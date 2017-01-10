@@ -1,4 +1,4 @@
--- To 1.3.16100601
+-- To 1.3.16100601;
 ALTER TABLE `accHistory`
   CHANGE COLUMN `acchistory_userId` `acchistory_userId` SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE COLUMN `acchistory_userEditId` `acchistory_userEditId` SMALLINT(5) UNSIGNED NOT NULL,
@@ -35,7 +35,6 @@ ALTER TABLE `accounts`
 ALTER TABLE `authTokens`
   CHANGE COLUMN `authtoken_userId` `authtoken_userId` SMALLINT(5) UNSIGNED NOT NULL,
   ADD INDEX `fk_authTokens_users_id_idx` (`authtoken_userId` ASC, `authtoken_createdBy` ASC);
-
 ALTER TABLE `log`
   CHANGE COLUMN `log_userId` `log_userId` SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE COLUMN `log_description` `log_description` TEXT NULL DEFAULT NULL,
@@ -229,6 +228,15 @@ ALTER TABLE `accHistory`
   ADD COLUMN `accHistory_passDateChange` INT UNSIGNED NULL
   AFTER `accHistory_passDate`;
 
+ALTER TABLE `accounts`
+  ADD COLUMN `account_parentId` SMALLINT(5) UNSIGNED NULL
+  AFTER `account_passDateChange`;
+
+ALTER TABLE `accHistory`
+  ADD COLUMN `accHistory_parentId` SMALLINT(5) UNSIGNED NULL
+  AFTER `accHistory_passDateChange`,
+  ADD INDEX `fk_accHistory_userGroup_id_idx` (`acchistory_userGroupId` ASC);
+
 CREATE OR REPLACE ALGORITHM = UNDEFINED
   DEFINER = CURRENT_USER
   SQL SECURITY DEFINER VIEW `account_data_v` AS
@@ -305,9 +313,6 @@ VIEW `account_search_v` AS
       LEFT JOIN `customers` ON ((`customers`.`customer_id` = `accounts`.`account_customerId`)));
 
 ALTER TABLE `accounts`
-  ADD COLUMN `account_parentId` SMALLINT (5) UNSIGNED NULL AFTER `account_passDateChange`;
-
-ALTER TABLE `accounts`
   ADD CONSTRAINT `fk_accounts_customer_id`
 FOREIGN KEY (`account_customerId`)
 REFERENCES `customers` (`customer_id`)
@@ -323,10 +328,6 @@ FOREIGN KEY (`account_userGroupId`)
 REFERENCES `usrGroups` (`usergroup_id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
-ALTER TABLE `accHistory`
-  ADD COLUMN `accHistory_parentId` SMALLINT(5) UNSIGNED NULL
-  AFTER `accHistory_passDateChange`,
-  ADD INDEX `fk_accHistory_userGroup_id_idx` (`acchistory_userGroupId` ASC);
 
 ALTER TABLE `accHistory`
   ADD CONSTRAINT `fk_accHistory_customer_id`
@@ -349,26 +350,29 @@ ALTER TABLE `accounts`
   ADD INDEX `IDX_parentId` USING BTREE (`account_parentId` ASC);
 
 ALTER TABLE `categories`
-ADD COLUMN `category_hash` VARBINARY(40) NOT NULL DEFAULT 0 AFTER `category_description`;
+  ADD COLUMN `category_hash` VARBINARY(40) NOT NULL DEFAULT 0
+  AFTER `category_description`;
 
 CREATE TABLE `plugins` (
-  `plugin_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `plugin_name` VARCHAR(100) NOT NULL,
-  `plugin_data` VARBINARY(5000) NULL,
-  `plugin_enabled` BIT(1) NOT NULL DEFAULT b'0',
+  `plugin_id`      INT UNSIGNED    NOT NULL AUTO_INCREMENT,
+  `plugin_name`    VARCHAR(100)    NOT NULL,
+  `plugin_data`    VARBINARY(5000) NULL,
+  `plugin_enabled` BIT(1)          NOT NULL DEFAULT b'0',
   PRIMARY KEY (`plugin_id`),
-  UNIQUE INDEX `plugin_name_UNIQUE` (`plugin_name` ASC));
+  UNIQUE INDEX `plugin_name_UNIQUE` (`plugin_name` ASC)
+);
 
 CREATE TABLE `notices` (
-  `notice_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `notice_type` VARCHAR(100) NULL,
-  `notice_component` VARCHAR(100) NOT NULL,
-  `notice_description` VARCHAR(500) NOT NULL,
-  `notice_date` INT UNSIGNED NOT NULL,
-  `notice_checked` BIT(1) NULL DEFAULT b'0',
-  `notice_userId` SMALLINT(5) UNSIGNED NULL,
-  `notice_sticky` BIT(1) NULL DEFAULT b'0',
-  `notice_onlyAdmin` BIT(1) NULL DEFAULT b'0',
+  `notice_id`          INT UNSIGNED         NOT NULL AUTO_INCREMENT,
+  `notice_type`        VARCHAR(100)         NULL,
+  `notice_component`   VARCHAR(100)         NOT NULL,
+  `notice_description` VARCHAR(500)         NOT NULL,
+  `notice_date`        INT UNSIGNED         NOT NULL,
+  `notice_checked`     BIT(1)               NULL     DEFAULT b'0',
+  `notice_userId`      SMALLINT(5) UNSIGNED NULL,
+  `notice_sticky`      BIT(1)               NULL     DEFAULT b'0',
+  `notice_onlyAdmin`   BIT(1)               NULL     DEFAULT b'0',
   PRIMARY KEY (`notice_id`),
   INDEX `IDX_userId` (`notice_userId` ASC, `notice_checked` ASC, `notice_date` ASC),
-  INDEX `IDX_component` (`notice_component` ASC, `notice_date` ASC, `notice_checked` ASC, `notice_userId` ASC));
+  INDEX `IDX_component` (`notice_component` ASC, `notice_date` ASC, `notice_checked` ASC, `notice_userId` ASC)
+);

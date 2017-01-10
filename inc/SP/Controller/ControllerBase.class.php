@@ -309,7 +309,7 @@ abstract class ControllerBase
         if ($fancy) {
             $this->view->addTemplate('errorfancy');
         } else {
-            $this->view->addTemplate('error');
+            $this->view->addTemplate('error', 'main');
         }
 
         $this->view->append('errors',

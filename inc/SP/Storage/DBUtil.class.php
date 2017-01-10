@@ -82,9 +82,10 @@ class DBUtil
             $query = /** @lang SQL */
                 'SELECT COUNT(*) 
                 FROM information_schema.tables
-                WHERE table_schema = \'' . Config::getConfig()->getDbName() . '\'';
+                WHERE table_schema = \'' . Config::getConfig()->getDbName() . '\'
+                AND table_name IN (\'customers\', \'categories\', \'accounts\', \'usrData\', \'config\', \'log\' )';
 
-            return (int)$db->query($query)->fetchColumn() === count(self::$tables);
+            return (int)$db->query($query)->fetchColumn() === 6;
         } catch (\Exception $e) {
             throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }

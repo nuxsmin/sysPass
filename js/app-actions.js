@@ -44,7 +44,6 @@ sysPass.Actions = function (Common) {
         main: {
             login: "/ajax/ajax_doLogin.php",
             install: "/ajax/ajax_install.php",
-            twofa: "/ajax/ajax_2fa.php",
             getUpdates: "/ajax/ajax_checkUpds.php"
         },
         checks: "/ajax/ajax_checkConnection.php",

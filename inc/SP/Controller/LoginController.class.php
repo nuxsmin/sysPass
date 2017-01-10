@@ -286,10 +286,10 @@ class LoginController
             $loadMPass = $UserPass->loadUserMPass();
 
             // Comprobar si es necesario actualizar la clave maestra
-            if ($loadMPass === false) {
+            if ($loadMPass === null) {
                 throw new AuthException(SPException::SP_INFO, _('Es necesaria su clave anterior'), '', self::STATUS_NEED_OLD_PASS);
                 // La clave no está establecida o se ha sido cambiada por el administrador
-            } else if ($loadMPass === null || !$UserPass->checkUserUpdateMPass()) {
+            } else if ($loadMPass === false || !$UserPass->checkUserUpdateMPass()) {
                 throw new AuthException(SPException::SP_INFO, _('La clave maestra no ha sido guardada o es incorrecta'), '', self::STATUS_INVALID_MASTER_PASS);
             }
         }

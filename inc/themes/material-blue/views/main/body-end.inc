@@ -8,12 +8,6 @@
 
         sysPassApp.log.info("DOMContentLoaded");
 
-        <?php if ($loadApp === true): ?>
-            sysPassApp.triggers().views.main();
-        <?php elseif ($isInstalled === false): ?>
-            sysPassApp.triggers().views.install();
-        <?php endif; ?>
-
         sysPassApp.sk.set("<?php echo $sk; ?>");
     });
 </script>

@@ -4,7 +4,7 @@
             <h1><?php printf(_('Actualización  %s'), $appVersion); ?></h1>
         </div>
 
-        <form id="upgrade" method="post" class="form-action" data-onsubmit="main/upgrade">
+        <form id="frmUpgrade" method="post" action="index.php">
             <fieldset>
                 <legend><?php echo _('Actualización de BBDD'); ?></legend>
 
@@ -25,7 +25,6 @@
 
                 <input type="hidden" name="a" value="<?php echo $action; ?>">
                 <input type="hidden" name="t" value="<?php echo $time; ?>">
-                <input type="hidden" name="isAjax" value="1">
                 <input type="hidden" name="upgrade" value="1">
             </fieldset>
 

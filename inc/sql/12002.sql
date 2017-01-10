@@ -1,4 +1,4 @@
--- To 1.2.0.0.2
+-- To 1.2.0.0.2;
 ALTER TABLE config
   CHANGE config_value config_value VARCHAR(255);
 ALTER TABLE usrData

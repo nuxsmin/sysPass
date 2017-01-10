@@ -1,4 +1,4 @@
--- To 1.1.21
+-- To 1.1.21;
 ALTER TABLE `categories`
   ADD COLUMN `category_description` VARCHAR(255) NULL
   AFTER `category_name`;

@@ -83,6 +83,7 @@ class Upgrade
     private static function upgradeDB($version)
     {
         $Log = new Log(_('Actualizar BBDD'));
+        $Log->addDetails(_('Versión'), $version);
 
         $queries = [];
 
@@ -125,8 +126,9 @@ class Upgrade
                 break;
         }
 
-        if (count($queries) > 0) {
+        if (count($queries) === 0) {
             $Log->addDescription(_('No es necesario actualizar la Base de Datos.'));
+            $Log->writeLog();
             return true;
         }
 
@@ -139,7 +141,6 @@ class Upgrade
             } catch (SPException $e) {
                 $Log->setLogLevel(Log::ERROR);
                 $Log->addDescription(_('Error al aplicar la actualización de la Base de Datos.'));
-                $Log->addDetails(_('Versión'), $version);
                 $Log->addDetails('ERROR', sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
                 $Log->writeLog();
 
@@ -149,7 +150,6 @@ class Upgrade
         }
 
         $Log->addDescription(_('Actualización de la Base de Datos realizada correctamente.'));
-        $Log->addDetails(_('Versión'), $version);
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -225,7 +225,9 @@ class Upgrade
      */
     public static function needConfigUpgrade($version)
     {
-        return in_array($version, self::$cfgUpgrade);
+        $latestUpgrade = self::$cfgUpgrade[count(self::$cfgUpgrade) - 1];
+
+        return version_compare($version, $latestUpgrade) <= 0;
     }
 
     /**
@@ -236,50 +238,7 @@ class Upgrade
      */
     public static function upgradeConfig($version)
     {
-        $Log = new Log(_('Actualizar Configuración'));
-        $Config = new ConfigData();
-
-        if (file_exists(CONFIG_FILE)) {
-            // Include the file, save the data from $CONFIG
-            include CONFIG_FILE;
-
-            if (isset($CONFIG) && is_array($CONFIG)) {
-                foreach (self::getConfigParams() as $mapTo => $mapFrom) {
-                    if (method_exists($Config, $mapTo)) {
-                        if (is_array($mapFrom)) {
-                            foreach ($mapFrom as $param) {
-                                if (isset($CONFIG[$param])) {
-                                    $Log->addDetails(_('Parámetro'), $param);
-                                    $Config->$mapTo($CONFIG[$param]);
-                                }
-                            }
-                        } else {
-                            $Log->addDetails(_('Parámetro'), $mapFrom);
-                            $Config->$mapTo($CONFIG[$mapFrom]);
-                        }
-                    }
-                }
-            }
-        }
-
-        try {
-            $Config->setConfigVersion($version);
-            Config::saveConfig($Config, false);
-            rename(CONFIG_FILE, CONFIG_FILE . '.old');
-        } catch (\Exception $e) {
-            $Log->addDescription(_('Error al actualizar la configuración'));
-            $Log->addDetails(_('Archivo'), CONFIG_FILE . '.old');
-            $Log->setLogLevel(Log::ERROR);
-            $Log->writeLog();
-            return false;
-        }
-
-        $Log->addDescription(_('Actualización de la Configuración realizada correctamente.'));
-        $Log->addDetails(_('Versión'), $version);
-        $Log->setLogLevel(Log::NOTICE);
-        $Log->writeLog();
-
-        return true;
+        return false;
     }
 
     /**
@@ -338,5 +297,55 @@ class Upgrade
             'setWikiPageUrl' => ['wikipageurl' . 'wiki_pageurl'],
             'setWikiSearchUrl' => ['wikisearchurl', 'wiki_searchurl']
         ];
+    }
+
+    public static function upgradeOldConfigFile($version)
+    {
+        $Log = new Log(_('Actualizar Configuración'));
+        $Config = new ConfigData();
+
+        // Include the file, save the data from $CONFIG
+        include CONFIG_FILE;
+
+        if (isset($CONFIG) && is_array($CONFIG)) {
+            foreach (self::getConfigParams() as $mapTo => $mapFrom) {
+                if (method_exists($Config, $mapTo)) {
+                    if (is_array($mapFrom)) {
+                        foreach ($mapFrom as $param) {
+                            if (isset($CONFIG[$param])) {
+                                $Log->addDetails(_('Parámetro'), $param);
+                                $Config->$mapTo($CONFIG[$param]);
+                            }
+                        }
+                    } else {
+                        if (isset($CONFIG[$mapFrom])) {
+                            $Log->addDetails(_('Parámetro'), $mapFrom);
+                            $Config->$mapTo($CONFIG[$mapFrom]);
+                        }
+                    }
+                }
+            }
+        }
+
+        try {
+            $Config->setConfigVersion($version);
+            Config::saveConfig($Config, false);
+            rename(CONFIG_FILE, CONFIG_FILE . '.old');
+
+            $Log->addDetails(_('Versión'), $version);
+            $Log->setLogLevel(Log::NOTICE);
+            $Log->writeLog();
+
+            return true;
+        } catch (\Exception $e) {
+            $Log->addDescription(_('Error al actualizar la configuración'));
+            $Log->addDetails(_('Archivo'), CONFIG_FILE . '.old');
+            $Log->setLogLevel(Log::ERROR);
+            $Log->writeLog();
+        }
+
+
+        // We are here...wrong
+        return false;
     }
 }

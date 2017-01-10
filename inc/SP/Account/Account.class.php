@@ -198,13 +198,13 @@ class Account extends AccountBase implements AccountInterface
         }
 
         $query = /** @lang SQL */
-            'SELECT ' . implode(',', $params) . ' '
-            . 'FROM accounts '
-            . 'LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id '
-            . 'LEFT JOIN usrData u1 ON account_userId = u1.user_id '
-            . 'LEFT JOIN usrData u2 ON account_userEditId = u2.user_id '
-            . 'LEFT JOIN customers ON account_customerId = customer_id '
-            . 'WHERE account_id = :id LIMIT 1';
+            'SELECT ' . implode(',', $params) . '
+            FROM accounts 
+            LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id 
+            LEFT JOIN usrData u1 ON account_userId = u1.user_id  
+            LEFT JOIN usrData u2 ON account_userEditId = u2.user_id 
+            LEFT JOIN customers ON account_customerId = customer_id 
+            WHERE account_id = :id LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -322,8 +322,9 @@ class Account extends AccountBase implements AccountInterface
     /**
      * Crea una nueva cuenta en la BBDD
      *
+     * @param bool $encryptPass Encriptar la clave?
      * @return $this
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function createAccount($encryptPass = true)
     {
@@ -419,11 +420,11 @@ class Account extends AccountBase implements AccountInterface
     /**
      * Devolver los datos de la clave encriptados
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @param string $masterPass Clave maestra a utilizar
      */
-    protected function setPasswordEncrypted()
+    protected function setPasswordEncrypted($masterPass = null)
     {
-        $pass = Crypt::encryptData($this->accountData->getAccountPass());
+        $pass = Crypt::encryptData($this->accountData->getAccountPass(), $masterPass);
 
         $this->accountData->setAccountPass($pass['data']);
         $this->accountData->setAccountIV($pass['iv']);
@@ -543,15 +544,12 @@ class Account extends AccountBase implements AccountInterface
      */
     public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null)
     {
-        $accountsOk = array();
+        $accountsOk = [];
         $userId = Session::getUserData()->getUserId();
         $demoEnabled = Checks::demoIsEnabled();
         $errorCount = 0;
 
         $Log = new Log(_('Actualizar Clave Maestra'));
-        $Log->addDescription(_('Inicio'));
-        $Log->writeLog();
-        $Log->resetDescription();
 
         if (!Crypt::checkCryptModule()) {
             $Log->setLogLevel(Log::ERROR);
@@ -580,46 +578,35 @@ class Account extends AccountBase implements AccountInterface
             }
 
             if (strlen($account->account_pass) === 0) {
-                $Log->addDescription(sprintf('%s: (%s) %s', _('Clave de cuenta vacía'), $account->account_id, $account->account_name));
+                $Log->addDetails(_('Clave de cuenta vacía'), sprintf('%s (%d)', $account->account_name, $account->account_id));
                 continue;
             }
 
             if (strlen($account->account_IV) < 32) {
-                $Log->addDescription(sprintf('%s: (%s) %s', _('IV de encriptación incorrecto'), $account->account_id, $account->account_name));
+                $Log->addDetails(_('IV de encriptación incorrecto'), sprintf('%s (%d)', $account->account_name, $account->account_id));
             }
 
             $decryptedPass = Crypt::getDecrypt($account->account_pass, $account->account_IV);
-            $this->accountData->setAccountPass(Crypt::mkEncrypt($decryptedPass, $newMasterPass));
-            $this->accountData->setAccountIV(Crypt::$strInitialVector);
+            $this->accountData->setAccountPass($decryptedPass);
+            $this->setPasswordEncrypted($newMasterPass);
 
             if ($this->accountData->getAccountPass() === false) {
                 $errorCount++;
-                $Log->addDescription(sprintf('%s: (%s) %s', _('No es posible desencriptar la clave de la cuenta'), $account->account_id, $account->account_name));
+                $Log->addDetails(_('No es posible desencriptar la clave de la cuenta'), sprintf('%s (%d)', $account->account_name, $account->account_id));
                 continue;
             }
 
             if (!$this->updateAccountPass(true)) {
                 $errorCount++;
-                $Log->addDescription(sprintf('%s: (%s) %s', _('Fallo al actualizar la clave de la cuenta'), $account->account_id, $account->acchistory_name));
+                $Log->addDetails(_('Fallo al actualizar la clave de la cuenta'), sprintf('%s (%d)', $account->account_name, $account->account_id));
                 continue;
             }
 
             $accountsOk[] = $this->accountData->getAccountId();
         }
 
-        // Vaciar el array de mensajes de log
-        if (count($Log->getDescription()) > 0) {
-            $Log->writeLog();
-            $Log->resetDescription();
-        }
-
-        if ($accountsOk) {
-            $Log->addDetails(_('Cuentas actualizadas'), implode(',', $accountsOk));
-            $Log->writeLog();
-            $Log->resetDescription();
-        }
-
-        $Log->addDescription(_('Fin'));
+        $Log->addDetails(_('Cuentas actualizadas'), implode(',', $accountsOk));
+        $Log->addDetails(_('Errores'), $errorCount);
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -647,27 +634,25 @@ class Account extends AccountBase implements AccountInterface
      * Actualiza la clave de una cuenta en la BBDD.
      *
      * @param bool $isMassive para no actualizar el histórico ni enviar mensajes
-     * @param bool $isRestore indica si es una restauración
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function updateAccountPass($isMassive = false, $isRestore = false)
+    public function updateAccountPass($isMassive = false)
     {
         $Log = new Log(_('Modificar Clave'));
 
         // No actualizar el histórico si es por cambio de clave maestra o restauración
-        if (!$isMassive
-            && !$isRestore
-            && !AccountHistory::addHistory($this->accountData->getAccountId(), false)
-        ) {
-            // Guardamos una copia de la cuenta en el histórico
-            $Log->addDescription(_('Error al actualizar el historial'));
-            $Log->writeLog();
+        if (!$isMassive) {
+            if (!AccountHistory::addHistory($this->accountData->getAccountId(), false)) {
+                // Guardamos una copia de la cuenta en el histórico
+                $Log->addDescription(_('Error al actualizar el historial'));
+                $Log->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, _('Error al actualizar la clave'));
+                throw new SPException(SPException::SP_ERROR, _('Error al actualizar la clave'));
+            }
+
+            $this->setPasswordEncrypted();
         }
-
-        $this->setPasswordEncrypted();
 
         $query = /** @lang SQL */
             'UPDATE accounts SET '
@@ -684,8 +669,8 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
         $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
         $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
-        $Data->addParam($this->accountData->getAccountId(), 'accountId');
         $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
+        $Data->addParam($this->accountData->getAccountId(), 'accountId');
 
 
         if (DB::getQuery($Data) === false) {
@@ -694,7 +679,7 @@ class Account extends AccountBase implements AccountInterface
 
         // No escribir en el log ni enviar correos si la actualización es
         // por cambio de clave maestra o restauración
-        if (!$isMassive && !$isRestore) {
+        if (!$isMassive) {
             $accountInfo = ['customer_name', 'account_name'];
             $this->getAccountInfoById($accountInfo);
 
@@ -716,7 +701,6 @@ class Account extends AccountBase implements AccountInterface
      */
     public function getAccountPassData()
     {
-        // FIXME: es necesario obtener los grupos secundarios de la cuenta
         $query = /** @lang SQL */
             'SELECT account_name,'
             . 'account_userId,'

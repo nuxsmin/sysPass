@@ -1,4 +1,4 @@
--- To 1.1.0
+-- To 1.1.0;
 ALTER TABLE `accFiles`
   CHANGE COLUMN `accfile_name` `accfile_name` VARCHAR(100) NOT NULL;
 ALTER TABLE `accounts`

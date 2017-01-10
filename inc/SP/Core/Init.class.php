@@ -363,35 +363,43 @@ class Init
      */
     private static function checkConfigVersion()
     {
-        $oldConfigCheck = file_exists(CONFIG_FILE);
         $appVersion = (int)implode(Util::getVersion(true));
 
-        if ($oldConfigCheck) {
-            include_once CONFIG_FILE;
+        if (file_exists(CONFIG_FILE) && Upgrade::upgradeOldConfigFile($appVersion)) {
+            self::logConfigUpgrade($appVersion);
+
+            self::$UPDATED = true;
+
+            return;
         }
 
-        $configVersion = $oldConfigCheck ? (int)$CONFIG['version'] : Config::getConfig()->getConfigVersion();
-
+        $configVersion = Config::getConfig()->getConfigVersion();
 
         if (Config::getConfig()->isInstalled()
             && $configVersion < $appVersion
-            && Upgrade::needConfigUpgrade($appVersion)
+            && Upgrade::needConfigUpgrade($configVersion)
             && Upgrade::upgradeConfig($appVersion)
         ) {
-            if ($oldConfigCheck) {
-                rename(CONFIG_FILE, CONFIG_FILE . '.old');
-            }
-
-            $Log = new Log(_('Actualización'));
-            $Log->addDescription(_('Actualización de versión realizada.'));
-            $Log->addDetails(_('Versión'), $appVersion);
-            $Log->addDetails(_('Tipo'), 'config');
-            $Log->writeLog();
-
-            Email::sendEmail($Log);
+            self::logConfigUpgrade($appVersion);
 
             self::$UPDATED = true;
         }
+    }
+
+    /**
+     * Registrar la actualización de la configuración
+     *
+     * @param $version
+     */
+    private static function logConfigUpgrade($version)
+    {
+        $Log = new Log(_('Actualización'));
+        $Log->addDescription(_('Actualización de versión realizada.'));
+        $Log->addDetails(_('Versión'), $version);
+        $Log->addDetails(_('Tipo'), 'config');
+        $Log->writeLog();
+
+        Email::sendEmail($Log);
     }
 
     /**
@@ -568,7 +576,7 @@ class Init
                 if (empty($upgradeKey)) {
                     Config::getConfig()->setUpgradeKey(sha1(uniqid(mt_rand(), true)));
                     Config::getConfig()->setMaintenance(true);
-                    Config::saveConfig();
+                    Config::saveConfig(null, false);
                 }
 
                 self::initError(_('La aplicación necesita actualizarse'), sprintf(_('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>'));
@@ -586,7 +594,7 @@ class Init
                         $update = true;
                     }
                 } else {
-                    $controller = new MainController();
+                    $controller = new MainController(null, 'upgrade');
                     $controller->getUpgrade();
                 }
             }

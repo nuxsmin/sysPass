@@ -134,7 +134,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '2.0-dev';
+        return '2.0-beta';
     }
 
     /**

@@ -67,7 +67,6 @@ class UserMigrate
      *
      * @param string $userLogin con el login del usuario
      * @param string $userPass  con la clave del usuario
-     * @return bool
      *
      * Esta función actualiza la clave de un usuario que ha sido migrado desde phpPMS
      * @throws \SP\Core\Exceptions\SPException

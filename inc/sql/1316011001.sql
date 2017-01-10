@@ -1,4 +1,6 @@
--- To 1.3.16011001
+-- To 1.3.16011001;
+ALTER TABLE `log`
+  ADD log_level VARCHAR(20) NOT NULL;
 CREATE TABLE `publicLinks` (
   publicLink_id       INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
   publicLink_itemId   INT UNSIGNED,
@@ -37,8 +39,6 @@ CREATE UNIQUE INDEX unique_publicLink_accountId
   ON publicLinks (publicLink_itemId);
 CREATE UNIQUE INDEX unique_publicLink_hash
   ON publicLinks (publicLink_hash);
-ALTER TABLE `log`
-  ADD log_level VARCHAR(20) NOT NULL;
 ALTER TABLE `config`
   CHANGE config_value config_value VARCHAR(2000);
 CREATE TABLE `accFavorites` (

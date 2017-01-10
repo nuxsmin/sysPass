@@ -1,4 +1,4 @@
--- To 1.3.16020501
+-- To 1.3.16020501;
 CREATE TABLE `tags` (
   `tag_id`   INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `tag_name` VARCHAR(45)  NOT NULL,

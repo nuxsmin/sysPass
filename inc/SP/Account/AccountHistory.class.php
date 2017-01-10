@@ -214,15 +214,11 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null)
     {
-        $idOk = array();
+        $accountsOk = [];
         $errorCount = 0;
         $demoEnabled = Checks::demoIsEnabled();
 
         $Log = new Log(_('Actualizar Clave Maestra (H)'));
-        $Log->addDescription(_('Inicio'));
-        $Log->writeLog();
-
-        $Log->resetDescription();
 
         if (!Crypt::checkCryptModule()) {
             $Log->setLogLevel(Log::ERROR);
@@ -252,29 +248,23 @@ class AccountHistory extends AccountBase implements AccountInterface
 
             // No realizar cambios si está en modo demo
             if ($demoEnabled) {
-                $idOk[] = $account->acchistory_id;
+                $accountsOk[] = $account->acchistory_id;
                 continue;
             }
 
             if (!$this->checkAccountMPass()) {
                 $errorCount++;
-                $Log->addDescription(_('La clave maestra del registro no coincide'));
-                $Log->addDetails('ID', $account->acchistory_id);
-                $Log->addDetails(_('Nombre'), $account->acchistory_name);
+                $Log->addDetails(_('La clave maestra del registro no coincide'), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
                 continue;
             }
 
             if ($account->acchistory_pass === '') {
-                $Log->addDescription(_('Clave de cuenta vacía'));
-                $Log->addDetails('ID', $account->acchistory_id);
-                $Log->addDetails(_('Nombre'), $account->acchistory_name);
+                $Log->addDetails(_('Clave de cuenta vacía'), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
                 continue;
             }
 
             if (strlen($account->acchistory_IV) < 32) {
-                $Log->addDescription(_('IV de encriptación incorrecto'));;
-                $Log->addDetails('ID', $account->acchistory_id);
-                $Log->addDetails(_('Nombre'), $account->acchistory_name);
+                $Log->addDetails(_('IV de encriptación incorrecto'), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
             }
 
             $decryptedPass = Crypt::getDecrypt($account->acchistory_pass, $account->acchistory_IV);
@@ -283,36 +273,21 @@ class AccountHistory extends AccountBase implements AccountInterface
 
             if ($AccountData->pass === false) {
                 $errorCount++;
-                $Log->addDescription(_('No es posible desencriptar la clave de la cuenta'));
-                $Log->addDetails('ID', $account->acchistory_id);
-                $Log->addDetails(_('Nombre'), $account->acchistory_name);
+                $Log->addDetails(_('No es posible desencriptar la clave de la cuenta'), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
                 continue;
             }
 
             if (!$this->updateAccountPass($AccountData)) {
                 $errorCount++;
-                $Log->addDescription(_('Fallo al actualizar la clave del histórico'));
-                $Log->addDetails('ID', $account->acchistory_id);
-                $Log->addDetails(_('Nombre'), $account->acchistory_name);
+                $Log->addDetails(_('Fallo al actualizar la clave del histórico'), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
                 continue;
             }
 
-            $idOk[] = $account->acchistory_id;
+            $accountsOk[] = $account->acchistory_id;
         }
 
-        // Vaciar el array de mensaje de log
-        if (count($Log->getDescription()) > 0) {
-            $Log->writeLog();
-            $Log->resetDescription();
-        }
-
-        if ($idOk) {
-            $Log->addDetails(_('Registros actualizados'), implode(',', $idOk));
-            $Log->writeLog();
-            $Log->resetDescription();
-        }
-
-        $Log->addDescription(_('Fin'));
+        $Log->addDetails(_('Cuentas actualizadas'), implode(',', $accountsOk));
+        $Log->addDetails(_('Errores'), $errorCount);
         $Log->writeLog();
 
         return true;

@@ -456,7 +456,7 @@ class ConfigActionController implements ItemControllerInterface
         } elseif ($newMasterPass === '' && $currentMasterPass === '') {
             $this->jsonResponse->setDescription(_('Clave maestra no indicada'));
             return;
-        } elseif ($confirmPassChange === 0) {
+        } elseif ($confirmPassChange === false) {
             $this->jsonResponse->setDescription(_('Se ha de confirmar el cambio de clave'));
             return;
         }

@@ -123,18 +123,8 @@ sysPass.Main = function () {
 
         var page = $("#container").data("page");
 
-        switch (page) {
-            case "login":
-                appTriggers.views.login();
-                break;
-            case "main":
-                break;
-            case "2fa":
-                appTriggers.views.twofa();
-                break;
-            case "passreset":
-                appTriggers.views.passreset();
-                break;
+        if (page !== "" && typeof appTriggers.views[page] === "function") {
+            appTriggers.views[page]();
         }
 
         if ($("footer").length > 0) {

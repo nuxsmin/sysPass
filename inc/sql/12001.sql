@@ -1,4 +1,4 @@
--- To 1.2.0.0.1
+-- To 1.2.0.0.1;
 ALTER TABLE `accounts`
   CHANGE COLUMN `account_userEditId` `account_userEditId` TINYINT(3) UNSIGNED NULL DEFAULT NULL,
   CHANGE COLUMN `account_dateEdit` `account_dateEdit` DATETIME NULL DEFAULT NULL;

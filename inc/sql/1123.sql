@@ -1,4 +1,4 @@
--- To 1.1.23
+-- To 1.1.23;
 CREATE TABLE `usrPassRecover` (
   `userpassr_id`     INT UNSIGNED      NOT NULL AUTO_INCREMENT,
   `userpassr_userId` SMALLINT UNSIGNED NOT NULL,

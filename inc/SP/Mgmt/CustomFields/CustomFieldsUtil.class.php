@@ -63,8 +63,7 @@ class CustomFieldsUtil
      */
     public static function updateCustomFieldsCrypt($currentMasterPass, $newMasterPassword)
     {
-        $Log = new Log();
-        $Log->setAction(_('Campos Personalizados'));
+        $Log = new Log(_('Campos Personalizados'));
 
         $query = /** @lang SQL */
             'SELECT customfielddata_id, customfielddata_data, customfielddata_iv FROM customFieldsData';
@@ -73,30 +72,28 @@ class CustomFieldsUtil
         $Data->setMapClassName(CustomFieldData::class);
         $Data->setQuery($query);
 
+        /** @var CustomFieldData[] $queryRes */
         $queryRes = DB::getResultsArray($Data);
 
         if (count($queryRes) === 0) {
-            $Log->addDescription(_('Fin'));
+            $Log->addDescription(_('No hay datos de campos personalizados'));
             $Log->writeLog();
-
             return true;
         }
 
         $Log->addDescription(_('Actualizando datos encriptados'));
-        $Log->writeLog(true);
 
         $errors = [];
         $success = [];
 
         foreach ($queryRes as $CustomField) {
-            /** @var CustomFieldData $CustomField */
             $fieldData = Crypt::getDecrypt($CustomField->getCustomfielddataData(), $CustomField->getCustomfielddataIv(), $currentMasterPass);
             $fieldCryptData = Crypt::encryptData($fieldData, $newMasterPassword);
 
             $query = /** @lang SQL */
                 'UPDATE customFieldsData SET
-                customfielddata_data = :data,
-                customfielddata_iv = :iv
+                customfielddata_data = ?,
+                customfielddata_iv = ? 
                 WHERE customfielddata_id = ?';
 
             $Data = new QueryData();
@@ -112,17 +109,8 @@ class CustomFieldsUtil
             }
         }
 
-        if (count($errors) > 0) {
-            $Log->addDetails(_('Registros no actualizados'), implode(',', $errors));
-            $Log->writeLog(true);
-        }
-
-        if (count($success) > 0) {
-            $Log->addDetails(_('Registros actualizados'), implode(',', $success));
-            $Log->writeLog(true);
-        }
-
-        $Log->addDescription(_('Fin'));
+        $Log->addDetails(_('Registros no actualizados'), implode(',', $errors));
+        $Log->addDetails(_('Registros actualizados'), implode(',', $success));
         $Log->writeLog();
 
         return (count($errors) === 0);
@@ -131,7 +119,7 @@ class CustomFieldsUtil
     /**
      * Crear los campos personalizados de un elemento
      *
-     * @param array           $customFields
+     * @param array $customFields
      * @param CustomFieldData $CustomFieldData
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
@@ -149,7 +137,7 @@ class CustomFieldsUtil
     /**
      * Actualizar los campos personalizados de un elemento
      *
-     * @param array           $customFields
+     * @param array $customFields
      * @param CustomFieldData $CustomFieldData
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
@@ -194,11 +182,26 @@ class CustomFieldsUtil
                     throw new SPException(SPException::SP_ERROR, _('Error al migrar campos personalizados'));
                 }
 
+                $query = /** @lang SQL */
+                    'UPDATE customFieldsDef SET
+                        customfielddef_module = ?,
+                        customfielddef_field = ?
+                        WHERE customfielddef_id= ? LIMIT 1';
+
                 foreach ($oldDefs as $def) {
                     $CustomFieldDef = CustomFieldDef::getItem()->getById($def->customfielddata_defId);
                     $CustomFieldDef->setModule(10);
+                    $CustomFieldDef->setCustomfielddefModule(10);
 
-                    CustomFieldDef::getItem($CustomFieldDef)->update();
+                    $Data = new QueryData();
+                    $Data->setQuery($query);
+                    $Data->addParam(10);
+                    $Data->addParam(serialize($CustomFieldDef));
+                    $Data->addParam($CustomFieldDef->getId());
+
+                    if (DB::getQuery($Data) === false) {
+                        throw new SPException(SPException::SP_ERROR, _('Error al actualizar el campo personalizado'));
+                    }
 
                     $Log->addDetails(_('Campo actualizado'), $def->customfielddata_defId);
                 }
@@ -209,8 +212,9 @@ class CustomFieldsUtil
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription($e->getMessage());
             $Log->addDescription($e->getHint());
-
-            return false;
         }
+
+        // We are here...wrong
+        return false;
     }
 }
