@@ -31,6 +31,7 @@ use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Storage\DB;
 use SP\Mgmt\Users\UserMigrate;
@@ -43,8 +44,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Upgrade
 {
-    private static $dbUpgrade = array(110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501);
-    private static $cfgUpgrade = array(1124, 1316020501);
+    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501, 1316100601, 2017010901];
+    private static $cfgUpgrade = [1124, 1316020501];
 
     /**
      * Inicia el proceso de actualización de la BBDD.
@@ -56,7 +57,7 @@ class Upgrade
     {
         foreach (self::$dbUpgrade as $upgradeVersion) {
             if ($version < $upgradeVersion) {
-                if (self::upgradeTo($upgradeVersion) === false) {
+                if (self::upgradeDB($upgradeVersion) === false) {
                     Init::initError(
                         _('Error al aplicar la actualización de la Base de Datos'),
                         _('Compruebe el registro de eventos para más detalles') . '. <a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a>');
@@ -79,88 +80,54 @@ class Upgrade
      * @param int $version con la versión a actualizar
      * @returns bool
      */
-    private static function upgradeTo($version)
+    private static function upgradeDB($version)
     {
         $Log = new Log(_('Actualizar BBDD'));
 
+        $queries = [];
+
         switch ($version) {
             case 110:
-                $queries[] = 'ALTER TABLE `accFiles` CHANGE COLUMN `accfile_name` `accfile_name` VARCHAR(100) NOT NULL';
-                $queries[] = 'ALTER TABLE `accounts` ADD COLUMN `account_otherGroupEdit` BIT(1) NULL DEFAULT 0 AFTER `account_dateEdit`, ADD COLUMN `account_otherUserEdit` BIT(1) NULL DEFAULT 0 AFTER `account_otherGroupEdit`;';
-                $queries[] = 'CREATE TABLE `accUsers` (`accuser_id` INT NOT NULL AUTO_INCREMENT,`accuser_accountId` INT(10) UNSIGNED NOT NULL,`accuser_userId` INT(10) UNSIGNED NOT NULL, PRIMARY KEY (`accuser_id`), INDEX `idx_account` (`accuser_accountId` ASC)) DEFAULT CHARSET=utf8;';
-                $queries[] = 'ALTER TABLE `accHistory` ADD COLUMN `accHistory_otherUserEdit` BIT NULL AFTER `acchistory_mPassHash`, ADD COLUMN `accHistory_otherGroupEdit` VARCHAR(45) NULL AFTER `accHistory_otherUserEdit`;';
-                $queries[] = 'ALTER TABLE `accFiles` CHANGE COLUMN `accfile_type` `accfile_type` VARCHAR(100) NOT NULL ;';
+                $queries = self::getQueriesFromFile($version);
                 break;
             case 1121:
-                $queries[] = 'ALTER TABLE `categories` ADD COLUMN `category_description` VARCHAR(255) NULL AFTER `category_name`;';
-                $queries[] = 'ALTER TABLE `usrProfiles` ADD COLUMN `userProfile_pAppMgmtMenu` BIT(1) NULL DEFAULT b\'0\' AFTER `userProfile_pUsersMenu`,CHANGE COLUMN `userProfile_pConfigCategories` `userProfile_pAppMgmtCategories` BIT(1) NULL DEFAULT b\'0\' AFTER `userProfile_pAppMgmtMenu`,ADD COLUMN `userProfile_pAppMgmtCustomers` BIT(1) NULL DEFAULT b\'0\' AFTER `userProfile_pAppMgmtCategories`;';
+                $queries = self::getQueriesFromFile($version);
                 break;
             case 1122:
-                $queries[] = 'ALTER TABLE `usrData` CHANGE COLUMN `user_login` `user_login` VARCHAR(50) NOT NULL ,CHANGE COLUMN `user_email` `user_email` VARCHAR(80) NULL DEFAULT NULL ;';
+                $queries = self::getQueriesFromFile($version);
                 break;
             case 1123:
-                $queries[] = 'CREATE TABLE `usrPassRecover` (`userpassr_id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `userpassr_userId` SMALLINT UNSIGNED NOT NULL,`userpassr_hash` VARBINARY(40) NOT NULL,`userpassr_date` INT UNSIGNED NOT NULL,`userpassr_used` BIT(1) NOT NULL DEFAULT b\'0\', PRIMARY KEY (`userpassr_id`),INDEX `IDX_userId` (`userpassr_userId` ASC, `userpassr_date` ASC)) DEFAULT CHARSET=utf8;';
-                $queries[] = 'ALTER TABLE `log` ADD COLUMN `log_ipAddress` VARCHAR(45) NOT NULL AFTER `log_userId`;';
-                $queries[] = 'ALTER TABLE `usrData` ADD COLUMN `user_isChangePass` BIT(1) NULL DEFAULT b\'0\' AFTER `user_isMigrate`;';
+                $queries = self::getQueriesFromFile($version);
                 break;
             case 11213:
-                $queries[] = 'ALTER TABLE `usrData` CHANGE COLUMN `user_mPass` `user_mPass` VARBINARY(32) NULL DEFAULT NULL ,CHANGE COLUMN `user_lastLogin` `user_lastLogin` DATETIME NULL DEFAULT NULL ,CHANGE COLUMN `user_lastUpdate` `user_lastUpdate` DATETIME NULL DEFAULT NULL, CHANGE COLUMN `user_mIV` `user_mIV` VARBINARY(32) NULL ;';
-                $queries[] = 'ALTER TABLE `accounts` CHANGE COLUMN `account_login` `account_login` VARCHAR(50) NULL DEFAULT NULL ;';
+                $queries = self::getQueriesFromFile($version);
                 break;
             case 11219:
-                $queries[] = 'ALTER TABLE `accounts` CHANGE COLUMN `account_pass` `account_pass` VARBINARY(255) NOT NULL ;';
-                $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `acchistory_pass` `acchistory_pass` VARBINARY(255) NOT NULL ;';
+                $queries = self::getQueriesFromFile($version);
                 break;
             case 11220:
-                $queries[] = 'ALTER TABLE `usrData` CHANGE COLUMN `user_pass` `user_pass` VARBINARY(255) NOT NULL,CHANGE COLUMN `user_mPass` `user_mPass` VARBINARY(255) DEFAULT NULL ;';
+                $queries = self::getQueriesFromFile($version);
                 break;
             case 12001:
-                $queries[] = 'ALTER TABLE `accounts` CHANGE COLUMN `account_userEditId` `account_userEditId` TINYINT(3) UNSIGNED NULL DEFAULT NULL, CHANGE COLUMN `account_dateEdit` `account_dateEdit` DATETIME NULL DEFAULT NULL;';
-                $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `acchistory_userEditId` `acchistory_userEditId` TINYINT(3) UNSIGNED NULL DEFAULT NULL, CHANGE COLUMN `acchistory_dateEdit` `acchistory_dateEdit` DATETIME NULL DEFAULT NULL;';
-                $queries[] = 'ALTER TABLE `accHistory` CHANGE COLUMN `accHistory_otherGroupEdit` `accHistory_otherGroupEdit` BIT NULL DEFAULT b\'0\';';
-                $queries[] = 'ALTER TABLE `usrProfiles` ADD COLUMN `userProfile_profile` BLOB NOT NULL;';
-                $queries[] = 'ALTER TABLE `usrData` ADD `user_preferences` BLOB NULL;';
-                $queries[] = 'CREATE TABLE usrToGroups (usertogroup_id INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,usertogroup_userId INT UNSIGNED NOT NULL,usertogroup_groupId INT UNSIGNED NOT NULL) DEFAULT CHARSET=utf8;';
-                $queries[] = 'CREATE INDEX IDX_accountId ON usrToGroups (usertogroup_userId)';
-                $queries[] = 'ALTER TABLE `accFiles` ADD `accFile_thumb` BLOB NULL;';
-                $queries[] = 'CREATE TABLE `authTokens` (`authtoken_id` int(11) NOT NULL AUTO_INCREMENT,`authtoken_userId` int(11) NOT NULL,`authtoken_token` varbinary(100) NOT NULL,`authtoken_actionId` smallint(5) unsigned NOT NULL,`authtoken_createdBy` smallint(5) unsigned NOT NULL,`authtoken_startDate` int(10) unsigned NOT NULL,PRIMARY KEY (`authtoken_id`),UNIQUE KEY `unique_authtoken_id` (`authtoken_id`),KEY `IDX_checkToken` (`authtoken_userId`,`authtoken_actionId`,`authtoken_token`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
-                $queries[] = 'CREATE TABLE `customFieldsDef` (`customfielddef_id` int(10) unsigned NOT NULL AUTO_INCREMENT, `customfielddef_module` smallint(5) unsigned NOT NULL, `customfielddef_field` blob NOT NULL, PRIMARY KEY (`customfielddef_id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
-                $queries[] = 'CREATE TABLE `customFieldsData` (`customfielddata_id` int(10) unsigned NOT NULL AUTO_INCREMENT,`customfielddata_moduleId` smallint(5) unsigned NOT NULL,`customfielddata_itemId` int(10) unsigned NOT NULL,`customfielddata_defId` int(10) unsigned NOT NULL,`customfielddata_data` longblob,`customfielddata_iv` varbinary(128) DEFAULT NULL, PRIMARY KEY (`customfielddata_id`), KEY `IDX_DEFID` (`customfielddata_defId`), KEY `IDX_DELETE` (`customfielddata_itemId`,`customfielddata_moduleId`), KEY `IDX_UPDATE` (`customfielddata_moduleId`,`customfielddata_itemId`,`customfielddata_defId`), KEY `IDX_ITEM` (`customfielddata_itemId`), KEY `IDX_MODULE` (`customfielddata_moduleId`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+                $queries = self::getQueriesFromFile($version);
                 break;
             case 12002:
-                $queries[] = 'ALTER TABLE config CHANGE config_value config_value VARCHAR(255);';
-                $queries[] = 'ALTER TABLE usrData CHANGE user_pass user_pass VARBINARY(255);';
-                $queries[] = 'ALTER TABLE usrData CHANGE user_hashSalt user_hashSalt VARBINARY(128);';
-                $queries[] = 'ALTER TABLE accHistory CHANGE acchistory_mPassHash acchistory_mPassHash VARBINARY(255);';
+                $queries = self::getQueriesFromFile($version);
                 break;
             case 1316011001:
-                $queries[] = 'ALTER TABLE `usrData` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `accFiles` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `accGroups` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `accHistory` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `accUsers` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `categories` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `config` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `customers` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `log` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `usrGroups` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `usrPassRecover` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `usrProfiles` ENGINE = InnoDB';
-                $queries[] = 'ALTER TABLE `accounts` ENGINE = InnoDB , DROP INDEX `IDX_searchTxt` , ADD INDEX `IDX_searchTxt` (`account_name` ASC, `account_login` ASC, `account_url` ASC)';
-                $queries[] = 'CREATE TABLE publicLinks (publicLink_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,publicLink_itemId INT,publicLink_hash VARBINARY(100) NOT NULL,publicLink_linkData LONGBLOB);';
-                $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_accountId ON publicLinks (publicLink_itemId)';
-                $queries[] = 'CREATE UNIQUE INDEX unique_publicLink_hash ON publicLinks (publicLink_hash)';
-                $queries[] = 'ALTER TABLE log ADD log_level VARCHAR(20) NOT NULL;';
-                $queries[] = 'ALTER TABLE config CHANGE config_value config_value VARCHAR(2000);';
-                $queries[] = 'CREATE TABLE `accFavorites` (`accfavorite_accountId` SMALLINT UNSIGNED NOT NULL,`accfavorite_userId` SMALLINT UNSIGNED NOT NULL,INDEX `fk_accFavorites_accounts_idx` (`accfavorite_accountId` ASC),INDEX `fk_accFavorites_users_idx` (`accfavorite_userId` ASC),INDEX `search_idx` (`accfavorite_accountId` ASC, `accfavorite_userId` ASC),CONSTRAINT `fk_accFavorites_accounts` FOREIGN KEY (`accfavorite_accountId`) REFERENCES `accounts` (`account_id`)  ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT `fk_accFavorites_users` FOREIGN KEY (`accfavorite_userId`) REFERENCES `usrData` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION)ENGINE=InnoDB DEFAULT CHARSET=utf8';
+                $queries = self::getQueriesFromFile($version);
                 break;
             case 1316020501:
-                $queries[] = 'CREATE TABLE `tags` (`tag_id`   INT UNSIGNED NOT NULL AUTO_INCREMENT,`tag_name` VARCHAR(45)  NOT NULL,`tag_hash` BINARY(20) NOT NULL,PRIMARY KEY (`tag_id`),INDEX `IDX_name` (`tag_name` ASC),UNIQUE INDEX `tag_hash_UNIQUE` (`tag_hash` ASC)) ENGINE = InnoDB DEFAULT CHARSET = utf8';
-                $queries[] = 'CREATE TABLE `accTags` (`acctag_accountId` INT UNSIGNED NOT NULL,`acctag_tagId`     INT UNSIGNED NOT NULL, INDEX `IDX_id` (`acctag_accountId` ASC, `acctag_tagId` ASC)) ENGINE = InnoDB DEFAULT CHARSET = utf8';
+                $queries = self::getQueriesFromFile($version);
                 break;
-            default :
-                $Log->addDescription(_('No es necesario actualizar la Base de Datos.'));
-                return true;
+            case 1316100601:
+                $queries = self::getQueriesFromFile($version);
+                break;
+        }
+
+        if (count($queries) > 0) {
+            $Log->addDescription(_('No es necesario actualizar la Base de Datos.'));
+            return true;
         }
 
         $Data = new QueryData();
@@ -171,7 +138,8 @@ class Upgrade
                 DB::getQuery($Data);
             } catch (SPException $e) {
                 $Log->setLogLevel(Log::ERROR);
-                $Log->addDescription(_('Error al aplicar la actualización de la Base de Datos.') . ' (v' . $version . ')');
+                $Log->addDescription(_('Error al aplicar la actualización de la Base de Datos.'));
+                $Log->addDetails(_('Versión'), $version);
                 $Log->addDetails('ERROR', sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
                 $Log->writeLog();
 
@@ -180,12 +148,38 @@ class Upgrade
             }
         }
 
-        $Log->addDescription(_('Actualización de la Base de Datos realizada correctamente.') . ' (v' . $version . ')');
+        $Log->addDescription(_('Actualización de la Base de Datos realizada correctamente.'));
+        $Log->addDetails(_('Versión'), $version);
         $Log->writeLog();
 
         Email::sendEmail($Log);
 
         return true;
+    }
+
+    /**
+     * Obtener las consultas de actualización desde un archivo
+     *
+     * @param $filename
+     * @return array|bool
+     */
+    private static function getQueriesFromFile($filename)
+    {
+        $file = SQL_PATH . DIRECTORY_SEPARATOR . $filename . '.sql';
+
+        $queries = [];
+
+        if (file_exists($file) && $handle = fopen($file, 'rb')) {
+            while (!feof($handle)) {
+                $buffer = stream_get_line($handle, 1000000, ";\n");
+
+                if (strlen(trim($buffer)) > 0) {
+                    $queries[] = str_replace("\n", '', $buffer);
+                }
+            }
+        }
+
+        return $queries;
     }
 
     /**
@@ -199,13 +193,13 @@ class Upgrade
         switch ($version) {
             case 12001:
                 return (ProfileUtil::migrateProfiles() && UserMigrate::migrateUsersGroup());
-                break;
             case 12002:
-                return (UserMigrate::setMigrateUsers());
-                break;
-            default:
-                break;
+                return UserMigrate::setMigrateUsers();
+            case 2017010901:
+                return CustomFieldsUtil::migrateCustomFields();
         }
+
+        return true;
     }
 
     /**
@@ -242,6 +236,7 @@ class Upgrade
      */
     public static function upgradeConfig($version)
     {
+        $Log = new Log(_('Actualizar Configuración'));
         $Config = new ConfigData();
 
         if (file_exists(CONFIG_FILE)) {
@@ -249,27 +244,19 @@ class Upgrade
             include CONFIG_FILE;
 
             if (isset($CONFIG) && is_array($CONFIG)) {
-                debugLog('upgrade_old');
-
-                foreach (self::getConfigParams() as $mapTo => $oldParam) {
-                    $mapFrom = function () use ($oldParam) {
-                        if (is_array($oldParam)) {
-                            foreach ($oldParam as $param) {
+                foreach (self::getConfigParams() as $mapTo => $mapFrom) {
+                    if (method_exists($Config, $mapTo)) {
+                        if (is_array($mapFrom)) {
+                            foreach ($mapFrom as $param) {
                                 if (isset($CONFIG[$param])) {
-                                    return $param;
+                                    $Log->addDetails(_('Parámetro'), $param);
+                                    $Config->$mapTo($CONFIG[$param]);
                                 }
                             }
-
-                            return '';
+                        } else {
+                            $Log->addDetails(_('Parámetro'), $mapFrom);
+                            $Config->$mapTo($CONFIG[$mapFrom]);
                         }
-
-                        return $oldParam;
-                    };
-
-                    if (isset($CONFIG[$mapFrom()])
-                        && method_exists($Config, $mapTo)
-                    ) {
-                        $Config->$mapTo($CONFIG[$mapFrom()]);
                     }
                 }
             }
@@ -279,12 +266,19 @@ class Upgrade
             $Config->setConfigVersion($version);
             Config::saveConfig($Config, false);
             rename(CONFIG_FILE, CONFIG_FILE . '.old');
-        } catch (\Exception $e){
-            Log::writeNewLog(_('Actualizar Configuración'), _('Error al actualizar la configuración'), Log::ERROR);
+        } catch (\Exception $e) {
+            $Log->addDescription(_('Error al actualizar la configuración'));
+            $Log->addDetails(_('Archivo'), CONFIG_FILE . '.old');
+            $Log->setLogLevel(Log::ERROR);
+            $Log->writeLog();
             return false;
         }
 
-        Log::writeNewLog(_('Actualizar Configuración'), _('Actualización de la Configuración realizada correctamente.') . ' (v' . $version . ')', Log::NOTICE);
+        $Log->addDescription(_('Actualización de la Configuración realizada correctamente.'));
+        $Log->addDetails(_('Versión'), $version);
+        $Log->setLogLevel(Log::NOTICE);
+        $Log->writeLog();
+
         return true;
     }
 

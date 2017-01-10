@@ -290,10 +290,12 @@ class Init
      */
     public static function initError($str, $hint = '')
     {
+        debugLog(__FUNCTION__);
+
         $Tpl = new Template();
         $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint]);
         $Controller = new MainController($Tpl, 'error', true);
-        $Controller->getError(true);
+        $Controller->getError();
         $Controller->view();
         exit();
     }
@@ -485,7 +487,6 @@ class Init
                 || Request::analyze('upgrade', 0) === 1
                 || Request::analyze('nodbupgrade', 0) === 1
             ) {
-                error_log(__FUNCTION__);
                 return true;
             }
 

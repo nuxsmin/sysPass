@@ -46,11 +46,12 @@ abstract class CustomFieldBase extends ItemBase
      * Category constructor.
      *
      * @param CustomFieldBaseData $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData = null)
     {
         if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\CustomFieldBaseData');
+            $this->setDataModel(CustomFieldBaseData::class);
         }
 
         parent::__construct($itemData);

@@ -58,17 +58,17 @@ class CustomFieldTypes
      */
     public static function getFieldsTypes($typeId = null, $nice = false)
     {
-        $types = array(
-            self::TYPE_TEXT => array('text', _('Texto')),
-            self::TYPE_WIKI => array('text', _('Wiki')),
-            self::TYPE_PASSWORD => array('password', _('Clave')),
-            self::TYPE_DATE => array('date', _('Fecha')),
-            self::TYPE_NUMBER => array('number', _('Número')),
-            self::TYPE_EMAIL => array('email', _('Email')),
-            self::TYPE_TELEPHONE => array('tel', _('Teléfono')),
-            self::TYPE_URL => array('url', _('Link')),
-            self::TYPE_COLOR => array('color', _('Color'))
-        );
+        $types = [
+            self::TYPE_TEXT => ['text', _('Texto')],
+            self::TYPE_WIKI => ['text', _('Wiki')],
+            self::TYPE_PASSWORD => ['password', _('Clave')],
+            self::TYPE_DATE => ['date', _('Fecha')],
+            self::TYPE_NUMBER => ['number', _('Número')],
+            self::TYPE_EMAIL => ['email', _('Email')],
+            self::TYPE_TELEPHONE => ['tel', _('Teléfono')],
+            self::TYPE_URL => ['url', _('Link')],
+            self::TYPE_COLOR => ['color', _('Color')]
+        ];
 
         if (null !== $typeId) {
             return ($nice === false) ? $types[$typeId][0] : $types[$typeId][1];
@@ -85,14 +85,14 @@ class CustomFieldTypes
      */
     public static function getFieldsModules($moduleId = null)
     {
-        $modules = array(
+        $modules = [
             ActionsInterface::ACTION_ACC => _('Cuentas'),
             ActionsInterface::ACTION_MGM_CATEGORIES => _('Categorías'),
             ActionsInterface::ACTION_MGM_CUSTOMERS => _('Clientes'),
             ActionsInterface::ACTION_USR_USERS => _('Usuarios'),
             ActionsInterface::ACTION_USR_GROUPS => _('Grupos')
 
-        );
+        ];
 
         return (null !== $moduleId) ? $modules[$moduleId] : $modules;
     }

@@ -188,6 +188,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\ValidationException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function userAction()
     {
@@ -239,6 +240,9 @@ class ItemActionController implements ItemControllerInterface
 
     /**
      * Guardar los datos de los campos personalizados del módulo
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function addCustomFieldData()
     {
@@ -251,6 +255,9 @@ class ItemActionController implements ItemControllerInterface
 
     /**
      * Actualizar los datos de los campos personalizados del módulo
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function updateCustomFieldData()
     {
@@ -265,6 +272,7 @@ class ItemActionController implements ItemControllerInterface
      * Eliminar los datos de los campos personalizados del módulo
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function deleteCustomFieldData()
     {
@@ -276,6 +284,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function groupAction()
     {
@@ -313,6 +322,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function profileAction()
     {
@@ -350,6 +360,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function customerAction()
     {
@@ -386,6 +397,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function categoryAction()
     {
@@ -454,6 +466,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function customFieldAction()
     {
@@ -486,6 +499,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function publicLinkAction()
     {
@@ -521,6 +535,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function tagAction()
     {
@@ -553,6 +568,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function fileAction()
     {
@@ -601,6 +617,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function accountAction()
     {

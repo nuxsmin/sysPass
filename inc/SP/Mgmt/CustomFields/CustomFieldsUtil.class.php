@@ -28,6 +28,7 @@ namespace SP\Mgmt\CustomFields;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Core\Crypt;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\Log\Log;
 use SP\Storage\DB;
@@ -49,7 +50,7 @@ class CustomFieldsUtil
      */
     public static function checkHash(&$fields, $srcHhash)
     {
-        return (!is_array($fields) || $srcHhash == md5(implode('', $fields)));
+        return (!is_array($fields) || $srcHhash === md5(implode('', $fields)));
     }
 
     /**
@@ -69,7 +70,7 @@ class CustomFieldsUtil
             'SELECT customfielddata_id, customfielddata_data, customfielddata_iv FROM customFieldsData';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\CustomFieldData');
+        $Data->setMapClassName(CustomFieldData::class);
         $Data->setQuery($query);
 
         $queryRes = DB::getResultsArray($Data);
@@ -84,8 +85,8 @@ class CustomFieldsUtil
         $Log->addDescription(_('Actualizando datos encriptados'));
         $Log->writeLog(true);
 
-        $errors = array();
-        $success = array();
+        $errors = [];
+        $success = [];
 
         foreach ($queryRes as $CustomField) {
             /** @var CustomFieldData $CustomField */
@@ -132,6 +133,8 @@ class CustomFieldsUtil
      *
      * @param array           $customFields
      * @param CustomFieldData $CustomFieldData
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function addItemCustomFields(array &$customFields, CustomFieldData $CustomFieldData)
     {
@@ -148,6 +151,8 @@ class CustomFieldsUtil
      *
      * @param array           $customFields
      * @param CustomFieldData $CustomFieldData
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function updateItemCustomFields(array $customFields, CustomFieldData $CustomFieldData)
     {
@@ -156,6 +161,56 @@ class CustomFieldsUtil
             $CustomFieldData->setValue($value);
 
             CustomField::getItem($CustomFieldData)->update();
+        }
+    }
+
+    /**
+     * Migración de campos personalizados
+     *
+     * @return bool
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
+    public static function migrateCustomFields()
+    {
+        $Log = new Log(__FUNCTION__);
+
+        $query = /** @lang SQL */
+            'SELECT customfielddata_defId FROM customFieldsData WHERE customfielddata_moduleId = 20';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        $oldDefs = DB::getResultsArray($Data);
+
+        try {
+            if (count($oldDefs) > 0) {
+                $query = /** @lang SQL */
+                    'UPDATE customFieldsData SET customfielddata_moduleId = 10 WHERE customfielddata_moduleId = 20';
+
+                $Data = new QueryData();
+                $Data->setQuery($query);
+
+                if (DB::getQuery($Data) === false) {
+                    throw new SPException(SPException::SP_ERROR, _('Error al migrar campos personalizados'));
+                }
+
+                foreach ($oldDefs as $def) {
+                    $CustomFieldDef = CustomFieldDef::getItem()->getById($def->customfielddata_defId);
+                    $CustomFieldDef->setModule(10);
+
+                    CustomFieldDef::getItem($CustomFieldDef)->update();
+
+                    $Log->addDetails(_('Campo actualizado'), $def->customfielddata_defId);
+                }
+            }
+
+            return true;
+        } catch (SPException $e) {
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription($e->getMessage());
+            $Log->addDescription($e->getHint());
+
+            return false;
         }
     }
 }

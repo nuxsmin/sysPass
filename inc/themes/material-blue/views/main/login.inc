@@ -82,7 +82,7 @@
         <div id="boxUpdated" class="round5"><?php echo _('Aplicación actualizada correctamente'); ?></div>
     <?php endif; ?>
 
-    <?php if ($demoEnabled): ?>
+    <?php if ($isDemoMode): ?>
         <div id="demo-info">
             <ul>
                 <li><i class="material-icons">perm_identity</i><span>demo</span></li>

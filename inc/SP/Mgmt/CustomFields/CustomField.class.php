@@ -50,7 +50,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
      */
     public function __construct($itemData, $customFieldDefId = null)
     {
-        $this->setDataModel('SP\DataModel\CustomFieldData');
+        $this->setDataModel(CustomFieldData::class);
 
         parent::__construct($itemData);
 
@@ -72,11 +72,11 @@ class CustomField extends CustomFieldBase implements ItemInterface
      */
     public function update()
     {
-        $exists = $this->checkIfExists();
+        $exists = $this->checkExists();
 
-        if ($this->itemData->getValue() !== '' && !$exists) {
+        if (!$exists && $this->itemData->getValue() !== '') {
             return $this->add();
-        } elseif ($this->itemData->getValue() === '' && $exists) {
+        } elseif ($exists && $this->itemData->getValue() === '') {
             return $this->delete($this->itemData->getId());
         }
 
@@ -105,8 +105,9 @@ class CustomField extends CustomFieldBase implements ItemInterface
      * Comprueba si el elemento tiene campos personalizados con datos
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
-    protected function checkIfExists()
+    protected function checkExists()
     {
         $query = /** @lang SQL */
             'SELECT customfielddata_id
@@ -154,9 +155,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $Data->addParam($cryptData['data']);
         $Data->addParam($cryptData['iv']);
 
-        $queryRes = DB::getQuery($Data);
-
-        return $queryRes;
+        return DB::getQuery($Data);
     }
 
     /**
@@ -184,9 +183,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $Data->addParam($id);
         $Data->addParam($this->itemData->getCustomfielddataModuleId());
 
-        $queryRes = DB::getQuery($Data);
-
-        return $queryRes;
+        return DB::getQuery($Data);
     }
 
     /**
@@ -243,7 +240,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
             $fieldDef = unserialize($CustomFieldData->getCustomfielddefField());
 
             if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-                $fieldDef = Util::castToClass('SP\DataModel\CustomFieldDefData', $fieldDef);
+                $fieldDef = Util::castToClass(CustomFieldDefData::class, $fieldDef);
             }
 
             $CustomFieldData->setDefinition($fieldDef);
@@ -299,7 +296,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
             WHERE customfielddef_module = ?';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\CustomFieldDefData');
+        $Data->setMapClassName(CustomFieldDefData::class);
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getModule());
 
@@ -318,7 +315,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
             $fieldDef = unserialize($CustomFieldDef->getCustomfielddefField());
 
             if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-                $fieldDef = Util::castToClass('SP\DataModel\CustomFieldDefData', $fieldDef);
+                $fieldDef = Util::castToClass(CustomFieldDefData::class, $fieldDef);
             }
 
             $CustomFieldData = new CustomFieldData();

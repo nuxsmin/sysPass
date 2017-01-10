@@ -74,6 +74,7 @@ class MainController extends ControllerBase implements ActionsInterface
      * Inicializar las variables para la vista principal de la aplicación
      *
      * @param string $page Nombre de la vista
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function initialize($page = '')
     {
@@ -95,7 +96,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('logonobg', Init::$WEBURI . '/imgs/logo_full_nobg.png');
         $this->view->assign('httpsEnabled', Checks::httpsEnabled());
 
-        $this->view->assign('loadApp', Session::getAuthCompleted());
+        $this->view->assign('loadApp', Session::getAuthCompleted() && !Config::getConfig()->isMaintenance());
 
         $this->setLoggedIn(Init::isLoggedIn());
 
@@ -283,26 +284,9 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
 
-        $this->view->assign('demoEnabled', Checks::demoIsEnabled());
         $this->view->assign('mailEnabled', Checks::mailIsEnabled());
         $this->view->assign('isLogout', Request::analyze('logout', false, true));
         $this->view->assign('updated', Init::$UPDATED === true);
-        $this->view->assign('newFeatures', array(
-            _('Nuevo estilo visual basado en Material Design Lite by Google'),
-            _('Usuarios en múltiples grupos'),
-            _('Previsualización de imágenes'),
-            _('Mostrar claves como imágenes'),
-            _('Campos personalizados'),
-            _('API de consultas'),
-            _('Autentificación en 2 pasos'),
-            _('Complejidad de generador de claves'),
-            _('Consultas especiales'),
-            _('Exportación a XML'),
-            _('Clave maestra temporal'),
-            _('Importación de cuentas desde sysPass, KeePass, KeePassX y CSV'),
-            _('Optimización del código y mayor rapidez de carga'),
-            _('Mejoras de seguridad en XSS e inyección SQL')
-        ));
 
         $getParams = [];
 
@@ -353,20 +337,18 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de error
-     *
-     * @param bool $showLogo mostrar el logo de sysPass
      */
-    public function getError($showLogo = false)
+    public function getError()
     {
         $this->view->addTemplate('body-header');
         $this->view->addTemplate('error');
         $this->view->addTemplate('body-footer');
-
-        $this->view->assign('showLogo', $showLogo);
     }
 
     /**
      * Obtener los datos para el interface de actualización de BD
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getUpgrade()
     {

@@ -233,15 +233,15 @@ class DB
         } catch (SPException $e) {
             ob_start();
             debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            error_log(sprintf('Exception: %s - %s', $e->getMessage(), $e->getHint()));
-            error_log(ob_get_clean());
+            debugLog(sprintf('Exception: %s - %s', $e->getMessage(), $e->getHint()));
+            debugLog(ob_get_clean());
 
             throw $e;
         } catch (\Exception $e) {
             ob_start();
             debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            error_log('Exception: ' . $e->getMessage());
-            error_log(ob_get_clean());
+            debugLog('Exception: ' . $e->getMessage());
+            debugLog(ob_get_clean());
 
             throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }

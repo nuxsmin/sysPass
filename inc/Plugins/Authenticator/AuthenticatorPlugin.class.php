@@ -71,6 +71,8 @@ class AuthenticatorPlugin extends PluginBase
      *
      * @param string $event Nombre del evento
      * @param mixed  $object
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function updateEvent($event, $object)
     {

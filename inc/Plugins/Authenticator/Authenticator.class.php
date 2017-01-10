@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -157,5 +157,13 @@ class Authenticator
         $totp = Google2FA::oath_totp($secretkey, $timeStamp);
 
         return ($totp === $userToken);
+    }
+
+    /**
+     * @return string
+     */
+    public function getInitializationKey()
+    {
+        return $this->initializationKey;
     }
 }

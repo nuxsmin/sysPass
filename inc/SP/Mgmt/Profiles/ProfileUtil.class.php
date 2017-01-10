@@ -26,11 +26,13 @@
 namespace SP\Mgmt\Profiles;
 
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\ProfileBaseData;
 use SP\DataModel\ProfileData;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
+use SP\Util\Util;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
@@ -45,6 +47,8 @@ class ProfileUtil
      * Migrar los perfiles con formato anterior a v1.2
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function migrateProfiles()
     {

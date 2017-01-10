@@ -48,7 +48,7 @@ abstract class ProfileBase extends ItemBase
     public function __construct($itemData = null)
     {
         if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\ProfileData');
+            $this->setDataModel(ProfileData::class);
         }
 
         parent::__construct($itemData);

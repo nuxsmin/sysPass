@@ -160,7 +160,7 @@ abstract class ControllerBase
     }
 
     /**
-     * Renderizar los datos de la plantilla y mostrarlos
+     * Mostrar los datos de la plantilla
      *
      * @throws FileNotFoundException
      */

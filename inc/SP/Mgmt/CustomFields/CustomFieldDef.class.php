@@ -45,10 +45,11 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
      * Category constructor.
      *
      * @param CustomFieldDefData $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData = null)
     {
-        $this->setDataModel('SP\DataModel\CustomFieldDefData');
+        $this->setDataModel(CustomFieldDefData::class);
 
         parent::__construct($itemData);
     }
@@ -110,6 +111,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
      *
      * @param $id
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function deleteItemsDataForDefinition($id)
     {
@@ -198,6 +200,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
      * Actualizar el módulo de los elementos con campos personalizados
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function updateItemsModulesForDefinition()
     {
