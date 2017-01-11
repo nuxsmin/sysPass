@@ -174,23 +174,15 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
+        /** @var CustomFieldDefData $CustomFieldDef */
         $CustomFieldDef = DB::getResults($Data);
 
         if ($CustomFieldDef === false) {
             throw new SPException(SPException::SP_INFO, _('Campo personalizado no encontrado'));
         }
 
-        /**
-         * @var CustomFieldDefData $CustomFieldDef
-         * @var CustomFieldDefData $fieldDef
-         */
-
-        $fieldDef = unserialize($CustomFieldDef->getCustomfielddefField());
-
-        if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-            $fieldDef = Util::castToClass($this->getDataModel(), $fieldDef);
-        }
-
+        /** @var CustomFieldDefData $fieldDef */
+        $fieldDef = Util::castToClass($this->getDataModel(), $CustomFieldDef->getCustomfielddefField());
         $fieldDef->setId($CustomFieldDef->getCustomfielddefId());
 
         return $fieldDef;
@@ -234,6 +226,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
+        /** @var CustomFieldDefData[] $queryRes */
         $queryRes = DB::getResultsArray($Data);
 
         if (count($queryRes) === 0) {
@@ -243,17 +236,9 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $fields = [];
 
         foreach ($queryRes as $CustomFieldDef) {
-            /**
-             * @var CustomFieldDefData $CustomFieldDef
-             * @var CustomFieldDefData $fieldDef
-             */
 
-            $fieldDef = unserialize($CustomFieldDef->getCustomfielddefField());
-
-            if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-                $fieldDef = Util::castToClass($this->getDataModel(), $fieldDef);
-            }
-
+            /** @var CustomFieldDefData $fieldDef */
+            $fieldDef = Util::castToClass($this->getDataModel(), $CustomFieldDef->getCustomfielddefField());
             $fieldDef->setId($CustomFieldDef->getCustomfielddefId());
 
             $fields[] = $fieldDef;

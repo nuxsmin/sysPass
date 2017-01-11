@@ -13,7 +13,7 @@
                        data-item-id="<?php echo $userId; ?>"
                        data-sk="<?php echo $sk; ?>">security</i>
                     <span for="btnUserPass"
-                          class="mdl-tooltip mdl-tooltip--top"><?php echo _('Cambiar clave de usuario'); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php echo _('Cambiar Clave de Usuario'); ?></span>
                 <?php endif; ?>
                 <i id="btnPrefs" class="material-icons"
                    data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>">account_circle</i>

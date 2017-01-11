@@ -250,9 +250,7 @@ class Crypt
     {
         if (empty($cryptData) || empty($cryptIV)){
             return false;
-        }
-
-        if (null === $password) {
+        } elseif (null === $password) {
             $password = SessionUtil::getSessionMPass();
         }
 

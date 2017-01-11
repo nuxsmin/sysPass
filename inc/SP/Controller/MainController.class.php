@@ -95,6 +95,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('logo', Init::$WEBURI . '/imgs/logo_full_bg.png');
         $this->view->assign('logonobg', Init::$WEBURI . '/imgs/logo_full_nobg.png');
         $this->view->assign('httpsEnabled', Checks::httpsEnabled());
+        $this->view->assign('lang', Init::isLoggedIn() ? Language::$userLang : Language::$globalLang);
 
         $this->view->assign('loadApp', Session::getAuthCompleted() && !Config::getConfig()->isMaintenance());
 

@@ -125,7 +125,7 @@
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="profile_config" <?php echo $profile->isConfigGeneral() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
                             <span class="mdl-switch__label"
-                                  title="<?php echo _('Configuración general'); ?>"><?php echo _('General'); ?></span>
+                                  title="<?php echo _('Configuración General'); ?>"><?php echo _('General'); ?></span>
                         </label>
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_configmpw">
                             <input type="checkbox" id="profile_configmpw"

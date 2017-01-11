@@ -479,13 +479,21 @@ class Util
      * Cast an object to another class, keeping the properties, but changing the methods
      *
      * @param string $class Class name
-     * @param object $object
-     * @return object
+     * @param string|object $object
+     * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
      */
     public static function castToClass($class, $object)
     {
-        return unserialize(preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', serialize($object)));
+        if (!is_object($object)) {
+            $object = unserialize($object);
+        }
+
+        if (get_class($object) === '__PHP_Incomplete_Class') {
+            return unserialize(preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', serialize($object)));
+        } else {
+            return $object;
+        }
     }
 
     /**

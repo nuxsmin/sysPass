@@ -112,7 +112,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         }
 
         $Log->addDescription(_('Conexión a LDAP correcta'));
-        $Log->addDescription(sprintf(_('Objetos encontrados: %s'), (int)$results['count']));
+        $Log->addDescription(sprintf(_('Objetos encontrados: %d'), (int)$results['count']));
         $Log->writeLog();
 
         return $results;

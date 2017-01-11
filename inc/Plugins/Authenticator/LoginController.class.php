@@ -64,6 +64,7 @@ class LoginController
      * @param ControllerBase $Controller
      * @throws \SP\Core\Exceptions\FileNotFoundException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function get2FA(ControllerBase $Controller)
     {
@@ -112,7 +113,7 @@ class LoginController
         $NoticeData = new NoticeData();
         $NoticeData->setNoticeComponent($this->Plugin->getName());
         $NoticeData->setNoticeUserId($userId);
-        $NoticeData->setNoticeType(_('Aviso Caducidad'));
+        $NoticeData->setNoticeType(_t('authenticator', 'Aviso Caducidad'));
 
         if (count(Notice::getItem($NoticeData)->getByUserCurrentDate()) > 0) {
             return;

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Authenticator\n"
-"POT-Creation-Date: 2017-01-08 13:25+0100\n"
-"PO-Revision-Date: 2017-01-08 13:25+0100\n"
+"POT-Creation-Date: 2017-01-11 01:19+0100\n"
+"PO-Revision-Date: 2017-01-11 01:20+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -37,16 +37,16 @@ msgstr "Rigth code"
 msgid "No es posible acceder directamente a este archivo"
 msgstr "Unable to access directly to this file"
 
-#: ../../../LoginController.class.php:115
+#: ../../../LoginController.class.php:116
 msgid "Aviso Caducidad"
 msgstr "Expire Notice"
 
-#: ../../../LoginController.class.php:125
+#: ../../../LoginController.class.php:126
 #, php-format
 msgid "El código 2FA se ha de restablecer en %d días"
 msgstr "The 2FA code will need to be reset within %d days"
 
-#: ../../../LoginController.class.php:129
+#: ../../../LoginController.class.php:130
 msgid ""
 "El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias"
 msgstr "The 2FA code is expired. You need to reset it on preferences tab"

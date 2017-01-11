@@ -190,7 +190,7 @@ class ApiRequest
         $this->ApiReflection = new ReflectionClass(SyspassApi::class);
 
         if (!$this->ApiReflection->hasMethod($this->data->method)) {
-            throw new SPException(SPException::SP_WARNING, _('Acción inválida'), '', -32601);
+            throw new SPException(SPException::SP_WARNING, _('Acción Inválida'), '', -32601);
         }
     }
 

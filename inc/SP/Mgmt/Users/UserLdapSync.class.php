@@ -38,7 +38,7 @@ class UserLdapSync
         $ldapObjects = $Ldap->findObjects();
         self::$totalObjects = (int)$ldapObjects['count'];
 
-        $Log->addDescription(sprintf(_('Objetos encontrados: %s'), self::$totalObjects));
+        $Log->addDescription(sprintf(_('Objetos encontrados: %d'), self::$totalObjects));
 
         if (self::$totalObjects > 0) {
             $UserData = new UserData();

@@ -108,12 +108,12 @@ class ActionController implements ItemControllerInterface
         $twoFa = new Authenticator($this->itemId, CoreSession::getUserData()->getUserLogin(), $AuthenticatorData->getIV());
 
         if (!$twoFa->verifyKey($pin)) {
-            $this->jsonResponse->setDescription(_('Código incorrecto'));
+            $this->jsonResponse->setDescription(_t('authenticator', 'Código incorrecto'));
             Json::returnJson($this->jsonResponse);
         }
 
         if (Checks::demoIsEnabled()) {
-            $this->jsonResponse->setDescription(_('Ey, esto es una DEMO!!'));
+            $this->jsonResponse->setDescription(_t('authenticator', 'Ey, esto es una DEMO!!'));
             Json::returnJson($this->jsonResponse);
         }
 
@@ -139,7 +139,7 @@ class ActionController implements ItemControllerInterface
         Plugin::getItem($PluginData)->update();
 
         $this->jsonResponse->setStatus(0);
-        $this->jsonResponse->setDescription(_('Preferencias actualizadas'));
+        $this->jsonResponse->setDescription(_t('authenticator', 'Preferencias actualizadas'));
 
         Json::returnJson($this->jsonResponse);
     }
@@ -168,13 +168,13 @@ class ActionController implements ItemControllerInterface
             Session::setTwoFApass(true);
             CoreSession::setAuthCompleted(true);
 
-            $this->jsonResponse->setDescription(_('Código correcto'));
+            $this->jsonResponse->setDescription(_t('authenticator', 'Código correcto'));
             $this->jsonResponse->setStatus(0);
         } else {
             Session::setTwoFApass(false);
             CoreSession::setAuthCompleted(false);
 
-            $this->jsonResponse->setDescription(_('Código incorrecto'));
+            $this->jsonResponse->setDescription(_t('authenticator', 'Código incorrecto'));
         }
 
         Json::returnJson($this->jsonResponse);

@@ -175,7 +175,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function delete($id)
     {
         if (is_array($id)) {
-            foreach ($id as $itemId){
+            foreach ($id as $itemId) {
                 $this->delete($itemId);
             }
 
@@ -261,22 +261,15 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
+        /** @var PublicLinkBaseData $queryRes */
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
         }
 
-        /**
-         * @var $queryRes   PublicLinkBaseData
-         * @var $PublicLink PublicLinkData
-         */
-        $PublicLink = unserialize($queryRes->getPublicLinkLinkData());
-
-        if (get_class($PublicLink) === '__PHP_Incomplete_Class') {
-            $PublicLink = Util::castToClass($this->getDataModel(), $PublicLink);
-        }
-
+        /** @var $PublicLink PublicLinkData */
+        $PublicLink = Util::castToClass($this->getDataModel(), $queryRes->getPublicLinkLinkData());
         $PublicLink->setPublicLinkId($id);
 
         return $PublicLink;
@@ -294,20 +287,14 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
+        /** @var PublicLinkData[] $queryRes */
+        $queryRes = DB::getResultsArray($Data);
+
         $publicLinks = [];
 
-        foreach (DB::getResultsArray($Data) as $PublicLinkListData) {
-            /**
-             * @var PublicLinkData     $PublicLinkData
-             * @var PublicLinkListData $PublicLinkListData
-             */
-
-            $PublicLinkData = unserialize($PublicLinkListData->getPublicLinkLinkData());
-
-            if (get_class($PublicLinkData) === '__PHP_Incomplete_Class') {
-                $PublicLinkData = Util::castToClass($this->getDataModel(), $PublicLinkData);
-            }
-
+        foreach ($queryRes as $PublicLinkListData) {
+            /** @var PublicLinkData $PublicLinkData */
+            $PublicLinkData = Util::castToClass($this->getDataModel(), $PublicLinkListData->getPublicLinkLinkData());
             $PublicLinkData->setPublicLinkId($PublicLinkListData->getPublicLinkId());
 
             $publicLinks[] = $this->getItemForList($PublicLinkData);
@@ -373,27 +360,20 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($hash);
 
+        /** @var PublicLinkBaseData $queryRes */
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
-        } elseif (count($queryRes) > 0) {
-            /**
-             * @var $queryRes   PublicLinkBaseData
-             * @var $PublicLink PublicLinkData
-             */
-            $PublicLink = unserialize($queryRes->getPublicLinkLinkData());
-
-            if (get_class($PublicLink) === '__PHP_Incomplete_Class') {
-                $PublicLink = Util::castToClass($this->getDataModel(), $PublicLink);
-            }
-
-            $PublicLink->setPublicLinkId($queryRes->getPublicLinkId());
-
-            return $PublicLink;
         }
 
-        return false;
+        /**
+         * @var $PublicLink PublicLinkData
+         */
+        $PublicLink = Util::castToClass($this->getDataModel(), $queryRes->getPublicLinkLinkData());
+        $PublicLink->setPublicLinkId($queryRes->getPublicLinkId());
+
+        return $PublicLink;
     }
 
     /**

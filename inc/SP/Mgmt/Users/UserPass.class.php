@@ -96,7 +96,7 @@ class UserPass extends UserBase
     {
         $configMPassTime = ConfigDB::getValue('lastupdatempass');
 
-        if ($configMPassTime === false) {
+        if (empty($configMPassTime)) {
             return false;
         }
 
@@ -177,22 +177,17 @@ class UserPass extends UserBase
         $userMPass = $this->getUserMPass();
         $configHashMPass = ConfigDB::getValue('masterPwd');
 
-        if ($userMPass === false
-            || $configHashMPass === false
-            || null === $configHashMPass
-        ) {
+        if ($userMPass === false || empty($configHashMPass)) {
             return false;
-        } elseif ($userMPass === null) {
-            return null;
-        }
 
         // Comprobamos el hash de la clave del usuario con la guardada
-        if (Crypt::checkHashPass($userMPass, $configHashMPass, true)) {
+        } elseif (Crypt::checkHashPass($userMPass, $configHashMPass, true)) {
             $this->clearUserMPass = $userMPass;
-            return SessionUtil::saveSessionMPass($userMPass);
-        }
 
-        return false;
+            return SessionUtil::saveSessionMPass($userMPass);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -204,7 +199,7 @@ class UserPass extends UserBase
     public function getUserMPass($cypher = null)
     {
         $query = /** @lang SQL */
-            'SELECT user_mPass, user_mIV FROM usrData WHERE user_id = ? LIMIT 1';
+            'SELECT user_mPass, user_mIV, user_lastUpdateMPass FROM usrData WHERE user_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -212,12 +207,12 @@ class UserPass extends UserBase
 
         $queryRes = DB::getResults($Data);
 
-        if ($queryRes === false) {
-            return false;
-        } elseif ($queryRes->user_mPass === ''
-            || $queryRes->user_mIV === ''
+        if ($queryRes === false
+            || empty($queryRes->user_mPass)
+            || empty($queryRes->user_mIV)
+            || $queryRes->user_lastUpdateMPass < ConfigDB::getValue('lastupdatempass')
         ) {
-            return null;
+            return false;
         }
 
         return Crypt::getDecrypt($queryRes->user_mPass, $queryRes->user_mIV, $this->getCypherPass($cypher));
@@ -234,6 +229,31 @@ class UserPass extends UserBase
         $pass = $cypher === null ? $this->itemData->getUserPass() : $cypher;
 
         return Crypt::generateAesKey($pass . $this->itemData->getUserLogin());
+    }
+
+    /**
+     * @return string
+     */
+    public function getClearUserMPass()
+    {
+        return $this->clearUserMPass;
+    }
+
+    /**
+     * Actualizar la clave maestra con la clave anterior del usuario
+     *
+     * @param $oldUserPass
+     * @return bool
+     */
+    public function updateMasterPass($oldUserPass)
+    {
+        $masterPass = $this->getUserMPass($oldUserPass);
+
+        if ($masterPass) {
+            return $this->updateUserMPass($masterPass);
+        }
+
+        return false;
     }
 
     /**
@@ -274,31 +294,6 @@ class UserPass extends UserBase
 
                 return DB::getQuery($Data);
             }
-        }
-
-        return false;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClearUserMPass()
-    {
-        return $this->clearUserMPass;
-    }
-
-    /**
-     * Actualizar la clave maestra con la clave anterior del usuario
-     *
-     * @param $oldUserPass
-     * @return bool
-     */
-    public function updateMasterPass($oldUserPass)
-    {
-        $masterPass = $this->getUserMPass($oldUserPass);
-
-        if ($masterPass) {
-            return $this->updateUserMPass($masterPass);
         }
 
         return false;

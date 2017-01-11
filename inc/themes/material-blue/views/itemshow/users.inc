@@ -139,14 +139,14 @@
                                title="<?php echo _('Administrador de la aplicación'); ?>">
                             <input type="checkbox" id="adminapp" class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="adminapp" <?php echo $user->isUserIsAdminApp() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
-                            <span class="mdl-switch__label"><?php echo _('Admin. Aplicación'); ?></span>
+                            <span class="mdl-switch__label"><?php echo _('Admin Aplicación'); ?></span>
                         </label>
 
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminacc"
                                title="<?php echo _('Administrador de cuentas'); ?>">
                             <input type="checkbox" id="adminacc" class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="adminacc" <?php echo $user->isUserIsAdminAcc() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
-                            <span class="mdl-switch__label"><?php echo _('Admin. Cuentas'); ?></span>
+                            <span class="mdl-switch__label"><?php echo _('Admin Cuentas'); ?></span>
                         </label>
                     <?php endif; ?>
                     <br>

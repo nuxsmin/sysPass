@@ -30,9 +30,11 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Core\Crypt;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
+use SP\DataModel\CustomFieldDefData;
 use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
+use SP\Util\Util;
 
 /**
  * Class CustomFieldsUtil utilidades para los campos personalizados
@@ -119,7 +121,7 @@ class CustomFieldsUtil
     /**
      * Crear los campos personalizados de un elemento
      *
-     * @param array $customFields
+     * @param array           $customFields
      * @param CustomFieldData $CustomFieldData
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
@@ -137,7 +139,7 @@ class CustomFieldsUtil
     /**
      * Actualizar los campos personalizados de un elemento
      *
-     * @param array $customFields
+     * @param array           $customFields
      * @param CustomFieldData $CustomFieldData
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
@@ -163,11 +165,15 @@ class CustomFieldsUtil
         $Log = new Log(__FUNCTION__);
 
         $query = /** @lang SQL */
-            'SELECT customfielddata_defId FROM customFieldsData WHERE customfielddata_moduleId = 20';
+            'SELECT customfielddef_id, customfielddef_field
+            FROM customFieldsData 
+            LEFT JOIN customFieldsDef ON customfielddef_id = customfielddata_defId
+            WHERE customfielddata_moduleId = 20';
 
         $Data = new QueryData();
         $Data->setQuery($query);
 
+        /** @var CustomFieldDefData[] $oldDefs */
         $oldDefs = DB::getResultsArray($Data);
 
         try {
@@ -188,8 +194,9 @@ class CustomFieldsUtil
                         customfielddef_field = ?
                         WHERE customfielddef_id= ? LIMIT 1';
 
-                foreach ($oldDefs as $def) {
-                    $CustomFieldDef = CustomFieldDef::getItem()->getById($def->customfielddata_defId);
+                foreach ($oldDefs as $CustomFieldDef) {
+                    $CustomFieldDef = Util::castToClass(CustomFieldDefData::class, $CustomFieldDef->getCustomfielddefField());
+                    $CustomFieldDef->setId($CustomFieldDef->getCustomfielddefId());
                     $CustomFieldDef->setModule(10);
                     $CustomFieldDef->setCustomfielddefModule(10);
 
@@ -197,13 +204,13 @@ class CustomFieldsUtil
                     $Data->setQuery($query);
                     $Data->addParam(10);
                     $Data->addParam(serialize($CustomFieldDef));
-                    $Data->addParam($CustomFieldDef->getId());
+                    $Data->addParam($CustomFieldDef->getCustomfielddefId());
 
                     if (DB::getQuery($Data) === false) {
-                        throw new SPException(SPException::SP_ERROR, _('Error al actualizar el campo personalizado'));
+                        $Log->addDetails(_('Error al actualizar el campo personalizado'), $CustomFieldDef->getCustomfielddefId());
+                    } else {
+                        $Log->addDetails(_('Campo actualizado'), $CustomFieldDef->getCustomfielddefId());
                     }
-
-                    $Log->addDetails(_('Campo actualizado'), $def->customfielddata_defId);
                 }
             }
 

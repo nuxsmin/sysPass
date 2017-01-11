@@ -67,13 +67,9 @@ class UserPreferencesUtil
         $data = [];
 
         foreach ($queryRes as $user) {
-            /** @var UserPreferencesData $UserPreferencesData */
-            $UserPreferencesData = unserialize($user->getUserPreferences());
-
-            if ($UserPreferencesData !== false) {
-                if (get_class($UserPreferencesData) === '__PHP_Incomplete_Class') {
-                    $UserPreferencesData = Util::castToClass(UserPreferencesData::class, $UserPreferencesData);
-                }
+            if ($user->getUserPreferences() !== '') {
+                /** @var UserPreferencesData $UserPreferencesData */
+                $UserPreferencesData = Util::castToClass(UserPreferencesData::class, $user->getUserPreferences());
 
                 if ($UserPreferencesData->isUse2Fa()) {
                     $Authenticator = new Authenticator($user->user_id, $user->user_login, $user->user_mIV);

@@ -228,20 +228,14 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $Data->addParam($this->itemData->getModule());
         $Data->addParam($id);
 
+        /** @var CustomFieldData[] $queryRes */
         $queryRes = DB::getResultsArray($Data);
 
         $customFields = [];
 
         foreach ($queryRes as $CustomFieldData) {
-            /**
-             * @var CustomFieldData    $CustomFieldData
-             * @var CustomFieldDefData $fieldDef
-             */
-            $fieldDef = unserialize($CustomFieldData->getCustomfielddefField());
-
-            if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-                $fieldDef = Util::castToClass(CustomFieldDefData::class, $fieldDef);
-            }
+            /** @var CustomFieldDefData $fieldDef */
+            $fieldDef = Util::castToClass(CustomFieldDefData::class, $CustomFieldData->getCustomfielddefField());
 
             $CustomFieldData->setDefinition($fieldDef);
             $CustomFieldData->setDefinitionId($CustomFieldData->getCustomfielddefId());
@@ -300,6 +294,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getModule());
 
+        /** @var CustomFieldDefData[] $queryRes */
         $queryRes = DB::getResultsArray($Data);
 
         if (count($queryRes) === 0) {
@@ -307,16 +302,8 @@ class CustomField extends CustomFieldBase implements ItemInterface
         }
 
         foreach ($queryRes as $CustomFieldDef) {
-            /**
-             * @var CustomFieldDefData $CustomFieldDef
-             * @var CustomFieldDefData $fieldDef
-             */
-
-            $fieldDef = unserialize($CustomFieldDef->getCustomfielddefField());
-
-            if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-                $fieldDef = Util::castToClass(CustomFieldDefData::class, $fieldDef);
-            }
+            /** @var CustomFieldDefData $fieldDef */
+            $fieldDef = Util::castToClass(CustomFieldDefData::class, $CustomFieldDef->getCustomfielddefField());
 
             $CustomFieldData = new CustomFieldData();
             $CustomFieldData->setDefinition($fieldDef);

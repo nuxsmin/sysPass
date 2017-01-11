@@ -134,7 +134,7 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="255" autocomplete="off">
                             <label class="mdl-textfield__label"
-                                   for="accountpassR"><?php echo _('Clave (Repetir)'); ?></label>
+                                   for="accountpassR"><?php echo _('Clave (repetir)'); ?></label>
                         </div>
                     </td>
                 </tr>

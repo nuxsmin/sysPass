@@ -183,18 +183,14 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($id);
 
         /**
-         * @var ProfileBaseData $ProfileData
+         * @var ProfileBaseData $queryRes
          * @var ProfileData $Profile
          */
-        $ProfileData = DB::getResults($Data);
-        $Profile = unserialize($ProfileData->getUserprofileProfile());
+        $queryRes = DB::getResults($Data);
 
-        if (get_class($Profile) === '__PHP_Incomplete_Class') {
-            $Profile = Util::castToClass($this->getDataModel(), $Profile);
-        }
-
-        $Profile->setUserprofileId($ProfileData->getUserprofileId());
-        $Profile->setUserprofileName($ProfileData->getUserprofileName());
+        $Profile = Util::castToClass($this->getDataModel(), $queryRes->getUserprofileProfile());
+        $Profile->setUserprofileId($queryRes->getUserprofileId());
+        $Profile->setUserprofileName($queryRes->getUserprofileName());
 
         return $Profile;
     }

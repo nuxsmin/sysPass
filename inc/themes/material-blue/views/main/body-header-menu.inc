@@ -43,13 +43,13 @@
             <?php endforeach; ?>
             <?php if ($showPassIcon): ?>
                 <a class="btn-action mdl-navigation__link"
-                   title="<?php echo _('Cambiar clave de usuario'); ?>"
+                   title="<?php echo _('Cambiar Clave de Usuario'); ?>"
                    data-onclick="appMgmt/show"
                    data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>"
                    data-item-id="<?php echo $userId; ?>"
                    data-sk="<?php echo $sk; ?>">
                     <i class="btn-action material-icons">security</i>
-                    <?php echo _('Cambiar clave de usuario'); ?>
+                    <?php echo _('Cambiar Clave de Usuario'); ?>
                 </a>
             <?php endif; ?>
             <a class="btn-menu mdl-navigation__link"

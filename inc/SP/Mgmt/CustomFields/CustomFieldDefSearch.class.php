@@ -71,20 +71,15 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
 
         DB::setFullRowCount();
 
+        /** @var CustomFieldDefData[] $queryRes */
         $queryRes = DB::getResultsArray($Data);
 
         $customFields = [];
 
         foreach ($queryRes as $CustomField) {
-            /**
-             * @var CustomFieldDefData $CustomField
-             * @var CustomFieldDefData $fieldDef
-             */
-            $fieldDef = unserialize($CustomField->getCustomfielddefField());
 
-            if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-                $fieldDef = Util::castToClass($this->getDataModel(), $fieldDef);
-            }
+            /** @var CustomFieldDefData $fieldDef */
+            $fieldDef = Util::castToClass($this->getDataModel(), $CustomField->getCustomfielddefField());
 
             if ($SearchData->getSeachString() === ''
                 || stripos($fieldDef->getName(), $SearchData->getSeachString()) !== false

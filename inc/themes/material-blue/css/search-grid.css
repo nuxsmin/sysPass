@@ -70,7 +70,8 @@
   #content #data-search .account-info {
     padding: .5em 0 .5em 0;
     text-align: left;
-    opacity: 0.3; }
+    opacity: 0.3;
+    min-height: 4em; }
     #content #data-search .account-info:hover {
       opacity: 1; }
   #content #data-search .account-actions {
