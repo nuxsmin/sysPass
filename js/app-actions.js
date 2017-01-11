@@ -303,6 +303,12 @@ sysPass.Actions = function (Common) {
                         $obj.find("input[type='text'],input[type='password']").val("");
                         $obj.find("input:first").focus();
 
+                        var $extra = $(".extra-hidden");
+
+                        if ($extra.length > 0) {
+                            $extra.hide();
+                        }
+
                         $("#mpass").prop("disabled", false).val("");
                         $("#smpass").show();
                         break;
@@ -311,6 +317,12 @@ sysPass.Actions = function (Common) {
 
                         $obj.find("input[type='text'],input[type='password']").val("");
                         $obj.find("input:first").focus();
+
+                        var $extra = $(".extra-hidden");
+
+                        if ($extra.length > 0) {
+                            $extra.hide();
+                        }
 
                         $("#oldpass").prop("disabled", false).val("");
                         $("#soldpass").show();

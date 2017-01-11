@@ -277,11 +277,9 @@ CREATE OR REPLACE ALGORITHM = UNDEFINED
       ON ((`accounts`.`account_customerId` = `customers`.`customer_id`))) LEFT JOIN `publicLinks`
       ON ((`accounts`.`account_id` = `publicLinks`.`publicLink_itemId`)));
 
-CREATE
-OR REPLACE ALGORITHM = UNDEFINED
+CREATE OR REPLACE ALGORITHM = UNDEFINED
   DEFINER = CURRENT_USER
-  SQL SECURITY DEFINER
-VIEW `account_search_v` AS
+  SQL SECURITY DEFINER VIEW `account_search_v` AS
   SELECT DISTINCT
     `accounts`.`account_id`                                        AS `account_id`,
     `accounts`.`account_customerId`                                AS `account_customerId`,

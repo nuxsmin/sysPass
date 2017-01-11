@@ -215,6 +215,9 @@ class UserPass extends UserBase
             return false;
         }
 
+        $this->itemData->setUserMPass($queryRes->user_mPass);
+        $this->itemData->setUserMIV($queryRes->user_mIV);
+
         return Crypt::getDecrypt($queryRes->user_mPass, $queryRes->user_mIV, $this->getCypherPass($cypher));
     }
 
@@ -291,6 +294,9 @@ class UserPass extends UserBase
                 $Data->addParam($this->itemData->getUserId());
 
                 $this->clearUserMPass = $masterPwd;
+
+                $this->itemData->setUserMPass($cryptMPass[0]);
+                $this->itemData->setUserMIV($cryptMPass[1]);
 
                 return DB::getQuery($Data);
             }

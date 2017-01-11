@@ -583,15 +583,22 @@ class Init
             } else {
                 $action = Request::analyze('a');
                 $hash = Request::analyze('h');
+                $confirm = Request::analyze('chkConfirm', false, false, true);
 
-                if ($action === 'upgrade' && $hash === Config::getConfig()->getUpgradeKey()) {
-                    if (Upgrade::doUpgrade($databaseVersion)) {
+                if ($confirm === true
+                    && $action === 'upgrade'
+                    && $hash === Config::getConfig()->getUpgradeKey()
+                ) {
+                    try {
+                        $update = Upgrade::doUpgrade($databaseVersion);
+
                         ConfigDB::setValue('version', $appVersion);
                         Config::getConfig()->setMaintenance(false);
                         Config::getConfig()->setUpgradeKey('');
                         Config::saveConfig();
-
-                        $update = true;
+                    } catch (SPException $e) {
+                        $hint = $e->getHint() . '<p class="center"><a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a></p>';
+                        self::initError($e->getMessage(), $hint);
                     }
                 } else {
                     $controller = new MainController(null, 'upgrade');

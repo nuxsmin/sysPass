@@ -159,7 +159,7 @@ class ActionController implements ItemControllerInterface
         /** @var AuthenticatorData $AuthenticatorData */
         $AuthenticatorData = ArrayUtil::searchInObject($this->Plugin->getData(), 'userId', $userId, new AuthenticatorData());
 
-        $TwoFa = new Authenticator($userId, null, $AuthenticatorData->getIV());
+        $TwoFa = new Authenticator($userId, CoreSession::getUserData()->getUserLogin(), $AuthenticatorData->getIV());
 
         if ($userId
             && $pin

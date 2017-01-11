@@ -85,6 +85,10 @@ class CustomFieldTypes
      */
     public static function getFieldsModules($moduleId = null)
     {
+        if (!isset($modules[$moduleId])) {
+            return '';
+        }
+
         $modules = [
             ActionsInterface::ACTION_ACC => _('Cuentas'),
             ActionsInterface::ACTION_MGM_CATEGORIES => _('Categorías'),

@@ -103,7 +103,7 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
             return $this->getItemData();
         }
 
-        return Util::castToClass($this->getDataModel(), $queryRes->getUserPreferences());
+        return Util::castToClass($this->getDataModel(), $queryRes->getUserPreferences(), 'SP\UserPreferences');
     }
 
     /**

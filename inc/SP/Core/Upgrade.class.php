@@ -33,6 +33,7 @@ use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Mgmt\Profiles\ProfileUtil;
+use SP\Mgmt\Users\UserPreferencesUtil;
 use SP\Storage\DB;
 use SP\Mgmt\Users\UserMigrate;
 use SP\Storage\QueryData;
@@ -51,22 +52,22 @@ class Upgrade
      * Inicia el proceso de actualización de la BBDD.
      *
      * @param int $version con la versión de la BBDD actual
-     * @returns bool
+     * @return bool
+     * @throws SPException
      */
     public static function doUpgrade($version)
     {
         foreach (self::$dbUpgrade as $upgradeVersion) {
             if ($version < $upgradeVersion) {
                 if (self::upgradeDB($upgradeVersion) === false) {
-                    Init::initError(
-                        _('Error al aplicar la actualización de la Base de Datos'),
-                        _('Compruebe el registro de eventos para más detalles') . '. <a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a>');
+                    throw new SPException(SPException::SP_CRITICAL, _('Error al aplicar la actualización de la Base de Datos'),
+                        _('Compruebe el registro de eventos para más detalles'));
                 }
 
                 if (self::auxUpgrades($upgradeVersion) === false) {
-                    Init::initError(
+                    throw new SPException(SPException::SP_CRITICAL,
                         _('Error al aplicar la actualización auxiliar'),
-                        _('Compruebe el registro de eventos para más detalles') . '. <a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a>');
+                        _('Compruebe el registro de eventos para más detalles'));
                 }
             }
         }
@@ -241,6 +242,56 @@ class Upgrade
         return false;
     }
 
+    public static function upgradeOldConfigFile($version)
+    {
+        $Log = new Log(_('Actualizar Configuración'));
+        $Config = new ConfigData();
+
+        // Include the file, save the data from $CONFIG
+        include CONFIG_FILE;
+
+        if (isset($CONFIG) && is_array($CONFIG)) {
+            foreach (self::getConfigParams() as $mapTo => $mapFrom) {
+                if (method_exists($Config, $mapTo)) {
+                    if (is_array($mapFrom)) {
+                        foreach ($mapFrom as $param) {
+                            if (isset($CONFIG[$param])) {
+                                $Log->addDetails(_('Parámetro'), $param);
+                                $Config->$mapTo($CONFIG[$param]);
+                            }
+                        }
+                    } else {
+                        if (isset($CONFIG[$mapFrom])) {
+                            $Log->addDetails(_('Parámetro'), $mapFrom);
+                            $Config->$mapTo($CONFIG[$mapFrom]);
+                        }
+                    }
+                }
+            }
+        }
+
+        try {
+            $Config->setConfigVersion($version);
+            Config::saveConfig($Config, false);
+            rename(CONFIG_FILE, CONFIG_FILE . '.old');
+
+            $Log->addDetails(_('Versión'), $version);
+            $Log->setLogLevel(Log::NOTICE);
+            $Log->writeLog();
+
+            return true;
+        } catch (\Exception $e) {
+            $Log->addDescription(_('Error al actualizar la configuración'));
+            $Log->addDetails(_('Archivo'), CONFIG_FILE . '.old');
+            $Log->setLogLevel(Log::ERROR);
+            $Log->writeLog();
+        }
+
+
+        // We are here...wrong
+        return false;
+    }
+
     /**
      * Devuelve array de métodos y parámetros de configuración
      *
@@ -297,55 +348,5 @@ class Upgrade
             'setWikiPageUrl' => ['wikipageurl' . 'wiki_pageurl'],
             'setWikiSearchUrl' => ['wikisearchurl', 'wiki_searchurl']
         ];
-    }
-
-    public static function upgradeOldConfigFile($version)
-    {
-        $Log = new Log(_('Actualizar Configuración'));
-        $Config = new ConfigData();
-
-        // Include the file, save the data from $CONFIG
-        include CONFIG_FILE;
-
-        if (isset($CONFIG) && is_array($CONFIG)) {
-            foreach (self::getConfigParams() as $mapTo => $mapFrom) {
-                if (method_exists($Config, $mapTo)) {
-                    if (is_array($mapFrom)) {
-                        foreach ($mapFrom as $param) {
-                            if (isset($CONFIG[$param])) {
-                                $Log->addDetails(_('Parámetro'), $param);
-                                $Config->$mapTo($CONFIG[$param]);
-                            }
-                        }
-                    } else {
-                        if (isset($CONFIG[$mapFrom])) {
-                            $Log->addDetails(_('Parámetro'), $mapFrom);
-                            $Config->$mapTo($CONFIG[$mapFrom]);
-                        }
-                    }
-                }
-            }
-        }
-
-        try {
-            $Config->setConfigVersion($version);
-            Config::saveConfig($Config, false);
-            rename(CONFIG_FILE, CONFIG_FILE . '.old');
-
-            $Log->addDetails(_('Versión'), $version);
-            $Log->setLogLevel(Log::NOTICE);
-            $Log->writeLog();
-
-            return true;
-        } catch (\Exception $e) {
-            $Log->addDescription(_('Error al actualizar la configuración'));
-            $Log->addDetails(_('Archivo'), CONFIG_FILE . '.old');
-            $Log->setLogLevel(Log::ERROR);
-            $Log->writeLog();
-        }
-
-
-        // We are here...wrong
-        return false;
     }
 }

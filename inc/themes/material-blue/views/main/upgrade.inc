@@ -23,6 +23,11 @@
                     <?php echo _('Este código se encuentra en el archivo de configuración de sysPass con la etiqueta "upgradeKey"'); ?>
                 </div>
 
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkConfirm">
+                    <input type="checkbox" id="chkConfirm" class="mdl-checkbox__input" name="chkConfirm">
+                    <span class="mdl-checkbox__label"><?php echo _('He realizado una copia de seguridad completa de sysPass'); ?></span>
+                </label>
+
                 <input type="hidden" name="a" value="<?php echo $action; ?>">
                 <input type="hidden" name="t" value="<?php echo $time; ?>">
                 <input type="hidden" name="upgrade" value="1">

@@ -45,66 +45,48 @@ use SP\Util\Util;
 class UserPreferencesUtil
 {
     /**
+     * @param UserData $UserData
+     * @param UserPreferencesData $UserPreferences
      * @return bool
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
-    public static function migrateTwoFA()
+    public static function migrateTwoFA(UserData $UserData, UserPreferencesData $UserPreferences)
     {
         $Log = new Log(__FUNCTION__);
         $Log->addDescription(_('Actualizando preferencias'));
 
-        $query = /** @lang SQL */
-            'SELECT user_id, user_login, user_mIV, user_preferences FROM usrData';
+        $Authenticator = new Authenticator($UserData->getUserId(), $UserData->getUserLogin());
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserData::class);
-        $Data->setQuery($query);
+        /** @var AuthenticatorData $AuthenticatorData */
+        $AuthenticatorData = new AuthenticatorData();
+        $AuthenticatorData->setUserId($UserData->getUserId());
+        $AuthenticatorData->setIV($Authenticator->getInitializationKey());
+        $AuthenticatorData->setTwofaEnabled(1);
+        $AuthenticatorData->setDate(time());
 
-        /** @var UserData[] $queryRes */
-        $queryRes = DB::getResultsArray($Data);
+        $data[$UserData->getUserId()] = $AuthenticatorData;
 
-        $data = [];
+        $Log->addDetails(_('Usuario'), $UserData->getUserLogin());
 
-        foreach ($queryRes as $user) {
-            if ($user->getUserPreferences() !== '') {
-                /** @var UserPreferencesData $UserPreferencesData */
-                $UserPreferencesData = Util::castToClass(UserPreferencesData::class, $user->getUserPreferences());
+        try {
+            $PluginData = new PluginData();
+            $PluginData->setPluginName(AuthenticatorPlugin::PLUGIN_NAME);
+            $PluginData->setPluginEnabled(1);
+            $PluginData->setPluginData(serialize($data));
 
-                if ($UserPreferencesData->isUse2Fa()) {
-                    $Authenticator = new Authenticator($user->user_id, $user->user_login, $user->user_mIV);
+            Plugin::getItem($PluginData)->update();
 
-                    /** @var AuthenticatorData $AuthenticatorData */
-                    $AuthenticatorData = new AuthenticatorData();
-                    $AuthenticatorData->setUserId($user->user_id);
-                    $AuthenticatorData->setIV($Authenticator->getInitializationKey());
-                    $AuthenticatorData->setTwofaEnabled(1);
-                    $AuthenticatorData->setDate(time());
+            $UserPreferences->setUse2Fa(0);
+            $UserPreferences->setUserId($UserData->getUserId());
+            UserPreferences::getItem($UserPreferences)->update();
 
-                    $data[$user->user_id] = $AuthenticatorData;
+            $Log->addDescription(_('Preferencias actualizadas'));
+            $Log->writeLog();
+        } catch (SPException $e) {
+            $Log->addDescription($e->getMessage());
+            $Log->setLogLevel(Log::ERROR);
+            $Log->writeLog();
 
-                    $Log->addDetails(_('Usuario'), $user->user_login);
-                }
-            }
-        }
-
-        if (count($data) > 0) {
-            try {
-                $PluginData = new PluginData();
-                $PluginData->setPluginName(AuthenticatorPlugin::PLUGIN_NAME);
-                $PluginData->setPluginEnabled(1);
-                $PluginData->setPluginData(serialize($data));
-
-                Plugin::getItem($PluginData)->update();
-
-                $Log->addDescription(_('Preferencias actualizadas'));
-                $Log->writeLog();
-            } catch (SPException $e) {
-                $Log->addDescription(_('Error al actualizar preferencias'));
-                $Log->setLogLevel(Log::ERROR);
-                $Log->writeLog();
-                return false;
-            }
+            return false;
         }
 
         return true;

@@ -1051,6 +1051,8 @@ fieldset.warning {
       #login-container #boxLogin #boxData i {
         margin-right: .5em;
         opacity: .5; }
+      #login-container #boxLogin #boxData .extra-hidden {
+        display: none; }
     #login-container #boxLogin #boxButton {
       position: absolute;
       top: 2em;

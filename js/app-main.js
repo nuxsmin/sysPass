@@ -134,6 +134,8 @@ sysPass.Main = function () {
         $("#btnBack").click(function () {
             redirect("index.php");
         });
+
+        appTriggers.bodyHooks();
     };
 
     // Mostrar mensaje de aviso

@@ -165,7 +165,7 @@ class CustomFieldsUtil
         $Log = new Log(__FUNCTION__);
 
         $query = /** @lang SQL */
-            'SELECT customfielddef_id, customfielddef_field
+            'SELECT DISTINCT customfielddef_id, customfielddef_field
             FROM customFieldsData 
             LEFT JOIN customFieldsDef ON customfielddef_id = customfielddata_defId
             WHERE customfielddata_moduleId = 20';
@@ -194,9 +194,9 @@ class CustomFieldsUtil
                         customfielddef_field = ?
                         WHERE customfielddef_id= ? LIMIT 1';
 
-                foreach ($oldDefs as $CustomFieldDef) {
-                    $CustomFieldDef = Util::castToClass(CustomFieldDefData::class, $CustomFieldDef->getCustomfielddefField());
-                    $CustomFieldDef->setId($CustomFieldDef->getCustomfielddefId());
+                foreach ($oldDefs as $cf) {
+                    $CustomFieldDef = Util::castToClass(CustomFieldDefData::class, $cf->customfielddef_field);
+                    $CustomFieldDef->setId($cf->customfielddef_id);
                     $CustomFieldDef->setModule(10);
                     $CustomFieldDef->setCustomfielddefModule(10);
 
@@ -204,12 +204,12 @@ class CustomFieldsUtil
                     $Data->setQuery($query);
                     $Data->addParam(10);
                     $Data->addParam(serialize($CustomFieldDef));
-                    $Data->addParam($CustomFieldDef->getCustomfielddefId());
+                    $Data->addParam($cf->customfielddef_id);
 
                     if (DB::getQuery($Data) === false) {
-                        $Log->addDetails(_('Error al actualizar el campo personalizado'), $CustomFieldDef->getCustomfielddefId());
+                        $Log->addDetails(_('Error al actualizar el campo personalizado'), $cf->customfielddef_id);
                     } else {
-                        $Log->addDetails(_('Campo actualizado'), $CustomFieldDef->getCustomfielddefId());
+                        $Log->addDetails(_('Campo actualizado'), $cf->customfielddef_id);
                     }
                 }
             }

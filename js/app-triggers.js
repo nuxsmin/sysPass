@@ -181,8 +181,6 @@ sysPass.Triggers = function (Common) {
         main: function () {
             log.info("views:main");
 
-            bodyHooks();
-
             $(".btn-menu").click(function () {
                 var $this = $(this);
 
@@ -229,21 +227,12 @@ sysPass.Triggers = function (Common) {
         login: function () {
             log.info("views:login");
 
-            bodyHooks();
-
             $("#boxLogout").fadeOut(1500, function () {
                 location.href = Common.config().APP_ROOT + "/index.php";
             });
         },
-        twofa: function () {
-            log.info("views:twofa");
-
-            bodyHooks();
-        },
         passreset: function () {
             log.info("views:passreset");
-
-            bodyHooks();
         },
         footer: function () {
             log.info("views:footer");
@@ -379,8 +368,6 @@ sysPass.Triggers = function (Common) {
         install: function () {
             log.info("views:install");
 
-            bodyHooks();
-
             var $form = $("#frmInstall");
 
             Common.appTheme().passwordDetect($form);
@@ -403,6 +390,7 @@ sysPass.Triggers = function (Common) {
     return {
         views: views,
         selectDetect: selectDetect,
-        updateSk: updateSk
+        updateSk: updateSk,
+        bodyHooks: bodyHooks
     };
 };

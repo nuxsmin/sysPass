@@ -40,7 +40,19 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Atributos de búsqueda
      */
-    const SEARCH_ATTRIBUTES = ['dn', 'displayname', 'samaccountname', 'mail', 'memberof', 'lockouttime', 'fullname', 'groupmembership', 'uid'];
+    const SEARCH_ATTRIBUTES = [
+        'dn',
+        'displayname',
+        'samaccountname',
+        'mail',
+        'memberof',
+        'lockouttime',
+        'fullname',
+        'groupmembership',
+        'uid',
+        'givenname',
+        'sn'
+    ];
     /**
      * @var resource
      */
@@ -152,6 +164,22 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     }
 
     /**
+     * Registrar error de LDAP y devolver el mensaje de error
+     *
+     * @return string
+     */
+    protected function ldapError()
+    {
+        $error = ldap_error($this->ldapHandler);
+        $errno = ldap_errno($this->ldapHandler);
+
+        $this->LdapAuthData->setAuthenticated(0);
+        $this->LdapAuthData->setStatusCode($errno);
+
+        return sprintf('%s (%d)', $error, $errno);
+    }
+
+    /**
      * Realizar la autentificación con el servidor de LDAP.
      *
      * @param string $bindDn con el DN del usuario
@@ -179,6 +207,14 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         }
 
         return true;
+    }
+
+    /**
+     * @return LdapAuthData
+     */
+    public function getLdapAuthData()
+    {
+        return $this->LdapAuthData;
     }
 
     /**
@@ -415,11 +451,15 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             'memberof' => 'group',
             'displayname' => 'name',
             'fullname' => 'name',
+            'givenname' => 'name',
+            'sn' => 'sn',
             'mail' => 'mail',
-            'lockouttime' => 'expire'];
+            'lockouttime' => 'expire'
+        ];
 
         $res = [
             'name' => '',
+            'sn' => '',
             'mail' => '',
             'group' => [],
             'expire' => 0
@@ -447,15 +487,12 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         }
 
         $this->LdapAuthData->setDn($searchResults[0]['dn']);
-        $this->LdapAuthData->setName($res['name']);
+        $this->LdapAuthData->setName(trim($res['name'] . ' ' . $res['sn']));
         $this->LdapAuthData->setEmail($res['mail']);
         $this->LdapAuthData->setExpire($res['expire']);
         $this->LdapAuthData->setGroups($res['group']);
 
-        if ($this->group !== null
-            && $this->group !== ''
-            && $this->group !== '*'
-        ) {
+        if (!empty($this->group) && $this->group !== '*') {
             $this->LdapAuthData->setGroupDn($this->searchGroupDN());
         }
 
@@ -595,59 +632,23 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     protected abstract function searchUserInGroup();
 
     /**
-     * @return LdapAuthData
-     */
-    public function getLdapAuthData()
-    {
-        return $this->LdapAuthData;
-    }
-
-    /**
-     * Realizar la desconexión del servidor de LDAP.
-     */
-    protected function unbind()
-    {
-        @ldap_unbind($this->ldapHandler);
-    }
-
-    /**
-     * Escapar carácteres especiales en el RDN de LDAP.
+     * Devolver los objetos disponibles
      *
-     * @param string $dn con el RDN del usuario
-     * @return string
+     * @return array|bool
      */
-    protected function escapeLdapDN($dn)
+    public function findObjects()
     {
-        $chars = [
-            '/(,)(?!uid|cn|ou|dc)/i',
-            '/(?<!uid|cn|ou|dc)(=)/i',
-            '/(")/',
-            '/(;)/',
-            '/(>)/',
-            '/(<)/',
-            '/(\+)/',
-            '/(#)/',
-            '/\G(\s)/',
-            '/(\s)(?=\s*$)/',
-            '/(\/)/'
-        ];
-        return preg_replace($chars, '\\\$1', $dn);
-    }
+        if (!$this->checkParams()) {
+            return false;
+        }
 
-    /**
-     * Registrar error de LDAP y devolver el mensaje de error
-     *
-     * @return string
-     */
-    protected function ldapError()
-    {
-        $error = ldap_error($this->ldapHandler);
-        $errno = ldap_errno($this->ldapHandler);
-
-        $this->LdapAuthData->setAuthenticated(0);
-        $this->LdapAuthData->setStatusCode($errno);
-
-        return sprintf('%s (%d)', $error, $errno);
+        try {
+            $this->connect();
+            $this->bind();
+            return $this->getObjects();
+        } catch (SPException $e) {
+            return false;
+        }
     }
 
     /**
@@ -700,22 +701,34 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     }
 
     /**
-     * Devolver los objetos disponibles
-     *
-     * @return array|bool
+     * Realizar la desconexión del servidor de LDAP.
      */
-    public function findObjects()
+    protected function unbind()
     {
-        if (!$this->checkParams()) {
-            return false;
-        }
+        @ldap_unbind($this->ldapHandler);
+    }
 
-        try {
-            $this->connect();
-            $this->bind();
-            return $this->getObjects();
-        } catch (SPException $e) {
-            return false;
-        }
+    /**
+     * Escapar carácteres especiales en el RDN de LDAP.
+     *
+     * @param string $dn con el RDN del usuario
+     * @return string
+     */
+    protected function escapeLdapDN($dn)
+    {
+        $chars = [
+            '/(,)(?!uid|cn|ou|dc)/i',
+            '/(?<!uid|cn|ou|dc)(=)/i',
+            '/(")/',
+            '/(;)/',
+            '/(>)/',
+            '/(<)/',
+            '/(\+)/',
+            '/(#)/',
+            '/\G(\s)/',
+            '/(\s)(?=\s*$)/',
+            '/(\/)/'
+        ];
+        return preg_replace($chars, '\\\$1', $dn);
     }
 }

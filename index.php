@@ -25,12 +25,13 @@
 
 use SP\Controller\MainController;
 use SP\Core\Init;
+use SP\Core\Session;
 
 define('APP_ROOT', '.');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!Init::checkPostLoginActions()) {
+if (!Init::checkPostLoginActions() && Session::getAuthCompleted()) {
     $Controller = new MainController(null, 'main');
     $Controller->getMain();
     $Controller->view();

@@ -50,6 +50,7 @@ use SP\Mgmt\Users\UserLdap;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserPassRecover;
 use SP\Mgmt\Users\UserPreferences;
+use SP\Mgmt\Users\UserPreferencesUtil;
 use SP\Mgmt\Users\UserUtil;
 use SP\Util\Json;
 use SP\Util\Util;
@@ -310,6 +311,10 @@ class LoginController
         Session::setUserPreferences($UserPreferencesData);
         Session::setSessionType(Session::SESSION_INTERACTIVE);
         Session::setAuthCompleted(true);
+
+        if ($UserPreferencesData->isUse2Fa()) {
+            UserPreferencesUtil::migrateTwoFA($this->UserData, $UserPreferencesData);
+        }
 
         DiFactory::getEventDispatcher()->notifyEvent('login.preferences', $this);
     }

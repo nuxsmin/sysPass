@@ -27,7 +27,7 @@
                         </div>
                     </div>
 
-                    <div id="soldpass" style="display: none">
+                    <div id="soldpass" class="extra-hidden">
                         <i class="material-icons">vpn_key</i>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="oldpass" name="oldpass" type="password"
@@ -38,7 +38,7 @@
                         </div>
                     </div>
 
-                    <div id="smpass" style="display: none">
+                    <div id="smpass" class="extra-hidden">
                         <i class="material-icons">vpn_key</i>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="mpass" name="mpass" type="password"

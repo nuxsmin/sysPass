@@ -483,14 +483,28 @@ class Util
      * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
      */
-    public static function castToClass($class, $object)
+    public static function castToClass($class, $object, $srcClass = null)
     {
         if (!is_object($object)) {
             $object = unserialize($object);
         }
 
         if (get_class($object) === '__PHP_Incomplete_Class') {
-            return unserialize(preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', serialize($object)));
+            if ($srcClass !== null) {
+                $replace = preg_replace_callback(
+                    '/:\d+:"\x00' . preg_quote($srcClass) . '\x00(\w+)"/',
+                    function ($matches) {
+                        return ':' . strlen($matches[1]) . ':"' . $matches[1] . '"';
+                    },
+                    serialize($object)
+                );
+
+                $replace = preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', $replace);
+            } else {
+                $replace = preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', serialize($object));
+            }
+
+            return unserialize($replace);
         } else {
             return $object;
         }

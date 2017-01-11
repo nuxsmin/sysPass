@@ -235,6 +235,9 @@ class UserPreferencesData
             if (substr($name, 0, 1) === '_') {
                 $newName = substr($name, 1);
                 $this->$newName = $value;
+
+                // Borrar la variable anterior
+                unset($this->$name);
             }
         }
     }
