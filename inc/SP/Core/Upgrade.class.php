@@ -44,8 +44,9 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Upgrade
 {
-    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501, 1316100601, 2017010901];
+    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501, 1316100601];
     private static $cfgUpgrade = [1124, 1316020501];
+    private static $auxUpgrade = [12001, 12002, 20017010901, 20017011201];
 
     /**
      * Inicia el proceso de actualización de la BBDD.
@@ -64,7 +65,11 @@ class Upgrade
                     throw new SPException(SPException::SP_CRITICAL, _('Error al aplicar la actualización de la Base de Datos'),
                         _('Compruebe el registro de eventos para más detalles'));
                 }
+            }
+        }
 
+        foreach (self::$auxUpgrade as $upgradeVersion) {
+            if ($version < $upgradeVersion) {
                 if (self::auxUpgrades($upgradeVersion) === false) {
                     throw new SPException(SPException::SP_CRITICAL,
                         _('Error al aplicar la actualización auxiliar'),
@@ -200,10 +205,10 @@ class Upgrade
                 return (ProfileUtil::migrateProfiles() && UserMigrate::migrateUsersGroup());
             case 12002:
                 return UserMigrate::setMigrateUsers();
-            case 2017010901:
-                Init::loadPlugins();
-
+            case 20017010901:
                 return CustomFieldsUtil::migrateCustomFields() && UserPreferencesUtil::migrate();
+            case 20017011201:
+                return UserPreferencesUtil::migrate();
         }
 
         return true;
@@ -245,6 +250,14 @@ class Upgrade
      */
     public static function upgradeConfig($version)
     {
+        switch ($version) {
+            case 20017011201:
+                $Config = Session::getConfig();
+                $Config->setSiteTheme('material-blue');
+                Config::saveConfig($Config, false);
+                return true;
+        }
+
         return false;
     }
 
@@ -283,6 +296,7 @@ class Upgrade
         }
 
         try {
+            $Config->setSiteTheme(Session::getTheme());
             $Config->setConfigVersion($version);
             Config::saveConfig($Config, false);
             rename(CONFIG_FILE, CONFIG_FILE . '.old');

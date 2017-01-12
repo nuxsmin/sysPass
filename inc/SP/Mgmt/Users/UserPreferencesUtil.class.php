@@ -27,6 +27,8 @@ namespace SP\Mgmt\Users;
 use Plugins\Authenticator\AuthenticatorData;
 use Plugins\Authenticator\AuthenticatorPlugin;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Init;
+use SP\Core\Session;
 use SP\DataModel\PluginData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
@@ -65,6 +67,8 @@ class UserPreferencesUtil
                     $Preferences = Util::castToClass(UserPreferencesData::class, $Preferences, 'SP\UserPreferences');
                     $User->setUserPreferences($Preferences);
 
+                    $Preferences->setTheme(Session::getTheme());
+
                     if ($Preferences->isUse2Fa()) {
                         self::migrateTwoFA($User);
                     }
@@ -92,6 +96,8 @@ class UserPreferencesUtil
      */
     protected static function migrateTwoFA(UserData $UserData)
     {
+        Init::loadPlugins();
+
         /** @var AuthenticatorData $AuthenticatorData */
         $AuthenticatorData = new AuthenticatorData();
         $AuthenticatorData->setUserId($UserData->getUserId());

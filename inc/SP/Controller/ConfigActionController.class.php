@@ -255,6 +255,11 @@ class ConfigActionController implements ItemControllerInterface
     protected function saveConfig(Log $Log)
     {
         try {
+            if (Checks::demoIsEnabled()) {
+                $this->jsonResponse->setDescription(_('Ey, esto es una DEMO!!'));
+                return;
+            }
+
             Config::saveConfig();
 
             $this->jsonResponse->setStatus(0);

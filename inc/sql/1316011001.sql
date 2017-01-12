@@ -7,6 +7,7 @@ CREATE TABLE `publicLinks` (
   publicLink_hash     VARBINARY(100)           NOT NULL,
   publicLink_linkData LONGBLOB
 );
+ALTER TABLE `accounts` DROP INDEX `IDX_searchTxt`;
 ALTER TABLE `usrData`
   ENGINE = InnoDB;
 ALTER TABLE `accFiles`
@@ -32,8 +33,7 @@ ALTER TABLE `usrPassRecover`
 ALTER TABLE `usrProfiles`
   ENGINE = InnoDB;
 ALTER TABLE `accounts`
-  ENGINE = InnoDB,
-  ADD INDEX `IDX_searchTxt` (`account_name` ASC, `account_login` ASC, `account_url` ASC);
+  ENGINE = InnoDB;
 CREATE UNIQUE INDEX unique_publicLink_accountId
   ON publicLinks (publicLink_itemId);
 CREATE UNIQUE INDEX unique_publicLink_hash
@@ -45,13 +45,7 @@ CREATE TABLE `accFavorites` (
   `accfavorite_userId`    SMALLINT UNSIGNED NOT NULL,
   INDEX `fk_accFavorites_accounts_idx` (`accfavorite_accountId` ASC),
   INDEX `fk_accFavorites_users_idx` (`accfavorite_userId` ASC),
-  INDEX `search_idx` (`accfavorite_accountId` ASC, `accfavorite_userId` ASC),
-  CONSTRAINT `fk_accFavorites_accounts` FOREIGN KEY (`accfavorite_accountId`) REFERENCES `accounts` (`account_id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_accFavorites_users` FOREIGN KEY (`accfavorite_userId`) REFERENCES `usrData` (`user_id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
+  INDEX `search_idx` (`accfavorite_accountId` ASC, `accfavorite_userId` ASC)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;

@@ -72,7 +72,9 @@ ALTER TABLE `accFavorites`
 FOREIGN KEY (`accfavorite_accountId`)
 REFERENCES `accounts` (`account_id`)
   ON DELETE CASCADE
-  ON UPDATE NO ACTION,
+  ON UPDATE NO ACTION;
+
+ALTER TABLE `accFavorites`
   ADD CONSTRAINT `fk_accFavorites_users_id`
 FOREIGN KEY (`accfavorite_userId`)
 REFERENCES `usrData` (`user_id`)
@@ -91,7 +93,9 @@ ALTER TABLE `accGroups`
 FOREIGN KEY (`accgroup_accountId`)
 REFERENCES `accounts` (`account_id`)
   ON DELETE CASCADE
-  ON UPDATE CASCADE,
+  ON UPDATE CASCADE;
+
+ALTER TABLE `accGroups`
   ADD CONSTRAINT `fk_accGroups_groups_id`
 FOREIGN KEY (`accgroup_groupId`)
 REFERENCES `usrGroups` (`usergroup_id`)
@@ -103,22 +107,30 @@ ALTER TABLE `accHistory`
 FOREIGN KEY (`acchistory_userId`)
 REFERENCES `usrData` (`user_id`)
   ON DELETE RESTRICT
-  ON UPDATE RESTRICT,
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `accHistory`
   ADD CONSTRAINT `fk_accHistory_users_edit_id`
 FOREIGN KEY (`acchistory_userEditId`)
 REFERENCES `usrData` (`user_id`)
   ON DELETE RESTRICT
-  ON UPDATE RESTRICT,
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `accHistory`
   ADD CONSTRAINT `fk_accHistory_category_id`
 FOREIGN KEY (`acchistory_categoryId`)
 REFERENCES `categories` (`category_id`)
   ON DELETE RESTRICT
-  ON UPDATE RESTRICT,
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `accHistory`
   ADD CONSTRAINT `fk_accHistory_customer_id`
 FOREIGN KEY (`acchistory_customerId`)
 REFERENCES `customers` (`customer_id`)
   ON DELETE RESTRICT
-  ON UPDATE RESTRICT,
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `accHistory`
   ADD CONSTRAINT `fk_accHistory_userGroup_id`
 FOREIGN KEY (`acchistory_userGroupId`)
 REFERENCES `usrGroups` (`usergroup_id`)
@@ -130,7 +142,9 @@ ALTER TABLE `accTags`
 FOREIGN KEY (`acctag_accountId`)
 REFERENCES `accounts` (`account_id`)
   ON DELETE CASCADE
-  ON UPDATE CASCADE,
+  ON UPDATE CASCADE;
+
+ALTER TABLE `accTags`
   ADD CONSTRAINT `fk_accTags_tags_id`
 FOREIGN KEY (`acctag_tagId`)
 REFERENCES `tags` (`tag_id`)
@@ -142,7 +156,9 @@ ALTER TABLE `accUsers`
 FOREIGN KEY (`accuser_accountId`)
 REFERENCES `accounts` (`account_id`)
   ON DELETE CASCADE
-  ON UPDATE CASCADE,
+  ON UPDATE CASCADE;
+
+ALTER TABLE `accUsers`
   ADD CONSTRAINT `fk_accUsers_users_id`
 FOREIGN KEY (`accuser_userId`)
 REFERENCES `usrData` (`user_id`)
@@ -154,22 +170,30 @@ ALTER TABLE `accounts`
 FOREIGN KEY (`account_categoryId`)
 REFERENCES `categories` (`category_id`)
   ON DELETE RESTRICT
-  ON UPDATE CASCADE,
+  ON UPDATE CASCADE;
+
+ALTER TABLE `accounts`
   ADD CONSTRAINT `fk_accounts_user_id`
 FOREIGN KEY (`account_userId`)
 REFERENCES `usrData` (`user_id`)
   ON DELETE RESTRICT
-  ON UPDATE RESTRICT,
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `accounts`
   ADD CONSTRAINT `fk_accounts_user_edit_id`
 FOREIGN KEY (`account_userEditId`)
 REFERENCES `usrData` (`user_id`)
   ON DELETE RESTRICT
-  ON UPDATE RESTRICT,
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `accounts`
   ADD CONSTRAINT `fk_accounts_customer_id`
 FOREIGN KEY (`account_customerId`)
 REFERENCES `customers` (`customer_id`)
   ON DELETE RESTRICT
-  ON UPDATE RESTRICT,
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `accounts`
   ADD CONSTRAINT `fk_accounts_userGroup_id`
 FOREIGN KEY (`account_userGroupId`)
 REFERENCES `usrGroups` (`usergroup_id`)
@@ -181,7 +205,9 @@ ALTER TABLE `authTokens`
 FOREIGN KEY (`authtoken_userId`)
 REFERENCES `usrData` (`user_id`)
   ON DELETE CASCADE
-  ON UPDATE CASCADE,
+  ON UPDATE CASCADE;
+
+ALTER TABLE `authTokens`
   ADD CONSTRAINT `fk_authTokens_createdBy_id`
 FOREIGN KEY (`authtoken_createdBy`)
 REFERENCES `usrData` (`user_id`)
@@ -200,7 +226,9 @@ ALTER TABLE `usrData`
 FOREIGN KEY (`user_groupId`)
 REFERENCES `usrGroups` (`usergroup_id`)
   ON DELETE RESTRICT
-  ON UPDATE RESTRICT,
+  ON UPDATE RESTRICT;
+
+ALTER TABLE `usrData`
   ADD CONSTRAINT `fk_usrData_profiles_id`
 FOREIGN KEY (`user_profileId`)
 REFERENCES `usrProfiles` (`userprofile_id`)
@@ -219,7 +247,9 @@ ALTER TABLE `usrToGroups`
 FOREIGN KEY (`usertogroup_userId`)
 REFERENCES `usrData` (`user_id`)
   ON DELETE CASCADE
-  ON UPDATE CASCADE,
+  ON UPDATE CASCADE;
+
+ALTER TABLE `usrToGroups`
   ADD CONSTRAINT `fk_usrToGroups_groups_id`
 FOREIGN KEY (`usertogroup_groupId`)
 REFERENCES `usrGroups` (`usergroup_id`)
