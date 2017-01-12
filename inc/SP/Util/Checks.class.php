@@ -75,7 +75,7 @@ class Checks
     public static function checkPhpVersion()
     {
         $error = [];
-        $needsVersion = '5.3.0';
+        $needsVersion = '5.6.0';
 
         if (version_compare(PHP_VERSION, $needsVersion, '>=') < 0) {
             $error[] = array(

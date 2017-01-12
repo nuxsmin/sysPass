@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -42,7 +42,7 @@ class Util
     /**
      * Generar una clave aleatoria
      *
-     * @param int $length Longitud de la clave
+     * @param int  $length     Longitud de la clave
      * @param bool $useNumbers Usar números
      * @param bool $useSpecial Usar carácteres especiales
      * @return string
@@ -201,13 +201,14 @@ class Util
     /**
      * Obtener datos desde una URL usando CURL
      *
-     * @param           $url string La URL
-     * @param array $data
+     * @param string    $url
+     * @param array     $data
      * @param bool|null $useCookie
+     * @param bool      $weak
      * @return bool|string
      * @throws SPException
      */
-    public static function getDataFromUrl($url, array $data = null, $useCookie = false)
+    public static function getDataFromUrl($url, array $data = null, $useCookie = false, $weak = false)
     {
         if (!Checks::curlIsAvailable()) {
             $Log = LogUtil::extensionNotLoaded('CURL', __FUNCTION__);
@@ -237,9 +238,11 @@ class Util
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 
-        // Trust SSL enabled server
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        if ($weak === true) {
+            // Trust SSL enabled server
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        }
 
         if (null !== $data) {
             curl_setopt($ch, CURLOPT_POST, 1);
@@ -402,8 +405,8 @@ class Util
      * such as 'false','N','yes','on','off', etc.
      *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
-     * @param mixed $in The variable to check
-     * @param bool $strict If set to false, consider everything that is not false to
+     * @param mixed $in     The variable to check
+     * @param bool  $strict If set to false, consider everything that is not false to
      *                      be true.
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
      */
@@ -477,7 +480,7 @@ class Util
     /**
      * Cast an object to another class, keeping the properties, but changing the methods
      *
-     * @param string $class Class name
+     * @param string        $class Class name
      * @param string|object $object
      * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
@@ -532,9 +535,9 @@ class Util
     /**
      * Comprobar si un valor existe en un array de objetos
      *
-     * @param array $objectArray
+     * @param array  $objectArray
      * @param string $method
-     * @param mixed $value
+     * @param mixed  $value
      * @return bool
      */
     public static function checkInObjectArray(array $objectArray, $method, $value)
