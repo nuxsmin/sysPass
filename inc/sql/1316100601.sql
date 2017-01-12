@@ -340,6 +340,7 @@ CREATE OR REPLACE ALGORITHM = UNDEFINED
     `accounts`.`account_passDate`                                  AS `account_passDate`,
     `accounts`.`account_passDateChange`                            AS `account_passDateChange`,
     `accounts`.`account_parentId`                                  AS `account_parentId`,
+    `accounts`.`account_countView`                                 AS `account_countView`,
     `ug`.`usergroup_name`                                          AS `usergroup_name`,
     `categories`.`category_name`                                   AS `category_name`,
     `customers`.`customer_name`                                    AS `customer_name`,

@@ -45,8 +45,8 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class Upgrade
 {
     private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501, 1316100601];
-    private static $cfgUpgrade = [1124, 1316020501];
-    private static $auxUpgrade = [12001, 12002, 20017010901, 20017011201];
+    private static $cfgUpgrade = [1124, 1316020501, 20017011202];
+    private static $auxUpgrade = [12001, 12002, 20017010901, 20017011202];
 
     /**
      * Inicia el proceso de actualización de la BBDD.
@@ -207,7 +207,7 @@ class Upgrade
                 return UserMigrate::setMigrateUsers();
             case 20017010901:
                 return CustomFieldsUtil::migrateCustomFields() && UserPreferencesUtil::migrate();
-            case 20017011201:
+            case 20017011202:
                 return UserPreferencesUtil::migrate();
         }
 
@@ -296,7 +296,7 @@ class Upgrade
         }
 
         try {
-            $Config->setSiteTheme(Session::getTheme());
+            $Config->setSiteTheme('material-blue');
             $Config->setConfigVersion($version);
             Config::saveConfig($Config, false);
             rename(CONFIG_FILE, CONFIG_FILE . '.old');
