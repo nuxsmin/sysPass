@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use SP\Controller\MainController;
@@ -32,7 +31,7 @@ define('APP_ROOT', '.');
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
 if (!Init::checkPostLoginActions() && Session::getAuthCompleted()) {
-    $Controller = new MainController(null, 'main');
+    $Controller = new MainController();
     $Controller->getMain();
     $Controller->view();
 }

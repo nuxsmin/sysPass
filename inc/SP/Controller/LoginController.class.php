@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -50,7 +50,6 @@ use SP\Mgmt\Users\UserLdap;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserPassRecover;
 use SP\Mgmt\Users\UserPreferences;
-use SP\Mgmt\Users\UserPreferencesUtil;
 use SP\Mgmt\Users\UserUtil;
 use SP\Util\Json;
 use SP\Util\Util;
@@ -95,6 +94,8 @@ class LoginController
      * Ejecutar las acciones de login
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \InvalidArgumentException
      */
     public function doLogin()
     {
@@ -149,6 +150,9 @@ class LoginController
      *
      * @param $userPass
      * @throws SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\AuthException
+     * @throws \InvalidArgumentException
      */
     protected function getUserData($userPass)
     {
@@ -192,6 +196,7 @@ class LoginController
      * Comprobar si se ha forzado un cambio de clave
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function checkPasswordChange()
     {
@@ -217,6 +222,9 @@ class LoginController
      * Cargar la sesión del usuario
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\AuthException
+     * @throws \InvalidArgumentException
      */
     protected function setUserSession()
     {
@@ -247,6 +255,8 @@ class LoginController
      * Cargar la clave maestra o solicitarla
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\AuthException
      */
     protected function loadMasterPass()
     {
@@ -305,16 +315,11 @@ class LoginController
      */
     protected function loadUserPreferences()
     {
-        $UserPreferencesData = UserPreferences::getItem()->getById($this->UserData->getUserId());
         Language::setLanguage(true);
         DiFactory::getTheme()->initTheme(true);
-        Session::setUserPreferences($UserPreferencesData);
+        Session::setUserPreferences($this->UserData->getUserPreferences());
         Session::setSessionType(Session::SESSION_INTERACTIVE);
         Session::setAuthCompleted(true);
-
-        if ($UserPreferencesData->isUse2Fa()) {
-            UserPreferencesUtil::migrateTwoFA($this->UserData, $UserPreferencesData);
-        }
 
         DiFactory::getEventDispatcher()->notifyEvent('login.preferences', $this);
     }
@@ -324,6 +329,7 @@ class LoginController
      *
      * @param LdapAuthData $LdapAuthData
      * @return bool
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws AuthException
      */
     protected function authLdap(LdapAuthData $LdapAuthData)

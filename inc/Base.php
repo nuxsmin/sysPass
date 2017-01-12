@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use SP\Core\Init;
@@ -28,7 +27,10 @@ use SP\Core\Init;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 define('BASE_DIR', __DIR__);
+//
+// Please, notice that this file should be outside the webserver root. You can move it and then update this path
 define('XML_CONFIG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.xml');
+
 define('CONFIG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php');
 define('MODEL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'SP');
 define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'web');
@@ -39,7 +41,7 @@ define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
 define('SQL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'sql');
 
 
-define('DEBUG', true);
+define('DEBUG', false);
 
 require 'SplClassLoader.php';
 

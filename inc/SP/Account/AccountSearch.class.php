@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,19 +19,18 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Account;
 
 use SP\Config\Config;
 use SP\Core\Acl;
+use SP\Core\Session;
 use SP\DataModel\AccountSearchData;
 use SP\Mgmt\Groups\GroupUtil;
 use SP\Mgmt\Users\User;
 use SP\Storage\DB;
-use SP\Core\Session;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
 

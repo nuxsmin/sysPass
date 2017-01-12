@@ -33,7 +33,6 @@ ALTER TABLE `usrProfiles`
   ENGINE = InnoDB;
 ALTER TABLE `accounts`
   ENGINE = InnoDB,
-  DROP INDEX `IDX_searchTxt`,
   ADD INDEX `IDX_searchTxt` (`account_name` ASC, `account_login` ASC, `account_url` ASC);
 CREATE UNIQUE INDEX unique_publicLink_accountId
   ON publicLinks (publicLink_itemId);

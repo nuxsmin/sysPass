@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,25 +19,24 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\PublicLinks;
 
 use SP\Account\AccountUtil;
 use SP\Config\Config;
+use SP\Core\Exceptions\SPException;
+use SP\Core\Session;
 use SP\DataModel\PublicLinkBaseData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Core\Session;
-use SP\Core\Exceptions\SPException;
 use SP\Mgmt\ItemInterface;
-use SP\Storage\DB;
 use SP\Mgmt\Users\UserUtil;
+use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
 

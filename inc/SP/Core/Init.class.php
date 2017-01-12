@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
@@ -34,7 +33,6 @@ use SP\Core\Plugin\PluginUtil;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\Plugins\Plugin;
 use SP\Mgmt\Profiles\Profile;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
@@ -285,8 +283,10 @@ class Init
     /**
      * Devuelve un eror utilizando la plantilla de error.
      *
-     * @param string $str con la descripción del error
+     * @param string $str  con la descripción del error
      * @param string $hint opcional, con una ayuda sobre el error
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public static function initError($str, $hint = '')
     {
@@ -294,7 +294,8 @@ class Init
 
         $Tpl = new Template();
         $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint]);
-        $Controller = new MainController($Tpl, 'error', true);
+
+        $Controller = new MainController($Tpl);
         $Controller->getError();
         $Controller->view();
         exit();
@@ -460,6 +461,7 @@ class Init
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
      *
      * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function checkInstalled()
     {
@@ -470,6 +472,13 @@ class Init
                 header("Location: $url");
                 exit();
             } else {
+                if (Session::getAuthCompleted()){
+                    session_destroy();
+
+                    self::start();
+                    return;
+                }
+
                 // Comprobar si sysPass está instalada o en modo mantenimiento
                 $Controller = new MainController();
                 $Controller->getInstaller();
@@ -544,17 +553,23 @@ class Init
 
     /**
      * Mostrar la página de login
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function goLogin()
     {
         SessionUtil::cleanSession();
 
-        $Controller = new MainController(null, 'login');
+        $Controller = new MainController();
         $Controller->getLogin();
     }
 
     /**
      * Comrpueba y actualiza la versión de la aplicación.
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \InvalidArgumentException
      */
     private static function checkDbVersion()
     {
@@ -601,7 +616,7 @@ class Init
                         self::initError($e->getMessage(), $hint);
                     }
                 } else {
-                    $controller = new MainController(null, 'upgrade');
+                    $controller = new MainController();
                     $controller->getUpgrade();
                 }
             }
@@ -675,7 +690,7 @@ class Init
     /**
      * Cargar los Plugins disponibles
      */
-    private static function loadPlugins()
+    public static function loadPlugins()
     {
         foreach (PluginUtil::getPlugins() as $plugin) {
             $Plugin = PluginUtil::loadPlugin($plugin);
@@ -704,7 +719,7 @@ class Init
             return false;
         }
 
-        $Controller = new MainController(null, $action);
+        $Controller = new MainController();
         $Controller->doAction('prelogin.' . $action);
     }
 
@@ -730,6 +745,7 @@ class Init
      * Comprobar si hay que ejecutar acciones de URL después de realizar login.
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkPostLoginActions()
     {
@@ -739,7 +755,7 @@ class Init
             return false;
         }
 
-        $Controller = new MainController(null, $action);
+        $Controller = new MainController();
         $Controller->doAction('postlogin.' . $action);
 
         return true;

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use SP\Auth\AuthUtil;
 use SP\Core\SessionUtil;
 use SP\Core\Exceptions\SPException;
+use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Email;
@@ -33,6 +33,7 @@ use SP\Log\Log;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserPassRecover;
+use SP\Util\Json;
 
 define('APP_ROOT', '..');
 
@@ -40,10 +41,13 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
+$JsonResponse = new JsonResponse();
+
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJson(_('CONSULTA INVÁLIDA'));
+    $JsonResponse->setDescription(_('CONSULTA INVÁLIDA'));
+    Json::returnJson($JsonResponse);
 }
 
 $userLogin = Request::analyze('login');
@@ -64,7 +68,9 @@ if ($userLogin && $userEmail) {
         $Log->addDescription(_('Solicitud enviada'));
         $Log->writeLog();
 
-        Response::printJson($Log->getDescription() . ';;' . _('En breve recibirá un correo para completar la solicitud.'), 0, 'goLogin();');
+        $JsonResponse->setDescription($Log->getDescription());
+        $JsonResponse->addMessage(_('En breve recibirá un correo para completar la solicitud.'));
+        Json::returnJson($JsonResponse);
     }
 
     $Log->addDescription(_('Solicitud no enviada'));
@@ -73,25 +79,30 @@ if ($userLogin && $userEmail) {
 
     Email::sendEmail($Log);
 
-    Response::printJson($Log->getDescription());
+    $JsonResponse->setStatus(0);
+    $JsonResponse->setDescription($Log->getDescription());
+    Json::returnJson($JsonResponse);
 } elseif ($userPass && $userPassR && $userPass === $userPassR) {
     $Log = new Log(_('Modificar Clave Usuario'));
 
     try {
-        UserPassRecover::getItem()->getHashUserId(Request::analyze('hash'));
-        UserPass::getItem()->updateUserPass(UserPassRecover::getItem()->getItemData()->getUserpassrUserId(), $userPass);
+        $UserPassRecover = UserPassRecover::getItem()->getHashUserId(Request::analyze('hash'));
+        UserPass::getItem()->updateUserPass($UserPassRecover->getItemData()->getUserpassrUserId(), $userPass);
     } catch (SPException $e) {
         $Log->addDescription($e->getMessage());
         $Log->writeLog();
 
-        Response::printJson($e->getMessage());
+        $JsonResponse->setDescription($e->getMessage());
+        Json::returnJson($JsonResponse);
     }
 
     $Log->addDescription(_('Clave actualizada'));
     $Log->addDetailsHtml(_('Login'), UserPass::getItem()->getItemData()->getUserLogin());
     $Log->writeLog();
 
-    Response::printJson($Log->getDescription(), 0, 'goLogin();');
+    $JsonResponse->setStatus(0);
+    $JsonResponse->setDescription($Log->getDescription());
+    Json::returnJson($JsonResponse);
 } else {
     Response::printJson(_('La clave es incorrecta o no coincide'));
 }

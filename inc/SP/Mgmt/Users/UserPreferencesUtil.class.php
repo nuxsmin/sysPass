@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,7 +24,6 @@
 
 namespace SP\Mgmt\Users;
 
-use Plugins\Authenticator\Authenticator;
 use Plugins\Authenticator\AuthenticatorData;
 use Plugins\Authenticator\AuthenticatorPlugin;
 use SP\Core\Exceptions\SPException;
@@ -33,8 +32,6 @@ use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Log\Log;
 use SP\Mgmt\Plugins\Plugin;
-use SP\Storage\DB;
-use SP\Storage\QueryData;
 use SP\Util\Util;
 
 /**
@@ -45,50 +42,75 @@ use SP\Util\Util;
 class UserPreferencesUtil
 {
     /**
-     * @param UserData $UserData
-     * @param UserPreferencesData $UserPreferences
+     * Migrar las preferencias
+     *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \InvalidArgumentException
      */
-    public static function migrateTwoFA(UserData $UserData, UserPreferencesData $UserPreferences)
+    public static function migrate()
     {
         $Log = new Log(__FUNCTION__);
         $Log->addDescription(_('Actualizando preferencias'));
 
-        $Authenticator = new Authenticator($UserData->getUserId(), $UserData->getUserLogin());
+        foreach (User::getItem()->getAll() as $User) {
+            try {
+                $Preferences = $User->getUserPreferences();
 
+                if (!empty($Preferences)) {
+                    $Log->addDetails(_('Usuario'), $User->getUserLogin());
+
+                    /** @var UserPreferencesData $Preferences */
+                    $Preferences = Util::castToClass(UserPreferencesData::class, $Preferences, 'SP\UserPreferences');
+                    $User->setUserPreferences($Preferences);
+
+                    if ($Preferences->isUse2Fa()) {
+                        self::migrateTwoFA($User);
+                    }
+                }
+            } catch (SPException $e) {
+                $Log->addDescription($e->getMessage());
+                $Log->setLogLevel(Log::ERROR);
+                $Log->writeLog();
+            }
+        }
+
+        $Log->addDescription(_('Preferencias actualizadas'));
+        $Log->writeLog();
+
+        return true;
+    }
+
+    /**
+     * Migrar la función de 2FA a plugin Authenticator
+     *
+     * @param UserData $UserData
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \InvalidArgumentException
+     */
+    protected static function migrateTwoFA(UserData $UserData)
+    {
         /** @var AuthenticatorData $AuthenticatorData */
         $AuthenticatorData = new AuthenticatorData();
         $AuthenticatorData->setUserId($UserData->getUserId());
-        $AuthenticatorData->setIV($Authenticator->getInitializationKey());
+        $AuthenticatorData->setIV(UserPass::getUserIVById($UserData->getId()));
         $AuthenticatorData->setTwofaEnabled(1);
         $AuthenticatorData->setDate(time());
 
         $data[$UserData->getUserId()] = $AuthenticatorData;
 
-        $Log->addDetails(_('Usuario'), $UserData->getUserLogin());
+        $PluginData = new PluginData();
+        $PluginData->setPluginName(AuthenticatorPlugin::PLUGIN_NAME);
+        $PluginData->setPluginEnabled(1);
+        $PluginData->setPluginData(serialize($data));
 
-        try {
-            $PluginData = new PluginData();
-            $PluginData->setPluginName(AuthenticatorPlugin::PLUGIN_NAME);
-            $PluginData->setPluginEnabled(1);
-            $PluginData->setPluginData(serialize($data));
+        Plugin::getItem($PluginData)->update();
 
-            Plugin::getItem($PluginData)->update();
-
-            $UserPreferences->setUse2Fa(0);
-            $UserPreferences->setUserId($UserData->getUserId());
-            UserPreferences::getItem($UserPreferences)->update();
-
-            $Log->addDescription(_('Preferencias actualizadas'));
-            $Log->writeLog();
-        } catch (SPException $e) {
-            $Log->addDescription($e->getMessage());
-            $Log->setLogLevel(Log::ERROR);
-            $Log->writeLog();
-
-            return false;
-        }
-
-        return true;
+        $UserPreferences = $UserData->getUserPreferences();
+        $UserPreferences->setUse2Fa(0);
+        $UserPreferences->setUserId($UserData->getUserId());
+        UserPreferences::getItem($UserPreferences)->update();
     }
 }

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -100,7 +100,7 @@ class ActionController implements ItemControllerInterface
      */
     protected function save()
     {
-        $pin = Request::analyze('security_pin', 0);
+        $pin = Request::analyze('security_pin');
         $twofa_enabled = Request::analyze('security_2faenabled', 0, false, 1);
 
         $AuthenticatorData = Session::getUserData();
@@ -153,7 +153,7 @@ class ActionController implements ItemControllerInterface
     protected function checkCode()
     {
         $userId = Request::analyze('itemId', 0);
-        $pin = Request::analyze('security_pin', 0);
+        $pin = Request::analyze('security_pin');
 
         // Buscar al usuario en los datos del plugin
         /** @var AuthenticatorData $AuthenticatorData */

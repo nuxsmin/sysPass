@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,17 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Api;
 
 use SP\Account\Account;
-use SP\Core\Backup;
 use SP\Account\AccountSearch;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
+use SP\Core\Backup;
 use SP\Core\Crypt;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;

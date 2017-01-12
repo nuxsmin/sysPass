@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -106,7 +106,7 @@ class LoginController
 
         $userId = Request::analyze('i', 0);
 
-        if (!isset($data[$userId]) || $data[$userId]->getExpireDays() === 0) {
+        if (!isset($data[$userId]) || $data[$userId]->getExpireDays() === null) {
             return;
         }
 

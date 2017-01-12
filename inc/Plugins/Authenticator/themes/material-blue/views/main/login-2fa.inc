@@ -22,13 +22,13 @@
 
             <div class="buttons">
                 <button id="btnBack" type="button"
-                        class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+                        class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary">
                     <i class="material-icons"
                        title="<?php echo _t('authenticator', 'Volver a iniciar sesión'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
                     <?php echo _t('authenticator', 'Volver'); ?>
                 </button>
 
-                <button id="btnLogin" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+                <button id="btnLogin" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary">
                     <?php echo _t('authenticator', 'Acceder'); ?>
                     <i class="material-icons"
                        title="<?php echo _t('authenticator', 'Solicitar'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>

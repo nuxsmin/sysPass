@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
@@ -28,12 +27,12 @@ namespace SP\Controller;
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
 use SP\Core\Acl;
+use SP\Core\DiFactory;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Session;
-use SP\Core\Exceptions\SPException;
-use SP\Core\DiFactory;
 use SP\Core\Template;
 use SP\Core\UI\ThemeIconsBase;
 use SP\DataModel\ProfileData;

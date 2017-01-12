@@ -306,8 +306,7 @@ CREATE TABLE `log` (
   `log_action` varchar(50) NOT NULL,
   `log_description` text,
   `log_level` varchar(20) NOT NULL,
-  PRIMARY KEY (`log_id`),
-  KEY `fk_log_users_id_idx` (`log_userId`)
+  PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

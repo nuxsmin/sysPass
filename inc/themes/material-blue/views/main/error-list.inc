@@ -8,8 +8,8 @@
         <?php foreach ($errors as $err): ?>
             <?php if (is_array($err)): ?>
                 <?php if ($err['type'] === \SP\Core\Exceptions\SPException::SP_CRITICAL): ?>
-                    <li class="error-critical">
-                        <i class="material-icons"><?php echo $icons->getIconCritical()->getIcon(); ?></i>
+                    <li class="msg-critical">
+                        <i class="material-icons <?php echo $icons->getIconCritical()->getClass(); ?>"><?php echo $icons->getIconCritical()->getIcon(); ?></i>
                         <strong><?php echo $err['description']; ?></strong>
                         <?php if ($err['hint']): ?>
                             <p class="hint">
@@ -18,8 +18,8 @@
                         <?php endif; ?>
                     </li>
                 <?php elseif ($err['type'] === \SP\Core\Exceptions\SPException::SP_WARNING): ?>
-                    <li class="error-warning">
-                        <i class="material-icons"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
+                    <li class="msg-warning">
+                        <i class="material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
                         <strong><?php echo $err['description']; ?></strong>
                         <?php if ($err['hint']): ?>
                             <p class="hint">
@@ -28,10 +28,10 @@
                         <?php endif; ?>
                     </li>
                 <?php else: ?>
-                    <li class="error-ok">
+                    <li class="msg-ok">
                         <strong><?php echo $err['description']; ?></strong>
                         <?php if ($err['hint']): ?>
-                            <i class="material-icons"><?php echo $icons->getIconInfo()->getIcon(); ?></i>
+                            <i class="material-icons <?php echo $icons->getIconInfo()->getClass(); ?>"><?php echo $icons->getIconInfo()->getIcon(); ?></i>
                             <p class="hint">
                                 <?php echo $err['hint']; ?>
                             </p>

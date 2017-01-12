@@ -19,7 +19,7 @@
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
                     <?php echo $icons->getIconHelp()->getIcon(); ?>
                 </div>
-                <div class="mdl-tooltip" for="help-code">
+                <div class="mdl-tooltip mdl-tooltip--large" for="help-code">
                     <?php echo _('Este código se encuentra en el archivo de configuración de sysPass con la etiqueta "upgradeKey"'); ?>
                 </div>
 
@@ -32,6 +32,15 @@
                 <input type="hidden" name="t" value="<?php echo $time; ?>">
                 <input type="hidden" name="upgrade" value="1">
             </fieldset>
+
+            <div>
+                <ul class="errors">
+                    <li class="msg-warning">
+                        <i class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
+                        <?php echo _('Por favor espere mientras el proceso se ejecuta'); ?>
+                    </li>
+                </ul>
+            </div>
 
             <div class="buttons">
                 <button id="btnChange" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"

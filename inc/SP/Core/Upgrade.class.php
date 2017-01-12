@@ -3,9 +3,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -20,8 +20,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
@@ -33,9 +32,9 @@ use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Mgmt\Profiles\ProfileUtil;
+use SP\Mgmt\Users\UserMigrate;
 use SP\Mgmt\Users\UserPreferencesUtil;
 use SP\Storage\DB;
-use SP\Mgmt\Users\UserMigrate;
 use SP\Storage\QueryData;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
@@ -53,6 +52,8 @@ class Upgrade
      *
      * @param int $version con la versión de la BBDD actual
      * @return bool
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \InvalidArgumentException
      * @throws SPException
      */
     public static function doUpgrade($version)
@@ -188,6 +189,9 @@ class Upgrade
      *
      * @param $version int El número de versión
      * @return bool
+     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     private static function auxUpgrades($version)
     {
@@ -197,7 +201,9 @@ class Upgrade
             case 12002:
                 return UserMigrate::setMigrateUsers();
             case 2017010901:
-                return CustomFieldsUtil::migrateCustomFields();
+                Init::loadPlugins();
+
+                return CustomFieldsUtil::migrateCustomFields() && UserPreferencesUtil::migrate();
         }
 
         return true;
@@ -242,6 +248,12 @@ class Upgrade
         return false;
     }
 
+    /**
+     * Actualizar el archivo de configuración a formato XML
+     *
+     * @param $version
+     * @return bool
+     */
     public static function upgradeOldConfigFile($version)
     {
         $Log = new Log(_('Actualizar Configuración'));
@@ -286,7 +298,6 @@ class Upgrade
             $Log->setLogLevel(Log::ERROR);
             $Log->writeLog();
         }
-
 
         // We are here...wrong
         return false;

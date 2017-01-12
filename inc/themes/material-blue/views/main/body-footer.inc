@@ -1,3 +1,6 @@
+<?php if ($useLayout === true): ?>
+</div> <!-- Close mdl-layout -->
+<?php endif; ?>
 </div> <!-- Close container -->
 <footer>
     <div id="footer-left" class="footer-parts">
@@ -54,7 +57,7 @@
                     <i class="material-icons mdl-color-text--red-900">lock_open</i>
                 </span>
                 <span for="secure-info"
-                      class="mdl-tooltip mdl-tooltip--top"><?php echo _('Indica si la conexión utiliza HTTPS.') . '<br><br>' . _('Las claves de formularios enviados se encriptan mediante PKI, el resto de datos no.'); ?></span>
+                      class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo _('Indica si la conexión utiliza HTTPS.') . '<br><br>' . _('Las claves de formularios enviados se encriptan mediante PKI, el resto de datos no.'); ?></span>
 
             <?php endif; ?>
 
@@ -70,11 +73,11 @@
                 <?php echo $appInfo['appname'], ' ', $appVersion; ?>
             </a>
             <span for="app-info"
-                  class="mdl-tooltip mdl-tooltip--top"><?php echo _('Ayuda :: FAQ :: Changelog'); ?></span>
+                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo _('Ayuda :: FAQ :: Changelog'); ?></span>
             &nbsp;::&nbsp;
             <a id="app-project" href="<?php echo $appInfo['appblog']; ?>" target="_blank">cygnux.org</a>
             <span for="app-project"
-                  class="mdl-tooltip mdl-tooltip--top"><?php echo _('Un proyecto de cygnux.org'); ?></span>
+                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo _('Un proyecto de cygnux.org'); ?></span>
         </div>
         <!-- Close Project -->
     </div>

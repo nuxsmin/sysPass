@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin 
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
@@ -32,6 +31,7 @@ use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
 use SP\Controller\Grids\Items;
 use SP\Core\ActionsInterface;
+use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Mgmt\Categories\CategorySearch;
@@ -43,7 +43,6 @@ use SP\Mgmt\Groups\GroupSearch;
 use SP\Mgmt\Plugins\PluginSearch;
 use SP\Mgmt\Profiles\ProfileSearch;
 use SP\Mgmt\PublicLinks\PublicLinkSearch;
-use SP\Core\Template;
 use SP\Mgmt\Tags\TagSearch;
 use SP\Mgmt\Users\UserSearch;
 use SP\Util\Checks;

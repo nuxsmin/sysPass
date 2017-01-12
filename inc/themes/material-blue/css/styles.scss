@@ -37,7 +37,7 @@
   margin: auto;
   width: 100%;
   &.login {
-    margin-top: 5%;
+    padding-top: 5%;
   }
   &.error, &.install, &.passreset {
     width: 100%;
@@ -1030,22 +1030,23 @@ fieldset.warning {
     }
   }
   ul.errors {
-    max-width: 40%;
+    max-width: 40vw;
     margin: 0 auto;
     list-style: none;
     font-size: 14px;
     text-align: left;
     > li {
       margin: 1.5em auto;
-      border-radius: 5px;
-      padding: 0.5em;
-      &.error-critical {
+      border-radius: 3px;
+      padding: 1em 0.5em;
+      &.msg-critical {
         @include color-red();
       }
-      &.error-warning {
+      &.msg-warning {
         @include color-amber();
+        color: #555;
       }
-      &.error-ok {
+      &.msg-ok {
         @include color-teal();
       }
       > p.hint {

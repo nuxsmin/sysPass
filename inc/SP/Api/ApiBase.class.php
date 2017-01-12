@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Api;
@@ -31,9 +30,9 @@ use SP\Auth\Auth;
 use SP\Auth\AuthResult;
 use SP\Auth\AuthUtil;
 use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;

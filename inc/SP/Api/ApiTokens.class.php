@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,21 +19,20 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Api;
 
 defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
 
-use SP\Storage\DB;
-use SP\Log\Email;
-use SP\Html\Html;
-use SP\Log\Log;
-use SP\Core\Session;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Session;
+use SP\Html\Html;
+use SP\Log\Email;
+use SP\Log\Log;
 use SP\Mgmt\Users\UserUtil;
+use SP\Storage\DB;
 use SP\Storage\QueryData;
 
 /**

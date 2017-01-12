@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Users;
@@ -102,10 +101,8 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Log = new Log(_('Nuevo Usuario'));
         $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
 
-        if ($this->itemData->isUserIsChangePass()) {
-            if (!AuthUtil::mailPassRecover($this->itemData)) {
-                $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
-            }
+        if ($this->itemData->isUserIsChangePass() && !AuthUtil::mailPassRecover($this->itemData)) {
+            $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
         }
 
         $Log->writeLog();
@@ -116,6 +113,25 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function checkDuplicatedOnAdd()
+    {
+        $query = /** @lang SQL */
+            'SELECT user_login, user_email
+            FROM usrData
+            WHERE UPPER(user_login) = UPPER(?) OR UPPER(user_email) = UPPER(?)';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserEmail());
+
+        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
+    }
+
+    /**
      * @param $id int|array
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
@@ -123,7 +139,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
     public function delete($id)
     {
         if (is_array($id)) {
-            foreach ($id as $itemId){
+            foreach ($id as $itemId) {
                 $this->delete($itemId);
             }
 
@@ -175,6 +191,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             user_lastLogin,
             user_lastUpdate,
             user_lastUpdateMPass,
+            user_preferences,
             BIN(user_isAdminApp) AS user_isAdminApp,
             BIN(user_isAdminAcc) AS user_isAdminAcc,
             BIN(user_isLdap) AS user_isLdap,
@@ -192,6 +209,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         } else {
             $Data->setMapClassName($this->getDataModel());
         }
+
         $Data->setQuery($query);
         $Data->addParam($id);
 
@@ -237,10 +255,10 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getUserNotes());
         $Data->addParam($this->itemData->getUserGroupId());
         $Data->addParam($this->itemData->getUserProfileId());
-        $Data->addParam(intval($this->itemData->isUserIsAdminApp()));
-        $Data->addParam(intval($this->itemData->isUserIsAdminAcc()));
-        $Data->addParam(intval($this->itemData->isUserIsDisabled()));
-        $Data->addParam(intval($this->itemData->isUserIsChangePass()));
+        $Data->addParam((int)$this->itemData->isUserIsAdminApp());
+        $Data->addParam((int)$this->itemData->isUserIsAdminAcc());
+        $Data->addParam((int)$this->itemData->isUserIsDisabled());
+        $Data->addParam((int)$this->itemData->isUserIsChangePass());
         $Data->addParam($this->itemData->getUserId());
 
         if (DB::getQuery($Data) === false) {
@@ -252,10 +270,8 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Log = new Log(_('Modificar Usuario'));
         $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
 
-        if ($this->itemData->isUserIsChangePass()) {
-            if (!AuthUtil::mailPassRecover($this->itemData)) {
-                $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
-            }
+        if ($this->itemData->isUserIsChangePass() && !AuthUtil::mailPassRecover($this->itemData)) {
+            $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
         }
 
         $Log->writeLog();
@@ -267,6 +283,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function checkDuplicatedOnUpdate()
     {
@@ -300,6 +317,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             user_notes,
             user_count,
             user_profileId,
+            user_preferences,
             BIN(user_isAdminApp) AS user_isAdminApp,
             BIN(user_isAdminAcc) AS user_isAdminAcc,
             BIN(user_isLdap) AS user_isLdap,
@@ -328,24 +346,6 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
     public function checkInUse($id)
     {
         // TODO: Implement checkInUse() method.
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkDuplicatedOnAdd()
-    {
-        $query = /** @lang SQL */
-            'SELECT user_login, user_email
-            FROM usrData
-            WHERE UPPER(user_login) = UPPER(?) OR UPPER(user_email) = UPPER(?)';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserLogin());
-        $Data->addParam($this->itemData->getUserEmail());
-
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
     }
 
     /**
@@ -405,6 +405,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             user_lastLogin,
             user_lastUpdate,
             user_lastUpdateMPass,
+            user_preferences,
             BIN(user_isAdminApp) AS user_isAdminApp,
             BIN(user_isAdminAcc) AS user_isAdminAcc,
             BIN(user_isLdap) AS user_isLdap,

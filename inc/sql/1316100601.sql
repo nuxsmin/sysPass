@@ -5,6 +5,7 @@ ALTER TABLE `accHistory`
   CHANGE COLUMN `acchistory_customerId` `acchistory_customerId` INT(10) UNSIGNED NOT NULL,
   CHANGE COLUMN `acchistory_categoryId` `acchistory_categoryId` SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE COLUMN `acchistory_dateEdit` `acchistory_dateEdit` DATETIME NULL DEFAULT NULL,
+  CHANGE COLUMN `acchistory_userGroupId` `acchistory_userGroupId` SMALLINT(5) UNSIGNED NOT NULL,
   ADD INDEX `fk_accHistory_users_id_idx` (`acchistory_userId` ASC),
   ADD INDEX `fk_accHistory_users_edit_id_idx` (`acchistory_userEditId` ASC),
   ADD INDEX `fk_accHistory_categories_id_idx` (`acchistory_categoryId` ASC),
@@ -27,8 +28,9 @@ ALTER TABLE `accounts`
   CHANGE COLUMN `account_id` `account_id` SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE COLUMN `account_userId` `account_userId` SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE COLUMN `account_userEditId` `account_userEditId` SMALLINT(5) UNSIGNED NOT NULL,
-  CHANGE COLUMN `account_categoryId` `account_categoryId` SMALLINT(3) UNSIGNED NOT NULL,
+  CHANGE COLUMN `account_categoryId` `account_categoryId` SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE COLUMN `account_dateEdit` `account_dateEdit` DATETIME NULL DEFAULT NULL,
+  CHANGE COLUMN `account_userGroupId` `account_userGroupId` SMALLINT(5) UNSIGNED NOT NULL,
   ADD INDEX `fk_accounts_user_id_idx` (`account_userId` ASC),
   ADD INDEX `fk_accounts_user__edit_id_idx` (`account_userEditId` ASC);
 
@@ -60,6 +62,10 @@ ALTER TABLE `usrToGroups`
   CHANGE COLUMN `usertogroup_groupId` `usertogroup_groupId` SMALLINT(5) UNSIGNED NOT NULL,
   ADD INDEX `fk_usrToGroups_groups_id_idx` (`usertogroup_groupId` ASC),
   DROP PRIMARY KEY;
+
+ALTER TABLE `accGroups`
+CHANGE COLUMN `accgroup_accountId` `accgroup_accountId` SMALLINT(5) UNSIGNED NOT NULL ,
+CHANGE COLUMN `accgroup_groupId` `accgroup_groupId` SMALLINT(5) UNSIGNED NOT NULL;
 
 ALTER TABLE `accFavorites`
   ADD CONSTRAINT `fk_accFavorites_accounts_id`
@@ -93,7 +99,7 @@ REFERENCES `usrGroups` (`usergroup_id`)
   ON UPDATE CASCADE;
 
 ALTER TABLE `accHistory`
-  ADD CONSTRAINT `fk_accHistory_users_id`
+  ADD CONSTRAINT `fk_accHistory_user_id`
 FOREIGN KEY (`acchistory_userId`)
 REFERENCES `usrData` (`user_id`)
   ON DELETE RESTRICT
@@ -103,16 +109,21 @@ FOREIGN KEY (`acchistory_userEditId`)
 REFERENCES `usrData` (`user_id`)
   ON DELETE RESTRICT
   ON UPDATE RESTRICT,
-  ADD CONSTRAINT `fk_accHistory_categories_id`
+  ADD CONSTRAINT `fk_accHistory_category_id`
 FOREIGN KEY (`acchistory_categoryId`)
 REFERENCES `categories` (`category_id`)
   ON DELETE RESTRICT
   ON UPDATE RESTRICT,
-  ADD CONSTRAINT `fk_accHistory_customers_id`
+  ADD CONSTRAINT `fk_accHistory_customer_id`
 FOREIGN KEY (`acchistory_customerId`)
 REFERENCES `customers` (`customer_id`)
   ON DELETE RESTRICT
-  ON UPDATE RESTRICT;
+  ON UPDATE RESTRICT,
+  ADD CONSTRAINT `fk_accHistory_userGroup_id`
+FOREIGN KEY (`acchistory_userGroupId`)
+REFERENCES `usrGroups` (`usergroup_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 ALTER TABLE `accTags`
   ADD CONSTRAINT `fk_accTags_accounts_id`
@@ -139,7 +150,7 @@ REFERENCES `usrData` (`user_id`)
   ON UPDATE CASCADE;
 
 ALTER TABLE `accounts`
-  ADD CONSTRAINT `fk_accounts_categories_id`
+  ADD CONSTRAINT `fk_accounts_category_id`
 FOREIGN KEY (`account_categoryId`)
 REFERENCES `categories` (`category_id`)
   ON DELETE RESTRICT
@@ -158,12 +169,22 @@ REFERENCES `usrData` (`user_id`)
 FOREIGN KEY (`account_customerId`)
 REFERENCES `customers` (`customer_id`)
   ON DELETE RESTRICT
-  ON UPDATE RESTRICT;
+  ON UPDATE RESTRICT,
+  ADD CONSTRAINT `fk_accounts_userGroup_id`
+FOREIGN KEY (`account_userGroupId`)
+REFERENCES `usrGroups` (`usergroup_id`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
 
 ALTER TABLE `authTokens`
-  ADD CONSTRAINT `fk_authTokens_users_id`
-FOREIGN KEY (`authtoken_userId`, `authtoken_createdBy`)
-REFERENCES `usrData` (`user_id`, `user_id`)
+  ADD CONSTRAINT `fk_authTokens_user_id`
+FOREIGN KEY (`authtoken_userId`)
+REFERENCES `usrData` (`user_id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_authTokens_createdBy_id`
+FOREIGN KEY (`authtoken_createdBy`)
+REFERENCES `usrData` (`user_id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 
@@ -173,13 +194,6 @@ FOREIGN KEY (`customfielddata_defId`)
 REFERENCES `customFieldsDef` (`customfielddef_id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
-
-ALTER TABLE `log`
-  ADD CONSTRAINT `fk_log_users_id`
-FOREIGN KEY (`log_userId`)
-REFERENCES `usrData` (`user_id`)
-  ON DELETE RESTRICT
-  ON UPDATE RESTRICT;
 
 ALTER TABLE `usrData`
   ADD CONSTRAINT `fk_usrData_groups_id`
@@ -309,40 +323,6 @@ CREATE OR REPLACE ALGORITHM = UNDEFINED
       LEFT JOIN `categories` ON ((`accounts`.`account_categoryId` = `categories`.`category_id`)))
       LEFT JOIN `usrGroups` `ug` ON ((`accounts`.`account_userGroupId` = `ug`.`usergroup_id`)))
       LEFT JOIN `customers` ON ((`customers`.`customer_id` = `accounts`.`account_customerId`)));
-
-ALTER TABLE `accounts`
-  ADD CONSTRAINT `fk_accounts_customer_id`
-FOREIGN KEY (`account_customerId`)
-REFERENCES `customers` (`customer_id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_accounts_category_id`
-FOREIGN KEY (`account_categoryId`)
-REFERENCES `categories` (`category_id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_accounts_userGroup_id`
-FOREIGN KEY (`account_userGroupId`)
-REFERENCES `usrGroups` (`usergroup_id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
-ALTER TABLE `accHistory`
-  ADD CONSTRAINT `fk_accHistory_customer_id`
-FOREIGN KEY (`acchistory_customerId`)
-REFERENCES `customers` (`customer_id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_accHistory_category_id`
-FOREIGN KEY (`acchistory_categoryId`)
-REFERENCES `categories` (`category_id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_accHistory_userGroup_id`
-FOREIGN KEY (`acchistory_userGroupId`)
-REFERENCES `usrGroups` (`usergroup_id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
 
 ALTER TABLE `accounts`
   ADD INDEX `IDX_parentId` USING BTREE (`account_parentId` ASC);

@@ -146,7 +146,7 @@ pre, code, samp, kbd {
   margin: auto;
   width: 100%; }
   #container.login {
-    margin-top: 5%; }
+    padding-top: 5%; }
   #container.error, #container.install, #container.passreset {
     width: 100%; }
   #container .logo {
@@ -754,7 +754,7 @@ footer {
 
 .filter-on {
   color: #26a69a;
-  background-color: #b2dfdb;
+  background-color: #e0f2f1;
   border: 1px solid #26a69a;
   padding: .3em 1em; }
 
@@ -795,12 +795,12 @@ footer {
   top: 2px; }
   .passLevel.strongest {
     color: #26a69a;
-    background-color: #b2dfdb;
+    background-color: #e0f2f1;
     border: 1px solid #26a69a;
     font-weight: bold; }
     .passLevel.strongest:hover {
       color: #26a69a;
-      background-color: #b2dfdb;
+      background-color: #e0f2f1;
       border: 1px solid #26a69a;
       font-weight: bold; }
   .passLevel.strong {
@@ -825,12 +825,12 @@ footer {
       font-weight: bold; }
   .passLevel.weak {
     color: #ef5350;
-    background-color: #ffcdd2;
+    background-color: #ffebee;
     border: 1px solid #ef5350;
     font-weight: bold; }
     .passLevel.weak:hover {
       color: #ef5350;
-      background-color: #ffcdd2;
+      background-color: #ffebee;
       border: 1px solid #ef5350;
       font-weight: bold; }
 
@@ -868,7 +868,7 @@ footer {
 
 .dialog-clip-copy {
   color: #26a69a;
-  background-color: #b2dfdb; }
+  background-color: #e0f2f1; }
 
 .help-box {
   background-color: #fff !important;
@@ -913,7 +913,7 @@ fieldset.warning {
   padding: 8px;
   border-radius: 5px;
   color: #ef5350;
-  background-color: #ffcdd2;
+  background-color: #ffebee;
   border: 1px solid #ef5350; }
   fieldset.warning legend {
     color: #ef5350 !important; }
@@ -944,26 +944,27 @@ fieldset.warning {
       font-size: 24px;
       letter-spacing: 3px; }
   #actions ul.errors {
-    max-width: 40%;
+    max-width: 40vw;
     margin: 0 auto;
     list-style: none;
     font-size: 14px;
     text-align: left; }
     #actions ul.errors > li {
       margin: 1.5em auto;
-      border-radius: 5px;
-      padding: 0.5em; }
-      #actions ul.errors > li.error-critical {
+      border-radius: 3px;
+      padding: 1em 0.5em; }
+      #actions ul.errors > li.msg-critical {
         color: #ef5350;
-        background-color: #ffcdd2;
+        background-color: #ffebee;
         border: 1px solid #ef5350; }
-      #actions ul.errors > li.error-warning {
+      #actions ul.errors > li.msg-warning {
         color: #ffca28;
         background-color: #fff8e1;
-        border: 1px solid #ffca28; }
-      #actions ul.errors > li.error-ok {
+        border: 1px solid #ffca28;
+        color: #555; }
+      #actions ul.errors > li.msg-ok {
         color: #26a69a;
-        background-color: #b2dfdb;
+        background-color: #e0f2f1;
         border: 1px solid #26a69a; }
       #actions ul.errors > li > p.hint {
         color: #555;
@@ -1037,7 +1038,8 @@ fieldset.warning {
   background-size: auto 10em; }
   #login-container #boxLogin {
     position: relative;
-    margin: 11em auto 0 auto;
+    top: 11em;
+    margin: 0 auto;
     width: 100%;
     min-height: 12em;
     padding: 1em;
@@ -1082,7 +1084,7 @@ fieldset.warning {
     text-align: center;
     padding: 0.5em;
     color: #26a69a;
-    background-color: #b2dfdb;
+    background-color: #e0f2f1;
     border: 1px solid #26a69a; }
   #login-container #demo-info {
     margin: 1em auto;

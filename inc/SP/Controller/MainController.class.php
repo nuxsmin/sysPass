@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
@@ -30,19 +29,19 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
-use SP\Core\Init;
 use SP\Core\DiFactory;
+use SP\Core\Exceptions\SPException;
+use SP\Core\Init;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
+use SP\Core\Session;
+use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\Html;
+use SP\Http\Request;
 use SP\Mgmt\Notices\Notice;
 use SP\Mgmt\PublicLinks\PublicLink;
-use SP\Http\Request;
-use SP\Core\Session;
-use SP\Core\SessionUtil;
-use SP\Core\Exceptions\SPException;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -58,37 +57,39 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page El nombre de página para la clase del body
-     * @param bool $initialize Si es una inicialización completa
+     * @param string $page       El nombre de página para la clase del body
+     * @param bool   $initialize Si es una inicialización completa
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
         parent::__construct($template);
 
+        $this->setPage($page);
+
         if ($initialize === true) {
-            $this->initialize($page);
+            $this->initialize();
         }
     }
 
     /**
      * Inicializar las variables para la vista principal de la aplicación
      *
-     * @param string $page Nombre de la vista
      * @throws \SP\Core\Exceptions\SPException
      */
-    protected function initialize($page = '')
+    protected function initialize()
     {
         $this->view->assign('startTime', microtime());
 
         $this->view->addTemplate('header');
         $this->view->addTemplate('body-start');
 
+        $this->view->assign('useLayout', true);
         $this->view->assign('isInstalled', Config::getConfig()->isInstalled());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('appInfo', Util::getAppInfo());
         $this->view->assign('appVersion', Util::getVersionString());
         $this->view->assign('isDemoMode', Checks::demoIsEnabled());
-        $this->view->assign('page', $page);
         $this->view->assign('icons', DiFactory::getTheme()->getIcons());
         $this->view->assign('logoIcon', Init::$WEBURI . '/imgs/logo_icon.png');
         $this->view->assign('logoNoText', Init::$WEBURI . '/imgs/logo_icon.svg');
@@ -178,6 +179,8 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getMain()
     {
+        $this->setPage('main');
+
         $this->getSessionBar();
         $this->getMenu();
 
@@ -281,10 +284,13 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getLogin()
     {
+        $this->setPage('login');
+
         $this->view->addTemplate('login');
         $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
 
+        $this->view->assign('useLayout', false);
         $this->view->assign('mailEnabled', Checks::mailIsEnabled());
         $this->view->assign('isLogout', Request::analyze('logout', false, true));
         $this->view->assign('updated', Init::$UPDATED === true);
@@ -308,6 +314,8 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getInstaller()
     {
+        $this->setPage('install');
+
         $this->view->addTemplate('body-header');
 
         $errors = array_merge(Checks::checkPhpVersion(), Checks::checkModules());
@@ -341,6 +349,8 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getError()
     {
+        $this->setPage('error');
+
         $this->view->addTemplate('body-header');
         $this->view->addTemplate('error');
         $this->view->addTemplate('body-footer');
@@ -353,6 +363,8 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getUpgrade()
     {
+        $this->setPage('upgrade');
+
         $this->view->addTemplate('body-header');
         $this->view->addTemplate('upgrade');
         $this->view->addTemplate('body-footer');
@@ -411,12 +423,14 @@ class MainController extends ControllerBase implements ActionsInterface
     }
 
     /**
-     * Realizar las accione del controlador
+     * Realizar las acciones del controlador
      *
      * @param mixed $type Tipo de acción
      */
     public function doAction($type = null)
     {
+        $this->setPage($type);
+
         switch ($type) {
             case 'prelogin.passreset':
                 $this->getPassReset();
@@ -434,16 +448,21 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getPassReset()
     {
+        $this->setPage('passreset');
+
         $this->view->addTemplate('body-header');
 
         if (Checks::mailIsEnabled() || Request::analyze('f', 0) === 1) {
             $this->view->addTemplate('passreset');
 
+            $this->view->assign('login', Request::analyze('login'));
+            $this->view->assign('email', Request::analyze('email'));
+
             $this->view->assign('action', Request::analyze('a'));
             $this->view->assign('hash', Request::analyze('h'));
             $this->view->assign('time', Request::analyze('t'));
 
-            $this->view->assign('passReset', $this->view->action === 'passreset' && $this->view->hash && $this->view->time);
+            $this->view->assign('passReset', $this->view->action === 'passreset' && !empty($this->view->hash) && !empty($this->view->time));
         } else {
             $this->showError(self::ERR_UNAVAILABLE, false);
         }
@@ -463,6 +482,8 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getPublicLink()
     {
+        $this->setPage('publiclink');
+
         $this->view->addTemplate('body-header');
 
         $hash = Request::analyze('h');
@@ -492,5 +513,15 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $this->view();
         exit();
+    }
+
+    /**
+     * Establecer la variable de página de la vista
+     *
+     * @param $page
+     */
+    protected function setPage($page)
+    {
+        $this->view->assign('page', $page);
     }
 }
