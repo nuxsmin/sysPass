@@ -87,7 +87,9 @@ CREATE TABLE `usrData` (
   UNIQUE KEY `IDX_login` (`user_login`),
   KEY `IDX_pass` (`user_pass`),
   KEY `fk_usrData_groups_id_idx` (`user_groupId`),
-  KEY `fk_usrData_profiles_id_idx` (`user_profileId`)
+  KEY `fk_usrData_profiles_id_idx` (`user_profileId`),
+  CONSTRAINT `fk_usrData_groups_id` FOREIGN KEY (`user_groupId`) REFERENCES `usrGroups` (`usergroup_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_usrData_profiles_id` FOREIGN KEY (`user_profileId`) REFERENCES `usrProfiles` (`userprofile_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -123,8 +125,12 @@ CREATE TABLE `accounts` (
   KEY `IDX_customerId` (`account_customerId`),
   KEY `fk_accounts_user_id` (`account_userId`),
   KEY `fk_accounts_user_edit_id` (`account_userEditId`),
-  CONSTRAINT `fk_accounts_user_id` FOREIGN KEY (`account_userId`) REFERENCES `usrData` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_accounts_user_id` FOREIGN KEY (`account_userId`) REFERENCES `usrData` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_accounts_category_id` FOREIGN KEY (`account_categoryId`) REFERENCES `categories` (`category_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_accounts_user_edit_id` FOREIGN KEY (`account_userEditId`) REFERENCES `usrData` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_accounts_customer_id` FOREIGN KEY (`account_customerId`) REFERENCES `customers` (`customer_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_accounts_userGroup_id` FOREIGN KEY (`account_userGroupId`) REFERENCES `usrGroups` (`usergroup_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `accFavorites`;
@@ -205,8 +211,12 @@ CREATE TABLE `accHistory` (
   KEY `fk_accHistory_users_id` (`acchistory_userId`),
   KEY `fk_accHistory_categories_id` (`acchistory_categoryId`),
   KEY `fk_accHistory_customers_id` (`acchistory_customerId`),
-  CONSTRAINT `fk_accHistory_users_id` FOREIGN KEY (`acchistory_userId`) REFERENCES `usrData` (`user_id`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_accHistory_users_id` FOREIGN KEY (`acchistory_userId`) REFERENCES `usrData` (`user_id`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  CONSTRAINT `fk_accHistory_users_edit_id` FOREIGN KEY (`acchistory_userEditId`) REFERENCES `usrData` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_accHistory_category_id` FOREIGN KEY (`acchistory_categoryId`) REFERENCES `categories` (`category_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_accHistory_customer_id` FOREIGN KEY (`acchistory_customerId`) REFERENCES `customers` (`customer_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `fk_accHistory_userGroup_id` FOREIGN KEY (`acchistory_userGroupId`) REFERENCES `usrGroups` (`usergroup_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `accTags`;
@@ -249,7 +259,9 @@ CREATE TABLE `authTokens` (
   UNIQUE KEY `unique_authtoken_id` (`authtoken_id`),
   KEY `IDX_checkToken` (`authtoken_userId`,`authtoken_actionId`,`authtoken_token`),
   KEY `fk_authTokens_users_id_idx` (`authtoken_userId`,`authtoken_createdBy`),
-  KEY `fk_authTokens_users_createdby_id` (`authtoken_createdBy`)
+  KEY `fk_authTokens_users_createdby_id` (`authtoken_createdBy`),
+  CONSTRAINT `fk_authTokens_user_id` FOREIGN KEY (`authtoken_userId`) REFERENCES `usrData` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_authTokens_createdBy_id` FOREIGN KEY (`authtoken_createdBy`) REFERENCES `usrData` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -452,6 +464,7 @@ CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFI
     `accounts`.`account_passDate`                                  AS `account_passDate`,
     `accounts`.`account_passDateChange`                            AS `account_passDateChange`,
     `accounts`.`account_parentId`                                  AS `account_parentId`,
+    `accounts`.`account_countView`                                 AS `account_countView`,
     `ug`.`usergroup_name`                                          AS `usergroup_name`,
     `categories`.`category_name`                                   AS `category_name`,
     `customers`.`customer_name`                                    AS `customer_name`,

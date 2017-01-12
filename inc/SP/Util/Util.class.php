@@ -180,7 +180,7 @@ class Util
                 $pubVersion = $realVer[1] . $realVer[2] . $realVer[3] . $realVer[4];
 //                $pubVersion = $realVer[1] . $realVer[2] . $realVer[3];
 
-                if ($pubVersion > $appVersion) {
+                if ((int)$pubVersion > (int)$appVersion) {
                     return [
                         'version' => $version,
                         'url' => $url,
@@ -324,7 +324,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '17011202';
+        $build = '17011203';
         $version = [2, 0, 0];
 
         if ($retBuild) {

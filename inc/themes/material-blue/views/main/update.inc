@@ -1,4 +1,4 @@
-<?php if ($numNotices > 0): ?>
+<?php if (isset($numNotices) && $numNotices > 0): ?>
     <a href="https://github.com/nuxsmin/sysPass/labels/Notices" target="_blank">
         <div id="notices-info" class="material-icons mdl-badge mdl-badge--overlap mdl-color-text--amber-200"
              data-badge="<?php echo $numNotices; ?>">feedback

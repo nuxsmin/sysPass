@@ -239,7 +239,7 @@ class Upgrade
     {
         $latestUpgrade = self::$cfgUpgrade[count(self::$cfgUpgrade) - 1];
 
-        return version_compare($version, $latestUpgrade) <= 0;
+        return version_compare($version, $latestUpgrade) < 0;
     }
 
     /**
@@ -250,15 +250,23 @@ class Upgrade
      */
     public static function upgradeConfig($version)
     {
-        switch ($version) {
-            case 20017011201:
-                $Config = Session::getConfig();
-                $Config->setSiteTheme('material-blue');
-                Config::saveConfig($Config, false);
-                return true;
+        $count = 0;
+        $Config = Config::getConfig();
+
+        foreach (self::$cfgUpgrade as $upgradeVersion) {
+            if (version_compare($version, $upgradeVersion) < 0) {
+                switch ($upgradeVersion) {
+                    case 20017011202:
+                        $Config->setSiteTheme('material-blue');
+                        $Config->setConfigVersion($upgradeVersion);
+                        Config::saveConfig($Config, false);
+                        $count++;
+                        break;
+                }
+            }
         }
 
-        return false;
+        return $count > 0;
     }
 
     /**

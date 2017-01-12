@@ -374,12 +374,12 @@ class Init
             return;
         }
 
-        $configVersion = Config::getConfig()->getConfigVersion();
+        $configVersion = (int)Config::getConfig()->getConfigVersion();
 
         if (Config::getConfig()->isInstalled()
             && $configVersion < $appVersion
             && Upgrade::needConfigUpgrade($configVersion)
-            && Upgrade::upgradeConfig($appVersion)
+            && Upgrade::upgradeConfig($configVersion)
         ) {
             self::logConfigUpgrade($appVersion);
 
