@@ -42,34 +42,74 @@ class Util
     /**
      * Generar una clave aleatoria
      *
-     * @param int  $length     Longitud de la clave
+     * @param int $length Longitud de la clave
      * @param bool $useNumbers Usar números
      * @param bool $useSpecial Usar carácteres especiales
+     * @param bool $checKStrength
      * @return string
      */
-    public static function randomPassword($length = 16, $useNumbers = true, $useSpecial = true)
+    public static function randomPassword($length = 16, $useNumbers = true, $useSpecial = true, $checKStrength = true)
     {
-        $special = '@#$%&/()=?¿!_-:.;,{}[]*^';
-        $numbers = '0123456789';
-        $alphabet = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ';
+        $charsLower = 'abcdefghijklmnopqrstuwxyz';
+        $charsUpper = 'ABCDEFGHIJKLMNOPQRSTUWXYZ';
+
+        $alphabet = $charsLower . $charsUpper;
 
         if ($useSpecial === true) {
-            $alphabet .= $special;
+            $charsSpecial = '@#$%&/()=?¿!_-:.;,{}[]*^';
+            $alphabet .= $charsSpecial;
         }
 
         if ($useNumbers === true) {
-            $alphabet .= $numbers;
+            $charsNumbers = '0123456789';
+            $alphabet .= $charsNumbers;
         }
 
-        $pass = [];
-        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        /**
+         * @return array
+         */
+        $passGen = function () use ($alphabet, $length) {
+            $pass = [];
+            $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
 
-        for ($i = 0; $i < $length; $i++) {
-            $n = mt_rand(0, $alphaLength);
-            $pass[] = $alphabet[$n];
+            for ($i = 0; $i < $length; $i++) {
+                $n = mt_rand(0, $alphaLength);
+                $pass[] = $alphabet[$n];
+            }
+
+            return $pass;
+        };
+
+        if ($checKStrength === true) {
+            do {
+                $pass = $passGen();
+                $strength = ['lower' => 0, 'upper' => 0, 'special' => 0, 'number' => 0];
+
+                foreach ($pass as $char) {
+                    if (strpos($charsLower, $char) !== false) {
+                        $strength['lower']++;
+                    } elseif (strpos($charsUpper, $char) !== false) {
+                        $strength['upper']++;
+                    } elseif ($useSpecial === true && strpos($charsSpecial, $char) !== false) {
+                        $strength['special']++;
+                    } elseif ($useNumbers === true && strpos($charsNumbers, $char) !== false) {
+                        $strength['number']++;
+                    }
+                }
+
+                if ($useSpecial === false) {
+                    unset($strength['special']);
+                }
+
+                if ($useNumbers === false) {
+                    unset($strength['number']);
+                }
+            } while (in_array(0, $strength, true));
+
+            return implode($pass);
+        } else {
+            return implode($passGen());
         }
-
-        return implode($pass); //turn the array into a string
     }
 
     /**
@@ -201,10 +241,10 @@ class Util
     /**
      * Obtener datos desde una URL usando CURL
      *
-     * @param string    $url
-     * @param array     $data
+     * @param string $url
+     * @param array $data
      * @param bool|null $useCookie
-     * @param bool      $weak
+     * @param bool $weak
      * @return bool|string
      * @throws SPException
      */
@@ -405,8 +445,8 @@ class Util
      * such as 'false','N','yes','on','off', etc.
      *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
-     * @param mixed $in     The variable to check
-     * @param bool  $strict If set to false, consider everything that is not false to
+     * @param mixed $in The variable to check
+     * @param bool $strict If set to false, consider everything that is not false to
      *                      be true.
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
      */
@@ -480,7 +520,7 @@ class Util
     /**
      * Cast an object to another class, keeping the properties, but changing the methods
      *
-     * @param string        $class Class name
+     * @param string $class Class name
      * @param string|object $object
      * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
@@ -535,9 +575,9 @@ class Util
     /**
      * Comprobar si un valor existe en un array de objetos
      *
-     * @param array  $objectArray
+     * @param array $objectArray
      * @param string $method
-     * @param mixed  $value
+     * @param mixed $value
      * @return bool
      */
     public static function checkInObjectArray(array $objectArray, $method, $value)

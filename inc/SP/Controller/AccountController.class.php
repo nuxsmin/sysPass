@@ -189,7 +189,7 @@ class AccountController extends ControllerBase implements ActionsInterface
 
             $PublicLinkData = PublicLink::getItem()->getHashForItem($this->getId());
 
-            $publicLinkUrl = (Checks::publicLinksIsEnabled() && $PublicLinkData ? Init::$WEBURI . '/?h=' . $PublicLinkData->getPublicLinkHash() . '&a=link' : '');
+            $publicLinkUrl = (Checks::publicLinksIsEnabled() && $PublicLinkData ? Init::$WEBURI . '/index.php?h=' . $PublicLinkData->getPublicLinkHash() . '&a=link' : '');
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
 
             $this->view->assign('accountPassDate', gmdate('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));

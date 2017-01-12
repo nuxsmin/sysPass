@@ -110,7 +110,7 @@ class UserPass extends UserBase
         /** @var UserPassData $queryRes */
         $queryRes = DB::getResults($Data);
 
-        return ($queryRes !== false && $queryRes->getUserLastUpdateMPass() > $configMPassTime);
+        return ($queryRes !== false && $queryRes->getUserLastUpdateMPass() >= $configMPassTime);
     }
 
     /**

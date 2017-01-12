@@ -176,8 +176,9 @@ pre, code, samp, kbd {
     width: 95%;
     margin: 2em auto 8em auto; }
     #container #content.public-link {
+      width: 75%;
       min-height: 0;
-      margin: 0; }
+      margin: 5em auto; }
 
 #content td.descField,
 #box-popup td.descField {

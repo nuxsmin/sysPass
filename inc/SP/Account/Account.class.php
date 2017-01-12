@@ -344,6 +344,7 @@ class Account extends AccountBase implements AccountInterface
             . 'account_dateAdd = NOW(),'
             . 'account_userId = :accountUserId,'
             . 'account_userGroupId = :accountUserGroupId,'
+            . 'account_userEditId = :accountUserEditId,'
             . 'account_otherUserEdit = :accountOtherUserEdit,'
             . 'account_otherGroupEdit = :accountOtherGroupEdit,'
             . 'account_isPrivate = :accountIsPrivate,'
@@ -363,6 +364,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
         $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
         $Data->addParam($this->accountData->getAccountUserGroupId() ?: Session::getUserData()->getUserGroupId(), 'accountUserGroupId');
+        $Data->addParam($this->accountData->getAccountUserId(), 'accountUserEditId');
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');

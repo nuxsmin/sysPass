@@ -7,7 +7,7 @@
     <?php include $this->includeTemplate('error-list', 'main'); ?>
 
     <div class="buttons">
-        <button class="btn-back mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+        <button id="btnBack" class="btn-back mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
             <i class="material-icons"
                title="<?php echo _('Volver'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
             <?php echo _('Volver'); ?>
