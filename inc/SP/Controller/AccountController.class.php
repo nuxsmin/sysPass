@@ -473,6 +473,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      *
      * @param PublicLinkData $PublicLinkData
      * @return bool
+     *
      */
     public function getAccountFromLink(PublicLinkData $PublicLinkData)
     {

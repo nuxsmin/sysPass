@@ -151,7 +151,7 @@ class PublicLinkData extends PublicLinkBaseData
      */
     public function isNotify()
     {
-        return $this->notify;
+        return (bool)$this->notify;
     }
 
     /**

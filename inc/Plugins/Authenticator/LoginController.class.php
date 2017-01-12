@@ -26,6 +26,7 @@ namespace Plugins\Authenticator;
 
 use SP\Controller\ControllerBase;
 use SP\Core\Init;
+use SP\Core\Messages\NoticeMessage;
 use SP\Core\Plugin\PluginBase;
 use SP\Core\Session as CoreSession;
 use SP\DataModel\NoticeData;
@@ -110,10 +111,7 @@ class LoginController
             return;
         }
 
-        $NoticeData = new NoticeData();
-        $NoticeData->setNoticeComponent($this->Plugin->getName());
-        $NoticeData->setNoticeUserId($userId);
-        $NoticeData->setNoticeType(_t('authenticator', 'Aviso Caducidad'));
+
 
         if (count(Notice::getItem($NoticeData)->getByUserCurrentDate()) > 0) {
             return;
@@ -122,12 +120,23 @@ class LoginController
         $expireTime = $data[$userId]->getDate() + ($data[$userId]->getExpireDays() * 86400);
         $timeRemaining = $expireTime - time();
 
+        $NoticeData = new NoticeData();
+        $NoticeData->setNoticeComponent($this->Plugin->getName());
+        $NoticeData->setNoticeUserId($userId);
+        $NoticeData->setNoticeType(_t('authenticator', 'Aviso Caducidad'));
+
+        $Message = new NoticeMessage();
+
         if ($timeRemaining <= self::WARNING_TIME) {
-            $NoticeData->setNoticeDescription(sprintf(_t('authenticator', 'El código 2FA se ha de restablecer en %d días'), $timeRemaining / 86400));
+            $Message->addDescription(sprintf(_t('authenticator', 'El código 2FA se ha de restablecer en %d días'), $timeRemaining / 86400));
+
+            $NoticeData->setNoticeDescription($Message);
 
             Notice::getItem($NoticeData)->add();
         } elseif (time() > $expireTime) {
-            $NoticeData->setNoticeDescription(_t('authenticator', 'El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias'));
+            $Message->addDescription(_t('authenticator', 'El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias'));
+
+            $NoticeData->setNoticeDescription($Message);
 
             Notice::getItem($NoticeData)->add();
         }

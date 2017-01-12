@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -33,10 +33,12 @@ use SP\Core\DiFactory;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Language;
+use SP\Core\Messages\NoticeMessage;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
+use SP\DataModel\NoticeData;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\Html;
 use SP\Http\Request;
@@ -70,6 +72,16 @@ class MainController extends ControllerBase implements ActionsInterface
         if ($initialize === true) {
             $this->initialize();
         }
+    }
+
+    /**
+     * Establecer la variable de página de la vista
+     *
+     * @param $page
+     */
+    protected function setPage($page)
+    {
+        $this->view->assign('page', $page);
     }
 
     /**
@@ -478,6 +490,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Obtener la vista para mostrar un enlace publicado
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getPublicLink()
@@ -499,6 +513,24 @@ class MainController extends ControllerBase implements ActionsInterface
             } else {
                 PublicLink::getItem($PublicLink)->addLinkView();
 
+                if ($PublicLink->isNotify()) {
+                    $Message = new NoticeMessage();
+                    $Message->setTitle(_('Enlace visualizado'));
+                    $Message->addDescription(sprintf('%s : %s', _('Cuenta'), $PublicLink->getItemId()));
+                    $Message->addDescription(sprintf('%s : %s', _('Origen'), $_SERVER['REMOTE_ADDR']));
+                    $Message->addDescription(sprintf('%s : %s', _('Agente'), $_SERVER['HTTP_USER_AGENT']));
+                    $Message->addDescription(sprintf('HTTPS : %s', $_SERVER['HTTPS'] ? 'ON' : 'OFF'));
+
+
+                    $NoticeData = new NoticeData();
+                    $NoticeData->setNoticeComponent(_('Cuentas'));
+                    $NoticeData->setNoticeDescription($Message);
+                    $NoticeData->setNoticeType(_('Información'));
+                    $NoticeData->setNoticeUserId($PublicLink->getUserId());
+
+                    Notice::getItem($NoticeData)->add();
+                }
+
                 $controller = new AccountController($this->view, $PublicLink->getItemId());
                 $controller->getAccountFromLink($PublicLink);
             }
@@ -513,15 +545,5 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $this->view();
         exit();
-    }
-
-    /**
-     * Establecer la variable de página de la vista
-     *
-     * @param $page
-     */
-    protected function setPage($page)
-    {
-        $this->view->assign('page', $page);
     }
 }

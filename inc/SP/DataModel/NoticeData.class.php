@@ -24,6 +24,8 @@
 
 namespace SP\DataModel;
 
+use SP\Core\Messages\MessageInterface;
+
 /**
  * Class NoticeData
  *
@@ -125,11 +127,11 @@ class NoticeData
     }
 
     /**
-     * @param string $notice_description
+     * @param MessageInterface $message
      */
-    public function setNoticeDescription($notice_description)
+    public function setNoticeDescription(MessageInterface $message)
     {
-        $this->notice_description = $notice_description;
+        $this->notice_description = $message->composeText();
     }
 
     /**
