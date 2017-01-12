@@ -364,6 +364,8 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
+        } elseif (is_array($queryRes)) {
+            return false;
         }
 
         /**

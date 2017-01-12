@@ -498,7 +498,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         // Desencriptar la clave de la cuenta
         $pass = Crypt::generateAesKey($PublicLinkData->getLinkHash());
         $masterPass = Crypt::getDecrypt($PublicLinkData->getPass(), $PublicLinkData->getPassIV(), $pass);
-        $accountPass = Crypt::getDecrypt($AccountPassData->pass, $AccountPassData->iv, $masterPass);
+        $accountPass = Crypt::getDecrypt($AccountPassData->getAccountPass(), $AccountPassData->getAccountIV(), $masterPass);
 
         $this->view->assign('useImage', Config::getConfig()->isPublinksImageEnabled());
 

@@ -28,6 +28,7 @@ use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
+use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\GroupAccountsData;
@@ -698,7 +699,7 @@ class Account extends AccountBase implements AccountInterface
      * Obtener los datos de una cuenta para mostrar la clave
      * Esta funcion realiza la consulta a la BBDD y devuelve los datos.
      *
-     * @return object|false
+     * @return AccountData|false
      */
     public function getAccountPassData()
     {
@@ -712,12 +713,12 @@ class Account extends AccountBase implements AccountInterface
             . 'customer_name '
             . 'FROM accounts '
             . 'LEFT JOIN customers ON account_customerId = customer_id '
-            . 'WHERE account_id = :id LIMIT 1';
+            . 'WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClass($this->accountData);
-        $Data->addParam($this->accountData->getAccountId(), 'id');
+        $Data->addParam($this->accountData->getAccountId());
 
         // Obtener los usuarios y grupos secundarios
         $this->accountData->setUsersId(UserAccounts::getUsersForAccount($this->accountData->getAccountId()));

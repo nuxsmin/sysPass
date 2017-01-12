@@ -57,6 +57,8 @@
     @include color-teal();
   }
   #demo-info {
+    position: relative;
+    top: 12em;
     margin: 1em auto;
     color: #c9c9c9;
     border-top: 1px solid #d9d9d9;

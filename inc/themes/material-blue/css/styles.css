@@ -176,7 +176,7 @@ pre, code, samp, kbd {
     width: 95%;
     margin: 2em auto 8em auto; }
     #container #content.public-link {
-      width: 75%;
+      width: 70%;
       min-height: 0;
       margin: 5em auto; }
 
@@ -1088,6 +1088,8 @@ fieldset.warning {
     background-color: #e0f2f1;
     border: 1px solid #26a69a; }
   #login-container #demo-info {
+    position: relative;
+    top: 12em;
     margin: 1em auto;
     color: #c9c9c9;
     border-top: 1px solid #d9d9d9;
