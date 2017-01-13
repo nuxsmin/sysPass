@@ -211,10 +211,9 @@ class AccountUtil
             'SELECT account_id, account_name, customer_name ' .
             'FROM accounts ' .
             'LEFT JOIN customers ON customer_id = account_customerId ' .
-            'WHERE ' . implode(' AND ', $queryWhere);
+            'WHERE ' . implode(' AND ', $queryWhere) . ' ORDER  BY customer_name';
 
         $Data->setQuery($query);
-
 
         return DB::getResultsArray($Data);
     }
@@ -240,7 +239,7 @@ class AccountUtil
             'SELECT account_id, account_name, customer_name ' .
             'FROM accounts ' .
             'LEFT JOIN customers ON customer_id = account_customerId ' .
-            'WHERE ' . implode(' AND ', $queryWhere);
+            'WHERE ' . implode(' AND ', $queryWhere) . ' ORDER BY customer_name';
 
         $Data->setQuery($query);
 

@@ -17,15 +17,6 @@
                 <td class="valField"><?php echo $accountData->customer_name; ?></td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('URL / IP'); ?></td>
-                <td class="valField"><A href="<?php echo $accountData->getAccountUrl(); ?>"
-                                        target="_blank"><?php echo $accountData->getAccountUrl(); ?></td>
-            </tr>
-            <tr>
-                <td class="descField"><?php echo _('Usuario'); ?></td>
-                <td class="valField"><?php echo $accountData->getAccountLogin(); ?></td>
-            </tr>
-            <tr>
                 <td class="descField"><?php echo _('Petición'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">

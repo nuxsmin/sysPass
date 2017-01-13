@@ -38,4 +38,5 @@ interface ItemsTypeInterface
     const ITEM_USERS = 5;
     const ITEM_GROUPS = 6;
     const ITEM_PROFILES = 7;
+    const ITEM_ACCOUNTS = 8;
 }

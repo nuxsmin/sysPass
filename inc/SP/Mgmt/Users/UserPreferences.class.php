@@ -98,7 +98,10 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
         /** @var UserData $queryRes */
         $queryRes = DB::getResults($Data);
 
-        if ($queryRes === false || $queryRes->getUserPreferences() === null) {
+        if ($queryRes === false
+            || $queryRes->getUserPreferences() === null
+            || $queryRes->getUserPreferences() === ''
+        ) {
             return $this->getItemData();
         }
 

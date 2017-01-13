@@ -208,7 +208,15 @@ class MainController extends ControllerBase implements ActionsInterface
     {
         $this->view->addTemplate('sessionbar');
 
-        $this->view->assign('adminApp', $this->UserData->isUserIsAdminApp() ? '<span title="' . _('Admin Aplicación') . '">(A+)</span>' : '');
+        $userType = null;
+
+        if ($this->UserData->isUserIsAdminApp()) {
+            $userType = $this->icons->getIconAppAdmin();
+        } elseif ($this->UserData->isUserIsAdminAcc()) {
+            $userType = $this->icons->getIconAccAdmin();
+        }
+
+        $this->view->assign('userType', $userType);
         $this->view->assign('userId', $this->UserData->getUserId());
         $this->view->assign('userLogin', strtoupper($this->UserData->getUserLogin()));
         $this->view->assign('userName', $this->UserData->getUserName() ?: strtoupper($this->view->userLogin));
@@ -498,7 +506,7 @@ class MainController extends ControllerBase implements ActionsInterface
     {
         $this->setPage('publiclink');
 
-        $this->view->addTemplate('body-header');
+        $this->view->addTemplate('body-header', 'main');
 
         $hash = Request::analyze('h');
 
@@ -540,8 +548,8 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->showError(self::ERR_PAGE_NO_PERMISSION, false);
         }
 
-        $this->view->addTemplate('body-footer');
-        $this->view->addTemplate('body-end');
+        $this->view->addTemplate('body-footer', 'main');
+        $this->view->addTemplate('body-end', 'main');
 
         $this->view();
         exit();

@@ -157,7 +157,7 @@ sysPass.Actions = function (Common) {
      * @param response
      */
     var showImageBox = function ($obj, response) {
-        var $content = $("<div id=\"fancyContainer\" class=\"image\">" + response + "</div>");
+        var $content = $("<div id=\"box-popup\" class=\"image\">" + response + "</div>");
         var $image = $content.find("img");
 
         $image.hide();

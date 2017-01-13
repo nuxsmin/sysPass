@@ -191,7 +191,7 @@
                             <?php foreach ($otherAccounts as $otherAccount): ?>
                                 <?php $selected = ($gotData && (int)$otherAccount->account_id === $accountData->getAccountParentId()) ? 'selected' : ''; ?>
 
-                                <option value="<?php echo $otherAccount->account_id; ?>" <?php echo $selected; ?>><?php printf('%s (%s)', $otherAccount->account_name, $otherAccount->customer_name); ?></option>
+                                <option value="<?php echo $otherAccount->account_id; ?>" <?php echo $selected; ?>><?php printf('%s - %s', $otherAccount->customer_name,  $otherAccount->account_name); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -214,10 +214,10 @@
                 </tr>
             <?php endif; ?>
 
-            <?php if ($actionId === \SP\Core\ActionsInterface::ACTION_ACC_EDIT && $accountData->getUserEditName()): ?>
+            <?php if ($actionId === \SP\Core\ActionsInterface::ACTION_ACC_EDIT && $isModified && $accountData->getUserEditName()): ?>
                 <tr>
                     <td class="descField"><?php echo _('Última Modificación'); ?></td>
-                    <td class="valField"><?php echo $accountData->getAccountDateEdit(), ' ', _('por'), ' ', $accountData->getUserEditName(); ?></td>
+                    <td class="valField"><?php printf('%s (%s)', $accountData->getAccountDateEdit(), $accountData->getUserEditName()); ?></td>
                 </tr>
             <?php endif; ?>
 

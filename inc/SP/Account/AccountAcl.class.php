@@ -282,7 +282,7 @@ class AccountAcl
             && Acl::checkUserAccess(Acl::ACTION_ACC_EDIT);
 
         // Mostrar acción de enlace público
-        $this->showLink = Checks::publicLinksIsEnabled() && Acl::checkUserAccess(Acl::ACTION_MGM_PUBLICLINKS);
+        $this->showLink = Checks::publicLinksIsEnabled() && Acl::checkUserAccess(Acl::ACTION_MGM_PUBLICLINKS_NEW);
 
         // Mostrar acción de ver cuenta
         $this->showView = $Acl->checkAccountAccess(Acl::ACTION_ACC_VIEW) && Acl::checkUserAccess(Acl::ACTION_ACC_VIEW);

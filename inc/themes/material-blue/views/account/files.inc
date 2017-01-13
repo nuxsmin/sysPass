@@ -15,7 +15,7 @@
                 <td class="descField"><?php echo _('Archivos'); ?></td>
                 <td class="valField">
                     <div id="list-account-files"
-                         data-item-id="<?php echo $accountIsHistory ? $accountParentId : $accountId; ?>"
+                         data-item-id="<?php echo $accountId; ?>"
                          data-history="<?php $accountIsHistory; ?>"
                          data-delete="<?php echo (int)$AccountAcl->isShowDelete(); ?>"
                          data-sk="<?php echo $sk; ?>">

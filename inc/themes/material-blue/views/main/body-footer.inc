@@ -1,5 +1,5 @@
 <?php if ($useLayout === true): ?>
-</div> <!-- Close mdl-layout -->
+    </div> <!-- Close mdl-layout -->
 <?php endif; ?>
 </div> <!-- Close container -->
 <footer>
@@ -9,6 +9,7 @@
                 <i id="btnLogout" class="material-icons">exit_to_app</i>
                 <span for="btnLogout"
                       class="mdl-tooltip mdl-tooltip--top"><?php echo _('Salir'); ?></span>
+
                 <?php if ($showPassIcon): ?>
                     <i id="btnUserPass" class="btn-action material-icons"
                        data-onclick="appMgmt/show"
@@ -33,12 +34,24 @@
                           class="mdl-tooltip mdl-tooltip--top"><?php printf(_('Hay %d notificaciones pendientes'), $userNotices); ?></span>
                 <?php else: ?>
                     <div id="notices-user" class="material-icons mdl-badge mdl-badge--overlap"
-                         data-badge="0">notifications</div>
+                         data-badge="0">notifications
+                    </div>
                     <span for="notices-user"
-                          class="mdl-tooltip mdl-tooltip--top"><?php echo _('No hay notificaciones pendientes'); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php echo _('No hay noInes pendientes'); ?></span>
                 <?php endif; ?>
 
-                <span id="user-info"><?php printf('%s (%s) %s', $userName, $userGroup, $adminApp); ?></span>
+                <span id="user-info">
+                    <span id="user-name"><?php echo $userName; ?></span>
+                    <span for="user-name"
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', _('Grupo'), $userGroup); ?></span>
+
+                    <?php /** @var \SP\Html\Assets\IconInterface $userType */
+                    if ($userType !== null): ?>
+                        <i id="user-type" class="material-icons"><?php echo $userType->getIcon(); ?></i>
+                        <span for="user-type"
+                              class="mdl-tooltip mdl-tooltip--top"><?php echo $userType->getTitle(); ?></span>
+                    <?php endif; ?>
+                </span>
             </div>
         <?php endif; ?>
     </div>
