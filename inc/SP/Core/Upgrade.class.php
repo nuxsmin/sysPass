@@ -44,7 +44,7 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  */
 class Upgrade
 {
-    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501, 1316100601];
+    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501, 1316100601, 20017011302];
     private static $cfgUpgrade = [1124, 1316020501, 20017011202];
     private static $auxUpgrade = [12001, 12002, 20017010901, 20017011202];
 
@@ -92,46 +92,7 @@ class Upgrade
         $Log = new Log(_('Actualizar BBDD'));
         $Log->addDetails(_('Versión'), $version);
 
-        $queries = [];
-
-        switch ($version) {
-            case 110:
-                $queries = self::getQueriesFromFile($version);
-                break;
-            case 1121:
-                $queries = self::getQueriesFromFile($version);
-                break;
-            case 1122:
-                $queries = self::getQueriesFromFile($version);
-                break;
-            case 1123:
-                $queries = self::getQueriesFromFile($version);
-                break;
-            case 11213:
-                $queries = self::getQueriesFromFile($version);
-                break;
-            case 11219:
-                $queries = self::getQueriesFromFile($version);
-                break;
-            case 11220:
-                $queries = self::getQueriesFromFile($version);
-                break;
-            case 12001:
-                $queries = self::getQueriesFromFile($version);
-                break;
-            case 12002:
-                $queries = self::getQueriesFromFile($version);
-                break;
-            case 1316011001:
-                $queries = self::getQueriesFromFile($version);
-                break;
-            case 1316020501:
-                $queries = self::getQueriesFromFile($version);
-                break;
-            case 1316100601:
-                $queries = self::getQueriesFromFile($version);
-                break;
-        }
+        $queries = self::getQueriesFromFile($version);
 
         if (count($queries) === 0) {
             $Log->addDescription(_('No es necesario actualizar la Base de Datos.'));

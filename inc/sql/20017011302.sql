@@ -1,0 +1,1 @@
+ALTER TABLE `accounts` CHANGE COLUMN `account_id` `account_id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT;
