@@ -113,7 +113,7 @@ sysPass.Requests = function (Common) {
     var getActionCall = function (opts, callbackOk, callbackError) {
         log.info("getActionCall");
 
-        var url = !opts.url.startsWith("http", 0) ? Common.config().APP_ROOT + opts.url : opts.url;
+        var url = (!opts.url.startsWith("http", 0) && !opts.url.startsWith("https", 0)) ? Common.config().APP_ROOT + opts.url : opts.url;
 
         var $ajax = $.ajax({
             dataType: opts.type,
