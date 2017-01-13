@@ -193,13 +193,13 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
 
             $this->view->assign('accountPassDate', gmdate('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
-            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange()));
+            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: ''));
         } else {
-            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', time() + 2592000));
+            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', time() + 7776000));
         }
 
         $this->view->assign('actionId', $this->getAction());
-        $this->view->assign('accountParentId', Session::getLastAcountId());
+//        $this->view->assign('accountParentId', Session::getLastAcountId());
         $this->view->assign('categories', Category::getItem()->getItemsForSelect());
         $this->view->assign('customers', Customer::getItem()->getItemsForSelect());
         $this->view->assign('otherUsers', UserUtil::getUsersLogin());

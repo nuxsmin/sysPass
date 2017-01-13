@@ -25,7 +25,7 @@ ALTER TABLE `accUsers`
   DROP PRIMARY KEY;
 
 ALTER TABLE `accounts`
-  CHANGE COLUMN `account_id` `account_id` SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE COLUMN `account_id` `account_id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE COLUMN `account_userId` `account_userId` SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE COLUMN `account_userEditId` `account_userEditId` SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE COLUMN `account_categoryId` `account_categoryId` SMALLINT(5) UNSIGNED NOT NULL,
