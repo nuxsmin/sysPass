@@ -115,6 +115,7 @@ class Log extends ActionLog
      *
      * @param bool $resetDescription Restablecer la descripción
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function writeLog($resetDescription = false)
     {
@@ -133,8 +134,6 @@ class Log extends ActionLog
         if (Checks::syslogIsEnabled()) {
             $this->sendToSyslog();
         }
-
-        Language::setAppLocales();
 
         $description = trim($this->getDescription() . PHP_EOL . $this->getDetails());
 
@@ -161,8 +160,6 @@ class Log extends ActionLog
         }
 
         $query = DB::getQuery($Data);
-
-        Language::unsetAppLocales();
 
         return $query;
     }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -39,6 +39,8 @@ class Request
      * Comprobar el método utilizado para enviar un formulario.
      *
      * @param string $method con el método utilizado.
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkReferer($method)
     {
@@ -70,7 +72,7 @@ class Request
             $CryptPKI = new CryptPKI();
             $clearData = $CryptPKI->decryptRSA(base64_decode($encryptedData));
         } catch (\Exception $e) {
-            error_log($e->getMessage());
+            debugLog($e->getMessage());
             return $encryptedData;
         }
 
@@ -90,28 +92,15 @@ class Request
      */
     public static function analyze($param, $default = '', $check = false, $force = false, $sanitize = true)
     {
-        switch ($_SERVER['REQUEST_METHOD']) {
-            case 'GET':
-                if (!isset($_GET[$param])) {
-                    return $force ? !$force : $default;
-                }
-                $value = &$_GET[$param];
-                break;
-            case 'POST':
-                if (!isset($_POST[$param])) {
-                    return $force ? !$force : $default;
-                }
-                $value = &$_POST[$param];
-                break;
-        }
-
-        if ($check) {
+        if (!isset($_REQUEST[$param])) {
+            return $force ? !$force : $default;
+        } elseif ($check) {
             return true;
         } elseif ($force) {
             return $force;
         }
 
-        return self::parse($value, $default, $sanitize);
+        return self::parse($_REQUEST[$param], $default, $sanitize);
     }
 
     /**
@@ -130,15 +119,11 @@ class Request
             }
 
             return $value;
-        }
-
-        if ((is_numeric($value) || is_numeric($default))
+        } elseif ((is_numeric($value) || is_numeric($default))
             && !is_string($default)
         ) {
             return (int)$value;
-        }
-
-        if (is_string($value)) {
+        } elseif (is_string($value)) {
             return ($sanitize === true) ? Html::sanitize($value) : (string)$value;
         }
 
@@ -219,6 +204,18 @@ class Request
     }
 
     /**
+     * Devuelve un nombre de archivo seguro
+     *
+     * @param      $file
+     * @param null $base
+     * @return string
+     */
+    public static function getSecureAppFile($file, $base = null)
+    {
+        return basename(self::getSecureAppPath($file, $base));
+    }
+
+    /**
      * Devolver una ruta segura para
      *
      * @param      $path
@@ -238,17 +235,5 @@ class Request
         } else {
             return $realPath;
         }
-    }
-
-    /**
-     * Devuelve un nombre de archivo seguro
-     *
-     * @param      $file
-     * @param null $base
-     * @return string
-     */
-    public static function getSecureAppFile($file, $base = null)
-    {
-        return basename(self::getSecureAppPath($file, $base));
     }
 }

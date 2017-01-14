@@ -59,6 +59,7 @@ class Language
      * Establecer el lenguaje a utilizar
      *
      * @param bool $force Forzar la detección del lenguaje para los inicios de sesión
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public static function setLanguage($force = false)
     {
@@ -83,6 +84,7 @@ class Language
      * Devuelve el lenguaje del usuario
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     private function getUserLang()
     {
@@ -146,10 +148,11 @@ class Language
     private static function setLocales($lang)
     {
         $lang .= '.utf8';
+        $fallback = 'en_US.utf8';
 
         putenv('LANG=' . $lang);
-        self::$localeStatus = setlocale(LC_MESSAGES, $lang);
-        setlocale(LC_ALL, $lang);
+        self::$localeStatus = setlocale(LC_MESSAGES, $lang, $fallback);
+        setlocale(LC_ALL, $lang, $fallback);
         bindtextdomain('messages', LOCALES_PATH);
         textdomain('messages');
         bind_textdomain_codeset('messages', 'UTF-8');
@@ -169,14 +172,14 @@ class Language
             'Deutsch' => 'de_DE',
             'Magyar' => 'hu_HU',
             'Français' => 'fr_FR',
-            'Polskie' => 'po_PO',
+            'Polski' => 'po_PO',
             'русский' => 'ru_RU',
             'Nederlands' => 'nl_NL'
         ];
     }
 
     /**
-     * Establecer el lenguaje global para las trdducciones
+     * Establecer el lenguaje global para las traducciones
      */
     public static function setAppLocales()
     {
@@ -184,7 +187,7 @@ class Language
     }
 
     /**
-     * Restablecer el lenguaje global para las trdducciones
+     * Restablecer el lenguaje global para las traducciones
      */
     public static function unsetAppLocales()
     {

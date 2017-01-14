@@ -156,7 +156,7 @@ class ConfigActionController implements ItemControllerInterface
             $Config->setSyslogRemoteEnabled($remoteSyslogEnabled);
             $Config->setSyslogServer($syslogServer);
             $Config->setSyslogPort($syslogPort);
-        } else {
+        } elseif ($Config->isSyslogEnabled()) {
             $Config->setSyslogRemoteEnabled(false);
 
             $Log->addDescription(_('Syslog remoto deshabilitado'));
@@ -232,7 +232,7 @@ class ConfigActionController implements ItemControllerInterface
             $Config->setProxyPass($proxyPass);
 
             $Log->addDescription(_('Proxy habiltado'));
-        } else {
+        } elseif ($Config->isProxyEnabled()) {
             $Config->setProxyEnabled(false);
 
             $Log->addDescription(_('Proxy deshabilitado'));
@@ -302,7 +302,7 @@ class ConfigActionController implements ItemControllerInterface
             $Config->setWikiFilter(explode(',', $wikiFilter));
 
             $Log->addDescription(_('Wiki habiltada'));
-        } else {
+        } elseif ($Config->isWikiEnabled()) {
             $Config->setWikiEnabled(false);
 
             $Log->addDescription(_('Wiki deshabilitada'));
@@ -329,7 +329,7 @@ class ConfigActionController implements ItemControllerInterface
             $Config->setDokuwikiNamespace($dokuWikiNamespace);
 
             $Log->addDescription(_('DokuWiki habiltada'));
-        } else {
+        } elseif ($Config->isDokuwikiEnabled()) {
             $Config->setDokuwikiEnabled(false);
 
             $Log->addDescription(_('DokuWiki deshabilitada'));
@@ -377,7 +377,7 @@ class ConfigActionController implements ItemControllerInterface
             $Config->setLdapBindPass($ldapBindPass);
 
             $Log->addDescription(_('LDAP habiltado'));
-        } else {
+        } elseif ($Config->isLdapEnabled()) {
             $Config->setLdapEnabled(false);
 
             $Log->addDescription(_('LDAP deshabilitado'));
@@ -428,7 +428,7 @@ class ConfigActionController implements ItemControllerInterface
             }
 
             $Log->addDescription(_('Correo habiltado'));
-        } else {
+        } elseif ($Config->isMailEnabled()) {
             $Config->setMailEnabled(false);
             $Config->setMailRequestsEnabled(false);
             $Config->setMailAuthenabled(false);
@@ -445,6 +445,7 @@ class ConfigActionController implements ItemControllerInterface
      * Acción para cambio de clave maestra
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function masterPassAction()
     {
