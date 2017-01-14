@@ -33,11 +33,12 @@
                     <span for="notices-user"
                           class="mdl-tooltip mdl-tooltip--top"><?php printf(_('Hay %d notificaciones pendientes'), $userNotices); ?></span>
                 <?php else: ?>
-                    <div id="notices-user" class="material-icons mdl-badge mdl-badge--overlap"
-                         data-badge="0">notifications
+                    <div id="notices-user" class="btn-menu material-icons mdl-badge mdl-badge--overlap"
+                         data-badge="0" data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>">
+                        notifications
                     </div>
                     <span for="notices-user"
-                          class="mdl-tooltip mdl-tooltip--top"><?php echo _('No hay noInes pendientes'); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php echo _('No hay no hay notificaciones pendientes'); ?></span>
                 <?php endif; ?>
 
                 <span id="user-info">

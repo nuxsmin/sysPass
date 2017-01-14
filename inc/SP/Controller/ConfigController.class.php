@@ -391,6 +391,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('dbName', $this->Config->getDbName() . '@' . $this->Config->getDbHost());
         $this->view->assign('configBackupDate', date('r', $this->configDB['config_backupdate']));
         $this->view->assign('plugins', PluginUtil::getLoadedPlugins());
+        $this->view->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', Config::getConfig()->getSiteLang(), _('No instalado')));
 
         $this->view->append('tabs', ['title' => _('Información')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'info');

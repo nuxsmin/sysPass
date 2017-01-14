@@ -58,6 +58,25 @@
             </tr>
             <tr>
                 <td class="descField">
+                    <?php echo _('Idioma'); ?>
+                    <div id="help-infolang"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-infolang">
+                        <p>
+                            <?php echo _('Indica si el idioma se encuentra disponible'); ?>
+                        </p>
+
+                        <p>
+                            <?php echo _('Si no está instalado, es necesario instalar las locales en el sistema operativo. Más información en Wiki.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <?php echo $locale; ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
                     <?php echo _('Plugins Cargados'); ?>
                 </td>
                 <td class="valField">

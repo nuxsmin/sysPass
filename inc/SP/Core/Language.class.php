@@ -48,6 +48,12 @@ class Language
      * @var string
      */
     public static $globalLang = '';
+    /**
+     * Estado de la localización. false si no existe
+     *
+     * @var string|false
+     */
+    public static $localeStatus;
 
     /**
      * Establecer el lenguaje a utilizar
@@ -142,7 +148,7 @@ class Language
         $lang .= '.utf8';
 
         putenv('LANG=' . $lang);
-        setlocale(LC_MESSAGES, $lang);
+        self::$localeStatus = setlocale(LC_MESSAGES, $lang);
         setlocale(LC_ALL, $lang);
         bindtextdomain('messages', LOCALES_PATH);
         textdomain('messages');
@@ -162,7 +168,10 @@ class Language
             'English' => 'en_US',
             'Deutsch' => 'de_DE',
             'Magyar' => 'hu_HU',
-            'Français' => 'fr_FR'
+            'Français' => 'fr_FR',
+            'Polskie' => 'po_PO',
+            'русский' => 'ru_RU',
+            'Nederlands' => 'nl_NL'
         ];
     }
 

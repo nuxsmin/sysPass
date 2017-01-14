@@ -16,7 +16,7 @@
                 </p>
 
                 <p>
-                    <?php echo _('Para mejorar/añadir las traducciones, puede colaborar en http:://translate.syspass.org'); ?>
+                    <?php echo _('Para mejorar/añadir las traducciones, puede colaborar en https://poeditor.com/join/project/fmlsBuugyv'); ?>
                 </p>
             </div>
         </td>
