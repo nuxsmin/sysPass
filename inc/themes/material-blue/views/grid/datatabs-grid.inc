@@ -99,7 +99,7 @@
                                         data-activetab="<?php echo $index; ?>"
                                         data-selection="#data-table-<?php echo $data->getId(); ?>">
                                         <i class="material-icons <?php echo $action->getIcon()->getClass(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>
-                                        <?php echo _('Eliminar Seleccionados'); ?>
+                                        <?php echo __('Eliminar Seleccionados'); ?>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>

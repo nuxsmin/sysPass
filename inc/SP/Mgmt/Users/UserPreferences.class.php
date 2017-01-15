@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\Users;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
@@ -75,7 +75,7 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
         $Data->addParam($this->itemData->getUserId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al actualizar preferencias'));
+            throw new SPException(SPException::SP_ERROR, __('Error al actualizar preferencias', false));
         }
 
         return $this;

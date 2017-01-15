@@ -32,7 +32,7 @@ use SP\Html\Html;
 use SP\Log\Log;
 use SP\Log\LogUtil;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase con utilizades para la aplicación
@@ -311,7 +311,7 @@ class Util
             $Log = new Log(__FUNCTION__);
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription(curl_error($ch));
-            $Log->addDetails(_('Respuesta'), $httpStatus);
+            $Log->addDetails(__('Respuesta', false), $httpStatus);
             $Log->writeLog();
 
             throw new SPException(SPException::SP_WARNING, $Log->getDescription());
@@ -412,7 +412,7 @@ class Util
 
             return $notices;
         } else {
-            error_log($noticesData->message);
+            debugLog($noticesData->message);
         }
 
         return false;
@@ -499,7 +499,7 @@ class Util
     public static function arrayJSEscape(&$array)
     {
         array_walk($array, function (&$value, $index) {
-            $value = str_replace(array("'", '"'), "\\'", $value);
+            $value = str_replace(['\'', '"'], '\\\'', $value);
         });
         return $array;
     }
@@ -532,6 +532,7 @@ class Util
         }
 
         if (get_class($object) === '__PHP_Incomplete_Class') {
+            //  Elimina el nombre de la clase en los métodos privados
             if ($srcClass !== null) {
                 $replace = preg_replace_callback(
                     '/:\d+:"\x00' . preg_quote($srcClass) . '\x00(\w+)"/',

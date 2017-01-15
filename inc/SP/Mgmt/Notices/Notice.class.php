@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -65,7 +65,7 @@ class Notice extends NoticeBase implements ItemInterface
         $Data->addParam($this->itemData->isNoticeOnlyAdmin());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear la notificación'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al crear la notificación', false));
         }
 
         $this->itemData->setNoticeId(DB::$lastId);
@@ -87,7 +87,7 @@ class Notice extends NoticeBase implements ItemInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            new SPException(SPException::SP_ERROR, _('Error al eliminar la notificación'));
+            new SPException(SPException::SP_ERROR, __('Error al eliminar la notificación', false));
         }
 
         $this->itemData->setNoticeId(DB::$lastId);
@@ -125,7 +125,7 @@ class Notice extends NoticeBase implements ItemInterface
         $Data->addParam($this->itemData->getNoticeId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al modificar la notificación'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al modificar la notificación', false));
         }
 
         $this->itemData->setNoticeId(DB::$lastId);
@@ -160,7 +160,7 @@ class Notice extends NoticeBase implements ItemInterface
         try {
             $queryRes = DB::getResults($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener la notificación'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener la notificación', false));
         }
 
         return $queryRes;
@@ -191,7 +191,7 @@ class Notice extends NoticeBase implements ItemInterface
         try {
             $queryRes = DB::getResultsArray($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener las notificaciones'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener las notificaciones', false));
         }
 
         return $queryRes;
@@ -239,7 +239,7 @@ class Notice extends NoticeBase implements ItemInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al modificar la notificación'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al modificar la notificación', false));
         }
 
         $this->itemData->setNoticeId(DB::$lastId);
@@ -249,6 +249,7 @@ class Notice extends NoticeBase implements ItemInterface
 
     /**
      * Devolver las notificaciones de un usuario para una fecha y componente determinados
+     *
      * @return mixed
      * @throws SPException
      */
@@ -277,7 +278,7 @@ class Notice extends NoticeBase implements ItemInterface
         try {
             $queryRes = DB::getResultsArray($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener las notificaciones'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener las notificaciones', false));
         }
 
         return $queryRes;
@@ -311,7 +312,7 @@ class Notice extends NoticeBase implements ItemInterface
         try {
             $queryRes = DB::getResultsArray($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener las notificaciones'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener las notificaciones', false));
         }
 
         return $queryRes;
@@ -346,7 +347,7 @@ class Notice extends NoticeBase implements ItemInterface
         try {
             $queryRes = DB::getResultsArray($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener las notificaciones'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener las notificaciones', false));
         }
 
         return $queryRes;

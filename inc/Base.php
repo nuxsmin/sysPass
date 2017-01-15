@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,7 +24,7 @@
 
 use SP\Core\Init;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 define('BASE_DIR', __DIR__);
 //
@@ -41,7 +41,7 @@ define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
 define('SQL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'sql');
 
 
-define('DEBUG', false);
+define('DEBUG', true);
 
 require 'SplClassLoader.php';
 
@@ -79,6 +79,18 @@ function debugLog($data, $printLastCaller = false)
             error_log(sprintf('Caller %d: %s\%s', $i, $class, $backtrace[$i]['function']));
         }
     }
+}
+
+/**
+ * Alias gettext function
+ *
+ * @param string $string
+ * @param bool   $tranlate Si es necesario traducir
+ * @return string
+ */
+function __($string, $tranlate = true)
+{
+    return $tranlate === true && $string !== '' ? gettext($string) : $string;
 }
 
 /**

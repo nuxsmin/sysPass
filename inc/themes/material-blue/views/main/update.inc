@@ -18,11 +18,11 @@
 <?php elseif ($updateStatus === true): ?>
     <div id="updates-info" class="icon material-icons mdl-color-text--teal-200">check_circle</div>
     <span for="updates-info"
-          class="mdl-tooltip mdl-tooltip--top"><?php echo _('Actualizado'); ?></span>
+          class="mdl-tooltip mdl-tooltip--top"><?php echo __('Actualizado'); ?></span>
 <?php elseif ($updateStatus === false): ?>
     <div id="updates-info" class="icon material-icons mdl-color-text--amber-200">
         warning
     </div>
     <span for="updates-info"
-          class="mdl-tooltip mdl-tooltip--top"><?php echo _('Error al comprobar actualizaciones'); ?></span>
+          class="mdl-tooltip mdl-tooltip--top"><?php echo __('Error al comprobar actualizaciones'); ?></span>
 <?php endif; ?>

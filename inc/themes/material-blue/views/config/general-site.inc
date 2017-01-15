@@ -1,22 +1,22 @@
 <?php /** @var $icons \Theme\Icons */ ?>
 
 <div id="title" class="midroundup titleNormal">
-    <?php echo _('Sitio'); ?>
+    <?php echo __('Sitio'); ?>
 </div>
 
 <table id="tblSite" class="data tblConfig round">
     <tr>
         <td class="descField">
-            <?php echo _('Idioma'); ?>
+            <?php echo __('Idioma'); ?>
             <div id="help-sitelang"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-sitelang">
                 <p>
-                    <?php echo _('Establece el idioma global de la aplicación. Es posible establecer un idioma por usuario en las preferencias.'); ?>
+                    <?php echo __('Establece el idioma global de la aplicación. Es posible establecer un idioma por usuario en las preferencias.'); ?>
                 </p>
 
                 <p>
-                    <?php echo _('Para mejorar/añadir las traducciones, puede colaborar en https://poeditor.com/join/project/fmlsBuugyv'); ?>
+                    <?php echo __('Para mejorar/añadir las traducciones, puede colaborar en https://poeditor.com/join/project/fmlsBuugyv'); ?>
                 </p>
             </div>
         </td>
@@ -31,12 +31,12 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Tema Visual'); ?>
+            <?php echo __('Tema Visual'); ?>
             <div id="help-sitetheme"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-sitetheme">
                 <p>
-                    <?php echo _('Establece el tema visual global de la aplicación. Es posible establecer un tema visual por usuario en las preferencias.'); ?>
+                    <?php echo __('Establece el tema visual global de la aplicación. Es posible establecer un tema visual por usuario en las preferencias.'); ?>
                 </p>
             </div>
         </td>
@@ -52,7 +52,7 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Timeout de sesión (s)'); ?>
+            <?php echo __('Timeout de sesión (s)'); ?>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -60,18 +60,18 @@
                        pattern="[0-9]{2,4}" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="5"
                        value="<?php echo $sessionTimeout; ?>"  required/>
                 <label class="mdl-textfield__label"
-                       for="session_timeout"><?php echo _('Timeout de sesión (s)'); ?></label>
+                       for="session_timeout"><?php echo __('Timeout de sesión (s)'); ?></label>
             </div>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Forzar HTTPS'); ?>
+            <?php echo __('Forzar HTTPS'); ?>
             <div id="help-https"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-https">
                 <p>
-                    <?php echo _('Fuerza para que todas las conexiones sean a través de HTTPS.'); ?>
+                    <?php echo __('Fuerza para que todas las conexiones sean a través de HTTPS.'); ?>
                 </p>
             </div>
         </td>
@@ -86,12 +86,12 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Habilitar depuración'); ?>
+            <?php echo __('Habilitar depuración'); ?>
             <div id="help-debug"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-debug">
                 <p>
-                    <?php echo _('Muestra información relativa a la configuración de la aplicación y rendimiento.'); ?>
+                    <?php echo __('Muestra información relativa a la configuración de la aplicación y rendimiento.'); ?>
                 </p>
             </div>
         </td>
@@ -105,12 +105,12 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Modo mantenimiento'); ?>
+            <?php echo __('Modo mantenimiento'); ?>
             <div id="help-maintenance"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-maintenance">
                 <p>
-                    <?php echo _('En este modo no se puede acceder a la aplicación. Para deshabilitarlo es necesario modificar el archivo de configuración.'); ?>
+                    <?php echo __('En este modo no se puede acceder a la aplicación. Para deshabilitarlo es necesario modificar el archivo de configuración.'); ?>
                 </p>
             </div>
         </td>
@@ -124,12 +124,12 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Comprobar actualizaciones'); ?>
+            <?php echo __('Comprobar actualizaciones'); ?>
             <div id="help-updates"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-updates">
                 <p>
-                    <?php echo _('Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores).'); ?>
+                    <?php echo __('Comprobar actualizaciones de la aplicación (sólo para los usuarios administradores).'); ?>
                 </p>
             </div>
         </td>
@@ -143,12 +143,12 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Comprobar notificaciones'); ?>
+            <?php echo __('Comprobar notificaciones'); ?>
             <div id="help-notices"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-notices">
                 <p>
-                    <?php echo _('Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo para los usuarios administradores).'); ?>
+                    <?php echo __('Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo para los usuarios administradores).'); ?>
                 </p>
             </div>
         </td>

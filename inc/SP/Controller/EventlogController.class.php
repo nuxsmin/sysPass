@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\ActionsInterface;
 use SP\Core\SessionUtil;
@@ -77,7 +77,7 @@ class EventlogController extends ControllerBase implements ActionsInterface
         $GridActionSearch->setId(self::ACTION_EVL);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchEvent');
-        $GridActionSearch->setTitle(_('Buscar Evento'));
+        $GridActionSearch->setTitle(__('Buscar Evento'));
         $GridActionSearch->setOnSubmitFunction('eventlog/search');
 
         $this->view->assign('rowClass', 'row_even');
@@ -101,9 +101,9 @@ class EventlogController extends ControllerBase implements ActionsInterface
             && SessionUtil::checkSessionKey($this->view->sk)
         ) {
             if (Log::clearEvents()) {
-                Response::printJson(_('Registro de eventos vaciado'), 0, 'sysPassUtil.Common.doAction(' . ActionsInterface::ACTION_EVL . '); sysPassUtil.Common.scrollUp();');
+                Response::printJson(__('Registro de eventos vaciado', false), 0);
             } else {
-                Response::printJson(_('Error al vaciar el registro de eventos'));
+                Response::printJson(__('Error al vaciar el registro de eventos', false));
             }
         }
     }

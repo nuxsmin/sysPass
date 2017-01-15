@@ -74,9 +74,9 @@ class AccountForm extends FormBase implements FormInterface
     protected function checkPass()
     {
         if (!$this->AccountData->getAccountPass()) {
-            throw new ValidationException(_('Es necesaria una clave'));
+            throw new ValidationException(__('Es necesaria una clave', false));
         } elseif (Request::analyzeEncrypted('passR') !== $this->AccountData->getAccountPass()) {
-            throw new ValidationException(_('Las claves no coinciden'));
+            throw new ValidationException(__('Las claves no coinciden', false));
         }
     }
 
@@ -86,18 +86,18 @@ class AccountForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->AccountData->getAccountName()) {
-            throw new ValidationException(_('Es necesario un nombre de cuenta'));
+            throw new ValidationException(__('Es necesario un nombre de cuenta', false));
         } elseif (!$this->AccountData->getAccountCustomerId()) {
-            throw new ValidationException(_('Es necesario un nombre de cliente'));
+            throw new ValidationException(__('Es necesario un nombre de cliente', false));
         } elseif (!$this->AccountData->getAccountLogin()) {
-            throw new ValidationException(_('Es necesario un usuario'));
+            throw new ValidationException(__('Es necesario un usuario', false));
         } elseif (!$this->AccountData->getAccountCategoryId()) {
-            throw new ValidationException(_('Es necesario una categoría'));
+            throw new ValidationException(__('Es necesario una categoría', false));
         }
     }
 
     /**
-     * @return mixed
+     * @return AccountData
      */
     public function getItemData()
     {

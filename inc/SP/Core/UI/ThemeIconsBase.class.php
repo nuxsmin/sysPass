@@ -27,7 +27,7 @@ namespace SP\Core\UI;
 use SP\Html\Assets\FontIcon;
 use SP\Html\Assets\ImageIcon;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ThemeIconsBase para la implementación de los iconos del tema visual

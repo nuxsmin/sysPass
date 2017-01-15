@@ -10,55 +10,55 @@
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo _('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Nombre'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $plugin->getPluginName(); ?>" <?php echo $isReadonly; ?>>
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo _('Nombre del plugin'); ?></label>
+                               for="name"><?php echo __('Nombre del plugin'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Versión'); ?></td>
+                <td class="descField"><?php echo __('Versión'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="version" name="version" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo implode('.', $pluginInfo->getVersion()); ?>" <?php echo $isReadonly; ?>>
                         <label class="mdl-textfield__label"
-                               for="version"><?php echo _('Versión del plugin'); ?></label>
+                               for="version"><?php echo __('Versión del plugin'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Versión Compatible'); ?></td>
+                <td class="descField"><?php echo __('Versión Compatible'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="compatible_version" name="compatible_version" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo implode('.', $pluginInfo->getCompatibleVersion()); ?>" <?php echo $isReadonly; ?>>
                         <label class="mdl-textfield__label"
-                               for="compatible_version"><?php echo _('Versión de sysPass compatible'); ?></label>
+                               for="compatible_version"><?php echo __('Versión de sysPass compatible'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Autor'); ?></td>
+                <td class="descField"><?php echo __('Autor'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="author" name="author" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $pluginInfo->getAuthor(); ?>" <?php echo $isReadonly; ?>>
                         <label class="mdl-textfield__label"
-                               for="author"><?php echo _('Autor del plugin'); ?></label>
+                               for="author"><?php echo __('Autor del plugin'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Eventos'); ?></td>
+                <td class="descField"><?php echo __('Eventos'); ?></td>
                 <td class="valField">
                     <div class="list-wrap">
                         <ul class="mdl-list">

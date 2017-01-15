@@ -13,7 +13,7 @@
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo _('Nombre') ?></td>
+                <td class="descField"><?php echo __('Nombre') ?></td>
                 <td class="valField">
 
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -22,13 +22,13 @@
                                value="<?php echo $user->getUserName(); ?>"
                                maxlength="80" <?php echo $isReadonly; ?>>
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo _('Nombre de usuario completo'); ?></label>
+                               for="name"><?php echo __('Nombre de usuario completo'); ?></label>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td class="descField"><?php echo _('Login'); ?></td>
+                <td class="descField"><?php echo __('Login'); ?></td>
                 <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="login" name="login" type="text" required
@@ -36,7 +36,7 @@
                                    value="<?php echo $user->getUserLogin(); ?>"
                                    maxlength="80" <?php echo $user->isUserIsLdap() || $isReadonly; ?>>
                             <label class="mdl-textfield__label"
-                                   for="login"><?php echo _('Login de inicio de sesión'); ?></label>
+                                   for="login"><?php echo __('Login de inicio de sesión'); ?></label>
                         </div>
                     <?php if ($user->isUserIsLdap()): ?>
                         <i class="material-icons <?php echo $icons->getIconLdapUser()->getClass(); ?>"
@@ -46,11 +46,11 @@
             </tr>
 
             <tr>
-                <td class="descField"><?php echo _('Perfil'); ?></td>
+                <td class="descField"><?php echo __('Perfil'); ?></td>
                 <td class="valField">
                     <select id="selProfile" name="profileid"
                             class="select-box" required <?php echo $isDisabled; ?>>
-                        <option value=""><?php echo _('Seleccionar Perfil'); ?></option>
+                        <option value=""><?php echo __('Seleccionar Perfil'); ?></option>
                         <?php foreach ($profiles as $profile): ?>
                             <option
                                     value="<?php echo $profile->id; ?>" <?php echo ($profile->id == $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
@@ -60,11 +60,11 @@
             </tr>
 
             <tr>
-                <td class="descField"><?php echo _('Grupo'); ?></td>
+                <td class="descField"><?php echo __('Grupo'); ?></td>
                 <td class="valField">
                     <select id="selGroup" name="groupid"
                             class="select-box" required <?php echo $isDisabled; ?>>
-                        <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
+                        <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
                         <?php foreach ($groups as $group): ?>
                             <option
                                     value="<?php echo $group->id; ?>" <?php echo ($group->id == $user->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
@@ -74,14 +74,14 @@
             </tr>
 
             <tr>
-                <td class="descField"><?php echo _('Email'); ?></td>
+                <td class="descField"><?php echo __('Email'); ?></td>
                 <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="email" name="email" type="email" required
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php echo $user->getUserEmail(); ?>" maxlength="50" <?php echo $isReadonly; ?>>
                             <label class="mdl-textfield__label"
-                                   for="email"><?php echo _('Dirección de correo'); ?></label>
+                                   for="email"><?php echo __('Dirección de correo'); ?></label>
                         </div
                 </td>
 
@@ -89,41 +89,41 @@
 
             <?php if ($actionId === \SP\Core\ActionsInterface::ACTION_USR_USERS_NEW): ?>
                 <tr>
-                    <td class="descField"><?php echo _('Clave'); ?></td>
+                    <td class="descField"><?php echo __('Clave'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="userpass" name="pass" type="password" required
                                    class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
                                    maxlength="50">
                             <label class="mdl-textfield__label"
-                                   for="userpass"><?php echo _('Clave'); ?></label>
+                                   for="userpass"><?php echo __('Clave'); ?></label>
                         </div>
                     </td>
                 </tr>
 
                 <tr>
-                    <td class="descField"><?php echo _('Clave (repetir)'); ?></td>
+                    <td class="descField"><?php echo __('Clave (repetir)'); ?></td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="userpassR" name="passR" type="password" required
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="50">
                             <label class="mdl-textfield__label"
-                                   for="userpassR"><?php echo _('Clave (repetir)'); ?></label>
+                                   for="userpassR"><?php echo __('Clave (repetir)'); ?></label>
                         </div>
                     </td>
                 </tr>
             <?php endif; ?>
 
             <tr>
-                <td class="descField"><?php echo _('Notas') ?></td>
+                <td class="descField"><?php echo __('Notas') ?></td>
                 <td class="valField">
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input" rows="3" id="notes" name="notes"
                                   maxlength="1000" <?php echo $isReadonly ;?>><?php echo $user->getUserNotes(); ?></textarea>
                             <label class="mdl-textfield__label"
-                                   for="notes"><?php echo _('Notas sobre la cuenta'); ?></label>
+                                   for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
                         </div>
                     <?php else: ?>
                         <?php echo $user->getUserNotes(); ?>
@@ -132,36 +132,36 @@
             </tr>
 
             <tr>
-                <td class="descField"><?php echo _('Opciones'); ?></td>
+                <td class="descField"><?php echo __('Opciones'); ?></td>
                 <td class="valField checkbox">
                     <?php if ($SessionUserData->isUserIsAdminApp() || $isDemo): ?>
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminapp"
-                               title="<?php echo _('Administrador de la aplicación'); ?>">
+                               title="<?php echo __('Administrador de la aplicación'); ?>">
                             <input type="checkbox" id="adminapp" class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="adminapp" <?php echo $user->isUserIsAdminApp() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
-                            <span class="mdl-switch__label"><?php echo _('Admin Aplicación'); ?></span>
+                            <span class="mdl-switch__label"><?php echo __('Admin Aplicación'); ?></span>
                         </label>
 
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminacc"
-                               title="<?php echo _('Administrador de cuentas'); ?>">
+                               title="<?php echo __('Administrador de cuentas'); ?>">
                             <input type="checkbox" id="adminacc" class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="adminacc" <?php echo $user->isUserIsAdminAcc() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
-                            <span class="mdl-switch__label"><?php echo _('Admin Cuentas'); ?></span>
+                            <span class="mdl-switch__label"><?php echo __('Admin Cuentas'); ?></span>
                         </label>
                     <?php endif; ?>
                     <br>
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="disabled"
-                           title="<?php echo _('Deshabilitado'); ?>">
+                           title="<?php echo __('Deshabilitado'); ?>">
                         <input type="checkbox" id="disabled" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="disabled" <?php echo $user->isUserIsDisabled() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
-                        <span class="mdl-switch__label"><?php echo _('Deshabilitado'); ?></span>
+                        <span class="mdl-switch__label"><?php echo __('Deshabilitado'); ?></span>
                     </label>
 
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="changepass"
-                           title="<?php echo _('Forzar cambio de clave'); ?>">
+                           title="<?php echo __('Forzar cambio de clave'); ?>">
                         <input type="checkbox" id="changepass" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="changepass" <?php echo $user->isUserIsChangePass() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
-                        <span class="mdl-switch__label"><?php echo _('Cambio de Clave'); ?></span>
+                        <span class="mdl-switch__label"><?php echo __('Cambio de Clave'); ?></span>
                     </label>
                 </td>
             </tr>
@@ -172,22 +172,22 @@
 
             <?php if ($isView): ?>
                 <tr>
-                    <td class="descField"><?php echo _('Entradas'); ?></td>
+                    <td class="descField"><?php echo __('Entradas'); ?></td>
                     <td class="valField"> <?php echo $user->getUserCount(); ?></td>
                 </tr>
 
                 <tr>
-                    <td class="descField"><?php echo _('Último Acceso'); ?></td>
+                    <td class="descField"><?php echo __('Último Acceso'); ?></td>
                     <td class="valField"> <?php echo $user->getUserLastLogin(); ?></td>
                 </tr>
 
                 <tr>
-                    <td class="descField"><?php echo _('Última Modificación'); ?></td>
+                    <td class="descField"><?php echo __('Última Modificación'); ?></td>
                     <td class="valField"> <?php echo $user->getUserLastUpdate(); ?></td>
                 </tr>
 
                 <tr>
-                    <td class="descField"><?php echo _('Fecha Clave Maestra'); ?></td>
+                    <td class="descField"><?php echo __('Fecha Clave Maestra'); ?></td>
                     <td class="valField"> <?php echo $user->getUserLastUpdateMPass(); ?></td>
                 </tr>
             <?php endif; ?>

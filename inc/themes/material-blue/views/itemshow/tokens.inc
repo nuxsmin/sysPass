@@ -8,10 +8,10 @@
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo _('Usuario'); ?></td>
+                <td class="descField"><?php echo __('Usuario'); ?></td>
                 <td class="valField">
                     <select id="selUsers" name="users" class="select-box" required>
-                        <option value=""><?php echo _('Seleccionar Usuario'); ?></option>
+                        <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
                         <?php foreach ($users as $user): ?>
                             <?php $selected = ($gotData && $user->id == $token->authtoken_userId) ? 'selected' : ''; ?>
                             <option value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
@@ -20,11 +20,11 @@
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Acción'); ?></td>
+                <td class="descField"><?php echo __('Acción'); ?></td>
                 <td class="valField">
                     <select id="selActions" name="actions"
                             class="select-box" required>
-                        <option value=""><?php echo _('Seleccionar Acción'); ?></option>
+                        <option value=""><?php echo __('Seleccionar Acción'); ?></option>
                         <?php foreach ($actions as $id => $name): ?>
                             <?php $selected = ($gotData && $id == $token->authtoken_actionId) ? 'selected' : ''; ?>
                             <option value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $name; ?></option>
@@ -34,20 +34,20 @@
             </tr>
             <?php if (!$isView): ?>
                 <tr>
-                    <td class="descField"><?php echo _('Opciones'); ?></td>
+                    <td class="descField"><?php echo __('Opciones'); ?></td>
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="refreshtoken"
-                               title="<?php echo _('Regenerar Autorización'); ?>">
+                               title="<?php echo __('Regenerar Autorización'); ?>">
                             <input type="checkbox" id="refreshtoken"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="refreshtoken"/>
-                            <span class="mdl-switch__label"><?php echo _('Regenerar Autorización'); ?></span>
+                            <span class="mdl-switch__label"><?php echo __('Regenerar Autorización'); ?></span>
                         </label>
                     </td>
                 </tr>
             <?php else: ?>
                 <tr>
-                    <td class="descField"><?php echo _('Token'); ?></td>
+                    <td class="descField"><?php echo __('Token'); ?></td>
                     <td class="valField"><?php echo $gotData ? $token->authtoken_token : ''; ?></td>
                 </tr>
             <?php endif; ?>

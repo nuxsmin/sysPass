@@ -28,6 +28,7 @@ use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
+use SP\Log\Log;
 use SP\Util\Json;
 
 /**
@@ -52,18 +53,24 @@ trait RequestControllerTrait
     /**
      * @var JsonResponse
      */
-    protected $jsonResponse;
+    protected $JsonResponse;
     /**
      * @var string
      */
     protected $sk;
+    /**
+     * @var Log
+     */
+    protected $Log;
 
     /**
      * inicializar las propiedades
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function init()
     {
-        $this->jsonResponse = new JsonResponse();
+        $this->JsonResponse = new JsonResponse();
 
         $this->checkSession();
         $this->analyzeRequest();
@@ -83,6 +90,8 @@ trait RequestControllerTrait
 
     /**
      * Comprobaciones antes de realizar una acción
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function preActionChecks()
     {
@@ -98,8 +107,8 @@ trait RequestControllerTrait
      */
     protected function invalidAction()
     {
-        $this->jsonResponse->setDescription(_('Acción Inválida'));
-        Json::returnJson($this->jsonResponse);
+        $this->JsonResponse->setDescription(__('Acción Inválida', false));
+        Json::returnJson($this->JsonResponse);
     }
 
     /**
@@ -110,9 +119,9 @@ trait RequestControllerTrait
     protected function checkSession()
     {
         if (!Init::isLoggedIn()) {
-            $this->jsonResponse->setDescription(_('La sesión no se ha iniciado o ha caducado'));
-            $this->jsonResponse->setStatus(10);
-            Json::returnJson($this->jsonResponse);
+            $this->JsonResponse->setDescription(__('La sesión no se ha iniciado o ha caducado', false));
+            $this->JsonResponse->setStatus(10);
+            Json::returnJson($this->JsonResponse);
         }
     }
 }

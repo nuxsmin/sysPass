@@ -42,7 +42,7 @@ use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de instalar sysPass.
@@ -129,48 +129,48 @@ class Installer
         if (!$this->InstallData->getAdminLogin()) {
             throw new InvalidArgumentException(
                 SPException::SP_CRITICAL,
-                _('Indicar nombre de usuario admin'),
-                _('Usuario admin para acceso a la aplicación'));
+                __('Indicar nombre de usuario admin', false),
+                __('Usuario admin para acceso a la aplicación', false));
         } elseif (!$this->InstallData->getAdminPass()) {
             throw new InvalidArgumentException(
                 SPException::SP_CRITICAL,
-                _('Indicar la clave de admin'),
-                _('Clave del usuario admin de la aplicación'));
+                __('Indicar la clave de admin', false),
+                __('Clave del usuario admin de la aplicación', false));
         } elseif (!$this->InstallData->getMasterPassword()) {
             throw new InvalidArgumentException(
                 SPException::SP_CRITICAL,
-                _('Indicar la clave maestra'),
-                _('Clave maestra para encriptar las claves'));
+                __('Indicar la clave maestra', false),
+                __('Clave maestra para encriptar las claves', false));
         } elseif (strlen($this->InstallData->getMasterPassword()) < 11) {
             throw new InvalidArgumentException(
                 SPException::SP_CRITICAL,
-                _('Clave maestra muy corta'),
-                _('La longitud de la clave maestra ha de ser mayor de 11 caracteres'));
+                __('Clave maestra muy corta', false),
+                __('La longitud de la clave maestra ha de ser mayor de 11 caracteres', false));
         } elseif (!$this->InstallData->getDbAdminUser()) {
             throw new InvalidArgumentException(
                 SPException::SP_CRITICAL,
-                _('Indicar el usuario de la BBDD'),
-                _('Usuario con permisos de administrador de la Base de Datos'));
+                __('Indicar el usuario de la BBDD', false),
+                __('Usuario con permisos de administrador de la Base de Datos', false));
         } elseif (!$this->InstallData->getDbAdminPass()) {
             throw new InvalidArgumentException(
                 SPException::SP_CRITICAL,
-                _('Indicar la clave de la BBDD'),
-                _('Clave del usuario administrador de la Base de Datos'));
+                __('Indicar la clave de la BBDD'),
+                __('Clave del usuario administrador de la Base de Datos'));
         } elseif (!$this->InstallData->getDbName()) {
             throw new InvalidArgumentException(
                 SPException::SP_CRITICAL,
-                _('Indicar el nombre de la BBDD'),
-                _('Nombre para la BBDD de la aplicación pej. syspass'));
+                __('Indicar el nombre de la BBDD', false),
+                __('Nombre para la BBDD de la aplicación pej. syspass', false));
         } elseif (substr_count($this->InstallData->getDbName(), '.') >= 1) {
             throw new InvalidArgumentException(
                 SPException::SP_CRITICAL,
-                _('El nombre de la BBDD no puede contener "."'),
-                _('Elimine los puntos del nombre de la Base de Datos'));
+                __('El nombre de la BBDD no puede contener "."', false),
+                __('Elimine los puntos del nombre de la Base de Datos', false));
         } elseif (!$this->InstallData->getDbHost()) {
             throw new InvalidArgumentException(
                 SPException::SP_CRITICAL,
-                _('Indicar el servidor de la BBDD'),
-                _('Servidor donde se instalará la Base de Datos'));
+                __('Indicar el servidor de la BBDD', false),
+                __('Servidor donde se instalará la Base de Datos', false));
         }
     }
 
@@ -189,8 +189,8 @@ class Installer
             $this->DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL,
-                _('No es posible conectar con la BD'),
-                _('Compruebe los datos de conexión') . '<br>' . $e->getMessage());
+                __('No es posible conectar con la BD', false),
+                __('Compruebe los datos de conexión', false) . '<br>' . $e->getMessage());
         }
     }
 
@@ -223,8 +223,8 @@ class Installer
                 }
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL,
-                    sprintf(_('No es posible comprobar el usuario de sysPass') . ' (%s)', $this->InstallData->getAdminLogin()),
-                    _('Compruebe los permisos del usuario de conexión a la BD'));
+                    sprintf(__('No es posible comprobar el usuario de sysPass', false) . ' (%s)', $this->InstallData->getAdminLogin()),
+                    __('Compruebe los permisos del usuario de conexión a la BD', false));
             }
 
             // Guardar el nuevo usuario/clave de conexión a la BD
@@ -275,7 +275,7 @@ class Installer
         } catch (PDOException $e) {
             throw new SPException(
                 SPException::SP_CRITICAL,
-                sprintf(_('Error al crear el usuario de conexión a MySQL \'%s\''), $this->InstallData->getDbUser()),
+                sprintf(__('Error al crear el usuario de conexión a MySQL \'%s\''), $this->InstallData->getDbUser()),
                 $e->getMessage());
         }
     }
@@ -291,12 +291,12 @@ class Installer
 
         if ($checkDatabase && !$this->InstallData->isHostingMode()) {
             throw new SPException(SPException::SP_CRITICAL,
-                _('La BBDD ya existe'),
-                _('Indique una nueva Base de Datos o elimine la existente'));
+                __('La BBDD ya existe', false),
+                __('Indique una nueva Base de Datos o elimine la existente', false));
         } elseif (!$checkDatabase && $this->InstallData->isHostingMode()) {
             throw new SPException(SPException::SP_CRITICAL,
-                _('La BBDD no existe'),
-                _('Es necesario crearla y asignar los permisos necesarios'));
+                __('La BBDD no existe', false),
+                __('Es necesario crearla y asignar los permisos necesarios', false));
         }
 
         if (!$this->InstallData->isHostingMode()) {
@@ -307,8 +307,8 @@ class Installer
                 $this->DB->query($query);
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL,
-                    sprintf(_('Error al crear la BBDD') . ' (%s)', $e->getMessage()),
-                    _('Verifique los permisos del usuario de la Base de Datos'));
+                    sprintf(__('Error al crear la BBDD', false) . ' (%s)', $e->getMessage()),
+                    __('Verifique los permisos del usuario de la Base de Datos', false));
             }
 
             $query = sprintf(/** @lang SQL */
@@ -330,8 +330,8 @@ class Installer
                 $this->DB->query($queryDns);
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL,
-                    sprintf(_('Error al establecer permisos de la BBDD (\'%s\')'), $e->getMessage()),
-                    _('Verifique los permisos del usuario de la Base de Datos'));
+                    sprintf(__('Error al establecer permisos de la BBDD (\'%s\')'), $e->getMessage()),
+                    __('Verifique los permisos del usuario de la Base de Datos', false));
             }
         }
     }
@@ -363,8 +363,8 @@ class Installer
 
         if (!file_exists($fileName)) {
             throw new SPException(SPException::SP_CRITICAL,
-                _('El archivo de estructura de la BBDD no existe'),
-                _('No es posible crear la BBDD de la aplicación. Descárguela de nuevo.'));
+                __('El archivo de estructura de la BBDD no existe', false),
+                __('No es posible crear la BBDD de la aplicación. Descárguela de nuevo.', false));
         }
 
         // Usar la base de datos de sysPass
@@ -372,8 +372,8 @@ class Installer
             $this->DB->query('USE `' . $this->InstallData->getDbName() . '`');
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL,
-                sprintf(_('Error al seleccionar la BBDD') . ' \'%s\' (%s)', $this->InstallData->getDbName(), $e->getMessage()),
-                _('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.'));
+                sprintf(__('Error al seleccionar la BBDD', false) . ' \'%s\' (%s)', $this->InstallData->getDbName(), $e->getMessage()),
+                __('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.', false));
         }
 
         // Leemos el archivo SQL para crear las tablas de la BBDD
@@ -391,8 +391,8 @@ class Installer
                         $this->DB->query('DROP DATABASE IF EXISTS `' . $this->InstallData->getDbName() . '`;');
 
                         throw new SPException(SPException::SP_CRITICAL,
-                            sprintf(_('Error al crear la BBDD') . ' (%s)', $e->getMessage()),
-                            _('Error al crear la estructura de la Base de Datos.'));
+                            sprintf(__('Error al crear la BBDD', false) . ' (%s)', $e->getMessage()),
+                            __('Error al crear la estructura de la Base de Datos.', false));
                     }
                 }
             }
@@ -404,6 +404,7 @@ class Installer
      * Esta función crea el grupo, perfil y usuario 'admin' para utilizar sysPass.
      *
      * @throws SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     private function createAdminAccount()
     {
@@ -416,8 +417,8 @@ class Installer
         } catch (SPException $e) {
             $this->rollback();
             throw new SPException(SPException::SP_CRITICAL,
-                _('Error al crear el grupo "admin"'),
-                _('Informe al desarrollador'));
+                __('Error al crear el grupo "admin"', false),
+                __('Informe al desarrollador', false));
         }
 
         $ProfileData = new ProfileData();
@@ -449,8 +450,8 @@ class Installer
         } catch (SPException $e) {
             $this->rollback();
             throw new SPException(SPException::SP_CRITICAL,
-                _('Error al crear el perfil "admin"'),
-                _('Informe al desarrollador'));
+                __('Error al crear el perfil "admin"', false),
+                __('Informe al desarrollador', false));
         }
 
         // Datos del usuario
@@ -469,8 +470,8 @@ class Installer
         } catch (SPException $e) {
             $this->rollback();
             throw new SPException(SPException::SP_CRITICAL,
-                _('Error al crear el usuario "admin"'),
-                _('Informe al desarrollador'));
+                __('Error al crear el usuario "admin"', false),
+                __('Informe al desarrollador', false));
         }
 
         // Guardar el hash de la clave maestra
@@ -482,8 +483,8 @@ class Installer
             $this->rollback();
 
             throw new SPException(SPException::SP_CRITICAL,
-                _('Error al actualizar la clave maestra del usuario "admin"'),
-                _('Informe al desarrollador'));
+                __('Error al actualizar la clave maestra del usuario "admin"', false),
+                __('Informe al desarrollador', false));
         }
     }
 

@@ -46,7 +46,7 @@ $JsonResponse = new JsonResponse();
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    $JsonResponse->setDescription(_('CONSULTA INVÁLIDA'));
+    $JsonResponse->setDescription(__('CONSULTA INVÁLIDA'));
     Json::returnJson($JsonResponse);
 }
 
@@ -57,24 +57,24 @@ $userPassR = Request::analyzeEncrypted('passR');
 
 
 if ($userLogin && $userEmail) {
-    $Log = new Log(_('Recuperación de Clave'));
-    $Log->addDetailsHtml(_('Solicitado para'), sprintf('%s (%s)', $userLogin, $userEmail));
+    $Log = new Log(__('Recuperación de Clave', false));
+    $Log->addDetailsHtml(__('Solicitado para'), sprintf('%s (%s)', $userLogin, $userEmail));
 
     $UserData = User::getItem()->getByLogin($userLogin);
 
     if ($UserData->getUserEmail() === $userEmail
         && AuthUtil::mailPassRecover($UserData)
     ) {
-        $Log->addDescription(_('Solicitud enviada'));
+        $Log->addDescription(__('Solicitud enviada', false));
         $Log->writeLog();
 
         $JsonResponse->setDescription($Log->getDescription());
-        $JsonResponse->addMessage(_('En breve recibirá un correo para completar la solicitud.'));
+        $JsonResponse->addMessage(__('En breve recibirá un correo para completar la solicitud.'));
         Json::returnJson($JsonResponse);
     }
 
-    $Log->addDescription(_('Solicitud no enviada'));
-    $Log->addDescription(_('Compruebe datos de usuario o consulte con el administrador'));
+    $Log->addDescription(__('Solicitud no enviada', false));
+    $Log->addDescription(__('Compruebe datos de usuario o consulte con el administrador', false));
     $Log->writeLog();
 
     Email::sendEmail($Log);
@@ -83,7 +83,7 @@ if ($userLogin && $userEmail) {
     $JsonResponse->setDescription($Log->getDescription());
     Json::returnJson($JsonResponse);
 } elseif ($userPass && $userPassR && $userPass === $userPassR) {
-    $Log = new Log(_('Modificar Clave Usuario'));
+    $Log = new Log(__('Modificar Clave Usuario', false));
 
     try {
         $UserPassRecover = UserPassRecover::getItem()->getHashUserId(Request::analyze('hash'));
@@ -96,13 +96,13 @@ if ($userLogin && $userEmail) {
         Json::returnJson($JsonResponse);
     }
 
-    $Log->addDescription(_('Clave actualizada'));
-    $Log->addDetailsHtml(_('Login'), UserPass::getItem()->getItemData()->getUserLogin());
+    $Log->addDescription(__('Clave actualizada', false));
+    $Log->addDetailsHtml(__('Login', false), UserPass::getItem()->getItemData()->getUserLogin());
     $Log->writeLog();
 
     $JsonResponse->setStatus(0);
     $JsonResponse->setDescription($Log->getDescription());
     Json::returnJson($JsonResponse);
 } else {
-    Response::printJson(_('La clave es incorrecta o no coincide'));
+    Response::printJson(__('La clave es incorrecta o no coincide'));
 }

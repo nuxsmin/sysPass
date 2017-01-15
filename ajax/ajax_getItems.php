@@ -43,7 +43,7 @@ $itemType = Request::analyze('itemType', false);
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJson(_('CONSULTA INVÁLIDA'));
+    Response::printJson(__('CONSULTA INVÁLIDA'));
 }
 
 $Controller = new ItemsController();

@@ -24,7 +24,7 @@
 
 namespace SP\Api;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Auth\Auth;
 use SP\Auth\AuthResult;
@@ -87,7 +87,7 @@ abstract class ApiBase implements ApiInterface
         $this->actionId = $this->getActionId($data->method);
 
         if (!AuthUtil::checkAuthToken($this->actionId, $data->params->authToken)) {
-            throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
         }
 
         $this->data = $data;
@@ -146,7 +146,7 @@ abstract class ApiBase implements ApiInterface
     protected function getParam($name, $required = false, $default = null)
     {
         if ($required === true && !isset($this->data->params->$name)) {
-            throw new InvalidArgumentException(SPException::SP_WARNING, _('Parámetros incorrectos'), $this->getHelp($this->data->method));
+            throw new InvalidArgumentException(SPException::SP_WARNING, __('Parámetros incorrectos', false), $this->getHelp($this->data->method));
         }
 
         if (isset($this->data->params->$name)) {
@@ -177,7 +177,7 @@ abstract class ApiBase implements ApiInterface
                 }
             }
         } else {
-            throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
         }
 
         $UserPass = UserPass::getItem($this->UserData);
@@ -189,7 +189,7 @@ abstract class ApiBase implements ApiInterface
             $this->auth = true;
             $this->mPass = $UserPass->getClearUserMPass();
         } else {
-            throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
         }
     }
 
@@ -202,7 +202,7 @@ abstract class ApiBase implements ApiInterface
     protected function checkActionAccess($action)
     {
         if ($this->actionId !== $action) {
-            throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
         }
     }
 
@@ -234,7 +234,7 @@ abstract class ApiBase implements ApiInterface
     protected function checkAuth()
     {
         if ($this->auth === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
         }
     }
 }

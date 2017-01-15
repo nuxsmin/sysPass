@@ -24,7 +24,7 @@
 
 namespace SP\Html\Assets;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Interface IconInterface

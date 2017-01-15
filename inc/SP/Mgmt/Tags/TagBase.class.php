@@ -27,7 +27,7 @@ namespace SP\Mgmt\Tags;
 use SP\DataModel\TagData;
 use SP\Mgmt\ItemBase;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class TagBase

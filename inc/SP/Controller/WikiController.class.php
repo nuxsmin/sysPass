@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
@@ -78,14 +78,14 @@ class WikiController extends ControllerBase implements ActionsInterface
                     $this->invalidAction();
             }
 
-            if (count($this->jsonResponse->getData()) === 0) {
-                $this->jsonResponse->setData(['html' => $this->render()]);
+            if (count($this->JsonResponse->getData()) === 0) {
+                $this->JsonResponse->setData(['html' => $this->render()]);
             }
         } catch (\Exception $e) {
-            $this->jsonResponse->setDescription($e->getMessage());
+            $this->JsonResponse->setDescription($e->getMessage());
         }
 
-        Json::returnJson($this->jsonResponse);
+        Json::returnJson($this->JsonResponse);
     }
 
     /**
@@ -123,6 +123,6 @@ class WikiController extends ControllerBase implements ActionsInterface
         $this->view->assign('pageInfo', $pageInfo);
         $this->view->assign('header', $headerData);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 }

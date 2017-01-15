@@ -30,7 +30,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
 use SP\Util\Json;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ApiRequest encargada de atender la peticiones a la API de sysPass
@@ -142,7 +142,7 @@ class ApiRequest
                 $this->verb = $requestMethod;
                 break;
             default:
-                throw new SPException(SPException::SP_WARNING, _('Método inválido'), '', -32600);
+                throw new SPException(SPException::SP_WARNING, __('Método inválido', false), '', -32600);
         }
     }
 
@@ -159,9 +159,9 @@ class ApiRequest
         $data = json_decode(Request::parse($request, '', true));
 
         if (!is_object($data) || json_last_error() !== JSON_ERROR_NONE) {
-            throw new SPException(SPException::SP_WARNING, _('Datos inválidos'), '', -32700);
+            throw new SPException(SPException::SP_WARNING, __('Datos inválidos', false), '', -32700);
         } elseif (!isset($data->jsonrpc, $data->method, $data->params, $data->id)) {
-            throw new SPException(SPException::SP_WARNING, _('Formato incorrecto'), '', -32600);
+            throw new SPException(SPException::SP_WARNING, __('Formato incorrecto', false), '', -32600);
         }
 
         $this->data = $data;
@@ -175,7 +175,7 @@ class ApiRequest
     private function checkBasicData()
     {
         if (!isset($this->data->params->authToken)) {
-            throw new SPException(SPException::SP_WARNING, _('Parámetros incorrectos'), '', -32602);
+            throw new SPException(SPException::SP_WARNING, __('Parámetros incorrectos', false), '', -32602);
         }
     }
 
@@ -189,7 +189,7 @@ class ApiRequest
         $this->ApiReflection = new ReflectionClass(SyspassApi::class);
 
         if (!$this->ApiReflection->hasMethod($this->data->method)) {
-            throw new SPException(SPException::SP_WARNING, _('Acción Inválida'), '', -32601);
+            throw new SPException(SPException::SP_WARNING, __('Acción Inválida', false), '', -32601);
         }
     }
 

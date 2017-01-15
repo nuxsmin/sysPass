@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Interface Item para la implementación de clases de elementos

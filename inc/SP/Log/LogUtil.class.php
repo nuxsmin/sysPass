@@ -37,10 +37,11 @@ class LogUtil
      * @param string $extension La extensión no cargada
      * @param string $source    El origen del error
      * @return Log
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function extensionNotLoaded($extension, $source = __FUNCTION__)
     {
-        $msg = sprintf(_('Extensión \'%s\' no cargada'), $extension);
+        $msg = sprintf(__('Extensión \'%s\' no cargada'), $extension);
 
         return Log::writeNewLog($source, $msg, Log::ERROR);
     }

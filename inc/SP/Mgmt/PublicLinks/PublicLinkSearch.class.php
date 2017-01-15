@@ -33,7 +33,7 @@ use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class PublicLinkUtil con utilidades para la gestión de enlaces
@@ -69,7 +69,7 @@ class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
 
             $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
             $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getUserId()));
-            $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? _('ON') : _('OFF'));
+            $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? __('ON') : __('OFF'));
             $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getDateAdd()));
             $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getDateExpire()));
             $PublicLinkListData->setCountViews($PublicLinkData->getCountViews() . '/' . $PublicLinkData->getMaxCountViews());

@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\Tags;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\TagData;
@@ -50,7 +50,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, _('Etiqueta duplicada'));
+            throw new SPException(SPException::SP_INFO, __('Etiqueta duplicada', false));
         }
 
         $query = /** @lang SQL */
@@ -62,7 +62,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getTagHash());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al crear etiqueta'));
+            throw new SPException(SPException::SP_ERROR, __('Error al crear etiqueta', false));
         }
 
         return $this;
@@ -116,7 +116,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al eliminar etiqueta'));
+            throw new SPException(SPException::SP_ERROR, __('Error al eliminar etiqueta', false));
         }
 
         return $this;
@@ -129,7 +129,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_INFO, _('Etiqueta duplicada'));
+            throw new SPException(SPException::SP_INFO, __('Etiqueta duplicada', false));
         }
 
         $query = /** @lang SQL */
@@ -142,7 +142,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getTagId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al actualizar etiqueta'));
+            throw new SPException(SPException::SP_ERROR, __('Error al actualizar etiqueta', false));
         }
 
         return $this;
@@ -182,7 +182,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener etiqueta'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener etiqueta', false));
         }
 
         return $queryRes;

@@ -32,7 +32,7 @@ use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class UserLdap
@@ -66,7 +66,7 @@ class UserLdap extends UserBase implements ItemInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, _('Login/email de usuario duplicados'));
+            throw new SPException(SPException::SP_INFO, __('Login/email de usuario duplicados', false));
         }
 
         $passdata = UserPass::makeUserPassHash($this->itemData->getUserPass());
@@ -97,7 +97,7 @@ class UserLdap extends UserBase implements ItemInterface
         $Data->addParam($this->itemData->getUserName());
         $Data->addParam($this->itemData->getUserLogin());
         $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam(_('Usuario de LDAP'));
+        $Data->addParam(__('Usuario de LDAP'));
         $Data->addParam($groupId);
         $Data->addParam($profileId);
         $Data->addParam((int)$this->itemData->isUserIsAdminApp());
@@ -108,21 +108,21 @@ class UserLdap extends UserBase implements ItemInterface
         $Data->addParam($passdata['salt']);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al guardar los datos de LDAP'));
+            throw new SPException(SPException::SP_ERROR, __('Error al guardar los datos de LDAP', false));
         }
 
         $this->itemData->setUserId(DB::getLastId());
 
         if (!$groupId || !$profileId) {
-            $LogEmail = new Log(_('Activación Cuenta'));
-            $LogEmail->addDescription(_('Su cuenta está pendiente de activación.'));
-            $LogEmail->addDescription(_('En breve recibirá un email de confirmación.'));
+            $LogEmail = new Log(__('Activación Cuenta', false));
+            $LogEmail->addDescription(__('Su cuenta está pendiente de activación.', false));
+            $LogEmail->addDescription(__('En breve recibirá un email de confirmación.', false));
 
             Email::sendEmail($LogEmail, $this->itemData->getUserEmail(), false);
         }
 
-        $Log = new Log(_('Nuevo usuario de LDAP'));
-        $Log->addDescription(sprintf("%s (%s)", $this->itemData->getUserName(), $this->itemData->getUserLogin()));
+        $Log = new Log(__('Nuevo usuario de LDAP', false));
+        $Log->addDescription(sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -165,7 +165,7 @@ class UserLdap extends UserBase implements ItemInterface
         $Data->addParam($this->itemData->getUserLogin());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al actualizar la clave del usuario en la BBDD'));
+            throw new SPException(SPException::SP_ERROR, __('Error al actualizar la clave del usuario en la BBDD', false));
         }
 
         return $this;

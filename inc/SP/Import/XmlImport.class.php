@@ -27,7 +27,7 @@ namespace SP\Import;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase XmlImport para usarla como envoltorio para llamar a la clase que corresponda
@@ -61,8 +61,8 @@ class XmlImport extends XmlImportBase
         }
 
         if (is_object($Import)){
-            Log::writeNewLog(_('Importar Cuentas'), _('Inicio'));
-            Log::writeNewLog(_('Importar Cuentas'), sprintf(_('Formato detectado: %s'), strtoupper($format)));
+            Log::writeNewLog(__('Importar Cuentas', false), __('Inicio', false));
+            Log::writeNewLog(__('Importar Cuentas', false), sprintf(__('Formato detectado: %s', false), strtoupper($format)));
 
             $Import->doImport();
         }

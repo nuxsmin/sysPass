@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Account\AccountSearch;
 use SP\Account\AccountsSearchItem;
@@ -208,8 +208,8 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_ACC_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionView->setName(_('Detalles de Cuenta'));
-        $GridActionView->setTitle(_('Detalles de Cuenta'));
+        $GridActionView->setName(__('Detalles de Cuenta'));
+        $GridActionView->setTitle(__('Detalles de Cuenta'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setReflectionFilter(AccountsSearchItem::class, 'isShowView');
         $GridActionView->addData('action-id', self::ACTION_ACC_VIEW);
@@ -219,8 +219,8 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionViewPass = new DataGridAction();
         $GridActionViewPass->setId(self::ACTION_ACC_VIEW_PASS);
         $GridActionViewPass->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionViewPass->setName(_('Ver Clave'));
-        $GridActionViewPass->setTitle(_('Ver Clave'));
+        $GridActionViewPass->setName(__('Ver Clave'));
+        $GridActionViewPass->setTitle(__('Ver Clave'));
         $GridActionViewPass->setIcon($this->icons->getIconViewPass());
         $GridActionViewPass->setReflectionFilter(AccountsSearchItem::class, 'isShowViewPass');
         $GridActionViewPass->addData('action-id', self::ACTION_ACC_VIEW_PASS);
@@ -234,8 +234,8 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionCopyPass = new DataGridAction();
         $GridActionCopyPass->setId(self::ACTION_ACC_VIEW_PASS);
         $GridActionCopyPass->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionCopyPass->setName(_('Copiar Clave en Portapapeles'));
-        $GridActionCopyPass->setTitle(_('Copiar Clave en Portapapeles'));
+        $GridActionCopyPass->setName(__('Copiar Clave en Portapapeles'));
+        $GridActionCopyPass->setTitle(__('Copiar Clave en Portapapeles'));
         $GridActionCopyPass->setIcon($ClipboardIcon);
         $GridActionCopyPass->setReflectionFilter(AccountsSearchItem::class, 'isShowCopyPass');
         $GridActionCopyPass->addData('action-id', self::ACTION_ACC_VIEW_PASS);
@@ -248,8 +248,8 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_ACC_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
-        $GridActionEdit->setName(_('Editar Cuenta'));
-        $GridActionEdit->setTitle(_('Editar Cuenta'));
+        $GridActionEdit->setName(__('Editar Cuenta'));
+        $GridActionEdit->setTitle(__('Editar Cuenta'));
         $GridActionEdit->setIcon($EditIcon);
         $GridActionEdit->setReflectionFilter(AccountsSearchItem::class, 'isShowEdit');
         $GridActionEdit->addData('action-id', self::ACTION_ACC_EDIT);
@@ -261,8 +261,8 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionCopy = new DataGridAction();
         $GridActionCopy->setId(self::ACTION_ACC_COPY);
         $GridActionCopy->setType(DataGridActionType::NEW_ITEM);
-        $GridActionCopy->setName(_('Copiar Cuenta'));
-        $GridActionCopy->setTitle(_('Copiar Cuenta'));
+        $GridActionCopy->setName(__('Copiar Cuenta'));
+        $GridActionCopy->setTitle(__('Copiar Cuenta'));
         $GridActionCopy->setIcon($CopyIcon);
         $GridActionCopy->setReflectionFilter(AccountsSearchItem::class, 'isShowCopy');
         $GridActionCopy->addData('action-id', self::ACTION_ACC_COPY);
@@ -274,8 +274,8 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_ACC_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Cuenta'));
-        $GridActionDel->setTitle(_('Eliminar Cuenta'));
+        $GridActionDel->setName(__('Eliminar Cuenta'));
+        $GridActionDel->setTitle(__('Eliminar Cuenta'));
         $GridActionDel->setIcon($DeleteIcon);
         $GridActionDel->setReflectionFilter(AccountsSearchItem::class, 'isShowDelete');
         $GridActionDel->addData('action-id', self::ACTION_ACC_DELETE);
@@ -284,8 +284,8 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
 
         $GridActionRequest = new DataGridAction();
         $GridActionRequest->setId(self::ACTION_ACC_REQUEST);
-        $GridActionRequest->setName(_('Solicitar Modificación'));
-        $GridActionRequest->setTitle(_('Solicitar Modificación'));
+        $GridActionRequest->setName(__('Solicitar Modificación'));
+        $GridActionRequest->setTitle(__('Solicitar Modificación'));
         $GridActionRequest->setIcon($this->icons->getIconEmail());
         $GridActionRequest->setReflectionFilter(AccountsSearchItem::class, 'isShowRequest');
         $GridActionRequest->addData('action-id', self::ACTION_ACC_REQUEST);
@@ -294,8 +294,8 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
 
         $GridActionOptional = new DataGridAction();
         $GridActionOptional->setId(0);
-        $GridActionOptional->setName(_('Más Acciones'));
-        $GridActionOptional->setTitle(_('Más Acciones'));
+        $GridActionOptional->setName(__('Más Acciones'));
+        $GridActionOptional->setTitle(__('Más Acciones'));
         $GridActionOptional->setIcon($this->icons->getIconOptional());
         $GridActionOptional->setReflectionFilter(AccountsSearchItem::class, 'isShowOptional');
         $GridActionOptional->addData('onclick', 'account/menu');
@@ -342,36 +342,36 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
     private function getHeaderSort()
     {
         $GridSortCustomer = new DataGridSort();
-        $GridSortCustomer->setName(_('Cliente'))
-            ->setTitle(_('Ordenar por Cliente'))
+        $GridSortCustomer->setName(__('Cliente'))
+            ->setTitle(__('Ordenar por Cliente'))
             ->setSortKey(AccountSearch::SORT_CUSTOMER)
             ->setIconUp($this->icons->getIconUp())
             ->setIconDown($this->icons->getIconDown());
 
         $GridSortName = new DataGridSort();
-        $GridSortName->setName(_('Nombre'))
-            ->setTitle(_('Ordenar por Nombre'))
+        $GridSortName->setName(__('Nombre'))
+            ->setTitle(__('Ordenar por Nombre'))
             ->setSortKey(AccountSearch::SORT_NAME)
             ->setIconUp($this->icons->getIconUp())
             ->setIconDown($this->icons->getIconDown());
 
         $GridSortCategory = new DataGridSort();
-        $GridSortCategory->setName(_('Categoría'))
-            ->setTitle(_('Ordenar por Categoría'))
+        $GridSortCategory->setName(__('Categoría'))
+            ->setTitle(__('Ordenar por Categoría'))
             ->setSortKey(AccountSearch::SORT_CATEGORY)
             ->setIconUp($this->icons->getIconUp())
             ->setIconDown($this->icons->getIconDown());
 
         $GridSortLogin = new DataGridSort();
-        $GridSortLogin->setName(_('Usuario'))
-            ->setTitle(_('Ordenar por Usuario'))
+        $GridSortLogin->setName(__('Usuario'))
+            ->setTitle(__('Ordenar por Usuario'))
             ->setSortKey(AccountSearch::SORT_LOGIN)
             ->setIconUp($this->icons->getIconUp())
             ->setIconDown($this->icons->getIconDown());
 
         $GridSortUrl = new DataGridSort();
-        $GridSortUrl->setName(_('URL / IP'))
-            ->setTitle(_('Ordenar por URL / IP'))
+        $GridSortUrl->setName(__('URL / IP'))
+            ->setTitle(__('Ordenar por URL / IP'))
             ->setSortKey(AccountSearch::SORT_URL)
             ->setIconUp($this->icons->getIconUp())
             ->setIconDown($this->icons->getIconDown());

@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\CustomFields;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Crypt;
 use SP\DataModel\CustomFieldData;

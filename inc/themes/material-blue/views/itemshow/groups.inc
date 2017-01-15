@@ -14,38 +14,39 @@
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo _('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Nombre'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $group->getUsergroupName(); ?>">
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo _('Nombre del grupo'); ?></label>
+                               for="name"><?php echo __('Nombre del grupo'); ?></label>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td class="descField"><?php echo _('Descripción'); ?></td>
+                <td class="descField"><?php echo __('Descripción'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="description" name="description" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $group->getUsergroupDescription(); ?>">
                         <label class="mdl-textfield__label"
-                               for="description"><?php echo _('Descripción del grupo'); ?></label>
+                               for="description"><?php echo __('Descripción del grupo'); ?></label>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td class="descField"><?php echo _('Usuarios'); ?></td>
+                <td class="descField"><?php echo __('Usuarios'); ?></td>
                 <td class="valField">
                     <select id="selUsers" name="users[]" multiple="multiple" class="select-box"
-                            title="<?php echo _('Usuarios'); ?>">
-                        <option value=""><?php echo _('Seleccionar Usuarios'); ?></option>
-                        <?php foreach ($users as $user): ?>
+                            title="<?php echo __('Usuarios'); ?>">
+                        <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
+                        <?php /** @var array $users */
+                        foreach ($users as $user): ?>
                             <?php $selected = \SP\Util\Util::checkInObjectArray($groupUsers, 'getUsertogroupUserId', $user->id) ? 'selected' : ''; ?>
                             <option
                                 value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>

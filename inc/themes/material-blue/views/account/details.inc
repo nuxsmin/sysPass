@@ -5,7 +5,7 @@
 
 <fieldset class="data round">
     <legend>
-        <?php echo _('Detalles'); ?>
+        <?php echo __('Detalles'); ?>
         <i id="btn-filters" class="material-icons show-extra-info" data-state="0"
            data-target="#data-details"
            data-icon-down="<?php echo $icons->getIconDown()->getIcon(); ?>"
@@ -15,24 +15,24 @@
     <div id="data-details">
         <table>
             <tr>
-                <td class="descField"><?php echo _('Visitas'); ?></td>
+                <td class="descField"><?php echo __('Visitas'); ?></td>
                 <td class="valField"><?php echo $accountData->getAccountCountView() . '(' . $accountData->getAccountCountDecrypt() . ')'; ?></td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Fecha Alta'); ?></td>
+                <td class="descField"><?php echo __('Fecha Alta'); ?></td>
                 <td class="valField"><?php echo $accountData->getAccountDateAdd() ?></td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Creador'); ?></td>
+                <td class="descField"><?php echo __('Creador'); ?></td>
                 <td class="valField"><?php echo $accountData->getUserName() ?: $accountData->getUserLogin(); ?></td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Grupo Principal'); ?></td>
+                <td class="descField"><?php echo __('Grupo Principal'); ?></td>
                 <td class="valField"><?php echo $accountData->getUsergroupName(); ?></td>
             </tr>
             <?php if (is_array($accountOtherUsers) && count($accountOtherUsers) > 0): ?>
                 <tr>
-                    <td class="descField"><?php echo _('Usuarios Secundarios'); ?></td>
+                    <td class="descField"><?php echo __('Usuarios Secundarios'); ?></td>
                     <td class="valField">
                         <?php
                         $users = [];
@@ -52,7 +52,7 @@
             <?php endif; ?>
             <?php if (is_array($accountOtherGroups) && count($accountOtherGroups) > 0): ?>
                 <tr>
-                    <td class="descField"><?php echo _('Grupos Secundarios'); ?></td>
+                    <td class="descField"><?php echo __('Grupos Secundarios'); ?></td>
                     <td class="valField">
                         <?php
                         $groups = [];
@@ -73,20 +73,20 @@
             <?php endif; ?>
             <?php if ($AccountAcl->isModified()): ?>
                 <tr>
-                    <td class="descField"><?php echo _('Fecha Edición'); ?></td>
+                    <td class="descField"><?php echo __('Fecha Edición'); ?></td>
                     <td class="valField"><?php echo $accountData->getAccountDateEdit(); ?></td>
                 </tr>
                 <tr>
-                    <td class="descField"><?php echo _('Editor'); ?></td>
+                    <td class="descField"><?php echo __('Editor'); ?></td>
                     <td class="valField"><?php echo $accountData->getUserEditName() ?: $accountData->getUserEditLogin(); ?></td>
                 </tr>
             <?php endif; ?>
             <tr>
-                <td class="descField"><?php echo _('Fecha de Clave'); ?></td>
+                <td class="descField"><?php echo __('Fecha de Clave'); ?></td>
                 <td class="valField"><?php echo $accountPassDate; ?></td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Fecha Caducidad Clave'); ?></td>
+                <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
                 <td class="valField"><?php echo $accountPassDateChange; ?></td>
             </tr>
         </table>

@@ -30,7 +30,7 @@ use SP\Core\Session;
 use SP\Mgmt\Users\UserPreferences;
 use Theme\Icons;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class Theme

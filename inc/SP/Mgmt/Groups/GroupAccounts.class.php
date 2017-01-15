@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\Groups;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupAccountsData;
@@ -65,7 +65,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al eliminar grupos asociados a la cuenta'));
+            throw new SPException(SPException::SP_ERROR, __('Error al eliminar grupos asociados a la cuenta', false));
         }
 
         return $this;
@@ -97,7 +97,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
         }
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al actualizar los grupos secundarios'));
+            throw new SPException(SPException::SP_ERROR, __('Error al actualizar los grupos secundarios', false));
         }
 
         return $this;

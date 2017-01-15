@@ -48,14 +48,14 @@ $Json = new JsonResponse();
 
 if (!Init::isLoggedIn()) {
     $Json->setStatus(10);
-    $Json->setDescription(_('La sesión no se ha iniciado o ha caducado'));
+    $Json->setDescription(__('La sesión no se ha iniciado o ha caducado'));
     Json::returnJson($Json);
 }
 
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    $Json->setDescription(_('CONSULTA INVÁLIDA'));
+    $Json->setDescription(__('CONSULTA INVÁLIDA'));
     Json::returnJson($Json);
 }
 
@@ -86,13 +86,13 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
         Util::reload();
 
         $Json->setStatus(0);
-        $Json->setDescription(_('Preferencias actualizadas'));
+        $Json->setDescription(__('Preferencias actualizadas'));
     } catch (SPException $e) {
         $Json->setDescription($e->getMessage());
     }
 
     Json::returnJson($Json);
 } else {
-    $Json->setDescription(_('Acción Inválida'));
+    $Json->setDescription(__('Acción Inválida'));
     Json::returnJson($Json);
 }

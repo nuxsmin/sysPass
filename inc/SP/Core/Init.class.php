@@ -38,7 +38,7 @@ use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase Init para la inicialización del entorno de sysPass
@@ -80,6 +80,8 @@ class Init
      * Inicializar la aplicación.
      * Esta función inicializa las variables de la aplicación y muestra la página
      * según el estado en el que se encuentre.
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public static function start()
     {
@@ -143,7 +145,7 @@ class Init
 
         // Comprobar si la Base de datos existe
         if (!DBUtil::checkDatabaseExist()) {
-            self::initError(_('Error en la verificación de la base de datos'));
+            self::initError(__('Error en la verificación de la base de datos'));
         }
 
         // Comprobar si es cierre de sesión
@@ -263,6 +265,9 @@ class Init
 
     /**
      * Iniciar la sesión PHP
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function startSession()
     {
@@ -272,11 +277,11 @@ class Init
         // Si la sesión no puede ser iniciada, devolver un error 500
         if (session_start() === false) {
 
-            Log::newLog(_('Sesion'), _('La sesión no puede ser inicializada'));
+            Log::newLog(__('Sesion', false), __('La sesión no puede ser inicializada', false));
 
             header('HTTP/1.1 500 Internal Server Error');
 
-            self::initError(_('La sesión no puede ser inicializada'), _('Consulte con el administrador'));
+            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
         }
     }
 
@@ -391,13 +396,14 @@ class Init
      * Registrar la actualización de la configuración
      *
      * @param $version
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function logConfigUpgrade($version)
     {
-        $Log = new Log(_('Actualización'));
-        $Log->addDescription(_('Actualización de versión realizada.'));
-        $Log->addDetails(_('Versión'), $version);
-        $Log->addDetails(_('Tipo'), 'config');
+        $Log = new Log(__('Actualización', false));
+        $Log->addDescription(__('Actualización de versión realizada.', false));
+        $Log->addDetails(__('Versión', false), $version);
+        $Log->addDetails(__('Tipo', false), 'config');
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -406,6 +412,8 @@ class Init
     /**
      * Comprobar el archivo de configuración.
      * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     private static function checkConfig()
     {
@@ -415,19 +423,19 @@ class Init
 
         if (!is_dir(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config')) {
             clearstatcache();
-            self::initError(_('El directorio "/config" no existe'));
+            self::initError(__('El directorio "/config" no existe'));
         }
 
         if (!is_writable(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config')) {
             clearstatcache();
-            self::initError(_('No es posible escribir en el directorio "config"'));
+            self::initError(__('No es posible escribir en el directorio "config"'));
         }
 
         $configPerms = decoct(fileperms(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config') & 0777);
 
         if (!Checks::checkIsWindows() && $configPerms !== "750") {
             clearstatcache();
-            self::initError(_('Los permisos del directorio "/config" son incorrectos'), _('Actual:') . ' ' . $configPerms . ' - ' . _('Necesario: 750'));
+            self::initError(__('Los permisos del directorio "/config" son incorrectos'), __('Actual:') . ' ' . $configPerms . ' - ' . __('Necesario: 750'));
         }
     }
 
@@ -511,7 +519,7 @@ class Init
             header('Status: 503 Service Temporarily Unavailable');
             header('Retry-After: 120');
 
-            self::initError(_('Aplicación en mantenimiento'), _('En breve estará operativa'));
+            self::initError(__('Aplicación en mantenimiento'), __('En breve estará operativa'));
         }
 
         return false;
@@ -538,16 +546,18 @@ class Init
 
     /**
      * Escribir la información de logout en el registro de eventos.
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function wrLogoutInfo()
     {
         $inactiveTime = round((time() - Session::getLastActivity()) / 60, 2);
         $totalTime = round((time() - Session::getStartActivity()) / 60, 2);
 
-        $Log = new Log(_('Finalizar sesión'));
-        $Log->addDetails(_('Usuario'), Session::getUserData()->getUserLogin());
-        $Log->addDetails(_('Tiempo inactivo'), $inactiveTime . ' min.');
-        $Log->addDetails(_('Tiempo total'), $totalTime . ' min.');
+        $Log = new Log(__('Finalizar sesión', false));
+        $Log->addDetails(__('Usuario', false), Session::getUserData()->getUserLogin());
+        $Log->addDetails(__('Tiempo inactivo', false), $inactiveTime . ' min.');
+        $Log->addDetails(__('Tiempo total', false), $totalTime . ' min.');
         $Log->writeLog();
     }
 
@@ -594,7 +604,7 @@ class Init
                     Config::saveConfig(null, false);
                 }
 
-                self::initError(_('La aplicación necesita actualizarse'), sprintf(_('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade">' . _('Actualizar') . '</a>'));
+                self::initError(__('La aplicación necesita actualizarse'), sprintf(__('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade">' . __('Actualizar') . '</a>'));
             } else {
                 $action = Request::analyze('a');
                 $hash = Request::analyze('h');
@@ -612,7 +622,7 @@ class Init
                         Config::getConfig()->setUpgradeKey('');
                         Config::saveConfig();
                     } catch (SPException $e) {
-                        $hint = $e->getHint() . '<p class="center"><a href="index.php?nodbupgrade=1">' . _('Acceder') . '</a></p>';
+                        $hint = $e->getHint() . '<p class="center"><a href="index.php?nodbupgrade=1">' . __('Acceder') . '</a></p>';
                         self::initError($e->getMessage(), $hint);
                     }
                 } else {
@@ -623,10 +633,10 @@ class Init
         }
 
         if ($update === true) {
-            $Log = new Log(_('Actualización'));
-            $Log->addDescription(_('Actualización de versión realizada.'));
-            $Log->addDetails(_('Versión'), $appVersion);
-            $Log->addDetails(_('Tipo'), 'db');
+            $Log = new Log(__('Actualización', false));
+            $Log->addDescription(__('Actualización de versión realizada.', false));
+            $Log->addDetails(__('Versión', false), $appVersion);
+            $Log->addDetails(__('Tipo', false), 'db');
             $Log->writeLog();
 
             Email::sendEmail($Log);

@@ -26,7 +26,7 @@ namespace SP\Core\Exceptions;
 
 use Exception;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Extender la clase Exception para mostrar ayuda en los mensajes

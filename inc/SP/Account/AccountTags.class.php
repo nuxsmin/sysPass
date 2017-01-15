@@ -30,7 +30,7 @@ use SP\DataModel\AccountExtData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class AccountTags
@@ -72,7 +72,7 @@ class AccountTags
     public function addTags(AccountExtData $accountData)
     {
         if (!$this->deleteTags($accountData)) {
-            throw new SPException(SPException::SP_WARNING, _('Error al eliminar las etiquetas de la cuenta'));
+            throw new SPException(SPException::SP_WARNING, __('Error al eliminar las etiquetas de la cuenta', false));
         }
 
         if (count($accountData->getTags()) === 0){

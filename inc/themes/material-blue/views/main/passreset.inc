@@ -4,7 +4,7 @@
     <div id="actions">
         <form id="frmPassReset" action="" method="post" class="form-action" data-onsubmit="user/passreset">
             <fieldset id="resetdata">
-                <legend><?php echo _('Solicitud de Cambio de Clave'); ?></legend>
+                <legend><?php echo __('Solicitud de Cambio de Clave'); ?></legend>
                 <?php if (!$passReset): ?>
 
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -13,7 +13,7 @@
                                value="<?php echo $login; ?>" maxlength="80" autocomplete="off"
                                autofocus>
                         <label class="mdl-textfield__label"
-                               for="login"><?php echo _('Usuario'); ?></label>
+                               for="login"><?php echo __('Usuario'); ?></label>
                     </div>
                     <br>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -22,7 +22,7 @@
                                value="<?php echo $email; ?>" maxlength="80"
                                autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="email"><?php echo _('Email del Usuario'); ?></label>
+                               for="email"><?php echo __('Email del Usuario'); ?></label>
                     </div>
                 <?php else: ?>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -31,7 +31,7 @@
                                value="" maxlength="255"
                                autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="pass"><?php echo _('Clave'); ?></label>
+                               for="pass"><?php echo __('Clave'); ?></label>
                     </div>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="passR" name="passR" type="password" required
@@ -39,7 +39,7 @@
                                value="" maxlength="255"
                                autocomplete="off">
                         <label class="mdl-textfield__label"
-                               for="pass"><?php echo _('Clave (repetir)'); ?></label>
+                               for="pass"><?php echo __('Clave (repetir)'); ?></label>
                     </div>
                     <input type="hidden" name="time" value="<?php echo $time; ?>">
                     <input type="hidden" name="hash" value="<?php echo $hash; ?>">
@@ -52,21 +52,21 @@
                 <button id="btnBack" type="button"
                         class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary">
                     <i class="material-icons"
-                       title="<?php echo _('Volver a iniciar sesión'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-                    <?php echo _('Volver'); ?>
+                       title="<?php echo __('Volver a iniciar sesión'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    <?php echo __('Volver'); ?>
                 </button>
 
                 <?php if (!$passReset): ?>
                     <button id="btnRequest" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary">
-                        <?php echo _('Solicitar'); ?>
+                        <?php echo __('Solicitar'); ?>
                         <i class="material-icons"
-                           title="<?php echo _('Solicitar'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
+                           title="<?php echo __('Solicitar'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
                     </button>
                 <?php else: ?>
                     <button id="btnChange" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary">
-                        <?php echo _('Cambiar'); ?>
+                        <?php echo __('Cambiar'); ?>
                         <i class="material-icons"
-                           title="<?php echo _('Cambiar'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
+                           title="<?php echo __('Cambiar'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
                     </button>
                 <?php endif; ?>
             </div>

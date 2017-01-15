@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Account\AccountUtil;
 use SP\Api\ApiTokensUtil;

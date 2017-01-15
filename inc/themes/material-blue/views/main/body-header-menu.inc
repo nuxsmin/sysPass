@@ -43,25 +43,25 @@
             <?php endforeach; ?>
             <?php if ($showPassIcon): ?>
                 <a class="btn-action mdl-navigation__link"
-                   title="<?php echo _('Cambiar Clave de Usuario'); ?>"
+                   title="<?php echo __('Cambiar Clave de Usuario'); ?>"
                    data-onclick="appMgmt/show"
                    data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>"
                    data-item-id="<?php echo $userId; ?>"
                    data-sk="<?php echo $sk; ?>">
                     <i class="btn-action material-icons">security</i>
-                    <?php echo _('Cambiar Clave de Usuario'); ?>
+                    <?php echo __('Cambiar Clave de Usuario'); ?>
                 </a>
             <?php endif; ?>
             <a class="btn-menu mdl-navigation__link"
-               title="<?php echo _('Preferencias de usuario'); ?>"
+               title="<?php echo __('Preferencias de usuario'); ?>"
                data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>">
                 <i class="btn-action material-icons">account_circle</i>
                 <?php printf('%s (%s) %s', $userName, $userGroup, $adminApp); ?>
             </a>
-            <a class="btn-action mdl-navigation__link" title="<?php echo _('Salir'); ?>"
+            <a class="btn-action mdl-navigation__link" title="<?php echo __('Salir'); ?>"
                data-onclick="main/logout">
                 <i class="material-icons">exit_to_app</i>
-                <?php echo _('Salir'); ?>
+                <?php echo __('Salir'); ?>
             </a>
             <a class="mdl-navigation__link" href="#">
                 <?php if ($httpsEnabled): ?>
@@ -71,7 +71,7 @@
                 <?php endif; ?>
 
                 <?php if ($isDemoMode): ?>
-                    <span class="status-info"><?php echo _('Demo'); ?></span>
+                    <span class="status-info"><?php echo __('Demo'); ?></span>
                 <?php endif; ?>
 
                 <?php echo $appInfo['appname'], ' ', $appVersion; ?>

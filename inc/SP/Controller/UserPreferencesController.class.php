@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
@@ -86,7 +86,7 @@ class UserPreferencesController extends TabControllerBase implements ActionsInte
         $this->view->assign('chkTopNavbar', $this->userPrefs->isTopNavbar() ? 'checked="checked"' : '');
         $this->view->assign('chkOptionalActions', $this->userPrefs->isOptionalActions() ? 'checked="checked"' : '');
 
-        $this->view->assign('tabIndex', $this->addTab(_('Preferencias')), 'preferences');
+        $this->view->assign('tabIndex', $this->addTab(__('Preferencias')), 'preferences');
         $this->view->assign('actionId', $this->getAction(), 'preferences');
     }
 

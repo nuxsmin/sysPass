@@ -40,14 +40,14 @@ if (!Init::isLoggedIn()) {
 }
 
 if (!Checks::fileIsEnabled()) {
-    echo _('Gestión de archivos deshabilitada');
+    echo __('Gestión de archivos deshabilitada');
     return false;
 }
 
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printHtmlError(_('CONSULTA INVÁLIDA'));
+    Response::printHtmlError(__('CONSULTA INVÁLIDA'));
 }
 
 $Controller = new ItemListController();

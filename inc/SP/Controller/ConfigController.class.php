@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
@@ -164,7 +164,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('proxyPass', $this->Config->getProxyPass());
 
         $this->view->assign('actionId', $this->getAction(), 'config');
-        $this->view->append('tabs', ['title' => _('General')]);
+        $this->view->append('tabs', ['title' => __('General')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'config');
     }
 
@@ -209,7 +209,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('dokuWikiNamespace', $this->Config->getDokuwikiNamespace());
 
         $this->view->assign('actionId', $this->getAction(), 'wiki');
-        $this->view->append('tabs', ['title' => _('Wiki')]);
+        $this->view->append('tabs', ['title' => __('Wiki')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'wiki');
     }
 
@@ -242,7 +242,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('ldapDefaultProfile', $this->Config->getLdapDefaultProfile());
 
         $this->view->assign('actionId', $this->getAction(), 'ldap');
-        $this->view->append('tabs', ['title' => _('LDAP')]);
+        $this->view->append('tabs', ['title' => __('LDAP')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'ldap');
     }
 
@@ -273,7 +273,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('mailSecurity', ['SSL', 'TLS']);
 
         $this->view->assign('actionId', $this->getAction(), 'mail');
-        $this->view->append('tabs', ['title' => _('Correo')]);
+        $this->view->append('tabs', ['title' => __('Correo')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'mail');
     }
 
@@ -297,7 +297,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('tempMasterMaxTime', isset($this->configDB['tempmaster_maxtime']) ? $this->configDB['tempmaster_maxtime'] : 0);
         $this->view->assign('tempMasterPass', Session::getTemporaryMasterPass());
 
-        $this->view->append('tabs', ['title' => _('Encriptación')]);
+        $this->view->append('tabs', ['title' => __('Encriptación')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'encryption');
     }
 
@@ -335,7 +335,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         );
 
         clearstatcache(true, $this->view->backupFile['absolute']);
-        $this->view->assign('lastBackupTime', file_exists($this->view->backupFile['absolute']) ? _('Último backup') . ': ' . date('r', filemtime($this->view->backupFile['absolute'])) : _('No se encontraron backups'));
+        $this->view->assign('lastBackupTime', file_exists($this->view->backupFile['absolute']) ? __('Último backup') . ': ' . date('r', filemtime($this->view->backupFile['absolute'])) : __('No se encontraron backups'));
 
         $this->view->assign('exportFile',
             ['absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '-' . $exportHash . '.xml',
@@ -344,9 +344,9 @@ class ConfigController extends ControllerBase implements ActionsInterface
         );
 
         clearstatcache(true, $this->view->exportFile['absolute']);
-        $this->view->assign('lastExportTime', file_exists($this->view->exportFile['absolute']) ? _('Última exportación') . ': ' . date('r', filemtime($this->view->exportFile['absolute'])) : _('No se encontró archivo de exportación'));
+        $this->view->assign('lastExportTime', file_exists($this->view->exportFile['absolute']) ? __('Última exportación') . ': ' . date('r', filemtime($this->view->exportFile['absolute'])) : __('No se encontró archivo de exportación'));
 
-        $this->view->append('tabs', ['title' => _('Copia de Seguridad')]);
+        $this->view->append('tabs', ['title' => __('Copia de Seguridad')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'backup');
     }
 
@@ -368,7 +368,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('groups', Group::getItem()->getItemsForSelect());
         $this->view->assign('users', User::getItem()->getItemsForSelect());
 
-        $this->view->append('tabs', ['title' => _('Importar Cuentas')]);
+        $this->view->append('tabs', ['title' => __('Importar Cuentas')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'import');
     }
 
@@ -391,9 +391,9 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('dbName', $this->Config->getDbName() . '@' . $this->Config->getDbHost());
         $this->view->assign('configBackupDate', date('r', $this->configDB['config_backupdate']));
         $this->view->assign('plugins', PluginUtil::getLoadedPlugins());
-        $this->view->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', Config::getConfig()->getSiteLang(), _('No instalado')));
+        $this->view->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', Config::getConfig()->getSiteLang(), __('No instalado')));
 
-        $this->view->append('tabs', ['title' => _('Información')]);
+        $this->view->append('tabs', ['title' => __('Información')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'info');
     }
 }

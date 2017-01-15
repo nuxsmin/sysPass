@@ -66,12 +66,12 @@ class ProfileForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->ProfileData->getUserprofileName()) {
-            throw new ValidationException(_('Es necesario un nombre de perfil'));
+            throw new ValidationException(__('Es necesario un nombre de perfil', false));
         }
     }
 
     /**
-     * @return mixed
+     * @return ProfileData
      */
     public function getItemData()
     {

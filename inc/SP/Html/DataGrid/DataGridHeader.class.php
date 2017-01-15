@@ -24,7 +24,7 @@
 
 namespace SP\Html\DataGrid;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class DataGridHeader para establecer las cabeceras de la matriz

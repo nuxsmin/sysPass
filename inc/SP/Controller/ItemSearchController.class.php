@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Account\AccountUtil;
 use SP\Api\ApiTokensUtil;
@@ -142,13 +142,13 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
                     $this->invalidAction();
             }
 
-            $this->jsonResponse->setCsrf($this->view->sk);
-            $this->jsonResponse->setData(['html' => $this->render()]);
+            $this->JsonResponse->setCsrf($this->view->sk);
+            $this->JsonResponse->setData(['html' => $this->render()]);
         } catch (\Exception $e) {
-            $this->jsonResponse->setDescription($e->getMessage());
+            $this->JsonResponse->setDescription($e->getMessage());
         }
 
-        Json::returnJson($this->jsonResponse);
+        Json::returnJson($this->JsonResponse);
     }
 
     /**
@@ -175,7 +175,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_USR);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -210,7 +210,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_USR);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -237,7 +237,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_USR);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -264,7 +264,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_USR);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -291,7 +291,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_USR);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -318,7 +318,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -345,7 +345,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -372,7 +372,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -399,7 +399,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -426,7 +426,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -453,7 +453,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -480,6 +480,6 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_MGM);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 }

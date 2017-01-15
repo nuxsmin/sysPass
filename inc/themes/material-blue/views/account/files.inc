@@ -2,7 +2,7 @@
 
 <fieldset class="data round">
     <legend>
-        <?php echo _('Archivos'); ?>
+        <?php echo __('Archivos'); ?>
         <i id="btn-filters" class="material-icons show-extra-info" data-state="0"
            data-target="#data-files"
            data-icon-down="<?php echo $icons->getIconDown()->getIcon(); ?>"
@@ -12,7 +12,7 @@
     <div id="data-files">
         <table>
             <tr>
-                <td class="descField"><?php echo _('Archivos'); ?></td>
+                <td class="descField"><?php echo __('Archivos'); ?></td>
                 <td class="valField">
                     <div id="list-account-files"
                          data-item-id="<?php echo $accountId; ?>"
@@ -34,7 +34,7 @@
                             <input type="file" id="inFile" multiple name="inFile"/>
                         </form>
                         <div class="mdl-tooltip" for="drop-account-files">
-                            <?php printf(_('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . _('Tamaño máximo de archivo: %d MB'), $maxFileSize); ?>
+                            <?php printf(__('Soltar archivos aquí (max. 5) o click para seleccionar') . '<br><br>' . __('Tamaño máximo de archivo: %d MB'), $maxFileSize); ?>
                         </div>
                     <?php endif; ?>
                 </td>

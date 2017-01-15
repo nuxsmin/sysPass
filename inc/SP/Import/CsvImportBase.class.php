@@ -32,7 +32,7 @@ use SP\Log\Log;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase CsvImportBase para base de clases de importación desde archivos CSV
@@ -76,7 +76,7 @@ abstract class CsvImportBase extends ImportBase
     {
         $line = 0;
 
-        $Log = new Log(_('Importar Cuentas'));
+        $Log = new Log(__('Importar Cuentas', false));
 
         foreach ($this->file->getFileContent() as $data) {
             $line++;
@@ -87,8 +87,8 @@ abstract class CsvImportBase extends ImportBase
             if ($numfields !== $this->numFields) {
                 throw new SPException(
                     SPException::SP_CRITICAL,
-                    sprintf(_('El número de campos es incorrecto (%d)'), $numfields),
-                    sprintf(_('Compruebe el formato del archivo CSV en línea %s'), $line)
+                    sprintf(__('El número de campos es incorrecto (%d)', false), $numfields),
+                    sprintf(__('Compruebe el formato del archivo CSV en línea %s', false), $line)
                 );
             }
 
@@ -122,12 +122,12 @@ abstract class CsvImportBase extends ImportBase
             try {
                 $this->addAccount($AccountData);
 
-                $Log->addDescription(sprintf(_('Cuenta importada: %s'), $accountName));
+                $Log->addDescription(sprintf(__('Cuenta importada: %s', false), $accountName));
             } catch (SPException $e) {
                 // Escribir los mensajes pendientes
                 $Log->writeLog(true);
-                $Log->addDescription(_('Error importando cuenta'));
-                $Log->addDescription(sprintf(_('Error procesando línea %s'), $line));
+                $Log->addDescription(__('Error importando cuenta', false));
+                $Log->addDescription(sprintf(__('Error procesando línea %s', false), $line));
                 $Log->addDescription($e->getMessage());
                 // Flush y reset
                 $Log->writeLog(true);

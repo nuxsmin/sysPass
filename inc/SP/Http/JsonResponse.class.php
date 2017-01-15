@@ -93,7 +93,7 @@ class JsonResponse implements \JsonSerializable
      */
     public function setDescription($description)
     {
-        $this->description = $description;
+        $this->description = __($description);
 
         return $this;
     }
@@ -199,7 +199,7 @@ class JsonResponse implements \JsonSerializable
      */
     public function addMessage($message)
     {
-        $this->messages[] = $message;
+        $this->messages[] = __($message);
         return $this;
     }
 

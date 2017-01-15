@@ -27,7 +27,7 @@ namespace SP\Core;
 use SP\Config\ConfigDB;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class CryptMasterPass para la gestión de la clave maestra

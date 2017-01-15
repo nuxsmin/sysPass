@@ -24,7 +24,7 @@
 
 namespace SP\Api;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
@@ -101,14 +101,8 @@ class ApiTokens
         try {
             DB::getQuery($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error interno', false));
         }
-
-        $Log = new Log(_('Nueva Autorización'));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->userId));
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
     }
 
     /**
@@ -134,11 +128,11 @@ class ApiTokens
         try {
             DB::getResults($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error interno', false));
         }
 
         if ($Data->getQueryNumRows() === 1) {
-            throw new SPException(SPException::SP_WARNING, _('La autorización ya existe'));
+            throw new SPException(SPException::SP_WARNING, __('La autorización ya existe', false));
         }
     }
 
@@ -162,7 +156,7 @@ class ApiTokens
         try {
             DB::getQuery($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error interno', false));
         }
     }
 
@@ -193,7 +187,7 @@ class ApiTokens
         try {
             $queryRes = DB::getResults($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error interno', false));
         }
 
         if ($Data->getQueryNumRows() === 0) {
@@ -237,14 +231,8 @@ class ApiTokens
         try {
             DB::getQuery($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error interno', false));
         }
-
-        $Log = new Log(_('Actualizar Autorización'));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->userId));
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
     }
 
     /**
@@ -263,14 +251,8 @@ class ApiTokens
         try {
             DB::getQuery($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error interno', false));
         }
-
-        $Log = new Log(_('Eliminar Autorización'));
-        $Log->addDetails(_('ID'), $this->tokenId);
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
     }
 
     /**

@@ -23,7 +23,7 @@
                 <div class="files-item-actions">
                     <?php if ($deleteEnabled === 1): ?>
                         <i class="btn-action material-icons <?php echo $icons->getIconDelete()->getClass(); ?>"
-                           title="<?php echo _('Eliminar Archivo'); ?>"
+                           title="<?php echo __('Eliminar Archivo'); ?>"
                            data-item-id="<?php echo $file->getAccfileId(); ?>"
                            data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_DELETE; ?>"
                            data-onclick="file/delete">
@@ -31,13 +31,13 @@
                     <?php endif; ?>
 
                     <i class="btn-action material-icons <?php echo $icons->getIconDownload()->getClass(); ?>"
-                       title="<?php echo _('Descargar Archivo'); ?>"
+                       title="<?php echo __('Descargar Archivo'); ?>"
                        data-item-id="<?php echo $file->getAccfileId(); ?>"
                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_DOWNLOAD; ?>"
                        data-onclick="file/download">
                         <?php echo $icons->getIconDownload()->getIcon(); ?></i>
                     <i class="btn-action material-icons <?php echo $icons->getIconView()->getClass(); ?>"
-                       title="<?php echo _('Ver Archivo'); ?>"
+                       title="<?php echo __('Ver Archivo'); ?>"
                        data-item-id="<?php echo $file->getAccfileId(); ?>"
                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_VIEW; ?>"
                        data-onclick="file/view">

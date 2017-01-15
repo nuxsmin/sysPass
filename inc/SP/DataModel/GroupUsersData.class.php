@@ -24,7 +24,7 @@
 
 namespace SP\DataModel;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class GroupUserData
@@ -51,7 +51,7 @@ class GroupUsersData extends DataModelBase
      */
     public function getUsertogroupGroupId()
     {
-        return $this->usertogroup_groupId;
+        return (int)$this->usertogroup_groupId;
     }
 
     /**
@@ -67,7 +67,7 @@ class GroupUsersData extends DataModelBase
      */
     public function getUsertogroupUserId()
     {
-        return $this->usertogroup_userId;
+        return (int)$this->usertogroup_userId;
     }
 
     /**

@@ -1,17 +1,17 @@
 <?php /** @var $icons \Theme\Icons */ ?>
 
 <div id="title" class="midroundup titleNormal">
-    <?php echo _('Eventos'); ?>
+    <?php echo __('Eventos'); ?>
 </div>
 
 <table id="tblEvents" class="data tblConfig round">
     <tr>
         <td class="descField">
-            <?php echo _('Habilitar log de eventos'); ?>
+            <?php echo __('Habilitar log de eventos'); ?>
             <div id="help-eventlog" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-eventlog">
                 <p>
-                    <?php echo _('Guarda las acciones realizadas en la aplicación.'); ?>
+                    <?php echo __('Guarda las acciones realizadas en la aplicación.'); ?>
                 </p>
             </div>
         </td>
@@ -25,7 +25,7 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Habilitar Syslog'); ?>
+            <?php echo __('Habilitar Syslog'); ?>
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="syslog_enabled">
@@ -37,7 +37,7 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Habilitar Syslog Remoto'); ?>
+            <?php echo __('Habilitar Syslog Remoto'); ?>
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="remotesyslog_enabled">
@@ -49,7 +49,7 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Servidor'); ?>
+            <?php echo __('Servidor'); ?>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -57,13 +57,13 @@
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        value="<?php echo $remoteSyslogServer; ?>"/>
                 <label class="mdl-textfield__label"
-                       for="remotesyslog_server"><?php echo _('Nombre o dirección IP'); ?></label>
+                       for="remotesyslog_server"><?php echo __('Nombre o dirección IP'); ?></label>
             </div>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Puerto'); ?>
+            <?php echo __('Puerto'); ?>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -71,7 +71,7 @@
                        pattern="[0-9]{1-5}" step="1" max="65535" class="mdl-textfield__input mdl-color-text--indigo-400"
                        value="<?php echo $remoteSyslogPort; ?>"/>
                 <label class="mdl-textfield__label"
-                       for="remotesyslog_port"><?php echo _('Puerto'); ?></label>
+                       for="remotesyslog_port"><?php echo __('Puerto'); ?></label>
             </div>
         </td>
     </tr>

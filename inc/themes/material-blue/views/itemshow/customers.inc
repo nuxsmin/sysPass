@@ -15,27 +15,27 @@
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo _('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Nombre'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $customer->getCustomerName(); ?>">
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo _('Nombre del cliente'); ?></label>
+                               for="name"><?php echo __('Nombre del cliente'); ?></label>
                     </div>
                 </td>
             </tr>
 
             <tr>
-                <td class="descField"><?php echo _('Descripción'); ?></td>
+                <td class="descField"><?php echo __('Descripción'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="description" name="description" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $customer->getCustomerDescription(); ?>">
                         <label class="mdl-textfield__label"
-                               for="description"><?php echo _('Descripción del cliente'); ?></label>
+                               for="description"><?php echo __('Descripción del cliente'); ?></label>
                     </div>
                 </td>
             </tr>

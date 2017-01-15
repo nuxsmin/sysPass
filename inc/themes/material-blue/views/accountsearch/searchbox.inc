@@ -12,23 +12,23 @@
             <div class="mdl-textfield mdl-js-textfield">
                 <input class="mdl-textfield__input mdl-color-text--indigo-400" type="text" id="search"
                        name="search" value="<?php echo $searchTxt; ?>" tabindex="1"/>
-                <label class="mdl-textfield__label" for="search"><?php echo _('Texto a buscar'); ?></label>
+                <label class="mdl-textfield__label" for="search"><?php echo __('Texto a buscar'); ?></label>
             </div>
 
             <div id="help-account_search" class="icon material-icons mdl-color-text--indigo-A200">help_outline</div>
 
             <div class="mdl-tooltip mdl-tooltip--large" for="help-account_search">
                 <p>
-                    <?php echo _('Parámetros especiales:'); ?>
+                    <?php echo __('Parámetros especiales:'); ?>
                 </p>
                 <ul>
-                    <li>user:login &gt; <?php echo _('Buscar cuentas a las que \'login\' tenga acceso'); ?></li>
+                    <li>user:login &gt; <?php echo __('Buscar cuentas a las que \'login\' tenga acceso'); ?></li>
                     <li>group:group_name
-                        &gt; <?php echo _('Buscar cuentas a las que \'group_name\' tenga acceso'); ?></li>
+                        &gt; <?php echo __('Buscar cuentas a las que \'group_name\' tenga acceso'); ?></li>
                     <li>file:file_name
-                        &gt; <?php echo _('Buscar cuentas con archivos con el nombre \'file_name\''); ?></li>
-                    <li>tag:tag_name &gt; <?php echo _('Buscar cuentas con la etiqueta \'tag_name\''); ?></li>
-                    <li>expired: &gt; <?php echo _('Buscar cuentas con la clave caducada'); ?></li>
+                        &gt; <?php echo __('Buscar cuentas con archivos con el nombre \'file_name\''); ?></li>
+                    <li>tag:tag_name &gt; <?php echo __('Buscar cuentas con la etiqueta \'tag_name\''); ?></li>
+                    <li>expired: &gt; <?php echo __('Buscar cuentas con la clave caducada'); ?></li>
                 </ul>
             </div>
         </div>
@@ -36,17 +36,17 @@
         <div class="search-filters">
             <?php if ($showGlobalSearch && !$isAdmin): ?>
                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect mdl-switch--inline" for="globalSearch"
-                       title="<?php echo _('Búsqueda global'); ?>">
+                       title="<?php echo __('Búsqueda global'); ?>">
                     <input type="checkbox" id="globalSearch" class="mdl-switch__input mdl-color-text--indigo-400"
                            name="chkgsearch" tabindex="2"
                         <?php echo $searchGlobal ? 'checked="checked"' : ''; ?>/>
-                    <span class="mdl-switch__label" title="<?php echo _('Búsqueda global'); ?>"></span>
+                    <span class="mdl-switch__label" title="<?php echo __('Búsqueda global'); ?>"></span>
                 </label>
                 <input type="hidden" name="gsearch" value="<?php echo $searchGlobal; ?>">
             <?php endif; ?>
 
             <select id="customer" name="customer" class="select-box select-box-deselect" tabindex="3">
-                <option value=""><?php echo _('Seleccionar Cliente'); ?></option>
+                <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
                 <?php foreach ($customers as $customer): ?>
                     <option
                         value="<?php echo $customer->id; ?>" <?php echo ($customer->id === $searchCustomer) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
@@ -54,7 +54,7 @@
             </select>
 
             <select id="category" name="category" class="select-box select-box-deselect" tabindex="4">
-                <option value=""><?php echo _('Seleccionar Categoría'); ?></option>
+                <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
                 <?php foreach ($categories as $category): ?>
                     <option
                         value="<?php echo $category->id; ?>" <?php echo ($category->id === $searchCategory) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
@@ -65,10 +65,10 @@
                 <button type="button" id="btn-favorite"
                         class="icon-searchfav mdl-button mdl-js-button mdl-button--icon" tabindex="5">
                     <i class="material-icons <?php echo ($searchFavorites === true) ? 'mdl-color-text--amber-A200' : ''; ?>"
-                       title="<?php echo ($searchFavorites === true) ? _('Mostrar Todos') : _('Mostrar Favoritos'); ?>">star</i>
+                       title="<?php echo ($searchFavorites === true) ? __('Mostrar Todos') : __('Mostrar Favoritos'); ?>">star</i>
                 </button>
                 <span for="btn-favorite"
-                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo _('Filtrar Favoritos'); ?></span>
+                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('Filtrar Favoritos'); ?></span>
 
                 <button type="reset" id="btn-reset"
                         class="btn-clear mdl-button mdl-js-button mdl-button--icon" tabindex="6">
@@ -82,18 +82,18 @@
                 <input id="rpp" name="rpp" class="mdl-slider mdl-js-slider" type="range"
                        min="3" step="3" value="<?php echo $data->getPager()->getLimitCount(); ?>" tabindex="7"/>
                 <span for="rpp"
-                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo _('Cuentas por página'); ?></span>
+                      class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('Cuentas por página'); ?></span>
             </div>
             <i id="btn-filters" class="material-icons show-filter" data-state="0"
                data-icon-down="<?php echo $icons->getIconAdd()->getIcon(); ?>"
                data-icon-up="<?php echo $icons->getIconRemove()->getIcon(); ?>"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
             <span for="btn-filters"
-                  class="mdl-tooltip mdl-tooltip--bottom"><?php echo _('Más Filtros'); ?></span>
+                  class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('Más Filtros'); ?></span>
         </div>
 
         <div class="search-filters-tags">
             <select id="tags" name="tags[]" class="select-box" multiple tabindex="8">
-                <option value=""><?php echo _('Seleccionar Etiqueta'); ?></option>
+                <option value=""><?php echo __('Seleccionar Etiqueta'); ?></option>
                 <?php foreach ($tags as $tag): ?>
                     <option
                         value="<?php echo $tag->id; ?>" <?php echo in_array($tag->id, $searchTags) ? 'selected' : ''; ?>><?php echo $tag->name; ?></option>

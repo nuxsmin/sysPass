@@ -30,7 +30,7 @@ use SP\Core\Session;
 use SP\Log\Log;
 use SP\Log\LogLevel;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class DokuWikiApi para realizar consultas a la API de DokuWiki
@@ -65,7 +65,7 @@ class DokuWikiApi extends DokuWikiApiBase
                 Session::setDokuWikiSession($resLogin[0]);
 
                 if ($resLogin[0] === false) {
-                    throw new SPException(SPException::SP_WARNING, _('Fallo de autentificación'));
+                    throw new SPException(SPException::SP_WARNING, __('Fallo de autentificación', false));
                 }
             }
 

@@ -27,7 +27,7 @@ namespace SP\Mgmt\Profiles;
 use SP\DataModel\ProfileData;
 use SP\Mgmt\ItemBase;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase ProfileBase para la definición de perfiles de acceso de usuarios

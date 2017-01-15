@@ -30,7 +30,7 @@ use SP\Http\Message;
 use SP\Log\Email;
 use SP\Log\Log;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de importar cuentas.
@@ -61,7 +61,7 @@ class Import
      */
     public function doImport(&$fileData)
     {
-        $Log = new Log(_('Importar Cuentas'));
+        $Log = new Log(__('Importar Cuentas', false));
 
         try {
             $file = new FileImport($fileData);
@@ -77,8 +77,8 @@ class Import
                 default:
                     throw new SPException(
                         SPException::SP_WARNING,
-                        sprintf(_('Tipo mime no soportado ("%s")'), $file->getFileType()),
-                        _('Compruebe el formato del archivo')
+                        sprintf(__('Tipo mime no soportado ("%s")', false), $file->getFileType()),
+                        __('Compruebe el formato del archivo', false)
                     );
             }
 
@@ -86,20 +86,20 @@ class Import
         } catch (SPException $e) {
             $Log->setLogLevel(Log::ERROR);
             $Log->addDescription($e->getMessage());
-            $Log->addDetails(_('Ayuda'), $e->getHint());
+            $Log->addDetails(__('Ayuda', false), $e->getHint());
             $Log->writeLog();
 
             throw $e;
         }
 
-        $Log->addDescription(_('Importación finalizada'));
+        $Log->addDescription(__('Importación finalizada', false));
         $Log->writeLog();
 
         Email::sendEmail($Log);
 
         $Message = new Message();
-        $Message->setDescription(_('Importación finalizada'));
-        $Message->setHint(_('Revise el registro de eventos para más detalles'));
+        $Message->setDescription(__('Importación finalizada', false));
+        $Message->setHint(__('Revise el registro de eventos para más detalles', false));
 
         return $Message;
     }

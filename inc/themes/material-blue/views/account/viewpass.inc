@@ -10,8 +10,8 @@
             <td class="dialog-user-text"><?php echo $login; ?></td>
             <td class="right">
                 <button class="dialog-clip-user-button mdl-button mdl-js-button mdl-js-ripple-effect"
-                        title="<?php echo _('Copiar Usuario'); ?>" data-clipboard-target=".dialog-user-text">
-                    <?php echo _('Usuario'); ?>
+                        title="<?php echo __('Copiar Usuario'); ?>" data-clipboard-target=".dialog-user-text">
+                    <?php echo __('Usuario'); ?>
                     <i class="material-icons"><?php echo $icons->getIconClipboard()->getIcon(); ?></i>
                 </button>
             </td>
@@ -21,8 +21,8 @@
                 <td class="dialog-pass-text"><?php echo $pass; ?></td>
                 <td class="right">
                     <button class="dialog-clip-pass-button mdl-button mdl-js-button mdl-js-ripple-effect"
-                            title="<?php echo _('Copiar Clave'); ?>" data-clipboard-target=".dialog-pass-text">
-                        <?php echo _('Clave'); ?>
+                            title="<?php echo __('Copiar Clave'); ?>" data-clipboard-target=".dialog-pass-text">
+                        <?php echo __('Clave'); ?>
                         <i class="material-icons"><?php echo $icons->getIconClipboard()->getIcon(); ?></i>
                     </button>
                 </td>

@@ -51,7 +51,7 @@ if (!Init::isLoggedIn()) {
 Util::checkReload();
 
 if (!Request::analyze('actionId', 0, true)) {
-    Response::printHtmlError(_('Parámetros incorrectos'));
+    Response::printHtmlError(__('Parámetros incorrectos'));
 }
 
 $actionId = Request::analyze('actionId', 0);

@@ -30,7 +30,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class AccountUtil con utilidades para la gestión de cuentas
@@ -129,7 +129,7 @@ class AccountUtil
         try {
             $queryRes = DB::getResultsArray($Data);
         }catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de las cuentas'));
+            throw new SPException(SPException::SP_CRITICAL, __('No se pudieron obtener los datos de las cuentas', false));
         }
 
         return $queryRes;

@@ -55,14 +55,14 @@ class UserPreferencesUtil
     public static function migrate()
     {
         $Log = new Log(__FUNCTION__);
-        $Log->addDescription(_('Actualizando preferencias'));
+        $Log->addDescription(__('Actualizando preferencias', false));
 
         foreach (User::getItem()->getAll() as $User) {
             try {
                 $Preferences = $User->getUserPreferences();
 
                 if (!empty($Preferences)) {
-                    $Log->addDetails(_('Usuario'), $User->getUserLogin());
+                    $Log->addDetails(__('Usuario', false), $User->getUserLogin());
 
                     /** @var UserPreferencesData $Preferences */
                     $Preferences = Util::castToClass(UserPreferencesData::class, $Preferences, 'SP\UserPreferences');
@@ -81,7 +81,7 @@ class UserPreferencesUtil
             }
         }
 
-        $Log->addDescription(_('Preferencias actualizadas'));
+        $Log->addDescription(__('Preferencias actualizadas', false));
         $Log->writeLog();
 
         return true;

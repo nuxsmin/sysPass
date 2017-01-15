@@ -48,7 +48,7 @@ class Request
             || $_SERVER['REQUEST_METHOD'] !== strtoupper($method)
             || !preg_match('#' . Init::$WEBROOT . '/.*$#', $_SERVER['HTTP_REFERER'])
         ) {
-            Init::initError(_('No es posible acceder directamente a este archivo'));
+            Init::initError(__('No es posible acceder directamente a este archivo'));
             exit();
         }
     }

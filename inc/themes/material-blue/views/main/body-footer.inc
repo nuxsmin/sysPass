@@ -8,7 +8,7 @@
             <div id="session">
                 <i id="btnLogout" class="material-icons">exit_to_app</i>
                 <span for="btnLogout"
-                      class="mdl-tooltip mdl-tooltip--top"><?php echo _('Salir'); ?></span>
+                      class="mdl-tooltip mdl-tooltip--top"><?php echo __('Salir'); ?></span>
 
                 <?php if ($showPassIcon): ?>
                     <i id="btnUserPass" class="btn-action material-icons"
@@ -17,12 +17,12 @@
                        data-item-id="<?php echo $userId; ?>"
                        data-sk="<?php echo $sk; ?>">security</i>
                     <span for="btnUserPass"
-                          class="mdl-tooltip mdl-tooltip--top"><?php echo _('Cambiar Clave de Usuario'); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php echo __('Cambiar Clave de Usuario'); ?></span>
                 <?php endif; ?>
                 <i id="btnPrefs" class="material-icons"
                    data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>">account_circle</i>
                 <span for="btnPrefs"
-                      class="mdl-tooltip mdl-tooltip--top"><?php echo _('Preferencias de usuario'); ?></span>
+                      class="mdl-tooltip mdl-tooltip--top"><?php echo __('Preferencias de usuario'); ?></span>
 
                 <?php if ($userNotices > 0): ?>
                     <div id="notices-user"
@@ -31,20 +31,20 @@
                          data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>">notifications
                     </div>
                     <span for="notices-user"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf(_('Hay %d notificaciones pendientes'), $userNotices); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf(__('Hay %d notificaciones pendientes'), $userNotices); ?></span>
                 <?php else: ?>
                     <div id="notices-user" class="btn-menu material-icons mdl-badge mdl-badge--overlap"
                          data-badge="0" data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>">
                         notifications
                     </div>
                     <span for="notices-user"
-                          class="mdl-tooltip mdl-tooltip--top"><?php echo _('No hay no hay notificaciones pendientes'); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php echo __('No hay no hay notificaciones pendientes'); ?></span>
                 <?php endif; ?>
 
                 <span id="user-info">
                     <span id="user-name"><?php echo $userName; ?></span>
                     <span for="user-name"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', _('Grupo'), $userGroup); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $userGroup); ?></span>
 
                     <?php /** @var \SP\Html\Assets\IconInterface $userType */
                     if ($userType !== null): ?>
@@ -71,12 +71,12 @@
                     <i class="material-icons mdl-color-text--red-900">lock_open</i>
                 </span>
                 <span for="secure-info"
-                      class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo _('Indica si la conexión utiliza HTTPS.') . '<br><br>' . _('Las claves de formularios enviados se encriptan mediante PKI, el resto de datos no.'); ?></span>
+                      class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Indica si la conexión utiliza HTTPS.') . '<br><br>' . __('Las claves de formularios enviados se encriptan mediante PKI, el resto de datos no.'); ?></span>
 
             <?php endif; ?>
 
             <?php if ($isDemoMode): ?>
-                <span class="status-info"><?php echo _('Demo'); ?></span>
+                <span class="status-info"><?php echo __('Demo'); ?></span>
             <?php endif; ?>
 
             <div id="updates"></div>
@@ -87,11 +87,11 @@
                 <?php echo $appInfo['appname'], ' ', $appVersion; ?>
             </a>
             <span for="app-info"
-                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo _('Ayuda :: FAQ :: Changelog'); ?></span>
+                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Ayuda :: FAQ :: Changelog'); ?></span>
             &nbsp;::&nbsp;
             <a id="app-project" href="<?php echo $appInfo['appblog']; ?>" target="_blank">cygnux.org</a>
             <span for="app-project"
-                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo _('Un proyecto de cygnux.org'); ?></span>
+                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Un proyecto de cygnux.org'); ?></span>
         </div>
         <!-- Close Project -->
     </div>

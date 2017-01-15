@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\CustomFields;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldDefData;
@@ -68,7 +68,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->addParam(serialize($this->itemData));
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al crear el campo personalizado'));
+            throw new SPException(SPException::SP_ERROR, __('Error al crear el campo personalizado', false));
         }
 
         return $this;
@@ -82,11 +82,15 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
     public function delete($id)
     {
         if (is_array($id)) {
-            foreach ($id as $itemId){
+            foreach ($id as $itemId) {
                 $this->delete($itemId);
             }
 
             return $this;
+        }
+
+        if ($this->deleteItemsDataForDefinition($id) === false) {
+            throw new SPException(SPException::SP_ERROR, __('Error al eliminar el campo personalizado', false));
         }
 
         $query = /** @lang SQL */
@@ -96,10 +100,8 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        if (DB::getQuery($Data) === false
-            || $this->deleteItemsDataForDefinition($id) === false
-        ) {
-            throw new SPException(SPException::SP_ERROR, _('Error al eliminar el campo personalizado'));
+        if (DB::getQuery($Data) === false) {
+            throw new SPException(SPException::SP_ERROR, __('Error al eliminar el campo personalizado', false));
         }
 
         return $this;
@@ -144,7 +146,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->addParam($this->itemData->getId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al actualizar el campo personalizado'));
+            throw new SPException(SPException::SP_ERROR, __('Error al actualizar el campo personalizado', false));
         }
 
         if ($curField->getModule() !== $this->itemData->getModule()) {
@@ -177,7 +179,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $CustomFieldDef = DB::getResults($Data);
 
         if ($CustomFieldDef === false) {
-            throw new SPException(SPException::SP_INFO, _('Campo personalizado no encontrado'));
+            throw new SPException(SPException::SP_INFO, __('Campo personalizado no encontrado', false));
         }
 
         /** @var CustomFieldDefData $fieldDef */
@@ -229,7 +231,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $queryRes = DB::getResultsArray($Data);
 
         if (count($queryRes) === 0) {
-            throw new SPException(SPException::SP_INFO, _('No se encontraron campos personalizados'));
+            throw new SPException(SPException::SP_INFO, __('No se encontraron campos personalizados', false));
         }
 
         $fields = [];

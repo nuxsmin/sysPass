@@ -40,7 +40,7 @@ use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class PublicLink para la creación de enlaces públicos
@@ -65,11 +65,11 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $this->itemData->addCountViews();
         $this->updateUseInfo($_SERVER['REMOTE_ADDR']);
 
-        $Log = new Log(_('Ver Enlace Público'));
-        $Log->addDescription(_('Enlace visualizado'));
-        $Log->addDetails(Html::strongText(_('Tipo')), $this->itemData->getTypeId());
-        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->itemData->getItemId()));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->itemData->getUserId()));
+        $Log = new Log(__('Ver Enlace Público', false));
+        $Log->addDescription(__('Enlace visualizado', false));
+        $Log->addDetails(__('Tipo', false), $this->itemData->getTypeId());
+        $Log->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($this->itemData->getItemId()));
+        $Log->addDetails(__('Usuario', false), UserUtil::getUserLoginById($this->itemData->getUserId()));
         $Log->writeLog();
 
         if ($this->itemData->isNotify()) {
@@ -98,7 +98,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam($this->itemData->getPublicLinkId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al actualizar enlace'));
+            throw new SPException(SPException::SP_ERROR, __('Error al actualizar enlace', false));
         }
 
         return true;
@@ -111,7 +111,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, _('Enlace ya creado'));
+            throw new SPException(SPException::SP_INFO, __('Enlace ya creado', false));
         }
 
         $this->itemData->setDateAdd(time());
@@ -134,17 +134,8 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam(serialize($this->itemData));
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al crear enlace'));
+            throw new SPException(SPException::SP_ERROR, __('Error al crear enlace', false));
         }
-
-        $Log = new Log(_('Nuevo Enlace'));
-        $Log->addDescription(_('Enlace creado'));
-        $Log->addDetails(Html::strongText(_('Tipo')), $this->itemData->getTypeId());
-        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->itemData->getItemId()));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->itemData->getUserId()));
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -189,15 +180,8 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al eliminar enlace'));
+            throw new SPException(SPException::SP_ERROR, __('Error al eliminar enlace', false));
         }
-
-        $Log = new Log(_('Eliminar Enlace'));
-        $Log->addDescription(_('Enlace eliminado'));
-        $Log->addDetails(Html::strongText(_('ID')), $this->itemData->getPublicLinkId());
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -227,17 +211,8 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam($this->itemData->getPublicLinkId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al renovar enlace'));
+            throw new SPException(SPException::SP_ERROR, __('Error al renovar enlace', false));
         }
-
-        $Log = new Log(_('Actualizar Enlace'));
-        $Log->addDescription(_('Enlace actualizado'));
-        $Log->addDetails(Html::strongText(_('Tipo')), $this->itemData->getTypeId());
-        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->itemData->getItemId()));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->itemData->getUserId()));
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -264,7 +239,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener enlace', false));
         }
 
         /** @var $PublicLink PublicLinkData */
@@ -315,7 +290,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $PublicLinkListData->setPublicLinkHash($PublicLinkData->getLinkHash());
         $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
         $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getUserId()));
-        $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? _('ON') : _('OFF'));
+        $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? __('ON') : __('OFF'));
         $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getDateAdd()));
         $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getDateExpire()));
         $PublicLinkListData->setCountViews($PublicLinkData->getCountViews() . '/' . $PublicLinkData->getMaxCountViews());
@@ -363,7 +338,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener enlace', false));
         } elseif (is_array($queryRes)) {
             return false;
         }
@@ -397,7 +372,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener enlace', false));
         }
 
         return $queryRes;

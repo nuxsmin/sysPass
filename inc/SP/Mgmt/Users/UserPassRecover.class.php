@@ -31,7 +31,7 @@ use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class UserPassRecover para la gestión de recuperaciones de claves de usuarios
@@ -101,9 +101,9 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error en comprobación de hash'));
+            throw new SPException(SPException::SP_ERROR, __('Error en comprobación de hash', false));
         } elseif ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, _('Hash inválido o expirado'));
+            throw new SPException(SPException::SP_INFO, __('Hash inválido o expirado', false));
         }
 
         $this->itemData = $queryRes;
@@ -127,7 +127,7 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
         $Data->addParam($this->itemData->getUserpassrHash());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error interno'));
+            throw new SPException(SPException::SP_ERROR, __('Error interno', false));
         }
 
         return $this;
@@ -152,7 +152,7 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
         $Data->addParam($this->itemData->getUserpassrHash());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al generar el hash de recuperación'));
+            throw new SPException(SPException::SP_ERROR, __('Error al generar el hash de recuperación', false));
         }
 
         return $this;

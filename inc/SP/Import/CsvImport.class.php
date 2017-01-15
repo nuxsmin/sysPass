@@ -26,7 +26,7 @@ namespace SP\Import;
 
 use SP\Core\Exceptions\SPException;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class CsvImport para importar cuentas desde archivos CSV

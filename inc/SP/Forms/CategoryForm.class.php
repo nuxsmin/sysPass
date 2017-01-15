@@ -66,12 +66,12 @@ class CategoryForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->CategoryData->getCategoryName()) {
-            throw new ValidationException(_('Es necesario un nombre de categoría'));
+            throw new ValidationException(__('Es necesario un nombre de categoría', false));
         }
     }
 
     /**
-     * @return mixed
+     * @return CategoryData
      */
     public function getItemData()
     {

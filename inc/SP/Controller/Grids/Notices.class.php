@@ -24,7 +24,7 @@
 
 namespace SP\Controller\Grids;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Init;
 use SP\Html\DataGrid\DataGridAction;
@@ -49,11 +49,11 @@ class Notices extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Fecha'));
-        $GridHeaders->addHeader(_('Tipo'));
-        $GridHeaders->addHeader(_('Componente'));
-        $GridHeaders->addHeader(_('Descripción'));
-        $GridHeaders->addHeader(_('Estado'));
+        $GridHeaders->addHeader(__('Fecha'));
+        $GridHeaders->addHeader(__('Tipo'));
+        $GridHeaders->addHeader(__('Componente'));
+        $GridHeaders->addHeader(__('Descripción'));
+        $GridHeaders->addHeader(__('Estado'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -62,7 +62,7 @@ class Notices extends GridBase
         $GridData->addDataRowSource('notice_type');
         $GridData->addDataRowSource('notice_component');
         $GridData->addDataRowSource('notice_description');
-        $GridData->addDataRowSourceWithIcon('notice_checked', $this->icons->getIconEnabled()->setTitle(_('Leída')));
+        $GridData->addDataRowSourceWithIcon('notice_checked', $this->icons->getIconEnabled()->setTitle(__('Leída')));
 
         // Grid
         $Grid = new DataGridTab();
@@ -71,7 +71,7 @@ class Notices extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Notificaciones'));
+        $Grid->setTitle(__('Notificaciones'));
         $Grid->setTime(round(Init::microtime_float() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -79,7 +79,7 @@ class Notices extends GridBase
         $GridActionSearch->setId(self::ACTION_NOT_USER_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchNotice');
-        $GridActionSearch->setTitle(_('Buscar Notificación'));
+        $GridActionSearch->setTitle(__('Buscar Notificación'));
         $GridActionSearch->setOnSubmitFunction('notice/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -89,8 +89,8 @@ class Notices extends GridBase
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_NOT_USER_VIEW);
         $GridActionNew->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionNew->setName(_('Ver Notificación'));
-        $GridActionNew->setTitle(_('Ver Notificación'));
+        $GridActionNew->setName(__('Ver Notificación'));
+        $GridActionNew->setTitle(__('Ver Notificación'));
         $GridActionNew->setIcon($this->icons->getIconView());
         $GridActionNew->setOnClickFunction('notice/show');
 
@@ -98,8 +98,8 @@ class Notices extends GridBase
 
         $GridActionCheck = new DataGridAction();
         $GridActionCheck->setId(self::ACTION_NOT_USER_CHECK);
-        $GridActionCheck->setName(_('Marcar Notificación'));
-        $GridActionCheck->setTitle(_('Marcar Notificación'));
+        $GridActionCheck->setName(__('Marcar Notificación'));
+        $GridActionCheck->setTitle(__('Marcar Notificación'));
         $GridActionCheck->setIcon($this->icons->getIconEnabled());
         $GridActionCheck->setOnClickFunction('notice/check');
         $GridActionCheck->setFilterRowSource('notice_checked', 1);
@@ -109,8 +109,8 @@ class Notices extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_NOT_USER_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Notificación'));
-        $GridActionDel->setTitle(_('Eliminar Notificación'));
+        $GridActionDel->setName(__('Eliminar Notificación'));
+        $GridActionDel->setTitle(__('Eliminar Notificación'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 

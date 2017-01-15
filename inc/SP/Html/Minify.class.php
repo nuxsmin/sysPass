@@ -29,7 +29,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class Minify para la gestión de archivos JS y CSS

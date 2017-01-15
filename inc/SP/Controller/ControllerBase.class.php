@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Acl;
 use SP\Core\DiFactory;
@@ -294,11 +294,11 @@ abstract class ControllerBase
     public function showError($type, $reset = true, $fancy = false)
     {
         $errorsTypes = [
-            self::ERR_UNAVAILABLE => ['txt' => _('Opción no disponible'), 'hint' => _('Consulte con el administrador')],
-            self::ERR_ACCOUNT_NO_PERMISSION => ['txt' => _('No tiene permisos para acceder a esta cuenta'), 'hint' => _('Consulte con el administrador')],
-            self::ERR_PAGE_NO_PERMISSION => ['txt' => _('No tiene permisos para acceder a esta página'), 'hint' => _('Consulte con el administrador')],
-            self::ERR_OPERATION_NO_PERMISSION => ['txt' => _('No tiene permisos para realizar esta operación'), 'hint' => _('Consulte con el administrador')],
-            self::ERR_UPDATE_MPASS => ['txt' => _('Clave maestra actualizada'), 'hint' => _('Reinicie la sesión para cambiarla')]
+            self::ERR_UNAVAILABLE => ['txt' => __('Opción no disponible'), 'hint' => __('Consulte con el administrador')],
+            self::ERR_ACCOUNT_NO_PERMISSION => ['txt' => __('No tiene permisos para acceder a esta cuenta'), 'hint' => __('Consulte con el administrador')],
+            self::ERR_PAGE_NO_PERMISSION => ['txt' => __('No tiene permisos para acceder a esta página'), 'hint' => __('Consulte con el administrador')],
+            self::ERR_OPERATION_NO_PERMISSION => ['txt' => __('No tiene permisos para realizar esta operación'), 'hint' => __('Consulte con el administrador')],
+            self::ERR_UPDATE_MPASS => ['txt' => __('Clave maestra actualizada'), 'hint' => __('Reinicie la sesión para cambiarla')]
         ];
 
         if ($reset) {

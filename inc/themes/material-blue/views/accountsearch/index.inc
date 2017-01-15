@@ -8,7 +8,7 @@
 
 <div id="res-content">
     <?php if ($data->getData()->getDataCount() === 0): ?>
-        <div class="noRes round"><?php echo _('No se encontraron registros'); ?></div>
+        <div class="noRes round"><?php echo __('No se encontraron registros'); ?></div>
     <?php else: ?>
         <!-- Data Header-->
         <div id="search-header">

@@ -1,6 +1,6 @@
 <fieldset class="data round">
     <legend>
-        <?php echo _('Cuentas Vinculadas'); ?>
+        <?php echo __('Cuentas Vinculadas'); ?>
         <i id="btn-filters" class="material-icons show-extra-info" data-state="0"
            data-target="#data-linkedAccounts"
            data-icon-down="<?php echo $icons->getIconDown()->getIcon(); ?>"
@@ -10,7 +10,7 @@
     <div id="data-linkedAccounts">
         <table>
             <tr>
-                <td class="descField"><?php echo _('Cuentas'); ?></td>
+                <td class="descField"><?php echo __('Cuentas'); ?></td>
                 <td class="valField">
                     <div class="list-wrap">
                         <ul class="mdl-list">

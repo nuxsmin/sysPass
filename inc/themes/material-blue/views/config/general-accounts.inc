@@ -1,17 +1,17 @@
 <?php /** @var $icons \Theme\Icons */ ?>
 
 <div id="title" class="midroundup titleNormal">
-    <?php echo _('Cuentas'); ?>
+    <?php echo __('Cuentas'); ?>
 </div>
 
 <table id="tblAccounts" class="data tblConfig round">
     <tr>
         <td class="descField">
-            <?php echo _('Nombre de cuenta como enlace'); ?>
+            <?php echo __('Nombre de cuenta como enlace'); ?>
             <div id="help-account_link" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-account_link">
                 <p>
-                    <?php echo _('Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta.'); ?>
+                    <?php echo __('Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta.'); ?>
                 </p>
             </div>
         </td>
@@ -25,11 +25,11 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Búsquedas globales'); ?>
+            <?php echo __('Búsquedas globales'); ?>
             <div id="help-globalsearch" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-globalsearch">
                 <p>
-                    <?php echo _('Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos.'); ?>
+                    <?php echo __('Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos.'); ?>
                 </p>
             </div>
         </td>
@@ -43,11 +43,11 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Resultados por página'); ?>
+            <?php echo __('Resultados por página'); ?>
             <div id="help-account_count" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-account_count">
                 <p>
-                    <?php echo _('Número de resultados por página a mostrar, al realizar una búsqueda.'); ?>
+                    <?php echo __('Número de resultados por página a mostrar, al realizar una búsqueda.'); ?>
                 </p>
             </div>
         </td>
@@ -57,21 +57,21 @@
                        pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="5"
                        value="<?php echo $accountCount; ?>" required/>
                 <label class="mdl-textfield__label"
-                       for="account_count"><?php echo _('Número de resultados por página'); ?></label>
+                       for="account_count"><?php echo __('Número de resultados por página'); ?></label>
             </div>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Imagen para mostrar clave'); ?>
+            <?php echo __('Imagen para mostrar clave'); ?>
             <div id="help-account_passtoimage" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-account_passtoimage">
                 <p>
-                    <?php echo _('Generar una imagen con el texto de la clave de la cuenta.'); ?>
+                    <?php echo __('Generar una imagen con el texto de la clave de la cuenta.'); ?>
                 </p>
 
                 <p>
-                    <?php echo _('Util para entornos donde copiar la clave supone un riesgo de seguridad.'); ?>
+                    <?php echo __('Util para entornos donde copiar la clave supone un riesgo de seguridad.'); ?>
                 </p>
             </div>
         </td>
@@ -86,11 +86,11 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo _('Resultados en Tarjetas'); ?>
+            <?php echo __('Resultados en Tarjetas'); ?>
             <div id="help-resultsascards" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-resultsascards">
                 <p>
-                    <?php echo _('Muestra los resultados de búsqueda de cuentas en formato tarjeta.'); ?>
+                    <?php echo __('Muestra los resultados de búsqueda de cuentas en formato tarjeta.'); ?>
                 </p>
             </div>
         </td>

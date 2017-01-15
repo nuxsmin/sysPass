@@ -47,6 +47,8 @@ class AuthUtil
      *
      * @param UserData $UserData
      * @return bool
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function mailPassRecover(UserData $UserData)
     {
@@ -56,15 +58,15 @@ class AuthUtil
         ) {
             $hash = Util::generateRandomBytes();
 
-            $Log = new Log(_('Cambio de Clave'));
+            $Log = new Log(__('Cambio de Clave'));
 
-            $Log->addDescriptionHtml(_('Se ha solicitado el cambio de su clave de usuario.'));
+            $Log->addDescriptionHtml(__('Se ha solicitado el cambio de su clave de usuario.'));
             $Log->addDescriptionLine();
-            $Log->addDescription(_('Para completar el proceso es necesario que acceda a la siguiente URL:'));
+            $Log->addDescription(__('Para completar el proceso es necesario que acceda a la siguiente URL:'));
             $Log->addDescriptionLine();
             $Log->addDescription(Html::anchorText(Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time()));
             $Log->addDescriptionLine();
-            $Log->addDescription(_('Si no ha solicitado esta acción, ignore este mensaje.'));
+            $Log->addDescription(__('Si no ha solicitado esta acción, ignore este mensaje.'));
 
             $UserPassRecoverData = new UserPassRecoverData();
             $UserPassRecoverData->setUserpassrUserId($UserData->getUserId());

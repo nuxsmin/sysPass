@@ -30,7 +30,7 @@ use SP\DataModel\UserData;
 use SP\Log\Log;
 use SP\Mgmt\Groups\GroupUsers;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
@@ -90,6 +90,7 @@ class Acl implements ActionsInterface
      * @param string $action con el nombre de la acción
      * @param int    $userId opcional, con el Id del usuario
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkUserAccess($action, $userId = 0)
     {
@@ -186,7 +187,10 @@ class Acl implements ActionsInterface
                 return true;
         }
 
-        Log::writeNewLog(__FUNCTION__, sprintf(_('Denegado acceso a %s'), self::getActionName($action)), Log::NOTICE);
+        $Log = new Log(__FUNCTION__);
+        $Log->setLogLevel(Log::NOTICE);
+        $Log->addDetails(__('Acceso denegado', false), self::getActionName($action, false, false));
+        $Log->writeLog();
 
         return false;
     }
@@ -196,49 +200,50 @@ class Acl implements ActionsInterface
      *
      * @param int  $action    El id de la acción
      * @param bool $shortName Si se devuelve el nombre corto de la acción
+     * @param bool $translate
      * @return string
      */
-    public static function getActionName($action, $shortName = false)
+    public static function getActionName($action, $shortName = false, $translate = true)
     {
         $actionName = [
-            self::ACTION_ACC_SEARCH => ['acc_search', _('Buscar Cuentas')],
-            self::ACTION_ACC_VIEW => ['acc_view', _('Ver Cuenta')],
-            self::ACTION_ACC_COPY => ['acc_copy', _('Copiar Cuenta')],
-            self::ACTION_ACC_NEW => ['acc_new', _('Nueva Cuenta')],
-            self::ACTION_ACC_EDIT => ['acc_edit', _('Editar Cuenta')],
-            self::ACTION_ACC_EDIT_PASS => ['acc_editpass', _('Editar Clave de Cuenta')],
-            self::ACTION_ACC_VIEW_HISTORY => ['acc_viewhist', _('Ver Historial')],
-            self::ACTION_ACC_VIEW_PASS => ['acc_viewpass', _('Ver Clave')],
-            self::ACTION_ACC_DELETE => ['acc_delete', _('Eliminar Cuenta')],
-            self::ACTION_ACC_FILES => ['acc_files', _('Archivos')],
-            self::ACTION_ACC_REQUEST => ['acc_request', _('Peticiones')],
-            self::ACTION_MGM => ['mgm', _('Gestión Aplicación')],
-            self::ACTION_MGM_CATEGORIES => ['mgm_categories', _('Gestión Categorías')],
-            self::ACTION_MGM_CATEGORIES_SEARCH => ['mgm_categories_search', _('Buscar Categorías')],
-            self::ACTION_MGM_CATEGORIES_NEW => ['mgm_categories_add', _('Añadir Categoría')],
-            self::ACTION_MGM_CATEGORIES_EDIT => ['mgm_categories_edit', _('Editar Categoría')],
-            self::ACTION_MGM_CATEGORIES_DELETE => ['mgm_categories_delete', _('Eliminar Categoría')],
-            self::ACTION_MGM_CUSTOMERS => ['mgm_customers', _('Gestión Clientes')],
-            self::ACTION_MGM_CUSTOMERS_SEARCH => ['mgm_customers', _('Buscar Clientes')],
-            self::ACTION_MGM_CUSTOMERS_NEW => ['mgm_customers_add', _('Añadir Cliente')],
-            self::ACTION_MGM_CUSTOMERS_EDIT => ['mgm_customers_edit', _('Editar Cliente')],
-            self::ACTION_MGM_CUSTOMERS_DELETE => ['mgm_customers_delete', _('Eliminar Cliente')],
-            self::ACTION_MGM_CUSTOMFIELDS => ['mgm_customfields', _('Gestión Campos Personalizados')],
-            self::ACTION_MGM_APITOKENS => ['mgm_apitokens', _('Gestión Autorizaciones API')],
-            self::ACTION_MGM_FILES => ['mgm_files', _('Gestión de Archivos')],
-            self::ACTION_MGM_ACCOUNTS => ['mgm_accounts', _('Gestión de Cuentas')],
-            self::ACTION_MGM_TAGS => ['mgm_tags', _('Gestión de Etiquetas')],
-            self::ACTION_USR => ['usr', _('Gestión Usuarios')],
-            self::ACTION_USR_USERS => ['usr_users', _('Gestión Usuarios')],
-            self::ACTION_USR_GROUPS => ['usr_groups', _('Gestión Grupos')],
-            self::ACTION_USR_PROFILES => ['usr_profiles', _('Gestión Perfiles')],
-            self::ACTION_CFG => ['cfg', _('Configuración')],
-            self::ACTION_CFG_GENERAL => ['cfg_general', _('Configuración General')],
-            self::ACTION_CFG_ENCRYPTION => ['cfg_encryption', _('Encriptación')],
-            self::ACTION_CFG_BACKUP => ['cfg_backup', _('Copia de Seguridad')],
-            self::ACTION_CFG_EXPORT => ['cfg_export', _('Exportar')],
-            self::ACTION_CFG_IMPORT => ['cfg_import', _('Importar')],
-            self::ACTION_EVL => 'evl'
+            self::ACTION_ACC_SEARCH => ['acc_search', __('Buscar Cuentas', $translate)],
+            self::ACTION_ACC_VIEW => ['acc_view', __('Ver Cuenta', $translate)],
+            self::ACTION_ACC_COPY => ['acc_copy', __('Copiar Cuenta', $translate)],
+            self::ACTION_ACC_NEW => ['acc_new', __('Nueva Cuenta', $translate)],
+            self::ACTION_ACC_EDIT => ['acc_edit', __('Editar Cuenta', $translate)],
+            self::ACTION_ACC_EDIT_PASS => ['acc_editpass', __('Editar Clave de Cuenta', $translate)],
+            self::ACTION_ACC_VIEW_HISTORY => ['acc_viewhist', __('Ver Historial', $translate)],
+            self::ACTION_ACC_VIEW_PASS => ['acc_viewpass', __('Ver Clave', $translate)],
+            self::ACTION_ACC_DELETE => ['acc_delete', __('Eliminar Cuenta', $translate)],
+            self::ACTION_ACC_FILES => ['acc_files', __('Archivos', $translate)],
+            self::ACTION_ACC_REQUEST => ['acc_request', __('Peticiones', $translate)],
+            self::ACTION_MGM => ['mgm', __('Gestión Aplicación', $translate)],
+            self::ACTION_MGM_CATEGORIES => ['mgm_categories', __('Gestión Categorías', $translate)],
+            self::ACTION_MGM_CATEGORIES_SEARCH => ['mgm_categories_search', __('Buscar Categorías', $translate)],
+            self::ACTION_MGM_CATEGORIES_NEW => ['mgm_categories_add', __('Añadir Categoría', $translate)],
+            self::ACTION_MGM_CATEGORIES_EDIT => ['mgm_categories_edit', __('Editar Categoría', $translate)],
+            self::ACTION_MGM_CATEGORIES_DELETE => ['mgm_categories_delete', __('Eliminar Categoría', $translate)],
+            self::ACTION_MGM_CUSTOMERS => ['mgm_customers', __('Gestión Clientes', $translate)],
+            self::ACTION_MGM_CUSTOMERS_SEARCH => ['mgm_customers', __('Buscar Clientes', $translate)],
+            self::ACTION_MGM_CUSTOMERS_NEW => ['mgm_customers_add', __('Añadir Cliente', $translate)],
+            self::ACTION_MGM_CUSTOMERS_EDIT => ['mgm_customers_edit', __('Editar Cliente', $translate)],
+            self::ACTION_MGM_CUSTOMERS_DELETE => ['mgm_customers_delete', __('Eliminar Cliente', $translate)],
+            self::ACTION_MGM_CUSTOMFIELDS => ['mgm_customfields', __('Gestión Campos Personalizados', $translate)],
+            self::ACTION_MGM_APITOKENS => ['mgm_apitokens', __('Gestión Autorizaciones API', $translate)],
+            self::ACTION_MGM_FILES => ['mgm_files', __('Gestión de Archivos', $translate)],
+            self::ACTION_MGM_ACCOUNTS => ['mgm_accounts', __('Gestión de Cuentas', $translate)],
+            self::ACTION_MGM_TAGS => ['mgm_tags', __('Gestión de Etiquetas', $translate)],
+            self::ACTION_USR => ['usr', __('Gestión Usuarios', $translate)],
+            self::ACTION_USR_USERS => ['usr_users', __('Gestión Usuarios', $translate)],
+            self::ACTION_USR_GROUPS => ['usr_groups', __('Gestión Grupos', $translate)],
+            self::ACTION_USR_PROFILES => ['usr_profiles', __('Gestión Perfiles', $translate)],
+            self::ACTION_CFG => ['cfg', __('Configuración', $translate)],
+            self::ACTION_CFG_GENERAL => ['cfg_general', __('Configuración General', $translate)],
+            self::ACTION_CFG_ENCRYPTION => ['cfg_encryption', __('Encriptación', $translate)],
+            self::ACTION_CFG_BACKUP => ['cfg_backup', __('Copia de Seguridad', $translate)],
+            self::ACTION_CFG_EXPORT => ['cfg_export', __('Exportar', $translate)],
+            self::ACTION_CFG_IMPORT => ['cfg_import', __('Importar', $translate)],
+            self::ACTION_EVL => ['cfg_evl', __('Log de Eventos', $translate)]
         ];
 
         if (!isset($actionName[$action])) {

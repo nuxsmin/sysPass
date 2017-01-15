@@ -31,7 +31,7 @@ use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
 use SP\DataModel\TagData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de importar cuentas desde sysPass
@@ -61,13 +61,14 @@ class SyspassImport extends XmlImportBase
      * Iniciar la importación desde sysPass.
      *
      * @throws SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function doImport()
     {
         try {
             if ($this->detectEncrypted()) {
                 if ($this->ImportParams->getImportPwd() === '') {
-                    throw new SPException(SPException::SP_ERROR, _('Clave de encriptación no indicada'));
+                    throw new SPException(SPException::SP_ERROR, __('Clave de encriptación no indicada', false));
                 }
 
                 $this->processEncrypted();

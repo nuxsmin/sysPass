@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\Groups;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupUsersData;
@@ -69,7 +69,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
         }
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al asignar los usuarios al grupo'));
+            throw new SPException(SPException::SP_ERROR, __('Error al asignar los usuarios al grupo', false));
         }
 
         return $this;
@@ -90,7 +90,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al eliminar los usuarios del grupo'));
+            throw new SPException(SPException::SP_ERROR, __('Error al eliminar los usuarios del grupo', false));
         }
 
         return $this;
@@ -98,6 +98,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
 
     /**
      * @return $this
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function update()
     {

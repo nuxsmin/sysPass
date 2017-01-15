@@ -24,7 +24,7 @@
 
 namespace SP\DataModel;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use JsonSerializable;
 use SP\Util\Json;

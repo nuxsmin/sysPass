@@ -29,7 +29,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Mgmt\Users\UserPass;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class Auth2FA

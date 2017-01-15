@@ -73,6 +73,7 @@ class PluginUtil
      *
      * @param string $name Nombre del plugin
      * @return bool|PluginInterface
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function loadPlugin($name)
     {
@@ -102,9 +103,9 @@ class PluginUtil
                 self::$disabledPlugins[] = $name;
             }
         } catch (\ReflectionException $e) {
-            Log::writeNewLog(__FUNCTION__, sprintf(_('No es posible cargar el plugin "%s"'), $name));
+            Log::writeNewLog(__FUNCTION__, sprintf(__('No es posible cargar el plugin "%s"'), $name));
         } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, sprintf(_('No es posible cargar el plugin "%s"'), $name));
+            Log::writeNewLog(__FUNCTION__, sprintf(__('No es posible cargar el plugin "%s"'), $name));
         }
 
         return false;
@@ -135,6 +136,7 @@ class PluginUtil
      *
      * @param string $name Nombre del plugin
      * @return bool|PluginInterface
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function getPluginInfo($name)
     {
@@ -156,7 +158,7 @@ class PluginUtil
 
             return $Plugin;
         } catch (\ReflectionException $e) {
-            Log::writeNewLog(__FUNCTION__, sprintf(_('No es posible cargar el plugin "%s"'), $name));
+            Log::writeNewLog(__FUNCTION__, sprintf(__('No es posible cargar el plugin "%s"'), $name));
         }
 
         return false;

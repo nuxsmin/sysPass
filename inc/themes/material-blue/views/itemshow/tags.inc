@@ -12,14 +12,14 @@
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo _('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Nombre'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $tag->getTagName(); ?>">
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo _('Nombre de la etiqueta'); ?></label>
+                               for="name"><?php echo __('Nombre de la etiqueta'); ?></label>
                     </div>
                 </td>
             </tr>

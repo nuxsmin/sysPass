@@ -32,7 +32,7 @@ use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de manejar el registro de eventos
@@ -75,6 +75,7 @@ class Log extends ActionLog
      * Limpiar el registro de eventos.
      *
      * @return bool con el resultado
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function clearEvents()
     {
@@ -87,7 +88,7 @@ class Log extends ActionLog
             return false;
         }
 
-        self::writeNewLogAndEmail(_('Vaciar Eventos'), _('Vaciar registro de eventos'), null);
+        self::writeNewLogAndEmail(__('Vaciar Eventos', false), __('Vaciar registro de eventos', false), null);
 
         return true;
     }
@@ -99,6 +100,7 @@ class Log extends ActionLog
      * @param string $description La descripción de la acción realizada
      * @param string $level
      * @return Log
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function writeNewLogAndEmail($action, $description = null, $level = Log::INFO)
     {
@@ -131,11 +133,13 @@ class Log extends ActionLog
             return false;
         }
 
+        Language::setAppLocales();
+
         if (Checks::syslogIsEnabled()) {
             $this->sendToSyslog();
         }
 
-        $description = trim($this->getDescription() . PHP_EOL . $this->getDetails());
+        $description = trim($this->getDescription(true) . PHP_EOL . $this->getDetails(true));
 
         $query = 'INSERT INTO log SET ' .
             'log_date = UNIX_TIMESTAMP(),' .
@@ -151,15 +155,17 @@ class Log extends ActionLog
         $Data->addParam(Session::getUserData()->getUserLogin(), 'login');
         $Data->addParam(Session::getUserData()->getUserId(), 'userId');
         $Data->addParam($_SERVER['REMOTE_ADDR'], 'ipAddress');
-        $Data->addParam($this->getAction(), 'action');
+        $Data->addParam(utf8_encode($this->getAction(true)), 'action');
         $Data->addParam($this->getLogLevel(), 'level');
-        $Data->addParam($description, 'description');
+        $Data->addParam(utf8_encode($description), 'description');
 
         if ($resetDescription === true) {
             $this->resetDescription();
         }
 
         $query = DB::getQuery($Data);
+
+        Language::unsetAppLocales();
 
         return $query;
     }
@@ -202,6 +208,7 @@ class Log extends ActionLog
      * @param string $description La descripción de la acción realizada
      * @param string $level
      * @return Log
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function writeNewLog($action, $description = null, $level = Log::INFO)
     {

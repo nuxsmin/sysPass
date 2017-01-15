@@ -40,7 +40,7 @@ use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Customers\CustomerSearch;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class Api para la gestión de peticiones a la API de sysPass
@@ -72,7 +72,7 @@ class SyspassApi extends ApiBase
             && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW_PASS));
 
         if (!$access) {
-            throw new SPException(SPException::SP_WARNING, _('Acceso no permitido'));
+            throw new SPException(SPException::SP_WARNING, __('Acceso no permitido', false));
         }
 
         $Account->getAccountPassData();
@@ -137,7 +137,7 @@ class SyspassApi extends ApiBase
             && Acl::checkUserAccess(ActionsInterface::ACTION_ACC_VIEW));
 
         if (!$access) {
-            throw new SPException(SPException::SP_WARNING, _('Acceso no permitido'));
+            throw new SPException(SPException::SP_WARNING, __('Acceso no permitido', false));
         }
 
         $Account->incrementViewCounter();
@@ -173,7 +173,7 @@ class SyspassApi extends ApiBase
 
         $ret = [
             'accountId' => $AccountData->getAccountId(),
-            'result' => _('Cuenta creada'),
+            'result' => __('Cuenta creada', false),
             'resultCode' => 0
         ];
 
@@ -198,7 +198,7 @@ class SyspassApi extends ApiBase
 
         $ret = [
             'accountId' => $accountId,
-            'result' => _('Cuenta eliminada'),
+            'result' => __('Cuenta eliminada', false),
             'resultCode' => 0
         ];
 
@@ -244,7 +244,7 @@ class SyspassApi extends ApiBase
 
         $ret = [
             'categoryId' => $Category->getItemData()->getCategoryId(),
-            'result' => _('Categoría creada'),
+            'result' => __('Categoría creada', false),
             'resultCode' => 0
         ];
 
@@ -267,7 +267,7 @@ class SyspassApi extends ApiBase
 
         $ret = [
             'categoryId' => $id,
-            'result' => _('Categoría eliminada'),
+            'result' => __('Categoría eliminada', false),
             'resultCode' => 0
         ];
 
@@ -313,7 +313,7 @@ class SyspassApi extends ApiBase
 
         $ret = [
             'customerId' => $Customer->getItemData()->getCustomerId(),
-            'result' => _('Cliente creado'),
+            'result' => __('Cliente creado', false),
             'resultCode' => 0
         ];
 
@@ -336,7 +336,7 @@ class SyspassApi extends ApiBase
 
         $ret = [
             'customerId' => $id,
-            'result' => _('Cliente eliminado'),
+            'result' => __('Cliente eliminado', false),
             'resultCode' => 0
         ];
 
@@ -351,14 +351,14 @@ class SyspassApi extends ApiBase
     public function backup()
     {
         $ret = [
-            'result' => _('Proceso de backup finalizado'),
+            'result' => __('Proceso de backup finalizado', false),
             'resultCode' => 0
         ];
 
         if (!Backup::doBackup()) {
             $ret = [
-                'result' => _('Error al realizar el backup'),
-                'hint' => _('Revise el registro de eventos para más detalles'),
+                'result' => __('Error al realizar el backup', false),
+                'hint' => __('Revise el registro de eventos para más detalles', false),
                 'resultCode' => 1
             ];
         }
@@ -388,44 +388,44 @@ class SyspassApi extends ApiBase
             'getAccountPassword' => [
                 'id' => ActionsInterface::ACTION_ACC_VIEW_PASS,
                 'help' => [
-                    'id' => _('Id de la cuenta'),
-                    'userPass' => _('Clave del usuario asociado al token'),
-                    'details' => _('Devolver detalles en la respuesta')
+                    'id' => __('Id de la cuenta'),
+                    'userPass' => __('Clave del usuario asociado al token', false),
+                    'details' => __('Devolver detalles en la respuesta', false)
                 ]
             ],
             'getAccountSearch' => [
                 'id' => ActionsInterface::ACTION_ACC_SEARCH,
                 'help' => [
-                    'text' => _('Texto a buscar'),
-                    'count' => _('Número de resultados a mostrar'),
-                    'categoryId' => _('Id de categoría a filtrar'),
-                    'customerId' => _('Id de cliente a filtrar')
+                    'text' => __('Texto a buscar', false),
+                    'count' => __('Número de resultados a mostrar', false),
+                    'categoryId' => __('Id de categoría a filtrar', false),
+                    'customerId' => __('Id de cliente a filtrar', false)
                 ]
             ],
             'getAccountData' => [
                 'id' => ActionsInterface::ACTION_ACC_VIEW,
                 'help' => [
-                    'id' => _('Id de la cuenta'),
-                    'userPass' => _('Clave del usuario asociado al token')
+                    'id' => __('Id de la cuenta'),
+                    'userPass' => __('Clave del usuario asociado al token', false)
                 ]
             ],
             'deleteAccount' => [
                 'id' => ActionsInterface::ACTION_ACC_DELETE,
                 'help' => [
-                    'id' => _('Id de la cuenta')
+                    'id' => __('Id de la cuenta', false)
                 ]
             ],
             'addAccount' => [
                 'id' => ActionsInterface::ACTION_ACC_NEW,
                 'help' => [
-                    'userPass' => _('Clave del usuario asociado al token'),
-                    'name' => _('Nombre de cuenta'),
-                    'categoryId' => _('Id de categoría'),
-                    'customerId' => _('Id de cliente'),
-                    'pass' => _('Clave'),
-                    'login' => _('Usuario de acceso'),
-                    'url' => _('URL o IP de acceso'),
-                    'notes' => _('Notas sobre la cuenta')
+                    'userPass' => __('Clave del usuario asociado al token', false),
+                    'name' => __('Nombre de cuenta', false),
+                    'categoryId' => __('Id de categoría', false),
+                    'customerId' => __('Id de cliente', false),
+                    'pass' => __('Clave', false),
+                    'login' => __('Usuario de acceso', false),
+                    'url' => __('URL o IP de acceso', false),
+                    'notes' => __('Notas sobre la cuenta', false)
                 ]
             ],
             'backup' => [
@@ -436,41 +436,41 @@ class SyspassApi extends ApiBase
             'getCategories' => [
                 'id' => ActionsInterface::ACTION_MGM_CATEGORIES,
                 'help' => [
-                    'name' => _('Nombre de categoría a buscar'),
-                    'count' => _('Número de resultados a mostrar')
+                    'name' => __('Nombre de categoría a buscar', false),
+                    'count' => __('Número de resultados a mostrar', false)
                 ]
             ],
             'addCategory' => [
                 'id' => ActionsInterface::ACTION_MGM_CATEGORIES,
                 'help' => [
-                    'name' => _('Nombre de la categoría'),
-                    'description' => _('Descripción de la categoría')
+                    'name' => __('Nombre de la categoría', false),
+                    'description' => __('Descripción de la categoría', false)
                 ]
             ],
             'deleteCategory' => [
                 'id' => ActionsInterface::ACTION_MGM_CATEGORIES,
                 'help' => [
-                    'id' => _('Id de categoría')
+                    'id' => __('Id de categoría', false)
                 ]
             ],
             'getCustomers' => [
                 'id' => ActionsInterface::ACTION_MGM_CUSTOMERS,
                 'help' => [
-                    'name' => _('Nombre de cliente a buscar'),
-                    'count' => _('Número de resultados a mostrar')
+                    'name' => __('Nombre de cliente a buscar', false),
+                    'count' => __('Número de resultados a mostrar', false)
                 ]
             ],
             'addCustomer' => [
                 'id' => ActionsInterface::ACTION_MGM_CUSTOMERS,
                 'help' => [
-                    'name' => _('Nombre del cliente'),
-                    'description' => _('Descripción del cliente')
+                    'name' => __('Nombre del cliente', false),
+                    'description' => __('Descripción del cliente', false)
                 ]
             ],
             'deleteCustomer' => [
                 'id' => ActionsInterface::ACTION_MGM_CUSTOMERS,
                 'help' => [
-                    'id' => _('Id de cliente')
+                    'id' => __('Id de cliente', false)
                 ]
             ]
         ];

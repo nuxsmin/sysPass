@@ -25,7 +25,7 @@
 
 namespace SP\Mgmt\Categories;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\SPException;
@@ -56,7 +56,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_WARNING, _('Categoría duplicada'));
+            throw new SPException(SPException::SP_WARNING, __('Categoría duplicada', false));
         }
 
         $query = /** @lang SQL */
@@ -69,16 +69,10 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear la categoría'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al crear la categoría', false));
         }
 
         $this->itemData->setCategoryId(DB::$lastId);
-
-        $Log = new Log(_('Nueva Categoría'));
-        $Log->addDetails(Html::strongText(_('Categoría')), $this->itemData->getCategoryName());
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -115,6 +109,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     /**
      * @param $id int|array
      * @return mixed
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
@@ -128,13 +123,14 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         }
 
         if ($this->checkInUse($id)) {
-            throw new SPException(SPException::SP_WARNING, _('No es posible eliminar'));
+            throw new SPException(SPException::SP_WARNING, __('No es posible eliminar', false));
         }
 
+        // FIXME: utilizar SQL
         $oldCategory = $this->getById($id);
 
         if (!is_object($oldCategory)) {
-            throw new SPException(SPException::SP_CRITICAL, _('Categoría no encontrada'));
+            throw new SPException(SPException::SP_CRITICAL, __('Categoría no encontrada', false));
         }
 
         $query = /** @lang SQL */
@@ -145,24 +141,16 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar la categoría'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al eliminar la categoría', false));
         }
-
-        $Log = new Log(_('Eliminar Categoría'));
-        $Log->addDetails(Html::strongText(_('Categoría')), sprintf('%s (%d)', $oldCategory->getCategoryName(), $id));
 
         try {
             $CustomFieldData = new CustomFieldData();
             $CustomFieldData->setModule(ActionsInterface::ACTION_MGM_CATEGORIES);
             CustomField::getItem($CustomFieldData)->delete($id);
         } catch (SPException $e) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription($e->getMessage());
+            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
         }
-
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -209,10 +197,8 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_WARNING, _('Nombre de categoría duplicado'));
+            throw new SPException(SPException::SP_WARNING, __('Nombre de categoría duplicado', false));
         }
-
-        $oldCategory = $this->getById($this->itemData->getCategoryId());
 
         $query = /** @lang SQL */
             'UPDATE categories
@@ -229,15 +215,8 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->itemData->getCategoryId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar la categoría'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al actualizar la categoría', false));
         }
-
-        $Log = new Log(_('Modificar Categoría'));
-        $Log->addDetails(Html::strongText(_('Nombre')), sprintf('%s > %s', $oldCategory->getCategoryName(), $this->itemData->getCategoryName()));
-        $Log->addDetails(Html::strongText(_('Descripción')), sprintf('%s > %s', $oldCategory->getCategoryDescription(), $this->itemData->getCategoryDescription()));
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }

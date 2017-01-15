@@ -31,7 +31,7 @@ use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ProfileUtil
@@ -49,7 +49,7 @@ class ProfileUtil
      */
     public static function migrateProfiles()
     {
-        $Log = new Log(_('Migrar Perfiles'));
+        $Log = new Log(__('Migrar Perfiles'));
 
         $query = /** @lang SQL */
             'SELECT userprofile_id AS id,
@@ -80,7 +80,7 @@ class ProfileUtil
 
         if (count($queryRes) === 0) {
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al obtener perfiles'));
+            $Log->addDescription(__('Error al obtener perfiles', false));
             return false;
         }
 
@@ -140,9 +140,9 @@ class ProfileUtil
         $queryRes = DB::getQuery($Data);
 
         if ($queryRes) {
-            $Log->addDescription(_('Operación realizada correctamente'));
+            $Log->addDescription(__('Operación realizada correctamente', false));
         } else {
-            $Log->addDescription(_('Fallo al realizar la operación'));
+            $Log->addDescription(__('Fallo al realizar la operación', false));
         }
 
         $Log->writeLog();

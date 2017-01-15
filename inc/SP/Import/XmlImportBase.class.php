@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,7 +26,7 @@ namespace SP\Import;
 
 use SP\Core\Exceptions\SPException;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class XmlImportBase abstracta para manejar archivos de importación en formato XML
@@ -79,8 +79,8 @@ abstract class XmlImportBase extends ImportBase
         if ($this->xml === false) {
             throw new SPException(
                 SPException::SP_CRITICAL,
-                _('Error interno'),
-                _('No es posible procesar el archivo XML')
+                __('Error interno', false),
+                __('No es posible procesar el archivo XML', false)
             );
         }
     }
@@ -108,8 +108,8 @@ abstract class XmlImportBase extends ImportBase
         } else {
             throw new SPException(
                 SPException::SP_CRITICAL,
-                _('Archivo XML no soportado'),
-                _('No es posible detectar la aplicación que exportó los datos')
+                __('Archivo XML no soportado', false),
+                __('No es posible detectar la aplicación que exportó los datos', false)
             );
         }
 
@@ -128,9 +128,12 @@ abstract class XmlImportBase extends ImportBase
         $ParentNode = $this->xmlDOM->getElementsByTagName($nodeName);
 
         if ($ParentNode->length === 0) {
-            throw new SPException(SPException::SP_WARNING, _('Formato de XML inválido'), sprintf(_('El nodo "%s" no existe'), $nodeName));
+            throw new SPException(
+                SPException::SP_WARNING,
+                __('Formato de XML inválido', false),
+                sprintf(__('El nodo "%s" no existe'), $nodeName));
         } elseif (!is_callable([$this, $callback])) {
-            throw new SPException(SPException::SP_WARNING, _('Método inválido'));
+            throw new SPException(SPException::SP_WARNING, __('Método inválido', false));
         }
 
         /** @var \DOMElement $nodes */

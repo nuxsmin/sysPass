@@ -7,18 +7,18 @@
               data-hash="">
 
             <div id="title" class="midroundup titleNormal">
-                <?php echo _('Wiki'); ?>
+                <?php echo __('Wiki'); ?>
             </div>
 
             <table id="tblWiki" class="data tblConfig round">
                 <tr>
                     <td class="descField">
-                        <?php echo _('Habilitar enlaces Wiki'); ?>
+                        <?php echo __('Habilitar enlaces Wiki'); ?>
                         <div id="help-wiki_enabled"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_enabled">
                             <p>
-                                <?php echo _('Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda.'); ?>
+                                <?php echo __('Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda.'); ?>
                             </p>
                         </div>
                     </td>
@@ -34,20 +34,20 @@
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('URL de búsqueda Wiki'); ?>
+                        <?php echo __('URL de búsqueda Wiki'); ?>
                         <div id="help-wiki_searchurl"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_searchurl">
                             <p>
-                                <?php echo _('URL que utiliza la wiki para realizar una búsqueda de una página.'); ?>
+                                <?php echo __('URL que utiliza la wiki para realizar una búsqueda de una página.'); ?>
                             </p>
 
                             <p>
-                                <?php echo _('Como parámetro se utiliza el nombre del cliente.'); ?>
+                                <?php echo __('Como parámetro se utiliza el nombre del cliente.'); ?>
                             </p>
 
                             <p>
-                                <?php _('Ejemplo:'); ?>
+                                <?php __('Ejemplo:'); ?>
                             </p>
 
                             <p>
@@ -61,26 +61,26 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="128" value="<?php echo $wikiSearchUrl; ?>">
                             <label class="mdl-textfield__label"
-                                   for="wiki_searchurl"><?php echo _('URL de búsqueda Wiki'); ?></label>
+                                   for="wiki_searchurl"><?php echo __('URL de búsqueda Wiki'); ?></label>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('URL de página en Wiki'); ?>
+                        <?php echo __('URL de página en Wiki'); ?>
                         <div id="help-wiki_pageurl"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_pageurl">
                             <p>
-                                <?php echo _('URL que utiliza la wiki para acceder a los detalles de una página.'); ?>
+                                <?php echo __('URL que utiliza la wiki para acceder a los detalles de una página.'); ?>
                             </p>
 
                             <p>
-                                <?php echo _('El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda de la Wiki.'); ?>
+                                <?php echo __('El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda de la Wiki.'); ?>
                             </p>
 
                             <p>
-                                <?php echo _('Ejemplo:'); ?>
+                                <?php echo __('Ejemplo:'); ?>
                             </p>
 
                             <p>
@@ -94,22 +94,22 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="128" value="<?php echo $wikiPageUrl; ?>">
                             <label class="mdl-textfield__label"
-                                   for="wiki_pageurl"><?php echo _('URL de página en Wiki'); ?></label>
+                                   for="wiki_pageurl"><?php echo __('URL de página en Wiki'); ?></label>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('Prefijo para nombre de cuenta'); ?>
+                        <?php echo __('Prefijo para nombre de cuenta'); ?>
                         <div id="help-wikifilter"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-wikifilter">
                             <p>
-                                <?php echo _('Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki.'); ?>
+                                <?php echo __('Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki.'); ?>
                             </p>
 
                             <p>
-                                <?php echo _('Ejemplos:') . ' serv- | srv- | vm-'; ?>
+                                <?php echo __('Ejemplos:') . ' serv- | srv- | vm-'; ?>
                             </p>
                         </div>
                     </td>
@@ -120,21 +120,21 @@
             </table>
 
             <div id="title" class="midroundup titleNormal">
-                <?php echo _('DokuWiki API'); ?>
+                <?php echo __('DokuWiki API'); ?>
             </div>
 
             <table id="tblDokuWiki" class="data tblConfig round">
                 <tr>
                     <td class="descField">
-                        <?php echo _('Habilitar API de DokuWiki'); ?>
+                        <?php echo __('Habilitar API de DokuWiki'); ?>
                         <div id="help-dokuwiki_enabled"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_enabled">
                             <p>
-                                <?php echo _('Habilita la conexión a la API XML-RPC de DokuWiki para los enlaces Wiki.'); ?>
+                                <?php echo __('Habilita la conexión a la API XML-RPC de DokuWiki para los enlaces Wiki.'); ?>
                             </p>
                             <p>
-                                <?php echo _('Para que esta característica funcione, es necesario habilitar los enlaces Wiki para el filtrado de cuentas.'); ?>
+                                <?php echo __('Para que esta característica funcione, es necesario habilitar los enlaces Wiki para el filtrado de cuentas.'); ?>
                             </p>
                         </div>
                     </td>
@@ -151,16 +151,16 @@
 
                 <tr>
                     <td class="descField">
-                        <?php echo _('URL API'); ?>
+                        <?php echo __('URL API'); ?>
                         <div id="help-dokuwiki_url"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_url">
                             <p>
-                                <?php echo _('URL de la API de DokuWiki.'); ?>
+                                <?php echo __('URL de la API de DokuWiki.'); ?>
                             </p>
 
                             <p>
-                                <?php echo _('Ejemplo:'); ?>
+                                <?php echo __('Ejemplo:'); ?>
                             <ul>
                                 <li>http://wiki.syspass.org/lib/exe/xmlrpc.php</li>
                             </ul>
@@ -172,22 +172,22 @@
                             <input id="dokuwiki_url" name="dokuwiki_url" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="128" value="<?php echo $dokuWikiUrl; ?>"/>
-                            <label class="mdl-textfield__label" for="dokuwiki_url"><?php echo _('URL API'); ?></label>
+                            <label class="mdl-textfield__label" for="dokuwiki_url"><?php echo __('URL API'); ?></label>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('URL Base'); ?>
+                        <?php echo __('URL Base'); ?>
                         <div id="help-dokuwiki_urlbase"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_urlbase">
                             <p>
-                                <?php echo _('URL base de DokuWiki.'); ?>
+                                <?php echo __('URL base de DokuWiki.'); ?>
                             </p>
 
                             <p>
-                                <?php echo _('Ejemplo:'); ?>
+                                <?php echo __('Ejemplo:'); ?>
                             <ul>
                                 <li>http://wiki.syspass.org/dokuwiki</li>
                             </ul>
@@ -200,18 +200,18 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="128" value="<?php echo $dokuWikiUrlBase; ?>"/>
                             <label class="mdl-textfield__label"
-                                   for="dokuwiki_urlbase"><?php echo _('URL Base'); ?></label>
+                                   for="dokuwiki_urlbase"><?php echo __('URL Base'); ?></label>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('Usuario'); ?>
+                        <?php echo __('Usuario'); ?>
                         <div id="help-dokuwiki_user"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_user">
                             <p>
-                                <?php echo _('Usuario para conectar a la API de DokuWiki.'); ?>
+                                <?php echo __('Usuario para conectar a la API de DokuWiki.'); ?>
                             </p>
                         </div>
                     </td>
@@ -220,31 +220,31 @@
                             <input id="dokuwiki_user" name="dokuwiki_user" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="128" value="<?php echo $dokuWikiUser; ?>"/>
-                            <label class="mdl-textfield__label" for="dokuwiki_user"><?php echo _('Usuario'); ?></label>
+                            <label class="mdl-textfield__label" for="dokuwiki_user"><?php echo __('Usuario'); ?></label>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('Clave'); ?>
+                        <?php echo __('Clave'); ?>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="dokuwiki_pass" name="dokuwiki_pass" type="password"
                                    class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
                                    maxlength="128" value="<?php echo $dokuWikiPass; ?>"/>
-                            <label class="mdl-textfield__label" for="dokuwiki_pass"><?php echo _('Clave'); ?></label>
+                            <label class="mdl-textfield__label" for="dokuwiki_pass"><?php echo __('Clave'); ?></label>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('Namespace'); ?>
+                        <?php echo __('Namespace'); ?>
                         <div id="help-dokuwiki_namespace"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_namespace">
                             <p>
-                                <?php echo _('Namespace utilizado para buscar las páginas.'); ?>
+                                <?php echo __('Namespace utilizado para buscar las páginas.'); ?>
                             </p>
                         </div>
                     </td>
@@ -255,7 +255,7 @@
                                    maxlength="128"
                                    value="<?php echo $dokuWikiNamespace; ?>"/>
                             <label class="mdl-textfield__label"
-                                   for="dokuwiki_namespace"><?php echo _('Namespace'); ?></label>
+                                   for="dokuwiki_namespace"><?php echo __('Namespace'); ?></label>
                         </div>
                     </td>
                 </tr>

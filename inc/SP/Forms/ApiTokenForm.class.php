@@ -66,14 +66,14 @@ class ApiTokenForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if ($this->ApiTokens->getUserId() === 0) {
-            throw new ValidationException(_('Usuario no indicado'));
+            throw new ValidationException(__('Usuario no indicado', false));
         } elseif ($this->ApiTokens->getActionId() === 0) {
-            throw new ValidationException(_('Acción no indicada'));
+            throw new ValidationException(__('Acción no indicada', false));
         }
     }
 
     /**
-     * @return mixed
+     * @return ApiTokens
      */
     public function getItemData()
     {

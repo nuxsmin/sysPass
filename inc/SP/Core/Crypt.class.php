@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 use SP\Util\Checks;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de realizar el encriptado/desencriptado de claves
@@ -103,10 +103,11 @@ class Crypt
     /**
      * Comprobar el hash de una clave.
      *
-     * @param string $pwd          con la clave a comprobar
+     * @param string $pwd         con la clave a comprobar
      * @param string $checkedHash con el hash a comprobar
-     * @param bool   $isMPass      si es la clave maestra
+     * @param bool   $isMPass     si es la clave maestra
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkHashPass($pwd, $checkedHash, $isMPass = false)
     {
@@ -126,7 +127,7 @@ class Crypt
 
                 AccountHistory::updateAccountsMPassHash($newHash);
                 ConfigDB::setValue('masterPwd', $newHash);
-                Log::writeNewLog(_('Aviso'), _('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.'), Log::NOTICE);
+                Log::writeNewLog(__('Aviso', false), __('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.', false), Log::NOTICE);
             }
 
             return $check;
@@ -191,8 +192,8 @@ class Crypt
         if (!Crypt::checkCryptModule()) {
             throw new SPException(
                 SPException::SP_CRITICAL,
-                _('Error interno'),
-                _('No se puede usar el módulo de encriptación')
+                __('Error interno', false),
+                __('No se puede usar el módulo de encriptación', false)
             );
         }
 
@@ -202,8 +203,8 @@ class Crypt
         if (!empty($data) && ($encData['data'] === false || is_null($encData['data']))) {
             throw new SPException(
                 SPException::SP_CRITICAL,
-                _('Error interno'),
-                _('Error al generar datos cifrados')
+                __('Error interno', false),
+                __('Error al generar datos cifrados', false)
             );
         }
 

@@ -45,6 +45,8 @@ class Email
      * @param string $mailTo  con el destinatario
      * @param bool   $isEvent para indicar si es um
      * @return bool
+     * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function sendEmail(Log $log, $mailTo = '', $isEvent = true)
     {
@@ -59,21 +61,20 @@ class Email
         }
 
         $Mail->isHTML();
-        $log->setNewLineHtml(true);
 
         if ($isEvent === true) {
-            $performer = Session::getUserData()->getUserLogin() ?: _('N/D');
-            $body[] = sprintf('%s: %s', Html::strongText(_('Acción')), utf8_decode($log->getAction()));
-            $body[] = sprintf('%s: %s (%s)', Html::strongText(_('Realizado por')), $performer, $_SERVER['REMOTE_ADDR']);
+            $performer = Session::getUserData()->getUserLogin() ?: __('N/D');
+            $body[] = sprintf('%s: %s', Html::strongText(__('Acción')), utf8_decode($log->getAction()));
+            $body[] = sprintf('%s: %s (%s)', Html::strongText(__('Realizado por')), $performer, $_SERVER['REMOTE_ADDR']);
 
             $Mail->addCC(Config::getConfig()->getMailFrom());
         }
 
-        $body[] = utf8_decode($log->getDescription());
+        $body[] = utf8_decode($log->getHtmlDescription());
         $body[] = utf8_decode($log->getDetails());
         $body[] = '';
         $body[] = '--';
-        $body[] = Util::getAppInfo('appname') . ' - ' . Util::getAppInfo('appdesc');
+        $body[] = sprintf('%s - %s', Util::getAppInfo('appname'), Util::getAppInfo('appdesc'));
         $body[] = Html::anchorText(Init::$WEBURI);
 
 
@@ -81,20 +82,20 @@ class Email
 
         $sendMail = $Mail->send();
 
-        $Log = new Log(_('Enviar Email'));
+        $Log = new Log(__('Enviar Email', false));
 
         // Enviar correo
         if ($sendMail) {
-            $Log->addDescription(_('Correo enviado'));
+            $Log->addDescription(__('Correo enviado', false));
         } else {
-            $Log->addDescription(_('Error al enviar correo'));
+            $Log->addDescription(__('Error al enviar correo', false));
             $Log->addDescription('ERROR: ' . $Mail->ErrorInfo);
         }
 
-        $Log->addDescription(_('Destinatario') . ': ' . $mailTo);
+        $Log->addDescription(__('Destinatario', false) . ': ' . $mailTo);
 
         if ($isEvent === true){
-            $Log->addDescription(_('CC') . ': ' . Config::getConfig()->getMailFrom());
+            $Log->addDescription(__('CC', false) . ': ' . Config::getConfig()->getMailFrom());
         }
 
         $Log->writeLog();
@@ -149,7 +150,7 @@ class Email
         $Mail->addAddress($mailTo);
         $Mail->addReplyTo($mailFrom, $appName);
         $Mail->WordWrap = 100;
-        $Mail->Subject = $appName . ' (' . _('Aviso') . ') - ' . $action;
+        $Mail->Subject = sprintf('%s (%s) - %s', $appName, __('Aviso'), $action);
 
         return $Mail;
     }

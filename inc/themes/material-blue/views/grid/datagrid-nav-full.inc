@@ -8,7 +8,7 @@
     <div class="pager-left">
         <?php echo $data->getData()->getDataCount(); ?> @ <?php echo $data->getTime(); ?>s
         <?php if ($data->getPager()->getFilterOn()): ?>
-            <span class="filter-on round"><?php echo _('Filtro ON'); ?></span>
+            <span class="filter-on round"><?php echo __('Filtro ON'); ?></span>
         <?php endif; ?>
     </div>
     <div class="pager-right">

@@ -24,7 +24,7 @@
 
 namespace SP\Config;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Interface ConfigInterface para las clases que gestionan la configuración de sysPass

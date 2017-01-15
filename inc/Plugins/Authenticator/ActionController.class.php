@@ -87,8 +87,8 @@ class ActionController implements ItemControllerInterface
                     $this->invalidAction();
             }
         } catch (\Exception $e) {
-            $this->jsonResponse->setDescription($e->getMessage());
-            Json::returnJson($this->jsonResponse);
+            $this->JsonResponse->setDescription($e->getMessage());
+            Json::returnJson($this->JsonResponse);
         }
     }
 
@@ -97,6 +97,7 @@ class ActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function save()
     {
@@ -108,13 +109,13 @@ class ActionController implements ItemControllerInterface
         $twoFa = new Authenticator($this->itemId, CoreSession::getUserData()->getUserLogin(), $AuthenticatorData->getIV());
 
         if (!$twoFa->verifyKey($pin)) {
-            $this->jsonResponse->setDescription(_t('authenticator', 'Código incorrecto'));
-            Json::returnJson($this->jsonResponse);
+            $this->JsonResponse->setDescription(_t('authenticator', 'Código incorrecto'));
+            Json::returnJson($this->JsonResponse);
         }
 
         if (Checks::demoIsEnabled()) {
-            $this->jsonResponse->setDescription(_t('authenticator', 'Ey, esto es una DEMO!!'));
-            Json::returnJson($this->jsonResponse);
+            $this->JsonResponse->setDescription(_t('authenticator', 'Ey, esto es una DEMO!!'));
+            Json::returnJson($this->JsonResponse);
         }
 
         $data = $this->Plugin->getData();
@@ -138,10 +139,10 @@ class ActionController implements ItemControllerInterface
 
         Plugin::getItem($PluginData)->update();
 
-        $this->jsonResponse->setStatus(0);
-        $this->jsonResponse->setDescription(_t('authenticator', 'Preferencias actualizadas'));
+        $this->JsonResponse->setStatus(0);
+        $this->JsonResponse->setDescription(_t('authenticator', 'Preferencias actualizadas'));
 
-        Json::returnJson($this->jsonResponse);
+        Json::returnJson($this->JsonResponse);
     }
 
     /**
@@ -168,15 +169,15 @@ class ActionController implements ItemControllerInterface
             Session::setTwoFApass(true);
             CoreSession::setAuthCompleted(true);
 
-            $this->jsonResponse->setDescription(_t('authenticator', 'Código correcto'));
-            $this->jsonResponse->setStatus(0);
+            $this->JsonResponse->setDescription(_t('authenticator', 'Código correcto'));
+            $this->JsonResponse->setStatus(0);
         } else {
             Session::setTwoFApass(false);
             CoreSession::setAuthCompleted(false);
 
-            $this->jsonResponse->setDescription(_t('authenticator', 'Código incorrecto'));
+            $this->JsonResponse->setDescription(_t('authenticator', 'Código incorrecto'));
         }
 
-        Json::returnJson($this->jsonResponse);
+        Json::returnJson($this->JsonResponse);
     }
 }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,6 +27,7 @@ namespace SP\Controller;
 use SP\Account\Account;
 use SP\Account\AccountFavorites;
 use SP\Account\AccountUtil;
+use SP\Auth\AuthUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\DataModel\CustomFieldData;
@@ -42,7 +43,6 @@ use SP\Forms\GroupForm;
 use SP\Forms\ProfileForm;
 use SP\Forms\TagForm;
 use SP\Forms\UserForm;
-use SP\Html\Html;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -80,6 +80,8 @@ class ItemActionController implements ItemControllerInterface
 
     /**
      * AjaxSaveController constructor.
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function __construct()
     {
@@ -93,6 +95,8 @@ class ItemActionController implements ItemControllerInterface
      */
     public function doAction()
     {
+        $this->Log = new Log();
+
         try {
             switch ($this->actionId) {
                 case ActionsInterface::ACTION_USR_USERS_NEW:
@@ -177,10 +181,15 @@ class ItemActionController implements ItemControllerInterface
                     $this->invalidAction();
             }
         } catch (\Exception $e) {
-            $this->jsonResponse->setDescription($e->getMessage());
+            $this->JsonResponse->setDescription($e->getMessage());
         }
 
-        Json::returnJson($this->jsonResponse);
+        if ($this->Log->getAction() !== null) {
+            $this->Log->writeLog();
+            $this->JsonResponse->setDescription($this->Log->getHtmlDescription());
+        }
+
+        Json::returnJson($this->JsonResponse);
     }
 
     /**
@@ -189,6 +198,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \phpmailer\phpmailerException
      */
     protected function userAction()
     {
@@ -202,28 +212,57 @@ class ItemActionController implements ItemControllerInterface
                 User::getItem($Form->getItemData())->add();
                 $this->addCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Usuario creado'));
+                $this->Log->setAction(__('Crear Usuario', false));
+                $this->Log->addDescription(__('Usuario creado', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getUserName());
+                $this->Log->addDetails(__('Login', false), $Form->getItemData()->getUserLogin());
+
+                if ($Form->getItemData()->isUserIsChangePass()
+                    && !AuthUtil::mailPassRecover($Form->getItemData())
+                ) {
+                    $this->Log->addDescription(__('No se pudo realizar la petición de cambio de clave.', false));
+                }
                 break;
             case ActionsInterface::ACTION_USR_USERS_EDIT:
                 User::getItem($Form->getItemData())->update();
                 $this->updateCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Usuario actualizado'));
+                $this->Log->setAction(__('Actualizar Usuario', false));
+                $this->Log->addDescription(__('Usuario actualizado', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getUserName());
+                $this->Log->addDetails(__('Login', false), $Form->getItemData()->getUserLogin());
+
+                if ($Form->getItemData()->isUserIsChangePass()
+                    && !AuthUtil::mailPassRecover($Form->getItemData())
+                ) {
+                    $this->Log->addDescription(__('No se pudo realizar la petición de cambio de clave.', false));
+                }
                 break;
             case ActionsInterface::ACTION_USR_USERS_DELETE:
+                $UserData = User::getItem()->getById($this->itemId);
+
                 User::getItem()->delete($this->itemId);
                 $this->deleteCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Usuario eliminado'));
+                $this->Log->setAction(__('Eliminar Usuario', false));
+                $this->Log->addDescription(__('Usuario eliminado', false));
+                $this->Log->addDetails(__('Nombre', false), $UserData->getUserName());
+                $this->Log->addDetails(__('Login', false), $UserData->getUserLogin());
                 break;
             case ActionsInterface::ACTION_USR_USERS_EDITPASS:
+                $UserData = User::getItem()->getById($this->itemId);
+
                 User::getItem($Form->getItemData())->updatePass();
 
-                $this->jsonResponse->setDescription(_('Clave actualizada'));
+                $this->Log->setAction(__('Actualizar Clave Usuario', false));
+                $this->Log->addDetails(__('Nombre', false), $UserData->getUserName());
+                $this->Log->addDetails(__('Login', false), $UserData->getUserLogin());
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        Email::sendEmail($this->Log);
+
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -285,6 +324,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \phpmailer\phpmailerException
      */
     protected function groupAction()
     {
@@ -298,23 +338,33 @@ class ItemActionController implements ItemControllerInterface
                 Group::getItem($Form->getItemData())->add();
                 $this->addCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Grupo creado'));
+                $this->Log->setAction(__('Crear Grupo', false));
+                $this->Log->addDescription(__('Grupo creado', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getUsergroupName());
                 break;
             case ActionsInterface::ACTION_USR_GROUPS_EDIT:
                 Group::getItem($Form->getItemData())->update();
                 $this->updateCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Grupo actualizado'));
+                $this->Log->setAction(__('Actualizar Grupo', false));
+                $this->Log->addDescription(__('Grupo actualizado', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getUsergroupName());
                 break;
             case ActionsInterface::ACTION_USR_GROUPS_DELETE:
+                $GroupData = Group::getItem()->getById($this->itemId);
+
                 Group::getItem()->delete($this->itemId);
                 $this->deleteCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Grupo eliminado'));
+                $this->Log->setAction(__('Eliminar Grupo', false));
+                $this->Log->addDescription(__('Grupo eliminado', false));
+                $this->Log->addDetails(__('Nombre', false), $GroupData->getUsergroupName());
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        Email::sendEmail($this->Log);
+
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -323,6 +373,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \phpmailer\phpmailerException
      */
     protected function profileAction()
     {
@@ -336,23 +387,33 @@ class ItemActionController implements ItemControllerInterface
                 Profile::getItem($Form->getItemData())->add();
                 $this->addCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Perfil creado'));
+                $this->Log->setAction(__('Crear Perfil', false));
+                $this->Log->addDescription(__('Perfil creado', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getUserprofileName());
                 break;
             case ActionsInterface::ACTION_USR_PROFILES_EDIT:
                 Profile::getItem($Form->getItemData())->update();
                 $this->updateCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Perfil actualizado'));
+                $this->Log->setAction(__('Actualizar Perfil', false));
+                $this->Log->addDescription(__('Perfil actualizado', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getUserprofileName());
                 break;
             case ActionsInterface::ACTION_USR_PROFILES_DELETE:
+                $ProfileData = Profile::getItem()->getById($this->itemId);
+
                 Profile::getItem()->delete($this->itemId);
                 $this->deleteCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Perfil eliminado'));
+                $this->Log->setAction(__('Eliminar Perfil', false));
+                $this->Log->addDescription(__('Perfil eliminado', false));
+                $this->Log->addDetails(__('Nombre', false), $ProfileData->getUserprofileName());
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        Email::sendEmail($this->Log);
+
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -361,6 +422,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \phpmailer\phpmailerException
      */
     protected function customerAction()
     {
@@ -374,22 +436,31 @@ class ItemActionController implements ItemControllerInterface
                 Customer::getItem($Form->getItemData())->add();
                 $this->addCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Cliente creado'));
+                $this->Log->setAction(__('Crear Cliente', false));
+                $this->Log->addDescription(__('Cliente creado', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getCustomerName());
                 break;
             case ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT:
                 Customer::getItem($Form->getItemData())->update();
                 $this->updateCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Cliente actualizado'));
+                $this->Log->setAction(__('Actualizar Cliente', false));
+                $this->Log->addDescription(__('Cliente actualizado', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getCustomerName());
                 break;
             case ActionsInterface::ACTION_MGM_CUSTOMERS_DELETE:
+                $CustomerData = Customer::getItem()->getById($this->itemId);
                 Customer::getItem()->delete($this->itemId);
 
-                $this->jsonResponse->setDescription(_('Cliente eliminado'));
+                $this->Log->setAction(__('Eliminar Cliente', false));
+                $this->Log->addDescription(__('Cliente eliminado', false));
+                $this->Log->addDetails(__('Nombre', false), $CustomerData->getCustomerName());
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        Email::sendEmail($this->Log);
+
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -398,6 +469,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \phpmailer\phpmailerException
      */
     protected function categoryAction()
     {
@@ -411,22 +483,31 @@ class ItemActionController implements ItemControllerInterface
                 Category::getItem($Form->getItemData())->add();
                 $this->addCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Categoría creada'));
+                $this->Log->setAction(__('Crear Categoría', false));
+                $this->Log->addDescription(__('Categoría creada', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getCategoryName());
                 break;
             case ActionsInterface::ACTION_MGM_CATEGORIES_EDIT:
                 Category::getItem($Form->getItemData())->update();
                 $this->updateCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Categoría actualizada'));
+                $this->Log->setAction(__('Actualizar Categoría', false));
+                $this->Log->addDescription(__('Categoría actualizada', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getCategoryName());
                 break;
             case ActionsInterface::ACTION_MGM_CATEGORIES_DELETE:
+                $CategoryData = Category::getItem()->getById($this->itemId);
                 Category::getItem()->delete($this->itemId);
 
-                $this->jsonResponse->setDescription(_('Categoría eliminada'));
+                $this->Log->setAction(__('Eliminar Categoría', false));
+                $this->Log->addDescription(__('Categoría eliminada', false));
+                $this->Log->addDetails(__('Nombre', false), $CategoryData->getCategoryName());
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        Email::sendEmail($this->Log);
+
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -434,6 +515,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     protected function tokenAction()
     {
@@ -444,21 +526,28 @@ class ItemActionController implements ItemControllerInterface
             case ActionsInterface::ACTION_MGM_APITOKENS_NEW:
                 $Form->getItemData()->addToken();
 
-                $this->jsonResponse->setDescription(_('Autorización creada'));
+                $this->Log->setAction(__('Crear Autorización', false));
+                $this->Log->addDescription(__('Autorización creada', false));
+                $this->Log->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_APITOKENS_EDIT:
                 $Form->getItemData()->updateToken();
 
-                $this->jsonResponse->setDescription(_('Autorización actualizada'));
+                $this->Log->setAction(__('Actualizar Autorización', false));
+                $this->Log->addDescription(__('Autorización actualizada', false));
+                $this->Log->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_APITOKENS_DELETE:
                 $Form->getItemData()->deleteToken();
 
-                $this->jsonResponse->setDescription(_('Autorización eliminada'));
+                $this->Log->setAction(__('Eliminar Autorización', false));
+                $this->Log->addDescription(__('Autorización eliminada', false));
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        Email::sendEmail($this->Log);
+
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -467,6 +556,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \phpmailer\phpmailerException
      */
     protected function customFieldAction()
     {
@@ -477,21 +567,28 @@ class ItemActionController implements ItemControllerInterface
             case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW:
                 CustomFieldDef::getItem($Form->getItemData())->add();
 
-                $this->jsonResponse->setDescription(_('Campo creado'));
+                $this->Log->setAction(__('Crear Campo', false));
+                $this->Log->addDescription(__('Campo creado', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getName());
                 break;
             case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT:
                 CustomFieldDef::getItem($Form->getItemData())->update();
 
-                $this->jsonResponse->setDescription(_('Campo actualizado'));
+                $this->Log->setAction(__('Actualizar Campo', false));
+                $this->Log->addDescription(__('Campo actualizado', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getName());
                 break;
             case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_DELETE:
                 CustomFieldDef::getItem()->delete($this->itemId);
 
-                $this->jsonResponse->setDescription(_('Campo eliminado'));
+                $this->Log->setAction(__('Eliminar Campo', false));
+                $this->Log->addDescription(__('Campo eliminado', false));
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        Email::sendEmail($this->Log);
+
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -500,6 +597,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \phpmailer\phpmailerException
      */
     protected function publicLinkAction()
     {
@@ -513,21 +611,37 @@ class ItemActionController implements ItemControllerInterface
                 $PublicLinkData->setItemId($this->itemId);
                 PublicLink::getItem($PublicLinkData)->add();
 
-                $this->jsonResponse->setDescription(_('Enlace creado'));
+                $this->Log->setAction(__('Crear Enlace', false));
+                $this->Log->addDescription(__('Enlace creado', false));
+                $this->Log->addDetails(__('Tipo', false), $PublicLinkData->getTypeId());
+                $this->Log->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
+                $this->Log->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_PUBLICLINKS_REFRESH:
-                PublicLink::getItem(PublicLink::getItem()->getById($this->itemId))->refresh();
+                $PublicLinkData = PublicLink::getItem()->getById($this->itemId);
+                PublicLink::getItem($PublicLinkData)->refresh();
 
-                $this->jsonResponse->setDescription(_('Enlace actualizado'));
+                $this->Log->setAction(__('Actualizar Enlace', false));
+                $this->Log->addDescription(__('Enlace actualizado', false));
+                $this->Log->addDetails(__('Tipo', false), $PublicLinkData->getTypeId());
+                $this->Log->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
+                $this->Log->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_PUBLICLINKS_DELETE:
+                $PublicLinkData = PublicLink::getItem()->getById($this->itemId);
                 PublicLink::getItem()->delete($this->itemId);
 
-                $this->jsonResponse->setDescription(_('Enlace eliminado'));
+                $this->Log->setAction(__('Eliminar Enlace', false));
+                $this->Log->addDescription(__('Enlace eliminado', false));
+                $this->Log->addDetails(__('Tipo', false), $PublicLinkData->getTypeId());
+                $this->Log->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
+                $this->Log->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getUserId()));
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        Email::sendEmail($this->Log);
+
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -546,21 +660,26 @@ class ItemActionController implements ItemControllerInterface
             case ActionsInterface::ACTION_MGM_TAGS_NEW:
                 Tag::getItem($Form->getItemData())->add();
 
-                $this->jsonResponse->setDescription(_('Etiqueta creada'));
+                $this->Log->setAction(__('Crear Etiqueta', false));
+                $this->Log->addDescription(__('Etiqueta creada', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getTagName());
                 break;
             case ActionsInterface::ACTION_MGM_TAGS_EDIT:
                 Tag::getItem($Form->getItemData())->update();
 
-                $this->jsonResponse->setDescription(_('Etiqueta actualizada'));
+                $this->Log->setAction(__('Actualizar Etiqueta', false));
+                $this->Log->addDescription(__('Etiqueta actualizada', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getTagName());
                 break;
             case ActionsInterface::ACTION_MGM_TAGS_DELETE:
                 Tag::getItem()->delete($this->itemId);
 
-                $this->jsonResponse->setDescription(_('Etiqueta eliminada'));
+                $this->Log->setAction(__('Eliminar Etiqueta', false));
+                $this->Log->addDescription(__('Etiqueta eliminada', false));
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -569,13 +688,25 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \phpmailer\phpmailerException
      */
     protected function fileAction()
     {
-        File::getItem()->delete($this->itemId);
-        $this->jsonResponse->setDescription(_('Archivo actualizado'));
+        $FileData = File::getItem()->getInfoById($this->itemId);
 
-        $this->jsonResponse->setStatus(0);
+        File::getItem()->delete($this->itemId);
+
+        $this->Log->setAction(__('Eliminar Archivo', false));
+        $this->Log->addDescription(__('Archivo eliminado', false));
+        $this->Log->addDetails(__('ID', false), $this->itemId);
+        $this->Log->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($FileData->getAccfileAccountId()));
+        $this->Log->addDetails(__('Archivo', false), $FileData->getAccfileName());
+        $this->Log->addDetails(__('Tipo', false), $FileData->getAccfileType());
+        $this->Log->addDetails(__('Tamaño', false), $FileData->getRoundSize() . 'KB');
+
+        Email::sendEmail($this->Log);
+
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -583,6 +714,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \phpmailer\phpmailerException
      */
     protected function pluginAction()
     {
@@ -594,22 +726,30 @@ class ItemActionController implements ItemControllerInterface
                 $PluginData->setPluginEnabled(1);
                 Plugin::getItem($PluginData)->toggle();
 
-                $this->jsonResponse->setDescription(_('Plugin habilitado'));
+                $this->Log->setAction(__('Actualizar Plugin', false));
+                $this->Log->addDescription(__('Plugin habilitado', false));
+                $this->Log->addDetails(__('Nombre', false), $PluginData->getPluginName());
                 break;
             case ActionsInterface::ACTION_MGM_PLUGINS_DISABLE:
                 $PluginData->setPluginEnabled(0);
                 Plugin::getItem($PluginData)->toggle();
 
-                $this->jsonResponse->setDescription(_('Plugin deshabilitado'));
+                $this->Log->setAction(__('Actualizar Plugin', false));
+                $this->Log->addDescription(__('Plugin deshabilitado', false));
+                $this->Log->addDetails(__('Nombre', false), $PluginData->getPluginName());
                 break;
             case ActionsInterface::ACTION_MGM_PLUGINS_RESET:
                 Plugin::getItem()->reset($this->itemId);
 
-                $this->jsonResponse->setDescription(_('Plugin restablecido'));
+                $this->Log->setAction(__('Actualizar Plugin', false));
+                $this->Log->addDescription(__('Plugin restablecido', false));
+                $this->Log->addDetails(__('Nombre', false), $PluginData->getPluginName());
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        Email::sendEmail($this->Log);
+
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -618,6 +758,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \phpmailer\phpmailerException
      */
     protected function accountAction()
     {
@@ -639,33 +780,45 @@ class ItemActionController implements ItemControllerInterface
 
                 $this->addCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Cuenta creada'));
+                $this->Log->setAction(__('Crear Cuenta', false));
+                $this->Log->addDescription(__('Cuenta creada', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getAccountName());
                 break;
             case ActionsInterface::ACTION_ACC_EDIT:
                 $Account->updateAccount();
                 $this->updateCustomFieldData();
 
-                $this->jsonResponse->setDescription(_('Cuenta actualizada'));
+                $this->Log->setAction(__('Actualizar Cuenta', false));
+                $this->Log->addDescription(__('Cuenta actualizada', false));
+                $this->Log->addDetails(__('Nombre', false), $Form->getItemData()->getAccountName());
                 break;
             case ActionsInterface::ACTION_ACC_EDIT_PASS:
                 $Account->updateAccountPass();
 
-                $this->jsonResponse->setDescription(_('Clave actualizada'));
+                $this->Log->setAction(__('Actualizar Cuenta', false));
+                $this->Log->addDescription(__('Clave actualizada', false));
+                $this->Log->addDetails(__('Nombre', false), ''); // FIXME: nombre de cuenta?
                 break;
             case ActionsInterface::ACTION_ACC_EDIT_RESTORE:
                 $Account->restoreFromHistory(Request::analyze('accountHistoryId', 0));
 
-                $this->jsonResponse->setDescription(_('Cuenta restaurada'));
+                $this->Log->setAction(__('Restaurar Cuenta', false));
+                $this->Log->addDescription(__('Cuenta restaurada', false));
+                $this->Log->addDetails(__('Nombre', false), ''); // FIXME: nombre de cuenta?
                 break;
             case ActionsInterface::ACTION_ACC_DELETE:
             case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE:
                 $Account->deleteAccount($this->itemId);
 
-                $this->jsonResponse->setDescription(_('Cuenta eliminada'));
+                $this->Log->setAction(__('Eliminar Cuenta', false));
+                $this->Log->addDescription(__('Cuenta eliminada', false));
+                $this->Log->addDetails(__('Nombre', false), ''); // FIXME: nombre de cuenta?
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        Email::sendEmail($this->Log);
+
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -682,33 +835,36 @@ class ItemActionController implements ItemControllerInterface
             case ActionsInterface::ACTION_ACC_FAVORITES_ADD:
                 AccountFavorites::addFavorite($this->itemId, $userId);
 
-                $this->jsonResponse->setDescription(_('Favorito añadido'));
+                $this->JsonResponse->setDescription(__('Favorito añadido'));
                 break;
             case ActionsInterface::ACTION_ACC_FAVORITES_DELETE:
                 AccountFavorites::deleteFavorite($this->itemId, $userId);
 
-                $this->jsonResponse->setDescription(_('Favorito eliminado'));
+                $this->JsonResponse->setDescription(__('Favorito eliminado'));
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
      * Importar usuarios de LDAP
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function ldapImportAction()
     {
         if (UserLdapSync::run()) {
-            $this->jsonResponse->setStatus(0);
-            $this->jsonResponse->setDescription(_('Importación de usuarios de LDAP realizada'));
-            $this->jsonResponse->addMessage(sprintf(_('Usuarios importados %d/%d'), UserLdapSync::$syncedObjects, UserLdapSync::$totalObjects));
-            $this->jsonResponse->addMessage(sprintf(_('Errores: %d'), UserLdapSync::$errorObjects));
+            $this->JsonResponse->setStatus(0);
+            $this->Log->addDescription(__('Importación de usuarios de LDAP realizada', false));
+            $this->Log->addDetails(__('Usuarios importados', false), sprintf('%d/%d', UserLdapSync::$syncedObjects, UserLdapSync::$totalObjects));
+            $this->Log->addDetails(__('Errores', false), UserLdapSync::$errorObjects);
         } else {
-            $this->jsonResponse->setDescription(_('Error al importar usuarios de LDAP'));
+            $this->Log->addDescription(__('Error al importar usuarios de LDAP', false));
         }
 
-        $this->jsonResponse->addMessage(_('Revise el registro de eventos para más detalles'));
+        $this->JsonResponse->addMessage(__('Revise el registro de eventos para más detalles', false));
     }
 
     /**
@@ -723,16 +879,16 @@ class ItemActionController implements ItemControllerInterface
             case ActionsInterface::ACTION_NOT_USER_CHECK:
                 Notice::getItem()->setChecked($this->itemId);
 
-                $this->jsonResponse->setDescription(_('Notificación leída'));
+                $this->JsonResponse->setDescription(__('Notificación leída'));
                 break;
             case ActionsInterface::ACTION_NOT_USER_DELETE:
                 Notice::getItem()->delete($this->itemId);
 
-                $this->jsonResponse->setDescription(_('Notificación eliminada'));
+                $this->JsonResponse->setDescription(__('Notificación eliminada'));
                 break;
         }
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -740,13 +896,14 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     protected function requestAccountAction()
     {
         $description = Request::analyze('description');
 
         if (!$description) {
-            $this->jsonResponse->setDescription(_('Es necesaria una descripción'));
+            $this->JsonResponse->setDescription(__('Es necesaria una descripción', false));
             return;
         }
 
@@ -761,11 +918,11 @@ class ItemActionController implements ItemControllerInterface
         $requestUsername = Session::getUserData()->getUserName();
         $requestLogin = Session::getUserData()->getUserLogin();
 
-        $Log = new Log(_('Solicitud de Modificación de Cuenta'));
-        $Log->addDetails(Html::strongText(_('Solicitante')), sprintf('%s (%s)', $requestUsername, $requestLogin));
-        $Log->addDetails(Html::strongText(_('Cuenta')), $account->account_name);
-        $Log->addDetails(Html::strongText(_('Cliente')), $account->customer_name);
-        $Log->addDetails(Html::strongText(_('Descripción')), $description);
+        $this->Log->setAction(__('Solicitud de Modificación de Cuenta', false));
+        $this->Log->addDetails(__('Solicitante', false), sprintf('%s (%s)', $requestUsername, $requestLogin));
+        $this->Log->addDetails(__('Cuenta', false), $account->account_name);
+        $this->Log->addDetails(__('Cliente', false), $account->customer_name);
+        $this->Log->addDetails(__('Descripción', false), $description);
 
         // Enviar por correo si está disponible
         if (Checks::mailrequestIsEnabled()) {
@@ -778,13 +935,11 @@ class ItemActionController implements ItemControllerInterface
             $mailto = implode(',', $recipients);
 
             if (strlen($mailto) > 1
-                && Email::sendEmail($Log, $mailto)
+                && Email::sendEmail($this->Log, $mailto)
             ) {
-                $Log->writeLog();
-
-                $this->jsonResponse->addMessage(_('Solicitud enviada por correo'));
+                $this->Log->addDescription(__('Solicitud enviada por correo', false));
             } else {
-                $this->jsonResponse->addMessage(_('Solicitud no enviada por correo'));
+                $this->Log->addDescription(__('Solicitud no enviada por correo', false));
             }
         }
 
@@ -793,13 +948,14 @@ class ItemActionController implements ItemControllerInterface
             $NoticeData = new NoticeData();
             $NoticeData->setNoticeUserId($user);
             $NoticeData->setNoticeComponent('Accounts');
-            $NoticeData->setNoticeType('Solicitud');
-            $NoticeData->setNoticeDescription(utf8_decode($Log->getDetails()));
+            $NoticeData->setNoticeType(__('Solicitud'));
+            $NoticeData->setNoticeDescription(utf8_decode($this->Log->getDetails()));
 
             Notice::getItem($NoticeData)->add();
         }
 
-        $this->jsonResponse->setDescription(_('Solicitud realizada'));
-        $this->jsonResponse->setStatus(0);
+
+        $this->Log->addDescription(__('Solicitud realizada', false));
+        $this->JsonResponse->setStatus(0);
     }
 }

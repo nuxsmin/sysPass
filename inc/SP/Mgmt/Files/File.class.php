@@ -37,7 +37,7 @@ use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\ImageUtil;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de realizar operaciones con archivos de las cuentas de sysPass
@@ -48,6 +48,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @return mixed
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function add()
     {
@@ -82,14 +83,14 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
             $Data->addParam('no_thumb');
         }
 
-        $Log = new Log(_('Subir Archivo'));
-        $Log->addDetails(_('Cuenta'), AccountUtil::getAccountNameById($this->itemData->getAccfileAccountId()));
-        $Log->addDetails(_('Archivo'), $this->itemData->getAccfileName());
-        $Log->addDetails(_('Tipo'), $this->itemData->getAccfileType());
-        $Log->addDetails(_('Tamaño'), $this->itemData->getRoundSize() . 'KB');
+        $Log = new Log(__('Subir Archivo', false));
+        $Log->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($this->itemData->getAccfileAccountId()));
+        $Log->addDetails(__('Archivo', false), $this->itemData->getAccfileName());
+        $Log->addDetails(__('Tipo', false), $this->itemData->getAccfileType());
+        $Log->addDetails(__('Tamaño', false), $this->itemData->getRoundSize() . 'KB');
 
         if (DB::getQuery($Data) === false) {
-            $Log->addDescription(_('No se pudo guardar el archivo'));
+            $Log->addDescription(__('No se pudo guardar el archivo', false));
             $Log->writeLog();
 
             Email::sendEmail($Log);
@@ -97,7 +98,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
             return false;
         }
 
-        $Log->addDescription(_('Archivo subido'));
+        $Log->addDescription(__('Archivo subido', false));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -120,8 +121,6 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
             return $this;
         }
 
-        $fileInfo = $this->getInfoById($id)->getItemData();
-
         // Eliminamos el archivo de la BBDD
         $query = /** @lang SQL */
             'DELETE FROM accFiles WHERE accfile_id = ? LIMIT 1';
@@ -130,26 +129,16 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        $Log = new Log(_('Eliminar Archivo'));
-        $Log->addDetails(_('ID'), $id);
-        $Log->addDetails(_('Cuenta'), AccountUtil::getAccountNameById($fileInfo->getAccfileAccountId()));
-        $Log->addDetails(_('Archivo'), $fileInfo->getAccfileName());
-        $Log->addDetails(_('Tipo'), $fileInfo->getAccfileType());
-        $Log->addDetails(_('Tamaño'), $this->itemData->getRoundSize() . 'KB');
-
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, __('Error al eliminar archivo', false));
         }
 
-        $Log->addDescription(_('Archivo eliminado'));
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
+        return $this;
     }
 
     /**
      * @param $id
-     * @return $this
+     * @return FileData
      */
     public function getInfoById($id)
     {
@@ -167,9 +156,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        $this->itemData = DB::getResults($Data);
-
-        return $this;
+        return DB::getResults($Data);
     }
 
     /**

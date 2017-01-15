@@ -29,7 +29,7 @@ use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountHistoryData;
 use SP\Mgmt\Groups\GroupAccountsUtil;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase abstracta para definición de métodos comunes a las cuentas

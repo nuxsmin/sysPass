@@ -31,7 +31,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ApiTokensUtil con utilidades para la gestión de tokens API
@@ -165,7 +165,7 @@ class ApiTokensUtil
         try {
             $queryRes = DB::getResults($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error interno'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error interno', false));
         }
 
         if ($Data->getQueryNumRows() === 0) {

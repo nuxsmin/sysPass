@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Account\Account;
 use SP\Account\AccountHistory;
@@ -92,6 +92,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Constructor
      *
      * @param $template Template con instancia de plantilla
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function __construct(Template $template = null)
     {
@@ -131,114 +132,114 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         try {
             switch ($this->actionId) {
                 case self::ACTION_USR_USERS_VIEW:
-                    $this->view->assign('header', _('Ver Usuario'));
+                    $this->view->assign('header', __('Ver Usuario'));
                     $this->view->assign('isView', true);
                     $this->getUser();
                     break;
                 case self::ACTION_USR_USERS_EDIT:
-                    $this->view->assign('header', _('Editar Usuario'));
+                    $this->view->assign('header', __('Editar Usuario'));
                     $this->getUser();
                     break;
                 case self::ACTION_USR_USERS_EDITPASS:
-                    $this->view->assign('header', _('Cambio de Clave'));
+                    $this->view->assign('header', __('Cambio de Clave'));
                     $this->getUserPass();
                     break;
                 case self::ACTION_USR_USERS_NEW:
-                    $this->view->assign('header', _('Nuevo Usuario'));
+                    $this->view->assign('header', __('Nuevo Usuario'));
                     $this->getUser();
                     break;
                 case self::ACTION_USR_GROUPS_VIEW:
-                    $this->view->assign('header', _('Ver Grupo'));
+                    $this->view->assign('header', __('Ver Grupo'));
                     $this->view->assign('isView', true);
                     $this->getGroup();
                     break;
                 case self::ACTION_USR_GROUPS_EDIT:
-                    $this->view->assign('header', _('Editar Grupo'));
+                    $this->view->assign('header', __('Editar Grupo'));
                     $this->getGroup();
                     break;
                 case self::ACTION_USR_GROUPS_NEW:
-                    $this->view->assign('header', _('Nuevo Grupo'));
+                    $this->view->assign('header', __('Nuevo Grupo'));
                     $this->getGroup();
                     break;
                 case self::ACTION_USR_PROFILES_VIEW:
-                    $this->view->assign('header', _('Ver Perfil'));
+                    $this->view->assign('header', __('Ver Perfil'));
                     $this->view->assign('isView', true);
                     $this->getProfile();
                     break;
                 case self::ACTION_USR_PROFILES_EDIT:
-                    $this->view->assign('header', _('Editar Perfil'));
+                    $this->view->assign('header', __('Editar Perfil'));
                     $this->getProfile();
                     break;
                 case self::ACTION_USR_PROFILES_NEW:
-                    $this->view->assign('header', _('Nuevo Perfil'));
+                    $this->view->assign('header', __('Nuevo Perfil'));
                     $this->getProfile();
                     break;
                 case self::ACTION_MGM_CUSTOMERS_VIEW:
-                    $this->view->assign('header', _('Ver Cliente'));
+                    $this->view->assign('header', __('Ver Cliente'));
                     $this->view->assign('isView', true);
                     $this->getCustomer();
                     break;
                 case self::ACTION_MGM_CUSTOMERS_EDIT:
-                    $this->view->assign('header', _('Editar Cliente'));
+                    $this->view->assign('header', __('Editar Cliente'));
                     $this->getCustomer();
                     break;
                 case self::ACTION_MGM_CUSTOMERS_NEW:
-                    $this->view->assign('header', _('Nuevo Cliente'));
+                    $this->view->assign('header', __('Nuevo Cliente'));
                     $this->getCustomer();
                     break;
                 case self::ACTION_MGM_CATEGORIES_VIEW:
-                    $this->view->assign('header', _('Ver Categoría'));
+                    $this->view->assign('header', __('Ver Categoría'));
                     $this->view->assign('isView', true);
                     $this->getCategory();
                     break;
                 case self::ACTION_MGM_CATEGORIES_EDIT:
-                    $this->view->assign('header', _('Editar Categoría'));
+                    $this->view->assign('header', __('Editar Categoría'));
                     $this->getCategory();
                     break;
                 case self::ACTION_MGM_CATEGORIES_NEW:
-                    $this->view->assign('header', _('Nueva Categoría'));
+                    $this->view->assign('header', __('Nueva Categoría'));
                     $this->getCategory();
                     break;
                 case self::ACTION_MGM_APITOKENS_VIEW:
-                    $this->view->assign('header', _('Ver Autorización'));
+                    $this->view->assign('header', __('Ver Autorización'));
                     $this->view->assign('isView', true);
                     $this->getToken();
                     break;
                 case self::ACTION_MGM_APITOKENS_NEW:
-                    $this->view->assign('header', _('Nueva Autorización'));
+                    $this->view->assign('header', __('Nueva Autorización'));
                     $this->getToken();
                     break;
                 case self::ACTION_MGM_APITOKENS_EDIT:
-                    $this->view->assign('header', _('Editar Autorización'));
+                    $this->view->assign('header', __('Editar Autorización'));
                     $this->getToken();
                     break;
                 case self::ACTION_MGM_CUSTOMFIELDS_NEW:
-                    $this->view->assign('header', _('Nuevo Campo'));
+                    $this->view->assign('header', __('Nuevo Campo'));
                     $this->getCustomField();
                     break;
                 case self::ACTION_MGM_CUSTOMFIELDS_EDIT:
-                    $this->view->assign('header', _('Editar Campo'));
+                    $this->view->assign('header', __('Editar Campo'));
                     $this->getCustomField();
                     break;
                 case self::ACTION_MGM_PUBLICLINKS_VIEW:
-                    $this->view->assign('header', _('Ver Enlace Público'));
+                    $this->view->assign('header', __('Ver Enlace Público'));
                     $this->view->assign('isView', true);
                     $this->getPublicLink();
                     break;
                 case self::ACTION_MGM_TAGS_NEW:
-                    $this->view->assign('header', _('Nueva Etiqueta'));
+                    $this->view->assign('header', __('Nueva Etiqueta'));
                     $this->getTag();
                     break;
                 case self::ACTION_MGM_TAGS_EDIT:
-                    $this->view->assign('header', _('Editar Etiqueta'));
+                    $this->view->assign('header', __('Editar Etiqueta'));
                     $this->getTag();
                     break;
                 case self::ACTION_ACC_VIEW_PASS:
-                    $this->view->assign('header', _('Clave de Cuenta'));
+                    $this->view->assign('header', __('Clave de Cuenta'));
                     $this->getAccountPass();
                     break;
                 case self::ACTION_MGM_PLUGINS_VIEW:
-                    $this->view->assign('header', _('Detalles de Plugin'));
+                    $this->view->assign('header', __('Detalles de Plugin'));
                     $this->view->assign('isView', true);
                     $this->getPlugin();
                     break;
@@ -246,14 +247,14 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
                     $this->invalidAction();
             }
 
-            if (count($this->jsonResponse->getData()) === 0) {
-                $this->jsonResponse->setData(['html' => $this->render()]);
+            if (count($this->JsonResponse->getData()) === 0) {
+                $this->JsonResponse->setData(['html' => $this->render()]);
             }
         } catch (\Exception $e) {
-            $this->jsonResponse->setDescription($e->getMessage());
+            $this->JsonResponse->setDescription($e->getMessage());
         }
 
-        Json::returnJson($this->jsonResponse);
+        Json::returnJson($this->JsonResponse);
     }
 
     /**
@@ -275,7 +276,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->getCustomFieldsForItem();
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -306,7 +307,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('user', User::getItem()->getById($this->itemId));
         $this->view->addTemplate('userspass');
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -325,7 +326,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->getCustomFieldsForItem();
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -348,7 +349,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             $this->view->assign('usedBy', ProfileUtil::getProfileInUsersName($this->itemId));
         }
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -364,7 +365,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('customer', $this->itemId ? Customer::getItem()->getById($this->itemId) : new CustomerData());
         $this->getCustomFieldsForItem();
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -380,7 +381,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('category', $this->itemId ? Category::getItem()->getById($this->itemId) : new CategoryData());
         $this->getCustomFieldsForItem();
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -401,11 +402,11 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('gotData', is_object($token));
 
         if ($this->view->isView === true) {
-            $msg = sprintf('%s ;;Usuario: %s', _('Token de autorización visualizado'), $token->user_login);
-            Log::writeNewLogAndEmail(_('Autorizaciones'), $msg);
+            $msg = sprintf('%s ;;Usuario: %s', __('Token de autorización visualizado'), $token->user_login);
+            Log::writeNewLogAndEmail(__('Autorizaciones', false), $msg);
         }
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -425,7 +426,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('types', CustomFieldTypes::getFieldsTypes());
         $this->view->assign('modules', CustomFieldTypes::getFieldsModules());
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -443,7 +444,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->view->assign('link', $PublicLink->getItemForList($PublicLink->getById($this->itemId)));
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -459,7 +460,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->view->assign('tag', $this->itemId ? Tag::getItem()->getById($this->itemId) : new TagData());
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -479,7 +480,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->view->addTemplate('files');
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -487,6 +488,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      *
      * @throws ItemException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getAccountPass()
     {
@@ -508,7 +510,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $Account->getAccountPassData();
 
         if ($isHistory && !$Account->checkAccountMPass()) {
-            throw new ItemException(_('La clave maestra no coincide'));
+            throw new ItemException(__('La clave maestra no coincide', false));
         }
 
         $Acl = new Acl(Acl::ACTION_ACC_VIEW_PASS);
@@ -518,9 +520,9 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $UserPass->getItemData()->setUserId(Session::getUserData()->getUserId());
 
         if (!Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS) || !$Acl->checkAccountAccess()) {
-            throw new ItemException(_('No tiene permisos para acceder a esta cuenta'));
+            throw new ItemException(__('No tiene permisos para acceder a esta cuenta', false));
         } elseif (!$UserPass->checkUserUpdateMPass()) {
-            throw new ItemException(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
+            throw new ItemException(__('Clave maestra actualizada', false) . '<br>' . __('Reinicie la sesión para cambiarla', false));
         }
 
         $accountClearPass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV());
@@ -528,9 +530,9 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         if (!$isHistory) {
             $Account->incrementDecryptCounter();
 
-            $log = new Log(_('Ver Clave'));
-            $log->addDetails(_('ID'), $this->itemId);
-            $log->addDetails(_('Cuenta'), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
+            $log = new Log(__('Ver Clave', false));
+            $log->addDetails(__('ID', false), $this->itemId);
+            $log->addDetails(__('Cuenta', false), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
             $log->writeLog();
         }
 
@@ -542,7 +544,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             $pass = ImageUtil::convertText($accountClearPass);
         }
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
 
         if ($isFull) {
             $this->view->addTemplate('viewpass', 'account');
@@ -560,14 +562,15 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             'useimage' => $useImage
         ];
 
-        $this->jsonResponse->setCsrf($this->view->sk);
-        $this->jsonResponse->setData($data);
+        $this->JsonResponse->setCsrf($this->view->sk);
+        $this->JsonResponse->setData($data);
     }
 
     /**
      * Obtener los datos para la vista de plugins
      *
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function getPlugin()
     {
@@ -580,6 +583,6 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('plugin', $Plugin);
         $this->view->assign('pluginInfo', PluginUtil::getPluginInfo($Plugin->getPluginName()));
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 }

@@ -6,42 +6,42 @@
         </div>
         <table class="data round">
             <tr>
-                <td class="descField"><?php echo _('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Nombre'); ?></td>
                 <td class="valField">
                     <?php echo $accountData->getAccountName(); ?>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Cliente'); ?></td>
+                <td class="descField"><?php echo __('Cliente'); ?></td>
                 <td class="valField">
                     <?php echo $accountData->getCustomerName(); ?>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Categoría'); ?></td>
+                <td class="descField"><?php echo __('Categoría'); ?></td>
                 <td class="valField">
                     <?php echo $accountData->getCategoryName(); ?>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('URL / IP'); ?></td>
+                <td class="descField"><?php echo __('URL / IP'); ?></td>
                 <td class="valField">
                     <?php echo $accountData->getAccountUrl(); ?>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Usuario'); ?></td>
+                <td class="descField"><?php echo __('Usuario'); ?></td>
                 <td class="valField">
                     <?php echo $accountData->getAccountLogin(); ?>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Notas'); ?></td>
+                <td class="descField"><?php echo __('Notas'); ?></td>
                 <td class="valField">
                     <?php echo $accountData->getAccountNotes(); ?>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Clave'); ?></td>
+                <td class="descField"><?php echo __('Clave'); ?></td>
                 <td class="valField">
                     <?php if ($useImage): ?>
                         <img class="account-pass-image" src="data:image/png;base64,<?php echo $accountPass; ?>"/>

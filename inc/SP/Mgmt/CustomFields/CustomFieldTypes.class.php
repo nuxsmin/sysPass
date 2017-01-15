@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\CustomFields;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\ActionsInterface;
 
@@ -58,15 +58,15 @@ class CustomFieldTypes
     public static function getFieldsTypes($typeId = null, $nice = false)
     {
         $types = [
-            self::TYPE_TEXT => ['text', _('Texto')],
-            self::TYPE_WIKI => ['text', _('Wiki')],
-            self::TYPE_PASSWORD => ['password', _('Clave')],
-            self::TYPE_DATE => ['date', _('Fecha')],
-            self::TYPE_NUMBER => ['number', _('Número')],
-            self::TYPE_EMAIL => ['email', _('Email')],
-            self::TYPE_TELEPHONE => ['tel', _('Teléfono')],
-            self::TYPE_URL => ['url', _('Link')],
-            self::TYPE_COLOR => ['color', _('Color')]
+            self::TYPE_TEXT => ['text', __('Texto')],
+            self::TYPE_WIKI => ['text', __('Wiki')],
+            self::TYPE_PASSWORD => ['password', __('Clave')],
+            self::TYPE_DATE => ['date', __('Fecha')],
+            self::TYPE_NUMBER => ['number', __('Número')],
+            self::TYPE_EMAIL => ['email', __('Email')],
+            self::TYPE_TELEPHONE => ['tel', __('Teléfono')],
+            self::TYPE_URL => ['url', __('Link')],
+            self::TYPE_COLOR => ['color', __('Color')]
         ];
 
         if (null !== $typeId) {
@@ -84,18 +84,18 @@ class CustomFieldTypes
      */
     public static function getFieldsModules($moduleId = null)
     {
-        if (!isset($modules[$moduleId])) {
-            return '';
-        }
-
         $modules = [
-            ActionsInterface::ACTION_ACC => _('Cuentas'),
-            ActionsInterface::ACTION_MGM_CATEGORIES => _('Categorías'),
-            ActionsInterface::ACTION_MGM_CUSTOMERS => _('Clientes'),
-            ActionsInterface::ACTION_USR_USERS => _('Usuarios'),
-            ActionsInterface::ACTION_USR_GROUPS => _('Grupos')
+            ActionsInterface::ACTION_ACC => __('Cuentas'),
+            ActionsInterface::ACTION_MGM_CATEGORIES => __('Categorías'),
+            ActionsInterface::ACTION_MGM_CUSTOMERS => __('Clientes'),
+            ActionsInterface::ACTION_USR_USERS => __('Usuarios'),
+            ActionsInterface::ACTION_USR_GROUPS => __('Grupos')
 
         ];
+
+        if (null !== $moduleId && !isset($modules[$moduleId])) {
+            return '';
+        }
 
         return (null !== $moduleId) ? $modules[$moduleId] : $modules;
     }

@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\Users;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Auth\AuthUtil;
 use SP\Core\Exceptions\SPException;
@@ -54,7 +54,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, _('Login/email de usuario duplicados'));
+            throw new SPException(SPException::SP_INFO, __('Login/email de usuario duplicados', false));
         }
 
         $passdata = UserPass::makeUserPassHash($this->itemData->getUserPass());
@@ -93,21 +93,10 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($passdata['salt']);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al crear el usuario'));
+            throw new SPException(SPException::SP_ERROR, __('Error al crear el usuario', false));
         }
 
         $this->itemData->setUserId(DB::getLastId());
-
-        $Log = new Log(_('Nuevo Usuario'));
-        $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
-
-        if ($this->itemData->isUserIsChangePass() && !AuthUtil::mailPassRecover($this->itemData)) {
-            $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
-        }
-
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -155,17 +144,10 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            new SPException(SPException::SP_ERROR, _('Error al eliminar el usuario'));
+            new SPException(SPException::SP_ERROR, __('Error al eliminar el usuario', false));
         }
 
         $this->itemData->setUserId(DB::$lastId);
-
-        $Log = new Log(_('Eliminar Usuario'));
-        $Log->addDetails(Html::strongText(_('Login')), $oldUserData->getUserLogin());
-        $Log->addDetails(Html::strongText(_('Nombre')), $oldUserData->getUserName());
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -216,7 +198,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener los datos del usuario'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener los datos del usuario', false));
         }
 
         return $queryRes;
@@ -229,7 +211,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_INFO, _('Login/email de usuario duplicados'));
+            throw new SPException(SPException::SP_INFO, __('Login/email de usuario duplicados', false));
         }
 
         $query = /** @lang SQL */
@@ -262,21 +244,10 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getUserId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al actualizar el usuario'));
+            throw new SPException(SPException::SP_ERROR, __('Error al actualizar el usuario', false));
         }
 
         $this->itemData->setUserId(DB::getLastId());
-
-        $Log = new Log(_('Modificar Usuario'));
-        $Log->addDetails(Html::strongText(_('Usuario')), sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
-
-        if ($this->itemData->isUserIsChangePass() && !AuthUtil::mailPassRecover($this->itemData)) {
-            $Log->addDescription(Html::strongText(_('No se pudo realizar la petición de cambio de clave.')));
-        }
-
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -333,7 +304,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         try {
             $queryRes = DB::getResultsArray($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener los usuarios'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener los usuarios', false));
         }
 
         return $queryRes;
@@ -372,14 +343,8 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getUserId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al modificar la clave'));
+            throw new SPException(SPException::SP_ERROR, __('Error al modificar la clave', false));
         }
-
-        $Log = new Log(_('Modificar Clave Usuario'));
-        $Log->addDetails(Html::strongText(_('Login')), $UserData->getUserLogin());
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -425,7 +390,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener los datos del usuario'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener los datos del usuario', false));
         }
 
         return $queryRes;

@@ -28,7 +28,7 @@ use ReflectionObject;
 use SP\Core\DiFactory;
 use SP\Core\Session;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es responsable de leer y escribir la configuración del archivo config.php
@@ -125,6 +125,8 @@ class Config
 
     /**
      * Realizar un backup de la configuración en la BD
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function backupToDB()
     {

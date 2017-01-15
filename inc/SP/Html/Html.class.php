@@ -24,7 +24,7 @@
 
 namespace SP\Html;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de mostrar el HTML

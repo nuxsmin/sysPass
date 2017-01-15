@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
@@ -97,7 +97,7 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
         try {
             switch ($this->actionId) {
                 case self::ACTION_NOT_USER_VIEW:
-                    $this->view->assign('header', _('Ver Notificación'));
+                    $this->view->assign('header', __('Ver Notificación'));
                     $this->view->assign('isView', true);
                     $this->getNotice();
                     break;
@@ -105,14 +105,14 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
                     $this->invalidAction();
             }
 
-            if (count($this->jsonResponse->getData()) === 0) {
-                $this->jsonResponse->setData(['html' => $this->render()]);
+            if (count($this->JsonResponse->getData()) === 0) {
+                $this->JsonResponse->setData(['html' => $this->render()]);
             }
         } catch (\Exception $e) {
-            $this->jsonResponse->setDescription($e->getMessage());
+            $this->JsonResponse->setDescription($e->getMessage());
         }
 
-        Json::returnJson($this->jsonResponse);
+        Json::returnJson($this->JsonResponse);
     }
 
     /**
@@ -130,6 +130,6 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
         $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::ACTION_NOT_USER_VIEW) ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 }

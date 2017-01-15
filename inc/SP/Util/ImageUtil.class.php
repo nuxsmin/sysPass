@@ -27,7 +27,7 @@ namespace SP\Util;
 use SP\Core\Init;
 use SP\Log\LogUtil;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ImageUtil para la manipulación de imágenes

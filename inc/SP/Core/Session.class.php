@@ -31,7 +31,7 @@ use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Mgmt\Users\UserPreferences;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase para manejar la variable de sesion

@@ -66,12 +66,12 @@ class GroupForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->GroupData->getUsergroupName()) {
-            throw new ValidationException(_('Es necesario un nombre de grupo'));
+            throw new ValidationException(__('Es necesario un nombre de grupo', false));
         }
     }
 
     /**
-     * @return mixed
+     * @return GroupData
      */
     public function getItemData()
     {

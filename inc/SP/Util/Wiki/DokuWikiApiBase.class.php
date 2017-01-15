@@ -128,11 +128,11 @@ abstract class DokuWikiApiBase
             $xmlValue = $this->xml->createElement('value');
 
             if (is_numeric($value)) {
-                $xmlValue->appendChild($this->xml->createElement('int', intval($value)));
+                $xmlValue->appendChild($this->xml->createElement('int', (int)$value));
             } elseif (is_string($value)) {
                 $xmlValue->appendChild($this->xml->createElement('string', $value));
             } elseif (is_bool($value)) {
-                $xmlValue->appendChild($this->xml->createElement('boolean', intval($value)));
+                $xmlValue->appendChild($this->xml->createElement('boolean', (int)$value));
             }
 
             $xmlParam->appendChild($xmlValue);
@@ -148,7 +148,7 @@ abstract class DokuWikiApiBase
     protected function callWiki()
     {
         try {
-            $data['type'] = array('Content-Type: text/xml');
+            $data['type'] = ['Content-Type: text/xml'];
             $data['data'] = $this->xml->saveXML();
 
             return Util::getDataFromUrl($this->apiUrl, $data, true);
@@ -170,7 +170,7 @@ abstract class DokuWikiApiBase
         if (count($error) > 0) {
             throw new SPException(
                 SPException::SP_WARNING,
-                _('Error al realizar la consulta'),
+                __('Error al realizar la consulta', false),
                 $error['faultString']
             );
         }
@@ -187,11 +187,11 @@ abstract class DokuWikiApiBase
         $Log = new Log('DokuWiki API', $e->getMessage(), LogLevel::ERROR);
 
         if ($e->getHint()) {
-            $Log->addDetails('Error', $e->getHint());
+            $Log->addDetails(__('Error', false), $e->getHint());
         }
 
         if (null !== $source) {
-            $Log->addDetails('Source', $source);
+            $Log->addDetails(__('Origen', false), $source);
         }
 
         $Log->writeLog();
@@ -207,12 +207,12 @@ abstract class DokuWikiApiBase
      */
     protected function setConnectionData($url, $user, $pass)
     {
-        $this->apiUrl = (empty($url)) ? Config::getConfig()->getDokuwikiUrl() : $url;
-        $this->apiUser = (empty($user)) ? Config::getConfig()->getDokuwikiUser() : $user;
-        $this->apiPassword = (empty($pass)) ? Config::getConfig()->getDokuwikiPass() : $pass;
+        $this->apiUrl = empty($url) ? Config::getConfig()->getDokuwikiUrl() : $url;
+        $this->apiUser = empty($user) ? Config::getConfig()->getDokuwikiUser() : $user;
+        $this->apiPassword = empty($pass) ? Config::getConfig()->getDokuwikiPass() : $pass;
 
         if (empty($this->apiUrl)) {
-            throw new SPException(SPException::SP_WARNING, _('URL de conexión no establecida'));
+            throw new SPException(SPException::SP_WARNING, __('URL de conexión no establecida', false));
         }
     }
 }

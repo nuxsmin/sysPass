@@ -66,11 +66,11 @@ class CustomFieldDefForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->CustomFieldDefData->getName()) {
-            throw new ValidationException(_('Nombre del campo no indicado'));
+            throw new ValidationException(__('Nombre del campo no indicado', false));
         } elseif ($this->CustomFieldDefData->getType() === 0) {
-            throw new ValidationException(_('Tipo del campo no indicado'));
+            throw new ValidationException(__('Tipo del campo no indicado', false));
         } elseif ($this->CustomFieldDefData->getModule() === 0) {
-            throw new ValidationException(_('Módulo del campo no indicado'));
+            throw new ValidationException(__('Módulo del campo no indicado', false));
         }
     }
 
@@ -91,7 +91,7 @@ class CustomFieldDefForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return mixed
+     * @return CustomFieldDefData
      */
     public function getItemData()
     {

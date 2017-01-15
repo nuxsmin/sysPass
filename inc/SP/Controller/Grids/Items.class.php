@@ -24,7 +24,7 @@
 
 namespace SP\Controller\Grids;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Config\Config;
 use SP\Core\Acl;
@@ -52,8 +52,8 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Nombre'));
-        $GridHeaders->addHeader(_('Descripción'));
+        $GridHeaders->addHeader(__('Nombre'));
+        $GridHeaders->addHeader(__('Descripción'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -68,7 +68,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Categorías'));
+        $Grid->setTitle(__('Categorías'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -76,7 +76,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_MGM_CATEGORIES_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchCategory');
-        $GridActionSearch->setTitle(_('Buscar Categoría'));
+        $GridActionSearch->setTitle(__('Buscar Categoría'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -86,8 +86,8 @@ class Items extends GridBase
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_CATEGORIES_NEW);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
-        $GridActionNew->setName(_('Nueva Categoría'));
-        $GridActionNew->setTitle(_('Nueva Categoría'));
+        $GridActionNew->setName(__('Nueva Categoría'));
+        $GridActionNew->setTitle(__('Nueva Categoría'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
@@ -97,8 +97,8 @@ class Items extends GridBase
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_MGM_CATEGORIES_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
-        $GridActionEdit->setName(_('Editar Categoría'));
-        $GridActionEdit->setTitle(_('Editar Categoría'));
+        $GridActionEdit->setName(__('Editar Categoría'));
+        $GridActionEdit->setTitle(__('Editar Categoría'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
 
@@ -107,8 +107,8 @@ class Items extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_CATEGORIES_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Categoría'));
-        $GridActionDel->setTitle(_('Eliminar Categoría'));
+        $GridActionDel->setName(__('Eliminar Categoría'));
+        $GridActionDel->setTitle(__('Eliminar Categoría'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
@@ -126,8 +126,8 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Nombre'));
-        $GridHeaders->addHeader(_('Descripción'));
+        $GridHeaders->addHeader(__('Nombre'));
+        $GridHeaders->addHeader(__('Descripción'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -142,7 +142,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Clientes'));
+        $Grid->setTitle(__('Clientes'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -150,7 +150,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_MGM_CUSTOMERS_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchCustomer');
-        $GridActionSearch->setTitle(_('Buscar Cliente'));
+        $GridActionSearch->setTitle(__('Buscar Cliente'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -160,8 +160,8 @@ class Items extends GridBase
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_CUSTOMERS_NEW);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
-        $GridActionNew->setName(_('Nuevo Cliente'));
-        $GridActionNew->setTitle(_('Nuevo Cliente'));
+        $GridActionNew->setName(__('Nuevo Cliente'));
+        $GridActionNew->setTitle(__('Nuevo Cliente'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
@@ -171,8 +171,8 @@ class Items extends GridBase
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_MGM_CUSTOMERS_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
-        $GridActionEdit->setName(_('Editar Cliente'));
-        $GridActionEdit->setTitle(_('Editar Cliente'));
+        $GridActionEdit->setName(__('Editar Cliente'));
+        $GridActionEdit->setTitle(__('Editar Cliente'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
 
@@ -181,8 +181,8 @@ class Items extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_CUSTOMERS_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Cliente'));
-        $GridActionDel->setTitle(_('Eliminar Cliente'));
+        $GridActionDel->setName(__('Eliminar Cliente'));
+        $GridActionDel->setTitle(__('Eliminar Cliente'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
@@ -200,9 +200,9 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Módulo'));
-        $GridHeaders->addHeader(_('Nombre'));
-        $GridHeaders->addHeader(_('Tipo'));
+        $GridHeaders->addHeader(__('Módulo'));
+        $GridHeaders->addHeader(__('Nombre'));
+        $GridHeaders->addHeader(__('Tipo'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -218,7 +218,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Campos Personalizados'));
+        $Grid->setTitle(__('Campos Personalizados'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -226,7 +226,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_MGM_CUSTOMFIELDS_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchCustomField');
-        $GridActionSearch->setTitle(_('Buscar Campo'));
+        $GridActionSearch->setTitle(__('Buscar Campo'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -236,8 +236,8 @@ class Items extends GridBase
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_CUSTOMFIELDS_NEW);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
-        $GridActionNew->setName(_('Nuevo Campo'));
-        $GridActionNew->setTitle(_('Nuevo Campo'));
+        $GridActionNew->setName(__('Nuevo Campo'));
+        $GridActionNew->setTitle(__('Nuevo Campo'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
@@ -247,8 +247,8 @@ class Items extends GridBase
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_MGM_CUSTOMFIELDS_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
-        $GridActionEdit->setName(_('Editar Campo'));
-        $GridActionEdit->setTitle(_('Editar Campo'));
+        $GridActionEdit->setName(__('Editar Campo'));
+        $GridActionEdit->setTitle(__('Editar Campo'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
 
@@ -257,8 +257,8 @@ class Items extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_CUSTOMFIELDS_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Campo'));
-        $GridActionDel->setTitle(_('Eliminar Campo'));
+        $GridActionDel->setName(__('Eliminar Campo'));
+        $GridActionDel->setTitle(__('Eliminar Campo'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
@@ -276,11 +276,11 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Cuenta'));
-        $GridHeaders->addHeader(_('Cliente'));
-        $GridHeaders->addHeader(_('Nombre'));
-        $GridHeaders->addHeader(_('Tipo'));
-        $GridHeaders->addHeader(_('Tamaño'));
+        $GridHeaders->addHeader(__('Cuenta'));
+        $GridHeaders->addHeader(__('Cliente'));
+        $GridHeaders->addHeader(__('Nombre'));
+        $GridHeaders->addHeader(__('Tipo'));
+        $GridHeaders->addHeader(__('Tamaño'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -298,7 +298,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Archivos'));
+        $Grid->setTitle(__('Archivos'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -306,7 +306,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_MGM_FILES_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchFile');
-        $GridActionSearch->setTitle(_('Buscar Archivo'));
+        $GridActionSearch->setTitle(__('Buscar Archivo'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -316,8 +316,8 @@ class Items extends GridBase
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_MGM_FILES_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionView->setName(_('Ver Archivo'));
-        $GridActionView->setTitle(_('Ver Archivo'));
+        $GridActionView->setName(__('Ver Archivo'));
+        $GridActionView->setTitle(__('Ver Archivo'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('file/view');
 
@@ -326,8 +326,8 @@ class Items extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_FILES_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Archivo'));
-        $GridActionDel->setTitle(_('Eliminar Archivo'));
+        $GridActionDel->setName(__('Eliminar Archivo'));
+        $GridActionDel->setTitle(__('Eliminar Archivo'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
@@ -345,8 +345,8 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Nombre'));
-        $GridHeaders->addHeader(_('Cliente'));
+        $GridHeaders->addHeader(__('Nombre'));
+        $GridHeaders->addHeader(__('Cliente'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -361,7 +361,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Cuentas'));
+        $Grid->setTitle(__('Cuentas'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -369,7 +369,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_MGM_ACCOUNTS_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchAccount');
-        $GridActionSearch->setTitle(_('Buscar Cuenta'));
+        $GridActionSearch->setTitle(__('Buscar Cuenta'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -379,8 +379,8 @@ class Items extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_ACCOUNTS_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Cuenta'));
-        $GridActionDel->setTitle(_('Eliminar Cuenta'));
+        $GridActionDel->setName(__('Eliminar Cuenta'));
+        $GridActionDel->setTitle(__('Eliminar Cuenta'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
@@ -398,11 +398,11 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Nombre'));
-        $GridHeaders->addHeader(_('Login'));
-        $GridHeaders->addHeader(_('Perfil'));
-        $GridHeaders->addHeader(_('Grupo'));
-        $GridHeaders->addHeader(_('Propiedades'));
+        $GridHeaders->addHeader(__('Nombre'));
+        $GridHeaders->addHeader(__('Login'));
+        $GridHeaders->addHeader(__('Perfil'));
+        $GridHeaders->addHeader(__('Grupo'));
+        $GridHeaders->addHeader(__('Propiedades'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -423,7 +423,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Usuarios'));
+        $Grid->setTitle(__('Usuarios'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -431,7 +431,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_USR_USERS_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchUser');
-        $GridActionSearch->setTitle(_('Buscar Usuario'));
+        $GridActionSearch->setTitle(__('Buscar Usuario'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -440,8 +440,8 @@ class Items extends GridBase
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_USR_USERS_NEW);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
-        $GridActionNew->setName(_('Nuevo Usuario'));
-        $GridActionNew->setTitle(_('Nuevo Usuario'));
+        $GridActionNew->setName(__('Nuevo Usuario'));
+        $GridActionNew->setTitle(__('Nuevo Usuario'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
@@ -454,8 +454,8 @@ class Items extends GridBase
             $GridActionLdapSync = new DataGridAction();
             $GridActionLdapSync->setId(self::ACTION_USR_SYNC_LDAP);
             $GridActionLdapSync->setType(DataGridActionType::NEW_ITEM);
-            $GridActionLdapSync->setName(_('Importar usuarios de LDAP'));
-            $GridActionLdapSync->setTitle(_('Importar usuarios de LDAP'));
+            $GridActionLdapSync->setName(__('Importar usuarios de LDAP'));
+            $GridActionLdapSync->setTitle(__('Importar usuarios de LDAP'));
             $GridActionLdapSync->setIcon(new FontIcon('get_app'));
             $GridActionLdapSync->setSkip(true);
             $GridActionLdapSync->setOnClickFunction('appMgmt/ldapSync');
@@ -467,8 +467,8 @@ class Items extends GridBase
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_USR_USERS_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionView->setName(_('Ver Detalles de Usuario'));
-        $GridActionView->setTitle(_('Ver Detalles de Usuario'));
+        $GridActionView->setName(__('Ver Detalles de Usuario'));
+        $GridActionView->setTitle(__('Ver Detalles de Usuario'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
 
@@ -477,8 +477,8 @@ class Items extends GridBase
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_USR_USERS_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
-        $GridActionEdit->setName(_('Editar Usuario'));
-        $GridActionEdit->setTitle(_('Editar Usuario'));
+        $GridActionEdit->setName(__('Editar Usuario'));
+        $GridActionEdit->setTitle(__('Editar Usuario'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
 
@@ -487,8 +487,8 @@ class Items extends GridBase
         $GridActionEditPass = new DataGridAction();
         $GridActionEditPass->setId(self::ACTION_USR_USERS_EDITPASS);
         $GridActionEditPass->setType(DataGridActionType::EDIT_ITEM);
-        $GridActionEditPass->setName(_('Cambiar Clave de Usuario'));
-        $GridActionEditPass->setTitle(_('Cambiar Clave de Usuario'));
+        $GridActionEditPass->setName(__('Cambiar Clave de Usuario'));
+        $GridActionEditPass->setTitle(__('Cambiar Clave de Usuario'));
         $GridActionEditPass->setIcon($this->icons->getIconEditPass());
         $GridActionEditPass->setOnClickFunction('appMgmt/show');
         $GridActionEditPass->setFilterRowSource('user_isLdap');
@@ -498,8 +498,8 @@ class Items extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_USR_USERS_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Usuario'));
-        $GridActionDel->setTitle(_('Eliminar Usuario'));
+        $GridActionDel->setName(__('Eliminar Usuario'));
+        $GridActionDel->setTitle(__('Eliminar Usuario'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
@@ -517,8 +517,8 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Nombre'));
-        $GridHeaders->addHeader(_('Descripción'));
+        $GridHeaders->addHeader(__('Nombre'));
+        $GridHeaders->addHeader(__('Descripción'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -533,7 +533,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Grupos'));
+        $Grid->setTitle(__('Grupos'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -541,7 +541,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_USR_GROUPS_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchGroup');
-        $GridActionSearch->setTitle(_('Buscar Grupo'));
+        $GridActionSearch->setTitle(__('Buscar Grupo'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -551,8 +551,8 @@ class Items extends GridBase
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_USR_GROUPS_NEW);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
-        $GridActionNew->setName(_('Nuevo Grupo'));
-        $GridActionNew->setTitle(_('Nuevo Grupo'));
+        $GridActionNew->setName(__('Nuevo Grupo'));
+        $GridActionNew->setTitle(__('Nuevo Grupo'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
@@ -562,8 +562,8 @@ class Items extends GridBase
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_USR_GROUPS_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
-        $GridActionEdit->setName(_('Editar Grupo'));
-        $GridActionEdit->setTitle(_('Editar Grupo'));
+        $GridActionEdit->setName(__('Editar Grupo'));
+        $GridActionEdit->setTitle(__('Editar Grupo'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
 
@@ -572,8 +572,8 @@ class Items extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_USR_GROUPS_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Grupo'));
-        $GridActionDel->setTitle(_('Eliminar Grupo'));
+        $GridActionDel->setName(__('Eliminar Grupo'));
+        $GridActionDel->setTitle(__('Eliminar Grupo'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
@@ -591,7 +591,7 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Nombre'));
+        $GridHeaders->addHeader(__('Nombre'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -605,7 +605,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Perfiles'));
+        $Grid->setTitle(__('Perfiles'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -613,7 +613,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_USR_PROFILES_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchProfile');
-        $GridActionSearch->setTitle(_('Buscar Perfil'));
+        $GridActionSearch->setTitle(__('Buscar Perfil'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -623,8 +623,8 @@ class Items extends GridBase
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_USR_PROFILES_NEW);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
-        $GridActionNew->setName(_('Nuevo Perfil'));
-        $GridActionNew->setTitle(_('Nuevo Perfil'));
+        $GridActionNew->setName(__('Nuevo Perfil'));
+        $GridActionNew->setTitle(__('Nuevo Perfil'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
@@ -634,8 +634,8 @@ class Items extends GridBase
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_USR_PROFILES_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionView->setName(_('Ver Detalles de Perfil'));
-        $GridActionView->setTitle(_('Ver Detalles de Perfil'));
+        $GridActionView->setName(__('Ver Detalles de Perfil'));
+        $GridActionView->setTitle(__('Ver Detalles de Perfil'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
 
@@ -644,8 +644,8 @@ class Items extends GridBase
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_USR_PROFILES_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
-        $GridActionEdit->setName(_('Editar Perfil'));
-        $GridActionEdit->setTitle(_('Editar Perfil'));
+        $GridActionEdit->setName(__('Editar Perfil'));
+        $GridActionEdit->setTitle(__('Editar Perfil'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
 
@@ -654,8 +654,8 @@ class Items extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_USR_PROFILES_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Perfil'));
-        $GridActionDel->setTitle(_('Eliminar Perfil'));
+        $GridActionDel->setName(__('Eliminar Perfil'));
+        $GridActionDel->setTitle(__('Eliminar Perfil'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
@@ -673,8 +673,8 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Usuario'));
-        $GridHeaders->addHeader(_('Acción'));
+        $GridHeaders->addHeader(__('Usuario'));
+        $GridHeaders->addHeader(__('Acción'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -689,7 +689,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Autorizaciones API'));
+        $Grid->setTitle(__('Autorizaciones API'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -697,7 +697,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_MGM_APITOKENS_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchToken');
-        $GridActionSearch->setTitle(_('Buscar Token'));
+        $GridActionSearch->setTitle(__('Buscar Token'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -707,8 +707,8 @@ class Items extends GridBase
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_APITOKENS_NEW);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
-        $GridActionNew->setName(_('Nueva Autorización'));
-        $GridActionNew->setTitle(_('Nueva Autorización'));
+        $GridActionNew->setName(__('Nueva Autorización'));
+        $GridActionNew->setTitle(__('Nueva Autorización'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
@@ -718,8 +718,8 @@ class Items extends GridBase
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_MGM_APITOKENS_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionView->setName(_('Ver token de Autorización'));
-        $GridActionView->setTitle(_('Ver token de Autorización'));
+        $GridActionView->setName(__('Ver token de Autorización'));
+        $GridActionView->setTitle(__('Ver token de Autorización'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
 
@@ -728,8 +728,8 @@ class Items extends GridBase
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_MGM_APITOKENS_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
-        $GridActionEdit->setName(_('Editar Autorización'));
-        $GridActionEdit->setTitle(_('Editar Autorización'));
+        $GridActionEdit->setName(__('Editar Autorización'));
+        $GridActionEdit->setTitle(__('Editar Autorización'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
 
@@ -738,8 +738,8 @@ class Items extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_APITOKENS_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Autorización'));
-        $GridActionDel->setTitle(_('Eliminar Autorización'));
+        $GridActionDel->setName(__('Eliminar Autorización'));
+        $GridActionDel->setTitle(__('Eliminar Autorización'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
@@ -757,12 +757,12 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Cuenta'));
-        $GridHeaders->addHeader(_('Fecha Creación'));
-        $GridHeaders->addHeader(_('Fecha Caducidad'));
-        $GridHeaders->addHeader(_('Usuario'));
-        $GridHeaders->addHeader(_('Notificar'));
-        $GridHeaders->addHeader(_('Visitas'));
+        $GridHeaders->addHeader(__('Cuenta'));
+        $GridHeaders->addHeader(__('Fecha Creación'));
+        $GridHeaders->addHeader(__('Fecha Caducidad'));
+        $GridHeaders->addHeader(__('Usuario'));
+        $GridHeaders->addHeader(__('Notificar'));
+        $GridHeaders->addHeader(__('Visitas'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -781,7 +781,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Enlaces'));
+        $Grid->setTitle(__('Enlaces'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -789,7 +789,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_MGM_PUBLICLINKS_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchLink');
-        $GridActionSearch->setTitle(_('Buscar Enlace'));
+        $GridActionSearch->setTitle(__('Buscar Enlace'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -799,8 +799,8 @@ class Items extends GridBase
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_MGM_PUBLICLINKS_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionView->setName(_('Ver Enlace'));
-        $GridActionView->setTitle(_('Ver Enlace'));
+        $GridActionView->setName(__('Ver Enlace'));
+        $GridActionView->setTitle(__('Ver Enlace'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
 
@@ -808,8 +808,8 @@ class Items extends GridBase
 
         $GridActionRefresh = new DataGridAction();
         $GridActionRefresh->setId(self::ACTION_MGM_PUBLICLINKS_REFRESH);
-        $GridActionRefresh->setName(_('Renovar Enlace'));
-        $GridActionRefresh->setTitle(_('Renovar Enlace'));
+        $GridActionRefresh->setName(__('Renovar Enlace'));
+        $GridActionRefresh->setTitle(__('Renovar Enlace'));
         $GridActionRefresh->setIcon($this->icons->getIconRefresh());
         $GridActionRefresh->setOnClickFunction('link/refresh');
 
@@ -818,8 +818,8 @@ class Items extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_PUBLICLINKS_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Enlace'));
-        $GridActionDel->setTitle(_('Eliminar Enlace'));
+        $GridActionDel->setName(__('Eliminar Enlace'));
+        $GridActionDel->setTitle(__('Eliminar Enlace'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
@@ -837,7 +837,7 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Nombre'));
+        $GridHeaders->addHeader(__('Nombre'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -851,7 +851,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Etiquetas'));
+        $Grid->setTitle(__('Etiquetas'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -859,7 +859,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_MGM_TAGS_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchTag');
-        $GridActionSearch->setTitle(_('Buscar Etiqueta'));
+        $GridActionSearch->setTitle(__('Buscar Etiqueta'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -869,8 +869,8 @@ class Items extends GridBase
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_MGM_TAGS_NEW);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
-        $GridActionNew->setName(_('Nueva Etiqueta'));
-        $GridActionNew->setTitle(_('Nueva Etiqueta'));
+        $GridActionNew->setName(__('Nueva Etiqueta'));
+        $GridActionNew->setTitle(__('Nueva Etiqueta'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
@@ -880,8 +880,8 @@ class Items extends GridBase
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_MGM_TAGS_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
-        $GridActionEdit->setName(_('Editar Etiqueta'));
-        $GridActionEdit->setTitle(_('Editar Etiqueta'));
+        $GridActionEdit->setName(__('Editar Etiqueta'));
+        $GridActionEdit->setTitle(__('Editar Etiqueta'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
 
@@ -890,8 +890,8 @@ class Items extends GridBase
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_MGM_TAGS_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
-        $GridActionDel->setName(_('Eliminar Etiqueta'));
-        $GridActionDel->setTitle(_('Eliminar Etiqueta'));
+        $GridActionDel->setName(__('Eliminar Etiqueta'));
+        $GridActionDel->setTitle(__('Eliminar Etiqueta'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
@@ -909,8 +909,8 @@ class Items extends GridBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(_('Plugin'));
-        $GridHeaders->addHeader(_('Estado'));
+        $GridHeaders->addHeader(__('Plugin'));
+        $GridHeaders->addHeader(__('Estado'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -926,7 +926,7 @@ class Items extends GridBase
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
-        $Grid->setTitle(_('Plugins'));
+        $Grid->setTitle(__('Plugins'));
         $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
@@ -934,7 +934,7 @@ class Items extends GridBase
         $GridActionSearch->setId(self::ACTION_MGM_PLUGINS_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchPlugin');
-        $GridActionSearch->setTitle(_('Buscar Plugin'));
+        $GridActionSearch->setTitle(__('Buscar Plugin'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
 
         $Grid->setDataActions($GridActionSearch);
@@ -944,8 +944,8 @@ class Items extends GridBase
         $GridActionView = new DataGridAction();
         $GridActionView->setId(self::ACTION_MGM_PLUGINS_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionView->setName(_('Ver Plugin'));
-        $GridActionView->setTitle(_('Ver Plugin'));
+        $GridActionView->setName(__('Ver Plugin'));
+        $GridActionView->setTitle(__('Ver Plugin'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
 
@@ -953,8 +953,8 @@ class Items extends GridBase
 
         $GridActionEnable = new DataGridAction();
         $GridActionEnable->setId(self::ACTION_MGM_PLUGINS_ENABLE);
-        $GridActionEnable->setName(_('Habilitar'));
-        $GridActionEnable->setTitle(_('Habilitar'));
+        $GridActionEnable->setName(__('Habilitar'));
+        $GridActionEnable->setTitle(__('Habilitar'));
         $GridActionEnable->setIcon($this->icons->getIconEnabled());
         $GridActionEnable->setOnClickFunction('plugin/toggle');
         $GridActionEnable->setFilterRowSource('plugin_enabled', 1);
@@ -963,8 +963,8 @@ class Items extends GridBase
 
         $GridActionDisable = new DataGridAction();
         $GridActionDisable->setId(self::ACTION_MGM_PLUGINS_DISABLE);
-        $GridActionDisable->setName(_('Deshabilitar'));
-        $GridActionDisable->setTitle(_('Deshabilitar'));
+        $GridActionDisable->setName(__('Deshabilitar'));
+        $GridActionDisable->setTitle(__('Deshabilitar'));
         $GridActionDisable->setIcon($this->icons->getIconDisabled());
         $GridActionDisable->setOnClickFunction('plugin/toggle');
         $GridActionDisable->setFilterRowSource('plugin_enabled', 0);
@@ -973,8 +973,8 @@ class Items extends GridBase
 
         $GridActionReset = new DataGridAction();
         $GridActionReset->setId(self::ACTION_MGM_PLUGINS_RESET);
-        $GridActionReset->setName(_('Restablecer Datos'));
-        $GridActionReset->setTitle(_('Restablecer Datos'));
+        $GridActionReset->setName(__('Restablecer Datos'));
+        $GridActionReset->setTitle(__('Restablecer Datos'));
         $GridActionReset->setIcon($this->icons->getIconRefresh());
         $GridActionReset->setOnClickFunction('plugin/reset');
 

@@ -70,10 +70,10 @@ class ChecksController implements ItemControllerInterface
                     $this->invalidAction();
             }
         } catch (\Exception $e) {
-            $this->jsonResponse->setDescription($e->getMessage());
+            $this->JsonResponse->setDescription($e->getMessage());
         }
 
-        Json::returnJson($this->jsonResponse);
+        Json::returnJson($this->JsonResponse);
     }
 
     /**
@@ -89,7 +89,7 @@ class ChecksController implements ItemControllerInterface
         $ldapBindPass = Request::analyzeEncrypted('ldap_bindpass');
 
         if (!$ldapServer || !$ldapBase || !$ldapBindUser || !$ldapBindPass) {
-            $this->jsonResponse->setDescription(_('Los parámetros de LDAP no están configurados'));
+            $this->JsonResponse->setDescription(__('Los parámetros de LDAP no están configurados', false));
             return;
         }
 
@@ -104,13 +104,13 @@ class ChecksController implements ItemControllerInterface
         try {
             $results = $Ldap->checkConnection();
 
-            $this->jsonResponse->setDescription(_('Conexión a LDAP correcta'));
-            $this->jsonResponse->addMessage(sprintf(_('Objetos encontrados: %d'), (int)$results['count']));
-            $this->jsonResponse->setData(LdapUtil::getResultsData($results, 'dn'));
-            $this->jsonResponse->setStatus(0);
+            $this->JsonResponse->setDescription(__('Conexión a LDAP correcta', false));
+            $this->JsonResponse->addMessage(sprintf(__('Objetos encontrados: %d'), (int)$results['count']));
+            $this->JsonResponse->setData(LdapUtil::getResultsData($results, 'dn'));
+            $this->JsonResponse->setStatus(0);
         } catch (SPException $e) {
-            $this->jsonResponse->setDescription($e->getMessage());
-            $this->jsonResponse->addMessage(_('Revise el registro de eventos para más detalles'));
+            $this->JsonResponse->setDescription($e->getMessage());
+            $this->JsonResponse->addMessage(__('Revise el registro de eventos para más detalles', false));
         }
     }
 
@@ -124,7 +124,7 @@ class ChecksController implements ItemControllerInterface
         $dokuWikiPass = Request::analyzeEncrypted('dokuwiki_pass');
 
         if (!$dokuWikiUrl) {
-            $this->jsonResponse->setDescription(_('Los parámetros de DokuWiki no están configurados'));
+            $this->JsonResponse->setDescription(__('Los parámetros de DokuWiki no están configurados', false));
             return;
         }
 
@@ -132,14 +132,14 @@ class ChecksController implements ItemControllerInterface
             $DokuWikiApi = DokuWikiApi::checkConnection($dokuWikiUrl, $dokuWikiUser, $dokuWikiPass);
 
             $dokuWikiVersion = $DokuWikiApi->getVersion();
-            $version = is_array($dokuWikiVersion) ? $dokuWikiVersion[0] : _('Error');
+            $version = is_array($dokuWikiVersion) ? $dokuWikiVersion[0] : __('Error');
 
-            $this->jsonResponse->setDescription(_('Conexión correcta'));
-            $this->jsonResponse->addMessage(sprintf('%s: %s', _('Versión'), $version));
-            $this->jsonResponse->setStatus(0);
+            $this->JsonResponse->setDescription(__('Conexión correcta', false));
+            $this->JsonResponse->addMessage(sprintf('%s: %s', __('Versión'), $version));
+            $this->JsonResponse->setStatus(0);
         } catch (SPException $e) {
-            $this->jsonResponse->setDescription(_('Error de conexión a DokuWiki'));
-            $this->jsonResponse->addMessage(_('Revise el registro de eventos para más detalles'));
+            $this->JsonResponse->setDescription(__('Error de conexión a DokuWiki', false));
+            $this->JsonResponse->addMessage(__('Revise el registro de eventos para más detalles', false));
         }
     }
 }

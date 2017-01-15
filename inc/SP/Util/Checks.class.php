@@ -80,8 +80,8 @@ class Checks
         if (version_compare(PHP_VERSION, $needsVersion, '>=') < 0) {
             $error[] = array(
                 'type' => SPException::SP_CRITICAL,
-                'description' => _('Versión de PHP requerida >= ') . $needsVersion,
-                'hint' => _('Actualice la versión de PHP para que la aplicación funcione correctamente')
+                'description' => __('Versión de PHP requerida >= ') . $needsVersion,
+                'hint' => __('Actualice la versión de PHP para que la aplicación funcione correctamente')
             );
         }
 
@@ -119,8 +119,8 @@ class Checks
             if (!extension_loaded($module)) {
                 $error[] = [
                     'type' => SPException::SP_WARNING,
-                    'description' => sprintf('%s (%s)', _('Módulo no disponible'), $module),
-                    'hint' => _('Sin este módulo la aplicación puede no funcionar correctamente.')
+                    'description' => sprintf('%s (%s)', __('Módulo no disponible'), $module),
+                    'hint' => __('Sin este módulo la aplicación puede no funcionar correctamente.')
                 ];
             }
         }

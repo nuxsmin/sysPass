@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Config\Config;
 use SP\Core\Acl;
@@ -234,7 +234,7 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $ActionSearch = new DataGridAction();
         $ActionSearch->setId(self::ACTION_ACC_SEARCH);
-        $ActionSearch->setTitle(_('Buscar'));
+        $ActionSearch->setTitle(__('Buscar'));
         $ActionSearch->setIcon($this->icons->getIconSearch());
         $ActionSearch->setData(['historyReset' => 1]);
 
@@ -243,7 +243,7 @@ class MainController extends ControllerBase implements ActionsInterface
         if (Acl::checkUserAccess(self::ACTION_ACC_NEW)) {
             $ActionNew = new DataGridAction();
             $ActionNew->setId(self::ACTION_ACC_NEW);
-            $ActionNew->setTitle(_('Nueva Cuenta'));
+            $ActionNew->setTitle(__('Nueva Cuenta'));
             $ActionNew->setIcon($this->icons->getIconAdd());
             $ActionNew->setData(['historyReset' => 0]);
 
@@ -253,7 +253,7 @@ class MainController extends ControllerBase implements ActionsInterface
         if (Acl::checkUserAccess(self::ACTION_USR)) {
             $ActionUsr = new DataGridAction();
             $ActionUsr->setId(self::ACTION_USR);
-            $ActionUsr->setTitle(_('Usuarios y Accesos'));
+            $ActionUsr->setTitle(__('Usuarios y Accesos'));
             $ActionUsr->setIcon($this->icons->getIconAccount());
             $ActionUsr->setData(['historyReset' => 0]);
 
@@ -263,7 +263,7 @@ class MainController extends ControllerBase implements ActionsInterface
         if (Acl::checkUserAccess(self::ACTION_MGM)) {
             $ActionMgm = new DataGridAction();
             $ActionMgm->setId(self::ACTION_MGM);
-            $ActionMgm->setTitle(_('Elementos y Personalización'));
+            $ActionMgm->setTitle(__('Elementos y Personalización'));
             $ActionMgm->setIcon($this->icons->getIconGroup());
             $ActionMgm->setData(['historyReset' => 0]);
 
@@ -273,7 +273,7 @@ class MainController extends ControllerBase implements ActionsInterface
         if (Acl::checkUserAccess(self::ACTION_CFG)) {
             $ActionConfig = new DataGridAction();
             $ActionConfig->setId(self::ACTION_CFG);
-            $ActionConfig->setTitle(_('Configuración'));
+            $ActionConfig->setTitle(__('Configuración'));
             $ActionConfig->setIcon($this->icons->getIconSettings());
             $ActionConfig->setData(['historyReset' => 1]);
 
@@ -283,7 +283,7 @@ class MainController extends ControllerBase implements ActionsInterface
         if (Acl::checkUserAccess(self::ACTION_EVL) && Checks::logIsEnabled()) {
             $ActionEventlog = new DataGridAction();
             $ActionEventlog->setId(self::ACTION_EVL);
-            $ActionEventlog->setTitle(_('Registro de Eventos'));
+            $ActionEventlog->setTitle(__('Registro de Eventos'));
             $ActionEventlog->setIcon($this->icons->getIconHeadline());
             $ActionEventlog->setData(['historyReset' => 1]);
 
@@ -292,7 +292,7 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $ActionNotice = new DataGridAction();
         $ActionNotice->setId(self::ACTION_NOT);
-        $ActionNotice->setTitle(_('Notificaciones'));
+        $ActionNotice->setTitle(__('Notificaciones'));
         $ActionNotice->setIcon($this->icons->getIconNotices());
         $ActionNotice->setData(['historyReset' => 1]);
 
@@ -343,15 +343,15 @@ class MainController extends ControllerBase implements ActionsInterface
         if (@file_exists(__FILE__ . "\0Nullbyte")) {
             $errors[] = [
                 'type' => SPException::SP_WARNING,
-                'description' => _('La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)'),
-                'hint' => _('Actualice la versión de PHP para usar sysPass de forma segura')];
+                'description' => __('La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)'),
+                'hint' => __('Actualice la versión de PHP para usar sysPass de forma segura')];
         }
 
         if (!Checks::secureRNGIsAvailable()) {
             $errors[] = [
                 'type' => SPException::SP_WARNING,
-                'description' => _('No se encuentra el generador de números aleatorios.'),
-                'hint' => _('Sin esta función un atacante puede utilizar su cuenta al resetear la clave')];
+                'description' => __('No se encuentra el generador de números aleatorios.'),
+                'hint' => __('Sin esta función un atacante puede utilizar su cuenta al resetear la clave')];
         }
 
         $this->view->assign('errors', $errors);
@@ -418,7 +418,7 @@ class MainController extends ControllerBase implements ActionsInterface
                 $this->view->assign('hasUpdates', true);
                 $this->view->assign('title', $updates['title']);
                 $this->view->assign('url', $updates['url']);
-                $this->view->assign('description', sprintf('%s - %s <br><br>%s', _('Descargar nueva versión'), $version, $description));
+                $this->view->assign('description', sprintf('%s - %s <br><br>%s', __('Descargar nueva versión'), $version, $description));
             } else {
                 $this->view->assign('updateStatus', $updates);
             }
@@ -430,7 +430,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $noticesTitle = '';
 
             if ($notices !== false && $numNotices > 0) {
-                $noticesTitle = _('Avisos de sysPass') . '<br>';
+                $noticesTitle = __('Avisos de sysPass') . '<br>';
 
                 foreach ($notices as $notice) {
                     $noticesTitle .= '<br>' . $notice[0];
@@ -523,17 +523,17 @@ class MainController extends ControllerBase implements ActionsInterface
 
                 if ($PublicLink->isNotify()) {
                     $Message = new NoticeMessage();
-                    $Message->setTitle(_('Enlace visualizado'));
-                    $Message->addDescription(sprintf('%s : %s', _('Cuenta'), $PublicLink->getItemId()));
-                    $Message->addDescription(sprintf('%s : %s', _('Origen'), $_SERVER['REMOTE_ADDR']));
-                    $Message->addDescription(sprintf('%s : %s', _('Agente'), $_SERVER['HTTP_USER_AGENT']));
+                    $Message->setTitle(__('Enlace visualizado'));
+                    $Message->addDescription(sprintf('%s : %s', __('Cuenta'), $PublicLink->getItemId()));
+                    $Message->addDescription(sprintf('%s : %s', __('Origen'), $_SERVER['REMOTE_ADDR']));
+                    $Message->addDescription(sprintf('%s : %s', __('Agente'), $_SERVER['HTTP_USER_AGENT']));
                     $Message->addDescription(sprintf('HTTPS : %s', $_SERVER['HTTPS'] ? 'ON' : 'OFF'));
 
 
                     $NoticeData = new NoticeData();
-                    $NoticeData->setNoticeComponent(_('Cuentas'));
+                    $NoticeData->setNoticeComponent(__('Cuentas'));
                     $NoticeData->setNoticeDescription($Message);
-                    $NoticeData->setNoticeType(_('Información'));
+                    $NoticeData->setNoticeType(__('Información'));
                     $NoticeData->setNoticeUserId($PublicLink->getUserId());
 
                     Notice::getItem($NoticeData)->add();

@@ -66,12 +66,12 @@ class CustomerForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->CustomerData->getCustomerName()) {
-            throw new ValidationException(_('Es necesario un nombre de cliente'));
+            throw new ValidationException(__('Es necesario un nombre de cliente', false));
         }
     }
 
     /**
-     * @return mixed
+     * @return CustomerData
      */
     public function getItemData()
     {

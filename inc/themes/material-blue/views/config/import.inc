@@ -5,26 +5,26 @@ use SP\Core\Session; ?>
 <div id="tabs-<?php echo $import_tabIndex; ?>" class="mdl-tabs__panel">
     <div class="tab-data">
         <div id="title" class="midroundup titleNormal">
-            <?php echo _('Importar CSV/XML'); ?>
+            <?php echo __('Importar CSV/XML'); ?>
         </div>
 
         <table class="data round">
             <form method="post" name="frmImport" id="frmImport">
                 <tr>
                     <td class="descField">
-                        <?php echo _('Usuario por Defecto'); ?>
+                        <?php echo __('Usuario por Defecto'); ?>
                         <div id="help-import_defaultuser"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-import_defaultuser">
                             <p>
-                                <?php echo _('Define el usuario por defecto para las cuentas importadas.'); ?>
+                                <?php echo __('Define el usuario por defecto para las cuentas importadas.'); ?>
                             </p>
                         </div>
                     </td>
                     <td class="valField">
                         <select id="import_defaultuser" name="import_defaultuser"
                                 class="select-box sel-chosen-user" required>
-                            <option value=""><?php echo _('Seleccionar Usuario'); ?></option>
+                            <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
                             <?php foreach ($users as $user): ?>
                                 <option
                                     value="<?php echo $user->id; ?>" <?php echo ($user->id === Session::getUserData()->getUserId()) ? 'selected' : ''; ?>>
@@ -36,19 +36,19 @@ use SP\Core\Session; ?>
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('Grupo por Defecto'); ?>
+                        <?php echo __('Grupo por Defecto'); ?>
                         <div id="help-import_defaultgroup"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-import_defaultgroup">
                             <p>
-                                <?php echo _('Define el grupo por defecto para las cuentas importadas.'); ?>
+                                <?php echo __('Define el grupo por defecto para las cuentas importadas.'); ?>
                             </p>
                         </div>
                     </td>
                     <td class="valField">
                         <select id="import_defaultgroup" name="import_defaultgroup"
                                 class="select-box sel-chosen-usergroup" required>
-                            <option value=""><?php echo _('Seleccionar Grupo'); ?></option>
+                            <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
                             <?php foreach ($groups as $group): ?>
                                 <option
                                     value="<?php echo $group->id; ?>" <?php echo ($group->id === $SessionUserData->getUserGroupId()) ? 'selected' : ''; ?>>
@@ -60,7 +60,7 @@ use SP\Core\Session; ?>
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('Clave de Importación'); ?>
+                        <?php echo __('Clave de Importación'); ?>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -68,13 +68,13 @@ use SP\Core\Session; ?>
                                    class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                                    maxlength="255"/>
                             <label class="mdl-textfield__label"
-                                   for="importPwd"><?php echo _('Clave de Importación'); ?></label>
+                                   for="importPwd"><?php echo __('Clave de Importación'); ?></label>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('Clave Maestra'); ?>
+                        <?php echo __('Clave Maestra'); ?>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -82,13 +82,13 @@ use SP\Core\Session; ?>
                                    class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                                    maxlength="255" />
                             <label class="mdl-textfield__label"
-                                   for="importMasterPwd"><?php echo _('Clave Maestra'); ?></label>
+                                   for="importMasterPwd"><?php echo __('Clave Maestra'); ?></label>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('Delimitador CSV'); ?>
+                        <?php echo __('Delimitador CSV'); ?>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -96,20 +96,20 @@ use SP\Core\Session; ?>
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="1" value=";"/>
                             <label class="mdl-textfield__label"
-                                   for="csvDelimiter"><?php echo _('Delimitador CSV'); ?></label>
+                                   for="csvDelimiter"><?php echo __('Delimitador CSV'); ?></label>
                         </div>
                     </td>
                 </tr>
             </form>
             <tr>
                 <td class="descField">
-                    <?php echo _('Archivo'); ?>
+                    <?php echo __('Archivo'); ?>
                 </td>
                 <td class="valField">
                     <div id="drop-import-files" class="round active-tooltip dropzone"
                          data-files-ext="csv,xml"
                          data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_IMPORT; ?>"
-                         title="<?php echo _('Soltar archivo aquí o click para seleccionar'); ?>">
+                         title="<?php echo __('Soltar archivo aquí o click para seleccionar'); ?>">
                         <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>
                     </div>
                     <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUploadForm">
@@ -128,20 +128,20 @@ use SP\Core\Session; ?>
                         <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
                     </button>
 
-                    <div id="help_import" class="help-box" title="<?php echo _('Ayuda'); ?>">
-                        <p class="help-text"><?php echo _('Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV.'); ?></p>
+                    <div id="help_import" class="help-box" title="<?php echo __('Ayuda'); ?>">
+                        <p class="help-text"><?php echo __('Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV.'); ?></p>
 
-                        <p class="help-text"><?php echo _('Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX'); ?></p>
+                        <p class="help-text"><?php echo __('Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX'); ?></p>
 
-                        <p class="help-text"><?php echo _('Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha.'); ?></p>
+                        <p class="help-text"><?php echo __('Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha.'); ?></p>
 
-                        <p class="help-text"><?php echo _('Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos.'); ?></p>
+                        <p class="help-text"><?php echo __('Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos.'); ?></p>
 
-                        <p class="help-text"><?php echo _('La importación de archivos CSV se realiza con el siguiente formato:'); ?></p>
+                        <p class="help-text"><?php echo __('La importación de archivos CSV se realiza con el siguiente formato:'); ?></p>
 
-                        <p class="help-text"><?php echo _('nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas'); ?></p>
+                        <p class="help-text"><?php echo __('nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas'); ?></p>
 
-                        <p class="help-text"><?php echo _('En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente.'); ?></p>
+                        <p class="help-text"><?php echo __('En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente.'); ?></p>
                     </div>
                 </li>
             </ul>

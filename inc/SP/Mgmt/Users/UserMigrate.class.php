@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\Users;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupUsersData;
@@ -94,12 +94,12 @@ class UserMigrate
         $Data->addParam($userPass);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al migrar cuenta de usuario'));
+            throw new SPException(SPException::SP_ERROR, __('Error al migrar cuenta de usuario', false));
         }
 
         $Log = new Log(__FUNCTION__);
-        $Log->addDescription(_('Usuario actualizado'));
-        $Log->addDetails(_('Login'), $userLogin);
+        $Log->addDescription(__('Usuario actualizado', false));
+        $Log->addDetails(__('Login', false), $userLogin);
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -107,9 +107,14 @@ class UserMigrate
 
     /**
      * Migrar el grupo de los usuarios a la nueva tabla
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public static function migrateUsersGroup()
     {
+        $Log = new Log(__FUNCTION__);
+
         $query = /** @lang SQL */
             'SELECT user_id, user_groupId FROM usrData';
 
@@ -119,7 +124,11 @@ class UserMigrate
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener grupo de usuarios'));
+            $Log->setLogLevel(Log::ERROR);
+            $Log->addDescription(__('Error al obtener grupo de usuarios', false));
+            $Log->writeLog();
+
+            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
         }
 
         foreach ($queryRes as $user) {
@@ -130,9 +139,12 @@ class UserMigrate
             try {
                 GroupUsers::getItem($GroupUsers)->update();
             } catch (SPException $e) {
-                Log::writeNewLog(_('Migrar Grupos'), sprintf('%s (%s)', _('Error al migrar grupo del usuario'), $user->user_id), Log::ERROR);
+                $Log->setLogLevel(Log::ERROR);
+                $Log->addDetails(__('Error al migrar grupo del usuario', false), $user->user_id);
             }
         }
+
+        $Log->writeLog();
 
         return true;
     }

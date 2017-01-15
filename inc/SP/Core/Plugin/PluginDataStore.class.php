@@ -25,6 +25,7 @@
 namespace SP\Core\Plugin;
 
 use SP\DataModel\PluginData;
+use SP\Log\Log;
 use SP\Mgmt\Plugins\Plugin;
 
 /**
@@ -55,6 +56,7 @@ class PluginDataStore
      *
      * @param PluginInterface $Plugin
      * @return bool
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function load(PluginInterface $Plugin)
@@ -68,6 +70,10 @@ class PluginDataStore
             $PluginData->setPluginEnabled(0);
 
             Plugin::getItem($PluginData)->add();
+
+            $Log = new Log(__('Nuevo Plugin', false));
+            $Log->addDetails(__('Nombre', false), $Plugin->getName());
+            $Log->writeLog();
 
             return false;
         }

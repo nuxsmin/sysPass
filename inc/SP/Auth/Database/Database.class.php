@@ -63,7 +63,7 @@ class Database implements AuthInterface
             } catch (SPException $e) {
                 $Log = new Log(__FUNCTION__);
                 $Log->addDescription($e->getMessage());
-                $Log->addDetails(_('Login'), $this->UserData->getUserLogin());
+                $Log->addDetails(__('Login', false), $this->UserData->getUserLogin());
                 $Log->writeLog();
 
                 return false;
@@ -77,7 +77,7 @@ class Database implements AuthInterface
             AND user_isMigrate = 0 LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\UserPassData');
+        $Data->setMapClassName(UserPassData::class);
         $Data->setQuery($query);
         $Data->addParam($this->UserData->getUserLogin());
 

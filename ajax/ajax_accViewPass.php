@@ -42,7 +42,7 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 Request::checkReferer('POST');
 
 if (!Init::isLoggedIn()) {
-    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
+    Response::printJson(__('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
 $accountId = Request::analyze('itemId', false);
@@ -66,16 +66,16 @@ if (!$isHistory) {
 $Account->getAccountPassData();
 
 if ($isHistory && !$Account->checkAccountMPass()) {
-    Response::printJson(_('La clave maestra no coincide'));
+    Response::printJson(__('La clave maestra no coincide'));
 }
 
 $Acl = new Acl(Acl::ACTION_ACC_VIEW_PASS);
 $Acl->setAccountData($Account->getAccountDataForACL());
 
 if (!Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS) || !$Acl->checkAccountAccess()) {
-    Response::printJson(_('No tiene permisos para acceder a esta cuenta'));
+    Response::printJson(__('No tiene permisos para acceder a esta cuenta'));
 } elseif (!UserPass::getItem(Session::getUserData())->checkUserUpdateMPass()) {
-    Response::printJson(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
+    Response::printJson(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
 }
 
 $accountClearPass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV());
@@ -83,9 +83,9 @@ $accountClearPass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountDa
 if (!$isHistory) {
     $Account->incrementDecryptCounter();
 
-    $log = new Log(_('Ver Clave'));
-    $log->addDetails(_('ID'), $accountId);
-    $log->addDetails(_('Cuenta'), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
+    $log = new Log(__('Ver Clave', false));
+    $log->addDetails(__('ID', false), $accountId);
+    $log->addDetails(__('Cuenta', false), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
     $log->writeLog();
 }
 
@@ -98,7 +98,7 @@ if (!$useImage) {
 }
 
 $data = [
-    'title' => _('Clave de Cuenta'),
+    'title' => __('Clave de Cuenta'),
     'acclogin' => $AccountData->getAccountLogin(),
     'accpass' => $pass,
     'useimage' => $useImage

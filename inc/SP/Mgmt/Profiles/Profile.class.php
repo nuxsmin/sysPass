@@ -25,7 +25,7 @@
 
 namespace SP\Mgmt\Profiles;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
@@ -56,7 +56,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, _('Nombre de perfil duplicado'));
+            throw new SPException(SPException::SP_INFO, __('Nombre de perfil duplicado', false));
         }
 
         $query = /** @lang SQL */
@@ -70,16 +70,10 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         $Data->addParam(serialize($this->itemData));
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al crear perfil'));
+            throw new SPException(SPException::SP_ERROR, __('Error al crear perfil', false));
         }
 
         $this->itemData->setUserprofileId(DB::getLastId());
-
-        $Log = new Log(_('Nuevo Perfil'));
-        $Log->addDetails(Html::strongText(_('Nombre')), $this->itemData->getUserprofileName());
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -120,10 +114,8 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         }
 
         if ($this->checkInUse($id)) {
-            throw new SPException(SPException::SP_INFO, _('Perfil en uso'));
+            throw new SPException(SPException::SP_INFO, __('Perfil en uso', false));
         }
-
-        $oldProfile = $this->getById($id);
 
         $query = /** @lang SQL */
             'DELETE FROM usrProfiles WHERE userprofile_id = ? LIMIT 1';
@@ -133,14 +125,8 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al eliminar perfil'));
+            throw new SPException(SPException::SP_ERROR, __('Error al eliminar perfil', false));
         }
-
-        $Log = new Log(_('Eliminar Perfil'));
-        $Log->addDetails(Html::strongText(_('Nombre')), $oldProfile->getUserprofileName());
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -148,6 +134,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     /**
      * @param $id int
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function checkInUse($id)
     {
@@ -201,10 +188,8 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_INFO, _('Nombre de perfil duplicado'));
+            throw new SPException(SPException::SP_INFO, __('Nombre de perfil duplicado', false));
         }
-
-        $oldProfileName = $this->getById($this->itemData->getUserprofileId());
 
         $query = /** @lang SQL */
             'UPDATE usrProfiles SET
@@ -219,14 +204,8 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getUserprofileId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al modificar perfil'));
+            throw new SPException(SPException::SP_ERROR, __('Error al modificar perfil', false));
         }
-
-        $Log = new Log(_('Modificar Perfil'));
-        $Log->addDetails(Html::strongText(_('Nombre')), $oldProfileName->getUserprofileName() . ' > ' . $this->itemData->getUserprofileName());
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         $this->updateSessionProfile();
 

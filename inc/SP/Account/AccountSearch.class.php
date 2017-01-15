@@ -34,7 +34,7 @@ use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class AccountSearch para la gestión de búsquedas de cuentas

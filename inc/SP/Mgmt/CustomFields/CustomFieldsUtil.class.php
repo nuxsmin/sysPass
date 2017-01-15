@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\CustomFields;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Crypt;
 use SP\Core\Exceptions\SPException;
@@ -64,7 +64,7 @@ class CustomFieldsUtil
      */
     public static function updateCustomFieldsCrypt($currentMasterPass, $newMasterPassword)
     {
-        $Log = new Log(_('Campos Personalizados'));
+        $Log = new Log(__('Campos Personalizados', false));
 
         $query = /** @lang SQL */
             'SELECT customfielddata_id, customfielddata_data, customfielddata_iv FROM customFieldsData';
@@ -77,12 +77,12 @@ class CustomFieldsUtil
         $queryRes = DB::getResultsArray($Data);
 
         if (count($queryRes) === 0) {
-            $Log->addDescription(_('No hay datos de campos personalizados'));
+            $Log->addDescription(__('No hay datos de campos personalizados', false));
             $Log->writeLog();
             return true;
         }
 
-        $Log->addDescription(_('Actualizando datos encriptados'));
+        $Log->addDescription(__('Actualizando datos encriptados', false));
 
         $errors = [];
         $success = [];
@@ -110,8 +110,8 @@ class CustomFieldsUtil
             }
         }
 
-        $Log->addDetails(_('Registros no actualizados'), implode(',', $errors));
-        $Log->addDetails(_('Registros actualizados'), implode(',', $success));
+        $Log->addDetails(__('Registros no actualizados', false), implode(',', $errors));
+        $Log->addDetails(__('Registros actualizados', false), implode(',', $success));
         $Log->writeLog();
 
         return (count($errors) === 0);
@@ -184,7 +184,7 @@ class CustomFieldsUtil
                 $Data->setQuery($query);
 
                 if (DB::getQuery($Data) === false) {
-                    throw new SPException(SPException::SP_ERROR, _('Error al migrar campos personalizados'));
+                    throw new SPException(SPException::SP_ERROR, __('Error al migrar campos personalizados', false));
                 }
 
                 $query = /** @lang SQL */
@@ -206,9 +206,9 @@ class CustomFieldsUtil
                     $Data->addParam($cf->customfielddef_id);
 
                     if (DB::getQuery($Data) === false) {
-                        $Log->addDetails(_('Error al actualizar el campo personalizado'), $cf->customfielddef_id);
+                        $Log->addDetails(__('Error al actualizar el campo personalizado', false), $cf->customfielddef_id);
                     } else {
-                        $Log->addDetails(_('Campo actualizado'), $cf->customfielddef_id);
+                        $Log->addDetails(__('Campo actualizado', false), $cf->customfielddef_id);
                     }
                 }
             }

@@ -99,7 +99,7 @@ class FileUtil
         $Data->addParam($accountId);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_WARNING, _('Error al eliminar archivos asociados a la cuenta'));
+            throw new SPException(SPException::SP_WARNING, __('Error al eliminar archivos asociados a la cuenta', false));
         }
     }
 

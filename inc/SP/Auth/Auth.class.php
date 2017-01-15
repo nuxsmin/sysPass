@@ -36,7 +36,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
 use SP\Util\Checks;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class Auth
@@ -80,9 +80,9 @@ class Auth
     protected function registerAuth($auth)
     {
         if (array_key_exists($auth, $this->auths)) {
-            throw new SPException(SPException::SP_ERROR, _('Método ya inicializado'), __FUNCTION__);
+            throw new SPException(SPException::SP_ERROR, __('Método ya inicializado', false), __FUNCTION__);
         } elseif (!method_exists($this, $auth)) {
-            throw new SPException(SPException::SP_ERROR, _('Método no disponible'), __FUNCTION__);
+            throw new SPException(SPException::SP_ERROR, __('Método no disponible', false), __FUNCTION__);
         }
 
         $this->auths[$auth] = $auth;

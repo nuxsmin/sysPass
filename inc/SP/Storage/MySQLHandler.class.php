@@ -29,7 +29,7 @@ use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class MySQLHandler
@@ -115,6 +115,7 @@ class MySQLHandler implements DBStorageInterface
      *
      * @throws \SP\Core\Exceptions\SPException
      * @return PDO
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
 
     public function getConnection()
@@ -124,11 +125,11 @@ class MySQLHandler implements DBStorageInterface
 
             if (empty($this->dbHost) || empty($this->dbUser) || empty($this->dbPass) || empty($this->dbName)) {
                 if ($isInstalled) {
-                    Init::initError(_('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
+                    Init::initError(__('No es posible conectar con la BD'), __('Compruebe los datos de conexión'));
                 } else {
                     throw new SPException(SPException::SP_CRITICAL,
-                        _('No es posible conectar con la BD'),
-                        _('Compruebe los datos de conexión'));
+                        __('No es posible conectar con la BD', false),
+                        __('Compruebe los datos de conexión', false));
                 }
             }
 
@@ -144,7 +145,7 @@ class MySQLHandler implements DBStorageInterface
                         Config::saveConfig();
                     }
                     Init::initError(
-                        _('No es posible conectar con la BD'),
+                        __('No es posible conectar con la BD'),
                         'Error ' . $e->getCode() . ': ' . $e->getMessage());
                 } else {
                     throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());

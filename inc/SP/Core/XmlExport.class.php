@@ -35,7 +35,7 @@ use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Tags\Tag;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase XmlExport para realizar la exportación de las cuentas de sysPass a formato XML
@@ -121,10 +121,11 @@ class XmlExport
      * Crear el documento XML y guardarlo
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function makeXML()
     {
-        $Log = new Log(_('Exportar XML'));
+        $Log = new Log(__('Exportar XML', false));
 
         try {
             $this->checkExportDir();
@@ -138,7 +139,7 @@ class XmlExport
             $this->writeXML();
         } catch (SPException $e) {
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al realizar la exportación de cuentas'));
+            $Log->addDescription(__('Error al realizar la exportación de cuentas', false));
             $Log->addDetails($e->getMessage(), $e->getHint());
             $Log->writeLog();
 
@@ -146,7 +147,7 @@ class XmlExport
             return false;
         }
 
-        $Log->addDescription(_('Exportación de cuentas realizada correctamente'));
+        $Log->addDescription(__('Exportación de cuentas realizada correctamente', false));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -471,7 +472,7 @@ class XmlExport
             $this->xml->preserveWhiteSpace = false;
 
             if (!$this->xml->save($this->exportFile)) {
-                throw new SPException(SPException::SP_CRITICAL, _('Error al crear el archivo XML'));
+                throw new SPException(SPException::SP_CRITICAL, __('Error al crear el archivo XML', false));
             }
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
@@ -508,13 +509,13 @@ class XmlExport
     private function checkExportDir()
     {
         if (@mkdir($this->exportDir, 0750) === false && is_dir($this->exportDir) === false) {
-            throw new SPException(SPException::SP_CRITICAL, sprintf(_('No es posible crear el directorio de backups ("%s")'), $this->exportDir));
+            throw new SPException(SPException::SP_CRITICAL, sprintf(__('No es posible crear el directorio de backups ("%s")'), $this->exportDir));
         }
 
         clearstatcache(true, $this->exportDir);
 
         if (!is_writable($this->exportDir)) {
-            throw new SPException(SPException::SP_CRITICAL, _('Compruebe los permisos del directorio de backups'));
+            throw new SPException(SPException::SP_CRITICAL, __('Compruebe los permisos del directorio de backups', false));
         }
 
         return true;

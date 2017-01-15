@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Account\Account;
 use SP\Account\AccountAcl;
@@ -130,7 +130,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleGreen',
-                'name' => _('Nueva Cuenta'),
+                'name' => __('Nueva Cuenta'),
                 'icon' => $this->icons->getIconAdd()->getIcon()
             ]
         );
@@ -266,7 +266,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleGreen',
-                'name' => _('Copiar Cuenta'),
+                'name' => __('Copiar Cuenta'),
                 'icon' => $this->icons->getIconCopy()->getIcon()
             ]
         );
@@ -313,7 +313,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleOrange',
-                'name' => _('Editar Cuenta'),
+                'name' => __('Editar Cuenta'),
                 'icon' => $this->icons->getIconEdit()->getIcon()
             ]
         );
@@ -339,7 +339,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleRed',
-                'name' => _('Eliminar Cuenta'),
+                'name' => __('Eliminar Cuenta'),
                 'icon' => $this->icons->getIconDelete()->getIcon()
             ]
         );
@@ -365,7 +365,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleNormal',
-                'name' => _('Detalles de Cuenta'),
+                'name' => __('Detalles de Cuenta'),
                 'icon' => $this->icons->getIconView()->getIcon()
             ]
         );
@@ -395,7 +395,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleNormal',
-                'name' => _('Detalles de Cuenta'),
+                'name' => __('Detalles de Cuenta'),
                 'icon' => 'access_time'
             ]
         );
@@ -449,7 +449,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleOrange',
-                'name' => _('Modificar Clave de Cuenta'),
+                'name' => __('Modificar Clave de Cuenta'),
                 'icon' => $this->icons->getIconEditPass()->getIcon()
             ]
         );
@@ -488,7 +488,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleNormal',
-                'name' => _('Detalles de Cuenta'),
+                'name' => __('Detalles de Cuenta'),
                 'icon' => $this->icons->getIconView()->getIcon()
             ]
         );

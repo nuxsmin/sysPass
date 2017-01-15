@@ -80,17 +80,17 @@ class UserForm extends FormBase implements FormInterface
         $isLdap = Request::analyze('isLdap', 0);
 
         if (!$isLdap && !$this->UserData->getUserName()) {
-            throw new ValidationException(_('Es necesario un nombre de usuario'));
+            throw new ValidationException(__('Es necesario un nombre de usuario', false));
         } elseif (!$isLdap && !$this->UserData->getUserLogin()) {
-            throw new ValidationException(_('Es necesario un login'));
+            throw new ValidationException(__('Es necesario un login', false));
         } elseif (!$this->UserData->getUserProfileId()) {
-            throw new ValidationException(_('Es necesario un perfil'));
+            throw new ValidationException(__('Es necesario un perfil', false));
         } elseif (!$this->UserData->getUserGroupId()) {
-            throw new ValidationException(_('Es necesario un grupo'));
+            throw new ValidationException(__('Es necesario un grupo', false));
         } elseif (!$isLdap && !$this->UserData->getUserEmail()) {
-            throw new ValidationException(_('Es necesario un email'));
+            throw new ValidationException(__('Es necesario un email', false));
         } elseif (Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp() && $this->UserData->getUserLogin() === 'demo') {
-            throw new ValidationException(_('Ey, esto es una DEMO!!'));
+            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
         }
     }
 
@@ -102,11 +102,11 @@ class UserForm extends FormBase implements FormInterface
         $userPassR = Request::analyzeEncrypted('passR');
 
         if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->UserData->getUserId()) === 'demo') {
-            throw new ValidationException(_('Ey, esto es una DEMO!!'));
+            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
         } elseif (!$userPassR || !$this->UserData->getUserPass()) {
-            throw new ValidationException(_('La clave no puede estar en blanco'));
+            throw new ValidationException(__('La clave no puede estar en blanco', false));
         } elseif ($this->UserData->getUserPass() !== $userPassR) {
-            throw new ValidationException(_('Las claves no coinciden'));
+            throw new ValidationException(__('Las claves no coinciden', false));
         }
     }
 
@@ -116,9 +116,9 @@ class UserForm extends FormBase implements FormInterface
     protected function checkDelete()
     {
         if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->UserData->getUserId()) === 'demo') {
-            throw new ValidationException(_('Ey, esto es una DEMO!!'));
+            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
         } elseif ($this->UserData->getUserId() === Session::getUserData()->getUserId()) {
-            throw new ValidationException(_('No es posible eliminar, usuario en uso'));
+            throw new ValidationException(__('No es posible eliminar, usuario en uso', false));
         }
     }
 

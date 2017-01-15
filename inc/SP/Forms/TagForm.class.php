@@ -66,7 +66,7 @@ class TagForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->TagData->getTagName()) {
-            throw new ValidationException(_('Es necesario un nombre de etiqueta'));
+            throw new ValidationException(__('Es necesario un nombre de etiqueta', false));
         }
     }
 
@@ -83,7 +83,7 @@ class TagForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return mixed
+     * @return TagData
      */
     public function getItemData()
     {

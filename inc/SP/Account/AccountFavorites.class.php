@@ -77,7 +77,7 @@ class AccountFavorites
         $Data->addParam($userId, 'userId');
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al añadir favorito'));
+            throw new SPException(SPException::SP_ERROR, __('Error al añadir favorito', false));
         }
     }
 
@@ -98,7 +98,7 @@ class AccountFavorites
         $Data->addParam($userId, 'userId');
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al eliminar favorito'));
+            throw new SPException(SPException::SP_ERROR, __('Error al eliminar favorito', false));
         }
     }
 }

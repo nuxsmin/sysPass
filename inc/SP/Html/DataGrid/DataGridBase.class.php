@@ -24,7 +24,7 @@
 
 namespace SP\Html\DataGrid;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use InvalidArgumentException;
 use SP\Core\ActionsInterface;
@@ -257,7 +257,7 @@ abstract class DataGridBase implements DataGridInterface
         $file = DiFactory::getTheme()->getViewsPath() . DIRECTORY_SEPARATOR . $template;
 
         if (!is_readable($file)) {
-            throw new InvalidArgumentException(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $template, $file));
+            throw new InvalidArgumentException(sprintf(__('No es posible obtener la plantilla "%s" : %s'), $template, $file));
         }
 
         return $file;

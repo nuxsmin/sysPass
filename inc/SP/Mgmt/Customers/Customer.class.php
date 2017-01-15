@@ -25,7 +25,7 @@
 
 namespace SP\Mgmt\Customers;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\SPException;
@@ -55,7 +55,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_WARNING, _('Cliente duplicado'));
+            throw new SPException(SPException::SP_WARNING, __('Cliente duplicado', false));
         }
 
         $query = /** @lang SQL */
@@ -71,16 +71,10 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear el cliente'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al crear el cliente', false));
         }
 
         $this->itemData->setCustomerId(DB::$lastId);
-
-        $Log = new Log(_('Nuevo Cliente'));
-        $Log->addDetails(Html::strongText(_('Cliente')), $this->itemData->getCustomerName());
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -114,6 +108,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     /**
      * @param $id int|array
      * @return mixed
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
@@ -127,13 +122,14 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         }
 
         if ($this->checkInUse($id)) {
-            throw new SPException(SPException::SP_WARNING, _('No es posible eliminar'));
+            throw new SPException(SPException::SP_WARNING, __('No es posible eliminar', false));
         }
 
+        // FIXME: utilizar SQL
         $oldCustomer = $this->getById($id);
 
         if (!is_object($oldCustomer)) {
-            throw new SPException(SPException::SP_CRITICAL, _('Cliente no encontrado'));
+            throw new SPException(SPException::SP_CRITICAL, __('Cliente no encontrado', false));
         }
 
         $query = /** @lang SQL */
@@ -144,25 +140,17 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar el cliente'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al eliminar el cliente', false));
         }
-
-        $Log = new Log(_('Eliminar Cliente'));
-        $Log->addDetails(Html::strongText(_('Cliente')), sprintf('%s (%d)', $oldCustomer->getCustomerName(), $id));
-
 
         try {
             $CustomFieldData = new CustomFieldData();
             $CustomFieldData->setModule(ActionsInterface::ACTION_MGM_CUSTOMERS);
             CustomField::getItem($CustomFieldData)->delete($id);
         } catch (SPException $e) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription($e->getMessage());
+            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
         }
 
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -209,10 +197,8 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_WARNING, _('Cliente duplicado'));
+            throw new SPException(SPException::SP_WARNING, __('Cliente duplicado', false));
         }
-
-        $oldCustomer = $this->getById($this->itemData->getCustomerId());
 
         $query = /** @lang SQL */
             'UPDATE customers
@@ -229,15 +215,8 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->itemData->getCustomerId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el cliente'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al actualizar el cliente', false));
         }
-
-        $Log = new Log(_('Actualizar Cliente'));
-        $Log->addDetails(Html::strongText(_('Nombre')), sprintf('%s > %s', $oldCustomer->getCustomerName(), $this->itemData->getCustomerName()));
-        $Log->addDetails(Html::strongText(_('Descripción')), sprintf('%s > %s', $oldCustomer->getCustomerDescription(), $this->itemData->getCustomerDescription()));
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }

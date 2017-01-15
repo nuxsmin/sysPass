@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -118,7 +118,7 @@ class LdapMsAds extends LdapBase
             || $this->group === '*'
             || in_array($this->LdapAuthData->getGroupDn(), $this->LdapAuthData->getGroups())
         ) {
-            $Log->addDescription(_('Usuario verificado en grupo'));
+            $Log->addDescription(__('Usuario verificado en grupo', false));
             $Log->writeLog();
 
             return true;
@@ -131,8 +131,8 @@ class LdapMsAds extends LdapBase
 
         if (!$searchRes) {
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al buscar el grupo de usuarios'));
-            $Log->addDetails(_('Grupo'), $groupDN);
+            $Log->addDescription(__('Error al buscar el grupo de usuarios', false));
+            $Log->addDetails(__('Grupo', false), $groupDN);
             $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
             $Log->addDetails('LDAP FILTER', $filter);
             $Log->writeLog();
@@ -142,8 +142,8 @@ class LdapMsAds extends LdapBase
 
         if (@ldap_count_entries($this->ldapHandler, $searchRes) === 0) {
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('No se encontró el grupo con ese nombre'));
-            $Log->addDetails(_('Grupo'), $groupDN);
+            $Log->addDescription(__('No se encontró el grupo con ese nombre', false));
+            $Log->addDetails(__('Grupo', false), $groupDN);
             $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
             $Log->addDetails('LDAP FILTER', $filter);
             $Log->writeLog();
@@ -156,8 +156,8 @@ class LdapMsAds extends LdapBase
         foreach ($entries as $entry) {
             if (is_array($entry)) {
                 if ($this->userLogin === strtolower($entry['samaccountname'][0])) {
-                    $Log->addDescription(_('Usuario verificado en grupo'));
-                    $Log->addDetails(_('Grupo'), $groupDN);
+                    $Log->addDescription(__('Usuario verificado en grupo', false));
+                    $Log->addDetails(__('Grupo', false), $groupDN);
                     $Log->writeLog();
 
                     return true;
@@ -165,9 +165,9 @@ class LdapMsAds extends LdapBase
             }
         }
 
-        $Log->addDescription(_('Usuario no pertenece al grupo'));
-        $Log->addDetails(_('Usuario'), $this->LdapAuthData->getDn());
-        $Log->addDetails(_('Grupo'), $groupDN);
+        $Log->addDescription(__('Usuario no pertenece al grupo', false));
+        $Log->addDetails(__('Usuario', false), $this->LdapAuthData->getDn());
+        $Log->addDetails(__('Grupo', false), $groupDN);
 
         return false;
     }

@@ -28,7 +28,7 @@ use SP\DataModel\UserData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class UserAccounts para la gestión de usuarios en las cuentas

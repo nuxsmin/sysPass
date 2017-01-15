@@ -27,7 +27,7 @@ namespace SP\Core;
 use SP\Config\Config;
 use SP\Mgmt\Users\UserPreferences;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class Language para el manejo del lenguaje utilizado por la aplicación
@@ -183,7 +183,7 @@ class Language
      */
     public static function setAppLocales()
     {
-        self::setLocales(self::$globalLang);
+        self::setLocales(Config::getConfig()->getSiteLang());
     }
 
     /**

@@ -24,7 +24,7 @@
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Config\Config;
 use SP\Controller\Grids\Notices;
@@ -99,13 +99,13 @@ class NoticesSearchController extends GridItemsSearchController implements Actio
                     $this->invalidAction();
             }
 
-            $this->jsonResponse->setCsrf($this->view->sk);
-            $this->jsonResponse->setData(['html' => $this->render()]);
+            $this->JsonResponse->setCsrf($this->view->sk);
+            $this->JsonResponse->setData(['html' => $this->render()]);
         } catch (\Exception $e) {
-            $this->jsonResponse->setDescription($e->getMessage());
+            $this->JsonResponse->setDescription($e->getMessage());
         }
 
-        Json::returnJson($this->jsonResponse);
+        Json::returnJson($this->JsonResponse);
     }
 
     /**
@@ -133,7 +133,7 @@ class NoticesSearchController extends GridItemsSearchController implements Actio
         $this->view->assign('data', $Grid);
         $this->view->assign('actionId', self::ACTION_NOT_USER);
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**

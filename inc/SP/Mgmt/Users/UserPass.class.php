@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\Users;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Config\ConfigDB;
 use SP\Core\Crypt;
@@ -142,11 +142,11 @@ class UserPass extends UserBase
         $Data->addParam($userId);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al modificar la clave'));
+            throw new SPException(SPException::SP_ERROR, __('Error al modificar la clave', false));
         }
 
-        $Log = new Log(_('Modificar Clave Usuario'));
-        $Log->addDetails(Html::strongText(_('Login')), $this->itemData->getUserLogin());
+        $Log = new Log(__('Modificar Clave Usuario', false));
+        $Log->addDetails(__('Login', false), $this->itemData->getUserLogin());
         $Log->writeLog();
 
         Email::sendEmail($Log);

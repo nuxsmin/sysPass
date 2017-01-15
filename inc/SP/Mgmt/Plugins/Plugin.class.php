@@ -58,14 +58,10 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($this->itemData->getPluginEnabled());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear el plugin'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al crear el plugin', false));
         }
 
         $this->itemData->setPluginId(DB::$lastId);
-
-        $Log = new Log(_('Nuevo Plugin'));
-        $Log->addDetails(Html::strongText(_('Plugin')), $this->itemData->getPluginName());
-        $Log->writeLog();
 
         return $this;
     }
@@ -87,13 +83,8 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($name);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar el plugin'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al eliminar el plugin', false));
         }
-
-        $Log = new Log(_('Eliminar Plugin'));
-        $Log->addDetails(Html::strongText(_('Plugin')), $name);
-
-        $Log->writeLog();
 
         return $this;
     }
@@ -121,12 +112,8 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($this->itemData->getPluginName());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el plugin'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al actualizar el plugin', false));
         }
-
-        $Log = new Log(_('Modificar Plugin'));
-        $Log->addDetails(Html::strongText(_('Plugin')), $this->itemData->getPluginName());
-        $Log->writeLog();
 
         return $this;
     }
@@ -230,13 +217,8 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($this->itemData->getPluginId());
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el plugin'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al actualizar el plugin', false));
         }
-
-        $Log = new Log(_('Modificar Plugin'));
-        $Log->addDetails(Html::strongText(_('Plugin')), $this->itemData->getPluginName());
-        $Log->addDetails(Html::strongText(_('Estado')), $this->itemData->getPluginEnabled() === 1 ? _('Habilitado') : _('Deshabilitado'));
-        $Log->writeLog();
 
         return $this;
     }
@@ -260,12 +242,8 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($id);
 
         if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el plugin'));
+            throw new SPException(SPException::SP_CRITICAL, __('Error al actualizar el plugin', false));
         }
-
-        $Log = new Log(_('Modificar Plugin'));
-        $Log->addDetails(Html::strongText(_('Plugin')), $this->itemData->getPluginName());
-        $Log->writeLog();
 
         return $this;
     }

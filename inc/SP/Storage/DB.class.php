@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de realizar las operaciones con la BBDD de sysPass.
@@ -265,7 +265,7 @@ class DB
             $queryRes->closeCursor();
             $queryData->setQueryNumRows($num);
         } catch (SPException $e) {
-            error_log('Exception: ' . $e->getMessage());
+            debugLog('Exception: ' . $e->getMessage());
 
             throw $e;
         }
@@ -278,6 +278,7 @@ class DB
      * @param $errorMsg  string  El mensaje de error
      * @param $errorCode int     El código de error
      * @param $queryFunction
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function logDBException($query, $errorMsg, $errorCode, $queryFunction)
     {
@@ -285,12 +286,12 @@ class DB
 
         $Log = new Log($caller, Log::ERROR);
         $Log->setLogLevel(Log::ERROR);
-        $Log->addDescription($errorMsg . '(' . $errorCode . ')');
+        $Log->addDescription(sprintf('%s (%s)', $errorMsg, $errorCode));
         $Log->addDetails('SQL', DBUtil::escape($query));
         $Log->writeLog();
 
-        error_log($Log->getDescription());
-        error_log($Log->getDetails());
+        debugLog($Log->getDescription(), true);
+        debugLog($Log->getDetails());
     }
 
     /**

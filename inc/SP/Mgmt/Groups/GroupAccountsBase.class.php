@@ -27,7 +27,7 @@ namespace SP\Mgmt\Groups;
 use SP\DataModel\GroupAccountsData;
 use SP\Mgmt\ItemBase;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class GroupAccountsBase

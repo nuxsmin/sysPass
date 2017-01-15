@@ -34,7 +34,7 @@ use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de realizar la copia y restauración de sysPass.
@@ -45,10 +45,11 @@ class Backup
      * Realizar backup de la BBDD y aplicación.
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function doBackup()
     {
-        $Log = new Log(_('Realizar Backup'));
+        $Log = new Log(__('Realizar Backup', false));
 
         $siteName = Util::getAppInfo('appname');
         $backupDir = Init::$SERVERROOT;
@@ -69,7 +70,7 @@ class Backup
             self::backupApp($bakFileApp);
         } catch (\Exception $e) {
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al realizar el backup'));
+            $Log->addDescription(__('Error al realizar el backup', false));
             $Log->addDetails($e->getCode(), $e->getMessage());
             $Log->writeLog();
 
@@ -77,7 +78,7 @@ class Backup
             return false;
         }
 
-        $Log->addDescription(_('Copia de la aplicación y base de datos realizada correctamente'));
+        $Log->addDescription(__('Copia de la aplicación y base de datos realizada correctamente', false));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -95,11 +96,11 @@ class Backup
     private static function checkBackupDir($backupDir)
     {
         if (@mkdir($backupDir, 0750) === false && is_dir($backupDir) === false) {
-            throw new SPException(SPException::SP_CRITICAL, sprintf(_('No es posible crear el directorio de backups ("%s")'), $backupDir));
+            throw new SPException(SPException::SP_CRITICAL, sprintf(__('No es posible crear el directorio de backups ("%s")'), $backupDir));
         }
 
         if (!is_writable($backupDir)) {
-            throw new SPException(SPException::SP_CRITICAL, _('Compruebe los permisos del directorio de backups'));
+            throw new SPException(SPException::SP_CRITICAL, __('Compruebe los permisos del directorio de backups', false));
         }
 
         return true;
@@ -232,9 +233,9 @@ class Backup
     {
         if (!class_exists(\PharData::class)) {
             if (Checks::checkIsWindows()) {
-                throw new SPException(SPException::SP_CRITICAL, _('Esta operación sólo es posible en entornos Linux'));
+                throw new SPException(SPException::SP_CRITICAL, __('Esta operación sólo es posible en entornos Linux', false));
             } elseif (!self::backupAppLegacyLinux($backupFile)) {
-                throw new SPException(SPException::SP_CRITICAL, _('Error al realizar backup en modo compatibilidad'));
+                throw new SPException(SPException::SP_CRITICAL, __('Error al realizar backup en modo compatibilidad', false));
             }
 
             return true;

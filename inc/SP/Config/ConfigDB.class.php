@@ -29,7 +29,7 @@ use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ConfigDB para la gestión de la configuración en la BD
@@ -76,6 +76,7 @@ class ConfigDB implements ConfigInterface
      *
      * @param bool $isInsert realizar un 'insert'?
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function writeConfig($isInsert = false)
     {
@@ -99,8 +100,8 @@ class ConfigDB implements ConfigInterface
             }
         }
 
-        $Log = new Log(_('Configuración'));
-        $Log->addDescription(_('Modificar configuración'));
+        $Log = new Log(__('Configuración', false));
+        $Log->addDescription(__('Modificar configuración', false));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -111,11 +112,12 @@ class ConfigDB implements ConfigInterface
     /**
      * Guardar un parámetro de configuración en la BBDD.
      *
-     * @param string $param con el parámetro a guardar
-     * @param string $value con el valor a guardar
-     * @param bool   $email enviar email?
+     * @param string $param     con el parámetro a guardar
+     * @param string $value     con el valor a guardar
+     * @param bool   $email     enviar email?
      * @param bool   $hideValue Ocultar el valor del registro en el log
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function setValue($param, $value, $email = true, $hideValue = false)
     {
@@ -135,12 +137,12 @@ class ConfigDB implements ConfigInterface
             return false;
         }
 
-        $log = new Log(_('Configuración'));
-        $log->addDescription(_('Modificar configuración'));
-        $log->addDetails(_('Parámetro'), $param);
+        $log = new Log(__('Configuración', false));
+        $log->addDescription(__('Modificar configuración', false));
+        $log->addDetails(__('Parámetro', false), $param);
 
         if ($hideValue === false) {
-            $log->addDetails(_('Valor'), $value);
+            $log->addDetails(__('Valor', false), $value);
         }
 
         $log->writeLog();

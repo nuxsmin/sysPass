@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -37,7 +37,7 @@ use SP\Mgmt\Users\UserPreferencesUtil;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de realizar las operaciones actualización de la aplicación.
@@ -60,21 +60,17 @@ class Upgrade
     public static function doUpgrade($version)
     {
         foreach (self::$dbUpgrade as $upgradeVersion) {
-            if ($version < $upgradeVersion) {
-                if (self::upgradeDB($upgradeVersion) === false) {
-                    throw new SPException(SPException::SP_CRITICAL, _('Error al aplicar la actualización de la Base de Datos'),
-                        _('Compruebe el registro de eventos para más detalles'));
-                }
+            if ($version < $upgradeVersion && self::upgradeDB($upgradeVersion) === false) {
+                throw new SPException(SPException::SP_CRITICAL, __('Error al aplicar la actualización de la Base de Datos', false),
+                    __('Compruebe el registro de eventos para más detalles', false));
             }
         }
 
         foreach (self::$auxUpgrade as $upgradeVersion) {
-            if ($version < $upgradeVersion) {
-                if (self::auxUpgrades($upgradeVersion) === false) {
-                    throw new SPException(SPException::SP_CRITICAL,
-                        _('Error al aplicar la actualización auxiliar'),
-                        _('Compruebe el registro de eventos para más detalles'));
-                }
+            if ($version < $upgradeVersion && self::auxUpgrades($upgradeVersion) === false) {
+                throw new SPException(SPException::SP_CRITICAL,
+                    __('Error al aplicar la actualización auxiliar', false),
+                    __('Compruebe el registro de eventos para más detalles', false));
             }
         }
 
@@ -86,16 +82,17 @@ class Upgrade
      *
      * @param int $version con la versión a actualizar
      * @returns bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function upgradeDB($version)
     {
-        $Log = new Log(_('Actualizar BBDD'));
-        $Log->addDetails(_('Versión'), $version);
+        $Log = new Log(__('Actualizar BBDD', false));
+        $Log->addDetails(__('Versión', false), $version);
 
         $queries = self::getQueriesFromFile($version);
 
         if (count($queries) === 0) {
-            $Log->addDescription(_('No es necesario actualizar la Base de Datos.'));
+            $Log->addDescription(__('No es necesario actualizar la Base de Datos.', false));
             $Log->writeLog();
             return true;
         }
@@ -108,7 +105,7 @@ class Upgrade
                 DB::getQuery($Data);
             } catch (SPException $e) {
                 $Log->setLogLevel(Log::ERROR);
-                $Log->addDescription(_('Error al aplicar la actualización de la Base de Datos.'));
+                $Log->addDescription(__('Error al aplicar la actualización de la Base de Datos.', false));
                 $Log->addDetails('ERROR', sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
                 $Log->writeLog();
 
@@ -117,7 +114,7 @@ class Upgrade
             }
         }
 
-        $Log->addDescription(_('Actualización de la Base de Datos realizada correctamente.'));
+        $Log->addDescription(__('Actualización de la Base de Datos realizada correctamente.', false));
         $Log->writeLog();
 
         Email::sendEmail($Log);
@@ -235,10 +232,11 @@ class Upgrade
      *
      * @param $version
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function upgradeOldConfigFile($version)
     {
-        $Log = new Log(_('Actualizar Configuración'));
+        $Log = new Log(__('Actualizar Configuración', false));
         $Config = new ConfigData();
 
         // Include the file, save the data from $CONFIG
@@ -250,13 +248,13 @@ class Upgrade
                     if (is_array($mapFrom)) {
                         foreach ($mapFrom as $param) {
                             if (isset($CONFIG[$param])) {
-                                $Log->addDetails(_('Parámetro'), $param);
+                                $Log->addDetails(__('Parámetro', false), $param);
                                 $Config->$mapTo($CONFIG[$param]);
                             }
                         }
                     } else {
                         if (isset($CONFIG[$mapFrom])) {
-                            $Log->addDetails(_('Parámetro'), $mapFrom);
+                            $Log->addDetails(__('Parámetro', false), $mapFrom);
                             $Config->$mapTo($CONFIG[$mapFrom]);
                         }
                     }
@@ -270,14 +268,14 @@ class Upgrade
             Config::saveConfig($Config, false);
             rename(CONFIG_FILE, CONFIG_FILE . '.old');
 
-            $Log->addDetails(_('Versión'), $version);
+            $Log->addDetails(__('Versión', false), $version);
             $Log->setLogLevel(Log::NOTICE);
             $Log->writeLog();
 
             return true;
         } catch (\Exception $e) {
-            $Log->addDescription(_('Error al actualizar la configuración'));
-            $Log->addDetails(_('Archivo'), CONFIG_FILE . '.old');
+            $Log->addDescription(__('Error al actualizar la configuración', false));
+            $Log->addDetails(__('Archivo', false), CONFIG_FILE . '.old');
             $Log->setLogLevel(Log::ERROR);
             $Log->writeLog();
         }

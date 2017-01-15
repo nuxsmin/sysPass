@@ -36,7 +36,7 @@ use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Tags\Tag;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ImportBase abstracta para manejo de archivos de importación
@@ -113,10 +113,10 @@ abstract class ImportBase
     protected function addAccount(AccountExtData $AccountData)
     {
         if ($AccountData->getAccountCategoryId() === 0) {
-            Log::writeNewLog(__FUNCTION__, _('Id de categoría no definido. No es posible importar cuenta.'), Log::INFO);
+            Log::writeNewLog(__FUNCTION__, __('Id de categoría no definido. No es posible importar cuenta.', false), Log::INFO);
             return false;
         } elseif ($AccountData->getAccountCustomerId() === 0) {
-            Log::writeNewLog(__FUNCTION__, _('Id de cliente no definido. No es posible importar cuenta.'), Log::INFO);
+            Log::writeNewLog(__FUNCTION__, __('Id de cliente no definido. No es posible importar cuenta.', false), Log::INFO);
             return false;
         }
 

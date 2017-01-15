@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,6 +23,7 @@
  */
 
 namespace SP\Log;
+
 use SP\Html\Html;
 
 /**
@@ -45,7 +46,7 @@ abstract class ActionLog extends LogLevel
      *
      * @var string
      */
-    protected $action = __CLASS__;
+    protected $action;
     /**
      * Detalles de la acción
      *
@@ -98,6 +99,17 @@ abstract class ActionLog extends LogLevel
     }
 
     /**
+     * Formatear una cadena para guardarla en el registro
+     *
+     * @param $string string La cadena a formatear
+     * @return string
+     */
+    private function formatString($string)
+    {
+        return strip_tags($string);
+    }
+
+    /**
      * Establece la descripción de la acción realizada en formato HTML
      *
      * @param string $description
@@ -113,17 +125,6 @@ abstract class ActionLog extends LogLevel
     public function addDescriptionLine()
     {
         $this->description[] = '';
-    }
-
-    /**
-     * Formatear una cadena para guardarla en el registro
-     *
-     * @param $string string La cadena a formatear
-     * @return string
-     */
-    private function formatString($string)
-    {
-        return strip_tags(utf8_encode($string));
     }
 
     /**
@@ -145,31 +146,53 @@ abstract class ActionLog extends LogLevel
     /**
      * Devuelve los detalles de la acción realizada
      *
+     * @param bool $translate
      * @return string
      */
-    public function getDetails()
+    public function getDetails($translate = false)
     {
         if (null === $this->details) {
             return '';
         }
 
         if (count($this->details) > 1) {
-            $newline = ($this->newLineHtml === false) ? PHP_EOL : self::NEWLINE_HTML;
+            if ($translate === true) {
+                return implode(PHP_EOL, array_map(function ($detail) use ($translate) {
+                    return $this->formatDetail($detail, $translate);
+                }, $this->details));
+            }
 
-            return implode($newline, $this->details);
+            return implode(PHP_EOL, array_map([$this, 'formatDetail'], $this->details));
         }
 
-        return $this->details[0];
+        return $this->formatDetail($this->details[0], $translate);
+    }
+
+    /**
+     * Devolver un detalle formateado
+     *
+     * @param array $detail
+     * @param bool  $translate
+     * @return string
+     */
+    protected function formatDetail(array $detail, $translate = false)
+    {
+        if ($translate === true) {
+            return sprintf('%s : %s', __($detail[0]), __($detail[1]));
+        }
+
+        return sprintf('%s : %s', $detail[0], $detail[1]);
     }
 
     /**
      * Devuelve la acción realizada
      *
+     * @param bool $translate
      * @return string
      */
-    public function getAction()
+    public function getAction($translate = false)
     {
-        return $this->action;
+        return $translate === true ? __($this->action) : $this->action;
     }
 
     /**
@@ -185,21 +208,45 @@ abstract class ActionLog extends LogLevel
     /**
      * Devuelve la descripción de la acción realizada
      *
+     * @param bool $translate
      * @return string
      */
-    public function getDescription()
+    public function getDescription($translate = false)
     {
         if (null === $this->description) {
             return '';
         }
 
         if (count($this->description) > 1) {
-            $newline = ($this->newLineHtml === false) ? PHP_EOL : self::NEWLINE_HTML;
+            if ($translate === true) {
+                return implode(PHP_EOL, array_map('__', $this->description));
+            }
 
-            return implode($newline, $this->description);
+            return implode(PHP_EOL, $this->description);
         }
 
-        return $this->description[0];
+        return $translate === true ? __($this->description[0]) : $this->description[0];
+    }
+
+    /**
+     * Devuelve la descripción de la acción realizada en formato HTML
+     *
+     * @param bool $translate
+     * @return string
+     */
+    public function getHtmlDescription($translate = false) {
+        return nl2br($this->getDescription($translate));
+    }
+
+    /**
+     * Añadir detalle en formato HTML. Se resalta el texto clave.
+     *
+     * @param $key   string
+     * @param $value string
+     */
+    public function addDetailsHtml($key, $value)
+    {
+        $this->addDetails(Html::strongText($key), $value);
     }
 
     /**
@@ -210,18 +257,7 @@ abstract class ActionLog extends LogLevel
      */
     public function addDetails($key, $value)
     {
-        $this->details[] = sprintf('%s: %s', $this->formatString($key), $this->formatString($value));
-    }
-
-    /**
-     * Añadir detalle en formato HTML. Se resalta el texto clave.
-     *
-     * @param $key string
-     * @param $value string
-     */
-    public function addDetailsHtml($key, $value)
-    {
-        $this->addDetails(Html::strongText($key), $value);
+        $this->details[] = [$this->formatString($key), $this->formatString($value)];
     }
 
     /**

@@ -80,7 +80,7 @@ class XmlHandler implements FileStorageInterface
     public function load($tag = 'root')
     {
         if (!$this->checkSourceFile()) {
-            throw new \Exception(sprintf(_('No es posible leer/escribir el archivo: %s'), $this->file));
+            throw new \Exception(sprintf(__('No es posible leer/escribir el archivo: %s'), $this->file));
         }
 
         $this->setDOM();
@@ -156,7 +156,7 @@ class XmlHandler implements FileStorageInterface
     public function save($tag = 'root')
     {
         if (null === $this->items) {
-            throw new \Exception(_('No hay elementos para guardar'));
+            throw new \Exception(__('No hay elementos para guardar', false));
         }
 
         $this->setDOM();

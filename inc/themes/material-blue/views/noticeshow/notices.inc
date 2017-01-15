@@ -35,49 +35,49 @@
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo _('Tipo'); ?></td>
+                <td class="descField"><?php echo __('Tipo'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="type" name="type" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $notice->getNoticeType(); ?>">
                         <label class="mdl-textfield__label"
-                               for="type"><?php echo _('Tipo'); ?></label>
+                               for="type"><?php echo __('Tipo'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Componente'); ?></td>
+                <td class="descField"><?php echo __('Componente'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="component" name="component" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $notice->getNoticeComponent(); ?>">
                         <label class="mdl-textfield__label"
-                               for="component"><?php echo _('Componente'); ?></label>
+                               for="component"><?php echo __('Componente'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Fecha'); ?></td>
+                <td class="descField"><?php echo __('Fecha'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="date" name="date" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $notice->getNoticeDate(); ?>">
                         <label class="mdl-textfield__label"
-                               for="date"><?php echo _('Fecha'); ?></label>
+                               for="date"><?php echo __('Fecha'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Descripción'); ?></td>
+                <td class="descField"><?php echo __('Descripción'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" type="text" rows="3"
                                   id="description"
                                   name="description" <?php echo $isReadonly; ?>><?php echo $notice->getNoticeDescription(); ?></textarea>
-                        <label class="mdl-textfield__label" for="description"><?php echo _('Descripción'); ?></label>
+                        <label class="mdl-textfield__label" for="description"><?php echo __('Descripción'); ?></label>
                     </div>
                 </td>
             </tr>

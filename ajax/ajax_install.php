@@ -55,7 +55,7 @@ try {
     $Installer->install();
 
     $Json->setStatus(0);
-    $Json->setDescription(_('Instalación finalizada'));
+    $Json->setDescription(__('Instalación finalizada'));
 } catch (SPException $e) {
     $Json->setDescription($e->getMessage());
     $Json->addMessage($e->getHint());

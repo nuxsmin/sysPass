@@ -117,14 +117,14 @@ class Connection implements ConnectionInterface
     public function send($message)
     {
         if (!is_resource($this->socket)) {
-            throw new SPException(SPException::SP_WARNING, _('Socket no inicializado'));
+            throw new SPException(SPException::SP_WARNING, __('Socket no inicializado', false));
         }
 
         $nBytes = @fwrite($this->socket, $message);
 //        $nBytes = @socket_sendto($this->_socket, $message, strlen($message), 0, $this->_host, $this->port);
 
         if ($nBytes === false) {
-            throw new SPException(SPException::SP_WARNING, _('Error al enviar datos'), $this->getSocketError());
+            throw new SPException(SPException::SP_WARNING, __('Error al enviar datos', false), $this->getSocketError());
         }
 
         return $nBytes;
