@@ -201,7 +201,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('actionId', $this->getAction());
 //        $this->view->assign('accountParentId', Session::getLastAcountId());
         $this->view->assign('categories', Category::getItem()->getItemsForSelect());
-        $this->view->assign('customers', Customer::getItem()->getItemsForSelect());
+        $this->view->assign('customers', Customer::getItem()->getItemsForSelectByUser());
         $this->view->assign('otherUsers', UserUtil::getUsersLogin());
         $this->view->assign('otherUsersJson', Json::getJson($this->view->otherUsers));
         $this->view->assign('otherGroups', Group::getItem()->getItemsForSelect());

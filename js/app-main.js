@@ -234,17 +234,18 @@ sysPass.Main = function () {
 
             return fullPath;
         };
-        var base = window.location.protocol + "//" + window.location.host + rootPath();
+
+        config.APP_ROOT = window.location.protocol + "//" + window.location.host + (location.port ? ':' + location.port : '') + rootPath();
 
         var opts = appRequests.getRequestOpts();
-        opts.url = base + "/ajax/ajax_getEnvironment.php";
+        opts.url = "/ajax/ajax_getEnvironment.php";
         opts.method = "get";
         opts.async = false;
         opts.useLoading = false;
         opts.data = {isAjax: 1};
 
         appRequests.getActionCall(opts, function (json) {
-            config.APP_ROOT = json.app_root;
+            // config.APP_ROOT = json.app_root;
             config.LANG = json.lang;
             config.PK = json.pk;
             config.CHECK_UPDATES = json.check_updates;

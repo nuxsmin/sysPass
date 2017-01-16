@@ -54,6 +54,12 @@ class Language
      * @var string|false
      */
     public static $localeStatus;
+    /**
+     * Si se ha establecido a las de la App
+     *
+     * @var bool
+     */
+    protected static $appSet = false;
 
     /**
      * Establecer el lenguaje a utilizar
@@ -122,7 +128,7 @@ class Language
      */
     private function getBrowserLang()
     {
-        if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             return str_replace('-', '_', substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
         } else {
             return '';
@@ -183,7 +189,10 @@ class Language
      */
     public static function setAppLocales()
     {
-        self::setLocales(Config::getConfig()->getSiteLang());
+        if (Config::getConfig()->getSiteLang() !== Session::getLocale()) {
+            self::setLocales(Config::getConfig()->getSiteLang());
+            self::$appSet = true;
+        }
     }
 
     /**
@@ -191,6 +200,9 @@ class Language
      */
     public static function unsetAppLocales()
     {
-        self::setLocales(Session::getLocale());
+        if (self::$appSet === true) {
+            self::setLocales(Session::getLocale());
+            self::$appSet = false;
+        }
     }
 }

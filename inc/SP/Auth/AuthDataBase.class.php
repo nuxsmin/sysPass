@@ -89,7 +89,7 @@ abstract class AuthDataBase
      */
     public function getAuthenticated()
     {
-        return (int)$this->authenticated;
+        return $this->authenticated;
     }
 
     /**

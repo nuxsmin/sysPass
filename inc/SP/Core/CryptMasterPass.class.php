@@ -25,6 +25,7 @@
 namespace SP\Core;
 
 use SP\Config\ConfigDB;
+use SP\Log\Log;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -36,6 +37,11 @@ defined('APP_ROOT') || die();
  */
 class CryptMasterPass
 {
+    /**
+     * Número máximo de intentos
+     */
+    const MAX_ATTEMPTS = 50;
+
     /**
      * Crea una clave temporal para encriptar la clave maestra y guardarla.
      *
@@ -77,16 +83,26 @@ class CryptMasterPass
      */
     public static function checkTempMasterPass($pass)
     {
-        $passTime = ConfigDB::getValue('tempmaster_passtime');
-        $passMaxTime = ConfigDB::getValue('tempmaster_maxtime');
-        $attempts = ConfigDB::getValue('tempmaster_attempts');
+        $passTime = (int)ConfigDB::getValue('tempmaster_passtime');
+        $passMaxTime = (int)ConfigDB::getValue('tempmaster_maxtime');
+        $attempts = (int)ConfigDB::getValue('tempmaster_attempts');
 
-        // Comprobar si el tiempo de validez se ha superado
-        if ($passTime !== false && time() - $passTime > $passMaxTime || $attempts >= 5) {
+        // Comprobar si el tiempo de validez o los intentos se han superado
+        if ($passMaxTime === 0) {
+            Log::writeNewLog(__FUNCTION__, __('Clave temporal caducada', false), Log::INFO);
+
+            return false;
+        } elseif ((!empty($passTime) && time() > $passMaxTime)
+            || $attempts >= self::MAX_ATTEMPTS
+        ) {
             ConfigDB::setCacheConfigValue('tempmaster_pass', '');
             ConfigDB::setCacheConfigValue('tempmaster_passiv', '');
             ConfigDB::setCacheConfigValue('tempmaster_passhash', '');
+            ConfigDB::setCacheConfigValue('tempmaster_maxtime', 0);
+            ConfigDB::setCacheConfigValue('tempmaster_attempts', 0);
             ConfigDB::writeConfig();
+
+            Log::writeNewLog(__FUNCTION__, __('Clave temporal caducada', false), Log::INFO);
 
             return false;
         }

@@ -30,6 +30,7 @@ use SP\Account\AccountSearch;
 use SP\Account\AccountsSearchItem;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
+use SP\Core\ItemsTypeInterface;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
@@ -137,7 +138,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
     {
         $this->view->addTemplate('searchbox');
 
-        $this->view->assign('customers', Customer::getItem()->getItemsForSelect());
+        $this->view->assign('customers', Customer::getItem()->getItemsForSelectByUser());
         $this->view->assign('categories', Category::getItem()->getItemsForSelect());
         $this->view->assign('tags', Tag::getItem()->getItemsForSelect());
     }

@@ -27,6 +27,7 @@ namespace SP\Mgmt\Customers;
 
 defined('APP_ROOT') || die();
 
+use SP\Account\AccountUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomerData;
@@ -248,5 +249,25 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->setQuery($query);
 
         return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Devolver los clientes visibles por el usuario
+     *
+     * @return array
+     */
+    public function getItemsForSelectByUser()
+    {
+        $outItems = [];
+
+        foreach (AccountUtil::getAccountsForUser() as $item){
+            $obj = new \stdClass();
+            $obj->id = $item->customer_id;
+            $obj->name = $item->customer_name;
+
+            $outItems[] = $obj;
+        }
+
+        return $outItems;
     }
 }

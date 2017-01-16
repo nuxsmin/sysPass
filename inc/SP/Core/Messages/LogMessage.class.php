@@ -256,4 +256,15 @@ class LogMessage extends MessageBase
 
         return $this;
     }
+
+    /**
+     * Devuelve los detalles en formato HTML
+     *
+     * @param bool $translate
+     * @return string
+     */
+    public function getHtmlDetails($translate = false)
+    {
+        return nl2br($this->getDetails($translate));
+    }
 }

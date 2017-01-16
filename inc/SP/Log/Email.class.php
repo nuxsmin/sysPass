@@ -54,7 +54,7 @@ class Email
             return false;
         }
 
-        $Mail = self::getMailer($mailTo, utf8_decode($LogMessage->getAction()));
+        $Mail = self::getMailer($mailTo, $LogMessage->getAction());
 
         if (!is_object($Mail)) {
             return false;
@@ -64,14 +64,14 @@ class Email
 
         if ($isEvent === true) {
             $performer = Session::getUserData()->getUserLogin() ?: __('N/D');
-            $body[] = sprintf('%s: %s', Html::strongText(__('Acción')), utf8_decode($LogMessage->getAction()));
+            $body[] = sprintf('%s: %s', Html::strongText(__('Acción')), $LogMessage->getAction());
             $body[] = sprintf('%s: %s (%s)', Html::strongText(__('Realizado por')), $performer, $_SERVER['REMOTE_ADDR']);
 
             $Mail->addCC(Config::getConfig()->getMailFrom());
         }
 
-        $body[] = utf8_decode($LogMessage->getHtmlDescription(true));
-        $body[] = utf8_decode($LogMessage->getDetails(true));
+        $body[] = $LogMessage->getHtmlDescription(true);
+        $body[] = $LogMessage->getHtmlDetails(true);
         $body[] = '';
         $body[] = '--';
         $body[] = sprintf('%s - %s', Util::getAppInfo('appname'), Util::getAppInfo('appdesc'));

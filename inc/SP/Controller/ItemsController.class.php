@@ -24,6 +24,7 @@
 
 namespace SP\Controller;
 
+use SP\Account\AccountUtil;
 use SP\Core\ItemsTypeInterface;
 use SP\DataModel\DataModelInterface;
 use SP\Mgmt\Categories\Category;
@@ -50,6 +51,8 @@ class ItemsController
                 return $this->getCategories();
             case ItemsTypeInterface::ITEM_CUSTOMERS:
                 return $this->getCustomers();
+            case ItemsTypeInterface::ITEM_CUSTOMERS_USER:
+                return $this->getCustomersForUser();
             default:
                 return [];
         }
@@ -95,5 +98,15 @@ class ItemsController
     protected function getCustomers()
     {
         return $this->prepareItems(Customer::getItem()->getAll());
+    }
+
+    /**
+     * Devolver los clientes visibles por el usuario
+     *
+     * @return array
+     */
+    protected function getCustomersForUser()
+    {
+        return Customer::getItem()->getItemsForSelectByUser();
     }
 }

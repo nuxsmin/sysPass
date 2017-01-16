@@ -33,6 +33,7 @@ interface ItemsTypeInterface
 {
     const ITEM_CATEGORIES = 1;
     const ITEM_CUSTOMERS = 2;
+    const ITEM_CUSTOMERS_USER = 120;
     const ITEM_FILES = 3;
     const ITEM_TAGS = 4;
     const ITEM_USERS = 5;

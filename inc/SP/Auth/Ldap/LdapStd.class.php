@@ -91,7 +91,7 @@ class LdapStd extends LdapBase
             || in_array($this->LdapAuthData->getGroupDn(), $this->LdapAuthData->getGroups())
         ) {
             $this->LogMessage->addDescription(__('Usuario verificado en grupo', false));
-            $this->writeLog();
+            $this->writeLog(Log::INFO);
 
             return true;
         }

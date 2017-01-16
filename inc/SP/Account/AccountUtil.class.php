@@ -228,20 +228,20 @@ class AccountUtil
     {
         $Data = new QueryData();
 
-        $queryWhere = self::getAccountFilterUser($Data);
-
         if ($accountId !== 0) {
             $queryWhere[] = 'account_id <> ? AND (account_parentId = 0 OR account_parentId IS NULL)';
             $Data->addParam($accountId);
         }
 
-        $query = /** @lang SQL */
-            'SELECT account_id, account_name, customer_name ' .
-            'FROM accounts ' .
-            'LEFT JOIN customers ON customer_id = account_customerId ' .
-            'WHERE ' . implode(' AND ', $queryWhere) . ' ORDER BY customer_name';
+        $Data->setSelect('account_id, account_name, customer_id, customer_name');
+        $Data->setFrom('accounts LEFT JOIN customers ON customer_id = account_customerId');
+        $Data->setOrder('customer_name');
 
-        $Data->setQuery($query);
+        // Si el perfil no permite búsquedas globales, se acotan los resultados
+        if (!Session::getUserProfile()->isAccGlobalSearch()) {
+            $queryWhere = self::getAccountFilterUser($Data);
+            $Data->setWhere(implode(' AND ', $queryWhere));
+        }
 
         return DB::getResultsArray($Data);
     }

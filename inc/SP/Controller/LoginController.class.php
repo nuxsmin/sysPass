@@ -52,6 +52,7 @@ use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserPassRecover;
 use SP\Mgmt\Users\UserPreferences;
 use SP\Mgmt\Users\UserUtil;
+use SP\Util\Checks;
 use SP\Util\Json;
 use SP\Util\Util;
 
@@ -142,6 +143,12 @@ class LoginController
             $this->jsonResponse->setStatus($e->getCode());
 
             Json::returnJson($this->jsonResponse);
+        }
+
+        $forward = Request::getRequestHeaders('X-Forwarded-For');
+
+        if ($forward) {
+            $this->LogMessage->addDetails('X-Forwarded-For', Checks::demoIsEnabled() ? '***' : $forward);
         }
 
         $Log->writeLog();
@@ -264,6 +271,8 @@ class LoginController
 
         if ($masterPass) {
             if (CryptMasterPass::checkTempMasterPass($masterPass)) {
+                $this->LogMessage->addDescription(__('Usando clave temporal', false));
+
                 $masterPass = CryptMasterPass::getTempMasterPass($masterPass);
             }
 
@@ -274,7 +283,7 @@ class LoginController
             } else {
                 SessionUtil::saveSessionMPass($UserPass->getClearUserMPass());
 
-                Log::writeNewLog(__('Login', false), __('Clave maestra actualizada', false));
+                $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
             }
         } else if ($oldPass) {
             if (!$UserPass->updateMasterPass($oldPass)) {
@@ -284,7 +293,7 @@ class LoginController
             } else {
                 SessionUtil::saveSessionMPass($UserPass->getClearUserMPass());
 
-                Log::writeNewLog(__('Login', false), __('Clave maestra actualizada', false));
+                $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
             }
         } else {
             $loadMPass = $UserPass->loadUserMPass();
@@ -392,9 +401,9 @@ class LoginController
             $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
 
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
+        } elseif ($AuthData->getAuthenticated() === 1) {
+            $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
         }
-
-        $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
 
         return true;
     }
@@ -417,6 +426,8 @@ class LoginController
             $this->LogMessage->addDetails(__('Autentificación', false), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
 
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
+        } elseif ($AuthData->getAuthenticated() === 1) {
+            $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
         }
 
         return true;
