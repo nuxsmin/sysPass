@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -119,6 +119,7 @@ class UserPass extends UserBase
      * @param $userId
      * @param $userPass
      * @return $this
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -145,11 +146,13 @@ class UserPass extends UserBase
             throw new SPException(SPException::SP_ERROR, __('Error al modificar la clave', false));
         }
 
-        $Log = new Log(__('Modificar Clave Usuario', false));
-        $Log->addDetails(__('Login', false), $this->itemData->getUserLogin());
+        $Log = new Log();
+        $Log->getLogMessage()
+            ->setAction(__('Modificar Clave Usuario', false))
+            ->addDetails(__('Login', false), $this->itemData->getUserLogin());
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($Log->getLogMessage());
 
         return $this;
     }
@@ -180,7 +183,7 @@ class UserPass extends UserBase
         if ($userMPass === false || empty($configHashMPass)) {
             return false;
 
-        // Comprobamos el hash de la clave del usuario con la guardada
+            // Comprobamos el hash de la clave del usuario con la guardada
         } elseif (Crypt::checkHashPass($userMPass, $configHashMPass, true)) {
             $this->clearUserMPass = $userMPass;
 

@@ -69,6 +69,7 @@ class UserMigrate
      *
      * Esta función actualiza la clave de un usuario que ha sido migrado desde phpPMS
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     public static function migrateUser($userLogin, $userPass)
     {
@@ -97,12 +98,14 @@ class UserMigrate
             throw new SPException(SPException::SP_ERROR, __('Error al migrar cuenta de usuario', false));
         }
 
-        $Log = new Log(__FUNCTION__);
-        $Log->addDescription(__('Usuario actualizado', false));
-        $Log->addDetails(__('Login', false), $userLogin);
+        $Log = new Log();
+        $Log->getLogMessage()
+            ->setAction(__FUNCTION__)
+            ->addDescription(__('Usuario actualizado', false))
+            ->addDetails(__('Login', false), $userLogin);
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($Log->getLogMessage());
     }
 
     /**
@@ -113,7 +116,9 @@ class UserMigrate
      */
     public static function migrateUsersGroup()
     {
-        $Log = new Log(__FUNCTION__);
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__FUNCTION__);
 
         $query = /** @lang SQL */
             'SELECT user_id, user_groupId FROM usrData';
@@ -124,11 +129,11 @@ class UserMigrate
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
+            $LogMessage->addDescription(__('Error al obtener grupo de usuarios', false));
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al obtener grupo de usuarios', false));
             $Log->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $LogMessage->getDescription());
         }
 
         foreach ($queryRes as $user) {
@@ -139,8 +144,8 @@ class UserMigrate
             try {
                 GroupUsers::getItem($GroupUsers)->update();
             } catch (SPException $e) {
+                $LogMessage->addDetails(__('Error al migrar grupo del usuario', false), $user->user_id);
                 $Log->setLogLevel(Log::ERROR);
-                $Log->addDetails(__('Error al migrar grupo del usuario', false), $user->user_id);
             }
         }
 

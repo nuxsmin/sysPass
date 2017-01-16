@@ -110,7 +110,7 @@ class LdapMsAds extends LdapBase
      */
     protected function searchUserInGroup()
     {
-        $Log = new Log(__FUNCTION__);
+        $this->LogMessage->setAction(__FUNCTION__);
 
         // Comprobar si está establecido el filtro de grupo o el grupo coincide con
         // los grupos del usuario
@@ -118,8 +118,8 @@ class LdapMsAds extends LdapBase
             || $this->group === '*'
             || in_array($this->LdapAuthData->getGroupDn(), $this->LdapAuthData->getGroups())
         ) {
-            $Log->addDescription(__('Usuario verificado en grupo', false));
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('Usuario verificado en grupo', false));
+            $this->writeLog(Log::INFO);
 
             return true;
         }
@@ -130,25 +130,23 @@ class LdapMsAds extends LdapBase
         $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, ['sAMAccountName']);
 
         if (!$searchRes) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al buscar el grupo de usuarios', false));
-            $Log->addDetails(__('Grupo', false), $groupDN);
-            $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
-            $Log->addDetails('LDAP FILTER', $filter);
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('Error al buscar el grupo de usuarios', false));
+            $this->LogMessage->addDetails(__('Grupo', false), $groupDN);
+            $this->LogMessage->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
+            $this->LogMessage->addDetails('LDAP FILTER', $filter);
+            $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
         }
 
         if (@ldap_count_entries($this->ldapHandler, $searchRes) === 0) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('No se encontró el grupo con ese nombre', false));
-            $Log->addDetails(__('Grupo', false), $groupDN);
-            $Log->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
-            $Log->addDetails('LDAP FILTER', $filter);
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('No se encontró el grupo con ese nombre', false));
+            $this->LogMessage->addDetails(__('Grupo', false), $groupDN);
+            $this->LogMessage->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
+            $this->LogMessage->addDetails('LDAP FILTER', $filter);
+            $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
         }
 
         $entries = ldap_get_entries($this->ldapHandler, $searchRes);
@@ -156,24 +154,26 @@ class LdapMsAds extends LdapBase
         foreach ($entries as $entry) {
             if (is_array($entry)) {
                 if ($this->userLogin === strtolower($entry['samaccountname'][0])) {
-                    $Log->addDescription(__('Usuario verificado en grupo', false));
-                    $Log->addDetails(__('Grupo', false), $groupDN);
-                    $Log->writeLog();
+                    $this->LogMessage->addDescription(__('Usuario verificado en grupo', false));
+                    $this->LogMessage->addDetails(__('Grupo', false), $groupDN);
+                    $this->writeLog(Log::INFO);
 
                     return true;
                 }
             }
         }
 
-        $Log->addDescription(__('Usuario no pertenece al grupo', false));
-        $Log->addDetails(__('Usuario', false), $this->LdapAuthData->getDn());
-        $Log->addDetails(__('Grupo', false), $groupDN);
+        $this->LogMessage->addDescription(__('Usuario no pertenece al grupo', false));
+        $this->LogMessage->addDetails(__('Usuario', false), $this->LdapAuthData->getDn());
+        $this->LogMessage->addDetails(__('Grupo', false), $groupDN);
+        $this->writeLog();
 
         return false;
     }
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function connect()
     {

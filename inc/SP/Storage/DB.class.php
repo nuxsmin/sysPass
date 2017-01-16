@@ -278,20 +278,21 @@ class DB
      * @param $errorMsg  string  El mensaje de error
      * @param $errorCode int     El código de error
      * @param $queryFunction
-     * @throws \SP\Core\Exceptions\SPException
      */
     private static function logDBException($query, $errorMsg, $errorCode, $queryFunction)
     {
         $caller = Util::traceLastCall($queryFunction);
 
-        $Log = new Log($caller, Log::ERROR);
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction($caller);
+        $LogMessage->addDescription(sprintf('%s (%s)', $errorMsg, $errorCode));
+        $LogMessage->addDetails('SQL', DBUtil::escape($query));
         $Log->setLogLevel(Log::ERROR);
-        $Log->addDescription(sprintf('%s (%s)', $errorMsg, $errorCode));
-        $Log->addDetails('SQL', DBUtil::escape($query));
         $Log->writeLog();
 
-        debugLog($Log->getDescription(), true);
-        debugLog($Log->getDetails());
+        debugLog($LogMessage->getDescription(), true);
+        debugLog($LogMessage->getDetails());
     }
 
     /**
@@ -318,7 +319,6 @@ class DB
      *
      * @param QueryData $queryData Los datos para realizar la consulta
      * @return bool
-     * @throws SPException
      */
     public static function getQuery(QueryData $queryData)
     {

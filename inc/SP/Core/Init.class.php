@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -400,13 +400,15 @@ class Init
      */
     private static function logConfigUpgrade($version)
     {
-        $Log = new Log(__('Actualización', false));
-        $Log->addDescription(__('Actualización de versión realizada.', false));
-        $Log->addDetails(__('Versión', false), $version);
-        $Log->addDetails(__('Tipo', false), 'config');
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Actualización', false));
+        $LogMessage->addDescription(__('Actualización de versión realizada.', false));
+        $LogMessage->addDetails(__('Versión', false), $version);
+        $LogMessage->addDetails(__('Tipo', false), 'config');
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
     }
 
     /**
@@ -480,7 +482,7 @@ class Init
                 header("Location: $url");
                 exit();
             } else {
-                if (Session::getAuthCompleted()){
+                if (Session::getAuthCompleted()) {
                     session_destroy();
 
                     self::start();
@@ -554,10 +556,12 @@ class Init
         $inactiveTime = round((time() - Session::getLastActivity()) / 60, 2);
         $totalTime = round((time() - Session::getStartActivity()) / 60, 2);
 
-        $Log = new Log(__('Finalizar sesión', false));
-        $Log->addDetails(__('Usuario', false), Session::getUserData()->getUserLogin());
-        $Log->addDetails(__('Tiempo inactivo', false), $inactiveTime . ' min.');
-        $Log->addDetails(__('Tiempo total', false), $totalTime . ' min.');
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Finalizar sesión', false));
+        $LogMessage->addDetails(__('Usuario', false), Session::getUserData()->getUserLogin());
+        $LogMessage->addDetails(__('Tiempo inactivo', false), $inactiveTime . ' min.');
+        $LogMessage->addDetails(__('Tiempo total', false), $totalTime . ' min.');
         $Log->writeLog();
     }
 
@@ -580,6 +584,7 @@ class Init
      * @throws \SP\Core\Exceptions\FileNotFoundException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \InvalidArgumentException
+     * @throws \phpmailer\phpmailerException
      */
     private static function checkDbVersion()
     {
@@ -633,13 +638,15 @@ class Init
         }
 
         if ($update === true) {
-            $Log = new Log(__('Actualización', false));
-            $Log->addDescription(__('Actualización de versión realizada.', false));
-            $Log->addDetails(__('Versión', false), $appVersion);
-            $Log->addDetails(__('Tipo', false), 'db');
+            $Log = new Log();
+            $LogMessage = $Log->getLogMessage();
+            $LogMessage->setAction(__('Actualización', false));
+            $LogMessage->addDescription(__('Actualización de versión realizada.', false));
+            $LogMessage->addDetails(__('Versión', false), $appVersion);
+            $LogMessage->addDetails(__('Tipo', false), 'db');
             $Log->writeLog();
 
-            Email::sendEmail($Log);
+            Email::sendEmail($LogMessage);
 
             self::$UPDATED = true;
         }

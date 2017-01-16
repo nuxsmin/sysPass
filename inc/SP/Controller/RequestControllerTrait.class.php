@@ -25,10 +25,10 @@
 namespace SP\Controller;
 
 use SP\Core\Init;
+use SP\Core\Messages\LogMessage;
 use SP\Core\SessionUtil;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Log\Log;
 use SP\Util\Json;
 
 /**
@@ -59,9 +59,9 @@ trait RequestControllerTrait
      */
     protected $sk;
     /**
-     * @var Log
+     * @var LogMessage
      */
-    protected $Log;
+    protected $LogMessage;
 
     /**
      * inicializar las propiedades

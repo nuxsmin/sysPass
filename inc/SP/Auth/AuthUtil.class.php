@@ -25,6 +25,7 @@
 namespace SP\Auth;
 
 use SP\Core\Init;
+use SP\Core\Messages\LogMessage;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPassRecoverData;
 use SP\Html\Html;
@@ -47,6 +48,7 @@ class AuthUtil
      *
      * @param UserData $UserData
      * @return bool
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -58,21 +60,21 @@ class AuthUtil
         ) {
             $hash = Util::generateRandomBytes();
 
-            $Log = new Log(__('Cambio de Clave'));
-
-            $Log->addDescriptionHtml(__('Se ha solicitado el cambio de su clave de usuario.'));
-            $Log->addDescriptionLine();
-            $Log->addDescription(__('Para completar el proceso es necesario que acceda a la siguiente URL:'));
-            $Log->addDescriptionLine();
-            $Log->addDescription(Html::anchorText(Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time()));
-            $Log->addDescriptionLine();
-            $Log->addDescription(__('Si no ha solicitado esta acción, ignore este mensaje.'));
+            $LogMessage = new LogMessage();
+            $LogMessage->setAction(__('Cambio de Clave'));
+            $LogMessage->addDescriptionHtml(__('Se ha solicitado el cambio de su clave de usuario.'));
+            $LogMessage->addDescriptionLine();
+            $LogMessage->addDescription(__('Para completar el proceso es necesario que acceda a la siguiente URL:'));
+            $LogMessage->addDescriptionLine();
+            $LogMessage->addDescription(Html::anchorText(Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time()));
+            $LogMessage->addDescriptionLine();
+            $LogMessage->addDescription(__('Si no ha solicitado esta acción, ignore este mensaje.'));
 
             $UserPassRecoverData = new UserPassRecoverData();
             $UserPassRecoverData->setUserpassrUserId($UserData->getUserId());
             $UserPassRecoverData->setUserpassrHash($hash);
 
-            return (Email::sendEmail($Log, $UserData->getUserEmail(), false) && UserPassRecover::getItem($UserPassRecoverData)->add());
+            return (Email::sendEmail($LogMessage, $UserData->getUserEmail(), false) && UserPassRecover::getItem($UserPassRecoverData)->add());
         }
 
         return false;

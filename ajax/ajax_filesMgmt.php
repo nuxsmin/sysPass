@@ -62,22 +62,23 @@ $accountId = Request::analyze('itemId', 0);
 $fileId = Request::analyze('fileId', 0);
 
 $Log = new Log();
+$LogMessage = $Log->getLogMessage();
 
 if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
     if ($accountId === 0 || !is_array($_FILES['inFile'])) {
         Response::printJson(__('CONSULTA INVÁLIDA'));
     }
 
-    $Log->setAction(__('Subir Archivo', false));
+    $LogMessage->setAction(__('Subir Archivo', false));
 
     $allowedExts = Config::getConfig()->getFilesAllowedExts();
     $allowedSize = Config::getConfig()->getFilesAllowedSize();
 
     if (count($allowedExts) === 0) {
-        $Log->addDescription(__('No hay extensiones permitidas', false));
+        $LogMessage->addDescription(__('No hay extensiones permitidas', false));
         $Log->writeLog();
 
-        Response::printJson($Log->getDescription());
+        Response::printJson($LogMessage->getDescription());
     }
 
     $FileData = new FileData();
@@ -91,18 +92,18 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
         $FileData->setAccfileExtension(strtoupper(pathinfo($FileData->getAccfileName(), PATHINFO_EXTENSION)));
 
         if (!in_array($FileData->getAccfileExtension(), $allowedExts)) {
-            $Log->addDescription(__('Tipo de archivo no soportado', false));
-            $Log->addDetails(__('Extensión', false), $FileData->getAccfileExtension());
+            $LogMessage->addDescription(__('Tipo de archivo no soportado', false));
+            $LogMessage->addDetails(__('Extensión', false), $FileData->getAccfileExtension());
             $Log->writeLog();
 
-            Response::printJson($Log->getDescription());
+            Response::printJson($LogMessage->getDescription());
         }
     } else {
-        $Log->addDescription(__('Archivo inválido', false));
-        $Log->addDetails(__('Archivo', false), $FileData->getAccfileName());
+        $LogMessage->addDescription(__('Archivo inválido', false));
+        $LogMessage->addDetails(__('Archivo', false), $FileData->getAccfileName());
         $Log->writeLog();
 
-        Response::printJson($Log->getDescription());
+        Response::printJson($LogMessage->getDescription());
     }
 
     // Variables con información del archivo
@@ -112,28 +113,28 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
         // Registramos el máximo tamaño permitido por PHP
         Util::getMaxUpload();
 
-        $Log->addDescription(__('Error interno al leer el archivo', false));
+        $LogMessage->addDescription(__('Error interno al leer el archivo', false));
         $Log->writeLog();
 
-        Response::printJson($Log->getDescription());
+        Response::printJson($LogMessage->getDescription());
     }
 
     if ($FileData->getAccfileSize() > ($allowedSize * 1000)) {
-        $Log->addDescription(__('Tamaño de archivo superado', false));
-        $Log->addDetails(__('Tamaño', false), $FileData->getRoundSize() . 'KB');
+        $LogMessage->addDescription(__('Tamaño de archivo superado', false));
+        $LogMessage->addDetails(__('Tamaño', false), $FileData->getRoundSize() . 'KB');
         $Log->writeLog();
 
-        Response::printJson($Log->getDescription());
+        Response::printJson($LogMessage->getDescription());
     }
 
     // Leemos el archivo a una variable
     $FileData->setAccfileContent(file_get_contents($tmpName));
 
     if ($FileData->getAccfileContent() === false) {
-        $Log->addDescription(__('Error interno al leer el archivo', false));
+        $LogMessage->addDescription(__('Error interno al leer el archivo', false));
         $Log->writeLog();
 
-        Response::printJson($Log->getDescription());
+        Response::printJson($LogMessage->getDescription());
     }
 
     if (File::getItem($FileData)->add()) {
@@ -156,12 +157,12 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
         Response::printJson(__('El archivo no existe'));
     }
 
-    $Log->setAction(__('Descargar Archivo', false));
-    $Log->addDetails(__('ID', false), $fileId);
-    $Log->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($FileData->getAccfileAccountId()));
-    $Log->addDetails(__('Archivo', false), $FileData->getAccfileName());
-    $Log->addDetails(__('Tipo', false), $FileData->getAccfileType());
-    $Log->addDetails(__('Tamaño', false), $FileData->getRoundSize() . 'KB');
+    $LogMessage->setAction(__('Descargar Archivo', false));
+    $LogMessage->addDetails(__('ID', false), $fileId);
+    $LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($FileData->getAccfileAccountId()));
+    $LogMessage->addDetails(__('Archivo', false), $FileData->getAccfileName());
+    $LogMessage->addDetails(__('Tipo', false), $FileData->getAccfileType());
+    $LogMessage->addDetails(__('Tamaño', false), $FileData->getRoundSize() . 'KB');
     $Log->writeLog();
 
     if ($actionId === ActionsInterface::ACTION_ACC_FILES_DOWNLOAD) {

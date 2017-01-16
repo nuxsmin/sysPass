@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,6 +27,7 @@ namespace SP\Auth\Ldap;
 use SP\Auth\AuthInterface;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Messages\LogMessage;
 use SP\DataModel\UserData;
 use SP\Log\Log;
 
@@ -89,6 +90,10 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      * @var LdapAuthData
      */
     protected $LdapAuthData;
+    /**
+     * @var LogMessage
+     */
+    protected $LogMessage;
 
     /**
      * LdapBase constructor.
@@ -96,6 +101,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     public function __construct()
     {
         $this->LdapAuthData = new LdapAuthData();
+        $this->LogMessage = new LogMessage();
     }
 
     /**
@@ -106,11 +112,11 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     public function checkConnection()
     {
-        $Log = new Log(__FUNCTION__);
+        $this->LogMessage->setAction(__FUNCTION__);
 
         if (!$this->searchBase || !$this->server || !$this->bindDn || !$this->bindPass) {
-            $Log->addDescription(__('Los parámetros de LDAP no están configurados', false));
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('Los parámetros de LDAP no están configurados', false));
+            $this->writeLog();
 
             return false;
         }
@@ -123,11 +129,23 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             throw $e;
         }
 
-        $Log->addDescription(__('Conexión a LDAP correcta', false));
-        $Log->addDescription(sprintf(__('Objetos encontrados: %d', false), (int)$results['count']));
-        $Log->writeLog();
+        $this->LogMessage->addDescription(__('Conexión a LDAP correcta', false));
+        $this->LogMessage->addDetails(__('Objetos encontrados', false), (int)$results['count']);
+        $this->writeLog(Log::INFO);
 
         return $results;
+    }
+
+    /**
+     * Escribir en el registro de eventos
+     *
+     * @param string $level
+     */
+    protected function writeLog($level = Log::ERROR)
+    {
+        $Log = new Log($this->LogMessage);
+        $Log->setLogLevel($level);
+        $Log->writeLog();
     }
 
     /**
@@ -138,8 +156,6 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     protected function connect()
     {
-        $Log = new Log(__FUNCTION__);
-
         // Habilitar la traza si el modo debug está habilitado
         if (Config::getConfig()->isDebug()) {
             @ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
@@ -149,12 +165,13 @@ abstract class LdapBase implements LdapInterface, AuthInterface
 
         // Conexión al servidor LDAP
         if (!is_resource($this->ldapHandler)) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(sprintf('%s: %s', __('No es posible conectar con el servidor de LDAP', false), $this->server));
-            $Log->addDetails('LDAP ERROR', $this->ldapError());
-            $Log->writeLog();
+            $this->LogMessage->setAction(__FUNCTION__);
+            $this->LogMessage->addDescription(__('No es posible conectar con el servidor de LDAP', false));
+            $this->LogMessage->addDetails(__('Servidor'), $this->server);
+            $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+            $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription(), $this->LogMessage->getDetails());
         }
 
         @ldap_set_option($this->ldapHandler, LDAP_OPT_NETWORK_TIMEOUT, 10);
@@ -182,28 +199,26 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Realizar la autentificación con el servidor de LDAP.
      *
-     * @param string $bindDn con el DN del usuario
+     * @param string $bindDn   con el DN del usuario
      * @param string $bindPass con la clave del usuario
      * @throws SPException
      * @return bool
      */
     protected function bind($bindDn = '', $bindPass = '')
     {
-        $Log = new Log(__FUNCTION__);
-
         $dn = $bindDn ?: $this->bindDn;
         $pass = $bindPass ?: $this->bindPass;
 
         if (!@ldap_bind($this->ldapHandler, $dn, $pass)) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al conectar (BIND)', false));
-            $Log->addDetails('LDAP ERROR', $this->ldapError());
-            $Log->addDetails('LDAP DN', $dn);
-            $Log->writeLog();
+            $this->LogMessage->setAction(__FUNCTION__);
+            $this->LogMessage->addDescription(__('Error al conectar (BIND)', false));
+            $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+            $this->LogMessage->addDetails('LDAP DN', $dn);
+            $this->writeLog();
 
             $this->getLdapAuthData()->setAuthenticated(1);
 
-            throw new SPException(SPException::SP_ERROR, __($Log->getDescription()));
+            throw new SPException(SPException::SP_ERROR, __($this->LogMessage->getDescription()));
         }
 
         return true;
@@ -225,44 +240,40 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     protected function searchBase()
     {
-        $Log = new Log(__FUNCTION__);
-
+        $this->LogMessage->setAction(__FUNCTION__);
         $filter = $this->getGroupDnFilter();
 
         $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, ['dn']);
 
         if (!$searchRes) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al buscar objetos en DN base', false));
-            $Log->addDetails('LDAP ERROR', $this->ldapError());
-            $Log->addDetails('LDAP FILTER', $filter);
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('Error al buscar objetos en DN base', false));
+            $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+            $this->LogMessage->addDetails('LDAP FILTER', $filter);
+            $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
         }
 
         if (@ldap_count_entries($this->ldapHandler, $searchRes) > 0) {
             $searchResults = @ldap_get_entries($this->ldapHandler, $searchRes);
 
             if (!$searchResults) {
-                $Log->setLogLevel(Log::ERROR);
-                $Log->addDescription(__('Error al buscar objetos en DN base', false));
-                $Log->addDetails('LDAP ERROR', $this->ldapError());
-                $Log->addDetails('LDAP FILTER', $this->getGroupDnFilter());
-                $Log->writeLog();
+                $this->LogMessage->addDescription(__('Error al buscar objetos en DN base', false));
+                $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+                $this->LogMessage->addDetails('LDAP FILTER', $this->getGroupDnFilter());
+                $this->writeLog();
 
-                throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+                throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
             }
 
             return $searchResults;
         } else {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al buscar objetos en DN base', false));
-            $Log->addDetails('LDAP ERROR', $this->ldapError());
-            $Log->addDetails('LDAP FILTER', $this->getGroupDnFilter());
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('Error al buscar objetos en DN base', false));
+            $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+            $this->LogMessage->addDetails('LDAP FILTER', $this->getGroupDnFilter());
+            $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
         }
     }
 
@@ -419,7 +430,9 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         $this->group = Config::getConfig()->getLdapGroup();
 
         if (!$this->searchBase || !$this->server || !$this->bindDn || !$this->bindPass) {
-            Log::writeNewLog(__FUNCTION__, __('Los parámetros de LDAP no están configurados', false));
+            $this->LogMessage->setAction(__FUNCTION__);
+            $this->LogMessage->setDescription(__('Los parámetros de LDAP no están configurados', false));
+            $this->writeLog();
 
             return false;
         }
@@ -509,43 +522,40 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     protected function getUserAttributes()
     {
-        $Log = new Log(__FUNCTION__);
+        $this->LogMessage->setAction(__FUNCTION__);
 
         $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $this->getUserDnFilter(), self::SEARCH_ATTRIBUTES);
 
         if (!$searchRes) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al buscar el DN del usuario', false));
-            $Log->addDetails(__('Usuario', false), $this->userLogin);
-            $Log->addDetails('LDAP ERROR', $this->ldapError());
-            $Log->addDetails('LDAP FILTER', $this->getUserDnFilter());
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('Error al buscar el DN del usuario', false));
+            $this->LogMessage->addDetails(__('Usuario', false), $this->userLogin);
+            $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+            $this->LogMessage->addDetails('LDAP FILTER', $this->getUserDnFilter());
+            $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
         }
 
         if (@ldap_count_entries($this->ldapHandler, $searchRes) === 1) {
             $searchResults = @ldap_get_entries($this->ldapHandler, $searchRes);
 
             if (!$searchResults) {
-                $Log->setLogLevel(Log::ERROR);
-                $Log->addDescription(__('Error al localizar el usuario en LDAP', false));
-                $Log->addDetails(__('Usuario', false), $this->userLogin);
-                $Log->addDetails('LDAP ERROR', $this->ldapError());
-                $Log->writeLog();
+                $this->LogMessage->addDescription(__('Error al localizar el usuario en LDAP', false));
+                $this->LogMessage->addDetails(__('Usuario', false), $this->userLogin);
+                $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+                $this->writeLog();
 
-                throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+                throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
             }
 
             return $searchResults;
         } else {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al buscar el DN del usuario', false));
-            $Log->addDetails(__('Usuario', false), $this->userLogin);
-            $Log->addDetails('LDAP FILTER', $this->getUserDnFilter());
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('Error al buscar el DN del usuario', false));
+            $this->LogMessage->addDetails(__('Usuario', false), $this->userLogin);
+            $this->LogMessage->addDetails('LDAP FILTER', $this->getUserDnFilter());
+            $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
         }
     }
 
@@ -564,46 +574,43 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     protected function searchGroupDN()
     {
-        $Log = new Log(__FUNCTION__);
+        $this->LogMessage->setAction(__FUNCTION__);
         $group = $this->getGroupName() ?: $this->group;
         $filter = '(cn=' . $group . ')';
 
         $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, ['dn', 'cn']);
 
         if (!$searchRes) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al buscar RDN de grupo', false));
-            $Log->addDetails(__('Grupo', false), $filter);
-            $Log->addDetails('LDAP ERROR', $this->ldapError());
-            $Log->addDetails('LDAP FILTER', $filter);
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('Error al buscar RDN de grupo', false));
+            $this->LogMessage->addDetails(__('Grupo', false), $filter);
+            $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+            $this->LogMessage->addDetails('LDAP FILTER', $filter);
+            $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
         }
 
         if (@ldap_count_entries($this->ldapHandler, $searchRes) === 1) {
             $ldapSearchData = @ldap_get_entries($this->ldapHandler, $searchRes);
 
             if (!$ldapSearchData) {
-                $Log->setLogLevel(Log::ERROR);
-                $Log->addDescription(__('Error al buscar RDN de grupo', false));
-                $Log->addDetails(__('Grupo', false), $filter);
-                $Log->addDetails('LDAP ERROR', $this->ldapError());
-                $Log->addDetails('LDAP FILTER', $filter);
-                $Log->writeLog();
+                $this->LogMessage->addDescription(__('Error al buscar RDN de grupo', false));
+                $this->LogMessage->addDetails(__('Grupo', false), $filter);
+                $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+                $this->LogMessage->addDetails('LDAP FILTER', $filter);
+                $this->writeLog();
 
-                throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+                throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
             }
 
             return $ldapSearchData[0]['dn'];
         } else {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al buscar RDN de grupo', false));
-            $Log->addDetails(__('Grupo', false), $filter);
-            $Log->addDetails('LDAP FILTER', $filter);
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('Error al buscar RDN de grupo', false));
+            $this->LogMessage->addDetails(__('Grupo', false), $filter);
+            $this->LogMessage->addDetails('LDAP FILTER', $filter);
+            $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
         }
     }
 
@@ -659,44 +666,41 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     protected function getObjects()
     {
-        $Log = new Log(__FUNCTION__);
+        $this->LogMessage->setAction(__FUNCTION__);
 
         $filter = $this->getGroupDnFilter();
 
         $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, self::SEARCH_ATTRIBUTES);
 
         if (!$searchRes) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al buscar objetos en DN base', false));
-            $Log->addDetails('LDAP ERROR', $this->ldapError());
-            $Log->addDetails('LDAP FILTER', $filter);
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('Error al buscar objetos en DN base', false));
+            $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+            $this->LogMessage->addDetails('LDAP FILTER', $filter);
+            $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
         }
 
         if (@ldap_count_entries($this->ldapHandler, $searchRes) > 0) {
             $searchResults = @ldap_get_entries($this->ldapHandler, $searchRes);
 
             if (!$searchResults) {
-                $Log->setLogLevel(Log::ERROR);
-                $Log->addDescription(__('Error al buscar objetos en DN base', false));
-                $Log->addDetails('LDAP ERROR', $this->ldapError());
-                $Log->addDetails('LDAP FILTER', $this->getGroupDnFilter());
-                $Log->writeLog();
+                $this->LogMessage->addDescription(__('Error al buscar objetos en DN base', false));
+                $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+                $this->LogMessage->addDetails('LDAP FILTER', $this->getGroupDnFilter());
+                $this->writeLog();
 
-                throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+                throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
             }
 
             return $searchResults;
         } else {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al buscar objetos en DN base', false));
-            $Log->addDetails('LDAP ERROR', $this->ldapError());
-            $Log->addDetails('LDAP FILTER', $this->getGroupDnFilter());
-            $Log->writeLog();
+            $this->LogMessage->addDescription(__('Error al buscar objetos en DN base', false));
+            $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
+            $this->LogMessage->addDetails('LDAP FILTER', $this->getGroupDnFilter());
+            $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $Log->getDescription());
+            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
         }
     }
 

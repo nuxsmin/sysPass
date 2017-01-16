@@ -218,11 +218,13 @@ class AccountHistory extends AccountBase implements AccountInterface
         $errorCount = 0;
         $demoEnabled = Checks::demoIsEnabled();
 
-        $Log = new Log(__('Actualizar Clave Maestra (H)', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Actualizar Clave Maestra (H)', false));
 
         if (!Crypt::checkCryptModule()) {
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error en el módulo de encriptación', false));
+            $LogMessage->addDescription(__('Error en el módulo de encriptación', false));
             $Log->writeLog();
             return false;
         }
@@ -231,7 +233,7 @@ class AccountHistory extends AccountBase implements AccountInterface
 
         if (!$accountsPass) {
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al obtener las claves de las cuentas', false));
+            $LogMessage->addDescription(__('Error al obtener las claves de las cuentas', false));
             $Log->writeLog();
             return false;
         }
@@ -254,17 +256,17 @@ class AccountHistory extends AccountBase implements AccountInterface
 
             if (!$this->checkAccountMPass()) {
                 $errorCount++;
-                $Log->addDetails(__('La clave maestra del registro no coincide', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
+                $LogMessage->addDetails(__('La clave maestra del registro no coincide', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
                 continue;
             }
 
             if ($account->acchistory_pass === '') {
-                $Log->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
+                $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
                 continue;
             }
 
             if (strlen($account->acchistory_IV) < 32) {
-                $Log->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
+                $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
             }
 
             $decryptedPass = Crypt::getDecrypt($account->acchistory_pass, $account->acchistory_IV);
@@ -273,21 +275,21 @@ class AccountHistory extends AccountBase implements AccountInterface
 
             if ($AccountData->pass === false) {
                 $errorCount++;
-                $Log->addDetails(__('No es posible desencriptar la clave de la cuenta', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
+                $LogMessage->addDetails(__('No es posible desencriptar la clave de la cuenta', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
                 continue;
             }
 
             if (!$this->updateAccountPass($AccountData)) {
                 $errorCount++;
-                $Log->addDetails(__('Fallo al actualizar la clave del histórico', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
+                $LogMessage->addDetails(__('Fallo al actualizar la clave del histórico', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
                 continue;
             }
 
             $accountsOk[] = $account->acchistory_id;
         }
 
-        $Log->addDetails(__('Cuentas actualizadas', false), implode(',', $accountsOk));
-        $Log->addDetails(__('Errores', false), $errorCount);
+        $LogMessage->addDetails(__('Cuentas actualizadas', false), implode(',', $accountsOk));
+        $LogMessage->addDetails(__('Errores', false), $errorCount);
         $Log->writeLog();
 
         return true;

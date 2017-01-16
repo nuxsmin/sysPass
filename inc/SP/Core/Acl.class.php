@@ -187,9 +187,11 @@ class Acl implements ActionsInterface
                 return true;
         }
 
-        $Log = new Log(__FUNCTION__);
+        $Log = new Log();
+        $Log->getLogMessage()
+            ->setAction(__FUNCTION__)
+            ->addDetails(__('Acceso denegado', false), self::getActionName($action, false, false));
         $Log->setLogLevel(Log::NOTICE);
-        $Log->addDetails(__('Acceso denegado', false), self::getActionName($action, false, false));
         $Log->writeLog();
 
         return false;

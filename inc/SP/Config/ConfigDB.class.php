@@ -76,6 +76,7 @@ class ConfigDB implements ConfigInterface
      *
      * @param bool $isInsert realizar un 'insert'?
      * @return bool
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function writeConfig($isInsert = false)
@@ -100,11 +101,13 @@ class ConfigDB implements ConfigInterface
             }
         }
 
-        $Log = new Log(__('Configuración', false));
-        $Log->addDescription(__('Modificar configuración', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Configuración', false));
+        $LogMessage->addDescription(__('Modificar configuración', false));
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
         return true;
     }
@@ -117,6 +120,7 @@ class ConfigDB implements ConfigInterface
      * @param bool   $email     enviar email?
      * @param bool   $hideValue Ocultar el valor del registro en el log
      * @return bool
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function setValue($param, $value, $email = true, $hideValue = false)
@@ -137,18 +141,20 @@ class ConfigDB implements ConfigInterface
             return false;
         }
 
-        $log = new Log(__('Configuración', false));
-        $log->addDescription(__('Modificar configuración', false));
-        $log->addDetails(__('Parámetro', false), $param);
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Configuración', false));
+        $LogMessage->addDescription(__('Modificar configuración', false));
+        $LogMessage->addDetails(__('Parámetro', false), $param);
 
         if ($hideValue === false) {
-            $log->addDetails(__('Valor', false), $value);
+            $LogMessage->addDetails(__('Valor', false), $value);
         }
 
-        $log->writeLog();
+        $Log->writeLog();
 
         if ($email === true) {
-            Email::sendEmail($log);
+            Email::sendEmail($LogMessage);
         }
 
         return true;

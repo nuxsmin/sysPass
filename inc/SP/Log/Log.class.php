@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,6 +26,7 @@ namespace SP\Log;
 
 use SP\Core\DiFactory;
 use SP\Core\Language;
+use SP\Core\Messages\LogMessage;
 use SP\Core\Session;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -75,6 +76,7 @@ class Log extends ActionLog
      * Limpiar el registro de eventos.
      *
      * @return bool con el resultado
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function clearEvents()
@@ -100,14 +102,13 @@ class Log extends ActionLog
      * @param string $description La descripción de la acción realizada
      * @param string $level
      * @return Log
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function writeNewLogAndEmail($action, $description = null, $level = Log::INFO)
     {
-        $Log = new Log($action, $description, $level);
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
+        $Log = Log::writeNewLog($action, $description, $level);
+        Email::sendEmail($Log->getLogMessage());
 
         return $Log;
     }
@@ -117,14 +118,13 @@ class Log extends ActionLog
      *
      * @param bool $resetDescription Restablecer la descripción
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function writeLog($resetDescription = false)
     {
         if ((defined('IS_INSTALLER') && IS_INSTALLER === 1)
             || DiFactory::getDBStorage()->getDbStatus() === 1
         ) {
-            debugLog('Action: ' . $this->getAction() . ' -- Description: ' . $this->getDescription() . ' -- Details: ' . $this->getDetails());
+            debugLog('Action: ' . $this->LogMessage->getAction() . ' -- Description: ' . $this->LogMessage->getDescription() . ' -- Details: ' . $this->LogMessage->getDetails());
 
             return false;
         }
@@ -139,7 +139,7 @@ class Log extends ActionLog
             $this->sendToSyslog();
         }
 
-        $description = trim($this->getDescription(true) . PHP_EOL . $this->getDetails(true));
+        $description = trim($this->LogMessage->getDescription(true) . PHP_EOL . $this->LogMessage->getDetails(true));
 
         $query = 'INSERT INTO log SET ' .
             'log_date = UNIX_TIMESTAMP(),' .
@@ -155,12 +155,12 @@ class Log extends ActionLog
         $Data->addParam(Session::getUserData()->getUserLogin(), 'login');
         $Data->addParam(Session::getUserData()->getUserId(), 'userId');
         $Data->addParam($_SERVER['REMOTE_ADDR'], 'ipAddress');
-        $Data->addParam(utf8_encode($this->getAction(true)), 'action');
+        $Data->addParam(utf8_encode($this->LogMessage->getAction(true)), 'action');
         $Data->addParam($this->getLogLevel(), 'level');
         $Data->addParam(utf8_encode($description), 'description');
 
         if ($resetDescription === true) {
-            $this->resetDescription();
+            $this->LogMessage->resetDescription();
         }
 
         $query = DB::getQuery($Data);
@@ -175,10 +175,10 @@ class Log extends ActionLog
      */
     private function sendToSyslog()
     {
-        $description = trim($this->getDescription() . PHP_EOL . $this->getDetails());
+        $description = trim($this->LogMessage->getDescription(true) . PHP_EOL . $this->LogMessage->getDetails(true));
 
         $msg = 'CEF:0|sysPass|logger|' . implode('.', Util::getVersion(true)) . '|';
-        $msg .= $this->getAction() . '|';
+        $msg .= $this->LogMessage->getAction(true) . '|';
         $msg .= $description . '|';
         $msg .= '0|';
         $msg .= sprintf('ip_addr="%s" user_name="%s"', $_SERVER['REMOTE_ADDR'], Session::getUserData()->getUserLogin());
@@ -198,7 +198,14 @@ class Log extends ActionLog
      */
     public static function newLog($action, $description = null, $level = Log::INFO)
     {
-        return new Log($action, $description, $level);
+        $LogMessage = new LogMessage();
+        $LogMessage->setAction($action);
+
+        if ($description !== null) {
+            $LogMessage->addDescription($description);
+        }
+
+        return new Log($LogMessage, $level);
     }
 
     /**
@@ -208,11 +215,14 @@ class Log extends ActionLog
      * @param string $description La descripción de la acción realizada
      * @param string $level
      * @return Log
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function writeNewLog($action, $description = null, $level = Log::INFO)
     {
-        $Log = new Log($action, $description, $level);
+        $LogMessage = new LogMessage();
+        $LogMessage->setAction($action);
+        $LogMessage->addDescription($description);
+
+        $Log = new Log($LogMessage, $level);
         $Log->writeLog();
 
         return $Log;

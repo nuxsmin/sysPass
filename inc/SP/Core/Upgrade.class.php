@@ -82,17 +82,20 @@ class Upgrade
      *
      * @param int $version con la versión a actualizar
      * @returns bool
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     private static function upgradeDB($version)
     {
-        $Log = new Log(__('Actualizar BBDD', false));
-        $Log->addDetails(__('Versión', false), $version);
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Actualizar BBDD', false));
+        $LogMessage->addDetails(__('Versión', false), $version);
 
         $queries = self::getQueriesFromFile($version);
 
         if (count($queries) === 0) {
-            $Log->addDescription(__('No es necesario actualizar la Base de Datos.', false));
+            $LogMessage->addDescription(__('No es necesario actualizar la Base de Datos.', false));
             $Log->writeLog();
             return true;
         }
@@ -104,20 +107,20 @@ class Upgrade
                 $Data->setQuery($query);
                 DB::getQuery($Data);
             } catch (SPException $e) {
+                $LogMessage->addDescription(__('Error al aplicar la actualización de la Base de Datos.', false));
+                $LogMessage->addDetails('ERROR', sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
                 $Log->setLogLevel(Log::ERROR);
-                $Log->addDescription(__('Error al aplicar la actualización de la Base de Datos.', false));
-                $Log->addDetails('ERROR', sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
                 $Log->writeLog();
 
-                Email::sendEmail($Log);
+                Email::sendEmail($LogMessage);
                 return false;
             }
         }
 
-        $Log->addDescription(__('Actualización de la Base de Datos realizada correctamente.', false));
+        $LogMessage->addDescription(__('Actualización de la Base de Datos realizada correctamente.', false));
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
         return true;
     }
@@ -236,7 +239,10 @@ class Upgrade
      */
     public static function upgradeOldConfigFile($version)
     {
-        $Log = new Log(__('Actualizar Configuración', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Actualizar Configuración', false));
+
         $Config = new ConfigData();
 
         // Include the file, save the data from $CONFIG
@@ -248,13 +254,13 @@ class Upgrade
                     if (is_array($mapFrom)) {
                         foreach ($mapFrom as $param) {
                             if (isset($CONFIG[$param])) {
-                                $Log->addDetails(__('Parámetro', false), $param);
+                                $LogMessage->addDetails(__('Parámetro', false), $param);
                                 $Config->$mapTo($CONFIG[$param]);
                             }
                         }
                     } else {
                         if (isset($CONFIG[$mapFrom])) {
-                            $Log->addDetails(__('Parámetro', false), $mapFrom);
+                            $LogMessage->addDetails(__('Parámetro', false), $mapFrom);
                             $Config->$mapTo($CONFIG[$mapFrom]);
                         }
                     }
@@ -268,14 +274,14 @@ class Upgrade
             Config::saveConfig($Config, false);
             rename(CONFIG_FILE, CONFIG_FILE . '.old');
 
-            $Log->addDetails(__('Versión', false), $version);
+            $LogMessage->addDetails(__('Versión', false), $version);
             $Log->setLogLevel(Log::NOTICE);
             $Log->writeLog();
 
             return true;
         } catch (\Exception $e) {
-            $Log->addDescription(__('Error al actualizar la configuración', false));
-            $Log->addDetails(__('Archivo', false), CONFIG_FILE . '.old');
+            $LogMessage->addDescription(__('Error al actualizar la configuración', false));
+            $LogMessage->addDetails(__('Archivo', false), CONFIG_FILE . '.old');
             $Log->setLogLevel(Log::ERROR);
             $Log->writeLog();
         }

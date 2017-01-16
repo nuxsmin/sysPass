@@ -48,6 +48,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @return mixed
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function add()
@@ -83,25 +84,27 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
             $Data->addParam('no_thumb');
         }
 
-        $Log = new Log(__('Subir Archivo', false));
-        $Log->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($this->itemData->getAccfileAccountId()));
-        $Log->addDetails(__('Archivo', false), $this->itemData->getAccfileName());
-        $Log->addDetails(__('Tipo', false), $this->itemData->getAccfileType());
-        $Log->addDetails(__('Tamaño', false), $this->itemData->getRoundSize() . 'KB');
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Subir Archivo', false));
+        $LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($this->itemData->getAccfileAccountId()));
+        $LogMessage->addDetails(__('Archivo', false), $this->itemData->getAccfileName());
+        $LogMessage->addDetails(__('Tipo', false), $this->itemData->getAccfileType());
+        $LogMessage->addDetails(__('Tamaño', false), $this->itemData->getRoundSize() . 'KB');
 
         if (DB::getQuery($Data) === false) {
-            $Log->addDescription(__('No se pudo guardar el archivo', false));
+            $LogMessage->addDescription(__('No se pudo guardar el archivo', false));
             $Log->writeLog();
 
-            Email::sendEmail($Log);
+            Email::sendEmail($LogMessage);
 
             return false;
         }
 
-        $Log->addDescription(__('Archivo subido', false));
+        $LogMessage->addDescription(__('Archivo subido', false));
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
         return true;
     }

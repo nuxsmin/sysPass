@@ -71,8 +71,10 @@ class PluginDataStore
 
             Plugin::getItem($PluginData)->add();
 
-            $Log = new Log(__('Nuevo Plugin', false));
-            $Log->addDetails(__('Nombre', false), $Plugin->getName());
+            $Log = new Log();
+            $Log->getLogMessage()
+                ->setAction(__('Nuevo Plugin', false))
+                ->addDetails(__('Nombre', false), $Plugin->getName());
             $Log->writeLog();
 
             return false;

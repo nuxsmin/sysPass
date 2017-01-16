@@ -44,12 +44,15 @@ class ProfileUtil
      * Migrar los perfiles con formato anterior a v1.2
      *
      * @return bool
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function migrateProfiles()
     {
-        $Log = new Log(__('Migrar Perfiles'));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Migrar Perfiles', false));
 
         $query = /** @lang SQL */
             'SELECT userprofile_id AS id,
@@ -79,8 +82,9 @@ class ProfileUtil
         $queryRes = DB::getResultsArray($Data);
 
         if (count($queryRes) === 0) {
+            $LogMessage->addDescription(__('Error al obtener perfiles', false));
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al obtener perfiles', false));
+            $Log->writeLog();
             return false;
         }
 
@@ -140,14 +144,14 @@ class ProfileUtil
         $queryRes = DB::getQuery($Data);
 
         if ($queryRes) {
-            $Log->addDescription(__('Operación realizada correctamente', false));
+            $LogMessage->addDescription(__('Operación realizada correctamente', false));
         } else {
-            $Log->addDescription(__('Fallo al realizar la operación', false));
+            $LogMessage->addDescription(__('Fallo al realizar la operación', false));
         }
 
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
         return $queryRes;
     }

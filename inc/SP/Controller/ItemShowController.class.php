@@ -530,10 +530,12 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         if (!$isHistory) {
             $Account->incrementDecryptCounter();
 
-            $log = new Log(__('Ver Clave', false));
-            $log->addDetails(__('ID', false), $this->itemId);
-            $log->addDetails(__('Cuenta', false), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
-            $log->writeLog();
+            $Log = new Log();
+            $LogMessage = $Log->getLogMessage();
+            $LogMessage->setAction(__('Ver Clave', false));
+            $LogMessage->addDetails(__('ID', false), $this->itemId);
+            $LogMessage->addDetails(__('Cuenta', false), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
+            $Log->writeLog();
         }
 
         $useImage = (int)Checks::accountPassToImageIsEnabled();

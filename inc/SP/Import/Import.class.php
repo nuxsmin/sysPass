@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -57,11 +57,14 @@ class Import
      *
      * @param array $fileData Los datos del archivo
      * @return Message
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function doImport(&$fileData)
     {
-        $Log = new Log(__('Importar Cuentas', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Importar Cuentas', false));
 
         try {
             $file = new FileImport($fileData);
@@ -84,18 +87,18 @@ class Import
 
             $Import->doImport();
         } catch (SPException $e) {
+            $LogMessage->addDescription($e->getMessage());
+            $LogMessage->addDetails(__('Ayuda', false), $e->getHint());
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription($e->getMessage());
-            $Log->addDetails(__('Ayuda', false), $e->getHint());
             $Log->writeLog();
 
             throw $e;
         }
 
-        $Log->addDescription(__('Importación finalizada', false));
+        $LogMessage->addDescription(__('Importación finalizada', false));
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
         $Message = new Message();
         $Message->setDescription(__('Importación finalizada', false));

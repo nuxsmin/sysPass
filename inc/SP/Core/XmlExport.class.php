@@ -121,11 +121,13 @@ class XmlExport
      * Crear el documento XML y guardarlo
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     public function makeXML()
     {
-        $Log = new Log(__('Exportar XML', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Exportar XML', false));
 
         try {
             $this->checkExportDir();
@@ -138,19 +140,19 @@ class XmlExport
             $this->createHash();
             $this->writeXML();
         } catch (SPException $e) {
+            $LogMessage->addDescription(__('Error al realizar la exportación de cuentas', false));
+            $LogMessage->addDetails($e->getMessage(), $e->getHint());
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al realizar la exportación de cuentas', false));
-            $Log->addDetails($e->getMessage(), $e->getHint());
             $Log->writeLog();
 
-            Email::sendEmail($Log);
+            Email::sendEmail($LogMessage);
             return false;
         }
 
-        $Log->addDescription(__('Exportación de cuentas realizada correctamente', false));
+        $LogMessage->addDescription(__('Exportación de cuentas realizada correctamente', false));
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
         return true;
     }

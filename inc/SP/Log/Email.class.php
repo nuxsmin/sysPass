@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,6 +26,7 @@ namespace SP\Log;
 
 use SP\Config\Config;
 use SP\Core\Init;
+use SP\Core\Messages\LogMessage;
 use SP\Core\Session;
 use SP\Html\Html;
 use SP\Util\Checks;
@@ -41,20 +42,19 @@ class Email
     /**
      * Enviar un email utilizando la clase PHPMailer.
      *
-     * @param Log    $log     con el objeto del tipo Log
-     * @param string $mailTo  con el destinatario
-     * @param bool   $isEvent para indicar si es um
+     * @param LogMessage $LogMessage con el objeto del tipo Log
+     * @param string     $mailTo     con el destinatario
+     * @param bool       $isEvent    para indicar si es um
      * @return bool
      * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\SPException
      */
-    public static function sendEmail(Log $log, $mailTo = '', $isEvent = true)
+    public static function sendEmail(LogMessage $LogMessage, $mailTo = '', $isEvent = true)
     {
         if (!Checks::mailIsEnabled()) {
             return false;
         }
 
-        $Mail = self::getEmailObject($mailTo, utf8_decode($log->getAction()));
+        $Mail = self::getMailer($mailTo, utf8_decode($LogMessage->getAction()));
 
         if (!is_object($Mail)) {
             return false;
@@ -64,14 +64,14 @@ class Email
 
         if ($isEvent === true) {
             $performer = Session::getUserData()->getUserLogin() ?: __('N/D');
-            $body[] = sprintf('%s: %s', Html::strongText(__('Acción')), utf8_decode($log->getAction()));
+            $body[] = sprintf('%s: %s', Html::strongText(__('Acción')), utf8_decode($LogMessage->getAction()));
             $body[] = sprintf('%s: %s (%s)', Html::strongText(__('Realizado por')), $performer, $_SERVER['REMOTE_ADDR']);
 
             $Mail->addCC(Config::getConfig()->getMailFrom());
         }
 
-        $body[] = utf8_decode($log->getHtmlDescription());
-        $body[] = utf8_decode($log->getDetails());
+        $body[] = utf8_decode($LogMessage->getHtmlDescription(true));
+        $body[] = utf8_decode($LogMessage->getDetails(true));
         $body[] = '';
         $body[] = '--';
         $body[] = sprintf('%s - %s', Util::getAppInfo('appname'), Util::getAppInfo('appdesc'));
@@ -82,22 +82,24 @@ class Email
 
         $sendMail = $Mail->send();
 
-        $Log = new Log(__('Enviar Email', false));
+        $LogMessage = new LogMessage();
+        $LogMessage->setAction(__('Enviar Email', false));
 
         // Enviar correo
         if ($sendMail) {
-            $Log->addDescription(__('Correo enviado', false));
+            $LogMessage->addDescription(__('Correo enviado', false));
         } else {
-            $Log->addDescription(__('Error al enviar correo', false));
-            $Log->addDescription('ERROR: ' . $Mail->ErrorInfo);
+            $LogMessage->addDescription(__('Error al enviar correo', false));
+            $LogMessage->addDescription('ERROR: ' . $Mail->ErrorInfo);
         }
 
-        $Log->addDescription(__('Destinatario', false) . ': ' . $mailTo);
+        $LogMessage->addDescription(__('Destinatario', false) . ': ' . $mailTo);
 
-        if ($isEvent === true){
-            $Log->addDescription(__('CC', false) . ': ' . Config::getConfig()->getMailFrom());
+        if ($isEvent === true) {
+            $LogMessage->addDescription(__('CC', false) . ': ' . Config::getConfig()->getMailFrom());
         }
 
+        $Log = new Log($LogMessage);
         $Log->writeLog();
 
         return $sendMail;
@@ -110,7 +112,7 @@ class Email
      * @param string $action con la acción realizada
      * @return false|\phpmailer\PHPMailer
      */
-    private static function getEmailObject($mailTo, $action)
+    private static function getMailer($mailTo, $action)
     {
         $appName = Util::getAppInfo('appname');
         $mailFrom = Config::getConfig()->getMailFrom();

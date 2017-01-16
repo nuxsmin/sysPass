@@ -44,7 +44,7 @@ class NoticeMessage extends MessageBase
         $message[] = '<footer>' . $this->footer . '</footer>';
         $message[] = '</div>';
 
-        return implode($message);
+        return implode('', $message);
     }
 
     /**

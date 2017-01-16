@@ -26,6 +26,7 @@ namespace SP\Mgmt\Users;
 
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Messages\LogMessage;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
@@ -61,6 +62,7 @@ class UserLdap extends UserBase implements ItemInterface
 
     /**
      * @return mixed
+     * @throws \phpmailer\phpmailerException
      * @throws SPException
      */
     public function add()
@@ -114,18 +116,21 @@ class UserLdap extends UserBase implements ItemInterface
         $this->itemData->setUserId(DB::getLastId());
 
         if (!$groupId || !$profileId) {
-            $LogEmail = new Log(__('Activación Cuenta', false));
+            $LogEmail = new LogMessage();
+            $LogEmail->setAction(__('Activación Cuenta', false));
             $LogEmail->addDescription(__('Su cuenta está pendiente de activación.', false));
             $LogEmail->addDescription(__('En breve recibirá un email de confirmación.', false));
 
             Email::sendEmail($LogEmail, $this->itemData->getUserEmail(), false);
         }
 
-        $Log = new Log(__('Nuevo usuario de LDAP', false));
-        $Log->addDescription(sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
+        $Log = new Log();
+        $Log->getLogMessage()
+            ->setAction(__('Nuevo usuario de LDAP', false))
+            ->addDescription(sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($Log->getLogMessage());
 
         return $this;
     }

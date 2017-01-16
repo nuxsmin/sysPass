@@ -36,6 +36,7 @@ use SP\Core\Exceptions\AuthException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Language;
+use SP\Core\Messages\LogMessage;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\DataModel\UserData;
@@ -76,9 +77,9 @@ class LoginController
      */
     protected $UserData;
     /**
-     * @var Log
+     * @var LogMessage
      */
-    protected $Log;
+    protected $LogMessage;
 
     /**
      * LoginController constructor.
@@ -87,7 +88,8 @@ class LoginController
     {
         $this->jsonResponse = new JsonResponse();
         $this->UserData = new UserData();
-        $this->Log = new Log();
+        $this->LogMessage = new LogMessage();
+        $this->LogMessage->setAction(__('Inicio sesión', false));
     }
 
     /**
@@ -110,7 +112,7 @@ class LoginController
         $this->UserData->setUserLogin($userLogin);
         $this->UserData->setUserPass($userPass);
 
-        $this->Log = new Log(__('Inicio sesión', false));
+        $Log = new Log($this->LogMessage);
 
         try {
             $Auth = new Auth($this->UserData);
@@ -133,11 +135,16 @@ class LoginController
             $this->setUserSession();
             $this->loadUserPreferences();
         } catch (SPException $e) {
+            $Log->setLogLevel(Log::ERROR);
+            $Log->writeLog();
+
             $this->jsonResponse->setDescription($e->getMessage());
             $this->jsonResponse->setStatus($e->getCode());
 
             Json::returnJson($this->jsonResponse);
         }
+
+        $Log->writeLog();
 
         $data = ['url' => 'index.php' . Request::importUrlParamsToGet()];
         $this->jsonResponse->setStatus(0);
@@ -156,16 +163,12 @@ class LoginController
      */
     protected function getUserData($userPass)
     {
-        $this->Log->resetDescription();
-
         try {
             $this->UserData = User::getItem($this->UserData)->getByLogin($this->UserData->getUserLogin());
             $this->UserData->setUserPass($userPass);
             $this->UserData->setUserPreferences(UserPreferences::getItem()->getById($this->UserData->getUserId()));
         } catch (SPException $e) {
-            $this->Log->setLogLevel(Log::ERROR);
-            $this->Log->addDescription(__('Error al obtener los datos del usuario de la BBDD', false));
-            $this->Log->writeLog();
+            $this->LogMessage->addDescription(__('Error al obtener los datos del usuario de la BBDD', false));
 
             throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
         }
@@ -178,13 +181,10 @@ class LoginController
      */
     protected function checkUserDisabled()
     {
-        $this->Log->resetDescription();
-
         // Comprobar si el usuario está deshabilitado
         if ($this->UserData->isUserIsDisabled()) {
-            $this->Log->addDescription(__('Usuario deshabilitado', false));
-            $this->Log->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
-            $this->Log->writeLog();
+            $this->LogMessage->addDescription(__('Usuario deshabilitado', false));
+            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
 
             throw new AuthException(SPException::SP_INFO, __('Usuario deshabilitado', false), '', self::STATUS_USER_DISABLED);
         }
@@ -238,14 +238,11 @@ class LoginController
             // Cargar las variables de sesión del usuario
             SessionUtil::loadUserSession($this->UserData);
 
-            $this->Log->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
-            $this->Log->addDetails(__('Perfil', false), Profile::getItem()->getById($this->UserData->getUserProfileId())->getUserprofileName());
-            $this->Log->addDetails(__('Grupo', false), Group::getItem()->getById($this->UserData->getUserGroupId())->getUsergroupName());
-            $this->Log->writeLog();
+            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
+            $this->LogMessage->addDetails(__('Perfil', false), Profile::getItem()->getById($this->UserData->getUserProfileId())->getUserprofileName());
+            $this->LogMessage->addDetails(__('Grupo', false), Group::getItem()->getById($this->UserData->getUserGroupId())->getUsergroupName());
         } else {
-            $this->Log->setLogLevel(Log::ERROR);
-            $this->Log->addDescription(__('Error al obtener la clave maestra del usuario', false));
-            $this->Log->writeLog();
+            $this->LogMessage->addDescription(__('Error al obtener la clave maestra del usuario', false));
 
             throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
         }
@@ -260,8 +257,6 @@ class LoginController
      */
     protected function loadMasterPass()
     {
-        $this->Log->resetDescription();
-
         $masterPass = Request::analyzeEncrypted('mpass');
         $oldPass = Request::analyzeEncrypted('oldpass');
 
@@ -273,8 +268,7 @@ class LoginController
             }
 
             if (!$UserPass->updateUserMPass($masterPass)) {
-                $this->Log->addDescription(__('Clave maestra incorrecta', false));
-                $this->Log->writeLog();
+                $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
 
                 throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
             } else {
@@ -284,8 +278,7 @@ class LoginController
             }
         } else if ($oldPass) {
             if (!$UserPass->updateMasterPass($oldPass)) {
-                $this->Log->addDescription(__('Clave maestra incorrecta', false));
-                $this->Log->writeLog();
+                $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
 
                 throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
             } else {
@@ -312,6 +305,7 @@ class LoginController
      * Cargar las preferencias del usuario y comprobar si usa 2FA
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function loadUserPreferences()
     {
@@ -335,40 +329,34 @@ class LoginController
      */
     protected function authLdap(LdapAuthData $LdapAuthData)
     {
-        $this->Log->resetDescription();
-
         if ($LdapAuthData->getStatusCode() > 0) {
-            $this->Log->addDetails(__('Tipo', false), __FUNCTION__);
-            $this->Log->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
+            $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
+            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
 
             if ($LdapAuthData->getStatusCode() === 49) {
-                $this->Log->addDescription(__('Login incorrecto', false));
-                $this->Log->writeLog();
+                $this->LogMessage->addDescription(__('Login incorrecto', false));
 
-                throw new AuthException(SPException::SP_INFO, $this->Log->getDescription(), '', self::STATUS_INVALID_LOGIN);
+                throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
             } elseif ($LdapAuthData->getStatusCode() === 701) {
-                $this->Log->addDescription(__('Cuenta expirada', false));
-                $this->Log->writeLog();
+                $this->LogMessage->addDescription(__('Cuenta expirada', false));
 
-                throw new AuthException(SPException::SP_INFO, $this->Log->getDescription(), '', self::STATUS_USER_DISABLED);
+                throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_USER_DISABLED);
             } else if ($LdapAuthData->getStatusCode() === 702) {
-                $this->Log->addDescription(__('El usuario no tiene grupos asociados', false));
-                $this->Log->writeLog();
+                $this->LogMessage->addDescription(__('El usuario no tiene grupos asociados', false));
 
-                throw new AuthException(SPException::SP_INFO, $this->Log->getDescription(), '', self::STATUS_USER_DISABLED);
+                throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_USER_DISABLED);
             } else {
-                $this->Log->addDescription(__('Error interno', false));
-                $this->Log->writeLog();
+                $this->LogMessage->addDescription(__('Error interno', false));
 
-                throw new AuthException(SPException::SP_INFO, $this->Log->getDescription(), '', self::STATUS_INTERNAL_ERROR);
+                throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INTERNAL_ERROR);
             }
         }
 
         $this->UserData->setUserName($LdapAuthData->getName());
         $this->UserData->setUserEmail($LdapAuthData->getEmail());
 
-        $this->Log->addDetails(__('Tipo', false), __FUNCTION__);
-        $this->Log->addDetails(__('Servidor LDAP', false), $LdapAuthData->getServer());
+        $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
+        $this->LogMessage->addDetails(__('Servidor LDAP', false), $LdapAuthData->getServer());
 
         try {
             // Verificamos si el usuario existe en la BBDD
@@ -380,9 +368,7 @@ class LoginController
                 UserLdap::getItem($this->UserData)->update();
             }
         } catch (SPException $e) {
-            $this->Log->setLogLevel(Log::ERROR);
-            $this->Log->addDescription($e->getMessage());
-            $this->Log->writeLog();
+            $this->LogMessage->addDescription($e->getMessage());
 
             throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
         }
@@ -400,18 +386,15 @@ class LoginController
      */
     protected function authDatabase(DatabaseAuthData $AuthData)
     {
-        $this->Log->resetDescription();
-
         // Autentificamos con la BBDD
         if ($AuthData->getAuthenticated() === 0) {
-            $this->Log->addDescription(__('Login incorrecto', false));
-            $this->Log->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
-            $this->Log->writeLog();
+            $this->LogMessage->addDescription(__('Login incorrecto', false));
+            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
 
-            throw new AuthException(SPException::SP_INFO, $this->Log->getDescription(), '', self::STATUS_INVALID_LOGIN);
+            throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
         }
 
-        $this->Log->addDetails(__('Tipo', false), __FUNCTION__);
+        $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
 
         return true;
     }
@@ -428,14 +411,12 @@ class LoginController
     {
         // Comprobar si concide el login con la autentificación del servidor web
         if ($AuthData->getAuthenticated() === 0) {
-            $this->Log->resetDescription();
-            $this->Log->addDescription(__('Login incorrecto', false));
-            $this->Log->addDetails(__('Tipo', false), __FUNCTION__);
-            $this->Log->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
-            $this->Log->addDetails(__('Autentificación', false), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
-            $this->Log->writeLog();
+            $this->LogMessage->addDescription(__('Login incorrecto', false));
+            $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
+            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
+            $this->LogMessage->addDetails(__('Autentificación', false), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
 
-            throw new AuthException(SPException::SP_INFO, $this->Log->getDescription(), '', self::STATUS_INVALID_LOGIN);
+            throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
         }
 
         return true;

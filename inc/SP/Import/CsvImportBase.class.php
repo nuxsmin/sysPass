@@ -76,7 +76,9 @@ abstract class CsvImportBase extends ImportBase
     {
         $line = 0;
 
-        $Log = new Log(__('Importar Cuentas', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Importar Cuentas', false));
 
         foreach ($this->file->getFileContent() as $data) {
             $line++;
@@ -122,13 +124,13 @@ abstract class CsvImportBase extends ImportBase
             try {
                 $this->addAccount($AccountData);
 
-                $Log->addDescription(sprintf(__('Cuenta importada: %s', false), $accountName));
+                $LogMessage->addDescription(sprintf(__('Cuenta importada: %s', false), $accountName));
             } catch (SPException $e) {
                 // Escribir los mensajes pendientes
                 $Log->writeLog(true);
-                $Log->addDescription(__('Error importando cuenta', false));
-                $Log->addDescription(sprintf(__('Error procesando línea %s', false), $line));
-                $Log->addDescription($e->getMessage());
+                $LogMessage->addDescription(__('Error importando cuenta', false));
+                $LogMessage->addDescription(sprintf(__('Error procesando línea %s', false), $line));
+                $LogMessage->addDescription($e->getMessage());
                 // Flush y reset
                 $Log->writeLog(true);
             }

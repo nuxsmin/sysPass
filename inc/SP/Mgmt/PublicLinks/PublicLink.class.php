@@ -58,6 +58,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
      * Incrementar el contador de visitas de un enlace
      *
      * @return bool
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function addLinkView()
@@ -65,15 +66,17 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $this->itemData->addCountViews();
         $this->updateUseInfo($_SERVER['REMOTE_ADDR']);
 
-        $Log = new Log(__('Ver Enlace Público', false));
-        $Log->addDescription(__('Enlace visualizado', false));
-        $Log->addDetails(__('Tipo', false), $this->itemData->getTypeId());
-        $Log->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($this->itemData->getItemId()));
-        $Log->addDetails(__('Usuario', false), UserUtil::getUserLoginById($this->itemData->getUserId()));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Ver Enlace Público', false));
+        $LogMessage->addDescription(__('Enlace visualizado', false));
+        $LogMessage->addDetails(__('Tipo', false), $this->itemData->getTypeId());
+        $LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($this->itemData->getItemId()));
+        $LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($this->itemData->getUserId()));
         $Log->writeLog();
 
         if ($this->itemData->isNotify()) {
-            Email::sendEmail($Log);
+            Email::sendEmail($LogMessage);
         }
 
         return $this->update();

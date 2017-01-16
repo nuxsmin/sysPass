@@ -61,9 +61,11 @@ class Database implements AuthInterface
             try {
                 UserMigrate::migrateUser($this->UserData->getUserLogin(), $this->UserData->getUserPass());
             } catch (SPException $e) {
-                $Log = new Log(__FUNCTION__);
-                $Log->addDescription($e->getMessage());
-                $Log->addDetails(__('Login', false), $this->UserData->getUserLogin());
+                $Log = new Log();
+                $LogMessage = $Log->getLogMessage();
+                $LogMessage->setAction(__FUNCTION__);
+                $LogMessage->addDescription($e->getMessage());
+                $LogMessage->addDetails(__('Login', false), $this->UserData->getUserLogin());
                 $Log->writeLog();
 
                 return false;

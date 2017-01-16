@@ -55,53 +55,55 @@ $userEmail = Request::analyze('email');
 $userPass = Request::analyzeEncrypted('pass');
 $userPassR = Request::analyzeEncrypted('passR');
 
+$Log = new Log();
+$LogMessage = $Log->getLogMessage();
 
 if ($userLogin && $userEmail) {
-    $Log = new Log(__('Recuperación de Clave', false));
-    $Log->addDetailsHtml(__('Solicitado para'), sprintf('%s (%s)', $userLogin, $userEmail));
+    $LogMessage->setAction(__('Recuperación de Clave', false));
+    $LogMessage->addDetailsHtml(__('Solicitado para'), sprintf('%s (%s)', $userLogin, $userEmail));
 
     $UserData = User::getItem()->getByLogin($userLogin);
 
     if ($UserData->getUserEmail() === $userEmail
         && AuthUtil::mailPassRecover($UserData)
     ) {
-        $Log->addDescription(__('Solicitud enviada', false));
+        $LogMessage->addDescription(__('Solicitud enviada', false));
         $Log->writeLog();
 
-        $JsonResponse->setDescription($Log->getDescription());
+        $JsonResponse->setDescription($LogMessage->getDescription());
         $JsonResponse->addMessage(__('En breve recibirá un correo para completar la solicitud.'));
         Json::returnJson($JsonResponse);
     }
 
-    $Log->addDescription(__('Solicitud no enviada', false));
-    $Log->addDescription(__('Compruebe datos de usuario o consulte con el administrador', false));
+    $LogMessage->addDescription(__('Solicitud no enviada', false));
+    $LogMessage->addDescription(__('Compruebe datos de usuario o consulte con el administrador', false));
     $Log->writeLog();
 
-    Email::sendEmail($Log);
+    Email::sendEmail($LogMessage);
 
     $JsonResponse->setStatus(0);
-    $JsonResponse->setDescription($Log->getDescription());
+    $JsonResponse->setDescription($LogMessage->getDescription());
     Json::returnJson($JsonResponse);
 } elseif ($userPass && $userPassR && $userPass === $userPassR) {
-    $Log = new Log(__('Modificar Clave Usuario', false));
+    $LogMessage->setAction(__('Modificar Clave Usuario', false));
 
     try {
         $UserPassRecover = UserPassRecover::getItem()->getHashUserId(Request::analyze('hash'));
         UserPass::getItem()->updateUserPass($UserPassRecover->getItemData()->getUserpassrUserId(), $userPass);
     } catch (SPException $e) {
-        $Log->addDescription($e->getMessage());
+        $LogMessage->addDescription($e->getMessage());
         $Log->writeLog();
 
         $JsonResponse->setDescription($e->getMessage());
         Json::returnJson($JsonResponse);
     }
 
-    $Log->addDescription(__('Clave actualizada', false));
-    $Log->addDetailsHtml(__('Login', false), UserPass::getItem()->getItemData()->getUserLogin());
+    $LogMessage->addDescription(__('Clave actualizada', false));
+    $LogMessage->addDetailsHtml(__('Login', false), UserPass::getItem()->getItemData()->getUserLogin());
     $Log->writeLog();
 
     $JsonResponse->setStatus(0);
-    $JsonResponse->setDescription($Log->getDescription());
+    $JsonResponse->setDescription($LogMessage->getDescription());
     Json::returnJson($JsonResponse);
 } else {
     Response::printJson(__('La clave es incorrecta o no coincide'));

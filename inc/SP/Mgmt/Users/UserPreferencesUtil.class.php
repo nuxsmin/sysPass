@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -54,15 +54,17 @@ class UserPreferencesUtil
      */
     public static function migrate()
     {
-        $Log = new Log(__FUNCTION__);
-        $Log->addDescription(__('Actualizando preferencias', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__FUNCTION__);
+        $LogMessage->addDescription(__('Actualizando preferencias', false));
 
         foreach (User::getItem()->getAll() as $User) {
             try {
                 $Preferences = $User->getUserPreferences();
 
                 if (!empty($Preferences)) {
-                    $Log->addDetails(__('Usuario', false), $User->getUserLogin());
+                    $LogMessage->addDetails(__('Usuario', false), $User->getUserLogin());
 
                     /** @var UserPreferencesData $Preferences */
                     $Preferences = Util::castToClass(UserPreferencesData::class, $Preferences, 'SP\UserPreferences');
@@ -75,13 +77,13 @@ class UserPreferencesUtil
                     }
                 }
             } catch (SPException $e) {
-                $Log->addDescription($e->getMessage());
+                $LogMessage->addDescription($e->getMessage());
                 $Log->setLogLevel(Log::ERROR);
                 $Log->writeLog();
             }
         }
 
-        $Log->addDescription(__('Preferencias actualizadas', false));
+        $LogMessage->addDescription(__('Preferencias actualizadas', false));
         $Log->writeLog();
 
         return true;

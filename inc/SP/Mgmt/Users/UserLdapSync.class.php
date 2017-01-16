@@ -51,19 +51,22 @@ class UserLdapSync
      * Sincronizar usuarios de LDAP
      *
      * @return bool
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public static function run()
     {
-        $Log = new Log(__('Sincronización LDAP', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Sincronización LDAP', false));
 
         $Ldap = Config::getConfig()->isLdapAds() ? new LdapMsAds() : new LdapStd();
 
         $ldapObjects = $Ldap->findObjects();
         self::$totalObjects = (int)$ldapObjects['count'];
 
-        $Log->addDescription(sprintf(__('Objetos encontrados: %d', false), self::$totalObjects));
+        $LogMessage->addDetails(__('Objetos encontrados', false), self::$totalObjects);
 
         if (self::$totalObjects > 0) {
             $UserData = new UserData();
@@ -95,24 +98,24 @@ class UserLdapSync
                     $User->setUserPass(Util::generateRandomBytes());
 
                     try {
-                        $Log->addDescription(sprintf(__('Creando usuario \'%s (%s)\'', false), $User->getUserName(), $User->getUserLogin()));
+                        $LogMessage->addDetails(__('Usuario', false), sprintf('%s (%s)', $User->getUserName(), $User->getUserLogin()));
                         UserLdap::getItem($User)->add();
 
                         self::$syncedObjects++;
                     } catch (SPException $e) {
                         self::$errorObjects++;
-                        $Log->addDescription($e->getMessage());
+                        $LogMessage->addDescription($e->getMessage());
                     }
                 }
             }
         } else {
-            $Log->addDescription(__('No se encontraron objetos para sincronizar', false));
+            $LogMessage->addDescription(__('No se encontraron objetos para sincronizar', false));
             $Log->writeLog();
 
             return false;
         }
 
-        $Log->addDescription(__('Sincronización finalizada', false));
+        $LogMessage->addDescription(__('Sincronización finalizada', false));
         $Log->writeLog();
 
         return true;

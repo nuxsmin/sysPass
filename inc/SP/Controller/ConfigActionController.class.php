@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -510,50 +510,55 @@ class ConfigActionController implements ItemControllerInterface
         ConfigDB::setCacheConfigValue('masterPwd', $hashMPass);
         ConfigDB::setCacheConfigValue('lastupdatempass', time());
 
-        $Log = new Log(__('Actualizar Clave Maestra', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Actualizar Clave Maestra', false));
 
         if (ConfigDB::writeConfig()) {
-            $Log->addDescription(__('Clave maestra actualizada', false));
+            $LogMessage->addDescription(__('Clave maestra actualizada', false));
 
             $this->JsonResponse->setStatus(0);
         } else {
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al guardar el hash de la clave maestra', false));
+            $LogMessage->addDescription(__('Error al guardar el hash de la clave maestra', false));
         }
 
-        $this->JsonResponse->setDescription($Log->getDescription());
+        $this->JsonResponse->setDescription($LogMessage->getHtmlDescription());
 
         $Log->writeLog();
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
     }
 
     /**
      * Acción para generar clave maestra temporal
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     protected function tempMasterPassAction()
     {
         $tempMasterMaxTime = Request::analyze('tmpass_maxtime', 3600);
         $tempMasterPass = CryptMasterPass::setTempMasterPass($tempMasterMaxTime);
 
-        $Log = new Log(__('Generar Clave Temporal', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Generar Clave Temporal', false));
 
         if ($tempMasterPass !== false && !empty($tempMasterPass)) {
-            $Log->addDescription(__('Clave Temporal Generada', false));
-            $Log->addDetails(__('Clave', false), $tempMasterPass);
+            $LogMessage->addDescription(__('Clave Temporal Generada', false));
+            $LogMessage->addDetails(__('Clave', false), $tempMasterPass);
 
             $this->JsonResponse->setStatus(0);
         } else {
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al generar clave temporal', false));
+            $LogMessage->addDescription(__('Error al generar clave temporal', false));
 
         }
 
-        $this->JsonResponse->setDescription($Log->getDescription());
+        $this->JsonResponse->setDescription($LogMessage->getHtmlDescription());
 
         $Log->writeLog();
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
     }
 
     /**

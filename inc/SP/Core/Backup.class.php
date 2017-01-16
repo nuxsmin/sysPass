@@ -45,11 +45,14 @@ class Backup
      * Realizar backup de la BBDD y aplicación.
      *
      * @return bool
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function doBackup()
     {
-        $Log = new Log(__('Realizar Backup', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Realizar Backup', false));
 
         $siteName = Util::getAppInfo('appname');
         $backupDir = Init::$SERVERROOT;
@@ -69,19 +72,19 @@ class Backup
             self::backupTables('*', $bakFileDB);
             self::backupApp($bakFileApp);
         } catch (\Exception $e) {
+            $LogMessage->addDescription(__('Error al realizar el backup', false));
+            $LogMessage->addDetails($e->getCode(), $e->getMessage());
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al realizar el backup', false));
-            $Log->addDetails($e->getCode(), $e->getMessage());
             $Log->writeLog();
 
-            Email::sendEmail($Log);
+            Email::sendEmail($LogMessage);
             return false;
         }
 
-        $Log->addDescription(__('Copia de la aplicación y base de datos realizada correctamente', false));
+        $LogMessage->addDescription(__('Copia de la aplicación y base de datos realizada correctamente', false));
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
         return true;
     }

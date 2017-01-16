@@ -485,6 +485,7 @@ class Account extends AccountBase implements AccountInterface
      * @param string $newMasterPass     con la nueva clave maestra
      * @param string $newHash           con el nuevo hash de la clave maestra
      * @return bool
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null)
@@ -494,11 +495,14 @@ class Account extends AccountBase implements AccountInterface
         $demoEnabled = Checks::demoIsEnabled();
         $errorCount = 0;
 
-        $Log = new Log(__('Actualizar Clave Maestra', false));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Actualizar Clave Maestra', false));
+
 
         if (!Crypt::checkCryptModule()) {
+            $LogMessage->addDescription(__('Error en el módulo de encriptación', false));
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error en el módulo de encriptación', false));
             $Log->writeLog();
             return false;
         }
@@ -506,8 +510,8 @@ class Account extends AccountBase implements AccountInterface
         $accountsPass = $this->getAccountsPassData();
 
         if (!$accountsPass) {
+            $LogMessage->addDescription(__('Error al obtener las claves de las cuentas', false));
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(__('Error al obtener las claves de las cuentas', false));
             $Log->writeLog();
             return false;
         }
@@ -523,12 +527,12 @@ class Account extends AccountBase implements AccountInterface
             }
 
             if (strlen($account->account_pass) === 0) {
-                $Log->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
+                $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
                 continue;
             }
 
             if (strlen($account->account_IV) < 32) {
-                $Log->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
+                $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
             }
 
             $decryptedPass = Crypt::getDecrypt($account->account_pass, $account->account_IV);
@@ -537,24 +541,24 @@ class Account extends AccountBase implements AccountInterface
 
             if ($this->accountData->getAccountPass() === false) {
                 $errorCount++;
-                $Log->addDetails(__('No es posible desencriptar la clave de la cuenta', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
+                $LogMessage->addDetails(__('No es posible desencriptar la clave de la cuenta', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
                 continue;
             }
 
             if (!$this->updateAccountPass(true)) {
                 $errorCount++;
-                $Log->addDetails(__('Fallo al actualizar la clave de la cuenta', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
+                $LogMessage->addDetails(__('Fallo al actualizar la clave de la cuenta', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
                 continue;
             }
 
             $accountsOk[] = $this->accountData->getAccountId();
         }
 
-        $Log->addDetails(__('Cuentas actualizadas', false), implode(',', $accountsOk));
-        $Log->addDetails(__('Errores', false), $errorCount);
+        $LogMessage->addDetails(__('Cuentas actualizadas', false), implode(',', $accountsOk));
+        $LogMessage->addDetails(__('Errores', false), $errorCount);
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
         return true;
     }

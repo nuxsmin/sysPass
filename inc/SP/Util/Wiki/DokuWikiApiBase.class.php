@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -180,27 +180,31 @@ abstract class DokuWikiApiBase
      * Escribir el error en el registro de eventos
      *
      * @param \SP\Core\Exceptions\SPException $e
-     * @param string $source Origen del error
+     * @param string                          $source Origen del error
      */
     protected function logException(SPException $e, $source = null)
     {
-        $Log = new Log('DokuWiki API', $e->getMessage(), LogLevel::ERROR);
+        $Log = new Log();
+        $LogMessgae = $Log->getLogMessage();
+        $LogMessgae->setAction('DokuWiki API');
+        $LogMessgae->addDescription($e->getMessage());
 
         if ($e->getHint()) {
-            $Log->addDetails(__('Error', false), $e->getHint());
+            $LogMessgae->addDetails(__('Error', false), $e->getHint());
         }
 
         if (null !== $source) {
-            $Log->addDetails(__('Origen', false), $source);
+            $LogMessgae->addDetails(__('Origen', false), $source);
         }
 
+        $Log->setLogLevel(LogLevel::ERROR);
         $Log->writeLog();
     }
 
     /**
      * Establecer los datos de conexión a la API de DokuWiki
      *
-     * @param string $url La URL de conexión
+     * @param string $url  La URL de conexión
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
      * @throws SPException

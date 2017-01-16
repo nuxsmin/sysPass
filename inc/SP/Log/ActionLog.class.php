@@ -24,7 +24,7 @@
 
 namespace SP\Log;
 
-use SP\Html\Html;
+use SP\Core\Messages\LogMessage;
 
 /**
  * Clase abstracta ActionLog para la gestión de mensajes de eventos
@@ -38,93 +38,28 @@ abstract class ActionLog extends LogLevel
      */
     const NEWLINE_TXT = PHP_EOL;
     /**
-     * Constante de nueva línea para descriciones en formato HTML
+     * Constante de nueva línea para descripciones en formato HTML
      */
     const NEWLINE_HTML = '<br>';
-    /**
-     * Acción realizada
-     *
-     * @var string
-     */
-    protected $action;
-    /**
-     * Detalles de la acción
-     *
-     * @var array
-     */
-    protected $description;
-    /**
-     * Formato de nueva línea en HTML
-     *
-     * @var bool
-     */
-    protected $newLineHtml = false;
     /**
      * @var string
      */
     protected $logLevel = '';
     /**
-     * @var array
+     * @var LogMessage
      */
-    protected $details;
+    protected $LogMessage;
 
     /**
      * Contructor
      *
-     * @param string $action      La acción realizada
-     * @param string $description La descripción de la acción realizada
-     * @param string $level       El nivel del mensaje
+     * @param LogMessage $LogMessage
+     * @param string     $level El nivel del mensaje
      */
-    public function __construct($action = null, $description = null, $level = Log::INFO)
+    public function __construct(LogMessage $LogMessage = null, $level = Log::INFO)
     {
-        if (null !== $action) {
-            $this->setAction($action);
-        }
-
-        if (null !== $description) {
-            $this->addDescription($description);
-        }
-
+        $this->LogMessage = $LogMessage ?: new LogMessage();
         $this->logLevel = $level;
-    }
-
-    /**
-     * Establece la descripción de la acción realizada
-     *
-     * @param string $description
-     */
-    public function addDescription($description = '')
-    {
-        $this->description[] = $this->formatString($description);
-    }
-
-    /**
-     * Formatear una cadena para guardarla en el registro
-     *
-     * @param $string string La cadena a formatear
-     * @return string
-     */
-    private function formatString($string)
-    {
-        return strip_tags($string);
-    }
-
-    /**
-     * Establece la descripción de la acción realizada en formato HTML
-     *
-     * @param string $description
-     */
-    public function addDescriptionHtml($description = '')
-    {
-        $this->addDescription(Html::strongText($description));
-    }
-
-    /**
-     * Añadir una línea en blanco a la descripción
-     */
-    public function addDescriptionLine()
-    {
-        $this->description[] = '';
     }
 
     /**
@@ -144,137 +79,18 @@ abstract class ActionLog extends LogLevel
     }
 
     /**
-     * Devuelve los detalles de la acción realizada
-     *
-     * @param bool $translate
-     * @return string
+     * @return LogMessage
      */
-    public function getDetails($translate = false)
+    public function getLogMessage()
     {
-        if (null === $this->details) {
-            return '';
-        }
-
-        if (count($this->details) > 1) {
-            if ($translate === true) {
-                return implode(PHP_EOL, array_map(function ($detail) use ($translate) {
-                    return $this->formatDetail($detail, $translate);
-                }, $this->details));
-            }
-
-            return implode(PHP_EOL, array_map([$this, 'formatDetail'], $this->details));
-        }
-
-        return $this->formatDetail($this->details[0], $translate);
+        return $this->LogMessage;
     }
 
     /**
-     * Devolver un detalle formateado
-     *
-     * @param array $detail
-     * @param bool  $translate
-     * @return string
+     * @param LogMessage $LogMessage
      */
-    protected function formatDetail(array $detail, $translate = false)
+    public function setLogMessage(LogMessage $LogMessage)
     {
-        if ($translate === true) {
-            return sprintf('%s : %s', __($detail[0]), __($detail[1]));
-        }
-
-        return sprintf('%s : %s', $detail[0], $detail[1]);
-    }
-
-    /**
-     * Devuelve la acción realizada
-     *
-     * @param bool $translate
-     * @return string
-     */
-    public function getAction($translate = false)
-    {
-        return $translate === true ? __($this->action) : $this->action;
-    }
-
-    /**
-     * Establece la acción realizada
-     *
-     * @param string $action
-     */
-    public function setAction($action)
-    {
-        $this->action = $this->formatString($action);
-    }
-
-    /**
-     * Devuelve la descripción de la acción realizada
-     *
-     * @param bool $translate
-     * @return string
-     */
-    public function getDescription($translate = false)
-    {
-        if (null === $this->description) {
-            return '';
-        }
-
-        if (count($this->description) > 1) {
-            if ($translate === true) {
-                return implode(PHP_EOL, array_map('__', $this->description));
-            }
-
-            return implode(PHP_EOL, $this->description);
-        }
-
-        return $translate === true ? __($this->description[0]) : $this->description[0];
-    }
-
-    /**
-     * Devuelve la descripción de la acción realizada en formato HTML
-     *
-     * @param bool $translate
-     * @return string
-     */
-    public function getHtmlDescription($translate = false) {
-        return nl2br($this->getDescription($translate));
-    }
-
-    /**
-     * Añadir detalle en formato HTML. Se resalta el texto clave.
-     *
-     * @param $key   string
-     * @param $value string
-     */
-    public function addDetailsHtml($key, $value)
-    {
-        $this->addDetails(Html::strongText($key), $value);
-    }
-
-    /**
-     * Establece los detalles de la acción realizada
-     *
-     * @param $key   string
-     * @param $value string
-     */
-    public function addDetails($key, $value)
-    {
-        $this->details[] = [$this->formatString($key), $this->formatString($value)];
-    }
-
-    /**
-     * Establecer el formato de nueva línea a HTML
-     *
-     * @param $bool bool
-     */
-    public function setNewLineHtml($bool)
-    {
-        $this->newLineHtml = $bool;
-    }
-
-    /**
-     * Restablecer la variable de descripcion
-     */
-    public function resetDescription()
-    {
-        $this->description = null;
+        $this->LogMessage = $LogMessage;
     }
 }
