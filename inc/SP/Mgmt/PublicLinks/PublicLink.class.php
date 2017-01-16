@@ -31,7 +31,6 @@ use SP\Core\Session;
 use SP\DataModel\PublicLinkBaseData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
-use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\ItemInterface;

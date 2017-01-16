@@ -26,8 +26,6 @@ namespace SP\Mgmt\Plugins;
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\PluginData;
-use SP\Html\Html;
-use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;

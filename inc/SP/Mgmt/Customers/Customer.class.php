@@ -31,8 +31,6 @@ use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
-use SP\Html\Html;
-use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\ItemInterface;

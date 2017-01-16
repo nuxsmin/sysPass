@@ -26,12 +26,8 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die();
 
-use SP\Auth\AuthUtil;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
-use SP\Html\Html;
-use SP\Log\Email;
-use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;

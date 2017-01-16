@@ -24,7 +24,6 @@
 
 namespace SP\Controller;
 
-use SP\Account\AccountUtil;
 use SP\Core\ItemsTypeInterface;
 use SP\DataModel\DataModelInterface;
 use SP\Mgmt\Categories\Category;

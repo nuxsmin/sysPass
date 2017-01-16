@@ -355,6 +355,7 @@ sysPass.Theme = function (Common) {
             };
 
             var $tagsSelect = $frmSearch.find("#tags")[0];
+            var $tagsBar = $frmSearch.find(".search-filters-tags");
             var $showFilter = $frmSearch.find("i.show-filter");
 
             $resContent.on("click", "#data-search-header .sort-down,#data-search-header .sort-up", function () {
@@ -369,7 +370,7 @@ sysPass.Theme = function (Common) {
                     checkFavorite($this);
                 });
             }).on("click", "#search-rows span.tag", function () {
-                if ($showFilter.data("state") == 0) {
+                if ($tagsBar.is(":hidden")) {
                     $showFilter.trigger("click");
                 }
 
@@ -378,13 +379,12 @@ sysPass.Theme = function (Common) {
 
             $showFilter.on("click", function () {
                 var $this = $(this);
-                var $tags = $frmSearch.find(".search-filters-tags");
 
-                if ($tags.is(":hidden")) {
-                    $tags.slideDown("slow");
+                if ($tagsBar.is(":hidden")) {
+                    $tagsBar.slideDown("slow");
                     $this.html($this.data("icon-up"));
                 } else {
-                    $tags.slideUp("slow");
+                    $tagsBar.slideUp("slow");
                     $this.html($this.data("icon-down"));
                 }
             });

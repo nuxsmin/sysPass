@@ -35,7 +35,6 @@ use SP\Core\CryptMasterPass;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\Core\XmlExport;
-use SP\Html\Html;
 use SP\Http\Request;
 use SP\Import\Import;
 use SP\Import\ImportParams;

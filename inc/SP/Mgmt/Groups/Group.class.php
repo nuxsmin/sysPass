@@ -28,8 +28,6 @@ namespace SP\Mgmt\Groups;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupData;
 use SP\DataModel\GroupUsersData;
-use SP\Html\Html;
-use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;

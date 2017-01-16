@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Crypt;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Messages\LogMessage;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefData;
 use SP\Log\Log;

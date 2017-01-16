@@ -28,10 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
-use SP\Html\Html;
-use SP\Log\Email;
-use SP\Log\Log;
-use SP\Mgmt\Users\UserUtil;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 

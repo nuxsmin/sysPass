@@ -160,6 +160,10 @@ sysPass.Actions = function (Common) {
         var $content = $("<div id=\"box-popup\" class=\"image\">" + response + "</div>");
         var $image = $content.find("img");
 
+        if ($image.length === 0) {
+            return showFloatingBox($obj, response);
+        }
+
         $image.hide();
 
         $.magnificPopup.open({

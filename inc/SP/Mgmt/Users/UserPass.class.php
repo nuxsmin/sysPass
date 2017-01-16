@@ -31,7 +31,6 @@ use SP\Core\Crypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionUtil;
 use SP\DataModel\UserPassData;
-use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;

@@ -29,7 +29,6 @@ use Plugins\Authenticator\AuthenticatorPlugin;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
-use SP\Core\Session;
 use SP\DataModel\PluginData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;

@@ -32,7 +32,6 @@ use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\GroupAccountsData;
-use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomField;

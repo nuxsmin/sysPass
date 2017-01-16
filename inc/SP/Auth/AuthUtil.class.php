@@ -30,7 +30,6 @@ use SP\DataModel\UserData;
 use SP\DataModel\UserPassRecoverData;
 use SP\Html\Html;
 use SP\Log\Email;
-use SP\Log\Log;
 use SP\Mgmt\Users\UserPassRecover;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
