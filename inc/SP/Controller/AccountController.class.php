@@ -193,7 +193,7 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
 
             $this->view->assign('accountPassDate', gmdate('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
-            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: ''));
+            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: 0));
         } else {
             $this->view->assign('accountPassDateChange', gmdate('Y-m-d', time() + 7776000));
         }

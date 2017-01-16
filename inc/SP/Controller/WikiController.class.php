@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -107,10 +107,13 @@ class WikiController extends ControllerBase implements ActionsInterface
             $DokuWikiApi = new DokuWikiApi();
             $headerData = $DokuWikiApi->getTitle();
             $pageData = $DokuWikiApi->getPage($pageName);
-            $pageInfo = $DokuWikiApi->getPageInfo($pageName);
 
-            if (is_array($pageData) && empty($pageData[0])) {
-                $pageSearch = $DokuWikiApi->getSearch($pageName);
+            if ($pageData !== false) {
+                if (is_array($pageData) && empty($pageData[0])) {
+                    $pageSearch = $DokuWikiApi->getSearch($pageName);
+                } else {
+                    $pageInfo = $DokuWikiApi->getPageInfo($pageName);
+                }
             }
         } catch (SPException $e) {
 //            $DokuWikiApi->getPageList();

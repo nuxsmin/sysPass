@@ -250,4 +250,25 @@ class DokuWikiApi extends DokuWikiApiBase
             return false;
         }
     }
+
+    /**
+     * Obtener los permisos de la página
+     *
+     * @param $page
+     * @return array|bool
+     */
+    public function getAcl($page)
+    {
+        try {
+            $this->createMsg('wiki.aclCheck');
+            $this->addParam($page);
+            $Res = new DokuWikiApiParse($this->callWiki());
+            $this->catchError($Res);
+
+            return $Res->parseParams();
+        } catch (SPException $e) {
+            $this->logException($e, __FUNCTION__);
+            return false;
+        }
+    }
 }

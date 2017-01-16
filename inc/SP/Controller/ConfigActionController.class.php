@@ -33,6 +33,7 @@ use SP\Core\Backup;
 use SP\Core\Crypt;
 use SP\Core\CryptMasterPass;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Messages\LogMessage;
 use SP\Core\Session;
 use SP\Core\XmlExport;
 use SP\Http\Request;
@@ -70,6 +71,8 @@ class ConfigActionController implements ItemControllerInterface
      */
     public function doAction()
     {
+        $this->LogMessage = new LogMessage();
+
         try {
             switch ($this->actionId) {
                 case ActionsInterface::ACTION_CFG_GENERAL:
@@ -106,6 +109,13 @@ class ConfigActionController implements ItemControllerInterface
             $this->JsonResponse->setDescription($e->getMessage());
         }
 
+        if ($this->LogMessage->getAction() !== null) {
+            $Log = new Log($this->LogMessage);
+            $Log->writeLog();
+
+            $this->JsonResponse->setDescription($this->LogMessage->getHtmlDescription());
+        }
+
         Json::returnJson($this->JsonResponse);
     }
 
@@ -116,7 +126,6 @@ class ConfigActionController implements ItemControllerInterface
      */
     protected function generalAction()
     {
-        $Log = Log::newLog(__('Modificar Configuración', false));
         $Config = Session::getConfig();
 
         // General
@@ -158,7 +167,7 @@ class ConfigActionController implements ItemControllerInterface
         } elseif ($Config->isSyslogEnabled()) {
             $Config->setSyslogRemoteEnabled(false);
 
-            $Log->addDescription(__('Syslog remoto deshabilitado', false));
+            $this->LogMessage->addDescription(__('Syslog remoto deshabilitado', false));
         }
 
         // Accounts
@@ -181,7 +190,7 @@ class ConfigActionController implements ItemControllerInterface
 
         if ($filesEnabled && $filesAllowedSize >= 16384) {
             $this->JsonResponse->setDescription(__('El tamaño máximo por archivo es de 16MB', false));
-            Json::returnJson($this->JsonResponse);
+            return;
         }
 
         if (!empty($filesAllowedExts)) {
@@ -230,28 +239,27 @@ class ConfigActionController implements ItemControllerInterface
             $Config->setProxyUser($proxyUser);
             $Config->setProxyPass($proxyPass);
 
-            $Log->addDescription(__('Proxy habiltado', false));
+            $this->LogMessage->addDescription(__('Proxy habiltado', false));
         } elseif ($Config->isProxyEnabled()) {
             $Config->setProxyEnabled(false);
 
-            $Log->addDescription(__('Proxy deshabilitado', false));
+            $this->LogMessage->addDescription(__('Proxy deshabilitado', false));
         }
 
-        $Log->addDetails(__('Sección', false), __('General', false));
+        $this->LogMessage->addDetails(__('Sección', false), __('General', false));
 
         // Recargar la aplicación completa para establecer nuevos valores
         Util::reload();
 
-        $this->saveConfig($Log);
+        $this->saveConfig();
     }
 
     /**
      * Guardar la configuración
      *
-     * @param Log $Log instancia de Log
      * @throws \SP\Core\Exceptions\SPException
      */
-    protected function saveConfig(Log $Log)
+    protected function saveConfig()
     {
         try {
             if (Checks::demoIsEnabled()) {
@@ -262,16 +270,16 @@ class ConfigActionController implements ItemControllerInterface
             Config::saveConfig();
 
             $this->JsonResponse->setStatus(0);
-            $this->JsonResponse->setDescription(__('Configuración actualizada', false));
-        } catch (SPException $e) {
-            $Log->addDescription(__('Error al guardar la configuración', false));
-            $Log->addDetails($e->getMessage(), $e->getHint());
 
-            $this->JsonResponse->setDescription($e->getMessage());
+            $this->LogMessage->addDescription(__('Configuración actualizada', false));
+        } catch (SPException $e) {
+            $this->LogMessage->addDescription(__('Error al guardar la configuración', false));
+            $this->LogMessage->addDetails($e->getMessage(), $e->getHint());
         }
 
-        $Log->writeLog();
-        Email::sendEmail($Log);
+        $this->LogMessage->setAction(__('Modificar Configuración', false));
+
+        Email::sendEmail($this->LogMessage);
     }
 
     /**
@@ -281,7 +289,6 @@ class ConfigActionController implements ItemControllerInterface
      */
     protected function wikiAction()
     {
-        $Log = Log::newLog(__('Modificar Configuración', false));
         $Config = Session::getConfig();
 
         // Wiki
@@ -300,11 +307,11 @@ class ConfigActionController implements ItemControllerInterface
             $Config->setWikiPageurl($wikiPageUrl);
             $Config->setWikiFilter(explode(',', $wikiFilter));
 
-            $Log->addDescription(__('Wiki habiltada', false));
+            $this->LogMessage->addDescription(__('Wiki habiltada', false));
         } elseif ($Config->isWikiEnabled()) {
             $Config->setWikiEnabled(false);
 
-            $Log->addDescription(__('Wiki deshabilitada', false));
+            $this->LogMessage->addDescription(__('Wiki deshabilitada', false));
         }
 
         // DokuWiki
@@ -327,16 +334,16 @@ class ConfigActionController implements ItemControllerInterface
             $Config->setDokuwikiPass($dokuWikiPass);
             $Config->setDokuwikiNamespace($dokuWikiNamespace);
 
-            $Log->addDescription(__('DokuWiki habiltada', false));
+            $this->LogMessage->addDescription(__('DokuWiki habiltada', false));
         } elseif ($Config->isDokuwikiEnabled()) {
             $Config->setDokuwikiEnabled(false);
 
-            $Log->addDescription(__('DokuWiki deshabilitada', false));
+            $this->LogMessage->addDescription(__('DokuWiki deshabilitada', false));
         }
 
-        $Log->addDetails(__('Sección', false), __('Wiki', false));
+        $this->LogMessage->addDetails(__('Sección', false), __('Wiki', false));
 
-        $this->saveConfig($Log);
+        $this->saveConfig();
     }
 
     /**
@@ -346,7 +353,6 @@ class ConfigActionController implements ItemControllerInterface
      */
     protected function ldapAction()
     {
-        $Log = Log::newLog(__('Modificar Configuración', false));
         $Config = Session::getConfig();
 
         // LDAP
@@ -375,16 +381,17 @@ class ConfigActionController implements ItemControllerInterface
             $Config->setLdapBindUser($ldapBindUser);
             $Config->setLdapBindPass($ldapBindPass);
 
-            $Log->addDescription(__('LDAP habiltado', false));
+            $this->LogMessage->addDescription(__('LDAP habiltado', false));
         } elseif ($Config->isLdapEnabled()) {
             $Config->setLdapEnabled(false);
 
-            $Log->addDescription(__('LDAP deshabilitado', false));
+            $this->LogMessage->addDescription(__('LDAP deshabilitado', false));
         }
 
-        $Log->addDetails(__('Sección', false), __('LDAP', false));
+        $this->LogMessage->addDetails(__('Sección', false), __('LDAP', false));
+        $this->JsonResponse->setStatus(0);
 
-        $this->saveConfig($Log);
+        $this->saveConfig();
     }
 
     /**
@@ -426,18 +433,19 @@ class ConfigActionController implements ItemControllerInterface
                 $Config->setMailPass($mailPass);
             }
 
-            $Log->addDescription(__('Correo habiltado', false));
+            $this->LogMessage->addDescription(__('Correo habiltado', false));
         } elseif ($Config->isMailEnabled()) {
             $Config->setMailEnabled(false);
             $Config->setMailRequestsEnabled(false);
             $Config->setMailAuthenabled(false);
 
-            $Log->addDescription(__('Correo deshabilitado', false));
+            $this->LogMessage->addDescription(__('Correo deshabilitado', false));
         }
 
-        $Log->addDetails(__('Sección', false), __('Correo', false));
+        $this->LogMessage->addDetails(__('Sección', false), __('Correo', false));
+        $this->JsonResponse->setStatus(0);
 
-        $this->saveConfig($Log);
+        $this->saveConfig();
     }
 
     /**
@@ -509,23 +517,16 @@ class ConfigActionController implements ItemControllerInterface
         ConfigDB::setCacheConfigValue('masterPwd', $hashMPass);
         ConfigDB::setCacheConfigValue('lastupdatempass', time());
 
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Actualizar Clave Maestra', false));
+        $this->LogMessage->setAction(__('Actualizar Clave Maestra', false));
 
         if (ConfigDB::writeConfig()) {
-            $LogMessage->addDescription(__('Clave maestra actualizada', false));
-
+            $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
             $this->JsonResponse->setStatus(0);
         } else {
-            $Log->setLogLevel(Log::ERROR);
-            $LogMessage->addDescription(__('Error al guardar el hash de la clave maestra', false));
+            $this->LogMessage->addDescription(__('Error al guardar el hash de la clave maestra', false));
         }
 
-        $this->JsonResponse->setDescription($LogMessage->getHtmlDescription());
-
-        $Log->writeLog();
-        Email::sendEmail($LogMessage);
+        Email::sendEmail($this->LogMessage);
     }
 
     /**
@@ -539,25 +540,18 @@ class ConfigActionController implements ItemControllerInterface
         $tempMasterMaxTime = Request::analyze('tmpass_maxtime', 3600);
         $tempMasterPass = CryptMasterPass::setTempMasterPass($tempMasterMaxTime);
 
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Generar Clave Temporal', false));
+        $this->LogMessage->setAction(__('Generar Clave Temporal', false));
 
         if ($tempMasterPass !== false && !empty($tempMasterPass)) {
-            $LogMessage->addDescription(__('Clave Temporal Generada', false));
-            $LogMessage->addDetails(__('Clave', false), $tempMasterPass);
+            $this->LogMessage->addDescription(__('Clave Temporal Generada', false));
+            $this->LogMessage->addDetails(__('Clave', false), $tempMasterPass);
 
             $this->JsonResponse->setStatus(0);
         } else {
-            $Log->setLogLevel(Log::ERROR);
-            $LogMessage->addDescription(__('Error al generar clave temporal', false));
-
+            $this->LogMessage->addDescription(__('Error al generar clave temporal', false));
         }
 
-        $this->JsonResponse->setDescription($LogMessage->getHtmlDescription());
-
-        $Log->writeLog();
-        Email::sendEmail($LogMessage);
+        Email::sendEmail($this->LogMessage);
     }
 
     /**
@@ -606,8 +600,8 @@ class ConfigActionController implements ItemControllerInterface
             return;
         }
 
-        $this->JsonResponse->setStatus(0);
         $this->JsonResponse->setDescription(__('Proceso de exportación finalizado', false));
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
@@ -626,7 +620,7 @@ class ConfigActionController implements ItemControllerInterface
             return;
         }
 
-        $this->JsonResponse->setStatus(0);
         $this->JsonResponse->setDescription(__('Proceso de backup finalizado', false));
+        $this->JsonResponse->setStatus(0);
     }
 }

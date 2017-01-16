@@ -151,7 +151,7 @@ abstract class DokuWikiApiBase
             $data['type'] = ['Content-Type: text/xml'];
             $data['data'] = $this->xml->saveXML();
 
-            return Util::getDataFromUrl($this->apiUrl, $data, true);
+            return Util::getDataFromUrl($this->apiUrl, $data, true, true);
         } catch (SPException $e) {
             throw $e;
         }

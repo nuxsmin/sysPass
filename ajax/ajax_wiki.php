@@ -22,6 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Controller\WikiController;
 use SP\Http\Request;
 
 define('APP_ROOT', '..');
@@ -30,5 +31,5 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-$Controller = new \SP\Controller\WikiController();
+$Controller = new WikiController();
 $Controller->doAction();

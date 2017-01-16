@@ -20,7 +20,7 @@
     <div id="wikiPageInfo">
         <?php if (is_array($pageInfo)): ?>
             <ul>
-                <li><?php printf('%s: <a href="%s" target="_blank">%s</a>', __('Página'), $wikiUrlBase . '/' . $pageInfo['name'], $pageInfo['name']); ?></li>
+                <li><?php printf('%s: <a href="%s" target="_blank">%s</a>', __('Página'), $wikiUrlBase . $pageInfo['name'], $pageInfo['name']); ?></li>
                 <li><?php printf('%s: %s', __('Fecha'), $pageInfo['lastModified']); ?></li>
                 <li><?php printf('%s: %s', __('Autor'), $pageInfo['author']); ?></li>
             </ul>

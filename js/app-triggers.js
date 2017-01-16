@@ -69,7 +69,7 @@ sysPass.Triggers = function (Common) {
 
         $container.find("#wikifilter").selectize({
             create: true,
-            createFilter: new RegExp("^[a-z0-9\._-]+$", "i"),
+            createFilter: new RegExp("^[a-z0-9:\._-]+$", "i"),
             plugins: ["remove_button"]
         });
     };

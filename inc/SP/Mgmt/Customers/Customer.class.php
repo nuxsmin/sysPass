@@ -30,6 +30,7 @@ defined('APP_ROOT') || die();
 use SP\Account\AccountUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Session;
 use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
 use SP\Log\Log;
@@ -258,16 +259,37 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
      */
     public function getItemsForSelectByUser()
     {
-        $outItems = [];
+        $Data = new QueryData();
 
-        foreach (AccountUtil::getAccountsForUser() as $item){
-            $obj = new \stdClass();
-            $obj->id = $item->customer_id;
-            $obj->name = $item->customer_name;
+        // Si el perfil no permite búsquedas globales, se acotan los resultados
+        if (!Session::getUserProfile()->isAccGlobalSearch()) {
+            $queryWhere = AccountUtil::getAccountFilterUser($Data);
 
-            $outItems[] = $obj;
+            $query = 'SELECT customer_id, customer_name 
+            FROM accounts LEFT JOIN customers ON customer_id = account_customerId
+            WHERE ' . implode(' AND ', $queryWhere) . '
+            GROUP BY customer_id
+            ORDER BY customer_name';
+        } else {
+            $query = 'SELECT customer_id, customer_name 
+            FROM accounts LEFT JOIN customers ON customer_id = account_customerId 
+            GROUP BY customer_id
+            ORDER BY customer_name';
         }
 
-        return $outItems;
+        $Data->setQuery($query);
+
+        $items = [];
+        
+        /** @var ItemInterface $this */
+        foreach (DB::getResultsArray($Data) as $item) {
+            $obj = new \stdClass();
+            $obj->id = (int)$item->customer_id;
+            $obj->name = $item->customer_name;
+
+            $items[] = $obj;
+        }
+
+        return $items;
     }
 }
