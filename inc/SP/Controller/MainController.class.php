@@ -236,7 +236,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $ActionSearch->setId(self::ACTION_ACC_SEARCH);
         $ActionSearch->setTitle(__('Buscar'));
         $ActionSearch->setIcon($this->icons->getIconSearch());
-        $ActionSearch->setData(['historyReset' => 1]);
+        $ActionSearch->setData(['historyReset' => 1, 'view' => 'search']);
 
         $this->view->append('actions', $ActionSearch);
 
@@ -245,7 +245,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $ActionNew->setId(self::ACTION_ACC_NEW);
             $ActionNew->setTitle(__('Nueva Cuenta'));
             $ActionNew->setIcon($this->icons->getIconAdd());
-            $ActionNew->setData(['historyReset' => 0]);
+            $ActionNew->setData(['historyReset' => 0, 'view' => 'account']);
 
             $this->view->append('actions', $ActionNew);
         }
@@ -255,7 +255,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $ActionUsr->setId(self::ACTION_USR);
             $ActionUsr->setTitle(__('Usuarios y Accesos'));
             $ActionUsr->setIcon($this->icons->getIconAccount());
-            $ActionUsr->setData(['historyReset' => 0]);
+            $ActionUsr->setData(['historyReset' => 0, 'view' => 'datatabs']);
 
             $this->view->append('actions', $ActionUsr);
         }
@@ -265,7 +265,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $ActionMgm->setId(self::ACTION_MGM);
             $ActionMgm->setTitle(__('Elementos y Personalización'));
             $ActionMgm->setIcon($this->icons->getIconGroup());
-            $ActionMgm->setData(['historyReset' => 0]);
+            $ActionMgm->setData(['historyReset' => 0, 'view' => 'datatabs']);
 
             $this->view->append('actions', $ActionMgm);
         }
@@ -275,7 +275,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $ActionConfig->setId(self::ACTION_CFG);
             $ActionConfig->setTitle(__('Configuración'));
             $ActionConfig->setIcon($this->icons->getIconSettings());
-            $ActionConfig->setData(['historyReset' => 1]);
+            $ActionConfig->setData(['historyReset' => 1, 'view' => 'config']);
 
             $this->view->append('actions', $ActionConfig);
         }
@@ -285,7 +285,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $ActionEventlog->setId(self::ACTION_EVL);
             $ActionEventlog->setTitle(__('Registro de Eventos'));
             $ActionEventlog->setIcon($this->icons->getIconHeadline());
-            $ActionEventlog->setData(['historyReset' => 1]);
+            $ActionEventlog->setData(['historyReset' => 1, 'view' => 'eventlog']);
 
             $this->view->append('actions', $ActionEventlog);
         }
@@ -294,7 +294,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $ActionNotice->setId(self::ACTION_NOT);
         $ActionNotice->setTitle(__('Notificaciones'));
         $ActionNotice->setIcon($this->icons->getIconNotices());
-        $ActionNotice->setData(['historyReset' => 1]);
+        $ActionNotice->setData(['historyReset' => 1, 'view' => 'notices']);
 
         $this->view->append('actions', $ActionNotice);
     }

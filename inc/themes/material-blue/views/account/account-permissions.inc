@@ -100,6 +100,12 @@
 <?php if (!$isView): ?>
     <script>
         $(function () {
+            var $accesses = $("#data-accesses");
+
+            if ($accesses.context.childNodes.length === 1) {
+                $accesses.parent(".data").hide();
+            }
+
             $('#otherUsers').selectize({
                 persist: false,
                 valueField: 'user_id',
@@ -131,7 +137,8 @@
                     }
                 }
             });
-        });
+        })
+        ;
     </script>
 <?php endif; ?>
 

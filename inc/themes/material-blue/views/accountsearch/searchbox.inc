@@ -112,6 +112,5 @@
     </form>
 </div>
 <script type="text/javascript">
-    sysPassApp.triggers().views.search();
     sysPassApp.sk.set("<?php echo $sk; ?>");
 </script>

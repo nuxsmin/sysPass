@@ -230,7 +230,7 @@ class AccountUtil
 
         $queryWhere = self::getAccountFilterUser($Data);
 
-        if ($accountId !== 0) {
+        if (!empty($accountId)) {
             $queryWhere[] = 'account_id <> ? AND (account_parentId = 0 OR account_parentId IS NULL)';
             $Data->addParam($accountId);
         }

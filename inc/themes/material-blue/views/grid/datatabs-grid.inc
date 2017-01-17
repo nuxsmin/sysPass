@@ -118,7 +118,3 @@
         </script>
     <?php endforeach; ?>
 </div> <!-- End Tabs-->
-
-<script type="text/javascript">
-    sysPassApp.triggers().views.datatabs();
-</script>

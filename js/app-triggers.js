@@ -188,7 +188,7 @@ sysPass.Triggers = function (Common) {
                     Common.appRequests().history.reset();
                 }
 
-                Common.appActions().doAction({actionId: $(this).data("action-id")});
+                Common.appActions().doAction({actionId: $this.data("action-id")}, $this.data("view"));
             });
 
             Common.appActions().doAction({actionId: 1});
@@ -249,10 +249,8 @@ sysPass.Triggers = function (Common) {
                 Common.appActions().doAction({actionId: $(this).data("action-id")});
             });
         },
-        common: function (container) {
+        common: function ($container) {
             log.info("views:common");
-
-            var $container = $(container);
 
             selectDetect($container);
 
@@ -354,20 +352,26 @@ sysPass.Triggers = function (Common) {
                 });
             }
 
-            $("#selParentAccount").on("change", function () {
-                var $this = $(this);
-                var $pass = $("#accountpass,#accountpassR");
+            var $selParentAccount = $("#selParentAccount");
 
-                if ($this[0].value > 0) {
-                    $pass.each(function () {
-                        $(this).prop("disabled", "true");
-                    });
-                } else {
-                    $pass.each(function () {
-                        $(this).prop("disabled", "");
-                    });
-                }
-            });
+            if ($selParentAccount.length > 0) {
+                $selParentAccount.on("change", function () {
+                    var $this = $(this);
+                    var $pass = $("#accountpass,#accountpassR");
+
+                    if ($this[0].value > 0) {
+                        $pass.each(function () {
+                            $(this).prop("disabled", "true");
+                        });
+                    } else {
+                        $pass.each(function () {
+                            $(this).prop("disabled", "");
+                        });
+                    }
+                });
+
+                Common.appActions().items.get($selParentAccount);
+            }
         },
         install: function () {
             log.info("views:install");

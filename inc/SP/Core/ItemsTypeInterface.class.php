@@ -33,11 +33,12 @@ interface ItemsTypeInterface
 {
     const ITEM_CATEGORIES = 1;
     const ITEM_CUSTOMERS = 2;
-    const ITEM_CUSTOMERS_USER = 120;
+    const ITEM_CUSTOMERS_USER = 52;
     const ITEM_FILES = 3;
     const ITEM_TAGS = 4;
     const ITEM_USERS = 5;
     const ITEM_GROUPS = 6;
     const ITEM_PROFILES = 7;
     const ITEM_ACCOUNTS = 8;
+    const ITEM_ACCOUNTS_USER = 58;
 }

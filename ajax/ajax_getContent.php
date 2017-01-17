@@ -138,5 +138,4 @@ if (Session::getUserData()->isUserIsAdminApp() && Config::getConfig()->isDebug()
     $Controller->getDebug();
 }
 
-$Tpl->addTemplate('js-common', 'common');
 $Controller->view();

@@ -56,7 +56,15 @@
                title="<?php echo __('Preferencias de usuario'); ?>"
                data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>">
                 <i class="btn-action material-icons">account_circle</i>
-                <?php printf('%s (%s) %s', $userName, $userGroup, $adminApp); ?>
+                <span id="user-name"><?php echo $userName; ?></span>
+                <span for="user-name"
+                      class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $userGroup); ?></span>
+                <?php /** @var \SP\Html\Assets\IconInterface $userType */
+                if ($userType !== null): ?>
+                    <i id="user-type" class="material-icons"><?php echo $userType->getIcon(); ?></i>
+                    <span for="user-type"
+                          class="mdl-tooltip mdl-tooltip--top"><?php echo $userType->getTitle(); ?></span>
+                <?php endif; ?>
             </a>
             <a class="btn-action mdl-navigation__link" title="<?php echo __('Salir'); ?>"
                data-onclick="main/logout">

@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -66,7 +66,7 @@ trait RequestControllerTrait
     /**
      * inicializar las propiedades
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @internal param array $checKItems Lista de elementos a analizar
      */
     protected function init()
     {

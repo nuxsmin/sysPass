@@ -186,13 +186,12 @@
                     <td class="descField"><?php echo __('Cuenta Vinculada'); ?></td>
                     <td class="valField">
                         <select id="selParentAccount" name="parentAccountId"
-                                class="select-box select-box-deselect" <?php echo $disabled; ?>>
+                                class="select-box select-box-deselect" <?php echo $disabled; ?>
+                                data-sk="<?php echo $sk; ?>"
+                                data-item-type="<?php echo \SP\Core\ItemsTypeInterface::ITEM_ACCOUNTS_USER; ?>"
+                                data-item-id="<?php echo $gotData ? $accountId : ''; ?>"
+                                data-selected-id="<?php echo $gotData ? $accountData->getAccountParentId() : ''; ?>">
                             <option value=""><?php echo __('Seleccionar Cuenta'); ?></option>
-                            <?php foreach ($otherAccounts as $otherAccount): ?>
-                                <?php $selected = ($gotData && (int)$otherAccount->account_id === $accountData->getAccountParentId()) ? 'selected' : ''; ?>
-
-                                <option value="<?php echo $otherAccount->account_id; ?>" <?php echo $selected; ?>><?php printf('%s - %s', $otherAccount->customer_name,  $otherAccount->account_name); ?></option>
-                            <?php endforeach; ?>
                         </select>
                     </td>
                 </tr>
@@ -293,6 +292,5 @@
         <?php endif; ?>
 
         sysPassApp.sk.set("<?php echo $sk; ?>");
-        sysPassApp.triggers().views.account();
     });
 </script>

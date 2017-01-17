@@ -24,9 +24,7 @@
 
 use SP\Controller\ItemsController;
 use SP\Core\Init;
-use SP\Core\SessionUtil;
 use SP\Http\Request;
-use SP\Http\Response;
 use SP\Util\Util;
 
 define('APP_ROOT', '..');
@@ -39,18 +37,5 @@ if (!Init::isLoggedIn()) {
     Util::logout();
 }
 
-$itemType = Request::analyze('itemType', false);
-$sk = Request::analyze('sk', false);
-
-if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJson(__('CONSULTA INVÁLIDA'));
-}
-
 $Controller = new ItemsController();
-
-$data = [
-    'sk' => SessionUtil::getSessionKey(),
-    'items' => $Controller->getItems($itemType)
-];
-
-Response::printJson($data, 0);
+$Controller->doAction();

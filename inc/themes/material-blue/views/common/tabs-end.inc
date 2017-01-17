@@ -6,7 +6,4 @@
     <?php foreach($tabs as $index => $tab): ?>
         sysPassApp.theme().html.tabs.add("#tabsHeader", <?php echo $index; ?>, "<?php echo $tab['title']; ?>", <?php echo $index === $activeTabId ? 1 : 0; ?>);
     <?php endforeach; ?>
-
-    // FIXME: eliminar
-    sysPassApp.triggers().views.config();
 </script>

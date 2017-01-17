@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -26,26 +26,52 @@ namespace SP\Controller;
 
 use SP\Account\AccountUtil;
 use SP\Core\ItemsTypeInterface;
+use SP\Core\SessionUtil;
 use SP\DataModel\DataModelInterface;
+use SP\Http\Request;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
+use SP\Util\Json;
 
 /**
  * Class ItemsController
  *
  * @package SP\Controller
  */
-class ItemsController
+class ItemsController implements ItemControllerInterface
 {
+    use RequestControllerTrait;
+
+    /**
+     * ItemsController constructor.
+     */
+    public function __construct()
+    {
+        $this->init();
+    }
+
+    /**
+     * Realizar la acción solicitada en la la petición HTTP
+     */
+    public function doAction()
+    {
+        $itemType = Request::analyze('itemType', false);
+
+        $this->JsonResponse->setStatus(0);
+        $this->JsonResponse->setData($this->getItems($itemType));
+        $this->JsonResponse->setCsrf(SessionUtil::getSessionKey());
+
+        Json::returnJson($this->JsonResponse);
+    }
+
     /**
      * Devuelve los elementos solicitados
      *
      * @param $itemType int El tipo de elemento a devolver
      * @return array
      */
-    public function getItems($itemType)
+    protected function getItems($itemType)
     {
-
         switch ($itemType) {
             case ItemsTypeInterface::ITEM_CATEGORIES:
                 return $this->getCategories();
@@ -53,6 +79,8 @@ class ItemsController
                 return $this->getCustomers();
             case ItemsTypeInterface::ITEM_CUSTOMERS_USER:
                 return $this->getCustomersForUser();
+            case ItemsTypeInterface::ITEM_ACCOUNTS_USER:
+                return $this->getAccountsForUser();
             default:
                 return [];
         }
@@ -108,5 +136,35 @@ class ItemsController
     protected function getCustomersForUser()
     {
         return Customer::getItem()->getItemsForSelectByUser();
+    }
+
+    /**
+     * Devolver las cuentas visubles por el usuario
+     *
+     * @return array
+     */
+    protected function getAccountsForUser()
+    {
+        $outItems = [];
+
+        foreach (AccountUtil::getAccountsForUser($this->itemId) as $account) {
+            $obj = new \stdClass();
+            $obj->id = $account->account_id;
+            $obj->name = $account->customer_name . ' - ' . $account->account_name;
+
+            $outItems[] = $obj;
+        }
+
+        return $outItems;
+    }
+
+    /**
+     * Comprobaciones antes de realizar una acción
+     */
+    protected function preActionChecks()
+    {
+//        if (!$this->sk || !SessionUtil::checkSessionKey($this->sk)) {
+//            $this->invalidAction();
+//        }
     }
 }

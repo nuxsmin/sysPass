@@ -79,7 +79,7 @@ sysPass.Actions = function (Common) {
     };
 
     // Función para cargar el contenido de la acción del menú seleccionada
-    var doAction = function (obj) {
+    var doAction = function (obj, view) {
         var data = {
             actionId: obj.actionId,
             itemId: obj.itemId !== "undefined" ? obj.itemId : 0,
@@ -96,29 +96,19 @@ sysPass.Actions = function (Common) {
             var $content = $("#content");
 
             $content.empty().html(response);
-        });
-    };
 
-    /**
-     * Actualizar los elemento de un select
-     *
-     * @param $obj
-     */
-    var updateItems = function ($obj) {
-        log.info("updateItems");
+            var views = sysPassApp.triggers().views;
+            views.common($content);
 
-        var $dst = $("#" + $obj.data("item-dst"))[0].selectize;
+            if (view !== undefined && typeof views[view] === "function") {
+                views[view]();
+            }
 
-        $dst.clearOptions();
-        $dst.load(function (callback) {
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.updateItems;
-            opts.method = "get";
-            opts.data = {sk: Common.sk.get(), itemType: $obj.data("item-type")};
+            var $mdlContent = $(".mdl-layout__content");
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                callback(json.items);
-            });
+            if ($mdlContent.scrollTop() > 0) {
+                $mdlContent.animate({scrollTop: 0}, 1000);
+            }
         });
     };
 
@@ -136,13 +126,15 @@ sysPass.Actions = function (Common) {
             },
             callbacks: {
                 open: function () {
-                    Common.appTriggers().views.common("#box-popup");
+                    var $boxPopup = $("#box-popup");
 
-                    $("#box-popup").find(":input:text:visible:first").focus();
+                    Common.appTriggers().views.common($boxPopup);
+
+                    $boxPopup.find(":input:text:visible:first").focus();
                 },
                 close: function () {
                     if ($obj.data("item-dst")) {
-                        updateItems($obj);
+                        items.update($obj);
                     }
                 }
             },
@@ -200,6 +192,49 @@ sysPass.Actions = function (Common) {
      */
     var closeFloatingBox = function () {
         $.magnificPopup.close();
+    };
+
+    /**
+     * Actualizar los elemento de un select
+     *
+     * @param $obj
+     */
+    var items = {
+        get: function ($obj) {
+            log.info("items:get");
+
+            var $dst = $obj[0].selectize;
+            $dst.clearOptions();
+            $dst.load(function (callback) {
+                var opts = Common.appRequests().getRequestOpts();
+                opts.url = ajaxUrl.updateItems;
+                opts.method = "get";
+                opts.data = {sk: $obj.data("sk"), itemType: $obj.data("item-type"), itemId: $obj.data("item-id")};
+
+                Common.appRequests().getActionCall(opts, function (json) {
+                    callback(json.data);
+
+                    $dst.setValue($obj.data("selected-id"), true);
+                });
+            });
+        },
+        update: function ($obj) {
+            log.info("items:update");
+
+            var $dst = $("#" + $obj.data("item-dst"))[0].selectize;
+
+            $dst.clearOptions();
+            $dst.load(function (callback) {
+                var opts = Common.appRequests().getRequestOpts();
+                opts.url = ajaxUrl.updateItems;
+                opts.method = "get";
+                opts.data = {sk: Common.sk.get(), itemType: $obj.data("item-type")};
+
+                Common.appRequests().getActionCall(opts, function (json) {
+                    callback(json.data);
+                });
+            });
+        }
     };
 
     /**
@@ -649,17 +684,17 @@ sysPass.Actions = function (Common) {
         show: function ($obj) {
             log.info("account:show");
 
-            doAction({actionId: $obj.data("action-id"), itemId: $obj.data("item-id")});
+            doAction({actionId: $obj.data("action-id"), itemId: $obj.data("item-id")}, "account");
         },
         showHistory: function ($obj) {
             log.info("account:showHistory");
 
-            doAction({actionId: $obj.data("action-id"), itemId: $obj.val()});
+            doAction({actionId: $obj.data("action-id"), itemId: $obj.val()}, "account");
         },
         edit: function ($obj) {
             log.info("account:edit");
 
-            doAction({actionId: $obj.data("action-id"), itemId: $obj.data("item-id")});
+            doAction({actionId: $obj.data("action-id"), itemId: $obj.data("item-id")}, "account");
         },
         delete: function ($obj) {
             log.info("account:delete");
@@ -762,7 +797,7 @@ sysPass.Actions = function (Common) {
         copy: function ($obj) {
             log.info("account:copy");
 
-            doAction({actionId: $obj.data("action-id"), itemId: $obj.data("item-id")});
+            doAction({actionId: $obj.data("action-id"), itemId: $obj.data("item-id")}, "account");
         },
         savefavorite: function ($obj, callback) {
             log.info("account:saveFavorite");
@@ -826,7 +861,10 @@ sysPass.Actions = function (Common) {
 
             var parentId = $obj.data("parent-id");
 
-            doAction({actionId: $obj.data("action-id"), itemId: parentId == 0 ? $obj.data("item-id") : parentId});
+            doAction({
+                actionId: $obj.data("action-id"),
+                itemId: parentId == 0 ? $obj.data("item-id") : parentId
+            }, "account");
         },
         restore: function ($obj) {
             log.info("account:restore");
@@ -1289,6 +1327,7 @@ sysPass.Actions = function (Common) {
         ajaxUrl: ajaxUrl,
         plugin: plugin,
         notice: notice,
-        wiki: wiki
+        wiki: wiki,
+        items: items
     };
 };
