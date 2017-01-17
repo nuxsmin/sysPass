@@ -1,4 +1,4 @@
-ALTER TABLE accounts` ADD COLUMN `account_isPrivateGroup` BIT(1) NULL DEFAULT b'0' AFTER `account_isPrivate`;
+ALTER TABLE `accounts` ADD COLUMN `account_isPrivateGroup` BIT(1) NULL DEFAULT b'0' AFTER `account_isPrivate`;
 
 CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFINER
 VIEW `account_data_v` AS
