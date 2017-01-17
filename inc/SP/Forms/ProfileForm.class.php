@@ -98,6 +98,7 @@ class ProfileForm extends FormBase implements FormInterface
         $this->ProfileData->setAccFiles(Request::analyze('profile_accfiles', 0, false, 1));
         $this->ProfileData->setAccPublicLinks(Request::analyze('profile_accpublinks', 0, false, 1));
         $this->ProfileData->setAccPrivate(Request::analyze('profile_accprivate', 0, false, 1));
+        $this->ProfileData->setAccPrivateGroup(Request::analyze('profile_accprivategroup', 0, false, 1));
         $this->ProfileData->setAccPermission(Request::analyze('profile_accpermissions', 0, false, 1));
         $this->ProfileData->setAccGlobalSearch(Request::analyze('profile_accglobalsearch', 0, false, 1));
         $this->ProfileData->setConfigGeneral(Request::analyze('profile_config', 0, false, 1));

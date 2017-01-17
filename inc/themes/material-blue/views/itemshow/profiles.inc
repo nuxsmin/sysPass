@@ -99,6 +99,13 @@
                             <span class="mdl-switch__label"
                                   title="<?php echo __('Crear cuenta privada'); ?>"><?php echo __('Privada'); ?></span>
                         </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accprivategroup">
+                            <input type="checkbox" id="profile_accprivategroup"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="profile_accprivategroup" <?php echo $profile->isAccPrivateGroup() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"
+                                  title="<?php echo __('Crear cuenta privada para grupo'); ?>"><?php echo __('Privada Grupo'); ?></span>
+                        </label>
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accpermissions">
                             <input type="checkbox" id="profile_accpermissions"
                                    class="mdl-switch__input mdl-color-text--indigo-400"

@@ -106,6 +106,7 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_otherUserEdit = :accountOtherUserEdit,'
                 . 'account_otherGroupEdit = :accountOtherGroupEdit, '
                 . 'account_isPrivate = :accountIsPrivate, '
+                . 'account_isPrivateGroup = :accountIsPrivateGroup, '
                 . 'account_parentId = :accountParentId '
                 . 'WHERE account_id = :accountId';
 
@@ -125,6 +126,7 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_otherUserEdit = :accountOtherUserEdit,'
                 . 'account_otherGroupEdit = :accountOtherGroupEdit, '
                 . 'account_isPrivate = :accountIsPrivate, '
+                . 'account_isPrivateGroup = :accountIsPrivateGroup, '
                 . 'account_parentId = :accountParentId '
                 . 'WHERE account_id = :accountId';
 
@@ -142,6 +144,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
+        $Data->addParam($this->accountData->getAccountIsPrivateGroup(), 'accountIsPrivateGroup');
         $Data->addParam($this->accountData->getAccountParentId(), 'accountParentId');
         $Data->addParam($this->accountData->getAccountId(), 'accountId');
 
@@ -320,6 +323,7 @@ class Account extends AccountBase implements AccountInterface
             . 'account_otherUserEdit = :accountOtherUserEdit,'
             . 'account_otherGroupEdit = :accountOtherGroupEdit,'
             . 'account_isPrivate = :accountIsPrivate,'
+            . 'account_isPrivateGroup = :accountIsPrivateGroup,'
             . 'account_passDate = UNIX_TIMESTAMP(),'
             . 'account_passDateChange = :accountPassDateChange,'
             . 'account_parentId = :accountParentId';
@@ -340,6 +344,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
+        $Data->addParam($this->accountData->getAccountIsPrivateGroup(), 'accountIsPrivateGroup');
         $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
         $Data->addParam($this->accountData->getAccountParentId(), 'accountParentId');
 

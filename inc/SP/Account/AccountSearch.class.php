@@ -434,6 +434,8 @@ class AccountSearch
 
         $arrQueryWhere[] = '(account_isPrivate = 0 OR (account_isPrivate = 1 AND account_userId = ?))';
         $Data->addParam(Session::getUserData()->getUserId());
+        $arrQueryWhere[] = '(account_isPrivateGroup = 0 OR (account_isPrivateGroup = 1 AND account_userGroupId = ?))';
+        $Data->addParam(Session::getUserData()->getUserGroupId());
 
         if ($this->limitCount > 0) {
             $queryLimit = '?, ?';

@@ -81,6 +81,7 @@
                     </td>
                 </tr>
             <?php endif; ?>
+
             <?php if ($allowPrivate === 1): ?>
                 <tr>
                     <td class="descField"><?php echo __('Cuenta Privada'); ?></td>
@@ -89,6 +90,19 @@
                             <input name="privateEnabled" type="checkbox" id="privateEnabled"
                                    class="mdl-switch__input" <?php echo ($gotData && $accountData->getAccountIsPrivate()) ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Privada'); ?></span>
+                        </label>
+                    </td>
+                </tr>
+            <?php endif; ?>
+
+            <?php if ($allowPrivateGroup === 1): ?>
+                <tr>
+                    <td class="descField"><?php echo __('Cuenta Privada Grupo'); ?></td>
+                    <td class="valField">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="privateGroupEnabled">
+                            <input name="privateGroupEnabled" type="checkbox" id="privateGroupEnabled"
+                                   class="mdl-switch__input" <?php echo ($gotData && $accountData->getAccountIsPrivateGroup()) ? 'checked' : ''; ?>/>
+                            <span class="mdl-switch__label"><?php echo __('Privada Grupo'); ?></span>
                         </label>
                     </td>
                 </tr>

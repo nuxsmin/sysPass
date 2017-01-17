@@ -208,6 +208,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('otherGroupsJson', Json::getJson($this->view->otherGroups));
         $this->view->assign('tagsJson', Json::getJson(Tag::getItem()->getItemsForSelect()));
         $this->view->assign('allowPrivate', $this->UserProfileData->isAccPrivate());
+        $this->view->assign('allowPrivateGroup', $this->UserProfileData->isAccPrivateGroup());
 
         $this->view->assign('otherAccounts', AccountUtil::getAccountsForUser($this->getId()));
         $this->view->assign('linkedAccounts', AccountUtil::getLinkedAccounts($this->getId()));

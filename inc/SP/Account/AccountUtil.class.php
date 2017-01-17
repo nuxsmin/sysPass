@@ -270,6 +270,8 @@ class AccountUtil
 
         $queryWhere[] = '(account_isPrivate = 0 OR (account_isPrivate = 1 AND account_userId = ?))';
         $Data->addParam(Session::getUserData()->getUserId());
+        $queryWhere[] = '(account_isPrivateGroup = 0 OR (account_isPrivateGroup = 1 AND account_userGroupId = ?))';
+        $Data->addParam(Session::getUserData()->getUserGroupId());
 
         return $queryWhere;
     }

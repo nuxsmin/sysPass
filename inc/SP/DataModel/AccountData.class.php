@@ -115,6 +115,10 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     /**
      * @var int
      */
+    public $account_isPrivateGroup = 0;
+    /**
+     * @var int
+     */
     public $account_passDate = 0;
     /**
      * @var int
@@ -519,5 +523,21 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     public function setAccountParentId($account_parentId)
     {
         $this->account_parentId = (int)$account_parentId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountIsPrivateGroup()
+    {
+        return (int)$this->account_isPrivateGroup;
+    }
+
+    /**
+     * @param int $account_isPrivateGroup
+     */
+    public function setAccountIsPrivateGroup($account_isPrivateGroup)
+    {
+        $this->account_isPrivateGroup = (int)$account_isPrivateGroup;
     }
 }

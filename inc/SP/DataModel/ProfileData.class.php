@@ -72,6 +72,10 @@ class ProfileData extends ProfileBaseData
     /**
      * @var bool
      */
+    protected $accPrivateGroup = false;
+    /**
+     * @var bool
+     */
     protected $accPermission = false;
     /**
      * @var bool
@@ -612,5 +616,21 @@ class ProfileData extends ProfileBaseData
     public function setAccGlobalSearch($accGlobalSearch)
     {
         $this->accGlobalSearch = $accGlobalSearch;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccPrivateGroup()
+    {
+        return $this->accPrivateGroup;
+    }
+
+    /**
+     * @param bool $accPrivateGroup
+     */
+    public function setAccPrivateGroup($accPrivateGroup)
+    {
+        $this->accPrivateGroup = $accPrivateGroup;
     }
 }
