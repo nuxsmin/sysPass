@@ -265,13 +265,15 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         if (!Session::getUserProfile()->isAccGlobalSearch()) {
             $queryWhere = AccountUtil::getAccountFilterUser($Data);
 
-            $query = 'SELECT customer_id, customer_name 
+            $query = /** @lang SQL */
+                'SELECT customer_id as id, customer_name as name 
             FROM accounts LEFT JOIN customers ON customer_id = account_customerId
             WHERE ' . implode(' AND ', $queryWhere) . '
             GROUP BY customer_id
             ORDER BY customer_name';
         } else {
-            $query = 'SELECT customer_id, customer_name 
+            $query = /** @lang SQL */
+                'SELECT customer_id as id, customer_name as name 
             FROM accounts LEFT JOIN customers ON customer_id = account_customerId 
             GROUP BY customer_id
             ORDER BY customer_name';
@@ -279,17 +281,6 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
 
         $Data->setQuery($query);
 
-        $items = [];
-        
-        /** @var ItemInterface $this */
-        foreach (DB::getResultsArray($Data) as $item) {
-            $obj = new \stdClass();
-            $obj->id = (int)$item->customer_id;
-            $obj->name = $item->customer_name;
-
-            $items[] = $obj;
-        }
-
-        return $items;
+        return DB::getResultsArray($Data);
     }
 }

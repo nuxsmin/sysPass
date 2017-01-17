@@ -153,7 +153,7 @@ class MySQLHandler implements DBStorageInterface
             }
         }
 
-        $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+        $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         return $this->db;
