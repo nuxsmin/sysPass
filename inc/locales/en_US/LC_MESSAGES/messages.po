@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-16 23:08+0100\n"
-"PO-Revision-Date: 2017-01-16 23:08+0100\n"
+"POT-Creation-Date: 2017-01-17 23:06+0100\n"
+"PO-Revision-Date: 2017-01-17 23:07+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -32,8 +32,7 @@ msgstr "Files management disabled"
 #: ../../../../ajax/ajax_accGetFiles.php:50
 #: ../../../../ajax/ajax_accSearch.php:44
 #: ../../../../ajax/ajax_filesMgmt.php:53
-#: ../../../../ajax/ajax_filesMgmt.php:69
-#: ../../../../ajax/ajax_getItems.php:46 ../../../../ajax/ajax_migrate.php:49
+#: ../../../../ajax/ajax_filesMgmt.php:69 ../../../../ajax/ajax_migrate.php:49
 #: ../../../../ajax/ajax_passReset.php:49
 #: ../../../../ajax/ajax_userPrefsSave.php:58
 msgid "CONSULTA INVÁLIDA"
@@ -329,97 +328,97 @@ msgid "Preferencias actualizadas"
 msgstr "Preferences updated"
 
 #: ../../../../inc/SP/Account/Account.class.php:67
-#: ../../../../inc/SP/Account/Account.class.php:220
-#: ../../../../inc/SP/Account/Account.class.php:412
-#: ../../../../inc/SP/Account/Account.class.php:594
+#: ../../../../inc/SP/Account/Account.class.php:223
+#: ../../../../inc/SP/Account/Account.class.php:417
+#: ../../../../inc/SP/Account/Account.class.php:599
 msgid "Error al actualizar el historial"
 msgstr "Error while updating history"
 
 #: ../../../../inc/SP/Account/Account.class.php:69
-#: ../../../../inc/SP/Account/Account.class.php:149
+#: ../../../../inc/SP/Account/Account.class.php:152
 msgid "Error al modificar la cuenta"
 msgstr "Error while updating account"
 
 #: ../../../../inc/SP/Account/Account.class.php:83
-#: ../../../../inc/SP/Account/Account.class.php:367
+#: ../../../../inc/SP/Account/Account.class.php:372
 msgid "Error al actualizar los usuarios de la cuenta"
 msgstr "Error while updating account's users"
 
-#: ../../../../inc/SP/Account/Account.class.php:222
-#: ../../../../inc/SP/Account/Account.class.php:252
+#: ../../../../inc/SP/Account/Account.class.php:225
+#: ../../../../inc/SP/Account/Account.class.php:255
 msgid "Error al restaurar cuenta"
 msgstr "Error on restoring account"
 
-#: ../../../../inc/SP/Account/Account.class.php:279
+#: ../../../../inc/SP/Account/Account.class.php:282
 #: ../../../../inc/SP/Account/AccountHistory.class.php:179
 #: ../../../../inc/SP/Account/AccountHistory.class.php:458
 msgid "No se pudieron obtener los datos de la cuenta"
 msgstr "Error while retrieving account data"
 
-#: ../../../../inc/SP/Account/Account.class.php:281
+#: ../../../../inc/SP/Account/Account.class.php:284
 msgid "La cuenta no existe"
 msgstr "Account doesn't exist"
 
-#: ../../../../inc/SP/Account/Account.class.php:347
+#: ../../../../inc/SP/Account/Account.class.php:352
 msgid "Error al crear la cuenta"
 msgstr "Error while creating account"
 
-#: ../../../../inc/SP/Account/Account.class.php:414
-#: ../../../../inc/SP/Account/Account.class.php:425
+#: ../../../../inc/SP/Account/Account.class.php:419
+#: ../../../../inc/SP/Account/Account.class.php:430
 msgid "Error al eliminar la cuenta"
 msgstr "Error while deleting account"
 
-#: ../../../../inc/SP/Account/Account.class.php:440
+#: ../../../../inc/SP/Account/Account.class.php:445
 msgid "Error al eliminar usuarios asociados a la cuenta"
 msgstr "Error while deleting account's users"
 
-#: ../../../../inc/SP/Account/Account.class.php:499
+#: ../../../../inc/SP/Account/Account.class.php:504
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:520
 msgid "Actualizar Clave Maestra"
 msgstr "Update Master Password"
 
-#: ../../../../inc/SP/Account/Account.class.php:503
+#: ../../../../inc/SP/Account/Account.class.php:508
 #: ../../../../inc/SP/Account/AccountHistory.class.php:227
 msgid "Error en el módulo de encriptación"
 msgstr "Error on encryption module"
 
-#: ../../../../inc/SP/Account/Account.class.php:512
+#: ../../../../inc/SP/Account/Account.class.php:517
 #: ../../../../inc/SP/Account/AccountHistory.class.php:236
 msgid "Error al obtener las claves de las cuentas"
 msgstr "Error while retrieving accounts' passwords"
 
-#: ../../../../inc/SP/Account/Account.class.php:529
+#: ../../../../inc/SP/Account/Account.class.php:534
 #: ../../../../inc/SP/Account/AccountHistory.class.php:264
 msgid "Clave de cuenta vacía"
 msgstr "Account password empty"
 
-#: ../../../../inc/SP/Account/Account.class.php:534
+#: ../../../../inc/SP/Account/Account.class.php:539
 #: ../../../../inc/SP/Account/AccountHistory.class.php:269
 msgid "IV de encriptación incorrecto"
 msgstr "Wrong encryption IV"
 
-#: ../../../../inc/SP/Account/Account.class.php:543
+#: ../../../../inc/SP/Account/Account.class.php:548
 #: ../../../../inc/SP/Account/AccountHistory.class.php:278
 msgid "No es posible desencriptar la clave de la cuenta"
 msgstr "Unable to decrypt account password"
 
-#: ../../../../inc/SP/Account/Account.class.php:549
+#: ../../../../inc/SP/Account/Account.class.php:554
 msgid "Fallo al actualizar la clave de la cuenta"
 msgstr "Error while updating account's password"
 
-#: ../../../../inc/SP/Account/Account.class.php:556
+#: ../../../../inc/SP/Account/Account.class.php:561
 #: ../../../../inc/SP/Account/AccountHistory.class.php:291
 msgid "Cuentas actualizadas"
 msgstr "Accounts updated"
 
-#: ../../../../inc/SP/Account/Account.class.php:557
+#: ../../../../inc/SP/Account/Account.class.php:562
 #: ../../../../inc/SP/Account/AccountHistory.class.php:292
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:865
 msgid "Errores"
 msgstr "Errors"
 
-#: ../../../../inc/SP/Account/Account.class.php:596
-#: ../../../../inc/SP/Account/Account.class.php:622
+#: ../../../../inc/SP/Account/Account.class.php:601
+#: ../../../../inc/SP/Account/Account.class.php:627
 msgid "Error al actualizar la clave"
 msgstr "Error while updating password"
 
@@ -814,6 +813,7 @@ msgstr "Error while searching group RDN"
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:182
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:63
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:47
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:61
 msgid "Grupo"
 msgstr "Group"
 
@@ -843,7 +843,7 @@ msgstr "The user doesn't belong to the group"
 #: ../../../../inc/SP/Controller/MainController.class.php:276
 #: ../../../../inc/SP/Core/Acl.class.php:242
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:75
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:120
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:127
 msgid "Configuración"
 msgstr "Configuration"
 
@@ -868,21 +868,21 @@ msgstr "Value"
 msgid "Nueva Cuenta"
 msgstr "New Account"
 
-#: ../../../../inc/SP/Controller/AccountController.class.php:269
+#: ../../../../inc/SP/Controller/AccountController.class.php:270
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:265
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:266
 #: ../../../../inc/SP/Core/Acl.class.php:213
 msgid "Copiar Cuenta"
 msgstr "Copy Account"
 
-#: ../../../../inc/SP/Controller/AccountController.class.php:316
+#: ../../../../inc/SP/Controller/AccountController.class.php:317
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:252
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:253
 #: ../../../../inc/SP/Core/Acl.class.php:215
 msgid "Editar Cuenta"
 msgstr "Edit Account"
 
-#: ../../../../inc/SP/Controller/AccountController.class.php:342
+#: ../../../../inc/SP/Controller/AccountController.class.php:343
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:278
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:279
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:382
@@ -893,16 +893,16 @@ msgstr "Edit Account"
 msgid "Eliminar Cuenta"
 msgstr "Delete Account"
 
-#: ../../../../inc/SP/Controller/AccountController.class.php:368
-#: ../../../../inc/SP/Controller/AccountController.class.php:398
-#: ../../../../inc/SP/Controller/AccountController.class.php:491
+#: ../../../../inc/SP/Controller/AccountController.class.php:369
+#: ../../../../inc/SP/Controller/AccountController.class.php:399
+#: ../../../../inc/SP/Controller/AccountController.class.php:492
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:212
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:213
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:45
 msgid "Detalles de Cuenta"
 msgstr "Account Details"
 
-#: ../../../../inc/SP/Controller/AccountController.class.php:452
+#: ../../../../inc/SP/Controller/AccountController.class.php:453
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:79
 msgid "Modificar Clave de Cuenta"
 msgstr "Edit Account Password"
@@ -1100,7 +1100,7 @@ msgstr "Section"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:249
 #: ../../../../inc/SP/Controller/ConfigController.class.php:167
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:128
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:135
 #: ../../../../inc/themes/material-blue/views/main/install.inc:132
 msgid "General"
 msgstr "General"
@@ -1249,7 +1249,7 @@ msgstr "Export process finished"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:300
 #: ../../../../inc/SP/Core/Acl.class.php:244
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:135
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:142
 msgid "Encriptación"
 msgstr "Encryption"
 
@@ -1341,7 +1341,7 @@ msgstr "Description"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:71
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:89
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:184
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:191
 msgid "Categorías"
 msgstr "Categories"
 
@@ -1372,7 +1372,7 @@ msgstr "Delete Category"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:145
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:90
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:191
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:198
 msgid "Clientes"
 msgstr "Customers"
 
@@ -1408,8 +1408,8 @@ msgstr "Module"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:221
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:69
-#: ../../../../inc/themes/material-blue/views/account/account.inc:244
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:198
+#: ../../../../inc/themes/material-blue/views/account/account.inc:243
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:205
 msgid "Campos Personalizados"
 msgstr "Custom Fields"
 
@@ -1441,7 +1441,7 @@ msgstr "Delete Field"
 #: ../../../../inc/themes/material-blue/views/account/files.inc:15
 #: ../../../../inc/themes/material-blue/views/config/general-files.inc:4
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:86
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:226
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:233
 msgid "Archivos"
 msgstr "Files"
 
@@ -1468,7 +1468,7 @@ msgstr "Delete File"
 #: ../../../../inc/themes/material-blue/views/account/linkedAccounts.inc:13
 #: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:4
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:29
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:219
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:226
 msgid "Cuentas"
 msgstr "Accounts"
 
@@ -1491,7 +1491,7 @@ msgstr "Properties"
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:24
 #: ../../../../inc/themes/material-blue/views/itemshow/groups.inc:43
 #: ../../../../inc/themes/material-blue/views/itemshow/groups.inc:46
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:163
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:170
 msgid "Usuarios"
 msgstr "Users"
 
@@ -1539,7 +1539,7 @@ msgstr "Delete User"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:536
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:92
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:46
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:170
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:177
 msgid "Grupos"
 msgstr "Groups"
 
@@ -1566,7 +1566,7 @@ msgid "Eliminar Grupo"
 msgstr "Delete Group"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:608
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:177
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:184
 msgid "Perfiles"
 msgstr "Profiles"
 
@@ -1604,7 +1604,7 @@ msgid "Acción"
 msgstr "Action"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:692
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:205
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:212
 msgid "Autorizaciones API"
 msgstr "API Authorizations"
 
@@ -1682,7 +1682,7 @@ msgstr "Delete Link"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:854
 #: ../../../../inc/themes/material-blue/views/account/account.inc:171
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:233
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:240
 msgid "Etiquetas"
 msgstr "Tags"
 
@@ -2314,7 +2314,7 @@ msgid "Gestión Perfiles"
 msgstr "Profiles Management"
 
 #: ../../../../inc/SP/Core/Acl.class.php:243
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:128
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:135
 msgid "Configuración General"
 msgstr "General Configuration"
 
@@ -2323,12 +2323,12 @@ msgid "Exportar"
 msgstr "Export"
 
 #: ../../../../inc/SP/Core/Acl.class.php:247
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:149
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:156
 msgid "Importar"
 msgstr "Import"
 
 #: ../../../../inc/SP/Core/Acl.class.php:248
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:247
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:254
 msgid "Log de Eventos"
 msgstr "Event Log"
 
@@ -3850,7 +3850,7 @@ msgstr "Accesses"
 
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:20
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:104
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:107
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:114
 msgid "Permisos"
 msgstr "Permissions"
 
@@ -3873,15 +3873,24 @@ msgstr "Select Groups"
 msgid "Grupo Principal"
 msgstr "Main Group"
 
-#: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:86
+#: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:87
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:111
 msgid "Cuenta Privada"
 msgstr "Private Account"
 
-#: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:91
+#: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:92
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:100
 msgid "Privada"
 msgstr "Private"
+
+#: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:100
+msgid "Cuenta Privada Grupo"
+msgstr "Private Account for Group"
+
+#: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:105
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:107
+msgid "Privada Grupo"
+msgstr "Private for Group"
 
 #: ../../../../inc/themes/material-blue/views/account/account.inc:11
 msgid "Histórico"
@@ -3895,25 +3904,25 @@ msgstr "Select Tags"
 msgid "Cuenta Vinculada"
 msgstr "Linked Account"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:190
+#: ../../../../inc/themes/material-blue/views/account/account.inc:194
 msgid "Seleccionar Cuenta"
 msgstr "Select Account"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:202
+#: ../../../../inc/themes/material-blue/views/account/account.inc:201
 msgid "Historial"
 msgstr "History"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:207
+#: ../../../../inc/themes/material-blue/views/account/account.inc:206
 msgid "Seleccionar fecha"
 msgstr "Select date"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:219
+#: ../../../../inc/themes/material-blue/views/account/account.inc:218
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:185
 msgid "Última Modificación"
 msgstr "Last Modification"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:226
-#: ../../../../inc/themes/material-blue/views/account/account.inc:229
+#: ../../../../inc/themes/material-blue/views/account/account.inc:225
+#: ../../../../inc/themes/material-blue/views/account/account.inc:228
 msgid "Enlace Público"
 msgstr "Public Link"
 
@@ -4050,7 +4059,7 @@ msgstr "Search for accounts with expired password"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:39
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:43
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:114
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:121
 msgid "Búsqueda global"
 msgstr "Global search"
 
@@ -4349,7 +4358,7 @@ msgid "Puerto"
 msgstr "Port"
 
 #: ../../../../inc/themes/material-blue/views/config/general-files.inc:10
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:226
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:233
 msgid "Gestión de archivos"
 msgstr "Files management"
 
@@ -4394,7 +4403,7 @@ msgid "Tamaño máximo de archivo en bytes"
 msgstr "Maximum file size in bytes"
 
 #: ../../../../inc/themes/material-blue/views/config/general-links.inc:4
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:212
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:219
 msgid "Enlaces Públicos"
 msgstr "Public Links"
 
@@ -5045,78 +5054,82 @@ msgid "Crear cuenta privada"
 msgstr "Create private account"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:107
+msgid "Crear cuenta privada para grupo"
+msgstr "Create private account for group"
+
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:114
 msgid "Asignar permisos"
 msgstr "Assign permissions"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:135
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:142
 msgid "Opciones de encriptación"
 msgstr "Encryption options"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:142
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:149
 msgid "Realizar copia de seguridad y exportar"
 msgstr "Make a backup and export"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:142
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:149
 msgid "Backup"
 msgstr "Backup"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:149
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:156
 msgid "Realizar importación de cuentas"
 msgstr "Make accounts import"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:155
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:162
 msgid "Gestión"
 msgstr "Management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:163
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:170
 msgid "Gestión de usuarios"
 msgstr "Users management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:170
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:177
 msgid "Gestión de grupos"
 msgstr "Groups management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:177
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:184
 msgid "Gestión de perfiles"
 msgstr "Profiles management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:184
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:191
 msgid "Gestión de categorías"
 msgstr "Categories management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:191
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:198
 msgid "Gestión de clientes"
 msgstr "Customers management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:198
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:205
 msgid "Gestión de campos personalizados"
 msgstr "Custom fields management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:205
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:212
 msgid "Gestión de autorizaciones API"
 msgstr "API authorizations management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:212
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:219
 msgid "Gestión de enlaces"
 msgstr "Links management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:219
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:226
 msgid "Gestión de cuentas"
 msgstr "Accounts management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:233
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:240
 msgid "Gestión de etiquetas"
 msgstr "Tags management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:239
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:246
 msgid "Otros"
 msgstr "Others"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:247
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:254
 msgid "Ver log de eventos"
 msgstr "View event log"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:254
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:261
 msgid "Usado por"
 msgstr "Used by"
 
@@ -5183,8 +5196,8 @@ msgid "Fecha Clave Maestra"
 msgstr "Master Password Date"
 
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:11
-#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:61
-#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:64
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:69
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:72
 msgid "Salir"
 msgstr "Sign Out"
 
@@ -5214,7 +5227,7 @@ msgstr ""
 "The passwords sent from the forms are encrypted with PKI, the other data not."
 
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:79
-#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:74
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:82
 msgid "Demo"
 msgstr "Demo"
 

@@ -1,4 +1,5 @@
 <div id="login-container">
+    <div id="boxSpacer"></div>
     <div id="boxLogin" class="round shadow">
         <?php if (!$isLogout): ?>
             <form method="post" name="frmLogin" id="frmLogin" class="form-action" data-onsubmit="main/login">
@@ -74,7 +75,7 @@
                 </div>
             <?php endif; ?>
         <?php else: ?>
-            <div id="boxLogout" class="round5"><?php echo __('Sesión finalizada'); ?></div>
+            <div id="boxLogout"><div class="round5"><?php echo __('Sesión finalizada'); ?></div></div>
         <?php endif; ?>
     </div><!-- Close boxLogin -->
 

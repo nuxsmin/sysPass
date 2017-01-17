@@ -42,14 +42,14 @@
                 <?php endif; ?>
 
                 <span id="user-info">
-                    <span id="user-name"><?php echo $userName; ?></span>
-                    <span for="user-name"
+                    <span id="user-name-footer"><?php echo $userName; ?></span>
+                    <span for="user-name-footer"
                           class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $userGroup); ?></span>
 
                     <?php /** @var \SP\Html\Assets\IconInterface $userType */
                     if ($userType !== null): ?>
-                        <i id="user-type" class="material-icons"><?php echo $userType->getIcon(); ?></i>
-                        <span for="user-type"
+                        <i id="user-type-footer" class="material-icons"><?php echo $userType->getIcon(); ?></i>
+                        <span for="user-type-footer"
                               class="mdl-tooltip mdl-tooltip--top"><?php echo $userType->getTitle(); ?></span>
                     <?php endif; ?>
                 </span>

@@ -1037,12 +1037,14 @@ fieldset.warning {
   margin: 0 auto;
   background: transparent url("../imgs/logo_full_bg.png") no-repeat top left;
   background-size: auto 10em; }
+  #login-container #boxSpacer {
+    height: 11em;
+    background-color: transparent; }
   #login-container #boxLogin {
     position: relative;
-    top: 11em;
     margin: 0 auto;
     width: 100%;
-    min-height: 12em;
+    min-height: 14em;
     padding: 1em;
     background-color: #fff; }
     #login-container #boxLogin #boxData {
@@ -1061,26 +1063,25 @@ fieldset.warning {
       top: 2em;
       right: 2em; }
     #login-container #boxLogin #boxActions {
-      position: absolute;
-      bottom: 1em;
-      right: 1em;
       width: 100%;
-      padding: .5em;
       text-align: right; }
       #login-container #boxLogin #boxActions a {
         color: #c9c9c9; }
   #login-container #boxLogout {
-    width: 250px;
-    margin: 8em auto 0 auto;
-    font-size: 14px;
-    text-align: center;
-    padding: 0.5em;
-    color: #ffca28;
-    background-color: #fff8e1;
-    border: 1px solid #ffca28; }
+    margin-top: 4em;
+    width: 100%; }
+    #login-container #boxLogout > div {
+      margin: 0 auto;
+      width: 250px;
+      font-size: 14px;
+      padding: 0.5em;
+      text-align: center;
+      color: #ffca28;
+      background-color: #fff8e1;
+      border: 1px solid #ffca28; }
   #login-container #boxUpdated {
     width: 350px;
-    margin: 5em auto 5em auto;
+    margin: 3em auto;
     font-size: 14px;
     text-align: center;
     padding: 0.5em;
@@ -1088,9 +1089,7 @@ fieldset.warning {
     background-color: #e0f2f1;
     border: 1px solid #26a69a; }
   #login-container #demo-info {
-    position: relative;
-    top: 12em;
-    margin: 1em auto;
+    margin: 3em auto;
     color: #c9c9c9;
     border-top: 1px solid #d9d9d9;
     border-bottom: 1px solid #d9d9d9;

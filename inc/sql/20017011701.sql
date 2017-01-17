@@ -1,7 +1,6 @@
 ALTER TABLE `accounts` ADD COLUMN `account_isPrivateGroup` BIT(1) NULL DEFAULT b'0' AFTER `account_isPrivate`;
 
-CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFINER
-VIEW `account_data_v` AS
+CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFINER VIEW `account_data_v` AS
     SELECT
         `accounts`.`account_id` AS `account_id`,
         `accounts`.`account_name` AS `account_name`,
@@ -17,12 +16,8 @@ VIEW `account_data_v` AS
         `accounts`.`account_countDecrypt` AS `account_countDecrypt`,
         `accounts`.`account_dateAdd` AS `account_dateAdd`,
         `accounts`.`account_dateEdit` AS `account_dateEdit`,
-        CONV(`accounts`.`account_otherUserEdit`,
-                10,
-                2) AS `account_otherUserEdit`,
-        CONV(`accounts`.`account_otherGroupEdit`,
-                10,
-                2) AS `account_otherGroupEdit`,
+        CONV(`accounts`.`account_otherUserEdit`,10,2) AS `account_otherUserEdit`,
+        CONV(`accounts`.`account_otherGroupEdit`,10,2) AS `account_otherGroupEdit`,
         CONV(`accounts`.`account_isPrivate`, 10, 2) AS `account_isPrivate`,
         CONV(`accounts`.`account_isPrivateGroup`, 10, 2) AS `account_isPrivateGroup`,
         `accounts`.`account_passDate` AS `account_passDate`,
@@ -45,8 +40,7 @@ VIEW `account_data_v` AS
         LEFT JOIN `customers` ON ((`accounts`.`account_customerId` = `customers`.`customer_id`)))
         LEFT JOIN `publicLinks` ON ((`accounts`.`account_id` = `publicLinks`.`publicLink_itemId`)));
 
-CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFINER
-VIEW `account_search_v` AS
+CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFINER VIEW `account_search_v` AS
     SELECT DISTINCT
         `accounts`.`account_id` AS `account_id`,
         `accounts`.`account_customerId` AS `account_customerId`,
