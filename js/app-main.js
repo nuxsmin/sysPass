@@ -235,7 +235,7 @@ sysPass.Main = function () {
             return fullPath;
         };
 
-        config.APP_ROOT = window.location.protocol + "//" + window.location.host + (location.port ? ':' + location.port : '') + rootPath();
+        config.APP_ROOT = window.location.protocol + "//" + window.location.host + rootPath();
 
         var opts = appRequests.getRequestOpts();
         opts.url = "/ajax/ajax_getEnvironment.php";

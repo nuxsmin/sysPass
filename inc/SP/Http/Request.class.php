@@ -83,11 +83,11 @@ class Request
      * Obtener los valores de variables $_GET y $_POST
      * y devolverlos limpios con el tipo correcto o esperado.
      *
-     * @param string $param    con el parámetro a consultar
-     * @param mixed  $default  valor por defecto a devolver
-     * @param bool   $check    comprobar si el parámetro está presente
-     * @param mixed  $force    valor devuelto si el parámeto está definido
-     * @param bool   $sanitize escapar/eliminar carácteres especiales
+     * @param string $param con el parámetro a consultar
+     * @param mixed $default valor por defecto a devolver
+     * @param bool $check comprobar si el parámetro está presente
+     * @param mixed $force valor devuelto si el parámeto está definido
+     * @param bool $sanitize escapar/eliminar carácteres especiales
      * @return mixed si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
      */
     public static function analyze($param, $default = '', $check = false, $force = false, $sanitize = true)
@@ -144,20 +144,14 @@ class Request
      * Devolver las cabeceras enviadas desde el cliente.
      *
      * @param string $header nombre de la cabecera a devolver
-     * @return array|false
+     * @return array|string
      */
     public static function getRequestHeaders($header = '')
     {
-        if (!function_exists('\apache_request_headers')) {
-            $headers = self::getApacheHeaders();
-        } else {
-            $headers = apache_request_headers();
-        }
+        $headers = self::getApacheHeaders();
 
-        if (!empty($header) && array_key_exists($header, $headers)) {
-            return trim($headers[$header]);
-        } elseif (!empty($header)) {
-            return false;
+        if (!empty($header)) {
+            return array_key_exists($header, $headers) ? trim($headers[$header]) : '';
         }
 
         return $headers;
@@ -170,6 +164,10 @@ class Request
      */
     public static function getApacheHeaders()
     {
+        if (!function_exists('\apache_request_headers')) {
+            return apache_request_headers();
+        }
+
         $headers = [];
 
         foreach ($_SERVER as $key => $value) {
