@@ -209,6 +209,7 @@ sysPass.Actions = function (Common) {
                 var opts = Common.appRequests().getRequestOpts();
                 opts.url = ajaxUrl.updateItems;
                 opts.method = "get";
+                opts.cache = true;
                 opts.data = {sk: $obj.data("sk"), itemType: $obj.data("item-type"), itemId: $obj.data("item-id")};
 
                 Common.appRequests().getActionCall(opts, function (json) {
