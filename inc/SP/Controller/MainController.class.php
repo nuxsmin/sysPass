@@ -377,6 +377,9 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('body-header');
         $this->view->addTemplate('error');
         $this->view->addTemplate('body-footer');
+
+        $this->view();
+        exit();
     }
 
     /**

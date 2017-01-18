@@ -467,7 +467,7 @@ class ConfigActionController implements ItemControllerInterface
             $this->JsonResponse->setDescription(__('Clave maestra actualizada', false));
             $this->JsonResponse->addMessage(__('Reinicie la sesión para cambiarla', false));
             return;
-        } elseif ($newMasterPass === '' && $currentMasterPass === '') {
+        } elseif (empty($newMasterPass) || empty($currentMasterPass)) {
             $this->JsonResponse->setDescription(__('Clave maestra no indicada'));
             return;
         } elseif ($confirmPassChange === false) {

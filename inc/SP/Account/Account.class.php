@@ -444,7 +444,8 @@ class Account extends AccountBase implements AccountInterface
         $Log = new Log();
         $LogMessage = $Log->getLogMessage();
         $LogMessage->setAction(__('Actualizar Clave Maestra', false));
-
+        $LogMessage->addDescription(__('Inicio', false));
+        $Log->writeLog(true);
 
         if (!Crypt::checkCryptModule()) {
             $LogMessage->addDescription(__('Error en el módulo de encriptación', false));

@@ -165,6 +165,10 @@ class Crypt
      */
     private static function encrypt($strValue, $strPassword, $cryptIV)
     {
+        if (empty($strValue)) {
+            return '';
+        }
+
         $mcryptRes = self::getMcryptResource();
 
         mcrypt_generic_init($mcryptRes, $strPassword, $cryptIV);
@@ -233,7 +237,7 @@ class Crypt
      */
     public static function mkEncrypt($data, $masterPwd = null)
     {
-        $masterPwd = null === $masterPwd ? SessionUtil::getSessionMPass() : $masterPwd;
+        $masterPwd = empty($masterPwd) ? SessionUtil::getSessionMPass() : $masterPwd;
 
         self::$strInitialVector = self::getIV();
         $cryptValue = self::encrypt($data, $masterPwd, self::$strInitialVector);

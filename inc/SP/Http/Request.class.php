@@ -144,7 +144,7 @@ class Request
      * Devolver las cabeceras enviadas desde el cliente.
      *
      * @param string $header nombre de la cabecera a devolver
-     * @return array
+     * @return array|false
      */
     public static function getRequestHeaders($header = '')
     {
@@ -155,7 +155,7 @@ class Request
         }
 
         if (!empty($header) && array_key_exists($header, $headers)) {
-            return $headers[$header];
+            return trim($headers[$header]);
         } elseif (!empty($header)) {
             return false;
         }

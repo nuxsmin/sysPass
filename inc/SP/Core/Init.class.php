@@ -30,12 +30,14 @@ use SP\Config\ConfigDB;
 use SP\Controller\MainController;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Plugin\PluginUtil;
+use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
+use SP\Util\Json;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -275,22 +277,34 @@ class Init
     }
 
     /**
-     * Devuelve un eror utilizando la plantilla de error.
+     * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
-     * @param string $str  con la descripción del error
+     * @param string $message con la descripción del error
      * @param string $hint opcional, con una ayuda sobre el error
+     * @param bool $headers
      */
-    public static function initError($str, $hint = '')
+    public static function initError($message, $hint = '', $headers = false)
     {
         debugLog(__FUNCTION__);
 
+        if (Checks::isJson()) {
+            $JsonResponse = new JsonResponse();
+            $JsonResponse->setDescription($message);
+            $JsonResponse->addMessage($hint);
+            Json::returnJson($JsonResponse);
+        } elseif ($headers === true) {
+            header('HTTP/1.1 503 Service Temporarily Unavailable');
+            header('Status: 503 Service Temporarily Unavailable');
+            header('Retry-After: 120');
+        }
+
+        SessionUtil::cleanSession();
+
         $Tpl = new Template();
-        $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => $str, 'hint' => $hint]);
+        $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => $message, 'hint' => $hint]);
 
         $Controller = new MainController($Tpl);
         $Controller->getError();
-        $Controller->view();
-        exit();
     }
 
     /**
@@ -492,16 +506,12 @@ class Init
     {
         if (Config::getConfig()->isMaintenance()) {
             if ($check === true
-                || Request::analyze('isAjax', 0) === 1
+                || Checks::isAjax()
                 || Request::analyze('upgrade', 0) === 1
                 || Request::analyze('nodbupgrade', 0) === 1
             ) {
                 return true;
             }
-
-            header('HTTP/1.1 503 Service Temporarily Unavailable');
-            header('Status: 503 Service Temporarily Unavailable');
-            header('Retry-After: 120');
 
             self::initError(__('Aplicación en mantenimiento'), __('En breve estará operativa'));
         }

@@ -63,7 +63,7 @@ $timeStart = Init::microtime_float();
 /**
  * Función para enviar mensajes al log de errores
  *
- * @param      $data
+ * @param mixed $data
  * @param bool $printLastCaller
  */
 function debugLog($data, $printLastCaller = false)
@@ -90,7 +90,7 @@ function debugLog($data, $printLastCaller = false)
  */
 function __($string, $tranlate = true)
 {
-    return $tranlate === true && $string !== '' ? gettext($string) : $string;
+    return $tranlate === true && $string !== '' && strlen($string) < 4096 ? gettext($string) : $string;
 }
 
 /**

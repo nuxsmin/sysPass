@@ -252,7 +252,7 @@ class LogMessage extends MessageBase
      */
     public function resetDescription()
     {
-        $this->description = null;
+        $this->description = [];
 
         return $this;
     }

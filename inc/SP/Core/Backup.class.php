@@ -64,7 +64,7 @@ class Backup
 
         $backupDstDir = $backupDir . DIRECTORY_SEPARATOR . 'backup';
         $bakFileApp = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '-' . $backupUniqueHash . '.tar';
-        $bakFileDB = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . 'db-' . $backupUniqueHash . '.sql';
+        $bakFileDB = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '_db-' . $backupUniqueHash . '.sql';
 
         try {
             self::checkBackupDir($backupDstDir);
@@ -170,33 +170,6 @@ class Backup
                     $sqlOut .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
                     $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
                     fwrite($handle, $sqlOut);
-
-                    $Data->setQuery('SELECT * FROM ' . $tableName);
-
-                    // Consulta para obtener los registros de la tabla
-                    $queryRes = DB::getResultsRaw($Data);
-
-                    $numColumns = $queryRes->columnCount();
-
-                    while ($row = $queryRes->fetch(\PDO::FETCH_NUM)) {
-                        fwrite($handle, 'INSERT INTO `' . $tableName . '` VALUES(');
-
-                        $field = 1;
-                        foreach ($row as $value) {
-                            if (is_numeric($value)) {
-                                fwrite($handle, $value);
-                            } else {
-                                fwrite($handle, DBUtil::escape($value));
-                            }
-
-                            if ($field < $numColumns) {
-                                fwrite($handle, ',');
-                            }
-
-                            $field++;
-                        }
-                        fwrite($handle, ');' . PHP_EOL);
-                    }
                 } elseif ($txtCreate->{'Create View'}) {
                     $sqlOutViews .= '-- ' . PHP_EOL;
                     $sqlOutViews .= '-- View ' . strtoupper($tableName) . PHP_EOL;
@@ -208,7 +181,44 @@ class Backup
                 fwrite($handle, PHP_EOL . PHP_EOL);
             }
 
+            // Guardar las vistas
             fwrite($handle, $sqlOutViews);
+
+            // Guardar los datos
+            foreach ($resTables as $tableName) {
+                // No guardar las vistas!
+                if (strrpos($dbname, '_v') !== false) {
+                    continue;
+                }
+
+                $Data->setQuery('SELECT * FROM `' . $tableName . '`');
+
+                // Consulta para obtener los registros de la tabla
+                $queryRes = DB::getResultsRaw($Data);
+
+                $numColumns = $queryRes->columnCount();
+
+                while ($row = $queryRes->fetch(\PDO::FETCH_NUM)) {
+                    fwrite($handle, 'INSERT INTO `' . $tableName . '` VALUES(');
+
+                    $field = 1;
+                    foreach ($row as $value) {
+                        if (is_numeric($value)) {
+                            fwrite($handle, $value);
+                        } else {
+                            fwrite($handle, DBUtil::escape($value));
+                        }
+
+                        if ($field < $numColumns) {
+                            fwrite($handle, ',');
+                        }
+
+                        $field++;
+                    }
+
+                    fwrite($handle, ');' . PHP_EOL);
+                }
+            }
 
             $sqlOut = '--' . PHP_EOL;
             $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (END)' . PHP_EOL;

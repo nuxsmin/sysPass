@@ -225,6 +225,8 @@ class AccountHistory extends AccountBase implements AccountInterface
         $Log = new Log();
         $LogMessage = $Log->getLogMessage();
         $LogMessage->setAction(__('Actualizar Clave Maestra (H)', false));
+        $LogMessage->addDescription(__('Inicio', false));
+        $Log->writeLog(true);
 
         if (!Crypt::checkCryptModule()) {
             $Log->setLogLevel(Log::ERROR);

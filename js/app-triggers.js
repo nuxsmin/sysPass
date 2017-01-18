@@ -191,7 +191,7 @@ sysPass.Triggers = function (Common) {
                 Common.appActions().doAction({actionId: $this.data("action-id")}, $this.data("view"));
             });
 
-            Common.appActions().doAction({actionId: 1});
+            Common.appActions().doAction({actionId: 1}, "search");
         },
         search: function () {
             log.info("views:search");

@@ -26,6 +26,7 @@ namespace SP\Util;
 
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
+use SP\Http\Request;
 
 /**
  * Class Checks utilidades de comprobación
@@ -34,7 +35,6 @@ use SP\Core\Exceptions\SPException;
  */
 class Checks
 {
-
     /**
      * Comprobar si la función de números aleatorios está disponible.
      *
@@ -309,5 +309,25 @@ class Checks
         return
             (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
             || $_SERVER['SERVER_PORT'] === 443;
+    }
+
+    /**
+     * Comprobar si la petición es Ajax
+     *
+     * @return bool
+     */
+    public static function isAjax()
+    {
+        return Request::getRequestHeaders('X-Requested-With') === 'XMLHttpRequest';
+    }
+
+    /**
+     * Comprobar si la petición es en formato JSON
+     *
+     * @return bool
+     */
+    public static function isJson()
+    {
+        return strpos(Request::getRequestHeaders('Accept'), 'application/json') === 0;
     }
 }
