@@ -21,7 +21,7 @@
                     <?php echo __('Descargar Actual'); ?>
                 </td>
                 <td class="valField">
-                    <?php if (file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute'])): ?>
+                    <?php if ($isAdminApp && file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute'])): ?>
                         <a href="<?php echo $backupDbFile['relative']; ?>"
                            download="<?php echo $backupDbFile['filename']; ?>" class="download">
                             <button type="button" class="mdl-button mdl-js-button">
@@ -100,7 +100,7 @@
                         <?php echo __('Descargar Actual'); ?>
                     </td>
                     <td class="valField">
-                        <?php if (file_exists($exportFile['absolute'])): ?>
+                        <?php if ($isAdminApp && file_exists($exportFile['absolute'])): ?>
                             <a href="<?php echo $exportFile['relative']; ?>"
                                download="<?php echo $exportFile['filename']; ?>"
                                class="download">

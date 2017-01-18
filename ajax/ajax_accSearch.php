@@ -32,7 +32,7 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-Request::checkReferer('POST');
+Request::checkReferer('GET');
 
 if (!Init::isLoggedIn()) {
     Response::printJson(__('La sesión no se ha iniciado o ha caducado'), 10);

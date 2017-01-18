@@ -29,7 +29,7 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-Request::checkReferer('POST');
+Request::checkReferer('GET');
 
 if (!Request::analyze('login', false)) {
     return;

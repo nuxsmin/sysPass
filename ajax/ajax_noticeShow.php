@@ -29,7 +29,7 @@ use SP\Http\Request;
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-Request::checkReferer('POST');
+Request::checkReferer('GET');
 
 $NoticeShow = new NoticeShowController();
 $NoticeShow->doAction();

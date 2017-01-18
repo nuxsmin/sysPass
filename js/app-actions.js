@@ -57,7 +57,6 @@ sysPass.Actions = function (Common) {
         plugin: "/ajax/ajax_itemSave.php",
         account: {
             save: "/ajax/ajax_itemSave.php",
-            showPass: "/ajax/ajax_accViewPass.php",
             saveFavorite: "/ajax/ajax_itemSave.php",
             request: "/ajax/ajax_itemSave.php",
             getFiles: "/ajax/ajax_accGetFiles.php",
@@ -88,6 +87,7 @@ sysPass.Actions = function (Common) {
 
         var opts = Common.appRequests().getRequestOpts();
         opts.url = ajaxUrl.doAction;
+        opts.method = "get";
         opts.type = "html";
         opts.addHistory = true;
         opts.data = data;
@@ -329,6 +329,7 @@ sysPass.Actions = function (Common) {
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.main.login;
+            opts.method = "get";
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
@@ -739,6 +740,7 @@ sysPass.Actions = function (Common) {
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.show;
+            opts.method = "get";
             opts.data = {
                 itemId: parentId == 0 ? $obj.data("item-id") : parentId,
                 actionId: $obj.data("action-id"),
@@ -776,6 +778,7 @@ sysPass.Actions = function (Common) {
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.show;
+            opts.method = "get";
             opts.async = false;
             opts.data = {
                 itemId: parentId == 0 ? $obj.data("item-id") : parentId,
@@ -895,6 +898,7 @@ sysPass.Actions = function (Common) {
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.account.search;
+            opts.method = "get";
             opts.data = $frmSearch.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
@@ -939,6 +943,7 @@ sysPass.Actions = function (Common) {
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.show;
+            opts.method = "get";
             opts.data = {
                 itemId: $obj.data("item-id"),
                 actionId: $obj.data("action-id"),
@@ -1034,6 +1039,7 @@ sysPass.Actions = function (Common) {
             var $target = $($obj.data("target"));
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.search;
+            opts.method = "get";
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
@@ -1105,6 +1111,7 @@ sysPass.Actions = function (Common) {
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.eventlog;
+            opts.method = "get";
             opts.type = "html";
             opts.data = {start: $obj.data("start"), current: $obj.data("current")};
 
@@ -1159,6 +1166,7 @@ sysPass.Actions = function (Common) {
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.wiki.show;
+            opts.method = "get";
             opts.data = {
                 pageName: $obj.data("pagename"),
                 actionId: $obj.data("action-id"),
@@ -1184,10 +1192,10 @@ sysPass.Actions = function (Common) {
             log.info("plugin:enable");
 
             var data = {
-                "itemId": $obj.data("item-id"),
-                "actionId": $obj.data("action-id"),
-                "sk": Common.sk.get(),
-                "activeTab": $obj.data("activetab")
+                itemId: $obj.data("item-id"),
+                actionId: $obj.data("action-id"),
+                sk: Common.sk.get(),
+                activeTab: $obj.data("activetab")
             };
 
             var opts = Common.appRequests().getRequestOpts();
@@ -1278,6 +1286,7 @@ sysPass.Actions = function (Common) {
             var $target = $($obj.data("target"));
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.notice.search;
+            opts.method = "get";
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
@@ -1295,6 +1304,7 @@ sysPass.Actions = function (Common) {
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.notice.show;
+            opts.method = "get";
             opts.data = {
                 itemId: $obj.data("item-id"),
                 actionId: $obj.data("action-id"),

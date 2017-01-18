@@ -319,6 +319,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('siteName', Util::getAppInfo('appname'));
         $this->view->assign('backupDir', Init::$SERVERROOT . '/backup');
         $this->view->assign('backupPath', Init::$WEBROOT . '/backup');
+        $this->view->assign('isAdminApp', $this->UserData->isUserIsAdminApp());
 
         $backupHash = $this->Config->getBackupHash();
         $exportHash = $this->Config->getExportHash();
