@@ -59,8 +59,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page       El nombre de página para la clase del body
-     * @param bool   $initialize Si es una inicialización completa
+     * @param string $page El nombre de página para la clase del body
+     * @param bool $initialize Si es una inicialización completa
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -374,9 +374,13 @@ class MainController extends ControllerBase implements ActionsInterface
     {
         $this->setPage('error');
 
-        $this->view->addTemplate('body-header');
-        $this->view->addTemplate('error');
-        $this->view->addTemplate('body-footer');
+        if (!Checks::isAjax()) {
+            $this->view->addTemplate('body-header');
+            $this->view->addTemplate('error');
+            $this->view->addTemplate('body-footer');
+        } else {
+            $this->view->addTemplate('error');
+        }
 
         $this->view();
         exit();

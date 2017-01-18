@@ -198,6 +198,10 @@ sysPass.Triggers = function (Common) {
 
             var $frmSearch = $("#frmSearch");
 
+            if ($frmSearch.length === 0) {
+                return;
+            }
+            
             $frmSearch.find("select, #rpp").on("change", function () {
                 $frmSearch.submit();
             });

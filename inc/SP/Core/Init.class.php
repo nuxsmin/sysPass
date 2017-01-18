@@ -303,7 +303,7 @@ class Init
         $Tpl = new Template();
         $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => $message, 'hint' => $hint]);
 
-        $Controller = new MainController($Tpl);
+        $Controller = new MainController($Tpl, 'error', !Checks::isAjax());
         $Controller->getError();
     }
 

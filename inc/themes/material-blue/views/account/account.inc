@@ -105,7 +105,7 @@
                 <td class="descField"><?php echo __('Usuario'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="login" name="login" type="text" required
+                        <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php echo $gotData ? $accountData->getAccountLogin() : ''; ?>" <?php echo $readonly; ?>>

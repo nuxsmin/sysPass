@@ -574,10 +574,9 @@ class ConfigActionController implements ItemControllerInterface
         $ImportParams->setCsvDelimiter(Request::analyze('csvDelimiter'));
 
         $Import = new Import($ImportParams);
-        $Message = $Import->doImport($_FILES['inFile']);
+        $LogMessage = $Import->doImport($_FILES['inFile']);
 
-        $this->JsonResponse->setDescription($Message->getDescription());
-        $this->JsonResponse->addMessage($Message->getHint());
+        $this->JsonResponse->setDescription($LogMessage->getHtmlDescription());
         $this->JsonResponse->setStatus(0);
     }
 

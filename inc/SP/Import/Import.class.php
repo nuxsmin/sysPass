@@ -26,7 +26,7 @@
 namespace SP\Import;
 
 use SP\Core\Exceptions\SPException;
-use SP\Http\Message;
+use SP\Core\Messages\LogMessage;
 use SP\Log\Email;
 use SP\Log\Log;
 
@@ -56,9 +56,8 @@ class Import
      * Iniciar la importación de cuentas.
      *
      * @param array $fileData Los datos del archivo
-     * @return Message
-     * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\SPException
+     * @return LogMessage
+     * @throws SPException
      */
     public function doImport(&$fileData)
     {
@@ -100,10 +99,8 @@ class Import
 
         Email::sendEmail($LogMessage);
 
-        $Message = new Message();
-        $Message->setDescription(__('Importación finalizada', false));
-        $Message->setHint(__('Revise el registro de eventos para más detalles', false));
+        $LogMessage->addDescription(__('Revise el registro de eventos para más detalles', false));
 
-        return $Message;
+        return $LogMessage;
     }
 }
