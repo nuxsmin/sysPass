@@ -106,17 +106,16 @@ abstract class CsvImportBase extends ImportBase
 
             // Obtener los ids de cliente y categoría
             $CustomerData = new CustomerData(null, $customerName);
-            Customer::getItem($CustomerData)->add();
-
+            $this->addCustomer($CustomerData);
             $CategoryData = new CategoryData(null, $categoryName);
-            Category::getItem($CategoryData)->add();
+            $this->addCategory($CategoryData);
 
             // Crear la nueva cuenta
             $AccountData = new AccountExtData();
             $AccountData->setAccountName($accountName);
             $AccountData->setAccountLogin($login);
-            $AccountData->setAccountCategoryId($CategoryData->getCategoryId());
             $AccountData->setAccountCustomerId($CustomerData->getCustomerId());
+            $AccountData->setAccountCategoryId($CategoryData->getCategoryId());
             $AccountData->setAccountNotes($notes);
             $AccountData->setAccountUrl($url);
             $AccountData->setAccountPass($password);
@@ -124,13 +123,13 @@ abstract class CsvImportBase extends ImportBase
             try {
                 $this->addAccount($AccountData);
 
-                $LogMessage->addDescription(sprintf(__('Cuenta importada: %s', false), $accountName));
+                $LogMessage->addDetails(__('Cuenta importada', false), $accountName);
             } catch (SPException $e) {
                 // Escribir los mensajes pendientes
                 $Log->writeLog(true);
                 $LogMessage->addDescription(__('Error importando cuenta', false));
-                $LogMessage->addDescription(sprintf(__('Error procesando línea %s', false), $line));
-                $LogMessage->addDescription($e->getMessage());
+                $LogMessage->addDetails(__('Error procesando línea', false), $line);
+                $LogMessage->addDetails(__('Error'), $e->getMessage());
                 // Flush y reset
                 $Log->writeLog(true);
             }
