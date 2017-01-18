@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,6 +26,7 @@ namespace SP\Core;
 
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventDispatcherInterface;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Mgmt\ItemBase;
@@ -94,16 +95,19 @@ class DiFactory
      * Devuelve la instancia de la clase del elemento solicitado
      *
      * @param  string $caller   La clase del objeto
-     * @param  mixed $itemData Los datos del elemento
+     * @param  mixed  $itemData Los datos del elemento
      * @return ItemBase
-     * @throws Exceptions\InvalidClassException
      */
     public static final function getItem($caller, $itemData = null)
     {
 //        error_log(count(self::$ItemFactory) . '-' . (memory_get_usage() / 1000));
 
-        if (isset(self::$ItemFactory[$caller])) {
-            return (null !== $itemData) ? self::$ItemFactory[$caller]->setItemData($itemData) : self::$ItemFactory[$caller];
+        try {
+            if (isset(self::$ItemFactory[$caller])) {
+                return (null !== $itemData) ? self::$ItemFactory[$caller]->setItemData($itemData) : self::$ItemFactory[$caller];
+            }
+        } catch (InvalidClassException $e) {
+            debugLog('Invalid class for item data: ' . $e->getMessage(), true);
         }
 
         self::$ItemFactory[$caller] = new $caller($itemData);

@@ -65,7 +65,6 @@ class Language
      * Establecer el lenguaje a utilizar
      *
      * @param bool $force Forzar la detección del lenguaje para los inicios de sesión
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public static function setLanguage($force = false)
     {
@@ -90,7 +89,6 @@ class Language
      * Devuelve el lenguaje del usuario
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     private function getUserLang()
     {

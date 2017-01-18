@@ -79,11 +79,11 @@ class AccountUtil
         $query = 'SELECT user_name '
             . 'FROM accUsers '
             . 'JOIN usrData ON accuser_userId = user_id '
-            . 'WHERE accuser_accountId = :id';
+            . 'WHERE accuser_accountId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'id');
+        $Data->addParam($accountId);
 
         $queryRes = DB::getResults($Data);
 
@@ -143,11 +143,11 @@ class AccountUtil
      */
     public static function getAccountNameById($accountId)
     {
-        $query = 'SELECT account_name FROM accounts WHERE account_id = :id LIMIT 1';
+        $query = 'SELECT account_name FROM accounts WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'id');
+        $Data->addParam($accountId);
 
         $queryRes = DB::getResults($Data);
 

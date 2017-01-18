@@ -61,7 +61,6 @@ class MainController extends ControllerBase implements ActionsInterface
      * @param        $template   Template con instancia de plantilla
      * @param string $page       El nombre de página para la clase del body
      * @param bool   $initialize Si es una inicialización completa
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -86,8 +85,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Inicializar las variables para la vista principal de la aplicación
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     protected function initialize()
     {
@@ -114,8 +111,14 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $this->setLoggedIn(Init::isLoggedIn());
 
-        // Cargar la clave pública en la sesión
-        SessionUtil::loadPublicKey();
+        try {
+            // Cargar la clave pública en la sesión
+            SessionUtil::loadPublicKey();
+        } catch (SPException $e) {
+            debugLog($e->getMessage(), true);
+        } catch (\phpseclib\Exception\FileNotFoundException $e) {
+            debugLog($e->getMessage(), true);
+        }
 
         $this->getResourcesLinks();
         $this->setResponseHeaders();
@@ -378,8 +381,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de actualización de BD
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getUpgrade()
     {

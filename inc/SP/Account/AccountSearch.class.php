@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -546,8 +546,8 @@ class AccountSearch
                 $filtersData[] =
                     [
                         'type' => 'private',
-                        'query' => 'account_isPrivate = 1 AND account_userId = ?',
-                        'values' => [Session::getUserData()->getUserId()]
+                        'query' => '(account_isPrivate = 1 AND account_userId = ?) OR (account_isPrivateGroup = 1 AND account_userGroupId = ?)',
+                        'values' => [Session::getUserData()->getUserId(), Session::getUserData()->getUserGroupId()]
                     ];
                 break;
             default:
@@ -643,9 +643,8 @@ class AccountSearch
     {
         $accountColor = Session::getAccountColor();
 
-        if (!isset($accountColor)
-            || !is_array($accountColor)
-            || !isset($accountColor[$id])
+        if (!is_array($accountColor)
+            || !isset($accountColor, $accountColor[$id])
         ) {
             // Se asigna el color de forma aleatoria a cada id
             $color = array_rand(self::$colors);

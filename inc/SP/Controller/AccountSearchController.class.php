@@ -30,7 +30,6 @@ use SP\Account\AccountSearch;
 use SP\Account\AccountsSearchItem;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
-use SP\Core\ItemsTypeInterface;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;

@@ -53,8 +53,6 @@ class Upgrade
      *
      * @param int $version con la versión de la BBDD actual
      * @return bool
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \InvalidArgumentException
      * @throws SPException
      */
     public static function doUpgrade($version)
@@ -235,7 +233,6 @@ class Upgrade
      *
      * @param $version
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function upgradeOldConfigFile($version)
     {

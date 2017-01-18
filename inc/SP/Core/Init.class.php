@@ -48,11 +48,6 @@ defined('APP_ROOT') || die();
 class Init
 {
     /**
-     * @var array Associative array for autoloading. classname => filename
-     */
-    public static $CLASSPATH = [];
-
-    /**
      * @var string The installation path on the server (e.g. /srv/www/syspass)
      */
     public static $SERVERROOT = '';
@@ -80,8 +75,6 @@ class Init
      * Inicializar la aplicación.
      * Esta función inicializa las variables de la aplicación y muestra la página
      * según el estado en el que se encuentre.
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public static function start()
     {
@@ -265,9 +258,6 @@ class Init
 
     /**
      * Iniciar la sesión PHP
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
-     * @throws \SP\Core\Exceptions\SPException
      */
     private static function startSession()
     {
@@ -276,8 +266,7 @@ class Init
 
         // Si la sesión no puede ser iniciada, devolver un error 500
         if (session_start() === false) {
-
-            Log::newLog(__('Sesion', false), __('La sesión no puede ser inicializada', false));
+            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
 
             header('HTTP/1.1 500 Internal Server Error');
 
@@ -290,8 +279,6 @@ class Init
      *
      * @param string $str  con la descripción del error
      * @param string $hint opcional, con una ayuda sobre el error
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public static function initError($str, $hint = '')
     {
@@ -396,7 +383,6 @@ class Init
      * Registrar la actualización de la configuración
      *
      * @param $version
-     * @throws \SP\Core\Exceptions\SPException
      */
     private static function logConfigUpgrade($version)
     {
@@ -414,8 +400,6 @@ class Init
     /**
      * Comprobar el archivo de configuración.
      * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     private static function checkConfig()
     {
@@ -435,7 +419,7 @@ class Init
 
         $configPerms = decoct(fileperms(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config') & 0777);
 
-        if (!Checks::checkIsWindows() && $configPerms !== "750") {
+        if (!Checks::checkIsWindows() && $configPerms !== '750') {
             clearstatcache();
             self::initError(__('Los permisos del directorio "/config" son incorrectos'), __('Actual:') . ' ' . $configPerms . ' - ' . __('Necesario: 750'));
         }
@@ -470,8 +454,6 @@ class Init
      * Comprueba que la aplicación esté instalada
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
      *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
-     * @throws \SP\Core\Exceptions\SPException
      */
     private static function checkInstalled()
     {
@@ -548,8 +530,6 @@ class Init
 
     /**
      * Escribir la información de logout en el registro de eventos.
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     private static function wrLogoutInfo()
     {
@@ -567,8 +547,6 @@ class Init
 
     /**
      * Mostrar la página de login
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     private static function goLogin()
     {
@@ -580,11 +558,6 @@ class Init
 
     /**
      * Comrpueba y actualiza la versión de la aplicación.
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \InvalidArgumentException
-     * @throws \phpmailer\phpmailerException
      */
     private static function checkDbVersion()
     {
@@ -725,8 +698,6 @@ class Init
      * Comprobar si hay que ejecutar acciones de URL antes de presentar la pantalla de login.
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public static function checkPreLoginActions()
     {
@@ -738,6 +709,8 @@ class Init
 
         $Controller = new MainController();
         $Controller->doAction('prelogin.' . $action);
+
+        return true;
     }
 
     /**
@@ -762,7 +735,6 @@ class Init
      * Comprobar si hay que ejecutar acciones de URL después de realizar login.
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkPostLoginActions()
     {

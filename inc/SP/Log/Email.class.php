@@ -24,6 +24,7 @@
 
 namespace SP\Log;
 
+use phpmailer\phpmailerException;
 use SP\Config\Config;
 use SP\Core\Init;
 use SP\Core\Messages\LogMessage;
@@ -46,7 +47,6 @@ class Email
      * @param string     $mailTo     con el destinatario
      * @param bool       $isEvent    para indicar si es um
      * @return bool
-     * @throws \phpmailer\phpmailerException
      */
     public static function sendEmail(LogMessage $LogMessage, $mailTo = '', $isEvent = true)
     {
@@ -80,17 +80,22 @@ class Email
 
         $Mail->Body = implode(Log::NEWLINE_HTML, $body);
 
-        $sendMail = $Mail->send();
-
         $LogMessage = new LogMessage();
         $LogMessage->setAction(__('Enviar Email', false));
+
+        try {
+            $sendMail = $Mail->send();
+        } catch (phpmailerException $e) {
+            $LogMessage->addDetails(__('Error', false), $e->getMessage());
+            $sendMail = false;
+        }
 
         // Enviar correo
         if ($sendMail) {
             $LogMessage->addDescription(__('Correo enviado', false));
         } else {
             $LogMessage->addDescription(__('Error al enviar correo', false));
-            $LogMessage->addDescription('ERROR: ' . $Mail->ErrorInfo);
+            $LogMessage->addDetails(__('Error', false), $Mail->ErrorInfo);
         }
 
         $LogMessage->addDescription(__('Destinatario', false) . ': ' . $mailTo);

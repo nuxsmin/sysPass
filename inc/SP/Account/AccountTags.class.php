@@ -51,13 +51,13 @@ class AccountTags
             'SELECT tag_id, tag_name
                 FROM accTags
                 JOIN tags ON tag_id = acctag_tagId
-                WHERE acctag_accountId = :id
+                WHERE acctag_accountId = ?
                 ORDER BY tag_name';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setUseKeyPair(true);
-        $Data->addParam($accountData->getAccountId(), 'id');
+        $Data->addParam($accountData->getAccountId());
 
         return DB::getResultsArray($Data);
     }
@@ -107,11 +107,11 @@ class AccountTags
     public function deleteTags(AccountData $accountData)
     {
         $query = /** @lang SQL */
-            'DELETE FROM accTags WHERE acctag_accountId = :id';
+            'DELETE FROM accTags WHERE acctag_accountId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountData->getAccountId(), 'id');
+        $Data->addParam($accountData->getAccountId());
 
         return DB::getQuery($Data);
     }

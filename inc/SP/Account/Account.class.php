@@ -50,11 +50,6 @@ defined('APP_ROOT') || die();
 class Account extends AccountBase implements AccountInterface
 {
     /**
-     * @var array Variable para la caché de parámetros de una cuenta.
-     */
-    private $cacheParams;
-
-    /**
      * Actualiza los datos de una cuenta en la BBDD.
      *
      * @return bool
@@ -129,7 +124,6 @@ class Account extends AccountBase implements AccountInterface
                 . 'account_isPrivateGroup = :accountIsPrivateGroup, '
                 . 'account_parentId = :accountParentId '
                 . 'WHERE account_id = :accountId';
-
         }
 
         $Data->setQuery($query);
@@ -150,60 +144,6 @@ class Account extends AccountBase implements AccountInterface
 
         if (DB::getQuery($Data) === false) {
             throw new SPException(SPException::SP_ERROR, __('Error al modificar la cuenta', false));
-        }
-
-        return true;
-    }
-
-    /**
-     * Obtener los datos de una cuenta con el id.
-     * Se guardan los datos en la variable $cacheParams de la clase para consultarlos
-     * posteriormente.
-     *
-     * @param array $params con los campos de la BBDD a obtener
-     * @return bool
-     */
-    private function getAccountInfoById($params)
-    {
-        if (!is_array($params)) {
-            return false;
-        }
-
-        if (is_array($this->cacheParams)) {
-            $cache = true;
-
-            foreach ($params as $param) {
-                if (!array_key_exists($param, $this->cacheParams)) {
-                    $cache = false;
-                }
-            }
-
-            if ($cache) {
-                return true;
-            }
-        }
-
-        $query = /** @lang SQL */
-            'SELECT ' . implode(',', $params) . '
-            FROM accounts 
-            LEFT JOIN usrGroups ug ON account_userGroupId = usergroup_id 
-            LEFT JOIN usrData u1 ON account_userId = u1.user_id  
-            LEFT JOIN usrData u2 ON account_userEditId = u2.user_id 
-            LEFT JOIN customers ON account_customerId = customer_id 
-            WHERE account_id = :id LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId(), 'id');
-
-        $queryRes = DB::getResults($Data);
-
-        if ($queryRes === false) {
-            return false;
-        }
-
-        foreach ($queryRes as $param => $value) {
-            $this->cacheParams[$param] = $value;
         }
 
         return true;
@@ -243,7 +183,9 @@ class Account extends AccountBase implements AccountInterface
             . 'dst.account_IV = src.acchistory_IV,'
             . 'dst.account_passDate = src.acchistory_passDate,'
             . 'dst.account_passDateChange = src.acchistory_passDateChange, '
-            . 'dst.account_parentId = src.acchistory_parentId '
+            . 'dst.account_parentId = src.acchistory_parentId, '
+            . 'dst.account_isPrivate = src.accHistory_isPrivate, '
+            . 'dst.account_isPrivateGroup = src.accHistory_isPrivateGroup '
             . 'WHERE dst.account_id = src.acchistory_accountId';
 
         $Data = new QueryData();
@@ -268,12 +210,12 @@ class Account extends AccountBase implements AccountInterface
     public function getData()
     {
         $query = /** @lang SQL */
-            'SELECT * FROM account_data_v WHERE account_id = :id LIMIT 1';
+            'SELECT * FROM account_data_v WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClass($this->accountData);
-        $Data->addParam($this->accountData->getAccountId(), 'id');
+        $Data->addParam($this->accountData->getAccountId());
 
         /** @var AccountExtData|array $queryRes */
         $queryRes = DB::getResults($Data);
@@ -456,11 +398,11 @@ class Account extends AccountBase implements AccountInterface
     public function incrementViewCounter()
     {
         $query = /** @lang SQL */
-            'UPDATE accounts SET account_countView = (account_countView + 1) WHERE account_id = :id LIMIT 1';
+            'UPDATE accounts SET account_countView = (account_countView + 1) WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId(), 'id');
+        $Data->addParam($this->accountData->getAccountId());
 
         return DB::getQuery($Data);
     }
@@ -473,11 +415,11 @@ class Account extends AccountBase implements AccountInterface
     public function incrementDecryptCounter()
     {
         $query = /** @lang SQL */
-            'UPDATE accounts SET account_countDecrypt = (account_countDecrypt + 1) WHERE account_id = :id LIMIT 1';
+            'UPDATE accounts SET account_countDecrypt = (account_countDecrypt + 1) WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId(), 'id');
+        $Data->addParam($this->accountData->getAccountId());
 
         return DB::getQuery($Data);
     }
@@ -530,7 +472,7 @@ class Account extends AccountBase implements AccountInterface
                 continue;
             }
 
-            if (strlen($account->account_pass) === 0) {
+            if (empty($account->account_pass)) {
                 $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
                 continue;
             }
@@ -570,7 +512,7 @@ class Account extends AccountBase implements AccountInterface
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
-     * @return false|array Con los datos de la clave
+     * @return array Con los datos de la clave
      */
     protected function getAccountsPassData()
     {

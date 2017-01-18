@@ -206,6 +206,8 @@ CREATE TABLE `accHistory` (
   `accHistory_passDate` int(10) unsigned DEFAULT NULL,
   `accHistory_passDateChange` int(10) unsigned DEFAULT NULL,
   `accHistory_parentId` smallint(5) unsigned DEFAULT NULL,
+  `accHistory_isPrivate` BIT(1) NULL DEFAULT b'0',
+  `accHistory_isPrivateGroup` BIT(1) NULL DEFAULT b'0',
   PRIMARY KEY (`acchistory_id`),
   KEY `IDX_accountId` (`acchistory_accountId`),
   KEY `fk_accHistory_users_edit_id_idx` (`acchistory_userEditId`),

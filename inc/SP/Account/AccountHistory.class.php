@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -68,24 +68,24 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'FROM accHistory '
             . 'LEFT JOIN usrData u1 ON acchistory_userEditId = u1.user_id '
             . 'LEFT JOIN usrData u2 ON acchistory_userId = u2.user_id '
-            . 'WHERE acchistory_accountId = :id '
+            . 'WHERE acchistory_accountId = ? '
             . 'ORDER BY acchistory_id DESC';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'id');
-
-        $queryRes = DB::getResultsArray($Data);
+        $Data->addParam($accountId);
 
         $arrHistory = [];
 
-        foreach ($queryRes as $history) {
+        foreach (DB::getResultsArray($Data) as $history) {
             // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
-            if ($history->acchistory_dateEdit === null || $history->acchistory_dateEdit == '0000-00-00 00:00:00') {
-                $arrHistory[$history->acchistory_id] = $history->acchistory_dateAdd . ' - ' . $history->user_add;
+            if (empty($history->acchistory_dateEdit) || $history->acchistory_dateEdit === '0000-00-00 00:00:00') {
+                $date = $history->acchistory_dateAdd . ' - ' . $history->user_add;
             } else {
-                $arrHistory[$history->acchistory_id] = $history->acchistory_dateEdit . ' - ' . $history->user_edit;
+                $date = $history->acchistory_dateEdit . ' - ' . $history->user_edit;
             }
+
+            $arrHistory[$history->acchistory_id] = $date;
         }
 
         return $arrHistory;
@@ -121,6 +121,8 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_userEditId,'
             . 'acchistory_otherUserEdit,'
             . 'acchistory_otherGroupEdit,'
+            . 'accHistory_isPrivate,'
+            . 'accHistory_isPrivateGroup,'
             . 'acchistory_isModify,'
             . 'acchistory_isDeleted,'
             . 'acchistory_mPassHash) '
@@ -142,14 +144,16 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'account_userEditId,'
             . 'account_otherUserEdit,'
             . 'account_otherGroupEdit,'
+            . 'account_isPrivate,'
+            . 'account_isPrivateGroup,'
             . ':isModify,'
             . ':isDelete,'
             . ':masterPwd '
-            . 'FROM accounts WHERE account_id = :account_id';
+            . 'FROM accounts WHERE account_id = :id';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id, 'account_id');
+        $Data->addParam($id, 'id');
         $Data->addParam(($isDelete === false) ? 1 : 0, 'isModify');
         $Data->addParam(($isDelete === true) ? 1 : 0, 'isDelete');
         $Data->addParam(ConfigDB::getValue('masterPwd'), 'masterPwd');
@@ -167,11 +171,11 @@ class AccountHistory extends AccountBase implements AccountInterface
     public static function getAccountIdFromId($historyId)
     {
         $query = /** @lang SQL */
-            'SELECT acchistory_accountId FROM accHistory WHERE acchistory_id = :id LIMIT 1';
+            'SELECT acchistory_accountId FROM accHistory WHERE acchistory_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($historyId, 'id');
+        $Data->addParam($historyId);
 
         $queryRes = DB::getResults($Data);
 
@@ -192,13 +196,13 @@ class AccountHistory extends AccountBase implements AccountInterface
     {
         $query = /** @lang SQL */
             'UPDATE accHistory SET '
-            . 'acchistory_mPassHash = :newHash '
-            . 'WHERE acchistory_mPassHash = :oldHash';
+            . 'acchistory_mPassHash = ? '
+            . 'WHERE acchistory_mPassHash = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($newHash, 'newHash');
-        $Data->addParam(ConfigDB::getValue('masterPwd'), 'oldHash');
+        $Data->addParam($newHash);
+        $Data->addParam(ConfigDB::getValue('masterPwd'));
 
         return DB::getQuery($Data);
     }
@@ -322,13 +326,13 @@ class AccountHistory extends AccountBase implements AccountInterface
         $query = /** @lang SQL */
             'SELECT acchistory_mPassHash ' .
             'FROM accHistory ' .
-            'WHERE acchistory_id = :id ' .
-            'AND acchistory_mPassHash = :mPassHash';
+            'WHERE acchistory_id = ? ' .
+            'AND acchistory_mPassHash = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(null === $id ? $this->accountData->getAccountId() : $id, 'id');
-        $Data->addParam(ConfigDB::getValue('masterPwd'), 'mPassHash');
+        $Data->addParam(null === $id ? $this->accountData->getAccountId() : $id);
+        $Data->addParam(ConfigDB::getValue('masterPwd'));
 
         return (DB::getResults($Data) !== false);
     }
@@ -376,12 +380,12 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'customer_name '
             . 'FROM accHistory '
             . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
-            . 'WHERE acchistory_id = :id LIMIT 1';
+            . 'WHERE acchistory_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClass($this->accountData);
-        $Data->addParam($this->getId(), 'id');
+        $Data->addParam($this->getId());
 
         return DB::getResults($Data);
     }
@@ -433,6 +437,8 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_isDeleted,'
             . 'acchistory_otherUserEdit + 0 AS account_otherUserEdit,'
             . 'acchistory_otherGroupEdit + 0 AS account_otherGroupEdit,'
+            . 'acchistory_isPrivate + 0 AS account_isPrivate,'
+            . 'acchistory_isPrivateGroup + 0 AS account_isPrivateGroup,'
             . 'u1.user_name,'
             . 'u1.user_login,'
             . 'usergroup_name,'
@@ -445,12 +451,12 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'LEFT JOIN usrData u1 ON acchistory_userId = u1.user_id '
             . 'LEFT JOIN usrData u2 ON acchistory_userEditId = u2.user_id '
             . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
-            . 'WHERE acchistory_id = :id LIMIT 1';
+            . 'WHERE acchistory_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClass($this->accountData);
-        $Data->addParam($this->getId(), 'id');
+        $Data->addParam($this->getId());
 
         $queryRes = DB::getResults($Data);
 
@@ -490,6 +496,8 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_userGroupId = :accountUserGroupId,'
             . 'acchistory_otherUserEdit = :accountOtherUserEdit,'
             . 'acchistory_otherGroupEdit = :accountOtherGroupEdit,'
+            . 'acchistory_isPrivate = :isPrivate,'
+            . 'acchistory_isPrivateGroup = :isPrivateGroup,'
             . 'acchistory_isModify = :isModify,'
             . 'acchistory_isDeleted = :isDelete,'
             . 'acchistory_mPassHash = :masterPwd';
@@ -509,6 +517,8 @@ class AccountHistory extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
+        $Data->addParam($this->accountData->getAccountIsPrivate(), 'isPrivate');
+        $Data->addParam($this->accountData->getAccountIsPrivateGroup(), 'isPrivateGroup');
         $Data->addParam($this->isIsModify(), 'isModify');
         $Data->addParam($this->isIsDelete(), 'isDelete');
         $Data->addParam(ConfigDB::getValue('masterPwd'), 'masterPwd');
@@ -567,10 +577,6 @@ class AccountHistory extends AccountBase implements AccountInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        if (DB::getQuery($Data) === false) {
-            return false;
-        }
-
-        return true;
+        return DB::getQuery($Data);
     }
 }

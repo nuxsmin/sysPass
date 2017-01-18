@@ -71,7 +71,6 @@ class DBUtil
      * Comprobar que la base de datos existe.
      *
      * @return bool
-     * @throws SPException
      */
     public static function checkDatabaseExist()
     {
@@ -86,8 +85,11 @@ class DBUtil
 
             return (int)$db->query($query)->fetchColumn() === 6;
         } catch (\Exception $e) {
-            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
+            debugLog($e->getMessage());
+            debugLog($e->getCode());
         }
+
+        return false;
     }
 
     /**

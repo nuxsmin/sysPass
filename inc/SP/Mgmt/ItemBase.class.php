@@ -64,7 +64,6 @@ abstract class ItemBase
      *
      * @param $itemData
      * @return static
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public final static function getItem($itemData = null)
     {
@@ -101,7 +100,7 @@ abstract class ItemBase
     public final function setItemData($itemData)
     {
         if (null !== $this->dataModel && !$itemData instanceof $this->dataModel) {
-            throw new InvalidClassException();
+            throw new InvalidClassException($this->dataModel);
         }
 
         $this->itemData = $itemData;

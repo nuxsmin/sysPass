@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -160,22 +160,26 @@ abstract class ControllerBase
 
     /**
      * Mostrar los datos de la plantilla
-     *
-     * @throws FileNotFoundException
      */
     public function view()
     {
-        echo $this->view->render();
+        try {
+            echo $this->view->render();
+        } catch (FileNotFoundException $e) {
+            debugLog($e->getMessage(), true);
+        }
     }
 
     /**
      * Renderizar los datos de la plantilla y devolverlos
-     *
-     * @throws FileNotFoundException
      */
     public function render()
     {
-        return $this->view->render();
+        try {
+            return $this->view->render();
+        } catch (FileNotFoundException $e) {
+            debugLog($e->getMessage(), true);
+        }
     }
 
     /**
@@ -258,33 +262,6 @@ abstract class ControllerBase
     }
 
     /**
-     * Establecer la instancia del motor de plantillas a utilizar.
-     *
-     * @param Template $template
-     */
-    protected function setTemplate(Template $template)
-    {
-        $this->view = $template;
-    }
-
-    /**
-     * Comprobar si está permitido el acceso al módulo/página.
-     *
-     * @param null $action La acción a comprobar
-     * @return bool
-     */
-    protected function checkAccess($action = null)
-    {
-        $checkAction = $this->action;
-
-        if (null !== $action) {
-            $checkAction = $action;
-        }
-
-        return Session::getUserData()->isUserIsAdminApp() || Acl::checkUserAccess($checkAction);
-    }
-
-    /**
      * Establecer la plantilla de error con el código indicado.
      *
      * @param int  $type int con el tipo de error
@@ -325,4 +302,31 @@ abstract class ControllerBase
      * @param mixed $type Tipo de acción
      */
     public abstract function doAction($type = null);
+
+    /**
+     * Establecer la instancia del motor de plantillas a utilizar.
+     *
+     * @param Template $template
+     */
+    protected function setTemplate(Template $template)
+    {
+        $this->view = $template;
+    }
+
+    /**
+     * Comprobar si está permitido el acceso al módulo/página.
+     *
+     * @param null $action La acción a comprobar
+     * @return bool
+     */
+    protected function checkAccess($action = null)
+    {
+        $checkAction = $this->action;
+
+        if (null !== $action) {
+            $checkAction = $action;
+        }
+
+        return Session::getUserData()->isUserIsAdminApp() || Acl::checkUserAccess($checkAction);
+    }
 }

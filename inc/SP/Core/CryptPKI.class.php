@@ -91,6 +91,7 @@ class CryptPKI
      *
      * @param string $data los datos a encriptar
      * @return string
+     * @throws \phpseclib\Exception\FileNotFoundException
      */
     public function encryptRSA($data)
     {
@@ -114,7 +115,7 @@ class CryptPKI
         if (!file_exists($file)) {
             Log::writeNewLog(__FUNCTION__, __('El archivo de clave no existe', false), Log::NOTICE);
 
-            throw new FileNotFoundException(__('El archivo de clave no existe', false));
+            throw new FileNotFoundException(__('El archivo de clave no existe'));
         }
 
         return file_get_contents($file);
@@ -125,6 +126,7 @@ class CryptPKI
      *
      * @param string $data los datos a desencriptar
      * @return string
+     * @throws \phpseclib\Exception\FileNotFoundException
      */
     public function decryptRSA($data)
     {
@@ -148,7 +150,7 @@ class CryptPKI
         if (!file_exists($file)) {
             Log::writeNewLog(__FUNCTION__, __('El archivo de clave no existe', false), Log::NOTICE);
 
-            throw new FileNotFoundException(__('El archivo de clave no existe', false));
+            throw new FileNotFoundException(__('El archivo de clave no existe'));
         }
 
         return file_get_contents($file);

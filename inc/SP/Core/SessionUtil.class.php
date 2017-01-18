@@ -51,6 +51,7 @@ class SessionUtil
     /**
      * Establecer la clave pública RSA en la sessión
      *
+     * @throws \phpseclib\Exception\FileNotFoundException
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function loadPublicKey()

@@ -70,11 +70,11 @@ class UserAccounts
             $queryExcluded = 'AND accuser_userId NOT IN (' . implode(',', $usersId) . ')';
         }
 
-        $query = 'DELETE FROM accUsers WHERE accuser_accountId = :id ' . $queryExcluded;
+        $query = 'DELETE FROM accUsers WHERE accuser_accountId = ? ' . $queryExcluded;
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'id');
+        $Data->addParam($accountId);
 
         return DB::getQuery($Data);
     }
@@ -126,11 +126,11 @@ class UserAccounts
      */
     public static function getUsersForAccount($accountId)
     {
-        $query = 'SELECT accuser_userId FROM accUsers WHERE accuser_accountId = :id';
+        $query = 'SELECT accuser_userId FROM accUsers WHERE accuser_accountId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'id');
+        $Data->addParam($accountId);
 
         $users = [];
 
@@ -154,13 +154,13 @@ class UserAccounts
             user_name
             FROM accUsers
             JOIN usrData ON user_Id = accuser_userId
-            WHERE accuser_accountId = :id
+            WHERE accuser_accountId = ?
             ORDER BY user_login';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\UserData');
+        $Data->setMapClassName(UserData::class);
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'id');
+        $Data->addParam($accountId);
 
         return DB::getResultsArray($Data);
     }

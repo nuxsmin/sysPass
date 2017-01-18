@@ -28,7 +28,6 @@ use SP\Core\DiFactory;
 use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Session;
-use SP\Http\Request;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Checks;

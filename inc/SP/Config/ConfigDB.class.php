@@ -120,8 +120,6 @@ class ConfigDB implements ConfigInterface
      * @param bool   $email     enviar email?
      * @param bool   $hideValue Ocultar el valor del registro en el log
      * @return bool
-     * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function setValue($param, $value, $email = true, $hideValue = false)
     {
