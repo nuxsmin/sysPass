@@ -212,7 +212,7 @@ sysPass.Actions = function (Common) {
                 opts.cache = true;
                 opts.data = {sk: $obj.data("sk"), itemType: $obj.data("item-type"), itemId: $obj.data("item-id")};
 
-                Common.appRequests().getActionCall(opts, function (json) {
+                Common.appRequests().getActionPromise(opts, function (json) {
                     callback(json.data);
 
                     $dst.setValue($obj.data("selected-id"), true);
@@ -231,7 +231,7 @@ sysPass.Actions = function (Common) {
                 opts.method = "get";
                 opts.data = {sk: Common.sk.get(), itemType: $obj.data("item-type")};
 
-                Common.appRequests().getActionCall(opts, function (json) {
+                Common.appRequests().getActionPromise(opts, function (json) {
                     callback(json.data);
                 });
             });
@@ -404,7 +404,7 @@ sysPass.Actions = function (Common) {
             opts.useLoading = false;
             opts.data = {isAjax: 1};
 
-            Common.appRequests().getActionCall(opts, function (response) {
+            Common.appRequests().getActionPromise(opts, function (response) {
                 $("#updates").html(response);
 
                 if (typeof  componentHandler !== "undefined") {
@@ -492,9 +492,10 @@ sysPass.Actions = function (Common) {
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.config.export;
+            opts.method = "post";
             opts.data = $obj.serialize();
 
-            Common.appRequests().getActionCall(opts, function (json) {
+            Common.appRequests().getActionPromise(opts, function (json) {
                 Common.msg.out(json);
 
                 if (json.status === 0 && $obj.data("nextaction-id") !== undefined) {

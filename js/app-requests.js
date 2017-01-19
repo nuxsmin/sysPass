@@ -172,9 +172,34 @@ sysPass.Requests = function (Common) {
         return $ajax;
     };
 
+    /**
+     * Realizar una acción con Ajax mediante promises
+     *
+     * @param opts
+     * @param callbackOk
+     */
+    var getActionPromise = function (opts, callbackOk) {
+        log.info("getActionPromise");
+
+        var url = (!opts.url.startsWith("http", 0) && !opts.url.startsWith("https", 0)) ? Common.config().APP_ROOT + opts.url : opts.url;
+
+        $.when($.ajax({
+            dataType: opts.type,
+            url: url,
+            method: opts.method,
+            async: opts.async,
+            data: opts.data,
+            cache: opts.cache,
+            processData: opts.processData,
+            contentType: opts.contentType,
+            timeout: opts.timeout
+        })).done(callbackOk);
+    };
+
     return {
         getRequestOpts: getRequestOpts,
         getActionCall: getActionCall,
+        getActionPromise: getActionPromise,
         history: history
     };
 };

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,7 +23,6 @@
  */
 
 use SP\Controller\ConfigActionController;
-use SP\Http\Request;
 
 define('APP_ROOT', '..');
 
