@@ -28,9 +28,6 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
-use SP\Log\Log;
-use SP\Mgmt\Categories\Category;
-use SP\Mgmt\Customers\Customer;
 
 defined('APP_ROOT') || die();
 
@@ -76,10 +73,6 @@ abstract class CsvImportBase extends ImportBase
     {
         $line = 0;
 
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Importar Cuentas', false));
-
         foreach ($this->file->getFileContent() as $data) {
             $line++;
             $fields = str_getcsv($data, $this->ImportParams->getCsvDelimiter(), '"');
@@ -115,19 +108,11 @@ abstract class CsvImportBase extends ImportBase
 
             try {
                 $this->addAccount($AccountData);
-
-                $LogMessage->addDetails(__('Cuenta importada', false), $accountName);
             } catch (SPException $e) {
-                // Escribir los mensajes pendientes
-                $Log->writeLog(true);
-                $LogMessage->addDescription(__('Error importando cuenta', false));
-                $LogMessage->addDetails(__('Error procesando línea', false), $line);
-                $LogMessage->addDetails(__('Error', false), $e->getMessage());
-                // Flush y reset
-                $Log->writeLog(true);
+                $this->LogMessage->addDetails(__('Error importando cuenta', false), $accountName);
+                $this->LogMessage->addDetails(__('Error procesando línea', false), $line);
+                $this->LogMessage->addDetails(__('Error', false), $e->getMessage());
             }
         }
-
-        $Log->writeLog();
     }
 }

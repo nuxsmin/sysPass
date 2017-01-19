@@ -36,8 +36,10 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de importar cuentas desde sysPass
  */
-class SyspassImport extends XmlImportBase
+class SyspassImport extends ImportBase
 {
+    use XmlImportTrait;
+
     /**
      * Mapeo de etiquetas
      *

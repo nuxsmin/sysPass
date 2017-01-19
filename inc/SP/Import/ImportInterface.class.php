@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,34 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Import;
-
-use SP\Core\Exceptions\SPException;
-
-defined('APP_ROOT') || die();
+namespace Import;
 
 /**
- * Class CsvImport para importar cuentas desde archivos CSV
- *
- * @package SP
+ * Interface ImportInterface
+ * @package Import
  */
-class CsvImport extends CsvImportBase
+interface ImportInterface
 {
     /**
-     * Iniciar la importación desde XML.
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     * @return bool
+     * Iniciar la importación
      */
-    public function doImport()
-    {
-        try {
-            $this->LogMessage->addDescription(sprintf(__('Formato detectado: %s'), 'CSV'));
-
-            $this->file->readFileToArray();
-            $this->processAccounts();
-        } catch (SPException $e) {
-            throw $e;
-        }
-    }
+    public function doImport();
 }

@@ -24,6 +24,7 @@
 
 namespace SP\Import;
 
+use Import\ImportInterface;
 use SP\Account\Account;
 use SP\Core\Crypt;
 use SP\Core\Exceptions\SPException;
@@ -44,7 +45,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-abstract class ImportBase
+abstract class ImportBase implements ImportInterface
 {
     /**
      * @var ImportParams
@@ -58,55 +59,55 @@ abstract class ImportBase
      * @var LogMessage
      */
     protected $LogMessage;
+    /**
+     * @var int
+     */
+    protected $counter = 0;
 
     /**
      * ImportBase constructor.
      *
-     * @param FileImport   $File
+     * @param FileImport $File
      * @param ImportParams $ImportParams
+     * @param LogMessage $LogMessage
      */
-    public function __construct(FileImport $File, ImportParams $ImportParams)
+    public function __construct(FileImport $File = null, ImportParams $ImportParams = null, LogMessage $LogMessage = null)
     {
         $this->file = $File;
         $this->ImportParams = $ImportParams;
-        $this->LogMessage = new LogMessage(__('Importar Cuentas', false));
+        $this->LogMessage = null !== $LogMessage ? $LogMessage : new LogMessage(__('Importar Cuentas', false));
     }
 
     /**
-     * Iniciar la importación desde XML.
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     * @return bool
+     * @return LogMessage
      */
-    public abstract function doImport();
+    public function getLogMessage()
+    {
+        return $this->LogMessage;
+    }
 
     /**
-     * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
-     *
-     * @return bool
+     * @param LogMessage $LogMessage
      */
-    protected function parseFileHeader()
+    public function setLogMessage($LogMessage)
     {
-        $handle = @fopen($this->file->getTmpFile(), 'r');
-        $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
+        $this->LogMessage = $LogMessage;
+    }
 
-        if ($handle) {
-            // No. de líneas a leer como máximo
-            $maxLines = 5;
-            $count = 0;
+    /**
+     * @return int
+     */
+    public function getCounter()
+    {
+        return $this->counter;
+    }
 
-            while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines) {
-                if (preg_match($headersRegex, $buffer, $app)) {
-                    fclose($handle);
-                    return strtolower($app[0]);
-                }
-                $count++;
-            }
-
-            fclose($handle);
-        }
-
-        return false;
+    /**
+     * @param ImportParams $ImportParams
+     */
+    public function setImportParams($ImportParams)
+    {
+        $this->ImportParams = $ImportParams;
     }
 
     /**
@@ -139,8 +140,10 @@ abstract class ImportBase
             $Account->createAccount();
 
             $this->LogMessage->addDetails(__('Cuenta creada', false), $AccountData->getAccountName());
+            $this->counter++;
         } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
+            $this->LogMessage->addDetails($e->getMessage(), $AccountData->getAccountName());
+            $this->LogMessage->addDetails(__('ERROR', false), $e->getHint());
         }
 
         return true;
@@ -163,7 +166,8 @@ abstract class ImportBase
 
             return $Category;
         } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
+            $this->LogMessage->addDetails($e->getMessage(), $CategoryData->category_name);
+            $this->LogMessage->addDetails(__('ERROR', false), $e->getHint());
         }
 
         return null;
@@ -185,7 +189,8 @@ abstract class ImportBase
 
             return $Customer;
         } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
+            $this->LogMessage->addDetails($e->getMessage(), $CustomerData->getCustomerName());
+            $this->LogMessage->addDetails(__('ERROR', false), $e->getHint());
         }
 
         return null;
@@ -208,7 +213,8 @@ abstract class ImportBase
 
             return $Tag;
         } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
+            $this->LogMessage->addDetails($e->getMessage(), $TagData->getTagName());
+            $this->LogMessage->addDetails(__('Error', false), $e->getHint());
         }
 
         return null;

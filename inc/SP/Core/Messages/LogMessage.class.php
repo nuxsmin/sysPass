@@ -134,6 +134,10 @@ class LogMessage extends MessageBase
      */
     public function addDetails($key, $value)
     {
+        if ($value === '' || $key === '') {
+            return $this;
+        }
+
         $this->details[] = [$this->formatString($key), $this->formatString($value)];
 
         return $this;
@@ -218,7 +222,7 @@ class LogMessage extends MessageBase
      * Devolver un detalle formateado
      *
      * @param array $detail
-     * @param bool  $translate
+     * @param bool $translate
      * @return string
      */
     protected function formatDetail(array $detail, $translate = false)

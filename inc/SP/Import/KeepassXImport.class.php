@@ -34,8 +34,10 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de importar cuentas desde KeePassX
  */
-class KeepassXImport extends XmlImportBase
+class KeepassXImport extends ImportBase
 {
+    use XmlImportTrait;
+
     /**
      * @var int
      */
@@ -100,8 +102,8 @@ class KeepassXImport extends XmlImportBase
     /**
      * Obtener los datos de las entradas de KeePass.
      *
-     * @param SimpleXMLElement $entries    El objeto XML con las entradas
-     * @param int              $categoryId Id de la categoría
+     * @param SimpleXMLElement $entries El objeto XML con las entradas
+     * @param int $categoryId Id de la categoría
      * @throws \SP\Core\Exceptions\SPException
      */
     protected function processAccounts(SimpleXMLElement $entries, $categoryId)

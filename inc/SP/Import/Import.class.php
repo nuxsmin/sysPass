@@ -61,9 +61,9 @@ class Import
      */
     public function doImport(&$fileData)
     {
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
+        $LogMessage = new LogMessage();
         $LogMessage->setAction(__('Importar Cuentas', false));
+        $Log = new Log($LogMessage);
 
         try {
             $file = new FileImport($fileData);
@@ -71,20 +71,22 @@ class Import
             switch ($file->getFileType()) {
                 case 'text/csv':
                 case 'application/vnd.ms-excel':
-                    $Import = new CsvImport($file, $this->ImportParams);
+                    $Import = new CsvImport($file, $this->ImportParams, $LogMessage);
                     break;
                 case 'text/xml':
-                    $Import = new XmlImport($file, $this->ImportParams);
+                    $Import = new XmlImport($file, $this->ImportParams, $LogMessage);
                     break;
                 default:
                     throw new SPException(
                         SPException::SP_WARNING,
-                        sprintf(__('Tipo mime no soportado ("%s")', false), $file->getFileType()),
+                        sprintf(__('Tipo mime no soportado ("%s")'), $file->getFileType()),
                         __('Compruebe el formato del archivo', false)
                     );
             }
 
             $Import->doImport();
+
+            $LogMessage->addDetails(__('Cuentas importadas'), $Import->getCounter());
         } catch (SPException $e) {
             $LogMessage->addDescription($e->getMessage());
             $LogMessage->addDetails(__('Ayuda', false), $e->getHint());
@@ -94,11 +96,11 @@ class Import
             throw $e;
         }
 
-        $LogMessage->addDescription(__('Importación finalizada', false));
-        $Log->writeLog();
+        $Log->writeLog(true);
 
         Email::sendEmail($LogMessage);
 
+        $LogMessage->addDescription(__('Importación finalizada', false));
         $LogMessage->addDescription(__('Revise el registro de eventos para más detalles', false));
 
         return $LogMessage;

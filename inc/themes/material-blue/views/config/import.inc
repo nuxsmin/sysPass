@@ -27,7 +27,7 @@ use SP\Core\Session; ?>
                             <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
                             <?php foreach ($users as $user): ?>
                                 <option
-                                    value="<?php echo $user->id; ?>" <?php echo ($user->id === Session::getUserData()->getUserId()) ? 'selected' : ''; ?>>
+                                        value="<?php echo $user->id; ?>" <?php echo ($user->id === Session::getUserData()->getUserId()) ? 'selected' : ''; ?>>
                                     <?php echo $user->name; ?>
                                 </option>
                             <?php endforeach; ?>
@@ -51,7 +51,7 @@ use SP\Core\Session; ?>
                             <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
                             <?php foreach ($groups as $group): ?>
                                 <option
-                                    value="<?php echo $group->id; ?>" <?php echo ($group->id === $SessionUserData->getUserGroupId()) ? 'selected' : ''; ?>>
+                                        value="<?php echo $group->id; ?>" <?php echo ($group->id === $SessionUserData->getUserGroupId()) ? 'selected' : ''; ?>>
                                     <?php echo $group->name; ?>
                                 </option>
                             <?php endforeach; ?>
@@ -94,7 +94,7 @@ use SP\Core\Session; ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="importMasterPwd" name="importMasterPwd" type="password"
                                    class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
-                                   maxlength="255" />
+                                   maxlength="255"/>
                             <label class="mdl-textfield__label"
                                    for="importMasterPwd"><?php echo __('Clave Maestra'); ?></label>
                         </div>

@@ -24,8 +24,8 @@
 
 namespace SP\Import;
 
-use SP\Core\Exceptions\SPException;
-use SP\Log\Log;
+use Import\XmlFileImport;
+use SP\Core\Messages\LogMessage;
 
 defined('APP_ROOT') || die();
 
@@ -35,36 +35,42 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class XmlImport extends XmlImportBase
+class XmlImport
 {
     /**
      * Iniciar la importación desde XML.
      *
-     * @throws SPException
-     * @return bool
+     * @param FileImport $File
+     * @param ImportParams $ImportParams
+     * @param LogMessage $LogMessage
+     * @return ImportBase|false
      */
-    public function doImport()
+    public function doImport(FileImport $File, ImportParams $ImportParams, LogMessage $LogMessage)
     {
-        $Import = null;
-        $format = $this->detectXMLFormat();
+        $XmlFileImport = new XmlFileImport($File);
+
+        $format = $XmlFileImport->detectXMLFormat();
 
         switch ($format) {
             case 'syspass':
-                $Import = new SyspassImport($this->file, $this->ImportParams);
+                $Import = new SyspassImport();
                 break;
             case 'keepass':
-                $Import = new KeepassImport($this->file, $this->ImportParams);
+                $Import = new KeepassImport();
                 break;
             case 'keepassx':
-                $Import = new KeepassXImport($this->file, $this->ImportParams);
+                $Import = new KeepassXImport();
                 break;
+            default:
+                return false;
         }
 
-        if (is_object($Import)){
-            Log::writeNewLog(__('Importar Cuentas', false), __('Inicio', false));
-            Log::writeNewLog(__('Importar Cuentas', false), sprintf(__('Formato detectado: %s', false), strtoupper($format)));
+        $Import->setImportParams($ImportParams);
+        $Import->setXmlDOM($XmlFileImport->getXmlDOM());
+        $Import->setLogMessage($LogMessage);
 
-            $Import->doImport();
-        }
+        $LogMessage->addDescription(sprintf(__('Formato detectado: %s'), strtoupper($format)));
+
+        return $Import;
     }
 }
