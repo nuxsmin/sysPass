@@ -82,7 +82,7 @@ abstract class CsvImportBase extends ImportBase
 
         foreach ($this->file->getFileContent() as $data) {
             $line++;
-            $fields = str_getcsv($data, $this->ImportParams->getCsvDelimiter());
+            $fields = str_getcsv($data, $this->ImportParams->getCsvDelimiter(), '"');
             $numfields = count($fields);
 
             // Comprobar el número de campos de la línea
@@ -93,13 +93,6 @@ abstract class CsvImportBase extends ImportBase
                     sprintf(__('Compruebe el formato del archivo CSV en línea %s', false), $line)
                 );
             }
-
-            // Eliminar las " del principio/fin de los campos
-//            array_walk($fields,
-//                function (&$value, $key) {
-//                    $value = trim($value, '"');
-//                }
-//            );
 
             // Asignar los valores del array a variables
             list($accountName, $customerName, $categoryName, $url, $login, $password, $notes) = $fields;

@@ -322,23 +322,19 @@ sysPass.Main = function () {
 
     // Función para habilitar la subida de archivos en una zona o formulario
     var fileUpload = function ($obj) {
-        var requestData = function () {
-            return {
-                actionId: $obj.data("action-id"),
-                itemId: $obj.data("item-id"),
-                sk: sk.get()
-            };
+        var requestData = {
+            actionId: $obj.data("action-id"),
+            itemId: $obj.data("item-id"),
+            sk: sk.get()
         };
 
         var options = {
             requestDoneAction: "",
             setRequestData: function (data) {
-                var req = requestData();
-
-                $.extend(req, data);
+                $.extend(requestData, data);
             },
             getRequestData: function () {
-                return requestData();
+                return requestData;
             },
             beforeSendAction: "",
             url: ""
@@ -355,10 +351,10 @@ sysPass.Main = function () {
             fd.append("inFile", file);
             fd.append("isAjax", 1);
 
-            var req = requestData();
+            requestData.sk = sk.get();
 
-            Object.keys(req).forEach(function (key) {
-                fd.append(key, req[key]);
+            Object.keys(requestData).forEach(function (key) {
+                fd.append(key, requestData[key]);
             });
 
             var opts = appRequests.getRequestOpts();
@@ -367,7 +363,7 @@ sysPass.Main = function () {
             opts.contentType = false;
             opts.data = fd;
 
-            appRequests.getActionPromise(opts, function (json) {
+            appRequests.getActionCall(opts, function (json) {
                 var status = json.status;
                 var description = json.description;
 
