@@ -75,6 +75,13 @@ use SP\Core\Session; ?>
                 <tr>
                     <td class="descField">
                         <?php echo __('Clave Maestra'); ?>
+                        <div id="help-import_masterpwd"
+                             class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-import_masterpwd">
+                            <p>
+                                <?php echo __('Sólo es necesaria para archivos XML de sysPass con clave maestra distinta de la actual.'); ?>
+                            </p>
+                        </div>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -89,6 +96,13 @@ use SP\Core\Session; ?>
                 <tr>
                     <td class="descField">
                         <?php echo __('Delimitador CSV'); ?>
+                        <div id="help-import_csvdelimiter"
+                             class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-import_csvdelimiter">
+                            <p>
+                                <?php echo __('Sólo es necesario para archivos CSV.'); ?>
+                            </p>
+                        </div>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -139,7 +153,7 @@ use SP\Core\Session; ?>
 
                         <p class="help-text"><?php echo __('La importación de archivos CSV se realiza con el siguiente formato:'); ?></p>
 
-                        <p class="help-text"><?php echo __('nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas'); ?></p>
+                        <p class="help-text"><?php echo __('"nombre_de_cuenta";"cliente";"categoría";"url";"usuario";"clave";"notas"'); ?></p>
 
                         <p class="help-text"><?php echo __('En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente.'); ?></p>
                     </div>
