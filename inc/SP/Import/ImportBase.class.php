@@ -27,6 +27,7 @@ namespace SP\Import;
 use SP\Account\Account;
 use SP\Core\Crypt;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Messages\LogMessage;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
@@ -53,6 +54,10 @@ abstract class ImportBase
      * @var FileImport
      */
     protected $file;
+    /**
+     * @var LogMessage
+     */
+    protected $LogMessage;
 
     /**
      * ImportBase constructor.
@@ -64,6 +69,7 @@ abstract class ImportBase
     {
         $this->file = $File;
         $this->ImportParams = $ImportParams;
+        $this->LogMessage = new LogMessage(__('Importar Cuentas', false));
     }
 
     /**
@@ -120,20 +126,22 @@ abstract class ImportBase
             return false;
         }
 
-        $encryptPass = false;
-
         if ($this->ImportParams->getImportMasterPwd() !== '') {
             $pass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->ImportParams->getImportMasterPwd());
             $AccountData->setAccountPass($pass);
-
-            $encryptPass = true;
         }
 
         $AccountData->setAccountUserId($this->ImportParams->getDefaultUser());
         $AccountData->setAccountUserGroupId($this->ImportParams->getDefaultGroup());
 
-        $Account = new Account($AccountData);
-        $Account->createAccount($encryptPass);
+        try {
+            $Account = new Account($AccountData);
+            $Account->createAccount();
+
+            $this->LogMessage->addDetails(__('Cuenta creada', false), $AccountData->getAccountName());
+        } catch (SPException $e) {
+            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
+        }
 
         return true;
     }
@@ -149,7 +157,11 @@ abstract class ImportBase
     protected function addCategory(CategoryData $CategoryData)
     {
         try {
-            return Category::getItem($CategoryData)->add();
+            $Category = Category::getItem($CategoryData)->add();
+
+            $this->LogMessage->addDetails(__('Categoría creada', false), $CategoryData->getCategoryName());
+
+            return $Category;
         } catch (SPException $e) {
             Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
         }
@@ -167,7 +179,11 @@ abstract class ImportBase
     protected function addCustomer(CustomerData $CustomerData)
     {
         try {
-            return Customer::getItem($CustomerData)->add();
+            $Customer = Customer::getItem($CustomerData)->add();
+
+            $this->LogMessage->addDetails(__('Cliente creado', false), $CustomerData->getCustomerName());
+
+            return $Customer;
         } catch (SPException $e) {
             Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
         }
@@ -186,7 +202,11 @@ abstract class ImportBase
     protected function addTag(TagData $TagData)
     {
         try {
-            return Tag::getItem($TagData)->add();
+            $Tag = Tag::getItem($TagData)->add();
+
+            $this->LogMessage->addDetails(__('Etiqueta creada', false), $TagData->getTagName());
+
+            return $Tag;
         } catch (SPException $e) {
             Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
         }
