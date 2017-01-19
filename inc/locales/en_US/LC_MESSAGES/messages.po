@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-19 11:33+0100\n"
-"PO-Revision-Date: 2017-01-19 11:37+0100\n"
+"POT-Creation-Date: 2017-01-19 11:39+0100\n"
+"PO-Revision-Date: 2017-01-19 11:39+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -71,7 +71,7 @@ msgstr "Invalid file"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:706
 #: ../../../../inc/SP/Core/Upgrade.class.php:281
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:91
-#: ../../../../inc/themes/material-blue/views/config/import.inc:120
+#: ../../../../inc/themes/material-blue/views/config/import.inc:127
 msgid "Archivo"
 msgstr "File"
 
@@ -2903,7 +2903,7 @@ msgstr "Please, check the file format"
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:64
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:129
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:217
-#: ../../../../inc/themes/material-blue/views/config/import.inc:145
+#: ../../../../inc/themes/material-blue/views/config/import.inc:152
 msgid "Ayuda"
 msgstr "Help"
 
@@ -4159,8 +4159,8 @@ msgstr ""
 "the XML file."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:8
-#: ../../../../inc/themes/material-blue/views/config/import.inc:77
-#: ../../../../inc/themes/material-blue/views/config/import.inc:92
+#: ../../../../inc/themes/material-blue/views/config/import.inc:84
+#: ../../../../inc/themes/material-blue/views/config/import.inc:99
 #: ../../../../inc/themes/material-blue/views/main/install.inc:48
 #: ../../../../inc/themes/material-blue/views/main/install.inc:54
 #: ../../../../inc/themes/material-blue/views/main/login.inc:49
@@ -4592,11 +4592,15 @@ msgid "Define el grupo por defecto para las cuentas importadas."
 msgstr "Defines the default group for the accounts imported."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:63
-#: ../../../../inc/themes/material-blue/views/config/import.inc:71
+#: ../../../../inc/themes/material-blue/views/config/import.inc:78
 msgid "Clave de Importación"
 msgstr "Import Password"
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:82
+#: ../../../../inc/themes/material-blue/views/config/import.inc:68
+msgid "Sólo es necesaria para archivos XML de sysPass encriptados."
+msgstr "It's only needed for sysPass XML files that have been encrypted."
+
+#: ../../../../inc/themes/material-blue/views/config/import.inc:89
 msgid ""
 "Sólo es necesaria para archivos XML de sysPass con clave maestra distinta de "
 "la actual."
@@ -4604,20 +4608,20 @@ msgstr ""
 "It's only needed for sysPass XML files that have been encrypted with a "
 "different master password  from the current one."
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:98
-#: ../../../../inc/themes/material-blue/views/config/import.inc:113
+#: ../../../../inc/themes/material-blue/views/config/import.inc:105
+#: ../../../../inc/themes/material-blue/views/config/import.inc:120
 msgid "Delimitador CSV"
 msgstr "CSV delimiter"
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:103
+#: ../../../../inc/themes/material-blue/views/config/import.inc:110
 msgid "Sólo es necesario para archivos CSV."
 msgstr "It's only needed for CSV files."
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:126
+#: ../../../../inc/themes/material-blue/views/config/import.inc:133
 msgid "Soltar archivo aquí o click para seleccionar"
 msgstr "Drop files here or click to select"
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:146
+#: ../../../../inc/themes/material-blue/views/config/import.inc:153
 msgid ""
 "Permite realizar la importación de Cuentas, Categorías y Clientes desde "
 "archivos XML y CSV."
@@ -4625,18 +4629,18 @@ msgstr ""
 "Allows you to make the Accounts, Categories and Customers import from XML or "
 "CSV files."
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:148
+#: ../../../../inc/themes/material-blue/views/config/import.inc:155
 msgid ""
 "Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
 msgstr "The supported XML file formats are: sysPass, KeePass and KeePassX"
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:150
+#: ../../../../inc/themes/material-blue/views/config/import.inc:157
 msgid ""
 "Arrastar el archivo a importar a la zona indicada o hacer click sobre la "
 "flecha."
 msgstr "Drag & Drop the file to the import zone or click over the arrow."
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:152
+#: ../../../../inc/themes/material-blue/views/config/import.inc:159
 msgid ""
 "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
 "KeePass o KeePassX y la categoría igual al nombre de los grupos."
@@ -4644,11 +4648,11 @@ msgstr ""
 "For KeePass or KeePassX files, the customer name will be KeePass or KeePassX "
 "and the category name like groups names."
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:154
+#: ../../../../inc/themes/material-blue/views/config/import.inc:161
 msgid "La importación de archivos CSV se realiza con el siguiente formato:"
 msgstr "The CSV import file requires the following format:"
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:156
+#: ../../../../inc/themes/material-blue/views/config/import.inc:163
 msgid ""
 "\"nombre_de_cuenta\";\"cliente\";\"categoría\";\"url\";\"usuario\";\"clave\";"
 "\"notas\""
@@ -4656,7 +4660,7 @@ msgstr ""
 "\"account_name\";\"customer\";\"category\";\"url\";\"user\";\"password\";"
 "\"notes\""
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:158
+#: ../../../../inc/themes/material-blue/views/config/import.inc:165
 msgid ""
 "En todos los casos, si el cliente o la categoría no están creados, se crean "
 "automáticamente."

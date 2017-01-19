@@ -61,6 +61,13 @@ use SP\Core\Session; ?>
                 <tr>
                     <td class="descField">
                         <?php echo __('Clave de Importación'); ?>
+                        <div id="help-import_pwd"
+                             class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-import_pwd">
+                            <p>
+                                <?php echo __('Sólo es necesaria para archivos XML de sysPass encriptados.'); ?>
+                            </p>
+                        </div>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
