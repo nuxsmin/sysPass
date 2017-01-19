@@ -164,7 +164,7 @@ class Request
      */
     public static function getApacheHeaders()
     {
-        if (!function_exists('\apache_request_headers')) {
+        if (function_exists('\apache_request_headers')) {
             return apache_request_headers();
         }
 
