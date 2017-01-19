@@ -72,7 +72,7 @@ class Notices extends GridBase
         $Grid->setHeader($GridHeaders);
         $Grid->setData($GridData);
         $Grid->setTitle(__('Notificaciones'));
-        $Grid->setTime(round(Init::microtime_float() - $this->queryTimeStart, 5));
+        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();

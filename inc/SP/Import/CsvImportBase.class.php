@@ -129,7 +129,7 @@ abstract class CsvImportBase extends ImportBase
                 $Log->writeLog(true);
                 $LogMessage->addDescription(__('Error importando cuenta', false));
                 $LogMessage->addDetails(__('Error procesando línea', false), $line);
-                $LogMessage->addDetails(__('Error'), $e->getMessage());
+                $LogMessage->addDetails(__('Error', false), $e->getMessage());
                 // Flush y reset
                 $Log->writeLog(true);
             }
