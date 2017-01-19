@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-17 23:06+0100\n"
-"PO-Revision-Date: 2017-01-17 23:07+0100\n"
+"PO-Revision-Date: 2017-01-19 01:41+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -3416,7 +3416,7 @@ msgstr "Unable to read/write the file: %s"
 
 #: ../../../../inc/SP/Storage/XmlHandler.class.php:159
 msgid "No hay elementos para guardar"
-msgstr "There aren't items to save"
+msgstr "There aren't any items to save"
 
 #: ../../../../inc/SP/Util/Checks.class.php:83
 msgid "Versión de PHP requerida >= "
@@ -4099,7 +4099,7 @@ msgstr "sysPass Backup"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:38
 msgid "No hay backups para descargar"
-msgstr "There aren't backups for download"
+msgstr "There aren't any backups for download"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:65
 msgid ""
@@ -4123,7 +4123,7 @@ msgstr "Export Accounts"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:111
 msgid "No hay archivos XML para descargar"
-msgstr "There isn't files for download"
+msgstr "There aren't any XML files for download"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:117
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:125
@@ -5213,7 +5213,7 @@ msgstr "There are %d unread notifications"
 
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:41
 msgid "No hay no hay notificaciones pendientes"
-msgstr "There aren't pending notifications"
+msgstr "There aren't any pending notifications"
 
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:74
 msgid "Indica si la conexión utiliza HTTPS."
