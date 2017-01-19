@@ -23,6 +23,7 @@
  */
 
 use SP\Controller\ConfigActionController;
+use SP\Http\Request;
 
 define('APP_ROOT', '..');
 
