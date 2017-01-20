@@ -24,7 +24,8 @@
 
 namespace SP\Import;
 
-use SimpleXMLElement;
+use DOMElement;
+use DOMXPath;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
@@ -56,93 +57,73 @@ class KeepassImport extends ImportBase
 
         $this->customerId = $customerData->getCustomerId();
 
-        $this->processCategories($this->xml->Root->Group);
+        $this->process();
+    }
+
+    /**
+     * Obtener los grupos y procesar lan entradas de KeePass.
+     */
+    protected function process()
+    {
+        foreach ($this->getItems() as $group => $entry) {
+            $CategoryData = new CategoryData(null, $group);
+            $this->addCategory($CategoryData);
+
+            if (count($entry) > 0) {
+                foreach ($entry as $account) {
+                    $AccountData = new AccountExtData();
+                    $AccountData->setAccountNotes($account['Notes']);
+                    $AccountData->setAccountPass($account['Password']);
+                    $AccountData->setAccountName($account['Title']);
+                    $AccountData->setAccountUrl($account['URL']);
+                    $AccountData->setAccountLogin('UserName');
+                    $AccountData->setAccountCategoryId($CategoryData->getCategoryId());
+                    $AccountData->setAccountCustomerId($this->customerId);
+
+                    $this->addAccount($AccountData);
+                }
+            }
+        }
     }
 
     /**
      * Obtener los grupos y procesar lan entradas de KeePass.
      *
-     * @param SimpleXMLElement $xml El objeto XML del archivo de KeePass
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return array
      */
-    protected function processCategories(SimpleXMLElement $xml)
+    protected function getItems()
     {
-        $Tags = $this->xmlDOM->getElementsByTagName('Root');
+        $DomXpath = new DOMXPath($this->xmlDOM);
+        $Tags = $DomXpath->query('/KeePassFile/Root/Group/*');
+        $items = [];
 
-        /** @var \DOMNode[] $Tags */
-//        foreach ($Tags as $Tag) {
-//        }
+        /** @var DOMElement[] $Tags */
+        foreach ($Tags as $tag) {
+            if ($tag->nodeType === 1) {
 
-        foreach ($xml as $node) {
-            if ($node->Group) {
-                foreach ($node->Group as $group) {
-                    // Analizar grupo
-                    if ($node->Group->Entry) {
-                        // Crear la categoría
-                        $CategoryData = new CategoryData(null, $group->Name, 'KeePass');
-                        $this->addCategory($CategoryData);
+                if ($tag->nodeName === 'Entry') {
+                    $path = $tag->getNodePath();
+                    $groupName = $DomXpath->query($path . '/../Name')->item(0)->nodeValue;
+                    $entryData = [];
 
-                        // Crear cuentas
-                        $this->processAccounts($group->Entry, $CategoryData->getCategoryId());
+                    /** @var DOMElement $key */
+                    foreach ($DomXpath->query($path . '/String/Key') as $key) {
+                        $value = $DomXpath->query($key->getNodePath() . '/../Value')->item(0)->nodeValue;
+
+                        $entryData[] = [$key->nodeValue => $value];
                     }
 
-                    if ($group->Group) {
-                        // Analizar subgrupo
-                        $this->processCategories($group);
+                    $items[$groupName][] = $entryData;
+                } elseif ($tag->nodeName === 'Group') {
+                    $groupName = $DomXpath->query($tag->getNodePath() . '/Name')->item(0)->nodeValue;
+
+                    if (!isset($groups[$groupName])) {
+                        $items[$groupName] = [];
                     }
                 }
             }
-
-            if ($node->Entry) {
-                // Crear la categoría
-                $CategoryData = new CategoryData(null, $node->Name, 'KeePass');
-                $this->addCategory($CategoryData);
-
-                // Crear cuentas
-                $this->processAccounts($node->Entry, $CategoryData->getCategoryId());
-            }
         }
-    }
 
-    /**
-     * Obtener los datos de las entradas de KeePass.
-     *
-     * @param SimpleXMLElement $entries El objeto XML con las entradas
-     * @param int $categoryId Id de la categoría
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function processAccounts(SimpleXMLElement $entries, $categoryId)
-    {
-        foreach ($entries as $entry) {
-            $AccountData = new AccountExtData();
-
-            foreach ($entry->String as $account) {
-                $value = isset($account->Value) ? (string)$account->Value : '';
-
-                switch ($account->Key) {
-                    case 'Notes':
-                        $AccountData->setAccountNotes($value);
-                        break;
-                    case 'Password':
-                        $AccountData->setAccountPass($value);
-                        break;
-                    case 'Title':
-                        $AccountData->setAccountName($value);
-                        break;
-                    case 'URL':
-                        $AccountData->setAccountUrl($value);
-                        break;
-                    case 'UserName':
-                        $AccountData->setAccountLogin($value);
-                        break;
-                }
-            }
-
-            $AccountData->setAccountCategoryId($categoryId);
-            $AccountData->setAccountCustomerId($this->customerId);
-
-            $this->addAccount($AccountData);
-        }
+        return $items;
     }
 }
