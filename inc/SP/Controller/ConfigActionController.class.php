@@ -113,7 +113,7 @@ class ConfigActionController implements ItemControllerInterface
             $Log = new Log($this->LogMessage);
             $Log->writeLog();
 
-            $this->JsonResponse->setDescription($this->LogMessage->getHtmlDescription());
+            $this->JsonResponse->setDescription($this->LogMessage->getHtmlDescription(true));
         }
 
         Json::returnJson($this->JsonResponse);
@@ -576,7 +576,7 @@ class ConfigActionController implements ItemControllerInterface
         $Import = new Import($ImportParams);
         $LogMessage = $Import->doImport($_FILES['inFile']);
 
-        $this->JsonResponse->setDescription($LogMessage->getHtmlDescription());
+        $this->JsonResponse->setDescription($LogMessage->getHtmlDescription(true));
         $this->JsonResponse->setStatus(0);
     }
 

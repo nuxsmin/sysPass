@@ -189,7 +189,7 @@ class ItemActionController implements ItemControllerInterface
             $Log = new Log($this->LogMessage);
             $Log->writeLog();
 
-            $this->JsonResponse->setDescription($this->LogMessage->getHtmlDescription());
+            $this->JsonResponse->setDescription($this->LogMessage->getHtmlDescription(true));
         }
 
         Json::returnJson($this->JsonResponse);
