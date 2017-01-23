@@ -43,11 +43,12 @@ abstract class CategoryBase extends ItemBase
      * Category constructor.
      *
      * @param $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData = null)
     {
         if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\CategoryData');
+            $this->setDataModel(CategoryData::class);
         }
 
         parent::__construct($itemData);

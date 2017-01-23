@@ -29,7 +29,7 @@ namespace SP\Core\Exceptions;
  *
  * @package SP\Core\Exceptions
  */
-class FileNotFoundException extends \Exception
+class FileNotFoundException extends SPException
 {
 
 }

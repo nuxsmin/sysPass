@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -80,12 +80,13 @@ class ApiTokens
             $this->refreshToken();
         }
 
-        $query = 'INSERT INTO authTokens ' .
-            'SET authtoken_userId = :userid,' .
-            'authtoken_actionId = :actionid,' .
-            'authtoken_createdBy = :createdby,' .
-            'authtoken_token = :token,' .
-            'authtoken_startDate = UNIX_TIMESTAMP()';
+        $query = /** @lang SQL */
+            'INSERT INTO authTokens 
+            SET authtoken_userId = :userid,
+            authtoken_actionId = :actionid,
+            authtoken_createdBy = :createdby,
+            authtoken_token = :token,
+            authtoken_startDate = UNIX_TIMESTAMP()';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -93,12 +94,9 @@ class ApiTokens
         $Data->addParam($this->actionId, 'actionid');
         $Data->addParam(Session::getUserData()->getUserId(), 'createdby');
         $Data->addParam($this->getUserToken() ? $this->token : $this->generateToken(), 'token');
+        $Data->setOnErrorMessage(__('Error interno', false));
 
-        try {
-            DB::getQuery($Data);
-        } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error interno', false));
-        }
+        DB::getQuery($Data);
     }
 
     /**
@@ -109,11 +107,11 @@ class ApiTokens
      */
     private function checkTokenExist()
     {
-        $query = 'SELECT authtoken_id FROM authTokens ' .
-            'WHERE authtoken_userId = :userid ' .
-            'AND authtoken_actionId = :actionid ' .
-            'AND authtoken_id <> :id ' .
-            'LIMIT 1';
+        $query = /** @lang SQL */
+            'SELECT authtoken_id FROM authTokens 
+            WHERE authtoken_userId = :userid 
+            AND authtoken_actionId = :actionid 
+            AND authtoken_id <> :id LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -139,21 +137,19 @@ class ApiTokens
      */
     private function refreshToken()
     {
-        $query = 'UPDATE authTokens SET ' .
-            'authtoken_token = :token,' .
-            'authtoken_startDate = UNIX_TIMESTAMP() ' .
-            'WHERE authtoken_userId = :userid';
+        $query = /** @lang SQL */
+            'UPDATE authTokens SET 
+            authtoken_token = :token,
+            authtoken_startDate = UNIX_TIMESTAMP() 
+            WHERE authtoken_userId = :userid';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->userId, 'userid');
         $Data->addParam($this->generateToken(), 'token');
+        $Data->setOnErrorMessage(__('Error interno', false));
 
-        try {
-            DB::getQuery($Data);
-        } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error interno', false));
-        }
+        DB::getQuery($Data);
     }
 
     /**
@@ -174,7 +170,8 @@ class ApiTokens
      */
     private function getUserToken()
     {
-        $query = 'SELECT authtoken_token FROM authTokens WHERE authtoken_userId = :userid LIMIT 1';
+        $query = /** @lang SQL */
+            'SELECT authtoken_token FROM authTokens WHERE authtoken_userId = :userid LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -208,13 +205,14 @@ class ApiTokens
             $this->refreshToken();
         }
 
-        $query = 'UPDATE authTokens ' .
-            'SET authtoken_userId = :userid,' .
-            'authtoken_actionId = :actionid,' .
-            'authtoken_createdBy = :createdby,' .
-            'authtoken_token = :token,' .
-            'authtoken_startDate = UNIX_TIMESTAMP() ' .
-            'WHERE authtoken_id = :id LIMIT 1';
+        $query = /** @lang SQL */
+            'UPDATE authTokens 
+            SET authtoken_userId = :userid,
+            authtoken_actionId = :actionid,
+            authtoken_createdBy = :createdby,
+            authtoken_token = :token,
+            authtoken_startDate = UNIX_TIMESTAMP() 
+            WHERE authtoken_id = :id LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -223,12 +221,9 @@ class ApiTokens
         $Data->addParam($this->actionId, 'actionid');
         $Data->addParam(Session::getUserData()->getUserId(), 'createdby');
         $Data->addParam($this->getUserToken() ? $this->token : $this->generateToken(), 'token');
+        $Data->setOnErrorMessage(__('Error interno', false));
 
-        try {
-            DB::getQuery($Data);
-        } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error interno', false));
-        }
+        DB::getQuery($Data);
     }
 
     /**
@@ -238,17 +233,35 @@ class ApiTokens
      */
     public function deleteToken()
     {
-        $query = 'DELETE FROM authTokens WHERE authtoken_id = ? LIMIT 1';
+        $query = /** @lang SQL */
+            'DELETE FROM authTokens WHERE authtoken_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->tokenId);
+        $Data->setOnErrorMessage(__('Error interno', false));
 
-        try {
-            DB::getQuery($Data);
-        } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error interno', false));
-        }
+        DB::getQuery($Data);
+    }
+
+
+    /**
+     * Eliminar token
+     *
+     * @param array $ids
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function deleteTokenBatch(array $ids)
+    {
+        $query = /** @lang SQL */
+            'DELETE FROM authTokens WHERE authtoken_id IN (' . implode(',', array_fill(0, count($ids), '?')) . ')';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+        $Data->setOnErrorMessage(__('Error interno', false));
+
+        DB::getQuery($Data);
     }
 
     /**

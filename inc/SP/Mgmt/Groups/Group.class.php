@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -46,6 +46,8 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @return $this
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -62,10 +64,9 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUsergroupName());
         $Data->addParam($this->itemData->getUsergroupDescription());
+        $Data->setOnErrorMessage(__('Error al crear el grupo', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al crear el grupo', false));
-        }
+        DB::getQuery($Data);
 
         $this->itemData->setUsergroupId(DB::$lastId);
 
@@ -73,11 +74,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
         $GroupUsers->setUsertogroupGroupId($this->itemData->getUsergroupId());
         $GroupUsers->setUsers($this->itemData->getUsers());
 
-        try {
-            GroupUsers::getItem($GroupUsers)->add();
-        } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, __('Error al añadir los usuarios del grupo', false), Log::ERROR);
-        }
+        GroupUsers::getItem($GroupUsers)->add();
 
         return $this;
     }
@@ -94,25 +91,21 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUsergroupName());
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
+        DB::getQuery($Data);
+
+        return $Data->getQueryNumRows() > 0;
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return $this
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId){
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
         if ($this->checkInUse($id)) {
             throw new SPException(SPException::SP_WARNING, __('Grupo en uso', false));
         }
@@ -123,16 +116,15 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar el grupo', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al eliminar el grupo', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Grupo no encontrado', false));
         }
 
-        try {
-            GroupUsers::getItem()->delete($id);
-        } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, __('Error al eliminar los usuarios del grupo', false), Log::ERROR);
-        }
+        GroupUsers::getItem()->delete($id);
 
         return $this;
     }
@@ -140,6 +132,8 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
     /**
      * @param $id int
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function checkInUse($id)
     {
@@ -187,6 +181,8 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @return $this
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
@@ -205,26 +201,23 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getUsergroupName());
         $Data->addParam($this->itemData->getUsergroupDescription());
         $Data->addParam($this->itemData->getUsergroupId());
+        $Data->setOnErrorMessage(__('Error al actualizar el grupo', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al actualizar el grupo', false));
-        }
+        DB::getQuery($Data);
 
         $GroupUsers = new GroupUsersData();
         $GroupUsers->setUsertogroupGroupId($this->itemData->getUsergroupId());
         $GroupUsers->setUsers($this->itemData->getUsers());
 
-        try {
-            GroupUsers::getItem($GroupUsers)->update();
-        } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, __('Error al actualizar los usuarios del grupo', false), Log::ERROR);
-        }
+        GroupUsers::getItem($GroupUsers)->update();
 
         return $this;
     }
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function checkDuplicatedOnUpdate()
     {
@@ -235,7 +228,9 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getUsergroupName());
         $Data->addParam($this->itemData->getUsergroupId());
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
+        DB::getQuery($Data);
+
+        return $Data->getQueryNumRows() > 0;
     }
 
     /**
@@ -253,6 +248,29 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
+
+        return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return GroupData[]
+     */
+    public function getByIdBatch(array $ids)
+    {
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT usergroup_id, usergroup_name, usergroup_description FROM usrGroups WHERE usergroup_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->setParams($ids);
 
         return DB::getResultsArray($Data);
     }

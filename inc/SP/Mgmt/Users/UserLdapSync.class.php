@@ -52,8 +52,6 @@ class UserLdapSync
      *
      * @return bool
      * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public static function run()
     {

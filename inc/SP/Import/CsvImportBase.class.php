@@ -67,7 +67,6 @@ abstract class CsvImportBase extends ImportBase
      * Obtener los datos de las entradas de sysPass y crearlas
      *
      * @throws SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function processAccounts()
     {

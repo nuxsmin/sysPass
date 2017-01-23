@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -65,10 +65,9 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserprofileName());
         $Data->addParam(serialize($this->itemData));
+        $Data->setOnErrorMessage(__('Error al crear perfil', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al crear perfil', false));
-        }
+        DB::getQuery($Data);
 
         $this->itemData->setUserprofileId(DB::getLastId());
 
@@ -96,20 +95,12 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId) {
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
         if ($this->checkInUse($id)) {
             throw new SPException(SPException::SP_INFO, __('Perfil en uso', false));
         }
@@ -120,9 +111,12 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar perfil', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al eliminar perfil', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Perfil no encontrado', false));
         }
 
         return $this;
@@ -167,7 +161,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
 
         /**
          * @var ProfileBaseData $queryRes
-         * @var ProfileData $Profile
+         * @var ProfileData     $Profile
          */
         $queryRes = DB::getResults($Data);
 
@@ -199,9 +193,12 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getUserprofileName());
         $Data->addParam(serialize($this->itemData));
         $Data->addParam($this->itemData->getUserprofileId());
+        $Data->setOnErrorMessage(__('Error al modificar perfil', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al modificar perfil', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Perfil no encontrado', false));
         }
 
         $this->updateSessionProfile();
@@ -211,6 +208,8 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function checkDuplicatedOnUpdate()
     {
@@ -253,6 +252,32 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
+
+        return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return ProfileBaseData[]
+     */
+    public function getByIdBatch(array $ids)
+    {
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT userprofile_id,
+            userprofile_name
+            FROM usrProfiles
+            WHERE userprofile_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->setParams($ids);
 
         return DB::getResultsArray($Data);
     }

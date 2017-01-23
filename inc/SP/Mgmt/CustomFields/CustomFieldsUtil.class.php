@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -105,10 +105,12 @@ class CustomFieldsUtil
             $Data->addParam($fieldCryptData['iv']);
             $Data->addParam($CustomField->getCustomfielddataId());
 
-            if (DB::getQuery($Data) === false) {
-                $errors[] = $CustomField->getCustomfielddataId();
-            } else {
+            try {
+                DB::getQuery($Data);
+
                 $success[] = $CustomField->getCustomfielddataId();
+            } catch (SPException $e) {
+                $errors[] = $CustomField->getCustomfielddataId();
             }
         }
 
@@ -186,10 +188,9 @@ class CustomFieldsUtil
 
                 $Data = new QueryData();
                 $Data->setQuery($query);
+                $Data->setOnErrorMessage(__('Error al migrar campos personalizados', false));
 
-                if (DB::getQuery($Data) === false) {
-                    throw new SPException(SPException::SP_ERROR, __('Error al migrar campos personalizados', false));
-                }
+                DB::getQuery($Data);
 
                 $query = /** @lang SQL */
                     'UPDATE customFieldsDef SET
@@ -209,10 +210,12 @@ class CustomFieldsUtil
                     $Data->addParam(serialize($CustomFieldDef));
                     $Data->addParam($cf->customfielddef_id);
 
-                    if (DB::getQuery($Data) === false) {
-                        $LogMessage->addDetails(__('Error al actualizar el campo personalizado', false), $cf->customfielddef_id);
-                    } else {
+                    try {
+                        DB::getQuery($Data);
+
                         $LogMessage->addDetails(__('Campo actualizado', false), $cf->customfielddef_id);
+                    } catch (SPException $e) {
+                        $LogMessage->addDetails(__('Error al actualizar el campo personalizado', false), $cf->customfielddef_id);
                     }
                 }
             }

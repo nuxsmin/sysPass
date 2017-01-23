@@ -31,7 +31,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class PublicLinkBaseData extends DataModelBase
+class PublicLinkBaseData extends DataModelBase implements  DataModelInterface
 {
     /**
      * @var int
@@ -112,5 +112,21 @@ class PublicLinkBaseData extends DataModelBase
     public function setPublicLinkItemId($publicLink_itemId)
     {
         $this->publicLink_itemId = (int)$publicLink_itemId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->publicLink_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return '';
     }
 }

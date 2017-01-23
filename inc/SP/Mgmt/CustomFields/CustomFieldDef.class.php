@@ -29,6 +29,7 @@ defined('APP_ROOT') || die();
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldDefData;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
@@ -40,6 +41,8 @@ use SP\Util\Util;
  */
 class CustomFieldDef extends CustomFieldBase implements ItemInterface
 {
+    use ItemTrait;
+
     /**
      * Category constructor.
      *
@@ -66,10 +69,9 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getModule());
         $Data->addParam(serialize($this->itemData));
+        $Data->setOnErrorMessage(__('Error al crear el campo personalizado', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al crear el campo personalizado', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -81,14 +83,6 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId) {
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
         if ($this->deleteItemsDataForDefinition($id) === false) {
             throw new SPException(SPException::SP_ERROR, __('Error al eliminar el campo personalizado', false));
         }
@@ -99,10 +93,9 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar el campo personalizado', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al eliminar el campo personalizado', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -144,10 +137,9 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->addParam($this->itemData->getModule());
         $Data->addParam(serialize($this->itemData));
         $Data->addParam($this->itemData->getId());
+        $Data->setOnErrorMessage(__('Error al actualizar el campo personalizado', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al actualizar el campo personalizado', false));
-        }
+        DB::getQuery($Data);
 
         if ($curField->getModule() !== $this->itemData->getModule()) {
             $this->updateItemsModulesForDefinition();
@@ -184,6 +176,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
 
         /** @var CustomFieldDefData $fieldDef */
         $fieldDef = Util::castToClass($this->getDataModel(), $CustomFieldDef->getCustomfielddefField());
+        $fieldDef->setCustomfielddefId($CustomFieldDef->getCustomfielddefId());
         $fieldDef->setId($CustomFieldDef->getCustomfielddefId());
 
         return $fieldDef;
@@ -271,5 +264,27 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
     public function checkDuplicatedOnAdd()
     {
         // TODO: Implement checkDuplicatedOnAdd() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        $query = /** @lang SQL */
+            'SELECT customfielddef_id,
+              customfielddef_module
+              FROM customFieldsDef
+              WHERE customfielddef_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DB::getResultsArray($Data);
     }
 }

@@ -41,11 +41,12 @@ abstract class GroupBase extends ItemBase
      * Category constructor.
      *
      * @param GroupData $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData = null)
     {
         if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\GroupData');
+            $this->setDataModel(GroupData::class);
         }
 
         parent::__construct($itemData);

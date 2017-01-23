@@ -48,7 +48,7 @@ class GroupUtil
             'SELECT usergroup_id, usergroup_name FROM usrGroups WHERE usergroup_name = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\GroupData');
+        $Data->setMapClassName(GroupData::class);
         $Data->setQuery($query);
         $Data->addParam($name);
 

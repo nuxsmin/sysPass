@@ -22,10 +22,11 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Import;
+namespace SP\Import;
 
 /**
  * Interface ImportInterface
+ *
  * @package Import
  */
 interface ImportInterface
@@ -34,4 +35,11 @@ interface ImportInterface
      * Iniciar la importación
      */
     public function doImport();
+
+    /**
+     * Devolver el contador de objetos importados
+     *
+     * @return int
+     */
+    public function getCounter();
 }

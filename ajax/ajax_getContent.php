@@ -28,6 +28,7 @@ use SP\Controller\AccountSearchController;
 use SP\Controller\ConfigController;
 use SP\Controller\EventlogController;
 use SP\Controller\ItemListController;
+use SP\Controller\NoticesController;
 use SP\Controller\UserPreferencesController;
 use SP\Core\ActionsInterface;
 use SP\Core\DiFactory;
@@ -128,7 +129,7 @@ switch ($actionId) {
         break;
     case ActionsInterface::ACTION_NOT:
     case ActionsInterface::ACTION_NOT_USER:
-        $Controller = new \SP\Controller\NoticesController($Tpl);
+        $Controller = new NoticesController($Tpl);
         $Controller->doAction();
         break;
 }

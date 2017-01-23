@@ -131,7 +131,7 @@ class AccountForm extends FormBase implements FormInterface
         // Arrays
         $accountOtherGroups = Request::analyze('otherGroups', 0);
         $accountOtherUsers = Request::analyze('otherUsers', 0);
-        $accountTags = Request::analyze('tags');
+        $accountTags = Request::analyze('tags', 0);
 
         if (is_array($accountOtherUsers)) {
             $this->AccountData->setUsersId($accountOtherUsers);

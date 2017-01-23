@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use SP\Core\Messages\MessageInterface;
  *
  * @package SP\DataModel
  */
-class NoticeData
+class NoticeData implements DataModelInterface
 {
     /**
      * @var int
@@ -212,5 +212,21 @@ class NoticeData
     public function setNoticeOnlyAdmin($notice_onlyAdmin)
     {
         $this->notice_onlyAdmin = (bool)$notice_onlyAdmin;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return (int)$this->notice_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->notice_component;
     }
 }

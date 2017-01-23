@@ -103,7 +103,7 @@ class AuthUtil
 
         DB::getQuery($Data);
 
-        return ($Data->getQueryNumRows() === 1);
+        return $Data->getQueryNumRows() === 1;
     }
 
     /**

@@ -27,7 +27,8 @@
         </form>
     <?php endif; ?>
 
-    <form method="post" name="frmaccount" id="frmAccount" class="form-action" data-onsubmit="account/save" data-hash="">
+    <form method="post" name="frmaccount" id="frmAccount" class="form-action"
+          data-onsubmit="account/save" data-hash="">
         <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
         <?php if ($gotData): ?>
             <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -60,10 +60,9 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getTagName());
         $Data->addParam($this->itemData->getTagHash());
+        $Data->setOnErrorMessage(__('Error al crear etiqueta', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al crear etiqueta', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -94,29 +93,24 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId) {
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
         $query = /** @lang SQL */
             'DELETE FROM tags WHERE tag_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar etiqueta', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al eliminar etiqueta', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Etiqueta no encontrada', false));
         }
 
         return $this;
@@ -140,9 +134,12 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getTagName());
         $Data->addParam($this->itemData->getTagHash());
         $Data->addParam($this->itemData->getTagId());
+        $Data->setOnErrorMessage(__('Error al actualizar etiqueta', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al actualizar etiqueta', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Etiqueta no encontrada', false));
         }
 
         return $this;
@@ -161,7 +158,9 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getTagHash());
         $Data->addParam($this->itemData->getTagId());
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
+        DB::getQuery($Data);
+
+        return $Data->getQueryNumRows() > 0;
     }
 
     /**
@@ -210,5 +209,28 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function checkInUse($id)
     {
         // TODO: Implement checkInUse() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return TagData[]
+     */
+    public function getByIdBatch(array $ids)
+    {
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT tag_id, tag_name FROM tags WHERE tag_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DB::getResultsArray($Data);
     }
 }

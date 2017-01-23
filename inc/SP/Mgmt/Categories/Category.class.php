@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -65,10 +65,9 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->itemData->getCategoryName());
         $Data->addParam($this->itemData->getCategoryDescription());
         $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
+        $Data->setOnErrorMessage(__('Error al crear la categoría', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al crear la categoría', false));
-        }
+        DB::getQuery($Data);
 
         $this->itemData->setCategoryId(DB::$lastId);
 
@@ -105,49 +104,27 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return mixed
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId) {
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
-        if ($this->checkInUse($id)) {
-            throw new SPException(SPException::SP_WARNING, __('No es posible eliminar', false));
-        }
-
-        // FIXME: utilizar SQL
-        $oldCategory = $this->getById($id);
-
-        if (!is_object($oldCategory)) {
-            throw new SPException(SPException::SP_CRITICAL, __('Categoría no encontrada', false));
-        }
-
         $query = /** @lang SQL */
             'DELETE FROM categories WHERE category_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar la categoría', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al eliminar la categoría', false));
-        }
+        DB::getQuery($Data);
 
-        try {
-            $CustomFieldData = new CustomFieldData();
-            $CustomFieldData->setModule(ActionsInterface::ACTION_MGM_CATEGORIES);
-            CustomField::getItem($CustomFieldData)->delete($id);
-        } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Categoría no encontrada', false));
         }
 
         return $this;
@@ -156,6 +133,8 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     /**
      * @param $id int
      * @return mixed
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function checkInUse($id)
     {
@@ -211,16 +190,17 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->itemData->getCategoryDescription());
         $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
         $Data->addParam($this->itemData->getCategoryId());
+        $Data->setOnErrorMessage(__('Error al actualizar la categoría', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al actualizar la categoría', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
 
     /**
      * @return mixed
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function checkDuplicatedOnUpdate()
     {
@@ -233,7 +213,9 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->itemData->getCategoryName());
         $Data->addParam($this->itemData->getCategoryId());
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
+        DB::getQuery($Data);
+
+        return $Data->getQueryNumRows() > 0;
     }
 
     /**
@@ -247,6 +229,29 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
+
+        return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return CategoryData[]
+     */
+    public function getByIdBatch(array $ids)
+    {
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT category_id, category_name, category_description FROM categories WHERE category_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+        $Data->setMapClassName($this->getDataModel());
 
         return DB::getResultsArray($Data);
     }

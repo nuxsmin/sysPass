@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -76,7 +76,7 @@ class KeepassImport extends ImportBase
                     $AccountData->setAccountPass($account['Password']);
                     $AccountData->setAccountName($account['Title']);
                     $AccountData->setAccountUrl($account['URL']);
-                    $AccountData->setAccountLogin('UserName');
+                    $AccountData->setAccountLogin($account['UserName']);
                     $AccountData->setAccountCategoryId($CategoryData->getCategoryId());
                     $AccountData->setAccountCustomerId($this->customerId);
 
@@ -94,23 +94,28 @@ class KeepassImport extends ImportBase
     protected function getItems()
     {
         $DomXpath = new DOMXPath($this->xmlDOM);
-        $Tags = $DomXpath->query('/KeePassFile/Root/Group/*');
+        $Tags = $DomXpath->query('/KeePassFile/Root/Group//Group|/KeePassFile/Root/Group//Entry');
         $items = [];
 
         /** @var DOMElement[] $Tags */
         foreach ($Tags as $tag) {
             if ($tag->nodeType === 1) {
-
                 if ($tag->nodeName === 'Entry') {
                     $path = $tag->getNodePath();
                     $groupName = $DomXpath->query($path . '/../Name')->item(0)->nodeValue;
-                    $entryData = [];
+                    $entryData = [
+                        'Title' => '',
+                        'UserName' => '',
+                        'URL' => '',
+                        'Notes' => '',
+                        'Password' => ''
+                    ];
 
                     /** @var DOMElement $key */
                     foreach ($DomXpath->query($path . '/String/Key') as $key) {
                         $value = $DomXpath->query($key->getNodePath() . '/../Value')->item(0)->nodeValue;
 
-                        $entryData[] = [$key->nodeValue => $value];
+                        $entryData[$key->nodeValue] = $value;
                     }
 
                     $items[$groupName][] = $entryData;

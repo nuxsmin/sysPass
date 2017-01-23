@@ -29,6 +29,7 @@ defined('APP_ROOT') || die();
 use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Html\Assets\FontIcon;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
@@ -46,7 +47,7 @@ class Items extends GridBase
 {
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getCategoriesGrid()
     {
@@ -120,7 +121,7 @@ class Items extends GridBase
 
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getCustomersGrid()
     {
@@ -194,7 +195,7 @@ class Items extends GridBase
 
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getCustomFieldsGrid()
     {
@@ -270,7 +271,7 @@ class Items extends GridBase
 
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getFilesGrid()
     {
@@ -339,7 +340,7 @@ class Items extends GridBase
 
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getAccountsGrid()
     {
@@ -392,7 +393,7 @@ class Items extends GridBase
 
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getUsersGrid()
     {
@@ -511,7 +512,7 @@ class Items extends GridBase
 
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getGroupsGrid()
     {
@@ -585,7 +586,7 @@ class Items extends GridBase
 
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getProfilesGrid()
     {
@@ -667,7 +668,7 @@ class Items extends GridBase
 
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getTokensGrid()
     {
@@ -751,7 +752,7 @@ class Items extends GridBase
 
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getPublicLinksGrid()
     {
@@ -831,7 +832,7 @@ class Items extends GridBase
 
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getTagsGrid()
     {
@@ -903,7 +904,7 @@ class Items extends GridBase
 
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getPluginsGrid()
     {

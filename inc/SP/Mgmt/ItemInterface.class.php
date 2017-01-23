@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -92,4 +92,20 @@ interface ItemInterface
      * @return bool
      */
     public function checkDuplicatedOnAdd();
+
+    /**
+     * Eliminar elementos en lote
+     *
+     * @param array $ids
+     * @return $this
+     */
+    public function deleteBatch(array $ids);
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids);
 }

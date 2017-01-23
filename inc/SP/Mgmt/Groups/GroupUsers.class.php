@@ -55,10 +55,8 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
             return $this;
         }
 
-        $params = array_fill(0, count($this->itemData->getUsers()), '(?,?)');
-
         $query = /** @lang SQL */
-            'INSERT INTO usrToGroups (usertogroup_userId, usertogroup_groupId) VALUES ' . implode(',', $params);
+            'INSERT INTO usrToGroups (usertogroup_userId, usertogroup_groupId) VALUES ' . $this->getParamsFromArray($this->itemData->getUsers(), '(?,?)');
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -68,9 +66,9 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
             $Data->addParam($this->itemData->getUsertogroupGroupId());
         }
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al asignar los usuarios al grupo', false));
-        }
+        $Data->setOnErrorMessage(__('Error al asignar los usuarios al grupo', false));
+
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -88,10 +86,9 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar los usuarios del grupo', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al eliminar los usuarios del grupo', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -167,5 +164,16 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     public function checkDuplicatedOnAdd()
     {
         // TODO: Implement checkDuplicatedOnAdd() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        // TODO: Implement getByIdBatch() method.
     }
 }

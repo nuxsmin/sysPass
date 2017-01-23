@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -71,7 +71,13 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
         $Data->addParam($UserData->getUserId());
         $Data->addParam(time() - self::MAX_PASS_RECOVER_TIME);
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= self::MAX_PASS_RECOVER_LIMIT);
+        try {
+            DB::getQuery($Data);
+        } catch (SPException $e) {
+            return false;
+        }
+
+        return $Data->getQueryNumRows() >= self::MAX_PASS_RECOVER_LIMIT;
     }
 
     /**
@@ -125,10 +131,9 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserpassrHash());
+        $Data->setOnErrorMessage(__('Error interno', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error interno', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -150,10 +155,9 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserpassrUserId());
         $Data->addParam($this->itemData->getUserpassrHash());
+        $Data->setOnErrorMessage(__('Error al generar el hash de recuperación', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al generar el hash de recuperación', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }

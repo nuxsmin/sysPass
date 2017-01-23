@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,7 +24,6 @@
 
 namespace SP\Import;
 
-use Import\ImportInterface;
 use SP\Account\Account;
 use SP\Core\Crypt;
 use SP\Core\Exceptions\SPException;
@@ -67,9 +66,9 @@ abstract class ImportBase implements ImportInterface
     /**
      * ImportBase constructor.
      *
-     * @param FileImport $File
+     * @param FileImport   $File
      * @param ImportParams $ImportParams
-     * @param LogMessage $LogMessage
+     * @param LogMessage   $LogMessage
      */
     public function __construct(FileImport $File = null, ImportParams $ImportParams = null, LogMessage $LogMessage = null)
     {
@@ -115,7 +114,6 @@ abstract class ImportBase implements ImportInterface
      *
      * @param \SP\DataModel\AccountExtData $AccountData
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
      */
     protected function addAccount(AccountExtData $AccountData)
     {
@@ -143,7 +141,7 @@ abstract class ImportBase implements ImportInterface
             $this->counter++;
         } catch (SPException $e) {
             $this->LogMessage->addDetails($e->getMessage(), $AccountData->getAccountName());
-            $this->LogMessage->addDetails(__('ERROR', false), $e->getHint());
+            $this->LogMessage->addDetails(__('Error', false), $e->getHint());
         }
 
         return true;
@@ -154,8 +152,6 @@ abstract class ImportBase implements ImportInterface
      *
      * @param CategoryData $CategoryData
      * @return Category|null
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \SP\Core\Exceptions\SPException
      */
     protected function addCategory(CategoryData $CategoryData)
     {
@@ -167,7 +163,7 @@ abstract class ImportBase implements ImportInterface
             return $Category;
         } catch (SPException $e) {
             $this->LogMessage->addDetails($e->getMessage(), $CategoryData->category_name);
-            $this->LogMessage->addDetails(__('ERROR', false), $e->getHint());
+            $this->LogMessage->addDetails(__('Error', false), $e->getHint());
         }
 
         return null;
@@ -178,7 +174,6 @@ abstract class ImportBase implements ImportInterface
      *
      * @param CustomerData $CustomerData
      * @return Customer|null
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function addCustomer(CustomerData $CustomerData)
     {
@@ -190,7 +185,7 @@ abstract class ImportBase implements ImportInterface
             return $Customer;
         } catch (SPException $e) {
             $this->LogMessage->addDetails($e->getMessage(), $CustomerData->getCustomerName());
-            $this->LogMessage->addDetails(__('ERROR', false), $e->getHint());
+            $this->LogMessage->addDetails(__('Error', false), $e->getHint());
         }
 
         return null;
@@ -201,8 +196,6 @@ abstract class ImportBase implements ImportInterface
      *
      * @param TagData $TagData
      * @return Tag|null
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \SP\Core\Exceptions\SPException
      */
     protected function addTag(TagData $TagData)
     {

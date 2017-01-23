@@ -25,6 +25,7 @@
 namespace SP\Log;
 
 use SP\Core\DiFactory;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Session;
@@ -76,6 +77,8 @@ class Log extends ActionLog
      * Limpiar el registro de eventos.
      *
      * @return bool con el resultado
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -85,10 +88,9 @@ class Log extends ActionLog
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->setOnErrorMessage(__('Error al vaciar el registro de eventos', false));
 
-        if (DB::getQuery($Data) === false) {
-            return false;
-        }
+        DB::getQuery($Data);
 
         self::writeNewLogAndEmail(__('Vaciar Eventos', false), __('Vaciar registro de eventos', false), null);
 
@@ -163,11 +165,16 @@ class Log extends ActionLog
             $this->LogMessage->resetDescription();
         }
 
-        $query = DB::getQuery($Data);
+        try {
+            DB::getQuery($Data);
+        } catch (SPException $e) {
+            debugLog($e->getMessage(), true);
+            debugLog($e->getHint());
+        }
 
         Language::unsetAppLocales();
 
-        return $query;
+        return true;
     }
 
     /**

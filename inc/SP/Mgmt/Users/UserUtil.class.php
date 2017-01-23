@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -45,6 +45,8 @@ class UserUtil
      *
      * @param UserData $UserData
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function checkUserMail(UserData $UserData)
     {
@@ -56,7 +58,9 @@ class UserUtil
         $Data->addParam($UserData->getUserLogin());
         $Data->addParam($UserData->getUserEmail());
 
-        return (DB::getQuery($Data) === true && $Data->getQueryNumRows() === 1);
+        DB::getQuery($Data);
+
+        return $Data->getQueryNumRows() === 1;
     }
 
     /**
@@ -88,6 +92,8 @@ class UserUtil
      *
      * @param $userId int El id del usuario
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function setUserLastLogin($userId)
     {

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,6 +29,7 @@ defined('APP_ROOT') || die();
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupAccountsData;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -39,8 +40,11 @@ use SP\Storage\QueryData;
  */
 class GroupAccounts extends GroupAccountsBase implements ItemInterface
 {
+    use ItemTrait;
+
     /**
      * @return $this
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function update()
     {
@@ -63,10 +67,9 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar grupos asociados a la cuenta', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al eliminar grupos asociados a la cuenta', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -83,10 +86,8 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
             return $this;
         }
 
-        $params = array_fill(0, count($this->itemData->getGroups()), '(?,?)');
-
         $query = /** @lang SQL */
-            'INSERT INTO accGroups (accgroup_accountId, accgroup_groupId) VALUES ' . implode(',', $params);
+            'INSERT INTO accGroups (accgroup_accountId, accgroup_groupId) VALUES ' . $this->getParamsFromArray($this->itemData->getGroups(), '(?,?)');
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -96,16 +97,16 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
             $Data->addParam($group);
         }
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al actualizar los grupos secundarios', false));
-        }
+        $Data->setOnErrorMessage(__('Error al actualizar los grupos secundarios', false));
+
+        DB::getQuery($Data);
 
         return $this;
     }
 
     /**
      * @param $id int
-     * @return $this
+     * @return array
      */
     public function getById($id)
     {
@@ -130,7 +131,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
 
     /**
      * @param $id int
-     * @return mixed
+     * @return bool
      */
     public function checkInUse($id)
     {
@@ -177,5 +178,16 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
         $Data->addParam($id);
 
         return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        // TODO: Implement getByIdBatch() method.
     }
 }

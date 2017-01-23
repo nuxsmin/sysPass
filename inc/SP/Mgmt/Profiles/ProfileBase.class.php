@@ -43,6 +43,7 @@ abstract class ProfileBase extends ItemBase
      * Category constructor.
      *
      * @param ProfileData $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData = null)
     {

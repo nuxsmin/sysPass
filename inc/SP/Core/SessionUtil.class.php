@@ -64,7 +64,6 @@ class SessionUtil
      * Guardar la clave maestra encriptada en la sesión
      *
      * @param $masterPass
-     * @return bool
      */
     public static function saveSessionMPass($masterPass)
     {
@@ -73,8 +72,6 @@ class SessionUtil
 
         Session::setMPass($sessionMasterPass[0]);
         Session::setMPassIV($sessionMasterPass[1]);
-
-        return true;
     }
 
     /**

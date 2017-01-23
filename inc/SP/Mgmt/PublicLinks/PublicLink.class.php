@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -34,6 +34,7 @@ use SP\DataModel\PublicLinkListData;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Mgmt\Users\UserUtil;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -48,6 +49,8 @@ defined('APP_ROOT') || die();
  */
 class PublicLink extends PublicLinkBase implements ItemInterface
 {
+    use ItemTrait;
+
     /**
      * Tipos de enlaces
      */
@@ -98,9 +101,12 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam(serialize($this->itemData));
         $Data->addParam($this->itemData->getLinkHash());
         $Data->addParam($this->itemData->getPublicLinkId());
+        $Data->setOnErrorMessage(__('Error al actualizar enlace', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al actualizar enlace', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Enlace no encontrado', false));
         }
 
         return true;
@@ -134,10 +140,9 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam($this->itemData->getPublicLinkHash());
         $Data->addParam($this->itemData->getPublicLinkItemId());
         $Data->addParam(serialize($this->itemData));
+        $Data->setOnErrorMessage(__('Error al crear enlace', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al crear enlace', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -160,29 +165,24 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return $this
      * @throws SPException
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId) {
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
         $query = /** @lang SQL */
             'DELETE FROM publicLinks WHERE publicLink_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar enlace', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al eliminar enlace', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Enlace no encontrado', false));
         }
 
         return $this;
@@ -211,10 +211,9 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam(serialize($this->itemData));
         $Data->addParam($this->itemData->getPublicLinkHash());
         $Data->addParam($this->itemData->getPublicLinkId());
+        $Data->setOnErrorMessage(__('Error al renovar enlace', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al renovar enlace', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -378,5 +377,27 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         }
 
         return $queryRes;
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getByIdBatch(array $ids)
+    {
+        $query = /** @lang SQL */
+            'SELECT publicLink_id,
+            publicLink_hash
+            FROM publicLinks WHERE publicLink_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DB::getResultsArray($Data);
     }
 }

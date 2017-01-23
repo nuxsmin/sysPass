@@ -31,6 +31,7 @@ use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
 use SP\Controller\Grids\Items;
 use SP\Core\ActionsInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
@@ -98,39 +99,40 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Realizar las accione del controlador
      *
      * @param mixed $type Tipo de acción
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function doAction($type = null)
     {
-        $this->useTabs();
+        try {
+            $this->useTabs();
 
-        if ($type === self::TYPE_ACCOUNTS) {
-            $this->getCategories();
-            $this->getCustomers();
-            $this->getCustomFields();
-            $this->getFiles();
-            $this->getAccounts();
-            $this->getTags();
-            $this->getPluginsList();
+            if ($type === self::TYPE_ACCOUNTS) {
+                $this->getCategories();
+                $this->getCustomers();
+                $this->getCustomFields();
+                $this->getFiles();
+                $this->getAccounts();
+                $this->getTags();
+                $this->getPluginsList();
 
-            $this->EventDispatcher->notifyEvent('show.itemlist.accounts', $this);
-        } elseif ($type === self::TYPE_ACCESSES) {
-            $this->getUsersList();
-            $this->getGroupsList();
-            $this->getProfilesList();
-            $this->getAPITokensList();
-            $this->getPublicLinksList();
+                $this->EventDispatcher->notifyEvent('show.itemlist.accounts', $this);
+            } elseif ($type === self::TYPE_ACCESSES) {
+                $this->getUsersList();
+                $this->getGroupsList();
+                $this->getProfilesList();
+                $this->getAPITokensList();
+                $this->getPublicLinksList();
 
-            $this->EventDispatcher->notifyEvent('show.itemlist.accesses', $this);
+                $this->EventDispatcher->notifyEvent('show.itemlist.accesses', $this);
+            }
+        } catch (SPException $e) {
+            $this->showError(self::ERR_EXCEPTION);
         }
     }
 
     /**
      * Obtener los datos para la pestaña de categorías
      *
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getCategories()
     {
@@ -158,8 +160,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de clientes
      *
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getCustomers()
     {
@@ -179,8 +180,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de campos personalizados
      *
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getCustomFields()
     {
@@ -200,8 +200,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de archivos
      *
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getFiles()
     {
@@ -225,7 +224,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de cuentas
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getAccounts()
     {
@@ -245,8 +244,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de etiquetas
      *
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getTags()
     {
@@ -266,8 +264,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de tokens de API
      *
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getPluginsList()
     {
@@ -287,8 +284,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de usuarios
      *
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getUsersList()
     {
@@ -308,8 +304,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de grupos
      *
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getGroupsList()
     {
@@ -329,8 +324,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de perfiles
      *
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getProfilesList()
     {
@@ -350,7 +344,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de tokens de API
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getAPITokensList()
     {
@@ -370,8 +364,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de tokens de API
      *
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getPublicLinksList()
     {

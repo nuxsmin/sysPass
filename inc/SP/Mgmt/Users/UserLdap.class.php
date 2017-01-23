@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -47,6 +47,8 @@ class UserLdap extends UserBase implements ItemInterface
      *
      * @param $userLogin
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function checkLDAPUserInDB($userLogin)
     {
@@ -57,11 +59,15 @@ class UserLdap extends UserBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($userLogin);
 
-        return (DB::getQuery($Data) === true && $Data->getQueryNumRows() === 1);
+        DB::getQuery($Data);
+
+        return $Data->getQueryNumRows() === 1;
     }
 
     /**
      * @return mixed
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \phpmailer\phpmailerException
      * @throws SPException
      */
@@ -108,10 +114,9 @@ class UserLdap extends UserBase implements ItemInterface
         $Data->addParam((int)$this->itemData->isUserIsChangePass());
         $Data->addParam($passdata['pass']);
         $Data->addParam($passdata['salt']);
+        $Data->setOnErrorMessage(__('Error al guardar los datos de LDAP', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al guardar los datos de LDAP', false));
-        }
+        DB::getQuery($Data);
 
         $this->itemData->setUserId(DB::getLastId());
 
@@ -133,6 +138,28 @@ class UserLdap extends UserBase implements ItemInterface
         Email::sendEmail($Log->getLogMessage());
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function checkDuplicatedOnAdd()
+    {
+        $query = /** @lang SQL */
+            'SELECT user_login, user_email
+            FROM usrData
+            WHERE UPPER(user_login) = UPPER(?) OR UPPER(user_email) = UPPER(?)';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserEmail());
+
+        DB::getQuery($Data);
+
+        return $Data->getQueryNumRows() > 0;
     }
 
     /**
@@ -168,10 +195,9 @@ class UserLdap extends UserBase implements ItemInterface
         $Data->addParam($this->itemData->getUserName());
         $Data->addParam($this->itemData->getUserEmail());
         $Data->addParam($this->itemData->getUserLogin());
+        $Data->setOnErrorMessage(__('Error al actualizar la clave del usuario en la BBDD', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al actualizar la clave del usuario en la BBDD', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -211,20 +237,24 @@ class UserLdap extends UserBase implements ItemInterface
     }
 
     /**
-     * @return bool
+     * Eliminar elementos en lote
+     *
+     * @param array $ids
+     * @return $this
      */
-    public function checkDuplicatedOnAdd()
+    public function deleteBatch(array $ids)
     {
-        $query = /** @lang SQL */
-            'SELECT user_login, user_email
-            FROM usrData
-            WHERE UPPER(user_login) = UPPER(?) OR UPPER(user_email) = UPPER(?)';
+        // TODO: Implement deleteBatch() method.
+    }
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserLogin());
-        $Data->addParam($this->itemData->getUserEmail());
-
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        // TODO: Implement getByIdBatch() method.
     }
 }

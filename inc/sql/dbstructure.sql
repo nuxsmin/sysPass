@@ -183,7 +183,7 @@ DROP TABLE IF EXISTS `accHistory`;
 CREATE TABLE `accHistory` (
   `acchistory_id` int(11) NOT NULL AUTO_INCREMENT,
   `acchistory_accountId` smallint(5) unsigned NOT NULL,
-  `acchistory_userGroupId` smallint(5) unsigned zerofill NOT NULL,
+  `acchistory_userGroupId` smallint(5) unsigned NOT NULL,
   `acchistory_userId` smallint(5) unsigned NOT NULL,
   `acchistory_userEditId` smallint(5) unsigned NOT NULL,
   `acchistory_customerId` int(10) unsigned NOT NULL,

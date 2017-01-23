@@ -167,6 +167,7 @@ sysPass.Main = function () {
                         break;
                     case 1:
                     case 2:
+                    case 4:
                         msg.error(description);
                         break;
                     case 3:

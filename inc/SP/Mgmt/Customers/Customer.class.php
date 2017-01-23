@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -69,10 +69,9 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->itemData->getCustomerName());
         $Data->addParam($this->itemData->getCustomerDescription());
         $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
+        $Data->setOnErrorMessage(__('Error al crear el cliente', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al crear el cliente', false));
-        }
+        DB::getQuery($Data);
 
         $this->itemData->setCustomerId(DB::$lastId);
 
@@ -106,30 +105,17 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return mixed
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId) {
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
         if ($this->checkInUse($id)) {
             throw new SPException(SPException::SP_WARNING, __('No es posible eliminar', false));
-        }
-
-        // FIXME: utilizar SQL
-        $oldCustomer = $this->getById($id);
-
-        if (!is_object($oldCustomer)) {
-            throw new SPException(SPException::SP_CRITICAL, __('Cliente no encontrado', false));
         }
 
         $query = /** @lang SQL */
@@ -138,19 +124,13 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar el cliente', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al eliminar el cliente', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Cliente no encontrado', false));
         }
-
-        try {
-            $CustomFieldData = new CustomFieldData();
-            $CustomFieldData->setModule(ActionsInterface::ACTION_MGM_CUSTOMERS);
-            CustomField::getItem($CustomFieldData)->delete($id);
-        } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
-        }
-
 
         return $this;
     }
@@ -158,6 +138,8 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     /**
      * @param $id int
      * @return mixed
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function checkInUse($id)
     {
@@ -213,9 +195,12 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->itemData->getCustomerDescription());
         $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
         $Data->addParam($this->itemData->getCustomerId());
+        $Data->setOnErrorMessage(__('Error al actualizar el cliente', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al actualizar el cliente', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Cliente no encontrado', false));
         }
 
         return $this;
@@ -223,6 +208,8 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
 
     /**
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function checkDuplicatedOnUpdate()
     {
@@ -234,7 +221,9 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
         $Data->addParam($this->itemData->getCustomerId());
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= 1);
+        DB::getQuery($Data);
+
+        return $Data->getQueryNumRows() > 0;
     }
 
     /**
@@ -280,6 +269,29 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         }
 
         $Data->setQuery($query);
+
+        return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return CustomerData[]
+     */
+    public function getByIdBatch(array $ids)
+    {
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT customer_id, customer_name, customer_description FROM customers WHERE customer_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->setParams($ids);
 
         return DB::getResultsArray($Data);
     }

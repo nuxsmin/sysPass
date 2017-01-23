@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,6 +25,7 @@
 use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\DataModel\FileData;
@@ -137,9 +138,11 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
         Response::printJson($LogMessage->getDescription());
     }
 
-    if (File::getItem($FileData)->add()) {
+    try {
+        File::getItem($FileData)->add();
+
         Response::printJson(__('Archivo guardado'), 0);
-    } else {
+    } catch (SPException $e) {
         Response::printJson(__('No se pudo guardar el archivo'));
     }
 } elseif ($actionId === ActionsInterface::ACTION_ACC_FILES_DOWNLOAD
@@ -193,11 +196,15 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
     // Verificamos que el ID sea numérico
     if (!is_numeric($fileId) || $fileId === 0) {
         Response::printJson(__('No es un ID de archivo válido'));
-    } elseif (File::getItem()->delete($fileId)) {
-        Response::printJson(__('Archivo eliminado'), 0);
     }
 
-    Response::printJson(__('Error al eliminar el archivo'));
+    try {
+        File::getItem()->delete($fileId);
+
+        Response::printJson(__('Archivo eliminado'), 0);
+    } catch (SPException $e) {
+        Response::printJson(__('Error al eliminar el archivo'));
+    }
 } else {
     Response::printJson(__('Acción Inválida'));
 }

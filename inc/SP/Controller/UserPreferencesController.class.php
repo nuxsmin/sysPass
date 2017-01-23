@@ -81,7 +81,7 @@ class UserPreferencesController extends TabControllerBase implements ActionsInte
         $this->view->assign('themesAvailable', DiFactory::getTheme()->getThemesAvailable());
         $this->view->assign('currentTheme', $this->userPrefs->getTheme() ?: Config::getConfig()->getSiteTheme());
         $this->view->assign('chkAccountLink', $this->userPrefs->isAccountLink() ? 'checked="checked"' : '');
-        $this->view->assign('resultsPerPage', $this->userPrefs->getResultsPerPage() ? $this->userPrefs->getResultsPerPage() : Config::getConfig()->getAccountCount());
+        $this->view->assign('resultsPerPage', $this->userPrefs->getResultsPerPage() ?: Config::getConfig()->getAccountCount());
         $this->view->assign('chkSortViews', $this->userPrefs->isSortViews() ? 'checked="checked"' : '');
         $this->view->assign('chkTopNavbar', $this->userPrefs->isTopNavbar() ? 'checked="checked"' : '');
         $this->view->assign('chkOptionalActions', $this->userPrefs->isOptionalActions() ? 'checked="checked"' : '');

@@ -26,7 +26,6 @@ namespace SP\Controller\Grids;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\Init;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
@@ -43,7 +42,7 @@ class Notices extends GridBase
 {
     /**
      * @return DataGridTab
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getNoticesGrid()
     {

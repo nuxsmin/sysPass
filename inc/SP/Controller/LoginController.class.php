@@ -215,11 +215,11 @@ class LoginController
             $UserPassRecoverData->setUserpassrUserId($this->UserData->getUserId());
             $UserPassRecoverData->setUserpassrHash($hash);
 
-            if (UserPassRecover::getItem($UserPassRecoverData)->add()) {
-                $data = ['url' => Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time() . '&f=1'];
-                $this->jsonResponse->setData($data);
-                Json::returnJson($this->jsonResponse);
-            }
+            UserPassRecover::getItem($UserPassRecoverData)->add();
+
+            $data = ['url' => Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time() . '&f=1'];
+            $this->jsonResponse->setData($data);
+            Json::returnJson($this->jsonResponse);
         }
 
         return false;
@@ -229,9 +229,10 @@ class LoginController
      * Cargar la sesión del usuario
      *
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\AuthException
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setUserSession()
     {
@@ -259,7 +260,6 @@ class LoginController
      * Cargar la clave maestra o solicitarla
      *
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\AuthException
      */
     protected function loadMasterPass()
@@ -332,8 +332,8 @@ class LoginController
      *
      * @param LdapAuthData $LdapAuthData
      * @return bool
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws AuthException
      */
     protected function authLdap(LdapAuthData $LdapAuthData)
@@ -369,12 +369,12 @@ class LoginController
 
         try {
             // Verificamos si el usuario existe en la BBDD
-            if (!UserLdap::checkLDAPUserInDB($this->UserData->getUserLogin())) {
-                // Creamos el usuario de LDAP en MySQL
-                UserLdap::getItem($this->UserData)->add();
-            } else {
+            if (UserLdap::checkLDAPUserInDB($this->UserData->getUserLogin())) {
                 // Actualizamos el usuario de LDAP en MySQL
                 UserLdap::getItem($this->UserData)->update();
+            } else {
+                // Creamos el usuario de LDAP en MySQL
+                UserLdap::getItem($this->UserData)->add();
             }
         } catch (SPException $e) {
             $this->LogMessage->addDescription($e->getMessage());

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,6 +26,7 @@ namespace SP\Controller;
 
 use SP\Controller\Grids\Notices;
 use SP\Core\ActionsInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Mgmt\Notices\Notice;
 
 /**
@@ -39,16 +40,17 @@ class NoticesController extends GridTabControllerBase implements ActionsInterfac
      * Realizar las acciones del controlador
      *
      * @param mixed $type Tipo de acción
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function doAction($type = null)
     {
-        $this->useTabs();
-        $this->getUserNotices();
+        try {
+            $this->useTabs();
+            $this->getUserNotices();
 
-        $this->EventDispatcher->notifyEvent('show.itemlist.notices', $this);
+            $this->EventDispatcher->notifyEvent('show.itemlist.notices', $this);
+        } catch (SPException $e) {
+            $this->showError(self::ERR_EXCEPTION);
+        }
     }
 
     /**
@@ -67,9 +69,7 @@ class NoticesController extends GridTabControllerBase implements ActionsInterfac
     /**
      * Obtener los datos para la pestaña de categorías
      *
-     * @throws \InvalidArgumentException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function getUserNotices()
     {

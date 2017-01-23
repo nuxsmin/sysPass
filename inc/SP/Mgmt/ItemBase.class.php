@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,6 +26,7 @@ namespace SP\Mgmt;
 
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\InvalidClassException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\DataModelInterface;
 
 /**
@@ -100,7 +101,7 @@ abstract class ItemBase
     public final function setItemData($itemData)
     {
         if (null !== $this->dataModel && !$itemData instanceof $this->dataModel) {
-            throw new InvalidClassException($this->dataModel);
+            throw new InvalidClassException(SPException::SP_ERROR, $this->dataModel);
         }
 
         $this->itemData = $itemData;

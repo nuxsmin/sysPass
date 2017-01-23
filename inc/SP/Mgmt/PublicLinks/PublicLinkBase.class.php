@@ -32,6 +32,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\SessionUtil;
 use SP\DataModel\PublicLinkData;
 use SP\Mgmt\ItemBase;
+use SP\DataModel\PublicLinkBaseData;
 
 /**
  * Class PublicLinks para la gestión de enlaces públicos
@@ -47,11 +48,12 @@ abstract class PublicLinkBase extends ItemBase
      * Category constructor.
      *
      * @param PublicLinkData $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData = null)
     {
         if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\PublicLinkBaseData');
+            $this->setDataModel(PublicLinkBaseData::class);
         }
 
         parent::__construct($itemData);

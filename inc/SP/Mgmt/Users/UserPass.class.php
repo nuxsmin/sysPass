@@ -118,6 +118,8 @@ class UserPass extends UserBase
      * @param $userId
      * @param $userPass
      * @return $this
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
@@ -140,10 +142,9 @@ class UserPass extends UserBase
         $Data->addParam($passdata['pass']);
         $Data->addParam($passdata['salt']);
         $Data->addParam($userId);
+        $Data->setOnErrorMessage(__('Error al modificar la clave', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al modificar la clave', false));
-        }
+        DB::getQuery($Data);
 
         $Log = new Log();
         $Log->getLogMessage()
@@ -173,6 +174,7 @@ class UserPass extends UserBase
      * Comprueba la clave maestra del usuario.
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function loadUserMPass()
     {
@@ -186,10 +188,12 @@ class UserPass extends UserBase
         } elseif (Crypt::checkHashPass($userMPass, $configHashMPass, true)) {
             $this->clearUserMPass = $userMPass;
 
-            return SessionUtil::saveSessionMPass($userMPass);
-        } else {
-            return null;
+            SessionUtil::saveSessionMPass($userMPass);
+
+            return true;
         }
+
+        return null;
     }
 
     /**
@@ -283,7 +287,7 @@ class UserPass extends UserBase
         if (Crypt::checkHashPass($masterPwd, $configHashMPass, true)) {
             $cryptMPass = Crypt::mkCustomMPassEncrypt($this->getCypherPass(), $masterPwd);
 
-            if ($cryptMPass) {
+            if (!empty($cryptMPass)) {
                 $query = /** @lang SQL */
                     'UPDATE usrData SET 
                     user_mPass = ?,
@@ -302,7 +306,9 @@ class UserPass extends UserBase
                 $this->itemData->setUserMPass($cryptMPass[0]);
                 $this->itemData->setUserMIV($cryptMPass[1]);
 
-                return DB::getQuery($Data);
+                DB::getQuery($Data);
+
+                return true;
             }
         }
 

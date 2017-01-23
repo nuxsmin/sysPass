@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,9 +23,10 @@
  */
 
 namespace SP\Mgmt;
+
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\DataModelInterface;
 use SP\Storage\DBUtil;
-
 
 /**
  * Class ItemTrait
@@ -57,6 +58,28 @@ trait ItemTrait
     }
 
     /**
+     * Eliminar elementos en lotes
+     *
+     * @param $ids
+     * @return array
+     */
+    public function deleteBatch(array $ids)
+    {
+        $items = $this->getByIdBatch($ids);
+
+        /** @var DataModelInterface[] $items */
+        foreach ($items as $key => $item) {
+            try {
+                $this->delete($item->getId());
+            } catch (SPException $e) {
+                unset($items[$key]);
+            }
+        }
+
+        return $items;
+    }
+
+    /**
      * Crear un hash con el nombre del elemento.
      *
      * Esta función crear un hash para detectar nombres de elementos duplicados mediante
@@ -71,5 +94,17 @@ trait ItemTrait
         $newValue = strtolower(str_replace($charsSrc, '', DBUtil::escape($name)));
 
         return md5($newValue);
+    }
+
+    /**
+     * Devuelve una cadena con los parámetros para una consulta SQL desde un array
+     *
+     * @param array  $items
+     * @param string $string Cadena a utilizar para los parámetros
+     * @return string
+     */
+    protected function getParamsFromArray(array $items, $string = '?')
+    {
+        return implode(',', array_fill(0, count($items), $string));
     }
 }

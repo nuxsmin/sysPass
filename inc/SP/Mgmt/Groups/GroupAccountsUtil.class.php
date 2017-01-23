@@ -54,7 +54,7 @@ class GroupAccountsUtil
             ORDER BY usergroup_name';
 
         $Data = new QueryData();
-        $Data->setMapClassName('\SP\DataModel\GroupData');
+        $Data->setMapClassName(GroupData::class);
         $Data->setQuery($query);
         $Data->addParam($accountId);
 

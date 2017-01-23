@@ -119,7 +119,6 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
      * Obtener los datos para la ficha de usuario
      *
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getNotice()
     {

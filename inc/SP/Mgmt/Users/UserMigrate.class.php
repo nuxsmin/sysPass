@@ -70,6 +70,8 @@ class UserMigrate
      * Esta función actualiza la clave de un usuario que ha sido migrado desde phpPMS
      * @throws \SP\Core\Exceptions\SPException
      * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public static function migrateUser($userLogin, $userPass)
     {
@@ -93,10 +95,9 @@ class UserMigrate
         $Data->addParam($userLogin);
         $Data->addParam($userPass);
         $Data->addParam($userPass);
+        $Data->setOnErrorMessage(__('Error al migrar cuenta de usuario', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al migrar cuenta de usuario', false));
-        }
+        DB::getQuery($Data);
 
         $Log = new Log();
         $Log->getLogMessage()
@@ -156,6 +157,9 @@ class UserMigrate
 
     /**
      * Establecer el campo isMigrate de cada usuario
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public static function setMigrateUsers()
     {

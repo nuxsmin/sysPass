@@ -43,11 +43,12 @@ class TagBase extends ItemBase
      * Category constructor.
      *
      * @param TagData $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData = null)
     {
         if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\TagData');
+            $this->setDataModel(TagData::class);
         }
 
         parent::__construct($itemData);

@@ -216,6 +216,8 @@ sysPass.Actions = function (Common) {
                     callback(json.data);
 
                     $dst.setValue($obj.data("selected-id"), true);
+
+                    Common.appTriggers().updateFormHash();
                 });
             });
         },
@@ -923,6 +925,10 @@ sysPass.Actions = function (Common) {
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
+
+                if (json.data.itemId !== undefined && json.data.nextActionId !== undefined) {
+                    doAction({actionId: json.data.nextActionId, itemId: json.data.itemId}, "account");
+                }
             });
         }
     };
@@ -1027,8 +1033,10 @@ sysPass.Actions = function (Common) {
                 Common.msg.out(json);
 
                 if (json.status === 0) {
-                    if (appMgmt.refreshTab === true) {
-                        doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                    var activeTab = $obj.data("activetab");
+
+                    if (appMgmt.refreshTab === true && activeTab !== undefined) {
+                        doAction({actionId: $obj.data("nextaction-id"), itemId: activeTab});
                     }
 
                     $.magnificPopup.close();

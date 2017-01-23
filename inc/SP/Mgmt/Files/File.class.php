@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -28,6 +28,7 @@ namespace SP\Mgmt\Files;
 use SP\Account\AccountUtil;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
+use SP\DataModel\FileExtData;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
@@ -48,6 +49,8 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @return mixed
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -71,6 +74,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getAccfileSize());
         $Data->addParam($this->itemData->getAccfileContent());
         $Data->addParam($this->itemData->getAccfileExtension());
+        $Data->setOnErrorMessage(__('No se pudo guardar el archivo', false));
 
         if (FileUtil::isImage($this->itemData)) {
             $thumbnail = ImageUtil::createThumbnail($this->itemData->getAccfileContent());
@@ -92,14 +96,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
         $LogMessage->addDetails(__('Tipo', false), $this->itemData->getAccfileType());
         $LogMessage->addDetails(__('Tamaño', false), $this->itemData->getRoundSize() . 'KB');
 
-        if (DB::getQuery($Data) === false) {
-            $LogMessage->addDescription(__('No se pudo guardar el archivo', false));
-            $Log->writeLog();
-
-            Email::sendEmail($LogMessage);
-
-            return false;
-        }
+        DB::getQuery($Data);
 
         $LogMessage->addDescription(__('Archivo subido', false));
         $Log->writeLog();
@@ -110,20 +107,12 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return mixed
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId){
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
         // Eliminamos el archivo de la BBDD
         $query = /** @lang SQL */
             'DELETE FROM accFiles WHERE accfile_id = ? LIMIT 1';
@@ -131,9 +120,12 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar archivo', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al eliminar archivo', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Archivo no encontrado', false));
         }
 
         return $this;
@@ -141,7 +133,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @param $id
-     * @return FileData
+     * @return FileExtData
      */
     public function getInfoById($id)
     {
@@ -150,12 +142,16 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
             accfile_size,
             accfile_type,
             accfile_accountId,
-            accfile_extension
+            accfile_extension,
+            account_name,
+            customer_name
             FROM accFiles
+            LEFT JOIN accounts ON account_id = accfile_accountId
+            LEFT JOIN customers ON customer_id = account_customerId
             WHERE accfile_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName($this->getDataModel());
+        $Data->setMapClassName(FileExtData::class);
         $Data->setQuery($query);
         $Data->addParam($id);
 
@@ -172,7 +168,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @param $id int
-     * @return FileData
+     * @return FileExtData
      */
     public function getById($id)
     {
@@ -183,12 +179,16 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
             accfile_accountId,
             accfile_content,
             accfile_thumb,
-            accfile_extension
+            accfile_extension,
+            account_name,
+            customer_name
             FROM accFiles
+            LEFT JOIN accounts ON account_id = accfile_accountId
+            LEFT JOIN customers ON customer_id = account_customerId
             WHERE accfile_id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName($this->getDataModel());
+        $Data->setMapClassName(FileExtData::class);
         $Data->setQuery($query);
         $Data->addParam($id);
 
@@ -226,5 +226,40 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
     public function checkDuplicatedOnAdd()
     {
         // TODO: Implement checkDuplicatedOnAdd() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return FileExtData[]
+     */
+    public function getByIdBatch(array $ids)
+    {
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT accfile_name,
+            accfile_size,
+            accfile_type,
+            accfile_accountId,
+            accfile_content,
+            accfile_thumb,
+            accfile_extension,
+            account_name,
+            customer_name
+            FROM accFiles
+            LEFT JOIN accounts ON account_id = accfile_accountId
+            LEFT JOIN customers ON customer_id = account_customerId
+            WHERE accfile_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName(FileExtData::class);
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DB::getResultsArray($Data);
     }
 }

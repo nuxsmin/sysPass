@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,6 +27,7 @@ namespace SP\Mgmt\Plugins;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\PluginData;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -37,6 +38,7 @@ use SP\Storage\QueryData;
  */
 class Plugin extends PluginBase implements ItemInterface
 {
+    use ItemTrait;
 
     /**
      * Añade un nuevo plugin
@@ -54,10 +56,9 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($this->itemData->getPluginName());
         $Data->addParam($this->itemData->getPluginData());
         $Data->addParam($this->itemData->getPluginEnabled());
+        $Data->setOnErrorMessage(__('Error al crear el plugin', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al crear el plugin', false));
-        }
+        DB::getQuery($Data);
 
         $this->itemData->setPluginId(DB::$lastId);
 
@@ -79,9 +80,12 @@ class Plugin extends PluginBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($name);
+        $Data->setOnErrorMessage(__('Error al eliminar el plugin', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al eliminar el plugin', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Plugin no encontrado', false));
         }
 
         return $this;
@@ -108,9 +112,12 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($this->itemData->getPluginData());
         $Data->addParam($this->itemData->getPluginEnabled());
         $Data->addParam($this->itemData->getPluginName());
+        $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al actualizar el plugin', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Plugin no encontrado', false));
         }
 
         return $this;
@@ -213,10 +220,9 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getPluginEnabled());
         $Data->addParam($this->itemData->getPluginId());
+        $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al actualizar el plugin', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -238,11 +244,33 @@ class Plugin extends PluginBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al actualizar el plugin', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return PluginData[]
+     */
+    public function getByIdBatch(array $ids)
+    {
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT plugin_id, plugin_name, BIN(plugin_enabled) AS plugin_enabled FROM plugins WHERE plugin_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DB::getResultsArray($Data);
     }
 }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,7 @@
 
 namespace SP\Config;
 
+use SP\Core\Exceptions\SPException;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
@@ -76,8 +77,6 @@ class ConfigDB implements ConfigInterface
      *
      * @param bool $isInsert realizar un 'insert'?
      * @return bool
-     * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function writeConfig($isInsert = false)
     {
@@ -96,7 +95,9 @@ class ConfigDB implements ConfigInterface
             $Data->addParam($param, 'param');
             $Data->addParam($value, 'value');
 
-            if (DB::getQuery($Data) === false) {
+            try {
+                DB::getQuery($Data);
+            } catch (SPException $e) {
                 return false;
             }
         }
@@ -135,7 +136,9 @@ class ConfigDB implements ConfigInterface
         $Data->addParam($value, 'value');
         $Data->addParam($value, 'valuedup');
 
-        if (DB::getQuery($Data) === false) {
+        try {
+            DB::getQuery($Data);
+        } catch (SPException $e) {
             return false;
         }
 
@@ -162,7 +165,7 @@ class ConfigDB implements ConfigInterface
      * Actualizar el array de parámetros de configuración
      *
      * @param $param   string La clave a actualizar
-     * @param $value mixed El valor a actualizar
+     * @param $value   mixed El valor a actualizar
      */
     public static function setCacheConfigValue($param, $value)
     {
@@ -187,7 +190,7 @@ class ConfigDB implements ConfigInterface
     /**
      * Obtiene un valor desde la configuración en la BBDD.
      *
-     * @param string $param con el parámetro de configuración
+     * @param string $param   con el parámetro de configuración
      * @param string $default El valor por defecto
      * @return false|string con el valor
      */
@@ -213,6 +216,8 @@ class ConfigDB implements ConfigInterface
      *
      * @param string $param clave
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function deleteParam($param)
     {
@@ -222,6 +227,6 @@ class ConfigDB implements ConfigInterface
         $Data->setQuery($query);
         $Data->addParam($param, 'param');
 
-        return (DB::getQuery($Data) !== false);
+        return DB::getQuery($Data);
     }
 }

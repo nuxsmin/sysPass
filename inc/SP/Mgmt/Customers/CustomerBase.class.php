@@ -48,7 +48,7 @@ abstract class CustomerBase extends ItemBase
     public function __construct($itemData = null)
     {
         if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\CustomerData');
+            $this->setDataModel(CustomerData::class);
         }
 
         parent::__construct($itemData);

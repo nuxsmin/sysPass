@@ -28,6 +28,7 @@ defined('APP_ROOT') || die();
 
 use InvalidArgumentException;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\UI\ThemeInterface;
 
 /**
@@ -61,6 +62,7 @@ class Template
     /**
      * @param null  $file Archivo de plantilla a añadir
      * @param array $vars Variables a inicializar
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function __construct($file = null, array $vars = array())
     {
@@ -81,6 +83,7 @@ class Template
      * @param string $file Con el nombre del archivo de plantilla
      * @param string $base Directorio base para la plantilla
      * @return bool
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function addTemplate($file, $base = null)
     {
@@ -99,8 +102,8 @@ class Template
      *
      * @param string $template Con el nombre del archivo
      * @return string La ruta al archivo de la plantilla
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      * @param string $base     Directorio base para la plantilla
-     * @throws \InvalidArgumentException
      */
     private function checkTemplate($template, $base = null)
     {
@@ -123,7 +126,7 @@ class Template
         if (!is_readable($file)) {
             debugLog(sprintf(__('No es posible obtener la plantilla "%s" : %s'), $file, $template));
 //            Log::writeNewLog(__FUNCTION__, sprintf(__('No es posible obtener la plantilla "%s" : %s'), $file, $template), Log::ERROR);
-            throw new InvalidArgumentException(sprintf(__('No es posible obtener la plantilla "%s" : %s'), $file, $template));
+            throw new FileNotFoundException(SPException::SP_ERROR, sprintf(__('No es posible obtener la plantilla "%s" : %s'), $file, $template));
         }
 
         return $file;
@@ -241,7 +244,7 @@ class Template
     public function render()
     {
         if (count($this->file) === 0) {
-            throw new FileNotFoundException(__('La plantilla no contiene archivos'));
+            throw new FileNotFoundException(SPException::SP_ERROR, __('La plantilla no contiene archivos'));
         }
 
         extract($this->vars, EXTR_SKIP);

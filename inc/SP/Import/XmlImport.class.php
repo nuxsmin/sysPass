@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,7 +24,6 @@
 
 namespace SP\Import;
 
-use Import\XmlFileImport;
 use SP\Core\Messages\LogMessage;
 
 defined('APP_ROOT') || die();
@@ -35,42 +34,80 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class XmlImport
+class XmlImport implements ImportInterface
 {
+    /**
+     * @var FileImport
+     */
+    protected $File;
+    /**
+     * @var ImportParams
+     */
+    protected $ImportParams;
+    /**
+     * @var LogMessage
+     */
+    protected $LogMessage;
+    /**
+     * @var ImportBase
+     */
+    protected $Import;
+
+    /**
+     * XmlImport constructor.
+     *
+     * @param FileImport   $File
+     * @param ImportParams $ImportParams
+     * @param LogMessage   $LogMessage
+     */
+    public function __construct(FileImport $File, ImportParams $ImportParams, LogMessage $LogMessage)
+    {
+        $this->File = $File;
+        $this->ImportParams = $ImportParams;
+        $this->LogMessage = $LogMessage;
+    }
+
     /**
      * Iniciar la importación desde XML.
      *
-     * @param FileImport $File
-     * @param ImportParams $ImportParams
-     * @param LogMessage $LogMessage
-     * @return ImportBase|false
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function doImport(FileImport $File, ImportParams $ImportParams, LogMessage $LogMessage)
+    public function doImport()
     {
-        $XmlFileImport = new XmlFileImport($File);
+        $XmlFileImport = new XmlFileImport($this->File);
 
         $format = $XmlFileImport->detectXMLFormat();
 
         switch ($format) {
             case 'syspass':
-                $Import = new SyspassImport();
+                $this->Import = new SyspassImport();
                 break;
             case 'keepass':
-                $Import = new KeepassImport();
+                $this->Import = new KeepassImport();
                 break;
             case 'keepassx':
-                $Import = new KeepassXImport();
+                $this->Import = new KeepassXImport();
                 break;
             default:
-                return false;
+                return;
         }
 
-        $Import->setImportParams($ImportParams);
-        $Import->setXmlDOM($XmlFileImport->getXmlDOM());
-        $Import->setLogMessage($LogMessage);
+        $this->Import->setImportParams($this->ImportParams);
+        $this->Import->setXmlDOM($XmlFileImport->getXmlDOM());
+        $this->Import->setLogMessage($this->LogMessage);
 
-        $LogMessage->addDescription(sprintf(__('Formato detectado: %s'), strtoupper($format)));
+        $this->LogMessage->addDescription(sprintf(__('Formato detectado: %s'), strtoupper($format)));
 
-        return $Import;
+        $this->Import->doImport();
+    }
+
+    /**
+     * Devolver el contador de objetos importados
+     *
+     * @return int
+     */
+    public function getCounter()
+    {
+        return $this->Import->getCounter();
     }
 }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -47,13 +47,14 @@ class AccountUtil
      */
     public static function getAccountRequestData($id)
     {
-        $query = 'SELECT account_userId,'
-            . 'account_userEditId,'
-            . 'account_name,'
-            . 'customer_name '
-            . 'FROM accounts '
-            . 'LEFT JOIN customers ON account_customerId = customer_id '
-            . 'WHERE account_id = ? LIMIT 1';
+        $query = /** @lang SQL */
+            'SELECT account_userId,
+            account_userEditId,
+            account_name,
+            customer_name 
+            FROM accounts 
+            LEFT JOIN customers ON account_customerId = customer_id 
+            WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -76,22 +77,19 @@ class AccountUtil
      */
     public static function getAccountUsersName($accountId)
     {
-        $query = 'SELECT user_name '
-            . 'FROM accUsers '
-            . 'JOIN usrData ON accuser_userId = user_id '
-            . 'WHERE accuser_accountId = ?';
+        $query = /** @lang SQL */
+            'SELECT user_name 
+            FROM accUsers 
+            JOIN usrData ON accuser_userId = user_id 
+            WHERE accuser_accountId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($accountId);
 
-        $queryRes = DB::getResults($Data);
+        $queryRes = DB::getResultsArray($Data);
 
         if ($queryRes === false) {
-            return false;
-        }
-
-        if (!is_array($queryRes)) {
             return false;
         }
 
@@ -112,27 +110,26 @@ class AccountUtil
      */
     public static function getAccountsData()
     {
-        $query = 'SELECT account_id,'
-            . 'account_name,'
-            . 'account_categoryId,'
-            . 'account_customerId,'
-            . 'account_login,'
-            . 'account_url,'
-            . 'account_pass,'
-            . 'account_IV,'
-            . 'account_notes '
-            . 'FROM accounts';
+        $query = /** @lang SQL */
+            'SELECT account_id,
+            account_name,
+            account_categoryId,
+            account_customerId,
+            account_login,
+            account_url,
+            account_pass,
+            account_IV,
+            account_notes 
+            FROM accounts';
 
         $Data = new QueryData();
         $Data->setQuery($query);
 
         try {
-            $queryRes = DB::getResultsArray($Data);
-        }catch (SPException $e) {
+            return DB::getResultsArray($Data);
+        } catch (SPException $e) {
             throw new SPException(SPException::SP_CRITICAL, __('No se pudieron obtener los datos de las cuentas', false));
         }
-
-        return $queryRes;
     }
 
     /**
@@ -143,7 +140,8 @@ class AccountUtil
      */
     public static function getAccountNameById($accountId)
     {
-        $query = 'SELECT account_name FROM accounts WHERE account_id = ? LIMIT 1';
+        $query = /** @lang SQL */
+            'SELECT account_name FROM accounts WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -152,6 +150,25 @@ class AccountUtil
         $queryRes = DB::getResults($Data);
 
         return ($queryRes !== false) ? $queryRes->account_name : false;
+    }
+
+    /**
+     * Devolver el nombre de la cuenta a partir del Id
+     *
+     * @param array $ids Id de la cuenta
+     * @return array
+     * @internal param int $accountId El Id de la cuenta
+     */
+    public static function getAccountNameByIdBatch(array $ids)
+    {
+        $query = /** @lang SQL */
+            'SELECT account_name FROM accounts WHERE account_id IN (' . implode(',', array_fill(0, count($ids), '?')) . ')';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DB::getResultsArray($Data);
     }
 
     /**
@@ -196,7 +213,7 @@ class AccountUtil
      */
     public static function getLinkedAccounts($accountId)
     {
-        if ($accountId === 0){
+        if ($accountId === 0) {
             return [];
         }
 
@@ -208,38 +225,10 @@ class AccountUtil
         $Data->addParam($accountId);
 
         $query = /** @lang SQL */
-            'SELECT account_id, account_name, customer_name ' .
-            'FROM accounts ' .
-            'LEFT JOIN customers ON customer_id = account_customerId ' .
-            'WHERE ' . implode(' AND ', $queryWhere) . ' ORDER  BY customer_name';
-
-        $Data->setQuery($query);
-
-        return DB::getResultsArray($Data);
-    }
-
-    /**
-     * Obtiene los datos de las cuentas visibles por el usuario
-     *
-     * @param int $accountId Cuenta actual
-     * @return array
-     */
-    public static function getAccountsForUser($accountId = 0)
-    {
-        $Data = new QueryData();
-
-        $queryWhere = self::getAccountFilterUser($Data);
-
-        if (!empty($accountId)) {
-            $queryWhere[] = 'account_id <> ? AND (account_parentId = 0 OR account_parentId IS NULL)';
-            $Data->addParam($accountId);
-        }
-
-        $query = /** @lang SQL */
-            'SELECT account_id, account_name, customer_name ' .
-            'FROM accounts ' .
-            'LEFT JOIN customers ON customer_id = account_customerId ' .
-            'WHERE ' . implode(' AND ', $queryWhere) . ' ORDER BY customer_name';
+            'SELECT account_id, account_name, customer_name 
+            FROM accounts 
+            LEFT JOIN customers ON customer_id = account_customerId 
+            WHERE ' . implode(' AND ', $queryWhere) . ' ORDER  BY customer_name';
 
         $Data->setQuery($query);
 
@@ -274,5 +263,33 @@ class AccountUtil
         $Data->addParam(Session::getUserData()->getUserGroupId());
 
         return $queryWhere;
+    }
+
+    /**
+     * Obtiene los datos de las cuentas visibles por el usuario
+     *
+     * @param int $accountId Cuenta actual
+     * @return array
+     */
+    public static function getAccountsForUser($accountId = 0)
+    {
+        $Data = new QueryData();
+
+        $queryWhere = self::getAccountFilterUser($Data);
+
+        if (!empty($accountId)) {
+            $queryWhere[] = 'account_id <> ? AND (account_parentId = 0 OR account_parentId IS NULL)';
+            $Data->addParam($accountId);
+        }
+
+        $query = /** @lang SQL */
+            'SELECT account_id, account_name, customer_name 
+            FROM accounts 
+            LEFT JOIN customers ON customer_id = account_customerId 
+            WHERE ' . implode(' AND ', $queryWhere) . ' ORDER BY customer_name';
+
+        $Data->setQuery($query);
+
+        return DB::getResultsArray($Data);
     }
 }

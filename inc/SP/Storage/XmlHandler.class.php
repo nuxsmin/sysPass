@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -32,6 +32,7 @@ use ReflectionObject;
 
 /**
  * Class XmlHandler para manejo básico de documentos XML
+ *
  * @package SMD\Storage
  */
 class XmlHandler implements FileStorageInterface
@@ -55,19 +56,12 @@ class XmlHandler implements FileStorageInterface
 
     /**
      * XmlHandler constructor.
+     *
      * @param $file
      */
     public function __construct($file)
     {
         $this->file = $file;
-    }
-
-    /**
-     * Crear un nuevo documento XML
-     */
-    private function setDOM()
-    {
-        $this->Dom = new DOMDocument('1.0', 'utf-8');
     }
 
     /**
@@ -80,7 +74,7 @@ class XmlHandler implements FileStorageInterface
     public function load($tag = 'root')
     {
         if (!$this->checkSourceFile()) {
-            throw new \Exception(sprintf(__('No es posible leer/escribir el archivo: %s'), $this->file));
+            throw new \Exception(sprintf(__('No es posible leer/escribir el archivo: %s', false), $this->file));
         }
 
         $this->setDOM();
@@ -101,6 +95,14 @@ class XmlHandler implements FileStorageInterface
     protected function checkSourceFile()
     {
         return (is_writable($this->file) && filesize($this->file) > 0);
+    }
+
+    /**
+     * Crear un nuevo documento XML
+     */
+    private function setDOM()
+    {
+        $this->Dom = new DOMDocument('1.0', 'utf-8');
     }
 
     /**
@@ -175,9 +177,9 @@ class XmlHandler implements FileStorageInterface
     /**
      * Crear los nodos hijos recursivamente a partir de un array multidimensional
      *
-     * @param mixed $items
+     * @param mixed   $items
      * @param DOMNode $Node
-     * @param null $type
+     * @param null    $type
      */
     protected function writeChildNodes($items, DOMNode $Node, $type = null)
     {
@@ -208,7 +210,7 @@ class XmlHandler implements FileStorageInterface
      * Analizar el tipo de elementos
      *
      * @param mixed $items
-     * @param bool $serialize
+     * @param bool  $serialize
      * @return array
      */
     protected function analyzeItems($items, $serialize = false)
@@ -241,7 +243,7 @@ class XmlHandler implements FileStorageInterface
             $property->setAccessible(true);
             $value = $property->getValue($object);
 
-            if (is_numeric($value) || is_bool($value)){
+            if (is_numeric($value) || is_bool($value)) {
                 $items[$property->getName()] = (int)$value;
             } else {
                 $items[$property->getName()] = $value;

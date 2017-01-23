@@ -90,7 +90,6 @@ class Acl implements ActionsInterface
      * @param string $action con el nombre de la acción
      * @param int    $userId opcional, con el Id del usuario
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkUserAccess($action, $userId = 0)
     {

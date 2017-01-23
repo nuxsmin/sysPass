@@ -59,8 +59,9 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page El nombre de página para la clase del body
-     * @param bool $initialize Si es una inicialización completa
+     * @param string $page       El nombre de página para la clase del body
+     * @param bool   $initialize Si es una inicialización completa
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -85,6 +86,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Inicializar las variables para la vista principal de la aplicación
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function initialize()
     {
@@ -191,6 +194,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface principal de sysPass
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getMain()
     {
@@ -206,6 +211,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para la mostrar la barra de sesión
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     private function getSessionBar()
     {
@@ -230,6 +237,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para mostrar el menú de acciones
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     private function getMenu()
     {
@@ -304,6 +313,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de login
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getLogin()
     {
@@ -334,6 +345,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface del instalador
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getInstaller()
     {
@@ -369,6 +382,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de error
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getError()
     {
@@ -388,6 +403,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de actualización de BD
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getUpgrade()
     {
@@ -408,6 +425,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de comprobación de actualizaciones
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getCheckUpdates()
     {
@@ -454,25 +473,32 @@ class MainController extends ControllerBase implements ActionsInterface
      * Realizar las acciones del controlador
      *
      * @param mixed $type Tipo de acción
+     * @throws \phpmailer\phpmailerException
      */
     public function doAction($type = null)
     {
         $this->setPage($type);
 
-        switch ($type) {
-            case 'prelogin.passreset':
-                $this->getPassReset();
-                break;
-            case 'prelogin.link':
-                $this->getPublicLink();
-                break;
-        }
+        try {
+            switch ($type) {
+                case 'prelogin.passreset':
+                    $this->getPassReset();
+                    break;
+                case 'prelogin.link':
+                    $this->getPublicLink();
+                    break;
+            }
 
-        DiFactory::getEventDispatcher()->notifyEvent('main.' . $type, $this);
+            DiFactory::getEventDispatcher()->notifyEvent('main.' . $type, $this);
+        } catch (SPException $e) {
+            $this->showError(self::ERR_EXCEPTION);
+        }
     }
 
     /**
      * Obtener los datos para el interface de restablecimiento de clave de usuario
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getPassReset()
     {
@@ -506,6 +532,9 @@ class MainController extends ControllerBase implements ActionsInterface
      * Obtener la vista para mostrar un enlace publicado
      *
      * @return bool
+     * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\FileNotFoundException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException

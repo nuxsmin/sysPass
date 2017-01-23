@@ -22,13 +22,13 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Import;
+namespace SP\Import;
 
 use SP\Core\Exceptions\SPException;
-use SP\Import\FileImport;
 
 /**
  * Class XmlFileImport
+ *
  * @package Import
  */
 class XmlFileImport
@@ -44,6 +44,7 @@ class XmlFileImport
 
     /**
      * XmlFileImport constructor.
+     *
      * @param FileImport $FileImport
      */
     public function __construct(FileImport $FileImport)

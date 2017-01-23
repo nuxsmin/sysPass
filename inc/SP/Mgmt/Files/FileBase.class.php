@@ -41,11 +41,12 @@ abstract class FileBase extends ItemBase
      * Category constructor.
      *
      * @param FileData $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData = null)
     {
         if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\FileData');
+            $this->setDataModel(FileData::class);
         }
 
         parent::__construct($itemData);

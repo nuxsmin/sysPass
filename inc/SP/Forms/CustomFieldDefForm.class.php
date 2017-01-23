@@ -82,6 +82,7 @@ class CustomFieldDefForm extends FormBase implements FormInterface
     protected function analyzeRequestData()
     {
         $this->CustomFieldDefData = new CustomFieldDefData();
+        $this->CustomFieldDefData->setCustomfielddefId($this->itemId);
         $this->CustomFieldDefData->setId($this->itemId);
         $this->CustomFieldDefData->setName(Request::analyze('name'));
         $this->CustomFieldDefData->setType(Request::analyze('type', 0));

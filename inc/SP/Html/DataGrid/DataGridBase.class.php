@@ -26,10 +26,10 @@ namespace SP\Html\DataGrid;
 
 defined('APP_ROOT') || die();
 
-use InvalidArgumentException;
 use SP\Core\ActionsInterface;
 use SP\Core\DiFactory;
-use SP\Core\Theme;
+use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\SPException;
 use SplObjectStorage;
 
 /**
@@ -234,7 +234,7 @@ abstract class DataGridBase implements DataGridInterface
      * @param string $template El nombre de la plantilla a utilizar
      * @param string $base     Directorio base para la plantilla
      * @return $this
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setDataHeaderTemplate($template, $base = null)
     {
@@ -249,7 +249,7 @@ abstract class DataGridBase implements DataGridInterface
      * @param      $template
      * @param null $base
      * @return string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function checkTemplate($template, $base = null)
     {
@@ -257,7 +257,7 @@ abstract class DataGridBase implements DataGridInterface
         $file = DiFactory::getTheme()->getViewsPath() . DIRECTORY_SEPARATOR . $template;
 
         if (!is_readable($file)) {
-            throw new InvalidArgumentException(sprintf(__('No es posible obtener la plantilla "%s" : %s'), $template, $file));
+            throw new InvalidArgumentException(SPException::SP_ERROR, sprintf(__('No es posible obtener la plantilla "%s" : %s'), $template, $file));
         }
 
         return $file;
@@ -278,7 +278,7 @@ abstract class DataGridBase implements DataGridInterface
      *
      * @param string $template El nombre de la plantilla a utilizar
      * @return $this
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setDataActionsTemplate($template)
     {
@@ -303,7 +303,7 @@ abstract class DataGridBase implements DataGridInterface
      * @param string $template El nombre de la plantilla a utilizar
      * @param string $base     Directorio base para la plantilla
      * @return $this
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setDataPagerTemplate($template, $base = null)
     {
@@ -326,7 +326,7 @@ abstract class DataGridBase implements DataGridInterface
      * @param string $template El nombre de la plantilla a utilizar
      * @param string $base     Directorio base para la plantilla
      * @return mixed
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setDataRowTemplate($template, $base = null)
     {

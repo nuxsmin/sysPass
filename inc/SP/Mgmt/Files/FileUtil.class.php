@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -70,6 +70,8 @@ class FileUtil
      *
      * @param int $accountId con el Id de la cuenta
      * @return int con el número de archivos
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function countAccountFiles($accountId)
     {
@@ -97,10 +99,9 @@ class FileUtil
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($accountId);
+        $Data->setOnErrorMessage(__('Error al eliminar archivos asociados a la cuenta', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_WARNING, __('Error al eliminar archivos asociados a la cuenta', false));
-        }
+        DB::getQuery($Data);
     }
 
     /**

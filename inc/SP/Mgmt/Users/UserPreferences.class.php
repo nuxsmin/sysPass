@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -30,6 +30,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
@@ -41,6 +42,8 @@ use SP\Util\Util;
  */
 class UserPreferences extends UserPreferencesBase implements ItemInterface
 {
+    use ItemTrait;
+
     /**
      * @return mixed
      */
@@ -73,10 +76,9 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam(serialize($this->itemData));
         $Data->addParam($this->itemData->getUserId());
+        $Data->setOnErrorMessage(__('Error al actualizar preferencias', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al actualizar preferencias', false));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -139,5 +141,16 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
     public function checkDuplicatedOnAdd()
     {
         // TODO: Implement checkDuplicatedOnAdd() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        // TODO: Implement getByIdBatch() method.
     }
 }

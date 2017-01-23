@@ -43,11 +43,12 @@ abstract class UserPreferencesBase extends ItemBase
      * Category constructor.
      *
      * @param UserPreferencesData $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function __construct($itemData = null)
     {
         if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\UserPreferencesData');
+            $this->setDataModel(UserPreferencesData::class);
         }
 
         parent::__construct($itemData);

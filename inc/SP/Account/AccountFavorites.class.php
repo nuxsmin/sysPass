@@ -43,11 +43,12 @@ class AccountFavorites
      */
     public static function getFavorites($userId)
     {
-        $query = 'SELECT accfavorite_accountId FROM accFavorites WHERE accfavorite_userId = :userId';
+        $query = /** @lang SQL */
+            'SELECT accfavorite_accountId FROM accFavorites WHERE accfavorite_userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($userId, 'userId');
+        $Data->addParam($userId);
 
         $queryRes = DB::getResultsArray($Data);
 
@@ -69,16 +70,16 @@ class AccountFavorites
      */
     public static function addFavorite($accountId, $userId)
     {
-        $query = 'INSERT INTO accFavorites SET accfavorite_accountId = :accountId, accfavorite_userId = :userId';
+        $query = /** @lang SQL */
+            'INSERT INTO accFavorites SET accfavorite_accountId = ?, accfavorite_userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'accountId');
-        $Data->addParam($userId, 'userId');
+        $Data->addParam($accountId);
+        $Data->addParam($userId);
+        $Data->setOnErrorMessage(__('Error al añadir favorito', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al añadir favorito', false));
-        }
+        DB::getQuery($Data);
     }
 
     /**
@@ -86,19 +87,20 @@ class AccountFavorites
      *
      * @param $accountId int El Id de la cuenta
      * @param $userId    int El Id del usuario
+     * @return bool
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function deleteFavorite($accountId, $userId)
     {
-        $query = 'DELETE FROM accFavorites WHERE accfavorite_accountId = :accountId AND accfavorite_userId = :userId';
+        $query = /** @lang SQL */
+            'DELETE FROM accFavorites WHERE accfavorite_accountId = ? AND accfavorite_userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'accountId');
-        $Data->addParam($userId, 'userId');
+        $Data->addParam($accountId);
+        $Data->addParam($userId);
+        $Data->setOnErrorMessage(__('Error al eliminar favorito', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al eliminar favorito', false));
-        }
+        DB::getQuery($Data);
     }
 }

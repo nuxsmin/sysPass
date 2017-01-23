@@ -52,6 +52,7 @@ abstract class ControllerBase
     const ERR_PAGE_NO_PERMISSION = 2;
     const ERR_UPDATE_MPASS = 3;
     const ERR_OPERATION_NO_PERMISSION = 4;
+    const ERR_EXCEPTION = 5;
 
     /**
      * Instancia del motor de plantillas a utilizar
@@ -275,7 +276,8 @@ abstract class ControllerBase
             self::ERR_ACCOUNT_NO_PERMISSION => ['txt' => __('No tiene permisos para acceder a esta cuenta'), 'hint' => __('Consulte con el administrador')],
             self::ERR_PAGE_NO_PERMISSION => ['txt' => __('No tiene permisos para acceder a esta página'), 'hint' => __('Consulte con el administrador')],
             self::ERR_OPERATION_NO_PERMISSION => ['txt' => __('No tiene permisos para realizar esta operación'), 'hint' => __('Consulte con el administrador')],
-            self::ERR_UPDATE_MPASS => ['txt' => __('Clave maestra actualizada'), 'hint' => __('Reinicie la sesión para cambiarla')]
+            self::ERR_UPDATE_MPASS => ['txt' => __('Clave maestra actualizada'), 'hint' => __('Reinicie la sesión para cambiarla')],
+            self::ERR_EXCEPTION => ['txt' => __('Se ha producido una excepción'), 'hint' => __('Consulte con el administrador')]
         ];
 
         if ($reset) {

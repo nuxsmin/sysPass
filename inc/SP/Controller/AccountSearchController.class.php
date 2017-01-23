@@ -30,6 +30,7 @@ use SP\Account\AccountSearch;
 use SP\Account\AccountsSearchItem;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
@@ -394,9 +395,13 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
      */
     public function doAction($type = null)
     {
-        $this->getSearchBox();
-        $this->getSearch();
+        try {
+            $this->getSearchBox();
+            $this->getSearch();
 
-        $this->EventDispatcher->notifyEvent('show.account.search', $this);
+            $this->EventDispatcher->notifyEvent('show.account.search', $this);
+        } catch (SPException $e) {
+            $this->showError(self::ERR_EXCEPTION);
+        }
     }
 }

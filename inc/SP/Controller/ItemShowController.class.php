@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -107,18 +107,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('actionId', $this->actionId);
         $this->view->assign('isView', false);
         $this->view->assign('showViewPass', true);
-    }
-
-    /**
-     * Comprobar si la sesión está activa
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function checkSession()
-    {
-        if (!Init::isLoggedIn()) {
-            Util::logout();
-        }
+        $this->view->assign('readonly', '');
     }
 
     /**
@@ -262,6 +251,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getUser()
     {
@@ -314,6 +304,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Obtener los datos para la ficha de grupo
      *
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getGroup()
     {
@@ -333,6 +324,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Obtener los datos para la ficha de perfil
      *
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getProfile()
     {
@@ -356,6 +348,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Obtener los datos para la ficha de cliente
      *
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getCustomer()
     {
@@ -372,6 +365,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Obtener los datos para la ficha de categoría
      *
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getCategory()
     {
@@ -388,6 +382,9 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Obtener los datos para la ficha de tokens de API
      *
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     protected function getToken()
     {
@@ -413,6 +410,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Obtener los datos para la ficha de campo personalizado
      *
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function getCustomField()
     {
@@ -421,7 +420,6 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $customField = $this->itemId ? CustomFieldDef::getItem()->getById($this->itemId) : new CustomFieldDefData();
 
-        $this->view->assign('customField', $customField);
         $this->view->assign('field', $customField);
         $this->view->assign('types', CustomFieldTypes::getFieldsTypes());
         $this->view->assign('modules', CustomFieldTypes::getFieldsModules());
@@ -434,6 +432,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getPublicLink()
     {
@@ -452,6 +451,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getTag()
     {
@@ -464,31 +464,14 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     }
 
     /**
-     * Obtener los datos para la vista de archivos de una cuenta
-     */
-    protected function getAccountFiles()
-    {
-        $this->setAction(self::ACTION_ACC_FILES);
-
-        $this->view->assign('accountId', Request::analyze('id', 0));
-        $this->view->assign('deleteEnabled', Request::analyze('del', 0));
-        $this->view->assign('files', FileUtil::getAccountFiles($this->view->accountId));
-
-        if (!is_array($this->view->files) || count($this->view->files) === 0) {
-            return;
-        }
-
-        $this->view->addTemplate('files');
-
-        $this->JsonResponse->setStatus(0);
-    }
-
-    /**
      * Mostrar la clave de una cuenta
      *
      * @throws ItemException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getAccountPass()
     {
@@ -573,6 +556,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      *
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getPlugin()
     {
@@ -584,6 +568,40 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('isReadonly', $this->view->isView ? 'readonly' : '');
         $this->view->assign('plugin', $Plugin);
         $this->view->assign('pluginInfo', PluginUtil::getPluginInfo($Plugin->getPluginName()));
+
+        $this->JsonResponse->setStatus(0);
+    }
+
+    /**
+     * Comprobar si la sesión está activa
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function checkSession()
+    {
+        if (!Init::isLoggedIn()) {
+            Util::logout();
+        }
+    }
+
+    /**
+     * Obtener los datos para la vista de archivos de una cuenta
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     */
+    protected function getAccountFiles()
+    {
+        $this->setAction(self::ACTION_ACC_FILES);
+
+        $this->view->assign('accountId', Request::analyze('id', 0));
+        $this->view->assign('deleteEnabled', Request::analyze('del', 0));
+        $this->view->assign('files', FileUtil::getAccountFiles($this->view->accountId));
+
+        if (!is_array($this->view->files) || count($this->view->files) === 0) {
+            return;
+        }
+
+        $this->view->addTemplate('files');
 
         $this->JsonResponse->setStatus(0);
     }

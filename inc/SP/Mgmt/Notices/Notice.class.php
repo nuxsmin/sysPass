@@ -28,6 +28,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\DataModel\NoticeData;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -38,6 +39,8 @@ use SP\Storage\QueryData;
  */
 class Notice extends NoticeBase implements ItemInterface
 {
+    use ItemTrait;
+
     /**
      * @return $this
      * @throws SPException
@@ -63,10 +66,9 @@ class Notice extends NoticeBase implements ItemInterface
         $Data->addParam($this->itemData->getNoticeUserId());
         $Data->addParam($this->itemData->isNoticeSticky());
         $Data->addParam($this->itemData->isNoticeOnlyAdmin());
+        $Data->setOnErrorMessage(__('Error al crear la notificación', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al crear la notificación', false));
-        }
+        DB::getQuery($Data);
 
         $this->itemData->setNoticeId(DB::$lastId);
 
@@ -74,7 +76,7 @@ class Notice extends NoticeBase implements ItemInterface
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -85,12 +87,13 @@ class Notice extends NoticeBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar la notificación', false));
 
-        if (DB::getQuery($Data) === false) {
-            new SPException(SPException::SP_ERROR, __('Error al eliminar la notificación', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Notificación no encontrada', false));
         }
-
-        $this->itemData->setNoticeId(DB::$lastId);
 
         return $this;
     }
@@ -123,12 +126,13 @@ class Notice extends NoticeBase implements ItemInterface
         $Data->addParam($this->itemData->isNoticeSticky());
         $Data->addParam($this->itemData->isNoticeOnlyAdmin());
         $Data->addParam($this->itemData->getNoticeId());
+        $Data->setOnErrorMessage(__('Error al modificar la notificación', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al modificar la notificación', false));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Notificación no encontrada', false));
         }
-
-        $this->itemData->setNoticeId(DB::$lastId);
 
         return $this;
     }
@@ -237,10 +241,9 @@ class Notice extends NoticeBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al modificar la notificación', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error al modificar la notificación', false));
-        }
+        DB::getQuery($Data);
 
         $this->itemData->setNoticeId(DB::$lastId);
 
@@ -351,5 +354,34 @@ class Notice extends NoticeBase implements ItemInterface
         }
 
         return $queryRes;
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        $query = /** @lang SQL */
+            'SELECT notice_id, 
+            notice_type,
+            notice_component,
+            notice_description,
+            FROM_UNIXTIME(notice_date) AS notice_date,
+            notice_checked,
+            notice_userId,
+            notice_sticky,
+            notice_onlyAdmin 
+            FROM notices 
+            WHERE notice_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setParams($ids);
+
+        return DB::getResultsArray($Data);
     }
 }

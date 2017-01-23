@@ -126,6 +126,7 @@ class Crypt
                 $newHash = self::mkHashPassword($pwd);
 
                 AccountHistory::updateAccountsMPassHash($newHash);
+
                 ConfigDB::setValue('masterPwd', $newHash);
                 Log::writeNewLog(__('Aviso', false), __('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.', false), Log::NOTICE);
             }

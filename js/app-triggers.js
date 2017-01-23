@@ -201,7 +201,7 @@ sysPass.Triggers = function (Common) {
             if ($frmSearch.length === 0) {
                 return;
             }
-            
+
             $frmSearch.find("select, #rpp").on("change", function () {
                 $frmSearch.submit();
             });
@@ -302,16 +302,7 @@ sysPass.Triggers = function (Common) {
                 };
             }
 
-            var $form = $(".form-action");
-
-            if ($form.length > 0) {
-                $form.each(function () {
-                    var $this = $(this);
-                    if (typeof $this.attr("data-hash") !== "undefined") {
-                        $this.attr("data-hash", SparkMD5.hash($this.serialize(), false));
-                    }
-                });
-            }
+            updateFormHash();
         },
         account: function () {
             log.info("views:account");
@@ -331,12 +322,6 @@ sysPass.Triggers = function (Common) {
                 upload.requestDoneAction = function () {
                     Common.appActions().account.getfiles($listFiles);
                 };
-            }
-
-            var $form = $(".form-action");
-
-            if ($form.length > 0) {
-                $form.attr("data-hash", SparkMD5.hash($form.serialize(), false));
             }
 
             var $extraInfo = $(".show-extra-info");
@@ -376,6 +361,8 @@ sysPass.Triggers = function (Common) {
 
                 Common.appActions().items.get($selParentAccount);
             }
+
+            updateFormHash();
         },
         install: function () {
             log.info("views:install");
@@ -399,10 +386,28 @@ sysPass.Triggers = function (Common) {
         });
     };
 
+    /**
+     * Actualizar el hash de los formularios de acción
+     */
+    var updateFormHash = function () {
+        log.info("updateFormHash");
+
+        var $form = $(".form-action[data-hash]");
+
+        if ($form.length > 0) {
+            $form.each(function () {
+                var $this = $(this);
+
+                $this.attr("data-hash", SparkMD5.hash($this.serialize(), false));
+            });
+        }
+    };
+
     return {
         views: views,
         selectDetect: selectDetect,
         updateSk: updateSk,
+        updateFormHash: updateFormHash,
         bodyHooks: bodyHooks
     };
 };

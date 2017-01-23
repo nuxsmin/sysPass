@@ -39,7 +39,6 @@ class CsvImport extends CsvImportBase
      * Iniciar la importación desde XML.
      *
      * @throws \SP\Core\Exceptions\SPException
-     * @return bool
      */
     public function doImport()
     {

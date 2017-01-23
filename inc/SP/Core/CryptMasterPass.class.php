@@ -80,6 +80,7 @@ class CryptMasterPass
      *
      * @param string $pass clave a comprobar
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkTempMasterPass($pass)
     {

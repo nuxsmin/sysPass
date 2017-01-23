@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,7 +31,7 @@ use SP\Mgmt\CustomFields\CustomFieldTypes;
  *
  * @package SP\DataModel
  */
-class CustomFieldDefData extends CustomFieldBaseData
+class CustomFieldDefData extends CustomFieldBaseData implements DataModelInterface
 {
     /**
      * @var int
@@ -177,5 +177,13 @@ class CustomFieldDefData extends CustomFieldBaseData
 
         $this->moduleName = CustomFieldTypes::getFieldsModules($this->getModule());
         $this->typeName = CustomFieldTypes::getFieldsTypes($this->getType(), true);
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->customfielddef_id;
     }
 }

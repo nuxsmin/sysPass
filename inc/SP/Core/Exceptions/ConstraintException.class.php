@@ -25,11 +25,11 @@
 namespace SP\Core\Exceptions;
 
 /**
- * Class InvalidClassException
+ * Class ConstraintException
  *
  * @package SP\Core\Exceptions
  */
-class InvalidClassException extends SPException
+class ConstraintException extends SPException
 {
 
 }

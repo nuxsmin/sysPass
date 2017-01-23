@@ -158,20 +158,12 @@ class CustomField extends CustomFieldBase implements ItemInterface
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return mixed
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId){
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
         $query = /** @lang SQL */
             'DELETE FROM customFieldsData
             WHERE customfielddata_itemId = ?
@@ -340,5 +332,27 @@ class CustomField extends CustomFieldBase implements ItemInterface
     public function checkDuplicatedOnAdd()
     {
         // TODO: Implement checkDuplicatedOnAdd() method.
+    }
+
+    /**
+     * Eliminar elementos en lote
+     *
+     * @param array $ids
+     * @return $this
+     */
+    public function deleteBatch(array $ids)
+    {
+        // TODO: Implement deleteBatch() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        // TODO: Implement getByIdBatch() method.
     }
 }

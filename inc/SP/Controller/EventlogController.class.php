@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -61,6 +61,37 @@ class EventlogController extends ControllerBase implements ActionsInterface
     }
 
     /**
+     * Comprobar si es necesario limpiar el registro de eventos
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function checkClear()
+    {
+        if ($this->view->clear
+            && $this->view->sk
+            && SessionUtil::checkSessionKey($this->view->sk)
+        ) {
+            Log::clearEvents();
+            Response::printJson(__('Registro de eventos vaciado', false), 0);
+        }
+    }
+
+    /**
+     * Realizar las accione del controlador
+     *
+     * @param mixed $type Tipo de acción
+     */
+    public function doAction($type = null)
+    {
+        $this->getEventlog();
+
+        $this->EventDispatcher->notifyEvent('show.eventlog', $this);
+    }
+
+    /**
      * Obtener los datos para la presentación de la tabla de eventos
      */
     public function getEventlog()
@@ -92,23 +123,6 @@ class EventlogController extends ControllerBase implements ActionsInterface
     }
 
     /**
-     * Comprobar si es necesario limpiar el registro de eventos
-     */
-    public function checkClear()
-    {
-        if ($this->view->clear
-            && $this->view->sk
-            && SessionUtil::checkSessionKey($this->view->sk)
-        ) {
-            if (Log::clearEvents()) {
-                Response::printJson(__('Registro de eventos vaciado', false), 0);
-            } else {
-                Response::printJson(__('Error al vaciar el registro de eventos', false));
-            }
-        }
-    }
-
-    /**
      * Devolver el paginador por defecto
      *
      * @param DataGridActionSearch $sourceAction
@@ -127,17 +141,5 @@ class EventlogController extends ControllerBase implements ActionsInterface
         $GridPager->setIconLast($this->icons->getIconNavLast());
 
         return $GridPager;
-    }
-
-    /**
-     * Realizar las accione del controlador
-     *
-     * @param mixed $type Tipo de acción
-     */
-    public function doAction($type = null)
-    {
-        $this->getEventlog();
-
-        $this->EventDispatcher->notifyEvent('show.eventlog', $this);
     }
 }

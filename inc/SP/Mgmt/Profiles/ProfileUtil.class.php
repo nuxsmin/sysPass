@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -141,19 +141,19 @@ class ProfileUtil
 
         $Data->setQuery($query);
 
-        $queryRes = DB::getQuery($Data);
+        try {
+            DB::getQuery($Data);
 
-        if ($queryRes) {
             $LogMessage->addDescription(__('Operación realizada correctamente', false));
-        } else {
+            $Log->writeLog();
+            Email::sendEmail($LogMessage);
+            return true;
+        } catch (SPException $e) {
             $LogMessage->addDescription(__('Fallo al realizar la operación', false));
+            $Log->writeLog();
+            Email::sendEmail($LogMessage);
+            return false;
         }
-
-        $Log->writeLog();
-
-        Email::sendEmail($LogMessage);
-
-        return $queryRes;
     }
 
     /**

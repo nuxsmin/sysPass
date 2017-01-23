@@ -242,15 +242,24 @@ class ItemActionController implements ItemControllerInterface
                 }
                 break;
             case ActionsInterface::ACTION_USR_USERS_DELETE:
-                $UserData = User::getItem()->getById($this->itemId);
+                if (is_array($this->itemId)) {
+                    $UsersData = User::getItem()->deleteBatch($this->itemId);
+                } else {
+                    $UsersData = (array)User::getItem()->getById($this->itemId);
 
-                User::getItem()->delete($this->itemId);
+                    User::getItem()->delete($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Usuario eliminado', false));
+                }
+
                 $this->deleteCustomFieldData();
 
                 $this->LogMessage->setAction(__('Eliminar Usuario', false));
-                $this->LogMessage->addDescription(__('Usuario eliminado', false));
-                $this->LogMessage->addDetails(__('Nombre', false), $UserData->getUserName());
-                $this->LogMessage->addDetails(__('Login', false), $UserData->getUserLogin());
+
+                foreach ($UsersData as $UserData) {
+                    $this->LogMessage->addDetails(__('Nombre', false), $UserData->getUserName());
+                    $this->LogMessage->addDetails(__('Login', false), $UserData->getUserLogin());
+                }
                 break;
             case ActionsInterface::ACTION_USR_USERS_EDITPASS:
                 $UserData = User::getItem()->getById($this->itemId);
@@ -258,6 +267,7 @@ class ItemActionController implements ItemControllerInterface
                 User::getItem($Form->getItemData())->updatePass();
 
                 $this->LogMessage->setAction(__('Actualizar Clave Usuario', false));
+                $this->LogMessage->addDescription(__('Clave actualizada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $UserData->getUserName());
                 $this->LogMessage->addDetails(__('Login', false), $UserData->getUserLogin());
                 break;
@@ -318,7 +328,11 @@ class ItemActionController implements ItemControllerInterface
      */
     protected function deleteCustomFieldData()
     {
-        CustomField::getItem($this->CustomFieldData)->delete($this->itemId);
+        if (is_array($this->itemId)) {
+            CustomField::getItem($this->CustomFieldData)->deleteBatch($this->itemId);
+        } else {
+            CustomField::getItem($this->CustomFieldData)->delete($this->itemId);
+        }
     }
 
     /**
@@ -328,6 +342,8 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function groupAction()
     {
@@ -354,14 +370,25 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getUsergroupName());
                 break;
             case ActionsInterface::ACTION_USR_GROUPS_DELETE:
-                $GroupData = Group::getItem()->getById($this->itemId);
+                if (is_array($this->itemId)) {
+                    $GroupsData = Group::getItem()->deleteBatch($this->itemId);
 
-                Group::getItem()->delete($this->itemId);
+                    $this->LogMessage->addDescription(__('Grupos eliminados', false));
+                } else {
+                    $GroupsData = (array)Group::getItem()->getById($this->itemId);
+
+                    Group::getItem()->delete($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Grupo eliminado', false));
+                }
+
                 $this->deleteCustomFieldData();
 
                 $this->LogMessage->setAction(__('Eliminar Grupo', false));
-                $this->LogMessage->addDescription(__('Grupo eliminado', false));
-                $this->LogMessage->addDetails(__('Nombre', false), $GroupData->getUsergroupName());
+
+                foreach ($GroupsData as $GroupData) {
+                    $this->LogMessage->addDetails(__('Nombre', false), $GroupData->getUsergroupName());
+                }
                 break;
         }
 
@@ -403,14 +430,25 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getUserprofileName());
                 break;
             case ActionsInterface::ACTION_USR_PROFILES_DELETE:
-                $ProfileData = Profile::getItem()->getById($this->itemId);
+                if (is_array($this->itemId)) {
+                    $ProfilesData = Profile::getItem()->deleteBatch($this->itemId);
 
-                Profile::getItem()->delete($this->itemId);
+                    $this->LogMessage->addDescription(__('Perfiles eliminados', false));
+                } else {
+                    $ProfilesData = (array)Profile::getItem()->getById($this->itemId);
+
+                    Profile::getItem()->delete($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Perfil eliminado', false));
+                }
+
                 $this->deleteCustomFieldData();
 
                 $this->LogMessage->setAction(__('Eliminar Perfil', false));
-                $this->LogMessage->addDescription(__('Perfil eliminado', false));
-                $this->LogMessage->addDetails(__('Nombre', false), $ProfileData->getUserprofileName());
+
+                foreach ($ProfilesData as $ProfileData) {
+                    $this->LogMessage->addDetails(__('Nombre', false), $ProfileData->getUserprofileName());
+                }
                 break;
         }
 
@@ -426,6 +464,8 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function customerAction()
     {
@@ -452,12 +492,25 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getCustomerName());
                 break;
             case ActionsInterface::ACTION_MGM_CUSTOMERS_DELETE:
-                $CustomerData = Customer::getItem()->getById($this->itemId);
-                Customer::getItem()->delete($this->itemId);
+                if (is_array($this->itemId)) {
+                    $CustomersData = Customer::getItem()->deleteBatch($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Clientes eliminados', false));
+                } else {
+                    $CustomersData = (array)Customer::getItem()->getById($this->itemId);
+
+                    Customer::getItem()->delete($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Cliente eliminado', false));
+                }
+
+                $this->deleteCustomFieldData();
 
                 $this->LogMessage->setAction(__('Eliminar Cliente', false));
-                $this->LogMessage->addDescription(__('Cliente eliminado', false));
-                $this->LogMessage->addDetails(__('Nombre', false), $CustomerData->getCustomerName());
+
+                foreach ($CustomersData as $CustomerData) {
+                    $this->LogMessage->addDetails(__('Nombre', false), $CustomerData->getCustomerName());
+                }
                 break;
         }
 
@@ -473,6 +526,8 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function categoryAction()
     {
@@ -499,12 +554,26 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getCategoryName());
                 break;
             case ActionsInterface::ACTION_MGM_CATEGORIES_DELETE:
-                $CategoryData = Category::getItem()->getById($this->itemId);
-                Category::getItem()->delete($this->itemId);
+
+                if (is_array($this->itemId)) {
+                    $CategoriesData = Category::getItem()->deleteBatch($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Categorías eliminadas', false));
+                } else {
+                    $CategoriesData = (array)Category::getItem()->getById($this->itemId);
+
+                    Category::getItem()->delete($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Categoría eliminada', false));
+                }
+
+                $this->deleteCustomFieldData();
 
                 $this->LogMessage->setAction(__('Eliminar Categoría', false));
-                $this->LogMessage->addDescription(__('Categoría eliminada', false));
-                $this->LogMessage->addDetails(__('Nombre', false), $CategoryData->getCategoryName());
+
+                foreach ($CategoriesData as $CategoryData) {
+                    $this->LogMessage->addDetails(__('Nombre', false), $CategoryData->getCategoryName());
+                }
                 break;
         }
 
@@ -519,6 +588,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     protected function tokenAction()
     {
@@ -541,10 +611,17 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_APITOKENS_DELETE:
-                $Form->getItemData()->deleteToken();
+                if (is_array($this->itemId)) {
+                    $Form->getItemData()->deleteTokenBatch($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Autorizaciones eliminadas', false));
+                } else {
+                    $Form->getItemData()->deleteToken();
+
+                    $this->LogMessage->addDescription(__('Autorización eliminada', false));
+                }
 
                 $this->LogMessage->setAction(__('Eliminar Autorización', false));
-                $this->LogMessage->addDescription(__('Autorización eliminada', false));
                 break;
         }
 
@@ -582,10 +659,17 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getName());
                 break;
             case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_DELETE:
-                CustomFieldDef::getItem()->delete($this->itemId);
+                if (is_array($this->itemId)) {
+                    CustomFieldDef::getItem()->deleteBatch($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Campos eliminados', false));
+                } else {
+                    CustomFieldDef::getItem()->delete($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Campo eliminado', false));
+                }
 
                 $this->LogMessage->setAction(__('Eliminar Campo', false));
-                $this->LogMessage->addDescription(__('Campo eliminado', false));
                 break;
         }
 
@@ -631,14 +715,22 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_PUBLICLINKS_DELETE:
-                $PublicLinkData = PublicLink::getItem()->getById($this->itemId);
-                PublicLink::getItem()->delete($this->itemId);
+                if (is_array($this->itemId)) {
+                    PublicLink::getItem()->deleteBatch($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Enlaces eliminados', false));
+                } else {
+                    $PublicLinkData = PublicLink::getItem()->getById($this->itemId);
+
+                    PublicLink::getItem()->delete($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Enlace eliminado', false));
+                    $this->LogMessage->addDetails(__('Tipo', false), $PublicLinkData->getTypeId());
+                    $this->LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
+                    $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getUserId()));
+                }
 
                 $this->LogMessage->setAction(__('Eliminar Enlace', false));
-                $this->LogMessage->addDescription(__('Enlace eliminado', false));
-                $this->LogMessage->addDetails(__('Tipo', false), $PublicLinkData->getTypeId());
-                $this->LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
-                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getUserId()));
                 break;
         }
 
@@ -675,10 +767,23 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getTagName());
                 break;
             case ActionsInterface::ACTION_MGM_TAGS_DELETE:
-                Tag::getItem()->delete($this->itemId);
+                if (is_array($this->itemId)) {
+                    $TagsData = Tag::getItem()->deleteBatch($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Etiquetas eliminadas', false));
+                } else {
+                    $TagsData = (array)Tag::getItem()->getById($this->itemId);
+
+                    Tag::getItem()->delete($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Etiqueta eliminada', false));
+                }
 
                 $this->LogMessage->setAction(__('Eliminar Etiqueta', false));
-                $this->LogMessage->addDescription(__('Etiqueta eliminada', false));
+
+                foreach ($TagsData as $TagData) {
+                    $this->LogMessage->addDetails(__('Nombre', false), $TagData->getTagName());
+                }
                 break;
         }
 
@@ -695,17 +800,25 @@ class ItemActionController implements ItemControllerInterface
      */
     protected function fileAction()
     {
-        $FileData = File::getItem()->getInfoById($this->itemId);
+        if (is_array($this->itemId)) {
+            $FilesData = File::getItem()->deleteBatch($this->itemId);
 
-        File::getItem()->delete($this->itemId);
+            $this->LogMessage->addDescription(__('Archivos eliminados', false));
+        } else {
+            $FilesData = (array)File::getItem()->getById($this->itemId);
+
+            File::getItem()->delete($this->itemId);
+
+            $this->LogMessage->addDescription(__('Archivo eliminado', false));
+        }
 
         $this->LogMessage->setAction(__('Eliminar Archivo', false));
-        $this->LogMessage->addDescription(__('Archivo eliminado', false));
-        $this->LogMessage->addDetails(__('ID', false), $this->itemId);
-        $this->LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($FileData->getAccfileAccountId()));
-        $this->LogMessage->addDetails(__('Archivo', false), $FileData->getAccfileName());
-        $this->LogMessage->addDetails(__('Tipo', false), $FileData->getAccfileType());
-        $this->LogMessage->addDetails(__('Tamaño', false), $FileData->getRoundSize() . 'KB');
+
+        foreach ($FilesData as $FileData) {
+            $this->LogMessage->addDetails(__('Cuenta', false), $FileData->getAccountName());
+            $this->LogMessage->addDetails(__('Cliente', false), $FileData->getCustomerName());
+            $this->LogMessage->addDetails(__('Archivo', false), $FileData->getAccfileName());
+        }
 
         Email::sendEmail($this->LogMessage);
 
@@ -786,6 +899,8 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->setAction(__('Crear Cuenta', false));
                 $this->LogMessage->addDescription(__('Cuenta creada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getAccountName());
+
+                $this->JsonResponse->setData(['itemId' => $Account->getAccountData()->getId(), 'nextActionId' => ActionsInterface::ACTION_ACC_EDIT]);
                 break;
             case ActionsInterface::ACTION_ACC_EDIT:
                 $Account->updateAccount();
@@ -794,28 +909,52 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->setAction(__('Actualizar Cuenta', false));
                 $this->LogMessage->addDescription(__('Cuenta actualizada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getAccountName());
+
+                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
                 break;
             case ActionsInterface::ACTION_ACC_EDIT_PASS:
                 $Account->updateAccountPass();
 
                 $this->LogMessage->setAction(__('Actualizar Cuenta', false));
                 $this->LogMessage->addDescription(__('Clave actualizada', false));
-                $this->LogMessage->addDetails(__('Nombre', false), ''); // FIXME: nombre de cuenta?
+                $this->LogMessage->addDetails(__('Nombre', false), AccountUtil::getAccountNameById($this->itemId));
+
+                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
                 break;
             case ActionsInterface::ACTION_ACC_EDIT_RESTORE:
                 $Account->restoreFromHistory(Request::analyze('accountHistoryId', 0));
 
                 $this->LogMessage->setAction(__('Restaurar Cuenta', false));
                 $this->LogMessage->addDescription(__('Cuenta restaurada', false));
-                $this->LogMessage->addDetails(__('Nombre', false), ''); // FIXME: nombre de cuenta?
+                $this->LogMessage->addDetails(__('Nombre', false), AccountUtil::getAccountNameById($this->itemId));
+
+                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
                 break;
             case ActionsInterface::ACTION_ACC_DELETE:
             case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE:
+                if (is_array($this->itemId)) {
+                    $accounts = AccountUtil::getAccountNameByIdBatch($this->itemId);
+                    $numAccounts = count($accounts);
+                } else {
+                    $accounts = AccountUtil::getAccountNameById($this->itemId);
+                    $numAccounts = 1;
+                }
+
                 $Account->deleteAccount($this->itemId);
+                $this->deleteCustomFieldData();
 
                 $this->LogMessage->setAction(__('Eliminar Cuenta', false));
-                $this->LogMessage->addDescription(__('Cuenta eliminada', false));
-                $this->LogMessage->addDetails(__('Nombre', false), ''); // FIXME: nombre de cuenta?
+
+                if ($numAccounts > 1) {
+                    $this->LogMessage->addDescription(__('Cuentas eliminadas', false));
+
+                    foreach ($accounts as $account) {
+                        $this->LogMessage->addDetails(__('Nombre', false), $account->account_name);
+                    }
+                } elseif ($numAccounts === 1) {
+                    $this->LogMessage->addDescription(__('Cuenta eliminada', false));
+                    $this->LogMessage->addDetails(__('Nombre', false), $accounts->account_name);
+                }
                 break;
         }
 
@@ -853,8 +992,7 @@ class ItemActionController implements ItemControllerInterface
     /**
      * Importar usuarios de LDAP
      *
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     protected function ldapImportAction()
     {
@@ -874,7 +1012,6 @@ class ItemActionController implements ItemControllerInterface
      * Acciones sobre notificaciones
      *
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function noticeAction()
     {
@@ -885,9 +1022,15 @@ class ItemActionController implements ItemControllerInterface
                 $this->JsonResponse->setDescription(__('Notificación leída'));
                 break;
             case ActionsInterface::ACTION_NOT_USER_DELETE:
-                Notice::getItem()->delete($this->itemId);
+                if (is_array($this->itemId)) {
+                    Notice::getItem()->deleteBatch($this->itemId);
 
-                $this->JsonResponse->setDescription(__('Notificación eliminada'));
+                    $this->JsonResponse->setDescription(__('Notificaciones eliminadas'));
+                } else {
+                    Notice::getItem()->delete($this->itemId);
+
+                    $this->JsonResponse->setDescription(__('Notificación eliminada'));
+                }
                 break;
         }
 
@@ -897,9 +1040,7 @@ class ItemActionController implements ItemControllerInterface
     /**
      * Acciones para peticiones sobre cuentas
      *
-     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \phpmailer\phpmailerException
      */
     protected function requestAccountAction()
     {

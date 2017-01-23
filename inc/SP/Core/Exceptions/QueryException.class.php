@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,11 +25,11 @@
 namespace SP\Core\Exceptions;
 
 /**
- * Class InvalidClassException
+ * Class QueryException
  *
  * @package SP\Core\Exceptions
  */
-class InvalidClassException extends SPException
+class QueryException extends SPException
 {
 
 }

@@ -38,7 +38,7 @@ if (!Init::isLoggedIn()) {
     Response::printJson(__('La sesión no se ha iniciado o ha caducado'), 10);
 }
 
-$sk = \SP\Http\Request::analyze('sk', false);
+$sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     Response::printJson(__('CONSULTA INVÁLIDA'));

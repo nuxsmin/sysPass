@@ -29,7 +29,7 @@ foreach ($customFields as $index => $field):?>
                            class="mdl-textfield__input mdl-color-text--indigo-400 <?php echo ($field->getDefinition()->getType() === CustomFieldTypes::TYPE_PASSWORD) ? 'passwordfield__input-show passwordfield__no-pki' : ''; ?>"
                            maxlength="500"
                            value="<?php echo ($field->getDefinition()->getType() === CustomFieldTypes::TYPE_PASSWORD && !$showViewPass) ? '***' : $field->getCleanValue(); ?>"
-                        <?php echo ($field->getDefinition()->isRequired()) ? 'required' : ''; ?> <?php echo $readonly; ?>>
+                        <?php echo $field->getDefinition()->isRequired() ? 'required' : ''; ?> <?php echo $readonly; ?>>
                     <label class="mdl-textfield__label"
                            for="<?php echo $field->getDefinition()->getFormId(); ?>"><?php echo $field->getDefinition()->getName(); ?></label>
                 </div>
