@@ -85,7 +85,7 @@ class Notice extends NoticeBase implements ItemInterface
         if (Session::getUserData()->isUserIsAdminApp()) {
             $query = 'DELETE FROM notices WHERE notice_id = ? LIMIT 1';
         } else {
-            $query = 'DELETE FROM notices WHERE notice_id = ? AND notice_sticky = 0 LIMIT 1';
+            $query = 'DELETE FROM notices WHERE notice_id = ? AND BIN(notice_sticky) = 0 LIMIT 1';
         }
 
         $Data = new QueryData();
@@ -153,10 +153,10 @@ class Notice extends NoticeBase implements ItemInterface
             notice_component,
             notice_description,
             FROM_UNIXTIME(notice_date) AS notice_date,
-            notice_checked,
             notice_userId,
-            notice_sticky,
-            notice_onlyAdmin 
+            BIN(notice_checked) AS notice_checked,
+            BIN(notice_sticky) as notice_sticky,
+            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
             FROM notices 
             WHERE notice_id = ? LIMIT 1';
 
@@ -186,10 +186,10 @@ class Notice extends NoticeBase implements ItemInterface
             notice_component,
             notice_description,
             FROM_UNIXTIME(notice_date) AS notice_date,
-            notice_checked,
             notice_userId,
-            notice_sticky,
-            notice_onlyAdmin 
+            BIN(notice_checked) AS notice_checked,
+            BIN(notice_sticky) as notice_sticky,
+            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
             FROM notices';
 
         $Data = new QueryData();
@@ -267,10 +267,10 @@ class Notice extends NoticeBase implements ItemInterface
             notice_component,
             notice_description,
             notice_date,
-            notice_checked,
             notice_userId,
-            notice_sticky,
-            notice_onlyAdmin 
+            BIN(notice_checked) AS notice_checked,
+            BIN(notice_sticky) as notice_sticky,
+            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
             FROM notices 
             WHERE notice_component = ? AND 
             (UNIX_TIMESTAMP() - notice_date) <= 86400 AND
@@ -303,12 +303,12 @@ class Notice extends NoticeBase implements ItemInterface
             notice_component,
             notice_description,
             FROM_UNIXTIME(notice_date) AS notice_date,
-            notice_checked,
             notice_userId,
-            notice_sticky,
-            notice_onlyAdmin 
+            BIN(notice_checked) AS notice_checked,
+            BIN(notice_sticky) as notice_sticky,
+            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
             FROM notices 
-            WHERE notice_userId = ? OR (notice_userId = NULL AND notice_onlyAdmin = 0) OR notice_sticky = 1
+            WHERE notice_userId = ? OR (notice_userId = NULL AND BIN(notice_onlyAdmin) = 0) OR BIN(notice_sticky) = 1
             ORDER BY notice_date DESC ';
 
         $Data = new QueryData();
@@ -337,14 +337,14 @@ class Notice extends NoticeBase implements ItemInterface
             notice_component,
             notice_description,
             FROM_UNIXTIME(notice_date) AS notice_date,
-            notice_checked,
             notice_userId,
-            notice_sticky,
-            notice_onlyAdmin 
+            BIN(notice_checked) AS notice_checked,
+            BIN(notice_sticky) as notice_sticky,
+            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
             FROM notices 
-            WHERE (notice_userId = ? OR notice_sticky = 1) 
-            AND notice_onlyAdmin = 0 
-            AND notice_checked = 0
+            WHERE (notice_userId = ? OR BIN(notice_sticky) = 1) 
+            AND BIN(notice_onlyAdmin) = 0 
+            AND BIN(notice_checked) = 0
             ORDER BY notice_date DESC ';
 
         $Data = new QueryData();
@@ -375,10 +375,10 @@ class Notice extends NoticeBase implements ItemInterface
             notice_component,
             notice_description,
             FROM_UNIXTIME(notice_date) AS notice_date,
-            notice_checked,
             notice_userId,
-            notice_sticky,
-            notice_onlyAdmin 
+            BIN(notice_checked) AS notice_checked,
+            BIN(notice_sticky) as notice_sticky,
+            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
             FROM notices 
             WHERE notice_id IN (' . $this->getParamsFromArray($ids) . ')';
 
