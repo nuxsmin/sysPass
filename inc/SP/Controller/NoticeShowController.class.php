@@ -32,6 +32,8 @@ use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\NoticeData;
 use SP\Mgmt\Notices\Notice;
+use SP\Mgmt\Users\User;
+use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 use SP\Util\Json;
 use SP\Util\Util;
@@ -101,6 +103,10 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
                     $this->view->assign('isView', true);
                     $this->getNotice();
                     break;
+                case self::ACTION_NOT_USER_NEW:
+                    $this->view->assign('header', __('Nueva Notificación'));
+                    $this->getNotice();
+                    break;
                 default:
                     $this->invalidAction();
             }
@@ -128,6 +134,10 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
         $this->view->assign('notice', $this->itemId ? Notice::getItem()->getById($this->itemId) : new NoticeData());
         $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::ACTION_NOT_USER_VIEW) ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
+
+        if ($this->UserData->isUserIsAdminApp()){
+            $this->view->assign('users', User::getItem()->getItemsForSelect());
+        }
 
         $this->JsonResponse->setStatus(0);
     }

@@ -38,11 +38,11 @@
                 <td class="descField"><?php echo __('Tipo'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="type" name="type" type="text"
+                        <input id="notice_type" name="notice_type" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $notice->getNoticeType(); ?>">
+                               value="<?php echo $notice->getNoticeType(); ?>" <?php echo $isDisabled; ?>>
                         <label class="mdl-textfield__label"
-                               for="type"><?php echo __('Tipo'); ?></label>
+                               for="notice_type"><?php echo __('Tipo'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -50,37 +50,74 @@
                 <td class="descField"><?php echo __('Componente'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="component" name="component" type="text"
+                        <input id="notice_component" name="notice_component" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $notice->getNoticeComponent(); ?>">
+                               value="<?php echo $notice->getNoticeComponent(); ?>" <?php echo $isDisabled; ?>>
                         <label class="mdl-textfield__label"
-                               for="component"><?php echo __('Componente'); ?></label>
+                               for="notice_component"><?php echo __('Componente'); ?></label>
                     </div>
                 </td>
             </tr>
+            <?php if ($isView): ?>
             <tr>
                 <td class="descField"><?php echo __('Fecha'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="date" name="date" type="text"
+                        <input id="notice_date" name="notice_date" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $notice->getNoticeDate(); ?>">
+                               value="<?php echo $notice->getNoticeDate(); ?>" <?php echo $isDisabled; ?>>
                         <label class="mdl-textfield__label"
-                               for="date"><?php echo __('Fecha'); ?></label>
+                               for="notice_date"><?php echo __('Fecha'); ?></label>
                     </div>
                 </td>
             </tr>
+            <?php endif; ?>
             <tr>
                 <td class="descField"><?php echo __('Descripción'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" type="text" rows="3"
-                                  id="description"
-                                  name="description" <?php echo $isReadonly; ?>><?php echo $notice->getNoticeDescription(); ?></textarea>
-                        <label class="mdl-textfield__label" for="description"><?php echo __('Descripción'); ?></label>
+                                  id="notice_description"
+                                  name="notice_description" <?php echo $isReadonly; ?>><?php echo $notice->getNoticeDescription(); ?></textarea>
+                        <label class="mdl-textfield__label" for="notice_description"><?php echo __('Descripción'); ?></label>
                     </div>
                 </td>
             </tr>
+
+            <?php if ($SessionUserData->isUserIsAdminApp() || $isDemo): ?>
+                <tr>
+                    <td class="descField"><?php echo __('Usuario'); ?></td>
+                    <td class="valField">
+                        <select id="notice_user" name="notice_user"
+                                class="select-box" <?php echo $isDisabled; ?>>
+                            <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
+                            <?php foreach ($users as $user): ?>
+                                <option
+                                        value="<?php echo $user->id; ?>" <?php echo ($user->id == $notice->getNoticeUserId()) ? 'selected' : ''; ?>><?php echo $user->name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="descField"><?php echo __('Opciones'); ?></td>
+                    <td class="valField checkbox">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notice_sticky"
+                               title="<?php echo __('Notificación global'); ?>">
+                            <input type="checkbox" id="notice_sticky" class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="notice_sticky" <?php echo $notice->isNoticeSticky() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"><?php echo __('Global'); ?></span>
+                        </label>
+
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notice_onlyadmin"
+                               title="<?php echo __('Sólo para administradores'); ?>">
+                            <input type="checkbox" id="notice_onlyadmin" class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="notice_onlyadmin" <?php echo $notice->isNoticeOnlyAdmin() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"><?php echo __('Solo Admins'); ?></span>
+                        </label>
+                    </td>
+                </tr>
+            <?php endif; ?>
+
             </tbody>
         </table>
 
@@ -93,7 +130,7 @@
         <div class="action-in-box">
             <button
                     class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                    form="frmCategories" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+                    form="frmNotices" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
                 <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
             </button>
         </div>

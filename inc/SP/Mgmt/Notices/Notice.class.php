@@ -82,7 +82,11 @@ class Notice extends NoticeBase implements ItemInterface
      */
     public function delete($id)
     {
-        $query = 'DELETE FROM notices WHERE notice_id = ? LIMIT 1';
+        if (Session::getUserData()->isUserIsAdminApp()) {
+            $query = 'DELETE FROM notices WHERE notice_id = ? LIMIT 1';
+        } else {
+            $query = 'DELETE FROM notices WHERE notice_id = ? AND notice_sticky = 0 LIMIT 1';
+        }
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -304,7 +308,7 @@ class Notice extends NoticeBase implements ItemInterface
             notice_sticky,
             notice_onlyAdmin 
             FROM notices 
-            WHERE notice_userId = ? OR (notice_userId = NULL AND notice_onlyAdmin = 0) 
+            WHERE notice_userId = ? OR (notice_userId = NULL AND notice_onlyAdmin = 0) OR notice_sticky = 1
             ORDER BY notice_date DESC ';
 
         $Data = new QueryData();
@@ -338,8 +342,9 @@ class Notice extends NoticeBase implements ItemInterface
             notice_sticky,
             notice_onlyAdmin 
             FROM notices 
-            WHERE notice_userId = ? AND notice_onlyAdmin = 0
-            AND (notice_checked = 0 OR notice_sticky = 1)
+            WHERE (notice_userId = ? OR notice_sticky = 1) 
+            AND notice_onlyAdmin = 0 
+            AND notice_checked = 0
             ORDER BY notice_date DESC ';
 
         $Data = new QueryData();

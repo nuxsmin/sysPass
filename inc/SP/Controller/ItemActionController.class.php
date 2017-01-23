@@ -41,6 +41,7 @@ use SP\Forms\CategoryForm;
 use SP\Forms\CustomerForm;
 use SP\Forms\CustomFieldDefForm;
 use SP\Forms\GroupForm;
+use SP\Forms\NoticeForm;
 use SP\Forms\ProfileForm;
 use SP\Forms\TagForm;
 use SP\Forms\UserForm;
@@ -172,6 +173,7 @@ class ItemActionController implements ItemControllerInterface
                     break;
                 case ActionsInterface::ACTION_NOT_USER_CHECK:
                 case ActionsInterface::ACTION_NOT_USER_VIEW:
+                case ActionsInterface::ACTION_NOT_USER_NEW:
                 case ActionsInterface::ACTION_NOT_USER_DELETE:
                     $this->noticeAction();
                     break;
@@ -1020,6 +1022,14 @@ class ItemActionController implements ItemControllerInterface
                 Notice::getItem()->setChecked($this->itemId);
 
                 $this->JsonResponse->setDescription(__('Notificación leída'));
+                break;
+            case ActionsInterface::ACTION_NOT_USER_NEW:
+                $Form = new NoticeForm($this->itemId);
+                $Form->validate($this->actionId);
+
+                Notice::getItem($Form->getItemData())->add();
+
+                $this->JsonResponse->setDescription(__('Notificación creada'));
                 break;
             case ActionsInterface::ACTION_NOT_USER_DELETE:
                 if (is_array($this->itemId)) {

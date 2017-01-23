@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -26,6 +26,7 @@ namespace SP\Controller\Grids;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Session;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
@@ -46,6 +47,8 @@ class Notices extends GridBase
      */
     public function getNoticesGrid()
     {
+        $isAdminApp = Session::getUserData()->isUserIsAdminApp();
+
         // Grid Header
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(__('Fecha'));
@@ -84,7 +87,20 @@ class Notices extends GridBase
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
 
-        // Grid item's actions
+        if ($isAdminApp) {
+            // Grid item's actions
+            $GridActionNew = new DataGridAction();
+            $GridActionNew->setId(self::ACTION_NOT_USER_NEW);
+            $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+            $GridActionNew->setName(__('Nueva Notificación'));
+            $GridActionNew->setTitle(__('Nueva Notificación'));
+            $GridActionNew->setIcon($this->icons->getIconAdd());
+            $GridActionNew->setSkip(true);
+            $GridActionNew->setOnClickFunction('notice/show');
+
+            $Grid->setDataActions($GridActionNew);
+        };
+
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::ACTION_NOT_USER_VIEW);
         $GridActionNew->setType(DataGridActionType::VIEW_ITEM);
@@ -103,6 +119,10 @@ class Notices extends GridBase
         $GridActionCheck->setOnClickFunction('notice/check');
         $GridActionCheck->setFilterRowSource('notice_checked', 1);
 
+        if (!$isAdminApp) {
+            $GridActionCheck->setFilterRowSource('notice_sticky', 1);
+        }
+
         $Grid->setDataActions($GridActionCheck);
 
         $GridActionDel = new DataGridAction();
@@ -112,6 +132,10 @@ class Notices extends GridBase
         $GridActionDel->setTitle(__('Eliminar Notificación'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
+
+        if (!$isAdminApp) {
+            $GridActionDel->setFilterRowSource('notice_sticky', 1);
+        }
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);

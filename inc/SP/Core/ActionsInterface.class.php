@@ -136,6 +136,7 @@ interface ActionsInterface
     const ACTION_NOT = 760;
     const ACTION_NOT_USER = 761;
     const ACTION_NOT_USER_VIEW = 7610;
+    const ACTION_NOT_USER_NEW = 7611;
     const ACTION_NOT_USER_CHECK = 7612;
     const ACTION_NOT_USER_DELETE = 7613;
     const ACTION_NOT_USER_SEARCH = 7615;
