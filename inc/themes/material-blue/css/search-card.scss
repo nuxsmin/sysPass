@@ -112,6 +112,12 @@
       padding: .5em 0;
       text-align: right;
       border-top: 1px solid #c9c9c9;
+      i {
+        opacity: .5;
+        &:hover {
+          opacity: 1;
+        }
+      }
     }
 
     .account-spacer {

@@ -314,7 +314,9 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridPager->setFilterOn($this->filterOn);
         $GridPager->setSourceAction(new DataGridActionSearch(self::ACTION_ACC_SEARCH));
 
-        $showOptionalActions = Session::getUserPreferences()->isOptionalActions();
+        $Preferences = Session::getUserPreferences();
+
+        $showOptionalActions = $Preferences->isOptionalActions() || $Preferences->isResultsAsCards() || Checks::resultsCardsIsEnabled();
 
         $Grid = new DataGrid();
         $Grid->setId('gridSearch');
