@@ -59,8 +59,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page       El nombre de página para la clase del body
-     * @param bool   $initialize Si es una inicialización completa
+     * @param string $page El nombre de página para la clase del body
+     * @param bool $initialize Si es una inicialización completa
      * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
@@ -145,11 +145,13 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?f=' . $themeJsFiles . '&b=' . $themeJsBase . '&v=' . $jsVersionHash);
         }
 
-        $cssVersionHash = md5(implode(Util::getVersion()) . Checks::resultsCardsIsEnabled());
+        $cssVersionHash = md5(implode(Util::getVersion()) . Checks::resultsCardsIsEnabled() . Session::getUserPreferences()->isResultsAsCards());
         $this->view->append('cssLinks', Init::$WEBROOT . '/css/css.php?v=' . $cssVersionHash);
 
         if (isset($themeInfo['css'])) {
-            if (!Checks::resultsCardsIsEnabled()) {
+            if (Checks::resultsCardsIsEnabled() || Session::getUserPreferences()->isResultsAsCards()) {
+                $themeInfo['css'][] = 'search-card.min.css';
+            } else {
                 $themeInfo['css'][] = 'search-grid.min.css';
             }
 

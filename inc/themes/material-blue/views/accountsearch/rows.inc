@@ -45,7 +45,7 @@
                             <a title="<?php echo __('Detalles de Cuenta'); ?>" class="btn-action"
                                data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
                                data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
-                               data-onclick="account/view"><?php echo $AccountSearchData->getAccountName(); ?></a>
+                               data-onclick="account/show"><?php echo $AccountSearchData->getAccountName(); ?></a>
                         <?php else: ?>
                             <div class="field-text">
                                 <?php echo $AccountSearchData->getAccountName(); ?>

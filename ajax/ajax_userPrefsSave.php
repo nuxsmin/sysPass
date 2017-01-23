@@ -74,6 +74,7 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     $UserPreferencesData->setSortViews(Request::analyze('sort_views', false, false, true));
     $UserPreferencesData->setTopNavbar(Request::analyze('top_navbar', false, false, true));
     $UserPreferencesData->setOptionalActions(Request::analyze('optional_actions', false, false, true));
+    $UserPreferencesData->setResultsAsCards(Request::analyze('resultsascards', false, false, true));
 
     try {
         UserPreferences::getItem($UserPreferencesData)->update();

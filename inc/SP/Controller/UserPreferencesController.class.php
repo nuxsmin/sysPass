@@ -85,6 +85,7 @@ class UserPreferencesController extends TabControllerBase implements ActionsInte
         $this->view->assign('chkSortViews', $this->userPrefs->isSortViews() ? 'checked="checked"' : '');
         $this->view->assign('chkTopNavbar', $this->userPrefs->isTopNavbar() ? 'checked="checked"' : '');
         $this->view->assign('chkOptionalActions', $this->userPrefs->isOptionalActions() ? 'checked="checked"' : '');
+        $this->view->assign('chkResultsAsCards', $this->userPrefs->isResultsAsCards() ? 'checked="checked"' : '');
 
         $this->view->assign('tabIndex', $this->addTab(__('Preferencias')), 'preferences');
         $this->view->assign('actionId', $this->getAction(), 'preferences');

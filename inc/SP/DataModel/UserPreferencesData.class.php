@@ -73,6 +73,10 @@ class UserPreferencesData
      * @var bool
      */
     public $optionalActions = false;
+    /**
+     * @var bool
+     */
+    public $resultsAsCards = false;
 
     /**
      * @return boolean
@@ -239,5 +243,21 @@ class UserPreferencesData
                 unset($this->$name);
             }
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isResultsAsCards()
+    {
+        return $this->resultsAsCards;
+    }
+
+    /**
+     * @param bool $resultsAsCards
+     */
+    public function setResultsAsCards($resultsAsCards)
+    {
+        $this->resultsAsCards = $resultsAsCards;
     }
 }

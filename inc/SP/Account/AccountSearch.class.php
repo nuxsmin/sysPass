@@ -305,6 +305,8 @@ class AccountSearch
 
         $accountsData['count'] = self::$queryNumRows;
 
+        $accountLinkEnabled = Session::getUserPreferences()->isAccountLink() || Config::getConfig()->isAccountLink();
+
         foreach ($results as $AccountSearchData) {
             // Establecer los datos de la cuenta
             $Account = new Account($AccountSearchData);
@@ -328,6 +330,7 @@ class AccountSearch
             $AccountSearchItems->setShowEdit($AccountAcl->isShowEdit());
             $AccountSearchItems->setShowCopy($AccountAcl->isShowCopy());
             $AccountSearchItems->setShowDelete($AccountAcl->isShowDelete());
+            $AccountSearchItems->setLink($accountLinkEnabled);
 
             $accountsData[] = $AccountSearchItems;
         }
