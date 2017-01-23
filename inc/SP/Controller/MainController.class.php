@@ -145,11 +145,13 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?f=' . $themeJsFiles . '&b=' . $themeJsBase . '&v=' . $jsVersionHash);
         }
 
-        $cssVersionHash = md5(implode(Util::getVersion()) . Checks::resultsCardsIsEnabled() . Session::getUserPreferences()->isResultsAsCards());
+        $resultsAsCards = Init::isLoggedIn() && Session::getUserPreferences()->isResultsAsCards();
+
+        $cssVersionHash = md5(implode(Util::getVersion()) . Checks::resultsCardsIsEnabled() . $resultsAsCards);
         $this->view->append('cssLinks', Init::$WEBROOT . '/css/css.php?v=' . $cssVersionHash);
 
         if (isset($themeInfo['css'])) {
-            if (Checks::resultsCardsIsEnabled() || Session::getUserPreferences()->isResultsAsCards()) {
+            if (Checks::resultsCardsIsEnabled() || $resultsAsCards) {
                 $themeInfo['css'][] = 'search-card.min.css';
             } else {
                 $themeInfo['css'][] = 'search-grid.min.css';
