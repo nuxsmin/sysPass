@@ -423,27 +423,6 @@ class Installer
 
         $ProfileData = new ProfileData();
         $ProfileData->setUserprofileName('Admin');
-        $ProfileData->setAccAdd(true);
-        $ProfileData->setAccView(true);
-        $ProfileData->setAccViewPass(true);
-        $ProfileData->setAccViewHistory(true);
-        $ProfileData->setAccEdit(true);
-        $ProfileData->setAccEditPass(true);
-        $ProfileData->setAccDelete(true);
-        $ProfileData->setAccFiles(true);
-        $ProfileData->setConfigGeneral(true);
-        $ProfileData->setConfigEncryption(true);
-        $ProfileData->setConfigBackup(true);
-        $ProfileData->setConfigImport(true);
-        $ProfileData->setMgmCategories(true);
-        $ProfileData->setMgmCustomers(true);
-        $ProfileData->setMgmUsers(true);
-        $ProfileData->setMgmGroups(true);
-        $ProfileData->setMgmProfiles(true);
-        $ProfileData->setMgmCustomFields(true);
-        $ProfileData->setMgmApiTokens(true);
-        $ProfileData->setMgmPublicLinks(true);
-        $ProfileData->setEvl(true);
 
         try {
             Profile::getItem($ProfileData)->add();
@@ -499,6 +478,8 @@ class Installer
             $this->DB->query('DROP USER `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHost() . '`;');
             $this->DB->query('DROP USER `' . $this->InstallData->getDbUser() . '`@`%`;');
         } catch (PDOException $e) {
+            debugLog($e->getMessage());
+
             return false;
         }
 

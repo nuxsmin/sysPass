@@ -913,7 +913,6 @@ sysPass.Actions = function (Common) {
                 Common.sk.set(json.sk);
 
                 $("#res-content").empty().html(json.html);
-                $frmSearch.find("input:first").focus();
             });
         },
         save: function ($obj) {
