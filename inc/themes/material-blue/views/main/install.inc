@@ -114,7 +114,7 @@
                     <input id="dbhost" name="dbhost" type="text" required
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            value="localhost" autocomplete="off" autofocus
-                           pattern="[0-9a-zA-Z._-]+|([0-9]{1,3}.)+">
+                           pattern="([0-9a-zA-Z._-]+|([0-9]{1,3}.)+)(:[0-9]{1,5})?">
                     <label class="mdl-textfield__label"
                            for="dbhost"><?php echo __('Servidor BBDD para sysPass'); ?></label>
                 </div>

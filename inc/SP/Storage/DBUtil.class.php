@@ -121,12 +121,12 @@ class DBUtil
         try {
             $db = DiFactory::getDBStorage()->getConnection();
 
-            $attributes = array(
+            $attributes = [
                 'SERVER_VERSION',
                 'CLIENT_VERSION',
                 'SERVER_INFO',
                 'CONNECTION_STATUS',
-            );
+            ];
 
             foreach ($attributes as $val) {
                 $dbinfo[$val] = $db->getAttribute(constant('PDO::ATTR_' . $val));

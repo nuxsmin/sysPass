@@ -134,9 +134,10 @@ class MySQLHandler implements DBStorageInterface
             }
 
             try {
+                $opts = [PDO::ATTR_EMULATE_PREPARES => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
                 $dsn = 'mysql:host=' . $this->dbHost . ';port=' . $this->dbPort . ';dbname=' . $this->dbName . ';charset=utf8';
-//                $this->db = new PDO($dsn, $dbuser, $dbpass, array(PDO::ATTR_PERSISTENT => true));
-                $this->db = new PDO($dsn, $this->dbUser, $this->dbPass);
+                $this->db = new PDO($dsn, $this->dbUser, $this->dbPass, $opts);
+//                $this->db = new PDO($dsn, $this->dbUser, $this->dbPass);
                 $this->dbStatus = 0;
             } catch (\Exception $e) {
                 if ($isInstalled) {
@@ -152,9 +153,6 @@ class MySQLHandler implements DBStorageInterface
                 }
             }
         }
-
-        $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true); //FIXME
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         return $this->db;
     }

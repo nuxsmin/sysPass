@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -40,6 +40,7 @@ use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
+use SP\Storage\DBUtil;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -104,6 +105,7 @@ class Installer
 
         // Set DB connection info
         $this->Config->setDbHost($this->InstallData->getDbHost());
+        $this->Config->setDbPort($this->InstallData->getDbPort());
         $this->Config->setDbName($this->InstallData->getDbName());
 
         // Set site config
@@ -111,6 +113,7 @@ class Installer
 
         $this->connectDatabase();
         $this->setupMySQLDatabase();
+        $this->checkConnection();
         $this->createAdminAccount();
 
         ConfigDB::setValue('version', implode(Util::getVersion(true)));
@@ -208,14 +211,15 @@ class Installer
             $this->InstallData->setDbUser(substr('sp_' . $this->InstallData->getAdminLogin(), 0, 16));
 
             // Comprobar si el usuario sumistrado existe
-            $query = sprintf(/** @lang SQL */
-                'SELECT COUNT(*) FROM mysql.user WHERE user=\'%s\' AND host=\'%s\'',
-                $this->InstallData->getDbUser(),
-                $this->InstallData->getDbAuthHost());
+            $query = /** @lang SQL */
+                'SELECT COUNT(*) FROM mysql.user WHERE user = ? AND host = ?';
 
             try {
+                $sth = $this->DB->prepare($query);
+                $sth->execute([$this->InstallData->getDbUser(), $this->InstallData->getDbAuthHost()]);
+
                 // Si no existe el usuario, se intenta crear
-                if ((int)$this->DB->query($query)->fetchColumn() === 0
+                if ((int)$sth->fetchColumn() === 0
                     // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
                     && $this->InstallData->getDbUser() != $this->Config->getDbUser()
                 ) {
@@ -257,21 +261,16 @@ class Installer
             return;
         }
 
-        $query = sprintf(/** @lang SQL */
-            'CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'',
-            $this->InstallData->getDbUser(),
-            $this->InstallData->getDbAuthHost(),
-            $this->InstallData->getDbPass());
+        $query = /** @lang SQL */
+            'CREATE USER `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHost() . '` IDENTIFIED BY \'' . $this->InstallData->getDbPass() . '\'';
 
-        $queryDns = sprintf(/** @lang SQL */
-            'CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'',
-            $this->InstallData->getDbUser(),
-            $this->InstallData->getDbAuthHostDns(),
-            $this->InstallData->getDbPass());
+        $queryDns = /** @lang SQL */
+            'CREATE USER `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHostDns() . '` IDENTIFIED BY \'' . $this->InstallData->getDbPass() . '\'';
 
         try {
-            $this->DB->query($query);
-            $this->DB->query($queryDns);
+            $this->DB->exec($query);
+            $this->DB->exec($queryDns);
+            $this->DB->exec('FLUSH PRIVILEGES');
         } catch (PDOException $e) {
             throw new SPException(
                 SPException::SP_CRITICAL,
@@ -300,35 +299,31 @@ class Installer
         }
 
         if (!$this->InstallData->isHostingMode()) {
-            $query = sprintf(/** @lang SQL */
-                'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci', $this->InstallData->getDbName());
 
             try {
-                $this->DB->query($query);
+                $this->DB->exec(/** @lang SQL */
+                    'CREATE SCHEMA `' . $this->InstallData->getDbName() . '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci');
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL,
                     sprintf(__('Error al crear la BBDD', false) . ' (%s)', $e->getMessage()),
                     __('Verifique los permisos del usuario de la Base de Datos', false));
             }
 
-            $query = sprintf(/** @lang SQL */
-                'GRANT ALL PRIVILEGES ON `%s`.* TO `%s`@`%s` IDENTIFIED BY \'%s\';',
-                $this->InstallData->getDbName(),
-                $this->InstallData->getDbUser(),
-                $this->InstallData->getDbAuthHost(),
-                $this->InstallData->getDbPass());
+            $query = /** @lang SQL */
+                'GRANT ALL PRIVILEGES ON `' . $this->InstallData->getDbName() . '`.* 
+                  TO `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHost() . '`';
 
-            $queryDns = sprintf(/** @lang SQL */
-                'GRANT ALL PRIVILEGES ON `%s`.* TO `%s`@`%s` IDENTIFIED BY \'%s\';',
-                $this->InstallData->getDbName(),
-                $this->InstallData->getDbUser(),
-                $this->InstallData->getDbAuthHostDns(),
-                $this->InstallData->getDbPass());
+            $queryDns = /** @lang SQL */
+                'GRANT ALL PRIVILEGES ON `' . $this->InstallData->getDbName() . '`.* 
+                  TO `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHostDns() . '`';
 
             try {
-                $this->DB->query($query);
-                $this->DB->query($queryDns);
+                $this->DB->exec($query);
+                $this->DB->exec($queryDns);
+                $this->DB->exec('FLUSH PRIVILEGES');
             } catch (PDOException $e) {
+                $this->rollback();
+
                 throw new SPException(SPException::SP_CRITICAL,
                     sprintf(__('Error al establecer permisos de la BBDD (\'%s\')'), $e->getMessage()),
                     __('Verifique los permisos del usuario de la Base de Datos', false));
@@ -343,12 +338,33 @@ class Installer
      */
     private function checkDatabaseExist()
     {
-        $query = sprintf(/** @lang SQL */
-            'SELECT COUNT(*) 
-            FROM information_schema.schemata
-            WHERE schema_name = \'%s\' LIMIT 1', $this->InstallData->getDbName());
+        $query = /** @lang SQL */
+            'SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = ? LIMIT 1';
 
-        return ((int)$this->DB->query($query)->fetchColumn() > 0);
+        $sth = $this->DB->prepare($query);
+        $sth->execute([$this->InstallData->getDbName()]);
+
+        return ((int)$sth->fetchColumn() > 0);
+    }
+
+    /**
+     * Deshacer la instalación en caso de fallo.
+     * Esta función elimina la base de datos y el usuario de sysPass
+     */
+    private function rollback()
+    {
+        try {
+            $this->DB->exec('DROP DATABASE IF EXISTS `' . $this->InstallData->getDbName() . '`');
+            $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHost() . '`');
+            $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHostDns() . '`');
+            $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`%`');
+        } catch (PDOException $e) {
+            debugLog($e->getMessage());
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -369,7 +385,7 @@ class Installer
 
         // Usar la base de datos de sysPass
         try {
-            $this->DB->query('USE `' . $this->InstallData->getDbName() . '`');
+            $this->DB->exec('USE `' . $this->InstallData->getDbName() . '`');
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL,
                 sprintf(__('Error al seleccionar la BBDD', false) . ' \'%s\' (%s)', $this->InstallData->getDbName(), $e->getMessage()),
@@ -387,8 +403,7 @@ class Installer
                         $query = str_replace("\n", '', $buffer);
                         $this->DB->query($query);
                     } catch (PDOException $e) {
-                        // drop database on error
-                        $this->DB->query('DROP DATABASE IF EXISTS `' . $this->InstallData->getDbName() . '`;');
+                        $this->rollback();
 
                         throw new SPException(SPException::SP_CRITICAL,
                             sprintf(__('Error al crear la BBDD', false) . ' (%s)', $e->getMessage()),
@@ -396,6 +411,22 @@ class Installer
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Comprobar la conexión a la BBDD
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function checkConnection()
+    {
+        if (!DBUtil::checkDatabaseExist()) {
+            $this->rollback();
+
+            throw new SPException(SPException::SP_CRITICAL,
+                __('Error al comprobar la base de datos', false),
+                __('Intente de nuevo la instalación', false));
         }
     }
 
@@ -465,24 +496,5 @@ class Installer
                 __('Error al actualizar la clave maestra del usuario "admin"', false),
                 __('Informe al desarrollador', false));
         }
-    }
-
-    /**
-     * Deshacer la instalación en caso de fallo.
-     * Esta función elimina la base de datos y el usuario de sysPass
-     */
-    private function rollback()
-    {
-        try {
-            $this->DB->query('DROP DATABASE IF EXISTS `' . $this->InstallData->getDbName() . '`;');
-            $this->DB->query('DROP USER `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHost() . '`;');
-            $this->DB->query('DROP USER `' . $this->InstallData->getDbUser() . '`@`%`;');
-        } catch (PDOException $e) {
-            debugLog($e->getMessage());
-
-            return false;
-        }
-
-        return true;
     }
 }

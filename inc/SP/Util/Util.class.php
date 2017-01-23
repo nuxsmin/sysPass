@@ -56,7 +56,7 @@ class Util
         $alphabet = $charsLower . $charsUpper;
 
         if ($useSpecial === true) {
-            $charsSpecial = '@#$%&/()=?¿!_-:.;,{}[]*^';
+            $charsSpecial = '@$%&/()!_:.;{}^';
             $alphabet .= $charsSpecial;
         }
 

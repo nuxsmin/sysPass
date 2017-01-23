@@ -272,7 +272,7 @@ DROP TABLE IF EXISTS `config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `config` (
-  `config_parameter` varchar(50) CHARACTER SET utf8 COLLATE utf8_spanish_ci NOT NULL,
+  `config_parameter` varchar(50) NOT NULL,
   `config_value` varchar(2000) DEFAULT NULL,
   UNIQUE KEY `vacParameter` (`config_parameter`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
