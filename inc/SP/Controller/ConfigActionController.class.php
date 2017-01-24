@@ -28,6 +28,7 @@ use SP\Account\Account;
 use SP\Account\AccountHistory;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
+use SP\Config\ConfigUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Backup;
 use SP\Core\Crypt;
@@ -193,19 +194,7 @@ class ConfigActionController implements ItemControllerInterface
             return;
         }
 
-        if (!empty($filesAllowedExts)) {
-            $exts = explode(',', $filesAllowedExts);
-            array_walk($exts, function (&$value) {
-                if (preg_match('/[^a-z0-9_-]+/i', $value)) {
-                    $this->JsonResponse->setDescription(sprintf('%s: %s', __('Extensión no permitida'), $value));
-                    Json::returnJson($this->JsonResponse);
-                }
-            });
-            $Config->setFilesAllowedExts($exts);
-        } else {
-            $Config->setFilesAllowedExts([]);
-        }
-
+        $Config->setFilesAllowedExts($filesAllowedExts);
         $Config->setFilesEnabled($filesEnabled);
         $Config->setFilesAllowedSize($filesAllowedSize);
 

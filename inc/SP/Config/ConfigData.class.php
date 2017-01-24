@@ -966,15 +966,19 @@ class ConfigData implements JsonSerializable
      */
     public function getFilesAllowedExts()
     {
-        return is_array($this->filesAllowedExts) ? $this->filesAllowedExts : array();
+        return is_array($this->filesAllowedExts) ? $this->filesAllowedExts : [];
     }
 
     /**
      * @param array $filesAllowedExts
      * @return $this
      */
-    public function setFilesAllowedExts($filesAllowedExts)
+    public function setFilesAllowedExts($filesAllowedExts = [])
     {
+        if (!is_array($filesAllowedExts)) {
+            $filesAllowedExts = ConfigUtil::filesExtsAdapter($filesAllowedExts);
+        }
+
         $this->filesAllowedExts = $filesAllowedExts;
 
         return $this;
