@@ -77,12 +77,12 @@ class Checks
         $error = [];
         $needsVersion = '5.6.0';
 
-        if (version_compare(PHP_VERSION, $needsVersion, '>=') < 0) {
-            $error[] = array(
+        if (version_compare(PHP_VERSION, $needsVersion, '<')) {
+            $error[] = [
                 'type' => SPException::SP_CRITICAL,
                 'description' => __('Versión de PHP requerida >= ') . $needsVersion,
                 'hint' => __('Actualice la versión de PHP para que la aplicación funcione correctamente')
-            );
+            ];
         }
 
         return $error;
