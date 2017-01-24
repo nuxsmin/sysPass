@@ -109,7 +109,7 @@
                         </label>
 
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notice_onlyadmin"
-                               title="<?php echo __('Sólo para administradores'); ?>">
+                               title="<?php echo __('Sólo para administradores de la aplicación'); ?>">
                             <input type="checkbox" id="notice_onlyadmin" class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="notice_onlyadmin" <?php echo $notice->isNoticeOnlyAdmin() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Solo Admins'); ?></span>
