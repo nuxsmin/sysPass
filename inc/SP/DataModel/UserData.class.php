@@ -60,23 +60,23 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @var bool
      */
-    public $user_isAdminApp = false;
+    public $user_isAdminApp = 0;
     /**
      * @var bool
      */
-    public $user_isAdminAcc = false;
+    public $user_isAdminAcc = 0;
     /**
      * @var bool
      */
-    public $user_isDisabled = false;
+    public $user_isDisabled = 0;
     /**
      * @var bool
      */
-    public $user_isChangePass = false;
+    public $user_isChangePass = 0;
     /**
      * @var bool
      */
-    public $user_isLdap = false;
+    public $user_isLdap = 0;
     /**
      * @var int
      */
@@ -92,7 +92,7 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @var bool
      */
-    public $user_isMigrate = false;
+    public $user_isMigrate = 0;
     /**
      * @var
      */
@@ -107,7 +107,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function getUserCount()
     {
-        return $this->user_count;
+        return (int)$this->user_count;
     }
 
     /**
@@ -115,7 +115,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserCount($user_count)
     {
-        $this->user_count = $user_count;
+        $this->user_count = (int)$user_count;
     }
 
     /**
@@ -123,7 +123,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function getUserLastLogin()
     {
-        return $this->user_lastLogin;
+        return (int)$this->user_lastLogin;
     }
 
     /**
@@ -131,7 +131,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserLastLogin($user_lastLogin)
     {
-        $this->user_lastLogin = $user_lastLogin;
+        $this->user_lastLogin = (int)$user_lastLogin;
     }
 
     /**
@@ -139,7 +139,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function getUserLastUpdate()
     {
-        return $this->user_lastUpdate;
+        return (int)$this->user_lastUpdate;
     }
 
     /**
@@ -147,7 +147,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserLastUpdate($user_lastUpdate)
     {
-        $this->user_lastUpdate = $user_lastUpdate;
+        $this->user_lastUpdate = (int)$user_lastUpdate;
     }
 
     /**
@@ -155,7 +155,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsMigrate()
     {
-        return $this->user_isMigrate;
+        return (bool)$this->user_isMigrate;
     }
 
     /**
@@ -163,7 +163,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserIsMigrate($user_isMigrate)
     {
-        $this->user_isMigrate = $user_isMigrate;
+        $this->user_isMigrate = (int)$user_isMigrate;
     }
 
     /**
@@ -235,7 +235,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function getUserProfileId()
     {
-        return $this->user_profileId;
+        return (int)$this->user_profileId;
     }
 
     /**
@@ -243,7 +243,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserProfileId($user_profileId)
     {
-        $this->user_profileId = $user_profileId;
+        $this->user_profileId = (int)$user_profileId;
     }
 
     /**
@@ -251,7 +251,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsAdminApp()
     {
-        return $this->user_isAdminApp;
+        return (bool)$this->user_isAdminApp;
     }
 
     /**
@@ -259,7 +259,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserIsAdminApp($user_isAdminApp)
     {
-        $this->user_isAdminApp = $user_isAdminApp;
+        $this->user_isAdminApp = (int)$user_isAdminApp;
     }
 
     /**
@@ -267,7 +267,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsAdminAcc()
     {
-        return $this->user_isAdminAcc;
+        return (bool)$this->user_isAdminAcc;
     }
 
     /**
@@ -275,7 +275,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserIsAdminAcc($user_isAdminAcc)
     {
-        $this->user_isAdminAcc = $user_isAdminAcc;
+        $this->user_isAdminAcc = (int)$user_isAdminAcc;
     }
 
     /**
@@ -283,7 +283,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsDisabled()
     {
-        return $this->user_isDisabled;
+        return (bool)$this->user_isDisabled;
     }
 
     /**
@@ -291,7 +291,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserIsDisabled($user_isDisabled)
     {
-        $this->user_isDisabled = $user_isDisabled;
+        $this->user_isDisabled = (int)$user_isDisabled;
     }
 
     /**
@@ -299,7 +299,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsChangePass()
     {
-        return $this->user_isChangePass;
+        return (bool)$this->user_isChangePass;
     }
 
     /**
@@ -307,7 +307,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserIsChangePass($user_isChangePass)
     {
-        $this->user_isChangePass = $user_isChangePass;
+        $this->user_isChangePass = (int)$user_isChangePass;
     }
 
     /**
@@ -315,7 +315,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsLdap()
     {
-        return $this->user_isLdap;
+        return (bool)$this->user_isLdap;
     }
 
     /**
@@ -323,7 +323,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserIsLdap($user_isLdap)
     {
-        $this->user_isLdap = $user_isLdap;
+        $this->user_isLdap = (int)$user_isLdap;
     }
 
     /**
@@ -379,7 +379,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function getId()
     {
-        return $this->user_id;
+        return (int)$this->user_id;
     }
 
     /**

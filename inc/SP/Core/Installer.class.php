@@ -471,9 +471,7 @@ class Installer
         $UserData->setUserLogin($this->InstallData->getAdminLogin());
         $UserData->setUserPass($this->InstallData->getAdminPass());
         $UserData->setUserName('Admin');
-        $UserData->setUserIsAdminApp(true);
-        $UserData->setUserIsAdminAcc(false);
-        $UserData->setUserIsDisabled(false);
+        $UserData->setUserIsAdminApp(1);
 
         try {
             User::getItem($UserData)->add();
