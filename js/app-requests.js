@@ -97,7 +97,8 @@ sysPass.Requests = function (Common) {
             timeout: 0,
             addHistory: false,
             hash: "",
-            useLoading: true
+            useLoading: true,
+            useFullLoading: false
         };
 
         return Object.create(opts);
@@ -127,7 +128,7 @@ sysPass.Requests = function (Common) {
             timeout: opts.timeout,
             beforeSend: function () {
                 if (opts.useLoading === true) {
-                    Common.appTheme().loading.show();
+                    Common.appTheme().loading.show(opts.useFullLoading);
                 }
             },
             success: function (response) {

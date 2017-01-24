@@ -8,8 +8,8 @@
             <?php echo __('Clave Maestra'); ?>
         </div>
 
-        <form method="post" name="frmCrypt" id="frmCrypt" class="form-action" data-onsubmit="config/save"
-              data-type="crypt"
+        <form method="post" name="frmCrypt" id="frmCrypt" class="form-action" data-onsubmit="config/masterpass"
+              data-type="masterpass"
               data-hash="">
             <table class="data tblConfig round">
                 <?php if ($lastUpdateMPass > 0): ?>

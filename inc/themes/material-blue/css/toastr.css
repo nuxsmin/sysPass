@@ -27,6 +27,7 @@
   background-color: #2196f3; }
 
 .toast-warning {
-  background-color: #ffca28; }
+  background-color: #ffca28;
+  color: #555; }
 
 /*# sourceMappingURL=toastr.css.map */

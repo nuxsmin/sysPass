@@ -34,6 +34,7 @@ use SP\Core\Backup;
 use SP\Core\Crypt;
 use SP\Core\CryptMasterPass;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Init;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Session;
 use SP\Core\XmlExport;
@@ -258,6 +259,12 @@ class ConfigActionController implements ItemControllerInterface
 
             Config::saveConfig();
 
+            if (Config::getConfig()->isMaintenance()) {
+                Util::lockApp(false);
+            } elseif (Init::$LOCK > 0) {
+                Util::unlockApp(false);
+            }
+
             $this->JsonResponse->setStatus(0);
 
             $this->LogMessage->addDescription(__('Configuración actualizada', false));
@@ -455,6 +462,7 @@ class ConfigActionController implements ItemControllerInterface
         if (!UserPass::getItem(Session::getUserData())->checkUserUpdateMPass()) {
             $this->JsonResponse->setDescription(__('Clave maestra actualizada', false));
             $this->JsonResponse->addMessage(__('Reinicie la sesión para cambiarla', false));
+            $this->JsonResponse->setStatus(100);
             return;
         } elseif (empty($newMasterPass) || empty($currentMasterPass)) {
             $this->JsonResponse->setDescription(__('Clave maestra no indicada'));
@@ -483,6 +491,8 @@ class ConfigActionController implements ItemControllerInterface
         $hashMPass = Crypt::mkHashPassword($newMasterPass);
 
         if (!$noAccountPassChange) {
+            Util::lockApp();
+
             $Account = new Account();
 
             if (!$Account->updateAccountsMasterPass($currentMasterPass, $newMasterPass)) {
@@ -501,6 +511,8 @@ class ConfigActionController implements ItemControllerInterface
                 $this->JsonResponse->setDescription(__('Errores al actualizar datos de campos personalizados', false));
                 return;
             }
+
+            Util::unlockApp();
         }
 
         ConfigDB::setCacheConfigValue('masterPwd', $hashMPass);
@@ -510,7 +522,9 @@ class ConfigActionController implements ItemControllerInterface
 
         if (ConfigDB::writeConfig()) {
             $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
-            $this->JsonResponse->setStatus(0);
+
+            $this->JsonResponse->addMessage(__('Reinicie la sesión para cambiarla', false));
+            $this->JsonResponse->setStatus(100);
         } else {
             $this->LogMessage->addDescription(__('Error al guardar el hash de la clave maestra', false));
         }

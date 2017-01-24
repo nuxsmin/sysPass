@@ -69,6 +69,10 @@ class Init
      */
     public static $UPDATED = false;
     /**
+     * @var int
+     */
+    public static $LOCK = 0;
+    /**
      * @var string
      */
     private static $SUBURI = '';
@@ -505,10 +509,13 @@ class Init
     public static function checkMaintenanceMode($check = false)
     {
         if (Config::getConfig()->isMaintenance()) {
+            self::$LOCK = Util::getAppLock();
+
             if ($check === true
                 || Checks::isAjax()
                 || Request::analyze('upgrade', 0) === 1
                 || Request::analyze('nodbupgrade', 0) === 1
+                || (self::$LOCK > 0 && self::isLoggedIn() && self::$LOCK === Session::getUserData()->getUserId())
             ) {
                 return true;
             }
@@ -517,6 +524,16 @@ class Init
         }
 
         return false;
+    }
+
+    /**
+     * Comprobar si el usuario está logado.
+     *
+     * @returns bool
+     */
+    public static function isLoggedIn()
+    {
+        return (DiFactory::getDBStorage()->getDbStatus() === 0 && Session::getUserData()->getUserLogin());
     }
 
     /**
@@ -721,16 +738,6 @@ class Init
         $Controller->doAction('prelogin.' . $action);
 
         return true;
-    }
-
-    /**
-     * Comprobar si el usuario está logado.
-     *
-     * @returns bool
-     */
-    public static function isLoggedIn()
-    {
-        return (DiFactory::getDBStorage()->getDbStatus() === 0 && Session::getUserData()->getUserLogin());
     }
 
     /**

@@ -475,6 +475,10 @@ sysPass.Actions = function (Common) {
             opts.url = ajaxUrl.config.save;
             opts.data = $obj.serialize();
 
+            if ($obj.data("type") === "masterpass") {
+                opts.useFullLoading = true;
+            }
+
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
@@ -485,6 +489,31 @@ sysPass.Actions = function (Common) {
                         setTimeout(function () {
                             Common.redirect("index.php");
                         }, 2000);
+                    }
+                }
+            });
+        },
+        masterpass: function ($obj) {
+            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
+
+            showDialog({
+                text: atext,
+                negative: {
+                    title: Common.config().LANG[44],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        Common.msg.error(Common.config().LANG[44]);
+
+                        $obj.find(":input[type=password]").val("");
+                    }
+                },
+                positive: {
+                    title: Common.config().LANG[43],
+                    onClick: function (e) {
+                        config.save($obj);
+
+                        $obj.find(":input[type=password]").val("");
                     }
                 }
             });

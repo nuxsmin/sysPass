@@ -80,5 +80,7 @@ $stringsJsLang = [
     55 => __('Sin cambios'),
     56 => __('Ahora'),
     57 => __('Este proceso importará los usuarios de LDAP detectados. Desea continuar?'),
-    58 => __('Esta acción restablecerá todos los datos del plugin. Desea continuar?')
+    58 => __('Esta acción restablecerá todos los datos del plugin. Desea continuar?'),
+    59 => __('Este proceso puede durar algo de tiempo. Desea continuar?'),
+    60 => __('Aviso')
 ];

@@ -152,6 +152,9 @@ sysPass.Main = function () {
         info: function (msg) {
             toastr.info(msg);
         },
+        sticky: function (msg) {
+            toastr.warning(msg, config.LANG[60], {timeOut: 0});
+        },
         out: function (data) {
             if (typeof data === "object") {
                 var status = data.status;
@@ -175,6 +178,10 @@ sysPass.Main = function () {
                         break;
                     case 10:
                         appActions.main.logout();
+                        break;
+                    case 100:
+                        msg.ok(description);
+                        msg.sticky(description);
                         break;
                     default:
                         return;

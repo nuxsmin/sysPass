@@ -446,7 +446,7 @@ class Account extends AccountBase implements AccountInterface
                 $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf(' % s(%d)', $account->account_name, $account->account_id));
             }
 
-            $decryptedPass = Crypt::getDecrypt($account->account_pass, $account->account_IV);
+            $decryptedPass = Crypt::getDecrypt($account->account_pass, $account->account_IV, $currentMasterPass);
             $this->accountData->setAccountPass($decryptedPass);
             $this->setPasswordEncrypted($newMasterPass);
 

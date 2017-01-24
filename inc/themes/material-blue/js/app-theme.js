@@ -46,13 +46,24 @@ sysPass.Theme = function (Common) {
      * @type {{show: loading.show, hide: loading.hide}}
      */
     var loading = {
-        show: function () {
-            $("#wrap-loading").show();
-            $("#loading").addClass("is-active");
+        elems: {
+            $wrap: $("#wrap-loading"),
+            $loading: $("#loading")
+        },
+        show: function (full) {
+            if (full !== undefined && full === true) {
+                loading.elems.$wrap.addClass("overlay-full");
+            }
+
+            loading.elems.$wrap.show();
+            loading.elems.$loading.addClass("is-active");
         },
         hide: function () {
-            $("#wrap-loading").hide();
-            $("#loading").removeClass("is-active");
+            loading.elems.$wrap.removeClass("overlay-full").hide();
+            loading.elems.$loading.removeClass("is-active");
+        },
+        upgradeFull: function () {
+            loading.elems.$wrap.addClass("overlay-full");
         }
     };
 
