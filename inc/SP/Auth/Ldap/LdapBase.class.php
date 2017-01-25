@@ -199,7 +199,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Realizar la autentificación con el servidor de LDAP.
      *
-     * @param string $bindDn   con el DN del usuario
+     * @param string $bindDn con el DN del usuario
      * @param string $bindPass con la clave del usuario
      * @throws SPException
      * @return bool
@@ -463,7 +463,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             'groupmembership' => 'group',
             'memberof' => 'group',
             'displayname' => 'name',
-            'fullname' => 'name',
+            'fullname' => 'fullname',
             'givenname' => 'name',
             'sn' => 'sn',
             'mail' => 'mail',
@@ -492,15 +492,20 @@ abstract class LdapBase implements LdapInterface, AuthInterface
                             $res[$validAttributes[$normalizedAttribute]] = $values;
                         } else {
                             // Almacenamos  1 solo valor
-                            $res[$validAttributes[$normalizedAttribute]] = $values[0];
+                            $res[$validAttributes[$normalizedAttribute]] = trim($values[0]);
                         }
                     }
                 }
             }
         }
 
+        if (!empty($res["fullname"])) {
+            $this->LdapAuthData->setName($res['fullname']);
+        } else {
+            $this->LdapAuthData->setName($res['name'] . ' ' . $res['sn']);
+        }
+
         $this->LdapAuthData->setDn($searchResults[0]['dn']);
-        $this->LdapAuthData->setName(trim($res['name'] . ' ' . $res['sn']));
         $this->LdapAuthData->setEmail($res['mail']);
         $this->LdapAuthData->setExpire($res['expire']);
         $this->LdapAuthData->setGroups($res['group']);

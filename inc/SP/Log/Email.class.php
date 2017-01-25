@@ -118,6 +118,7 @@ class Email
 
         $Mail = new PHPMailer();
 
+        $Mail->SMTPAutoTLS = false;
         $Mail->isSMTP();
         $Mail->CharSet = 'utf-8';
         $Mail->Host = $mailServer;
@@ -172,15 +173,19 @@ class Email
             return false;
         }
 
-        $Mail = self::getMailer($mailTo, $Message->getTitle());
-        $Mail->isHTML(true);
+        $Mail = self::getMailer(Config::getConfig()->getMailFrom(), $Message->getTitle());
+        $Mail->isHTML();
 
         foreach ($mailTo as $recipient) {
             $Mail->addBCC($recipient->user_email, $recipient->user_name);
         }
 
-        $Mail->Body = $Message->composeHtml() . implode(Log::NEWLINE_HTML, self::getEmailFooter());
-        $Mail->AltBody = $Message->composeText() . implode(Log::NEWLINE_TXT, self::getEmailFooter());
+        if (empty($Message->getFooter())) {
+            $Message->setFooter(self::getEmailFooter());
+        }
+
+        $Mail->Body = $Message->composeHtml();
+        $Mail->AltBody = $Message->composeText();
 
         $LogMessage = new LogMessage();
         $LogMessage->setAction(__('Enviar Email', false));

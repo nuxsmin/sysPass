@@ -128,63 +128,53 @@ sysPass.Theme = function (Common) {
     };
 
 
+    // FIXME
     // Diálogo de configuración de complejidad de clave
     var complexityDialog = function () {
-        $("<div></div>").dialog({
-            modal: true,
+
+        var content =
+            "<div id=\"box-complexity\"><div>" +
+            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-numbers\">" +
+            "<input type=\"checkbox\" id=\"checkbox-numbers\" class=\"mdl-checkbox__input\" name=\"checkbox-numbers\" checked/>" +
+            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[35] + "</span>" +
+            "</label>" +
+            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-uppercase\">" +
+            "<input type=\"checkbox\" id=\"checkbox-uppercase\" class=\"mdl-checkbox__input\" name=\"checkbox-uppercase\"/>" +
+            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[36] + "</span>" +
+            "</label>" +
+            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-symbols\">" +
+            "<input type=\"checkbox\" id=\"checkbox-symbols\" class=\"mdl-checkbox__input\" name=\"checkbox-symbols\"/>" +
+            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[37] + "</span>" +
+            "</label>" +
+            "<div class=\"mdl-textfield mdl-js-textfield textfield-passlength\">" +
+            "<input class=\"mdl-textfield__input\" type=\"number\" pattern=\"[0-9]*\" id=\"passlength\" />" +
+            "<label class=\"mdl-textfield__label\" for=\"passlength\">" + Common.config().LANG[38] + "</label>" +
+            "</div></div></div>";
+
+        showDialog({
             title: Common.config().LANG[29],
-            width: "400px",
-            open: function () {
-                var thisDialog = $(this);
-
-                var content =
-                    "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-numbers\">" +
-                    "<input type=\"checkbox\" id=\"checkbox-numbers\" class=\"mdl-checkbox__input\" name=\"checkbox-numbers\"/>" +
-                    "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[35] + "</span>" +
-                    "</label>" +
-                    "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-uppercase\">" +
-                    "<input type=\"checkbox\" id=\"checkbox-uppercase\" class=\"mdl-checkbox__input\" name=\"checkbox-uppercase\"/>" +
-                    "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[36] + "</span>" +
-                    "</label>" +
-                    "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-symbols\">" +
-                    "<input type=\"checkbox\" id=\"checkbox-symbols\" class=\"mdl-checkbox__input\" name=\"checkbox-symbols\"/>" +
-                    "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[37] + "</span>" +
-                    "</label>" +
-                    "<div class=\"mdl-textfield mdl-js-textfield textfield-passlength\">" +
-                    "<input class=\"mdl-textfield__input\" type=\"number\" pattern=\"[0-9]*\" id=\"passlength\" />" +
-                    "<label class=\"mdl-textfield__label\" for=\"passlength\">" + Common.config().LANG[38] + "</label>" +
-                    "</div>" +
-                    "<button id=\"btn-complexity\" class=\"mdl-button mdl-js-button mdl-button--raised\">Ok</button>";
-
-                thisDialog.html(content);
-
-                // Recentrar después de insertar el contenido
-                thisDialog.dialog("option", "position", "center");
-
-
-                // Actualizar componentes de MDL
-                thisDialog.ready(function () {
-                    $("#checkbox-numbers").prop("checked", Common.passwordData.complexity.numbers);
-                    $("#checkbox-uppercase").prop("checked", Common.passwordData.complexity.uppercase);
-                    $("#checkbox-symbols").prop("checked", Common.passwordData.complexity.symbols);
-                    $("#passlength").val(Common.passwordData.complexity.numlength);
-
-                    $("#btn-complexity").click(function () {
-                        Common.passwordData.complexity.numbers = $(" #checkbox-numbers").is(":checked");
-                        Common.passwordData.complexity.uppercase = $("#checkbox-uppercase").is(":checked");
-                        Common.passwordData.complexity.symbols = $("#checkbox-symbols").is(":checked");
-                        Common.passwordData.complexity.numlength = parseInt($("#passlength").val());
-
-                        thisDialog.dialog("close");
-                    });
-
-                    // Actualizar objetos de MDL
-                    componentHandler.upgradeDom();
-                });
+            text: content,
+            negative: {
+                title: Common.config().LANG[44]
             },
-            // Forzar la eliminación del objeto para que ZeroClipboard siga funcionando al abrirlo de nuevo
-            close: function () {
-                $(this).dialog("destroy");
+            positive: {
+                title: Common.config().LANG[43],
+                onClick: function (e) {
+                    e.preventDefault();
+
+                    Common.passwordData.complexity.numbers = $("#checkbox-numbers").is(":checked");
+                    Common.passwordData.complexity.uppercase = $("#checkbox-uppercase").is(":checked");
+                    Common.passwordData.complexity.symbols = $("#checkbox-symbols").is(":checked");
+                    Common.passwordData.complexity.numlength = parseInt($("#passlength").val());
+                }
+            },
+            cancelable: true,
+            contentStyle: {'max-width': '300px'},
+            onLoaded: function () {
+                $("#checkbox-numbers").prop("checked", Common.passwordData.complexity.numbers);
+                $("#checkbox-uppercase").prop("checked", Common.passwordData.complexity.uppercase);
+                $("#checkbox-symbols").prop("checked", Common.passwordData.complexity.symbols);
+                $("#passlength").val(Common.passwordData.complexity.numlength);
             }
         });
     };

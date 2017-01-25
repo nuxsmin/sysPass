@@ -162,6 +162,7 @@ class UserUtil
             LEFT JOIN usrToGroups ON usertogroup_userId = user_id
             WHERE user_email IS NOT NULL 
             AND user_groupId = ? OR usertogroup_groupId = ?
+            AND user_isDisabled = 0
             ORDER BY user_login';
 
         $Data = new QueryData();
@@ -182,7 +183,7 @@ class UserUtil
         $query = /** @lang SQL */
             'SELECT user_id, user_login, user_name, user_email 
             FROM usrData 
-            WHERE user_email IS NOT NULL 
+            WHERE user_email IS NOT NULL AND user_isDisabled = 0
             ORDER BY user_login';
 
         $Data = new QueryData();

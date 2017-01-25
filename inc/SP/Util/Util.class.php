@@ -344,6 +344,7 @@ class Util
         $appinfo = [
             'appname' => 'sysPass',
             'appdesc' => 'Systems Password Manager',
+            'appalias' => 'SGC',
             'appwebsite' => 'http://www.syspass.org',
             'appblog' => 'http://www.cygnux.org',
             'appdoc' => 'http://wiki.syspass.org',

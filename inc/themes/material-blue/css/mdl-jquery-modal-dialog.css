@@ -32,7 +32,8 @@
   line-height: 1;
   background-color: #607d8b;
   color: #eceff1;
-  padding: .5em; }
+  padding: .5em;
+  text-align: center; }
 
 .dialog-button-bar {
   text-align: right;

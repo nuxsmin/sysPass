@@ -572,6 +572,11 @@ pre, code, samp, kbd {
       text-align: justify;
       line-height: 2em; }
 
+#box-complexity > div {
+  text-align: justify;
+  line-height: 1.5em;
+  margin-top: 1em; }
+
 #debug {
   float: left;
   text-align: left; }

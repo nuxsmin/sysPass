@@ -36,9 +36,9 @@ abstract class MessageBase implements MessageInterface
      */
     protected $title;
     /**
-     * @var string
+     * @var array
      */
-    protected $footer;
+    protected $footer = [];
     /**
      * @var array
      */
@@ -93,9 +93,9 @@ abstract class MessageBase implements MessageInterface
     }
 
     /**
-     * @param string $footer
+     * @param array $footer
      */
-    public function setFooter($footer)
+    public function setFooter(array $footer)
     {
         $this->footer = $footer;
     }

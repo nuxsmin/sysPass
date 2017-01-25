@@ -41,7 +41,7 @@ class NoticeMessage extends MessageBase
         $message[] = '<div class="notice-message" style="font-family: Helvetica, Arial, sans-serif">';
         $message[] = '<h3>' . $this->title . '</h3>';
         $message[] = '<div class="notice-description">' . implode('<br>', $this->description) . '</div>';
-        $message[] = '<footer>' . $this->footer . '</footer>';
+        $message[] = '<footer>' . implode('<br>', $this->footer) . '</footer>';
         $message[] = '</div>';
 
         return implode('', $message);
@@ -54,10 +54,6 @@ class NoticeMessage extends MessageBase
      */
     public function composeText()
     {
-        $message[] = $this->title;
-        $message[] = implode(PHP_EOL, $this->description);
-        $message[] = $this->footer;
-
-        return implode(PHP_EOL, $message);
+        return $this->title . PHP_EOL . implode(PHP_EOL, $this->description) . PHP_EOL . implode(PHP_EOL, $this->footer);
     }
 }

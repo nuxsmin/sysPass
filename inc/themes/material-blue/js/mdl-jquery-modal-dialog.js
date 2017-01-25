@@ -44,7 +44,7 @@ function showDialog(options) {
         $('<header>' + options.title + '</header>').appendTo(content);
     }
     if (options.text != null) {
-        $('<p>' + options.text + '</p>').appendTo(content);
+        $(options.text).appendTo(content);
     }
     if (options.neutral || options.negative || options.positive) {
         var buttonBar = $('<div class="mdl-card__actions dialog-button-bar"></div>');
@@ -92,7 +92,7 @@ function showDialog(options) {
         }
         buttonBar.appendTo(content);
     }
-    componentHandler.upgradeDom();
+
     if (options.cancelable) {
         dialog.click(function () {
             hideDialog(dialog);
@@ -106,9 +106,12 @@ function showDialog(options) {
         });
     }
     setTimeout(function () {
-        dialog.css({opacity: 1});
-        if (options.onLoaded)
+        if (options.onLoaded) {
             options.onLoaded();
+        }
+
+        componentHandler.upgradeDom();
+        dialog.css({opacity: 1});
     }, 1);
 }
 
