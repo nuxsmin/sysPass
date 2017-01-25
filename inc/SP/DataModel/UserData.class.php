@@ -155,7 +155,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsMigrate()
     {
-        return (bool)$this->user_isMigrate;
+        return (int)$this->user_isMigrate;
     }
 
     /**
@@ -251,7 +251,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsAdminApp()
     {
-        return (bool)$this->user_isAdminApp;
+        return (int)$this->user_isAdminApp;
     }
 
     /**
@@ -267,7 +267,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsAdminAcc()
     {
-        return (bool)$this->user_isAdminAcc;
+        return (int)$this->user_isAdminAcc;
     }
 
     /**
@@ -283,7 +283,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsDisabled()
     {
-        return (bool)$this->user_isDisabled;
+        return (int)$this->user_isDisabled;
     }
 
     /**
@@ -299,7 +299,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsChangePass()
     {
-        return (bool)$this->user_isChangePass;
+        return (int)$this->user_isChangePass;
     }
 
     /**
@@ -315,7 +315,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function isUserIsLdap()
     {
-        return (bool)$this->user_isLdap;
+        return (int)$this->user_isLdap;
     }
 
     /**
