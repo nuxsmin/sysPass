@@ -188,7 +188,7 @@
 
                 <tr>
                     <td class="descField"><?php echo __('Fecha Clave Maestra'); ?></td>
-                    <td class="valField"> <?php echo $user->getUserLastUpdateMPass(); ?></td>
+                    <td class="valField"> <?php echo gmdate('Y-m-d H:i:s', $user->getUserLastUpdateMPass()); ?></td>
                 </tr>
             <?php endif; ?>
             </tbody>

@@ -123,7 +123,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function getUserLastLogin()
     {
-        return (int)$this->user_lastLogin;
+        return $this->user_lastLogin;
     }
 
     /**
@@ -131,7 +131,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserLastLogin($user_lastLogin)
     {
-        $this->user_lastLogin = (int)$user_lastLogin;
+        $this->user_lastLogin = $user_lastLogin;
     }
 
     /**
@@ -139,7 +139,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function getUserLastUpdate()
     {
-        return (int)$this->user_lastUpdate;
+        return $this->user_lastUpdate;
     }
 
     /**
@@ -147,7 +147,7 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function setUserLastUpdate($user_lastUpdate)
     {
-        $this->user_lastUpdate = (int)$user_lastUpdate;
+        $this->user_lastUpdate = $user_lastUpdate;
     }
 
     /**
