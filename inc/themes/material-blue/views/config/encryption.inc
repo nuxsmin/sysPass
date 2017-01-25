@@ -174,6 +174,14 @@
                 </tr>
                 <tr>
                     <td class="descField">
+                        <?php echo __('Intentos'); ?>
+                    </td>
+                    <td class="valField">
+                        <?php echo $tempMasterAttempts; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="descField">
                         <?php echo __('Validez (s)'); ?>
                     </td>
                     <td class="valField">
@@ -185,6 +193,41 @@
                             <label class="mdl-textfield__label"
                                    for="tmpass_maxtime"><?php echo __('Validez (s)'); ?></label>
                         </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="descField">
+                        <?php echo __('Grupo'); ?>
+                    </td>
+                    <td class="valField">
+                        <select id="tmpass_group" name="tmpass_group"
+                                class="select-box select-box-deselect">
+                            <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
+                            <?php foreach ($groups as $group): ?>
+                                <option
+                                        value="<?php echo $group->id; ?>"><?php echo $group->name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="descField">
+                        <?php echo __('Enviar correo'); ?>
+
+                        <div id="help-chkSendEmail"
+                             class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-chkSendEmail">
+                            <p>
+                                <?php echo __('Envía un correo a todos los usuarios o sólo a los del grupo seleccionado.'); ?>
+                            </p>
+                        </div>
+                    </td>
+                    <td class="valField">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="tmpass_chkSendEmail">
+                            <input type="checkbox" id="tmpass_chkSendEmail"
+                                   class="mdl-switch__input mdl-color-text--indigo-400" name="tmpass_chkSendEmail"/>
+                            <span class="mdl-switch__label"></span>
+                        </label>
                     </td>
                 </tr>
                 <?php if (!empty($tempMasterPass)): ?>

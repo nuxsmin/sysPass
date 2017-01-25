@@ -56,7 +56,7 @@ class NoticeData implements DataModelInterface
     /**
      * @var bool
      */
-    public $notice_checked = false;
+    public $notice_checked = 0;
     /**
      * @var int
      */
@@ -64,11 +64,11 @@ class NoticeData implements DataModelInterface
     /**
      * @var bool
      */
-    public $notice_sticky = false;
+    public $notice_sticky = 0;
     /**
      * @var bool
      */
-    public $notice_onlyAdmin = false;
+    public $notice_onlyAdmin = 0;
 
     /**
      * @return int
@@ -155,7 +155,7 @@ class NoticeData implements DataModelInterface
      */
     public function isNoticeChecked()
     {
-        return (bool)$this->notice_checked;
+        return (int)$this->notice_checked;
     }
 
     /**
@@ -163,7 +163,7 @@ class NoticeData implements DataModelInterface
      */
     public function setNoticeChecked($notice_checked)
     {
-        $this->notice_checked = (bool)$notice_checked;
+        $this->notice_checked = (int)$notice_checked;
     }
 
     /**
@@ -187,7 +187,7 @@ class NoticeData implements DataModelInterface
      */
     public function isNoticeSticky()
     {
-        return (bool)$this->notice_sticky;
+        return (int)$this->notice_sticky;
     }
 
     /**
@@ -195,7 +195,7 @@ class NoticeData implements DataModelInterface
      */
     public function setNoticeSticky($notice_sticky)
     {
-        $this->notice_sticky = (bool)$notice_sticky;
+        $this->notice_sticky = (int)$notice_sticky;
     }
 
     /**
@@ -203,7 +203,7 @@ class NoticeData implements DataModelInterface
      */
     public function isNoticeOnlyAdmin()
     {
-        return (bool)$this->notice_onlyAdmin;
+        return (int)$this->notice_onlyAdmin;
     }
 
     /**
@@ -211,7 +211,7 @@ class NoticeData implements DataModelInterface
      */
     public function setNoticeOnlyAdmin($notice_onlyAdmin)
     {
-        $this->notice_onlyAdmin = (bool)$notice_onlyAdmin;
+        $this->notice_onlyAdmin = (int)$notice_onlyAdmin;
     }
 
     /**

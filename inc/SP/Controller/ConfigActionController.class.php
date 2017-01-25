@@ -28,7 +28,6 @@ use SP\Account\Account;
 use SP\Account\AccountHistory;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
-use SP\Config\ConfigUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Backup;
 use SP\Core\Crypt;
@@ -36,6 +35,7 @@ use SP\Core\CryptMasterPass;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Messages\LogMessage;
+use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
 use SP\Core\XmlExport;
 use SP\Http\Request;
@@ -45,6 +45,7 @@ use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Mgmt\Users\UserPass;
+use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 use SP\Util\Json;
 use SP\Util\Util;
@@ -542,12 +543,30 @@ class ConfigActionController implements ItemControllerInterface
     {
         $tempMasterMaxTime = Request::analyze('tmpass_maxtime', 3600);
         $tempMasterPass = CryptMasterPass::setTempMasterPass($tempMasterMaxTime);
+        $tempMasterGroup = Request::analyze('tmpass_group', 0);
+        $tempMasterEmail = Request::analyze('tmpass_chkSendEmail', 0, false, 1);
 
         $this->LogMessage->setAction(__('Generar Clave Temporal', false));
 
         if ($tempMasterPass !== false && !empty($tempMasterPass)) {
             $this->LogMessage->addDescription(__('Clave Temporal Generada', false));
             $this->LogMessage->addDetails(__('Clave', false), $tempMasterPass);
+
+            if ($tempMasterEmail) {
+                $Message = new NoticeMessage();
+                $Message->setTitle(sprintf(__('Clave Maestra %s'), Util::getAppInfo('appname')));
+                $Message->addDescription(__('Se ha generado una nueva clave para el acceso a sysPass y se solicitará en el siguiente inicio.'));
+                $Message->addDescription('');
+                $Message->addDescription(sprintf(__('La nueva clave es: %s'), $tempMasterPass));
+                $Message->addDescription('');
+                $Message->addDescription(__('No olvide acceder lo antes posible para guardar los cambios.'));
+
+                if ($tempMasterGroup !== 0) {
+                    Email::sendEmailBatch($Message, UserUtil::getUserGroupEmail($tempMasterGroup));
+                } else {
+                    Email::sendEmailBatch($Message, UserUtil::getUsersEmail());
+                }
+            }
 
             $this->JsonResponse->setStatus(0);
         } else {

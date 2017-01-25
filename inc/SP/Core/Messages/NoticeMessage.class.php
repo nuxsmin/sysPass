@@ -38,9 +38,9 @@ class NoticeMessage extends MessageBase
      */
     public function composeHtml()
     {
-        $message[] = '<div class="notice-message">';
-        $message[] = '<h1>' . $this->title . '</h1>';
-        $message[] = '<p>' . implode('<br>', $this->description) . '</p>';
+        $message[] = '<div class="notice-message" style="font-family: Helvetica, Arial, sans-serif">';
+        $message[] = '<h3>' . $this->title . '</h3>';
+        $message[] = '<div class="notice-description">' . implode('<br>', $this->description) . '</div>';
         $message[] = '<footer>' . $this->footer . '</footer>';
         $message[] = '</div>';
 

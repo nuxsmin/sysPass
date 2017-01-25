@@ -30,6 +30,7 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
+use SP\Core\CryptMasterPass;
 use SP\Core\DiFactory;
 use SP\Core\Init;
 use SP\Core\Language;
@@ -295,7 +296,9 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('lastUpdateMPass', isset($this->configDB['lastupdatempass']) ? $this->configDB['lastupdatempass'] : 0);
         $this->view->assign('tempMasterPassTime', isset($this->configDB['tempmaster_passtime']) ? $this->configDB['tempmaster_passtime'] : 0);
         $this->view->assign('tempMasterMaxTime', isset($this->configDB['tempmaster_maxtime']) ? $this->configDB['tempmaster_maxtime'] : 0);
+        $this->view->assign('tempMasterAttempts', isset($this->configDB['tempmaster_attempts']) ? sprintf('%d/%d', $this->configDB['tempmaster_attempts'], CryptMasterPass::MAX_ATTEMPTS) : 0);
         $this->view->assign('tempMasterPass', Session::getTemporaryMasterPass());
+        $this->view->assign('groups', Group::getItem()->getItemsForSelect());
 
         $this->view->append('tabs', ['title' => __('Encriptación')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'encryption');

@@ -148,4 +148,46 @@ class UserUtil
         return DB::getResultsArray($Data);
     }
 
+    /**
+     * Obtener el email de los usuarios de un grupo
+     *
+     * @param $groupId
+     * @return array
+     */
+    public static function getUserGroupEmail($groupId)
+    {
+        $query = /** @lang SQL */
+            'SELECT user_id, user_login, user_name, user_email 
+            FROM usrData 
+            LEFT JOIN usrToGroups ON usertogroup_userId = user_id
+            WHERE user_email IS NOT NULL 
+            AND user_groupId = ? OR usertogroup_groupId = ?
+            ORDER BY user_login';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($groupId);
+        $Data->addParam($groupId);
+
+        return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Obtener el email de los usuarios
+     *
+     * @return array
+     */
+    public static function getUsersEmail()
+    {
+        $query = /** @lang SQL */
+            'SELECT user_id, user_login, user_name, user_email 
+            FROM usrData 
+            WHERE user_email IS NOT NULL 
+            ORDER BY user_login';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return DB::getResultsArray($Data);
+    }
 }
