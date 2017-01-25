@@ -46,14 +46,14 @@ class UserPassRecoverData extends DataModelBase
     /**
      * @var bool
      */
-    public $userpassr_used = false;
+    public $userpassr_used = 0;
 
     /**
      * @return int
      */
     public function getUserpassrUserId()
     {
-        return $this->userpassr_userId;
+        return (int)$this->userpassr_userId;
     }
 
     /**
@@ -61,7 +61,7 @@ class UserPassRecoverData extends DataModelBase
      */
     public function setUserpassrUserId($userpassr_userId)
     {
-        $this->userpassr_userId = $userpassr_userId;
+        $this->userpassr_userId = (int)$userpassr_userId;
     }
 
     /**
@@ -101,7 +101,7 @@ class UserPassRecoverData extends DataModelBase
      */
     public function isUserpassrUsed()
     {
-        return $this->userpassr_used;
+        return (int)$this->userpassr_used;
     }
 
     /**
@@ -109,7 +109,7 @@ class UserPassRecoverData extends DataModelBase
      */
     public function setUserpassrUsed($userpassr_used)
     {
-        $this->userpassr_used = $userpassr_used;
+        $this->userpassr_used = (int)$userpassr_used;
     }
     
 }

@@ -34,18 +34,18 @@ class AccountHistoryData extends AccountData
     /**
      * @var bool
      */
-    public $isModify = false;
+    public $isModify = 0;
     /**
      * @var bool
      */
-    public $isDeleted = false;
+    public $isDeleted = 0;
 
     /**
      * @return boolean
      */
     public function isIsModify()
     {
-        return $this->isModify;
+        return (int)$this->isModify;
     }
 
     /**
@@ -61,7 +61,7 @@ class AccountHistoryData extends AccountData
      */
     public function isIsDeleted()
     {
-        return $this->isDeleted;
+        return (int)$this->isDeleted;
     }
 
     /**
