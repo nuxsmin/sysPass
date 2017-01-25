@@ -46,6 +46,7 @@ use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
+use SP\Storage\DB;
 use SP\Util\Checks;
 use SP\Util\Json;
 use SP\Util\Util;
@@ -494,9 +495,16 @@ class ConfigActionController implements ItemControllerInterface
         if (!$noAccountPassChange) {
             Util::lockApp();
 
+            if (!DB::beginTransaction()) {
+                $this->JsonResponse->setDescription(__('No es posible iniciar una transacción', false));
+                return;
+            }
+
             $Account = new Account();
 
             if (!$Account->updateAccountsMasterPass($currentMasterPass, $newMasterPass)) {
+                DB::rollbackTransaction();
+
                 $this->JsonResponse->setDescription(__('Errores al actualizar las claves de las cuentas', false));
                 return;
             }
@@ -504,12 +512,21 @@ class ConfigActionController implements ItemControllerInterface
             $AccountHistory = new AccountHistory();
 
             if (!$AccountHistory->updateAccountsMasterPass($currentMasterPass, $newMasterPass, $hashMPass)) {
+                DB::rollbackTransaction();
+
                 $this->JsonResponse->setDescription(__('Errores al actualizar las claves de las cuentas del histórico', false));
                 return;
             }
 
             if (!CustomFieldsUtil::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)) {
+                DB::rollbackTransaction();
+
                 $this->JsonResponse->setDescription(__('Errores al actualizar datos de campos personalizados', false));
+                return;
+            }
+
+            if (!DB::endTransaction()) {
+                $this->JsonResponse->setDescription(__('No es posible finalizar una transacción', false));
                 return;
             }
 

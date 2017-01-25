@@ -367,4 +367,36 @@ class DB
     {
         self::$fullRowCount = true;
     }
+
+    /**
+     * Iniciar una transacción
+     *
+     * @return bool
+     */
+    public static function beginTransaction()
+    {
+        $conn = DiFactory::getDBStorage()->getConnection();
+
+        return !$conn->inTransaction() && $conn->beginTransaction();
+    }
+
+    /**
+     * Finalizar una transacción
+     */
+    public static function endTransaction()
+    {
+        $conn = DiFactory::getDBStorage()->getConnection();
+
+        return $conn->inTransaction() && $conn->commit();
+    }
+
+    /**
+     * Rollback de una transacción
+     */
+    public static function rollbackTransaction()
+    {
+        $conn = DiFactory::getDBStorage()->getConnection();
+
+        return $conn->inTransaction() && $conn->rollBack();
+    }
 }
