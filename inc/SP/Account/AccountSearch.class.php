@@ -345,11 +345,8 @@ class AccountSearch
      */
     public function getAccounts()
     {
-        $isAdmin = (Session::getUserData()->isUserIsAdminApp() || Session::getUserData()->isUserIsAdminAcc());
-
         $arrFilterCommon = [];
         $arrFilterSelect = [];
-        $arrFilterUser = [];
         $arrayQueryJoin = [];
         $arrQueryWhere = [];
         $queryLimit = '';
@@ -421,24 +418,7 @@ class AccountSearch
             $arrQueryWhere[] = '(' . implode(' AND ', $arrFilterSelect) . ')';
         }
 
-        if (!$isAdmin && !$this->globalSearch) {
-            $arrFilterUser[] = 'account_userId = ?';
-            $Data->addParam(Session::getUserData()->getUserId());
-            $arrFilterUser[] = 'account_userGroupId = ?';
-            $Data->addParam(Session::getUserData()->getUserGroupId());
-            $arrFilterUser[] = 'account_id IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)';
-            $Data->addParam(Session::getUserData()->getUserId());
-            $Data->addParam(Session::getUserData()->getUserGroupId());
-            $arrFilterUser[] = 'account_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = account_userGroupId AND usertogroup_userId = ?)';
-            $Data->addParam(Session::getUserData()->getUserId());
-
-            $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
-        }
-
-        $arrQueryWhere[] = '(account_isPrivate = 0 OR (account_isPrivate = 1 AND account_userId = ?))';
-        $Data->addParam(Session::getUserData()->getUserId());
-        $arrQueryWhere[] = '(account_isPrivateGroup = 0 OR (account_isPrivateGroup = 1 AND account_userGroupId = ?))';
-        $Data->addParam(Session::getUserData()->getUserGroupId());
+        $arrQueryWhere = array_merge($arrQueryWhere, AccountUtil::getAccountFilterUser($Data));
 
         if ($this->limitCount > 0) {
             $queryLimit = '?, ?';
