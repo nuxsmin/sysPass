@@ -247,7 +247,7 @@ class ItemActionController implements ItemControllerInterface
                 if (is_array($this->itemId)) {
                     $UsersData = User::getItem()->deleteBatch($this->itemId);
                 } else {
-                    $UsersData = (array)User::getItem()->getById($this->itemId);
+                    $UsersData = [User::getItem()->getById($this->itemId)];
 
                     User::getItem()->delete($this->itemId);
 
