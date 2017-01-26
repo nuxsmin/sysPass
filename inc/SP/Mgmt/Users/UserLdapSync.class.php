@@ -110,7 +110,7 @@ class UserLdapSync
             $LogMessage->addDescription(__('No se encontraron objetos para sincronizar', false));
             $Log->writeLog();
 
-            return false;
+            return true;
         }
 
         $LogMessage->addDescription(__('Sincronización finalizada', false));
