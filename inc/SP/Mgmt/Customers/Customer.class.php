@@ -250,23 +250,17 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     {
         $Data = new QueryData();
 
-        // Si el perfil no permite búsquedas globales, se acotan los resultados
-        if (!Session::getUserProfile()->isAccGlobalSearch()) {
-            $queryWhere = AccountUtil::getAccountFilterUser($Data);
+        // Acotar los resultados por usuario
+        $queryWhere = AccountUtil::getAccountFilterUser($Data);
 
-            $query = /** @lang SQL */
-                'SELECT customer_id as id, customer_name as name 
-            FROM accounts LEFT JOIN customers ON customer_id = account_customerId
-            WHERE ' . implode(' AND ', $queryWhere) . '
+        $query = /** @lang SQL */
+            'SELECT customer_id as id, customer_name as name 
+            FROM accounts 
+            RIGHT JOIN customers ON customer_id = account_customerId
+            WHERE account_customerId IS NULL 
+            OR (' . implode(' AND ', $queryWhere) . ')
             GROUP BY customer_id
             ORDER BY customer_name';
-        } else {
-            $query = /** @lang SQL */
-                'SELECT customer_id as id, customer_name as name 
-            FROM accounts LEFT JOIN customers ON customer_id = account_customerId 
-            GROUP BY customer_id
-            ORDER BY customer_name';
-        }
 
         $Data->setQuery($query);
 

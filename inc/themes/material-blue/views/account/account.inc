@@ -64,7 +64,7 @@
                         <i class="material-icons btn-action" title="<?php echo __('Nuevo Cliente'); ?>"
                            data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMERS_NEW; ?>"
                            data-item-id="0"
-                           data-item-type="<?php echo \SP\Core\ItemsTypeInterface::ITEM_CUSTOMERS; ?>"
+                           data-item-type="<?php echo \SP\Core\ItemsTypeInterface::ITEM_CUSTOMERS_USER; ?>"
                            data-item-dst="selCustomer"
                            data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
                     <?php endif; ?>
