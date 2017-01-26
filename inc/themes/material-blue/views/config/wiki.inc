@@ -59,7 +59,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="wiki_searchurl" name="wiki_searchurl" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $wikiSearchUrl; ?>">
+                                   maxlength="255" value="<?php echo $wikiSearchUrl; ?>">
                             <label class="mdl-textfield__label"
                                    for="wiki_searchurl"><?php echo __('URL de búsqueda Wiki'); ?></label>
                         </div>
@@ -92,7 +92,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="wiki_pageurl" name="wiki_pageurl" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $wikiPageUrl; ?>">
+                                   maxlength="255" value="<?php echo $wikiPageUrl; ?>">
                             <label class="mdl-textfield__label"
                                    for="wiki_pageurl"><?php echo __('URL de página en Wiki'); ?></label>
                         </div>
@@ -171,7 +171,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="dokuwiki_url" name="dokuwiki_url" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $dokuWikiUrl; ?>"/>
+                                   maxlength="255" value="<?php echo $dokuWikiUrl; ?>"/>
                             <label class="mdl-textfield__label" for="dokuwiki_url"><?php echo __('URL API'); ?></label>
                         </div>
                     </td>
@@ -198,7 +198,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="dokuwiki_urlbase" name="dokuwiki_urlbase" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $dokuWikiUrlBase; ?>"/>
+                                   maxlength="255" value="<?php echo $dokuWikiUrlBase; ?>"/>
                             <label class="mdl-textfield__label"
                                    for="dokuwiki_urlbase"><?php echo __('URL Base'); ?></label>
                         </div>

@@ -29,6 +29,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\LogMessage;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Storage\DB;
 
 defined('APP_ROOT') || die();
 
@@ -84,10 +85,20 @@ class Import
                     );
             }
 
+            if (!DB::beginTransaction()) {
+                throw new SPException(SPException::SP_ERROR, __('No es posible iniciar una transacción', false));
+            }
+
             $Import->doImport();
+
+            if (!DB::endTransaction()) {
+                throw new SPException(SPException::SP_ERROR, __('No es posible finalizar una transacción', false));
+            }
 
             $LogMessage->addDetails(__('Cuentas importadas'), $Import->getCounter());
         } catch (SPException $e) {
+            DB::rollbackTransaction();
+
             $LogMessage->addDescription($e->getMessage());
             $LogMessage->addDetails(__('Ayuda', false), $e->getHint());
             $Log->setLogLevel(Log::ERROR);
