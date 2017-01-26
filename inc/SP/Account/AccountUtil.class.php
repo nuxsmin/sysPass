@@ -243,9 +243,9 @@ class AccountUtil
      */
     public static function getAccountFilterUser(QueryData $Data)
     {
-        if (!(Session::getUserData()->isUserIsAdminApp()
-            && Session::getUserData()->isUserIsAdminAcc())
-            || !Session::getUserProfile()->isAccGlobalSearch()
+        if (!Session::getUserData()->isUserIsAdminApp()
+            && !Session::getUserData()->isUserIsAdminAcc()
+            && !Session::getUserProfile()->isAccGlobalSearch()
         ) {
             $filterUser[] = 'account_userId = ?';
             $Data->addParam(Session::getUserData()->getUserId());
