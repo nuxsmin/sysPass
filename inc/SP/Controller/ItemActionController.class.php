@@ -377,7 +377,7 @@ class ItemActionController implements ItemControllerInterface
 
                     $this->LogMessage->addDescription(__('Grupos eliminados', false));
                 } else {
-                    $GroupsData = (array)Group::getItem()->getById($this->itemId);
+                    $GroupsData = [Group::getItem()->getById($this->itemId)];
 
                     Group::getItem()->delete($this->itemId);
 
@@ -437,7 +437,7 @@ class ItemActionController implements ItemControllerInterface
 
                     $this->LogMessage->addDescription(__('Perfiles eliminados', false));
                 } else {
-                    $ProfilesData = (array)Profile::getItem()->getById($this->itemId);
+                    $ProfilesData = [Profile::getItem()->getById($this->itemId)];
 
                     Profile::getItem()->delete($this->itemId);
 
@@ -499,7 +499,7 @@ class ItemActionController implements ItemControllerInterface
 
                     $this->LogMessage->addDescription(__('Clientes eliminados', false));
                 } else {
-                    $CustomersData = (array)Customer::getItem()->getById($this->itemId);
+                    $CustomersData = [Customer::getItem()->getById($this->itemId)];
 
                     Customer::getItem()->delete($this->itemId);
 
@@ -562,7 +562,7 @@ class ItemActionController implements ItemControllerInterface
 
                     $this->LogMessage->addDescription(__('Categorías eliminadas', false));
                 } else {
-                    $CategoriesData = (array)Category::getItem()->getById($this->itemId);
+                    $CategoriesData = [Category::getItem()->getById($this->itemId)];
 
                     Category::getItem()->delete($this->itemId);
 
@@ -774,7 +774,7 @@ class ItemActionController implements ItemControllerInterface
 
                     $this->LogMessage->addDescription(__('Etiquetas eliminadas', false));
                 } else {
-                    $TagsData = (array)Tag::getItem()->getById($this->itemId);
+                    $TagsData = [Tag::getItem()->getById($this->itemId)];
 
                     Tag::getItem()->delete($this->itemId);
 
@@ -807,7 +807,7 @@ class ItemActionController implements ItemControllerInterface
 
             $this->LogMessage->addDescription(__('Archivos eliminados', false));
         } else {
-            $FilesData = (array)File::getItem()->getById($this->itemId);
+            $FilesData = [File::getItem()->getById($this->itemId)];
 
             File::getItem()->delete($this->itemId);
 
