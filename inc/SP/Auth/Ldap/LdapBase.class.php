@@ -431,7 +431,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
 
         if (!$this->searchBase || !$this->server || !$this->bindDn || !$this->bindPass) {
             $this->LogMessage->setAction(__FUNCTION__);
-            $this->LogMessage->setDescription(__('Los parámetros de LDAP no están configurados', false));
+            $this->LogMessage->addDescription(__('Los parámetros de LDAP no están configurados', false));
             $this->writeLog();
 
             return false;
