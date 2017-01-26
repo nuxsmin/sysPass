@@ -29,7 +29,9 @@ use SP\Core\Messages\LogMessage;
 use SP\Core\SessionUtil;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
+use SP\Util\Checks;
 use SP\Util\Json;
+use SP\Util\Util;
 
 /**
  * Class RequestControllerTrait
@@ -119,9 +121,13 @@ trait RequestControllerTrait
     protected function checkSession()
     {
         if (!Init::isLoggedIn()) {
-            $this->JsonResponse->setDescription(__('La sesión no se ha iniciado o ha caducado', false));
-            $this->JsonResponse->setStatus(10);
-            Json::returnJson($this->JsonResponse);
+            if (Checks::isJson()) {
+                $this->JsonResponse->setDescription(__('La sesión no se ha iniciado o ha caducado', false));
+                $this->JsonResponse->setStatus(10);
+                Json::returnJson($this->JsonResponse);
+            } else {
+                Util::logout();
+            }
         }
     }
 }

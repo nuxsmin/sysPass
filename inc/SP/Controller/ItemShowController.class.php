@@ -573,18 +573,6 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     }
 
     /**
-     * Comprobar si la sesión está activa
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function checkSession()
-    {
-        if (!Init::isLoggedIn()) {
-            Util::logout();
-        }
-    }
-
-    /**
      * Obtener los datos para la vista de archivos de una cuenta
      *
      * @throws \SP\Core\Exceptions\FileNotFoundException
