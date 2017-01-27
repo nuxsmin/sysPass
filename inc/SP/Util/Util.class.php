@@ -174,7 +174,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '2.0-beta';
+        return '2.0-RC1';
     }
 
     /**
@@ -368,7 +368,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '17012601';
+        $build = '17012701';
         $version = [2, 0, 0];
 
         if ($retBuild) {
