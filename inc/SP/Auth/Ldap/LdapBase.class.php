@@ -462,7 +462,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         $validAttributes = [
             'groupmembership' => 'group',
             'memberof' => 'group',
-            'displayname' => 'name',
+            'displayname' => 'fullname',
             'fullname' => 'fullname',
             'givenname' => 'name',
             'sn' => 'sn',
