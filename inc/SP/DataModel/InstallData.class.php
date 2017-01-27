@@ -56,6 +56,10 @@ class InstallData
      */
     private $dbHost = 'localhost';
     /**
+     * @var string
+     */
+    private $dbSocket;
+    /**
      * @var int
      */
     private $dbPort = 0;
@@ -310,5 +314,21 @@ class InstallData
     public function setDbAuthHostDns($dbAuthHostDns)
     {
         $this->dbAuthHostDns = $dbAuthHostDns;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDbSocket()
+    {
+        return $this->dbSocket;
+    }
+
+    /**
+     * @param string $dbSocket
+     */
+    public function setDbSocket($dbSocket)
+    {
+        $this->dbSocket = $dbSocket;
     }
 }

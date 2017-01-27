@@ -89,7 +89,9 @@ class Installer
         $this->Config->setPasswordSalt(Util::generateRandomBytes(30));
         $this->Config->setConfigVersion(implode(Util::getVersion(true)));
 
-        if (preg_match('/(.*):(\d{1,5})/', $this->InstallData->getDbHost(), $match)) {
+        if (preg_match('/unix:(.*)/', $this->InstallData->getDbHost(), $match)) {
+            $this->InstallData->setDbSocket($match[1]);
+        } elseif (preg_match('/(.*):(\d{1,5})/', $this->InstallData->getDbHost(), $match)) {
             $this->InstallData->setDbHost($match[1]);
             $this->InstallData->setDbPort($match[2]);
         } else {
@@ -105,6 +107,7 @@ class Installer
 
         // Set DB connection info
         $this->Config->setDbHost($this->InstallData->getDbHost());
+        $this->Config->setDbSocket($this->InstallData->getDbSocket());
         $this->Config->setDbPort($this->InstallData->getDbPort());
         $this->Config->setDbName($this->InstallData->getDbName());
 
@@ -187,13 +190,17 @@ class Installer
     private function connectDatabase()
     {
         try {
-            $dsn = 'mysql:host=' . $this->InstallData->getDbHost() . ';dbport=' . $this->InstallData->getDbPort() . ';charset=utf8';
+            if (null !== $this->InstallData->getDbSocket()) {
+                $dsn = 'mysql:unix_socket=' . $this->InstallData->getDbSocket() . ';charset=utf8';
+            } else {
+                $dsn = 'mysql:host=' . $this->InstallData->getDbHost() . ';dbport=' . $this->InstallData->getDbPort() . ';charset=utf8';
+            }
             $this->DB = new PDO($dsn, $this->InstallData->getDbAdminUser(), $this->InstallData->getDbAdminPass());
             $this->DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL,
                 __('No es posible conectar con la BD', false),
-                __('Compruebe los datos de conexión', false) . '<br>' . $e->getMessage());
+                __('Compruebe los datos de conexión') . '<br>' . $e->getMessage());
         }
     }
 
@@ -227,7 +234,7 @@ class Installer
                 }
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL,
-                    sprintf(__('No es posible comprobar el usuario de sysPass', false) . ' (%s)', $this->InstallData->getAdminLogin()),
+                    sprintf(__('No es posible comprobar el usuario de sysPass') . ' (%s)', $this->InstallData->getAdminLogin()),
                     __('Compruebe los permisos del usuario de conexión a la BD', false));
             }
 
@@ -274,7 +281,7 @@ class Installer
         } catch (PDOException $e) {
             throw new SPException(
                 SPException::SP_CRITICAL,
-                sprintf(__('Error al crear el usuario de conexión a MySQL \'%s\''), $this->InstallData->getDbUser()),
+                sprintf(__('Error al crear el usuario de conexión a MySQL \'%s\'', false), $this->InstallData->getDbUser()),
                 $e->getMessage());
         }
     }
@@ -305,7 +312,7 @@ class Installer
                     'CREATE SCHEMA `' . $this->InstallData->getDbName() . '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci');
             } catch (PDOException $e) {
                 throw new SPException(SPException::SP_CRITICAL,
-                    sprintf(__('Error al crear la BBDD', false) . ' (%s)', $e->getMessage()),
+                    sprintf(__('Error al crear la BBDD') . ' (%s)', $e->getMessage()),
                     __('Verifique los permisos del usuario de la Base de Datos', false));
             }
 
@@ -388,7 +395,7 @@ class Installer
             $this->DB->exec('USE `' . $this->InstallData->getDbName() . '`');
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL,
-                sprintf(__('Error al seleccionar la BBDD', false) . ' \'%s\' (%s)', $this->InstallData->getDbName(), $e->getMessage()),
+                sprintf(__('Error al seleccionar la BBDD') . ' \'%s\' (%s)', $this->InstallData->getDbName(), $e->getMessage()),
                 __('No es posible usar la Base de Datos para crear la estructura. Compruebe los permisos y que no exista.', false));
         }
 
@@ -406,7 +413,7 @@ class Installer
                         $this->rollback();
 
                         throw new SPException(SPException::SP_CRITICAL,
-                            sprintf(__('Error al crear la BBDD', false) . ' (%s)', $e->getMessage()),
+                            sprintf(__('Error al crear la BBDD') . ' (%s)', $e->getMessage()),
                             __('Error al crear la estructura de la Base de Datos.', false));
                     }
                 }

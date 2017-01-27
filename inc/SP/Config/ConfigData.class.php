@@ -128,6 +128,10 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
+    private $dbSocket;
+    /**
+     * @var string
+     */
     private $dbName = '';
     /**
      * @var string
@@ -1766,5 +1770,21 @@ class ConfigData implements JsonSerializable
         $this->configSaver = $configSaver;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDbSocket()
+    {
+        return $this->dbSocket;
+    }
+
+    /**
+     * @param string $dbSocket
+     */
+    public function setDbSocket($dbSocket)
+    {
+        $this->dbSocket = $dbSocket;
     }
 }

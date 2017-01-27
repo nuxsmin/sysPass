@@ -47,6 +47,10 @@ class MySQLHandler implements DBStorageInterface
      */
     private $dbHost = '';
     /**
+     * @var string
+     */
+    private $dbSocket;
+    /**
      * @var int
      */
     private $dbPort = 0;
@@ -103,6 +107,7 @@ class MySQLHandler implements DBStorageInterface
         $Config = Config::getConfig();
 
         $this->dbHost = $Config->getDbHost();
+        $this->dbSocket = $Config->getDbSocket();
         $this->dbUser = $Config->getDbUser();
         $this->dbPass = $Config->getDbPass();
         $this->dbName = $Config->getDbName();
@@ -135,7 +140,13 @@ class MySQLHandler implements DBStorageInterface
 
             try {
                 $opts = [PDO::ATTR_EMULATE_PREPARES => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
-                $dsn = 'mysql:host=' . $this->dbHost . ';port=' . $this->dbPort . ';dbname=' . $this->dbName . ';charset=utf8';
+
+                if (empty($this->dbSocket)) {
+                    $dsn = 'mysql:host=' . $this->dbHost . ';port=' . $this->dbPort . ';dbname=' . $this->dbName . ';charset=utf8';
+                } else {
+                    $dsn = 'mysql:unix_socket=' . $this->dbSocket . ';dbname=' . $this->dbName . ';charset=utf8';
+                }
+
                 $this->db = new PDO($dsn, $this->dbUser, $this->dbPass, $opts);
 //                $this->db = new PDO($dsn, $this->dbUser, $this->dbPass);
                 $this->dbStatus = 0;
