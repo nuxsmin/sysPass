@@ -29,8 +29,8 @@
   left: 50%;
   padding: 1em;
   background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 5px;
   display: none;
+  @include border-radius(5px);
   &.overlay-full {
     top: 0;
     left: 0;
@@ -243,9 +243,7 @@
     background: $color-indigo-fg;
     color: #fff;
     border: 0 solid rgba(0, 0, 0, 0);
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
+    @include border-radius(3px);
   }
   .extra-info {
     margin-top: 20px;
@@ -581,7 +579,7 @@
     background-color: transparent;
     max-width: 100%;
     margin: 0 auto;
-    border-radius: 0;
+    @include border-radius(0);
     img {
       width: auto;
       margin: 0 auto;
@@ -650,11 +648,7 @@ footer {
   background-color: #f5f5f5;
   color: #b9b9b9;
   font-size: 1em;
-  box-shadow: 0 -8px 6px -6px #c9c9c9;
-  -webkit-box-shadow: 0 -8px 6px -6px #c9c9c9;
-  -moz-box-shadow: 0 -8px 6px -6px #c9c9c9;
-  display: flex;
-  justify-content: space-between;
+  @include box-shadow-top();
   .footer-parts {
     display: flex;
     justify-content: space-between;
@@ -710,9 +704,7 @@ footer {
 }
 
 .round, .round5 {
-  border-radius: 5px !important;
-  -moz-border-radius: 5px !important;
-  -webkit-border-radius: 5px !important;
+  @include border-radius(5px);
 }
 
 .midround {
@@ -728,9 +720,7 @@ footer {
 }
 
 .fullround {
-  border-radius: 50% !important;
-  -moz-border-radius: 50% !important;
-  -webkit-border-radius: 50% !important;
+  @include border-radius(50%);
 }
 
 .iconMini {
@@ -1191,6 +1181,24 @@ fieldset.warning {
   #box-popup {
     h2 > .btn-popup-close {
       display: inline-block;
+    }
+  }
+
+  .mdl-data-table {
+    table-layout:fixed;
+    width:100%;
+  }
+
+  .table-responsive {
+    td, th {
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -o-text-overflow: ellipsis;
+    }
+    .cell-actions i{
+      display: block !important;
     }
   }
 }

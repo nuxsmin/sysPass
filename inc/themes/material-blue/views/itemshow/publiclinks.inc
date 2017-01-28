@@ -9,35 +9,65 @@
         <tbody>
         <tr>
             <td class="descField"><?php echo __('Cuenta'); ?></td>
-            <td class="valField"><?php echo $link->getAccountName(); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Cuenta'); ?></div>
+
+                <?php echo $link->getAccountName(); ?>
+            </td>
         </tr>
         <tr>
             <td class="descField"><?php echo __('Fecha Creación'); ?></td>
-            <td class="valField"><?php echo $link->getDateAdd(); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Fecha Creación'); ?></div>
+
+                <?php echo $link->getDateAdd(); ?>
+            </td>
         </tr>
         <tr>
             <td class="descField"><?php echo __('Fecha Caducidad'); ?></td>
-            <td class="valField"><?php echo $link->getDateExpire(); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Fecha Caducidad'); ?></div>
+
+                <?php echo $link->getDateExpire(); ?>
+            </td>
         </tr>
         <tr>
             <td class="descField"><?php echo __('Usuario'); ?></td>
-            <td class="valField"><?php echo $link->getUserLogin(); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Usuario'); ?></div>
+
+                <?php echo $link->getUserLogin(); ?>
+            </td>
         </tr>
         <tr>
             <td class="descField"><?php echo __('Notificar'); ?></td>
-            <td class="valField"><?php echo $link->getNotify(); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Notificar'); ?></div>
+
+                <?php echo $link->getNotify(); ?>
+            </td>
         </tr>
         <tr>
             <td class="descField"><?php echo __('Visitas'); ?></td>
-            <td class="valField"><?php echo $link->getCountViews(); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Visitas'); ?></div>
+
+                <?php echo $link->getCountViews(); ?>
+            </td>
         </tr>
         <tr>
             <td class="descField"><?php echo __('Hash'); ?></td>
-            <td class="valField"><?php echo $link->getPublicLinkHash(); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Hash'); ?></div>
+
+                <?php echo $link->getPublicLinkHash(); ?>
+            </td>
         </tr>
         <tr>
             <td class="descField"><?php echo __('Uso'); ?></td>
             <td class="valField">
+                <div class="lowres-title"><?php echo __('Uso'); ?></div>
+
                 <div class="list-wrap">
                     <ul class="mdl-list">
                         <?php foreach ($link->getUseInfo() as $useInfo): ?>

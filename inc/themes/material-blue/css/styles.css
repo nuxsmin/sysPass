@@ -139,8 +139,10 @@ pre, code, samp, kbd {
   left: 50%;
   padding: 1em;
   background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 5px;
-  display: none; }
+  display: none;
+  border-radius: 5px !important;
+  -moz-border-radius: 5px !important;
+  -webkit-border-radius: 5px !important; }
   #wrap-loading.overlay-full {
     top: 0;
     left: 0;
@@ -306,9 +308,9 @@ pre, code, samp, kbd {
   background: #5c6bc0;
   color: #fff;
   border: 0 solid transparent;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px; }
+  border-radius: 3px !important;
+  -moz-border-radius: 3px !important;
+  -webkit-border-radius: 3px !important; }
 #content .extra-info {
   margin-top: 20px; }
 #content #tabs fieldset {
@@ -566,7 +568,9 @@ pre, code, samp, kbd {
     background-color: transparent;
     max-width: 100%;
     margin: 0 auto;
-    border-radius: 0; }
+    border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    -webkit-border-radius: 0 !important; }
     #box-popup.image img {
       width: auto;
       margin: 0 auto; }
@@ -621,11 +625,9 @@ footer {
   background-color: #f5f5f5;
   color: #b9b9b9;
   font-size: 1em;
-  box-shadow: 0 -8px 6px -6px #c9c9c9;
-  -webkit-box-shadow: 0 -8px 6px -6px #c9c9c9;
-  -moz-box-shadow: 0 -8px 6px -6px #c9c9c9;
-  display: flex;
-  justify-content: space-between; }
+  -webkit-box-shadow: 0 -3px 2px -2px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: 0 -3px 2px -2px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 -3px 2px -2px rgba(0, 0, 0, 0.14); }
   footer .footer-parts {
     display: flex;
     justify-content: space-between; }
@@ -701,9 +703,9 @@ footer {
   border-bottom: 1px solid #c9c9c9; }
 
 .shadow {
-  -webkit-box-shadow: 2px 2px 3px -3px #a9a9a9;
-  -moz-box-shadow: 2px 2px 3px -3px #a9a9a9;
-  box-shadow: 1px 1px 2px #d9d9d9; }
+  -webkit-box-shadow: 2px 2px 3px -3px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: 2px 2px 3px -3px rgba(0, 0, 0, 0.14);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.14); }
 
 .noRes {
   width: 60%;
@@ -1130,6 +1132,19 @@ fieldset.warning {
       width: 100%; }
 
   #box-popup h2 > .btn-popup-close {
-    display: inline-block; } }
+    display: inline-block; }
+
+  .mdl-data-table {
+    table-layout: fixed;
+    width: 100%; }
+
+  .table-responsive td, .table-responsive th {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis; }
+  .table-responsive .cell-actions i {
+    display: block !important; } }
 
 /*# sourceMappingURL=styles.css.map */

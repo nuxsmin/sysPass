@@ -16,9 +16,21 @@ $color-blue-fg: #2196f3;
 $color-grey: #555;
 
 @mixin box-shadow() {
-  -webkit-box-shadow: 2px 2px 3px -3px #a9a9a9;
-  -moz-box-shadow: 2px 2px 3px -3px #a9a9a9;
-  box-shadow: 1px 1px 2px #d9d9d9;
+  -webkit-box-shadow: 2px 2px 3px -3px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: 2px 2px 3px -3px rgba(0, 0, 0, 0.14);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.14);
+}
+
+@mixin box-shadow-top() {
+  -webkit-box-shadow: 0 -3px 2px -2px rgba(0, 0, 0, 0.14);
+  -moz-box-shadow: 0 -3px 2px -2px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 -3px 2px -2px rgba(0, 0, 0, 0.14);
+}
+
+@mixin border-radius($radius) {
+  border-radius: $radius !important;
+  -moz-border-radius: $radius !important;
+  -webkit-border-radius: $radius !important;
 }
 
 @mixin color-red() {
