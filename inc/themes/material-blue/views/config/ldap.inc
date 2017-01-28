@@ -15,7 +15,6 @@
                 <?php if ($ldapIsAvailable || $isDemoMode): ?>
                     <tr>
                         <td class="descField">
-                            <?php echo __('Habilitar LDAP'); ?>
                             <div id="help-ldap_enabled"
                                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                             <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_enabled">
@@ -34,7 +33,27 @@
                                        class="mdl-switch__input mdl-color-text--indigo-400"
                                        name="ldap_enabled"
                                     <?php echo $chkLdap; ?>/>
-                                <span class="mdl-switch__label"></span>
+                                <span class="mdl-switch__label"><?php echo __('Habilitar LDAP'); ?></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="descField">
+                            <div id="help-ldap_ads"
+                                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                            <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_ads">
+                                <p>
+                                    <?php echo __('Habilita el modo de conexión con LDAP de Active Directory.'); ?>
+                                </p>
+                            </div>
+                        </td>
+                        <td class="valField">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_ads">
+                                <input type="checkbox" id="ldap_ads"
+                                       class="mdl-switch__input mdl-color-text--indigo-400"
+                                       name="ldap_ads"
+                                    <?php echo $chkLdapADS; ?>/>
+                                <span class="mdl-switch__label"><?php echo __('Active Directory'); ?></span>
                             </label>
                         </td>
                     </tr>
@@ -195,6 +214,8 @@
                             </div>
                         </td>
                         <td class="valField">
+                            <div class="lowres-title"><?php echo __('Grupo por Defecto'); ?></div>
+
                             <select id="ldap_defaultgroup" name="ldap_defaultgroup"
                                     class="select-box sel-chosen-usergroup" required>
                                 <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
@@ -217,6 +238,8 @@
                             </div>
                         </td>
                         <td class="valField">
+                            <div class="lowres-title"><?php echo __('Perfil por Defecto'); ?></div>
+
                             <select id="ldap_defaultprofile" name="ldap_defaultprofile"
                                     class="select-box sel-chosen-profile" required>
                                 <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
@@ -227,34 +250,13 @@
                             </select>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="descField">
-                            <?php echo __('Active Directory'); ?>
-                            <div id="help-ldap_ads"
-                                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                            <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_ads">
-                                <p>
-                                    <?php echo __('Habilita el modo de conexión con LDAP de Active Directory.'); ?>
-                                </p>
-                            </div>
-                        </td>
-                        <td class="valField">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_ads">
-                                <input type="checkbox" id="ldap_ads"
-                                       class="mdl-switch__input mdl-color-text--indigo-400"
-                                       name="ldap_ads"
-                                    <?php echo $chkLdapADS; ?>/>
-                                <span class="mdl-switch__label"></span>
-                            </label>
-                        </td>
-                    </tr>
                     <tr id="ldap-results" style="display: none;">
                         <td class="descField">
                             <?php echo __('Resultados'); ?>
                         </td>
                         <td class="valField">
-                            <div class="list-wrap">
-                            </div>
+                            <div class="lowres-title"><?php echo __('Resultados'); ?></div>
+                            <div class="list-wrap"></div>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -275,6 +277,13 @@
 
         <div class="tab-actions">
             <ul>
+                <li>
+                    <button id="btnBack" type="button"
+                            class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                            title="<?php echo __('Atrás'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    </button>
+                </li>
                 <li>
                     <button type="button"
                             class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"

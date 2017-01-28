@@ -6,7 +6,7 @@
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?></H2>
+    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmCustomers" id="frmCustomers" class="form-action"
           data-onsubmit="appMgmt/save"

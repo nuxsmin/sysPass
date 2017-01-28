@@ -1,5 +1,5 @@
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?></H2>
+    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmTokens" id="frmTokens" class="form-action"
           data-onsubmit="appMgmt/save"
@@ -10,6 +10,8 @@
             <tr>
                 <td class="descField"><?php echo __('Usuario'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Usuario'); ?></div>
+
                     <select id="selUsers" name="users" class="select-box" required>
                         <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
                         <?php foreach ($users as $user): ?>
@@ -22,6 +24,8 @@
             <tr>
                 <td class="descField"><?php echo __('Acción'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Acción'); ?></div>
+
                     <select id="selActions" name="actions"
                             class="select-box" required>
                         <option value=""><?php echo __('Seleccionar Acción'); ?></option>
@@ -48,7 +52,11 @@
             <?php else: ?>
                 <tr>
                     <td class="descField"><?php echo __('Token'); ?></td>
-                    <td class="valField"><?php echo $gotData ? $token->authtoken_token : ''; ?></td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Token'); ?></div>
+
+                        <?php echo $gotData ? $token->authtoken_token : ''; ?>
+                    </td>
                 </tr>
             <?php endif; ?>
             </tbody>

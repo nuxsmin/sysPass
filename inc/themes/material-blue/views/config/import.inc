@@ -21,6 +21,8 @@ use SP\Core\Session; ?>
                     </div>
                 </td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Usuario por Defecto'); ?></div>
+
                     <select id="import_defaultuser" name="import_defaultuser"
                             class="select-box sel-chosen-user" required>
                         <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
@@ -45,6 +47,8 @@ use SP\Core\Session; ?>
                     </div>
                 </td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Grupo por Defecto'); ?></div>
+
                     <select id="import_defaultgroup" name="import_defaultgroup"
                             class="select-box sel-chosen-usergroup" required>
                         <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
@@ -62,6 +66,8 @@ use SP\Core\Session; ?>
                     <?php echo __('Archivo'); ?>
                 </td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Archivo'); ?></div>
+
                     <div id="drop-import-files" class="round active-tooltip dropzone"
                          data-files-ext="csv,xml"
                          data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_IMPORT; ?>"
@@ -77,6 +83,13 @@ use SP\Core\Session; ?>
 
         <div class="tab-actions">
             <ul>
+                <li>
+                    <button id="btnBack" type="button"
+                            class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                            title="<?php echo __('Atrás'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    </button>
+                </li>
                 <li>
                     <button id="help_import_button"
                             class="btn-help mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"

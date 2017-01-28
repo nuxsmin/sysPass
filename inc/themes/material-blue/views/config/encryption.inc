@@ -18,6 +18,8 @@
                             <?php echo __('Último cambio'); ?>
                         </td>
                         <td class="valField">
+                            <div class="lowres-title"><?php echo __('Último cambio'); ?></div>
+
                             <?php echo date('r', $lastUpdateMPass); ?>
                         </td>
                     </tr>
@@ -66,8 +68,6 @@
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo __('No modificar cuentas'); ?>
-
                         <div id="help-chkNoAccountChange"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-chkNoAccountChange">
@@ -80,14 +80,12 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="chkNoAccountChange">
                             <input type="checkbox" id="chkNoAccountChange"
                                    class="mdl-switch__input mdl-color-text--indigo-400" name="chkNoAccountChange"/>
-                            <span class="mdl-switch__label"></span>
+                            <span class="mdl-switch__label"><?php echo __('No modificar cuentas'); ?></span>
                         </label>
                     </td>
                 </tr>
                 <tr>
-                    <td class="descField">
-                        <?php echo __('Confirmar cambio'); ?>
-                    </td>
+                    <td class="descField"></td>
                     <td class="valField">
                         <div
                             class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
@@ -105,7 +103,7 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="confirmPassChange">
                             <input type="checkbox" id="confirmPassChange" class="mdl-switch__input"
                                    name="confirmPassChange"/>
-                            <span class="mdl-switch__label"></span>
+                            <span class="mdl-switch__label"><?php echo __('Confirmar cambio'); ?></span>
                         </label>
                     </td>
                 </tr>
@@ -157,6 +155,8 @@
                         <?php echo __('Último cambio'); ?>
                     </td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Último cambio'); ?></div>
+
                         <?php echo ($tempMasterPassTime > 0) ? date('r', $tempMasterPassTime) : __('No generada'); ?>
                     </td>
                 </tr>
@@ -165,6 +165,8 @@
                         <?php echo __('Válido hasta'); ?>
                     </td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Válido hasta'); ?></div>
+
                         <?php if (time() > $tempMasterMaxTime): ?>
                             <span style="color: red"><?php echo date('r', $tempMasterMaxTime); ?></span>
                         <?php elseif ($tempMasterMaxTime > 0): echo date('r', $tempMasterMaxTime); ?>
@@ -177,6 +179,8 @@
                         <?php echo __('Intentos'); ?>
                     </td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Intentos'); ?></div>
+
                         <?php echo $tempMasterAttempts; ?>
                     </td>
                 </tr>
@@ -197,22 +201,7 @@
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo __('Grupo'); ?>
-                    </td>
-                    <td class="valField">
-                        <select id="tmpass_group" name="tmpass_group"
-                                class="select-box select-box-deselect">
-                            <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
-                            <?php foreach ($groups as $group): ?>
-                                <option
-                                        value="<?php echo $group->id; ?>"><?php echo $group->name; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo __('Enviar correo'); ?>
+
 
                         <div id="help-chkSendEmail"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
@@ -226,8 +215,25 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="tmpass_chkSendEmail">
                             <input type="checkbox" id="tmpass_chkSendEmail"
                                    class="mdl-switch__input mdl-color-text--indigo-400" name="tmpass_chkSendEmail"/>
-                            <span class="mdl-switch__label"></span>
+                            <span class="mdl-switch__label"><?php echo __('Enviar correo'); ?></span>
                         </label>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="descField">
+                        <?php echo __('Grupo'); ?>
+                    </td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Grupo'); ?></div>
+
+                        <select id="tmpass_group" name="tmpass_group"
+                                class="select-box select-box-deselect">
+                            <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
+                            <?php foreach ($groups as $group): ?>
+                                <option
+                                        value="<?php echo $group->id; ?>"><?php echo $group->name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </td>
                 </tr>
                 <?php if (!empty($tempMasterPass)): ?>
@@ -236,6 +242,8 @@
                             <?php echo __('Clave'); ?>
                         </td>
                         <td class="valField">
+                            <div class="lowres-title"><?php echo __('Clave'); ?></div>
+
                             <?php echo $tempMasterPass; ?>
                         </td>
                     </tr>
@@ -248,6 +256,13 @@
         </form>
         <div class="tab-actions">
             <ul>
+                <li>
+                    <button id="btnBack" type="button"
+                            class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                            title="<?php echo __('Atrás'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    </button>
+                </li>
                 <li>
                     <button id="help_tmpass_button"
                             class="btn-help mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"

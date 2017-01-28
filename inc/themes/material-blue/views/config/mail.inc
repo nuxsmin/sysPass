@@ -11,16 +11,14 @@
               data-hash="">
             <table id="tblMail" class="data tblConfig round">
                 <tr>
-                    <td class="descField">
-                        <?php echo __('Habilitar notificaciones de correo'); ?>
-                    </td>
+                    <td class="descField"></td>
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_enabled">
                             <input type="checkbox" id="mail_enabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="mail_enabled"
                                 <?php echo $chkMail; ?>/>
-                            <span class="mdl-switch__label"></span>
+                            <span class="mdl-switch__label"><?php echo __('Habilitar notificaciones de correo'); ?></span>
                         </label>
                     </td>
                 </tr>
@@ -51,15 +49,13 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="descField">
-                        <?php echo __('Habilitar Autentificación'); ?>
-                    </td>
+                    <td class="descField"></td>
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_authenabled">
                             <input type="checkbox" id="mail_authenabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="mail_authenabled" <?php echo $chkMailAuth; ?>/>
-                            <span class="mdl-switch__label"></span>
+                            <span class="mdl-switch__label"><?php echo __('Habilitar Autentificación'); ?></span>
                         </label>
                     </td>
                 </tr>
@@ -94,6 +90,8 @@
                         <?php echo __('Seguridad'); ?>
                     </td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Seguridad'); ?></div>
+
                         <select name="mail_security" id="sel-mailsecurity" size="1" class="select-box sel-chosen-ns">
                             <option value=""><?php echo __('Deshabilitada'); ?></option>
                             <?php foreach ($mailSecurity as $security): ?>
@@ -119,8 +117,6 @@
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo __('Habilitar peticiones por correo'); ?>
-
                         <div id="help-mail_requestsenabled"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-mail_requestsenabled">
@@ -134,7 +130,7 @@
                             <input type="checkbox" id="mail_requestsenabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="mail_requestsenabled" <?php echo $chkMailRequests; ?>/>
-                            <span class="mdl-switch__label"></span>
+                            <span class="mdl-switch__label"><?php echo __('Habilitar peticiones por correo'); ?></span>
                         </label>
                     </td>
                 </tr>
@@ -148,6 +144,13 @@
 
         <div class="tab-actions">
             <ul>
+                <li>
+                    <button id="btnBack" type="button"
+                            class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                            title="<?php echo __('Atrás'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    </button>
+                </li>
                 <li>
                     <button form="frmMail"
                             class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"

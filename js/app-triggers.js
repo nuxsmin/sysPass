@@ -171,6 +171,8 @@ sysPass.Triggers = function (Common) {
             });
 
             $this.submit();
+        }).on("click", ".btn-popup-close", function (e) {
+            $.magnificPopup.close();
         });
     };
 

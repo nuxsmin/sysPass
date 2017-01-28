@@ -6,7 +6,7 @@
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?></H2>
+    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmCustomFields" id="frmCustomFields" class="form-action"
           data-onsubmit="appMgmt/save"
@@ -29,6 +29,8 @@
             <tr>
                 <td class="descField"><?php echo __('Tipo'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Tipo'); ?></div>
+
                     <select name="type" id="sel-type" size="1" class="select-box">
                         <?php foreach ($types as $id => $type): ?>
                             <option
@@ -40,6 +42,8 @@
             <tr>
                 <td class="descField"><?php echo __('Módulo'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Módulo'); ?></div>
+
                     <select name="module" id="sel-module" size="1" class="select-box">
                         <?php foreach ($modules as $id => $module): ?>
                             <option
@@ -60,13 +64,13 @@
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Obligatorio'); ?></td>
+                <td class="descField"></td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="required">
                         <input type="checkbox" id="required" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="required"
                             <?php echo $field->isRequired() ? 'checked' : ''; ?>/>
-                        <span class="mdl-switch__label"></span>
+                        <span class="mdl-switch__label"><?php echo __('Obligatorio'); ?></span>
                     </label>
                 </td>
             </tr

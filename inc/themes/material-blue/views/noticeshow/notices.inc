@@ -88,6 +88,8 @@
                 <tr>
                     <td class="descField"><?php echo __('Usuario'); ?></td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Usuario'); ?></div>
+
                         <select id="notice_user" name="notice_user"
                                 class="select-box" <?php echo $isDisabled; ?>>
                             <option value=""><?php echo __('Seleccionar Usuario'); ?></option>

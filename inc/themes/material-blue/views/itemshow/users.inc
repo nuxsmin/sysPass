@@ -4,7 +4,7 @@
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?></h2>
+    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmUsers" id="frmUsers" class="form-action"
           data-onsubmit="appMgmt/save"
@@ -48,6 +48,8 @@
             <tr>
                 <td class="descField"><?php echo __('Perfil'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Perfil'); ?></div>
+
                     <select id="selProfile" name="profileid"
                             class="select-box" required <?php echo $isDisabled; ?>>
                         <option value=""><?php echo __('Seleccionar Perfil'); ?></option>
@@ -62,6 +64,8 @@
             <tr>
                 <td class="descField"><?php echo __('Grupo'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Grupo'); ?></div>
+
                     <select id="selGroup" name="groupid"
                             class="select-box" required <?php echo $isDisabled; ?>>
                         <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
@@ -173,22 +177,38 @@
             <?php if ($isView): ?>
                 <tr>
                     <td class="descField"><?php echo __('Entradas'); ?></td>
-                    <td class="valField"> <?php echo $user->getUserCount(); ?></td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Entradas'); ?></div>
+
+                        <?php echo $user->getUserCount(); ?>
+                    </td>
                 </tr>
 
                 <tr>
                     <td class="descField"><?php echo __('Último Acceso'); ?></td>
-                    <td class="valField"> <?php echo $user->getUserLastLogin(); ?></td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Último Acceso'); ?></div>
+
+                        <?php echo $user->getUserLastLogin(); ?>
+                    </td>
                 </tr>
 
                 <tr>
                     <td class="descField"><?php echo __('Última Modificación'); ?></td>
-                    <td class="valField"> <?php echo $user->getUserLastUpdate(); ?></td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Última Modificación'); ?></div>
+
+                        <?php echo $user->getUserLastUpdate(); ?>
+                    </td>
                 </tr>
 
                 <tr>
                     <td class="descField"><?php echo __('Fecha Clave Maestra'); ?></td>
-                    <td class="valField"> <?php echo gmdate('Y-m-d H:i:s', $user->getUserLastUpdateMPass()); ?></td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Fecha Clave Maestra'); ?></div>
+
+                        <?php echo gmdate('Y-m-d H:i:s', $user->getUserLastUpdateMPass()); ?>
+                    </td>
                 </tr>
             <?php endif; ?>
             </tbody>

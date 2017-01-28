@@ -102,7 +102,8 @@
     #content #data-search .account-label .label-field .field-name {
       display: block;
       text-align: left;
-      border-bottom: 1px solid #d9d9d9; }
+      border-bottom: 1px solid #d9d9d9;
+      color: #607d8b; }
     #content #data-search .account-label .label-left,
     #content #data-search .account-label .label-right {
       height: auto; }

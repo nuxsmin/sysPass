@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-25 14:05+0100\n"
-"PO-Revision-Date: 2017-01-25 14:06+0100\n"
+"POT-Creation-Date: 2017-01-28 11:16+0100\n"
+"PO-Revision-Date: 2017-01-28 11:16+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -40,7 +40,7 @@ msgstr "INVALID QUERY"
 
 #: ../../../../ajax/ajax_accSearch.php:38
 #: ../../../../ajax/ajax_userPrefsSave.php:51
-#: ../../../../inc/SP/Controller/RequestControllerTrait.class.php:122
+#: ../../../../inc/SP/Controller/RequestControllerTrait.class.php:125
 msgid "La sesión no se ha iniciado o ha caducado"
 msgstr "Session not started or timed out"
 
@@ -71,7 +71,8 @@ msgstr "Invalid file"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:822
 #: ../../../../inc/SP/Core/Upgrade.class.php:281
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:95
-#: ../../../../inc/themes/material-blue/views/config/import.inc:127
+#: ../../../../inc/themes/material-blue/views/config/import.inc:66
+#: ../../../../inc/themes/material-blue/views/config/import.inc:69
 msgid "Archivo"
 msgstr "File"
 
@@ -156,6 +157,7 @@ msgstr "Account"
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:96
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:75
 #: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:30
+#: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:32
 #: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:38
 #: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:45
 msgid "Tipo"
@@ -173,7 +175,7 @@ msgstr "Error while deleting file"
 #: ../../../../ajax/ajax_filesMgmt.php:209
 #: ../../../../ajax/ajax_userPrefsSave.php:97
 #: ../../../../inc/SP/Api/ApiRequest.class.php:192
-#: ../../../../inc/SP/Controller/RequestControllerTrait.class.php:110
+#: ../../../../inc/SP/Controller/RequestControllerTrait.class.php:112
 msgid "Acción Inválida"
 msgstr "Invalid Action"
 
@@ -272,7 +274,7 @@ msgid "Error al eliminar la cuenta"
 msgstr "Error while deleting account"
 
 #: ../../../../inc/SP/Account/Account.class.php:410
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:539
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:557
 msgid "Actualizar Clave Maestra"
 msgstr "Update Master Password"
 
@@ -449,12 +451,12 @@ msgid "Cliente eliminado"
 msgstr "Customer deleted"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:354
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:661
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:679
 msgid "Proceso de backup finalizado"
 msgstr "Backup process finished"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:360
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:656
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:674
 #: ../../../../inc/SP/Core/Backup.class.php:75
 msgid "Error al realizar el backup"
 msgstr "Error while doing backup"
@@ -462,10 +464,10 @@ msgstr "Error while doing backup"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:361
 #: ../../../../inc/SP/Controller/ChecksController.class.php:113
 #: ../../../../inc/SP/Controller/ChecksController.class.php:142
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:637
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:657
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:655
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:675
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1010
-#: ../../../../inc/SP/Import/Import.class.php:104
+#: ../../../../inc/SP/Import/Import.class.php:115
 msgid "Revise el registro de eventos para más detalles"
 msgstr "Please check the event log for more details"
 
@@ -506,7 +508,9 @@ msgstr "Customer Id to filter on"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:422
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:18
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:16
 #: ../../../../inc/themes/material-blue/views/account/account.inc:48
+#: ../../../../inc/themes/material-blue/views/account/request.inc:19
 msgid "Nombre de cuenta"
 msgstr "Account name"
 
@@ -521,24 +525,27 @@ msgid "Id de cliente"
 msgstr "Customer Id"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:425
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:570
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:588
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:63
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:56
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:62
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:73
-#: ../../../../inc/themes/material-blue/views/account/account-link.inc:44
-#: ../../../../inc/themes/material-blue/views/account/account.inc:119
-#: ../../../../inc/themes/material-blue/views/account/account.inc:126
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:76
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:79
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:87
+#: ../../../../inc/themes/material-blue/views/account/account.inc:123
+#: ../../../../inc/themes/material-blue/views/account/account.inc:130
 #: ../../../../inc/themes/material-blue/views/account/viewpass.inc:25
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:236
-#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:63
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:119
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:81
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:88
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:242
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:245
+#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:61
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:138
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:77
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:84
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:229
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:236
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:92
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:99
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:96
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:103
 #: ../../../../inc/themes/material-blue/views/itemshow/userspass.inc:35
 #: ../../../../inc/themes/material-blue/views/itemshow/userspass.inc:41
 #: ../../../../inc/themes/material-blue/views/main/install.inc:43
@@ -548,18 +555,19 @@ msgid "Clave"
 msgstr "Password"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:426
-#: ../../../../inc/themes/material-blue/views/account/account.inc:113
+#: ../../../../inc/themes/material-blue/views/account/account.inc:117
 msgid "Usuario de acceso"
 msgstr "Access user"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:427
-#: ../../../../inc/themes/material-blue/views/account/account.inc:101
+#: ../../../../inc/themes/material-blue/views/account/account.inc:105
 msgid "URL o IP de acceso"
 msgstr "Access URL or IP"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:428
-#: ../../../../inc/themes/material-blue/views/account/account.inc:168
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:126
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:72
+#: ../../../../inc/themes/material-blue/views/account/account.inc:172
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:130
 msgid "Notas sobre la cuenta"
 msgstr "Notes about the account"
 
@@ -601,7 +609,7 @@ msgstr "Method unavailable"
 
 #: ../../../../inc/SP/Auth/AuthUtil.class.php:63
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:133
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:164
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:168
 msgid "Cambio de Clave"
 msgstr "Password Change"
 
@@ -638,13 +646,14 @@ msgid "No es posible conectar con el servidor de LDAP"
 msgstr "Unable to connect to the LDAP server"
 
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:170
-#: ../../../../inc/themes/material-blue/views/config/general-events.inc:52
-#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:21
-#: ../../../../inc/themes/material-blue/views/config/info.inc:45
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:43
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:68
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:29
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:36
+#: ../../../../inc/themes/material-blue/views/config/general-events.inc:49
+#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:19
+#: ../../../../inc/themes/material-blue/views/config/info.inc:51
+#: ../../../../inc/themes/material-blue/views/config/info.inc:54
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:62
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:87
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:27
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:34
 msgid "Servidor"
 msgstr "Server"
 
@@ -655,20 +664,20 @@ msgstr "Connection error (BIND)"
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:249
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:261
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:271
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:676
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:688
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:698
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:681
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:693
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:703
 msgid "Error al buscar objetos en DN base"
 msgstr "Error while searching objects in base DN"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:530
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:553
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:535
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:558
 msgid "Error al buscar el DN del usuario"
 msgstr "Error while searching user DN"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:531
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:544
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:554
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:536
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:549
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:559
 #: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:167
 #: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:109
 #: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:119
@@ -689,41 +698,45 @@ msgstr "Error while searching user DN"
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:77
 #: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:99
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:66
+#: ../../../../res/test.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:45
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:51
-#: ../../../../inc/themes/material-blue/views/account/account-link.inc:33
-#: ../../../../inc/themes/material-blue/views/account/account.inc:106
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:54
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:60
+#: ../../../../inc/themes/material-blue/views/account/account.inc:110
 #: ../../../../inc/themes/material-blue/views/account/viewpass.inc:14
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:63
-#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:49
-#: ../../../../inc/themes/material-blue/views/config/info.inc:40
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:98
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:68
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:75
+#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:47
+#: ../../../../inc/themes/material-blue/views/config/info.inc:46
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:117
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:64
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:71
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:209
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:223
 #: ../../../../inc/themes/material-blue/views/eventlog/eventlog.inc:31
 #: ../../../../inc/themes/material-blue/views/itemshow/publiclinks.inc:23
 #: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:11
+#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:13
 #: ../../../../inc/themes/material-blue/views/main/login.inc:15
 #: ../../../../inc/themes/material-blue/views/main/passreset.inc:16
 #: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:89
+#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:91
 msgid "Usuario"
 msgstr "User"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:543
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:548
 msgid "Error al localizar el usuario en LDAP"
 msgstr "Error while searching user on LDAP"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:584
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:597
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:608
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:589
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:602
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:613
 msgid "Error al buscar RDN de grupo"
 msgstr "Error while searching group RDN"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:585
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:598
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:609
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:590
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:603
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:614
 #: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:134
 #: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:144
 #: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:158
@@ -732,10 +745,12 @@ msgstr "Error while searching group RDN"
 #: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:120
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:405
 #: ../../../../inc/SP/Controller/LoginController.class.php:251
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:200
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:155
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:182
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:63
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:224
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:227
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:174
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:201
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:65
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:67
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:47
 #: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:61
 msgid "Grupo"
@@ -767,7 +782,8 @@ msgstr "The user doesn't belong to the group"
 #: ../../../../inc/SP/Controller/MainController.class.php:292
 #: ../../../../inc/SP/Core/Acl.class.php:241
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:75
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:127
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:215
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:217
 msgid "Configuración"
 msgstr "Configuration"
 
@@ -837,7 +853,7 @@ msgstr "Delete Account"
 #: ../../../../inc/SP/Core/Acl.class.php:217
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:48
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:48
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:51
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:53
 msgid "Ver Clave"
 msgstr "View password"
 
@@ -865,9 +881,12 @@ msgstr "More Actions"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1078
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:23
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:29
-#: ../../../../inc/themes/material-blue/views/account/account-link.inc:15
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:21
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:27
 #: ../../../../inc/themes/material-blue/views/account/account.inc:53
-#: ../../../../inc/themes/material-blue/views/account/request.inc:16
+#: ../../../../inc/themes/material-blue/views/account/account.inc:55
+#: ../../../../inc/themes/material-blue/views/account/request.inc:24
+#: ../../../../inc/themes/material-blue/views/account/request.inc:31
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:21
 msgid "Cliente"
 msgstr "Customer"
@@ -922,7 +941,7 @@ msgstr "Sort by Customer"
 #: ../../../../inc/themes/material-blue/views/account/account.inc:41
 #: ../../../../inc/themes/material-blue/views/account/request.inc:12
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:43
-#: ../../../../inc/themes/material-blue/views/config/info.inc:26
+#: ../../../../inc/themes/material-blue/views/config/info.inc:30
 #: ../../../../inc/themes/material-blue/views/itemshow/categories.inc:15
 #: ../../../../inc/themes/material-blue/views/itemshow/customers.inc:18
 #: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:18
@@ -940,8 +959,10 @@ msgid "Ordenar por Nombre"
 msgstr "Sort by Name"
 
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:362
-#: ../../../../inc/themes/material-blue/views/account/account-link.inc:21
-#: ../../../../inc/themes/material-blue/views/account/account.inc:74
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:32
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:38
+#: ../../../../inc/themes/material-blue/views/account/account.inc:76
+#: ../../../../inc/themes/material-blue/views/account/account.inc:78
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:57
 msgid "Categoría"
 msgstr "Category"
@@ -957,8 +978,9 @@ msgstr "Sort by Username"
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:376
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:34
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:40
-#: ../../../../inc/themes/material-blue/views/account/account-link.inc:27
-#: ../../../../inc/themes/material-blue/views/account/account.inc:95
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:43
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:49
+#: ../../../../inc/themes/material-blue/views/account/account.inc:99
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:68
 msgid "URL / IP"
 msgstr "URL / IP"
@@ -984,8 +1006,8 @@ msgstr "DokuWiki parameters are not set"
 #: ../../../../inc/SP/Import/ImportBase.class.php:210
 #: ../../../../inc/SP/Log/Email.class.php:92
 #: ../../../../inc/SP/Log/Email.class.php:93
-#: ../../../../inc/SP/Log/Email.class.php:198
-#: ../../../../inc/SP/Log/Email.class.php:199
+#: ../../../../inc/SP/Log/Email.class.php:203
+#: ../../../../inc/SP/Log/Email.class.php:204
 #: ../../../../inc/SP/Util/Wiki/DokuWikiApiBase.class.php:193
 msgid "Error"
 msgstr "Error"
@@ -999,7 +1021,7 @@ msgstr "Connection successful"
 #: ../../../../inc/SP/Core/Init.class.php:645
 #: ../../../../inc/SP/Core/Upgrade.class.php:91
 #: ../../../../inc/SP/Core/Upgrade.class.php:274
-#: ../../../../inc/themes/material-blue/views/config/info.inc:34
+#: ../../../../inc/themes/material-blue/views/config/info.inc:40
 #: ../../../../inc/themes/material-blue/views/itemshow/plugins.inc:25
 msgid "Versión"
 msgstr "Version"
@@ -1008,136 +1030,149 @@ msgstr "Version"
 msgid "Error de conexión a DokuWiki"
 msgstr "Error while connecting to DokuWiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:165
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:169
 msgid "Faltan parámetros de syslog remoto"
 msgstr "Missing remote syslog parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:174
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:178
 msgid "Syslog remoto deshabilitado"
 msgstr "Remote syslog disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:196
-msgid "El tamaño máximo por archivo es de 16MB"
-msgstr "The maximum size per file is 16MB"
-
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:225
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:191
 msgid "Faltan parámetros de Proxy"
 msgstr "Missing proxy parameters "
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:234
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:200
 msgid "Proxy habiltado"
 msgstr "Proxy enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:238
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:204
 msgid "Proxy deshabilitado"
 msgstr "Proxy disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:241
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:342
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:389
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:443
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:207
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:262
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:360
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:407
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:461
 msgid "Sección"
 msgstr "Section"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:241
-#: ../../../../inc/SP/Controller/ConfigController.class.php:168
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:135
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:207
+#: ../../../../inc/SP/Controller/ConfigController.class.php:151
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:225
 #: ../../../../inc/themes/material-blue/views/main/install.inc:132
 msgid "General"
 msgstr "General"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:258
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:489
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:604
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:651
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:243
+msgid "El tamaño máximo por archivo es de 16MB"
+msgstr "The maximum size per file is 16MB"
+
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:262
+#: ../../../../inc/SP/Controller/ConfigController.class.php:200
+#: ../../../../inc/SP/Controller/Grids/Items.class.php:365
+#: ../../../../inc/SP/Controller/MainController.class.php:575
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:88
+#: ../../../../inc/themes/material-blue/views/account/linkedAccounts.inc:13
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:29
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:31
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:195
+msgid "Cuentas"
+msgstr "Accounts"
+
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:276
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:507
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:622
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:669
 #: ../../../../inc/SP/Forms/UserForm.class.php:93
 #: ../../../../inc/SP/Forms/UserForm.class.php:105
 #: ../../../../inc/SP/Forms/UserForm.class.php:119
 msgid "Ey, esto es una DEMO!!"
 msgstr "Ey, this is a DEMO!!"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:272
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:290
 msgid "Configuración actualizada"
 msgstr "Configuration updated"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:274
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:292
 msgid "Error al guardar la configuración"
 msgstr "Error while saving configuration"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:278
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:402
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:296
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:420
 msgid "Modificar Configuración"
 msgstr "Edit Configuration"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:300
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:318
 msgid "Faltan parámetros de Wiki"
 msgstr "Missing Wiki parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:308
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:326
 msgid "Wiki habiltada"
 msgstr "Wiki enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:312
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:330
 msgid "Wiki deshabilitada"
 msgstr "Wiki disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:325
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:343
 msgid "Faltan parámetros de DokuWiki"
 msgstr "Missing DokuWiki parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:335
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:353
 msgid "DokuWiki habiltada"
 msgstr "DokuWiki enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:339
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:357
 msgid "DokuWiki deshabilitada"
 msgstr "DokuWiki disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:342
-#: ../../../../inc/SP/Controller/ConfigController.class.php:213
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:360
+#: ../../../../inc/SP/Controller/ConfigController.class.php:232
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:62
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:10
 msgid "Wiki"
 msgstr "Wiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:369
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:387
 msgid "Faltan parámetros de LDAP"
 msgstr "Missing LDAP parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:382
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:400
 msgid "LDAP habiltado"
 msgstr "LDAP enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:386
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:404
 msgid "LDAP deshabilitado"
 msgstr "LDAP disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:389
-#: ../../../../inc/SP/Controller/ConfigController.class.php:246
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:407
+#: ../../../../inc/SP/Controller/ConfigController.class.php:265
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:7
 msgid "LDAP"
 msgstr "LDAP"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:418
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:436
 msgid "Faltan parámetros de Correo"
 msgstr "Missing Mail parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:434
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:452
 msgid "Correo habiltado"
 msgstr "Mail enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:440
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:458
 msgid "Correo deshabilitado"
 msgstr "Mail disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:443
-#: ../../../../inc/SP/Controller/ConfigController.class.php:277
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:461
+#: ../../../../inc/SP/Controller/ConfigController.class.php:296
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:7
 msgid "Correo"
 msgstr "Mail"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:465
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:542
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:483
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:560
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:279
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:508
 #: ../../../../inc/SP/Controller/LoginController.class.php:286
@@ -1145,71 +1180,73 @@ msgstr "Mail"
 msgid "Clave maestra actualizada"
 msgstr "Master Password updated"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:466
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:544
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:484
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:562
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:279
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:508
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Please, restart the session for update it"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:470
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:488
 msgid "Clave maestra no indicada"
 msgstr "Master Password needed"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:473
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:491
 msgid "Se ha de confirmar el cambio de clave"
 msgstr "The password update must be confirmed"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:478
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:496
 msgid "Las claves son idénticas"
 msgstr "The passwords are the same"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:481
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:499
 msgid "Las claves maestras no coinciden"
 msgstr "The master passwords do not match"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:484
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:502
 msgid "La clave maestra actual no coincide"
 msgstr "The current master password does not match"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:499
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:517
+#: ../../../../inc/SP/Import/Import.class.php:89
 msgid "No es posible iniciar una transacción"
 msgstr "Unable to start a transaction"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:508
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:526
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Error while updating accounts' passwords"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:517
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:535
 msgid "Errores al actualizar las claves de las cuentas del histórico"
 msgstr "Error while updating accounts' passwords in history"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:524
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:542
 msgid "Errores al actualizar datos de campos personalizados"
 msgstr "Error while updating custom fields data"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:529
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:547
+#: ../../../../inc/SP/Import/Import.class.php:95
 msgid "No es posible finalizar una transacción"
 msgstr "Unable to finish a transaction"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:547
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:565
 msgid "Error al guardar el hash de la clave maestra"
 msgstr "Error while saving Master Password's hash"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:566
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:584
 msgid "Generar Clave Temporal"
 msgstr "Generate Temporary Password"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:569
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:587
 msgid "Clave Temporal Generada"
 msgstr "Temporary Password Generated"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:574
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:592
 #, php-format
 msgid "Clave Maestra %s"
 msgstr "Master Password %s"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:575
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:593
 msgid ""
 "Se ha generado una nueva clave para el acceso a sysPass y se solicitará en "
 "el siguiente inicio."
@@ -1217,73 +1254,73 @@ msgstr ""
 "A new sysPass master password has been generated, so the next time you log "
 "into the application it will be requested."
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:577
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:595
 #, php-format
 msgid "La nueva clave es: %s"
 msgstr "The new Master Password is: %s"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:579
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:597
 msgid "No olvide acceder lo antes posible para guardar los cambios."
 msgstr ""
 "Please, do not forget to log in as soon as possible to save the changes."
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:590
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:608
 msgid "Error al generar clave temporal"
 msgstr "Error while generating temporary password"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:631
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:649
 #: ../../../../inc/SP/Forms/AccountForm.class.php:79
 #: ../../../../inc/SP/Forms/UserForm.class.php:109
 msgid "Las claves no coinciden"
 msgstr "The passwords do not match"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:636
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:654
 msgid "Error al realizar la exportación"
 msgstr "Error while exporting"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:641
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:659
 msgid "Proceso de exportación finalizado"
 msgstr "Export process finished"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:303
+#: ../../../../inc/SP/Controller/ConfigController.class.php:322
 #: ../../../../inc/SP/Core/Acl.class.php:243
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:142
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:232
 msgid "Encriptación"
 msgstr "Encryption"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:348
+#: ../../../../inc/SP/Controller/ConfigController.class.php:367
 msgid "Último backup"
 msgstr "Last backup"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:348
+#: ../../../../inc/SP/Controller/ConfigController.class.php:367
 msgid "No se encontraron backups"
 msgstr "There aren't backups available"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:359
+#: ../../../../inc/SP/Controller/ConfigController.class.php:378
 msgid "Última exportación"
 msgstr "Last export"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:359
+#: ../../../../inc/SP/Controller/ConfigController.class.php:378
 msgid "No se encontró archivo de exportación"
 msgstr "No export file found"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:361
+#: ../../../../inc/SP/Controller/ConfigController.class.php:380
 #: ../../../../inc/SP/Core/Acl.class.php:244
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:7
 msgid "Copia de Seguridad"
 msgstr "Backup"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:383
-#: ../../../../inc/SP/Import/Import.class.php:65
+#: ../../../../inc/SP/Controller/ConfigController.class.php:402
+#: ../../../../inc/SP/Import/Import.class.php:66
 #: ../../../../inc/SP/Import/ImportBase.class.php:77
 msgid "Importar Cuentas"
 msgstr "Import Accounts"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:406
+#: ../../../../inc/SP/Controller/ConfigController.class.php:425
 msgid "No instalado"
 msgstr "Not installed"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:408
+#: ../../../../inc/SP/Controller/ConfigController.class.php:427
 #: ../../../../inc/SP/Controller/MainController.class.php:577
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:77
 msgid "Información"
@@ -1343,7 +1380,7 @@ msgstr "Description"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:72
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:89
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:191
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:160
 msgid "Categorías"
 msgstr "Categories"
 
@@ -1354,7 +1391,7 @@ msgstr "Search for Category"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:90
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:91
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:189
-#: ../../../../inc/themes/material-blue/views/account/account.inc:85
+#: ../../../../inc/themes/material-blue/views/account/account.inc:89
 msgid "Nueva Categoría"
 msgstr "New Category"
 
@@ -1374,7 +1411,7 @@ msgstr "Delete Category"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:146
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:90
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:198
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:167
 msgid "Clientes"
 msgstr "Customers"
 
@@ -1385,7 +1422,7 @@ msgstr "Search for Customer"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:164
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:165
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:176
-#: ../../../../inc/themes/material-blue/views/account/account.inc:64
+#: ../../../../inc/themes/material-blue/views/account/account.inc:66
 msgid "Nuevo Cliente"
 msgstr "New Customer"
 
@@ -1404,14 +1441,15 @@ msgid "Eliminar Cliente"
 msgstr "Delete Customer"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:204
-#: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:41
+#: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:43
+#: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:45
 msgid "Módulo"
 msgstr "Module"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:222
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:69
-#: ../../../../inc/themes/material-blue/views/account/account.inc:244
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:205
+#: ../../../../inc/themes/material-blue/views/account/account.inc:256
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:174
 msgid "Campos Personalizados"
 msgstr "Custom Fields"
 
@@ -1441,9 +1479,9 @@ msgstr "Delete Field"
 #: ../../../../inc/SP/Core/Acl.class.php:219
 #: ../../../../inc/themes/material-blue/views/account/files.inc:5
 #: ../../../../inc/themes/material-blue/views/account/files.inc:15
-#: ../../../../inc/themes/material-blue/views/config/general-files.inc:4
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:86
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:233
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:208
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:88
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:202
 msgid "Archivos"
 msgstr "Files"
 
@@ -1464,16 +1502,6 @@ msgstr "View File"
 msgid "Eliminar Archivo"
 msgstr "Delete File"
 
-#: ../../../../inc/SP/Controller/Grids/Items.class.php:365
-#: ../../../../inc/SP/Controller/MainController.class.php:575
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:88
-#: ../../../../inc/themes/material-blue/views/account/linkedAccounts.inc:13
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:4
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:29
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:226
-msgid "Cuentas"
-msgstr "Accounts"
-
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:373
 msgid "Buscar Cuenta"
 msgstr "Search for Account"
@@ -1481,6 +1509,7 @@ msgstr "Search for Account"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:404
 #: ../../../../inc/SP/Controller/LoginController.class.php:250
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:49
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:51
 msgid "Perfil"
 msgstr "Profile"
 
@@ -1492,8 +1521,9 @@ msgstr "Properties"
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:91
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:24
 #: ../../../../inc/themes/material-blue/views/itemshow/groups.inc:43
-#: ../../../../inc/themes/material-blue/views/itemshow/groups.inc:46
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:170
+#: ../../../../inc/themes/material-blue/views/itemshow/groups.inc:45
+#: ../../../../inc/themes/material-blue/views/itemshow/groups.inc:48
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:139
 msgid "Usuarios"
 msgstr "Users"
 
@@ -1509,7 +1539,7 @@ msgstr "New User"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:458
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:459
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:283
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:292
 msgid "Importar usuarios de LDAP"
 msgstr "Import users from LDAP"
 
@@ -1541,7 +1571,7 @@ msgstr "Delete User"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:537
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:92
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:46
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:177
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:146
 msgid "Grupos"
 msgstr "Groups"
 
@@ -1568,7 +1598,7 @@ msgid "Eliminar Grupo"
 msgstr "Delete Group"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:609
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:184
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:153
 msgid "Perfiles"
 msgstr "Profiles"
 
@@ -1601,12 +1631,13 @@ msgstr "Delete Profile"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:678
 #: ../../../../inc/SP/Log/Email.class.php:63
-#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:23
+#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:25
+#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:27
 msgid "Acción"
 msgstr "Action"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:693
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:212
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:181
 msgid "Autorizaciones API"
 msgstr "API Authorizations"
 
@@ -1654,6 +1685,7 @@ msgstr "Notify"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:766
 #: ../../../../inc/themes/material-blue/views/account/details.inc:18
+#: ../../../../inc/themes/material-blue/views/account/details.inc:20
 #: ../../../../inc/themes/material-blue/views/itemshow/publiclinks.inc:31
 msgid "Visitas"
 msgstr "Visits"
@@ -1683,8 +1715,9 @@ msgid "Eliminar Enlace"
 msgstr "Delete Link"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:855
-#: ../../../../inc/themes/material-blue/views/account/account.inc:172
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:240
+#: ../../../../inc/themes/material-blue/views/account/account.inc:176
+#: ../../../../inc/themes/material-blue/views/account/account.inc:178
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:209
 msgid "Etiquetas"
 msgstr "Tags"
 
@@ -1750,7 +1783,7 @@ msgstr "Reset Data"
 #: ../../../../inc/SP/Controller/Grids/Notices.class.php:54
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:85
-#: ../../../../inc/themes/material-blue/views/account/account.inc:152
+#: ../../../../inc/themes/material-blue/views/account/account.inc:156
 #: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:63
 #: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:70
 #: ../../../../inc/themes/material-blue/views/wiki/wikipage.inc:24
@@ -2311,7 +2344,7 @@ msgid "Editar Clave de Cuenta"
 msgstr "Edit Account Password"
 
 #: ../../../../inc/SP/Core/Acl.class.php:216
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:58
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:60
 msgid "Ver Historial"
 msgstr "View History"
 
@@ -2381,7 +2414,7 @@ msgid "Gestión Perfiles"
 msgstr "Profiles Management"
 
 #: ../../../../inc/SP/Core/Acl.class.php:242
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:135
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:225
 msgid "Configuración General"
 msgstr "General Configuration"
 
@@ -2390,12 +2423,12 @@ msgid "Exportar"
 msgstr "Export"
 
 #: ../../../../inc/SP/Core/Acl.class.php:246
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:156
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:246
 msgid "Importar"
 msgstr "Import"
 
 #: ../../../../inc/SP/Core/Acl.class.php:247
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:254
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:262
 msgid "Log de Eventos"
 msgstr "Event Log"
 
@@ -2427,7 +2460,7 @@ msgid "Error al realizar backup en modo compatibilidad"
 msgstr "Error while doing backup in compatibility mode"
 
 #: ../../../../inc/SP/Core/Crypt.class.php:131
-#: ../../../../inc/SP/Log/Email.class.php:140
+#: ../../../../inc/SP/Log/Email.class.php:141
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:70
 #: ../../../../js/strings.js.php:85
 msgid "Aviso"
@@ -2554,148 +2587,148 @@ msgstr "Update"
 msgid "Acceder"
 msgstr "Sign in"
 
-#: ../../../../inc/SP/Core/Installer.class.php:135
+#: ../../../../inc/SP/Core/Installer.class.php:138
 msgid "Indicar nombre de usuario admin"
 msgstr "Enter the admin username"
 
-#: ../../../../inc/SP/Core/Installer.class.php:136
+#: ../../../../inc/SP/Core/Installer.class.php:139
 msgid "Usuario admin para acceso a la aplicación"
 msgstr "Admin user to login to the application"
 
-#: ../../../../inc/SP/Core/Installer.class.php:140
+#: ../../../../inc/SP/Core/Installer.class.php:143
 msgid "Indicar la clave de admin"
 msgstr "Enter the admin's password"
 
-#: ../../../../inc/SP/Core/Installer.class.php:141
+#: ../../../../inc/SP/Core/Installer.class.php:144
 msgid "Clave del usuario admin de la aplicación"
 msgstr "Application administrator's password"
 
-#: ../../../../inc/SP/Core/Installer.class.php:145
+#: ../../../../inc/SP/Core/Installer.class.php:148
 msgid "Indicar la clave maestra"
 msgstr "Enter the Master Password"
 
-#: ../../../../inc/SP/Core/Installer.class.php:146
+#: ../../../../inc/SP/Core/Installer.class.php:149
 msgid "Clave maestra para encriptar las claves"
 msgstr "Master Password to encrypt the passwords"
 
-#: ../../../../inc/SP/Core/Installer.class.php:150
+#: ../../../../inc/SP/Core/Installer.class.php:153
 msgid "Clave maestra muy corta"
 msgstr "Master Password too short"
 
-#: ../../../../inc/SP/Core/Installer.class.php:151
+#: ../../../../inc/SP/Core/Installer.class.php:154
 msgid "La longitud de la clave maestra ha de ser mayor de 11 caracteres"
 msgstr "The Master Password length need to be at least 11 characters"
 
-#: ../../../../inc/SP/Core/Installer.class.php:155
+#: ../../../../inc/SP/Core/Installer.class.php:158
 msgid "Indicar el usuario de la BBDD"
 msgstr "Enter the database user"
 
-#: ../../../../inc/SP/Core/Installer.class.php:156
+#: ../../../../inc/SP/Core/Installer.class.php:159
 msgid "Usuario con permisos de administrador de la Base de Datos"
 msgstr "An user with database administrative rights"
 
-#: ../../../../inc/SP/Core/Installer.class.php:160
+#: ../../../../inc/SP/Core/Installer.class.php:163
 msgid "Indicar la clave de la BBDD"
 msgstr "Enter the database password"
 
-#: ../../../../inc/SP/Core/Installer.class.php:161
+#: ../../../../inc/SP/Core/Installer.class.php:164
 msgid "Clave del usuario administrador de la Base de Datos"
 msgstr "Database administrator's password"
 
-#: ../../../../inc/SP/Core/Installer.class.php:165
+#: ../../../../inc/SP/Core/Installer.class.php:168
 msgid "Indicar el nombre de la BBDD"
 msgstr "Enter the database name"
 
-#: ../../../../inc/SP/Core/Installer.class.php:166
+#: ../../../../inc/SP/Core/Installer.class.php:169
 msgid "Nombre para la BBDD de la aplicación pej. syspass"
 msgstr "Application database name. eg. syspass"
 
-#: ../../../../inc/SP/Core/Installer.class.php:170
+#: ../../../../inc/SP/Core/Installer.class.php:173
 msgid "El nombre de la BBDD no puede contener \".\""
 msgstr "Database name cannot contain \".\""
 
-#: ../../../../inc/SP/Core/Installer.class.php:171
+#: ../../../../inc/SP/Core/Installer.class.php:174
 msgid "Elimine los puntos del nombre de la Base de Datos"
 msgstr "Please, remove dots in database name"
 
-#: ../../../../inc/SP/Core/Installer.class.php:175
+#: ../../../../inc/SP/Core/Installer.class.php:178
 msgid "Indicar el servidor de la BBDD"
 msgstr "Enter the database server"
 
-#: ../../../../inc/SP/Core/Installer.class.php:176
+#: ../../../../inc/SP/Core/Installer.class.php:179
 msgid "Servidor donde se instalará la Base de Datos"
 msgstr "Server where the database will be installed"
 
-#: ../../../../inc/SP/Core/Installer.class.php:195
-#: ../../../../inc/SP/Storage/MySQLHandler.class.php:128
-#: ../../../../inc/SP/Storage/MySQLHandler.class.php:131
-#: ../../../../inc/SP/Storage/MySQLHandler.class.php:149
+#: ../../../../inc/SP/Core/Installer.class.php:202
+#: ../../../../inc/SP/Storage/MySQLHandler.class.php:133
+#: ../../../../inc/SP/Storage/MySQLHandler.class.php:136
+#: ../../../../inc/SP/Storage/MySQLHandler.class.php:160
 msgid "No es posible conectar con la BD"
 msgstr "Unable to connect to the DB"
 
-#: ../../../../inc/SP/Core/Installer.class.php:196
-#: ../../../../inc/SP/Storage/MySQLHandler.class.php:128
-#: ../../../../inc/SP/Storage/MySQLHandler.class.php:132
+#: ../../../../inc/SP/Core/Installer.class.php:203
+#: ../../../../inc/SP/Storage/MySQLHandler.class.php:133
+#: ../../../../inc/SP/Storage/MySQLHandler.class.php:137
 msgid "Compruebe los datos de conexión"
 msgstr "Please, check connection parameters"
 
-#: ../../../../inc/SP/Core/Installer.class.php:230
+#: ../../../../inc/SP/Core/Installer.class.php:237
 msgid "No es posible comprobar el usuario de sysPass"
 msgstr "Unable to check the sysPass user"
 
-#: ../../../../inc/SP/Core/Installer.class.php:231
+#: ../../../../inc/SP/Core/Installer.class.php:238
 msgid "Compruebe los permisos del usuario de conexión a la BD"
 msgstr "Please, check the DB connection user rights"
 
-#: ../../../../inc/SP/Core/Installer.class.php:277
+#: ../../../../inc/SP/Core/Installer.class.php:284
 #, php-format
 msgid "Error al crear el usuario de conexión a MySQL '%s'"
 msgstr "Error while creating the MySQL connection user '%s'"
 
-#: ../../../../inc/SP/Core/Installer.class.php:293
+#: ../../../../inc/SP/Core/Installer.class.php:300
 msgid "La BBDD ya existe"
 msgstr "The database already exists"
 
-#: ../../../../inc/SP/Core/Installer.class.php:294
+#: ../../../../inc/SP/Core/Installer.class.php:301
 msgid "Indique una nueva Base de Datos o elimine la existente"
 msgstr "Enter a new database or delete the existing one"
 
-#: ../../../../inc/SP/Core/Installer.class.php:297
+#: ../../../../inc/SP/Core/Installer.class.php:304
 msgid "La BBDD no existe"
 msgstr "Database does not exist"
 
-#: ../../../../inc/SP/Core/Installer.class.php:298
+#: ../../../../inc/SP/Core/Installer.class.php:305
 msgid "Es necesario crearla y asignar los permisos necesarios"
 msgstr "You need to create it and assign the needed permissions"
 
-#: ../../../../inc/SP/Core/Installer.class.php:308
-#: ../../../../inc/SP/Core/Installer.class.php:409
+#: ../../../../inc/SP/Core/Installer.class.php:315
+#: ../../../../inc/SP/Core/Installer.class.php:416
 msgid "Error al crear la BBDD"
 msgstr "Error while creating DB"
 
-#: ../../../../inc/SP/Core/Installer.class.php:309
-#: ../../../../inc/SP/Core/Installer.class.php:329
+#: ../../../../inc/SP/Core/Installer.class.php:316
+#: ../../../../inc/SP/Core/Installer.class.php:336
 msgid "Verifique los permisos del usuario de la Base de Datos"
 msgstr "Please check database user permissions"
 
-#: ../../../../inc/SP/Core/Installer.class.php:328
+#: ../../../../inc/SP/Core/Installer.class.php:335
 #, php-format
 msgid "Error al establecer permisos de la BBDD ('%s')"
 msgstr "Error while setting database permissions ('%s')"
 
-#: ../../../../inc/SP/Core/Installer.class.php:382
+#: ../../../../inc/SP/Core/Installer.class.php:389
 msgid "El archivo de estructura de la BBDD no existe"
 msgstr "The database structure file does not exist"
 
-#: ../../../../inc/SP/Core/Installer.class.php:383
+#: ../../../../inc/SP/Core/Installer.class.php:390
 msgid "No es posible crear la BBDD de la aplicación. Descárguela de nuevo."
 msgstr "Unable to create the application database. Please download it again."
 
-#: ../../../../inc/SP/Core/Installer.class.php:391
+#: ../../../../inc/SP/Core/Installer.class.php:398
 msgid "Error al seleccionar la BBDD"
 msgstr "Error while selecting database."
 
-#: ../../../../inc/SP/Core/Installer.class.php:392
+#: ../../../../inc/SP/Core/Installer.class.php:399
 msgid ""
 "No es posible usar la Base de Datos para crear la estructura. Compruebe los "
 "permisos y que no exista."
@@ -2703,38 +2736,38 @@ msgstr ""
 "Unable to use the database to create the structure. Check permissions and it "
 "does not exist."
 
-#: ../../../../inc/SP/Core/Installer.class.php:410
+#: ../../../../inc/SP/Core/Installer.class.php:417
 msgid "Error al crear la estructura de la Base de Datos."
 msgstr "Error while creating database structure."
 
-#: ../../../../inc/SP/Core/Installer.class.php:428
+#: ../../../../inc/SP/Core/Installer.class.php:435
 msgid "Error al comprobar la base de datos"
 msgstr "Error while checking the database"
 
-#: ../../../../inc/SP/Core/Installer.class.php:429
+#: ../../../../inc/SP/Core/Installer.class.php:436
 msgid "Intente de nuevo la instalación"
 msgstr "Please, try the installation again"
 
-#: ../../../../inc/SP/Core/Installer.class.php:451
+#: ../../../../inc/SP/Core/Installer.class.php:458
 msgid "Error al crear el grupo \"admin\""
 msgstr "Error while creating \"admin\" group"
 
-#: ../../../../inc/SP/Core/Installer.class.php:452
-#: ../../../../inc/SP/Core/Installer.class.php:464
-#: ../../../../inc/SP/Core/Installer.class.php:482
-#: ../../../../inc/SP/Core/Installer.class.php:495
+#: ../../../../inc/SP/Core/Installer.class.php:459
+#: ../../../../inc/SP/Core/Installer.class.php:471
+#: ../../../../inc/SP/Core/Installer.class.php:489
+#: ../../../../inc/SP/Core/Installer.class.php:502
 msgid "Informe al desarrollador"
 msgstr "Warn to developer"
 
-#: ../../../../inc/SP/Core/Installer.class.php:463
+#: ../../../../inc/SP/Core/Installer.class.php:470
 msgid "Error al crear el perfil \"admin\""
 msgstr "Error while creating \"admin\" profile"
 
-#: ../../../../inc/SP/Core/Installer.class.php:481
+#: ../../../../inc/SP/Core/Installer.class.php:488
 msgid "Error al crear el usuario \"admin\""
 msgstr "Error while creating \"admin\" user"
 
-#: ../../../../inc/SP/Core/Installer.class.php:494
+#: ../../../../inc/SP/Core/Installer.class.php:501
 msgid "Error al actualizar la clave maestra del usuario \"admin\""
 msgstr "Error while updating Master Password for user \"admin\""
 
@@ -2975,30 +3008,30 @@ msgstr "Please, check PHP configuration for upload files"
 msgid "Compruebe los permisos del directorio temporal"
 msgstr "Please, check temporary directory permissions"
 
-#: ../../../../inc/SP/Import/Import.class.php:82
+#: ../../../../inc/SP/Import/Import.class.php:83
 #, php-format
 msgid "Tipo mime no soportado (\"%s\")"
 msgstr "Mime type not supported (\"%s\")"
 
-#: ../../../../inc/SP/Import/Import.class.php:83
+#: ../../../../inc/SP/Import/Import.class.php:84
 msgid "Compruebe el formato del archivo"
 msgstr "Please, check the file format"
 
-#: ../../../../inc/SP/Import/Import.class.php:89
+#: ../../../../inc/SP/Import/Import.class.php:98
 msgid "Cuentas importadas"
 msgstr "Accounts imported"
 
-#: ../../../../inc/SP/Import/Import.class.php:92
+#: ../../../../inc/SP/Import/Import.class.php:103
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:66
 #: ../../../../js/strings.js.php:79
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:64
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:129
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:260
-#: ../../../../inc/themes/material-blue/views/config/import.inc:152
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:68
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:127
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:275
+#: ../../../../inc/themes/material-blue/views/config/import.inc:101
 msgid "Ayuda"
 msgstr "Help"
 
-#: ../../../../inc/SP/Import/Import.class.php:103
+#: ../../../../inc/SP/Import/Import.class.php:114
 msgid "Importación finalizada"
 msgstr "Import finished"
 
@@ -3045,17 +3078,17 @@ msgid "Realizado por"
 msgstr "Performed by"
 
 #: ../../../../inc/SP/Log/Email.class.php:76
-#: ../../../../inc/SP/Log/Email.class.php:186
+#: ../../../../inc/SP/Log/Email.class.php:191
 msgid "Enviar Email"
 msgstr "Send Email"
 
 #: ../../../../inc/SP/Log/Email.class.php:81
-#: ../../../../inc/SP/Log/Email.class.php:193
+#: ../../../../inc/SP/Log/Email.class.php:198
 msgid "Correo enviado"
 msgstr "Email sent"
 
 #: ../../../../inc/SP/Log/Email.class.php:82
-#: ../../../../inc/SP/Log/Email.class.php:187
+#: ../../../../inc/SP/Log/Email.class.php:192
 msgid "Destinatario"
 msgstr "Recipient"
 
@@ -3064,7 +3097,7 @@ msgid "CC"
 msgstr "CC"
 
 #: ../../../../inc/SP/Log/Email.class.php:91
-#: ../../../../inc/SP/Log/Email.class.php:197
+#: ../../../../inc/SP/Log/Email.class.php:202
 msgid "Error al enviar correo"
 msgstr "Error while sending email"
 
@@ -3077,7 +3110,7 @@ msgid "Vaciar Eventos"
 msgstr "Clear Events"
 
 #: ../../../../inc/SP/Log/Log.class.php:95
-#: ../../../../inc/themes/material-blue/views/eventlog/eventlog.inc:137
+#: ../../../../inc/themes/material-blue/views/eventlog/eventlog.inc:144
 msgid "Vaciar registro de eventos"
 msgstr "Clear event log"
 
@@ -3142,7 +3175,7 @@ msgstr "Number"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:66
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:60
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:77
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:81
 msgid "Email"
 msgstr "Email"
 
@@ -3561,7 +3594,7 @@ msgid ""
 msgstr "Please update the PHP version to run sysPass"
 
 #: ../../../../inc/SP/Util/Checks.class.php:122
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:263
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:265
 msgid "Módulo no disponible"
 msgstr "Module unavailable"
 
@@ -3606,13 +3639,13 @@ msgid "Ver Detalles"
 msgstr "View Details"
 
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:49
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:65
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:67
 msgid "Editar"
 msgstr "Edit"
 
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:50
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:80
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:79
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:81
 msgid "Eliminar"
 msgstr "Delete"
 
@@ -3621,18 +3654,18 @@ msgid "Cambiar Clave"
 msgstr "Change password"
 
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:52
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:142
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:146
 msgid "Admin Aplicación"
 msgstr "Application Admin"
 
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:53
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:149
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:153
 msgid "Admin Cuentas"
 msgstr "Account Admin"
 
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:55
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:154
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:157
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:158
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:161
 msgid "Deshabilitado"
 msgstr "Disabled"
 
@@ -3782,34 +3815,34 @@ msgstr "Clear event log?"
 
 #: ../../../../js/strings.js.php:47
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:75
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:205
-#: ../../../../inc/themes/material-blue/views/config/import.inc:51
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:200
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:67
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:231
+#: ../../../../inc/themes/material-blue/views/config/import.inc:54
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:221
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:71
 msgid "Seleccionar Grupo"
 msgstr "Select Group"
 
 #: ../../../../js/strings.js.php:48
-#: ../../../../inc/themes/material-blue/views/config/import.inc:27
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:222
-#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:14
-#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:93
+#: ../../../../inc/themes/material-blue/views/config/import.inc:28
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:245
+#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:16
+#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:95
 msgid "Seleccionar Usuario"
 msgstr "Select User"
 
 #: ../../../../js/strings.js.php:49
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:53
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:55
 msgid "Seleccionar Perfil"
 msgstr "Select Profile"
 
 #: ../../../../js/strings.js.php:50
-#: ../../../../inc/themes/material-blue/views/account/account.inc:57
+#: ../../../../inc/themes/material-blue/views/account/account.inc:59
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:49
 msgid "Seleccionar Cliente"
 msgstr "Select Customer"
 
 #: ../../../../js/strings.js.php:51
-#: ../../../../inc/themes/material-blue/views/account/account.inc:78
+#: ../../../../inc/themes/material-blue/views/account/account.inc:82
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:57
 msgid "Seleccionar Categoría"
 msgstr "Select Category"
@@ -3869,7 +3902,7 @@ msgid "Longitud"
 msgstr "Length"
 
 #: ../../../../js/strings.js.php:65
-#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:27
+#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:31
 msgid "Seleccionar Acción"
 msgstr "Select Action"
 
@@ -3948,10 +3981,10 @@ msgid "Este proceso puede durar algo de tiempo. Desea continuar?"
 msgstr "This process could long sometime. Do you wish to continue?"
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:67
-#: ../../../../inc/themes/material-blue/views/account/account.inc:131
-#: ../../../../inc/themes/material-blue/views/account/account.inc:138
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:105
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:112
+#: ../../../../inc/themes/material-blue/views/account/account.inc:135
+#: ../../../../inc/themes/material-blue/views/account/account.inc:142
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:109
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:116
 #: ../../../../inc/themes/material-blue/views/itemshow/userspass.inc:47
 #: ../../../../inc/themes/material-blue/views/itemshow/userspass.inc:54
 #: ../../../../inc/themes/material-blue/views/main/install.inc:62
@@ -3960,26 +3993,38 @@ msgid "Clave (repetir)"
 msgstr "Password (repeat)"
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:78
-#: ../../../../inc/themes/material-blue/views/account/account.inc:145
-#: ../../../../inc/themes/material-blue/views/account/details.inc:89
+#: ../../../../inc/themes/material-blue/views/account/account.inc:149
+#: ../../../../inc/themes/material-blue/views/account/details.inc:121
+#: ../../../../inc/themes/material-blue/views/account/details.inc:123
 msgid "Fecha Caducidad Clave"
 msgstr "Password Expiry Date"
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:88
-#: ../../../../inc/themes/material-blue/views/account/account.inc:156
+#: ../../../../inc/themes/material-blue/views/account/account.inc:160
 msgid "Seleccionar Fecha"
 msgstr "Select date"
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:102
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:101
-#: ../../../../inc/themes/material-blue/views/account/request.inc:42
+#: ../../../../inc/themes/material-blue/views/account/request.inc:58
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:297
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:163
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:262
+#: ../../../../inc/themes/material-blue/views/config/general.inc:29
+#: ../../../../inc/themes/material-blue/views/config/import.inc:89
+#: ../../../../inc/themes/material-blue/views/config/info.inc:121
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:283
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:150
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:276
+#: ../../../../inc/themes/material-blue/views/eventlog/eventlog.inc:137
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:171
 msgid "Atrás"
 msgstr "Back"
 
-#: ../../../../inc/themes/material-blue/views/account/account-link.inc:39
-#: ../../../../inc/themes/material-blue/views/account/account.inc:161
+#: ../../../../inc/themes/material-blue/views/account/account-link.inc:65
+#: ../../../../inc/themes/material-blue/views/account/account.inc:165
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:140
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:119
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:123
 msgid "Notas"
 msgstr "Notes"
 
@@ -3989,12 +4034,12 @@ msgstr "Accesses"
 
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:20
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:104
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:114
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:116
 msgid "Permisos"
 msgstr "Permissions"
 
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:26
-#: ../../../../inc/themes/material-blue/views/itemshow/groups.inc:47
+#: ../../../../inc/themes/material-blue/views/itemshow/groups.inc:49
 msgid "Seleccionar Usuarios"
 msgstr "Select Users"
 
@@ -4008,7 +4053,8 @@ msgid "Seleccionar Grupos"
 msgstr "Select Groups"
 
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:72
-#: ../../../../inc/themes/material-blue/views/account/details.inc:30
+#: ../../../../inc/themes/material-blue/views/account/details.inc:42
+#: ../../../../inc/themes/material-blue/views/account/details.inc:44
 msgid "Grupo Principal"
 msgstr "Main Group"
 
@@ -4018,7 +4064,7 @@ msgid "Cuenta Privada"
 msgstr "Private Account"
 
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:92
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:100
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:102
 msgid "Privada"
 msgstr "Private"
 
@@ -4027,7 +4073,7 @@ msgid "Cuenta Privada Grupo"
 msgstr "Private Account for Group"
 
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:105
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:107
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:109
 msgid "Privada Grupo"
 msgstr "Private for Group"
 
@@ -4035,33 +4081,37 @@ msgstr "Private for Group"
 msgid "Histórico"
 msgstr "History"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:176
+#: ../../../../inc/themes/material-blue/views/account/account.inc:182
 msgid "Seleccionar Etiquetas"
 msgstr "Select Tags"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:187
+#: ../../../../inc/themes/material-blue/views/account/account.inc:193
+#: ../../../../inc/themes/material-blue/views/account/account.inc:195
 msgid "Cuenta Vinculada"
 msgstr "Linked Account"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:195
+#: ../../../../inc/themes/material-blue/views/account/account.inc:203
 msgid "Seleccionar Cuenta"
 msgstr "Select Account"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:202
+#: ../../../../inc/themes/material-blue/views/account/account.inc:210
+#: ../../../../inc/themes/material-blue/views/account/account.inc:212
 msgid "Historial"
 msgstr "History"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:207
+#: ../../../../inc/themes/material-blue/views/account/account.inc:217
 msgid "Seleccionar fecha"
 msgstr "Select date"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:219
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:185
+#: ../../../../inc/themes/material-blue/views/account/account.inc:229
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:197
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:199
 msgid "Última Modificación"
 msgstr "Last Modification"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:226
-#: ../../../../inc/themes/material-blue/views/account/account.inc:229
+#: ../../../../inc/themes/material-blue/views/account/account.inc:236
+#: ../../../../inc/themes/material-blue/views/account/account.inc:238
+#: ../../../../inc/themes/material-blue/views/account/account.inc:241
 msgid "Enlace Público"
 msgstr "Public Link"
 
@@ -4085,31 +4135,38 @@ msgstr "Restore account from this point"
 msgid "Detalles"
 msgstr "Details"
 
-#: ../../../../inc/themes/material-blue/views/account/details.inc:22
+#: ../../../../inc/themes/material-blue/views/account/details.inc:26
+#: ../../../../inc/themes/material-blue/views/account/details.inc:28
 msgid "Fecha Alta"
 msgstr "Date Added"
 
-#: ../../../../inc/themes/material-blue/views/account/details.inc:26
+#: ../../../../inc/themes/material-blue/views/account/details.inc:34
+#: ../../../../inc/themes/material-blue/views/account/details.inc:36
 msgid "Creador"
 msgstr "Creator"
 
-#: ../../../../inc/themes/material-blue/views/account/details.inc:35
+#: ../../../../inc/themes/material-blue/views/account/details.inc:51
+#: ../../../../inc/themes/material-blue/views/account/details.inc:53
 msgid "Usuarios Secundarios"
 msgstr "Secondary Users"
 
-#: ../../../../inc/themes/material-blue/views/account/details.inc:55
+#: ../../../../inc/themes/material-blue/views/account/details.inc:73
+#: ../../../../inc/themes/material-blue/views/account/details.inc:75
 msgid "Grupos Secundarios"
 msgstr "Secondary Groups"
 
-#: ../../../../inc/themes/material-blue/views/account/details.inc:76
+#: ../../../../inc/themes/material-blue/views/account/details.inc:96
+#: ../../../../inc/themes/material-blue/views/account/details.inc:98
 msgid "Fecha Edición"
 msgstr "Date Modified"
 
-#: ../../../../inc/themes/material-blue/views/account/details.inc:80
+#: ../../../../inc/themes/material-blue/views/account/details.inc:104
+#: ../../../../inc/themes/material-blue/views/account/details.inc:106
 msgid "Editor"
 msgstr "Editor"
 
-#: ../../../../inc/themes/material-blue/views/account/details.inc:85
+#: ../../../../inc/themes/material-blue/views/account/details.inc:113
+#: ../../../../inc/themes/material-blue/views/account/details.inc:115
 msgid "Fecha de Clave"
 msgstr "Password Date"
 
@@ -4130,15 +4187,15 @@ msgstr "Linked Accounts"
 msgid "Solicitar Modificación de Cuenta"
 msgstr "Request Account Modification"
 
-#: ../../../../inc/themes/material-blue/views/account/request.inc:20
+#: ../../../../inc/themes/material-blue/views/account/request.inc:36
 msgid "Petición"
 msgstr "Request"
 
-#: ../../../../inc/themes/material-blue/views/account/request.inc:26
+#: ../../../../inc/themes/material-blue/views/account/request.inc:42
 msgid "Descripción de la petición"
 msgstr "Request Description"
 
-#: ../../../../inc/themes/material-blue/views/account/request.inc:49
+#: ../../../../inc/themes/material-blue/views/account/request.inc:65
 msgid "Enviar"
 msgstr "Send"
 
@@ -4198,7 +4255,7 @@ msgstr "Search for accounts with expired password"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:39
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:43
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:121
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:123
 msgid "Búsqueda global"
 msgstr "Global search"
 
@@ -4218,29 +4275,192 @@ msgstr "More Filters"
 msgid "Seleccionar Etiqueta"
 msgstr "Select Tag"
 
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:12
+msgid "Búsqueda"
+msgstr "Searching"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:18
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:46
+msgid "Resultados por página"
+msgstr "Results per page"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:23
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:51
+msgid "Número de resultados por página a mostrar, al realizar una búsqueda."
+msgstr "Number of results per page to show when doing searches."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:34
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:62
+msgid "Número de resultados por página"
+msgstr "Results per page"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:44
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:72
+msgid ""
+"Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
+"de la cuenta."
+msgstr "Enables the account name as a link to account details."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:53
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:81
+msgid "Nombre de cuenta como enlace"
+msgstr "Account name as link"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:63
+msgid ""
+"Permite que todos los usuarios puedan realizar búsquedas en todas las "
+"cuentas, pero no pueden ver el contenido de las que no tienen permisos."
+msgstr ""
+"Allows the users to do searches that includes all accounts, if they don't "
+"have permission they can't view the accounts details."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:72
+msgid "Búsquedas globales"
+msgstr "Global searches"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:82
+msgid "Generar una imagen con el texto de la clave de la cuenta."
+msgstr "Generate an image with a text of the account password."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:86
+msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
+msgstr ""
+"Useful for environments where copying a password to clipboard is a security "
+"risk."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:96
+msgid "Imagen para mostrar clave"
+msgstr "Image to show password"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:106
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:145
+msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
+msgstr "Enables to show account's search results like a card format."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:116
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:154
+msgid "Resultados en Tarjetas"
+msgstr "Results like Cards"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:123
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:188
+msgid "Enlaces Públicos"
+msgstr "Public Links"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:133
+msgid ""
+"Habilita la posibilidad de generar enlaces públicos para ver los detalles de "
+"una cuenta."
+msgstr ""
+"Enables the ability to create public links to view an account's details"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:137
+msgid ""
+"Las cuentas enlazadas serán visibles por cualquiera que disponga del enlace."
+msgstr "The linked accounts will be visible by anyone that have the link."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:141
+msgid ""
+"Para crear enlaces, los usuarios tienen que tener activada la opción en su "
+"perfl."
+msgstr ""
+"To create links, the users must have activated the option in their profiles."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:151
+msgid "Habilitar Enlaces Públicos"
+msgstr "Enable Public Links"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:157
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:166
+msgid "Tiempo de caducidad"
+msgstr "Expire time"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:172
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:181
+msgid "Número máximo  de visitas"
+msgstr "Maximum visits"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:191
+msgid "La clave de la cuenta es visualizada como una imagen."
+msgstr "The account password is shown as image."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:201
+msgid "Usar imagen para clave"
+msgstr "Use an image for password"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:218
+msgid "Habilita la subida/descarga de archivos para las cuentas."
+msgstr "Enables the uploads/downloads of account files."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:228
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:202
+msgid "Gestión de archivos"
+msgstr "Files management"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:234
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:252
+msgid "Extensiones de archivos permitidas"
+msgstr "Allowed file extensions"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:239
+msgid "Extensiones permitidas para la subida de archivos."
+msgstr "Allowed file extensions for uploading."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:243
+msgid "Se permite un máximo de 4 caracteres."
+msgstr "Max 4 characters allowed."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:247
+msgid ""
+"Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
+"configuración."
+msgstr ""
+"Write the extension and press enter to add. Remember to save the "
+"configuration."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:260
+msgid "Tamaño máximo de archivo"
+msgstr "Maximum file size"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:265
+msgid "Establece el tamaño máximo para subir archivos."
+msgstr "Set the maximum file size for uploading."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:269
+msgid "El máximo absuluto es de 16MB."
+msgstr "The absolute maximum is 16MB."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:280
+msgid "Tamaño máximo de archivo en bytes"
+msgstr "Maximum file size in bytes"
+
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:13
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:92
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:16
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:96
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:99
 msgid "Resultado"
 msgstr "Result"
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:21
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:100
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:23
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:26
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:106
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:109
 msgid "Descargar Actual"
 msgstr "Download Current"
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:28
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:32
 msgid "Copia BBDD"
 msgstr "DB Backup"
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:35
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:39
 msgid "Copia sysPass"
 msgstr "sysPass Backup"
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:38
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:42
 msgid "No hay backups para descargar"
 msgstr "There aren't any backups for download"
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:65
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:69
 msgid ""
 "La copia de seguridad permite guardar y descargar tanto la base de datos de "
 "sysPass como los archivos de la aplicación y su configuración."
@@ -4248,7 +4468,7 @@ msgstr ""
 "The backup allows you to save and download either sysPass database or "
 "application files and its configuration."
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:67
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:71
 msgid ""
 "Con este método es posible guardar todos los datos de sysPass en otro lugar "
 "o utilizarlos para hacer la aplicación portable."
@@ -4256,25 +4476,25 @@ msgstr ""
 "With this method it's possible to save all sysPass data in another place or "
 "use it to make a portable application."
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:82
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:86
 msgid "Exportar Cuentas"
 msgstr "Export Accounts"
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:111
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:119
 msgid "No hay archivos XML para descargar"
 msgstr "There aren't any XML files for download"
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:117
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:125
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:133
 msgid "Clave de Exportación"
 msgstr "Export Password"
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:131
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:139
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:147
 msgid "Clave de Exportación (repetir)"
 msgstr "Export Password (repeat)"
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:161
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:176
 msgid ""
 "La exportación de cuentas permite guardar las cuentas y sus datos en formato "
 "XML para posteriormente poder ser importados en otras instancias de sysPass."
@@ -4282,18 +4502,18 @@ msgstr ""
 "The accounts export allows you to save the accounts and their data in XML "
 "format to be imported in another sysPass instance."
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:163
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:178
 msgid "Los elementos exportados son cuentas, clientes y categorías."
 msgstr "The exported items are accounts, customers and categories."
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:165
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:180
 msgid ""
 "Las claves de las cuentas son exportadas de forma encriptada para mayor "
 "seguridad."
 msgstr ""
 "The accounts passwords are exported in an excrypted way for better security."
 
-#: ../../../../inc/themes/material-blue/views/config/backup.inc:167
+#: ../../../../inc/themes/material-blue/views/config/backup.inc:182
 msgid ""
 "Es posible establecer una clave de exportación para guardar todos los datos "
 "encriptados en el archivo XML."
@@ -4302,8 +4522,8 @@ msgstr ""
 "the XML file."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:8
-#: ../../../../inc/themes/material-blue/views/config/import.inc:84
-#: ../../../../inc/themes/material-blue/views/config/import.inc:99
+#: ../../../../inc/themes/material-blue/views/config/import.inc:148
+#: ../../../../inc/themes/material-blue/views/config/import.inc:163
 #: ../../../../inc/themes/material-blue/views/main/install.inc:48
 #: ../../../../inc/themes/material-blue/views/main/install.inc:54
 #: ../../../../inc/themes/material-blue/views/main/login.inc:49
@@ -4311,50 +4531,52 @@ msgid "Clave Maestra"
 msgstr "Master Password"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:18
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:157
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:21
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:155
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:158
 msgid "Último cambio"
 msgstr "Last Change"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:27
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:35
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:29
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:37
 msgid "Clave Maestra actual"
 msgstr "Current Master Password"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:41
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:49
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:43
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:51
 msgid "Nueva Clave Maestra"
 msgstr "New Master Password"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:55
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:63
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:57
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:65
 msgid "Nueva Clave Maestra (repetir)"
 msgstr "New Master Password (repeat)"
-
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:69
-msgid "No modificar cuentas"
-msgstr "Do not modify accounts"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:75
 msgid "Establece una nueva clave maestra sin re-encriptar las cuentas"
 msgstr "Sets a new Master Password without re-encrypting the accounts."
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:89
-msgid "Confirmar cambio"
-msgstr "Confirm Change"
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:83
+msgid "No modificar cuentas"
+msgstr "Do not modify accounts"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:94
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:92
 msgid "Guarde la nueva clave en un lugar seguro."
 msgstr "You should save the new password on a secure place"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:98
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:96
 msgid "Se volverán a encriptar las claves de todas las cuentas."
 msgstr "All accounts passwords will be encrypted again."
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:102
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:100
 msgid "Los usuarios deberán de introducir la nueva clave maestra."
 msgstr "Users will need to enter the new Master Password."
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:130
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:106
+msgid "Confirmar cambio"
+msgstr "Confirm Change"
+
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:128
 msgid ""
 "La clave maestra es utilizada para encriptar las claves de las cuentas de "
 "sysPass para mantenerlas seguras."
@@ -4362,7 +4584,7 @@ msgstr ""
 "The Master Password is used to encryt sysPass accounts passwords and keep "
 "them safe."
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:132
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:130
 msgid ""
 "Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja "
 "que incluya números, letras y símbolos."
@@ -4370,38 +4592,40 @@ msgstr ""
 "It's advisable to change it from time to time and use a complex password "
 "that includes numbers, letters and symbols."
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:146
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:144
 msgid "Clave Temporal"
 msgstr "Temporary Password"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:160
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:171
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:173
 msgid "No generada"
 msgstr "Not generated"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:165
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:168
 msgid "Válido hasta"
 msgstr "Valid until"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:177
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:179
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:182
 msgid "Intentos"
 msgstr "Attempts"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:185
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:194
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:189
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:198
 msgid "Validez (s)"
 msgstr "Life (s)"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:215
-msgid "Enviar correo"
-msgstr "Send email"
-
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:221
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:210
 msgid ""
 "Envía un correo a todos los usuarios o sólo a los del grupo seleccionado."
 msgstr "Sends an email to all users or only to those whose group is selected."
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:261
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:218
+msgid "Enviar correo"
+msgstr "Send email"
+
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:276
 msgid ""
 "La clave temporal es utilizada como clave maestra para los usuarios que "
 "necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
@@ -4411,220 +4635,65 @@ msgstr ""
 "to enter it during login. This waythere is no need to tell them the real "
 "Master Password."
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:267
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:282
 msgid "Generar"
 msgstr "Generate"
 
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:10
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:42
-msgid "Nombre de cuenta como enlace"
-msgstr "Account name as link"
-
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:14
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:47
-msgid ""
-"Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles "
-"de la cuenta."
-msgstr "Enables the account name as a link to account details."
-
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:28
-msgid "Búsquedas globales"
-msgstr "Global searches"
-
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:32
-msgid ""
-"Permite que todos los usuarios puedan realizar búsquedas en todas las "
-"cuentas, pero no pueden ver el contenido de las que no tienen permisos."
-msgstr ""
-"Allows the users to do searches that includes all accounts, if they don't "
-"have permission they can't view the accounts details."
-
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:46
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:62
-msgid "Resultados por página"
-msgstr "Results per page"
-
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:50
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:67
-msgid "Número de resultados por página a mostrar, al realizar una búsqueda."
-msgstr "Number of results per page to show when doing searches."
-
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:60
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:78
-msgid "Número de resultados por página"
-msgstr "Results per page"
-
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:66
-msgid "Imagen para mostrar clave"
-msgstr "Image to show password"
-
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:70
-msgid "Generar una imagen con el texto de la clave de la cuenta."
-msgstr "Generate an image with a text of the account password."
-
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:74
-msgid "Util para entornos donde copiar la clave supone un riesgo de seguridad."
-msgstr ""
-"Useful for environments where copying a password to clipboard is a security "
-"risk."
-
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:89
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:139
-msgid "Resultados en Tarjetas"
-msgstr "Results like Cards"
-
-#: ../../../../inc/themes/material-blue/views/config/general-accounts.inc:93
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:143
-msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
-msgstr "Enables to show account's search results like a card format."
-
 #: ../../../../inc/themes/material-blue/views/config/general-events.inc:4
 #: ../../../../inc/themes/material-blue/views/itemshow/plugins.inc:61
+#: ../../../../inc/themes/material-blue/views/itemshow/plugins.inc:63
 msgid "Eventos"
 msgstr "Events"
 
-#: ../../../../inc/themes/material-blue/views/config/general-events.inc:10
-msgid "Habilitar log de eventos"
-msgstr "Enable event log"
-
-#: ../../../../inc/themes/material-blue/views/config/general-events.inc:14
+#: ../../../../inc/themes/material-blue/views/config/general-events.inc:13
 msgid "Guarda las acciones realizadas en la aplicación."
 msgstr "Saves the actions done by the application."
 
-#: ../../../../inc/themes/material-blue/views/config/general-events.inc:28
+#: ../../../../inc/themes/material-blue/views/config/general-events.inc:21
+msgid "Habilitar log de eventos"
+msgstr "Enable event log"
+
+#: ../../../../inc/themes/material-blue/views/config/general-events.inc:32
 msgid "Habilitar Syslog"
 msgstr "Enable Syslog"
 
-#: ../../../../inc/themes/material-blue/views/config/general-events.inc:40
+#: ../../../../inc/themes/material-blue/views/config/general-events.inc:43
 msgid "Habilitar Syslog Remoto"
 msgstr "Enable Remote Syslog"
 
-#: ../../../../inc/themes/material-blue/views/config/general-events.inc:60
+#: ../../../../inc/themes/material-blue/views/config/general-events.inc:57
 msgid "Nombre o dirección IP"
 msgstr "Hostname or IP address"
 
-#: ../../../../inc/themes/material-blue/views/config/general-events.inc:66
-#: ../../../../inc/themes/material-blue/views/config/general-events.inc:74
-#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:35
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:42
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:49
+#: ../../../../inc/themes/material-blue/views/config/general-events.inc:63
+#: ../../../../inc/themes/material-blue/views/config/general-events.inc:71
+#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:33
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:40
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:47
 msgid "Puerto"
 msgstr "Port"
-
-#: ../../../../inc/themes/material-blue/views/config/general-files.inc:10
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:233
-msgid "Gestión de archivos"
-msgstr "Files management"
-
-#: ../../../../inc/themes/material-blue/views/config/general-files.inc:15
-msgid "Habilita la subida/descarga de archivos para las cuentas."
-msgstr "Enables the uploads/downloads of account files."
-
-#: ../../../../inc/themes/material-blue/views/config/general-files.inc:30
-msgid "Extensiones de archivos permitidas"
-msgstr "Allowed file extensions"
-
-#: ../../../../inc/themes/material-blue/views/config/general-files.inc:35
-msgid "Extensiones permitidas para la subida de archivos."
-msgstr "Allowed file extensions for uploading."
-
-#: ../../../../inc/themes/material-blue/views/config/general-files.inc:39
-msgid "Se permite un máximo de 4 caracteres."
-msgstr "Max 4 characters allowed."
-
-#: ../../../../inc/themes/material-blue/views/config/general-files.inc:43
-msgid ""
-"Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
-"configuración."
-msgstr ""
-"Write the extension and press enter to add. Remember to save the "
-"configuration."
-
-#: ../../../../inc/themes/material-blue/views/config/general-files.inc:54
-msgid "Tamaño máximo de archivo"
-msgstr "Maximum file size"
-
-#: ../../../../inc/themes/material-blue/views/config/general-files.inc:59
-msgid "Establece el tamaño máximo para subir archivos."
-msgstr "Set the maximum file size for uploading."
-
-#: ../../../../inc/themes/material-blue/views/config/general-files.inc:63
-msgid "El máximo absuluto es de 16MB."
-msgstr "The absolute maximum is 16MB."
-
-#: ../../../../inc/themes/material-blue/views/config/general-files.inc:73
-msgid "Tamaño máximo de archivo en bytes"
-msgstr "Maximum file size in bytes"
-
-#: ../../../../inc/themes/material-blue/views/config/general-links.inc:4
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:219
-msgid "Enlaces Públicos"
-msgstr "Public Links"
-
-#: ../../../../inc/themes/material-blue/views/config/general-links.inc:10
-msgid "Habilitar Enlaces Públicos"
-msgstr "Enable Public Links"
-
-#: ../../../../inc/themes/material-blue/views/config/general-links.inc:15
-msgid ""
-"Habilita la posibilidad de generar enlaces públicos para ver los detalles de "
-"una cuenta."
-msgstr ""
-"Enables the ability to create public links to view an account's details"
-
-#: ../../../../inc/themes/material-blue/views/config/general-links.inc:19
-msgid ""
-"Las cuentas enlazadas serán visibles por cualquiera que disponga del enlace."
-msgstr "The linked accounts will be visible by anyone that have the link."
-
-#: ../../../../inc/themes/material-blue/views/config/general-links.inc:23
-msgid ""
-"Para crear enlaces, los usuarios tienen que tener activada la opción en su "
-"perfl."
-msgstr ""
-"To create links, the users must have activated the option in their profiles."
-
-#: ../../../../inc/themes/material-blue/views/config/general-links.inc:38
-msgid "Tiempo de caducidad"
-msgstr "Expire time"
-
-#: ../../../../inc/themes/material-blue/views/config/general-links.inc:46
-msgid "Tiempo en minutos"
-msgstr "Time in minutes"
-
-#: ../../../../inc/themes/material-blue/views/config/general-links.inc:52
-msgid "Número máximo  de visitas"
-msgstr "Maximum visits"
-
-#: ../../../../inc/themes/material-blue/views/config/general-links.inc:64
-msgid "Usar imagen para clave"
-msgstr "Use an image for password"
-
-#: ../../../../inc/themes/material-blue/views/config/general-links.inc:69
-msgid "La clave de la cuenta es visualizada como una imagen."
-msgstr "The account password is shown as image."
 
 #: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:2
 msgid "Proxy"
 msgstr "Proxy"
 
-#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:8
+#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:13
 msgid "Usar Proxy"
 msgstr "Use Proxy"
 
-#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:29
+#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:27
 msgid "Servidor proxy"
 msgstr "Proxy server"
 
-#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:43
+#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:41
 msgid "Puerto del servidor proxy"
 msgstr "Proxy server port"
 
-#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:57
+#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:55
 msgid "Usuario del servidor proxy"
 msgstr "Proxy server user"
 
-#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:71
+#: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:69
 msgid "Clave del servidor proxy"
 msgstr "Proxy server password"
 
@@ -4634,10 +4703,13 @@ msgid "Sitio"
 msgstr "Site"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:10
-#: ../../../../inc/themes/material-blue/views/config/info.inc:61
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:24
+#: ../../../../inc/themes/material-blue/views/config/info.inc:71
+#: ../../../../inc/themes/material-blue/views/config/info.inc:85
 #: ../../../../inc/themes/material-blue/views/main/install.inc:135
 #: ../../../../inc/themes/material-blue/views/main/install.inc:136
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:18
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:20
 msgid "Idioma"
 msgstr "Language"
 
@@ -4657,12 +4729,14 @@ msgstr ""
 "To improve/add the translations, you can get involved at https://poeditor."
 "com/join/project/fmlsBuugyv"
 
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:34
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:29
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:36
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:46
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:31
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:33
 msgid "Tema Visual"
 msgstr "Visual Theme"
 
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:39
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:41
 msgid ""
 "Establece el tema visual global de la aplicación. Es posible establecer un "
 "tema visual por usuario en las preferencias."
@@ -4670,35 +4744,31 @@ msgstr ""
 "Set the global app visual theme. You can set a per user visual theme at the "
 "user preferences."
 
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:55
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:63
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:59
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:67
 msgid "Timeout de sesión (s)"
 msgstr "Session timeout (s)"
 
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:69
-msgid "Forzar HTTPS"
-msgstr "Force HTTPS"
-
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:74
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:77
 msgid "Fuerza para que todas las conexiones sean a través de HTTPS."
 msgstr "It forces the use of HTTPS on all the connections"
 
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:89
-msgid "Habilitar depuración"
-msgstr "Enable debug"
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:86
+msgid "Forzar HTTPS"
+msgstr "Force HTTPS"
 
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:94
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:96
 msgid ""
 "Muestra información relativa a la configuración de la aplicación y "
 "rendimiento."
 msgstr ""
 "Shows some information about application configuration and performance."
 
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:108
-msgid "Modo mantenimiento"
-msgstr "Maintenance mode"
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:104
+msgid "Habilitar depuración"
+msgstr "Enable debug"
 
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:113
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:114
 msgid ""
 "En este modo no se puede acceder a la aplicación. Para deshabilitarlo es "
 "necesario modificar el archivo de configuración."
@@ -4706,9 +4776,9 @@ msgstr ""
 "In this mode nobody can login to the application. To disable it, you need to "
 "modify the configuration file."
 
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:127
-msgid "Comprobar actualizaciones"
-msgstr "Check for updates"
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:122
+msgid "Modo mantenimiento"
+msgstr "Maintenance mode"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:132
 msgid ""
@@ -4716,11 +4786,11 @@ msgid ""
 "administradores)."
 msgstr "Check for application updates (only for administrators)."
 
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:146
-msgid "Comprobar notificaciones"
-msgstr "Check for notices"
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:140
+msgid "Comprobar actualizaciones"
+msgstr "Check for updates"
 
-#: ../../../../inc/themes/material-blue/views/config/general-site.inc:151
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:150
 msgid ""
 "Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo "
 "para los usuarios administradores)."
@@ -4728,58 +4798,39 @@ msgstr ""
 "Check if there are sysPass security or warning notices (only for "
 "administrators)."
 
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:158
+msgid "Comprobar notificaciones"
+msgstr "Check for notices"
+
 #: ../../../../inc/themes/material-blue/views/config/import.inc:8
 msgid "Importar CSV/XML"
 msgstr "CSV/XML Import"
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:15
+#: ../../../../inc/themes/material-blue/views/config/import.inc:14
+#: ../../../../inc/themes/material-blue/views/config/import.inc:24
 msgid "Usuario por Defecto"
 msgstr "Default User"
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:20
+#: ../../../../inc/themes/material-blue/views/config/import.inc:19
 msgid "Define el usuario por defecto para las cuentas importadas."
 msgstr "Defines the default user for the accounts imported."
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:39
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:188
+#: ../../../../inc/themes/material-blue/views/config/import.inc:40
+#: ../../../../inc/themes/material-blue/views/config/import.inc:50
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:207
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:217
 msgid "Grupo por Defecto"
 msgstr "Default Group"
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:44
+#: ../../../../inc/themes/material-blue/views/config/import.inc:45
 msgid "Define el grupo por defecto para las cuentas importadas."
 msgstr "Defines the default group for the accounts imported."
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:63
-#: ../../../../inc/themes/material-blue/views/config/import.inc:78
-msgid "Clave de Importación"
-msgstr "Import Password"
-
-#: ../../../../inc/themes/material-blue/views/config/import.inc:68
-msgid "Sólo es necesaria para archivos XML de sysPass encriptados."
-msgstr "It's only needed for sysPass XML files that have been encrypted."
-
-#: ../../../../inc/themes/material-blue/views/config/import.inc:89
-msgid ""
-"Sólo es necesaria para archivos XML de sysPass con clave maestra distinta de "
-"la actual."
-msgstr ""
-"It's only needed for sysPass XML files that have been encrypted with a "
-"different master password  from the current one."
-
-#: ../../../../inc/themes/material-blue/views/config/import.inc:105
-#: ../../../../inc/themes/material-blue/views/config/import.inc:120
-msgid "Delimitador CSV"
-msgstr "CSV delimiter"
-
-#: ../../../../inc/themes/material-blue/views/config/import.inc:110
-msgid "Sólo es necesario para archivos CSV."
-msgstr "It's only needed for CSV files."
-
-#: ../../../../inc/themes/material-blue/views/config/import.inc:133
+#: ../../../../inc/themes/material-blue/views/config/import.inc:74
 msgid "Soltar archivo aquí o click para seleccionar"
 msgstr "Drop files here or click to select"
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:153
+#: ../../../../inc/themes/material-blue/views/config/import.inc:102
 msgid ""
 "Permite realizar la importación de Cuentas, Categorías y Clientes desde "
 "archivos XML y CSV."
@@ -4787,18 +4838,18 @@ msgstr ""
 "Allows you to make the Accounts, Categories and Customers import from XML or "
 "CSV files."
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:155
+#: ../../../../inc/themes/material-blue/views/config/import.inc:104
 msgid ""
 "Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX"
 msgstr "The supported XML file formats are: sysPass, KeePass and KeePassX"
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:157
+#: ../../../../inc/themes/material-blue/views/config/import.inc:106
 msgid ""
 "Arrastar el archivo a importar a la zona indicada o hacer click sobre la "
 "flecha."
 msgstr "Drag & Drop the file to the import zone or click over the arrow."
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:159
+#: ../../../../inc/themes/material-blue/views/config/import.inc:108
 msgid ""
 "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
 "KeePass o KeePassX y la categoría igual al nombre de los grupos."
@@ -4806,11 +4857,11 @@ msgstr ""
 "For KeePass or KeePassX files, the customer name will be KeePass or KeePassX "
 "and the category name like groups names."
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:161
+#: ../../../../inc/themes/material-blue/views/config/import.inc:110
 msgid "La importación de archivos CSV se realiza con el siguiente formato:"
 msgstr "The CSV import file requires the following format:"
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:163
+#: ../../../../inc/themes/material-blue/views/config/import.inc:112
 msgid ""
 "\"nombre_de_cuenta\";\"cliente\";\"categoría\";\"url\";\"usuario\";\"clave\";"
 "\"notas\""
@@ -4818,7 +4869,7 @@ msgstr ""
 "\"account_name\";\"customer\";\"category\";\"url\";\"user\";\"password\";"
 "\"notes\""
 
-#: ../../../../inc/themes/material-blue/views/config/import.inc:165
+#: ../../../../inc/themes/material-blue/views/config/import.inc:114
 msgid ""
 "En todos los casos, si el cliente o la categoría no están creados, se crean "
 "automáticamente."
@@ -4826,39 +4877,77 @@ msgstr ""
 "In all cases, if the customer or category do not exist the will be created "
 "automatically."
 
+#: ../../../../inc/themes/material-blue/views/config/import.inc:121
+msgid "XML"
+msgstr "XML"
+
+#: ../../../../inc/themes/material-blue/views/config/import.inc:127
+#: ../../../../inc/themes/material-blue/views/config/import.inc:142
+msgid "Clave de Importación"
+msgstr "Import Password"
+
+#: ../../../../inc/themes/material-blue/views/config/import.inc:132
+msgid "Sólo es necesaria para archivos XML de sysPass encriptados."
+msgstr "It's only needed for sysPass XML files that have been encrypted."
+
+#: ../../../../inc/themes/material-blue/views/config/import.inc:153
+msgid ""
+"Sólo es necesaria para archivos XML de sysPass con clave maestra distinta de "
+"la actual."
+msgstr ""
+"It's only needed for sysPass XML files that have been encrypted with a "
+"different master password  from the current one."
+
+#: ../../../../inc/themes/material-blue/views/config/import.inc:170
+msgid "CSV"
+msgstr "CSV"
+
+#: ../../../../inc/themes/material-blue/views/config/import.inc:176
+#: ../../../../inc/themes/material-blue/views/config/import.inc:191
+msgid "Delimitador CSV"
+msgstr "CSV delimiter"
+
+#: ../../../../inc/themes/material-blue/views/config/import.inc:181
+msgid "Sólo es necesario para archivos CSV."
+msgstr "It's only needed for CSV files."
+
 #: ../../../../inc/themes/material-blue/views/config/info.inc:5
 msgid "Información de la Aplicación"
 msgstr "Application Information"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:11
+#: ../../../../inc/themes/material-blue/views/config/info.inc:14
 msgid "Versión sysPass"
 msgstr "sysPass version"
 
-#: ../../../../inc/themes/material-blue/views/config/info.inc:19
+#: ../../../../inc/themes/material-blue/views/config/info.inc:21
+#: ../../../../inc/themes/material-blue/views/config/info.inc:24
 msgid "Base de Datos"
 msgstr "Database"
 
-#: ../../../../inc/themes/material-blue/views/config/info.inc:31
+#: ../../../../inc/themes/material-blue/views/config/info.inc:35
+#: ../../../../inc/themes/material-blue/views/config/info.inc:38
 msgid "PHP"
 msgstr "PHP"
 
-#: ../../../../inc/themes/material-blue/views/config/info.inc:36
+#: ../../../../inc/themes/material-blue/views/config/info.inc:42
 msgid "Extensiones"
 msgstr "Extensions"
 
-#: ../../../../inc/themes/material-blue/views/config/info.inc:38
+#: ../../../../inc/themes/material-blue/views/config/info.inc:44
 msgid "Memoria Usada"
 msgstr "Used Memory"
 
-#: ../../../../inc/themes/material-blue/views/config/info.inc:53
+#: ../../../../inc/themes/material-blue/views/config/info.inc:61
+#: ../../../../inc/themes/material-blue/views/config/info.inc:64
 msgid "Copia de Configuración"
 msgstr "Configuration Backup"
 
-#: ../../../../inc/themes/material-blue/views/config/info.inc:66
+#: ../../../../inc/themes/material-blue/views/config/info.inc:76
 msgid "Indica si el idioma se encuentra disponible"
 msgstr "Tells whether the language is available or not."
 
-#: ../../../../inc/themes/material-blue/views/config/info.inc:70
+#: ../../../../inc/themes/material-blue/views/config/info.inc:80
 msgid ""
 "Si no está instalado, es necesario instalar las locales en el sistema "
 "operativo. Más información en Wiki."
@@ -4866,120 +4955,120 @@ msgstr ""
 "If it is not installed, you would need install the right operating system "
 "locales. More info at Wiki."
 
-#: ../../../../inc/themes/material-blue/views/config/info.inc:80
+#: ../../../../inc/themes/material-blue/views/config/info.inc:92
+#: ../../../../inc/themes/material-blue/views/config/info.inc:95
 msgid "Plugins Cargados"
 msgstr "Loaded Plugins"
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:18
-msgid "Habilitar LDAP"
-msgstr "Enable LDAP"
-
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:23
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:22
 msgid "Habilita de autentificación mediante servidor LDAP."
 msgstr "Enables authentication aganist a LDAP server."
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:27
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:26
 msgid "Este método utilizará MySQL en caso de fallo."
 msgstr "This method will use MySQL as fallback."
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:48
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:36
+msgid "Habilitar LDAP"
+msgstr "Enable LDAP"
+
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:46
+msgid "Habilita el modo de conexión con LDAP de Active Directory."
+msgstr "Enables Active Directory LDAP connection mode."
+
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:56
+msgid "Active Directory"
+msgstr "Active Directory"
+
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:67
 msgid "Nombre o dirección IP del servidor de LDAP."
 msgstr "Hostname or IP address of LDAP server."
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:52
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:83
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:134
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:168
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:112
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:71
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:102
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:153
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:187
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:111
 msgid "Ejemplos:"
 msgstr "Examples:"
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:74
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:93
 msgid "Usuario de conexión"
 msgstr "Bind User"
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:79
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:98
 msgid "Usuario para conectar con el servicio de LDAP."
 msgstr "User to connect to the LDAP service."
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:104
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:123
 msgid "Clave de conexión"
 msgstr "Bind Password"
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:109
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:128
 msgid "Clave del usuario de conexión a LDAP."
 msgstr "LDAP connection user password"
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:125
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:149
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:144
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:168
 msgid "Base de búsqueda"
 msgstr "Search base"
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:130
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:149
 msgid "Base en la que realizar la búsqueda de usuarios de LDAP."
 msgstr "LDAP base to do the LDAP users searches."
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:160
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:179
 msgid ""
 "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
 msgstr "LDAP group that the user must belong to allow it to login."
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:164
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:183
 msgid "Este grupo debe de estar ubicado en la base de búsquedas de LDAP."
 msgstr "This group needs to be placed in the LDAP search base."
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:193
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:212
 msgid ""
 "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Define the default users group for newly LDAP users"
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:210
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:231
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:241
 msgid "Perfil por Defecto"
 msgstr "Default Profile"
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:215
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:236
 msgid ""
 "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Defines the default profile for the newly created LDAP users."
 
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:232
-msgid "Active Directory"
-msgstr "Active Directory"
-
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:237
-msgid "Habilita el modo de conexión con LDAP de Active Directory."
-msgstr "Enables Active Directory LDAP connection mode."
-
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:253
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:255
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:258
 msgid "Resultados"
 msgstr "Results"
 
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:15
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:21
 msgid "Habilitar notificaciones de correo"
 msgstr "Enable email notifications"
 
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:55
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:58
 msgid "Habilitar Autentificación"
 msgstr "Enable Authentication"
 
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:94
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:90
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:93
 msgid "Seguridad"
 msgstr "Security"
 
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:98
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:96
 msgid "Deshabilitada"
 msgstr "Disabled"
 
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:108
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:116
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:106
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:114
 msgid "Dirección de correo de envío"
 msgstr "Recipient email address"
 
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:122
-msgid "Habilitar peticiones por correo"
-msgstr "Enable requests by email"
-
-#: ../../../../inc/themes/material-blue/views/config/mail.inc:128
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:124
 msgid ""
 "Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
 "cuentas sin permisos."
@@ -4987,68 +5076,69 @@ msgstr ""
 "Allows users to request either modifications to existing accounts, or access "
 "to accounts in which they have no rights."
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:16
-msgid "Habilitar enlaces Wiki"
-msgstr "Enable Wiki links"
+#: ../../../../inc/themes/material-blue/views/config/mail.inc:133
+msgid "Habilitar peticiones por correo"
+msgstr "Enable requests by email"
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:21
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:20
 msgid ""
 "Habilita la opción de añadir un enlace a Wiki externa para los resultados de "
 "la búsqueda."
 msgstr ""
 "Enables the option to add a link for search results to an external Wiki."
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:37
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:64
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:30
+msgid "Habilitar enlaces Wiki"
+msgstr "Enable Wiki links"
+
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:36
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:63
 msgid "URL de búsqueda Wiki"
 msgstr "Wiki search URL"
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:42
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:41
 msgid "URL que utiliza la wiki para realizar una búsqueda de una página."
 msgstr "URL that the Wiki uses to make an entry search."
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:46
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:45
 msgid "Como parámetro se utiliza el nombre del cliente."
 msgstr "The customer name is used as parameter."
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:50
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:83
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:49
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:82
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:163
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:190
 msgid "Ejemplo:"
 msgstr "Example:"
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:70
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:97
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:69
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:96
 msgid "URL de página en Wiki"
 msgstr "Wiki page URL"
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:75
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:74
 msgid "URL que utiliza la wiki para acceder a los detalles de una página."
 msgstr "URL that the Wiki uses to access to the entry details."
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:79
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:78
 msgid ""
 "El nombre de la cuenta se utiliza como parámetro de la variable de búsqueda "
 "de la Wiki."
 msgstr "The account name is used as parameter of Wiki search variable."
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:103
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:102
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:116
 msgid "Prefijo para nombre de cuenta"
 msgstr "Account name prefix"
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:108
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:107
 msgid ""
 "Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
 msgstr "Prefix to determine which accounts have a link to the Wiki."
 
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:123
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:124
 msgid "DokuWiki API"
 msgstr "DokuWiki API"
-
-#: ../../../../inc/themes/material-blue/views/config/wiki.inc:129
-msgid "Habilitar API de DokuWiki"
-msgstr "Enable DokuWiki API"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:134
 msgid ""
@@ -5062,6 +5152,10 @@ msgid ""
 msgstr ""
 "In order to get this feature working, you should enable Wiki links for "
 "accounts filtering"
+
+#: ../../../../inc/themes/material-blue/views/config/wiki.inc:147
+msgid "Habilitar API de DokuWiki"
+msgstr "Enable DokuWiki API"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:154
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:175
@@ -5122,15 +5216,15 @@ msgstr "Delete Selected"
 msgid "Nombre del campo"
 msgstr "Field name"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:52
+#: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:56
 msgid "Texto Ayuda"
 msgstr "Help Text"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:58
+#: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:62
 msgid "Ayuda del campo"
 msgstr "Field help"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:63
+#: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:73
 msgid "Obligatorio"
 msgstr "Required"
 
@@ -5171,139 +5265,142 @@ msgstr "Plugin author"
 msgid "Nombre del perfil"
 msgstr "Profile name"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:37
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:39
 msgid "Crear nueva cuenta"
 msgstr "Create a new account"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:37
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:39
 msgid "Crear"
 msgstr "Create"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:44
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:46
 msgid "Ver detalles de cuenta"
 msgstr "View account details"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:44
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:46
 msgid "Ver"
 msgstr "View"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:51
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:53
 msgid "Ver clave de cuenta"
 msgstr "View account password"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:58
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:60
 msgid "Ver historial de cuenta"
 msgstr "View account history"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:65
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:67
 msgid "Editar cuenta"
 msgstr "Edit account"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:72
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:74
 msgid "Editar clave de cuenta"
 msgstr "Edit account password"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:72
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:74
 msgid "Editar Clave"
 msgstr "Edit Password"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:79
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:81
 msgid "Eliminar cuenta"
 msgstr "Delete account"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:86
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:88
 msgid "Ver archivos de cuenta"
 msgstr "View account files"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:93
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:95
 msgid "Publicar enlace a cuenta"
 msgstr "Share link to account"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:93
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:95
 msgid "Publicar Enlace"
 msgstr "Share Link"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:100
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:102
 msgid "Crear cuenta privada"
 msgstr "Create private account"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:107
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:109
 msgid "Crear cuenta privada para grupo"
 msgstr "Create private account for group"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:114
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:116
 msgid "Asignar permisos"
 msgstr "Assign permissions"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:142
-msgid "Opciones de encriptación"
-msgstr "Encryption options"
-
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:149
-msgid "Realizar copia de seguridad y exportar"
-msgstr "Make a backup and export"
-
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:149
-msgid "Backup"
-msgstr "Backup"
-
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:156
-msgid "Realizar importación de cuentas"
-msgstr "Make accounts import"
-
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:162
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:129
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:131
 msgid "Gestión"
 msgstr "Management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:170
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:139
 msgid "Gestión de usuarios"
 msgstr "Users management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:177
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:146
 msgid "Gestión de grupos"
 msgstr "Groups management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:184
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:153
 msgid "Gestión de perfiles"
 msgstr "Profiles management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:191
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:160
 msgid "Gestión de categorías"
 msgstr "Categories management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:198
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:167
 msgid "Gestión de clientes"
 msgstr "Customers management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:205
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:174
 msgid "Gestión de campos personalizados"
 msgstr "Custom fields management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:212
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:181
 msgid "Gestión de autorizaciones API"
 msgstr "API authorizations management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:219
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:188
 msgid "Gestión de enlaces"
 msgstr "Links management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:226
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:195
 msgid "Gestión de cuentas"
 msgstr "Accounts management"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:240
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:209
 msgid "Gestión de etiquetas"
 msgstr "Tags management"
 
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:232
+msgid "Opciones de encriptación"
+msgstr "Encryption options"
+
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:239
+msgid "Realizar copia de seguridad y exportar"
+msgstr "Make a backup and export"
+
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:239
+msgid "Backup"
+msgstr "Backup"
+
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:246
+msgid "Realizar importación de cuentas"
+msgstr "Make accounts import"
+
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:252
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:254
 msgid "Otros"
 msgstr "Others"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:254
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:262
 msgid "Ver log de eventos"
 msgstr "View event log"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:261
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:269
+#: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:271
 msgid "Usado por"
 msgstr "Used by"
 
@@ -5319,18 +5416,19 @@ msgstr "Use"
 msgid "Nombre de la etiqueta"
 msgstr "Tag name"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:37
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:135
-#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:102
+#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:41
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:139
+#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:104
 msgid "Opciones"
 msgstr "Options"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:40
 #: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:44
+#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:48
 msgid "Regenerar Autorización"
 msgstr "Refresh Authorization"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:50
+#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:54
+#: ../../../../inc/themes/material-blue/views/itemshow/tokens.inc:56
 msgid "Token"
 msgstr "Token"
 
@@ -5342,31 +5440,34 @@ msgstr "Full username"
 msgid "Login de inicio de sesión"
 msgstr "Session login"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:84
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:88
 msgid "Dirección de correo"
 msgstr "Email address"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:139
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:143
 msgid "Administrador de la aplicación"
 msgstr "Application administrator"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:146
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:150
 msgid "Administrador de cuentas"
 msgstr "Accounts administrator"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:161
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:165
 msgid "Forzar cambio de clave"
 msgstr "Force password change"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:175
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:179
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:181
 msgid "Entradas"
 msgstr "Entries"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:180
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:188
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:190
 msgid "Último Acceso"
 msgstr "Last Access"
 
-#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:190
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:206
+#: ../../../../inc/themes/material-blue/views/itemshow/users.inc:208
 msgid "Fecha Clave Maestra"
 msgstr "Master Password Date"
 
@@ -5554,47 +5655,47 @@ msgstr "Please, wait while the process is running"
 msgid "Iniciar Actualización"
 msgstr "Start Update"
 
-#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:105
+#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:107
 msgid "Notificación global"
 msgstr "Global notification"
 
-#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:108
+#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:110
 msgid "Global"
 msgstr "Global"
 
-#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:112
+#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:114
 msgid "Sólo para administradores de la aplicación"
 msgstr "Only for application administrators"
 
-#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:115
+#: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:117
 msgid "Solo Admins"
 msgstr "Only Admins"
 
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:84
-msgid "Ordenar resultados por visitas"
-msgstr "Sort search results by views"
-
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:89
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:91
 msgid ""
 "Ordena los resultados de búsqueda por el número de visitas de las cuentas."
 msgstr "Sorts accounts search results by the number of accounts' views"
 
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:102
-msgid "Barra de navegación superior"
-msgstr "Navigation bar on top"
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:99
+msgid "Ordenar resultados por visitas"
+msgstr "Sort search results by views"
 
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:107
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:109
 msgid "Mostrar una barra de navegación superior en las búsquedas."
 msgstr "Shows a navigation bar on top of the search results."
 
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:120
-msgid "Mostrar Acciones Ocultas"
-msgstr "Show Hidden Actions"
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:117
+msgid "Barra de navegación superior"
+msgstr "Navigation bar on top"
 
-#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:125
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:127
 msgid ""
 "Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas."
 msgstr "Always show the hidden actions on the accounts search page."
+
+#: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:136
+msgid "Mostrar Acciones Ocultas"
+msgstr "Show Hidden Actions"
 
 #: ../../../../inc/themes/material-blue/views/wiki/wikipage.inc:2
 msgid "Ver Wiki"
@@ -5609,3 +5710,6 @@ msgstr "Search results of '%s'"
 #: ../../../../inc/themes/material-blue/views/wiki/wikipage.inc:23
 msgid "Página"
 msgstr "Page"
+
+#~ msgid "Tiempo en minutos"
+#~ msgstr "Time in minutes"

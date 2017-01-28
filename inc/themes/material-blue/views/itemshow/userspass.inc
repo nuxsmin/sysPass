@@ -4,7 +4,7 @@
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?></h2>
+    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="updUsrPass" id="frmUpdUsrPass" class="form-action" data-onsubmit="appMgmt/save">
         <table class="popup-data">
@@ -14,7 +14,7 @@
                     <div class="mdl-textfield mdl-js-textfield">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $user->getUserName(); ?>" readonly disabled />
+                               value="<?php echo $user->getUserName(); ?>" readonly disabled/>
                     </div>
                 </td>
             </tr>
@@ -26,7 +26,7 @@
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $user->getUserLogin(); ?>"
-                               readonly disabled />
+                               readonly disabled/>
                     </div>
                 </td>
             </tr>

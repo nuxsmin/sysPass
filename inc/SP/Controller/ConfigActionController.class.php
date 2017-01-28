@@ -83,6 +83,9 @@ class ConfigActionController implements ItemControllerInterface
                 case ActionsInterface::ACTION_CFG_GENERAL:
                     $this->generalAction();
                     break;
+                case ActionsInterface::ACTION_CFG_ACCOUNTS:
+                    $this->accountsAction();
+                    break;
                 case ActionsInterface::ACTION_CFG_WIKI:
                     $this->wikiAction();
                     break;
@@ -175,6 +178,49 @@ class ConfigActionController implements ItemControllerInterface
             $this->LogMessage->addDescription(__('Syslog remoto deshabilitado', false));
         }
 
+        // Proxy
+        $proxyEnabled = Request::analyze('proxy_enabled', false, false, true);
+        $proxyServer = Request::analyze('proxy_server');
+        $proxyPort = Request::analyze('proxy_port', 0);
+        $proxyUser = Request::analyze('proxy_user');
+        $proxyPass = Request::analyzeEncrypted('proxy_pass');
+
+
+        // Valores para Proxy
+        if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
+            $this->JsonResponse->setDescription(__('Faltan parámetros de Proxy', false));
+            return;
+        } elseif ($proxyEnabled) {
+            $Config->setProxyEnabled(true);
+            $Config->setProxyServer($proxyServer);
+            $Config->setProxyPort($proxyPort);
+            $Config->setProxyUser($proxyUser);
+            $Config->setProxyPass($proxyPass);
+
+            $this->LogMessage->addDescription(__('Proxy habiltado', false));
+        } elseif ($Config->isProxyEnabled()) {
+            $Config->setProxyEnabled(false);
+
+            $this->LogMessage->addDescription(__('Proxy deshabilitado', false));
+        }
+
+        $this->LogMessage->addDetails(__('Sección', false), __('General', false));
+
+        // Recargar la aplicación completa para establecer nuevos valores
+//        Util::reload();
+
+        $this->saveConfig();
+    }
+
+    /**
+     * Accion para opciones configuración de cuentas
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function accountsAction()
+    {
+        $Config = Session::getConfig();
+
         // Accounts
         $globalSearchEnabled = Request::analyze('globalsearch', false, false, true);
         $accountPassToImageEnabled = Request::analyze('account_passtoimage', false, false, true);
@@ -213,36 +259,7 @@ class ConfigActionController implements ItemControllerInterface
         $Config->setPublinksMaxTime($pubLinksMaxTime * 60);
         $Config->setPublinksMaxViews($pubLinksMaxViews);
 
-        // Proxy
-        $proxyEnabled = Request::analyze('proxy_enabled', false, false, true);
-        $proxyServer = Request::analyze('proxy_server');
-        $proxyPort = Request::analyze('proxy_port', 0);
-        $proxyUser = Request::analyze('proxy_user');
-        $proxyPass = Request::analyzeEncrypted('proxy_pass');
-
-
-        // Valores para Proxy
-        if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
-            $this->JsonResponse->setDescription(__('Faltan parámetros de Proxy', false));
-            return;
-        } elseif ($proxyEnabled) {
-            $Config->setProxyEnabled(true);
-            $Config->setProxyServer($proxyServer);
-            $Config->setProxyPort($proxyPort);
-            $Config->setProxyUser($proxyUser);
-            $Config->setProxyPass($proxyPass);
-
-            $this->LogMessage->addDescription(__('Proxy habiltado', false));
-        } elseif ($Config->isProxyEnabled()) {
-            $Config->setProxyEnabled(false);
-
-            $this->LogMessage->addDescription(__('Proxy deshabilitado', false));
-        }
-
-        $this->LogMessage->addDetails(__('Sección', false), __('General', false));
-
-        // Recargar la aplicación completa para establecer nuevos valores
-        Util::reload();
+        $this->LogMessage->addDetails(__('Sección', false), __('Cuentas', false));
 
         $this->saveConfig();
     }

@@ -16,24 +16,42 @@
         <table>
             <tr>
                 <td class="descField"><?php echo __('Visitas'); ?></td>
-                <td class="valField"><?php echo $accountData->getAccountCountView() . '(' . $accountData->getAccountCountDecrypt() . ')'; ?></td>
+                <td class="valField">
+                    <div class="lowres-title"><?php echo __('Visitas'); ?></div>
+
+                    <?php echo $accountData->getAccountCountView() . '(' . $accountData->getAccountCountDecrypt() . ')'; ?>
+                </td>
             </tr>
             <tr>
                 <td class="descField"><?php echo __('Fecha Alta'); ?></td>
-                <td class="valField"><?php echo $accountData->getAccountDateAdd() ?></td>
+                <td class="valField">
+                    <div class="lowres-title"><?php echo __('Fecha Alta'); ?></div>
+
+                    <?php echo $accountData->getAccountDateAdd() ?>
+                </td>
             </tr>
             <tr>
                 <td class="descField"><?php echo __('Creador'); ?></td>
-                <td class="valField"><?php echo $accountData->getUserName() ?: $accountData->getUserLogin(); ?></td>
+                <td class="valField">
+                    <div class="lowres-title"><?php echo __('Creador'); ?></div>
+
+                    <?php echo $accountData->getUserName() ?: $accountData->getUserLogin(); ?>
+                </td>
             </tr>
             <tr>
                 <td class="descField"><?php echo __('Grupo Principal'); ?></td>
-                <td class="valField"><?php echo $accountData->getUsergroupName(); ?></td>
+                <td class="valField">
+                    <div class="lowres-title"><?php echo __('Grupo Principal'); ?></div>
+
+                    <?php echo $accountData->getUsergroupName(); ?>
+                </td>
             </tr>
             <?php if (is_array($accountOtherUsers) && count($accountOtherUsers) > 0): ?>
                 <tr>
                     <td class="descField"><?php echo __('Usuarios Secundarios'); ?></td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Usuarios Secundarios'); ?></div>
+
                         <?php
                         $users = [];
 
@@ -54,6 +72,8 @@
                 <tr>
                     <td class="descField"><?php echo __('Grupos Secundarios'); ?></td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Grupos Secundarios'); ?></div>
+
                         <?php
                         $groups = [];
 
@@ -74,20 +94,36 @@
             <?php if ($AccountAcl->isModified()): ?>
                 <tr>
                     <td class="descField"><?php echo __('Fecha Edición'); ?></td>
-                    <td class="valField"><?php echo $accountData->getAccountDateEdit(); ?></td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Fecha Edición'); ?></div>
+
+                        <?php echo $accountData->getAccountDateEdit(); ?>
+                    </td>
                 </tr>
                 <tr>
                     <td class="descField"><?php echo __('Editor'); ?></td>
-                    <td class="valField"><?php echo $accountData->getUserEditName() ?: $accountData->getUserEditLogin(); ?></td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Editor'); ?></div>
+
+                        <?php echo $accountData->getUserEditName() ?: $accountData->getUserEditLogin(); ?>
+                    </td>
                 </tr>
             <?php endif; ?>
             <tr>
                 <td class="descField"><?php echo __('Fecha de Clave'); ?></td>
-                <td class="valField"><?php echo $accountPassDate; ?></td>
+                <td class="valField">
+                    <div class="lowres-title"><?php echo __('Fecha de Clave'); ?></div>
+
+                    <?php echo $accountPassDate; ?>
+                </td>
             </tr>
             <tr>
                 <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
-                <td class="valField"><?php echo $accountPassDateChange; ?></td>
+                <td class="valField">
+                    <div class="lowres-title"><?php echo __('Fecha Caducidad Clave'); ?></div>
+
+                    <?php echo $accountPassDateChange; ?>
+                </td>
             </tr>
         </table>
     </div>

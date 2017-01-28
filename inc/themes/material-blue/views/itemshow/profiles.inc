@@ -4,7 +4,7 @@
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?></H2>
+    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmProfiles" id="frmProfiles" class="form-action"
           data-onsubmit="appMgmt/save"
@@ -28,6 +28,8 @@
             <tr>
                 <td class="descField"><?php echo __('Cuentas'); ?></td>
                 <td class="valField checkbox">
+                    <div class="lowres-title"><?php echo __('Cuentas'); ?></div>
+
                     <div id="btnProfilesAcc" class="btn-checks">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_accadd">
                             <input type="checkbox" id="profile_accadd"
@@ -124,43 +126,10 @@
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Configuración'); ?></td>
-                <td class="valField checkbox">
-                    <div id="btnProfilesConfig" class="btn-checks">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_config">
-                            <input type="checkbox" id="profile_config"
-                                   class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="profile_config" <?php echo $profile->isConfigGeneral() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
-                            <span class="mdl-switch__label"
-                                  title="<?php echo __('Configuración General'); ?>"><?php echo __('General'); ?></span>
-                        </label>
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_configmpw">
-                            <input type="checkbox" id="profile_configmpw"
-                                   class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="profile_configmpw" <?php echo $profile->isConfigEncryption() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
-                            <span class="mdl-switch__label"
-                                  title="<?php echo __('Opciones de encriptación'); ?>"><?php echo __('Encriptación'); ?></span>
-                        </label>
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_configback">
-                            <input type="checkbox" id="profile_configback"
-                                   class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="profile_configback" <?php echo $profile->isConfigBackup() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
-                            <span class="mdl-switch__label"
-                                  title="<?php echo __('Realizar copia de seguridad y exportar'); ?>"><?php echo __('Backup'); ?></span>
-                        </label>
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_configimport">
-                            <input type="checkbox" id="profile_configimport"
-                                   class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="profile_configimport" <?php echo $profile->isConfigImport() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
-                            <span class="mdl-switch__label"
-                                  title="<?php echo __('Realizar importación de cuentas'); ?>"><?php echo __('Importar'); ?></span>
-                        </label>
-                    </div>
-                </td>
-            </tr>
-            <tr>
                 <td class="descField"><?php echo __('Gestión'); ?></td>
                 <td class="valField checkbox">
+                    <div class="lowres-title"><?php echo __('Gestión'); ?></div>
+
                     <div id="btnProfilesUsers" class="btn-checks">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_users">
                             <input type="checkbox" id="profile_users"
@@ -243,8 +212,47 @@
                 </td>
             </tr>
             <tr>
+                <td class="descField"><?php echo __('Configuración'); ?></td>
+                <td class="valField checkbox">
+                    <div class="lowres-title"><?php echo __('Configuración'); ?></div>
+
+                    <div id="btnProfilesConfig" class="btn-checks">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_config">
+                            <input type="checkbox" id="profile_config"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="profile_config" <?php echo $profile->isConfigGeneral() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"
+                                  title="<?php echo __('Configuración General'); ?>"><?php echo __('General'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_configmpw">
+                            <input type="checkbox" id="profile_configmpw"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="profile_configmpw" <?php echo $profile->isConfigEncryption() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"
+                                  title="<?php echo __('Opciones de encriptación'); ?>"><?php echo __('Encriptación'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_configback">
+                            <input type="checkbox" id="profile_configback"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="profile_configback" <?php echo $profile->isConfigBackup() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"
+                                  title="<?php echo __('Realizar copia de seguridad y exportar'); ?>"><?php echo __('Backup'); ?></span>
+                        </label>
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_configimport">
+                            <input type="checkbox" id="profile_configimport"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="profile_configimport" <?php echo $profile->isConfigImport() ? 'CHECKED' : ''; ?> <?php echo $isDisabled; ?>/>
+                            <span class="mdl-switch__label"
+                                  title="<?php echo __('Realizar importación de cuentas'); ?>"><?php echo __('Importar'); ?></span>
+                        </label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
                 <td class="descField"><?php echo __('Otros'); ?></td>
                 <td class="valField checkbox">
+                    <div class="lowres-title"><?php echo __('Otros'); ?></div>
+
                     <div id="btnProfilesOthers" class="btn-checks">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="profile_eventlog">
                             <input type="checkbox" id="profile_eventlog"
@@ -260,6 +268,8 @@
                 <tr>
                     <td class="descField"><?php echo __('Usado por'); ?></td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Usado por'); ?></div>
+
                         <div class="list-wrap">
                             <ul class="mdl-list">
                                 <?php foreach ($usedBy as $user): ?>

@@ -5,7 +5,7 @@
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?></H2>
+    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmGroups" id="frmGroups" class="form-action"
           data-onsubmit="appMgmt/save"
@@ -42,6 +42,8 @@
             <tr>
                 <td class="descField"><?php echo __('Usuarios'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Usuarios'); ?></div>
+
                     <select id="selUsers" name="users[]" multiple="multiple" class="select-box"
                             title="<?php echo __('Usuarios'); ?>">
                         <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>

@@ -3,7 +3,7 @@
 /** @var $icons \SP\Core\UI\ThemeIconsBase */
 ?>
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?></h2>
+    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmTags" id="frmTags" class="form-action"
           data-onsubmit="appMgmt/save"

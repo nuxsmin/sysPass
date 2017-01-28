@@ -13,7 +13,6 @@
             <table id="tblWiki" class="data tblConfig round">
                 <tr>
                     <td class="descField">
-                        <?php echo __('Habilitar enlaces Wiki'); ?>
                         <div id="help-wiki_enabled"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_enabled">
@@ -28,7 +27,7 @@
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="wiki_enabled"
                                 <?php echo $chkWiki; ?>/>
-                            <span class="mdl-switch__label"></span>
+                            <span class="mdl-switch__label"><?php echo __('Habilitar enlaces Wiki'); ?></span>
                         </label>
                     </td>
                 </tr>
@@ -114,6 +113,8 @@
                         </div>
                     </td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Prefijo para nombre de cuenta'); ?></div>
+
                         <input type="text" name="wiki_filter" id="wikifilter" value="<?php echo $wikiFilter; ?>"/>
                     </td>
                 </tr>
@@ -126,7 +127,6 @@
             <table id="tblDokuWiki" class="data tblConfig round">
                 <tr>
                     <td class="descField">
-                        <?php echo __('Habilitar API de DokuWiki'); ?>
                         <div id="help-dokuwiki_enabled"
                              class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                         <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_enabled">
@@ -144,7 +144,7 @@
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="dokuwiki_enabled"
                                 <?php echo $chkDokuWiki; ?>/>
-                            <span class="mdl-switch__label"></span>
+                            <span class="mdl-switch__label"><?php echo __('Habilitar API de DokuWiki'); ?></span>
                         </label>
                     </td>
                 </tr>
@@ -270,6 +270,13 @@
 
         <div class="tab-actions">
             <ul>
+                <li>
+                    <button id="btnBack" type="button"
+                            class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                            title="<?php echo __('Atrás'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    </button>
+                </li>
                 <li>
                     <button type="button"
                             class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"

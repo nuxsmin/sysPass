@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -93,6 +93,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('tabs-start', 'common');
 
         $this->getGeneralTab();
+        $this->getAccountsTab();
         $this->getWikiTab();
         $this->getLdapTab();
         $this->getMailTab();
@@ -111,7 +112,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getGeneralTab()
+    protected function getGeneralTab()
     {
         $this->setAction(self::ACTION_CFG_GENERAL);
 
@@ -139,24 +140,6 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('remoteSyslogServer', $this->Config->getSyslogServer());
         $this->view->assign('remoteSyslogPort', $this->Config->getSyslogPort());
 
-        // Files
-        $this->view->assign('chkFiles', $this->Config->isFilesEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('filesAllowedExts', implode(',', $this->Config->getFilesAllowedExts()));
-        $this->view->assign('filesAllowedSize', $this->Config->getFilesAllowedSize());
-
-        // Accounts
-        $this->view->assign('chkGlobalSearch', $this->Config->isGlobalSearch() ? 'checked="checked"' : '');
-        $this->view->assign('chkResultsAsCards', $this->Config->isResultsAsCards() ? 'checked="checked"' : '');
-        $this->view->assign('chkAccountPassToImage', $this->Config->isAccountPassToImage() ? 'checked="checked"' : '');
-        $this->view->assign('chkAccountLink', $this->Config->isAccountLink() ? 'checked="checked"' : '');
-        $this->view->assign('accountCount', $this->Config->getAccountCount());
-
-        // PublicLinks
-        $this->view->assign('chkPubLinks', $this->Config->isPublinksImageEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkPubLinksImage', $this->Config->isPublinksImageEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('pubLinksMaxTime', $this->Config->getPublinksMaxTime() / 60);
-        $this->view->assign('pubLinksMaxViews', $this->Config->getPublinksMaxViews());
-
         // Proxy
         $this->view->assign('chkProxy', $this->Config->isProxyEnabled() ? 'checked="checked"' : '');
         $this->view->assign('proxyServer', $this->Config->getProxyServer());
@@ -183,11 +166,47 @@ class ConfigController extends ControllerBase implements ActionsInterface
     }
 
     /**
+     * Obtener la pestaña de cuentas
+     */
+    protected function getAccountsTab()
+    {
+        $this->setAction(self::ACTION_CFG_ACCOUNTS);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $this->view->addTemplate('accounts');
+
+        // Files
+        $this->view->assign('chkFiles', $this->Config->isFilesEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('filesAllowedExts', implode(',', $this->Config->getFilesAllowedExts()));
+        $this->view->assign('filesAllowedSize', $this->Config->getFilesAllowedSize());
+
+        // Accounts
+        $this->view->assign('chkGlobalSearch', $this->Config->isGlobalSearch() ? 'checked="checked"' : '');
+        $this->view->assign('chkResultsAsCards', $this->Config->isResultsAsCards() ? 'checked="checked"' : '');
+        $this->view->assign('chkAccountPassToImage', $this->Config->isAccountPassToImage() ? 'checked="checked"' : '');
+        $this->view->assign('chkAccountLink', $this->Config->isAccountLink() ? 'checked="checked"' : '');
+        $this->view->assign('accountCount', $this->Config->getAccountCount());
+
+        // PublicLinks
+        $this->view->assign('chkPubLinks', $this->Config->isPublinksImageEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('chkPubLinksImage', $this->Config->isPublinksImageEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('pubLinksMaxTime', $this->Config->getPublinksMaxTime() / 60);
+        $this->view->assign('pubLinksMaxViews', $this->Config->getPublinksMaxViews());
+
+        $this->view->assign('actionId', $this->getAction(), 'accounts');
+        $this->view->append('tabs', ['title' => __('Cuentas')]);
+        $this->view->assign('tabIndex', $this->getTabIndex(), 'accounts');
+    }
+
+    /**
      * Obtener la pestaña de Wiki
      *
      * @return void
      */
-    public function getWikiTab()
+    protected function getWikiTab()
     {
         $this->setAction(self::ACTION_CFG_WIKI);
 
@@ -219,7 +238,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getLdapTab()
+    protected function getLdapTab()
     {
         $this->setAction(self::ACTION_CFG_LDAP);
 
@@ -252,7 +271,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getMailTab()
+    protected function getMailTab()
     {
         $this->setAction(self::ACTION_CFG_MAIL);
 
@@ -283,7 +302,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getEncryptionTab()
+    protected function getEncryptionTab()
     {
         $this->setAction(self::ACTION_CFG_ENCRYPTION);
 
@@ -309,7 +328,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getBackupTab()
+    protected function getBackupTab()
     {
         $this->setAction(self::ACTION_CFG_BACKUP);
 
@@ -367,7 +386,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getImportTab()
+    protected function getImportTab()
     {
         $this->setAction(self::ACTION_CFG_IMPORT);
 
@@ -389,7 +408,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getInfoTab()
+    protected function getInfoTab()
     {
         $this->setAction(self::ACTION_CFG_GENERAL);
 

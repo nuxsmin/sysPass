@@ -4,7 +4,7 @@
 /** @var  \SP\Core\UI\ThemeIconsBase $icons */
 ?>
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?></h2>
+    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmCategories" id="frmPlugins">
         <table class="popup-data">
@@ -60,6 +60,8 @@
             <tr>
                 <td class="descField"><?php echo __('Eventos'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Eventos'); ?></div>
+
                     <div class="list-wrap">
                         <ul class="mdl-list">
                             <?php foreach ($pluginInfo->getEvents() as $event): ?>

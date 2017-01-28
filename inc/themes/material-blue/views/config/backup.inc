@@ -13,6 +13,8 @@
                     <?php echo __('Resultado'); ?>
                 </td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Resultado'); ?></div>
+
                     <?php echo $lastBackupTime; ?>
                 </td>
             </tr>
@@ -21,6 +23,8 @@
                     <?php echo __('Descargar Actual'); ?>
                 </td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
+
                     <?php if ($isAdminApp && file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute'])): ?>
                         <a href="<?php echo $backupDbFile['relative']; ?>"
                            download="<?php echo $backupDbFile['filename']; ?>" class="download">
@@ -92,6 +96,8 @@
                         <?php echo __('Resultado'); ?>
                     </td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Resultado'); ?></div>
+
                         <?php echo $lastExportTime; ?>
                     </td>
                 </tr>
@@ -100,6 +106,8 @@
                         <?php echo __('Descargar Actual'); ?>
                     </td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
+
                         <?php if ($isAdminApp && file_exists($exportFile['absolute'])): ?>
                             <a href="<?php echo $exportFile['relative']; ?>"
                                download="<?php echo $exportFile['filename']; ?>"
@@ -150,6 +158,13 @@
         <div class="tab-actions">
             <ul>
                 <li>
+                    <button id="btnBack" type="button"
+                            class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                            title="<?php echo __('Atrás'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    </button>
+                </li>
+                <li>
                     <button id="help_export_button" type="button"
                             class="btn-help mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                             title="<?php echo $icons->getIconHelp()->getTitle(); ?>"
@@ -168,7 +183,6 @@
                     </div>
                 </li>
                 <li>
-
                     <button form="frmExport"
                             class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
                             title="<?php echo $icons->getIconPlay()->getTitle(); ?>">

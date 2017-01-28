@@ -4,15 +4,13 @@
 
 <table id="tblProxy" class="data tblConfig round">
     <tr>
-        <td class="descField">
-            <?php echo __('Usar Proxy'); ?>
-        </td>
+        <td class="descField"></td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="proxy_enabled">
                 <input type="checkbox" id="proxy_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                        name="proxy_enabled"
                     <?php echo $chkProxy; ?>/>
-                <span class="mdl-switch__label"></span>
+                <span class="mdl-switch__label"><?php echo __('Usar Proxy'); ?></span>
             </label>
         </td>
     </tr>

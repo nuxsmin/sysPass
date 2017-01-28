@@ -141,14 +141,15 @@ interface ActionsInterface
     const ACTION_NOT_USER_DELETE = 7613;
     const ACTION_NOT_USER_SEARCH = 7615;
     const ACTION_CFG = 80;
-    const ACTION_CFG_GENERAL = 81;
-    const ACTION_CFG_ENCRYPTION = 82;
-    const ACTION_CFG_ENCRYPTION_TEMPPASS = 83;
-    const ACTION_CFG_BACKUP = 84;
-    const ACTION_CFG_IMPORT = 85;
-    const ACTION_CFG_EXPORT = 86;
-    const ACTION_CFG_WIKI = 87;
-    const ACTION_CFG_LDAP = 88;
-    const ACTION_CFG_MAIL = 89;
+    const ACTION_CFG_GENERAL = 801;
+    const ACTION_CFG_ENCRYPTION = 802;
+    const ACTION_CFG_ENCRYPTION_TEMPPASS = 803;
+    const ACTION_CFG_BACKUP = 804;
+    const ACTION_CFG_IMPORT = 805;
+    const ACTION_CFG_EXPORT = 806;
+    const ACTION_CFG_WIKI = 807;
+    const ACTION_CFG_LDAP = 808;
+    const ACTION_CFG_MAIL = 809;
+    const ACTION_CFG_ACCOUNTS = 810;
     const ACTION_EVL = 90;
 }

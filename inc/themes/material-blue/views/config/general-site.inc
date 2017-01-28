@@ -21,6 +21,8 @@
             </div>
         </td>
         <td class="valField">
+            <div class="lowres-title"><?php echo __('Idioma'); ?></div>
+
             <select name="sitelang" id="sel-sitelang" size="1" class="select-box sel-chosen-ns">
                 <?php foreach ($langsAvailable as $langName => $langValue): ?>
                     <option
@@ -41,6 +43,8 @@
             </div>
         </td>
         <td class="valField">
+            <div class="lowres-title"><?php echo __('Tema Visual'); ?></div>
+
             <select name="sitetheme" id="sel-sitetheme" size="1"
                     class="select-box sel-chosen-ns" >
                 <?php foreach ($themesAvailable as $themeDir => $themeName): ?>
@@ -66,7 +70,6 @@
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Forzar HTTPS'); ?>
             <div id="help-https"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-https">
@@ -80,13 +83,12 @@
                 <input type="checkbox" id="https_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                        name="https_enabled"
                     <?php echo $chkHttps; ?>/>
-                <span class="mdl-switch__label"></span>
+                <span class="mdl-switch__label"><?php echo __('Forzar HTTPS'); ?></span>
             </label>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Habilitar depuración'); ?>
             <div id="help-debug"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-debug">
@@ -99,13 +101,12 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="debug">
                 <input type="checkbox" id="debug" class="mdl-switch__input mdl-color-text--indigo-400" name="debug"
                     <?php echo $chkDebug; ?>/>
-                <span class="mdl-switch__label"></span>
+                <span class="mdl-switch__label"><?php echo __('Habilitar depuración'); ?></span>
             </label>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Modo mantenimiento'); ?>
             <div id="help-maintenance"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-maintenance">
@@ -118,13 +119,12 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="maintenance">
                 <input type="checkbox" id="maintenance" class="mdl-switch__input mdl-color-text--indigo-400" name="maintenance"
                     <?php echo $chkMaintenance; ?>/>
-                <span class="mdl-switch__label"></span>
+                <span class="mdl-switch__label"><?php echo __('Modo mantenimiento'); ?></span>
             </label>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Comprobar actualizaciones'); ?>
             <div id="help-updates"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-updates">
@@ -137,13 +137,12 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="updates">
                 <input type="checkbox" id="updates" class="mdl-switch__input mdl-color-text--indigo-400" name="updates"
                     <?php echo $chkUpdates; ?>/>
-                <span class="mdl-switch__label"></span>
+                <span class="mdl-switch__label"><?php echo __('Comprobar actualizaciones'); ?></span>
             </label>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Comprobar notificaciones'); ?>
             <div id="help-notices"
                  class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-notices">
@@ -156,7 +155,7 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notices">
                 <input type="checkbox" id="notices" class="mdl-switch__input mdl-color-text--indigo-400" name="notices"
                     <?php echo $chkNotices; ?>/>
-                <span class="mdl-switch__label"></span>
+                <span class="mdl-switch__label"><?php echo __('Comprobar notificaciones'); ?></span>
             </label>
         </td>
     </tr>

@@ -7,7 +7,6 @@
 <table id="tblEvents" class="data tblConfig round">
     <tr>
         <td class="descField">
-            <?php echo __('Habilitar log de eventos'); ?>
             <div id="help-eventlog" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-eventlog">
                 <p>
@@ -19,31 +18,29 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="log_enabled">
                 <input type="checkbox" id="log_enabled" class="mdl-switch__input mdl-color-text--indigo-400" name="log_enabled"
                     <?php echo $chkLog; ?>/>
-                <span class="mdl-switch__label"></span>
+                <span class="mdl-switch__label"><?php echo __('Habilitar log de eventos'); ?></span>
             </label>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Habilitar Syslog'); ?>
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="syslog_enabled">
                 <input type="checkbox" id="syslog_enabled" class="mdl-switch__input mdl-color-text--indigo-400" name="syslog_enabled"
                     <?php echo $chkSyslog; ?>/>
-                <span class="mdl-switch__label"></span>
+                <span class="mdl-switch__label"><?php echo __('Habilitar Syslog'); ?></span>
             </label>
         </td>
     </tr>
     <tr>
         <td class="descField">
-            <?php echo __('Habilitar Syslog Remoto'); ?>
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="remotesyslog_enabled">
                 <input type="checkbox" id="remotesyslog_enabled" class="mdl-switch__input mdl-color-text--indigo-400" name="remotesyslog_enabled"
                     <?php echo $chkRemoteSyslog; ?>/>
-                <span class="mdl-switch__label"></span>
+                <span class="mdl-switch__label"><?php echo __('Habilitar Syslog Remoto'); ?></span>
             </label>
         </td>
     </tr>

@@ -52,6 +52,8 @@
             <tr>
                 <td class="descField"><?php echo __('Cliente'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Cliente'); ?></div>
+
                     <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer"
                             required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
@@ -73,6 +75,8 @@
             <tr>
                 <td class="descField"><?php echo __('Categoría'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Categoría'); ?></div>
+
                     <select id="selCategory" name="categoryId" class="select-box sel-chosen-category"
                             required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
@@ -171,6 +175,8 @@
             <tr>
                 <td class="descField"><?php echo __('Etiquetas'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Etiquetas'); ?></div>
+
                     <?php if (!$isView): ?>
                         <select id="selTags" name="tags[]" multiple="multiple">
                             <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
@@ -186,6 +192,8 @@
                 <tr>
                     <td class="descField"><?php echo __('Cuenta Vinculada'); ?></td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Cuenta Vinculada'); ?></div>
+
                         <select id="selParentAccount" name="parentAccountId"
                                 class="select-box select-box-deselect" <?php echo $disabled; ?>
                                 data-sk="<?php echo $sk; ?>"
@@ -201,6 +209,8 @@
                 <tr>
                     <td class="descField"><?php echo __('Historial'); ?></td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Historial'); ?></div>
+
                         <select id="historyId" name="historyId" class="select-box"
                                 data-action-id="<?php echo SP\Core\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>"
                                 data-onchange="account/showHistory">
@@ -225,6 +235,8 @@
                 <tr>
                     <td class="descField"><?php echo __('Enlace Público'); ?></td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Enlace Público'); ?></div>
+
                         <a href="<?php echo $publicLinkUrl; ?>" target="_blank"
                            title="<?php echo __('Enlace Público'); ?>">
                             <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
