@@ -66,9 +66,13 @@ class Auth
     {
         $this->UserData = $UserData;
 
-        $this->registerAuth('authLdap');
-        $this->registerAuth('authDatabase');
         $this->registerAuth('authBrowser');
+
+        if (Checks::ldapIsAvailable() && Checks::ldapIsEnabled()) {
+            $this->registerAuth('authLdap');
+        }
+
+        $this->registerAuth('authDatabase');
     }
 
     /**
@@ -115,12 +119,6 @@ class Auth
      */
     public function authLdap()
     {
-        if (!Checks::ldapIsAvailable()
-            || !Checks::ldapIsEnabled()
-        ) {
-            return false;
-        }
-
         $Ldap = Config::getConfig()->isLdapAds() ? new LdapMsAds() : new LdapStd();
 
         $LdapAuthData = $Ldap->getLdapAuthData();
@@ -137,6 +135,7 @@ class Auth
         }
 
         $LdapAuthData->setAuthenticated(1);
+
         return $LdapAuthData;
     }
 

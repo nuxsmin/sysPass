@@ -30,14 +30,14 @@
             <tr>
                 <td class="descField"><?php echo __('Login'); ?></td>
                 <td class="valField">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="login" name="login" type="text" required
-                                   class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $user->getUserLogin(); ?>"
-                                   maxlength="80" <?php echo $user->isUserIsLdap() || $isReadonly; ?>>
-                            <label class="mdl-textfield__label"
-                                   for="login"><?php echo __('Login de inicio de sesión'); ?></label>
-                        </div>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="login" name="login" type="text" required
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
+                               value="<?php echo $user->getUserLogin(); ?>"
+                               maxlength="80" <?php echo $user->isUserIsLdap() || $isReadonly; ?>>
+                        <label class="mdl-textfield__label"
+                               for="login"><?php echo __('Login de inicio de sesión'); ?></label>
+                    </div>
                     <?php if ($user->isUserIsLdap()): ?>
                         <i class="material-icons <?php echo $icons->getIconLdapUser()->getClass(); ?>"
                            title="<?php echo $icons->getIconLdapUser()->getTitle(); ?>"><?php echo $icons->getIconLdapUser()->getIcon(); ?></i>
@@ -80,13 +80,13 @@
             <tr>
                 <td class="descField"><?php echo __('Email'); ?></td>
                 <td class="valField">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="email" name="email" type="email" required
-                                   class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $user->getUserEmail(); ?>" maxlength="50" <?php echo $isReadonly; ?>>
-                            <label class="mdl-textfield__label"
-                                   for="email"><?php echo __('Dirección de correo'); ?></label>
-                        </div
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="email" name="email" type="email" required
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
+                               value="<?php echo $user->getUserEmail(); ?>" maxlength="50" <?php echo $isReadonly; ?>>
+                        <label class="mdl-textfield__label"
+                               for="email"><?php echo __('Dirección de correo'); ?></label>
+                    </div
                 </td>
 
             </tr>
@@ -125,7 +125,7 @@
                     <?php if (!$isView): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input" rows="3" id="notes" name="notes"
-                                  maxlength="1000" <?php echo $isReadonly ;?>><?php echo $user->getUserNotes(); ?></textarea>
+                                  maxlength="1000" <?php echo $isReadonly; ?>><?php echo $user->getUserNotes(); ?></textarea>
                             <label class="mdl-textfield__label"
                                    for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
                         </div>

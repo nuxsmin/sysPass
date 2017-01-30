@@ -26,7 +26,7 @@
 /** @var  \SP\Core\UI\ThemeIconsBase $icons */
 ?>
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?></h2>
+    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmNotices" id="frmNotices" class="form-action"
           data-onsubmit="appMgmt/save"
@@ -84,14 +84,14 @@
                 </td>
             </tr>
 
-            <?php if ($SessionUserData->isUserIsAdminApp() || $isDemo): ?>
+            <?php if (!$isView && ($SessionUserData->isUserIsAdminApp() || $isDemo)): ?>
                 <tr>
                     <td class="descField"><?php echo __('Usuario'); ?></td>
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Usuario'); ?></div>
 
                         <select id="notice_user" name="notice_user"
-                                class="select-box" <?php echo $isDisabled; ?>>
+                                class="select-box select-box-deselect" <?php echo $isDisabled; ?>>
                             <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
                             <?php foreach ($users as $user): ?>
                                 <option
@@ -110,12 +110,12 @@
                             <span class="mdl-switch__label"><?php echo __('Global'); ?></span>
                         </label>
 
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notice_onlyadmin"
-                               title="<?php echo __('Sólo para administradores de la aplicación'); ?>">
+<!--                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notice_onlyadmin"
+                               title="<?php /*echo __('Sólo para administradores de la aplicación'); */?>">
                             <input type="checkbox" id="notice_onlyadmin" class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="notice_onlyadmin" <?php echo $notice->isNoticeOnlyAdmin() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
-                            <span class="mdl-switch__label"><?php echo __('Solo Admins'); ?></span>
-                        </label>
+                                   name="notice_onlyadmin" <?php /*echo $notice->isNoticeOnlyAdmin() ? 'checked' : ' '; */?> <?php /*echo $isDisabled; */?>/>
+                            <span class="mdl-switch__label"><?php /*echo __('Solo Admins'); */?></span>
+                        </label>-->
                     </td>
                 </tr>
             <?php endif; ?>

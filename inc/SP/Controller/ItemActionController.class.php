@@ -175,6 +175,7 @@ class ItemActionController implements ItemControllerInterface
                 case ActionsInterface::ACTION_NOT_USER_CHECK:
                 case ActionsInterface::ACTION_NOT_USER_VIEW:
                 case ActionsInterface::ACTION_NOT_USER_NEW:
+                case ActionsInterface::ACTION_NOT_USER_EDIT:
                 case ActionsInterface::ACTION_NOT_USER_DELETE:
                     $this->noticeAction();
                     break;
@@ -247,6 +248,8 @@ class ItemActionController implements ItemControllerInterface
             case ActionsInterface::ACTION_USR_USERS_DELETE:
                 if (is_array($this->itemId)) {
                     $UsersData = User::getItem()->deleteBatch($this->itemId);
+
+                    $this->LogMessage->addDescription(__('Usuarios eliminados', false));
                 } else {
                     $UsersData = [User::getItem()->getById($this->itemId)];
 
@@ -1031,6 +1034,14 @@ class ItemActionController implements ItemControllerInterface
                 Notice::getItem($Form->getItemData())->add();
 
                 $this->JsonResponse->setDescription(__('Notificación creada'));
+                break;
+            case ActionsInterface::ACTION_NOT_USER_EDIT:
+                $Form = new NoticeForm($this->itemId);
+                $Form->validate($this->actionId);
+
+                Notice::getItem($Form->getItemData())->update();
+
+                $this->JsonResponse->setDescription(__('Notificación actualizada'));
                 break;
             case ActionsInterface::ACTION_NOT_USER_DELETE:
                 if (is_array($this->itemId)) {

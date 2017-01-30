@@ -119,11 +119,16 @@ class Notices extends GridBase
         $GridActionCheck->setOnClickFunction('notice/check');
         $GridActionCheck->setFilterRowSource('notice_checked', 1);
 
-        if (!$isAdminApp) {
-            $GridActionCheck->setFilterRowSource('notice_sticky', 1);
-        }
-
         $Grid->setDataActions($GridActionCheck);
+
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(self::ACTION_NOT_USER_EDIT);
+        $GridActionEdit->setName(__('Editar Notificación'));
+        $GridActionEdit->setTitle(__('Editar Notificación'));
+        $GridActionEdit->setIcon($this->icons->getIconEdit());
+        $GridActionEdit->setOnClickFunction('notice/show');
+
+        $Grid->setDataActions($GridActionEdit);
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_NOT_USER_DELETE);
@@ -134,6 +139,8 @@ class Notices extends GridBase
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         if (!$isAdminApp) {
+            $GridActionCheck->setFilterRowSource('notice_sticky', 1);
+            $GridActionEdit->setFilterRowSource('notice_sticky', 1);
             $GridActionDel->setFilterRowSource('notice_sticky', 1);
         }
 

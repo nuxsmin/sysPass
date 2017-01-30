@@ -137,8 +137,9 @@ interface ActionsInterface
     const ACTION_NOT_USER = 761;
     const ACTION_NOT_USER_VIEW = 7610;
     const ACTION_NOT_USER_NEW = 7611;
-    const ACTION_NOT_USER_CHECK = 7612;
+    const ACTION_NOT_USER_EDIT = 7612;
     const ACTION_NOT_USER_DELETE = 7613;
+    const ACTION_NOT_USER_CHECK = 7614;
     const ACTION_NOT_USER_SEARCH = 7615;
     const ACTION_CFG = 80;
     const ACTION_CFG_GENERAL = 801;

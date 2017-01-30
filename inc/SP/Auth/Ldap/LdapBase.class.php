@@ -216,8 +216,6 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             $this->LogMessage->addDetails('LDAP DN', $dn);
             $this->writeLog();
 
-            $this->getLdapAuthData()->setAuthenticated(1);
-
             throw new SPException(SPException::SP_ERROR, __($this->LogMessage->getDescription()));
         }
 

@@ -124,7 +124,9 @@ class LoginController
 
                 /** @var AuthResult $AuthResult */
                 foreach ($result as $AuthResult) {
-                    $this->{$AuthResult->getAuth()}($AuthResult->getData());
+                    if ($this->{$AuthResult->getAuth()}($AuthResult->getData()) === true) {
+                        break;
+                    }
                 }
             } else {
                 throw new AuthException(SPException::SP_INFO, __('Login incorrecto', false), '', self::STATUS_INVALID_LOGIN);
@@ -412,7 +414,6 @@ class LoginController
      * Comprobar si el cliente ha enviado las variables de autentificación
      *
      * @param BrowserAuthData $AuthData
-     * @return bool
      * @throws \SP\Core\Exceptions\SPException
      * @throws AuthException
      */
@@ -429,7 +430,5 @@ class LoginController
         } elseif ($AuthData->getAuthenticated() === 1) {
             $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
         }
-
-        return true;
     }
 }

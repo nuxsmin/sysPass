@@ -51,6 +51,14 @@ abstract class AuthDataBase
      * @var string
      */
     protected $server;
+    /**
+     * @var bool
+     */
+    protected $required = false;
+    /**
+     * @var bool
+     */
+    protected $failed = false;
 
     /**
      * @return string
@@ -130,5 +138,37 @@ abstract class AuthDataBase
     public function setStatusCode($statusCode)
     {
         $this->statusCode = (int)$statusCode;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired()
+    {
+        return (bool)$this->required;
+    }
+
+    /**
+     * @param bool $required
+     */
+    public function setRequired($required)
+    {
+        $this->required = (bool)$required;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFailed()
+    {
+        return $this->failed;
+    }
+
+    /**
+     * @param bool $failed
+     */
+    public function setFailed($failed)
+    {
+        $this->failed = $failed;
     }
 }

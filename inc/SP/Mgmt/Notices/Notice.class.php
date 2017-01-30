@@ -125,7 +125,6 @@ class Notice extends NoticeBase implements ItemInterface
         $Data->addParam($this->itemData->getNoticeType());
         $Data->addParam($this->itemData->getNoticeComponent());
         $Data->addParam($this->itemData->getNoticeDescription());
-        $Data->addParam($this->itemData->isNoticeChecked());
         $Data->addParam($this->itemData->getNoticeUserId());
         $Data->addParam($this->itemData->isNoticeSticky());
         $Data->addParam($this->itemData->isNoticeOnlyAdmin());
@@ -149,7 +148,8 @@ class Notice extends NoticeBase implements ItemInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT notice_type,
+            'SELECT notice_id, 
+            notice_type,
             notice_component,
             notice_description,
             FROM_UNIXTIME(notice_date) AS notice_date,

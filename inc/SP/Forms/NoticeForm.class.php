@@ -95,6 +95,7 @@ class NoticeForm extends FormBase implements FormInterface
         $Description->addDescription(Request::analyze('notice_description'));
 
         $this->NoticeData = new NoticeData();
+        $this->NoticeData->setNoticeId($this->itemId);
         $this->NoticeData->setNoticeType(Request::analyze('notice_type'));
         $this->NoticeData->setNoticeComponent(Request::analyze('notice_component'));
         $this->NoticeData->setNoticeDescription($Description);

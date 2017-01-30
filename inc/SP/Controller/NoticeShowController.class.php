@@ -33,7 +33,6 @@ use SP\Core\Template;
 use SP\DataModel\NoticeData;
 use SP\Mgmt\Notices\Notice;
 use SP\Mgmt\Users\User;
-use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 use SP\Util\Json;
 use SP\Util\Util;
@@ -105,6 +104,10 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
                     break;
                 case self::ACTION_NOT_USER_NEW:
                     $this->view->assign('header', __('Nueva Notificación'));
+                    $this->getNotice();
+                    break;
+                case self::ACTION_NOT_USER_EDIT:
+                    $this->view->assign('header', __('Editar Notificación'));
                     $this->getNotice();
                     break;
                 default:
