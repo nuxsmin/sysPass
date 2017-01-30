@@ -289,8 +289,6 @@ class AccountAcl
             return $sessionAcl;
         }
 
-        debugLog('ACL NO cache: ' . $this->accountId);
-
         return $this->updateAcl();
     }
 
