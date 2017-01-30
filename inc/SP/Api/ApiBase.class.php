@@ -34,6 +34,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\DataModel\UserData;
+use SP\Log\Log;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
 use SP\Util\Json;
@@ -77,6 +78,10 @@ abstract class ApiBase implements ApiInterface
      * @var UserData
      */
     protected $UserData;
+    /**
+     * @var Log
+     */
+    protected $Log;
 
     /**
      * @param $data
@@ -101,6 +106,8 @@ abstract class ApiBase implements ApiInterface
         }
 
         Session::setSessionType(Session::SESSION_API);
+
+        $this->Log = new Log();
     }
 
     /**

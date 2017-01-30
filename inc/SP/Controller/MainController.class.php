@@ -61,7 +61,6 @@ class MainController extends ControllerBase implements ActionsInterface
      * @param        $template   Template con instancia de plantilla
      * @param string $page El nombre de página para la clase del body
      * @param bool $initialize Si es una inicialización completa
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -86,8 +85,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Inicializar las variables para la vista principal de la aplicación
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function initialize()
     {
@@ -110,7 +107,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('httpsEnabled', Checks::httpsEnabled());
         $this->view->assign('lang', Init::isLoggedIn() ? Language::$userLang : Language::$globalLang);
 
-        $this->view->assign('loadApp', Session::getAuthCompleted() && !Config::getConfig()->isMaintenance());
+        $this->view->assign('loadApp', Session::getAuthCompleted());
 
         $this->setLoggedIn(Init::isLoggedIn());
 
@@ -199,7 +196,7 @@ class MainController extends ControllerBase implements ActionsInterface
     /**
      * Obtener los datos para el interface principal de sysPass
      *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getMain()
     {
@@ -216,7 +213,7 @@ class MainController extends ControllerBase implements ActionsInterface
     /**
      * Obtener los datos para la mostrar la barra de sesión
      *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function getSessionBar()
     {
@@ -241,8 +238,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para mostrar el menú de acciones
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     private function getMenu()
     {
@@ -317,8 +312,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de login
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getLogin()
     {
@@ -349,8 +342,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface del instalador
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getInstaller()
     {
@@ -386,8 +377,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de error
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getError()
     {
@@ -407,8 +396,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de actualización de BD
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getUpgrade()
     {
@@ -429,8 +416,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de comprobación de actualizaciones
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getCheckUpdates()
     {
@@ -568,7 +553,7 @@ class MainController extends ControllerBase implements ActionsInterface
                     $Message->addDescription(sprintf('%s : %s', __('Cuenta'), $PublicLink->getItemId()));
                     $Message->addDescription(sprintf('%s : %s', __('Origen'), $_SERVER['REMOTE_ADDR']));
                     $Message->addDescription(sprintf('%s : %s', __('Agente'), $_SERVER['HTTP_USER_AGENT']));
-                    $Message->addDescription(sprintf('HTTPS : %s', $_SERVER['HTTPS'] ? 'ON' : 'OFF'));
+                    $Message->addDescription(sprintf('HTTPS : %s', Checks::httpsEnabled() ? 'ON' : 'OFF'));
 
 
                     $NoticeData = new NoticeData();

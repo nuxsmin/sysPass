@@ -24,6 +24,7 @@
 
 namespace SP\Account;
 
+use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\DataModel\ItemSearchData;
@@ -149,7 +150,7 @@ class AccountUtil
 
         $queryRes = DB::getResults($Data);
 
-        return ($queryRes !== false) ? $queryRes->account_name : false;
+        return is_object($queryRes) ? $queryRes->account_name : false;
     }
 
     /**
@@ -245,7 +246,7 @@ class AccountUtil
     {
         if (!Session::getUserData()->isUserIsAdminApp()
             && !Session::getUserData()->isUserIsAdminAcc()
-            && !Session::getUserProfile()->isAccGlobalSearch()
+            && !(Session::getUserProfile()->isAccGlobalSearch() && Config::getConfig()->isGlobalSearch())
         ) {
             $filterUser[] = 'account_userId = ?';
             $Data->addParam(Session::getUserData()->getUserId());

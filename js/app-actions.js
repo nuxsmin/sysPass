@@ -680,6 +680,8 @@ sysPass.Actions = function (Common) {
 
                         Common.appRequests().getActionCall(opts, function (json) {
                             Common.msg.out(json);
+
+                            doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("item-id")});
                         });
                     }
                 }

@@ -30,6 +30,16 @@
                     <?php echo $accountData->getAccountDateAdd() ?>
                 </td>
             </tr>
+            <?php if ($isModified && $accountData->getUserEditName()): ?>
+                <tr>
+                    <td class="descField"><?php echo __('Última Modificación'); ?></td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Última Modificación'); ?></div>
+
+                        <?php printf('%s (%s)', $accountData->getAccountDateEdit(), $accountData->getUserEditName()); ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
             <tr>
                 <td class="descField"><?php echo __('Creador'); ?></td>
                 <td class="valField">

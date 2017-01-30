@@ -277,17 +277,14 @@ sysPass.Theme = function (Common) {
         };
 
         var getUnixtime = function (val) {
-            log.info(moment.tz("UTC"));
-            log.info(Common.config().TIMEZONE);
-
-            return moment(val).tz(Common.config().TIMEZONE).format("X");
+            return moment.tz(val, Common.config().TIMEZONE).format("X");
         };
 
         // Actualizar el input oculto con la fecha en formato UNIX
         var updateUnixInput = function ($obj, date) {
             var unixtime;
 
-            if (typeof date !== "undefined") {
+            if (date !== undefined) {
                 unixtime = date;
             } else {
                 unixtime = getUnixtime($obj.val());

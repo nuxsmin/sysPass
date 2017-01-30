@@ -191,7 +191,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('accountCount', $this->Config->getAccountCount());
 
         // PublicLinks
-        $this->view->assign('chkPubLinks', $this->Config->isPublinksImageEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('chkPubLinks', $this->Config->isPublinksEnabled() ? 'checked="checked"' : '');
         $this->view->assign('chkPubLinksImage', $this->Config->isPublinksImageEnabled() ? 'checked="checked"' : '');
         $this->view->assign('pubLinksMaxTime', $this->Config->getPublinksMaxTime() / 60);
         $this->view->assign('pubLinksMaxViews', $this->Config->getPublinksMaxViews());

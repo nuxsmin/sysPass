@@ -44,7 +44,7 @@ defined('APP_ROOT') || die();
  */
 class Upgrade
 {
-    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501, 1316100601, 20017011302, 20017011701];
+    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501, 1316100601, 20017011302, 20017011701, 20017012901];
     private static $cfgUpgrade = [1124, 1316020501, 20017011202];
     private static $auxUpgrade = [12001, 12002, 20017010901, 20017011202];
 
@@ -53,6 +53,9 @@ class Upgrade
      *
      * @param int $version con la versión de la BBDD actual
      * @return bool
+     * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \InvalidArgumentException
      * @throws SPException
      */
     public static function doUpgrade($version)
@@ -153,6 +156,9 @@ class Upgrade
      *
      * @param $version int El número de versión
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \phpmailer\phpmailerException
      * @throws \InvalidArgumentException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
@@ -181,11 +187,9 @@ class Upgrade
      */
     public static function needDBUpgrade($version)
     {
-        $upgrades = array_filter(self::$dbUpgrade, function ($uVersions) use ($version) {
-            return ($uVersions > $version);
-        });
+        $latestUpgrade = self::$dbUpgrade[count(self::$dbUpgrade) - 1];
 
-        return (count($upgrades) > 0);
+        return version_compare($version, $latestUpgrade) < 0;
     }
 
     /**

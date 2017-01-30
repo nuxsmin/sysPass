@@ -532,7 +532,7 @@ pre, code, samp, kbd {
 #box-popup {
   min-width: 25em;
   max-width: 50em;
-  margin: 5em auto;
+  margin: 0 auto;
   padding: 0;
   background-color: #fff; }
   #box-popup.box-password-view {
@@ -544,7 +544,7 @@ pre, code, samp, kbd {
     font-size: 18px;
     color: #fff;
     background-color: #607d8b;
-    margin: 0 0 1em 0;
+    margin: 0;
     padding: .5em 0;
     line-height: 1em; }
     #box-popup > h2 .btn-popup-close {
@@ -610,7 +610,8 @@ pre, code, samp, kbd {
   min-width: 400px;
   border: 0;
   text-align: left;
-  margin: 0 .5em; }
+  margin: 0;
+  padding: 1em .5em; }
   .popup-data .descField {
     min-width: 100px; }
 

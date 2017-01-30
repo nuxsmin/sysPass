@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,7 @@
 
 namespace SP\Core;
 
+use SP\Account\AccountAcl;
 use SP\Account\AccountSearch;
 use SP\Config\ConfigData;
 use SP\DataModel\ProfileData;
@@ -656,5 +657,31 @@ class Session
     public static function getAuthCompleted()
     {
         return self::getSessionKey('authCompleted', false);
+    }
+
+    /**
+     * Establecer la ACL de una cuenta
+     *
+     * @param AccountAcl $AccountAcl
+     */
+    public static function setAccountAcl(AccountAcl $AccountAcl)
+    {
+        $_SESSION['accountAcl'][$AccountAcl->getAccountId()] = $AccountAcl;
+    }
+
+    /**
+     * Devolver la ACL de una cuenta
+     *
+     * @param $accountId
+     *
+     * @return null|AccountAcl
+     */
+    public static function getAccountAcl($accountId)
+    {
+        if (isset($_SESSION['accountAcl'][$accountId])) {
+            return $_SESSION['accountAcl'][$accountId];
+        }
+
+        return null;
     }
 }

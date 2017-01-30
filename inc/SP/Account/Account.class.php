@@ -53,16 +53,20 @@ class Account extends AccountBase implements AccountInterface
      */
     public function updateAccount()
     {
+        $Acl = Session::getAccountAcl($this->accountData->getAccountId());
+
         // Guardamos una copia de la cuenta en el histórico
         AccountHistory::addHistory($this->accountData->getAccountId(), false);
 
-        $GroupAccountsData = new GroupAccountsData();
-        $GroupAccountsData->setAccgroupAccountId($this->accountData->getAccountId());
-        $GroupAccountsData->setGroups($this->accountData->getUserGroupsId());
-
         try {
-            GroupAccounts::getItem($GroupAccountsData)->update();
-            UserAccounts::updateUsersForAccount($this->accountData->getAccountId(), $this->accountData->getUsersId());
+            if ($Acl->getStoredAcl()->isShowPermission()) {
+                $GroupAccountsData = new GroupAccountsData();
+                $GroupAccountsData->setAccgroupAccountId($this->accountData->getAccountId());
+                $GroupAccountsData->setGroups($this->accountData->getUserGroupsId());
+
+                GroupAccounts::getItem($GroupAccountsData)->update();
+                UserAccounts::updateUsersForAccount($this->accountData->getAccountId(), $this->accountData->getUsersId());
+            }
         } catch (SPException $e) {
             Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
         }
@@ -74,46 +78,37 @@ class Account extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
 
+        $fields = [
+            'account_customerId = :accountCustomerId',
+            'account_categoryId = :accountCategoryId',
+            'account_name = :accountName',
+            'account_login = :accountLogin',
+            'account_url = :accountUrl',
+            'account_notes = :accountNotes',
+            'account_userEditId = :accountUserEditId',
+            'account_dateEdit = NOW()',
+            'account_passDateChange = :accountPassDateChange',
+            'account_isPrivate = :accountIsPrivate',
+            'account_isPrivateGroup = :accountIsPrivateGroup',
+            'account_parentId = :accountParentId'
+        ];
+
         if ($this->accountData->getAccountUserGroupId()) {
-            $query = /** @lang SQL */
-                'UPDATE accounts SET '
-                . 'account_customerId = :accountCustomerId,'
-                . 'account_categoryId = :accountCategoryId,'
-                . 'account_name = :accountName,'
-                . 'account_login = :accountLogin,'
-                . 'account_url = :accountUrl,'
-                . 'account_notes = :accountNotes,'
-                . 'account_userEditId = :accountUserEditId,'
-                . 'account_userGroupId = :accountUserGroupId,'
-                . 'account_dateEdit = NOW(),'
-                . 'account_passDateChange = :accountPassDateChange,'
-                . 'account_otherUserEdit = :accountOtherUserEdit,'
-                . 'account_otherGroupEdit = :accountOtherGroupEdit, '
-                . 'account_isPrivate = :accountIsPrivate, '
-                . 'account_isPrivateGroup = :accountIsPrivateGroup, '
-                . 'account_parentId = :accountParentId '
-                . 'WHERE account_id = :accountId';
+            $fields[] = 'account_userGroupId = :accountUserGroupId';
 
             $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
-        } else {
-            $query = /** @lang SQL */
-                'UPDATE accounts SET '
-                . 'account_customerId = :accountCustomerId,'
-                . 'account_categoryId = :accountCategoryId,'
-                . 'account_name = :accountName,'
-                . 'account_login = :accountLogin,'
-                . 'account_url = :accountUrl,'
-                . 'account_notes = :accountNotes,'
-                . 'account_userEditId = :accountUserEditId,'
-                . 'account_dateEdit = NOW(),'
-                . 'account_passDateChange = :accountPassDateChange,'
-                . 'account_otherUserEdit = :accountOtherUserEdit,'
-                . 'account_otherGroupEdit = :accountOtherGroupEdit, '
-                . 'account_isPrivate = :accountIsPrivate, '
-                . 'account_isPrivateGroup = :accountIsPrivateGroup, '
-                . 'account_parentId = :accountParentId '
-                . 'WHERE account_id = :accountId';
         }
+
+        if ($Acl->getStoredAcl()->isShowPermission()) {
+            $fields[] = 'account_otherUserEdit = :accountOtherUserEdit';
+            $fields[] = 'account_otherGroupEdit = :accountOtherGroupEdit';
+
+            $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
+            $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
+        }
+
+        $query = /** @lang SQL */
+            'UPDATE accounts SET ' . implode(',', $fields) . ' WHERE account_id = :accountId';
 
         $Data->setQuery($query);
         $Data->addParam($this->accountData->getAccountCustomerId(), 'accountCustomerId');
@@ -124,8 +119,6 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
         $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
         $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
-        $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
-        $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
         $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
         $Data->addParam($this->accountData->getAccountIsPrivateGroup(), 'accountIsPrivateGroup');
         $Data->addParam($this->accountData->getAccountParentId(), 'accountParentId');

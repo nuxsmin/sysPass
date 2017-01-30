@@ -306,31 +306,37 @@ class AccountSearch
         $accountsData['count'] = self::$queryNumRows;
 
         $accountLinkEnabled = Session::getUserPreferences()->isAccountLink() || Config::getConfig()->isAccountLink();
+        $favorites = AccountFavorites::getFavorites(Session::getUserData()->getUserId());
 
         foreach ($results as $AccountSearchData) {
             // Establecer los datos de la cuenta
             $Account = new Account($AccountSearchData);
 
+            // Propiedades de búsqueda de cada cuenta
+            $AccountSearchItems = new AccountsSearchItem($AccountSearchData);
+
+            // Obtener la ACL de la cuenta
+            $AccountAcl = new AccountAcl($Account, Acl::ACTION_ACC_SEARCH);
+
             if (!$AccountSearchData->getAccountIsPrivate()) {
-                $AccountSearchData->setUsersId($Account->getUsersAccount());
-                $AccountSearchData->setUserGroupsId($Account->getGroupsAccount());
+                $AccountSearchData->setUsersId($AccountSearchItems->getCacheUsers(true));
+                $AccountSearchData->setUserGroupsId($AccountSearchItems->getCacheGroups(true));
             }
 
             $AccountSearchData->setTags(AccountTags::getTags($Account->getAccountData()));
 
-            // Obtener la ACL de la cuenta
-            $AccountAcl = new AccountAcl();
-            $AccountAcl->getAcl($Account, Acl::ACTION_ACC_SEARCH);
+            // Obtener la ACL
+            $Acl = $AccountAcl->getAcl();
 
-            $AccountSearchItems = new AccountsSearchItem($AccountSearchData);
             $AccountSearchItems->setTextMaxLength($maxTextLength);
             $AccountSearchItems->setColor($this->pickAccountColor($AccountSearchData->getAccountCustomerId()));
-            $AccountSearchItems->setShowView($AccountAcl->isShowView());
-            $AccountSearchItems->setShowViewPass($AccountAcl->isShowViewPass());
-            $AccountSearchItems->setShowEdit($AccountAcl->isShowEdit());
-            $AccountSearchItems->setShowCopy($AccountAcl->isShowCopy());
-            $AccountSearchItems->setShowDelete($AccountAcl->isShowDelete());
+            $AccountSearchItems->setShowView($Acl->isShowView());
+            $AccountSearchItems->setShowViewPass($Acl->isShowViewPass());
+            $AccountSearchItems->setShowEdit($Acl->isShowEdit());
+            $AccountSearchItems->setShowCopy($Acl->isShowCopy());
+            $AccountSearchItems->setShowDelete($Acl->isShowDelete());
             $AccountSearchItems->setLink($accountLinkEnabled);
+            $AccountSearchItems->setFavorite(in_array($AccountSearchData->getAccountId(), $favorites, true));
 
             $accountsData[] = $AccountSearchItems;
         }

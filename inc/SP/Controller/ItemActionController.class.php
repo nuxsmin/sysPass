@@ -30,6 +30,7 @@ use SP\Account\AccountUtil;
 use SP\Auth\AuthUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Messages\LogMessage;
+use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\NoticeData;
@@ -1103,7 +1104,7 @@ class ItemActionController implements ItemControllerInterface
             $NoticeData->setNoticeUserId($user);
             $NoticeData->setNoticeComponent('Accounts');
             $NoticeData->setNoticeType(__('Solicitud'));
-            $NoticeData->setNoticeDescription(utf8_decode($this->LogMessage->getDetails()));
+            $NoticeData->setNoticeDescription($this->LogMessage);
 
             Notice::getItem($NoticeData)->add();
         }

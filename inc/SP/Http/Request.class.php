@@ -189,7 +189,7 @@ class Request
     {
         $params = [];
 
-        foreach ($_POST as $param => $value) {
+        foreach ($_REQUEST as $param => $value) {
             Html::sanitize($param);
             Html::sanitize($value);
 

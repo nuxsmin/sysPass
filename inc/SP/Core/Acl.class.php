@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -41,34 +41,6 @@ class Acl implements ActionsInterface
      * @var int
      */
     protected $actionId;
-    /**
-     * @var AccountExtData
-     */
-    protected $AccountData;
-    /**
-     * @var UserData
-     */
-    protected $UserData;
-    /**
-     * @var bool
-     */
-    protected $userInGroups = false;
-    /**
-     * @var bool
-     */
-    protected $userInUsers = false;
-    /**
-     * @var bool
-     */
-    protected $resultView = false;
-    /**
-     * @var bool
-     */
-    protected $resultEdit = false;
-    /**
-     * @var bool
-     */
-    private $compileAccountAccess = false;
 
     /**
      * Acl constructor.
@@ -78,7 +50,6 @@ class Acl implements ActionsInterface
     public function __construct($actionId = null)
     {
         $this->actionId = $actionId;
-        $this->UserData = Session::getUserData();
     }
 
     /**
@@ -131,8 +102,9 @@ class Acl implements ActionsInterface
                 return ($curUserProfile->isMgmCategories() || $curUserProfile->isMgmCustomers());
             case self::ACTION_CFG:
                 return ($curUserProfile->isConfigGeneral() || $curUserProfile->isConfigEncryption() || $curUserProfile->isConfigBackup() || $curUserProfile->isConfigImport());
-            case self::ACTION_MGM_PLUGINS:
             case self::ACTION_CFG_GENERAL:
+            case self::ACTION_MGM_PLUGINS:
+            case self::ACTION_CFG_ACCOUNTS:
                 return $curUserProfile->isConfigGeneral();
             case self::ACTION_CFG_IMPORT:
                 return $curUserProfile->isConfigImport();
@@ -256,94 +228,5 @@ class Acl implements ActionsInterface
         }
 
         return $actionName[$action][1];
-    }
-
-    /**
-     * Comprueba los permisos de acceso a una cuenta.
-     *
-     * @param null $actionId
-     * @return bool
-     */
-    public function checkAccountAccess($actionId = null)
-    {
-        if ($this->UserData->isUserIsAdminApp()
-            || $this->UserData->isUserIsAdminAcc()
-        ) {
-            return true;
-        }
-
-        if ($this->compileAccountAccess === false) {
-            $this->compileAccountAccess();
-        }
-
-        $action = null === $actionId ? $this->actionId : $actionId;
-
-        switch ($action) {
-            case self::ACTION_ACC_VIEW:
-            case self::ACTION_ACC_VIEW_PASS:
-            case self::ACTION_ACC_VIEW_HISTORY:
-            case self::ACTION_ACC_COPY:
-                return $this->resultView;
-            case self::ACTION_ACC_EDIT:
-            case self::ACTION_ACC_DELETE:
-            case self::ACTION_ACC_EDIT_PASS:
-                return $this->resultEdit;
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Evaluar la ACL
-     */
-    protected function compileAccountAccess()
-    {
-        $this->userInGroups = $this->getIsUserInGroups();
-        $this->userInUsers = in_array($this->UserData->getUserId(), $this->AccountData->getAccountUsersId());
-
-        $this->resultView = ($this->UserData->getUserId() === $this->AccountData->getAccountUserId()
-            || $this->UserData->getUserGroupId() === $this->AccountData->getAccountUserGroupId()
-            || $this->userInUsers
-            || $this->userInGroups);
-
-        $this->resultEdit = ($this->UserData->getUserId() === $this->AccountData->getAccountUserId()
-            || $this->UserData->getUserGroupId() === $this->AccountData->getAccountUserGroupId()
-            || ($this->userInUsers && $this->AccountData->getAccountOtherUserEdit())
-            || ($this->userInGroups && $this->AccountData->getAccountOtherGroupEdit()));
-
-        $this->compileAccountAccess = true;
-    }
-
-    /**
-     * Comprobar si el usuario o el grupo del usuario se encuentran los grupos asociados a la
-     * cuenta.
-     *
-     * @return bool
-     */
-    protected function getIsUserInGroups()
-    {
-        // Comprobar si el usuario está vinculado desde un grupo
-        foreach (GroupUsers::getItem()->getById($this->AccountData->getAccountUserGroupId()) as $GroupUsersData) {
-            if ($GroupUsersData->getUsertogroupUserId() === $this->UserData->getUserId()) {
-                return true;
-            }
-        }
-
-        // Comprobar si el grupo del usuario está vinculado como grupo secundario de la cuenta
-        foreach ($this->AccountData->getUserGroupsId() as $groupId) {
-            if ($groupId === $this->UserData->getUserGroupId()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param AccountExtData $AccountData
-     */
-    public function setAccountData($AccountData)
-    {
-        $this->AccountData = $AccountData;
     }
 }

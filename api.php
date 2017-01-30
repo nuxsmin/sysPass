@@ -23,6 +23,7 @@
  */
 
 use SP\Api\ApiRequest;
+use SP\Log\Log;
 
 define('APP_ROOT', '.');
 
@@ -34,5 +35,6 @@ try {
     $ApiRequest = new ApiRequest();
     exit($ApiRequest->runApi());
 } catch (Exception $e) {
+    Log::writeNewLog('API', $e->getMessage(), Log::ERROR);
     exit($ApiRequest->formatJsonError($e));
 }

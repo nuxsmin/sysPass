@@ -205,7 +205,7 @@
                     </td>
                 </tr>
             <?php endif; ?>
-            <?php if ($AccountAcl->isShowHistory() && is_array($historyData) && count($historyData) > 0): ?>
+            <?php if ($AccountAcl->isShowHistory() && count($historyData) > 0): ?>
                 <tr>
                     <td class="descField"><?php echo __('Historial'); ?></td>
                     <td class="valField">
@@ -246,7 +246,7 @@
             <?php endif; ?>
         </table>
 
-        <?php if (!$isView): ?>
+        <?php if (!$isView && $AccountAcl->isShowPermission()): ?>
             <?php include $this->includeTemplate('account-permissions'); ?>
         <?php endif; ?>
 

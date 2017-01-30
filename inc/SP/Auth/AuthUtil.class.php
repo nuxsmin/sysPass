@@ -93,8 +93,7 @@ class AuthUtil
             'SELECT authtoken_id
             FROM authTokens
             WHERE authtoken_actionId = ?
-            AND authtoken_token = ?
-            LIMIT 1';
+            AND authtoken_token = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);

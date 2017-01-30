@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -97,9 +97,7 @@ class AccountsSearchItem
      */
     public function isFavorite()
     {
-        $favorites = AccountFavorites::getFavorites(Session::getUserData()->getUserId());
-
-        return in_array($this->AccountSearchData->getAccountId(), $favorites);
+        return $this->favorite;
     }
 
     /**
@@ -247,15 +245,73 @@ class AccountsSearchItem
     {
         $accesses = sprintf('<em>(G) %s*</em><br>', $this->AccountSearchData->getUsergroupName());
 
-        foreach (GroupAccountsUtil::getGroupsInfoForAccount($this->AccountSearchData->getAccountId()) as $group) {
+        foreach ($this->getCacheGroups() as $group) {
             $accesses .= sprintf('<em>(G) %s</em><br>', $group->getUsergroupName());
         }
 
-        foreach (UserAccounts::getUsersInfoForAccount($this->AccountSearchData->getAccountId()) as $user) {
+        foreach ($this->getCacheUsers() as $user) {
             $accesses .= sprintf('<em>(U) %s</em><br>', $user->getUserLogin());
         }
 
         return $accesses;
+    }
+
+    /**
+     * Devuelve los grupos de la cuenta desde la cache
+     *
+     * @param bool $keys
+     * @return array
+     */
+    public function getCacheGroups($keys = false)
+    {
+        $cache = $this->getCache();
+
+        return $keys === true ? array_keys($cache['groups']) : $cache['groups'];
+    }
+
+    /**
+     * Devolver los accesos desde la caché
+     *
+     * @return array
+     */
+    protected function getCache()
+    {
+        $accountId = $this->AccountSearchData->getAccountId();
+        $cacheName = 'accountsCache';
+
+        if (!isset($_SESSION[$cacheName][$accountId])
+            || $_SESSION[$cacheName][$accountId]['time'] < (int)strtotime($this->AccountSearchData->getAccountDateEdit())
+        ) {
+            $session =& $_SESSION[$cacheName][$accountId];
+
+            $session['users'] = [];
+            $session['groups'] = [];
+
+            foreach (UserAccounts::getUsersInfoForAccount($accountId) as $UserData) {
+                $session['users'][$UserData->getUserId()] = $UserData;
+            }
+
+            foreach (GroupAccountsUtil::getGroupsInfoForAccount($accountId) as $GroupData) {
+                $session['groups'][$GroupData->getUsergroupId()] = $GroupData;
+            }
+
+            $session['time'] = time();
+        }
+
+        return $_SESSION[$cacheName][$accountId];
+    }
+
+    /**
+     * Devuelve los usuarios de la cuenta desde la cache
+     *
+     * @param bool $keys
+     * @return array
+     */
+    public function getCacheUsers($keys = false)
+    {
+        $cache = $this->getCache();
+
+        return $keys === true ? array_keys($cache['users']) : $cache['users'];
     }
 
     /**

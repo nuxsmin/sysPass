@@ -25,6 +25,7 @@ use SP\Util\Checks;
                 <button id="btnLink" type="button"
                         class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPublicLink()->getClassButton(); ?>"
                         data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW; ?>"
+                        data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
                         data-item-id="<?php echo $accountId; ?>"
                         data-sk="<?php echo $sk; ?>"
                         data-onclick="link/save"

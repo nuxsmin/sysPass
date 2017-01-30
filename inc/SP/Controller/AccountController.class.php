@@ -64,6 +64,10 @@ use SP\Util\Json;
 class AccountController extends ControllerBase implements ActionsInterface
 {
     /**
+     * @var AccountAcl
+     */
+    protected $AccountAcl;
+    /**
      * @var Account|AccountHistory instancia para el manejo de datos de una cuenta
      */
     private $Account;
@@ -268,6 +272,9 @@ class AccountController extends ControllerBase implements ActionsInterface
     {
         $this->view->assign('showLogo', false);
 
+        $Acl = new AccountAcl($this->Account, $this->getAction());
+        $this->AccountAcl = $Acl;
+
         if (!Acl::checkUserAccess($this->getAction())) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
@@ -275,10 +282,9 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->showError(self::ERR_UPDATE_MPASS);
             return false;
         } elseif ($this->id > 0) {
-            $Acl = new Acl($this->getAction());
-            $Acl->setAccountData($this->Account->getAccountDataForACL());
+            $this->AccountAcl = $Acl->getAcl();
 
-            if (!$Acl->checkAccountAccess()) {
+            if (!$this->AccountAcl->checkAccountAccess()) {
                 $this->showError(self::ERR_ACCOUNT_NO_PERMISSION);
                 return false;
             }
@@ -302,7 +308,7 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->view->assign('accountOtherGroups', GroupAccountsUtil::getGroupsInfoForAccount($this->getId()));
             $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->getAccount()->getAccountData()->getTags())));
             $this->view->assign('historyData', AccountHistory::getAccountList($this->AccountData->getAccountId()));
-            $this->view->assign('isModified', $this->AccountData->getAccountDateEdit() && $this->AccountData->getAccountDateEdit() !== '0000-00-00 00:00:00');
+            $this->view->assign('isModified', strtotime($this->AccountData->getAccountDateEdit()) !== false);
             $this->view->assign('maxFileSize', round(Config::getConfig()->getFilesAllowedSize() / 1024, 1));
             $this->view->assign('filesAllowedExts', implode(',', Config::getConfig()->getFilesAllowedExts()));
 
@@ -311,14 +317,13 @@ class AccountController extends ControllerBase implements ActionsInterface
             $publicLinkUrl = (Checks::publicLinksIsEnabled() && $PublicLinkData ? Init::$WEBURI . '/index.php?h=' . $PublicLinkData->getPublicLinkHash() . '&a=link' : '');
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
 
-            $this->view->assign('accountPassDate', gmdate('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
-            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: 0));
+            $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
+            $this->view->assign('accountPassDateChange', date('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: 0));
         } else {
-            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', time() + 7776000));
+            $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
         }
 
         $this->view->assign('actionId', $this->getAction());
-//        $this->view->assign('accountParentId', Session::getLastAcountId());
         $this->view->assign('categories', Category::getItem()->getItemsForSelect());
         $this->view->assign('customers', Customer::getItem()->getItemsForSelectByUser());
         $this->view->assign('otherUsers', UserUtil::getUsersLogin());
@@ -335,11 +340,8 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
         $this->view->assign('readonly', $this->view->isView ? 'readonly' : '');
 
-        $AccountAcl = new AccountAcl();
-        $AccountAcl->setModified($this->isGotData() ? $this->view->isModified : false);
-        $AccountAcl->getAcl($this->getAccount(), $this->getAction());
-        $this->view->assign('AccountAcl', $AccountAcl);
         $this->view->assign('showViewPass', $this->UserProfileData->isAccViewPass());
+        $this->view->assign('AccountAcl', $this->AccountAcl);
     }
 
     /**

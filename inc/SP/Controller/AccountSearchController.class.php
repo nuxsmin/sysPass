@@ -202,7 +202,6 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
      * Devuelve la matriz a utilizar en la vista
      *
      * @return DataGrid
-     * @throws \InvalidArgumentException
      */
     private function getGrid()
     {

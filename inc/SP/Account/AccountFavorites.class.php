@@ -55,7 +55,7 @@ class AccountFavorites
         $favorites = [];
 
         foreach($queryRes as $favorite){
-            $favorites[] = $favorite->accfavorite_accountId;
+            $favorites[] = (int)$favorite->accfavorite_accountId;
         }
 
         return $favorites;

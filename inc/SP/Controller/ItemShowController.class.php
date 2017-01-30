@@ -27,6 +27,7 @@ namespace SP\Controller;
 defined('APP_ROOT') || die();
 
 use SP\Account\Account;
+use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
 use SP\Api\ApiTokensUtil;
 use SP\Core\Acl;
@@ -496,13 +497,13 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             throw new ItemException(__('La clave maestra no coincide', false));
         }
 
-        $Acl = new Acl(Acl::ACTION_ACC_VIEW_PASS);
-        $Acl->setAccountData($Account->getAccountDataForACL());
+        $AccountAcl = new AccountAcl($Account, ActionsInterface::ACTION_ACC_VIEW_PASS);
+        $Acl = $AccountAcl->getAcl();
 
         $UserPass = new UserPass(new UserPassData());
         $UserPass->getItemData()->setUserId(Session::getUserData()->getUserId());
 
-        if (!Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS) || !$Acl->checkAccountAccess()) {
+        if (!$Acl->isShowViewPass()) {
             throw new ItemException(__('No tiene permisos para acceder a esta cuenta', false));
         } elseif (!$UserPass->checkUserUpdateMPass()) {
             throw new ItemException(__('Clave maestra actualizada', false) . '<br>' . __('Reinicie la sesión para cambiarla', false));

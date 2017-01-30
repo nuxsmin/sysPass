@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -93,74 +93,6 @@ abstract class AccountBase
     public function setAccountParentId($accountParentId)
     {
         $this->accountParentId = $accountParentId;
-    }
-
-    /**
-     * Devolver datos de la cuenta para comprobación de accesos.
-     *
-     * @param int $accountId con el id de la cuenta
-     * @return AccountExtData objeto con los datos de la cuenta
-     */
-    public function getAccountDataForACL($accountId = null)
-    {
-        if (null !== $accountId) {
-            $this->accountData->setAccountId($accountId);
-        } else {
-            $this->accountData->getAccountId();
-        }
-
-        return $this->accountData;
-    }
-
-    /**
-     * Obtiene el listado usuarios con acceso a una cuenta.
-     * Lo almacena en la cache de sesión como array de cuentas
-     *
-     * @return array Con los registros con id de cuenta como clave e id de usuario como valor
-     */
-    public function getUsersAccount()
-    {
-        $accId = $this->accountData->getAccountId();
-
-        $cacheUsers = &$_SESSION['cache']['usersId'];
-
-        if (!is_array($cacheUsers)) {
-            $cacheUsers = [$accId => [], 'expires' => 0];
-        }
-
-        if (!isset($cacheUsers[$accId])
-            || time() > $cacheUsers['expires']
-        ) {
-            $cacheUsers[$accId] = UserAccounts::getUsersForAccount($accId);
-            $cacheUsers['expires'] = time() + self::CACHE_EXPIRE_TIME;
-        }
-
-        return $cacheUsers[$accId];
-    }
-
-    /**
-     * Obtiene el listado de grupos secundarios de una cuenta.
-     * Lo almacena en la cache de sesión como array de cuentas
-     *
-     * @return array con los registros con id de cuenta como clave e id de grupo como valor
-     */
-    public function getGroupsAccount()
-    {
-        $accId = $this->accountData->getAccountId();
-        $cacheUserGroups = &$_SESSION['cache']['userGroupsId'];
-
-        if (!is_array($cacheUserGroups)) {
-            $cacheUserGroups = [$accId => [], 'expires' => 0];
-        }
-
-        if (!isset($cacheUserGroups[$accId])
-            || time() > $cacheUserGroups['expires']
-        ) {
-            $cacheUserGroups[$accId] = GroupAccountsUtil::getGroupsForAccount($accId);
-            $cacheUserGroups['expires'] = time() + self::CACHE_EXPIRE_TIME;
-        }
-
-        return $cacheUserGroups[$accId];
     }
 
     /**

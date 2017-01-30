@@ -18,31 +18,33 @@
                     <?php echo $lastBackupTime; ?>
                 </td>
             </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo __('Descargar Actual'); ?>
-                </td>
-                <td class="valField">
-                    <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
+            <?php if ($isAdminApp): ?>
+                <tr>
+                    <td class="descField">
+                        <?php echo __('Descargar Actual'); ?>
+                    </td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
 
-                    <?php if ($isAdminApp && file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute'])): ?>
-                        <a href="<?php echo $backupDbFile['relative']; ?>"
-                           download="<?php echo $backupDbFile['filename']; ?>" class="download">
-                            <button type="button" class="mdl-button mdl-js-button">
-                                <?php echo __('Copia BBDD'); ?>
-                            </button>
-                        </a>
+                        <?php if (file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute'])): ?>
+                            <a href="<?php echo $backupDbFile['relative']; ?>"
+                               download="<?php echo $backupDbFile['filename']; ?>" class="download">
+                                <button type="button" class="mdl-button mdl-js-button">
+                                    <?php echo __('Copia BBDD'); ?>
+                                </button>
+                            </a>
 
-                        <a href="<?php echo $backupFile['relative']; ?>"
-                           download="<?php echo $backupFile['filename']; ?>" class="download">
-                            <button type="button" class="mdl-button mdl-js-button">
-                                <?php echo __('Copia sysPass'); ?>
-                            </button>
-                        </a>
-                    <?php else: echo __('No hay backups para descargar'); ?>
-                    <?php endif; ?>
-                </td>
-            </tr>
+                            <a href="<?php echo $backupFile['relative']; ?>"
+                               download="<?php echo $backupFile['filename']; ?>" class="download">
+                                <button type="button" class="mdl-button mdl-js-button">
+                                    <?php echo __('Copia sysPass'); ?>
+                                </button>
+                            </a>
+                        <?php else: echo __('No hay backups para descargar'); ?>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
         </table>
 
         <form method="post" name="frmBackup" id="frmBackup" class="form-action"
@@ -101,25 +103,27 @@
                         <?php echo $lastExportTime; ?>
                     </td>
                 </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo __('Descargar Actual'); ?>
-                    </td>
-                    <td class="valField">
-                        <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
+                <?php if ($isAdminApp): ?>
+                    <tr>
+                        <td class="descField">
+                            <?php echo __('Descargar Actual'); ?>
+                        </td>
+                        <td class="valField">
+                            <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
 
-                        <?php if ($isAdminApp && file_exists($exportFile['absolute'])): ?>
-                            <a href="<?php echo $exportFile['relative']; ?>"
-                               download="<?php echo $exportFile['filename']; ?>"
-                               class="download">
-                                <button type="button" class="mdl-button mdl-js-button">
-                                    XML <?php echo $siteName; ?>
-                                </button>
-                            </a>
-                        <?php else: echo __('No hay archivos XML para descargar'); ?>
-                        <?php endif; ?>
-                    </td>
-                </tr>
+                            <?php if (file_exists($exportFile['absolute'])): ?>
+                                <a href="<?php echo $exportFile['relative']; ?>"
+                                   download="<?php echo $exportFile['filename']; ?>"
+                                   class="download">
+                                    <button type="button" class="mdl-button mdl-js-button">
+                                        XML <?php echo $siteName; ?>
+                                    </button>
+                                </a>
+                            <?php else: echo __('No hay archivos XML para descargar'); ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endif; ?>
                 <tr>
                     <td class="descField">
                         <?php echo __('Clave de Exportación'); ?>

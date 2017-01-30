@@ -83,14 +83,13 @@ class Template
      * @param string $file Con el nombre del archivo de plantilla
      * @param string $base Directorio base para la plantilla
      * @return bool
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function addTemplate($file, $base = null)
     {
         try {
             $template = $this->checkTemplate($file, $base);
             $this->setTemplate($template);
-        } catch (InvalidArgumentException $e) {
+        } catch (FileNotFoundException $e) {
             return false;
         }
 

@@ -75,7 +75,7 @@ class ApiRequest
             'jsonrpc' => '2.0',
             'error' => [
                 'code' => $code,
-                'message' => $e->getMessage(),
+                'message' => __($e->getMessage()),
                 'data' => $class === SPException::class || $class === InvalidArgumentException::class ? $e->getHint() : ''
             ],
             'id' => ($code === -32700 || $code === -32600) ? null : $this->getId()

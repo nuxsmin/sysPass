@@ -24,6 +24,7 @@
 
 namespace SP\Core;
 
+use SP\Account\AccountAcl;
 use SP\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
@@ -81,6 +82,9 @@ class Init
      * Inicializar la aplicación.
      * Esta función inicializa las variables de la aplicación y muestra la página
      * según el estado en el que se encuentre.
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     public static function start()
     {
@@ -122,7 +126,7 @@ class Init
 
         // Comprobar si es necesario inicialización
         if (self::checkInitSourceInclude() ||
-            (defined('IS_INSTALLER') && Request::analyze('isAjax', false, true))
+            (defined('IS_INSTALLER') && Checks::isAjax())
         ) {
             return;
         }
@@ -134,6 +138,13 @@ class Init
             // Restablecer el idioma y el tema visual
             Language::setLanguage(true);
             DiFactory::getTheme()->initTheme(true);
+
+            if (self::isLoggedIn()){
+                // Recargar los permisos del perfil de usuario
+                Session::setUserProfile(Profile::getItem()->getById(Session::getUserData()->getUserProfileId()));
+                // Reset de los datos de ACL de cuentas
+                AccountAcl::resetData();
+            }
         }
 
         // Comprobar si está instalado
@@ -264,6 +275,8 @@ class Init
 
     /**
      * Iniciar la sesión PHP
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function startSession()
     {
@@ -284,8 +297,9 @@ class Init
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
-     * @param string $hint opcional, con una ayuda sobre el error
-     * @param bool $headers
+     * @param string $hint    opcional, con una ayuda sobre el error
+     * @param bool   $headers
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function initError($message, $hint = '', $headers = false)
     {
@@ -357,6 +371,8 @@ class Init
 
     /**
      * Cargar la configuración
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function loadConfig()
     {
@@ -418,6 +434,8 @@ class Init
     /**
      * Comprobar el archivo de configuración.
      * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function checkConfig()
     {
@@ -437,7 +455,7 @@ class Init
 
         $configPerms = decoct(fileperms(self::$SERVERROOT . DIRECTORY_SEPARATOR . 'config') & 0777);
 
-        if (!Checks::checkIsWindows() && $configPerms !== '750') {
+        if ($configPerms !== '750' && !Checks::checkIsWindows()) {
             clearstatcache();
             self::initError(__('Los permisos del directorio "/config" son incorrectos'), __('Actual:') . ' ' . $configPerms . ' - ' . __('Necesario: 750'));
         }
@@ -472,6 +490,7 @@ class Init
      * Comprueba que la aplicación esté instalada
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
      *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function checkInstalled()
     {
@@ -505,6 +524,7 @@ class Init
      *
      * @param bool $check sólo comprobar si está activado el modo
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkMaintenanceMode($check = false)
     {
@@ -585,6 +605,8 @@ class Init
 
     /**
      * Comrpueba y actualiza la versión de la aplicación.
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function checkDbVersion()
     {
@@ -706,6 +728,8 @@ class Init
 
     /**
      * Cargar los Plugins disponibles
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function loadPlugins()
     {
@@ -725,6 +749,7 @@ class Init
      * Comprobar si hay que ejecutar acciones de URL antes de presentar la pantalla de login.
      *
      * @return bool
+     * @throws \phpmailer\phpmailerException
      */
     public static function checkPreLoginActions()
     {
@@ -752,6 +777,7 @@ class Init
      * Comprobar si hay que ejecutar acciones de URL después de realizar login.
      *
      * @return bool
+     * @throws \phpmailer\phpmailerException
      */
     public static function checkPostLoginActions()
     {
