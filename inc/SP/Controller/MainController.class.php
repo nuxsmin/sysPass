@@ -551,7 +551,7 @@ class MainController extends ControllerBase implements ActionsInterface
                     $Message = new NoticeMessage();
                     $Message->setTitle(__('Enlace visualizado'));
                     $Message->addDescription(sprintf('%s : %s', __('Cuenta'), $PublicLink->getItemId()));
-                    $Message->addDescription(sprintf('%s : %s', __('Origen'), $_SERVER['REMOTE_ADDR']));
+                    $Message->addDescription(sprintf('%s : %s', __('Origen'), Checks::demoIsEnabled() ? '*.*.*.*' : $_SERVER['REMOTE_ADDR']));
                     $Message->addDescription(sprintf('%s : %s', __('Agente'), $_SERVER['HTTP_USER_AGENT']));
                     $Message->addDescription(sprintf('HTTPS : %s', Checks::httpsEnabled() ? 'ON' : 'OFF'));
 
