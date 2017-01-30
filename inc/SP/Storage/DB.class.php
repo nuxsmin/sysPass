@@ -351,7 +351,7 @@ class DB
             self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
 
             if ($e->getCode() === 23000) {
-                throw new ConstraintException(SPException::SP_ERROR, __('Registro en uso', false), $e->getMessage(), $e->getCode());
+                throw new ConstraintException(SPException::SP_ERROR, __('Restricción de integridad', false), $e->getMessage(), $e->getCode());
             } else {
                 throw new QueryException(SPException::SP_ERROR, $errorMessage, $e->getMessage(), $e->getCode());
             }
