@@ -59,4 +59,12 @@ class PublicLinkForm implements FormInterface
     {
         return true;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getItemData()
+    {
+        // TODO: Implement getItemData() method.
+    }
 }

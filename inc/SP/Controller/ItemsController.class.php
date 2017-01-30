@@ -163,8 +163,5 @@ class ItemsController implements ItemControllerInterface
      */
     protected function preActionChecks()
     {
-//        if (!$this->sk || !SessionUtil::checkSessionKey($this->sk)) {
-//            $this->invalidAction();
-//        }
     }
 }

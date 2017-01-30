@@ -269,6 +269,8 @@ sysPass.Triggers = function (Common) {
             if (typeof Common.appTheme().viewsTriggers.common === "function") {
                 Common.appTheme().viewsTriggers.common($container);
             }
+
+            Common.appTriggers().updateFormHash($container);
         },
         datatabs: function (active) {
             log.info("views:datatabs");
@@ -303,8 +305,6 @@ sysPass.Triggers = function (Common) {
                     });
                 };
             }
-
-            updateFormHash();
         },
         account: function () {
             log.info("views:account");
@@ -363,8 +363,6 @@ sysPass.Triggers = function (Common) {
 
                 Common.appActions().items.get($selParentAccount);
             }
-
-            updateFormHash();
         },
         install: function () {
             log.info("views:install");
@@ -391,10 +389,16 @@ sysPass.Triggers = function (Common) {
     /**
      * Actualizar el hash de los formularios de acción
      */
-    var updateFormHash = function () {
+    var updateFormHash = function ($container) {
         log.info("updateFormHash");
 
-        var $form = $(".form-action[data-hash]");
+        var $form;
+
+        if ($container !== undefined) {
+            $form = $container.find(".form-action[data-hash]");
+        } else {
+            $form = $(".form-action[data-hash]");
+        }
 
         if ($form.length > 0) {
             $form.each(function () {

@@ -11,7 +11,8 @@
     <form method="post" name="frmCustomers" id="frmCustomers" class="form-action"
           data-onsubmit="appMgmt/save"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMERS; ?>">
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMERS; ?>"
+          data-hash="">
         <table class="popup-data">
             <tbody>
             <tr>
@@ -53,8 +54,8 @@
     </form>
     <div class="action-in-box">
         <button
-            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-            form="frmCustomers" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                form="frmCustomers" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
             <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>

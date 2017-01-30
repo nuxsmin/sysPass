@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -53,11 +53,26 @@ class ApiTokenForm extends FormBase implements FormInterface
         switch ($action) {
             case ActionsInterface::ACTION_MGM_APITOKENS_NEW:
             case ActionsInterface::ACTION_MGM_APITOKENS_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
         return true;
+    }
+
+    /**
+     * Analizar los datos de la petición HTTP
+     *
+     * @return void
+     */
+    protected function analyzeRequestData()
+    {
+        $this->ApiTokens = new ApiTokens();
+        $this->ApiTokens->setTokenId($this->itemId);
+        $this->ApiTokens->setUserId(Request::analyze('users', 0));
+        $this->ApiTokens->setActionId(Request::analyze('actions', 0));
+        $this->ApiTokens->setRefreshToken(Request::analyze('refreshtoken', false, false, true));
     }
 
     /**
@@ -78,19 +93,5 @@ class ApiTokenForm extends FormBase implements FormInterface
     public function getItemData()
     {
         return $this->ApiTokens;
-    }
-
-    /**
-     * Analizar los datos de la petición HTTP
-     *
-     * @return void
-     */
-    protected function analyzeRequestData()
-    {
-        $this->ApiTokens = new ApiTokens();
-        $this->ApiTokens->setTokenId($this->itemId);
-        $this->ApiTokens->setUserId(Request::analyze('users', 0));
-        $this->ApiTokens->setActionId(Request::analyze('actions', 0));
-        $this->ApiTokens->setRefreshToken(Request::analyze('refreshtoken', false, false, true));
     }
 }

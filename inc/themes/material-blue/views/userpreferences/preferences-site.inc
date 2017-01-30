@@ -11,7 +11,8 @@
               class="form-action"
               data-onsubmit="user/savePreferences"
               data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL; ?>"
-              data-activetab="<?php echo $preferences_tabIndex; ?>">
+              data-activetab="<?php echo $preferences_tabIndex; ?>"
+              data-hash="">
 
             <table id="tblSite" class="data tblConfig round">
                 <tr>

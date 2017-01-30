@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -53,11 +53,35 @@ class NoticeForm extends FormBase implements FormInterface
     {
         switch ($action) {
             case ActionsInterface::ACTION_NOT_USER_NEW:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
         return true;
+    }
+
+    /**
+     * Analizar los datos de la petición HTTP
+     *
+     * @return void
+     */
+    protected function analyzeRequestData()
+    {
+        $Description = new NoticeMessage();
+        $Description->addDescription(Request::analyze('notice_description'));
+
+        $this->NoticeData = new NoticeData();
+        $this->NoticeData->setNoticeId($this->itemId);
+        $this->NoticeData->setNoticeType(Request::analyze('notice_type'));
+        $this->NoticeData->setNoticeComponent(Request::analyze('notice_component'));
+        $this->NoticeData->setNoticeDescription($Description);
+        $this->NoticeData->setNoticeUserId(Request::analyze('notice_user', 0));
+
+        if ($this->NoticeData->getNoticeUserId() === 0) {
+            $this->NoticeData->setNoticeOnlyAdmin(Request::analyze('notice_onlyadmin', 0, false, 1));
+            $this->NoticeData->setNoticeSticky(Request::analyze('notice_sticky', 0, false, 1));
+        }
     }
 
     private function checkCommon()
@@ -82,28 +106,5 @@ class NoticeForm extends FormBase implements FormInterface
     public function getItemData()
     {
         return $this->NoticeData;
-    }
-
-    /**
-     * Analizar los datos de la petición HTTP
-     *
-     * @return void
-     */
-    protected function analyzeRequestData()
-    {
-        $Description = new NoticeMessage();
-        $Description->addDescription(Request::analyze('notice_description'));
-
-        $this->NoticeData = new NoticeData();
-        $this->NoticeData->setNoticeId($this->itemId);
-        $this->NoticeData->setNoticeType(Request::analyze('notice_type'));
-        $this->NoticeData->setNoticeComponent(Request::analyze('notice_component'));
-        $this->NoticeData->setNoticeDescription($Description);
-        $this->NoticeData->setNoticeUserId(Request::analyze('notice_user', 0));
-
-        if ($this->NoticeData->getNoticeUserId() === 0) {
-            $this->NoticeData->setNoticeOnlyAdmin(Request::analyze('notice_onlyadmin', 0, false, 1));
-            $this->NoticeData->setNoticeSticky(Request::analyze('notice_sticky', 0, false, 1));
-        }
     }
 }

@@ -11,7 +11,8 @@
     <form method="post" name="frmCustomFields" id="frmCustomFields" class="form-action"
           data-onsubmit="appMgmt/save"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMFIELDS; ?>">
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMFIELDS; ?>"
+          data-hash="">
         <table class="popup-data">
             <tbody>
             <tr>

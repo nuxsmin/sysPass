@@ -4,7 +4,8 @@
     <form method="post" name="frmTokens" id="frmTokens" class="form-action"
           data-onsubmit="appMgmt/save"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_APITOKENS; ?>">
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_APITOKENS; ?>"
+          data-hash="">
         <table class="popup-data">
             <tbody>
             <tr>

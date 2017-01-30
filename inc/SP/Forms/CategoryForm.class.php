@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -53,11 +53,25 @@ class CategoryForm extends FormBase implements FormInterface
         switch ($action) {
             case ActionsInterface::ACTION_MGM_CATEGORIES_NEW:
             case ActionsInterface::ACTION_MGM_CATEGORIES_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
         return true;
+    }
+
+    /**
+     * Analizar los datos de la petición HTTP
+     *
+     * @return void
+     */
+    protected function analyzeRequestData()
+    {
+        $this->CategoryData = new CategoryData();
+        $this->CategoryData->setCategoryId($this->itemId);
+        $this->CategoryData->setCategoryName(Request::analyze('name'));
+        $this->CategoryData->setCategoryDescription(Request::analyze('description'));
     }
 
     /**
@@ -76,18 +90,5 @@ class CategoryForm extends FormBase implements FormInterface
     public function getItemData()
     {
         return $this->CategoryData;
-    }
-
-    /**
-     * Analizar los datos de la petición HTTP
-     *
-     * @return void
-     */
-    protected function analyzeRequestData()
-    {
-        $this->CategoryData = new CategoryData();
-        $this->CategoryData->setCategoryId($this->itemId);
-        $this->CategoryData->setCategoryName(Request::analyze('name'));
-        $this->CategoryData->setCategoryDescription(Request::analyze('description'));
     }
 }

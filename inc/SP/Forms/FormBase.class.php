@@ -44,8 +44,6 @@ abstract class FormBase
     public function __construct($itemId)
     {
         $this->itemId = $itemId;
-
-        $this->analyzeRequestData();
     }
 
     /**

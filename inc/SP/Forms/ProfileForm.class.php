@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -53,29 +53,12 @@ class ProfileForm extends FormBase implements FormInterface
         switch ($action) {
             case ActionsInterface::ACTION_USR_PROFILES_NEW:
             case ActionsInterface::ACTION_USR_PROFILES_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
         return true;
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkCommon()
-    {
-        if (!$this->ProfileData->getUserprofileName()) {
-            throw new ValidationException(__('Es necesario un nombre de perfil', false));
-        }
-    }
-
-    /**
-     * @return ProfileData
-     */
-    public function getItemData()
-    {
-        return $this->ProfileData;
     }
 
     /**
@@ -117,5 +100,23 @@ class ProfileForm extends FormBase implements FormInterface
         $this->ProfileData->setMgmFiles(Request::analyze('profile_files', 0, false, 1));
         $this->ProfileData->setMgmTags(Request::analyze('profile_tags', 0, false, 1));
         $this->ProfileData->setEvl(Request::analyze('profile_eventlog', 0, false, 1));
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->ProfileData->getUserprofileName()) {
+            throw new ValidationException(__('Es necesario un nombre de perfil', false));
+        }
+    }
+
+    /**
+     * @return ProfileData
+     */
+    public function getItemData()
+    {
+        return $this->ProfileData;
     }
 }

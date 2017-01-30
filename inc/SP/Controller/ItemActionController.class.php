@@ -1002,11 +1002,14 @@ class ItemActionController implements ItemControllerInterface
      */
     protected function ldapImportAction()
     {
+        $this->LogMessage->setAction(__('Importar usuarios de LDAP', false));
+
         if (UserLdapSync::run()) {
-            $this->JsonResponse->setStatus(0);
             $this->LogMessage->addDescription(__('Importación de usuarios de LDAP realizada', false));
             $this->LogMessage->addDetails(__('Usuarios importados', false), sprintf('%d/%d', UserLdapSync::$syncedObjects, UserLdapSync::$totalObjects));
             $this->LogMessage->addDetails(__('Errores', false), UserLdapSync::$errorObjects);
+
+            $this->JsonResponse->setStatus(0);
         } else {
             $this->LogMessage->addDescription(__('Error al importar usuarios de LDAP', false));
         }
@@ -1018,6 +1021,7 @@ class ItemActionController implements ItemControllerInterface
      * Acciones sobre notificaciones
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\ValidationException
      */
     protected function noticeAction()
     {

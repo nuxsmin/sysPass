@@ -76,18 +76,6 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
     }
 
     /**
-     * Comprobar si la sesión está activa
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function checkSession()
-    {
-        if (!Init::isLoggedIn()) {
-            Util::logout();
-        }
-    }
-
-    /**
      * Realizar la acción solicitada en la la petición HTTP
      *
      * @param mixed $type Tipo de acción

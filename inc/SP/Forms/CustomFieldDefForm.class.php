@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -53,25 +53,12 @@ class CustomFieldDefForm extends FormBase implements FormInterface
         switch ($action) {
             case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW:
             case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
         return true;
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkCommon()
-    {
-        if (!$this->CustomFieldDefData->getName()) {
-            throw new ValidationException(__('Nombre del campo no indicado', false));
-        } elseif ($this->CustomFieldDefData->getType() === 0) {
-            throw new ValidationException(__('Tipo del campo no indicado', false));
-        } elseif ($this->CustomFieldDefData->getModule() === 0) {
-            throw new ValidationException(__('Módulo del campo no indicado', false));
-        }
     }
 
     /**
@@ -89,6 +76,20 @@ class CustomFieldDefForm extends FormBase implements FormInterface
         $this->CustomFieldDefData->setModule(Request::analyze('module', 0));
         $this->CustomFieldDefData->setHelp(Request::analyze('help'));
         $this->CustomFieldDefData->setRequired(Request::analyze('required', false, false, true));
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->CustomFieldDefData->getName()) {
+            throw new ValidationException(__('Nombre del campo no indicado', false));
+        } elseif ($this->CustomFieldDefData->getType() === 0) {
+            throw new ValidationException(__('Tipo del campo no indicado', false));
+        } elseif ($this->CustomFieldDefData->getModule() === 0) {
+            throw new ValidationException(__('Módulo del campo no indicado', false));
+        }
     }
 
     /**

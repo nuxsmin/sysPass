@@ -200,7 +200,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $ldapGroup = '*';
+    private $ldapGroup = '';
     /**
      * @var string
      */

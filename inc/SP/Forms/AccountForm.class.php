@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -54,54 +54,21 @@ class AccountForm extends FormBase implements FormInterface
     {
         switch ($action) {
             case ActionsInterface::ACTION_ACC_EDIT_PASS:
+                $this->analyzeRequestData();
                 $this->checkPass();
                 break;
             case ActionsInterface::ACTION_ACC_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
             case ActionsInterface::ACTION_ACC_NEW:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 $this->checkPass();
                 break;
         }
 
         return true;
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkPass()
-    {
-        if (!$this->AccountData->getAccountPass()) {
-            throw new ValidationException(__('Es necesaria una clave', false));
-        } elseif (Request::analyzeEncrypted('passR') !== $this->AccountData->getAccountPass()) {
-            throw new ValidationException(__('Las claves no coinciden', false));
-        }
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkCommon()
-    {
-        if (!$this->AccountData->getAccountName()) {
-            throw new ValidationException(__('Es necesario un nombre de cuenta', false));
-        } elseif (!$this->AccountData->getAccountCustomerId()) {
-            throw new ValidationException(__('Es necesario un nombre de cliente', false));
-        } elseif (!$this->AccountData->getAccountLogin()) {
-            throw new ValidationException(__('Es necesario un usuario', false));
-        } elseif (!$this->AccountData->getAccountCategoryId()) {
-            throw new ValidationException(__('Es necesario una categoría', false));
-        }
-    }
-
-    /**
-     * @return AccountData
-     */
-    public function getItemData()
-    {
-        return $this->AccountData;
     }
 
     /**
@@ -153,5 +120,41 @@ class AccountForm extends FormBase implements FormInterface
         ) {
             $this->AccountData->setAccountUserGroupId($accountMainGroupId);
         }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkPass()
+    {
+        if (!$this->AccountData->getAccountPass()) {
+            throw new ValidationException(__('Es necesaria una clave', false));
+        } elseif (Request::analyzeEncrypted('passR') !== $this->AccountData->getAccountPass()) {
+            throw new ValidationException(__('Las claves no coinciden', false));
+        }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->AccountData->getAccountName()) {
+            throw new ValidationException(__('Es necesario un nombre de cuenta', false));
+        } elseif (!$this->AccountData->getAccountCustomerId()) {
+            throw new ValidationException(__('Es necesario un nombre de cliente', false));
+        } elseif (!$this->AccountData->getAccountLogin()) {
+            throw new ValidationException(__('Es necesario un usuario', false));
+        } elseif (!$this->AccountData->getAccountCategoryId()) {
+            throw new ValidationException(__('Es necesario una categoría', false));
+        }
+    }
+
+    /**
+     * @return AccountData
+     */
+    public function getItemData()
+    {
+        return $this->AccountData;
     }
 }

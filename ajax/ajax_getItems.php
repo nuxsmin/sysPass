@@ -23,19 +23,13 @@
  */
 
 use SP\Controller\ItemsController;
-use SP\Core\Init;
 use SP\Http\Request;
-use SP\Util\Util;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
 Request::checkReferer('GET');
-
-if (!Init::isLoggedIn()) {
-    Util::logout();
-}
 
 $Controller = new ItemsController();
 $Controller->doAction();

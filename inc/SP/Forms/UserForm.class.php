@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -55,13 +55,16 @@ class UserForm extends FormBase implements FormInterface
     {
         switch ($action) {
             case ActionsInterface::ACTION_USR_USERS_NEW:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 $this->checkPass();
                 break;
             case ActionsInterface::ACTION_USR_USERS_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
             case ActionsInterface::ACTION_USR_USERS_EDITPASS:
+                $this->analyzeRequestData();
                 $this->checkPass();
                 break;
             case ActionsInterface::ACTION_USR_USERS_DELETE:
@@ -117,9 +120,20 @@ class UserForm extends FormBase implements FormInterface
     {
         if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->UserData->getUserId()) === 'demo') {
             throw new ValidationException(__('Ey, esto es una DEMO!!', false));
-        } elseif ($this->UserData->getUserId() === Session::getUserData()->getUserId()) {
+        } elseif (
+            (!is_array($this->itemId) === Session::getUserData()->getUserId())
+            || (is_array($this->itemId) && in_array(Session::getUserData()->getUserId(), $this->itemId))
+        ) {
             throw new ValidationException(__('No es posible eliminar, usuario en uso', false));
         }
+    }
+
+    /**
+     * @return UserData
+     */
+    public function getItemData()
+    {
+        return $this->UserData;
     }
 
     /**
@@ -142,13 +156,5 @@ class UserForm extends FormBase implements FormInterface
         $this->UserData->setUserIsDisabled(Request::analyze('disabled', 0, false, 1));
         $this->UserData->setUserIsChangePass(Request::analyze('changepass', 0, false, 1));
         $this->UserData->setUserPass(Request::analyzeEncrypted('pass'));
-    }
-
-    /**
-     * @return UserData
-     */
-    public function getItemData()
-    {
-        return $this->UserData;
     }
 }
