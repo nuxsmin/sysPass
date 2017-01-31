@@ -106,18 +106,14 @@ class Crypt
     public static function makeHashSalt($salt = null, $random = true)
     {
         if ($random === true) {
-            $string = bin2hex(self::getIV());
-        } elseif ($salt !== null) {
-            if (strlen($salt) < 22) {
-                $string = $salt . Config::getConfig()->getPasswordSalt();
-            } else {
-                $string = $salt;
-            }
-        } else {
-            $string = Config::getConfig()->getPasswordSalt();
+            $salt = bin2hex(self::getIV());
+        } elseif ($salt !== null && strlen($salt) < 22) {
+            $salt .= Config::getConfig()->getPasswordSalt();
+        } elseif ($salt === null) {
+            $salt = Config::getConfig()->getPasswordSalt();
         }
 
-        return '$2y$07$' . substr($string, 0, 21) . '$';
+        return '$2y$07$' . substr($salt, 0, 21) . '$';
     }
 
     /**
