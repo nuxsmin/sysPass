@@ -41,10 +41,51 @@ class Crypt
     public static $strInitialVector;
 
     /**
+     * Comprobar el hash de una clave.
+     *
+     * @param string $pwd con la clave a comprobar
+     * @param string $checkedHash con el hash a comprobar
+     * @param bool $isMPass si es la clave maestra
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public static function checkHashPass($pwd, $checkedHash, $isMPass = false)
+    {
+        // Obtenemos el salt de la clave
+        $salt = substr($checkedHash, 0, 72);
+        // Obtenemos el hash SHA256
+        $validHash = substr($checkedHash, 72);
+        // Re-hash de la clave a comprobar
+        $testHash = crypt($pwd, $salt);
+
+        // Comprobar si el hash está en formato anterior a 12002
+        if ($isMPass && strlen($checkedHash) === 128) {
+            $check = (hash('sha256', substr($checkedHash, 0, 64) . $pwd) === substr($checkedHash, 64, 64));
+
+            if ($check) {
+                $newHash = self::mkHashPassword($pwd);
+
+                AccountHistory::updateAccountsMPassHash($newHash);
+
+                ConfigDB::setValue('masterPwd', $newHash);
+                Log::writeNewLog(__('Aviso', false), __('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.', false), Log::NOTICE);
+            }
+
+            return $check;
+        }
+
+        // Timing attacks...
+//        usleep(mt_rand(100000, 300000));
+
+        // Si los hashes son idénticos, la clave es válida
+        return hash_equals($testHash, $validHash);
+    }
+
+    /**
      * Generar un hash de una clave utilizando un salt.
      *
      * @param string $pwd con la clave a 'hashear'
-     * @param bool   $prefixSalt Añadir el salt al hash
+     * @param bool $prefixSalt Añadir el salt al hash
      * @return string con el hash de la clave
      */
     public static function mkHashPassword($pwd, $prefixSalt = true)
@@ -58,11 +99,21 @@ class Crypt
     /**
      * Crear un salt utilizando mcrypt.
      *
+     * @param null $salt
+     * @param bool $random
      * @return string con el salt creado
      */
-    public static function makeHashSalt()
+    public static function makeHashSalt($salt = null, $random = true)
     {
-        return '$2y$07$' . bin2hex(self::getIV()) . '$';
+        if ($random === true) {
+            $string = substr(bin2hex(self::getIV()), 0, 21);
+        } elseif ($salt !== null) {
+            $string = substr($salt, 0, 21);
+        } else {
+            $string = substr(Config::getConfig()->getPasswordSalt(), 0, 21);
+        }
+
+        return '$2y$07$' . $string . '$';
     }
 
     /**
@@ -101,47 +152,6 @@ class Crypt
     }
 
     /**
-     * Comprobar el hash de una clave.
-     *
-     * @param string $pwd         con la clave a comprobar
-     * @param string $checkedHash con el hash a comprobar
-     * @param bool   $isMPass     si es la clave maestra
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public static function checkHashPass($pwd, $checkedHash, $isMPass = false)
-    {
-        // Obtenemos el salt de la clave
-        $salt = substr($checkedHash, 0, 72);
-        // Obtenemos el hash SHA256
-        $validHash = substr($checkedHash, 72);
-        // Re-hash de la clave a comprobar
-        $testHash = crypt($pwd, $salt);
-
-        // Comprobar si el hash está en formato anterior a 12002
-        if ($isMPass && strlen($checkedHash) === 128) {
-            $check = (hash('sha256', substr($checkedHash, 0, 64) . $pwd) === substr($checkedHash, 64, 64));
-
-            if ($check) {
-                $newHash = self::mkHashPassword($pwd);
-
-                AccountHistory::updateAccountsMPassHash($newHash);
-
-                ConfigDB::setValue('masterPwd', $newHash);
-                Log::writeNewLog(__('Aviso', false), __('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.', false), Log::NOTICE);
-            }
-
-            return $check;
-        }
-
-        // Timing attacks...
-//        usleep(mt_rand(100000, 300000));
-
-        // Si los hashes son idénticos, la clave es válida
-        return hash_equals($testHash, $validHash);
-    }
-
-    /**
      * Generar la clave maestra encriptada con una clave
      *
      * @param string $customPwd con la clave a encriptar
@@ -159,9 +169,9 @@ class Crypt
     /**
      * Encriptar datos con la clave maestra.
      *
-     * @param string $strValue    con los datos a encriptar
+     * @param string $strValue con los datos a encriptar
      * @param string $strPassword con la clave maestra
-     * @param string $cryptIV     con el IV
+     * @param string $cryptIV con el IV
      * @return string con los datos encriptados
      */
     private static function encrypt($strValue, $strPassword, $cryptIV)
@@ -182,7 +192,7 @@ class Crypt
     /**
      * Encriptar datos. Devuelve un array con los datos encriptados y el IV.
      *
-     * @param mixed  $data string Los datos a encriptar
+     * @param mixed $data string Los datos a encriptar
      * @param string $pwd La clave de encriptación
      * @return array
      * @throws SPException
@@ -232,7 +242,7 @@ class Crypt
      * Generar datos encriptados.
      * Esta función llama a los métodos privados para encriptar datos.
      *
-     * @param string $data      con los datos a encriptar
+     * @param string $data con los datos a encriptar
      * @param string $masterPwd con la clave maestra
      * @return bool
      */
@@ -250,13 +260,13 @@ class Crypt
      * Desencriptar datos con la clave maestra.
      *
      * @param string $cryptData Los datos a desencriptar
-     * @param string $cryptIV      con el IV
-     * @param string $password  La clave maestra
+     * @param string $cryptIV con el IV
+     * @param string $password La clave maestra
      * @return string con los datos desencriptados
      */
     public static function getDecrypt($cryptData, $cryptIV, $password = null)
     {
-        if (empty($cryptData) || empty($cryptIV)){
+        if (empty($cryptData) || empty($cryptIV)) {
             return false;
         } elseif (null === $password) {
             $password = SessionUtil::getSessionMPass();
@@ -276,18 +286,12 @@ class Crypt
      * Generar una key para su uso con el algoritmo AES
      *
      * @param string $string La cadena de la que deriva la key
-     * @param null   $salt   El salt utilizado
+     * @param null $salt El salt utilizado
      * @return string
      */
     public static function generateAesKey($string, $salt = null)
     {
-        if (null === $salt) {
-            $salt = Config::getConfig()->getPasswordSalt();
-        }
-
-        $salt = '$2y$07$' . substr($salt, 0, 21) . '$';
-
-        return substr(crypt($string, $salt), 7, 32);
+        return substr(crypt($string, self::makeHashSalt($salt, false)), 7, 32);
     }
 
     public static function checkPassword($pwd, $salt)
