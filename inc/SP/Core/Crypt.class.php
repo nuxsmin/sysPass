@@ -285,7 +285,7 @@ class Crypt
             $salt = Config::getConfig()->getPasswordSalt();
         }
 
-        $salt = '$2y$07$' . $salt . '$';
+        $salt = '$2y$07$' . substr($salt, 0, 21) . '$';
 
         return substr(crypt($string, $salt), 7, 32);
     }
