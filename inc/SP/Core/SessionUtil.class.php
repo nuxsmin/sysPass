@@ -67,8 +67,7 @@ class SessionUtil
      */
     public static function saveSessionMPass($masterPass)
     {
-        $mPassPwd = Crypt::generateAesKey(session_id());
-        $sessionMasterPass = Crypt::mkCustomMPassEncrypt($mPassPwd, $masterPass);
+        $sessionMasterPass = Crypt::mkCustomMPassEncrypt(Crypt::generateAesKey(session_id()), $masterPass);
 
         Session::setMPass($sessionMasterPass[0]);
         Session::setMPassIV($sessionMasterPass[1]);
@@ -81,8 +80,7 @@ class SessionUtil
      */
     public static function getSessionMPass()
     {
-        $cryptPass = Crypt::generateAesKey(session_id());
-        return Crypt::getDecrypt(Session::getMPass(), Session::getMPassIV(), $cryptPass);
+        return Crypt::getDecrypt(Session::getMPass(), Session::getMPassIV(), Crypt::generateAesKey(session_id()));
     }
 
     /**

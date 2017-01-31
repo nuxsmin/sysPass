@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -43,49 +43,51 @@ class Crypt
     /**
      * Comprobar el hash de una clave.
      *
-     * @param string $pwd con la clave a comprobar
+     * @param string $pwd         con la clave a comprobar
      * @param string $checkedHash con el hash a comprobar
-     * @param bool $isMPass si es la clave maestra
+     * @param bool   $isMPass     si es la clave maestra
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkHashPass($pwd, $checkedHash, $isMPass = false)
     {
-        // Obtenemos el salt de la clave
-        $salt = substr($checkedHash, 0, 72);
-        // Obtenemos el hash SHA256
-        $validHash = substr($checkedHash, 72);
-        // Re-hash de la clave a comprobar
-        $testHash = crypt($pwd, $salt);
+        if ($isMPass) {
+            // Comprobar si el hash está en formato anterior a 12002
+            if (strlen($checkedHash) === 128) {
+                $check = (hash('sha256', substr($checkedHash, 0, 64) . $pwd) === substr($checkedHash, 64, 64));
 
-        // Comprobar si el hash está en formato anterior a 12002
-        if ($isMPass && strlen($checkedHash) === 128) {
-            $check = (hash('sha256', substr($checkedHash, 0, 64) . $pwd) === substr($checkedHash, 64, 64));
+                if ($check) {
+                    $newHash = self::mkHashPassword($pwd);
 
-            if ($check) {
-                $newHash = self::mkHashPassword($pwd);
+                    AccountHistory::updateAccountsMPassHash($newHash);
 
-                AccountHistory::updateAccountsMPassHash($newHash);
+                    ConfigDB::setValue('masterPwd', $newHash);
+                    Log::writeNewLog(__('Aviso', false), __('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.', false), Log::NOTICE);
+                }
 
-                ConfigDB::setValue('masterPwd', $newHash);
+                return $check;
+
+            // Hash de clave maestra anterior a 2.0.0.17013101
+            } elseif (hash_equals(crypt($pwd, substr($checkedHash, 0, 72)), substr($checkedHash, 72))) {
+                ConfigDB::setValue('masterPwd', Crypt::mkHashPassword($pwd));
+
                 Log::writeNewLog(__('Aviso', false), __('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.', false), Log::NOTICE);
+                return true;
             }
-
-            return $check;
         }
 
         // Timing attacks...
 //        usleep(mt_rand(100000, 300000));
 
-        // Si los hashes son idénticos, la clave es válida
-        return hash_equals($testHash, $validHash);
+        // Obtener el hash de la clave y la clave para generar una clave y comparar
+        return hash_equals(crypt($pwd, substr($checkedHash, 0, 30)), substr($checkedHash, 30));
     }
 
     /**
      * Generar un hash de una clave utilizando un salt.
      *
-     * @param string $pwd con la clave a 'hashear'
-     * @param bool $prefixSalt Añadir el salt al hash
+     * @param string $pwd        con la clave a 'hashear'
+     * @param bool   $prefixSalt Añadir el salt al hash
      * @return string con el hash de la clave
      */
     public static function mkHashPassword($pwd, $prefixSalt = true)
@@ -99,8 +101,8 @@ class Crypt
     /**
      * Crear un salt utilizando mcrypt.
      *
-     * @param null $salt
-     * @param bool $random
+     * @param string $salt
+     * @param bool   $random
      * @return string con el salt creado
      */
     public static function makeHashSalt($salt = null, $random = true)
@@ -169,9 +171,9 @@ class Crypt
     /**
      * Encriptar datos con la clave maestra.
      *
-     * @param string $strValue con los datos a encriptar
+     * @param string $strValue    con los datos a encriptar
      * @param string $strPassword con la clave maestra
-     * @param string $cryptIV con el IV
+     * @param string $cryptIV     con el IV
      * @return string con los datos encriptados
      */
     private static function encrypt($strValue, $strPassword, $cryptIV)
@@ -192,8 +194,8 @@ class Crypt
     /**
      * Encriptar datos. Devuelve un array con los datos encriptados y el IV.
      *
-     * @param mixed $data string Los datos a encriptar
-     * @param string $pwd La clave de encriptación
+     * @param mixed  $data string Los datos a encriptar
+     * @param string $pwd  La clave de encriptación
      * @return array
      * @throws SPException
      */
@@ -215,7 +217,7 @@ class Crypt
         // Encriptar datos
         $encData['data'] = Crypt::mkEncrypt($data, $pwd);
 
-        if (!empty($data) && ($encData['data'] === false || is_null($encData['data']))) {
+        if (!empty($data) && ($encData['data'] === false || null === $encData['data'])) {
             throw new SPException(
                 SPException::SP_CRITICAL,
                 __('Error interno', false),
@@ -242,7 +244,7 @@ class Crypt
      * Generar datos encriptados.
      * Esta función llama a los métodos privados para encriptar datos.
      *
-     * @param string $data con los datos a encriptar
+     * @param string $data      con los datos a encriptar
      * @param string $masterPwd con la clave maestra
      * @return bool
      */
@@ -251,17 +253,16 @@ class Crypt
         $masterPwd = empty($masterPwd) ? SessionUtil::getSessionMPass() : $masterPwd;
 
         self::$strInitialVector = self::getIV();
-        $cryptValue = self::encrypt($data, $masterPwd, self::$strInitialVector);
 
-        return $cryptValue;
+        return self::encrypt($data, $masterPwd, self::$strInitialVector);
     }
 
     /**
      * Desencriptar datos con la clave maestra.
      *
      * @param string $cryptData Los datos a desencriptar
-     * @param string $cryptIV con el IV
-     * @param string $password La clave maestra
+     * @param string $cryptIV   con el IV
+     * @param string $password  La clave maestra
      * @return string con los datos desencriptados
      */
     public static function getDecrypt($cryptData, $cryptIV, $password = null)
@@ -286,16 +287,11 @@ class Crypt
      * Generar una key para su uso con el algoritmo AES
      *
      * @param string $string La cadena de la que deriva la key
-     * @param null $salt El salt utilizado
+     * @param null   $salt   El salt utilizado
      * @return string
      */
     public static function generateAesKey($string, $salt = null)
     {
         return substr(crypt($string, self::makeHashSalt($salt, false)), 7, 32);
-    }
-
-    public static function checkPassword($pwd, $salt)
-    {
-        $testHash = crypt($pwd, $salt);
     }
 }

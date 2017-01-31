@@ -563,6 +563,22 @@ sysPass.Actions = function (Common) {
                     doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
                 }
             });
+        },
+        refreshMpass: function ($obj) {
+            log.info("config:import");
+
+            var opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.config.save;
+            opts.data = {
+                actionId: $obj.data("action-id"),
+                itemId: $obj.data("item-id"),
+                sk: $obj.data("sk"),
+                isAjax: 1
+            };
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+            });
         }
     };
 

@@ -144,6 +144,7 @@ interface ActionsInterface
     const ACTION_CFG = 80;
     const ACTION_CFG_GENERAL = 801;
     const ACTION_CFG_ENCRYPTION = 802;
+    const ACTION_CFG_ENCRYPTION_REFRESH = 8021;
     const ACTION_CFG_ENCRYPTION_TEMPPASS = 803;
     const ACTION_CFG_BACKUP = 804;
     const ACTION_CFG_IMPORT = 805;

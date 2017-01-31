@@ -131,6 +131,16 @@
                     </div>
                 </li>
                 <li>
+                    <button type="button"
+                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
+                            data-onclick="config/refreshMpass"
+                            data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION_REFRESH; ?>"
+                            data-sk="<?php echo $sk; ?>"
+                            title="<?php echo __('Actualizar hash de clave maestra'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconRefresh()->getIcon(); ?></i>
+                    </button>
+                </li>
+                <li>
                     <button form="frmCrypt"
                             class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
                             title="<?php echo $icons->getIconPlay()->getTitle(); ?>">

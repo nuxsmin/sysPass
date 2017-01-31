@@ -37,6 +37,7 @@ use SP\Core\Init;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
+use SP\Core\SessionUtil;
 use SP\Core\XmlExport;
 use SP\Html\Html;
 use SP\Http\Request;
@@ -97,6 +98,9 @@ class ConfigActionController implements ItemControllerInterface
                     break;
                 case ActionsInterface::ACTION_CFG_ENCRYPTION:
                     $this->masterPassAction();
+                    break;
+                case ActionsInterface::ACTION_CFG_ENCRYPTION_REFRESH:
+                    $this->masterPassRefreshAction();
                     break;
                 case ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS:
                     $this->tempMasterPassAction();
@@ -213,6 +217,40 @@ class ConfigActionController implements ItemControllerInterface
     }
 
     /**
+     * Guardar la configuración
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function saveConfig()
+    {
+        try {
+            if (Checks::demoIsEnabled()) {
+                $this->JsonResponse->setDescription(__('Ey, esto es una DEMO!!', false));
+                return;
+            }
+
+            Config::saveConfig();
+
+            if (Config::getConfig()->isMaintenance()) {
+                Util::lockApp(false);
+            } elseif (Init::$LOCK > 0) {
+                Util::unlockApp(false);
+            }
+
+            $this->JsonResponse->setStatus(0);
+
+            $this->LogMessage->addDescription(__('Configuración actualizada', false));
+        } catch (SPException $e) {
+            $this->LogMessage->addDescription(__('Error al guardar la configuración', false));
+            $this->LogMessage->addDetails($e->getMessage(), $e->getHint());
+        }
+
+        $this->LogMessage->setAction(__('Modificar Configuración', false));
+
+        Email::sendEmail($this->LogMessage);
+    }
+
+    /**
      * Accion para opciones configuración de cuentas
      *
      * @throws \SP\Core\Exceptions\SPException
@@ -262,40 +300,6 @@ class ConfigActionController implements ItemControllerInterface
         $this->LogMessage->addDetails(__('Sección', false), __('Cuentas', false));
 
         $this->saveConfig();
-    }
-
-    /**
-     * Guardar la configuración
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function saveConfig()
-    {
-        try {
-            if (Checks::demoIsEnabled()) {
-                $this->JsonResponse->setDescription(__('Ey, esto es una DEMO!!', false));
-                return;
-            }
-
-            Config::saveConfig();
-
-            if (Config::getConfig()->isMaintenance()) {
-                Util::lockApp(false);
-            } elseif (Init::$LOCK > 0) {
-                Util::unlockApp(false);
-            }
-
-            $this->JsonResponse->setStatus(0);
-
-            $this->LogMessage->addDescription(__('Configuración actualizada', false));
-        } catch (SPException $e) {
-            $this->LogMessage->addDescription(__('Error al guardar la configuración', false));
-            $this->LogMessage->addDetails($e->getMessage(), $e->getHint());
-        }
-
-        $this->LogMessage->setAction(__('Modificar Configuración', false));
-
-        Email::sendEmail($this->LogMessage);
     }
 
     /**
@@ -563,6 +567,29 @@ class ConfigActionController implements ItemControllerInterface
             $this->JsonResponse->setStatus(100);
         } else {
             $this->LogMessage->addDescription(__('Error al guardar el hash de la clave maestra', false));
+        }
+
+        Email::sendEmail($this->LogMessage);
+    }
+
+    /**
+     * Regenerar el hash de la clave maestra
+     */
+    protected function masterPassRefreshAction()
+    {
+        if (Checks::demoIsEnabled()) {
+            $this->JsonResponse->setDescription(__('Ey, esto es una DEMO!!', false));
+            return;
+        }
+
+        $this->LogMessage->setAction(__('Actualizar Clave Maestra', false));
+
+        if (ConfigDB::setValue('masterPwd', Crypt::mkHashPassword(SessionUtil::getSessionMPass()))) {
+            $this->LogMessage->addDescription(__('Hash de clave maestra actualizado', false));
+
+            $this->JsonResponse->setStatus(0);
+        } else {
+            $this->LogMessage->addDescription(__('Error al actualizar el hash de la clave maestra', false));
         }
 
         Email::sendEmail($this->LogMessage);
