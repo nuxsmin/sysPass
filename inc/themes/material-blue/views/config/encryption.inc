@@ -130,6 +130,7 @@
                         <p class="help-text"><?php echo __('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
                     </div>
                 </li>
+                <?php if ($isAdminApp): ?>
                 <li>
                     <button type="button"
                             class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
@@ -140,6 +141,7 @@
                         <i class="material-icons"><?php echo $icons->getIconRefresh()->getIcon(); ?></i>
                     </button>
                 </li>
+                <?php endif; ?>
                 <li>
                     <button form="frmCrypt"
                             class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"

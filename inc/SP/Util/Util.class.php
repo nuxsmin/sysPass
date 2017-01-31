@@ -174,7 +174,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '2.0-RC2';
+        return '2.0-RC3';
     }
 
     /**
@@ -344,7 +344,7 @@ class Util
         $appinfo = [
             'appname' => 'sysPass',
             'appdesc' => 'Systems Password Manager',
-            'appalias' => 'SGC',
+            'appalias' => 'SPM',
             'appwebsite' => 'http://www.syspass.org',
             'appblog' => 'http://www.cygnux.org',
             'appdoc' => 'http://wiki.syspass.org',
@@ -368,7 +368,7 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '17013101';
+        $build = '17020101';
         $version = [2, 0, 0];
 
         if ($retBuild) {

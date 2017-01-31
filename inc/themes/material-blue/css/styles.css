@@ -532,7 +532,7 @@ pre, code, samp, kbd {
 #box-popup {
   min-width: 25em;
   max-width: 50em;
-  margin: 0 auto;
+  margin: 5em auto;
   padding: 0;
   background-color: #fff; }
   #box-popup.box-password-view {
