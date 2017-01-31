@@ -689,6 +689,9 @@ class ConfigActionController implements ItemControllerInterface
 
     /**
      * Acción para realizar el backup de sysPass
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     protected function backupAction()
     {

@@ -60,7 +60,7 @@ class Email
 
         if ($isEvent === true) {
             $performer = Session::getUserData()->getUserLogin() ?: __('N/D');
-            $body[] = sprintf('%s: %s', Html::strongText(__('Acción')), $LogMessage->getAction());
+            $body[] = sprintf('%s: %s', Html::strongText(__('Acción')), $LogMessage->getAction(true));
             $body[] = sprintf('%s: %s (%s)', Html::strongText(__('Realizado por')), $performer, $_SERVER['REMOTE_ADDR']);
 
             $Mail->addCC(Config::getConfig()->getMailFrom());
@@ -70,7 +70,7 @@ class Email
         $body[] = $LogMessage->getHtmlDetails(true);
 
         $Mail->isHTML();
-        $Mail->Body = implode(Log::NEWLINE_HTML, array_merge($body, self::getEmailFooter()));
+        $Mail->Body = implode(Log::NEWLINE_HTML, array_merge($body, Email::getEmailFooter()));
 
         $LogMessage = new LogMessage();
         $LogMessage->setAction(__('Enviar Email', false));
