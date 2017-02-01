@@ -90,12 +90,6 @@ sysPass.Main = function () {
         }
     };
 
-    // Configurar Alertify
-    // var $alertify = alertify
-    //     .logPosition("top right")
-    //     .closeLogOnClick(true)
-    //     .delay(10000);
-
     // Opciones para Toastr
     toastr.options = {
         "closeButton": true,

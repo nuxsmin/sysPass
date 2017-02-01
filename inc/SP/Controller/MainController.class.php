@@ -129,7 +129,7 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getResourcesLinks()
     {
-        $jsVersionHash = md5(implode(Util::getVersion()));
+        $jsVersionHash = md5(implode(Util::getVersion(true)));
         $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?v=' . $jsVersionHash);
         $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?g=1&v=' . $jsVersionHash);
 
@@ -144,7 +144,7 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $resultsAsCards = Init::isLoggedIn() && Session::getUserPreferences()->isResultsAsCards();
 
-        $cssVersionHash = md5(implode(Util::getVersion()) . Checks::resultsCardsIsEnabled() . $resultsAsCards);
+        $cssVersionHash = md5(implode(Util::getVersion(true)) . Checks::resultsCardsIsEnabled() . $resultsAsCards);
         $this->view->append('cssLinks', Init::$WEBROOT . '/css/css.php?v=' . $cssVersionHash);
 
         if (isset($themeInfo['css'])) {

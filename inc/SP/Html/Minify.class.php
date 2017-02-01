@@ -65,7 +65,7 @@ class Minify
 
     /**
      * @param string $path
-     * @param bool   $checkPath
+     * @param bool $checkPath
      * @return $this
      */
     public function setBase($path, $checkPath = false)
@@ -102,9 +102,13 @@ class Minify
         header($expire);
 
         // Devolver código 304 si la versión es la misma y no se solicita refrescar
-        if ($etag === $etagMatch && !($cacheControl === 'no-cache' || $pragma === 'no-cache')) {
+        if ($etag === $etagMatch
+            && !($cacheControl === 'no-cache'
+                || $cacheControl === 'max-age=0'
+                || $pragma === 'no-cache')
+        ) {
             header($_SERVER['SERVER_PROTOCOL'] . ' 304 Not Modified');
-            exit;
+            exit();
         }
 
         if ($this->type === self::FILETYPE_JS) {
@@ -204,7 +208,7 @@ class Minify
      * Añadir un archivo
      *
      * @param string $file
-     * @param bool   $minify Si es necesario reducir
+     * @param bool $minify Si es necesario reducir
      * @return $this
      */
     public function addFile($file, $minify = true)
