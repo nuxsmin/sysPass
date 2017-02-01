@@ -56,7 +56,7 @@ class Email
             return false;
         }
 
-        $Mail = self::getMailer($mailTo, $LogMessage->getAction());
+        $Mail = self::getMailer($mailTo, $LogMessage->getAction(true));
 
         if ($isEvent === true) {
             $performer = Session::getUserData()->getUserLogin() ?: __('N/D');
