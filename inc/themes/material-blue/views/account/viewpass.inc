@@ -3,7 +3,13 @@
 /** @var  \SP\Core\UI\ThemeIconsBase $icons */
 ?>
 <div id="box-popup" class="box-password-view">
-    <h2 class="center"><?php echo $header; ?></h2>
+    <?php if (!$isLinked): ?>
+        <h2 class="center"><?php echo $header; ?></h2>
+    <?php else: ?>
+        <h2 class="center"><?php echo $header; ?>&nbsp;<i title="<?php echo __('Cuenta Vinculada'); ?>"
+                                                          class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
+        </h2>
+    <?php endif; ?>
     <table>
         <tbody>
         <tr>

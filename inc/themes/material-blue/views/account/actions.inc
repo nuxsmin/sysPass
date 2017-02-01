@@ -105,6 +105,20 @@ use SP\Util\Checks;
             </li>
         <?php endif; ?>
 
+        <?php if ($AccountAcl->isShowCopy()): ?>
+            <li>
+                <button id="btnEdit" type="button"
+                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCopy()->getClassButton(); ?>"
+                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_COPY; ?>"
+                        data-item-id="<?php echo $accountId; ?>"
+                        data-sk="<?php echo $sk; ?>"
+                        data-onclick="account/copy"
+                        title="<?php echo __('Copiar Cuenta'); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconCopy()->getIcon(); ?></i>
+                </button>
+            </li>
+        <?php endif; ?>
+
         <?php if ($AccountAcl->isShowEdit()): ?>
             <li>
                 <button id="btnEdit" type="button"
