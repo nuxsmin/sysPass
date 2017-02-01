@@ -796,7 +796,7 @@ sysPass.Actions = function (Common) {
                 itemId: parentId == 0 ? $obj.data("item-id") : parentId,
                 actionId: $obj.data("action-id"),
                 isHistory: $obj.data("history"),
-                isLinked: parentId > 0,
+                isLinked: parentId > 0 ? 1 : 0,
                 isFull: 1,
                 sk: Common.sk.get(),
                 isAjax: 1

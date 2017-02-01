@@ -538,7 +538,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             $this->view->assign('login', $AccountData->getAccountLogin());
             $this->view->assign('pass', $pass);
             $this->view->assign('isImage', $useImage);
-            $this->view->assign('isLinked', Request::analyze('isLinked', 0, false, 1));
+            $this->view->assign('isLinked', Request::analyze('isLinked', 0));
 
             return;
         }
