@@ -938,7 +938,7 @@ sysPass.Actions = function (Common) {
                 $obj.html(response);
             });
         },
-        search: function () {
+        search: function ($obj) {
             log.info("account:search");
 
             var $frmSearch = $("#frmSearch");
@@ -946,6 +946,10 @@ sysPass.Actions = function (Common) {
 
             order.key = $frmSearch.find("input[name='skey']").val();
             order.dir = $frmSearch.find("input[name='sorder']").val();
+
+            if ($obj !== undefined) {
+                $frmSearch.find("input[name='start']").val(0);
+            }
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.account.search;

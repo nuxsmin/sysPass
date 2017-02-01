@@ -104,7 +104,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         // Obtener el filtro de búsqueda desde la sesión
         $filters = Session::getSearchFilters();
 
-        // Comprobar si la búsqueda es realizada desde el fromulario
+        // Comprobar si la búsqueda es realizada desde el formulario
         // de lo contrario, se recupera la información de filtros de la sesión
         $isSearch = (!isset($this->view->actionId));
 
