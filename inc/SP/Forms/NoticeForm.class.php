@@ -53,6 +53,7 @@ class NoticeForm extends FormBase implements FormInterface
     {
         switch ($action) {
             case ActionsInterface::ACTION_NOT_USER_NEW:
+            case ActionsInterface::ACTION_NOT_USER_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
