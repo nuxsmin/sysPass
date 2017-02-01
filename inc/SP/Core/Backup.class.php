@@ -187,7 +187,7 @@ class Backup
             // Guardar los datos
             foreach ($resTables as $tableName) {
                 // No guardar las vistas!
-                if (strrpos($dbname, '_v') !== false) {
+                if (strrpos($tableName, '_v') !== false) {
                     continue;
                 }
 
