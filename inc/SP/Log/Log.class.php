@@ -90,11 +90,7 @@ class Log extends ActionLog
         $Data->setQuery($query);
         $Data->setOnErrorMessage(__('Error al vaciar el registro de eventos', false));
 
-        DB::getQuery($Data);
-
-        self::writeNewLogAndEmail(__('Vaciar Eventos', false), __('Vaciar registro de eventos', false), null);
-
-        return true;
+        return DB::getQuery($Data);
     }
 
     /**

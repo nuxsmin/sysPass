@@ -229,16 +229,16 @@ class ApiTokens
     /**
      * Eliminar token
      *
-     * @throws SPException
+     * @param $id
      */
-    public function deleteToken()
+    public function deleteToken($id)
     {
         $query = /** @lang SQL */
             'DELETE FROM authTokens WHERE authtoken_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->tokenId);
+        $Data->addParam($id);
         $Data->setOnErrorMessage(__('Error interno', false));
 
         DB::getQuery($Data);

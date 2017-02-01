@@ -528,9 +528,10 @@ class AccountAcl
     public function isShowPermission()
     {
         $UserProfile = Session::getUserProfile();
+        $UserData = Session::getUserData();
 
-        return $this->UserData->isUserIsAdminAcc()
-            || $this->UserData->isUserIsAdminApp()
+        return $UserData->isUserIsAdminAcc()
+            || $UserData->isUserIsAdminApp()
             || $UserProfile->isAccPermission()
             || $UserProfile->isAccPrivateGroup()
             || $UserProfile->isAccPrivate();

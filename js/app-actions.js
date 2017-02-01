@@ -1169,7 +1169,14 @@ sysPass.Actions = function (Common) {
             opts.url = ajaxUrl.eventlog;
             opts.method = "get";
             opts.type = "html";
-            opts.data = {start: $obj.data("start"), current: $obj.data("current")};
+            opts.data = {
+                actionId: $obj.data("action-id"),
+                sk: Common.sk.get(),
+                isAjax: 1,
+                start: $obj.data("start"),
+                count: $obj.data("count"),
+                current: $obj.data("current")
+            };
 
             Common.appRequests().getActionCall(opts, function (response) {
                 $("#content").html(response);
@@ -1196,6 +1203,7 @@ sysPass.Actions = function (Common) {
 
                         var opts = Common.appRequests().getRequestOpts();
                         opts.url = ajaxUrl.eventlog;
+                        opts.method = "get";
                         opts.data = {clear: 1, sk: Common.sk.get(), isAjax: 1};
 
                         Common.appRequests().getActionCall(opts, function (json) {

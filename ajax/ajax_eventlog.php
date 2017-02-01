@@ -24,7 +24,6 @@
 
 use SP\Controller\EventlogController;
 use SP\Core\Init;
-use SP\Core\Template;
 use SP\Http\Request;
 
 define('APP_ROOT', '..');
@@ -37,16 +36,6 @@ if (!Init::isLoggedIn()) {
     \SP\Util\Util::logout();
 }
 
-$start = Request::analyze('start', 0);
-$clear = Request::analyze('clear', 0);
-$sk = Request::analyze('sk', false);
-
-$Tpl = new Template();
-$Tpl->assign('limitStart', $start);
-$Tpl->assign('clear', $clear);
-$Tpl->assign('sk', $sk);
-$Tpl->assign('queryTimeStart', microtime());
-$Controller = new EventlogController($Tpl);
-$Controller->checkClear();
-$Controller->getEventlog();
-echo $Tpl->render();
+$Controller = new EventlogController();
+$Controller->doAction();
+$Controller->view();

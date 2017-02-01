@@ -27,6 +27,7 @@ namespace SP\Controller;
 use SP\Account\Account;
 use SP\Account\AccountFavorites;
 use SP\Account\AccountUtil;
+use SP\Api\ApiTokens;
 use SP\Auth\AuthUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Messages\LogMessage;
@@ -599,10 +600,10 @@ class ItemActionController implements ItemControllerInterface
     protected function tokenAction()
     {
         $Form = new ApiTokenForm($this->itemId);
-        $Form->validate($this->actionId);
 
         switch ($this->actionId) {
             case ActionsInterface::ACTION_MGM_APITOKENS_NEW:
+                $Form->validate($this->actionId);
                 $Form->getItemData()->addToken();
 
                 $this->LogMessage->setAction(__('Crear Autorización', false));
@@ -610,6 +611,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_APITOKENS_EDIT:
+                $Form->validate($this->actionId);
                 $Form->getItemData()->updateToken();
 
                 $this->LogMessage->setAction(__('Actualizar Autorización', false));
@@ -617,12 +619,14 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_APITOKENS_DELETE:
+                $ApiToken = new ApiTokens();
+
                 if (is_array($this->itemId)) {
-                    $Form->getItemData()->deleteTokenBatch($this->itemId);
+                    $ApiToken->deleteTokenBatch($this->itemId);
 
                     $this->LogMessage->addDescription(__('Autorizaciones eliminadas', false));
                 } else {
-                    $Form->getItemData()->deleteToken();
+                    $ApiToken->deleteToken($this->itemId);
 
                     $this->LogMessage->addDescription(__('Autorización eliminada', false));
                 }
