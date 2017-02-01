@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -70,22 +70,11 @@ class Checks
     /**
      * Comprobar la versión de PHP.
      *
-     * @return array
+     * @return bool
      */
     public static function checkPhpVersion()
     {
-        $error = [];
-        $needsVersion = '5.6.0';
-
-        if (version_compare(PHP_VERSION, $needsVersion, '<')) {
-            $error[] = [
-                'type' => SPException::SP_CRITICAL,
-                'description' => __('Versión de PHP requerida >= ') . $needsVersion,
-                'hint' => __('Actualice la versión de PHP para que la aplicación funcione correctamente')
-            ];
-        }
-
-        return $error;
+        return version_compare(PHP_VERSION, '5.6.0', '>=') && version_compare(PHP_VERSION, '7.1.0') === -1;
     }
 
     /**
@@ -113,19 +102,15 @@ class Checks
             'mbstring'
         ];
 
-        $error = [];
+        $missing = [];
 
         foreach ($modsNeed as $module) {
             if (!extension_loaded($module)) {
-                $error[] = [
-                    'type' => SPException::SP_WARNING,
-                    'description' => sprintf('%s (%s)', __('Módulo no disponible'), $module),
-                    'hint' => __('Sin este módulo la aplicación puede no funcionar correctamente.')
-                ];
+                $missing[] = $module;
             }
         }
 
-        return $error;
+        return $missing;
     }
 
     /**
@@ -165,7 +150,7 @@ class Checks
      */
     public static function demoIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isDemoEnabled());
+        return Config::getConfig()->isDemoEnabled();
     }
 
     /**
@@ -175,7 +160,7 @@ class Checks
      */
     public static function fileIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isFilesEnabled());
+        return Config::getConfig()->isFilesEnabled();
     }
 
     /**
@@ -185,7 +170,7 @@ class Checks
      */
     public static function mailIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isMailEnabled());
+        return Config::getConfig()->isMailEnabled();
     }
 
     /**
@@ -195,7 +180,7 @@ class Checks
      */
     public static function wikiIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isWikiEnabled());
+        return Config::getConfig()->isWikiEnabled();
     }
 
     /**
@@ -205,7 +190,7 @@ class Checks
      */
     public static function dokuWikiIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isDokuwikiEnabled());
+        return Config::getConfig()->isDokuwikiEnabled();
     }
 
     /**
@@ -215,7 +200,7 @@ class Checks
      */
     public static function mailrequestIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isMailRequestsEnabled());
+        return Config::getConfig()->isMailRequestsEnabled();
     }
 
     /**
@@ -225,7 +210,7 @@ class Checks
      */
     public static function ldapIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isLdapEnabled());
+        return Config::getConfig()->isLdapEnabled();
     }
 
     /**
@@ -235,7 +220,7 @@ class Checks
      */
     public static function logIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isLogEnabled());
+        return Config::getConfig()->isLogEnabled();
     }
 
     /**
@@ -245,7 +230,7 @@ class Checks
      */
     public static function syslogIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isSyslogEnabled());
+        return Config::getConfig()->isSyslogEnabled();
     }
 
     /**
@@ -255,7 +240,7 @@ class Checks
      */
     public static function remoteSyslogIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isSyslogRemoteEnabled());
+        return Config::getConfig()->isSyslogRemoteEnabled();
     }
 
 
@@ -266,7 +251,7 @@ class Checks
      */
     public static function resultsCardsIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isResultsAsCards());
+        return Config::getConfig()->isResultsAsCards();
     }
 
     /**
@@ -276,7 +261,7 @@ class Checks
      */
     public static function accountPassToImageIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isAccountPassToImage());
+        return Config::getConfig()->isAccountPassToImage();
     }
 
     /**
@@ -286,7 +271,7 @@ class Checks
      */
     public static function forceHttpsIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isHttpsEnabled());
+        return Config::getConfig()->isHttpsEnabled();
     }
 
     /**
@@ -296,7 +281,7 @@ class Checks
      */
     public static function publicLinksIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isPublinksEnabled());
+        return Config::getConfig()->isPublinksEnabled();
     }
 
     /**

@@ -59,8 +59,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page El nombre de página para la clase del body
-     * @param bool $initialize Si es una inicialización completa
+     * @param string $page       El nombre de página para la clase del body
+     * @param bool   $initialize Si es una inicialización completa
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -349,7 +349,27 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $this->view->addTemplate('body-header');
 
-        $errors = array_merge(Checks::checkPhpVersion(), Checks::checkModules());
+        $errors = [];
+
+        if (!Checks::checkPhpVersion()) {
+            $errors[] = [
+                'type' => SPException::SP_CRITICAL,
+                'description' => __('Versión de PHP requerida >= ') . ' 5.6.0 <= 7.0',
+                'hint' => __('Actualice la versión de PHP para que la aplicación funcione correctamente')
+            ];
+        }
+
+        $modules = Checks::checkModules();
+
+        if (count($modules) > 0) {
+            foreach ($modules as $module) {
+                $error[] = [
+                    'type' => SPException::SP_WARNING,
+                    'description' => sprintf('%s (%s)', __('Módulo no disponible'), $module),
+                    'hint' => __('Sin este módulo la aplicación puede no funcionar correctamente.')
+                ];
+            }
+        }
 
         if (@file_exists(__FILE__ . "\0Nullbyte")) {
             $errors[] = [

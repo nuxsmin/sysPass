@@ -92,11 +92,6 @@ class Init
             date_default_timezone_set('UTC');
         }
 
-        // Intentar desactivar magic quotes.
-        if (get_magic_quotes_gpc() == 1) {
-            ini_set('magic_quotes_runtime', 0);
-        }
-
         // Variables de autentificación
         self::setAuth();
 
@@ -129,6 +124,12 @@ class Init
             (defined('IS_INSTALLER') && Checks::isAjax())
         ) {
             return;
+        }
+
+        if (!Checks::checkPhpVersion()) {
+            self::initError(
+                __('Versión de PHP requerida >= ') . ' 5.6.0 <= 7.0',
+                __('Actualice la versión de PHP para que la aplicación funcione correctamente'));
         }
 
         // Volver a cargar la configuración si se recarga la página
@@ -304,6 +305,8 @@ class Init
     public static function initError($message, $hint = '', $headers = false)
     {
         debugLog(__FUNCTION__);
+        debugLog($message);
+        debugLog($hint);
 
         if (Checks::isJson()) {
             $JsonResponse = new JsonResponse();
@@ -333,8 +336,7 @@ class Init
     private static function setPaths()
     {
         // Calcular los directorios raíz
-        $dir = defined(__DIR__) ? __DIR__ : dirname(__FILE__);
-        $dir = substr($dir, 0, strpos($dir, str_replace('\\', '/', __NAMESPACE__)) - 1);
+        $dir = substr(__DIR__, 0, strpos(__DIR__, str_replace('\\', '/', __NAMESPACE__)) - 1);
 
         self::$SERVERROOT = substr($dir, 0, strripos($dir, DIRECTORY_SEPARATOR));
 
