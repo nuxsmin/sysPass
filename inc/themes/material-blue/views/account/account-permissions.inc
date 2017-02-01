@@ -142,14 +142,7 @@
                 labelField: 'name',
                 searchField: ['name'],
                 plugins: ['remove_button'],
-                options: <?php echo $otherGroupsJson; ?>,
-                onInitialize: function () {
-                    var userGroupId = <?php echo $gotData ? $accountData->getAccountUserGroupId() : 0; ?>;
-
-                    if (userGroupId > 0) {
-                        this.removeOption(userGroupId);
-                    }
-                }
+                options: <?php echo $otherGroupsJson; ?>
             });
         })
         ;
