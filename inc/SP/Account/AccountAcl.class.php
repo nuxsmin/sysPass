@@ -352,8 +352,6 @@ class AccountAcl
     {
         $this->compileAccountAccess();
 
-        $UserProfile = Session::getUserProfile();
-
         // Mostrar historial
         $this->showHistory = Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_HISTORY);
 
@@ -392,13 +390,6 @@ class AccountAcl
         // Mostrar acción de copiar cuenta
         $this->showCopy = $this->checkAccountAccess(Acl::ACTION_ACC_COPY)
             && Acl::checkUserAccess(Acl::ACTION_ACC_COPY);
-
-        // Cambiar los permisos de la cuenta
-        $this->showPermission = $this->UserData->isUserIsAdminAcc()
-            || $this->UserData->isUserIsAdminApp()
-            || $UserProfile->isAccPermission()
-            || $UserProfile->isAccPrivateGroup()
-            || $UserProfile->isAccPrivate();
     }
 
     /**
@@ -536,7 +527,13 @@ class AccountAcl
      */
     public function isShowPermission()
     {
-        return $this->showPermission;
+        $UserProfile = Session::getUserProfile();
+
+        return $this->UserData->isUserIsAdminAcc()
+            || $this->UserData->isUserIsAdminApp()
+            || $UserProfile->isAccPermission()
+            || $UserProfile->isAccPrivateGroup()
+            || $UserProfile->isAccPrivate();
     }
 
     /**
