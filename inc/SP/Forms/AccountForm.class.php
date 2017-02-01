@@ -62,6 +62,7 @@ class AccountForm extends FormBase implements FormInterface
                 $this->checkCommon();
                 break;
             case ActionsInterface::ACTION_ACC_NEW:
+            case ActionsInterface::ACTION_ACC_COPY:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 $this->checkPass();
