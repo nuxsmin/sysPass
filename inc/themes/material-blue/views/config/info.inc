@@ -13,7 +13,7 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Versión sysPass'); ?></div>
 
-                    <?php printf('%s (%s)', \SP\Util\Util::getVersionString() ,\SP\Html\Html::strongText(implode('.', \SP\Util\Util::getVersion(true)))); ?>
+                    <?php printf('%s (%s)', \SP\Util\Util::getVersionString(), \SP\Html\Html::strongText(implode('.', \SP\Util\Util::getVersion(true)))); ?>
                 </td>
             </tr>
             <tr>
@@ -44,6 +44,13 @@
                     <?php printf('%s: %d KB', \SP\Html\Html::strongText(__('Memoria Usada')), (memory_get_usage(true) / 1024)); ?>
                     <br>
                     <?php printf('%s: %s', \SP\Html\Html::strongText(__('Usuario')), (!$isDemoMode) ? get_current_user() : '***'); ?>
+                    <?php if (version_compare(PHP_VERSION, '5.6.0', '>=')): ?>
+                        <br>
+                        <?php echo \SP\Html\Html::strongText(__('OP Cache')); ?>
+                        <?php foreach (opcache_get_status(false)['opcache_statistics'] as $key => $value): ?>
+                            <br><?php printf('%s : %s', $key, $value); ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </td>
             </tr>
             <tr>
