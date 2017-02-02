@@ -44,7 +44,7 @@
                     <?php printf('%s: %d KB', \SP\Html\Html::strongText(__('Memoria Usada')), (memory_get_usage(true) / 1024)); ?>
                     <br>
                     <?php printf('%s: %s', \SP\Html\Html::strongText(__('Usuario')), (!$isDemoMode) ? get_current_user() : '***'); ?>
-                    <?php if (version_compare(PHP_VERSION, '5.6.0', '>=')): ?>
+                    <?php if (function_exists('opcache_get_status') && version_compare(PHP_VERSION, '5.6.0', '>=')): ?>
                         <br>
                         <?php echo \SP\Html\Html::strongText(__('OP Cache')); ?>
                         <?php foreach (opcache_get_status(false)['opcache_statistics'] as $key => $value): ?>
