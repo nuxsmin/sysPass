@@ -1017,6 +1017,9 @@ fieldset.warning {
 .left {
   text-align: left !important; }
 
+.opacity50 {
+  opacity: .5 !important; }
+
 #login-container {
   width: 40em;
   margin: 0 auto;

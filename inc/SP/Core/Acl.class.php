@@ -124,6 +124,8 @@ class Acl implements ActionsInterface
                 return ($curUserProfile->isMgmPublicLinks() || $curUserProfile->isAccPublicLinks());
             case self::ACTION_MGM_ACCOUNTS:
             case self::ACTION_MGM_ACCOUNTS_SEARCH:
+            case self::ACTION_MGM_ACCOUNTS_HISTORY:
+            case self::ACTION_MGM_ACCOUNTS_SEARCH_HISTORY:
                 return $curUserProfile->isMgmAccounts();
             case self::ACTION_MGM_FILES:
             case self::ACTION_MGM_FILES_SEARCH:

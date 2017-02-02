@@ -26,6 +26,8 @@ namespace SP\Controller;
 
 use SP\Account\Account;
 use SP\Account\AccountFavorites;
+use SP\Account\AccountHistory;
+use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
 use SP\Api\ApiTokens;
 use SP\Auth\AuthUtil;
@@ -165,6 +167,9 @@ class ItemActionController implements ItemControllerInterface
                 case ActionsInterface::ACTION_ACC_DELETE:
                 case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE:
                     $this->accountAction();
+                    break;
+                case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE_HISTORY:
+                    $this->accountHistoryAction();
                     break;
                 case ActionsInterface::ACTION_ACC_FAVORITES_ADD:
                 case ActionsInterface::ACTION_ACC_FAVORITES_DELETE:
@@ -1130,6 +1135,56 @@ class ItemActionController implements ItemControllerInterface
 
 
         $this->LogMessage->addDescription(__('Solicitud realizada', false));
+        $this->JsonResponse->setStatus(0);
+    }
+
+    /**
+     * Acción para eliminar una cuenta del historial
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function accountHistoryAction()
+    {
+        $Account = new AccountHistory();
+
+        switch ($this->actionId) {
+            case ActionsInterface::ACTION_MGM_ACCOUNTS_EDIT_RESTORE:
+                AccountHistoryUtil::restoreFromHistory($this->itemId, Request::analyze('accountId', 0));
+
+                $this->LogMessage->setAction(__('Restaurar Cuenta', false));
+                $this->LogMessage->addDescription(__('Cuenta restaurada', false));
+                $this->LogMessage->addDetails(__('Nombre', false), AccountUtil::getAccountNameById($this->itemId));
+
+                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
+                break;
+            case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE_HISTORY:
+                if (is_array($this->itemId)) {
+                    $accounts = AccountHistoryUtil::getAccountNameByIdBatch($this->itemId);
+                    $numAccounts = count($accounts);
+                } else {
+                    $accounts = AccountHistoryUtil::getAccountNameById($this->itemId);
+                    $numAccounts = 1;
+                }
+
+                $Account->deleteAccount($this->itemId);
+
+                $this->LogMessage->setAction(__('Eliminar Cuenta (H)', false));
+
+                if ($numAccounts > 1) {
+                    $this->LogMessage->addDescription(__('Cuentas eliminadas', false));
+
+                    foreach ($accounts as $account) {
+                        $this->LogMessage->addDetails(__('Nombre', false), $account->acchistory_name);
+                    }
+                } elseif ($numAccounts === 1) {
+                    $this->LogMessage->addDescription(__('Cuenta eliminada', false));
+                    $this->LogMessage->addDetails(__('Nombre', false), $accounts->acchistory_name);
+                }
+                break;
+        }
+
+        Email::sendEmail($this->LogMessage);
+
         $this->JsonResponse->setStatus(0);
     }
 }

@@ -609,13 +609,24 @@ class AccountHistory extends AccountBase implements AccountInterface
      */
     public function deleteAccount($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $accountId) {
+                $this->deleteAccount($accountId);
+            }
+
+            return true;
+        }
+
         $query = /** @lang SQL */
             'DELETE FROM accHistory WHERE acchistory_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar la cuenta', false));
 
-        return DB::getQuery($Data);
+        DB::getQuery($Data);
+
+        return $Data->getQueryNumRows() === 1;
     }
 }

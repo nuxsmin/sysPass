@@ -395,6 +395,74 @@ class Items extends GridBase
      * @return DataGridTab
      * @throws InvalidArgumentException
      */
+    public function getAccountsHistoryGrid()
+    {
+        // Grid Header
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(__('Nombre'));
+        $GridHeaders->addHeader(__('Cliente'));
+        $GridHeaders->addHeader(__('Fecha'));
+        $GridHeaders->addHeader(__('Estado'));
+
+        // Grid Data
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('acchistory_id');
+        $GridData->addDataRowSource('acchistory_name');
+        $GridData->addDataRowSource('customer_name');
+        $GridData->addDataRowSource('acchistory_dateEdit');
+        $GridData->addDataRowSourceWithIcon('acchistory_isModify', $this->icons->getIconEdit()->setTitle(__('Modificada'))->setClass('opacity50'));
+        $GridData->addDataRowSourceWithIcon('acchistory_isDeleted', $this->icons->getIconDelete()->setTitle(__('Eliminada'))->setClass('opacity50'));
+
+        // Grid
+        $Grid = new DataGridTab();
+        $Grid->setId('tblAccountsHistory');
+        $Grid->setDataRowTemplate('datagrid-rows', 'grid');
+        $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(__('Cuentas (H)'));
+        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+
+        // Grid Actions
+        $GridActionSearch = new DataGridActionSearch();
+        $GridActionSearch->setId(self::ACTION_MGM_ACCOUNTS_SEARCH_HISTORY);
+        $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
+        $GridActionSearch->setName('frmSearchAccountHistory');
+        $GridActionSearch->setTitle(__('Buscar Cuenta'));
+        $GridActionSearch->setOnSubmitFunction('appMgmt/search');
+
+        $Grid->setDataActions($GridActionSearch);
+        $Grid->setPager($this->getPager($GridActionSearch));
+
+        // Grid item's actions
+        $GridActionRestore = new DataGridAction();
+        $GridActionRestore->setId(self::ACTION_MGM_ACCOUNTS_EDIT_RESTORE);
+        $GridActionRestore->setType(DataGridActionType::EDIT_ITEM);
+        $GridActionRestore->setName(__('Restaurar Cuenta'));
+        $GridActionRestore->setTitle(__('Restaurar Cuenta'));
+        $GridActionRestore->setIcon($this->icons->getIconRestore());
+        $GridActionRestore->setOnClickFunction('');
+
+//        $Grid->setDataActions($GridActionRestore);
+
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(self::ACTION_MGM_ACCOUNTS_DELETE_HISTORY);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
+        $GridActionDel->setName(__('Eliminar Cuenta'));
+        $GridActionDel->setTitle(__('Eliminar Cuenta'));
+        $GridActionDel->setIcon($this->icons->getIconDelete());
+        $GridActionDel->setOnClickFunction('appMgmt/delete');
+
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
+
+        return $Grid;
+    }
+
+    /**
+     * @return DataGridTab
+     * @throws InvalidArgumentException
+     */
     public function getUsersGrid()
     {
         // Grid Header

@@ -26,6 +26,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
+use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
 use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
@@ -131,6 +132,9 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
                     break;
                 case ActionsInterface::ACTION_MGM_ACCOUNTS_SEARCH:
                     $this->getAccounts();
+                    break;
+                case ActionsInterface::ACTION_MGM_ACCOUNTS_SEARCH_HISTORY:
+                    $this->getAccountsHistory();
                     break;
                 case ActionsInterface::ACTION_MGM_TAGS_SEARCH:
                     $this->getTags();
@@ -419,6 +423,33 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         $Grid = $this->getGrids()->getAccountsGrid();
         $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($this->ItemSearchData));
+        $Grid->updatePager();
+
+        $this->updatePager($Grid->getPager(), $this->ItemSearchData);
+
+        $this->view->assign('data', $Grid);
+        $this->view->assign('actionId', self::ACTION_MGM);
+
+        $this->JsonResponse->setStatus(0);
+    }
+
+    /**
+     * Obtener las cuentas de una búsqueda
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function getAccountsHistory()
+    {
+        $this->setAction(self::ACTION_MGM_ACCOUNTS_SEARCH_HISTORY);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $this->view->addTemplate('datagrid-table', 'grid');
+
+        $Grid = $this->getGrids()->getAccountsHistoryGrid();
+        $Grid->getData()->setData(AccountHistoryUtil::getAccountsMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);

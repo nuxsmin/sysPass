@@ -26,6 +26,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
+use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
 use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
@@ -111,6 +112,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
                 $this->getCustomFields();
                 $this->getFiles();
                 $this->getAccounts();
+                $this->getAccountsHistory();
                 $this->getTags();
                 $this->getPluginsList();
 
@@ -236,6 +238,26 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
 
         $Grid = $this->getGrids()->getAccountsGrid();
         $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($this->ItemSearchData));
+        $Grid->updatePager();
+
+        $this->view->append('tabs', $Grid);
+    }
+
+    /**
+     * Obtener los datos para la pestaña de cuentas en el histórico
+     *
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     */
+    public function getAccountsHistory()
+    {
+        $this->setAction(self::ACTION_MGM_ACCOUNTS_HISTORY);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $Grid = $this->getGrids()->getAccountsHistoryGrid();
+        $Grid->getData()->setData(AccountHistoryUtil::getAccountsMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
         $this->view->append('tabs', $Grid);
