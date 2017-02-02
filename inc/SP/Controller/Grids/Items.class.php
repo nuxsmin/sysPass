@@ -404,14 +404,17 @@ class Items extends GridBase
         $GridHeaders->addHeader(__('Fecha'));
         $GridHeaders->addHeader(__('Estado'));
 
+        $iconEdit = clone $this->icons->getIconEdit();
+        $iconDelete = clone $this->icons->getIconDelete();
+
         // Grid Data
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('acchistory_id');
         $GridData->addDataRowSource('acchistory_name');
         $GridData->addDataRowSource('customer_name');
         $GridData->addDataRowSource('acchistory_dateEdit');
-        $GridData->addDataRowSourceWithIcon('acchistory_isModify', $this->icons->getIconEdit()->setTitle(__('Modificada'))->setClass('opacity50'));
-        $GridData->addDataRowSourceWithIcon('acchistory_isDeleted', $this->icons->getIconDelete()->setTitle(__('Eliminada'))->setClass('opacity50'));
+        $GridData->addDataRowSourceWithIcon('acchistory_isModify', $iconEdit->setTitle(__('Modificada'))->setClass('opacity50'));
+        $GridData->addDataRowSourceWithIcon('acchistory_isDeleted', $iconDelete->setTitle(__('Eliminada'))->setClass('opacity50'));
 
         // Grid
         $Grid = new DataGridTab();
