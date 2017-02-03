@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-01 00:00+0100\n"
-"PO-Revision-Date: 2017-02-01 00:00+0100\n"
+"POT-Creation-Date: 2017-02-03 22:09+0100\n"
+"PO-Revision-Date: 2017-02-03 22:09+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: de_DE\n"
@@ -41,12 +41,14 @@ msgstr "Änderungsdatum"
 #: ../../../LoginController.class.php:131
 #, php-format
 msgid "El código 2FA se ha de restablecer en %d días"
-msgstr ""
+msgstr "Der 2FA-Code muss innerhalb von %d Tagen zurückgesetzt werden"
 
 #: ../../../LoginController.class.php:137
 msgid ""
 "El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias"
 msgstr ""
+"Der 2FA Code ist abgelaufen. Du musst es auf der Registerkarte Einstellungen "
+"zurücksetzen"
 
 #: ../../../PreferencesController.class.php:97
 msgid "Seguridad"
@@ -110,6 +112,8 @@ msgid ""
 "Una vez activada, sólo es posible acceder si se dispone del dispositivo "
 "generador de códigos asociado."
 msgstr ""
+"Sobald aktiviert, kannst du dich nur mit dem Codegenerator verbundenen Gerät "
+"anmelden."
 
 #: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:84
 #, fuzzy
@@ -118,4 +122,4 @@ msgstr "Änderungsdatum"
 
 #: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:91
 msgid "Días"
-msgstr ""
+msgstr "Tage"

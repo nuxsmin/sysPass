@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-01 00:02+0100\n"
-"PO-Revision-Date: 2017-02-01 00:02+0100\n"
+"POT-Creation-Date: 2017-02-03 22:10+0100\n"
+"PO-Revision-Date: 2017-02-03 22:10+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: ca_ES\n"
@@ -41,12 +41,13 @@ msgstr "Data Edició"
 #: ../../../LoginController.class.php:131
 #, php-format
 msgid "El código 2FA se ha de restablecer en %d días"
-msgstr ""
+msgstr "El codi 2FA s'ha de restablir en %d dies."
 
 #: ../../../LoginController.class.php:137
 msgid ""
 "El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias"
 msgstr ""
+"El codi 2FA ha caducat. Es necessari restablir-ho des de les preferències."
 
 #: ../../../PreferencesController.class.php:97
 msgid "Seguridad"
@@ -124,4 +125,4 @@ msgstr "Data Edició"
 
 #: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:91
 msgid "Días"
-msgstr ""
+msgstr "Dies"
