@@ -52,20 +52,25 @@ trait XmlImportTrait
     /**
      * Obtener los datos de los nodos
      *
-     * @param string $nodeName Nombre del nodo principal
+     * @param string $nodeName      Nombre del nodo principal
      * @param string $childNodeName Nombre de los nodos hijos
-     * @param string $callback Método a ejecutar
+     * @param string $callback      Método a ejecutar
+     * @param bool   $required      Indica si el nodo es requerido
      * @throws SPException
      */
-    protected function getNodesData($nodeName, $childNodeName, $callback)
+    protected function getNodesData($nodeName, $childNodeName, $callback, $required = true)
     {
         $ParentNode = $this->xmlDOM->getElementsByTagName($nodeName);
 
         if ($ParentNode->length === 0) {
-            throw new SPException(
-                SPException::SP_WARNING,
-                __('Formato de XML inválido', false),
-                sprintf(__('El nodo "%s" no existe'), $nodeName));
+            if ($required === true) {
+                throw new SPException(
+                    SPException::SP_WARNING,
+                    __('Formato de XML inválido', false),
+                    sprintf(__('El nodo "%s" no existe'), $nodeName));
+            }
+
+            return;
         } elseif (!is_callable([$this, $callback])) {
             throw new SPException(SPException::SP_WARNING, __('Método inválido', false));
         }

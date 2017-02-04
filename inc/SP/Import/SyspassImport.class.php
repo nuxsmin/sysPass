@@ -98,9 +98,17 @@ class SyspassImport extends ImportBase
 
     /**
      * Procesar los datos encriptados y añadirlos al árbol DOM desencriptados
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function processEncrypted()
     {
+        $hash = $this->xmlDOM->getElementsByTagName('Encrypted')->item(0)->getAttribute('hash');
+
+        if ($hash !== '' && !Crypt::checkHashPass($this->ImportParams->getImportPwd(), $hash)) {
+            throw new SPException(SPException::SP_ERROR, __('Clave de encriptación incorrecta', false));
+        }
+
         foreach ($this->xmlDOM->getElementsByTagName('Data') as $node) {
             /** @var $node \DOMElement */
             $data = base64_decode($node->nodeValue);
@@ -110,7 +118,10 @@ class SyspassImport extends ImportBase
 
             $newXmlData = new \DOMDocument();
 //            $newXmlData->preserveWhiteSpace = true;
-            $newXmlData->loadXML($xmlDecrypted);
+            if (!$newXmlData->loadXML($xmlDecrypted)) {
+                throw new SPException(SPException::SP_ERROR, __('Clave de encriptación incorrecta', false));
+            }
+
             $newNode = $this->xmlDOM->importNode($newXmlData->documentElement, TRUE);
 
             $this->xmlDOM->documentElement->appendChild($newNode);
@@ -201,7 +212,7 @@ class SyspassImport extends ImportBase
     protected function processTags(\DOMElement $Tag = null)
     {
         if ($Tag === null) {
-            $this->getNodesData('Tags', 'Tag', __FUNCTION__);
+            $this->getNodesData('Tags', 'Tag', __FUNCTION__, false);
             return;
         }
 

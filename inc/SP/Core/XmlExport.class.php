@@ -278,6 +278,7 @@ class XmlExport
 
                 if (!$encryptedNode instanceof \DOMElement) {
                     $encryptedNode = $this->xml->createElement('Encrypted');
+                    $encryptedNode->setAttribute('hash', Crypt::mkHashPassword($this->exportPass));
                 }
 
                 // Crear el nodo hijo con los datos encriptados
