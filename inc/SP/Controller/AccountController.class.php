@@ -340,7 +340,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
         $this->view->assign('readonly', $this->view->isView ? 'readonly' : '');
 
-        $this->view->assign('showViewPass', $this->UserProfileData->isAccViewPass());
+        $this->view->assign('showViewPass', $this->AccountAcl->isShowViewPass());
         $this->view->assign('AccountAcl', $this->AccountAcl);
     }
 

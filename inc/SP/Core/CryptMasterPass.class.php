@@ -108,8 +108,6 @@ class CryptMasterPass
             return false;
         }
 
-        Crypt::checkHashPass($pass, ConfigDB::getValue('tempmaster_passhash'));
-
         $isValid = Crypt::checkHashPass($pass, ConfigDB::getValue('tempmaster_passhash'));
 
         if (!$isValid) {

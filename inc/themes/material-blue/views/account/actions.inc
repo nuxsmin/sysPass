@@ -6,6 +6,28 @@ use SP\Util\Checks;
 ?>
 <div class="item-actions">
     <ul>
+        <?php if ($gotData && $accountIsHistory): ?>
+            <li>
+                <button id="btnBack" type="button"
+                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                        data-item-id="<?php echo $accountId; ?>"
+                        data-sk="<?php echo $sk; ?>"
+                        data-onclick="account/show"
+                        title="<?php echo __('Ver Actual'); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                </button>
+            </li>
+        <?php else: ?>
+            <li>
+                <button id="btnBack" type="button"
+                        class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                        title="<?php echo __('Atrás'); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                </button>
+            </li>
+        <?php endif; ?>
+
         <?php if ($AccountAcl->isShowDelete()): ?>
             <li>
                 <button id="btnDelete" type="button"
@@ -68,6 +90,20 @@ use SP\Util\Checks;
             <?php endif; ?>
         <?php endif; ?>
 
+        <?php if ($AccountAcl->isShowCopy()): ?>
+            <li>
+                <button id="btnEdit" type="button"
+                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCopy()->getClassButton(); ?>"
+                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_COPY; ?>"
+                        data-item-id="<?php echo $accountId; ?>"
+                        data-sk="<?php echo $sk; ?>"
+                        data-onclick="account/copy"
+                        title="<?php echo __('Copiar Cuenta'); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconCopy()->getIcon(); ?></i>
+                </button>
+            </li>
+        <?php endif; ?>
+
         <?php if ($AccountAcl->isShowEditPass()): ?>
             <li>
                 <button id="btnEditPass" type="button"
@@ -79,42 +115,6 @@ use SP\Util\Checks;
                         data-onclick="account/editpass"
                         title="<?php echo __('Modificar Clave de Cuenta'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconEditPass()->getIcon(); ?></i>
-                </button>
-            </li>
-        <?php endif; ?>
-
-        <?php if ($gotData && $accountIsHistory): ?>
-            <li>
-                <button id="btnBack" type="button"
-                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
-                        data-item-id="<?php echo $accountId; ?>"
-                        data-sk="<?php echo $sk; ?>"
-                        data-onclick="account/show"
-                        title="<?php echo __('Ver Actual'); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-                </button>
-            </li>
-        <?php else: ?>
-            <li>
-                <button id="btnBack" type="button"
-                        class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                        title="<?php echo __('Atrás'); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-                </button>
-            </li>
-        <?php endif; ?>
-
-        <?php if ($AccountAcl->isShowCopy()): ?>
-            <li>
-                <button id="btnEdit" type="button"
-                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCopy()->getClassButton(); ?>"
-                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_COPY; ?>"
-                        data-item-id="<?php echo $accountId; ?>"
-                        data-sk="<?php echo $sk; ?>"
-                        data-onclick="account/copy"
-                        title="<?php echo __('Copiar Cuenta'); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconCopy()->getIcon(); ?></i>
                 </button>
             </li>
         <?php endif; ?>

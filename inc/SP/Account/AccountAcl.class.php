@@ -203,7 +203,8 @@ class AccountAcl
         return ($this->action === Acl::ACTION_ACC_SEARCH
                 || $this->action === Acl::ACTION_ACC_VIEW
                 || $this->action === Acl::ACTION_ACC_VIEW_PASS
-                || $this->action === Acl::ACTION_ACC_VIEW_HISTORY)
+                || $this->action === Acl::ACTION_ACC_VIEW_HISTORY
+                || $this->action === Acl::ACTION_ACC_EDIT)
             && $this->showViewPass;
     }
 
