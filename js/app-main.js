@@ -262,6 +262,7 @@ sysPass.Main = function () {
             config.TIMEZONE = json.timezone;
             config.LOCALE = json.locale;
             config.DEBUG = json.debug;
+            config.MAX_FILE_SIZE = parseInt(json.max_file_size);
 
             if (typeof callback === "function") {
                 callback();
