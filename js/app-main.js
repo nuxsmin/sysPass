@@ -596,6 +596,13 @@ sysPass.Main = function () {
             $(".dialog-user-text").addClass("dialog-clip-copy");
             e.clearSelection();
         });
+
+        var clipboardIcon = new Clipboard(".clip-pass-icon");
+
+        clipboardIcon.on("success", function (e) {
+            msg.ok(config.LANG[45]);
+            e.clearSelection();
+        });
     };
 
     /**

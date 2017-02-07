@@ -169,7 +169,7 @@ sysPass.Theme = function (Common) {
                 }
             },
             cancelable: true,
-            contentStyle: {'max-width': '300px'},
+            contentStyle: {"max-width": "300px"},
             onLoaded: function () {
                 $("#checkbox-numbers").prop("checked", Common.passwordData.complexity.numbers);
                 $("#checkbox-uppercase").prop("checked", Common.passwordData.complexity.uppercase);
@@ -247,8 +247,9 @@ sysPass.Theme = function (Common) {
         $container.find(".passwordfield__input-show").each(function () {
             var $this = $(this);
             var $icon = $("<i class=\"showpass material-icons\" title=\"" + Common.config().LANG[32] + "\" data-targetid=\"" + $this.attr("id") + "\">remove_red_eye</i>");
+            var $clip = $("<i class=\"clip-pass-icon material-icons\" title=\"" + Common.config().LANG[34] + "\" data-clipboard-text=\"" + $this.val() + "\">content_paste</i>");
 
-            $this.parent().after($icon);
+            $this.parent().after($clip).after($icon);
 
             // Crear evento para mostrar clave generada/introducida
             $icon.on("mouseover", function () {

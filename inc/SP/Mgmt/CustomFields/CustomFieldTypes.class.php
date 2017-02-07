@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -39,14 +39,15 @@ class CustomFieldTypes
      * Tipos de Campos
      */
     const TYPE_TEXT = 1;
-    const TYPE_COLOR = 8;
-    const TYPE_URL = 7;
-    const TYPE_WIKI = 9;
     const TYPE_PASSWORD = 2;
     const TYPE_DATE = 3;
-    const TYPE_EMAIL = 5;
     const TYPE_NUMBER = 4;
+    const TYPE_EMAIL = 5;
     const TYPE_TELEPHONE = 6;
+    const TYPE_URL = 7;
+    const TYPE_COLOR = 8;
+    const TYPE_WIKI = 9;
+    const TYPE_TEXTAREA = 10;
 
     /**
      * Devolver los tipos de campos soportados
@@ -66,7 +67,8 @@ class CustomFieldTypes
             self::TYPE_EMAIL => ['email', __('Email')],
             self::TYPE_TELEPHONE => ['tel', __('Teléfono')],
             self::TYPE_URL => ['url', __('Link')],
-            self::TYPE_COLOR => ['color', __('Color')]
+            self::TYPE_COLOR => ['color', __('Color')],
+            self::TYPE_TEXTAREA => ['textarea', __('Área de Texto')]
         ];
 
         if (null !== $typeId) {

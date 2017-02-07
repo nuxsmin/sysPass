@@ -30,11 +30,9 @@ use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
 use SP\Api\ApiTokensUtil;
-use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt;
 use SP\Core\Exceptions\ItemException;
-use SP\Core\Init;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
@@ -107,7 +105,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('activeTab', $this->activeTab);
         $this->view->assign('actionId', $this->actionId);
         $this->view->assign('isView', false);
-        $this->view->assign('showViewPass', true);
+        $this->view->assign('showViewCustomPass', true);
         $this->view->assign('readonly', '');
     }
 
