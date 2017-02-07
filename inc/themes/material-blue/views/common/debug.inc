@@ -8,7 +8,6 @@
         <li>SESSION:
             <pre><?php echo print_r($_SESSION, true) ?></pre>
         </li>
-        <li>MASTER PASS: <?php echo \SP\Core\SessionUtil::getSessionMPass(); ?></li>
         <li>CONFIG FILE:
             <pre><?php echo print_r(\SP\Core\Session::getConfig(), true); ?></pre>
         </li>

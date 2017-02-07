@@ -47,6 +47,5 @@ fabric.properties
 
 backup/*
 config/*
-patches/
 res/
 tools/
