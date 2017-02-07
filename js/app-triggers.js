@@ -232,10 +232,6 @@ sysPass.Triggers = function (Common) {
         },
         login: function () {
             log.info("views:login");
-
-            $("#boxLogout").fadeOut(1500, function () {
-                location.href = Common.config().APP_ROOT + "/index.php";
-            });
         },
         passreset: function () {
             log.info("views:passreset");

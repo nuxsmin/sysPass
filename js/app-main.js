@@ -146,8 +146,14 @@ sysPass.Main = function () {
         info: function (msg) {
             toastr.info(msg);
         },
-        sticky: function (msg) {
-            toastr.warning(msg, config.LANG[60], {timeOut: 0});
+        sticky: function (msg, callback) {
+            var opts = {timeOut: 0};
+
+            if (typeof callback === "function") {
+                opts.onHidden = callback;
+            }
+
+            toastr.warning(msg, config.LANG[60], opts);
         },
         out: function (data) {
             if (typeof data === "object") {
@@ -217,6 +223,7 @@ sysPass.Main = function () {
 
             initializeClipboard();
             setupCallbacks();
+            checkLogout();
         });
     };
 
@@ -298,7 +305,7 @@ sysPass.Main = function () {
 
 
     // Función para obtener las variables de la URL y parsearlas a un array.
-    var getUrlVars = function () {
+    var getUrlVars = function (param) {
         var vars = [], hash;
         var hashes = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
         for (var i = 0; i < hashes.length; i++) {
@@ -306,15 +313,18 @@ sysPass.Main = function () {
             vars.push(hash[0]);
             vars[hash[0]] = hash[1];
         }
-        return vars;
+
+        return param !== undefined && vars[param] !== undefined ? vars[param] : vars;
     };
 
     // Función para comprobar si se ha salido de la sesión
     var checkLogout = function () {
-        var session = getUrlVars()["session"];
+        log.info("checkLogout");
 
-        if (session === 0) {
-            resMsg("warn", config.LANG[2], "", "location.search = ''");
+        if (parseInt(getUrlVars("logout")) === 1) {
+            msg.sticky(config.LANG[61], function () {
+                redirect("index.php");
+            });
         }
     };
 

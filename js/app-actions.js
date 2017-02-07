@@ -336,6 +336,8 @@ sysPass.Actions = function (Common) {
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
+                var $extra = $(".extra-hidden");
+
                 switch (json.status) {
                     case 0:
                         Common.redirect(json.data.url);
@@ -345,8 +347,6 @@ sysPass.Actions = function (Common) {
 
                         $obj.find("input[type='text'],input[type='password']").val("");
                         $obj.find("input:first").focus();
-
-                        var $extra = $(".extra-hidden");
 
                         if ($extra.length > 0) {
                             $extra.hide();
@@ -360,8 +360,6 @@ sysPass.Actions = function (Common) {
 
                         $obj.find("input[type='text'],input[type='password']").val("");
                         $obj.find("input:first").focus();
-
-                        var $extra = $(".extra-hidden");
 
                         if ($extra.length > 0) {
                             $extra.hide();

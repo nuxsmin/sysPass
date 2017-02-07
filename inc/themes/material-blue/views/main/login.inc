@@ -74,8 +74,6 @@
                     <a href="index.php?a=passreset"><?php echo __('¿Olvidó su clave?'); ?></a>
                 </div>
             <?php endif; ?>
-        <?php else: ?>
-            <div id="boxLogout"><div class="round5"><?php echo __('Sesión finalizada'); ?></div></div>
         <?php endif; ?>
     </div><!-- Close boxLogin -->
 
