@@ -84,8 +84,9 @@
     <?php if ($isDemoMode): ?>
         <div id="demo-info">
             <ul>
-                <li><i class="material-icons">perm_identity</i><span>demo</span></li>
-                <li><i class="material-icons">vpn_key</i><span>syspass</span></li>
+                <li title="<?php echo __('Usuario'); ?>"><i class="material-icons">perm_identity</i><span>demo</span></li>
+                <li title="<?php echo __('Clave'); ?>"><i class="material-icons">vpn_key</i><span>syspass</span></li>
+                <li title="<?php echo __('Clave Maestra'); ?>"><i class="material-icons">vpn_key</i><span>12345678900</span></li>
             </ul>
         </div>
     <?php endif; ?>

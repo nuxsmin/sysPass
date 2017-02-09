@@ -86,7 +86,7 @@ class AccountHistoryUtil
     public static function getAccountsMgmtSearch(ItemSearchData $SearchData)
     {
         $Data = new QueryData();
-        $Data->setSelect('acchistory_id, acchistory_name, customer_name, acchistory_dateEdit, BIN(acchistory_isModify) as acchistory_isModify, BIN(acchistory_isDeleted) as acchistory_isDeleted');
+        $Data->setSelect('acchistory_id, acchistory_name, customer_name, IFNULL(acchistory_dateEdit,acchistory_dateAdd) as acchistory_date, BIN(acchistory_isModify) as acchistory_isModify, BIN(acchistory_isDeleted) as acchistory_isDeleted');
         $Data->setFrom('accHistory LEFT JOIN customers ON acchistory_customerId = customer_id');
         $Data->setOrder('acchistory_name, customer_name, acchistory_id DESC');
 

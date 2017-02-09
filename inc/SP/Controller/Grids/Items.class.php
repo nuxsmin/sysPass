@@ -412,7 +412,7 @@ class Items extends GridBase
         $GridData->setDataRowSourceId('acchistory_id');
         $GridData->addDataRowSource('acchistory_name');
         $GridData->addDataRowSource('customer_name');
-        $GridData->addDataRowSource('acchistory_dateEdit');
+        $GridData->addDataRowSource('acchistory_date');
         $GridData->addDataRowSourceWithIcon('acchistory_isModify', $iconEdit->setTitle(__('Modificada'))->setClass('opacity50'));
         $GridData->addDataRowSourceWithIcon('acchistory_isDeleted', $iconDelete->setTitle(__('Eliminada'))->setClass('opacity50'));
 

@@ -1,6 +1,11 @@
 <?php
 /** @var $icons \SP\Core\UI\ThemeIconsBase */
 /** @var $user \SP\DataModel\UserData */
+
+if ($user->getUserLogin() === 'demo') {
+    $isReadonly = 'readonly';
+    $isDisabled = 'disabled';
+}
 ?>
 
 <div id="box-popup">
@@ -35,7 +40,7 @@
                         <input id="login" name="login" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $user->getUserLogin(); ?>"
-                               maxlength="80" <?php echo $user->isUserIsLdap() || $isReadonly; ?>>
+                               maxlength="80" <?php echo $user->isUserIsLdap() || $isReadonly ? $isReadonly : ''; ?>>
                         <label class="mdl-textfield__label"
                                for="login"><?php echo __('Login de inicio de sesión'); ?></label>
                     </div>
@@ -123,16 +128,12 @@
             <tr>
                 <td class="descField"><?php echo __('Notas') ?></td>
                 <td class="valField">
-                    <?php if (!$isView): ?>
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input" rows="3" id="notes" name="notes"
                                   maxlength="1000" <?php echo $isReadonly; ?>><?php echo $user->getUserNotes(); ?></textarea>
-                            <label class="mdl-textfield__label"
-                                   for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
-                        </div>
-                    <?php else: ?>
-                        <?php echo $user->getUserNotes(); ?>
-                    <?php endif; ?>
+                        <label class="mdl-textfield__label"
+                               for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
+                    </div>
                 </td>
             </tr>
 
