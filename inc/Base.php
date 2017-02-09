@@ -40,7 +40,7 @@ define('PLUGINS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'Plugins');
 define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
 define('SQL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'sql');
 
-define('DEBUG', false);
+define('DEBUG', true);
 
 require 'SplClassLoader.php';
 

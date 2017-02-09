@@ -22,13 +22,13 @@
                     <?php echo __('Parámetros especiales:'); ?>
                 </p>
                 <ul>
-                    <li>user:login &gt; <?php echo __('Buscar cuentas a las que \'login\' tenga acceso'); ?></li>
-                    <li>group:group_name
-                        &gt; <?php echo __('Buscar cuentas a las que \'group_name\' tenga acceso'); ?></li>
-                    <li>file:file_name
-                        &gt; <?php echo __('Buscar cuentas con archivos con el nombre \'file_name\''); ?></li>
-                    <li>tag:tag_name &gt; <?php echo __('Buscar cuentas con la etiqueta \'tag_name\''); ?></li>
-                    <li>expired: &gt; <?php echo __('Buscar cuentas con la clave caducada'); ?></li>
+                    <li><?php printf('<strong>user:"login"</strong> <br> %s', __('Buscar cuentas a las que \'login\' tenga acceso')); ?></li>
+                    <li><?php printf('<strong>owner:"login"</strong> <br> %s', __('Devolver las cuentas en las que \'login\' es propietario')); ?></li>
+                    <li><?php printf('<strong>group:"group_name"</strong> <br> %s', __('Buscar cuentas a las que \'group_name\' tenga acceso')); ?></li>
+                    <li><?php printf('<strong>maingroup:"group_name"</strong> <br> %s', __('Devolver las cuentas con grupo principal \'group_name\'')); ?></li>
+                    <li><?php printf('<strong>file:"file_name"</strong> <br> %s', __('Buscar cuentas con archivos con el nombre \'file_name\'')); ?></li>
+                    <li><?php printf('<strong>expired:</strong> <br> %s', __('Buscar cuentas con la clave caducada')); ?></li>
+                    <li><?php printf('<strong>private:</strong> <br> %s', __('Devolver las cuentas privadas del usuario actual')); ?></li>
                 </ul>
             </div>
         </div>
@@ -49,7 +49,7 @@
                 <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
                 <?php foreach ($customers as $customer): ?>
                     <option
-                        value="<?php echo $customer->id; ?>" <?php echo ($customer->id === $searchCustomer) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
+                            value="<?php echo $customer->id; ?>" <?php echo ($customer->id === $searchCustomer) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -57,7 +57,7 @@
                 <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
                 <?php foreach ($categories as $category): ?>
                     <option
-                        value="<?php echo $category->id; ?>" <?php echo ($category->id === $searchCategory) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
+                            value="<?php echo $category->id; ?>" <?php echo ($category->id === $searchCategory) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -96,7 +96,7 @@
                 <option value=""><?php echo __('Seleccionar Etiqueta'); ?></option>
                 <?php foreach ($tags as $tag): ?>
                     <option
-                        value="<?php echo $tag->id; ?>" <?php echo in_array($tag->id, $searchTags) ? 'selected' : ''; ?>><?php echo $tag->name; ?></option>
+                            value="<?php echo $tag->id; ?>" <?php echo in_array($tag->id, $searchTags) ? 'selected' : ''; ?>><?php echo $tag->name; ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

@@ -472,12 +472,13 @@ class AccountSearch
      * con las columnas y los valores a buscar.
      *
      * @return array|bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function analyzeQueryString()
     {
-        preg_match('/(user|group|file|expired|private|owner|maingroup):(.*)/i', $this->txtSearch, $filters);
-
-        if (!is_array($filters) || count($filters) === 0) {
+        if (!preg_match('/^(user|group|file|owner|maingroup):"([\w\.]+)"$/i', $this->txtSearch, $filters)
+            && !preg_match('/^(expired|private):$/i', $this->txtSearch, $filters)
+        ) {
             return [];
         }
 
@@ -486,6 +487,11 @@ class AccountSearch
         switch ($filters[1]) {
             case 'user':
                 $UserData = User::getItem()->getByLogin($filters[2]);
+
+                if (!is_object($UserData)) {
+                    return [];
+                }
+
                 $filtersData[] = [
                     'type' => 'user',
                     'query' => 'account_userId = ? OR account_id IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)',
@@ -494,6 +500,11 @@ class AccountSearch
                 break;
             case 'owner':
                 $UserData = User::getItem()->getByLogin($filters[2]);
+
+                if (!is_object($UserData)) {
+                    return [];
+                }
+
                 $filtersData[] = [
                     'type' => 'user',
                     'query' => 'account_userId = ?',
@@ -502,6 +513,11 @@ class AccountSearch
                 break;
             case 'group':
                 $GroupData = GroupUtil::getGroupIdByName($filters[2]);
+
+                if (!is_object($GroupData)) {
+                    return [];
+                }
+
                 $filtersData[] = [
                     'type' => 'group',
                     'query' => 'account_userGroupId = ? OR account_id IN (SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)',
@@ -510,6 +526,11 @@ class AccountSearch
                 break;
             case 'maingroup':
                 $GroupData = GroupUtil::getGroupIdByName($filters[2]);
+
+                if (!is_object($GroupData)) {
+                    return [];
+                }
+
                 $filtersData[] = [
                     'type' => 'group',
                     'query' => 'account_userGroupId = ?',
