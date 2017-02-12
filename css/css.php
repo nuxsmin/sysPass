@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,40 +19,38 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Minify;
+use SP\Html\Minify;
+use SP\Http\Request;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$file = \SP\Request::analyze('f');
-$base = \SP\Request::analyze('b');
+$file = Request::analyze('f');
+$base = Request::analyze('b');
 
 if (!$file) {
     $Minify = new Minify();
-    $Minify->setType(Minify::FILETYPE_CSS);
-    $Minify->setBase(__DIR__);
-    $Minify->addFile('reset.min.css');
-    $Minify->addFile('jquery-ui.min.css');
-    $Minify->addFile('jquery-ui.structure.min.css');
-    $Minify->addFile('chosen.min.css');
-    $Minify->addFile('chosen-custom.min.css');
-    $Minify->addFile('alertify-bootstrap-3.min.css');
-    $Minify->addFile('jquery.tagsinput.min.css');
-    $Minify->addFile('jquery.fancybox.min.css');
-    $Minify->addFile('fonts.min.css');
-    $Minify->addFile('material-icons.min.css');
-    $Minify->getMinified();
+    $Minify->setType(Minify::FILETYPE_CSS)
+        ->setBase(__DIR__)
+        ->addFile('reset.min.css')
+        ->addFile('jquery-ui.min.css')
+        ->addFile('jquery-ui.structure.min.css')
+        ->addFile('jquery.tagsinput.min.css')
+        ->addFile('fonts.min.css')
+        ->addFile('material-icons.min.css')
+        ->addFile('toastr.min.css')
+        ->addFile('magnific-popup.min.css')
+        ->getMinified();
 } elseif ($file && $base) {
-    $base = \SP\Request::analyze('b');
+    $base = Request::analyze('b');
 
     $Minify = new Minify();
-    $Minify->setType(Minify::FILETYPE_CSS);
-    $Minify->setBase(urldecode($base), true);
-    $Minify->addFile(urldecode($file));
-    $Minify->getMinified();
+    $Minify->setType(Minify::FILETYPE_CSS)
+        ->setBase(urldecode($base), true)
+        ->addFile(urldecode($file))
+        ->getMinified();
 }

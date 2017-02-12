@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,39 +19,49 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Minify;
+use SP\Html\Minify;
+use SP\Http\Request;
 
 define('APP_ROOT', '..');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-$file = \SP\Request::analyze('f');
-$base = \SP\Request::analyze('b');
+$file = Request::analyze('f');
+$base = Request::analyze('b');
+$group = Request::analyze('g', 0);
 
 if (!$file) {
     $Minify = new Minify();
     $Minify->setType(Minify::FILETYPE_JS);
     $Minify->setBase(__DIR__);
-    $Minify->addFile('jquery-1.11.2.min.js');
-    $Minify->addFile('jquery-ui.min.js');
-    $Minify->addFile('jquery.fancybox.pack.js');
-    $Minify->addFile('jquery.powertip.min.js');
-    $Minify->addFile('chosen.jquery.min.js');
-    $Minify->addFile('alertify.min.js');
-    $Minify->addFile('jquery.fileDownload.min.js');
-    $Minify->addFile('jquery.tagsinput.min.js');
-    $Minify->addFile('clipboard.min.js');
-    $Minify->addFile('zxcvbn-async.min.js');
-    $Minify->addFile('jsencrypt.min.js');
-    $Minify->addFile('functions.min.js');
+
+    if ($group === 0) {
+        $Minify->addFile('jquery-1.11.2.min.js')
+            ->addFile('jquery-ui.min.js')
+            ->addFile('jquery.fileDownload.min.js')
+            ->addFile('clipboard.min.js')
+            ->addFile('selectize.min.js')
+            ->addFile('selectize-plugins.min.js')
+            ->addFile('zxcvbn-async.min.js')
+            ->addFile('jsencrypt.min.js')
+            ->addFile('spark-md5.min.js')
+            ->addFile('moment.min.js')
+            ->addFile('moment-timezone.min.js')
+            ->addFile('toastr.min.js')
+            ->addFile('jquery.magnific-popup.min.js');
+    } elseif ($group === 1) {
+        $Minify->addFile('app.min.js')
+            ->addFile('app-triggers.min.js')
+            ->addFile('app-actions.min.js')
+            ->addFile('app-requests.min.js')
+            ->addFile('app-main.min.js');
+    }
+
     $Minify->getMinified();
 } elseif ($file && $base) {
-    $base = \SP\Request::analyze('b');
-
     $Minify = new Minify();
     $Minify->setType(Minify::FILETYPE_JS);
     $Minify->setBase(urldecode($base), true);

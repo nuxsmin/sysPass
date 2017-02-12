@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.or
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,42 +19,22 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+use SP\Api\ApiRequest;
+use SP\Log\Log;
 
 define('APP_ROOT', '.');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-try {
-    $ApiRequest = new \SP\ApiRequest();
-
-    switch ($ApiRequest->getAction()) {
-        case \SP\Controller\ActionsInterface::ACTION_ACC_VIEW:
-            $itemId = \SP\Request::analyze(\SP\ApiRequest::ITEM, 0);
-
-            $out = $ApiRequest->getApi()->getAccountData($itemId);
-            break;
-        case \SP\Controller\ActionsInterface::ACTION_ACC_VIEW_PASS:
-            $ApiRequest->addVar('userPass', \SP\ApiRequest::analyze(\SP\ApiRequest::USER_PASS));
-
-            $itemId = \SP\Request::analyze(\SP\ApiRequest::ITEM, 0);
-
-            $out = $ApiRequest->getApi()->getAccountPassword($itemId);
-            break;
-        case \SP\Controller\ActionsInterface::ACTION_ACC_SEARCH:
-            $search = \SP\Request::analyze(\SP\ApiRequest::SEARCH);
-            $count = \SP\Request::analyze(\SP\ApiRequest::SEARCH_COUNT, 10);
-
-            $out = $ApiRequest->getApi()->getAccountSearch($search, $count);
-            break;
-        default:
-            throw new Exception(_('Acción Inválida'));
-    }
-} catch (Exception $e) {
-    \SP\Response::printJSON(array($e->getMessage(), _('Ayuda Parámetros') => \SP\ApiRequest::getHelp()));
-}
-
 header('Content-type: application/json');
-echo $out;
+
+try {
+    $ApiRequest = new ApiRequest();
+    exit($ApiRequest->runApi());
+} catch (Exception $e) {
+    Log::writeNewLog('API', $e->getMessage(), Log::ERROR);
+    exit($ApiRequest->formatJsonError($e));
+}

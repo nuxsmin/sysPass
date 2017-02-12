@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,11 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Request;
+use SP\Config\Config;
+use SP\Core\CryptPKI;
+use SP\Core\Init;
+use SP\Core\Session;
+use SP\Http\Request;
+use SP\Http\Response;
+use SP\Util\Checks;
 
 define('APP_ROOT', '..');
 
@@ -32,16 +37,22 @@ require APP_ROOT . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'strings.j
 
 Request::checkReferer('GET');
 
+$Config = Config::getConfig();
+
 $data = array(
     'lang' => $stringsJsLang,
-    'app_root' => SP\Init::$WEBURI,
+    'locale' => $Config->getSiteLang(),
+    'app_root' => Init::$WEBURI,
     'pk' => '',
-    'max_file_size' => \SP\Config::getValue('files_allowed_size')
+    'max_file_size' => $Config->getFilesAllowedSize(),
+    'check_updates' => Session::getAuthCompleted() && ($Config->isCheckUpdates() || $Config->isChecknotices()) && (Session::getUserData()->isUserIsAdminApp() || Checks::demoIsEnabled()),
+    'timezone' => date_default_timezone_get(),
+    'debug' => DEBUG || $Config->isDebug()
 );
 
 try {
-    $CryptPKI = new SP\CryptPKI();
-    $data['pk'] = (SP\Session::getPublicKey()) ? SP\Session::getPublicKey() : $CryptPKI->getPublicKey();
-} catch (Exception $e){}
+    $CryptPKI = new CryptPKI();
+    $data['pk'] = Session::getPublicKey() ?: $CryptPKI->getPublicKey();
+} catch (Exception $e) {}
 
-SP\Response::printJSON($data, 0);
+Response::printJson($data, 0);

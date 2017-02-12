@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,24 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Request;
-use SP\SessionUtil;
-use SP\UserUtil;
+use Plugins\Authenticator\Authenticator;
+use SP\Core\ActionsInterface;
+use SP\Core\Init;
+use SP\Core\Language;
+use SP\Core\Session;
+use SP\Core\Exceptions\SPException;
+use SP\Core\DiFactory;
+use SP\Http\JsonResponse;
+use SP\Http\Request;
+use SP\Core\SessionUtil;
+use SP\Mgmt\Users\UserPreferences;
+use SP\Mgmt\Users\UserUtil;
+use SP\Util\Checks;
+use SP\Util\Json;
+use SP\Util\Util;
 
 define('APP_ROOT', '..');
 
@@ -33,86 +44,56 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('POST');
 
-if (!SP\Init::isLoggedIn()) {
-    SP\Response::printJSON(_('La sesión no se ha iniciado o ha caducado'), 10);
+$Json = new JsonResponse();
+
+if (!Init::isLoggedIn()) {
+    $Json->setStatus(10);
+    $Json->setDescription(__('La sesión no se ha iniciado o ha caducado'));
+    Json::returnJson($Json);
 }
 
-$sk = SP\Request::analyze('sk', false);
+$sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
+    $Json->setDescription(__('CONSULTA INVÁLIDA'));
+    Json::returnJson($Json);
 }
 
 // Variables POST del formulario
-$actionId = SP\Request::analyze('actionId', 0);
-$itemId = SP\Request::analyze('itemId', 0);
-$activeTab = SP\Request::analyze('activeTab', 0);
+$actionId = Request::analyze('actionId', 0);
+$itemId = Request::analyze('itemId', 0);
 
-// Acción al cerrar la vista
-$doActionOnClose = "sysPassUtil.Common.doAction($actionId,'',$activeTab);";
+if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
+    $UserPreferencesData = UserPreferences::getItem()->getById($itemId);
 
-if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
-    $userLang = SP\Request::analyze('userlang');
-    $userTheme = SP\Request::analyze('usertheme', 'material-blue');
-    $resultsPerPage = SP\Request::analyze('resultsperpage', 12);
-    $accountLink = SP\Request::analyze('account_link', false, false, true);
-    $sortViews = SP\Request::analyze('sort_views', false, false, true);
-    $topNavbar = SP\Request::analyze('top_navbar', false, false, true);
-    $optionalActions = SP\Request::analyze('optional_actions', false, false, true);
+    $UserPreferencesData->setUserId($itemId);
+    $UserPreferencesData->setLang(Request::analyze('userlang'));
+    $UserPreferencesData->setTheme(Request::analyze('usertheme', 'material-blue'));
+    $UserPreferencesData->setResultsPerPage(Request::analyze('resultsperpage', 12));
+    $UserPreferencesData->setAccountLink(Request::analyze('account_link', false, false, true));
+    $UserPreferencesData->setSortViews(Request::analyze('sort_views', false, false, true));
+    $UserPreferencesData->setTopNavbar(Request::analyze('top_navbar', false, false, true));
+    $UserPreferencesData->setOptionalActions(Request::analyze('optional_actions', false, false, true));
+    $UserPreferencesData->setResultsAsCards(Request::analyze('resultsascards', false, false, true));
 
-    if (!array_key_exists($userTheme , \SP\Themes::getThemesAvailable())) {
-        SP\Response::printJSON(_('Error al actualizar preferencias'));
+    try {
+        UserPreferences::getItem($UserPreferencesData)->update();
+        // Forzar la detección del lenguaje tras actualizar
+        Language::setLanguage(true);
+        DiFactory::getTheme()->initTheme(true);
+
+        // Actualizar las preferencias en la sesión y recargar la página
+        Session::setUserPreferences($UserPreferencesData);
+        Util::reload();
+
+        $Json->setStatus(0);
+        $Json->setDescription(__('Preferencias actualizadas'));
+    } catch (SPException $e) {
+        $Json->setDescription($e->getMessage());
     }
 
-    // No se instancia la clase ya que es necesario guardar los atributos ya guardados
-    $UserPrefs = \SP\UserPreferences::getPreferences($itemId);
-    $UserPrefs->setId($itemId);
-    $UserPrefs->setLang($userLang);
-    $UserPrefs->setTheme($userTheme);
-    $UserPrefs->setResultsPerPage($resultsPerPage);
-    $UserPrefs->setAccountLink($accountLink);
-    $UserPrefs->setSortViews($sortViews);
-    $UserPrefs->setTopNavbar($topNavbar);
-    $UserPrefs->setOptionalActions($optionalActions);
-
-    if (!$UserPrefs->updatePreferences()) {
-        SP\Response::printJSON(_('Error al actualizar preferencias'));
-    }
-
-    // Forzar la detección del lenguaje tras actualizar
-    SP\Language::setLanguage(true);
-    SP\Themes::setTheme(true);
-    // Actualizar las preferencias en la sesión y recargar la página
-    SP\Session::setUserPreferences($UserPrefs);
-    SP\Util::reload();
-
-    SP\Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
-} else if ($actionId === SP\Controller\ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
-    if (SP\Util::demoIsEnabled() && \SP\Session::getUserLogin() === 'demo') {
-        SP\Response::printJSON(_('Ey, esto es una DEMO!!'));
-    }
-
-    // Variables POST del formulario
-    $twoFaEnabled = SP\Request::analyze('security_2faenabled', 0, false, 1);
-    $pin = SP\Request::analyze('security_pin', 0);
-
-    $userLogin = UserUtil::getUserLoginById($itemId);
-    $twoFa = new \SP\Auth\Auth2FA($itemId, $userLogin);
-
-    if (!$twoFa->verifyKey($pin)) {
-        SP\Response::printJSON(_('Código incorrecto'));
-    }
-
-    // No se instancia la clase ya que es necesario guardar los atributos ya guardados
-    $UserPrefs = \SP\UserPreferences::getPreferences($itemId);
-    $UserPrefs->setId($itemId);
-    $UserPrefs->setUse2Fa(\SP\Util::boolval($twoFaEnabled));
-
-    if (!$UserPrefs->updatePreferences()) {
-        SP\Response::printJSON(_('Error al actualizar preferencias'));
-    }
-
-    SP\Response::printJSON(_('Preferencias actualizadas'), 0, $doActionOnClose);
+    Json::returnJson($Json);
 } else {
-    SP\Response::printJSON(_('Acción Inválida'));
+    $Json->setDescription(__('Acción Inválida'));
+    Json::returnJson($Json);
 }

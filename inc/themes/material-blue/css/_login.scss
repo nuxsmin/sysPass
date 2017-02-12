@@ -1,0 +1,78 @@
+#login-container {
+  width: 40em;
+  margin: 0 auto;
+  background: transparent url("../imgs/logo_full_bg.png") no-repeat top left;
+  background-size: auto 10em;
+  #boxSpacer {
+    height: 11em;
+    background-color: transparent;
+  }
+  #boxLogin {
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+    min-height: 14em;
+    padding: 1em;
+    background-color: #fff;
+    #boxData {
+      height: 100%;
+      min-height: 14em;
+      /*margin-bottom: 10em;*/
+      text-align: left;
+      background-color: transparent;
+      i {
+        margin-right: .5em;
+        opacity: .5;
+      }
+      .extra-hidden {display: none;}
+    }
+    #boxButton {
+      position: absolute;
+      top: 2em;
+      right: 2em;
+    }
+    #boxActions {
+      width: 100%;
+      text-align: right;
+      a {
+        color: #c9c9c9;
+      }
+    }
+  }
+  #boxLogout {
+    margin-top: 4em;
+    width: 100%;
+    &> div {
+      margin: 0 auto;
+      width: 250px;
+      font-size: 14px;
+      padding: 0.5em;
+      text-align: center;
+      @include color-amber();
+    }
+  }
+  #boxUpdated {
+    width: 350px;
+    margin: 3em auto;
+    font-size: 14px;
+    text-align: center;
+    padding: 0.5em;
+    @include color-teal();
+  }
+  #demo-info {
+    margin: 3em auto;
+    color: #c9c9c9;
+    border-top: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+    padding: .5em;
+    ul {
+      display: flex;
+      justify-content: space-around;
+      list-style: none;
+      li span{
+        margin: 0 2em;
+      }
+    }
+  }
+}
+

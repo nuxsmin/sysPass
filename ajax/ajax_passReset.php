@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,64 +19,92 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\SessionUtil;
-use SP\UserPass;
-use SP\UserPassRecover;
-use SP\UserUtil;
+use SP\Auth\AuthUtil;
+use SP\Core\SessionUtil;
+use SP\Core\Exceptions\SPException;
+use SP\Http\JsonResponse;
+use SP\Http\Request;
+use SP\Http\Response;
+use SP\Log\Email;
+use SP\Log\Log;
+use SP\Mgmt\Users\User;
+use SP\Mgmt\Users\UserPass;
+use SP\Mgmt\Users\UserPassRecover;
+use SP\Util\Json;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-SP\Request::checkReferer('POST');
+Request::checkReferer('POST');
 
-$sk = SP\Request::analyze('sk', false);
+$JsonResponse = new JsonResponse();
+
+$sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    SP\Response::printJSON(_('CONSULTA INVÁLIDA'));
+    $JsonResponse->setDescription(__('CONSULTA INVÁLIDA'));
+    Json::returnJson($JsonResponse);
 }
 
-$userLogin = SP\Request::analyze('login');
-$userEmail = SP\Request::analyze('email');
-$userPass = SP\Request::analyzeEncrypted('pass');
-$userPassR = SP\Request::analyzeEncrypted('passR');
-$hash = SP\Request::analyze('hash');
-$time = SP\Request::analyze('time');
+$userLogin = Request::analyze('login');
+$userEmail = Request::analyze('email');
+$userPass = Request::analyzeEncrypted('pass');
+$userPassR = Request::analyzeEncrypted('passR');
 
-$message['action'] = _('Recuperación de Clave');
+$Log = new Log();
+$LogMessage = $Log->getLogMessage();
 
 if ($userLogin && $userEmail) {
-    $log = new \SP\Log(_('Recuperación de Clave'));
+    $LogMessage->setAction(__('Recuperación de Clave', false));
+    $LogMessage->addDetailsHtml(__('Solicitado para'), sprintf('%s (%s)', $userLogin, $userEmail));
 
-    if (SP\Auth::mailPassRecover($userLogin, $userEmail)) {
-        $log->addDescription(SP\Html::strongText(_('Solicitado para') . ': ') . ' ' . $userLogin . ' (' . $userEmail . ')');
+    $UserData = User::getItem()->getByLogin($userLogin);
 
-        SP\Response::printJSON(_('Solicitud enviada') . ';;' . _('En breve recibirá un correo para completar la solicitud.'), 0, 'goLogin();');
-    } else {
-        $log->addDescription('ERROR');
-        $log->addDescription(SP\Html::strongText(_('Solicitado para') . ': ') . ' ' . $userLogin . ' (' . $userEmail . ')');
+    if ($UserData->getUserEmail() === $userEmail
+        && AuthUtil::mailPassRecover($UserData)
+    ) {
+        $LogMessage->addDescription(__('Solicitud enviada', false));
+        $Log->writeLog();
 
-        SP\Response::printJSON(_('No se ha podido realizar la solicitud. Consulte con el administrador.'));
+        $JsonResponse->setDescription($LogMessage->getDescription());
+        $JsonResponse->addMessage(__('En breve recibirá un correo para completar la solicitud.'));
+        Json::returnJson($JsonResponse);
     }
 
-    $log->writeLog();
-    SP\Email::sendEmail($log);
+    $LogMessage->addDescription(__('Solicitud no enviada', false));
+    $LogMessage->addDescription(__('Compruebe datos de usuario o consulte con el administrador', false));
+    $Log->writeLog();
+
+    Email::sendEmail($LogMessage);
+
+    $JsonResponse->setStatus(0);
+    $JsonResponse->setDescription($LogMessage->getDescription());
+    Json::returnJson($JsonResponse);
 } elseif ($userPass && $userPassR && $userPass === $userPassR) {
-    $userId = UserPassRecover::checkHashPassRecover($hash);
+    $LogMessage->setAction(__('Modificar Clave Usuario', false));
 
-    if ($userId) {
-        if (UserPass::updateUserPass($userId, $userPass) && UserPassRecover::updateHashPassRecover($hash)) {
-            \SP\Log::writeNewLogAndEmail(_('Modificar Clave Usuario'), SP\Html::strongText(_('Login') . ': ') . UserUtil::getUserLoginById($userId));
+    try {
+        $UserPassRecover = UserPassRecover::getItem()->getHashUserId(Request::analyze('hash'));
+        UserPass::getItem()->updateUserPass($UserPassRecover->getItemData()->getUserpassrUserId(), $userPass);
+    } catch (SPException $e) {
+        $LogMessage->addDescription($e->getMessage());
+        $Log->writeLog();
 
-            SP\Response::printJSON(_('Clave actualizada'), 0, 'goLogin();');
-        }
+        $JsonResponse->setDescription($e->getMessage());
+        Json::returnJson($JsonResponse);
     }
 
-    SP\Response::printJSON(_('Error al modificar la clave'));
+    $LogMessage->addDescription(__('Clave actualizada', false));
+    $LogMessage->addDetailsHtml(__('Login', false), UserPass::getItem()->getItemData()->getUserLogin());
+    $Log->writeLog();
+
+    $JsonResponse->setStatus(0);
+    $JsonResponse->setDescription($LogMessage->getDescription());
+    Json::returnJson($JsonResponse);
 } else {
-    SP\Response::printJSON(_('La clave es incorrecta o no coincide'));
+    Response::printJson(__('La clave es incorrecta o no coincide'));
 }

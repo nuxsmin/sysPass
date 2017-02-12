@@ -1,0 +1,122 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: sysPass\n"
+"POT-Creation-Date: 2017-02-03 22:12+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
+"Language-Team: Alexander Titov,Alex Us\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.10\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-KeywordsList: _t:2\n"
+"X-Poedit-SearchPath-0: ../../..\n"
+
+#: ../../../ActionController.class.php:112
+#: ../../../ActionController.class.php:178
+msgid "Código incorrecto"
+msgstr "Неправильный код"
+
+#: ../../../ActionController.class.php:117
+msgid "Ey, esto es una DEMO!!"
+msgstr "Эй, это Демо-версия!!"
+
+#: ../../../ActionController.class.php:143
+msgid "Preferencias actualizadas"
+msgstr "Настройки изменены"
+
+#: ../../../ActionController.class.php:172
+msgid "Código correcto"
+msgstr "Правильный код"
+
+#: ../../../LoginController.class.php:126
+#, fuzzy
+msgid "Aviso Caducidad"
+msgstr "Действует до"
+
+#: ../../../LoginController.class.php:131
+#, php-format
+msgid "El código 2FA se ha de restablecer en %d días"
+msgstr "2FA код будет сброшен через %d дней."
+
+#: ../../../LoginController.class.php:137
+msgid ""
+"El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias"
+msgstr "2FA код просрочен. Вам нужно сбросить его на странице настроек"
+
+#: ../../../PreferencesController.class.php:97
+msgid "Seguridad"
+msgstr "Безопасность"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:7
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:40
+msgid "Autentificación en 2 pasos"
+msgstr "Двухфакторная аутентификация"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:13
+msgid "Introducir código"
+msgstr "Введите код"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:27
+msgid "Volver a iniciar sesión"
+msgstr "Назад ко входу"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:28
+msgid "Volver"
+msgstr "Назад"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:32
+msgid "Acceder"
+msgstr "Войти"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:34
+msgid "Solicitar"
+msgstr "Запрос"
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:29
+msgid "Autentificación"
+msgstr "Аутентификация"
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:45
+msgid ""
+"Habilita la autentificación en 2 pasos que requiere de la introducción de un "
+"token generado por una aplicación como Google Authenticator."
+msgstr "Включает двухфакторную аутентификацию, например Google Authenticator."
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:49
+msgid ""
+"Escanee el código QR proporcionado y a continuación introduzca la clave de 6 "
+"dígitos."
+msgstr "Отсканируйте QR-код и затем введите шестизначный пароль."
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:58
+msgid "Activar"
+msgstr "Активировать"
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:64
+msgid "Error al obtener el código QR. Inténtelo de nuevo"
+msgstr "Ошибка получения QR-кода. Попробуйте еще раз."
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:74
+msgid "Código"
+msgstr "Пароль"
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:80
+msgid ""
+"Una vez activada, sólo es posible acceder si se dispone del dispositivo "
+"generador de códigos asociado."
+msgstr ""
+"После включения, Вы можете получить доступ только при наличии привязанного "
+"устройства."
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:84
+#, fuzzy
+msgid "Días Caducidad"
+msgstr "Действует до"
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:91
+msgid "Días"
+msgstr "Дни"
