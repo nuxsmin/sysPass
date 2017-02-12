@@ -212,4 +212,26 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
     {
         // TODO: Implement checkDuplicatedOnAdd() method.
     }
+
+    /**
+     * Eliminar elementos en lote
+     *
+     * @param array $ids
+     * @return $this
+     */
+    public function deleteBatch(array $ids)
+    {
+        // TODO: Implement deleteBatch() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        // TODO: Implement getByIdBatch() method.
+    }
 }
