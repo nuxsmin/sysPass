@@ -154,7 +154,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $masterPass = Crypt::getDecrypt($PublicLinkData->getPass(), $PublicLinkData->getPassIV(), $pass);
         $accountPass = Crypt::getDecrypt($AccountPassData->getAccountPass(), $AccountPassData->getAccountIV(), $masterPass);
 
-        $this->view->assign('useImage', Config::getConfig()->isPublinksImageEnabled());
+        $this->view->assign('useImage', Config::getConfig()->isPublinksImageEnabled() || Config::getConfig()->isAccountPassToImage());
 
         if ($this->view->useImage) {
             $accountPass = ImageUtil::convertText($accountPass);
