@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-13 00:10+0100\n"
-"PO-Revision-Date: 2017-02-13 00:10+0100\n"
+"POT-Creation-Date: 2017-02-13 16:24+0100\n"
+"PO-Revision-Date: 2017-02-13 16:24+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: de_DE\n"
@@ -14,6 +14,8 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 1.6.10\n"
+"X-Contributors: Lukas, Normo, Erik B., GoatMaster, Thomas L.\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: ../../../..\n"
 
 #: ../../../../ajax/ajax_accGetFiles.php:43
@@ -42,9 +44,8 @@ msgid "Subir Archivo"
 msgstr "Datei hochladen"
 
 #: ../../../../ajax/ajax_filesMgmt.php:79
-#, fuzzy
 msgid "No hay extensiones permitidas"
-msgstr "Es gibt keine erlaubten Dateiendungen"
+msgstr "Es sind keine Erweiterungen erlaubt"
 
 #: ../../../../ajax/ajax_filesMgmt.php:96
 #: ../../../../inc/SP/Import/FileImport.class.php:97
@@ -236,9 +237,8 @@ msgid "Login"
 msgstr "Anmeldung"
 
 #: ../../../../ajax/ajax_passReset.php:109
-#, fuzzy
 msgid "La clave es incorrecta o no coincide"
-msgstr "Das Passwort is falsch oder nicht gleich"
+msgstr "Falsches Passwort oder kein übereinstimmendes Passwort"
 
 #: ../../../../ajax/ajax_userPrefsSave.php:90
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:85
@@ -855,7 +855,6 @@ msgstr "Fehler beim Suchen nach Benutzer DN"
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:77
 #: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:99
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:66
-#: ../../../../res/test.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:45
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:51
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:54
@@ -1266,9 +1265,8 @@ msgstr "Master-Passwort aktualisiert"
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:566
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:279
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:507
-#, fuzzy
 msgid "Reinicie la sesión para cambiarla"
-msgstr "Neue Sitzung beginnen"
+msgstr "Bitte starte die Sitzung neu, um sie zu aktualisieren"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:492
 msgid "Clave maestra no indicada"
@@ -1296,9 +1294,8 @@ msgid "No es posible iniciar una transacción"
 msgstr "Eine Transaktion konnte nicht gestartet werden"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:530
-#, fuzzy
 msgid "Errores al actualizar las claves de las cuentas"
-msgstr "Fehler beim Ändern der Passwörter eines Kontos"
+msgstr "Fehler beim Aktualisieren der Passwörter"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:539
 msgid "Errores al actualizar las claves de las cuentas del histórico"
@@ -1334,9 +1331,9 @@ msgid "Clave Temporal Generada"
 msgstr "temporäres Passwort erstellt"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:619
-#, fuzzy, php-format
+#, php-format
 msgid "Clave Maestra %s"
-msgstr "Master Passwort %2"
+msgstr "Master Passwort %s"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:620
 msgid ""
@@ -1613,19 +1610,16 @@ msgid "Estado"
 msgstr "Status"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:416
-#, fuzzy
 msgid "Modificada"
-msgstr "Password erneuern"
+msgstr "Geändert"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:417
-#, fuzzy
 msgid "Eliminada"
-msgstr "Löschen"
+msgstr "Entfernt"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:426
-#, fuzzy
 msgid "Cuentas (H)"
-msgstr "Konten"
+msgstr "Konten (H)"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:444
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:445
@@ -2271,9 +2265,8 @@ msgid "Solicitud realizada"
 msgstr "Anfrage erledigt"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1171
-#, fuzzy
 msgid "Eliminar Cuenta (H)"
-msgstr "Konto löschen"
+msgstr "Konto löschen (H)"
 
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:123
 msgid "Ver Usuario"
@@ -2669,7 +2662,7 @@ msgid "Actualización"
 msgstr "Aktualisierung"
 
 #: ../../../../inc/SP/Core/Init.class.php:428
-#: ../../../../inc/SP/Core/Init.class.php:668 ../../../../res/upgrade.php:121
+#: ../../../../inc/SP/Core/Init.class.php:668
 msgid "Actualización de versión realizada."
 msgstr "Version aktualisiert"
 
@@ -2794,9 +2787,8 @@ msgid "El nombre de la BBDD no puede contener \".\""
 msgstr "Name der Datenbank darf keine \".\" enthalten"
 
 #: ../../../../inc/SP/Core/Installer.class.php:174
-#, fuzzy
 msgid "Elimine los puntos del nombre de la Base de Datos"
-msgstr "Bitte entfernen Sie den Punkt aus dem Datenbanknamen"
+msgstr "Bitte entferne die Punkte aus dem Datenbanknamen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:178
 msgid "Indicar el servidor de la BBDD"
@@ -3143,30 +3135,26 @@ msgid "Verifique los permisos del usuario del servidor web"
 msgstr "Bitte überprüfen Sie die Zugriffsberechtigungen des Web-Servers"
 
 #: ../../../../inc/SP/Import/FileImport.class.php:98
-#, fuzzy
 msgid "Compruebe la extensión del archivo"
-msgstr "Bitte überprüfen Sie die Dateiendung"
+msgstr "Bitte überprüfe die Dateierweiterung"
 
 #: ../../../../inc/SP/Import/FileImport.class.php:114
-#, fuzzy
 msgid "Compruebe la configuración de PHP para subir archivos"
-msgstr "Bitte überprüfen Sie die PHP-Konfiguration zum Hochladen von Dateien"
+msgstr "Bitte überprüfe die PHP-Konfiguration zum Hochladen von Dateien"
 
 #: ../../../../inc/SP/Import/FileImport.class.php:158
 #: ../../../../inc/SP/Import/FileImport.class.php:186
-#, fuzzy
 msgid "Compruebe los permisos del directorio temporal"
-msgstr "Bitte überprüfen Sie die Zugriffsrechte des temporären Verzeichnisses"
+msgstr "Bitte überprüfe die Zugriffsrechte des temporären Verzeichnisses"
 
 #: ../../../../inc/SP/Import/Import.class.php:83
-#, fuzzy, php-format
+#, php-format
 msgid "Tipo mime no soportado (\"%s\")"
-msgstr "Mime-Type nicht unterstüzt"
+msgstr "Mime-Type nicht unterstüzt  (\"%s\")"
 
 #: ../../../../inc/SP/Import/Import.class.php:84
-#, fuzzy
 msgid "Compruebe el formato del archivo"
-msgstr "Bitte überprüfen Sie das Format der Datei"
+msgstr "Bitte überprüfe das Dateiformat"
 
 #: ../../../../inc/SP/Import/Import.class.php:98
 msgid "Cuentas importadas"
@@ -3200,9 +3188,8 @@ msgstr "Verschlüsselungspasswort nicht definiert."
 
 #: ../../../../inc/SP/Import/SyspassImport.class.php:109
 #: ../../../../inc/SP/Import/SyspassImport.class.php:122
-#, fuzzy
 msgid "Clave de encriptación incorrecta"
-msgstr "Falsche Verschlüsselung IV"
+msgstr "Falsches Verschlüsselungs-Passwort"
 
 #: ../../../../inc/SP/Import/XmlFileImport.class.php:85
 msgid "Archivo XML no soportado"
@@ -3338,7 +3325,7 @@ msgstr "Farbe"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:71
 msgid "Área de Texto"
-msgstr ""
+msgstr "Textbereich"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:82
 msgid "No hay datos de campos personalizados"
@@ -3349,9 +3336,8 @@ msgid "Actualizando datos encriptados"
 msgstr "Aktualisiere verschlüsselte Daten"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:117
-#, fuzzy
 msgid "Registros no actualizados"
-msgstr "Nicht aktualisierte Einträge"
+msgstr "Datensätze nicht aktualisiert"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:118
 msgid "Registros actualizados"
@@ -3639,7 +3625,6 @@ msgid "Usuario de LDAP"
 msgstr "LDAP-Benutzer"
 
 #: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:117
-#, fuzzy
 msgid "Error al guardar los datos de LDAP"
 msgstr "Fehler beim Speichern der LDAP-Benutzerdaten"
 
@@ -4370,9 +4355,10 @@ msgid "Buscar cuentas a las que 'login' tenga acceso"
 msgstr "Suche nach Konten, für die 'login' Rechte besitzt"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:26
-#, fuzzy
 msgid "Devolver las cuentas en las que 'login' es propietario"
-msgstr "Suche nach Konten, für die 'login' Rechte besitzt"
+msgstr ""
+"Hole dir die Konten, in denen der Benutzer mit Login \"Login\" der "
+"Eigentümer ist"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:27
 msgid "Buscar cuentas a las que 'group_name' tenga acceso"
@@ -4381,6 +4367,7 @@ msgstr "Suche nach Konten, für die 'group_name' Rechte besitzt"
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:28
 msgid "Devolver las cuentas con grupo principal 'group_name'"
 msgstr ""
+"Erhalte die Konten, welche die Hauptgruppe mit dem Namen \"group_name\" haben"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:29
 msgid "Buscar cuentas con archivos con el nombre 'file_name'"
@@ -4393,7 +4380,7 @@ msgstr "Suche Konten mit abgelaufenen Passwort"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:31
 msgid "Devolver las cuentas privadas del usuario actual"
-msgstr ""
+msgstr "Hole dir die privaten Konten für den aktuellen Benutzer"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:39
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:43
@@ -4549,7 +4536,6 @@ msgid "Extensiones de archivos permitidas"
 msgstr "Erlaubte Dateiendungen"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:239
-#, fuzzy
 msgid "Extensiones permitidas para la subida de archivos."
 msgstr "Erlaubte Dateierweiterungen für Dateiupload."
 
@@ -5092,7 +5078,7 @@ msgstr "Benutzer Speicher"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:49
 msgid "OP Cache"
-msgstr ""
+msgstr "OP Cache"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:68
 #: ../../../../inc/themes/material-blue/views/config/info.inc:71
@@ -5862,589 +5848,3 @@ msgstr "Suchergebnisse von %s"
 #: ../../../../inc/themes/material-blue/views/wiki/wikipage.inc:23
 msgid "Página"
 msgstr "Seite"
-
-#~ msgid "Código correcto"
-#~ msgstr "Code bestätigt"
-
-#~ msgid "Código incorrecto"
-#~ msgstr "Falscher Code"
-
-#~ msgid "Id inválido"
-#~ msgstr "Ungültige ID"
-
-#~ msgid "Login de usuario duplicado"
-#~ msgstr "Dupbliziertes Benutzer-Anmeldung "
-
-#~ msgid "Email de usuario duplicado"
-#~ msgstr "Bereits verwendete Benutzer-E-Mail"
-
-#~ msgid "Grupo en uso por:"
-#~ msgstr "Gruppe in Benutzung durch:"
-
-#~ msgid "Error al crear el perfil"
-#~ msgstr "Fehler beim Anlegen des Profils"
-
-#~ msgid "Error al actualizar el perfil"
-#~ msgstr "Fehler beim Ändern des Profils"
-
-#~ msgid "Perfil en uso por:"
-#~ msgstr "Profil wird benutzt durch: "
-
-#~ msgid "Error al eliminar el perfil"
-#~ msgstr "Fehler beim Löschen eines Profils"
-
-#~ msgid "Usuario o acción no indicado"
-#~ msgstr "Benutzer oder Aktion nicht gesetzt"
-
-#~ msgid "Realizar Exportación"
-#~ msgstr "Export starten"
-
-#~ msgid "Error de conexión a LDAP"
-#~ msgstr "LDAP Verbindungsfehler"
-
-#~ msgid "Servidor Login"
-#~ msgstr "Anmeldeserver"
-
-#~ msgid "Usuario/Clave incorrectos"
-#~ msgstr "Falscher/s Benutzername/Passwort"
-
-#~ msgid "El archivo es mayor de "
-#~ msgstr "Datei ist größer als"
-
-#~ msgid "Confirmar la importación de cuentas"
-#~ msgstr "Import der Konten bestätigen"
-
-#~ msgid "Es necesario un usuario de conexión"
-#~ msgstr "Benutzername der Verbindung ist notwendig"
-
-#~ msgid "Es necesaria una clave de conexión"
-#~ msgstr "Verbindungs-Passwort wird benötigt"
-
-#~ msgid "Es necesario el nombre de la BBDD"
-#~ msgstr "Datenbank ist notwendig"
-
-#~ msgid "Es necesario un nombre de host"
-#~ msgstr "Hostname ist notwendig"
-
-#~ msgid ""
-#~ "No se ha podido realizar la solicitud. Consulte con el administrador."
-#~ msgstr ""
-#~ "Anfrage konnte nicht ausgeführt werden. Bitte Administrator "
-#~ "benachrichtigen."
-
-#~ msgid "Error al enviar la solicitud"
-#~ msgstr "Fehler beim Senden der Anfrage"
-
-#~ msgid "Ayuda Parámetros"
-#~ msgstr "Parameterhilfe"
-
-#~ msgid "ERROR: Error en la operación."
-#~ msgstr "Fehler: Operation fehlgeschlagen"
-
-#~ msgid "Fin"
-#~ msgstr "Ende"
-
-#~ msgid "Denegado acceso a"
-#~ msgstr "Zugriff verweigert auf"
-
-#~ msgid "Token de autorización"
-#~ msgstr "Autorisierungstoken"
-
-#~ msgid "Acción a realizar"
-#~ msgstr "Aktion"
-
-#~ msgid "Clave de usuario (opcional)"
-#~ msgstr "Benutzerpasswort (optional)"
-
-#~ msgid "Cadena a buscar"
-#~ msgstr "Text nach dem gesucht wird"
-
-#~ msgid "Numero de cuentas a mostar en la búsqueda"
-#~ msgstr "Anzahl von Suchtreffern pro Seite"
-
-#~ msgid "Item a devolver"
-#~ msgstr "zurück gegebener Artikel"
-
-#~ msgid "No es posible crear el directorio de backups"
-#~ msgstr "Verzeichnis für Backups kann nicht angelegt werden"
-
-#~ msgid "Categoría en uso por:"
-#~ msgstr "Kategorie wird verwendet von:"
-
-#~ msgid "Modificar Categoría"
-#~ msgstr "Kategorie ändern"
-
-#~ msgid "No es posible escribir el archivo de configuración"
-#~ msgstr "Konfigurationsdatei kann nicht geschrieben werden"
-
-#~ msgid "Compruebe los permisos del directorio \"config\""
-#~ msgstr "Bitte überprüfen Sie Zugriffsrechte auf das Verzeichnis \"config\""
-
-#~ msgid "Error procesando línea %s"
-#~ msgstr "Fehler beim verarbeiten von Zeile %s"
-
-#~ msgid "Cuenta importada: %s"
-#~ msgstr "Accout %s importiert"
-
-#~ msgid "Cliente en uso por:"
-#~ msgstr "Kunde wird verwendet von:"
-
-#~ msgid "Error al añadir los usuarios del grupo"
-#~ msgstr "Fehler beim hinzufügen von Nutzern zur Gruppe"
-
-#~ msgid "Error al actualizar los usuarios del grupo"
-#~ msgstr "Fehler beim aktualisieren von Gruppennutzern"
-
-#~ msgid "Tipo mime no soportado"
-#~ msgstr "Mimetype wird nicht unterstützt"
-
-#~ msgid "Sesion"
-#~ msgstr "Sitzung"
-
-#~ msgid "El usuario de MySQL ya existe"
-#~ msgstr "MySQL Benutzer wird schon benutzt"
-
-#~ msgid "Indique un nuevo usuario o elimine el existente"
-#~ msgstr "Neuen Benutzernamen eingeben oder bestehenden Benutzer löschen"
-
-#~ msgid "Error al establecer permisos de la BBDD"
-#~ msgstr "Fehler beim Setzen der Datenbank-Berechtigungen"
-
-#~ msgid "Faltan parámetros"
-#~ msgstr "Fehlender Parameter"
-
-#~ msgid "La versión no es compatible"
-#~ msgstr "Inkompatible Version"
-
-#~ msgid "Actualice a la última versión de phpPMS"
-#~ msgstr "Bitte aktualisieren Sie auf die letzte Version von phpPMS."
-
-#~ msgid "Error al obtener la configuración"
-#~ msgstr "Fehler beim Laden der Konfiguration"
-
-#~ msgid "Error al vaciar tabla"
-#~ msgstr "Fehler beim Leeren der Tabelle"
-
-#~ msgid "Usuario actual no es administrador de la aplicación"
-#~ msgstr "Angemeldeter Benutzer ist nicht Administrator"
-
-#~ msgid "No es posible crear el cliente"
-#~ msgstr "Kunde kann nicht angelegt werden"
-
-#~ msgid "Contacte con el desarrollador"
-#~ msgstr "Bitte kontaktieren Sie den Entwickler"
-
-#~ msgid "Importar Clientes"
-#~ msgstr "Importiere Kunden"
-
-#~ msgid "Registros"
-#~ msgstr "Datensätze"
-
-#~ msgid "Error al obtener los clientes"
-#~ msgstr "Fehler beim Laden des Kunden"
-
-#~ msgid "Error al obtener cuentas"
-#~ msgstr "Fehler beim Laden des Kontos"
-
-#~ msgid "Error al migrar cuenta"
-#~ msgstr "Fehler beim Importieren des Kontos"
-
-#~ msgid "Error al obtener los grupos de cuentas"
-#~ msgstr "Fehler beim Laden der Gruppen eines Kontos"
-
-#~ msgid "Importar Grupos de Cuentas"
-#~ msgstr "Importiere Kontogruppen"
-
-#~ msgid "Error al crear grupos de cuentas"
-#~ msgstr "Fehler beim Anlegen der Gruppen eines Kontos"
-
-#~ msgid "Error al obtener el historico de cuentas"
-#~ msgstr "Fehler beim Laden der Konto-Historie"
-
-#~ msgid "Importar Histórico de Cuentas"
-#~ msgstr "Importiere Konten-Historie"
-
-#~ msgid "Error al crear historico de cuentas"
-#~ msgstr "Fehler beim Anlegen der Konto-Historie"
-
-#~ msgid "Error al obtener los archivos de cuentas"
-#~ msgstr "Fehler beim Laden der Konto-Dateien"
-
-#~ msgid "Importar Archivos de Cuentas"
-#~ msgstr "Importiere Konto-Dateien"
-
-#~ msgid "Error al crear archivos de cuentas"
-#~ msgstr "Fehler beim Anlegen der Kontodateien"
-
-#~ msgid "Error al obtener las categorías de cuentas"
-#~ msgstr "Fehler beim Holen der Konto-Kategorien"
-
-#~ msgid "Importar Categorías de Cuentas"
-#~ msgstr "Importiere Kontokategorien"
-
-#~ msgid "Error al crear categorías de cuentas"
-#~ msgstr "Fehler beim Holen der Konto-Kategorien"
-
-#~ msgid "Importar Usuarios"
-#~ msgstr "Importiere Benutzer"
-
-#~ msgid "Error al crear usuarios"
-#~ msgstr "Fehler beim Anlegen der Benutzer"
-
-#~ msgid "Error al obtener los grupos de usuarios"
-#~ msgstr "Fehler beim Laden der Gruppen eines Benutzers"
-
-#~ msgid "Importar Grupos de Usuarios"
-#~ msgstr "Importiere Benutzergruppen"
-
-#~ msgid "Error al crear los grupos de usuarios"
-#~ msgstr "Fehler beim Hinzufügen Gruppen eines Benutzers"
-
-#~ msgid "Importar Configuración"
-#~ msgstr "Importiere Konfiguration"
-
-#~ msgid "Datos de perfil incorrectos"
-#~ msgstr "falsche Profildaten"
-
-#~ msgid "Modificar Perfil"
-#~ msgstr "Profil ändern"
-
-#~ msgid "No hay categorías para importar"
-#~ msgstr "Es existieren keine Kategorien zum importieren"
-
-#~ msgid "No hay clientes para importar"
-#~ msgstr "Es existieren keine Kunden zum importieren"
-
-#~ msgid "No hay cuentas para importar"
-#~ msgstr "Es existieren keine Accounts zum importieren"
-
-#~ msgid "Actualización de la Configuración realizada correctamente."
-#~ msgstr "Configuration Aktualisierung erfolgreich durchgeführt."
-
-#~ msgid "Modificar Usuario"
-#~ msgstr "Benutzer ändern"
-
-#~ msgid "Migrar Grupos"
-#~ msgstr "Gurppen migrieren"
-
-#~ msgid "Formato detectado"
-#~ msgstr "Erkanntest Format"
-
-#~ msgid "Gestión de Categorías"
-#~ msgstr "Kategorienverwaltung"
-
-#~ msgid "Gestión de Clientes"
-#~ msgstr "Kundenverwaltung"
-
-#~ msgid "Nuevo estilo visual basado en Material Design Lite by Google"
-#~ msgstr "Neues Design basierend auf Design von Google"
-
-#~ msgid "Usuarios en múltiples grupos"
-#~ msgstr "Nutzer können zu mehreren Gruppen gehören"
-
-#~ msgid "Previsualización de imágenes"
-#~ msgstr "Bilder Vorgenerierung"
-
-#~ msgid "Mostrar claves como imágenes"
-#~ msgstr "Zeige Passwörter als Bilder"
-
-#~ msgid "Campos personalizados"
-#~ msgstr "Benutzerdefinierte Felder"
-
-#~ msgid "API de consultas"
-#~ msgstr "API Abfragen"
-
-#~ msgid "Autentificación en 2 pasos"
-#~ msgstr "Zwei-Faktor Authentifizierung"
-
-#~ msgid "Complejidad de generador de claves"
-#~ msgstr "Zufälligkeitsgenerator mit konfigurierbarer Komplexität"
-
-#~ msgid "Consultas especiales"
-#~ msgstr "Spezialabfragen"
-
-#~ msgid "Exportación a XML"
-#~ msgstr "XML Export"
-
-#~ msgid "Clave maestra temporal"
-#~ msgstr "temporäres Master-Passwort"
-
-#~ msgid "Importación de cuentas desde sysPass, KeePass, KeePassX y CSV"
-#~ msgstr "Account Import von KeePass, KeePassX oder CSV"
-
-#~ msgid "Optimización del código y mayor rapidez de carga"
-#~ msgstr "Code Optimierung und verschnellertes Laden"
-
-#~ msgid "Mejoras de seguridad en XSS e inyección SQL"
-#~ msgstr "Verbesserte Sicherheit um XSS und SQL injections zu verhindern"
-
-#~ msgid "Pulse <a href=\"index.php\" title=\"Acceder\">aquí</a> para acceder"
-#~ msgstr ""
-#~ "Klicken Sie <a href=\"index.php\" title=\"Acceder\">hier</a> für den "
-#~ "Zugriff"
-
-#~ msgid "Gestión de Usuarios"
-#~ msgstr "Benutzerverwaltung"
-
-#~ msgid "Gestión de Grupos"
-#~ msgstr "Gruppenverwaltung"
-
-#~ msgid "Gestión de Perfiles"
-#~ msgstr "Profilverwaltung"
-
-#~ msgid "Gestión de Autorizaciones API"
-#~ msgstr "API Berechtigungsmanagement"
-
-#~ msgid "Introducir código"
-#~ msgstr "Code eingeben"
-
-#~ msgid "Verificar"
-#~ msgstr "bestätigen"
-
-#~ msgid "Buscar en desplegable o introducir"
-#~ msgstr "Weitersuchen"
-
-#~ msgid "por"
-#~ msgstr "durch"
-
-#~ msgid "Seleccionar grupos secundarios"
-#~ msgstr "Untergruppe auswählen"
-
-#~ msgid "Seleccionar usuarios"
-#~ msgstr "Benutzer auswählen"
-
-#~ msgid ""
-#~ "Para mejorar/añadir las traducciones, puede colaborar en http:://"
-#~ "translate.syspass.org"
-#~ msgstr ""
-#~ "Um die Übersetzung zu verbessern können Sie die den Dienst auf http:://"
-#~ "translate.syspass.org nutzen"
-
-#~ msgid "Añadir extensión"
-#~ msgstr "Endung hinzufügen"
-
-#~ msgid "Eliminar extensión"
-#~ msgstr "Endung löschen"
-
-#~ msgid "Atención"
-#~ msgstr "Warnung"
-
-#~ msgid "Validez"
-#~ msgstr "Lebensspanne"
-
-#~ msgid "Seguro"
-#~ msgstr "Sicher"
-
-#~ msgid "Inseguro"
-#~ msgstr "Unsicher"
-
-#~ msgid "nombre_de_cuenta;cliente;categoría;url;usuario;clave;notas"
-#~ msgstr "konto_name;kunde;kategorie;url;benutzer;passwort;bemerkungen"
-
-#~ msgid "Importar phpPMS"
-#~ msgstr "phpPMS Import"
-
-#~ msgid "Usuario BBDD"
-#~ msgstr "Datenbankbenutzer"
-
-#~ msgid "Indicar el usuario de conexión a la base de datos de phpPMS."
-#~ msgstr "phpPMS Datenbankbenutzer eingeben"
-
-#~ msgid "Clave BBDD"
-#~ msgstr "Datenbank-Passwort"
-
-#~ msgid "Nombre BBDD"
-#~ msgstr "Datenbankname"
-
-#~ msgid "Indicar el nombre de la base de datos de phpPMS."
-#~ msgstr "phpPMS Datenbankname eingeben"
-
-#~ msgid "Servidor BBDD"
-#~ msgstr "Datenbank-Server"
-
-#~ msgid "Indicar el servidor de la base de datos de phpPMS."
-#~ msgstr "phpPMS Datenbankserver eingeben"
-
-#~ msgid "Confirmar"
-#~ msgstr "Bestätigen"
-
-#~ msgid "Los datos actuales serán borrados (excepto el usuario actual)"
-#~ msgstr "Daten werden gelöscht (mit Ausnahme des aktuellen Benutzers)"
-
-#~ msgid "Iniciar"
-#~ msgstr "Start"
-
-#~ msgid "Instalación "
-#~ msgstr "Installation"
-
-#~ msgid "Crear cuenta de admin de sysPass"
-#~ msgstr "Administrator-Konto anlegen"
-
-#~ msgid "Login de usuario con permisos de administrador de MySQL"
-#~ msgstr "Benutzer-Anmeldung mit administrativen Datenbank-Rechten"
-
-#~ msgid "Nombre del servidor de la base de datos de sysPass"
-#~ msgstr "Server der sysPass-Datenbank eingeben"
-
-#~ msgid "Comprobar conexión con LDAP"
-#~ msgstr "LDAP-Verbindung prüfen"
-
-#~ msgid "Nuevas Características"
-#~ msgstr "Neue Eigenschaften"
-
-#~ msgid "Login del Usuario"
-#~ msgstr "Benutzer-Anmeldung"
-
-#~ msgid "Nueva Clave"
-#~ msgstr "Neues Passwort"
-
-#~ msgid "Solicitar cambio de clave"
-#~ msgstr "Starte Passwortänderung"
-
-#~ msgid "Añadir nueva cuenta"
-#~ msgstr "Konto hinzufügen"
-
-#~ msgid "Borrar cuenta"
-#~ msgstr "Konto löschen"
-
-#~ msgid "Borrar"
-#~ msgstr "Löschen"
-
-#~ msgid "Configuración general"
-#~ msgstr "Allgemeine Konfiguration"
-
-#~ msgid "Cambiar clave maestra"
-#~ msgstr "Master-Passwort ändern"
-
-#~ msgid "Realizar copia de seguridad"
-#~ msgstr "Backup erstellen"
-
-#~ msgid "No usado"
-#~ msgstr "Nicht benutzt"
-
-#~ msgid "Global ON"
-#~ msgstr "Global eingeschaltet"
-
-#~ msgid "CPP"
-#~ msgstr "KPS"
-
-#~ msgid "Autenticación"
-#~ msgstr "Authentifizierung"
-
-#~ msgid "Autenticación en 2 pasos"
-#~ msgstr "Zwei Faktor Authentifizierung"
-
-#~ msgid ""
-#~ "Habilita la autentificación en 2 pasos que requiere de la introducción de "
-#~ "un token generado por una aplicación como Google Authenticator."
-#~ msgstr "Aktiviert Zwei-Faktor-Authentifizierung"
-
-#~ msgid ""
-#~ "Escanee el código QR proporcionado y a continuación introduzca la clave "
-#~ "de 6 dígitos."
-#~ msgstr ""
-#~ "Bereitgestellten QR Code scannen und einen 6-stelligen Code eingeben"
-
-#~ msgid "Activar"
-#~ msgstr "Aktivieren"
-
-#~ msgid "Error al obtener el código QR. Inténtelo de nuevo"
-#~ msgstr "Fehler beim Abrufen des QR-Codes. Bitte erneut versuchen."
-
-#~ msgid "Código"
-#~ msgstr "Code"
-
-#~ msgid ""
-#~ "Una vez activada, sólo es posible acceder si se dispone del dispositivo "
-#~ "generador de códigos asociado."
-#~ msgstr ""
-#~ "Einmal aktiviert, kann man sich nur anmelden, wenn man das Gerät besitzt, "
-#~ "dass den Code generiert."
-
-#~ msgid "Cambiar clave de usuario"
-#~ msgstr "Benutzerpasswort ändern"
-
-#~ msgid "Introducir Código de Seguridad"
-#~ msgstr "Sicherheitscode eingeben"
-
-#~ msgid "Admin. Aplicación"
-#~ msgstr "Anwendungs-Administrator"
-
-#~ msgid "Admin. Cuentas"
-#~ msgstr "Konto-Administrator"
-
-#~ msgid "Añadir filtro"
-#~ msgstr "Filter hinzufügen"
-
-#~ msgid "Eliminar filtro"
-#~ msgstr "Filter löschen"
-
-#~ msgid "> Usar texto y crear nuevo"
-#~ msgstr "> Nutze den Text und erstelle einen neuen"
-
-#~ msgid "Seleccionar o escribir para crear uno nuevo"
-#~ msgstr "Auswählen oder schreiben um einen neuen zu kreieren"
-
-#~ msgid "Clave (Repetir)"
-#~ msgstr "Passwort (wiederholen)"
-
-#~ msgid "Archivo actualizado"
-#~ msgstr "Datei aktualisiert"
-
-#~ msgid "Usuarios importados %d/%d"
-#~ msgstr "Benutzer %d/%d  importiert"
-
-#~ msgid "Errores: %d"
-#~ msgstr "Fehler: %d"
-
-#~ msgid "Denegado acceso a %s"
-#~ msgstr "Zugriff verweigert auf %s"
-
-#~ msgid "Eliminar Plugin"
-#~ msgstr "Plugin löschen"
-
-#~ msgid "Modificar Plugin"
-#~ msgstr "Plugin anpassen"
-
-#~ msgid "Nuevo Enlace"
-#~ msgstr "Neuer Link"
-
-#~ msgid "Creando usuario '%s (%s)'"
-#~ msgstr "Erstelle Benutzer '%s (%s)' "
-
-#~ msgid "Buscar cuentas con la etiqueta 'tag_name'"
-#~ msgstr "Suche Konten mit Tag 'tag_name'"
-
-#~ msgid "Tiempo en minutos"
-#~ msgstr "Zeit in Minuten"
-
-#~ msgid "No hay notificaciones pendientes"
-#~ msgstr "Anstehende Benachrichtigungen sind nicht vorhanden"
-
-#~ msgid "Registro en uso"
-#~ msgstr "Datensatz im Gebrauch"
-
-#~ msgid "Sólo para administradores de la aplicación"
-#~ msgstr "Nur für Anwendungsadministratoren"
-
-#~ msgid "Solo Admins"
-#~ msgstr "Nur Administratoren"
-
-#~ msgid "Aviso Caducidad"
-#~ msgstr "Nachricht abbrechen"
-
-#~ msgid "El código 2FA se ha de restablecer en %d días"
-#~ msgstr "Der 2FA-Code muss innerhalb von %d Tagen zurückgesetzt werden"
-
-#~ msgid ""
-#~ "El código 2FA ha caducado. Es necesario restablecerlo desde las "
-#~ "preferencias"
-#~ msgstr ""
-#~ "Der 2FA-Code ist abgelaufen. Sie müssen es auf der Registerkarte "
-#~ "Einstellungen zurücksetzen"
-
-#~ msgid "Días Caducidad"
-#~ msgstr "Verfalltage"
-
-#~ msgid "Días"
-#~ msgstr "Tage"
