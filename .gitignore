@@ -49,3 +49,5 @@ backup/*
 config/*
 res/
 tools/
+
+!.blank
