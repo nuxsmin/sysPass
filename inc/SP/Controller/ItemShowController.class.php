@@ -48,6 +48,7 @@ use SP\DataModel\TagData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPassData;
 use SP\Http\Request;
+use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
@@ -398,8 +399,13 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('gotData', is_object($token));
 
         if ($this->view->isView === true) {
-            $msg = sprintf('%s ;;Usuario: %s', __('Token de autorización visualizado'), $token->user_login);
-            Log::writeNewLogAndEmail(__('Autorizaciones', false), $msg);
+            $Log = Log::newLog(__('Autorizaciones', false));
+            $LogMessage = $Log->getLogMessage();
+            $LogMessage->addDescription(__('Token de autorización visualizado'));
+            $LogMessage->addDetails(__('Usuario'), $token->user_login);
+            $Log->writeLog();
+
+            Email::sendEmail($LogMessage);
         }
 
         $this->JsonResponse->setStatus(0);
