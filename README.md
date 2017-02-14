@@ -34,7 +34,7 @@ PHP web based Password Manager for business and personal use.
 - [x] Multilanguage
 - [x] API
 
-Installation instructions and documentation at Doc https://docs.syspass.org
+Installation instructions and documentation at Doc https://doc.syspass.org
 
 ----------------
 
