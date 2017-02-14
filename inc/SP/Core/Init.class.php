@@ -322,7 +322,7 @@ class Init
         SessionUtil::cleanSession();
 
         $Tpl = new Template();
-        $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => $message, 'hint' => $hint]);
+        $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => __($message), 'hint' => __($hint)]);
 
         $Controller = new MainController($Tpl, 'error', !Checks::isAjax());
         $Controller->getError();
