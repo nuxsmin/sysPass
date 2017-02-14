@@ -49,7 +49,7 @@
                 <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
                 <?php foreach ($customers as $customer): ?>
                     <option
-                            value="<?php echo $customer->id; ?>" <?php echo ($customer->id === $searchCustomer) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
+                            value="<?php echo $customer->id; ?>" <?php echo ((int)$customer->id === $searchCustomer) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
                 <?php endforeach; ?>
             </select>
 
@@ -57,7 +57,7 @@
                 <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
                 <?php foreach ($categories as $category): ?>
                     <option
-                            value="<?php echo $category->id; ?>" <?php echo ($category->id === $searchCategory) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
+                            value="<?php echo $category->id; ?>" <?php echo ((int)$category->id === $searchCategory) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
                 <?php endforeach; ?>
             </select>
 
