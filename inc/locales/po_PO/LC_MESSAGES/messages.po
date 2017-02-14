@@ -4566,8 +4566,8 @@ msgid "El máximo absuluto es de 16MB."
 msgstr "Absolutne maksimum to 16MB."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:280
-msgid "Tamaño máximo de archivo en bytes"
-msgstr "Maksymalny rozmiar pliku w bajtach"
+msgid "Tamaño máximo de archivo en kilobytes"
+msgstr "Maksymalny rozmiar pliku w kilobajtach"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:13
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:16
