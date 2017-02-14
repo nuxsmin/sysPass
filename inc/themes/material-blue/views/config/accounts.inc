@@ -277,7 +277,7 @@
                                    maxlength="5"
                                    value="<?php echo $filesAllowedSize; ?>"/>
                             <label class="mdl-textfield__label"
-                                   for="files_allowed_size"><?php echo __('Tamaño máximo de archivo en bytes'); ?></label>
+                                   for="files_allowed_size"><?php echo __('Tamaño máximo de archivo en kilobytes'); ?></label>
                         </div>
                     </td>
                 </tr>
