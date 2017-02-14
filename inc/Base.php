@@ -26,8 +26,6 @@ use SP\Core\Init;
 
 defined('APP_ROOT') || die();
 
-define('BASE_DIR', __DIR__);
-//
 // Please, notice that this file should be outside the webserver root. You can move it and then update this path
 define('XML_CONFIG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.xml');
 
