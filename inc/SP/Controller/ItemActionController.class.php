@@ -244,12 +244,6 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Usuario actualizado', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getUserName());
                 $this->LogMessage->addDetails(__('Login', false), $Form->getItemData()->getUserLogin());
-
-                if ($Form->getItemData()->isUserIsChangePass()
-                    && !AuthUtil::mailPassRecover($Form->getItemData())
-                ) {
-                    $this->LogMessage->addDescription(__('No se pudo realizar la petición de cambio de clave.', false));
-                }
                 break;
             case ActionsInterface::ACTION_USR_USERS_DELETE:
                 if (is_array($this->itemId)) {
