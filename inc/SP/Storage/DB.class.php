@@ -344,7 +344,7 @@ class DB
 
         try {
             $db = new DB();
-            $db->doQuery($queryData);;
+            $db->doQuery($queryData);
         } catch (SPException $e) {
             $queryData->setQueryStatus($e->getCode());
 

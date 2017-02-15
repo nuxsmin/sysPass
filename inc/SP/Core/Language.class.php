@@ -149,14 +149,14 @@ class Language
      *
      * @param string $lang El lenguaje a utilizar
      */
-    private static function setLocales($lang)
+    public static function setLocales($lang)
     {
         $lang .= '.utf8';
         $fallback = 'en_US.utf8';
 
         putenv('LANG=' . $lang);
-        self::$localeStatus = setlocale(LC_MESSAGES, $lang, $fallback);
-        setlocale(LC_ALL, $lang, $fallback);
+        self::$localeStatus = setlocale(LC_MESSAGES, [$lang, $fallback]);
+        setlocale(LC_ALL, [$lang, $fallback]);
         bindtextdomain('messages', LOCALES_PATH);
         textdomain('messages');
         bind_textdomain_codeset('messages', 'UTF-8');

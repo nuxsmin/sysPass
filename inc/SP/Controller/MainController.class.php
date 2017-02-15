@@ -38,12 +38,17 @@ use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
+use SP\Core\Upgrade\Check;
 use SP\DataModel\NoticeData;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\Html;
 use SP\Http\Request;
+use SP\Mgmt\Categories\Category;
+use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Notices\Notice;
 use SP\Mgmt\PublicLinks\PublicLink;
+use SP\Mgmt\Users\User;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -429,6 +434,17 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('action', Request::analyze('a'));
         $this->view->assign('time', Request::analyze('t'));
         $this->view->assign('upgrade', $this->view->action === 'upgrade');
+        $this->view->assign('checkConstraints', Check::checkConstraints());
+
+        $constraints = [];
+
+        foreach ($this->view->checkConstraints as $key => $val) {
+            if ($val > 0) {
+                $constraints[] = sprintf('%s : %s', $key, $val);
+            }
+        }
+
+        $this->view->assign('constraints', $constraints);
 
         $this->view();
         exit();

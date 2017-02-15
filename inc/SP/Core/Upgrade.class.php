@@ -28,6 +28,12 @@ namespace SP\Core;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Upgrade\Group;
+use SP\Core\Upgrade\Profile;
+use SP\Core\Upgrade\User;
+use SP\Core\Upgrade\Category;
+use SP\Core\Upgrade\Customer;
+use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
@@ -60,19 +66,58 @@ class Upgrade
      */
     public static function doUpgrade($version)
     {
+        DB::beginTransaction();
+
         foreach (self::$dbUpgrade as $upgradeVersion) {
-            if ($version < $upgradeVersion && self::upgradeDB($upgradeVersion) === false) {
-                throw new SPException(SPException::SP_CRITICAL, __('Error al aplicar la actualización de la Base de Datos', false),
-                    __('Compruebe el registro de eventos para más detalles', false));
+            if ($version < $upgradeVersion) {
+                if (self::auxPreUpgrades($upgradeVersion) === false) {
+                    DB::rollbackTransaction();
+
+                    throw new SPException(SPException::SP_CRITICAL,
+                        __('Error al aplicar la actualización auxiliar', false),
+                        __('Compruebe el registro de eventos para más detalles', false));
+                }
+
+                if (self::upgradeDB($upgradeVersion) === false) {
+                    DB::rollbackTransaction();
+
+                    throw new SPException(SPException::SP_CRITICAL, __('Error al aplicar la actualización de la Base de Datos', false),
+                        __('Compruebe el registro de eventos para más detalles', false));
+                }
             }
         }
 
         foreach (self::$auxUpgrade as $upgradeVersion) {
             if ($version < $upgradeVersion && self::auxUpgrades($upgradeVersion) === false) {
+                DB::rollbackTransaction();
+
                 throw new SPException(SPException::SP_CRITICAL,
                     __('Error al aplicar la actualización auxiliar', false),
                     __('Compruebe el registro de eventos para más detalles', false));
             }
+        }
+
+        DB::endTransaction();
+
+        return true;
+    }
+
+    /**
+     * Aplicar actualizaciones auxiliares antes de actualizar la BBDD
+     *
+     * @param $version
+     * @return bool
+     */
+    private static function auxPreUpgrades($version)
+    {
+        switch ($version) {
+            case 1316011001:
+                return
+                    User::fixUsersId(Request::analyze('userid', 1))
+                    && Group::fixGroupId(Request::analyze('groupid', 1))
+                    && Profile::fixProfilesId(Request::analyze('profileid', 1))
+                    && Category::fixCategoriesId(Request::analyze('categoryid', 1))
+                    && Customer::fixCustomerId(Request::analyze('customerid', 1));
         }
 
         return true;

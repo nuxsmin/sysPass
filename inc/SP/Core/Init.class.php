@@ -101,6 +101,9 @@ class Init
         // Cargar las extensiones
         self::loadExtensions();
 
+        // Establecer el lenguaje por defecto
+        Language::setLocales('en_US');
+
         // Iniciar la sesión de PHP
         self::startSession();
 
