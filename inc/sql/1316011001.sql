@@ -7,7 +7,6 @@ CREATE TABLE `publicLinks` (
   publicLink_hash     VARBINARY(100)           NOT NULL,
   publicLink_linkData LONGBLOB
 );
-ALTER TABLE `accounts` DROP INDEX `IDX_searchTxt`;
 ALTER TABLE `usrData`
   ENGINE = InnoDB;
 ALTER TABLE `accFiles`
