@@ -127,9 +127,9 @@ class LdapMsAds extends LdapBase
         $groupDN = $this->LdapAuthData->getGroupDn();
         $filter = '(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . ')';
 
-        $searchRes = @ldap_search($this->ldapHandler, $this->searchBase, $filter, ['sAMAccountName']);
+        $searchResults = $this->getResults($filter, ['sAMAccountName']);
 
-        if (!$searchRes) {
+        if ($searchResults === false) {
             $this->LogMessage->addDescription(__('Error al buscar el grupo de usuarios', false));
             $this->LogMessage->addDetails(__('Grupo', false), $groupDN);
             $this->LogMessage->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
@@ -139,19 +139,7 @@ class LdapMsAds extends LdapBase
             throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
         }
 
-        if (@ldap_count_entries($this->ldapHandler, $searchRes) === 0) {
-            $this->LogMessage->addDescription(__('No se encontró el grupo con ese nombre', false));
-            $this->LogMessage->addDetails(__('Grupo', false), $groupDN);
-            $this->LogMessage->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
-            $this->LogMessage->addDetails('LDAP FILTER', $filter);
-            $this->writeLog();
-
-            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
-        }
-
-        $entries = ldap_get_entries($this->ldapHandler, $searchRes);
-
-        foreach ($entries as $entry) {
+        foreach ($searchResults as $entry) {
             if (is_array($entry)) {
                 if ($this->userLogin === strtolower($entry['samaccountname'][0])) {
                     $this->LogMessage->addDescription(__('Usuario verificado en grupo', false));
