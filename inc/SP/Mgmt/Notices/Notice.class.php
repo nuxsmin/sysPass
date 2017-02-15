@@ -82,10 +82,10 @@ class Notice extends NoticeBase implements ItemInterface
      */
     public function delete($id)
     {
+        $query = 'DELETE FROM notices WHERE notice_id = ? AND BIN(notice_sticky) = 0 LIMIT 1';
+
         if (Session::getUserData()->isUserIsAdminApp()) {
             $query = 'DELETE FROM notices WHERE notice_id = ? LIMIT 1';
-        } else {
-            $query = 'DELETE FROM notices WHERE notice_id = ? AND BIN(notice_sticky) = 0 LIMIT 1';
         }
 
         $Data = new QueryData();
@@ -132,10 +132,6 @@ class Notice extends NoticeBase implements ItemInterface
         $Data->setOnErrorMessage(__('Error al modificar la notificación', false));
 
         DB::getQuery($Data);
-
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Notificación no encontrada', false));
-        }
 
         return $this;
     }

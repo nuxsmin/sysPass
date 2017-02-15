@@ -105,10 +105,6 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
         DB::getQuery($Data);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Enlace no encontrado', false));
-        }
-
         return true;
     }
 

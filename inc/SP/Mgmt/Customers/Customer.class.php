@@ -199,10 +199,6 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
 
         DB::getQuery($Data);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Cliente no encontrado', false));
-        }
-
         return $this;
     }
 

@@ -138,10 +138,6 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
 
         DB::getQuery($Data);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Etiqueta no encontrada', false));
-        }
-
         return $this;
     }
 

@@ -184,11 +184,9 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
 
         DB::getQuery($Data);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Usuario no encontrado', false));
+        if ($Data->getQueryNumRows() > 0) {
+            $this->itemData->setUserId(DB::getLastId());
         }
-
-        $this->itemData->setUserId(DB::getLastId());
 
         return $this;
     }
