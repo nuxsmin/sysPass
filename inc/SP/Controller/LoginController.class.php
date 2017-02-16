@@ -221,6 +221,7 @@ class LoginController
 
             $data = ['url' => Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time() . '&f=1'];
             $this->jsonResponse->setData($data);
+            $this->jsonResponse->setStatus(0);
             Json::returnJson($this->jsonResponse);
         }
 

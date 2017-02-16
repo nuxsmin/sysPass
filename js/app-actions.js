@@ -305,6 +305,12 @@ sysPass.Actions = function (Common) {
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
+
+                if (json.status == 0) {
+                    setTimeout(function () {
+                        Common.redirect("index.php");
+                    }, 1000);
+                }
             });
         }
     };
