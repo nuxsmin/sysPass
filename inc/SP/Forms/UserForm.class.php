@@ -104,7 +104,7 @@ class UserForm extends FormBase implements FormInterface
     {
         $userPassR = Request::analyzeEncrypted('passR');
 
-        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->UserData->getUserId()) === 'demo') {
+        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
             throw new ValidationException(__('Ey, esto es una DEMO!!', false));
         } elseif (!$userPassR || !$this->UserData->getUserPass()) {
             throw new ValidationException(__('La clave no puede estar en blanco', false));
@@ -118,7 +118,7 @@ class UserForm extends FormBase implements FormInterface
      */
     protected function checkDelete()
     {
-        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->UserData->getUserId()) === 'demo') {
+        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
             throw new ValidationException(__('Ey, esto es una DEMO!!', false));
         } elseif (
             (!is_array($this->itemId) === Session::getUserData()->getUserId())
