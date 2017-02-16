@@ -12,7 +12,8 @@ CREATE TABLE `tags` (
 CREATE TABLE `accTags` (
   `acctag_accountId` INT UNSIGNED NOT NULL,
   `acctag_tagId`     INT UNSIGNED NOT NULL,
-  INDEX `IDX_id` (`acctag_accountId` ASC, `acctag_tagId` ASC)
+  INDEX `IDX_id` (`acctag_accountId` ASC),
+  INDEX `fk_accTags_tags_id_idx` (`acctag_tagId` ASC)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;

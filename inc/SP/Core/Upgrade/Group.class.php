@@ -53,7 +53,7 @@ class Group
         }
 
         $query = /** @lang SQL */
-            'UPDATE usrData SET user_groupId = ? WHERE user_groupId NOT IN (' . $paramsIn . ')';
+            'UPDATE usrData SET user_groupId = ? WHERE user_groupId NOT IN (' . $paramsIn . ') OR user_groupId IS NULL';
         $Data->setQuery($query);
 
         DB::getQuery($Data);

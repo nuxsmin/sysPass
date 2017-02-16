@@ -53,13 +53,13 @@ class Category
         }
 
         $query = /** @lang SQL */
-            'UPDATE accHistory SET acchistory_categoryId = ? WHERE acchistory_categoryId NOT IN (' . $paramsIn . ')';
+            'UPDATE accHistory SET acchistory_categoryId = ? WHERE acchistory_categoryId NOT IN (' . $paramsIn . ') OR acchistory_categoryId IS NULL';
         $Data->setQuery($query);
 
         DB::getQuery($Data);
 
         $query = /** @lang SQL */
-            'UPDATE accounts SET account_categoryId = ? WHERE account_categoryId NOT IN (' . $paramsIn . ')';
+            'UPDATE accounts SET account_categoryId = ? WHERE account_categoryId NOT IN (' . $paramsIn . ') OR account_categoryId IS NULL';
         $Data->setQuery($query);
 
         DB::getQuery($Data);

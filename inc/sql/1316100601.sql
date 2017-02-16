@@ -12,10 +12,7 @@ ALTER TABLE `accHistory`
   ADD INDEX `fk_accHistory_customers_id_idx` (`acchistory_customerId` ASC);
 
 ALTER TABLE `accTags`
-  CHANGE COLUMN `acctag_accountId` `acctag_accountId` SMALLINT(10) UNSIGNED NOT NULL,
-  DROP INDEX `IDX_id`,
-  ADD INDEX `IDX_id` (`acctag_accountId` ASC),
-  ADD INDEX `fk_accTags_tags_id_idx` (`acctag_tagId` ASC);
+  CHANGE COLUMN `acctag_accountId` `acctag_accountId` SMALLINT(10) UNSIGNED NOT NULL;
 
 ALTER TABLE `accUsers`
   DROP COLUMN `accuser_id`,

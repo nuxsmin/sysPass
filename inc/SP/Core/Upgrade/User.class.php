@@ -53,25 +53,25 @@ class User
         }
 
         $query = /** @lang SQL */
-            'UPDATE accounts SET account_userId = ? WHERE account_userId NOT IN (' . $paramsIn . ')';
+            'UPDATE accounts SET account_userId = ? WHERE account_userId NOT IN (' . $paramsIn . ') OR account_userId IS NULL ';
         $Data->setQuery($query);
 
         DB::getQuery($Data);
 
         $query = /** @lang SQL */
-            'UPDATE accounts SET account_userEditId = ? WHERE account_userEditId NOT IN (' . $paramsIn . ')';
+            'UPDATE accounts SET account_userEditId = ? WHERE account_userEditId NOT IN (' . $paramsIn . ') OR account_userEditId IS NULL';
         $Data->setQuery($query);
 
         DB::getQuery($Data);
 
         $query = /** @lang SQL */
-            'UPDATE accHistory SET acchistory_userId = ? WHERE acchistory_userId NOT IN (' . $paramsIn . ')';
+            'UPDATE accHistory SET acchistory_userId = ? WHERE acchistory_userId NOT IN (' . $paramsIn . ') OR acchistory_userId IS NULL';
         $Data->setQuery($query);
 
         DB::getQuery($Data);
 
         $query = /** @lang SQL */
-            'UPDATE accHistory SET acchistory_userEditId = ? WHERE acchistory_userEditId NOT IN (' . $paramsIn . ')';
+            'UPDATE accHistory SET acchistory_userEditId = ? WHERE acchistory_userEditId NOT IN (' . $paramsIn . ') OR acchistory_userEditId IS NULL';
         $Data->setQuery($query);
 
         DB::getQuery($Data);

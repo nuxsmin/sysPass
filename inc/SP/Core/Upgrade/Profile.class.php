@@ -53,7 +53,7 @@ class Profile
         }
 
         $query = /** @lang SQL */
-            'UPDATE usrData SET user_profileId = ? WHERE user_profileId NOT IN (' . $paramsIn . ')';
+            'UPDATE usrData SET user_profileId = ? WHERE user_profileId NOT IN (' . $paramsIn . ') OR user_profileId IS NULL';
         $Data->setQuery($query);
 
         DB::getQuery($Data);
