@@ -27,7 +27,7 @@ namespace SP\Core;
 use SP\Config\Config;
 use SP\DataModel\UserData;
 use SP\Mgmt\Profiles\Profile;
-use SP\Core\Crypt\Session as SessionCrypt;
+use SP\Core\Crypt\Session as CryptSession;
 
 defined('APP_ROOT') || die();
 
@@ -70,7 +70,7 @@ class SessionUtil
      */
     public static function getSessionMPass()
     {
-        return SessionCrypt::getSessionKey();
+        return CryptSession::getSessionKey();
     }
 
     /**

@@ -28,6 +28,7 @@ namespace SP\Core;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Upgrade\Crypt;
 use SP\Core\Upgrade\Group;
 use SP\Core\Upgrade\Profile;
 use SP\Core\Upgrade\User;
@@ -42,6 +43,7 @@ use SP\Mgmt\Users\UserMigrate;
 use SP\Mgmt\Users\UserPreferencesUtil;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
+use SP\Util\Util;
 
 defined('APP_ROOT') || die();
 
@@ -52,7 +54,7 @@ class Upgrade
 {
     private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501, 1316100601, 20017011302, 20017011701, 20017012901];
     private static $cfgUpgrade = [1124, 1316020501, 20017011202];
-    private static $auxUpgrade = [12001, 12002, 20017010901, 20017011202];
+    private static $auxUpgrade = [12001, 12002, 20017010901, 20017011202, 20017021601];
 
     /**
      * Inicia el proceso de actualización de la BBDD.
@@ -70,7 +72,7 @@ class Upgrade
 
         foreach (self::$dbUpgrade as $upgradeVersion) {
             if ($version < $upgradeVersion) {
-                if (self::auxPreUpgrades($upgradeVersion) === false) {
+                if (self::auxPreDbUpgrade($upgradeVersion) === false) {
                     DB::rollbackTransaction();
 
                     throw new SPException(SPException::SP_CRITICAL,
@@ -108,7 +110,7 @@ class Upgrade
      * @param $version
      * @return bool
      */
-    private static function auxPreUpgrades($version)
+    private static function auxPreDbUpgrade($version)
     {
         switch ($version) {
             case 1316011001:
@@ -219,6 +221,10 @@ class Upgrade
                 return CustomFieldsUtil::migrateCustomFields() && UserPreferencesUtil::migrate();
             case 20017011202:
                 return UserPreferencesUtil::migrate();
+            case 20017021601:
+                $masterPass = Request::analyze('mpass');
+
+                return !empty($masterPass) && Crypt::migrateHash($masterPass) && Crypt::migrate($masterPass);
         }
 
         return true;
@@ -397,5 +403,23 @@ class Upgrade
             'setWikiPageUrl' => ['wikipageurl' . 'wiki_pageurl'],
             'setWikiSearchUrl' => ['wikisearchurl', 'wiki_searchurl']
         ];
+    }
+
+    /**
+     * Establecer la key de actualización
+     *
+     * @param string $type Tipo de actualización
+     */
+    public static function setUpgradeKey($type)
+    {
+        $upgradeKey = Config::getConfig()->getUpgradeKey();
+
+        if (empty($upgradeKey)) {
+            Config::getConfig()->setUpgradeKey(Util::generateRandomBytes(64));
+            Config::getConfig()->setMaintenance(true);
+            Config::saveConfig(null, false);
+        }
+
+        Init::initError(__('La aplicación necesita actualizarse'), sprintf(__('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade&type=' . $type . '">' . __('Actualizar') . '</a>'));
     }
 }

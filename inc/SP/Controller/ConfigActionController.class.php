@@ -24,25 +24,21 @@
 
 namespace SP\Controller;
 
-use SP\Account\Account;
 use SP\Account\AccountCrypt;
-use SP\Account\AccountHistory;
 use SP\Account\AccountHistoryCrypt;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
 use SP\Core\Backup;
-use SP\Core\OldCrypt;
 use SP\Core\Crypt\Hash;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\CryptMasterPass;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
-use SP\Core\SessionUtil;
 use SP\Core\XmlExport;
-use SP\Html\Html;
 use SP\Http\Request;
 use SP\Import\Import;
 use SP\Import\ImportParams;
@@ -590,7 +586,7 @@ class ConfigActionController implements ItemControllerInterface
 
         $this->LogMessage->setAction(__('Actualizar Clave Maestra', false));
 
-        if (ConfigDB::setValue('masterPwd', Hash::hashKey(Crypt\Session::getSessionKey()))) {
+        if (ConfigDB::setValue('masterPwd', Hash::hashKey(CryptSession::getSessionKey()))) {
             $this->LogMessage->addDescription(__('Hash de clave maestra actualizado', false));
 
             $this->JsonResponse->setStatus(0);

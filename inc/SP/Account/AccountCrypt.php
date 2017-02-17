@@ -24,6 +24,7 @@
 
 namespace SP\Account;
 
+use SP\Core\Crypt\Crypt;
 use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
@@ -100,9 +101,9 @@ class AccountCrypt
 
             $decryptedPass = OldCrypt::getDecrypt($account->account_pass, $account->account_IV, $currentMasterPass);
 
-            $securedKey = Crypt\Crypt::makeSecuredKey($currentMasterPass);
+            $securedKey = Crypt::makeSecuredKey($currentMasterPass);
 
-            $AccountData->setAccountPass(Crypt\Crypt::encrypt($decryptedPass, $securedKey));
+            $AccountData->setAccountPass(Crypt::encrypt($decryptedPass, $securedKey));
             $AccountData->setAccountIV($securedKey);
 
             try {
@@ -176,11 +177,11 @@ class AccountCrypt
                 $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
             }
 
-            $currentSecuredKey = Crypt\Crypt::unlockSecuredKey($account->account_IV, $currentMasterPass);
-            $decryptedPass = Crypt\Crypt::decrypt($account->account_pass, $currentSecuredKey);
+            $currentSecuredKey = Crypt::unlockSecuredKey($account->account_IV, $currentMasterPass);
+            $decryptedPass = Crypt::decrypt($account->account_pass, $currentSecuredKey);
 
-            $newSecuredKey = Crypt\Crypt::makeSecuredKey($newMasterPass);
-            $AccountData->setAccountPass(Crypt\Crypt::encrypt($decryptedPass, $newSecuredKey));
+            $newSecuredKey = Crypt::makeSecuredKey($newMasterPass);
+            $AccountData->setAccountPass(Crypt::encrypt($decryptedPass, $newSecuredKey));
             $AccountData->setAccountIV($newSecuredKey);
 
             try {

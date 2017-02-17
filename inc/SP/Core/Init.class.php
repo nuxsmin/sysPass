@@ -40,6 +40,7 @@ use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\Json;
 use SP\Util\Util;
+use SP\Core\Crypt\Session as CryptSession;
 
 defined('APP_ROOT') || die();
 
@@ -143,7 +144,7 @@ class Init
             Language::setLanguage(true);
             DiFactory::getTheme()->initTheme(true);
 
-            if (self::isLoggedIn()){
+            if (self::isLoggedIn()) {
                 // Recargar los permisos del perfil de usuario
                 Session::setUserProfile(Profile::getItem()->getById(Session::getUserData()->getUserProfileId()));
                 // Reset de los datos de ACL de cuentas
@@ -165,8 +166,8 @@ class Init
         // Comprobar si es cierre de sesión
         self::checkLogout();
 
-        // Comprobar la versión y actualizarla
-        self::checkDbVersion();
+        // Comprobar si es necesario actualizar componentes
+        self::checkUpgrade();
 
         // Inicializar la sesión
         self::initSession();
@@ -305,8 +306,8 @@ class Init
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
-     * @param string $hint    opcional, con una ayuda sobre el error
-     * @param bool   $headers
+     * @param string $hint opcional, con una ayuda sobre el error
+     * @param bool $headers
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function initError($message, $hint = '', $headers = false)
@@ -496,6 +497,16 @@ class Init
     }
 
     /**
+     * Comprobar si el usuario está logado.
+     *
+     * @returns bool
+     */
+    public static function isLoggedIn()
+    {
+        return (DiFactory::getDBStorage()->getDbStatus() === 0 && Session::getUserData()->getUserLogin());
+    }
+
+    /**
      * Comprueba que la aplicación esté instalada
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
      *
@@ -556,16 +567,6 @@ class Init
     }
 
     /**
-     * Comprobar si el usuario está logado.
-     *
-     * @returns bool
-     */
-    public static function isLoggedIn()
-    {
-        return (DiFactory::getDBStorage()->getDbStatus() === 0 && Session::getUserData()->getUserLogin());
-    }
-
-    /**
      * Comprobar si es necesario cerrar la sesión
      */
     private static function checkLogout()
@@ -613,62 +614,17 @@ class Init
     }
 
     /**
-     * Comrpueba y actualiza la versión de la aplicación.
-     *
-     * @throws \SP\Core\Exceptions\SPException
+     * Comprobar si es necesario actualizar componentes
      */
-    private static function checkDbVersion()
+    private static function checkUpgrade()
     {
-        if (self::$SUBURI !== '/index.php' || Request::analyze('logout', 0) === 1) {
+        if (self::$SUBURI !== '/index.php') {
             return;
         }
 
-        $update = false;
-        $databaseVersion = (int)str_replace('.', '', ConfigDB::getValue('version'));
         $appVersion = (int)implode(Util::getVersion(true));
 
-        if ($databaseVersion < $appVersion
-            && Request::analyze('nodbupgrade', 0) === 0
-            && Upgrade::needDBUpgrade($databaseVersion)
-        ) {
-            if (!self::checkMaintenanceMode(true)) {
-                $upgradeKey = Config::getConfig()->getUpgradeKey();
-
-                if (empty($upgradeKey)) {
-                    Config::getConfig()->setUpgradeKey(sha1(uniqid(mt_rand(), true)));
-                    Config::getConfig()->setMaintenance(true);
-                    Config::saveConfig(null, false);
-                }
-
-                self::initError(__('La aplicación necesita actualizarse'), sprintf(__('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade">' . __('Actualizar') . '</a>'));
-            } else {
-                $action = Request::analyze('a');
-                $hash = Request::analyze('h');
-                $confirm = Request::analyze('chkConfirm', false, false, true);
-
-                if ($confirm === true
-                    && $action === 'upgrade'
-                    && $hash === Config::getConfig()->getUpgradeKey()
-                ) {
-                    try {
-                        $update = Upgrade::doUpgrade($databaseVersion);
-
-                        ConfigDB::setValue('version', $appVersion);
-                        Config::getConfig()->setMaintenance(false);
-                        Config::getConfig()->setUpgradeKey('');
-                        Config::saveConfig();
-                    } catch (SPException $e) {
-                        $hint = $e->getHint() . '<p class="center"><a href="index.php?nodbupgrade=1">' . __('Acceder') . '</a></p>';
-                        self::initError($e->getMessage(), $hint);
-                    }
-                } else {
-                    $controller = new MainController();
-                    $controller->getUpgrade();
-                }
-            }
-        }
-
-        if ($update === true) {
+        if (self::checkDbVersion($appVersion)) {
             $Log = new Log();
             $LogMessage = $Log->getLogMessage();
             $LogMessage->setAction(__('Actualización', false));
@@ -681,6 +637,55 @@ class Init
 
             self::$UPDATED = true;
         }
+    }
+
+    /**
+     * Comrpueba y actualiza la versión de la aplicación.
+     *
+     * @param $appVersion
+     * @return bool
+     */
+    private static function checkDbVersion($appVersion)
+    {
+        $databaseVersion = (int)str_replace('.', '', ConfigDB::getValue('version'));
+
+        if ($databaseVersion < $appVersion
+            && Request::analyze('nodbupgrade', 0) === 0
+            && Upgrade::needDBUpgrade($databaseVersion)
+        ) {
+            if (!self::checkMaintenanceMode(true)) {
+                Upgrade::setUpgradeKey('db');
+            } else {
+                $action = Request::analyze('a');
+                $hash = Request::analyze('h');
+                $confirm = Request::analyze('chkConfirm', false, false, true);
+
+                if ($confirm === true
+                    && $action === 'upgrade'
+                    && $hash === Config::getConfig()->getUpgradeKey()
+                ) {
+                    try {
+                        Upgrade::doUpgrade($databaseVersion);
+
+                        ConfigDB::setValue('version', $appVersion);
+
+                        Config::getConfig()->setMaintenance(false);
+                        Config::getConfig()->setUpgradeKey('');
+                        Config::saveConfig();
+
+                        return true;
+                    } catch (SPException $e) {
+                        $hint = $e->getHint() . '<p class="center"><a href="index.php?nodbupgrade=1">' . __('Acceder') . '</a></p>';
+                        self::initError($e->getMessage(), $hint);
+                    }
+                } else {
+                    $controller = new MainController();
+                    $controller->getUpgrade();
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -711,13 +716,15 @@ class Init
         if (Session::getSidStartTime() === 0) {
             Session::setSidStartTime(time());
             Session::setStartActivity(time());
-        } else if (Session::getUserData()->getUserId() > 0 && time() - Session::getSidStartTime() > $sessionLifeTime / 2) {
-            $sessionMPass = Crypt\Session::getSessionKey();
+        } else if (Session::getUserData()->getUserId() > 0
+            && time() - Session::getSidStartTime() > $sessionLifeTime / 2
+        ) {
+            $sessionMPass = CryptSession::getSessionKey();
 
             session_regenerate_id(true);
 
             // Regenerar la clave maestra
-            Crypt\Session::saveSessionKey($sessionMPass);
+            CryptSession::saveSessionKey($sessionMPass);
 
             Session::setSidStartTime(time());
             // Recargar los permisos del perfil de usuario

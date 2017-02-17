@@ -24,6 +24,7 @@
 
 namespace SP\Account;
 
+use SP\Core\Crypt\Crypt;
 use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
@@ -303,9 +304,9 @@ class Account extends AccountBase implements AccountInterface
      */
     protected function setPasswordEncrypted($masterPass = null)
     {
-        $securedKey = Crypt\Crypt::makeSecuredKey($masterPass);
+        $securedKey = Crypt::makeSecuredKey($masterPass);
 
-        $this->accountData->setAccountPass(Crypt\Crypt::encrypt($this->accountData->getAccountPass(), $securedKey));
+        $this->accountData->setAccountPass(Crypt::encrypt($this->accountData->getAccountPass(), $securedKey));
         $this->accountData->setAccountIV($securedKey);
     }
 

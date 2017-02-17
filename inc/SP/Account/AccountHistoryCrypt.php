@@ -25,6 +25,8 @@
 namespace SP\Account;
 
 use SP\Config\ConfigDB;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Hash;
 use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Email;
@@ -83,7 +85,7 @@ class AccountHistoryCrypt
         $AccountDataBase->id = 0;
         $AccountDataBase->pass = '';
         $AccountDataBase->iv = '';
-        $AccountDataBase->hash = Crypt\Hash::hashKey($currentMasterPass);
+        $AccountDataBase->hash = Hash::hashKey($currentMasterPass);
 
         foreach ($accountsPass as $account) {
             $AccountData = clone $AccountDataBase;
@@ -107,9 +109,9 @@ class AccountHistoryCrypt
 
             $decryptedPass = OldCrypt::getDecrypt($account->acchistory_pass, $account->acchistory_IV, $currentMasterPass);
 
-            $securedKey = Crypt\Crypt::makeSecuredKey($currentMasterPass);
+            $securedKey = Crypt::makeSecuredKey($currentMasterPass);
 
-            $AccountData->pass = Crypt\Crypt::encrypt($decryptedPass, $securedKey);
+            $AccountData->pass = Crypt::encrypt($decryptedPass, $securedKey);
             $AccountData->iv = $securedKey;
 
             try {
@@ -184,7 +186,7 @@ class AccountHistoryCrypt
         $AccountDataBase->id = 0;
         $AccountDataBase->pass = '';
         $AccountDataBase->iv = '';
-        $AccountDataBase->hash = Crypt\Hash::hashKey($newMasterPass);
+        $AccountDataBase->hash = Hash::hashKey($newMasterPass);
 
         foreach ($accountsPass as $account) {
             $AccountData = clone $AccountDataBase;
@@ -206,11 +208,11 @@ class AccountHistoryCrypt
                 $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
             }
 
-            $currentSecuredKey = Crypt\Crypt::unlockSecuredKey($account->acchistory_IV, $currentMasterPass);
-            $decryptedPass = Crypt\Crypt::decrypt($account->acchistory_pass, $currentSecuredKey);
+            $currentSecuredKey = Crypt::unlockSecuredKey($account->acchistory_IV, $currentMasterPass);
+            $decryptedPass = Crypt::decrypt($account->acchistory_pass, $currentSecuredKey);
 
-            $newSecuredKey = Crypt\Crypt::makeSecuredKey($newMasterPass);
-            $AccountData->acchistory_pass = Crypt\Crypt::encrypt($decryptedPass, $newSecuredKey);
+            $newSecuredKey = Crypt::makeSecuredKey($newMasterPass);
+            $AccountData->acchistory_pass = Crypt::encrypt($decryptedPass, $newSecuredKey);
             $AccountData->acchistory_IV = $newSecuredKey;
 
             try {

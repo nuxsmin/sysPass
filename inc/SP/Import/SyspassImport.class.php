@@ -24,6 +24,7 @@
 
 namespace SP\Import;
 
+use SP\Core\Crypt\Crypt;
 use SP\Core\OldCrypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
@@ -117,8 +118,8 @@ class SyspassImport extends ImportBase
             if ($iv = base64_decode($node->getAttribute('iv'))) {
                 $xmlDecrypted = OldCrypt::getDecrypt($data, $iv, $this->ImportParams->getImportPwd());
             } else {
-                $securedKey = Crypt\Crypt::unlockSecuredKey($node->getAttribute('key'), $this->ImportParams->getImportPwd());
-                $xmlDecrypted = Crypt\Crypt::decrypt($data, $securedKey);
+                $securedKey = Crypt::unlockSecuredKey($node->getAttribute('key'), $this->ImportParams->getImportPwd());
+                $xmlDecrypted = Crypt::decrypt($data, $securedKey);
             }
 
             $newXmlData = new \DOMDocument();

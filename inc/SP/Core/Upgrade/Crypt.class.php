@@ -33,6 +33,7 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
+use SP\Storage\DB;
 
 /**
  * Class Crypt
@@ -50,11 +51,19 @@ class Crypt
     public static function migrate(&$masterPass)
     {
         try {
+            DB::beginTransaction();
+
             self::migrateAccounts($masterPass);
             self::migrateCustomFields($masterPass);
+
+            DB::endTransaction();
         } catch (CryptoException $e) {
+            DB::rollbackTransaction();
+
             return false;
         } catch (SPException $e) {
+            DB::rollbackTransaction();
+
             return false;
         }
 
@@ -115,13 +124,14 @@ class Crypt
                 return true;
             }
 
-            // Hash de clave maestra anterior a 2.0.0.17013101
+        // Hash de clave maestra anterior a 2.0.0.17013101
+        // Hash de clave maestra anterior a 2.0.0.17021601
         } elseif (hash_equals(crypt($masterPass, substr($configHashMPass, 0, 72)), substr($configHashMPass, 72))
             || hash_equals(crypt($masterPass, substr($configHashMPass, 0, 30)), substr($configHashMPass, 30))
         ) {
             ConfigDB::setValue('masterPwd', Hash::hashKey($masterPass));
-
             Log::writeNewLog(__('Aviso', false), __('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.', false), Log::NOTICE);
+
             return true;
         }
 

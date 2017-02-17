@@ -27,15 +27,14 @@ namespace SP\Mgmt\Users;
 defined('APP_ROOT') || die();
 
 use SP\Config\ConfigDB;
-use SP\Core\OldCrypt;
+use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
-use SP\Core\Exceptions\SPException;
-use SP\Core\SessionUtil;
 use SP\DataModel\UserPassData;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
+use SP\Core\Crypt\Session as CryptSession;
 
 /**
  * Class UserPass para la gestión de las claves de un usuario
@@ -190,7 +189,7 @@ class UserPass extends UserBase
         } elseif (Hash::checkHashKey($userMPass, $configHashMPass)) {
             $this->clearUserMPass = $userMPass;
 
-            Crypt\Session::saveSessionKey($userMPass);
+            CryptSession::saveSessionKey($userMPass);
 
             return true;
         }
@@ -226,9 +225,9 @@ class UserPass extends UserBase
         $this->itemData->setUserMPass($queryRes->user_mPass);
         $this->itemData->setUserMIV($queryRes->user_mIV);
 
-        $securedKey = Crypt\Crypt::unlockSecuredKey($queryRes->user_mIV, $this->getCypherPass($cypher));
+        $securedKey = Crypt::unlockSecuredKey($queryRes->user_mIV, $this->getCypherPass($cypher));
 
-        return Crypt\Crypt::decrypt($queryRes->user_mPass, $securedKey);
+        return Crypt::decrypt($queryRes->user_mPass, $securedKey);
     }
 
     /**
@@ -241,7 +240,7 @@ class UserPass extends UserBase
     {
         $pass = $cypher === null ? $this->itemData->getUserPass() : $cypher;
 
-        return Crypt\Crypt::makeSecuredKey($pass . $this->itemData->getUserLogin());
+        return Crypt::makeSecuredKey($pass . $this->itemData->getUserLogin());
     }
 
     /**
@@ -291,8 +290,8 @@ class UserPass extends UserBase
         if (Hash::checkHashKey($masterPwd, $configHashMPass)
             || \SP\Core\Upgrade\Crypt::migrateHash($masterPwd)
         ) {
-            $securedKey = Crypt\Crypt::makeSecuredKey($this->getCypherPass());
-            $cryptMPass = Crypt\Crypt::encrypt($masterPwd, $securedKey);
+            $securedKey = Crypt::makeSecuredKey($this->getCypherPass());
+            $cryptMPass = Crypt::encrypt($masterPwd, $securedKey);
 
             if (!empty($cryptMPass)) {
                 $query = /** @lang SQL */

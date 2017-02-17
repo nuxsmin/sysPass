@@ -34,6 +34,7 @@ use SP\Account\UserAccounts;
 use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
+use SP\Core\Crypt\Crypt;
 use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
@@ -150,11 +151,11 @@ class AccountController extends ControllerBase implements ActionsInterface
         $AccountPassData = $this->Account->getAccountPassData();
 
         // Obtener la llave de la clave maestra
-        $securedKey = Crypt\Crypt::unlockSecuredKey($PublicLinkData->getPassIV(), Config::getConfig()->getPasswordSalt() . $PublicLinkData->getLinkHash());
+        $securedKey = Crypt::unlockSecuredKey($PublicLinkData->getPassIV(), Config::getConfig()->getPasswordSalt() . $PublicLinkData->getLinkHash());
 
         // Desencriptar la clave de la cuenta
-        $accountSecuredKey = Crypt\Crypt::unlockSecuredKey($AccountPassData->getAccountIV(), Crypt\Crypt::decrypt($PublicLinkData->getPass(), $securedKey));
-        $accountPass = Crypt\Crypt::decrypt($AccountPassData->getAccountPass(), $accountSecuredKey);
+        $accountSecuredKey = Crypt::unlockSecuredKey($AccountPassData->getAccountIV(), Crypt::decrypt($PublicLinkData->getPass(), $securedKey));
+        $accountPass = Crypt::decrypt($AccountPassData->getAccountPass(), $accountSecuredKey);
 
         $this->view->assign('useImage', Config::getConfig()->isPublinksImageEnabled() || Config::getConfig()->isAccountPassToImage());
 

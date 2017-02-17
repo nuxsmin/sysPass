@@ -26,6 +26,7 @@ namespace SP\Mgmt\CustomFields;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Crypt\Crypt;
 use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
@@ -92,10 +93,10 @@ class CustomFieldsUtil
         $success = [];
 
         foreach ($queryRes as $CustomField) {
-            $currentSecuredKey = Crypt\Crypt::unlockSecuredKey($CustomField->getCustomfielddataIv(), $currentMasterPass);
-            $fieldData = Crypt\Crypt::decrypt($CustomField->getCustomfielddataData(), $currentSecuredKey);
+            $currentSecuredKey = Crypt::unlockSecuredKey($CustomField->getCustomfielddataIv(), $currentMasterPass);
+            $fieldData = Crypt::decrypt($CustomField->getCustomfielddataData(), $currentSecuredKey);
 
-            $securedKey = Crypt\Crypt::makeSecuredKey($newMasterPassword);
+            $securedKey = Crypt::makeSecuredKey($newMasterPassword);
 
             $query = /** @lang SQL */
                 'UPDATE customFieldsData SET
@@ -105,7 +106,7 @@ class CustomFieldsUtil
 
             $Data = new QueryData();
             $Data->setQuery($query);
-            $Data->addParam(Crypt\Crypt::encrypt($fieldData, $securedKey));
+            $Data->addParam(Crypt::encrypt($fieldData, $securedKey));
             $Data->addParam($securedKey);
             $Data->addParam($CustomField->getCustomfielddataId());
 
@@ -162,7 +163,7 @@ class CustomFieldsUtil
         $success = [];
 
         foreach ($queryRes as $CustomField) {
-            $securedKey = Crypt\Crypt::makeSecuredKey($currentMasterPass);
+            $securedKey = Crypt::makeSecuredKey($currentMasterPass);
             $fieldData = OldCrypt::getDecrypt($CustomField->getCustomfielddataData(), $CustomField->getCustomfielddataIv(), $currentMasterPass);
 
             $query = /** @lang SQL */
@@ -173,7 +174,7 @@ class CustomFieldsUtil
 
             $Data = new QueryData();
             $Data->setQuery($query);
-            $Data->addParam(Crypt\Crypt::encrypt($fieldData, $securedKey));
+            $Data->addParam(Crypt::encrypt($fieldData, $securedKey));
             $Data->addParam($securedKey);
             $Data->addParam($CustomField->getCustomfielddataId());
 

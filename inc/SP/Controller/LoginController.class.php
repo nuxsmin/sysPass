@@ -30,7 +30,6 @@ use SP\Auth\AuthUtil;
 use SP\Auth\Browser\BrowserAuthData;
 use SP\Auth\Database\DatabaseAuthData;
 use SP\Auth\Ldap\LdapAuthData;
-use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\CryptMasterPass;
 use SP\Core\DiFactory;

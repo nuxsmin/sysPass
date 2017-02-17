@@ -27,13 +27,12 @@ namespace SP\Mgmt\PublicLinks;
 defined('APP_ROOT') || die();
 
 use SP\Config\Config;
-use SP\Core\OldCrypt;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\SPException;
-use SP\Core\SessionUtil;
 use SP\DataModel\PublicLinkData;
 use SP\Mgmt\ItemBase;
 use SP\DataModel\PublicLinkBaseData;
-use SP\Util\Util;
 
 /**
  * Class PublicLinks para la gestión de enlaces públicos
@@ -77,9 +76,9 @@ abstract class PublicLinkBase extends ItemBase
      */
     protected final function createLinkPass()
     {
-        $securedKey = Crypt\Crypt::makeSecuredKey(Config::getConfig()->getPasswordSalt() . $this->createLinkHash());
+        $securedKey = Crypt::makeSecuredKey(Config::getConfig()->getPasswordSalt() . $this->createLinkHash());
 
-        $this->itemData->setPass(Crypt\Crypt::encrypt(Crypt\Session::getSessionKey(), $securedKey));
+        $this->itemData->setPass(Crypt::encrypt(CryptSession::getSessionKey(), $securedKey));
         $this->itemData->setPassIV($securedKey);
     }
 
