@@ -24,7 +24,7 @@
 
 namespace SP\Account;
 
-use SP\Core\Crypt;
+use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\DataModel\AccountData;
@@ -303,10 +303,10 @@ class Account extends AccountBase implements AccountInterface
      */
     protected function setPasswordEncrypted($masterPass = null)
     {
-        $pass = Crypt::encryptData($this->accountData->getAccountPass(), $masterPass);
+        $securedKey = Crypt\Crypt::makeSecuredKey($masterPass);
 
-        $this->accountData->setAccountPass($pass['data']);
-        $this->accountData->setAccountIV($pass['iv']);
+        $this->accountData->setAccountPass(Crypt\Crypt::encrypt($this->accountData->getAccountPass(), $securedKey));
+        $this->accountData->setAccountIV($securedKey);
     }
 
     /**
@@ -379,109 +379,6 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountId());
 
         return DB::getQuery($Data);
-    }
-
-    /**
-     * Actualiza las claves de todas las cuentas con la nueva clave maestra.
-     *
-     * @param string $currentMasterPass con la clave maestra actual
-     * @param string $newMasterPass     con la nueva clave maestra
-     * @param string $newHash           con el nuevo hash de la clave maestra
-     * @return bool
-     * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null)
-    {
-        $accountsOk = [];
-        $userId = Session::getUserData()->getUserId();
-        $demoEnabled = Checks::demoIsEnabled();
-        $errorCount = 0;
-
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Actualizar Clave Maestra', false));
-        $LogMessage->addDescription(__('Inicio', false));
-        $Log->writeLog(true);
-
-        if (!Crypt::checkCryptModule()) {
-            $LogMessage->addDescription(__('Error en el módulo de encriptación', false));
-            $Log->setLogLevel(Log::ERROR);
-            $Log->writeLog();
-            return false;
-        }
-
-        $accountsPass = $this->getAccountsPassData();
-
-        if (!$accountsPass) {
-            $LogMessage->addDescription(__('Error al obtener las claves de las cuentas', false));
-            $Log->setLogLevel(Log::ERROR);
-            $Log->writeLog();
-            return false;
-        }
-
-        foreach ($accountsPass as $account) {
-            $this->accountData->setAccountId($account->account_id);
-            $this->accountData->setAccountUserEditId($userId);
-
-            // No realizar cambios si está en modo demo
-            if ($demoEnabled) {
-                $accountsOk[] = $this->accountData->getAccountId();
-                continue;
-            }
-
-            if (empty($account->account_pass)) {
-                $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf(' % s(%d)', $account->account_name, $account->account_id));
-                continue;
-            }
-
-            if (strlen($account->account_IV) < 32) {
-                $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf(' % s(%d)', $account->account_name, $account->account_id));
-            }
-
-            $decryptedPass = Crypt::getDecrypt($account->account_pass, $account->account_IV, $currentMasterPass);
-            $this->accountData->setAccountPass($decryptedPass);
-            $this->setPasswordEncrypted($newMasterPass);
-
-            if ($this->accountData->getAccountPass() === false) {
-                $errorCount++;
-                $LogMessage->addDetails(__('No es posible desencriptar la clave de la cuenta', false), sprintf(' % s(%d)', $account->account_name, $account->account_id));
-                continue;
-            }
-
-            try {
-                $this->updateAccountPass(true);
-                $accountsOk[] = $this->accountData->getAccountId();
-            } catch (SPException $e) {
-                $errorCount++;
-                $LogMessage->addDetails(__('Fallo al actualizar la clave de la cuenta', false), sprintf(' % s(%d)', $account->account_name, $account->account_id));
-                continue;
-            }
-        }
-
-        $LogMessage->addDetails(__('Cuentas actualizadas', false), implode(',', $accountsOk));
-        $LogMessage->addDetails(__('Errores', false), $errorCount);
-        $Log->writeLog();
-
-        Email::sendEmail($LogMessage);
-
-        return true;
-    }
-
-    /**
-     * Obtener los datos relativos a la clave de todas las cuentas.
-     *
-     * @return array Con los datos de la clave
-     */
-    protected function getAccountsPassData()
-    {
-        $query = /** @lang SQL */
-            'SELECT account_id, account_name, account_pass, account_IV FROM accounts';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        return DB::getResultsArray($Data);
     }
 
     /**

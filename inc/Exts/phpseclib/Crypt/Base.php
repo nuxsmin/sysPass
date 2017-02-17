@@ -540,7 +540,7 @@ abstract class Base
      *
      *         Where $hash (default = sha1) currently supports the following hashes: see: Crypt/Hash.php
      *
-     * @see Crypt/Hash.php
+     * @see OldCrypt/Hash.php
      * @param string $password
      * @param string $method
      * @throws \LengthException if pbkdf1 is being used and the derived key length exceeds the hash length

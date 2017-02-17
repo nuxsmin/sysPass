@@ -30,6 +30,7 @@ use PDOException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupData;
@@ -490,7 +491,7 @@ class Installer
         }
 
         // Guardar el hash de la clave maestra
-        ConfigDB::setCacheConfigValue('masterPwd', Crypt::mkHashPassword($this->InstallData->getMasterPassword()));
+        ConfigDB::setCacheConfigValue('masterPwd', Hash::hashKey($this->InstallData->getMasterPassword()));
         ConfigDB::setCacheConfigValue('lastupdatempass', time());
         ConfigDB::writeConfig(true);
 

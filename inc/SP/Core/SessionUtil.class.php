@@ -27,6 +27,7 @@ namespace SP\Core;
 use SP\Config\Config;
 use SP\DataModel\UserData;
 use SP\Mgmt\Profiles\Profile;
+use SP\Core\Crypt\Session as SessionCrypt;
 
 defined('APP_ROOT') || die();
 
@@ -61,26 +62,15 @@ class SessionUtil
     }
 
     /**
-     * Guardar la clave maestra encriptada en la sesión
-     *
-     * @param $masterPass
-     */
-    public static function saveSessionMPass($masterPass)
-    {
-        $sessionMasterPass = Crypt::mkCustomMPassEncrypt(Crypt::generateAesKey(session_id()), $masterPass);
-
-        Session::setMPass($sessionMasterPass[0]);
-        Session::setMPassIV($sessionMasterPass[1]);
-    }
-
-    /**
      * Desencriptar la clave maestra de la sesión.
      *
      * @return string con la clave maestra
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      */
     public static function getSessionMPass()
     {
-        return Crypt::getDecrypt(Session::getMPass(), Session::getMPassIV(), Crypt::generateAesKey(session_id()));
+        return SessionCrypt::getSessionKey();
     }
 
     /**

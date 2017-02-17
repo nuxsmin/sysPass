@@ -30,6 +30,8 @@ use SP\Auth\AuthUtil;
 use SP\Auth\Browser\BrowserAuthData;
 use SP\Auth\Database\DatabaseAuthData;
 use SP\Auth\Ldap\LdapAuthData;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\CryptMasterPass;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\AuthException;
@@ -264,6 +266,8 @@ class LoginController
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\AuthException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     protected function loadMasterPass()
     {
@@ -284,7 +288,7 @@ class LoginController
 
                 throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
             } else {
-                SessionUtil::saveSessionMPass($UserPass->getClearUserMPass());
+                CryptSession::saveSessionKey($UserPass->getClearUserMPass());
 
                 $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
             }
@@ -294,7 +298,7 @@ class LoginController
 
                 throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
             } else {
-                SessionUtil::saveSessionMPass($UserPass->getClearUserMPass());
+                CryptSession::saveSessionKey($UserPass->getClearUserMPass());
 
                 $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
             }

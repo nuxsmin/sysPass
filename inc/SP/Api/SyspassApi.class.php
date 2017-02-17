@@ -31,7 +31,7 @@ use SP\Account\AccountUtil;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\Core\Backup;
-use SP\Core\Crypt;
+use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
@@ -84,9 +84,11 @@ class SyspassApi extends ApiBase
         $LogMessage->addDetails(__('Origen', false), 'API');
         $this->Log->writeLog();
 
+        $securedKey = Crypt\Crypt::unlockSecuredKey($AccountData->getAccountIV(), $this->mPass);
+
         $ret = [
             'itemId' => $accountId,
-            'pass' => Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->mPass)
+            'pass' => Crypt\Crypt::decrypt($AccountData->getAccountPass(), $securedKey)
         ];
 
         if ($this->getParam('details', false, 0)) {

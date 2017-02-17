@@ -25,12 +25,15 @@
 namespace SP\Controller;
 
 use SP\Account\Account;
+use SP\Account\AccountCrypt;
 use SP\Account\AccountHistory;
+use SP\Account\AccountHistoryCrypt;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
 use SP\Core\Backup;
-use SP\Core\Crypt;
+use SP\Core\OldCrypt;
+use SP\Core\Crypt\Hash;
 use SP\Core\CryptMasterPass;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
@@ -502,7 +505,7 @@ class ConfigActionController implements ItemControllerInterface
         } elseif ($newMasterPass !== $newMasterPassR) {
             $this->JsonResponse->setDescription(__('Las claves maestras no coinciden', false));
             return;
-        } elseif (!Crypt::checkHashPass($currentMasterPass, ConfigDB::getValue('masterPwd'), true)) {
+        } elseif (!Hash::checkHashKey($currentMasterPass, ConfigDB::getValue('masterPwd'))) {
             $this->JsonResponse->setDescription(__('La clave maestra actual no coincide', false));
             return;
         }
@@ -512,7 +515,7 @@ class ConfigActionController implements ItemControllerInterface
             return;
         }
 
-        $hashMPass = Crypt::mkHashPassword($newMasterPass);
+        $hashMPass = Hash::hashKey($newMasterPass);
 
         if (!$noAccountPassChange) {
             Util::lockApp();
@@ -522,18 +525,18 @@ class ConfigActionController implements ItemControllerInterface
                 return;
             }
 
-            $Account = new Account();
+            $Account = new AccountCrypt();
 
-            if (!$Account->updateAccountsMasterPass($currentMasterPass, $newMasterPass)) {
+            if (!$Account->updatePass($currentMasterPass, $newMasterPass)) {
                 DB::rollbackTransaction();
 
                 $this->JsonResponse->setDescription(__('Errores al actualizar las claves de las cuentas', false));
                 return;
             }
 
-            $AccountHistory = new AccountHistory();
+            $AccountHistory = new AccountHistoryCrypt();
 
-            if (!$AccountHistory->updateAccountsMasterPass($currentMasterPass, $newMasterPass, $hashMPass)) {
+            if (!$AccountHistory->updatePass($currentMasterPass, $newMasterPass)) {
                 DB::rollbackTransaction();
 
                 $this->JsonResponse->setDescription(__('Errores al actualizar las claves de las cuentas del histórico', false));
@@ -574,6 +577,9 @@ class ConfigActionController implements ItemControllerInterface
 
     /**
      * Regenerar el hash de la clave maestra
+     *
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     protected function masterPassRefreshAction()
     {
@@ -584,7 +590,7 @@ class ConfigActionController implements ItemControllerInterface
 
         $this->LogMessage->setAction(__('Actualizar Clave Maestra', false));
 
-        if (ConfigDB::setValue('masterPwd', Crypt::mkHashPassword(SessionUtil::getSessionMPass()))) {
+        if (ConfigDB::setValue('masterPwd', Hash::hashKey(Crypt\Session::getSessionKey()))) {
             $this->LogMessage->addDescription(__('Hash de clave maestra actualizado', false));
 
             $this->JsonResponse->setStatus(0);

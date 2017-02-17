@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,33 +22,36 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Account;
-
-use SP\DataModel\AccountData;
-use SP\DataModel\AccountExtData;
-use SP\DataModel\AccountHistoryData;
-
-defined('APP_ROOT') || die();
+namespace SP\Core\Crypt;
 
 /**
- * Interface AccountInterface con la definición de métodos comunes a las cuentas
+ * Class Hash
+ *
+ * @package SP\Core\Crypt
  */
-interface AccountInterface
+class Hash
 {
     /**
-     * @return AccountExtData|AccountData|AccountHistoryData
+     * Comprobar el hash de una clave.
+     *
+     * @param string $key  con la clave a comprobar
+     * @param string $hash con el hash a comprobar
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function getData();
+    public static function checkHashKey($key, $hash)
+    {
+        return password_verify($key, $hash);
+    }
 
     /**
-     * @param bool $encryptPass Si se encripta la clave de la cuenta
-     * @return mixed
+     * Generar un hash de una clave criptográficamente segura
+     *
+     * @param string $key con la clave a 'hashear'
+     * @return string con el hash de la clave
      */
-    public function createAccount($encryptPass = true);
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public function deleteAccount($id);
+    public static function hashKey($key)
+    {
+        return password_hash($key, PASSWORD_BCRYPT);
+    }
 }

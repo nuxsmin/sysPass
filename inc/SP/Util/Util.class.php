@@ -121,9 +121,13 @@ class Util
      */
     public static function generateRandomBytes($length = 30)
     {
+        if (function_exists('random_bytes')) {
+            return bin2hex(random_bytes($length));
+        }
+
         // Try to use openssl_random_pseudo_bytes
         if (function_exists('openssl_random_pseudo_bytes')) {
-            $pseudo_byte = bin2hex(openssl_random_pseudo_bytes($length));
+            $pseudo_byte = bin2hex(openssl_random_pseudo_bytes($length, $strong));
             return substr($pseudo_byte, 0, $length); // Truncate it to match the length
         }
 

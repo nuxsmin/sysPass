@@ -26,7 +26,7 @@ namespace SP\Mgmt\CustomFields;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\Crypt;
+use SP\Core\OldCrypt;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefData;
 use SP\Mgmt\ItemInterface;
@@ -79,7 +79,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
             return $this->delete($this->itemData->getId());
         }
 
-        $cryptData = Crypt::encryptData($this->itemData->getValue());
+        $securedKey = Crypt\Crypt::makeSecuredKey(Crypt\Session::getSessionKey());
 
         $query = /** @lang SQL */
             'UPDATE customFieldsData SET
@@ -91,8 +91,8 @@ class CustomField extends CustomFieldBase implements ItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($cryptData['data']);
-        $Data->addParam($cryptData['iv']);
+        $Data->addParam(Crypt\Crypt::encrypt($this->itemData->getValue(), $securedKey));
+        $Data->addParam($securedKey);
         $Data->addParam($this->itemData->getModule());
         $Data->addParam($this->itemData->getId());
         $Data->addParam($this->itemData->getDefinitionId());
@@ -136,7 +136,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
             return true;
         }
 
-        $cryptData = Crypt::encryptData($this->itemData->getValue());
+        $securedKey = Crypt\Crypt::makeSecuredKey(Crypt\Session::getSessionKey());
 
         $query = /** @lang SQL */
             'INSERT INTO customFieldsData SET
@@ -151,8 +151,8 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $Data->addParam($this->itemData->getId());
         $Data->addParam($this->itemData->getModule());
         $Data->addParam($this->itemData->getDefinitionId());
-        $Data->addParam($cryptData['data']);
-        $Data->addParam($cryptData['iv']);
+        $Data->addParam(Crypt\Crypt::encrypt($this->itemData->getValue(), $securedKey));
+        $Data->addParam($securedKey);
 
         return DB::getQuery($Data);
     }
@@ -248,7 +248,9 @@ class CustomField extends CustomFieldBase implements ItemInterface
     protected function unencryptData(CustomFieldData $CustomFieldData)
     {
         if ($CustomFieldData->getCustomfielddataData() !== '') {
-            return $this->formatValue(Crypt::getDecrypt($CustomFieldData->getCustomfielddataData(), $CustomFieldData->getCustomfielddataIv()));
+            $securedKey = Crypt\Crypt::unlockSecuredKey($CustomFieldData->getCustomfielddataIv(), Crypt\Session::getSessionKey());
+
+            return $this->formatValue(Crypt\Crypt::decrypt($CustomFieldData->getCustomfielddataData(), $securedKey));
         }
 
         return '';

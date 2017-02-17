@@ -258,6 +258,10 @@ class Init
      */
     private static function loadExtensions()
     {
+        $PluginsLoader = new \SplClassLoader('Defuse\Crypto', EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'php-encryption');
+        $PluginsLoader->setPrepend(false);
+        $PluginsLoader->register();
+
         $PhpSecLoader = new \SplClassLoader('phpseclib', EXTENSIONS_PATH);
         $PhpSecLoader->setPrepend(false);
         $PhpSecLoader->register();
@@ -681,6 +685,9 @@ class Init
 
     /**
      * Inicialiar la sesión de usuario
+     *
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     private static function initSession()
     {
@@ -705,13 +712,16 @@ class Init
             Session::setSidStartTime(time());
             Session::setStartActivity(time());
         } else if (Session::getUserData()->getUserId() > 0 && time() - Session::getSidStartTime() > $sessionLifeTime / 2) {
-            $sessionMPass = SessionUtil::getSessionMPass();
+            $sessionMPass = Crypt\Session::getSessionKey();
+
             session_regenerate_id(true);
+
+            // Regenerar la clave maestra
+            Crypt\Session::saveSessionKey($sessionMPass);
+
             Session::setSidStartTime(time());
             // Recargar los permisos del perfil de usuario
             Session::setUserProfile(Profile::getItem()->getById(Session::getUserData()->getUserProfileId()));
-            // Regenerar la clave maestra
-            SessionUtil::saveSessionMPass($sessionMPass);
         }
 
         Session::setLastActivity(time());

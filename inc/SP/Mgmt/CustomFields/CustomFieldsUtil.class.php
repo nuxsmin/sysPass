@@ -26,7 +26,7 @@ namespace SP\Mgmt\CustomFields;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\Crypt;
+use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefData;
@@ -60,6 +60,8 @@ class CustomFieldsUtil
      * @param string $currentMasterPass La clave maestra actual
      * @param string $newMasterPassword La nueva clave maestra
      * @return bool
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function updateCustomFieldsCrypt($currentMasterPass, $newMasterPassword)
@@ -90,8 +92,10 @@ class CustomFieldsUtil
         $success = [];
 
         foreach ($queryRes as $CustomField) {
-            $fieldData = Crypt::getDecrypt($CustomField->getCustomfielddataData(), $CustomField->getCustomfielddataIv(), $currentMasterPass);
-            $fieldCryptData = Crypt::encryptData($fieldData, $newMasterPassword);
+            $currentSecuredKey = Crypt\Crypt::unlockSecuredKey($CustomField->getCustomfielddataIv(), $currentMasterPass);
+            $fieldData = Crypt\Crypt::decrypt($CustomField->getCustomfielddataData(), $currentSecuredKey);
+
+            $securedKey = Crypt\Crypt::makeSecuredKey($newMasterPassword);
 
             $query = /** @lang SQL */
                 'UPDATE customFieldsData SET
@@ -101,8 +105,76 @@ class CustomFieldsUtil
 
             $Data = new QueryData();
             $Data->setQuery($query);
-            $Data->addParam($fieldCryptData['data']);
-            $Data->addParam($fieldCryptData['iv']);
+            $Data->addParam(Crypt\Crypt::encrypt($fieldData, $securedKey));
+            $Data->addParam($securedKey);
+            $Data->addParam($CustomField->getCustomfielddataId());
+
+            try {
+                DB::getQuery($Data);
+
+                $success[] = $CustomField->getCustomfielddataId();
+            } catch (SPException $e) {
+                $errors[] = $CustomField->getCustomfielddataId();
+            }
+        }
+
+        $LogMessage->addDetails(__('Registros no actualizados', false), implode(',', $errors));
+        $LogMessage->addDetails(__('Registros actualizados', false), implode(',', $success));
+        $Log->writeLog();
+
+        return (count($errors) === 0);
+    }
+
+    /**
+     * Actualizar los datos encriptados con una nueva clave
+     *
+     * @param string $currentMasterPass La clave maestra actual
+     * @return bool
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public static function updateCustomFieldsOldCrypt(&$currentMasterPass)
+    {
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Campos Personalizados', false));
+
+        $query = /** @lang SQL */
+            'SELECT customfielddata_id, customfielddata_data, customfielddata_iv FROM customFieldsData';
+
+        $Data = new QueryData();
+        $Data->setMapClassName(CustomFieldData::class);
+        $Data->setQuery($query);
+
+        /** @var CustomFieldData[] $queryRes */
+        $queryRes = DB::getResultsArray($Data);
+
+        if (count($queryRes) === 0) {
+            $LogMessage->addDescription(__('No hay datos de campos personalizados', false));
+            $Log->writeLog();
+            return true;
+        }
+
+        $LogMessage->addDescription(__('Actualizando datos encriptados', false));
+
+        $errors = [];
+        $success = [];
+
+        foreach ($queryRes as $CustomField) {
+            $securedKey = Crypt\Crypt::makeSecuredKey($currentMasterPass);
+            $fieldData = OldCrypt::getDecrypt($CustomField->getCustomfielddataData(), $CustomField->getCustomfielddataIv(), $currentMasterPass);
+
+            $query = /** @lang SQL */
+                'UPDATE customFieldsData SET
+                customfielddata_data = ?,
+                customfielddata_iv = ? 
+                WHERE customfielddata_id = ?';
+
+            $Data = new QueryData();
+            $Data->setQuery($query);
+            $Data->addParam(Crypt\Crypt::encrypt($fieldData, $securedKey));
+            $Data->addParam($securedKey);
             $Data->addParam($CustomField->getCustomfielddataId());
 
             try {

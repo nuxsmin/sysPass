@@ -27,12 +27,13 @@ namespace SP\Mgmt\PublicLinks;
 defined('APP_ROOT') || die();
 
 use SP\Config\Config;
-use SP\Core\Crypt;
+use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionUtil;
 use SP\DataModel\PublicLinkData;
 use SP\Mgmt\ItemBase;
 use SP\DataModel\PublicLinkBaseData;
+use SP\Util\Util;
 
 /**
  * Class PublicLinks para la gestión de enlaces públicos
@@ -71,14 +72,15 @@ abstract class PublicLinkBase extends ItemBase
      * Devolver la clave y el IV para el enlace
      *
      * @throws SPException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     protected final function createLinkPass()
     {
-        $pass = Crypt::generateAesKey($this->createLinkHash());
-        $cryptPass = Crypt::encryptData(SessionUtil::getSessionMPass(), $pass);
+        $securedKey = Crypt\Crypt::makeSecuredKey(Config::getConfig()->getPasswordSalt() . $this->createLinkHash());
 
-        $this->itemData->setPass($cryptPass['data']);
-        $this->itemData->setPassIV($cryptPass['iv']);
+        $this->itemData->setPass(Crypt\Crypt::encrypt(Crypt\Session::getSessionKey(), $securedKey));
+        $this->itemData->setPassIV($securedKey);
     }
 
     /**

@@ -108,9 +108,4 @@ abstract class AccountBase
      * Esta funcion realiza la consulta a la BBDD y devuelve los datos.
      */
     protected abstract function getAccountPassData();
-
-    /**
-     * Obtener los datos relativos a la clave de todas las cuentas.
-     */
-    protected abstract function getAccountsPassData();
 }

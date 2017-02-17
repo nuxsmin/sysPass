@@ -26,10 +26,11 @@ namespace Plugins\Authenticator;
 
 use InvalidArgumentException;
 use SP\Controller\TabControllerBase;
-use SP\Core\Crypt;
+use SP\Core\OldCrypt;
 use SP\Core\Plugin\PluginBase;
 use SP\Core\Plugin\PluginInterface;
 use SP\Util\ArrayUtil;
+use SP\Util\Util;
 
 /**
  * Class Controller
@@ -79,7 +80,7 @@ class PreferencesController
             $IV = null;
 
             if (!$AuthenticatorData->isTwofaEnabled()) {
-                $IV = Crypt::getIV();
+                $IV = Util::generateRandomBytes();
                 $AuthenticatorData->setIV($IV);
 
                 Session::setUserData($AuthenticatorData);

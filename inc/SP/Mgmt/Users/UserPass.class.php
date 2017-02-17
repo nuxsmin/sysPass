@@ -27,7 +27,8 @@ namespace SP\Mgmt\Users;
 defined('APP_ROOT') || die();
 
 use SP\Config\ConfigDB;
-use SP\Core\Crypt;
+use SP\Core\OldCrypt;
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionUtil;
 use SP\DataModel\UserPassData;
@@ -165,15 +166,16 @@ class UserPass extends UserBase
      */
     public static function makeUserPassHash($userPass)
     {
-        $salt = Crypt::makeHashSalt();
-
-        return ['salt' => $salt, 'pass' => crypt($userPass, $salt)];
+        return ['salt' => '', 'pass' => Hash::hashKey($userPass)];
     }
 
     /**
      * Comprueba la clave maestra del usuario.
      *
      * @return bool
+     *
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function loadUserMPass()
@@ -184,11 +186,11 @@ class UserPass extends UserBase
         if ($userMPass === false || empty($configHashMPass)) {
             return false;
 
-            // Comprobamos el hash de la clave del usuario con la guardada
-        } elseif (Crypt::checkHashPass($userMPass, $configHashMPass, true)) {
+        // Comprobamos el hash de la clave del usuario con la guardada
+        } elseif (Hash::checkHashKey($userMPass, $configHashMPass)) {
             $this->clearUserMPass = $userMPass;
 
-            SessionUtil::saveSessionMPass($userMPass);
+            Crypt\Session::saveSessionKey($userMPass);
 
             return true;
         }
@@ -224,7 +226,9 @@ class UserPass extends UserBase
         $this->itemData->setUserMPass($queryRes->user_mPass);
         $this->itemData->setUserMIV($queryRes->user_mIV);
 
-        return Crypt::getDecrypt($queryRes->user_mPass, $queryRes->user_mIV, $this->getCypherPass($cypher));
+        $securedKey = Crypt\Crypt::unlockSecuredKey($queryRes->user_mIV, $this->getCypherPass($cypher));
+
+        return Crypt\Crypt::decrypt($queryRes->user_mPass, $securedKey);
     }
 
     /**
@@ -237,7 +241,7 @@ class UserPass extends UserBase
     {
         $pass = $cypher === null ? $this->itemData->getUserPass() : $cypher;
 
-        return Crypt::generateAesKey($pass . $this->itemData->getUserLogin());
+        return Crypt\Crypt::makeSecuredKey($pass . $this->itemData->getUserLogin());
     }
 
     /**
@@ -280,12 +284,15 @@ class UserPass extends UserBase
         if ($configHashMPass === false) {
             return false;
         } elseif (null === $configHashMPass) {
-            $configHashMPass = Crypt::mkHashPassword($masterPwd);
+            $configHashMPass = Hash::hashKey($masterPwd);
             ConfigDB::setValue('masterPwd', $configHashMPass);
         }
 
-        if (Crypt::checkHashPass($masterPwd, $configHashMPass, true)) {
-            $cryptMPass = Crypt::mkCustomMPassEncrypt($this->getCypherPass(), $masterPwd);
+        if (Hash::checkHashKey($masterPwd, $configHashMPass)
+            || \SP\Core\Upgrade\Crypt::migrateHash($masterPwd)
+        ) {
+            $securedKey = Crypt\Crypt::makeSecuredKey($this->getCypherPass());
+            $cryptMPass = Crypt\Crypt::encrypt($masterPwd, $securedKey);
 
             if (!empty($cryptMPass)) {
                 $query = /** @lang SQL */
@@ -297,14 +304,14 @@ class UserPass extends UserBase
 
                 $Data = new QueryData();
                 $Data->setQuery($query);
-                $Data->addParam($cryptMPass[0]);
-                $Data->addParam($cryptMPass[1]);
+                $Data->addParam($cryptMPass);
+                $Data->addParam($securedKey);
                 $Data->addParam($this->itemData->getUserId());
 
                 $this->clearUserMPass = $masterPwd;
 
-                $this->itemData->setUserMPass($cryptMPass[0]);
-                $this->itemData->setUserMIV($cryptMPass[1]);
+                $this->itemData->setUserMPass($cryptMPass);
+                $this->itemData->setUserMIV($securedKey);
 
                 DB::getQuery($Data);
 

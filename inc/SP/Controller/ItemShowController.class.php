@@ -31,7 +31,7 @@ use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
 use SP\Api\ApiTokensUtil;
 use SP\Core\ActionsInterface;
-use SP\Core\Crypt;
+use SP\Core\OldCrypt;
 use SP\Core\Exceptions\ItemException;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
@@ -513,7 +513,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             throw new ItemException(__('Clave maestra actualizada', false) . '<br>' . __('Reinicie la sesión para cambiarla', false));
         }
 
-        $accountClearPass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV());
+        $securedKey = Crypt\Crypt::unlockSecuredKey($AccountData->getAccountIV(), Crypt\Session::getSessionKey());
+        $accountClearPass = Crypt\Crypt::decrypt($AccountData->getAccountPass(), $securedKey);
 
         if (!$isHistory) {
             $Account->incrementDecryptCounter();
