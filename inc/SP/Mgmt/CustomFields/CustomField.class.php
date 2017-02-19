@@ -28,6 +28,8 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefData;
 use SP\Mgmt\ItemInterface;
@@ -68,6 +70,11 @@ class CustomField extends CustomFieldBase implements ItemInterface
 
     /**
      * @return mixed
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function update()
@@ -80,19 +87,24 @@ class CustomField extends CustomFieldBase implements ItemInterface
             return $this->delete($this->itemData->getId());
         }
 
-        $securedKey = Crypt::makeSecuredKey(CryptSession::getSessionKey());
+        $sessionKey = CryptSession::getSessionKey();
+        $securedKey = Crypt::makeSecuredKey($sessionKey);
+
+        if (strlen($securedKey) > 1000) {
+            throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+        }
 
         $query = /** @lang SQL */
             'UPDATE customFieldsData SET
             customfielddata_data = ?,
-            customfielddata_iv = ?
+            customfielddata_key = ?
             WHERE customfielddata_moduleId = ?
             AND customfielddata_itemId = ?
             AND customfielddata_defId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(Crypt::encrypt($this->itemData->getValue(), $securedKey));
+        $Data->addParam(Crypt::encrypt($this->itemData->getValue(), $securedKey, $sessionKey));
         $Data->addParam($securedKey);
         $Data->addParam($this->itemData->getModule());
         $Data->addParam($this->itemData->getId());
@@ -129,6 +141,11 @@ class CustomField extends CustomFieldBase implements ItemInterface
 
     /**
      * @return mixed
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function add()
@@ -137,7 +154,12 @@ class CustomField extends CustomFieldBase implements ItemInterface
             return true;
         }
 
-        $securedKey = Crypt::makeSecuredKey(CryptSession::getSessionKey());
+        $sessionKey = CryptSession::getSessionKey();
+        $securedKey = Crypt::makeSecuredKey($sessionKey);
+
+        if (strlen($securedKey) > 1000) {
+            throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+        }
 
         $query = /** @lang SQL */
             'INSERT INTO customFieldsData SET
@@ -145,14 +167,14 @@ class CustomField extends CustomFieldBase implements ItemInterface
             customfielddata_moduleId = ?,
             customfielddata_defId = ?,
             customfielddata_data = ?,
-            customfielddata_iv = ?';
+            customfielddata_key = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getId());
         $Data->addParam($this->itemData->getModule());
         $Data->addParam($this->itemData->getDefinitionId());
-        $Data->addParam(Crypt::encrypt($this->itemData->getValue(), $securedKey));
+        $Data->addParam(Crypt::encrypt($this->itemData->getValue(), $securedKey, $sessionKey));
         $Data->addParam($securedKey);
 
         return DB::getQuery($Data);
@@ -188,7 +210,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
             'SELECT customfielddata_id,
             customfielddef_id,
             customfielddata_data,
-            customfielddata_iv,
+            customfielddata_key,
             customfielddef_field
             FROM customFieldsData
             JOIN customFieldsDef ON customfielddata_defId = customfielddef_id
@@ -199,7 +221,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
             0 as customfielddata_id,
             customfielddef_id,
             "" as customfielddata_data,
-            "" as customfielddata_iv,
+            "" as customfielddata_key,
             customfielddef_field
             FROM customFieldsDef
             WHERE customfielddef_module = ?
@@ -245,11 +267,12 @@ class CustomField extends CustomFieldBase implements ItemInterface
      *
      * @param CustomFieldData $CustomFieldData
      * @return string
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected function unencryptData(CustomFieldData $CustomFieldData)
     {
         if ($CustomFieldData->getCustomfielddataData() !== '') {
-            $securedKey = Crypt::unlockSecuredKey($CustomFieldData->getCustomfielddataIv(), CryptSession::getSessionKey());
+            $securedKey = Crypt::unlockSecuredKey($CustomFieldData->getCustomfielddataKey(), CryptSession::getSessionKey());
 
             return $this->formatValue(Crypt::decrypt($CustomFieldData->getCustomfielddataData(), $securedKey));
         }

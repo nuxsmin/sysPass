@@ -24,17 +24,25 @@
 
 namespace SP\Core\Upgrade;
 
+use Defuse\Crypto\Exception\CryptoException;
+use SP\Config\ConfigDB;
+use SP\Core\Crypt\Hash;
+use SP\Core\Exceptions\SPException;
+use SP\Core\OldCrypt;
+use SP\Mgmt\Users\UserPass;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
 /**
  * Class User
+ *
  * @package SP\Core\Upgrade
  */
 class User
 {
     /**
      * Actualizar registros con usuarios no existentes
+     *
      * @param int $userId Id de usuario por defecto
      * @return bool
      */
@@ -52,36 +60,67 @@ class User
             $Data->addParam($user->user_id);
         }
 
-        $query = /** @lang SQL */
-            'UPDATE accounts SET account_userId = ? WHERE account_userId NOT IN (' . $paramsIn . ') OR account_userId IS NULL ';
-        $Data->setQuery($query);
+        try {
+            DB::beginTransaction();
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accounts SET account_userId = ? WHERE account_userId NOT IN (' . $paramsIn . ') OR account_userId IS NULL ';
+            $Data->setQuery($query);
 
-        $query = /** @lang SQL */
-            'UPDATE accounts SET account_userEditId = ? WHERE account_userEditId NOT IN (' . $paramsIn . ') OR account_userEditId IS NULL';
-        $Data->setQuery($query);
+            DB::getQuery($Data);
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accounts SET account_userEditId = ? WHERE account_userEditId NOT IN (' . $paramsIn . ') OR account_userEditId IS NULL';
+            $Data->setQuery($query);
 
-        $query = /** @lang SQL */
-            'UPDATE accHistory SET acchistory_userId = ? WHERE acchistory_userId NOT IN (' . $paramsIn . ') OR acchistory_userId IS NULL';
-        $Data->setQuery($query);
+            DB::getQuery($Data);
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accHistory SET acchistory_userId = ? WHERE acchistory_userId NOT IN (' . $paramsIn . ') OR acchistory_userId IS NULL';
+            $Data->setQuery($query);
 
-        $query = /** @lang SQL */
-            'UPDATE accHistory SET acchistory_userEditId = ? WHERE acchistory_userEditId NOT IN (' . $paramsIn . ') OR acchistory_userEditId IS NULL';
-        $Data->setQuery($query);
+            DB::getQuery($Data);
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accHistory SET acchistory_userEditId = ? WHERE acchistory_userEditId NOT IN (' . $paramsIn . ') OR acchistory_userEditId IS NULL';
+            $Data->setQuery($query);
 
-        $query = /** @lang SQL */
-            'DELETE FROM usrPassRecover WHERE userpassr_userId <> ? AND userpassr_userId NOT IN (' . $paramsIn . ')';
-        $Data->setQuery($query);
+            DB::getQuery($Data);
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'DELETE FROM usrPassRecover WHERE userpassr_userId <> ? AND userpassr_userId NOT IN (' . $paramsIn . ')';
+            $Data->setQuery($query);
+
+            DB::getQuery($Data);
+
+            DB::endTransaction();
+        } catch (SPException $e) {
+            DB::rollbackTransaction();
+
+            return false;
+        }
 
         return true;
+    }
+
+    /**
+     * Actualizar la clave maestra
+     *
+     * @param UserPass $UserPass
+     * @return bool
+     */
+    public static function upgradeMasterKey(UserPass $UserPass)
+    {
+        $UserData = $UserPass->getItemData();
+        $key = OldCrypt::generateAesKey($UserData->getUserPass() . $UserData->getUserLogin());
+        $mKey = OldCrypt::getDecrypt($UserData->getUserMPass(), $UserData->getUserMKey(), $key);
+
+        try {
+            return $mKey && $UserPass->updateUserMPass($mKey);
+        } catch (SPException $e) {
+        } catch (CryptoException $e) {
+        }
+
+        return false;
     }
 }

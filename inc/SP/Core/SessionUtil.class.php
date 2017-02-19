@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -110,7 +110,7 @@ class SessionUtil
      */
     public static function cleanSession()
     {
-        foreach ($_SESSION as $key => $value){
+        foreach ($_SESSION as $key => $value) {
             unset($_SESSION[$key]);
         }
 
@@ -140,5 +140,24 @@ class SessionUtil
 //        Session::unsetSessionKey('sessiontype');
 //        Session::unsetSessionKey('config');
 //        Session::unsetSessionKey('configTime');
+    }
+
+    /**
+     * Regenerad el ID de sesión
+     */
+    public static function regenerate()
+    {
+        session_regenerate_id(true);
+        Session::setSidStartTime(time());
+    }
+
+    /**
+     * Destruir la sesión y reiniciar
+     */
+    public static function restart()
+    {
+        session_unset();
+        session_destroy();
+        session_start();
     }
 }

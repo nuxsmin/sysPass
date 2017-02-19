@@ -26,6 +26,7 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
 use SP\Mgmt\ItemInterface;
@@ -53,8 +54,6 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             throw new SPException(SPException::SP_INFO, __('Login/email de usuario duplicados', false));
         }
 
-        $passdata = UserPass::makeUserPassHash($this->itemData->getUserPass());
-
         $query = /** @lang SQL */
             'INSERT INTO usrData SET
             user_name = ?,
@@ -64,14 +63,14 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             user_groupId = ?,
             user_profileId = ?,
             user_mPass = \'\',
-            user_mIV = \'\',
+            user_mKey = \'\',
             user_isAdminApp = ?,
             user_isAdminAcc = ?,
             user_isDisabled = ?,
             user_isChangePass = ?,
             user_isLdap = 0,
             user_pass = ?,
-            user_hashSalt = ?';
+            user_hashSalt = \'\'';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -85,8 +84,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->isUserIsAdminAcc());
         $Data->addParam($this->itemData->isUserIsDisabled());
         $Data->addParam($this->itemData->isUserIsChangePass());
-        $Data->addParam($passdata['pass']);
-        $Data->addParam($passdata['salt']);
+        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
         $Data->setOnErrorMessage(__('Error al crear el usuario', false));
 
         DB::getQuery($Data);
@@ -266,20 +264,17 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
      */
     public function updatePass()
     {
-        $passdata = UserPass::makeUserPassHash($this->itemData->getUserPass());
-
         $query = /** @lang SQL */
             'UPDATE usrData SET
             user_pass = ?,
-            user_hashSalt = ?,
+            user_hashSalt = \'\',
             user_isChangePass = 0,
             user_lastUpdate = NOW()
             WHERE user_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($passdata['pass']);
-        $Data->addParam($passdata['salt']);
+        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
         $Data->addParam($this->itemData->getUserId());
         $Data->setOnErrorMessage(__('Error al modificar la clave', false));
 

@@ -24,17 +24,20 @@
 
 namespace SP\Core\Upgrade;
 
+use SP\Core\Exceptions\SPException;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
 /**
  * Class Profile
+ *
  * @package SP\Core\Upgrade
  */
 class Profile
 {
     /**
      * Actualizar registros con perfiles no existentes
+     *
      * @param int $profileId Id de perfil por defecto
      * @return bool
      */
@@ -52,11 +55,21 @@ class Profile
             $Data->addParam($profile->userprofile_id);
         }
 
-        $query = /** @lang SQL */
-            'UPDATE usrData SET user_profileId = ? WHERE user_profileId NOT IN (' . $paramsIn . ') OR user_profileId IS NULL';
-        $Data->setQuery($query);
+        try {
+            DB::beginTransaction();
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE usrData SET user_profileId = ? WHERE user_profileId NOT IN (' . $paramsIn . ') OR user_profileId IS NULL';
+            $Data->setQuery($query);
+
+            DB::getQuery($Data);
+
+            DB::endTransaction();
+        } catch (SPException $e) {
+            DB::rollbackTransaction();
+
+            return false;
+        }
 
         return true;
     }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,6 +26,7 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupUsersData;
 use SP\Log\Email;
@@ -73,26 +74,25 @@ class UserMigrate
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public static function migrateUser($userLogin, $userPass)
+    public static function migrateUserPass($userLogin, $userPass)
     {
-        $passdata = UserPass::makeUserPassHash($userPass);
-
         $query = /** @lang SQL */
             'UPDATE usrData SET
             user_pass = ?,
-            user_hashSalt = ?,
+            user_hashSalt = \'\',
             user_lastUpdate = NOW(),
             user_isMigrate = 0
             WHERE user_login = ?
             AND user_isMigrate = 1
             AND (user_pass = SHA1(CONCAT(user_hashSalt,?))
-            OR user_pass = MD5(?)) LIMIT 1';
+            OR user_pass = MD5(?)
+            OR user_pass = ENCRYPT(?, user_hashSalt)) LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($passdata['pass']);
-        $Data->addParam($passdata['salt']);
+        $Data->addParam(Hash::hashKey($userPass));
         $Data->addParam($userLogin);
+        $Data->addParam($userPass);
         $Data->addParam($userPass);
         $Data->addParam($userPass);
         $Data->setOnErrorMessage(__('Error al migrar cuenta de usuario', false));

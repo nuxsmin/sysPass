@@ -276,7 +276,7 @@ class SyspassImport extends ImportBase
                         $AccountData->setAccountPass(base64_decode($accountNode->nodeValue));
                         break;
                     case 'passiv';
-                        $AccountData->setAccountIV(base64_decode($accountNode->nodeValue));
+                        $AccountData->setAccountKey(base64_decode($accountNode->nodeValue));
                         break;
                     case 'notes';
                         $AccountData->setAccountNotes($accountNode->nodeValue);

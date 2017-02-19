@@ -24,6 +24,7 @@
 
 namespace SP\Core\Upgrade;
 
+use SP\Core\Exceptions\SPException;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -52,11 +53,21 @@ class Group
             $Data->addParam($group->usergroup_id);
         }
 
-        $query = /** @lang SQL */
-            'UPDATE usrData SET user_groupId = ? WHERE user_groupId NOT IN (' . $paramsIn . ') OR user_groupId IS NULL';
-        $Data->setQuery($query);
+        try {
+            DB::beginTransaction();
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE usrData SET user_groupId = ? WHERE user_groupId NOT IN (' . $paramsIn . ') OR user_groupId IS NULL';
+            $Data->setQuery($query);
+
+            DB::getQuery($Data);
+
+            DB::endTransaction();
+        } catch (SPException $e) {
+            DB::rollbackTransaction();
+
+            return false;
+        }
 
         return true;
     }

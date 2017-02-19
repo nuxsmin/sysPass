@@ -24,6 +24,7 @@
 
 namespace SP\Controller;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Auth\Auth;
 use SP\Auth\AuthResult;
 use SP\Auth\AuthUtil;
@@ -233,8 +234,8 @@ class LoginController
      * Cargar la sesión del usuario
      *
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\AuthException
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\AuthException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -265,8 +266,8 @@ class LoginController
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\AuthException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function loadMasterPass()
     {
@@ -275,42 +276,48 @@ class LoginController
 
         $UserPass = UserPass::getItem($this->UserData);
 
-        if ($masterPass) {
-            if (CryptMasterPass::checkTempMasterPass($masterPass)) {
-                $this->LogMessage->addDescription(__('Usando clave temporal', false));
+        try {
+            if ($masterPass) {
+                if (CryptMasterPass::checkTempMasterPass($masterPass)) {
+                    $this->LogMessage->addDescription(__('Usando clave temporal', false));
 
-                $masterPass = CryptMasterPass::getTempMasterPass($masterPass);
-            }
+                    $masterPass = CryptMasterPass::getTempMasterPass($masterPass);
+                }
 
-            if (!$UserPass->updateUserMPass($masterPass)) {
-                $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
+                if (!$UserPass->updateUserMPass($masterPass)) {
+                    $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
 
-                throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
+                    throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
+                } else {
+                    CryptSession::saveSessionKey($UserPass->getClearUserMPass());
+
+                    $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
+                }
+            } else if ($oldPass) {
+                if (!$UserPass->updateMasterPass($oldPass)) {
+                    $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
+
+                    throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
+                } else {
+                    CryptSession::saveSessionKey($UserPass->getClearUserMPass());
+
+                    $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
+                }
             } else {
-                CryptSession::saveSessionKey($UserPass->getClearUserMPass());
+                $loadMPass = $UserPass->loadUserMPass();
 
-                $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
+                // Comprobar si es necesario actualizar la clave maestra
+                if ($loadMPass === null) {
+                    throw new AuthException(SPException::SP_INFO, __('Es necesaria su clave anterior', false), '', self::STATUS_NEED_OLD_PASS);
+                    // La clave no está establecida o se ha sido cambiada por el administrador
+                } else if ($loadMPass === false) {
+                    throw new AuthException(SPException::SP_INFO, __('La clave maestra no ha sido guardada o es incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
+                }
             }
-        } else if ($oldPass) {
-            if (!$UserPass->updateMasterPass($oldPass)) {
-                $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
+        } catch (CryptoException $e) {
+            $this->LogMessage->addDescription(__('Error interno', false));
 
-                throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
-            } else {
-                CryptSession::saveSessionKey($UserPass->getClearUserMPass());
-
-                $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
-            }
-        } else {
-            $loadMPass = $UserPass->loadUserMPass();
-
-            // Comprobar si es necesario actualizar la clave maestra
-            if ($loadMPass === null) {
-                throw new AuthException(SPException::SP_INFO, __('Es necesaria su clave anterior', false), '', self::STATUS_NEED_OLD_PASS);
-                // La clave no está establecida o se ha sido cambiada por el administrador
-            } else if ($loadMPass === false) {
-                throw new AuthException(SPException::SP_INFO, __('La clave maestra no ha sido guardada o es incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
-            }
+            throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), $e->getMessage(), self::STATUS_INTERNAL_ERROR);
         }
 
         return $UserPass;

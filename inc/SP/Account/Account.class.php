@@ -24,7 +24,10 @@
 
 namespace SP\Account;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
@@ -158,7 +161,7 @@ class Account extends AccountBase implements AccountInterface
             . 'dst.account_otherUserEdit = src.acchistory_otherUserEdit + 0,'
             . 'dst.account_otherGroupEdit = src.acchistory_otherGroupEdit + 0,'
             . 'dst.account_pass = src.acchistory_pass,'
-            . 'dst.account_IV = src.acchistory_IV,'
+            . 'dst.account_key = src.acchistory_key,'
             . 'dst.account_passDate = src.acchistory_passDate,'
             . 'dst.account_passDateChange = src.acchistory_passDateChange, '
             . 'dst.account_parentId = src.acchistory_parentId, '
@@ -216,6 +219,11 @@ class Account extends AccountBase implements AccountInterface
      *
      * @param bool $encryptPass Encriptar la clave?
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws SPException
      */
     public function createAccount($encryptPass = true)
@@ -232,7 +240,7 @@ class Account extends AccountBase implements AccountInterface
             . 'account_login = :accountLogin,'
             . 'account_url = :accountUrl,'
             . 'account_pass = :accountPass,'
-            . 'account_IV = :accountIV,'
+            . 'account_key = :accountKey,'
             . 'account_notes = :accountNotes,'
             . 'account_dateAdd = NOW(),'
             . 'account_userId = :accountUserId,'
@@ -254,7 +262,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountLogin(), 'accountLogin');
         $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
         $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
-        $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
+        $Data->addParam($this->accountData->getAccountKey(), 'accountKey');
         $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
         $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
         $Data->addParam($this->accountData->getAccountUserGroupId() ?: Session::getUserData()->getUserGroupId(), 'accountUserGroupId');
@@ -301,13 +309,23 @@ class Account extends AccountBase implements AccountInterface
      *
      * @param string $masterPass Clave maestra a utilizar
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setPasswordEncrypted($masterPass = null)
     {
-        $securedKey = Crypt::makeSecuredKey($masterPass);
+        try {
+            $masterPass = $masterPass ?: CryptSession::getSessionKey();
+            $securedKey = Crypt::makeSecuredKey($masterPass);
 
-        $this->accountData->setAccountPass(Crypt::encrypt($this->accountData->getAccountPass(), $securedKey));
-        $this->accountData->setAccountIV($securedKey);
+            $this->accountData->setAccountPass(Crypt::encrypt($this->accountData->getAccountPass(), $securedKey, $masterPass));
+            $this->accountData->setAccountKey($securedKey);
+
+            if (strlen($securedKey) > 1000 || strlen($this->accountData->getAccountPass()) > 1000) {
+                throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+            }
+        } catch (CryptoException $e) {
+            throw new SPException(SPException::SP_ERROR, __('Error interno', false));
+        }
     }
 
     /**
@@ -387,6 +405,8 @@ class Account extends AccountBase implements AccountInterface
      *
      * @param bool $isMassive para no actualizar el histórico ni enviar mensajes
      * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function updateAccountPass($isMassive = false)
@@ -401,7 +421,7 @@ class Account extends AccountBase implements AccountInterface
         $query = /** @lang SQL */
             'UPDATE accounts SET '
             . 'account_pass = :accountPass,'
-            . 'account_IV = :accountIV,'
+            . 'account_key = :accountKey,'
             . 'account_userEditId = :accountUserEditId,'
             . 'account_dateEdit = NOW(), '
             . 'account_passDate = UNIX_TIMESTAMP(), '
@@ -411,7 +431,7 @@ class Account extends AccountBase implements AccountInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
-        $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
+        $Data->addParam($this->accountData->getAccountKey(), 'accountKey');
         $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
         $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
         $Data->addParam($this->accountData->getAccountId(), 'accountId');
@@ -436,7 +456,7 @@ class Account extends AccountBase implements AccountInterface
             . 'account_userGroupId,'
             . 'account_login,'
             . 'account_pass,'
-            . 'account_IV,'
+            . 'account_key,'
             . 'customer_name '
             . 'FROM accounts '
             . 'LEFT JOIN customers ON account_customerId = customer_id '

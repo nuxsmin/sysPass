@@ -93,6 +93,7 @@ class Crypt
      * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     private static function migrateCustomFields(&$masterPass)
     {
@@ -104,8 +105,7 @@ class Crypt
      *
      * @param $masterPass
      * @return bool
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function migrateHash(&$masterPass)
     {
@@ -124,8 +124,8 @@ class Crypt
                 return true;
             }
 
-        // Hash de clave maestra anterior a 2.0.0.17013101
-        // Hash de clave maestra anterior a 2.0.0.17021601
+            // Hash de clave maestra anterior a 2.0.0.17013101
+            // Hash de clave maestra anterior a 2.0.0.17021601
         } elseif (hash_equals(crypt($masterPass, substr($configHashMPass, 0, 72)), substr($configHashMPass, 72))
             || hash_equals(crypt($masterPass, substr($configHashMPass, 0, 30)), substr($configHashMPass, 30))
         ) {
@@ -135,6 +135,6 @@ class Crypt
             return true;
         }
 
-        return false;
+        return Hash::checkHashKey($masterPass, $configHashMPass);
     }
 }

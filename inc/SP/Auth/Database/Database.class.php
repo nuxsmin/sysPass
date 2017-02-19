@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,6 +25,7 @@
 namespace SP\Auth\Database;
 
 use SP\Auth\AuthInterface;
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPassData;
@@ -48,18 +49,38 @@ class Database implements AuthInterface
     protected $UserData;
 
     /**
+     * Autentificar al usuario
+     *
+     * @param UserData $UserData Datos del usuario
+     * @return DatabaseAuthData
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
+     */
+    public function authenticate(UserData $UserData)
+    {
+        $this->UserData = $UserData;
+
+        $AuthData = new DatabaseAuthData();
+        $AuthData->setAuthenticated($this->authUser());
+
+        return $AuthData;
+    }
+
+    /**
      * Autentificación de usuarios con BD.
      *
      * Esta función comprueba la clave del usuario. Si el usuario necesita ser migrado desde phpPMS,
      * se ejecuta el proceso para actualizar la clave.
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     protected function authUser()
     {
         if (UserMigrate::checkUserIsMigrate($this->UserData->getUserLogin())) {
             try {
-                UserMigrate::migrateUser($this->UserData->getUserLogin(), $this->UserData->getUserPass());
+                UserMigrate::migrateUserPass($this->UserData->getUserLogin(), $this->UserData->getUserPass());
             } catch (SPException $e) {
                 $Log = new Log();
                 $LogMessage = $Log->getLogMessage();
@@ -86,24 +107,9 @@ class Database implements AuthInterface
         /** @var UserPassData $queryRes */
         $queryRes = DB::getResults($Data);
 
-        return ($queryRes !== false
+        return $queryRes !== false
             && $Data->getQueryNumRows() === 1
-            && $queryRes->getUserPass() === crypt($this->UserData->getUserPass(), $queryRes->getUserHashSalt()));
-    }
-
-    /**
-     * Autentificar al usuario
-     *
-     * @param UserData $UserData Datos del usuario
-     * @return DatabaseAuthData
-     */
-    public function authenticate(UserData $UserData)
-    {
-        $this->UserData = $UserData;
-
-        $AuthData = new DatabaseAuthData();
-        $AuthData->setAuthenticated($this->authUser());
-
-        return $AuthData;
+            && (Hash::checkHashKey($this->UserData->getUserPass(), $queryRes->getUserPass())
+            || hash_equals($queryRes->getUserPass(), crypt($this->UserData->getUserPass(), $queryRes->getUserHashSalt())));
     }
 }

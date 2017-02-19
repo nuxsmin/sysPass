@@ -117,6 +117,7 @@ class AccountHistoryUtil
      * @param $id int El Id del registro en el histórico
      * @param $accountId
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function restoreFromHistory($id, $accountId)
     {
@@ -138,7 +139,7 @@ class AccountHistoryUtil
             . 'dst.account_otherUserEdit = src.acchistory_otherUserEdit + 0,'
             . 'dst.account_otherGroupEdit = src.acchistory_otherGroupEdit + 0,'
             . 'dst.account_pass = src.acchistory_pass,'
-            . 'dst.account_IV = src.acchistory_IV,'
+            . 'dst.account_key = src.acchistory_key,'
             . 'dst.account_passDate = src.acchistory_passDate,'
             . 'dst.account_passDateChange = src.acchistory_passDateChange, '
             . 'dst.account_parentId = src.acchistory_parentId, '

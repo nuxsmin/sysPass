@@ -25,6 +25,7 @@
 namespace SP\Core\Crypt;
 
 use SP\Core\Session as CoreSession;
+use SP\Core\SessionUtil;
 
 /**
  * Class Session
@@ -37,14 +38,15 @@ class Session
      * Devolver la clave maestra de la sesión
      *
      * @return string
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Defuse\Crypto\Exception\BadFormatException
      */
     public static function getSessionKey()
     {
-        $securedKey = Crypt::unlockSecuredKey(CoreSession::getMPassPwd(), self::getPassword());
+        $securedKey = Crypt::unlockSecuredKey(CoreSession::getMPassKey(), self::getKey());
 
-        return Crypt::decrypt(CoreSession::getMPass(), $securedKey);
+        return Crypt::decrypt(CoreSession::getMPass(), $securedKey, self::getKey());
     }
 
     /**
@@ -52,10 +54,9 @@ class Session
      *
      * @return string
      */
-    private static function getPassword()
+    private static function getKey()
     {
-        // FIXME
-        return session_id() . CoreSession::getUserData()->getUserLogin();
+        return session_id() . CoreSession::getSidStartTime();
     }
 
     /**
@@ -64,12 +65,30 @@ class Session
      * @param $data
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     public static function saveSessionKey($data)
     {
-        $securedKey = Crypt::makeSecuredKey(self::getPassword());
+        $securedKey = Crypt::makeSecuredKey(self::getKey());
 
-        CoreSession::setMPassPwd($securedKey);
-        CoreSession::setMPass(Crypt::encrypt($data, $securedKey));
+        CoreSession::setMPassKey($securedKey);
+        CoreSession::setMPass(Crypt::encrypt($data, $securedKey, self::getKey()));
+    }
+
+
+    /**
+     * Regenerar la clave de sesión
+     *
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public static function reKey()
+    {
+        $sessionMPass = self::getSessionKey();
+
+        SessionUtil::regenerate();
+
+        self::saveSessionKey($sessionMPass);
     }
 }

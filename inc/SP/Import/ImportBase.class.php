@@ -127,11 +127,11 @@ abstract class ImportBase implements ImportInterface
         }
 
         if ($this->ImportParams->getImportMasterPwd() !== '') {
-            $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountIV(), $this->ImportParams->getImportMasterPwd());
+            $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
             $pass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey);
 
             // TODO: importar con encriptación anterior
-//            $pass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->ImportParams->getImportMasterPwd());
+//            $pass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
             $AccountData->setAccountPass($pass);
         }
 

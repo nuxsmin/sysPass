@@ -420,9 +420,11 @@ class MainController extends ControllerBase implements ActionsInterface
     }
 
     /**
-     * Obtener los datos para el interface de actualización de BD
+     * Obtener los datos para el interface de actualización de componentes
+     *
+     * @param $version
      */
-    public function getUpgrade()
+    public function getUpgrade($version)
     {
         $this->setPage('upgrade');
 
@@ -431,20 +433,33 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
 
-        $this->view->assign('action', Request::analyze('a'));
-        $this->view->assign('time', Request::analyze('t'));
-        $this->view->assign('upgrade', $this->view->action === 'upgrade');
-        $this->view->assign('checkConstraints', Check::checkConstraints());
+        $action = Request::analyze('a');
+        $type = Request::analyze('type');
 
-        $constraints = [];
+        $this->view->assign('action', $action);
+        $this->view->assign('type', $type);
+        $this->view->assign('version', $version);
+        $this->view->assign('upgrade', $action === 'upgrade');
 
-        foreach ($this->view->checkConstraints as $key => $val) {
-            if ($val > 0) {
-                $constraints[] = sprintf('%s : %s', $key, $val);
+        if ($type === 'db') {
+            $this->view->assign('legend', __('Actualización de BBDD'));
+
+            if ($version < 1316011001) {
+                $this->view->assign('checkConstraints', Check::checkConstraints());
+
+                $constraints = [];
+
+                foreach ($this->view->checkConstraints as $key => $val) {
+                    if ($val > 0) {
+                        $constraints[] = sprintf('%s : %s', $key, $val);
+                    }
+                }
+
+                $this->view->assign('constraints', $constraints);
             }
+        } elseif ($type === 'app') {
+            $this->view->assign('legend', __('Actualización de Aplicación'));
         }
-
-        $this->view->assign('constraints', $constraints);
 
         $this->view();
         exit();

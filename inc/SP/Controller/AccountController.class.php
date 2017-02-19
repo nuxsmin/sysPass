@@ -154,7 +154,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $securedKey = Crypt::unlockSecuredKey($PublicLinkData->getPassIV(), Config::getConfig()->getPasswordSalt() . $PublicLinkData->getLinkHash());
 
         // Desencriptar la clave de la cuenta
-        $accountSecuredKey = Crypt::unlockSecuredKey($AccountPassData->getAccountIV(), Crypt::decrypt($PublicLinkData->getPass(), $securedKey));
+        $accountSecuredKey = Crypt::unlockSecuredKey($AccountPassData->getAccountKey(), Crypt::decrypt($PublicLinkData->getPass(), $securedKey));
         $accountPass = Crypt::decrypt($AccountPassData->getAccountPass(), $accountSecuredKey);
 
         $this->view->assign('useImage', Config::getConfig()->isPublinksImageEnabled() || Config::getConfig()->isAccountPassToImage());

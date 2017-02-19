@@ -478,6 +478,9 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function getAccountPass()
     {
@@ -514,8 +517,9 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             throw new ItemException(__('Clave maestra actualizada', false) . '<br>' . __('Reinicie la sesión para cambiarla', false));
         }
 
-        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountIV(), CryptSession::getSessionKey());
-        $accountClearPass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey);
+        $key = CryptSession::getSessionKey();
+        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $key);
+        $accountClearPass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $key);
 
         if (!$isHistory) {
             $Account->incrementDecryptCounter();

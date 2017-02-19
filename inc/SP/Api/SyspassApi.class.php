@@ -56,6 +56,9 @@ class SyspassApi extends ApiBase
      * Devolver la clave de una cuenta
      *
      * @return string La cadena en formato JSON
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getAccountPassword()
@@ -85,7 +88,7 @@ class SyspassApi extends ApiBase
         $LogMessage->addDetails(__('Origen', false), 'API');
         $this->Log->writeLog();
 
-        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountIV(), $this->mPass);
+        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $this->mPass);
 
         $ret = [
             'itemId' => $accountId,
@@ -95,7 +98,7 @@ class SyspassApi extends ApiBase
         if ($this->getParam('details', false, 0)) {
             // Para evitar los caracteres especiales
             $AccountData->setAccountPass('');
-            $AccountData->setAccountIV('');
+            $AccountData->setAccountKey('');
 
             $ret['details'] = $AccountData;
         }

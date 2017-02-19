@@ -62,7 +62,6 @@ class Template
     /**
      * @param null  $file Archivo de plantilla a añadir
      * @param array $vars Variables a inicializar
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function __construct($file = null, array $vars = array())
     {

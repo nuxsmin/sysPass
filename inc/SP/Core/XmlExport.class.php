@@ -24,6 +24,7 @@
 
 namespace SP\Core;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Core\Crypt\Crypt;
@@ -300,6 +301,8 @@ class XmlExport
             }
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+        } catch (CryptoException $e) {
+            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
         }
     }
 
@@ -307,6 +310,8 @@ class XmlExport
      * Crear el nodo con los datos de los clientes
      *
      * #@throws SPException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     private function createCustomers()
     {

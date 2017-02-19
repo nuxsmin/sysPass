@@ -25,6 +25,7 @@
 namespace SP\Core\Crypt;
 
 use Defuse\Crypto\Crypto;
+use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
@@ -39,36 +40,78 @@ class Crypt
     /**
      * Encriptar datos con una clave segura
      *
-     * @param $data
-     * @param $securedKey
+     * @param string     $data
+     * @param string|Key $securedKey
+     * @param string     $password
      * @return string
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws CryptoException
      */
-    public static function encrypt($data, $securedKey)
+    public static function encrypt($data, $securedKey, $password = null)
     {
-        $key = Key::loadFromAsciiSafeString($securedKey);
+        try {
+            if ($securedKey instanceof Key) {
+                $key = $securedKey;
+            } elseif (!empty($password)) {
+                $key = self::unlockSecuredKey($securedKey, $password, false);
+            } else {
+                $key = Key::loadFromAsciiSafeString($securedKey);
+            }
 
-        return Crypto::encrypt($data, $key);
+            return Crypto::encrypt($data, $key);
+        } catch (CryptoException $e) {
+            debugLog($e->getMessage());
+
+            throw $e;
+        }
+    }
+
+    /**
+     * @param string $key
+     * @param string $password
+     * @param bool   $useAscii
+     * @return string|Key
+     * @throws CryptoException
+     */
+    public static function unlockSecuredKey($key, $password, $useAscii = true)
+    {
+        try {
+            if ($useAscii) {
+                return KeyProtectedByPassword::loadFromAsciiSafeString($key)->unlockKey($password)->saveToAsciiSafeString();
+            }
+
+            return KeyProtectedByPassword::loadFromAsciiSafeString($key)->unlockKey($password);
+        } catch (CryptoException $e) {
+            debugLog($e->getMessage());
+
+            throw $e;
+        }
     }
 
     /**
      * Desencriptar datos con una clave segura
      *
-     * @param $data
-     * @param $securedKey
+     * @param string     $data
+     * @param string|Key $securedKey
+     * @param string     $password
      * @return string
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws CryptoException
      */
-    public static function decrypt($data, $securedKey)
+    public static function decrypt($data, $securedKey, $password = null)
     {
-        $key = Key::loadFromAsciiSafeString($securedKey);
-
         try {
+            if ($securedKey instanceof Key) {
+                $key = $securedKey;
+            } elseif (!empty($password) && $securedKey instanceof KeyProtectedByPassword) {
+                $key = self::unlockSecuredKey($securedKey, $password);
+            } else {
+                $key = Key::loadFromAsciiSafeString($securedKey);
+            }
+
             return Crypto::decrypt($data, $key);
-        } catch (WrongKeyOrModifiedCiphertextException $e) {
-            return false;
+        } catch (CryptoException $e) {
+            debugLog($e->getMessage());
+
+            throw $e;
         }
 
     }
@@ -76,28 +119,23 @@ class Crypt
     /**
      * Securiza una clave de seguridad
      *
-     * @param $password
-     * @return string
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @param string $password
+     * @param bool   $useAscii
+     * @return string|Key
+     * @throws CryptoException
      */
-    public static function makeSecuredKey($password)
-    {
-        return KeyProtectedByPassword::createRandomPasswordProtectedKey($password)->saveToAsciiSafeString();
-    }
-
-    /**
-     * @param $key
-     * @param $password
-     * @return string
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     */
-    public static function unlockSecuredKey($key, $password)
+    public static function makeSecuredKey($password, $useAscii = true)
     {
         try {
-            return KeyProtectedByPassword::loadFromAsciiSafeString($key)->unlockKey($password)->saveToAsciiSafeString();
-        } catch (WrongKeyOrModifiedCiphertextException $e) {
-            return false;
+            if ($useAscii) {
+                return KeyProtectedByPassword::createRandomPasswordProtectedKey($password)->saveToAsciiSafeString();
+            }
+
+            return KeyProtectedByPassword::createRandomPasswordProtectedKey($password);
+        } catch (CryptoException $e) {
+            debugLog($e->getMessage());
+
+            throw $e;
         }
     }
 }

@@ -262,9 +262,9 @@ class Session
      *
      * @return string
      */
-    public static function getMPassPwd()
+    public static function getMPassKey()
     {
-        return self::getSessionKey('mPassPwd');
+        return self::getSessionKey('mPassKey');
     }
 
     /**
@@ -272,29 +272,9 @@ class Session
      *
      * @param $mPassPwd string La clave usada
      */
-    public static function setMPassPwd($mPassPwd)
+    public static function setMPassKey($mPassPwd)
     {
-        self::setSessionKey('mPassPwd', $mPassPwd);
-    }
-
-    /**
-     * Devuelve el vector de inicialización de la clave maestra
-     *
-     * @return string
-     */
-    public static function getMPassIV()
-    {
-        return self::getSessionKey('mPassIV');
-    }
-
-    /**
-     * Establece el vector de inicialización de la clave maestra
-     *
-     * @param $mPassIV string El vector de inicialización
-     */
-    public static function setMPassIV($mPassIV)
-    {
-        self::setSessionKey('mPassIV', $mPassIV);
+        self::setSessionKey('mPassKey', $mPassPwd);
     }
 
     /**

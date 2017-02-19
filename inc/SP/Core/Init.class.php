@@ -24,13 +24,16 @@
 
 namespace SP\Core;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountAcl;
 use SP\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
+use SP\Controller\MainActionController;
 use SP\Controller\MainController;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Plugin\PluginUtil;
+use SP\Core\Upgrade\Upgrade;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Log\Email;
@@ -86,6 +89,8 @@ class Init
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \phpmailer\phpmailerException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public static function start()
     {
@@ -259,7 +264,7 @@ class Init
      */
     private static function loadExtensions()
     {
-        $PluginsLoader = new \SplClassLoader('Defuse\Crypto', EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'php-encryption');
+        $PluginsLoader = new \SplClassLoader('Defuse\Crypto', EXTENSIONS_PATH);
         $PluginsLoader->setPrepend(false);
         $PluginsLoader->register();
 
@@ -306,15 +311,14 @@ class Init
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
-     * @param string $hint opcional, con una ayuda sobre el error
-     * @param bool $headers
-     * @throws \SP\Core\Exceptions\SPException
+     * @param string $hint    opcional, con una ayuda sobre el error
+     * @param bool   $headers
      */
     public static function initError($message, $hint = '', $headers = false)
     {
         debugLog(__FUNCTION__);
-        debugLog($message);
-        debugLog($hint);
+        debugLog(__($message));
+        debugLog(__($hint));
 
         if (Checks::isJson()) {
             $JsonResponse = new JsonResponse();
@@ -544,7 +548,6 @@ class Init
      *
      * @param bool $check sólo comprobar si está activado el modo
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkMaintenanceMode($check = false)
     {
@@ -590,8 +593,8 @@ class Init
      */
     private static function wrLogoutInfo()
     {
-        $inactiveTime = round((time() - Session::getLastActivity()) / 60, 2);
-        $totalTime = round((time() - Session::getStartActivity()) / 60, 2);
+        $inactiveTime = abs(round((time() - Session::getLastActivity()) / 60, 2));
+        $totalTime = abs(round((time() - Session::getStartActivity()) / 60, 2));
 
         $Log = new Log();
         $LogMessage = $Log->getLogMessage();
@@ -622,15 +625,25 @@ class Init
             return;
         }
 
-        $appVersion = (int)implode(Util::getVersion(true));
-
-        if (self::checkDbVersion($appVersion)) {
+        if ($version = Upgrade::checkDbVersion()) {
             $Log = new Log();
             $LogMessage = $Log->getLogMessage();
             $LogMessage->setAction(__('Actualización', false));
             $LogMessage->addDescription(__('Actualización de versión realizada.', false));
-            $LogMessage->addDetails(__('Versión', false), $appVersion);
+            $LogMessage->addDetails(__('Versión', false), $version);
             $LogMessage->addDetails(__('Tipo', false), 'db');
+            $Log->writeLog();
+
+            Email::sendEmail($LogMessage);
+
+            self::$UPDATED = true;
+        } elseif ($version = Upgrade::checkAppVersion()) {
+            $Log = new Log();
+            $LogMessage = $Log->getLogMessage();
+            $LogMessage->setAction(__('Actualización', false));
+            $LogMessage->addDescription(__('Actualización de versión realizada.', false));
+            $LogMessage->addDetails(__('Versión', false), $version);
+            $LogMessage->addDetails(__('Tipo', false), 'app');
             $Log->writeLog();
 
             Email::sendEmail($LogMessage);
@@ -640,95 +653,45 @@ class Init
     }
 
     /**
-     * Comrpueba y actualiza la versión de la aplicación.
+     * Inicializar la sesión de usuario
      *
-     * @param $appVersion
-     * @return bool
-     */
-    private static function checkDbVersion($appVersion)
-    {
-        $databaseVersion = (int)str_replace('.', '', ConfigDB::getValue('version'));
-
-        if ($databaseVersion < $appVersion
-            && Request::analyze('nodbupgrade', 0) === 0
-            && Upgrade::needDBUpgrade($databaseVersion)
-        ) {
-            if (!self::checkMaintenanceMode(true)) {
-                Upgrade::setUpgradeKey('db');
-            } else {
-                $action = Request::analyze('a');
-                $hash = Request::analyze('h');
-                $confirm = Request::analyze('chkConfirm', false, false, true);
-
-                if ($confirm === true
-                    && $action === 'upgrade'
-                    && $hash === Config::getConfig()->getUpgradeKey()
-                ) {
-                    try {
-                        Upgrade::doUpgrade($databaseVersion);
-
-                        ConfigDB::setValue('version', $appVersion);
-
-                        Config::getConfig()->setMaintenance(false);
-                        Config::getConfig()->setUpgradeKey('');
-                        Config::saveConfig();
-
-                        return true;
-                    } catch (SPException $e) {
-                        $hint = $e->getHint() . '<p class="center"><a href="index.php?nodbupgrade=1">' . __('Acceder') . '</a></p>';
-                        self::initError($e->getMessage(), $hint);
-                    }
-                } else {
-                    $controller = new MainController();
-                    $controller->getUpgrade();
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Inicialiar la sesión de usuario
-     *
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     private static function initSession()
     {
-        $sessionLifeTime = self::getSessionLifeTime();
+        $lastActivity = Session::getLastActivity();
 
         // Timeout de sesión
-        if (Session::getLastActivity() && (time() - Session::getLastActivity() > $sessionLifeTime)) {
+        if ($lastActivity > 0
+            && (time() - $lastActivity) > self::getSessionLifeTime()
+        ) {
             if (isset($_COOKIE[session_name()])) {
                 setcookie(session_name(), '', time() - 42000, '/');
             }
 
             self::wrLogoutInfo();
 
-            session_unset();
-            session_destroy();
-            session_start();
+            SessionUtil::restart();
             return;
         }
 
+        $sidStartTime = Session::getSidStartTime();
+
         // Regenerar el Id de sesión periódicamente para evitar fijación
-        if (Session::getSidStartTime() === 0) {
+        if ($sidStartTime === 0) {
             Session::setSidStartTime(time());
             Session::setStartActivity(time());
-        } else if (Session::getUserData()->getUserId() > 0
-            && time() - Session::getSidStartTime() > $sessionLifeTime / 2
-        ) {
-            $sessionMPass = CryptSession::getSessionKey();
+        } else if (time() - $sidStartTime > 120 && Session::getUserData()->getUserId() > 0) {
+            try {
+                CryptSession::reKey();
 
-            session_regenerate_id(true);
+                // Recargar los permisos del perfil de usuario
+                Session::setUserProfile(Profile::getItem()->getById(Session::getUserData()->getUserProfileId()));
+            } catch (CryptoException $e) {
+                debugLog($e->getMessage());
 
-            // Regenerar la clave maestra
-            CryptSession::saveSessionKey($sessionMPass);
-
-            Session::setSidStartTime(time());
-            // Recargar los permisos del perfil de usuario
-            Session::setUserProfile(Profile::getItem()->getById(Session::getUserData()->getUserProfileId()));
+                SessionUtil::restart();
+                return;
+            }
         }
 
         Session::setLastActivity(time());
@@ -741,11 +704,16 @@ class Init
      */
     private static function getSessionLifeTime()
     {
-        if (null === Session::getSessionTimeout()) {
-            Session::setSessionTimeout(Config::getConfig()->getSessionTimeout());
+        $timeout = Session::getSessionTimeout();
+
+        if (null === $timeout) {
+            $configTimeout = Config::getConfig()->getSessionTimeout();
+            Session::setSessionTimeout($configTimeout);
+
+            return $configTimeout;
         }
 
-        return Session::getSessionTimeout();
+        return $timeout;
     }
 
     /**

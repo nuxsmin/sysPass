@@ -48,8 +48,6 @@ class UserPreferencesUtil
      *
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \InvalidArgumentException
      */
     public static function migrate()
     {
@@ -93,8 +91,6 @@ class UserPreferencesUtil
      *
      * @param UserData $UserData
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \InvalidArgumentException
      */
     protected static function migrateTwoFA(UserData $UserData)
     {

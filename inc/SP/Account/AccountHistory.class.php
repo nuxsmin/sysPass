@@ -115,7 +115,7 @@ class AccountHistory extends AccountBase implements AccountInterface
                 . 'account_login,'
                 . 'account_url,'
                 . 'account_pass,'
-                . 'account_IV,'
+                . 'account_key,'
                 . 'account_notes,'
                 . 'account_countView,'
                 . 'account_countDecrypt,'
@@ -143,7 +143,7 @@ class AccountHistory extends AccountBase implements AccountInterface
                 . 'account_login,'
                 . 'account_url,'
                 . 'account_pass,'
-                . 'account_IV,'
+                . 'account_key,'
                 . 'account_notes,'
                 . 'account_countView,'
                 . 'account_countDecrypt,'
@@ -171,7 +171,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_login,'
             . 'acchistory_url,'
             . 'acchistory_pass,'
-            . 'acchistory_IV,'
+            . 'acchistory_key,'
             . 'acchistory_notes,'
             . 'acchistory_countView,'
             . 'acchistory_countDecrypt,'
@@ -277,16 +277,16 @@ class AccountHistory extends AccountBase implements AccountInterface
         $query = /** @lang SQL */
             'UPDATE accHistory SET '
             . 'acchistory_pass = :accountPass,'
-            . 'acchistory_IV = :accountIV,'
-            . 'acchistory_mPassHash = :newHash '
+            . 'acchistory_key = :accountKey,'
+            . 'acchistory_mPassHash = :hash '
             . 'WHERE acchistory_id = :id';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($AccountData->id, 'id');
         $Data->addParam($AccountData->pass, 'accountPass');
-        $Data->addParam($AccountData->iv, 'accountIV');
-        $Data->addParam($AccountData->hash, 'newHash');
+        $Data->addParam($AccountData->key, 'accountKey');
+        $Data->addParam($AccountData->hash, 'hash');
 
         return DB::getQuery($Data);
     }
@@ -305,7 +305,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_userGroupId AS account_userGroupId,'
             . 'acchistory_login AS account_login,'
             . 'acchistory_pass AS account_pass,'
-            . 'acchistory_IV AS account_IV,'
+            . 'acchistory_key AS account_key,'
             . 'customer_name '
             . 'FROM accHistory '
             . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
@@ -353,7 +353,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_login as account_login,'
             . 'acchistory_url as account_url,'
             . 'acchistory_pass as account_pass,'
-            . 'acchistory_IV as account_IV,'
+            . 'acchistory_key as account_key,'
             . 'acchistory_notes as account_notes,'
             . 'acchistory_countView as account_countView,'
             . 'acchistory_countDecrypt as account_countDecrypt,'
@@ -417,7 +417,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_login = :accountLogin,'
             . 'acchistory_url = :accountUrl,'
             . 'acchistory_pass = :accountPass,'
-            . 'acchistory_IV = :accountIV,'
+            . 'acchistory_key = :accountKey,'
             . 'acchistory_notes = :accountNotes,'
             . 'acchistory_dateAdd = :accountDateAdd,'
             . 'acchistory_dateEdit = :accountDateEdit,'
@@ -442,7 +442,7 @@ class AccountHistory extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountLogin(), 'accountLogin');
         $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
         $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
-        $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
+        $Data->addParam($this->accountData->getAccountKey(), 'accountKey');
         $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
         $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
         $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');

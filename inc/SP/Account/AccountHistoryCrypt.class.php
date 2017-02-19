@@ -24,9 +24,11 @@
 
 namespace SP\Account;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Config\ConfigDB;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Email;
@@ -84,7 +86,7 @@ class AccountHistoryCrypt
         $AccountDataBase = new \stdClass();
         $AccountDataBase->id = 0;
         $AccountDataBase->pass = '';
-        $AccountDataBase->iv = '';
+        $AccountDataBase->key = '';
         $AccountDataBase->hash = Hash::hashKey($currentMasterPass);
 
         foreach ($accountsPass as $account) {
@@ -103,23 +105,30 @@ class AccountHistoryCrypt
             } elseif (empty($account->acchistory_pass)) {
                 $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
                 continue;
-            } elseif (strlen($account->acchistory_IV) < 32) {
+            } elseif (strlen($account->acchistory_key) < 32) {
                 $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
             }
 
-            $decryptedPass = OldCrypt::getDecrypt($account->acchistory_pass, $account->acchistory_IV, $currentMasterPass);
-
-            $securedKey = Crypt::makeSecuredKey($currentMasterPass);
-
-            $AccountData->pass = Crypt::encrypt($decryptedPass, $securedKey);
-            $AccountData->iv = $securedKey;
-
             try {
+                $decryptedPass = OldCrypt::getDecrypt($account->acchistory_pass, $account->acchistory_key, $currentMasterPass);
+
+                $securedKey = Crypt::makeSecuredKey($currentMasterPass);
+
+                $AccountData->pass = Crypt::encrypt($decryptedPass, $securedKey, $currentMasterPass);
+                $AccountData->key = $securedKey;
+
+                if (strlen($securedKey) > 1000 || strlen($AccountData->pass) > 1000) {
+                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                }
+
                 $Account = new AccountHistory();
                 $Account->updateAccountPass($AccountData);
 
                 $accountsOk[] = $account->acchistory_id;
             } catch (SPException $e) {
+                $errorCount++;
+                $LogMessage->addDetails(__('Fallo al actualizar la clave del histórico', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
+            } catch (CryptoException $e) {
                 $errorCount++;
                 $LogMessage->addDetails(__('Fallo al actualizar la clave del histórico', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
             }
@@ -142,7 +151,7 @@ class AccountHistoryCrypt
     protected function getAccountsPassData()
     {
         $query = /** @lang SQL */
-            'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_IV, acchistory_mPassHash FROM accHistory';
+            'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_key, acchistory_mPassHash FROM accHistory';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -185,7 +194,7 @@ class AccountHistoryCrypt
         $AccountDataBase = new \stdClass();
         $AccountDataBase->id = 0;
         $AccountDataBase->pass = '';
-        $AccountDataBase->iv = '';
+        $AccountDataBase->key = '';
         $AccountDataBase->hash = Hash::hashKey($newMasterPass);
 
         foreach ($accountsPass as $account) {
@@ -204,23 +213,28 @@ class AccountHistoryCrypt
             } elseif (empty($account->acchistory_pass)) {
                 $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
                 continue;
-            } elseif (strlen($account->acchistory_IV) < 32) {
-                $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
             }
 
-            $currentSecuredKey = Crypt::unlockSecuredKey($account->acchistory_IV, $currentMasterPass);
-            $decryptedPass = Crypt::decrypt($account->acchistory_pass, $currentSecuredKey);
-
-            $newSecuredKey = Crypt::makeSecuredKey($newMasterPass);
-            $AccountData->acchistory_pass = Crypt::encrypt($decryptedPass, $newSecuredKey);
-            $AccountData->acchistory_IV = $newSecuredKey;
-
             try {
+                $currentSecuredKey = Crypt::unlockSecuredKey($account->acchistory_key, $currentMasterPass);
+                $decryptedPass = Crypt::decrypt($account->acchistory_pass, $currentSecuredKey);
+
+                $newSecuredKey = Crypt::makeSecuredKey($newMasterPass);
+                $AccountData->pass = Crypt::encrypt($decryptedPass, $newSecuredKey);
+                $AccountData->key = $newSecuredKey;
+
+                if (strlen($newSecuredKey) > 1000 || strlen($AccountData->pass) > 1000) {
+                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                }
+
                 $Account = new AccountHistory();
                 $Account->updateAccountPass($AccountData);
 
                 $accountsOk[] = $account->acchistory_id;
             } catch (SPException $e) {
+                $errorCount++;
+                $LogMessage->addDetails(__('Fallo al actualizar la clave del histórico', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
+            } catch (CryptoException $e) {
                 $errorCount++;
                 $LogMessage->addDetails(__('Fallo al actualizar la clave del histórico', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
             }

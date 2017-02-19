@@ -6,7 +6,7 @@
 
         <form id="frmUpgrade" method="post" action="index.php">
             <fieldset>
-                <legend><?php echo __('Actualización de BBDD'); ?></legend>
+                <legend><?php echo $legend; ?></legend>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="h" name="h" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
@@ -23,7 +23,7 @@
                     <?php echo __('Este código se encuentra en el archivo de configuración de sysPass con la etiqueta "upgradeKey"'); ?>
                 </div>
 
-                <?php if (count($constraints) > 0): ?>
+                <?php if ($version < 1316011001 && count($constraints) > 0): ?>
                     <div>
                         <ul class="errors">
                             <li class="msg-warning">
@@ -50,7 +50,7 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    autocomplete="off" min="1" max="1000">
                             <label class="mdl-textfield__label"
-                                   for="h"><?php echo __('Introducir un ID de usuario válido para cuentas'); ?></label>
+                                   for="userid"><?php echo __('Introducir un ID de usuario válido para cuentas'); ?></label>
                         </div>
                     <?php endif; ?>
 
@@ -62,7 +62,7 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    autocomplete="off" min="1" max="1000">
                             <label class="mdl-textfield__label"
-                                   for="h"><?php echo __('Introducir un ID de categoría válido para cuentas'); ?></label>
+                                   for="categoryid"><?php echo __('Introducir un ID de categoría válido para cuentas'); ?></label>
                         </div>
                     <?php endif; ?>
 
@@ -74,7 +74,7 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    autocomplete="off" min="1" max="1000">
                             <label class="mdl-textfield__label"
-                                   for="h"><?php echo __('Introducir un ID de cliente válido para cuentas'); ?></label>
+                                   for="customerid"><?php echo __('Introducir un ID de cliente válido para cuentas'); ?></label>
                         </div>
                     <?php endif; ?>
 
@@ -84,7 +84,7 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    autocomplete="off" min="1" max="1000">
                             <label class="mdl-textfield__label"
-                                   for="h"><?php echo __('Introducir un ID de grupo válido para usuarios'); ?></label>
+                                   for="groupid"><?php echo __('Introducir un ID de grupo válido para usuarios'); ?></label>
                         </div>
                     <?php endif; ?>
 
@@ -94,9 +94,36 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    autocomplete="off" min="1" max="1000">
                             <label class="mdl-textfield__label"
-                                   for="h"><?php echo __('Introducir un ID de perfil válido para usuarios'); ?></label>
+                                   for="profileid"><?php echo __('Introducir un ID de perfil válido para usuarios'); ?></label>
                         </div>
                     <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if ($version < 20117021901): ?>
+                    <div>
+                        <ul class="errors">
+                            <li class="msg-warning">
+                                <i class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
+                                <?php echo __('Esta actualización utiliza un nuevo esquema de encriptación, por lo que es necesario reencriptar los datos almacenados'); ?>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="masterkey" name="masterkey" type="password"
+                               class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
+                               maxlength="255" required/>
+                        <label class="mdl-textfield__label"
+                               for="masterkey"><?php echo __('Clave Maestra actual'); ?></label>
+                    </div>
+
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="userlogin" name="userlogin" type="text" required
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
+                               autocomplete="off">
+                        <label class="mdl-textfield__label"
+                               for="userlogin"><?php echo __('Introducir login de usuario válido'); ?></label>
+                    </div>
                 <?php endif; ?>
 
                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkConfirm">
@@ -105,7 +132,7 @@
                 </label>
 
                 <input type="hidden" name="a" value="<?php echo $action; ?>">
-                <input type="hidden" name="t" value="<?php echo $time; ?>">
+                <input type="hidden" name="type" value="<?php echo $type; ?>">
                 <input type="hidden" name="upgrade" value="1">
             </fieldset>
 

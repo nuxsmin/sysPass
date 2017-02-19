@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -73,12 +73,14 @@ abstract class PublicLinkBase extends ItemBase
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected final function createLinkPass()
     {
-        $securedKey = Crypt::makeSecuredKey(Config::getConfig()->getPasswordSalt() . $this->createLinkHash());
+        $key = Config::getConfig()->getPasswordSalt() . $this->createLinkHash();
+        $securedKey = Crypt::makeSecuredKey($key);
 
-        $this->itemData->setPass(Crypt::encrypt(CryptSession::getSessionKey(), $securedKey));
+        $this->itemData->setPass(Crypt::encrypt(CryptSession::getSessionKey(), $securedKey, $key));
         $this->itemData->setPassIV($securedKey);
     }
 

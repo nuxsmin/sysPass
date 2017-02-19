@@ -33,7 +33,6 @@ use SP\Api\ApiTokens;
 use SP\Auth\AuthUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Messages\LogMessage;
-use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\NoticeData;
@@ -212,6 +211,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     protected function userAction()
     {
@@ -299,7 +299,6 @@ class ItemActionController implements ItemControllerInterface
     /**
      * Guardar los datos de los campos personalizados del módulo
      *
-     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     protected function addCustomFieldData()
@@ -314,7 +313,6 @@ class ItemActionController implements ItemControllerInterface
     /**
      * Actualizar los datos de los campos personalizados del módulo
      *
-     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     protected function updateCustomFieldData()
@@ -884,6 +882,8 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function accountAction()
     {
@@ -963,6 +963,56 @@ class ItemActionController implements ItemControllerInterface
                 } elseif ($numAccounts === 1) {
                     $this->LogMessage->addDescription(__('Cuenta eliminada', false));
                     $this->LogMessage->addDetails(__('Nombre', false), $accounts->account_name);
+                }
+                break;
+        }
+
+        Email::sendEmail($this->LogMessage);
+
+        $this->JsonResponse->setStatus(0);
+    }
+
+    /**
+     * Acción para eliminar una cuenta del historial
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function accountHistoryAction()
+    {
+        $Account = new AccountHistory();
+
+        switch ($this->actionId) {
+            case ActionsInterface::ACTION_MGM_ACCOUNTS_EDIT_RESTORE:
+                AccountHistoryUtil::restoreFromHistory($this->itemId, Request::analyze('accountId', 0));
+
+                $this->LogMessage->setAction(__('Restaurar Cuenta', false));
+                $this->LogMessage->addDescription(__('Cuenta restaurada', false));
+                $this->LogMessage->addDetails(__('Nombre', false), AccountUtil::getAccountNameById($this->itemId));
+
+                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
+                break;
+            case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE_HISTORY:
+                if (is_array($this->itemId)) {
+                    $accounts = AccountHistoryUtil::getAccountNameByIdBatch($this->itemId);
+                    $numAccounts = count($accounts);
+                } else {
+                    $accounts = AccountHistoryUtil::getAccountNameById($this->itemId);
+                    $numAccounts = 1;
+                }
+
+                $Account->deleteAccount($this->itemId);
+
+                $this->LogMessage->setAction(__('Eliminar Cuenta (H)', false));
+
+                if ($numAccounts > 1) {
+                    $this->LogMessage->addDescription(__('Cuentas eliminadas', false));
+
+                    foreach ($accounts as $account) {
+                        $this->LogMessage->addDetails(__('Nombre', false), $account->acchistory_name);
+                    }
+                } elseif ($numAccounts === 1) {
+                    $this->LogMessage->addDescription(__('Cuenta eliminada', false));
+                    $this->LogMessage->addDetails(__('Nombre', false), $accounts->acchistory_name);
                 }
                 break;
         }
@@ -1127,58 +1177,7 @@ class ItemActionController implements ItemControllerInterface
             Notice::getItem($NoticeData)->add();
         }
 
-
         $this->LogMessage->addDescription(__('Solicitud realizada', false));
-        $this->JsonResponse->setStatus(0);
-    }
-
-    /**
-     * Acción para eliminar una cuenta del historial
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function accountHistoryAction()
-    {
-        $Account = new AccountHistory();
-
-        switch ($this->actionId) {
-            case ActionsInterface::ACTION_MGM_ACCOUNTS_EDIT_RESTORE:
-                AccountHistoryUtil::restoreFromHistory($this->itemId, Request::analyze('accountId', 0));
-
-                $this->LogMessage->setAction(__('Restaurar Cuenta', false));
-                $this->LogMessage->addDescription(__('Cuenta restaurada', false));
-                $this->LogMessage->addDetails(__('Nombre', false), AccountUtil::getAccountNameById($this->itemId));
-
-                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
-                break;
-            case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE_HISTORY:
-                if (is_array($this->itemId)) {
-                    $accounts = AccountHistoryUtil::getAccountNameByIdBatch($this->itemId);
-                    $numAccounts = count($accounts);
-                } else {
-                    $accounts = AccountHistoryUtil::getAccountNameById($this->itemId);
-                    $numAccounts = 1;
-                }
-
-                $Account->deleteAccount($this->itemId);
-
-                $this->LogMessage->setAction(__('Eliminar Cuenta (H)', false));
-
-                if ($numAccounts > 1) {
-                    $this->LogMessage->addDescription(__('Cuentas eliminadas', false));
-
-                    foreach ($accounts as $account) {
-                        $this->LogMessage->addDetails(__('Nombre', false), $account->acchistory_name);
-                    }
-                } elseif ($numAccounts === 1) {
-                    $this->LogMessage->addDescription(__('Cuenta eliminada', false));
-                    $this->LogMessage->addDetails(__('Nombre', false), $accounts->acchistory_name);
-                }
-                break;
-        }
-
-        Email::sendEmail($this->LogMessage);
-
         $this->JsonResponse->setStatus(0);
     }
 }

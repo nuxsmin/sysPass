@@ -41,6 +41,10 @@ define('SQL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'sql');
 
 define('DEBUG', false);
 
+// Required random_compat polyfill for random_bytes() and random_int()
+// @see https://github.com/paragonie/random_compat/tree/v2.0.4#random_compat
+require_once EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'random_compat' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'random.php';
+
 require 'SplClassLoader.php';
 
 $ClassLoader = new SplClassLoader('SP');

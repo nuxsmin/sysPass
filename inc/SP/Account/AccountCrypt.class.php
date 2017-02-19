@@ -24,7 +24,9 @@
 
 namespace SP\Account;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
@@ -95,23 +97,30 @@ class AccountCrypt
             } elseif (empty($account->account_pass)) {
                 $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
                 continue;
-            } elseif (strlen($account->account_IV) < 32) {
+            } elseif (strlen($account->account_key) < 32) {
                 $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
             }
 
-            $decryptedPass = OldCrypt::getDecrypt($account->account_pass, $account->account_IV, $currentMasterPass);
-
-            $securedKey = Crypt::makeSecuredKey($currentMasterPass);
-
-            $AccountData->setAccountPass(Crypt::encrypt($decryptedPass, $securedKey));
-            $AccountData->setAccountIV($securedKey);
-
             try {
+                $decryptedPass = OldCrypt::getDecrypt($account->account_pass, $account->account_key, $currentMasterPass);
+
+                $securedKey = Crypt::makeSecuredKey($currentMasterPass);
+
+                $AccountData->setAccountPass(Crypt::encrypt($decryptedPass, $securedKey, $currentMasterPass));
+                $AccountData->setAccountKey($securedKey);
+
+                if (strlen($securedKey) > 1000 || strlen($AccountData->getAccountPass()) > 1000) {
+                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                }
+
                 $Account = new Account($AccountData);
                 $Account->updateAccountPass(true);
 
                 $accountsOk[] = $account->account_id;
             } catch (SPException $e) {
+                $errorCount++;
+                $LogMessage->addDetails(__('Fallo al actualizar la clave de la cuenta', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
+            } catch (CryptoException $e) {
                 $errorCount++;
                 $LogMessage->addDetails(__('Fallo al actualizar la clave de la cuenta', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
             }
@@ -126,6 +135,21 @@ class AccountCrypt
         return true;
     }
 
+    /**
+     * Obtener los datos relativos a la clave de todas las cuentas.
+     *
+     * @return array Con los datos de la clave
+     */
+    protected function getAccountsPassData()
+    {
+        $query = /** @lang SQL */
+            'SELECT account_id, account_name, account_pass, account_key FROM accounts';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return DB::getResultsArray($Data);
+    }
 
     /**
      * Actualiza las claves de todas las cuentas con la nueva clave maestra.
@@ -173,23 +197,28 @@ class AccountCrypt
             } elseif (empty($account->account_pass)) {
                 $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
                 continue;
-            } elseif (strlen($account->account_IV) < 32) {
-                $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
             }
 
-            $currentSecuredKey = Crypt::unlockSecuredKey($account->account_IV, $currentMasterPass);
-            $decryptedPass = Crypt::decrypt($account->account_pass, $currentSecuredKey);
-
-            $newSecuredKey = Crypt::makeSecuredKey($newMasterPass);
-            $AccountData->setAccountPass(Crypt::encrypt($decryptedPass, $newSecuredKey));
-            $AccountData->setAccountIV($newSecuredKey);
-
             try {
+                $currentSecuredKey = Crypt::unlockSecuredKey($account->account_key, $currentMasterPass);
+                $decryptedPass = Crypt::decrypt($account->account_pass, $currentSecuredKey);
+
+                $newSecuredKey = Crypt::makeSecuredKey($newMasterPass);
+                $AccountData->setAccountPass(Crypt::encrypt($decryptedPass, $newSecuredKey));
+                $AccountData->setAccountKey($newSecuredKey);
+
+                if (strlen($newSecuredKey) > 1000 || strlen($AccountData->getAccountPass()) > 1000) {
+                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                }
+
                 $Account = new Account($AccountData);
                 $Account->updateAccountPass(true);
 
                 $accountsOk[] = $account->account_id;
             } catch (SPException $e) {
+                $errorCount++;
+                $LogMessage->addDetails(__('Fallo al actualizar la clave de la cuenta', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
+            } catch (CryptoException $e) {
                 $errorCount++;
                 $LogMessage->addDetails(__('Fallo al actualizar la clave de la cuenta', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
             }
@@ -202,21 +231,5 @@ class AccountCrypt
         Email::sendEmail($LogMessage);
 
         return true;
-    }
-
-    /**
-     * Obtener los datos relativos a la clave de todas las cuentas.
-     *
-     * @return array Con los datos de la clave
-     */
-    protected function getAccountsPassData()
-    {
-        $query = /** @lang SQL */
-            'SELECT account_id, account_name, account_pass, account_IV FROM accounts';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        return DB::getResultsArray($Data);
     }
 }

@@ -92,8 +92,6 @@ trait RequestControllerTrait
 
     /**
      * Comprobaciones antes de realizar una acción
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     protected function preActionChecks()
     {
@@ -104,8 +102,6 @@ trait RequestControllerTrait
 
     /**
      * Acción no disponible
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     protected function invalidAction()
     {
@@ -115,8 +111,6 @@ trait RequestControllerTrait
 
     /**
      * Comprobar si la sesión está activa
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     protected function checkSession()
     {
