@@ -109,7 +109,6 @@ class Database implements AuthInterface
 
         return $queryRes !== false
             && $Data->getQueryNumRows() === 1
-            && (Hash::checkHashKey($this->UserData->getUserPass(), $queryRes->getUserPass())
-            || hash_equals($queryRes->getUserPass(), crypt($this->UserData->getUserPass(), $queryRes->getUserHashSalt())));
+            && Hash::checkHashKey($this->UserData->getUserPass(), $queryRes->getUserPass());
     }
 }
