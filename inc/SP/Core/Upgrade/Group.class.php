@@ -63,7 +63,7 @@ class Group
             DB::getQuery($Data);
 
             $query = /** @lang SQL */
-                'DELETE FROM usrToGroups WHERE usertogroup_groupId NOT IN (' . $paramsIn . ') OR usertogroup_groupId IS NULL';
+                'DELETE FROM usrToGroups WHERE usertogroup_groupId <> ? AND usertogroup_groupId NOT IN (' . $paramsIn . ') OR usertogroup_groupId IS NULL';
             $Data->setQuery($query);
 
             DB::getQuery($Data);

@@ -33,6 +33,11 @@ use SP\Storage\QueryData;
  */
 class Check
 {
+    /**
+     * Comprobar si hay conflictos para aplicar las restricciones
+     *
+     * @return mixed
+     */
     public static function checkConstraints()
     {
         $query = /** @lang SQL */
