@@ -30,6 +30,7 @@ use SP\Core\DiFactory;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Messages\LogMessage;
 use SP\Log\Log;
 use SP\Util\Util;
 
@@ -249,7 +250,7 @@ class DB
             debugLog('Exception: ' . $e->getMessage());
             debugLog(ob_get_clean());
 
-            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), '', $e->getCode());
+            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), '', $e->getCode(), $e);
         }
     }
 
@@ -290,17 +291,21 @@ class DB
     {
         $caller = Util::traceLastCall($queryFunction);
 
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
+        $LogMessage = new LogMessage();
         $LogMessage->setAction($caller);
         $LogMessage->addDescription(__('Error en la consulta', false));
         $LogMessage->addDescription(sprintf('%s (%s)', $errorMsg, $errorCode));
         $LogMessage->addDetails('SQL', DBUtil::escape($query));
-        $Log->setLogLevel(Log::ERROR);
-        $Log->writeLog();
 
         debugLog($LogMessage->getDescription(), true);
         debugLog($LogMessage->getDetails());
+
+        // Solo registrar eventos de ls BD si no son consultas del registro de eventos
+        if ($caller !== 'writeLog') {
+            $Log = new Log($LogMessage);
+            $Log->setLogLevel(Log::ERROR);
+            $Log->writeLog();
+        }
     }
 
     /**
@@ -345,6 +350,8 @@ class DB
         try {
             $db = new DB();
             $db->doQuery($queryData);
+
+            return true;
         } catch (SPException $e) {
             $queryData->setQueryStatus($e->getCode());
 
@@ -352,12 +359,10 @@ class DB
 
             if ($e->getCode() === 23000) {
                 throw new ConstraintException(SPException::SP_ERROR, __('Restricción de integridad', false), $e->getMessage(), $e->getCode());
-            } else {
-                throw new QueryException(SPException::SP_ERROR, $errorMessage, $e->getMessage(), $e->getCode());
             }
-        }
 
-        return true;
+            throw new QueryException(SPException::SP_ERROR, $errorMessage, $e->getMessage(), $e->getCode());
+        }
     }
 
     /**

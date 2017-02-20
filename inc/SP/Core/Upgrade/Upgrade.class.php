@@ -52,7 +52,7 @@ defined('APP_ROOT') || die();
  */
 class Upgrade
 {
-    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501, 1316100601, 20017011302, 20017011701, 20017012901, 20117021901];
+    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316100601, 20017011302, 20017011701, 20017012901, 20117021901];
     private static $cfgUpgrade = [1124, 1316020501, 20017011202];
     private static $auxUpgrade = [12001, 12002, 20017010901, 20017011202];
     private static $appUpgrade = [20117021901];
@@ -61,34 +61,32 @@ class Upgrade
      * Inicia el proceso de actualización de la BBDD.
      *
      * @param int $version con la versión de la BBDD actual
-     * @param     $type
      * @return bool
      * @throws SPException
      */
-    public static function doUpgrade($version, $type)
+    public static function doUpgrade($version)
     {
-        if ($type === 'db') {
-            foreach (self::$dbUpgrade as $upgradeVersion) {
-                if ($version < $upgradeVersion) {
-                    if (self::auxPreDbUpgrade($upgradeVersion) === false) {
-                        throw new SPException(SPException::SP_CRITICAL,
-                            __('Error al aplicar la actualización auxiliar', false),
-                            __('Compruebe el registro de eventos para más detalles', false));
-                    }
-
-                    if (self::upgradeDB($upgradeVersion) === false) {
-                        throw new SPException(SPException::SP_CRITICAL, __('Error al aplicar la actualización de la Base de Datos', false),
-                            __('Compruebe el registro de eventos para más detalles', false));
-                    }
-                }
-            }
-        } elseif ($type === 'app') {
-            foreach (self::$appUpgrade as $upgradeVersion) {
-                if ($version < $upgradeVersion && self::appUpgrades($upgradeVersion) === false) {
+        foreach (self::$dbUpgrade as $upgradeVersion) {
+            if ($version < $upgradeVersion) {
+                if (self::auxPreDbUpgrade($upgradeVersion) === false) {
                     throw new SPException(SPException::SP_CRITICAL,
-                        __('Error al aplicar la actualización de la aplicación', false),
+                        __('Error al aplicar la actualización auxiliar', false),
                         __('Compruebe el registro de eventos para más detalles', false));
                 }
+
+                if (self::upgradeDB($upgradeVersion) === false) {
+                    throw new SPException(SPException::SP_CRITICAL,
+                        __('Error al aplicar la actualización de la Base de Datos', false),
+                        __('Compruebe el registro de eventos para más detalles', false));
+                }
+            }
+        }
+
+        foreach (self::$appUpgrade as $upgradeVersion) {
+            if ($version < $upgradeVersion && self::appUpgrades($upgradeVersion) === false) {
+                throw new SPException(SPException::SP_CRITICAL,
+                    __('Error al aplicar la actualización de la aplicación', false),
+                    __('Compruebe el registro de eventos para más detalles', false));
             }
         }
 
@@ -113,8 +111,11 @@ class Upgrade
     {
         switch ($version) {
             case 1316011001:
+                return self::upgradeDB(1300000000);
+            case 1316100601:
                 return
-                    UserUpgrade::fixUsersId(Request::analyze('userid', 1))
+                    Account::fixAccountsId()
+                    && UserUpgrade::fixUsersId(Request::analyze('userid', 1))
                     && Group::fixGroupId(Request::analyze('groupid', 1))
                     && Profile::fixProfilesId(Request::analyze('profileid', 1))
                     && Category::fixCategoriesId(Request::analyze('categoryid', 1))
@@ -139,7 +140,7 @@ class Upgrade
 
         $queries = self::getQueriesFromFile($version);
 
-        if (count($queries) === 0) {
+        if (count($queries) === 0 || (int)ConfigDB::getValue('version') === $version) {
             $LogMessage->addDescription(__('No es necesario actualizar la Base de Datos.', false));
             $Log->writeLog();
             return true;
@@ -161,6 +162,8 @@ class Upgrade
                 return false;
             }
         }
+
+        ConfigDB::setValue('version', $version);
 
         $LogMessage->addDescription(__('Actualización de la Base de Datos realizada correctamente.', false));
         $Log->writeLog();
@@ -210,9 +213,7 @@ class Upgrade
                     $databaseVersion = (int)str_replace('.', '', ConfigDB::getValue('version'));
 
                     if ($databaseVersion < $version) {
-                        if (self::upgradeDB($version)) {
-                            ConfigDB::setValue('version', $version);
-                        } else {
+                        if (!self::upgradeDB($version)) {
                             $dbResult = false;
                         }
                     }
@@ -225,8 +226,8 @@ class Upgrade
                     return $dbResult === true
                         && is_object($UserData)
                         && !empty($masterPass)
-                        && Crypt::migrateHash($masterPass)
                         && Crypt::migrate($masterPass)
+                        && Crypt::migrateHash($masterPass)
                         && UserMigrate::setMigrateUsers();
             }
         } catch (SPException $e) {

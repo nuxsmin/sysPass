@@ -51,18 +51,26 @@ class Crypt
     public static function migrate(&$masterPass)
     {
         try {
-            DB::beginTransaction();
+            if (!DB::beginTransaction()) {
+                throw new SPException(SPException::SP_ERROR, __('No es posible iniciar una transacción', false));
+            }
 
             self::migrateAccounts($masterPass);
             self::migrateCustomFields($masterPass);
 
-            DB::endTransaction();
+            if (!DB::endTransaction()) {
+                throw new SPException(SPException::SP_ERROR, __('No es posible finalizar una transacción', false));
+            }
         } catch (CryptoException $e) {
-            DB::rollbackTransaction();
+            if (DB::rollbackTransaction()) {
+                debugLog('Rollback');
+            }
 
             return false;
         } catch (SPException $e) {
-            DB::rollbackTransaction();
+            if (DB::rollbackTransaction()) {
+                debugLog('Rollback');
+            }
 
             return false;
         }

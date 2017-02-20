@@ -55,6 +55,8 @@ class AccountHistoryCrypt
      */
     public function updateOldPass(&$currentMasterPass)
     {
+        set_time_limit(300);
+
         $accountsOk = [];
         $demoEnabled = Checks::demoIsEnabled();
         $errorCount = 0;

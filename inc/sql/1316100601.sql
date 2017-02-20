@@ -11,9 +11,6 @@ ALTER TABLE `accHistory`
   ADD INDEX `fk_accHistory_categories_id_idx` (`acchistory_categoryId` ASC),
   ADD INDEX `fk_accHistory_customers_id_idx` (`acchistory_customerId` ASC);
 
-ALTER TABLE `accTags`
-  CHANGE COLUMN `acctag_accountId` `acctag_accountId` SMALLINT(10) UNSIGNED NOT NULL;
-
 ALTER TABLE `accUsers`
   DROP COLUMN `accuser_id`,
   CHANGE COLUMN `accuser_accountId` `accuser_accountId` SMALLINT(5) UNSIGNED NOT NULL,
@@ -34,6 +31,7 @@ ALTER TABLE `accounts`
 ALTER TABLE `authTokens`
   CHANGE COLUMN `authtoken_userId` `authtoken_userId` SMALLINT(5) UNSIGNED NOT NULL,
   ADD INDEX `fk_authTokens_users_id_idx` (`authtoken_userId` ASC, `authtoken_createdBy` ASC);
+
 ALTER TABLE `log`
   CHANGE COLUMN `log_userId` `log_userId` SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE COLUMN `log_description` `log_description` TEXT NULL DEFAULT NULL,
@@ -61,8 +59,8 @@ ALTER TABLE `usrToGroups`
   DROP PRIMARY KEY;
 
 ALTER TABLE `accGroups`
-CHANGE COLUMN `accgroup_accountId` `accgroup_accountId` SMALLINT(5) UNSIGNED NOT NULL ,
-CHANGE COLUMN `accgroup_groupId` `accgroup_groupId` SMALLINT(5) UNSIGNED NOT NULL;
+  CHANGE COLUMN `accgroup_accountId` `accgroup_accountId` SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE COLUMN `accgroup_groupId` `accgroup_groupId` SMALLINT(5) UNSIGNED NOT NULL;
 
 ALTER TABLE `accFavorites`
   ADD CONSTRAINT `fk_accFavorites_accounts_id`
@@ -278,9 +276,7 @@ ALTER TABLE `accHistory`
   AFTER `accHistory_passDateChange`,
   ADD INDEX `fk_accHistory_userGroup_id_idx` (`acchistory_userGroupId` ASC);
 
-CREATE OR REPLACE ALGORITHM = UNDEFINED
-  DEFINER = CURRENT_USER
-  SQL SECURITY DEFINER VIEW `account_data_v` AS
+CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFINER VIEW `account_data_v` AS
   SELECT
     `accounts`.`account_id`                          AS `account_id`,
     `accounts`.`account_name`                        AS `account_name`,
@@ -318,9 +314,7 @@ CREATE OR REPLACE ALGORITHM = UNDEFINED
       ON ((`accounts`.`account_customerId` = `customers`.`customer_id`))) LEFT JOIN `publicLinks`
       ON ((`accounts`.`account_id` = `publicLinks`.`publicLink_itemId`)));
 
-CREATE OR REPLACE ALGORITHM = UNDEFINED
-  DEFINER = CURRENT_USER
-  SQL SECURITY DEFINER VIEW `account_search_v` AS
+CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFINER VIEW `account_search_v` AS
   SELECT DISTINCT
     `accounts`.`account_id`                                        AS `account_id`,
     `accounts`.`account_customerId`                                AS `account_customerId`,
@@ -358,27 +352,3 @@ ALTER TABLE `accounts`
 ALTER TABLE `categories`
   ADD COLUMN `category_hash` VARBINARY(40) NOT NULL DEFAULT 0
   AFTER `category_description`;
-
-CREATE TABLE `plugins` (
-  `plugin_id`      INT UNSIGNED    NOT NULL AUTO_INCREMENT,
-  `plugin_name`    VARCHAR(100)    NOT NULL,
-  `plugin_data`    VARBINARY(5000) NULL,
-  `plugin_enabled` BIT(1)          NOT NULL DEFAULT b'0',
-  PRIMARY KEY (`plugin_id`),
-  UNIQUE INDEX `plugin_name_UNIQUE` (`plugin_name` ASC)
-);
-
-CREATE TABLE `notices` (
-  `notice_id`          INT UNSIGNED         NOT NULL AUTO_INCREMENT,
-  `notice_type`        VARCHAR(100)         NULL,
-  `notice_component`   VARCHAR(100)         NOT NULL,
-  `notice_description` VARCHAR(500)         NOT NULL,
-  `notice_date`        INT UNSIGNED         NOT NULL,
-  `notice_checked`     BIT(1)               NULL     DEFAULT b'0',
-  `notice_userId`      SMALLINT(5) UNSIGNED NULL,
-  `notice_sticky`      BIT(1)               NULL     DEFAULT b'0',
-  `notice_onlyAdmin`   BIT(1)               NULL     DEFAULT b'0',
-  PRIMARY KEY (`notice_id`),
-  INDEX `IDX_userId` (`notice_userId` ASC, `notice_checked` ASC, `notice_date` ASC),
-  INDEX `IDX_component` (`notice_component` ASC, `notice_date` ASC, `notice_checked` ASC, `notice_userId` ASC)
-);

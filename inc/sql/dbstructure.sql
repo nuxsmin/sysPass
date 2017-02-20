@@ -222,6 +222,19 @@ CREATE TABLE `accHistory` (
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+DROP TABLE IF EXISTS `tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tags` (
+  `tag_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tag_name` varchar(45) NOT NULL,
+  `tag_hash` binary(40) NOT NULL,
+  PRIMARY KEY (`tag_id`),
+  UNIQUE KEY `tag_hash_UNIQUE` (`tag_hash`),
+  KEY `IDX_name` (`tag_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 DROP TABLE IF EXISTS `accTags`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -339,19 +352,6 @@ CREATE TABLE `publicLinks` (
   UNIQUE KEY `unique_publicLink_accountId` (`publicLink_itemId`),
   KEY `IDX_itemId` (`publicLink_itemId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-DROP TABLE IF EXISTS `tags`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tags` (
-  `tag_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `tag_name` varchar(45) NOT NULL,
-  `tag_hash` binary(40) NOT NULL,
-  PRIMARY KEY (`tag_id`),
-  UNIQUE KEY `tag_hash_UNIQUE` (`tag_hash`),
-  KEY `IDX_name` (`tag_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `usrPassRecover`;

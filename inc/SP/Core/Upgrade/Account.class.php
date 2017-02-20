@@ -29,35 +29,25 @@ use SP\Storage\DB;
 use SP\Storage\QueryData;
 
 /**
- * Class Group
+ * Class Account
+ *
  * @package SP\Core\Upgrade
  */
-class Group
+class Account
 {
     /**
-     * Actualizar registros con grupos no existentes
-     * @param int $groupId Id de grupo por defecto
+     * Actualizar registros con usuarios no existentes
+     *
      * @return bool
      */
-    public static function fixGroupId($groupId)
+    public static function fixAccountsId()
     {
-        $Data = new QueryData();
-        $Data->setQuery('SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id');
-
-        $groups = DB::getResultsArray($Data);
-
-        $paramsIn = trim(str_repeat(',?', count($groups)), ',');
-        $Data->addParam($groupId);
-
-        foreach ($groups as $group) {
-            $Data->addParam($group->usergroup_id);
-        }
-
         try {
             DB::beginTransaction();
 
+            $Data = new QueryData();
             $query = /** @lang SQL */
-                'UPDATE usrData SET user_groupId = ? WHERE user_groupId NOT IN (' . $paramsIn . ') OR user_groupId IS NULL';
+                'DELETE FROM accUsers WHERE accuser_accountId NOT IN (SELECT account_id FROM accounts) OR accuser_accountId IS NULL';
             $Data->setQuery($query);
 
             DB::getQuery($Data);
