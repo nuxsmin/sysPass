@@ -24,7 +24,6 @@
 
 namespace SP\Import;
 
-use Import\XmlFileImport;
 use SP\Core\Exceptions\SPException;
 
 defined('APP_ROOT') || die();
