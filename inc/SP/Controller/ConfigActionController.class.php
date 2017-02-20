@@ -651,8 +651,8 @@ class ConfigActionController implements ItemControllerInterface
         }
 
         $ImportParams = new ImportParams();
-        $ImportParams->setDefaultUser(Request::analyze('defUser', Session::getUserData()->getUserId()));
-        $ImportParams->setDefaultGroup(Request::analyze('defGroup', Session::getUserData()->getUserGroupId()));
+        $ImportParams->setDefaultUser(Request::analyze('import_defaultuser', Session::getUserData()->getUserId()));
+        $ImportParams->setDefaultGroup(Request::analyze('import_defaultgroup', Session::getUserData()->getUserGroupId()));
         $ImportParams->setImportPwd(Request::analyzeEncrypted('importPwd'));
         $ImportParams->setImportMasterPwd(Request::analyzeEncrypted('importMasterPwd'));
         $ImportParams->setCsvDelimiter(Request::analyze('csvDelimiter'));
