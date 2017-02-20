@@ -37,4 +37,4 @@ CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFI
         (((`accounts`
         LEFT JOIN `categories` ON ((`accounts`.`account_categoryId` = `categories`.`category_id`)))
         LEFT JOIN `usrGroups` `ug` ON ((`accounts`.`account_userGroupId` = `ug`.`usergroup_id`)))
-        LEFT JOIN `customers` ON ((`customers`.`customer_id` = `accounts`.`account_customerId`)))
+        LEFT JOIN `customers` ON ((`customers`.`customer_id` = `accounts`.`account_customerId`)));

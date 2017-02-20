@@ -128,7 +128,9 @@ class AccountForm extends FormBase implements FormInterface
      */
     protected function checkPass()
     {
-        if (!$this->AccountData->getAccountPass()) {
+        if ($this->AccountData->getAccountParentId() > 0) {
+            return;
+        } elseif (!$this->AccountData->getAccountPass()) {
             throw new ValidationException(__('Es necesaria una clave', false));
         } elseif (Request::analyzeEncrypted('passR') !== $this->AccountData->getAccountPass()) {
             throw new ValidationException(__('Las claves no coinciden', false));

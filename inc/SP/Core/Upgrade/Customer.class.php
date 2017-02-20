@@ -23,17 +23,21 @@
  */
 
 namespace SP\Core\Upgrade;
+
+use SP\Core\Exceptions\SPException;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
 /**
  * Class Customer
+ *
  * @package SP\Core\Upgrade
  */
 class Customer
 {
     /**
      * Actualizar registros con clientes no existentes
+     *
      * @param int $customerId Id de cliente por defecto
      * @return bool
      */
@@ -51,18 +55,28 @@ class Customer
             $Data->addParam($customer->customer_id);
         }
 
-        $query = /** @lang SQL */
-            'UPDATE accHistory SET acchistory_customerId = ? WHERE acchistory_customerId NOT IN (' . $paramsIn . ')';
-        $Data->setQuery($query);
+        try {
+            DB::beginTransaction();
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accHistory SET acchistory_customerId = ? WHERE acchistory_customerId NOT IN (' . $paramsIn . ') OR acchistory_customerId IS NULL';
+            $Data->setQuery($query);
 
-        $query = /** @lang SQL */
-            'UPDATE accounts SET account_customerId = ? WHERE account_customerId NOT IN (' . $paramsIn . ')';
-        $Data->setQuery($query);
+            DB::getQuery($Data);
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accounts SET account_customerId = ? WHERE account_customerId NOT IN (' . $paramsIn . ') OR account_customerId IS NULL';
+            $Data->setQuery($query);
 
-        return true;
+            DB::getQuery($Data);
+
+            DB::endTransaction();
+
+            return true;
+        } catch (SPException $e) {
+            DB::rollbackTransaction();
+
+            return false;
+        }
     }
 }

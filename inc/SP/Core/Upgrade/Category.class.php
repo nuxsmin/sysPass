@@ -24,17 +24,20 @@
 
 namespace SP\Core\Upgrade;
 
+use SP\Core\Exceptions\SPException;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
 /**
  * Class Category
+ *
  * @package SP\Core\Upgrade
  */
 class Category
 {
     /**
      * Actualizar registros con categorías no existentes
+     *
      * @param int $categoryId Id de categoría por defecto
      * @return bool
      */
@@ -52,18 +55,28 @@ class Category
             $Data->addParam($category->category_id);
         }
 
-        $query = /** @lang SQL */
-            'UPDATE accHistory SET acchistory_categoryId = ? WHERE acchistory_categoryId NOT IN (' . $paramsIn . ')';
-        $Data->setQuery($query);
+        try {
+            DB::beginTransaction();
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accHistory SET acchistory_categoryId = ? WHERE acchistory_categoryId NOT IN (' . $paramsIn . ') OR acchistory_categoryId IS NULL';
+            $Data->setQuery($query);
 
-        $query = /** @lang SQL */
-            'UPDATE accounts SET account_categoryId = ? WHERE account_categoryId NOT IN (' . $paramsIn . ')';
-        $Data->setQuery($query);
+            DB::getQuery($Data);
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accounts SET account_categoryId = ? WHERE account_categoryId NOT IN (' . $paramsIn . ') OR account_categoryId IS NULL';
+            $Data->setQuery($query);
 
-        return true;
+            DB::getQuery($Data);
+
+            DB::endTransaction();
+
+            return true;
+        } catch (SPException $e) {
+            DB::rollbackTransaction();
+
+            return false;
+        }
     }
 }

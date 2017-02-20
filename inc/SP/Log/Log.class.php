@@ -45,6 +45,10 @@ class Log extends ActionLog
      * @var int
      */
     public static $numRows = 0;
+    /**
+     * @var int
+     */
+    private static $logDbEnabled = 1;
 
     /**
      * Obtener los eventos guardados.
@@ -120,6 +124,7 @@ class Log extends ActionLog
     public function writeLog($resetDescription = false)
     {
         if ((defined('IS_INSTALLER') && IS_INSTALLER === 1)
+            || self::$logDbEnabled === 0
             || DiFactory::getDBStorage()->getDbStatus() === 1
         ) {
             debugLog('Action: ' . $this->LogMessage->getAction() . ' -- Description: ' . $this->LogMessage->getDescription() . ' -- Details: ' . $this->LogMessage->getDetails());
@@ -164,8 +169,11 @@ class Log extends ActionLog
         try {
             DB::getQuery($Data);
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
-            debugLog($e->getHint());
+            debugLog(__($e->getMessage()), true);
+            debugLog(__($e->getHint()));
+
+            // Desactivar el log a BD si falla
+            self::$logDbEnabled = 0;
         }
 
         Language::unsetAppLocales();

@@ -24,17 +24,20 @@
 
 namespace SP\Core\Upgrade;
 
+use SP\Core\Exceptions\SPException;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
 /**
  * Class User
+ *
  * @package SP\Core\Upgrade
  */
 class User
 {
     /**
      * Actualizar registros con usuarios no existentes
+     *
      * @param int $userId Id de usuario por defecto
      * @return bool
      */
@@ -52,36 +55,46 @@ class User
             $Data->addParam($user->user_id);
         }
 
-        $query = /** @lang SQL */
-            'UPDATE accounts SET account_userId = ? WHERE account_userId NOT IN (' . $paramsIn . ')';
-        $Data->setQuery($query);
+        try {
+            DB::beginTransaction();
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accounts SET account_userId = ? WHERE account_userId NOT IN (' . $paramsIn . ') OR account_userId IS NULL';
+            $Data->setQuery($query);
 
-        $query = /** @lang SQL */
-            'UPDATE accounts SET account_userEditId = ? WHERE account_userEditId NOT IN (' . $paramsIn . ')';
-        $Data->setQuery($query);
+            DB::getQuery($Data);
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accounts SET account_userEditId = ? WHERE account_userEditId NOT IN (' . $paramsIn . ') OR account_userEditId IS NULL';
+            $Data->setQuery($query);
 
-        $query = /** @lang SQL */
-            'UPDATE accHistory SET acchistory_userId = ? WHERE acchistory_userId NOT IN (' . $paramsIn . ')';
-        $Data->setQuery($query);
+            DB::getQuery($Data);
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accHistory SET acchistory_userId = ? WHERE acchistory_userId NOT IN (' . $paramsIn . ') OR acchistory_userId IS NULL';
+            $Data->setQuery($query);
 
-        $query = /** @lang SQL */
-            'UPDATE accHistory SET acchistory_userEditId = ? WHERE acchistory_userEditId NOT IN (' . $paramsIn . ')';
-        $Data->setQuery($query);
+            DB::getQuery($Data);
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'UPDATE accHistory SET acchistory_userEditId = ? WHERE acchistory_userEditId NOT IN (' . $paramsIn . ') OR acchistory_userEditId IS NULL';
+            $Data->setQuery($query);
 
-        $query = /** @lang SQL */
-            'DELETE FROM usrPassRecover WHERE userpassr_userId <> ? AND userpassr_userId NOT IN (' . $paramsIn . ')';
-        $Data->setQuery($query);
+            DB::getQuery($Data);
 
-        DB::getQuery($Data);
+            $query = /** @lang SQL */
+                'DELETE FROM usrPassRecover WHERE userpassr_userId <> ? AND userpassr_userId NOT IN (' . $paramsIn . ')';
+            $Data->setQuery($query);
 
-        return true;
+            DB::getQuery($Data);
+
+            DB::endTransaction();
+
+            return true;
+        } catch (SPException $e) {
+            DB::rollbackTransaction();
+
+            return false;
+        }
     }
 }

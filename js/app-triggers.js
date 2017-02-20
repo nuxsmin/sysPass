@@ -349,10 +349,12 @@ sysPass.Triggers = function (Common) {
                     if ($this[0].value > 0) {
                         $pass.each(function () {
                             $(this).prop("disabled", "true");
+                            $(this).prop("required", "false");
                         });
                     } else {
                         $pass.each(function () {
                             $(this).prop("disabled", "");
+                            $(this).prop("required", "true");
                         });
                     }
                 });

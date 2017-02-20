@@ -226,10 +226,7 @@ class Installer
                 $sth->execute([$this->InstallData->getDbUser(), $this->InstallData->getDbAuthHost()]);
 
                 // Si no existe el usuario, se intenta crear
-                if ((int)$sth->fetchColumn() === 0
-                    // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
-                    && $this->InstallData->getDbUser() != $this->Config->getDbUser()
-                ) {
+                if ((int)$sth->fetchColumn() === 0) {
                     $this->createDBUser();
                 }
             } catch (PDOException $e) {

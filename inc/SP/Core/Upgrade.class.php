@@ -27,6 +27,7 @@ namespace SP\Core;
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Config\ConfigDB;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Upgrade\Group;
 use SP\Core\Upgrade\Profile;
@@ -50,7 +51,7 @@ defined('APP_ROOT') || die();
  */
 class Upgrade
 {
-    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316020501, 1316100601, 20017011302, 20017011701, 20017012901];
+    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316100601, 20017011302, 20017011701, 20017012901];
     private static $cfgUpgrade = [1124, 1316020501, 20017011202];
     private static $auxUpgrade = [12001, 12002, 20017010901, 20017011202];
 
@@ -59,19 +60,18 @@ class Upgrade
      *
      * @param int $version con la versión de la BBDD actual
      * @return bool
-     * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \InvalidArgumentException
+     * @throws \phpmailer\phpmailerException
      * @throws SPException
      */
     public static function doUpgrade($version)
     {
-        DB::beginTransaction();
-
         foreach (self::$dbUpgrade as $upgradeVersion) {
             if ($version < $upgradeVersion) {
                 if (self::auxPreUpgrades($upgradeVersion) === false) {
-                    DB::rollbackTransaction();
 
                     throw new SPException(SPException::SP_CRITICAL,
                         __('Error al aplicar la actualización auxiliar', false),
@@ -79,7 +79,6 @@ class Upgrade
                 }
 
                 if (self::upgradeDB($upgradeVersion) === false) {
-                    DB::rollbackTransaction();
 
                     throw new SPException(SPException::SP_CRITICAL, __('Error al aplicar la actualización de la Base de Datos', false),
                         __('Compruebe el registro de eventos para más detalles', false));
@@ -89,15 +88,12 @@ class Upgrade
 
         foreach (self::$auxUpgrade as $upgradeVersion) {
             if ($version < $upgradeVersion && self::auxUpgrades($upgradeVersion) === false) {
-                DB::rollbackTransaction();
 
                 throw new SPException(SPException::SP_CRITICAL,
                     __('Error al aplicar la actualización auxiliar', false),
                     __('Compruebe el registro de eventos para más detalles', false));
             }
         }
-
-        DB::endTransaction();
 
         return true;
     }
@@ -113,7 +109,8 @@ class Upgrade
         switch ($version) {
             case 1316011001:
                 return
-                    User::fixUsersId(Request::analyze('userid', 1))
+                    self::upgradeDB(1300000000)
+                    && User::fixUsersId(Request::analyze('userid', 1))
                     && Group::fixGroupId(Request::analyze('groupid', 1))
                     && Profile::fixProfilesId(Request::analyze('profileid', 1))
                     && Category::fixCategoriesId(Request::analyze('categoryid', 1))
@@ -128,8 +125,6 @@ class Upgrade
      *
      * @param int $version con la versión a actualizar
      * @returns bool
-     * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\SPException
      */
     private static function upgradeDB($version)
     {
@@ -155,6 +150,7 @@ class Upgrade
             } catch (SPException $e) {
                 $LogMessage->addDescription(__('Error al aplicar la actualización de la Base de Datos.', false));
                 $LogMessage->addDetails('ERROR', sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
+                $LogMessage->addDetails('SQL', $query);
                 $Log->setLogLevel(Log::ERROR);
                 $Log->writeLog();
 
@@ -162,6 +158,8 @@ class Upgrade
                 return false;
             }
         }
+
+        ConfigDB::setValue('version', $version);
 
         $LogMessage->addDescription(__('Actualización de la Base de Datos realizada correctamente.', false));
         $Log->writeLog();
