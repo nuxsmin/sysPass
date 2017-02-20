@@ -226,8 +226,8 @@ class Upgrade
                     return $dbResult === true
                         && is_object($UserData)
                         && !empty($masterPass)
-                        && Crypt::migrateHash($masterPass)
                         && Crypt::migrate($masterPass)
+                        && Crypt::migrateHash($masterPass)
                         && UserMigrate::setMigrateUsers();
             }
         } catch (SPException $e) {

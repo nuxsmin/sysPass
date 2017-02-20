@@ -55,6 +55,8 @@ class AccountCrypt
      */
     public function updateOldPass(&$currentMasterPass)
     {
+        set_time_limit(300);
+
         $accountsOk = [];
         $userId = Session::getUserData()->getUserId();
         $demoEnabled = Checks::demoIsEnabled();
