@@ -29,6 +29,7 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Upgrade\Account;
 use SP\Core\Upgrade\Group;
 use SP\Core\Upgrade\Profile;
 use SP\Core\Upgrade\User;
@@ -108,8 +109,9 @@ class Upgrade
     {
         switch ($version) {
             case 1316011001:
-                return
-                    self::upgradeDB(1300000000)
+                return self::upgradeDB(1300000000);
+            case 1316100601:
+                return Account::fixAccountsId()
                     && User::fixUsersId(Request::analyze('userid', 1))
                     && Group::fixGroupId(Request::analyze('groupid', 1))
                     && Profile::fixProfilesId(Request::analyze('profileid', 1))
@@ -135,7 +137,7 @@ class Upgrade
 
         $queries = self::getQueriesFromFile($version);
 
-        if (count($queries) === 0) {
+        if (count($queries) === 0 || (int)ConfigDB::getValue('version') === $version) {
             $LogMessage->addDescription(__('No es necesario actualizar la Base de Datos.', false));
             $Log->writeLog();
             return true;
