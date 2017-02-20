@@ -31,6 +31,7 @@ use SP\Account\AccountHistoryCrypt;
 use SP\Config\ConfigDB;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Init;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Storage\DB;
@@ -74,6 +75,10 @@ class Crypt
 
             return false;
         }
+
+        global $timeStart;
+
+        debugLog(Init::microtime_float() - $timeStart);
 
         return true;
     }

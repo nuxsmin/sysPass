@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -41,14 +41,13 @@ use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPassRecoverData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Log\Log;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
-use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserLdap;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserPassRecover;
@@ -76,7 +75,7 @@ class LoginController
      */
     protected $jsonResponse;
     /**
-     * @var UserData
+     * @var UserLoginData
      */
     protected $UserData;
     /**
@@ -90,7 +89,7 @@ class LoginController
     public function __construct()
     {
         $this->jsonResponse = new JsonResponse();
-        $this->UserData = new UserData();
+        $this->UserData = new UserLoginData();
         $this->LogMessage = new LogMessage();
         $this->LogMessage->setAction(__('Inicio sesión', false));
     }
@@ -112,8 +111,8 @@ class LoginController
             Json::returnJson($this->jsonResponse);
         }
 
-        $this->UserData->setUserLogin($userLogin);
-        $this->UserData->setUserPass($userPass);
+        $this->UserData->setLogin($userLogin);
+        $this->UserData->setLoginPass($userPass);
 
         $Log = new Log($this->LogMessage);
 
@@ -134,9 +133,9 @@ class LoginController
                 throw new AuthException(SPException::SP_INFO, __('Login incorrecto', false), '', self::STATUS_INVALID_LOGIN);
             }
 
-            $this->getUserData($userPass);
-            $this->checkUserDisabled();
-            $this->checkPasswordChange();
+            $this->getUserData();
+            $this->checkUser();
+            $this->loadMasterPass();
             $this->setUserSession();
             $this->loadUserPreferences();
         } catch (SPException $e) {
@@ -166,17 +165,14 @@ class LoginController
     /**
      * Obtener los datos del usuario
      *
-     * @param $userPass
      * @throws SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\AuthException
      * @throws \InvalidArgumentException
      */
-    protected function getUserData($userPass)
+    protected function getUserData()
     {
         try {
-            $this->UserData = User::getItem($this->UserData)->getByLogin($this->UserData->getUserLogin());
-            $this->UserData->setUserPass($userPass);
             $this->UserData->setUserPreferences(UserPreferences::getItem()->getById($this->UserData->getUserId()));
         } catch (SPException $e) {
             $this->LogMessage->addDescription(__('Error al obtener los datos del usuario de la BBDD', false));
@@ -186,21 +182,139 @@ class LoginController
     }
 
     /**
-     * omprobar si el usuario está deshabilitado
+     * Comprobar estado del usuario
      *
      * @throws \SP\Core\Exceptions\SPException
      */
-    protected function checkUserDisabled()
+    protected function checkUser()
     {
         // Comprobar si el usuario está deshabilitado
         if ($this->UserData->isUserIsDisabled()) {
             $this->LogMessage->addDescription(__('Usuario deshabilitado', false));
-            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
+            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
 
             throw new AuthException(SPException::SP_INFO, __('Usuario deshabilitado', false), '', self::STATUS_USER_DISABLED);
+        } elseif ($this->UserData->isUserIsChangePass()) {
+            $hash = Util::generateRandomBytes();
+
+            $UserPassRecoverData = new UserPassRecoverData();
+            $UserPassRecoverData->setUserpassrUserId($this->UserData->getUserId());
+            $UserPassRecoverData->setUserpassrHash($hash);
+
+            UserPassRecover::getItem($UserPassRecoverData)->add();
+
+            $data = ['url' => Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time() . '&f=1'];
+            $this->jsonResponse->setData($data);
+            $this->jsonResponse->setStatus(0);
+            Json::returnJson($this->jsonResponse);
         }
 
         return false;
+    }
+
+    /**
+     * Cargar la clave maestra o solicitarla
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\AuthException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    protected function loadMasterPass()
+    {
+        $masterPass = Request::analyzeEncrypted('mpass');
+        $oldPass = Request::analyzeEncrypted('oldpass');
+
+        try {
+            if ($masterPass) {
+                if (CryptMasterPass::checkTempMasterPass($masterPass)) {
+                    $this->LogMessage->addDescription(__('Usando clave temporal', false));
+
+                    $masterPass = CryptMasterPass::getTempMasterPass($masterPass);
+                }
+
+                if (!UserPass::updateUserMPass($masterPass, $this->UserData)) {
+                    $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
+
+                    throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
+                } else {
+                    CryptSession::saveSessionKey(UserPass::getClearUserMPass());
+
+                    $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
+                }
+            } else if ($oldPass) {
+                if (!UserPass::updateMasterPassFromOldPass($oldPass, $this->UserData)) {
+                    $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
+
+                    throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
+                } else {
+                    CryptSession::saveSessionKey(UserPass::getClearUserMPass());
+
+                    $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
+                }
+            } else {
+                switch (UserPass::loadUserMPass($this->UserData)) {
+                    case UserPass::MPASS_CHECKOLD:
+                        throw new AuthException(SPException::SP_INFO, __('Es necesaria su clave anterior', false), '', self::STATUS_NEED_OLD_PASS);
+                        break;
+                    case UserPass::MPASS_NOTSET:
+                    case UserPass::MPASS_CHANGED:
+                    case UserPass::MPASS_WRONG:
+                        throw new AuthException(SPException::SP_INFO, __('La clave maestra no ha sido guardada o es incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
+                        break;
+                }
+            }
+        } catch (CryptoException $e) {
+            $this->LogMessage->addDescription(__('Error interno', false));
+
+            throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), $e->getMessage(), self::STATUS_INTERNAL_ERROR);
+        }
+    }
+
+    /**
+     * Cargar la sesión del usuario
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\AuthException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    protected function setUserSession()
+    {
+        // Obtenemos la clave maestra del usuario
+        if (UserPass::getClearUserMPass() !== '') {
+            // Actualizar el último login del usuario
+            UserUtil::setUserLastLogin($this->UserData->getUserId());
+
+            // Cargar las variables de sesión del usuario
+            SessionUtil::loadUserSession($this->UserData);
+
+            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
+            $this->LogMessage->addDetails(__('Perfil', false), Profile::getItem()->getById($this->UserData->getUserProfileId())->getUserprofileName());
+            $this->LogMessage->addDetails(__('Grupo', false), Group::getItem()->getById($this->UserData->getUserGroupId())->getUsergroupName());
+        } else {
+            $this->LogMessage->addDescription(__('Error al obtener la clave maestra del usuario', false));
+
+            throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
+        }
+    }
+
+    /**
+     * Cargar las preferencias del usuario y comprobar si usa 2FA
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
+    protected function loadUserPreferences()
+    {
+        Language::setLanguage(true);
+        DiFactory::getTheme()->initTheme(true);
+        Session::setUserPreferences($this->UserData->getUserPreferences());
+        Session::setSessionType(Session::SESSION_INTERACTIVE);
+        Session::setAuthCompleted(true);
+
+        DiFactory::getEventDispatcher()->notifyEvent('login.preferences', $this);
     }
 
     /**
@@ -231,116 +345,6 @@ class LoginController
     }
 
     /**
-     * Cargar la sesión del usuario
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \InvalidArgumentException
-     * @throws \SP\Core\Exceptions\AuthException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    protected function setUserSession()
-    {
-        $UserPass = $this->loadMasterPass();
-
-        // Obtenemos la clave maestra del usuario
-        if ($UserPass->getClearUserMPass() !== '') {
-            // Actualizar el último login del usuario
-            UserUtil::setUserLastLogin($this->UserData->getUserId());
-
-            // Cargar las variables de sesión del usuario
-            SessionUtil::loadUserSession($this->UserData);
-
-            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
-            $this->LogMessage->addDetails(__('Perfil', false), Profile::getItem()->getById($this->UserData->getUserProfileId())->getUserprofileName());
-            $this->LogMessage->addDetails(__('Grupo', false), Group::getItem()->getById($this->UserData->getUserGroupId())->getUsergroupName());
-        } else {
-            $this->LogMessage->addDescription(__('Error al obtener la clave maestra del usuario', false));
-
-            throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
-        }
-    }
-
-    /**
-     * Cargar la clave maestra o solicitarla
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\AuthException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    protected function loadMasterPass()
-    {
-        $masterPass = Request::analyzeEncrypted('mpass');
-        $oldPass = Request::analyzeEncrypted('oldpass');
-
-        $UserPass = UserPass::getItem($this->UserData);
-
-        try {
-            if ($masterPass) {
-                if (CryptMasterPass::checkTempMasterPass($masterPass)) {
-                    $this->LogMessage->addDescription(__('Usando clave temporal', false));
-
-                    $masterPass = CryptMasterPass::getTempMasterPass($masterPass);
-                }
-
-                if (!$UserPass->updateUserMPass($masterPass)) {
-                    $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
-
-                    throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
-                } else {
-                    CryptSession::saveSessionKey($UserPass->getClearUserMPass());
-
-                    $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
-                }
-            } else if ($oldPass) {
-                if (!$UserPass->updateMasterPass($oldPass)) {
-                    $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
-
-                    throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
-                } else {
-                    CryptSession::saveSessionKey($UserPass->getClearUserMPass());
-
-                    $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
-                }
-            } else {
-                $loadMPass = $UserPass->loadUserMPass();
-
-                // Comprobar si es necesario actualizar la clave maestra
-                if ($loadMPass === null) {
-                    throw new AuthException(SPException::SP_INFO, __('Es necesaria su clave anterior', false), '', self::STATUS_NEED_OLD_PASS);
-                    // La clave no está establecida o se ha sido cambiada por el administrador
-                } else if ($loadMPass === false) {
-                    throw new AuthException(SPException::SP_INFO, __('La clave maestra no ha sido guardada o es incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
-                }
-            }
-        } catch (CryptoException $e) {
-            $this->LogMessage->addDescription(__('Error interno', false));
-
-            throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), $e->getMessage(), self::STATUS_INTERNAL_ERROR);
-        }
-
-        return $UserPass;
-    }
-
-    /**
-     * Cargar las preferencias del usuario y comprobar si usa 2FA
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     */
-    protected function loadUserPreferences()
-    {
-        Language::setLanguage(true);
-        DiFactory::getTheme()->initTheme(true);
-        Session::setUserPreferences($this->UserData->getUserPreferences());
-        Session::setSessionType(Session::SESSION_INTERACTIVE);
-        Session::setAuthCompleted(true);
-
-        DiFactory::getEventDispatcher()->notifyEvent('login.preferences', $this);
-    }
-
-    /**
      * Autentificación LDAP
      *
      * @param LdapAuthData $LdapAuthData
@@ -353,7 +357,7 @@ class LoginController
     {
         if ($LdapAuthData->getStatusCode() > 0) {
             $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
-            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
+            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
 
             if ($LdapAuthData->getStatusCode() === 49) {
                 $this->LogMessage->addDescription(__('Login incorrecto', false));
@@ -382,7 +386,7 @@ class LoginController
 
         try {
             // Verificamos si el usuario existe en la BBDD
-            if (UserLdap::checkLDAPUserInDB($this->UserData->getUserLogin())) {
+            if (UserLdap::checkLDAPUserInDB($this->UserData->getLogin())) {
                 // Actualizamos el usuario de LDAP en MySQL
                 UserLdap::getItem($this->UserData)->update();
             } else {
@@ -411,7 +415,7 @@ class LoginController
         // Autentificamos con la BBDD
         if ($AuthData->getAuthenticated() === 0) {
             $this->LogMessage->addDescription(__('Login incorrecto', false));
-            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
+            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
 
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
         } elseif ($AuthData->getAuthenticated() === 1) {
@@ -434,7 +438,7 @@ class LoginController
         if ($AuthData->getAuthenticated() === 0) {
             $this->LogMessage->addDescription(__('Login incorrecto', false));
             $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
-            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getUserLogin());
+            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
             $this->LogMessage->addDetails(__('Autentificación', false), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
 
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);

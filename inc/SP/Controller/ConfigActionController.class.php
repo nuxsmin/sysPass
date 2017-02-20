@@ -482,7 +482,7 @@ class ConfigActionController implements ItemControllerInterface
         $confirmPassChange = Request::analyze('confirmPassChange', 0, false, 1);
         $noAccountPassChange = Request::analyze('chkNoAccountChange', 0, false, 1);
 
-        if (!UserPass::getItem(Session::getUserData())->checkUserUpdateMPass()) {
+        if (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
             $this->JsonResponse->setDescription(__('Clave maestra actualizada', false));
             $this->JsonResponse->addMessage(__('Reinicie la sesión para cambiarla', false));
             $this->JsonResponse->setStatus(100);

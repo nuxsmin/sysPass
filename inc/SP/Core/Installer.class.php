@@ -36,7 +36,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupData;
 use SP\DataModel\InstallData;
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Users\User;
@@ -462,11 +462,13 @@ class Installer
             Profile::getItem($ProfileData)->add();
 
             // Datos del usuario
-            $UserData = new UserData();
+            $UserData = new UserLoginData();
             $UserData->setUserGroupId($GroupData->getUsergroupId());
             $UserData->setUserProfileId($ProfileData->getUserprofileId());
             $UserData->setUserLogin($this->InstallData->getAdminLogin());
+            $UserData->setLogin($this->InstallData->getAdminLogin());
             $UserData->setUserPass($this->InstallData->getAdminPass());
+            $UserData->setLoginPass($this->InstallData->getAdminPass());
             $UserData->setUserName('Admin');
             $UserData->setUserIsAdminApp(1);
 
@@ -477,10 +479,9 @@ class Installer
             ConfigDB::setCacheConfigValue('lastupdatempass', time());
             ConfigDB::writeConfig(true);
 
-            if (!UserPass::getItem($UserData)->updateUserMPass($this->InstallData->getMasterPassword())) {
+            if (!UserPass::updateUserMPass($this->InstallData->getMasterPassword(), $UserData)) {
                 throw new SPException(SPException::SP_CRITICAL,
-                    __('Error al actualizar la clave maestra del usuario "admin"', false),
-                    __('Informe al desarrollador', false));
+                    __('Error al actualizar la clave maestra del usuario "admin"', false));
             }
         } catch (\Exception $e) {
             $this->rollback();

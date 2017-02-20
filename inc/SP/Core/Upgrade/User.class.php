@@ -25,10 +25,9 @@
 namespace SP\Core\Upgrade;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Config\ConfigDB;
-use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\Core\OldCrypt;
+use SP\DataModel\UserLoginData;
 use SP\Mgmt\Users\UserPass;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -118,17 +117,16 @@ class User
     /**
      * Actualizar la clave maestra
      *
-     * @param UserPass $UserPass
+     * @param UserLoginData $UserData
      * @return bool
      */
-    public static function upgradeMasterKey(UserPass $UserPass)
+    public static function upgradeMasterKey(UserLoginData $UserData)
     {
-        $UserData = $UserPass->getItemData();
-        $key = OldCrypt::generateAesKey($UserData->getUserPass() . $UserData->getUserLogin());
+        $key = OldCrypt::generateAesKey($UserData->getLoginPass() . $UserData->getLogin());
         $mKey = OldCrypt::getDecrypt($UserData->getUserMPass(), $UserData->getUserMKey(), $key);
 
         try {
-            return $mKey && $UserPass->updateUserMPass($mKey);
+            return $mKey && UserPass::updateUserMPass($mKey, $UserData);
         } catch (SPException $e) {
         } catch (CryptoException $e) {
         }

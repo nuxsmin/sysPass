@@ -305,6 +305,10 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             user_lastUpdate,
             user_lastUpdateMPass,
             user_preferences,
+            user_pass,
+            user_hashSalt,
+            user_mPass,
+            user_mKey,            
             BIN(user_isAdminApp) AS user_isAdminApp,
             BIN(user_isAdminAcc) AS user_isAdminAcc,
             BIN(user_isLdap) AS user_isLdap,
@@ -357,6 +361,10 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             user_lastUpdate,
             user_lastUpdateMPass,
             user_preferences,
+            user_pass,
+            user_hashSalt,
+            user_mPass,
+            user_mKey,
             BIN(user_isAdminApp) AS user_isAdminApp,
             BIN(user_isAdminAcc) AS user_isAdminAcc,
             BIN(user_isLdap) AS user_isLdap,
@@ -369,7 +377,13 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             WHERE user_login = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName($this->getDataModel());
+
+        if (is_object($this->itemData)) {
+            $Data->setMapClass($this->itemData);
+        } else {
+            $Data->setMapClassName($this->getDataModel());
+        }
+        
         $Data->setQuery($query);
         $Data->addParam($login);
 

@@ -41,6 +41,14 @@ class LogMessage extends MessageBase
      * @var array Detalles de la acción en formato "detalle : descripción"
      */
     protected $details = [];
+    /**
+     * @var int
+     */
+    protected $descriptionCounter = 0;
+    /**
+     * @var int
+     */
+    protected $detailsCounter = 0;
 
     /**
      * Devuelve la acción realizada
@@ -140,6 +148,8 @@ class LogMessage extends MessageBase
 
         $this->details[] = [$this->formatString($key), $this->formatString($value)];
 
+        $this->detailsCounter++;
+
         return $this;
     }
 
@@ -175,6 +185,7 @@ class LogMessage extends MessageBase
     public function addDescriptionLine()
     {
         $this->description[] = '';
+        $this->descriptionCounter++;
 
         return $this;
     }
@@ -222,7 +233,7 @@ class LogMessage extends MessageBase
      * Devolver un detalle formateado
      *
      * @param array $detail
-     * @param bool $translate
+     * @param bool  $translate
      * @return string
      */
     protected function formatDetail(array $detail, $translate = false)
@@ -257,6 +268,18 @@ class LogMessage extends MessageBase
     public function resetDescription()
     {
         $this->description = [];
+        $this->descriptionCounter = 0;
+
+        return $this;
+    }
+
+    /**
+     * Restablecer la variable de detalles
+     */
+    public function resetDetails()
+    {
+        $this->details = [];
+        $this->detailsCounter = 0;
 
         return $this;
     }
@@ -270,5 +293,21 @@ class LogMessage extends MessageBase
     public function getHtmlDetails($translate = false)
     {
         return nl2br($this->getDetails($translate));
+    }
+
+    /**
+     * @return int
+     */
+    public function getDescriptionCounter()
+    {
+        return $this->descriptionCounter;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDetailsCounter()
+    {
+        return $this->detailsCounter;
     }
 }

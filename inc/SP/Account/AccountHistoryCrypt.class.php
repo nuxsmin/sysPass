@@ -55,7 +55,7 @@ class AccountHistoryCrypt
      */
     public function updateOldPass(&$currentMasterPass)
     {
-        set_time_limit(300);
+        set_time_limit(0);
 
         $accountsOk = [];
         $demoEnabled = Checks::demoIsEnabled();
@@ -92,6 +92,10 @@ class AccountHistoryCrypt
         $AccountDataBase->hash = Hash::hashKey($currentMasterPass);
 
         foreach ($accountsPass as $account) {
+            if ($LogMessage->getDetailsCounter() >= 100) {
+                $Log->writeLog(false, true);
+            }
+
             $AccountData = clone $AccountDataBase;
 
             $AccountData->id = $account->acchistory_id;
@@ -200,6 +204,10 @@ class AccountHistoryCrypt
         $AccountDataBase->hash = Hash::hashKey($newMasterPass);
 
         foreach ($accountsPass as $account) {
+            if ($LogMessage->getDetailsCounter() >= 100) {
+                $Log->writeLog(false, true);
+            }
+
             $AccountData = clone $AccountDataBase;
 
             $AccountData->id = $account->acchistory_id;

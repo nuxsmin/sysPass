@@ -28,7 +28,7 @@ use SP\Auth\AuthInterface;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\LogMessage;
-use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\Log\Log;
 
 /**
@@ -405,22 +405,22 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Autentificar al usuario
      *
-     * @param UserData $UserData Datos del usuario
+     * @param UserLoginData $UserData Datos del usuario
      * @return bool
      */
-    public function authenticate(UserData $UserData)
+    public function authenticate(UserLoginData $UserData)
     {
         if (!$this->checkParams()) {
             return false;
         }
 
         try {
-            $this->setUserLogin($UserData->getUserLogin());
+            $this->setUserLogin($UserData->getLogin());
 
             $this->connect();
             $this->bind();
             $this->getAttributes();
-            $this->bind($this->LdapAuthData->getDn(), $UserData->getUserPass());
+            $this->bind($this->LdapAuthData->getDn(), $UserData->getLoginPass());
         } catch (SPException $e) {
             return false;
         }
@@ -511,7 +511,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             }
         }
 
-        if (!empty($res["fullname"])) {
+        if (!empty($res['fullname'])) {
             $this->LdapAuthData->setName($res['fullname']);
         } else {
             $this->LdapAuthData->setName($res['name'] . ' ' . $res['sn']);

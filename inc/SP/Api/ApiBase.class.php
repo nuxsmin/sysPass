@@ -34,6 +34,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\Log\Log;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
@@ -75,7 +76,7 @@ abstract class ApiBase implements ApiInterface
      */
     protected $mPass = '';
     /**
-     * @var UserData
+     * @var UserLoginData
      */
     protected $UserData;
     /**
@@ -168,6 +169,9 @@ abstract class ApiBase implements ApiInterface
      *
      * @throws SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     protected function doAuth()
     {
@@ -187,14 +191,11 @@ abstract class ApiBase implements ApiInterface
             throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
         }
 
-        $UserPass = UserPass::getItem($this->UserData);
-
         if (!$this->UserData->isUserIsDisabled()
-            && $UserPass->checkUserUpdateMPass()
-            && $UserPass->loadUserMPass()
+            && UserPass::loadUserMPass($this->UserData) === UserPass::MPASS_OK
         ) {
             $this->auth = true;
-            $this->mPass = $UserPass->getClearUserMPass();
+            $this->mPass = UserPass::getClearUserMPass();
         } else {
             throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
         }

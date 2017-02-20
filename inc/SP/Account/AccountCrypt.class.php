@@ -55,7 +55,7 @@ class AccountCrypt
      */
     public function updateOldPass(&$currentMasterPass)
     {
-        set_time_limit(300);
+        set_time_limit(0);
 
         $accountsOk = [];
         $userId = Session::getUserData()->getUserId();
@@ -87,6 +87,10 @@ class AccountCrypt
         $AccountDataBase = new AccountData();
 
         foreach ($accountsPass as $account) {
+            if ($LogMessage->getDetailsCounter() >= 100) {
+                $Log->writeLog(false, true);
+            }
+
             $AccountData = clone $AccountDataBase;
 
             $AccountData->setAccountId($account->account_id);
@@ -187,6 +191,10 @@ class AccountCrypt
         $AccountDataBase = new AccountData();
 
         foreach ($accountsPass as $account) {
+            if ($LogMessage->getDetailsCounter() >= 100) {
+                $Log->writeLog(false, true);
+            }
+
             $AccountData = clone $AccountDataBase;
 
             $AccountData->setAccountId($account->account_id);

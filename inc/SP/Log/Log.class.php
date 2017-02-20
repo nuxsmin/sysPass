@@ -118,10 +118,31 @@ class Log extends ActionLog
     /**
      * Escribir un nuevo evento en el registro de eventos
      *
+     * @param string $action      La acción realizada
+     * @param string $description La descripción de la acción realizada
+     * @param string $level
+     * @return Log
+     */
+    public static function writeNewLog($action, $description = null, $level = Log::INFO)
+    {
+        $LogMessage = new LogMessage();
+        $LogMessage->setAction($action);
+        $LogMessage->addDescription($description);
+
+        $Log = new Log($LogMessage, $level);
+        $Log->writeLog();
+
+        return $Log;
+    }
+
+    /**
+     * Escribir un nuevo evento en el registro de eventos
+     *
      * @param bool $resetDescription Restablecer la descripción
+     * @param bool $resetDetails     Restablecer los detalles
      * @return bool
      */
-    public function writeLog($resetDescription = false)
+    public function writeLog($resetDescription = false, $resetDetails = false)
     {
         if ((defined('IS_INSTALLER') && IS_INSTALLER === 1)
             || self::$logDbEnabled === 0
@@ -164,6 +185,10 @@ class Log extends ActionLog
 
         if ($resetDescription === true) {
             $this->LogMessage->resetDescription();
+        }
+
+        if ($resetDetails === true) {
+            $this->LogMessage->resetDetails();
         }
 
         try {
@@ -217,25 +242,5 @@ class Log extends ActionLog
         }
 
         return new Log($LogMessage, $level);
-    }
-
-    /**
-     * Escribir un nuevo evento en el registro de eventos
-     *
-     * @param string $action      La acción realizada
-     * @param string $description La descripción de la acción realizada
-     * @param string $level
-     * @return Log
-     */
-    public static function writeNewLog($action, $description = null, $level = Log::INFO)
-    {
-        $LogMessage = new LogMessage();
-        $LogMessage->setAction($action);
-        $LogMessage->addDescription($description);
-
-        $Log = new Log($LogMessage, $level);
-        $Log->writeLog();
-
-        return $Log;
     }
 }

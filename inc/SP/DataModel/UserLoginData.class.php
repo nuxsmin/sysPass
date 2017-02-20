@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,21 +22,53 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Auth;
-
-use SP\DataModel\UserLoginData;
+namespace SP\DataModel;
 
 /**
- * Interface AuthInterface
- * @package Auth
+ * Class UserLoginData
+ *
+ * @package SP\DataModel
  */
-interface AuthInterface
+class UserLoginData extends UserData
 {
     /**
-     * Autentificar al usuario
-     *
-     * @param UserLoginData $UserData Datos del usuario
-     * @return mixed|AuthDataBase
+     * @var string
      */
-    public function authenticate(UserLoginData $UserData);
+    protected $login;
+    /**
+     * @var string
+     */
+    protected $loginPass;
+
+    /**
+     * @return string
+     */
+    public function getLogin()
+    {
+        return $this->login;
+    }
+
+    /**
+     * @param string $login
+     */
+    public function setLogin($login)
+    {
+        $this->login = $login;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLoginPass()
+    {
+        return $this->loginPass;
+    }
+
+    /**
+     * @param string $loginPass
+     */
+    public function setLoginPass($loginPass)
+    {
+        $this->loginPass = $loginPass;
+    }
 }
