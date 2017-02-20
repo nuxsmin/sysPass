@@ -137,7 +137,7 @@ class Upgrade
 
         $queries = self::getQueriesFromFile($version);
 
-        if (count($queries) === 0) {
+        if (count($queries) === 0 || (int)ConfigDB::getValue('version') === $version) {
             $LogMessage->addDescription(__('No es necesario actualizar la Base de Datos.', false));
             $Log->writeLog();
             return true;
