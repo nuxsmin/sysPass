@@ -507,7 +507,9 @@ class Init
      */
     public static function isLoggedIn()
     {
-        return (DiFactory::getDBStorage()->getDbStatus() === 0 && Session::getUserData()->getUserLogin());
+        return (DiFactory::getDBStorage()->getDbStatus() === 0
+            && Session::getUserData()->getUserLogin()
+            && is_object(Session::getUserPreferences()));
     }
 
     /**
