@@ -58,8 +58,6 @@ class MainActionController
             && $hash === Config::getConfig()->getUpgradeKey()
         ) {
             $this->upgrade($dbVersion, 'db');
-
-            ConfigDB::setValue('version', implode(Util::getVersion(true)));
         } else {
             $controller = new MainController();
             $controller->getUpgrade($dbVersion);
@@ -103,7 +101,7 @@ class MainActionController
     private function upgrade($version, $type)
     {
         try {
-            Upgrade::doUpgrade($version, $type);
+            Upgrade::doUpgrade($version);
 
             $Config = Config::getConfig();
             $Config->setMaintenance(false);

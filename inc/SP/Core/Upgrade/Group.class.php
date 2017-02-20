@@ -63,12 +63,12 @@ class Group
             DB::getQuery($Data);
 
             DB::endTransaction();
+
+            return true;
         } catch (SPException $e) {
             DB::rollbackTransaction();
 
             return false;
         }
-
-        return true;
     }
 }

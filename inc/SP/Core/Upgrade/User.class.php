@@ -93,14 +93,26 @@ class User
 
             DB::getQuery($Data);
 
+            $query = /** @lang SQL */
+                'DELETE FROM usrToGroups WHERE usertogroup_userId <> ? AND usertogroup_userId NOT IN (' . $paramsIn . ') OR usertogroup_userId IS NULL';
+            $Data->setQuery($query);
+
+            DB::getQuery($Data);
+
+            $query = /** @lang SQL */
+                'DELETE FROM accUsers WHERE accuser_userId <> ? AND accuser_userId NOT IN (' . $paramsIn . ') OR accuser_userId IS NULL';
+            $Data->setQuery($query);
+
+            DB::getQuery($Data);
+
             DB::endTransaction();
+
+            return true;
         } catch (SPException $e) {
             DB::rollbackTransaction();
 
             return false;
         }
-
-        return true;
     }
 
     /**
