@@ -50,8 +50,6 @@ class AccountHistoryCrypt
      *
      * @param $currentMasterPass
      * @return bool
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function updateOldPass(&$currentMasterPass)
     {
@@ -83,8 +81,6 @@ class AccountHistoryCrypt
             return false;
         }
 
-        $currentMPassHash = ConfigDB::getValue('masterPwd');
-
         $AccountDataBase = new \stdClass();
         $AccountDataBase->id = 0;
         $AccountDataBase->pass = '';
@@ -104,7 +100,7 @@ class AccountHistoryCrypt
             if ($demoEnabled) {
                 $accountsOk[] = $account->acchistory_id;
                 continue;
-            } elseif ($account->acchistory_mPassHash !== $currentMPassHash) {
+            } elseif ($account->acchistory_mPassHash !== \SP\Core\Upgrade\Crypt::$currentMPassHash) {
                 $errorCount++;
                 $LogMessage->addDetails(__('La clave maestra del registro no coincide', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
                 continue;

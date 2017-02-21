@@ -55,7 +55,7 @@ class Upgrade
     private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316100601, 20017011302, 20017011701, 20017012901];
     private static $cfgUpgrade = [1124, 1316020501, 20017011202];
     private static $auxUpgrade = [12001, 12002, 20017010901, 20017011202];
-    private static $appUpgrade = [20117021901];
+    private static $appUpgrade = [20117022101];
 
     /**
      * Inicia el proceso de actualización de la BBDD.
@@ -140,7 +140,7 @@ class Upgrade
 
         $queries = self::getQueriesFromFile($version);
 
-        if (count($queries) === 0 || (int)ConfigDB::getValue('version') === $version) {
+        if (count($queries) === 0 || (int)ConfigDB::getValue('version') > $version) {
             $LogMessage->addDescription(__('No es necesario actualizar la Base de Datos.', false));
             $Log->writeLog();
             return true;
@@ -206,32 +206,27 @@ class Upgrade
      */
     private static function appUpgrades($version)
     {
-        try {
-            switch ($version) {
-                case 20117021901:
-                    $dbResult = true;
-                    $databaseVersion = (int)str_replace('.', '', ConfigDB::getValue('version'));
+        switch ($version) {
+            case 20117022101:
+                $dbResult = true;
+                $databaseVersion = (int)str_replace('.', '', ConfigDB::getValue('version'));
 
-                    if ($databaseVersion < $version) {
-                        if (!self::upgradeDB($version)) {
-                            $dbResult = false;
-                        }
+                if ($databaseVersion < $version) {
+                    if (!self::upgradeDB($version)) {
+                        $dbResult = false;
                     }
+                }
 
-                    $masterPass = Request::analyzeEncrypted('masterkey');
-                    $UserData = User::getItem()->getByLogin(Request::analyze('userlogin'));
+                $masterPass = Request::analyzeEncrypted('masterkey');
+                $UserData = User::getItem()->getByLogin(Request::analyze('userlogin'));
 
-                    CoreSession::setUserData($UserData);
+                CoreSession::setUserData($UserData);
 
-                    return $dbResult === true
-                        && is_object($UserData)
-                        && !empty($masterPass)
-                        && Crypt::migrate($masterPass)
-                        && Crypt::migrateHash($masterPass)
-                        && UserMigrate::setMigrateUsers();
-            }
-        } catch (SPException $e) {
-            return false;
+                return $dbResult === true
+                    && is_object($UserData)
+                    && !empty($masterPass)
+                    && Crypt::migrate($masterPass)
+                    && UserMigrate::setMigrateUsers();
         }
 
         return false;
@@ -441,10 +436,10 @@ class Upgrade
                 self::setUpgradeKey('db');
             } else {
                 $Controller = new MainActionController();
-                $Controller->upgradeDbAction($databaseVersion);
+                $Controller->doAction($databaseVersion);
             }
 
-            return $appVersion;
+            return true;
         }
 
         return false;
@@ -476,7 +471,7 @@ class Upgrade
             Config::saveConfig(null, false);
         }
 
-        Init::initError(__('La aplicación necesita actualizarse'), sprintf(__('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?upgrade=1&a=upgrade&type=' . $type . '">' . __('Actualizar') . '</a>'));
+        Init::initError(__('La aplicación necesita actualizarse'), sprintf(__('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?a=upgrade&type=' . $type . '">' . __('Actualizar') . '</a>'));
     }
 
     /**
@@ -493,10 +488,10 @@ class Upgrade
                 self::setUpgradeKey('app');
             } else {
                 $Controller = new MainActionController();
-                $Controller->upgradeAppAction($appVersion);
+                $Controller->doAction($appVersion);
             }
 
-            return $appVersion;
+            return true;
         }
 
         return false;

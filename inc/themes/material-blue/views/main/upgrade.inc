@@ -1,12 +1,16 @@
 <main class="mdl-layout__content">
     <div id="actions" class="upgrade">
         <div id="page-title">
-            <h1><?php printf(__('Actualización  %s'), $appVersion); ?></h1>
+            <h1><?php printf(__('Actualización  %s'), $upgradeVersion); ?></h1>
         </div>
 
-        <form id="frmUpgrade" method="post" action="index.php">
+        <form id="frmUpgrade" method="get" action="index.php" class="form-action" data-onsubmit="main/upgrade">
             <fieldset>
-                <legend><?php echo $legend; ?></legend>
+                <?php if ($type === 'db'): ?>
+                    <legend><?php echo __('Actualización de BBDD'); ?></legend>
+                <?php elseif ($type === 'app'): ?>
+                    <legend><?php echo __('Actualización de Aplicación'); ?></legend>
+                <?php endif; ?>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="h" name="h" type="text" required class="mdl-textfield__input mdl-color-text--indigo-400"
@@ -99,12 +103,16 @@
                     <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if ($version < 20117021901): ?>
+                <?php if ($version < 20117022101): ?>
                     <div>
                         <ul class="errors">
                             <li class="msg-warning">
                                 <i class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
                                 <?php echo __('Esta actualización utiliza un nuevo esquema de encriptación, por lo que es necesario reencriptar los datos almacenados'); ?>
+                                <br>
+                                <strong><?php printf(__('Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo.'), $numAccounts); ?></strong>
+                                <br>
+                                <?php printf(__('Para más información consulte: %s'), '<a target="_blank" href="https://doc.syspass.org">https://doc.syspass.org</a>'); ?>
                             </li>
                         </ul>
                     </div>
@@ -133,6 +141,7 @@
 
                 <input type="hidden" name="a" value="<?php echo $action; ?>">
                 <input type="hidden" name="type" value="<?php echo $type; ?>">
+                <input type="hidden" name="version" value="<?php echo $version; ?>">
                 <input type="hidden" name="upgrade" value="1">
             </fieldset>
 

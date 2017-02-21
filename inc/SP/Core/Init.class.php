@@ -28,8 +28,6 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountAcl;
 use SP\Auth\Browser\Browser;
 use SP\Config\Config;
-use SP\Config\ConfigDB;
-use SP\Controller\MainActionController;
 use SP\Controller\MainController;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Plugin\PluginUtil;
@@ -130,7 +128,7 @@ class Init
 
         // Comprobar si es necesario inicialización
         if (self::checkInitSourceInclude() ||
-            (defined('IS_INSTALLER') && Checks::isAjax())
+            ((defined('IS_INSTALLER') || defined('IS_UPGRADE')) && Checks::isAjax())
         ) {
             return;
         }
@@ -558,7 +556,7 @@ class Init
 
             if ($check === true
                 || Checks::isAjax()
-                || Request::analyze('upgrade', 0) === 1
+                || Request::analyze('a') === 'upgrade'
                 || Request::analyze('nodbupgrade', 0) === 1
                 || (self::$LOCK > 0 && self::isLoggedIn() && self::$LOCK === Session::getUserData()->getUserId())
             ) {
@@ -623,35 +621,7 @@ class Init
      */
     private static function checkUpgrade()
     {
-        if (self::$SUBURI !== '/index.php') {
-            return;
-        }
-
-        if ($version = Upgrade::checkDbVersion()) {
-            $Log = new Log();
-            $LogMessage = $Log->getLogMessage();
-            $LogMessage->setAction(__('Actualización', false));
-            $LogMessage->addDescription(__('Actualización de versión realizada.', false));
-            $LogMessage->addDetails(__('Versión', false), $version);
-            $LogMessage->addDetails(__('Tipo', false), 'db');
-            $Log->writeLog();
-
-            Email::sendEmail($LogMessage);
-
-            self::$UPDATED = true;
-        } elseif ($version = Upgrade::checkAppVersion()) {
-            $Log = new Log();
-            $LogMessage = $Log->getLogMessage();
-            $LogMessage->setAction(__('Actualización', false));
-            $LogMessage->addDescription(__('Actualización de versión realizada.', false));
-            $LogMessage->addDetails(__('Versión', false), $version);
-            $LogMessage->addDetails(__('Tipo', false), 'app');
-            $Log->writeLog();
-
-            Email::sendEmail($LogMessage);
-
-            self::$UPDATED = true;
-        }
+        return self::$SUBURI === '/index.php' && (Upgrade::checkDbVersion() || Upgrade::checkAppVersion());
     }
 
     /**

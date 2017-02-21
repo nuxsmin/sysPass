@@ -58,8 +58,8 @@ class Session
     /**
      * Establecer una variable de sesión
      *
-     * @param string $key   El nombre de la variable
-     * @param mixed  $value El valor de la variable
+     * @param string $key El nombre de la variable
+     * @param mixed $value El valor de la variable
      */
     public static function setSessionKey($key, $value)
     {
@@ -70,8 +70,8 @@ class Session
      * Establecer una variable de sesión para un plugin
      *
      * @param string $plugin Nombre del plugin
-     * @param string $key    El nombre de la variable
-     * @param mixed  $value  El valor de la variable
+     * @param string $key El nombre de la variable
+     * @param mixed $value El valor de la variable
      */
     public static function setPluginKey($plugin, $key, $value)
     {
@@ -92,7 +92,7 @@ class Session
      * Devolver una variable de sesión
      *
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      * @return mixed
      */
     public static function getSessionKey($key, $default = '')
@@ -109,7 +109,7 @@ class Session
      *
      * @param string $plugin
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      * @return mixed
      */
     public static function getPluginKey($plugin, $key, $default = '')
@@ -664,4 +664,25 @@ class Session
 
         return null;
     }
+
+    /**
+     * Establece si se ha actulizado la aplicación
+     *
+     * @param bool $bool
+     */
+    public static function setAppUpdated($bool = true)
+    {
+        self::setSessionKey('appupdated', $bool);
+    }
+
+    /**
+     * Devuelve si se ha actulizado la aplicación
+     *
+     * @return bool
+     */
+    public static function getAppUpdated()
+    {
+        return self::getSessionKey('appupdated', false);
+    }
+
 }

@@ -25,13 +25,13 @@
 namespace SP\Controller;
 
 use SP\Config\Config;
-use SP\Config\ConfigDB;
-use SP\Core\Exceptions\SPException;
-use SP\Core\Init;
+use SP\Core\Exceptions\ValidationException;
 use SP\Core\Session;
-use SP\Core\SessionUtil;
 use SP\Core\Upgrade\Upgrade;
+use SP\Http\JsonResponse;
 use SP\Http\Request;
+use SP\Log\Log;
+use SP\Util\Json;
 use SP\Util\Util;
 
 /**
@@ -42,50 +42,42 @@ use SP\Util\Util;
 class MainActionController
 {
     /**
-     * Acción para actualizar lda BD
+     * Realizar acción
      *
-     * @param $dbVersion
+     * @param int $version
      * @return bool
      */
-    public function upgradeDbAction($dbVersion)
+    public function doAction($version = 0)
     {
-        $action = Request::analyze('a');
-        $hash = Request::analyze('h');
-        $confirm = Request::analyze('chkConfirm', false, false, true);
+        $version = Request::analyze('version', $version);
+        $type = Request::analyze('type');
 
-        if ($confirm === true
-            && $action === 'upgrade'
-            && $hash === Config::getConfig()->getUpgradeKey()
+        if (Request::analyze('a') === 'upgrade'
+            && Request::analyze('upgrade', 0) === 1
         ) {
-            $this->upgrade($dbVersion, 'db');
-        } else {
+            try {
+                $JsonResponse = new JsonResponse();
+                $JsonResponse->setAction(__('Actualización', false));
+
+                if (Request::analyze('h') !== Config::getConfig()->getUpgradeKey()) {
+                    throw new ValidationException(__('Código de seguridad incorrecto', false));
+                } elseif (Request::analyze('chkConfirm', false, false, true) === false) {
+                    throw new ValidationException(__('Es necesario confirmar la actualización', false));
+                }
+
+                $this->upgrade($version, $type);
+
+                $JsonResponse->setDescription(__('Aplicación actualizada correctamente', false));
+                $JsonResponse->addMessage(__('En 5 segundos será redirigido al login', false));
+                $JsonResponse->setStatus(0);
+            } catch (\Exception $e) {
+                $JsonResponse->setDescription($e->getMessage());
+            }
+
+            Json::returnJson($JsonResponse);
+        } elseif ($type === 'db' || $type === 'app') {
             $controller = new MainController();
-            $controller->getUpgrade($dbVersion);
-        }
-
-        return false;
-    }
-
-    /**
-     * Acción para actualizar la aplicación
-     *
-     * @param $appVersion
-     * @return bool
-     */
-    public function upgradeAppAction($appVersion)
-    {
-        $action = Request::analyze('a');
-        $hash = Request::analyze('h');
-        $confirm = Request::analyze('chkConfirm', false, false, true);
-
-        if ($confirm === true
-            && $action === 'upgrade'
-            && $hash === Config::getConfig()->getUpgradeKey()
-        ) {
-            $this->upgrade($appVersion, 'app');
-        } else {
-            $controller = new MainController();
-            $controller->getUpgrade($appVersion);
+            $controller->getUpgrade($version);
         }
 
         return false;
@@ -96,29 +88,31 @@ class MainActionController
      *
      * @param int $version
      * @param int $type
-     * @return bool
      */
     private function upgrade($version, $type)
     {
-        try {
-            Upgrade::doUpgrade($version);
+        Upgrade::doUpgrade($version);
 
-            $Config = Config::getConfig();
-            $Config->setMaintenance(false);
-            $Config->setUpgradeKey('');
+        $Config = Config::getConfig();
+        $Config->setMaintenance(false);
+        $Config->setUpgradeKey('');
 
-            if ($type === 'app') {
-                $Config->setConfigVersion(implode('', Util::getVersion(true)));
-            }
-
-            Config::saveConfig($Config);
-
-            Config::loadConfig(true);
-            return true;
-        } catch (\Exception $e) {
-            Init::initError($e->getMessage(), $e->getCode());
+        if ($type === 'app') {
+            $Config->setConfigVersion(implode('', Util::getVersion(true)));
         }
 
-        return false;
+        Config::saveConfig($Config);
+
+        Config::loadConfig(true);
+
+        Session::setAppUpdated();
+
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Actualización', false));
+        $LogMessage->addDescription(__('Actualización de versión realizada.', false));
+        $LogMessage->addDetails(__('Versión', false), $version);
+        $LogMessage->addDetails(__('Tipo', false), $type);
+        $Log->writeLog();
     }
 }

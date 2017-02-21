@@ -43,17 +43,25 @@ use SP\Storage\DB;
  */
 class Crypt
 {
+    public static $currentMPassHash;
+
     /**
      * Migrar elementos encriptados
      *
      * @param $masterPass
      * @return bool
+     * @throws \Exception
      */
     public static function migrate(&$masterPass)
     {
         try {
+            // Guardar hash actual antes de cambiar...
+            self::$currentMPassHash = ConfigDB::getValue('masterPwd');
+
             if (!DB::beginTransaction()) {
                 throw new SPException(SPException::SP_ERROR, __('No es posible iniciar una transacción', false));
+            } elseif (!self::migrateHash($masterPass)) {
+                throw new SPException(SPException::SP_INFO, __('Clave maestra incorrecta', false));
             }
 
             self::migrateAccounts($masterPass);
@@ -62,55 +70,19 @@ class Crypt
             if (!DB::endTransaction()) {
                 throw new SPException(SPException::SP_ERROR, __('No es posible finalizar una transacción', false));
             }
-        } catch (CryptoException $e) {
+
+            global $timeStart;
+
+            debugLog(Init::microtime_float() - $timeStart);
+
+            return true;
+        } catch (\Exception $e) {
             if (DB::rollbackTransaction()) {
-                debugLog('Rollback');
+                debugLog(__METHOD__ . ': Rollback');
             }
 
-            return false;
-        } catch (SPException $e) {
-            if (DB::rollbackTransaction()) {
-                debugLog('Rollback');
-            }
-
-            return false;
+            throw $e;
         }
-
-        global $timeStart;
-
-        debugLog(Init::microtime_float() - $timeStart);
-
-        return true;
-    }
-
-    /**
-     * Migrar claves de cuentas a nuevo formato
-     *
-     * @param $masterPass
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     */
-    private static function migrateAccounts(&$masterPass)
-    {
-        $AccountCrypt = new AccountCrypt();
-        $AccountCrypt->updateOldPass($masterPass);
-
-        $AccountHistoryCrypt = new AccountHistoryCrypt();
-        $AccountHistoryCrypt->updateOldPass($masterPass);
-    }
-
-    /**
-     * Migrar los datos de los campos personalizados a nuevo formato
-     *
-     * @param $masterPass
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     */
-    private static function migrateCustomFields(&$masterPass)
-    {
-        CustomFieldsUtil::updateCustomFieldsOldCrypt($masterPass);
     }
 
     /**
@@ -149,5 +121,33 @@ class Crypt
         }
 
         return Hash::checkHashKey($masterPass, $configHashMPass);
+    }
+
+    /**
+     * Migrar claves de cuentas a nuevo formato
+     *
+     * @param $masterPass
+     */
+    private static function migrateAccounts(&$masterPass)
+    {
+        $AccountCrypt = new AccountCrypt();
+        $AccountCrypt->updateOldPass($masterPass);
+
+        $AccountHistoryCrypt = new AccountHistoryCrypt();
+        $AccountHistoryCrypt->updateOldPass($masterPass);
+    }
+
+    /**
+     * Migrar los datos de los campos personalizados a nuevo formato
+     *
+     * @param $masterPass
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     */
+    private static function migrateCustomFields(&$masterPass)
+    {
+        CustomFieldsUtil::updateCustomFieldsOldCrypt($masterPass);
     }
 }

@@ -44,6 +44,7 @@ sysPass.Actions = function (Common) {
         main: {
             login: "/ajax/ajax_doLogin.php",
             install: "/ajax/ajax_install.php",
+            upgrade: "/ajax/ajax_upgrade.php",
             getUpdates: "/ajax/ajax_checkUpds.php"
         },
         checks: "/ajax/ajax_checkConnection.php",
@@ -396,6 +397,45 @@ sysPass.Actions = function (Common) {
                     setTimeout(function () {
                         Common.redirect("index.php");
                     }, 1000);
+                }
+            });
+        },
+        upgrade: function ($obj) {
+            log.info("main:upgrade");
+
+            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
+
+            showDialog({
+                text: atext,
+                negative: {
+                    title: Common.config().LANG[44],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        Common.msg.error(Common.config().LANG[44]);
+                    }
+                },
+                positive: {
+                    title: Common.config().LANG[43],
+                    onClick: function (e) {
+                        var opts = Common.appRequests().getRequestOpts();
+                        opts.url = ajaxUrl.main.upgrade;
+                        opts.method = "get";
+                        opts.useFullLoading = true;
+                        opts.data = $obj.serialize();
+
+                        Common.appRequests().getActionCall(opts, function (json) {
+                            Common.msg.out(json);
+
+                            if (json.status == 0) {
+                                setTimeout(function () {
+                                    Common.redirect("index.php");
+                                }, 5000);
+                            } else {
+                                $obj.find(":input[name=h]").val("");
+                            }
+                        });
+                    }
                 }
             });
         },

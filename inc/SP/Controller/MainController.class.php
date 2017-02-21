@@ -38,6 +38,7 @@ use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
+use SP\Core\Upgrade\Account;
 use SP\Core\Upgrade\Check;
 use SP\DataModel\NoticeData;
 use SP\Html\DataGrid\DataGridAction;
@@ -64,8 +65,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page       El nombre de página para la clase del body
-     * @param bool   $initialize Si es una inicialización completa
+     * @param string $page El nombre de página para la clase del body
+     * @param bool $initialize Si es una inicialización completa
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -329,7 +330,9 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('useLayout', false);
         $this->view->assign('mailEnabled', Checks::mailIsEnabled());
         $this->view->assign('isLogout', Request::analyze('logout', false, true));
-        $this->view->assign('updated', Init::$UPDATED === true);
+        $this->view->assign('updated', Session::getAppUpdated());
+
+        Session::setAppUpdated(false);
 
         $getParams = [];
 
@@ -439,26 +442,24 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('action', $action);
         $this->view->assign('type', $type);
         $this->view->assign('version', $version);
-        $this->view->assign('upgrade', $action === 'upgrade');
+        $this->view->assign('upgradeVersion', implode('.', Util::getVersion(true)));
 
-        if ($type === 'db') {
-            $this->view->assign('legend', __('Actualización de BBDD'));
+        if ($version < 1316011001) {
+            $this->view->assign('checkConstraints', Check::checkConstraints());
 
-            if ($version < 1316011001) {
-                $this->view->assign('checkConstraints', Check::checkConstraints());
+            $constraints = [];
 
-                $constraints = [];
-
-                foreach ($this->view->checkConstraints as $key => $val) {
-                    if ($val > 0) {
-                        $constraints[] = sprintf('%s : %s', $key, $val);
-                    }
+            foreach ($this->view->checkConstraints as $key => $val) {
+                if ($val > 0) {
+                    $constraints[] = sprintf('%s : %s', $key, $val);
                 }
-
-                $this->view->assign('constraints', $constraints);
             }
-        } elseif ($type === 'app') {
-            $this->view->assign('legend', __('Actualización de Aplicación'));
+
+            $this->view->assign('constraints', $constraints);
+        }
+
+        if ($version < 20117022101) {
+            $this->view->assign('numAccounts', Account::getNumAccounts());
         }
 
         $this->view();
