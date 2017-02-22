@@ -36,6 +36,7 @@ use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
+use SP\Util\Util;
 
 /**
  * Class AccountHistoryCrypt
@@ -73,8 +74,9 @@ class AccountHistoryCrypt
         }
 
         $accountsPass = $this->getAccountsPassData();
+        $numAccounts = count($accountsPass);
 
-        if (count($accountsPass) === 0) {
+        if ($numAccounts === 0) {
             $LogMessage->addDescription(__('Error al obtener las claves de las cuentas', false));
             $Log->setLogLevel(Log::ERROR);
             $Log->writeLog();
@@ -87,29 +89,35 @@ class AccountHistoryCrypt
         $AccountDataBase->key = '';
         $AccountDataBase->hash = Hash::hashKey($currentMasterPass);
 
+        $counter = 0;
+        $startTime = time();
+
         foreach ($accountsPass as $account) {
-            if ($LogMessage->getDetailsCounter() >= 100) {
+            // No realizar cambios si está en modo demo
+            if ($demoEnabled) {
+                $accountsOk[] = $account->acchistory_id;
+                continue;
+            } elseif ($LogMessage->getDetailsCounter() >= 100) {
                 $Log->writeLog(false, true);
+            }
+
+            if ($counter % 100 === 0) {
+                debugLog(__('Actualizar Clave Maestra (H)'));
+                debugLog(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
+
+                $eta = Util::getETA($startTime, $counter, $numAccounts);
+                debugLog(sprintf('ETA: %ds (%f.2/s)', $eta[0], $eta[1]));
             }
 
             $AccountData = clone $AccountDataBase;
 
             $AccountData->id = $account->acchistory_id;
 
-            // No realizar cambios si está en modo demo
-            if ($demoEnabled) {
-                $accountsOk[] = $account->acchistory_id;
-                continue;
-            } elseif ($account->acchistory_mPassHash !== \SP\Core\Upgrade\Crypt::$currentMPassHash) {
-                $errorCount++;
-                $LogMessage->addDetails(__('La clave maestra del registro no coincide', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
-                continue;
-            } elseif (empty($account->acchistory_pass)) {
-                $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
-                continue;
-            } elseif (strlen($account->acchistory_key) < 32) {
-                $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
-            }
+//            if ($account->acchistory_mPassHash !== \SP\Core\Upgrade\Crypt::$currentMPassHash) {
+//                $errorCount++;
+//                $LogMessage->addDetails(__('La clave maestra del registro no coincide', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
+//                continue;
+//            }
 
             try {
                 $decryptedPass = OldCrypt::getDecrypt($account->acchistory_pass, $account->acchistory_key, $currentMasterPass);
@@ -127,6 +135,7 @@ class AccountHistoryCrypt
                 $Account->updateAccountPass($AccountData);
 
                 $accountsOk[] = $account->acchistory_id;
+                $counter++;
             } catch (SPException $e) {
                 $errorCount++;
                 $LogMessage->addDetails(__('Fallo al actualizar la clave del histórico', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
@@ -153,10 +162,15 @@ class AccountHistoryCrypt
     protected function getAccountsPassData()
     {
         $query = /** @lang SQL */
-            'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_key, acchistory_mPassHash FROM accHistory';
+            'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_key 
+            FROM accHistory
+            WHERE BIT_LENGTH(acchistory_key) >= 256 
+            AND BIT_LENGTH(acchistory_pass) > 0
+            AND acchistory_mPassHash = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->addParam(\SP\Core\Upgrade\Crypt::$currentMPassHash);
 
         return DB::getResultsArray($Data);
     }
@@ -183,15 +197,14 @@ class AccountHistoryCrypt
         $Log->writeLog(true);
 
         $accountsPass = $this->getAccountsPassData();
+        $numAccounts = count($accountsPass);
 
-        if (count($accountsPass) === 0) {
+        if ($numAccounts === 0) {
             $LogMessage->addDescription(__('Error al obtener las claves de las cuentas', false));
             $Log->setLogLevel(Log::ERROR);
             $Log->writeLog();
             return false;
         }
-
-        $currentMPassHash = ConfigDB::getValue('masterPwd');
 
         $AccountDataBase = new \stdClass();
         $AccountDataBase->id = 0;
@@ -199,34 +212,36 @@ class AccountHistoryCrypt
         $AccountDataBase->key = '';
         $AccountDataBase->hash = Hash::hashKey($newMasterPass);
 
+        $counter = 0;
+        $startTime = time();
+
         foreach ($accountsPass as $account) {
-            if ($LogMessage->getDetailsCounter() >= 100) {
+            // No realizar cambios si está en modo demo
+            if ($demoEnabled) {
+                $accountsOk[] = $account->acchistory_id;
+                continue;
+            } elseif ($LogMessage->getDetailsCounter() >= 100) {
                 $Log->writeLog(false, true);
+            }
+
+            if ($counter % 100 === 0) {
+                debugLog(__('Actualizar Clave Maestra (H)'));
+                debugLog(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
+
+                $eta = Util::getETA($startTime, $counter, $numAccounts);
+                debugLog(sprintf('ETA: %ds (%f.2/s)', $eta[0], $eta[1]));
             }
 
             $AccountData = clone $AccountDataBase;
 
             $AccountData->id = $account->acchistory_id;
 
-            // No realizar cambios si está en modo demo
-            if ($demoEnabled) {
-                $accountsOk[] = $account->acchistory_id;
-                continue;
-            } elseif ($account->acchistory_mPassHash !== $currentMPassHash) {
-                $errorCount++;
-                $LogMessage->addDetails(__('La clave maestra del registro no coincide', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
-                continue;
-            } elseif (empty($account->acchistory_pass)) {
-                $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
-                continue;
-            }
-
             try {
                 $currentSecuredKey = Crypt::unlockSecuredKey($account->acchistory_key, $currentMasterPass);
                 $decryptedPass = Crypt::decrypt($account->acchistory_pass, $currentSecuredKey);
 
                 $newSecuredKey = Crypt::makeSecuredKey($newMasterPass);
-                $AccountData->pass = Crypt::encrypt($decryptedPass, $newSecuredKey);
+                $AccountData->pass = Crypt::encrypt($decryptedPass, $newSecuredKey, $newMasterPass);
                 $AccountData->key = $newSecuredKey;
 
                 if (strlen($newSecuredKey) > 1000 || strlen($AccountData->pass) > 1000) {
@@ -237,6 +252,7 @@ class AccountHistoryCrypt
                 $Account->updateAccountPass($AccountData);
 
                 $accountsOk[] = $account->acchistory_id;
+                $counter++;
             } catch (SPException $e) {
                 $errorCount++;
                 $LogMessage->addDetails(__('Fallo al actualizar la clave del histórico', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));

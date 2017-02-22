@@ -128,6 +128,8 @@
                         <p class="help-text"><?php echo __('La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras.'); ?></p>
 
                         <p class="help-text"><?php echo __('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
+
+                        <p class="help-text"><?php printf(__('Para más información consulte: %s'), '<a target="_blank" href="https://doc.syspass.org">https://doc.syspass.org</a>'); ?></p>
                     </div>
                 </li>
                 <?php if ($isAdminApp): ?>

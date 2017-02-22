@@ -146,12 +146,8 @@ class DB
         // Limpiar valores de caché
         $this->lastResult = [];
 
-        try {
-            /** @var PDOStatement $queryRes */
-            $queryRes = $this->prepareQueryData($queryData);
-        } catch (SPException $e) {
-            throw $e;
-        }
+        /** @var PDOStatement $queryRes */
+        $queryRes = $this->prepareQueryData($queryData);
 
         if ($isSelect) {
             if ($getRawData) {
@@ -250,7 +246,7 @@ class DB
             debugLog('Exception: ' . $e->getMessage());
             debugLog(ob_get_clean());
 
-            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), '', $e->getCode(), $e);
+            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
         }
     }
 
@@ -267,16 +263,10 @@ class DB
             return 0;
         }
 
-        try {
-            $queryRes = $this->prepareQueryData($queryData, true);
-            $num = (int)$queryRes->fetchColumn();
-            $queryRes->closeCursor();
-            $queryData->setQueryNumRows($num);
-        } catch (SPException $e) {
-            debugLog('Exception: ' . $e->getMessage());
-
-            throw $e;
-        }
+        $queryRes = $this->prepareQueryData($queryData, true);
+        $num = (int)$queryRes->fetchColumn();
+        $queryRes->closeCursor();
+        $queryData->setQueryNumRows($num);
     }
 
     /**

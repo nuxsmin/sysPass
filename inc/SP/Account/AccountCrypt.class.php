@@ -36,6 +36,7 @@ use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
+use SP\Util\Util;
 
 /**
  * Class AccountCrypt
@@ -50,8 +51,6 @@ class AccountCrypt
      *
      * @param $currentMasterPass
      * @return bool
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function updateOldPass(&$currentMasterPass)
     {
@@ -76,8 +75,9 @@ class AccountCrypt
         }
 
         $accountsPass = $this->getAccountsPassData();
+        $numAccounts = count($accountsPass);
 
-        if (count($accountsPass) === 0) {
+        if ($numAccounts === 0) {
             $LogMessage->addDescription(__('Error al obtener las claves de las cuentas', false));
             $Log->setLogLevel(Log::ERROR);
             $Log->writeLog();
@@ -86,9 +86,24 @@ class AccountCrypt
 
         $AccountDataBase = new AccountData();
 
+        $counter = 0;
+        $startTime = time();
+
         foreach ($accountsPass as $account) {
-            if ($LogMessage->getDetailsCounter() >= 100) {
+            // No realizar cambios si está en modo demo
+            if ($demoEnabled) {
+                $accountsOk[] = $account->account_id;
+                continue;
+            } elseif ($LogMessage->getDetailsCounter() >= 100) {
                 $Log->writeLog(false, true);
+            }
+
+            if ($counter % 100 === 0) {
+                debugLog(__('Actualizar Clave Maestra'));
+                debugLog(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
+
+                $eta = Util::getETA($startTime, $counter, $numAccounts);
+                debugLog(sprintf('ETA: %ds (%f.2/s)', $eta[0], $eta[1]));
             }
 
             $AccountData = clone $AccountDataBase;
@@ -96,16 +111,9 @@ class AccountCrypt
             $AccountData->setAccountId($account->account_id);
             $AccountData->setAccountUserEditId($userId);
 
-            // No realizar cambios si está en modo demo
-            if ($demoEnabled) {
-                $accountsOk[] = $account->account_id;
-                continue;
-            } elseif (empty($account->account_pass)) {
-                $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
-                continue;
-            } elseif (strlen($account->account_key) < 32) {
-                $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
-            }
+//            } elseif (strlen($account->account_key) < 32) {
+//                $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
+//            }
 
             try {
                 $decryptedPass = OldCrypt::getDecrypt($account->account_pass, $account->account_key, $currentMasterPass);
@@ -123,6 +131,7 @@ class AccountCrypt
                 $Account->updateAccountPass(true);
 
                 $accountsOk[] = $account->account_id;
+                $counter++;
             } catch (SPException $e) {
                 $errorCount++;
                 $LogMessage->addDetails(__('Fallo al actualizar la clave de la cuenta', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
@@ -149,7 +158,9 @@ class AccountCrypt
     protected function getAccountsPassData()
     {
         $query = /** @lang SQL */
-            'SELECT account_id, account_name, account_pass, account_key FROM accounts';
+            'SELECT account_id, account_name, account_pass, account_key 
+            FROM accounts
+            WHERE BIT_LENGTH(account_key) >= 256 AND BIT_LENGTH(account_pass) > 0';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -180,8 +191,9 @@ class AccountCrypt
         $Log->writeLog(true);
 
         $accountsPass = $this->getAccountsPassData();
+        $numAccounts = count($accountsPass);
 
-        if (count($accountsPass) === 0) {
+        if ($numAccounts === 0) {
             $LogMessage->addDescription(__('Error al obtener las claves de las cuentas', false));
             $Log->setLogLevel(Log::ERROR);
             $Log->writeLog();
@@ -189,10 +201,24 @@ class AccountCrypt
         }
 
         $AccountDataBase = new AccountData();
+        $counter = 0;
+        $startTime = time();
 
         foreach ($accountsPass as $account) {
-            if ($LogMessage->getDetailsCounter() >= 100) {
+            // No realizar cambios si está en modo demo
+            if ($demoEnabled) {
+                $accountsOk[] = $account->account_id;
+                continue;
+            } elseif ($LogMessage->getDetailsCounter() >= 100) {
                 $Log->writeLog(false, true);
+            }
+
+            if ($counter % 100 === 0) {
+                debugLog(__('Actualizar Clave Maestra'));
+                debugLog(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
+
+                $eta = Util::getETA($startTime, $counter, $numAccounts);
+                debugLog(sprintf('ETA: %ds (%f.2/s)', $eta[0], $eta[1]));
             }
 
             $AccountData = clone $AccountDataBase;
@@ -200,21 +226,12 @@ class AccountCrypt
             $AccountData->setAccountId($account->account_id);
             $AccountData->setAccountUserEditId($userId);
 
-            // No realizar cambios si está en modo demo
-            if ($demoEnabled) {
-                $accountsOk[] = $account->account_id;
-                continue;
-            } elseif (empty($account->account_pass)) {
-                $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
-                continue;
-            }
-
             try {
                 $currentSecuredKey = Crypt::unlockSecuredKey($account->account_key, $currentMasterPass);
                 $decryptedPass = Crypt::decrypt($account->account_pass, $currentSecuredKey);
 
                 $newSecuredKey = Crypt::makeSecuredKey($newMasterPass);
-                $AccountData->setAccountPass(Crypt::encrypt($decryptedPass, $newSecuredKey));
+                $AccountData->setAccountPass(Crypt::encrypt($decryptedPass, $newSecuredKey, $newMasterPass));
                 $AccountData->setAccountKey($newSecuredKey);
 
                 if (strlen($newSecuredKey) > 1000 || strlen($AccountData->getAccountPass()) > 1000) {
@@ -225,6 +242,7 @@ class AccountCrypt
                 $Account->updateAccountPass(true);
 
                 $accountsOk[] = $account->account_id;
+                $counter++;
             } catch (SPException $e) {
                 $errorCount++;
                 $LogMessage->addDetails(__('Fallo al actualizar la clave de la cuenta', false), sprintf('%s (%d)', $account->account_name, $account->account_id));

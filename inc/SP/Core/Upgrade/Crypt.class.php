@@ -73,7 +73,7 @@ class Crypt
 
             global $timeStart;
 
-            debugLog(Init::microtime_float() - $timeStart);
+            debugLog('Total time: ' . Init::microtime_float() - $timeStart);
 
             return true;
         } catch (\Exception $e) {

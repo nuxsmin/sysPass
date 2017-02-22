@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -88,6 +88,7 @@ class MainActionController
      *
      * @param int $version
      * @param int $type
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function upgrade($version, $type)
     {
@@ -97,8 +98,10 @@ class MainActionController
         $Config->setMaintenance(false);
         $Config->setUpgradeKey('');
 
+        $appVersion = implode('', Util::getVersion(true));
+
         if ($type === 'app') {
-            $Config->setConfigVersion(implode('', Util::getVersion(true)));
+            $Config->setConfigVersion($appVersion);
         }
 
         Config::saveConfig($Config);
@@ -111,7 +114,7 @@ class MainActionController
         $LogMessage = $Log->getLogMessage();
         $LogMessage->setAction(__('Actualización', false));
         $LogMessage->addDescription(__('Actualización de versión realizada.', false));
-        $LogMessage->addDetails(__('Versión', false), $version);
+        $LogMessage->addDetails(__('Versión', false), sprintf('%d => %d', $version, $appVersion));
         $LogMessage->addDetails(__('Tipo', false), $type);
         $Log->writeLog();
     }

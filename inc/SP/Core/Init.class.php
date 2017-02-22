@@ -248,12 +248,17 @@ class Init
         if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {
             define('DEBUG', true);
         }
+
         if (defined('DEBUG') && DEBUG) {
             error_reporting(E_ALL);
             ini_set('display_errors', 'On');
         } else {
             error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
             ini_set('display_errors', 'Off');
+        }
+
+        if (!file_exists(LOG_FILE) && touch(LOG_FILE) && chmod(LOG_FILE, 0600)) {
+            error_log('Setup log file: ' . LOG_FILE);
         }
     }
 
@@ -262,9 +267,9 @@ class Init
      */
     private static function loadExtensions()
     {
-        $PluginsLoader = new \SplClassLoader('Defuse\Crypto', EXTENSIONS_PATH);
-        $PluginsLoader->setPrepend(false);
-        $PluginsLoader->register();
+        $CryptoLoader = new \SplClassLoader('Defuse\Crypto', EXTENSIONS_PATH);
+        $CryptoLoader->setPrepend(false);
+        $CryptoLoader->register();
 
         $PhpSecLoader = new \SplClassLoader('phpseclib', EXTENSIONS_PATH);
         $PhpSecLoader->setPrepend(false);
@@ -521,7 +526,9 @@ class Init
         // Redirigir al instalador si no está instalada
         if (!Config::getConfig()->isInstalled()) {
             if (self::$SUBURI !== '/index.php') {
-                $url = 'http://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . self::$WEBROOT . '/index.php';
+                $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
+
+                $url = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . self::$WEBROOT . '/index.php';
                 header("Location: $url");
                 exit();
             } else {
@@ -631,9 +638,11 @@ class Init
     private static function initSession()
     {
         $lastActivity = Session::getLastActivity();
+        $inMaintenance = Config::getConfig()->isMaintenance();
 
         // Timeout de sesión
         if ($lastActivity > 0
+            && !$inMaintenance
             && (time() - $lastActivity) > self::getSessionLifeTime()
         ) {
             if (isset($_COOKIE[session_name()])) {
@@ -652,7 +661,10 @@ class Init
         if ($sidStartTime === 0) {
             Session::setSidStartTime(time());
             Session::setStartActivity(time());
-        } else if (time() - $sidStartTime > 120 && Session::getUserData()->getUserId() > 0) {
+        } else if (!$inMaintenance
+            && time() - $sidStartTime > 120
+            && Session::getUserData()->getUserId() > 0
+        ) {
             try {
                 CryptSession::reKey();
 
@@ -752,7 +764,7 @@ class Init
         $Controller = new MainController();
         $Controller->doAction('postlogin.' . $action);
 
-        return true;
+        return false;
     }
 
     /**

@@ -568,6 +568,7 @@ sysPass.Actions = function (Common) {
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.config.export;
             opts.method = "post";
+            opts.useFullLoading = true;
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {

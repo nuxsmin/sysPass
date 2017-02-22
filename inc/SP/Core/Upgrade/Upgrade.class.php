@@ -203,6 +203,9 @@ class Upgrade
      *
      * @param $version
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     private static function appUpgrades($version)
     {
@@ -467,9 +470,10 @@ class Upgrade
 
         if (empty($upgradeKey)) {
             Config::getConfig()->setUpgradeKey(Util::generateRandomBytes(32));
-            Config::getConfig()->setMaintenance(true);
-            Config::saveConfig(null, false);
         }
+
+        Config::getConfig()->setMaintenance(true);
+        Config::saveConfig(null, false);
 
         Init::initError(__('La aplicación necesita actualizarse'), sprintf(__('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?a=upgrade&type=' . $type . '">' . __('Actualizar') . '</a>'));
     }

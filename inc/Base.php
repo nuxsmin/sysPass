@@ -38,6 +38,7 @@ define('EXTENSIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'Exts');
 define('PLUGINS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'Plugins');
 define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
 define('SQL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'sql');
+define('LOG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'sysPass.log');
 
 define('DEBUG', false);
 
@@ -66,11 +67,13 @@ $timeStart = Init::microtime_float();
  * Función para enviar mensajes al log de errores
  *
  * @param mixed $data
- * @param bool $printLastCaller
+ * @param bool  $printLastCaller
  */
 function debugLog($data, $printLastCaller = false)
 {
-    error_log(print_r($data, true));
+    if (!error_log(print_r($data, true) . PHP_EOL, 3, LOG_FILE)) {
+        error_log(print_r($data, true));
+    }
 
     if ($printLastCaller === true) {
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);

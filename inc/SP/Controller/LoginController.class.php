@@ -24,6 +24,7 @@
 
 namespace SP\Controller;
 
+use Defuse\Crypto\Exception\BadFormatException;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Auth\Auth;
 use SP\Auth\AuthResult;
@@ -264,6 +265,10 @@ class LoginController
                         break;
                 }
             }
+        } catch (BadFormatException $e) {
+            $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
+
+            throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
         } catch (CryptoException $e) {
             $this->LogMessage->addDescription(__('Error interno', false));
 
