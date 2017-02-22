@@ -365,18 +365,19 @@ class Account extends AccountBase implements AccountInterface
     /**
      * Incrementa el contador de visitas de una cuenta en la BBDD
      *
+     * @param int $id
      * @return bool
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function incrementViewCounter()
+    public function incrementViewCounter($id = null)
     {
         $query = /** @lang SQL */
             'UPDATE accounts SET account_countView = (account_countView + 1) WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId());
+        $Data->addParam($id ?: $this->accountData->getAccountId());
 
         return DB::getQuery($Data);
     }
@@ -384,18 +385,19 @@ class Account extends AccountBase implements AccountInterface
     /**
      * Incrementa el contador de vista de clave de una cuenta en la BBDD
      *
+     * @param null $id
      * @return bool
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function incrementDecryptCounter()
+    public function incrementDecryptCounter($id = null)
     {
         $query = /** @lang SQL */
             'UPDATE accounts SET account_countDecrypt = (account_countDecrypt + 1) WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId());
+        $Data->addParam($id ?: $this->accountData->getAccountId());
 
         return DB::getQuery($Data);
     }
@@ -472,5 +474,45 @@ class Account extends AccountBase implements AccountInterface
         $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($this->accountData->getAccountId()));
 
         return DB::getResults($Data);
+    }
+
+    /**
+     * Obtener los datos de una cuenta.
+     * Esta funcion realiza la consulta a la BBDD y guarda los datos en las variables de la clase.
+     *
+     * @return AccountExtData
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getDataForLink()
+    {
+        $query = /** @lang SQL */
+            'SELECT account_name,'
+            . 'account_login,'
+            . 'account_pass,'
+            . 'account_key,'
+            . 'account_url,'
+            . 'account_notes,'
+            . 'category_name,'
+            . 'customer_name '
+            . 'FROM accounts '
+            . 'LEFT JOIN customers ON account_customerId = customer_id '
+            . 'LEFT JOIN categories ON account_categoryId = category_id '
+            . 'WHERE account_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setMapClass($this->accountData);
+        $Data->addParam($this->accountData->getAccountId());
+
+        /** @var AccountExtData|array $queryRes */
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            throw new SPException(SPException::SP_CRITICAL, __('No se pudieron obtener los datos de la cuenta', false));
+        } elseif (is_array($queryRes) && count($queryRes) === 0) {
+            throw new SPException(SPException::SP_CRITICAL, __('La cuenta no existe', false));
+        }
+
+        return $this->accountData;
     }
 }

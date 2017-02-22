@@ -26,10 +26,12 @@ namespace SP\Mgmt\PublicLinks;
 
 defined('APP_ROOT') || die();
 
+use SP\Account\Account;
 use SP\Config\Config;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountExtData;
 use SP\DataModel\PublicLinkData;
 use SP\Mgmt\ItemBase;
 use SP\DataModel\PublicLinkBaseData;
@@ -82,6 +84,33 @@ abstract class PublicLinkBase extends ItemBase
 
         $this->itemData->setPass(Crypt::encrypt(CryptSession::getSessionKey(), $securedKey, $key));
         $this->itemData->setPassIV($securedKey);
+    }
+
+    /**
+     * Obtener los datos de una cuenta y encriptarlos para el enlace
+     *
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    protected final function setLinkData()
+    {
+        // Obtener los datos de la cuenta
+        $Account = new Account(new AccountExtData($this->itemData->getItemId()));
+        $AccountData = $Account->getDataForLink();
+
+        $key = CryptSession::getSessionKey();
+        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $key);
+        $AccountData->setAccountPass(Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $key));
+        $AccountData->setAccountKey(null);
+
+        // Encriptar los datos de la cuenta
+        $linkKey = Config::getConfig()->getPasswordSalt() . $this->createLinkHash();
+        $linkSecuredKey = Crypt::makeSecuredKey($linkKey);
+
+        $this->itemData->setData(Crypt::encrypt(serialize($AccountData), $linkSecuredKey, $linkKey));
+        $this->itemData->setPassIV($linkSecuredKey);
     }
 
     /**

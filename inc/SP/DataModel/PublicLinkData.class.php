@@ -81,6 +81,10 @@ class PublicLinkData extends PublicLinkBaseData
      * @var array
      */
     protected $useInfo = [];
+    /**
+     * @var string
+     */
+    protected $data;
 
     /**
      * @return int
@@ -288,5 +292,21 @@ class PublicLinkData extends PublicLinkBaseData
     public function addUseInfo($useInfo)
     {
         $this->useInfo[] = $useInfo;
+    }
+
+    /**
+     * @return string
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param string $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
     }
 }
