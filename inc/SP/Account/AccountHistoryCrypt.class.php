@@ -181,8 +181,6 @@ class AccountHistoryCrypt
      * @param $currentMasterPass
      * @param $newMasterPass
      * @return bool
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function updatePass($currentMasterPass, $newMasterPass)
     {

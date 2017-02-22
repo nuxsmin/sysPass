@@ -51,11 +51,6 @@ class CustomFieldsUtil
      * @param string $currentMasterPass La clave maestra actual
      * @param string $newMasterPassword La nueva clave maestra
      * @return bool
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function updateCustomFieldsCrypt($currentMasterPass, $newMasterPassword)
     {
@@ -85,31 +80,33 @@ class CustomFieldsUtil
         $success = [];
 
         foreach ($queryRes as $CustomField) {
-            $currentSecuredKey = Crypt::unlockSecuredKey($CustomField->getCustomfielddataKey(), $currentMasterPass);
-            $securedKey = Crypt::makeSecuredKey($newMasterPassword);
+            try {
+                $currentSecuredKey = Crypt::unlockSecuredKey($CustomField->getCustomfielddataKey(), $currentMasterPass);
+                $securedKey = Crypt::makeSecuredKey($newMasterPassword);
 
-            if (strlen($securedKey) > 1000) {
-                throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
-            }
+                if (strlen($securedKey) > 1000) {
+                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                }
 
-            $query = /** @lang SQL */
-                'UPDATE customFieldsData SET
+                $query = /** @lang SQL */
+                    'UPDATE customFieldsData SET
                 customfielddata_data = ?,
                 customfielddata_key = ? 
                 WHERE customfielddata_id = ?';
 
-            $Data = new QueryData();
-            $Data->setQuery($query);
-            $Data->addParam(Crypt::encrypt(Crypt::decrypt($CustomField->getCustomfielddataData(), $currentSecuredKey), $securedKey));
-            $Data->addParam($securedKey);
-            $Data->addParam($CustomField->getCustomfielddataId());
+                $Data = new QueryData();
+                $Data->setQuery($query);
+                $Data->addParam(Crypt::encrypt(Crypt::decrypt($CustomField->getCustomfielddataData(), $currentSecuredKey, $currentMasterPass), $securedKey, $newMasterPassword));
+                $Data->addParam($securedKey);
+                $Data->addParam($CustomField->getCustomfielddataId());
 
-            try {
                 DB::getQuery($Data);
 
                 $success[] = $CustomField->getCustomfielddataId();
-            } catch (SPException $e) {
-                $errors[] = $CustomField->getCustomfielddataId();
+            } catch (\Exception $e) {
+                debugLog(__($e->getMessage()));
+
+                return false;
             }
         }
 
@@ -117,7 +114,7 @@ class CustomFieldsUtil
         $LogMessage->addDetails(__('Registros actualizados', false), implode(',', $success));
         $Log->writeLog();
 
-        return (count($errors) === 0);
+        return true;
     }
 
     /**
@@ -125,11 +122,6 @@ class CustomFieldsUtil
      *
      * @param string $currentMasterPass La clave maestra actual
      * @return bool
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function updateCustomFieldsOldCrypt(&$currentMasterPass)
     {
@@ -159,31 +151,33 @@ class CustomFieldsUtil
         $success = [];
 
         foreach ($queryRes as $CustomField) {
-            $securedKey = Crypt::makeSecuredKey($currentMasterPass);
-            $fieldData = OldCrypt::getDecrypt($CustomField->getCustomfielddataData(), $CustomField->getCustomfielddataKey(), $currentMasterPass);
+            try {
+                $securedKey = Crypt::makeSecuredKey($currentMasterPass);
+                $fieldData = OldCrypt::getDecrypt($CustomField->getCustomfielddataData(), $CustomField->getCustomfielddataKey(), $currentMasterPass);
 
-            if (strlen($securedKey) > 1000) {
-                throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
-            }
+                if (strlen($securedKey) > 1000) {
+                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                }
 
-            $query = /** @lang SQL */
-                'UPDATE customFieldsData SET
+                $query = /** @lang SQL */
+                    'UPDATE customFieldsData SET
                 customfielddata_data = ?,
                 customfielddata_key = ? 
                 WHERE customfielddata_id = ?';
 
-            $Data = new QueryData();
-            $Data->setQuery($query);
-            $Data->addParam(Crypt::encrypt($fieldData, $securedKey, $currentMasterPass));
-            $Data->addParam($securedKey);
-            $Data->addParam($CustomField->getCustomfielddataId());
+                $Data = new QueryData();
+                $Data->setQuery($query);
+                $Data->addParam(Crypt::encrypt($fieldData, $securedKey, $currentMasterPass));
+                $Data->addParam($securedKey);
+                $Data->addParam($CustomField->getCustomfielddataId());
 
-            try {
                 DB::getQuery($Data);
 
                 $success[] = $CustomField->getCustomfielddataId();
-            } catch (SPException $e) {
-                $errors[] = $CustomField->getCustomfielddataId();
+            } catch (\Exception $e) {
+                debugLog(__($e->getMessage()));
+
+                return false;
             }
         }
 
@@ -191,7 +185,7 @@ class CustomFieldsUtil
         $LogMessage->addDetails(__('Registros actualizados', false), implode(',', $success));
         $Log->writeLog();
 
-        return (count($errors) === 0);
+        return true;
     }
 
     /**
@@ -240,7 +234,6 @@ class CustomFieldsUtil
      * Migración de campos personalizados
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public static function migrateCustomFields()
     {
