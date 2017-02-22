@@ -65,6 +65,10 @@ class UserPass extends UserBase
      * @var string
      */
     private static $clearUserMPass = '';
+    /**
+     * @var bool
+     */
+    public static $gotMPass = false;
 
     /**
      * Category constructor.
@@ -183,7 +187,7 @@ class UserPass extends UserBase
 
             // Comprobamos el hash de la clave del usuario con la guardada
             if (Hash::checkHashKey($userMPass, $configHashMPass)) {
-                self::$clearUserMPass = $userMPass;
+                self::$gotMPass = true;
 
                 CryptSession::saveSessionKey($userMPass);
 
@@ -256,6 +260,9 @@ class UserPass extends UserBase
                 $Data->addParam($UserData->getUserId());
 
                 self::$clearUserMPass = $userMPass;
+                self::$gotMPass = true;
+
+                CryptSession::saveSessionKey($userMPass);
 
                 $UserData->setUserMPass($cryptMPass);
                 $UserData->setUserMKey($securedKey);

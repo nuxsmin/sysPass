@@ -27,6 +27,7 @@ namespace SP\Core;
 use SP\Account\AccountAcl;
 use SP\Account\AccountSearch;
 use SP\Config\ConfigData;
+use SP\Core\Crypt\Vault;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
@@ -235,46 +236,6 @@ class Session
     public static function setSecurityKey($sk)
     {
         self::setSessionKey('sk', $sk);
-    }
-
-    /**
-     * Devuelve la clave maestra encriptada
-     *
-     * @return string
-     */
-    public static function getMPass()
-    {
-        return self::getSessionKey('mPass');
-    }
-
-    /**
-     * Establecer la clave maestra encriptada
-     *
-     * @param $mpass string La clave maestra
-     */
-    public static function setMPass($mpass)
-    {
-        self::setSessionKey('mPass', $mpass);
-    }
-
-    /**
-     * Devuelve la clave usada para encriptar la clave maestra
-     *
-     * @return string
-     */
-    public static function getMPassKey()
-    {
-        return self::getSessionKey('mPassKey');
-    }
-
-    /**
-     * Establece la clave usada para encriptar la clave maestra
-     *
-     * @param $mPassPwd string La clave usada
-     */
-    public static function setMPassKey($mPassPwd)
-    {
-        self::setSessionKey('mPassKey', $mPassPwd);
     }
 
     /**
@@ -685,4 +646,23 @@ class Session
         return self::getSessionKey('appupdated', false);
     }
 
+    /**
+     * Devuelve la clave maestra encriptada
+     *
+     * @return Vault
+     */
+    public static function getVault()
+    {
+        return self::getSessionKey('vault');
+    }
+
+    /**
+     * Establecer la clave maestra encriptada
+     *
+     * @param Vault $vault
+     */
+    public static function setVault(Vault $vault)
+    {
+        self::setSessionKey('vault', $vault);
+    }
 }

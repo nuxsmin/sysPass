@@ -103,7 +103,7 @@ class AccountCrypt
                 debugLog(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
 
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
-                debugLog(sprintf('ETA: %ds (%f.2/s)', $eta[0], $eta[1]));
+                debugLog(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
             }
 
             $AccountData = clone $AccountDataBase;
@@ -159,8 +159,7 @@ class AccountCrypt
     {
         $query = /** @lang SQL */
             'SELECT account_id, account_name, account_pass, account_key 
-            FROM accounts
-            WHERE BIT_LENGTH(account_key) >= 256 AND BIT_LENGTH(account_pass) > 0';
+            FROM accounts WHERE BIT_LENGTH(account_pass) > 0';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -177,6 +176,8 @@ class AccountCrypt
      */
     public function updatePass($currentMasterPass, $newMasterPass)
     {
+        set_time_limit(0);
+
         $accountsOk = [];
         $userId = Session::getUserData()->getUserId();
         $demoEnabled = Checks::demoIsEnabled();
@@ -216,7 +217,7 @@ class AccountCrypt
                 debugLog(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
 
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
-                debugLog(sprintf('ETA: %ds (%f.2/s)', $eta[0], $eta[1]));
+                debugLog(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
             }
 
             $AccountData = clone $AccountDataBase;

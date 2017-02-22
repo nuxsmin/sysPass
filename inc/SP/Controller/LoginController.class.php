@@ -139,6 +139,7 @@ class LoginController
             $this->loadMasterPass();
             $this->setUserSession();
             $this->loadUserPreferences();
+            $this->cleanUserData();
         } catch (SPException $e) {
             $Log->setLogLevel(Log::ERROR);
             $Log->writeLog();
@@ -239,8 +240,6 @@ class LoginController
 
                     throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
                 } else {
-                    CryptSession::saveSessionKey(UserPass::getClearUserMPass());
-
                     $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
                 }
             } else if ($oldPass) {
@@ -249,8 +248,6 @@ class LoginController
 
                     throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
                 } else {
-                    CryptSession::saveSessionKey(UserPass::getClearUserMPass());
-
                     $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
                 }
             } else {
@@ -288,7 +285,7 @@ class LoginController
     protected function setUserSession()
     {
         // Obtenemos la clave maestra del usuario
-        if (UserPass::getClearUserMPass() !== '') {
+        if (UserPass::$gotMPass === true) {
             // Actualizar el último login del usuario
             UserUtil::setUserLastLogin($this->UserData->getUserId());
 
@@ -315,11 +312,23 @@ class LoginController
     {
         Language::setLanguage(true);
         DiFactory::getTheme()->initTheme(true);
+
         Session::setUserPreferences($this->UserData->getUserPreferences());
         Session::setSessionType(Session::SESSION_INTERACTIVE);
         Session::setAuthCompleted(true);
 
         DiFactory::getEventDispatcher()->notifyEvent('login.preferences', $this);
+    }
+
+    /**
+     * Limpiar datos de usuario
+     */
+    private function cleanUserData()
+    {
+        $this->UserData->setLogin(null);
+        $this->UserData->setLoginPass(null);
+        $this->UserData->setUserMPass(null);
+        $this->UserData->setUserMKey(null);
     }
 
     /**

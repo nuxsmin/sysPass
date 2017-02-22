@@ -43,8 +43,6 @@ use SP\Storage\DB;
  */
 class Crypt
 {
-    public static $currentMPassHash;
-
     /**
      * Migrar elementos encriptados
      *
@@ -55,8 +53,7 @@ class Crypt
     public static function migrate(&$masterPass)
     {
         try {
-            // Guardar hash actual antes de cambiar...
-            self::$currentMPassHash = ConfigDB::getValue('masterPwd');
+            AccountHistoryCrypt::$currentMPassHash = ConfigDB::getValue('masterPwd');
 
             if (!DB::beginTransaction()) {
                 throw new SPException(SPException::SP_ERROR, __('No es posible iniciar una transacción', false));
@@ -73,7 +70,7 @@ class Crypt
 
             global $timeStart;
 
-            debugLog('Total time: ' . Init::microtime_float() - $timeStart);
+            debugLog('Total time: ' . (Init::microtime_float() - $timeStart));
 
             return true;
         } catch (\Exception $e) {

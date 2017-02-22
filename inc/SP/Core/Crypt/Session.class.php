@@ -25,7 +25,6 @@
 namespace SP\Core\Crypt;
 
 use SP\Core\Session as CoreSession;
-use SP\Core\SessionUtil;
 
 /**
  * Class Session
@@ -44,19 +43,7 @@ class Session
      */
     public static function getSessionKey()
     {
-        $securedKey = Crypt::unlockSecuredKey(CoreSession::getMPassKey(), self::getKey());
-
-        return Crypt::decrypt(CoreSession::getMPass(), $securedKey, self::getKey());
-    }
-
-    /**
-     * Devolver la clave utilizada para generar la llave segura
-     *
-     * @return string
-     */
-    private static function getKey()
-    {
-        return session_id() . CoreSession::getSidStartTime();
+        return CoreSession::getVault()->getData();
     }
 
     /**
@@ -69,12 +56,9 @@ class Session
      */
     public static function saveSessionKey($data)
     {
-        $securedKey = Crypt::makeSecuredKey(self::getKey());
-
-        CoreSession::setMPassKey($securedKey);
-        CoreSession::setMPass(Crypt::encrypt($data, $securedKey, self::getKey()));
+        $Vault = new Vault();
+        CoreSession::setVault($Vault->saveData($data));
     }
-
 
     /**
      * Regenerar la clave de sesión
@@ -85,10 +69,6 @@ class Session
      */
     public static function reKey()
     {
-        $sessionMPass = self::getSessionKey();
-
-        SessionUtil::regenerate();
-
-        self::saveSessionKey($sessionMPass);
+        CoreSession::setVault(CoreSession::getVault()->reKey());
     }
 }
