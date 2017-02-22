@@ -50,16 +50,17 @@ class CryptMasterPass
      *
      * @param int $maxTime El tiempo máximo de validez de la clave
      * @return bool|string
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public static function setTempMasterPass($maxTime = 14400)
     {
         // Encriptar la clave maestra con hash aleatorio generado
-        $randomKey = Util::generateRandomBytes(64);
+        $randomKey = Util::generateRandomBytes(32);
         $securedKey = Crypt::makeSecuredKey($randomKey);
 
-        ConfigDB::setCacheConfigValue('tempmaster_pass', Crypt::encrypt(CryptSession::getSessionKey(), $securedKey));
+        ConfigDB::setCacheConfigValue('tempmaster_pass', Crypt::encrypt(CryptSession::getSessionKey(), $securedKey, $randomKey));
         ConfigDB::setCacheConfigValue('tempmaster_passkey', $securedKey);
         ConfigDB::setCacheConfigValue('tempmaster_passhash', Hash::hashKey($randomKey));
         ConfigDB::setCacheConfigValue('tempmaster_passtime', time());

@@ -576,6 +576,7 @@ class ConfigActionController implements ItemControllerInterface
      *
      * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected function masterPassRefreshAction()
     {
@@ -602,6 +603,9 @@ class ConfigActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \phpmailer\phpmailerException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected function tempMasterPassAction()
     {
