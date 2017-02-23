@@ -383,8 +383,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
     {
         $query = /** @lang SQL */
             'SELECT authtoken_userId,
-            authtoken_key,
-            authtoken_pass,
+            authtoken_vault,
             authtoken_hash 
             FROM authTokens
             WHERE authtoken_actionId = ? 
