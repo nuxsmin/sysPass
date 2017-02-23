@@ -24,6 +24,7 @@
 
 namespace SP\Mgmt\ApiTokens;
 
+use SP\Core\ActionsInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\Vault;
@@ -59,7 +60,6 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         }
 
         $token = $this->getTokenByUserId($this->itemData->getAuthtokenUserId());
-        $this->setSecureData($token);
 
         $query = /** @lang SQL */
             'INSERT INTO authTokens 
@@ -77,7 +77,13 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $Data->addParam($this->itemData->getAuthtokenActionId());
         $Data->addParam(Session::getUserData()->getUserId());
         $Data->addParam($token);
-        $Data->addParam(serialize($this->itemData->getAuthtokenVault()));
+
+        if ($this->itemData->getAuthtokenActionId() === ActionsInterface::ACTION_ACC_VIEW_PASS) {
+            $Data->addParam(serialize($this->getSecureData($token)));
+        } else {
+            $Data->addParam(null);
+        }
+
         $Data->addParam(Hash::hashKey($this->itemData->getAuthtokenHash()));
         $Data->setOnErrorMessage(__('Error interno', false));
 
@@ -138,6 +144,21 @@ class ApiToken extends ApiTokenBase implements ItemInterface
     }
 
     /**
+     * Generar la llave segura del token
+     *
+     * @param $token
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @return Vault
+     */
+    private function getSecureData($token)
+    {
+        $Vault = new Vault();
+        $Vault->saveData(CryptSession::getSessionKey(), $this->itemData->getAuthtokenHash() . $token);
+
+        return $Vault;
+    }
+
+    /**
      * @param $id int
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
@@ -156,6 +177,8 @@ class ApiToken extends ApiTokenBase implements ItemInterface
 
         if ($Data->getQueryNumRows() === 0) {
             throw new SPException(SPException::SP_INFO, __('Token no encontrado', false));
+        } else {
+            $Data->addParam(null);
         }
 
         return $this;
@@ -175,7 +198,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         }
 
         $token = $this->getTokenByUserId($this->itemData->getAuthtokenUserId());
-        $this->setSecureData($token);
+        $this->getSecureData($token);
 
         $query = /** @lang SQL */
             'UPDATE authTokens 
@@ -194,7 +217,13 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $Data->addParam($this->itemData->getAuthtokenActionId());
         $Data->addParam(Session::getUserData()->getUserId());
         $Data->addParam($token);
-        $Data->addParam(serialize($this->itemData->getAuthtokenVault()));
+
+        if ($this->itemData->getAuthtokenActionId() === ActionsInterface::ACTION_ACC_VIEW_PASS) {
+            $Data->addParam(serialize($this->getSecureData($token)));
+        } else {
+            $Data->addParam(null);
+        }
+
         $Data->addParam(Hash::hashKey($this->itemData->getAuthtokenHash()));
         $Data->addParam($this->itemData->getAuthtokenId());
         $Data->setOnErrorMessage(__('Error interno', false));
@@ -237,7 +266,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
     public function refreshToken()
     {
         $token = $this->generateToken();
-        $this->setSecureData($token);
+        $this->getSecureData($token);
 
         $query = /** @lang SQL */
             'UPDATE authTokens 
@@ -252,27 +281,19 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($this->generateToken());
         $Data->addParam(Hash::hashKey($this->itemData->getAuthtokenHash()));
-        $Data->addParam(serialize($this->itemData->getAuthtokenVault()));
+
+        if ($this->itemData->getAuthtokenActionId() === ActionsInterface::ACTION_ACC_VIEW_PASS) {
+            $Data->addParam(serialize($this->getSecureData($token)));
+        } else {
+            $Data->addParam(null);
+        }
+
         $Data->addParam($this->itemData->getAuthtokenUserId());
         $Data->setOnErrorMessage(__('Error interno', false));
 
         DB::getQuery($Data);
 
         return $this;
-    }
-
-    /**
-     * Generar la llave segura del token
-     *
-     * @param $token
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     */
-    private function setSecureData($token)
-    {
-        $Vault = new Vault();
-        $Vault->saveData(CryptSession::getSessionKey(), $this->itemData->getAuthtokenHash() . $token);
-
-        $this->itemData->setAuthtokenVault($Vault);
     }
 
     /**

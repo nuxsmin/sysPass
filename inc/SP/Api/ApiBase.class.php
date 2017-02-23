@@ -27,7 +27,6 @@ namespace SP\Api;
 defined('APP_ROOT') || die();
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\InvalidArgumentException;
@@ -104,7 +103,7 @@ abstract class ApiBase implements ApiInterface
 
         $this->loadUserData();
 
-        if ($this->getParam('pass') !== null) {
+        if ($this->passIsNeeded()) {
             $this->doAuth();
         }
 
@@ -139,11 +138,30 @@ abstract class ApiBase implements ApiInterface
     }
 
     /**
+     * @return bool
+     */
+    protected abstract function passIsNeeded();
+
+    /**
+     * Realizar la autentificación del usuario
+     *
+     * @throws SPException
+     */
+    protected function doAuth()
+    {
+        if ($this->UserData->isUserIsDisabled()
+            || !Hash::checkHashKey($this->getParam('pass', true), $this->ApiTokenData->getAuthtokenHash())
+        ) {
+            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
+        }
+    }
+
+    /**
      * Devolver el valor de un parámetro
      *
-     * @param string $name     Nombre del parámetro
-     * @param bool   $required Si es requerido
-     * @param mixed  $default  Valor por defecto
+     * @param string $name Nombre del parámetro
+     * @param bool $required Si es requerido
+     * @param mixed $default Valor por defecto
      * @return int|string
      * @throws SPException
      */
@@ -158,20 +176,6 @@ abstract class ApiBase implements ApiInterface
         }
 
         return $default;
-    }
-
-    /**
-     * Realizar la autentificación del usuario
-     *
-     * @throws SPException
-     */
-    protected function doAuth()
-    {
-        if ($this->UserData->isUserIsDisabled()
-            || !Hash::checkHashKey($this->getParam('pass'), $this->ApiTokenData->getAuthtokenHash())
-        ) {
-            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
-        }
     }
 
     /**

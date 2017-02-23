@@ -28,6 +28,7 @@ use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ApiTokenData;
 use SP\Http\Request;
+use SP\Mgmt\ApiTokens\ApiTokensUtil;
 
 /**
  * Class ApiTokenForm
@@ -84,7 +85,9 @@ class ApiTokenForm extends FormBase implements FormInterface
             throw new ValidationException(__('Usuario no indicado', false));
         } elseif ($this->ApiTokenData->getAuthtokenActionId() === 0) {
             throw new ValidationException(__('Acción no indicada', false));
-        } elseif ($this->ApiTokenData->getAuthtokenHash() === '') {
+        } elseif ($this->ApiTokenData->getAuthtokenActionId() === ActionsInterface::ACTION_ACC_VIEW_PASS
+            && $this->ApiTokenData->getAuthtokenHash() === ''
+        ) {
             throw new ValidationException(__('La clave no puede estar en blanco', false));
         }
     }

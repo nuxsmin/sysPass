@@ -28,11 +28,9 @@ use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountSearch;
 use SP\Account\AccountUtil;
-use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\Core\Backup;
 use SP\Core\Crypt\Crypt;
-use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
@@ -549,5 +547,13 @@ class SyspassApi extends ApiBase
                 ]
             ]
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    protected function passIsNeeded()
+    {
+        return $this->actionId === ActionsInterface::ACTION_ACC_VIEW_PASS;
     }
 }
