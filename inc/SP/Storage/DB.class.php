@@ -272,19 +272,18 @@ class DB
     /**
      * Método para registar los eventos de BD en el log
      *
-     * @param $query     string  La consulta que genera el error
-     * @param $errorMsg  string  El mensaje de error
-     * @param $errorCode int     El código de error
-     * @param $queryFunction
+     * @param string     $query La consulta que genera el error
+     * @param \Exception $e
+     * @param string     $queryFunction
      */
-    private static function logDBException($query, $errorMsg, $errorCode, $queryFunction)
+    private static function logDBException($query, \Exception $e, $queryFunction)
     {
         $caller = Util::traceLastCall($queryFunction);
 
         $LogMessage = new LogMessage();
         $LogMessage->setAction($caller);
         $LogMessage->addDescription(__('Error en la consulta', false));
-        $LogMessage->addDescription(sprintf('%s (%s)', $errorMsg, $errorCode));
+        $LogMessage->addDescription(sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
         $LogMessage->addDetails('SQL', DBUtil::escape($query));
 
         debugLog($LogMessage->getDescription(), true);
@@ -345,7 +344,7 @@ class DB
         } catch (SPException $e) {
             $queryData->setQueryStatus($e->getCode());
 
-            self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
+            self::logDBException($queryData->getQuery(), $e, __FUNCTION__);
 
             if ($e->getCode() === 23000) {
                 throw new ConstraintException(SPException::SP_ERROR, __('Restricción de integridad', false), $e->getMessage(), $e->getCode());

@@ -29,7 +29,6 @@ use SP\Account\AccountFavorites;
 use SP\Account\AccountHistory;
 use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
-use SP\Api\ApiTokens;
 use SP\Auth\AuthUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Messages\LogMessage;
@@ -51,6 +50,7 @@ use SP\Forms\UserForm;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Mgmt\ApiTokens\ApiToken;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\CustomFields\CustomField;
@@ -593,37 +593,48 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function tokenAction()
     {
         $Form = new ApiTokenForm($this->itemId);
 
+        $refresh = Request::analyze('refreshtoken', false, false, true);
+
         switch ($this->actionId) {
             case ActionsInterface::ACTION_MGM_APITOKENS_NEW:
                 $Form->validate($this->actionId);
-                $Form->getItemData()->addToken();
+
+                if ($refresh === true) {
+                    ApiToken::getItem($Form->getItemData())->refreshToken()->add();
+                } else {
+                    ApiToken::getItem($Form->getItemData())->add();
+                }
 
                 $this->LogMessage->setAction(__('Crear Autorización', false));
                 $this->LogMessage->addDescription(__('Autorización creada', false));
-                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getUserId()));
+                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getAuthtokenUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_APITOKENS_EDIT:
                 $Form->validate($this->actionId);
-                $Form->getItemData()->updateToken();
+
+                if ($refresh === true) {
+                    ApiToken::getItem($Form->getItemData())->refreshToken()->update();
+                } else {
+                    ApiToken::getItem($Form->getItemData())->update();
+                }
 
                 $this->LogMessage->setAction(__('Actualizar Autorización', false));
                 $this->LogMessage->addDescription(__('Autorización actualizada', false));
-                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getUserId()));
+                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getAuthtokenUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_APITOKENS_DELETE:
-                $ApiToken = new ApiTokens();
-
                 if (is_array($this->itemId)) {
-                    $ApiToken->deleteTokenBatch($this->itemId);
+                    ApiToken::getItem()->deleteBatch($this->itemId);
 
                     $this->LogMessage->addDescription(__('Autorizaciones eliminadas', false));
                 } else {
-                    $ApiToken->deleteToken($this->itemId);
+                    ApiToken::getItem()->delete($this->itemId);
 
                     $this->LogMessage->addDescription(__('Autorización eliminada', false));
                 }

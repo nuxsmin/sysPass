@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,26 +22,45 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Mgmt\ApiTokens;
+
+defined('APP_ROOT') || die();
+
+use SP\DataModel\ApiTokenData;
+use SP\Mgmt\ItemBase;
 
 /**
- * Interface FormInterface
+ * Class ApiTokensBase
  *
- * @package SP\Forms
+ * @package SP\Mgmt\ApiTokens
  */
-interface FormInterface
+abstract class ApiTokenBase extends ItemBase
 {
-    /**
-     * Validar el formulario
-     *
-     * @param $action
-     * @return FormInterface
-     * @throws \SP\Core\Exceptions\ValidationException
-     */
-    public function validate($action);
+    /** @var ApiTokenData */
+    protected $itemData;
 
     /**
-     * @return mixed
+     * ApiTokensBase constructor.
+     *
+     * @param $itemData
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
-    public function getItemData();
+    public function __construct($itemData = null)
+    {
+        if (!$this->dataModel) {
+            $this->setDataModel(ApiTokenData::class);
+        }
+
+        parent::__construct($itemData);
+    }
+
+    /**
+     * Devolver los datos del elemento
+     *
+     * @return ApiTokenData
+     */
+    public function getItemData()
+    {
+        return parent::getItemData();
+    }
 }

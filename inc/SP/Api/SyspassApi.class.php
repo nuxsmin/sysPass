@@ -88,11 +88,12 @@ class SyspassApi extends ApiBase
         $LogMessage->addDetails(__('Origen', false), 'API');
         $this->Log->writeLog();
 
-        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $this->mPass);
+        $mPass = $this->getMPass();
+        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $mPass);
 
         $ret = [
             'itemId' => $accountId,
-            'pass' => Crypt::decrypt($AccountData->getAccountPass(), $securedKey)
+            'pass' => Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $mPass)
         ];
 
         if ($this->getParam('details', false, 0)) {
@@ -158,6 +159,11 @@ class SyspassApi extends ApiBase
      * Añadir una nueva cuenta
      *
      * @return string La cadena en formato JSON
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function addAccount()

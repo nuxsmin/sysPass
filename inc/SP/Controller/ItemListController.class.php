@@ -36,6 +36,8 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
+use SP\Mgmt\ApiTokens\ApiToken;
+use SP\Mgmt\ApiTokens\ApiTokenSearch;
 use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\CustomerSearch;
 use SP\Mgmt\CustomFields\CustomFieldDefSearch;
@@ -377,7 +379,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
         }
 
         $Grid = $this->getGrids()->getTokensGrid();
-        $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($this->ItemSearchData));
+        $Grid->getData()->setData(ApiTokenSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
         $this->view->append('tabs', $Grid);

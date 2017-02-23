@@ -7,4 +7,8 @@ ALTER TABLE `customFieldsData`
 ALTER TABLE `usrData`
   CHANGE COLUMN `user_mPass` `user_mPass` VARBINARY(1000) NULL DEFAULT NULL,
   CHANGE COLUMN `user_mIV` `user_mKey` VARBINARY(1000) NULL DEFAULT NULL;
+ALTER TABLE `authTokens`
+  ADD COLUMN `authtoken_pass` VARBINARY(1000) NULL,
+  ADD COLUMN `authtoken_key` VARBINARY(1000) NULL,
+  ADD COLUMN `authtoken_hash` VARBINARY(100) NULL;
 

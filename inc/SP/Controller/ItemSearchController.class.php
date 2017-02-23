@@ -36,6 +36,7 @@ use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
+use SP\Mgmt\ApiTokens\ApiTokenSearch;
 use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\CustomerSearch;
 use SP\Mgmt\CustomFields\CustomFieldDefSearch;
@@ -248,6 +249,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      * Obtener los tokens API de una búsqueda
      *
      * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getTokens()
     {
@@ -260,7 +262,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->view->addTemplate('datagrid-table', 'grid');
 
         $Grid = $this->getGrids()->getTokensGrid();
-        $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($this->ItemSearchData));
+        $Grid->getData()->setData(ApiTokenSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);

@@ -39,6 +39,7 @@ use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\AccountExtData;
+use SP\DataModel\ApiTokenData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
@@ -51,6 +52,7 @@ use SP\DataModel\UserPassData;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Mgmt\ApiTokens\ApiToken;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\CustomFields\CustomField;
@@ -66,6 +68,7 @@ use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
+use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 use SP\Util\ImageUtil;
 use SP\Util\Json;
@@ -392,18 +395,19 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->module = self::ACTION_MGM_APITOKENS;
         $this->view->addTemplate('tokens');
 
-        $token = ApiTokensUtil::getTokens($this->itemId, true);
+        $ApiTokenData = $this->itemId ? ApiToken::getItem()->getById($this->itemId) : new ApiTokenData();
 
         $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('actions', ApiTokensUtil::getTokenActions());
-        $this->view->assign('token', $token);
-        $this->view->assign('gotData', is_object($token));
+        $this->view->assign('ApiTokenData', $ApiTokenData);
+        $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_MGM_APITOKENS_VIEW) ? 'disabled' : '');
+        $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 
         if ($this->view->isView === true) {
             $Log = Log::newLog(__('Autorizaciones', false));
             $LogMessage = $Log->getLogMessage();
             $LogMessage->addDescription(__('Token de autorización visualizado'));
-            $LogMessage->addDetails(__('Usuario'), $token->user_login);
+            $LogMessage->addDetails(__('Usuario'), UserUtil::getUserLoginById($ApiTokenData->authtoken_userId));
             $Log->writeLog();
 
             Email::sendEmail($LogMessage);

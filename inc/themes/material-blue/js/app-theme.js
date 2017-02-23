@@ -114,9 +114,12 @@ sysPass.Theme = function (Common) {
             // Poner la clave en los input y actualizar MDL
             $dstParent.find("input:password").val(genPassword);
             $dstParent.addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+
             // Poner la clave en el input de repetición y encriptarla
-            $targetR.val(genPassword).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-            Common.encryptFormValue($targetR);
+            if ($targetR.length > 0) {
+                $targetR.val(genPassword).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+                Common.encryptFormValue($targetR);
+            }
 
             // Mostar el indicador de complejidad
             $dstParent.find("#passLevel").show(500);
@@ -127,8 +130,6 @@ sysPass.Theme = function (Common) {
         }
     };
 
-
-    // FIXME
     // Diálogo de configuración de complejidad de clave
     var complexityDialog = function () {
 
@@ -193,8 +194,6 @@ sysPass.Theme = function (Common) {
 
             var $thisParent = $this.parent();
             var targetId = $this.attr("id");
-            var $targetIdR = $("#" + targetId + "R");
-
 
             var btnMenu = "<button id=\"menu-speed-" + targetId + "\" class=\"mdl-button mdl-js-button mdl-button--icon\" type=\"button\" title=\"" + Common.config().LANG[27] + "\"><i class=\"material-icons\">more_vert</i></button>";
 
@@ -234,7 +233,12 @@ sysPass.Theme = function (Common) {
             // Reset de los campos de clave
             $passwordActions.find(".reset").on("click", function () {
                 $this.val("");
-                $targetIdR.val("");
+
+                var $targetIdR = $("#" + targetId + "R");
+
+                if ($targetIdR.length > 0) {
+                    $targetIdR.val("");
+                }
 
                 // Actualizar objetos de MDL
                 componentHandler.upgradeDom();

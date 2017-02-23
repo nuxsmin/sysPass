@@ -530,8 +530,8 @@ pre, code, samp, kbd {
   padding: .3em 0; }
 
 #box-popup {
-  min-width: 25em;
-  max-width: 50em;
+  min-width: 30em;
+  max-width: 60em;
   margin: 5em auto;
   padding: 0;
   background-color: #fff; }

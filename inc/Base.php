@@ -81,7 +81,11 @@ function debugLog($data, $printLastCaller = false)
 
         for ($i = 1; $i <= $n - 1; $i++) {
             $class = isset($backtrace[$i]['class']) ? $backtrace[$i]['class'] : '';
-            error_log(sprintf('Caller %d: %s\%s', $i, $class, $backtrace[$i]['function']));
+            $line = sprintf('Caller %d: %s\%s', $i, $class, $backtrace[$i]['function']);
+
+            if (!error_log($line . PHP_EOL, 3, LOG_FILE)) {
+                error_log($line);
+            }
         }
     }
 }
