@@ -511,8 +511,6 @@ class ConfigActionController implements ItemControllerInterface
             return;
         }
 
-        $hashMPass = Hash::hashKey($newMasterPass);
-
         if (!$noAccountPassChange) {
             Util::lockApp();
 
@@ -554,7 +552,7 @@ class ConfigActionController implements ItemControllerInterface
             Util::unlockApp();
         }
 
-        ConfigDB::setCacheConfigValue('masterPwd', $hashMPass);
+        ConfigDB::setCacheConfigValue('masterPwd', Hash::hashKey($newMasterPass));
         ConfigDB::setCacheConfigValue('lastupdatempass', time());
 
         $this->LogMessage->setAction(__('Actualizar Clave Maestra', false));

@@ -29,7 +29,7 @@ defined('APP_ROOT') || die();
 use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
-use SP\Api\ApiTokensUtil;
+use SP\Mgmt\ApiTokens\ApiTokensUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
@@ -48,7 +48,6 @@ use SP\DataModel\GroupData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\TagData;
 use SP\DataModel\UserData;
-use SP\DataModel\UserPassData;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -72,7 +71,6 @@ use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 use SP\Util\ImageUtil;
 use SP\Util\Json;
-use SP\Util\Util;
 
 /**
  * Class AccItemMgmt

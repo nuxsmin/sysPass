@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
-use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
 use SP\Controller\Grids\Items;
 use SP\Core\ActionsInterface;

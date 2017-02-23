@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
-use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
 use SP\Controller\Grids\Items;
 use SP\Core\ActionsInterface;
@@ -36,7 +35,6 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
-use SP\Mgmt\ApiTokens\ApiToken;
 use SP\Mgmt\ApiTokens\ApiTokenSearch;
 use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\CustomerSearch;

@@ -24,9 +24,9 @@
 
 namespace SP\Mgmt\ApiTokens;
 
-use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\DataModel\ApiTokenData;
@@ -67,8 +67,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
             authtoken_actionId = ?,
             authtoken_createdBy = ?,
             authtoken_token = ?,
-            authtoken_key = ?,
-            authtoken_pass = ?,
+            authtoken_vault = ?,
             authtoken_hash = ?,
             authtoken_startDate = UNIX_TIMESTAMP()';
 
@@ -78,8 +77,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $Data->addParam($this->itemData->getAuthtokenActionId());
         $Data->addParam(Session::getUserData()->getUserId());
         $Data->addParam($token);
-        $Data->addParam($this->itemData->getAuthtokenKey());
-        $Data->addParam($this->itemData->getAuthtokenPass());
+        $Data->addParam(serialize($this->itemData->getAuthtokenVault()));
         $Data->addParam(Hash::hashKey($this->itemData->getAuthtokenHash()));
         $Data->setOnErrorMessage(__('Error interno', false));
 
@@ -185,8 +183,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
             authtoken_actionId = ?,
             authtoken_createdBy = ?,
             authtoken_token = ?,
-            authtoken_key = ?,
-            authtoken_pass = ?,
+            authtoken_vault = ?,
             authtoken_hash = ?,
             authtoken_startDate = UNIX_TIMESTAMP() 
             WHERE authtoken_id = ? LIMIT 1';
@@ -197,8 +194,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $Data->addParam($this->itemData->getAuthtokenActionId());
         $Data->addParam(Session::getUserData()->getUserId());
         $Data->addParam($token);
-        $Data->addParam($this->itemData->getAuthtokenKey());
-        $Data->addParam($this->itemData->getAuthtokenPass());
+        $Data->addParam(serialize($this->itemData->getAuthtokenVault()));
         $Data->addParam(Hash::hashKey($this->itemData->getAuthtokenHash()));
         $Data->addParam($this->itemData->getAuthtokenId());
         $Data->setOnErrorMessage(__('Error interno', false));
@@ -247,7 +243,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
             'UPDATE authTokens 
             SET authtoken_token = ?,
             authtoken_hash = ?,
-            authtoken_key = ?,
+            authtoken_vault = ?,
             authtoken_pass = ?,
             authtoken_startDate = UNIX_TIMESTAMP() 
             WHERE authtoken_userId = ? LIMIT 1';
@@ -256,8 +252,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($this->generateToken());
         $Data->addParam(Hash::hashKey($this->itemData->getAuthtokenHash()));
-        $Data->addParam($this->itemData->getAuthtokenKey());
-        $Data->addParam($this->itemData->getAuthtokenPass());
+        $Data->addParam(serialize($this->itemData->getAuthtokenVault()));
         $Data->addParam($this->itemData->getAuthtokenUserId());
         $Data->setOnErrorMessage(__('Error interno', false));
 
@@ -274,11 +269,10 @@ class ApiToken extends ApiTokenBase implements ItemInterface
      */
     private function setSecureData($token)
     {
-        $key = $this->itemData->getAuthtokenHash() . $token;
-        $securedKey = Crypt::makeSecuredKey($key);
+        $Vault = new Vault();
+        $Vault->saveData(CryptSession::getSessionKey(), $this->itemData->getAuthtokenHash() . $token);
 
-        $this->itemData->setAuthtokenKey($securedKey);
-        $this->itemData->setAuthtokenPass(Crypt::encrypt(CryptSession::getSessionKey(), $securedKey, $key));
+        $this->itemData->setAuthtokenVault($Vault);
     }
 
     /**

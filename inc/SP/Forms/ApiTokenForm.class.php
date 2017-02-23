@@ -84,7 +84,7 @@ class ApiTokenForm extends FormBase implements FormInterface
             throw new ValidationException(__('Usuario no indicado', false));
         } elseif ($this->ApiTokenData->getAuthtokenActionId() === 0) {
             throw new ValidationException(__('Acción no indicada', false));
-        } elseif ($this->ApiTokenData->getAuthtokenKey() === '') {
+        } elseif ($this->ApiTokenData->getAuthtokenHash() === '') {
             throw new ValidationException(__('La clave no puede estar en blanco', false));
         }
     }

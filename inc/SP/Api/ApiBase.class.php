@@ -29,6 +29,7 @@ defined('APP_ROOT') || die();
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
+use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
@@ -182,9 +183,9 @@ abstract class ApiBase implements ApiInterface
     protected function getMPass()
     {
         try {
-            $key = $this->getParam('pass') . $this->getParam('authToken');
-            $securedKey = Crypt::unlockSecuredKey($this->ApiTokenData->getAuthtokenKey(), $key);
-            return Crypt::decrypt($this->ApiTokenData->getAuthtokenPass(), $securedKey, $key);
+            /** @var Vault $Vault */
+            $Vault = unserialize($this->ApiTokenData->getAuthtokenVault());
+            return $Vault->getData($this->getParam('pass') . $this->getParam('authToken'));
         } catch (CryptoException $e) {
             throw new SPException(SPException::SP_ERROR, __('Error interno', false), $e->getMessage());
         }

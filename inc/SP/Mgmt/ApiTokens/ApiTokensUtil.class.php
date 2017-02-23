@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Api;
+namespace SP\Mgmt\ApiTokens;
 
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;

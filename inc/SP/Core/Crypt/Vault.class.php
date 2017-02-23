@@ -54,18 +54,20 @@ class Vault
     /**
      * Regenerar la clave de sesión
      *
+     * @param  string $key
      * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @return Vault
      */
-    public function reKey()
+    public function reKey($key = null)
     {
         $this->timeUpdated = time();
-        $sessionMPass = $this->getData();
+        $sessionMPass = $this->getData($key);
 
         SessionUtil::regenerate();
 
-        $this->saveData($sessionMPass);
+        $this->saveData($sessionMPass, $key);
 
         return $this;
     }
@@ -73,16 +75,18 @@ class Vault
     /**
      * Devolver la clave maestra de la sesión
      *
+     * @param  string $key
      * @return string
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Defuse\Crypto\Exception\BadFormatException
      */
-    public function getData()
+    public function getData($key = null)
     {
-        $securedKey = Crypt::unlockSecuredKey($this->key, $this->getKey());
+        $key = $key ?: $this->getKey();
+        $securedKey = Crypt::unlockSecuredKey($this->key, $key);
 
-        return Crypt::decrypt($this->data, $securedKey, $this->getKey());
+        return Crypt::decrypt($this->data, $securedKey, $key);
     }
 
     /**
@@ -99,19 +103,21 @@ class Vault
      * Guardar la clave maestra en la sesión
      *
      * @param $data
+     * @param  string $key
      * @return $this
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public function saveData($data)
+    public function saveData($data, $key = null)
     {
         if ($this->timeSet === 0) {
             $this->timeSet = time();
         }
 
-        $this->key = Crypt::makeSecuredKey($this->getKey());
-        $this->data = Crypt::encrypt($data, $this->key, $this->getKey());
+        $key = $key ?: $this->getKey();
+        $this->key = Crypt::makeSecuredKey($key);
+        $this->data = Crypt::encrypt($data, $this->key, $key);
 
         return $this;
     }

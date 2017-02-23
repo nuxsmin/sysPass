@@ -24,6 +24,8 @@
 
 namespace SP\DataModel;
 
+use SP\Core\Crypt\Vault;
+
 /**
  * Class ApiTokenData
  *
@@ -36,13 +38,9 @@ class ApiTokenData extends DataModelBase implements DataModelInterface
      */
     public $authtoken_id;
     /**
-     * @var string
+     * @var Vault
      */
-    public $authtoken_key;
-    /**
-     * @var string
-     */
-    public $authtoken_pass;
+    public $authtoken_vault;
     /**
      * @var int
      */
@@ -85,19 +83,19 @@ class ApiTokenData extends DataModelBase implements DataModelInterface
     }
 
     /**
-     * @return mixed
+     * @return Vault
      */
-    public function getAuthtokenKey()
+    public function getAuthtokenVault()
     {
-        return $this->authtoken_key;
+        return $this->authtoken_vault;
     }
 
     /**
-     * @param mixed $authtoken_key
+     * @param Vault $authtoken_vault
      */
-    public function setAuthtokenKey($authtoken_key)
+    public function setAuthtokenVault(Vault $authtoken_vault)
     {
-        $this->authtoken_key = $authtoken_key;
+        $this->authtoken_vault = $authtoken_vault;
     }
 
     /**
@@ -210,21 +208,5 @@ class ApiTokenData extends DataModelBase implements DataModelInterface
     public function setAuthtokenHash($authtoken_hash)
     {
         $this->authtoken_hash = $authtoken_hash;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthtokenPass()
-    {
-        return $this->authtoken_pass;
-    }
-
-    /**
-     * @param string $authtoken_pass
-     */
-    public function setAuthtokenPass($authtoken_pass)
-    {
-        $this->authtoken_pass = $authtoken_pass;
     }
 }
