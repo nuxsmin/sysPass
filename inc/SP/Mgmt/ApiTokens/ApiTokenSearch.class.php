@@ -43,13 +43,14 @@ class ApiTokenSearch extends ApiTokenBase implements ItemSearchInterface
      */
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
-        $query = 'SELECT authtoken_id,' .
-            'authtoken_userId,' .
-            'authtoken_actionId, ' .
-            'authtoken_token, ' .
-            'user_login ' .
-            'FROM authTokens ' .
-            'LEFT JOIN usrData ON user_id = authtoken_userId ';
+        $query = /** @lang SQL */
+            'SELECT authtoken_id,
+            authtoken_userId,
+            authtoken_actionId, 
+            authtoken_token,
+            CONCAT(user_name, \' (\', user_login, \')\') AS user_login 
+            FROM authTokens 
+            LEFT JOIN usrData ON user_id = authtoken_userId ';
 
         $Data = new QueryData();
 

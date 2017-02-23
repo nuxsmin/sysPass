@@ -67,11 +67,11 @@ $timeStart = Init::microtime_float();
  * Función para enviar mensajes al log de errores
  *
  * @param mixed $data
- * @param bool  $printLastCaller
+ * @param bool $printLastCaller
  */
 function debugLog($data, $printLastCaller = false)
 {
-    if (!error_log(print_r($data, true) . PHP_EOL, 3, LOG_FILE)) {
+    if (!error_log(date('Y-m-d H:i:s') . ' - ' . print_r($data, true) . PHP_EOL, 3, LOG_FILE)) {
         error_log(print_r($data, true));
     }
 
@@ -94,7 +94,7 @@ function debugLog($data, $printLastCaller = false)
  * Alias gettext function
  *
  * @param string $string
- * @param bool   $tranlate Si es necesario traducir
+ * @param bool $tranlate Si es necesario traducir
  * @return string
  */
 function __($string, $tranlate = true)
