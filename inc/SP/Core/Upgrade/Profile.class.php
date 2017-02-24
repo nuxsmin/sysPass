@@ -25,6 +25,7 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\ProfileData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -44,23 +45,14 @@ class Profile
     public static function fixProfilesId($profileId)
     {
         $Data = new QueryData();
-        $Data->setQuery('SELECT userprofile_id FROM usrProfiles ORDER BY userprofile_id');
-
-        $profiles = DB::getResultsArray($Data);
-
-        $paramsIn = trim(str_repeat(',?', count($profiles)), ',');
-        $Data->addParam($profileId);
-
-        foreach ($profiles as $profile) {
-            $Data->addParam($profile->userprofile_id);
-        }
 
         try {
             DB::beginTransaction();
 
             $query = /** @lang SQL */
-                'UPDATE usrData SET user_profileId = ? WHERE user_profileId NOT IN (' . $paramsIn . ') OR user_profileId IS NULL';
+                'UPDATE usrData SET user_profileId = ? WHERE user_profileId NOT IN (SELECT userprofile_id FROM usrProfiles ORDER BY userprofile_id) OR user_profileId IS NULL';
             $Data->setQuery($query);
+            $Data->addParam($profileId);
 
             DB::getQuery($Data);
 
@@ -72,5 +64,27 @@ class Profile
 
             return false;
         }
+    }
+
+    /**
+     * Crear un perfil para elementos huérfanos
+     *
+     * @return int
+     */
+    public static function createOrphanProfile()
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO usrProfiles SET
+            userprofile_name = \'Orphan profile\',
+            userProfile_profile = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(serialize(new ProfileData()));
+        $Data->setOnErrorMessage(__('Error al crear perfil', false));
+
+        DB::getQuery($Data);
+
+        return DB::getLastId();
     }
 }

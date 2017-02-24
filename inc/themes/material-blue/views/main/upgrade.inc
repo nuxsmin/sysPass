@@ -33,6 +33,8 @@
                             <li class="msg-warning">
                                 <i class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
                                 <?php echo __('Se han encontrado elementos huérfanos. Por favor, modifique estos elementos o indique los IDs por defecto para los elementos huérfanos.'); ?>
+                                <br>
+                                <?php echo __('Si no se indican los IDs, se crearán nuevos elementos.'); ?>
                             </li>
                         </ul>
                     </div>
@@ -50,9 +52,9 @@
                         || $checkConstraints->accountshistory_useredit > 0
                     ): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="userid" name="userid" type="number" required
+                            <input id="userid" name="userid" type="number"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   autocomplete="off" min="1" max="1000">
+                                   autocomplete="off" min="0" max="1000" value="0">
                             <label class="mdl-textfield__label"
                                    for="userid"><?php echo __('Introducir un ID de usuario válido para cuentas'); ?></label>
                         </div>
@@ -62,9 +64,9 @@
                         || $checkConstraints->accountshistory_category > 0
                     ): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="categoryid" name="categoryid" type="number" required
+                            <input id="categoryid" name="categoryid" type="number"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   autocomplete="off" min="1" max="1000">
+                                   autocomplete="off" min="0" max="1000" value="0">
                             <label class="mdl-textfield__label"
                                    for="categoryid"><?php echo __('Introducir un ID de categoría válido para cuentas'); ?></label>
                         </div>
@@ -74,9 +76,9 @@
                         || $checkConstraints->accountshistory_customer > 0
                     ): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="customerid" name="customerid" type="number" required
+                            <input id="customerid" name="customerid" type="number"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   autocomplete="off" min="1" max="1000">
+                                   autocomplete="off" min="0" max="1000" value="0">
                             <label class="mdl-textfield__label"
                                    for="customerid"><?php echo __('Introducir un ID de cliente válido para cuentas'); ?></label>
                         </div>
@@ -84,9 +86,9 @@
 
                     <?php if ($checkConstraints->users_group > 0): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="groupid" name="groupid" type="number" required
+                            <input id="groupid" name="groupid" type="number"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   autocomplete="off" min="1" max="1000">
+                                   autocomplete="off" min="0" max="1000" value="0">
                             <label class="mdl-textfield__label"
                                    for="groupid"><?php echo __('Introducir un ID de grupo válido para usuarios'); ?></label>
                         </div>
@@ -94,9 +96,9 @@
 
                     <?php if ($checkConstraints->users_profile > 0): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="profileid" name="profileid" type="number" required
+                            <input id="profileid" name="profileid" type="number"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   autocomplete="off" min="1" max="1000">
+                                   autocomplete="off" min="0" max="1000" value="0">
                             <label class="mdl-textfield__label"
                                    for="profileid"><?php echo __('Introducir un ID de perfil válido para usuarios'); ?></label>
                         </div>

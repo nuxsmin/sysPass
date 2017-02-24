@@ -47,20 +47,27 @@ class User
      */
     public static function fixUsersId($userId)
     {
-        $Data = new QueryData();
-        $Data->setQuery('SELECT user_id FROM usrData ORDER BY user_id');
-
-        $users = DB::getResultsArray($Data);
-
-        $paramsIn = trim(str_repeat(',?', count($users)), ',');
-        $Data->addParam($userId);
-
-        foreach ($users as $user) {
-            $Data->addParam($user->user_id);
-        }
-
         try {
             DB::beginTransaction();
+
+            $Data = new QueryData();
+            $Data->setQuery('SELECT user_id FROM usrData ORDER BY user_id');
+
+            $users = DB::getResultsArray($Data);
+
+            $paramsIn = trim(str_repeat(',?', count($users)), ',');
+
+            if ($userId === 0) {
+                $groupId = Group::createOrphanGroup();
+                $profileId = Profile::createOrphanProfile();
+                $userId = self::createOrphanUser($groupId, $profileId);
+            }
+
+            $Data->addParam($userId);
+
+            foreach ($users as $user) {
+                $Data->addParam($user->user_id);
+            }
 
             $query = /** @lang SQL */
                 'UPDATE accounts SET account_userId = ? WHERE account_userId NOT IN (' . $paramsIn . ') OR account_userId IS NULL ';
@@ -112,6 +119,38 @@ class User
 
             return false;
         }
+    }
+
+    /**
+     * Crear un usuario para elementos huérfanos
+     *
+     * @param $groupId
+     * @param $profileId
+     * @return int
+     */
+    public static function createOrphanUser($groupId, $profileId)
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO usrData SET
+            user_name = \'Orphan User\',
+            user_login = \'orphan_user\',
+            user_notes = \'Created by the upgrade process\',
+            user_groupId = ?,
+            user_profileId = ?,
+            user_mIV = \'\',
+            user_isDisabled = 1,
+            user_pass = \'\',
+            user_hashSalt = \'\'';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($groupId);
+        $Data->addParam($profileId);
+        $Data->setOnErrorMessage(__('Error al crear el usuario', false));
+
+        DB::getQuery($Data);
+
+        return DB::getLastId();
     }
 
     /**

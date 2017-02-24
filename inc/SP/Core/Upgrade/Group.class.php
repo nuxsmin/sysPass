@@ -41,30 +41,22 @@ class Group
      */
     public static function fixGroupId($groupId)
     {
-        $Data = new QueryData();
-        $Data->setQuery('SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id');
-
-        $groups = DB::getResultsArray($Data);
-
-        $paramsIn = trim(str_repeat(',?', count($groups)), ',');
-        $Data->addParam($groupId);
-
-        foreach ($groups as $group) {
-            $Data->addParam($group->usergroup_id);
-        }
-
         try {
             DB::beginTransaction();
 
+            $Data = new QueryData();
+
             $query = /** @lang SQL */
-                'UPDATE usrData SET user_groupId = ? WHERE user_groupId NOT IN (' . $paramsIn . ') OR user_groupId IS NULL';
+                'UPDATE usrData SET user_groupId = ? WHERE user_groupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR user_groupId IS NULL';
             $Data->setQuery($query);
+            $Data->addParam($groupId);
 
             DB::getQuery($Data);
 
             $query = /** @lang SQL */
-                'DELETE FROM usrToGroups WHERE usertogroup_groupId <> ? AND usertogroup_groupId NOT IN (' . $paramsIn . ') OR usertogroup_groupId IS NULL';
+                'DELETE FROM usrToGroups WHERE usertogroup_groupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR usertogroup_groupId IS NULL';
             $Data->setQuery($query);
+            $Data->setParams([]);
 
             DB::getQuery($Data);
 
@@ -76,5 +68,26 @@ class Group
 
             return false;
         }
+    }
+
+    /**
+     * Crear un grupo para elementos huérfanos
+     *
+     * @return int
+     */
+    public static function createOrphanGroup()
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO usrGroups SET
+            usergroup_name = \'Orphan group\',
+            usergroup_description = \'Created by the upgrade process\'';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setOnErrorMessage(__('Error al crear el grupo', false));
+
+        DB::getQuery($Data);
+
+        return DB::getLastId();
     }
 }

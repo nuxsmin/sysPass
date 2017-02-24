@@ -115,11 +115,11 @@ class Upgrade
             case 1316100601:
                 return
                     Account::fixAccountsId()
-                    && UserUpgrade::fixUsersId(Request::analyze('userid', 1))
-                    && Group::fixGroupId(Request::analyze('groupid', 1))
-                    && Profile::fixProfilesId(Request::analyze('profileid', 1))
-                    && Category::fixCategoriesId(Request::analyze('categoryid', 1))
-                    && Customer::fixCustomerId(Request::analyze('customerid', 1));
+                    && UserUpgrade::fixUsersId(Request::analyze('userid', 0))
+                    && Group::fixGroupId(Request::analyze('groupid', 0))
+                    && Profile::fixProfilesId(Request::analyze('profileid', 0))
+                    && Category::fixCategoriesId(Request::analyze('categoryid', 0))
+                    && Customer::fixCustomerId(Request::analyze('customerid', 0));
         }
 
         return true;

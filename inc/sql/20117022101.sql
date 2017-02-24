@@ -1,5 +1,6 @@
 ALTER TABLE `accounts`
-  CHANGE COLUMN `account_IV` `account_key` VARBINARY(1000) NOT NULL ;
+  CHANGE COLUMN `account_pass` `account_pass` VARBINARY(1000) NOT NULL,
+  CHANGE COLUMN `account_IV` `account_key` VARBINARY(1000) NOT NULL;
 ALTER TABLE `accHistory`
   CHANGE COLUMN `acchistory_IV` `acchistory_key` VARBINARY(1000) NOT NULL ;
 ALTER TABLE `customFieldsData`
