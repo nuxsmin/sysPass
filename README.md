@@ -2,6 +2,8 @@
 
 ## #sysPass - Systems Password Manager
 
+[![Join the chat at https://gitter.im/sysPass/Lobby](https://badges.gitter.im/sysPass/Lobby.svg)](https://gitter.im/sysPass/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ----------------
 
 Gestor de Claves web basado en PHP para uso empresarial y personal.
