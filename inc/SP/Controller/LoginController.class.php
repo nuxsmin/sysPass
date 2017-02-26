@@ -24,6 +24,8 @@
 
 namespace SP\Controller;
 
+defined('APP_ROOT') || die();
+
 use Defuse\Crypto\Exception\BadFormatException;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Auth\Auth;
@@ -32,7 +34,6 @@ use SP\Auth\AuthUtil;
 use SP\Auth\Browser\BrowserAuthData;
 use SP\Auth\Database\DatabaseAuthData;
 use SP\Auth\Ldap\LdapAuthData;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\CryptMasterPass;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\AuthException;
@@ -42,6 +43,7 @@ use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
+use SP\DataModel\TrackData;
 use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPassRecoverData;
 use SP\Http\JsonResponse;
@@ -49,6 +51,7 @@ use SP\Http\Request;
 use SP\Log\Log;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
+use SP\Mgmt\Tracks\Track;
 use SP\Mgmt\Users\UserLdap;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserPassRecover;
@@ -65,11 +68,20 @@ use SP\Util\Util;
  */
 class LoginController
 {
+    /**
+     * Estados
+     */
     const STATUS_INVALID_LOGIN = 1;
     const STATUS_INVALID_MASTER_PASS = 2;
     const STATUS_USER_DISABLED = 3;
     const STATUS_INTERNAL_ERROR = 4;
     const STATUS_NEED_OLD_PASS = 5;
+    const STATUS_MAX_ATTEMPTS_EXCEEDED = 6;
+    /**
+     * Tiempo para contador de intentos
+     */
+    const TIME_TRACKING = 600;
+    const TIME_TRACKING_MAX_ATTEMPTS = 5;
 
     /**
      * @var JsonResponse
@@ -118,6 +130,8 @@ class LoginController
         $Log = new Log($this->LogMessage);
 
         try {
+            $this->checkTracking();
+
             $Auth = new Auth($this->UserData);
             $result = $Auth->doAuth();
 
@@ -131,6 +145,8 @@ class LoginController
                     }
                 }
             } else {
+                $this->addTracking();
+
                 throw new AuthException(SPException::SP_INFO, __('Login incorrecto', false), '', self::STATUS_INVALID_LOGIN);
             }
 
@@ -165,6 +181,54 @@ class LoginController
     }
 
     /**
+     * Comprobar los intentos de login
+     *
+     * @throws \SP\Core\Exceptions\AuthException
+     */
+    private function checkTracking()
+    {
+        try {
+            $TrackData = new TrackData();
+            $TrackData->setTrackSource('Login');
+            $TrackData->setTrackIp($_SERVER['REMOTE_ADDR']);
+
+            $attempts = count(Track::getItem($TrackData)->getTracksForClientFromTime(time() - self::TIME_TRACKING));
+        } catch (SPException $e) {
+            $this->LogMessage->addDescription($e->getMessage());
+
+            throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
+        }
+
+        if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
+            $this->addTracking();
+
+            sleep(0.3 * $attempts);
+
+            $this->LogMessage->addDescription(sprintf(__('Intentos excedidos (%d/%d)'), $attempts, self::TIME_TRACKING_MAX_ATTEMPTS));
+
+            throw new AuthException(SPException::SP_INFO, __('Intentos excedidos', false), '', self::STATUS_MAX_ATTEMPTS_EXCEEDED);
+        }
+    }
+
+    /**
+     * Añadir un seguimiento
+     *
+     * @throws \SP\Core\Exceptions\AuthException
+     */
+    private function addTracking()
+    {
+        try {
+            $TrackData = new TrackData();
+            $TrackData->setTrackSource('Login');
+            $TrackData->setTrackIp($_SERVER['REMOTE_ADDR']);
+
+            Track::getItem($TrackData)->add();
+        } catch (SPException $e) {
+            throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
+        }
+    }
+
+    /**
      * Obtener los datos del usuario
      *
      * @throws SPException
@@ -194,6 +258,8 @@ class LoginController
         if ($this->UserData->isUserIsDisabled()) {
             $this->LogMessage->addDescription(__('Usuario deshabilitado', false));
             $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
+
+            $this->addTracking();
 
             throw new AuthException(SPException::SP_INFO, __('Usuario deshabilitado', false), '', self::STATUS_USER_DISABLED);
         } elseif ($this->UserData->isUserIsChangePass()) {
@@ -238,6 +304,8 @@ class LoginController
                 if (!UserPass::updateUserMPass($masterPass, $this->UserData)) {
                     $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
 
+                    $this->addTracking();
+
                     throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
                 } else {
                     $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
@@ -245,6 +313,8 @@ class LoginController
             } else if ($oldPass) {
                 if (!UserPass::updateMasterPassFromOldPass($oldPass, $this->UserData)) {
                     $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
+
+                    $this->addTracking();
 
                     throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
                 } else {
@@ -258,6 +328,8 @@ class LoginController
                     case UserPass::MPASS_NOTSET:
                     case UserPass::MPASS_CHANGED:
                     case UserPass::MPASS_WRONG:
+                        $this->addTracking();
+
                         throw new AuthException(SPException::SP_INFO, __('La clave maestra no ha sido guardada o es incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
                         break;
                 }
@@ -376,6 +448,8 @@ class LoginController
             if ($LdapAuthData->getStatusCode() === 49) {
                 $this->LogMessage->addDescription(__('Login incorrecto', false));
 
+                $this->addTracking();
+
                 throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
             } elseif ($LdapAuthData->getStatusCode() === 701) {
                 $this->LogMessage->addDescription(__('Cuenta expirada', false));
@@ -431,6 +505,8 @@ class LoginController
             $this->LogMessage->addDescription(__('Login incorrecto', false));
             $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
 
+            $this->addTracking();
+
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
         } elseif ($AuthData->getAuthenticated() === 1) {
             $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
@@ -454,6 +530,8 @@ class LoginController
             $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
             $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
             $this->LogMessage->addDetails(__('Autentificación', false), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
+
+            $this->addTracking();
 
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
         } elseif ($AuthData->getAuthenticated() === 1) {

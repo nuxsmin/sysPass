@@ -458,7 +458,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->assign('constraints', $constraints);
         }
 
-        if ($version < 20117022101) {
+        if ($version < 21017022601) {
             $this->view->assign('numAccounts', Account::getNumAccounts());
         }
 

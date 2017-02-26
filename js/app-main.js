@@ -184,7 +184,7 @@ sysPass.Main = function () {
                         msg.sticky(description);
                         break;
                     default:
-                        return;
+                        msg.error(description);
                 }
             }
         },

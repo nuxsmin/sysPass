@@ -52,10 +52,10 @@ defined('APP_ROOT') || die();
  */
 class Upgrade
 {
-    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316100601, 20017011302, 20017011701, 20017012901];
+    private static $dbUpgrade = [110, 1121, 1122, 1123, 11213, 11219, 11220, 12001, 12002, 1316011001, 1316100601, 20017011302, 20017011701, 21017022601];
     private static $cfgUpgrade = [1124, 1316020501, 20017011202];
     private static $auxUpgrade = [12001, 12002, 20017010901, 20017011202];
-    private static $appUpgrade = [20117022101];
+    private static $appUpgrade = [21017022601];
 
     /**
      * Inicia el proceso de actualización de la BBDD.
@@ -153,7 +153,7 @@ class Upgrade
                 $Data->setQuery($query);
                 DB::getQuery($Data);
             } catch (SPException $e) {
-                $LogMessage->addDescription(__('Error al aplicar la actualización de la Base de Datos.', false));
+                $LogMessage->addDescription(__('Error al aplicar la actualización de la Base de Datos', false));
                 $LogMessage->addDetails('ERROR', sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
                 $Log->setLogLevel(Log::ERROR);
                 $Log->writeLog();
@@ -210,7 +210,7 @@ class Upgrade
     private static function appUpgrades($version)
     {
         switch ($version) {
-            case 20117022101:
+            case 21017022601:
                 $dbResult = true;
                 $databaseVersion = (int)str_replace('.', '', ConfigDB::getValue('version'));
 

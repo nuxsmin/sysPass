@@ -105,7 +105,7 @@
                     <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if ($version < 20117022101): ?>
+                <?php if ($version < 21017022601): ?>
                     <div>
                         <ul class="errors">
                             <li class="msg-warning">

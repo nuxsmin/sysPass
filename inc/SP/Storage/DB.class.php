@@ -110,7 +110,7 @@ class DB
         } catch (SPException $e) {
             $queryData->setQueryStatus($e->getCode());
 
-            self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
+            self::logDBException($queryData->getQuery(), $e, __FUNCTION__);
             return false;
         }
 
@@ -310,7 +310,7 @@ class DB
             $db = new DB();
             return $db->doQuery($queryData, true);
         } catch (SPException $e) {
-            self::logDBException($queryData->getQuery(), $e->getMessage(), $e->getCode(), __FUNCTION__);
+            self::logDBException($queryData->getQuery(), $e, __FUNCTION__);
 
             throw $e;
         }

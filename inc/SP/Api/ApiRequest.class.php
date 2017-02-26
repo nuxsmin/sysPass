@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,13 +24,15 @@
 
 namespace SP\Api;
 
+defined('APP_ROOT') || die();
+
 use ReflectionClass;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\TrackData;
 use SP\Http\Request;
+use SP\Mgmt\Tracks\Track;
 use SP\Util\Json;
-
-defined('APP_ROOT') || die();
 
 /**
  * Class ApiRequest encargada de atender la peticiones a la API de sysPass
@@ -49,6 +51,8 @@ class ApiRequest
      */
     const ACTION = 'action';
     const AUTH_TOKEN = 'authToken';
+    const TIME_TRACKING_MAX_ATTEMPTS = 5;
+    const TIME_TRACKING = 300;
 
     /**
      * @var \stdClass
@@ -76,7 +80,7 @@ class ApiRequest
             'error' => [
                 'code' => $code,
                 'message' => __($e->getMessage()),
-                'data' => $class === SPException::class || $class === InvalidArgumentException::class ? $e->getHint() : ''
+                'data' => $class === SPException::class || $class === InvalidArgumentException::class ? __($e->getHint()) : ''
             ],
             'id' => ($code === -32700 || $code === -32600) ? null : $this->getId()
         ];
@@ -115,12 +119,40 @@ class ApiRequest
     protected function init()
     {
         try {
+            $this->checkTracking();
             $this->analyzeRequestMethod();
             $this->getRequestData();
             $this->checkBasicData();
             $this->checkAction();
         } catch (SPException $e) {
             throw $e;
+        }
+    }
+
+    /**
+     * Comprobar los intentos de login
+     *
+     * @throws \SP\Core\Exceptions\AuthException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    private function checkTracking()
+    {
+        try {
+            $TrackData = new TrackData();
+            $TrackData->setTrackSource('API');
+            $TrackData->setTrackIp($_SERVER['REMOTE_ADDR']);
+
+            $attempts = count(Track::getItem($TrackData)->getTracksForClientFromTime(time() - self::TIME_TRACKING));
+        } catch (SPException $e) {
+            throw new SPException(SPException::SP_ERROR, __('Error interno', false), __FUNCTION__, -32601);
+        }
+
+        if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
+            ApiUtil::addTracking();
+
+            sleep(0.3 * $attempts);
+
+            throw new SPException(SPException::SP_INFO, __('Intentos excedidos', false), '', -32601);
         }
     }
 
@@ -189,9 +221,12 @@ class ApiRequest
         $this->ApiReflection = new ReflectionClass(SyspassApi::class);
 
         if (!$this->ApiReflection->hasMethod($this->data->method)) {
+            ApiUtil::addTracking();
+
             throw new SPException(SPException::SP_WARNING, __('Acción Inválida', false), '', -32601);
         }
     }
+
 
     /**
      * Obtener el id de la acción

@@ -19,7 +19,7 @@ CREATE TABLE `customers` (
   `customer_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`customer_id`),
   KEY `IDX_name` (`customer_name`,`customer_hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `categories`;
@@ -31,7 +31,7 @@ CREATE TABLE `categories` (
   `category_hash` varbinary(40) NOT NULL,
   `category_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `usrGroups`;
@@ -42,7 +42,7 @@ CREATE TABLE `usrGroups` (
   `usergroup_name` varchar(50) NOT NULL,
   `usergroup_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`usergroup_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `usrProfiles`;
@@ -53,7 +53,7 @@ CREATE TABLE `usrProfiles` (
   `userprofile_name` varchar(45) NOT NULL,
   `userProfile_profile` blob NOT NULL,
   PRIMARY KEY (`userprofile_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `usrData`;
@@ -90,7 +90,7 @@ CREATE TABLE `usrData` (
   KEY `fk_usrData_profiles_id_idx` (`user_profileId`),
   CONSTRAINT `fk_usrData_groups_id` FOREIGN KEY (`user_groupId`) REFERENCES `usrGroups` (`usergroup_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_usrData_profiles_id` FOREIGN KEY (`user_profileId`) REFERENCES `usrProfiles` (`userprofile_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `accounts`;
@@ -131,7 +131,7 @@ CREATE TABLE `accounts` (
   CONSTRAINT `fk_accounts_user_edit_id` FOREIGN KEY (`account_userEditId`) REFERENCES `usrData` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_accounts_customer_id` FOREIGN KEY (`account_customerId`) REFERENCES `customers` (`customer_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_accounts_userGroup_id` FOREIGN KEY (`account_userGroupId`) REFERENCES `usrGroups` (`usergroup_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `accFavorites`;
@@ -161,7 +161,7 @@ CREATE TABLE `accFiles` (
   PRIMARY KEY (`accfile_id`),
   KEY `IDX_accountId` (`accfile_accountId`),
   CONSTRAINT `fk_accFiles_accounts_id` FOREIGN KEY (`accfile_accountId`) REFERENCES `accounts` (`account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `accGroups`;
@@ -219,7 +219,7 @@ CREATE TABLE `accHistory` (
   CONSTRAINT `fk_accHistory_category_id` FOREIGN KEY (`acchistory_categoryId`) REFERENCES `categories` (`category_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_accHistory_customer_id` FOREIGN KEY (`acchistory_customerId`) REFERENCES `customers` (`customer_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `fk_accHistory_userGroup_id` FOREIGN KEY (`acchistory_userGroupId`) REFERENCES `usrGroups` (`usergroup_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `tags`;
@@ -232,7 +232,7 @@ CREATE TABLE `tags` (
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY `tag_hash_UNIQUE` (`tag_hash`),
   KEY `IDX_name` (`tag_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `accTags`;
@@ -280,7 +280,7 @@ CREATE TABLE `authTokens` (
   KEY `fk_authTokens_users_createdby_id` (`authtoken_createdBy`),
   CONSTRAINT `fk_authTokens_user_id` FOREIGN KEY (`authtoken_userId`) REFERENCES `usrData` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_authTokens_createdBy_id` FOREIGN KEY (`authtoken_createdBy`) REFERENCES `usrData` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `config`;
@@ -337,7 +337,7 @@ CREATE TABLE `log` (
   `log_description` text,
   `log_level` varchar(20) NOT NULL,
   PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `publicLinks`;
@@ -393,7 +393,8 @@ CREATE TABLE `plugins` (
   `plugin_data` VARBINARY(5000) NULL,
   `plugin_enabled` BIT(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`plugin_id`),
-  UNIQUE INDEX `plugin_name_UNIQUE` (`plugin_name` ASC));
+  UNIQUE INDEX `plugin_name_UNIQUE` (`plugin_name` ASC)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `notices`;
@@ -411,7 +412,24 @@ CREATE TABLE `notices` (
   `notice_onlyAdmin` BIT(1) NULL DEFAULT b'0',
   PRIMARY KEY (`notice_id`),
   INDEX `IDX_userId` (`notice_userId` ASC, `notice_checked` ASC, `notice_date` ASC),
-  INDEX `IDX_component` (`notice_component` ASC, `notice_date` ASC, `notice_checked` ASC, `notice_userId` ASC));
+  INDEX `IDX_component` (`notice_component` ASC, `notice_date` ASC, `notice_checked` ASC, `notice_userId` ASC)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `track`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `track` (
+  `track_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `track_userId` SMALLINT(5) UNSIGNED NULL,
+  `track_source` VARCHAR(100) NOT NULL,
+  `track_time` INT UNSIGNED NOT NULL,
+  `track_ipv4` BINARY(4) NOT NULL,
+  `track_ipv6` BINARY(16) NULL,
+  PRIMARY KEY (`track_id`),
+  INDEX `IDX_userId` (`track_userId` ASC),
+  INDEX `IDX_time-ip-source` (`track_time` ASC, `track_ipv4` ASC, `track_ipv6` ASC, `track_source` ASC)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 DROP TABLE IF EXISTS `account_data_v`;

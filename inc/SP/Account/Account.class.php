@@ -28,19 +28,16 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\GroupAccountsData;
-use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Groups\GroupAccounts;
 use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
-use SP\Util\Checks;
 
 defined('APP_ROOT') || die();
 
@@ -311,7 +308,7 @@ class Account extends AccountBase implements AccountInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    protected function setPasswordEncrypted($masterPass = null)
+    public function setPasswordEncrypted($masterPass = null)
     {
         try {
             $masterPass = $masterPass ?: CryptSession::getSessionKey();

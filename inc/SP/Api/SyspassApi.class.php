@@ -24,6 +24,8 @@
 
 namespace SP\Api;
 
+defined('APP_ROOT') || die();
+
 use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountSearch;
@@ -40,8 +42,6 @@ use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Customers\CustomerSearch;
-
-defined('APP_ROOT') || die();
 
 /**
  * Class Api para la gestión de peticiones a la API de sysPass
@@ -182,7 +182,8 @@ class SyspassApi extends ApiBase
 
         $Account = new Account($AccountData);
 
-        $Account->createAccount();
+        $Account->setPasswordEncrypted($this->getMPass());
+        $Account->createAccount(false);
 
         $LogMessage = $this->Log->getLogMessage();
         $LogMessage->setAction(__('Crear Cuenta', false));
@@ -463,7 +464,7 @@ class SyspassApi extends ApiBase
                 'id' => ActionsInterface::ACTION_ACC_VIEW_PASS,
                 'help' => [
                     'id' => __('Id de la cuenta'),
-                    'userPass' => __('Clave del usuario asociado al token'),
+                    'tokenPass' => __('Clave del token'),
                     'details' => __('Devolver detalles en la respuesta')
                 ]
             ],
@@ -479,8 +480,7 @@ class SyspassApi extends ApiBase
             'getAccountData' => [
                 'id' => ActionsInterface::ACTION_ACC_VIEW,
                 'help' => [
-                    'id' => __('Id de la cuenta'),
-                    'userPass' => __('Clave del usuario asociado al token')
+                    'id' => __('Id de la cuenta')
                 ]
             ],
             'deleteAccount' => [
@@ -492,7 +492,7 @@ class SyspassApi extends ApiBase
             'addAccount' => [
                 'id' => ActionsInterface::ACTION_ACC_NEW,
                 'help' => [
-                    'userPass' => __('Clave del usuario asociado al token'),
+                    'tokenPass' => __('Clave del token'),
                     'name' => __('Nombre de cuenta'),
                     'categoryId' => __('Id de categoría'),
                     'customerId' => __('Id de cliente'),
