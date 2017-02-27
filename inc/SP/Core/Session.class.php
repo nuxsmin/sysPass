@@ -59,8 +59,8 @@ class Session
     /**
      * Establecer una variable de sesión
      *
-     * @param string $key El nombre de la variable
-     * @param mixed $value El valor de la variable
+     * @param string $key   El nombre de la variable
+     * @param mixed  $value El valor de la variable
      */
     public static function setSessionKey($key, $value)
     {
@@ -71,8 +71,8 @@ class Session
      * Establecer una variable de sesión para un plugin
      *
      * @param string $plugin Nombre del plugin
-     * @param string $key El nombre de la variable
-     * @param mixed $value El valor de la variable
+     * @param string $key    El nombre de la variable
+     * @param mixed  $value  El valor de la variable
      */
     public static function setPluginKey($plugin, $key, $value)
     {
@@ -93,7 +93,7 @@ class Session
      * Devolver una variable de sesión
      *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
      * @return mixed
      */
     public static function getSessionKey($key, $default = '')
@@ -110,7 +110,7 @@ class Session
      *
      * @param string $plugin
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
      * @return mixed
      */
     public static function getPluginKey($plugin, $key, $default = '')
@@ -664,5 +664,25 @@ class Session
     public static function setVault(Vault $vault)
     {
         self::setSessionKey('vault', $vault);
+    }
+
+    /**
+     * Devuelve la tarea activa
+     *
+     * @return Task
+     */
+    public static function getTask()
+    {
+        return self::getSessionKey('task');
+    }
+
+    /**
+     * Establecer la tarea activa
+     *
+     * @param Task $task
+     */
+    public static function setTask(Task $task)
+    {
+        self::setSessionKey('task', $task);
     }
 }

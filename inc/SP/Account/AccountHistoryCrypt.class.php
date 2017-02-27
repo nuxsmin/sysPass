@@ -28,8 +28,10 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\QueryException;
+use SP\Core\Messages\TaskMessage;
 use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Session;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
@@ -93,6 +95,11 @@ class AccountHistoryCrypt
         $AccountDataBase->key = '';
         $AccountDataBase->hash = Hash::hashKey($currentMasterPass);
 
+        $Task = Session::getTask();
+
+        $Message = new TaskMessage();
+        $Message->setTask(__('Actualizar Clave Maestra (H)'));
+
         $counter = 0;
         $startTime = time();
 
@@ -106,11 +113,13 @@ class AccountHistoryCrypt
             }
 
             if ($counter % 100 === 0) {
-                debugLog(__('Actualizar Clave Maestra (H)'));
-                debugLog(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
-
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
-                debugLog(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
+
+                $Message->setMessage(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
+                $Message->setProgress(round(($counter * 100) / $numAccounts, 2));
+                $Message->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
+
+                $Task->writeJsonStatusAndFlush($Message);
             }
 
             $AccountData = clone $AccountDataBase;
@@ -214,6 +223,11 @@ class AccountHistoryCrypt
         $AccountDataBase->key = '';
         $AccountDataBase->hash = Hash::hashKey($newMasterPass);
 
+        $Task = Session::getTask();
+
+        $Message = new TaskMessage();
+        $Message->setTask(__('Actualizar Clave Maestra (H)'));
+
         $counter = 0;
         $startTime = time();
 
@@ -227,11 +241,13 @@ class AccountHistoryCrypt
             }
 
             if ($counter % 100 === 0) {
-                debugLog(__('Actualizar Clave Maestra (H)'));
-                debugLog(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
-
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
-                debugLog(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
+
+                $Message->setMessage(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
+                $Message->setProgress(round(($counter * 100) / $numAccounts, 2));
+                $Message->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
+
+                $Task->writeJsonStatusAndFlush($Message);
             }
 
             $AccountData = clone $AccountDataBase;

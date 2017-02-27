@@ -24,7 +24,6 @@
 
 namespace SP\Core\Upgrade;
 
-use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountCrypt;
 use SP\Account\AccountHistory;
 use SP\Account\AccountHistoryCrypt;
@@ -32,8 +31,12 @@ use SP\Config\ConfigDB;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
+use SP\Core\Messages\TaskMessage;
+use SP\Core\Session;
+use SP\Core\Task;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
+use SP\Mgmt\Users\UserMigrate;
 use SP\Storage\DB;
 
 /**
@@ -52,7 +55,20 @@ class Crypt
      */
     public static function migrate(&$masterPass)
     {
+        global $timeStart;
+
+        $Message = new TaskMessage();
+        $Message->setTask(__('Actualizar Clave Maestra'));
+        $Message->setMessage(__('Errores al actualizar las claves de las cuentas'));
+        $Message->setEnd(1);
+
         try {
+            $Task = new Task(__FUNCTION__);
+
+            Session::setTask($Task);
+
+            session_write_close();
+
             AccountHistoryCrypt::$currentMPassHash = ConfigDB::getValue('masterPwd');
 
             if (!DB::beginTransaction()) {
@@ -63,20 +79,32 @@ class Crypt
 
             self::migrateAccounts($masterPass);
             self::migrateCustomFields($masterPass);
+            UserMigrate::setMigrateUsers();
 
             if (!DB::endTransaction()) {
                 throw new SPException(SPException::SP_ERROR, __('No es posible finalizar una transacción', false));
             }
 
-            global $timeStart;
-
             debugLog('Total time: ' . (Init::microtime_float() - $timeStart));
+
+            $Message->setMessage(__('Clave maestra actualizada'));
+            $Message->setTime(Init::microtime_float() - $timeStart);
+            $Message->setProgress(100);
+
+            $Task->writeJsonStatusAndFlush($Message);
+            session_start();
 
             return true;
         } catch (\Exception $e) {
             if (DB::rollbackTransaction()) {
                 debugLog(__METHOD__ . ': Rollback');
             }
+
+            $Message->setTime(Init::microtime_float() - $timeStart);
+            $Message->setProgress(0);
+
+            $Task->writeJsonStatusAndFlush($Message);
+            session_start();
 
             throw $e;
         }

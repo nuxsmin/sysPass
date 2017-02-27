@@ -42,6 +42,20 @@
       top: 50%;
       left: 50%;
     }
+    #taskStatus {
+      display: block;
+    }
+  }
+  #taskStatus {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 55%;
+    width: 100%;
+    text-align: center;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 1em 0;
   }
 }
 

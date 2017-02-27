@@ -486,7 +486,7 @@ class Init
     private static function checkInitSourceInclude()
     {
         $srcScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
-        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php'];
+        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php', 'ajax_task.php'];
 
         return in_array($srcScript, $skipInit, true);
     }

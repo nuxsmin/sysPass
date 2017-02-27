@@ -10,7 +10,7 @@ ALTER TABLE `usrData`
   CHANGE COLUMN `user_mIV` `user_mKey` VARBINARY(1000) NULL DEFAULT NULL;
 ALTER TABLE `authTokens`
   ADD COLUMN `authtoken_vault` VARBINARY(2000) NULL,
-  CHANGE COLUMN `authtoken_hash` `authtoken_hash` VARBINARY(100) NULL;
+  ADD COLUMN `authtoken_hash` VARBINARY(100) NULL;
 CREATE TABLE `track` (
   `track_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `track_userId` SMALLINT(5) UNSIGNED NULL,

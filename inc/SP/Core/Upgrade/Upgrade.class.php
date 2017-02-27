@@ -140,7 +140,7 @@ class Upgrade
 
         $queries = self::getQueriesFromFile($version);
 
-        if (count($queries) === 0 || (int)ConfigDB::getValue('version') > $version) {
+        if (count($queries) === 0 || (int)ConfigDB::getValue('version') >= $version) {
             $LogMessage->addDescription(__('No es necesario actualizar la Base de Datos.', false));
             $Log->writeLog();
             return true;
@@ -204,8 +204,6 @@ class Upgrade
      * @param $version
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
      */
     private static function appUpgrades($version)
     {
@@ -228,8 +226,7 @@ class Upgrade
                 return $dbResult === true
                     && is_object($UserData)
                     && !empty($masterPass)
-                    && Crypt::migrate($masterPass)
-                    && UserMigrate::setMigrateUsers();
+                    && Crypt::migrate($masterPass);
         }
 
         return false;

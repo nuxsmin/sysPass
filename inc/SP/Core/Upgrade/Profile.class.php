@@ -36,6 +36,8 @@ use SP\Storage\QueryData;
  */
 class Profile
 {
+    protected static $orphanProfileId;
+
     /**
      * Actualizar registros con perfiles no existentes
      *
@@ -48,6 +50,10 @@ class Profile
 
         try {
             DB::beginTransaction();
+
+            if ($profileId === 0){
+                $profileId = self::$orphanProfileId ?: self::createOrphanProfile();
+            }
 
             $query = /** @lang SQL */
                 'UPDATE usrData SET user_profileId = ? WHERE user_profileId NOT IN (SELECT userprofile_id FROM usrProfiles ORDER BY userprofile_id) OR user_profileId IS NULL';
@@ -70,6 +76,8 @@ class Profile
      * Crear un perfil para elementos huérfanos
      *
      * @return int
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function createOrphanProfile()
     {
@@ -85,6 +93,8 @@ class Profile
 
         DB::getQuery($Data);
 
-        return DB::getLastId();
+        self::$orphanProfileId = DB::getLastId();
+
+        return self::$orphanProfileId;
     }
 }

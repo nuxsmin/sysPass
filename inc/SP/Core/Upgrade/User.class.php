@@ -127,6 +127,8 @@ class User
      * @param $groupId
      * @param $profileId
      * @return int
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function createOrphanUser($groupId, $profileId)
     {

@@ -35,6 +35,11 @@ use SP\Storage\QueryData;
 class Group
 {
     /**
+     * @var int
+     */
+    protected static $orphanGroupId;
+
+    /**
      * Actualizar registros con grupos no existentes
      * @param int $groupId Id de grupo por defecto
      * @return bool
@@ -43,6 +48,10 @@ class Group
     {
         try {
             DB::beginTransaction();
+
+            if ($groupId === 0){
+                $groupId = self::$orphanGroupId ?: self::createOrphanGroup();
+            }
 
             $Data = new QueryData();
 
@@ -74,6 +83,8 @@ class Group
      * Crear un grupo para elementos huérfanos
      *
      * @return int
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function createOrphanGroup()
     {
@@ -88,6 +99,8 @@ class Group
 
         DB::getQuery($Data);
 
-        return DB::getLastId();
+        self::$orphanGroupId = DB::getLastId();
+
+        return self::$orphanGroupId;
     }
 }
