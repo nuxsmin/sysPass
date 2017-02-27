@@ -100,9 +100,7 @@ class MainActionController
 
         $appVersion = implode('', Util::getVersion(true));
 
-        if ($type === 'app') {
-            $Config->setConfigVersion($appVersion);
-        }
+        $Config->setConfigVersion($appVersion);
 
         Config::saveConfig($Config);
 

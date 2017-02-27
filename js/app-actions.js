@@ -421,8 +421,9 @@ sysPass.Actions = function (Common) {
                     onClick: function (e) {
                         var optsTask = Common.appRequests().getRequestOpts();
                         optsTask.url = ajaxUrl.main.task;
+                        optsTask.data = {source: $obj.find("input[name='lock']").val()};
 
-                        Common.appRequests().getActionEvent(optsTask, function (result) {
+                        var task = Common.appRequests().getActionEvent(optsTask, function (result) {
                             var $taskStatus = $("#taskStatus");
 
                             var text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
@@ -440,6 +441,8 @@ sysPass.Actions = function (Common) {
                             Common.msg.out(json);
 
                             if (json.status !== 0) {
+                                task.close();
+
                                 $obj.find(":input[name=h]").val("");
                             } else {
                                 setTimeout(function () {

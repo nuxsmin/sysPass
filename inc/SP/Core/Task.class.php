@@ -53,6 +53,10 @@ class Task
      * @var int Intérvalo en segundos
      */
     protected $interval = 5;
+    /**
+     * @var bool Si se ha inicializado para escribir en el archivo
+     */
+    protected $initialized = false;
 
     /**
      * Task constructor.
@@ -63,7 +67,39 @@ class Task
     {
         $this->name = $name;
         $this->taskId = uniqid($this->name, true);
-        $this->file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->taskId . '.out';
+        $this->initialized = $this->checkFile();
+    }
+
+    /**
+     * Comprobar si se puede escribir en el archivo
+     *
+     * @return bool
+     */
+    protected function checkFile()
+    {
+        $fileName = $this->taskId . '.out';
+        $fileTmp = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+
+        if (touch($fileTmp)) {
+            $this->file = $fileTmp;
+        } else {
+            $fileTmpAlt = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $fileName;
+            $dirAlt = dirname($fileTmpAlt);
+
+            if (!file_exists($dirAlt) && !mkdir($dirAlt)) {
+                return false;
+            }
+
+            if (!touch($fileTmpAlt)) {
+                return false;
+            }
+
+            $this->file = $fileTmpAlt;
+        }
+
+        debugLog('Start Task: ' . $this->name);
+
+        return true;
     }
 
     /**
@@ -83,7 +119,9 @@ class Task
      */
     protected function openFile()
     {
-        if (!$this->fileHandler = fopen($this->file, 'wb')) {
+        if ($this->initialized === false
+            || !$this->fileHandler = fopen($this->file, 'wb')
+        ) {
             return false;
         }
 
@@ -98,7 +136,9 @@ class Task
      */
     public function writeStatus(TaskMessage $Message)
     {
-        if (!is_resource($this->fileHandler)) {
+        if ($this->initialized === false
+            || !is_resource($this->fileHandler)
+        ) {
             return false;
         }
 
@@ -115,7 +155,8 @@ class Task
      */
     public function writeStatusAndFlush(TaskMessage $Message)
     {
-        return !is_resource($this->fileHandler)
+        return $this->initialized === true
+            && !is_resource($this->fileHandler)
             && file_put_contents($this->file, $Message->composeText()) !== false;
     }
 
@@ -127,7 +168,8 @@ class Task
      */
     public function writeJsonStatusAndFlush(TaskMessage $Message)
     {
-        return !is_resource($this->fileHandler)
+        return $this->initialized === true
+            && !is_resource($this->fileHandler)
             && file_put_contents($this->file, $Message->composeJson()) !== false;
     }
 
@@ -138,7 +180,9 @@ class Task
      */
     public function end()
     {
-        return $this->closeFile();
+        debugLog('End Task: ' . $this->name);
+
+        return $this->closeFile() && @unlink($this->file);
     }
 
     /**
@@ -148,11 +192,11 @@ class Task
      */
     protected function closeFile()
     {
-        if (is_resource($this->fileHandler)) {
+        if ($this->initialized === true && is_resource($this->fileHandler)) {
             return fclose($this->fileHandler);
         }
 
-        return true;
+        return $this->initialized;
     }
 
     /**

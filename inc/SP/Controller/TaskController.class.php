@@ -27,6 +27,7 @@ namespace SP\Controller;
 use SP\Core\Messages\TaskMessage;
 use SP\Core\Session;
 use SP\Core\Task;
+use SP\Http\Request;
 
 /**
  * Class TaskController
@@ -39,6 +40,18 @@ class TaskController
      * @var Task Instancia de la tarea
      */
     protected $Task;
+    /**
+     * @var int Tiempo de espera en cada intendo de inicialización
+     */
+    protected $startupWaitTime = 10;
+    /**
+     * @var int Intentos de inicialización
+     */
+    protected $startupWaitCount = 30;
+    /**
+     * @var string Archivo de bloqueo
+     */
+    protected $lockFile;
 
     /**
      * Realizar acción
@@ -47,16 +60,33 @@ class TaskController
      */
     public function doAction()
     {
+        $source = Request::analyze('source');
+
+        if ($this->checkWait($source)) {
+            return false;
+        }
+
         $count = 0;
 
         do {
-            if ($count >= 30) {
+            session_write_close();
+
+            if ($count >= $this->startupWaitCount) {
+                debugLog('Aborting ...');
+
+                $this->removeLock();
+
                 return false;
             }
 
+            debugLog('Waiting task ...');
+
+            sleep($this->startupWaitTime);
+
+            session_start();
+
             $this->Task = Session::getTask();
             $count++;
-            sleep(2);
         } while (!is_object($this->Task));
 
         session_write_close();
@@ -65,7 +95,26 @@ class TaskController
             $this->readTaskStatus();
         }
 
+        $this->removeLock();
+
         return true;
+    }
+
+    /**
+     * Comprobar si hay una tarea a la espera
+     *
+     * @param $source
+     * @return bool
+     */
+    protected function checkWait($source)
+    {
+        $this->lockFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $source . '.lock';
+
+        if (file_exists($this->lockFile) || !touch($this->lockFile)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -82,6 +131,7 @@ class TaskController
     protected function readTaskStatus()
     {
         $id = 0;
+        $failCount = 0;
         $file = $this->Task->getFile();
         $interval = $this->Task->getInterval();
 
@@ -89,14 +139,17 @@ class TaskController
         $Message->setTask($this->Task->getTaskId());
         $Message->setMessage(__('Esperando actualización de progreso ...'));
 
-        while (true) {
+        while ($failCount <= 10) {
             $content = file_get_contents($file);
 
             if ($content !== false) {
                 $this->sendMessage($id, $content);
                 $id++;
             } else {
+                debugLog($Message->composeText());
+
                 $this->sendMessage($id, $Message->composeJson());
+                $failCount++;
             }
 
             sleep($interval);
@@ -115,5 +168,15 @@ class TaskController
 
         ob_flush();
         flush();
+    }
+
+    /**
+     * Eliminar bloqueo
+     */
+    protected function removeLock()
+    {
+        debugLog(__METHOD__);
+
+        unlink($this->lockFile);
     }
 }

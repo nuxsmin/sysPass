@@ -57,11 +57,6 @@ class Crypt
     {
         global $timeStart;
 
-        $Message = new TaskMessage();
-        $Message->setTask(__('Actualizar Clave Maestra'));
-        $Message->setMessage(__('Errores al actualizar las claves de las cuentas'));
-        $Message->setEnd(1);
-
         try {
             $Task = new Task(__FUNCTION__);
 
@@ -87,23 +82,18 @@ class Crypt
 
             debugLog('Total time: ' . (Init::microtime_float() - $timeStart));
 
-            $Message->setMessage(__('Clave maestra actualizada'));
-            $Message->setTime(Init::microtime_float() - $timeStart);
-            $Message->setProgress(100);
+            $Task->end();
 
-            $Task->writeJsonStatusAndFlush($Message);
             session_start();
 
             return true;
         } catch (\Exception $e) {
             if (DB::rollbackTransaction()) {
-                debugLog(__METHOD__ . ': Rollback');
+                debugLog('Rollback: ' . __METHOD__);
             }
 
-            $Message->setTime(Init::microtime_float() - $timeStart);
-            $Message->setProgress(0);
+            $Task->end();
 
-            $Task->writeJsonStatusAndFlush($Message);
             session_start();
 
             throw $e;

@@ -144,6 +144,7 @@
                 <input type="hidden" name="a" value="<?php echo $action; ?>">
                 <input type="hidden" name="type" value="<?php echo $type; ?>">
                 <input type="hidden" name="version" value="<?php echo $version; ?>">
+                <input type="hidden" name="lock" value="upgrade">
                 <input type="hidden" name="upgrade" value="1">
             </fieldset>
 

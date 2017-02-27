@@ -205,6 +205,7 @@ sysPass.Requests = function (Common) {
      */
     var getActionEvent = function (opts, callbackProgress, callbackEnd) {
         var url = (!opts.url.startsWith("http", 0) && !opts.url.startsWith("https", 0)) ? Common.config().APP_ROOT + opts.url : opts.url;
+        url += "?" + $.param(opts.data);
 
         var source = new EventSource(url);
 
