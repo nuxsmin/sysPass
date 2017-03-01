@@ -82,6 +82,7 @@ CREATE TABLE `usrData` (
   `user_hashSalt` varbinary(128) NOT NULL,
   `user_isMigrate` bit(1) DEFAULT b'0',
   `user_isChangePass` bit(1) DEFAULT b'0',
+  `user_isChangedPass` bit(1) DEFAULT b'0',
   `user_preferences` blob,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `IDX_login` (`user_login`),
