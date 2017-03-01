@@ -8,7 +8,7 @@
 
 Gestor de Claves web basado en PHP para uso empresarial y personal.
 
-- [x] Encriptación AES-256 en modo CBC
+- [x] Encriptación AES-256 en modo CTR
 - [x] RSA para envío de claves desde formularios
 - [x] Autentificación en 2 pasos
 - [x] Interfaz en HTML5 y Ajax
