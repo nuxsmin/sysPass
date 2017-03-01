@@ -29,10 +29,13 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
+session_write_close();
+
 Request::checkReferer('GET');
 
 header('Content-Type: text/event-stream');
-header('Cache-Control: no-cache');
+header('Cache-Control: no-store, no-cache');
+header('Access-Control-Allow-Origin: *');
 
 $Controller = new TaskController();
 $Controller->doAction();

@@ -269,6 +269,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             user_pass = ?,
             user_hashSalt = \'\',
             user_isChangePass = 0,
+            user_isChangedPass = 1,
             user_lastUpdate = NOW()
             WHERE user_id = ? LIMIT 1';
 
@@ -314,6 +315,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             BIN(user_isLdap) AS user_isLdap,
             BIN(user_isDisabled) AS user_isDisabled,
             BIN(user_isChangePass) AS user_isChangePass,
+            BIN(user_isChangedPass) AS user_isChangedPass,
             BIN(user_isMigrate) AS user_isMigrate
             FROM usrData
             JOIN usrGroups ON usergroup_id = user_groupId
@@ -370,6 +372,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             BIN(user_isLdap) AS user_isLdap,
             BIN(user_isDisabled) AS user_isDisabled,
             BIN(user_isChangePass) AS user_isChangePass,
+            BIN(user_isChangedPass) AS user_isChangedPass,
             BIN(user_isDisabled) AS user_isDisabled,
             BIN(user_isMigrate) AS user_isMigrate
             FROM usrData
@@ -428,6 +431,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             BIN(user_isLdap) AS user_isLdap,
             BIN(user_isDisabled) AS user_isDisabled,
             BIN(user_isChangePass) AS user_isChangePass,
+            BIN(user_isChangedPass) AS user_isChangedPass,
             BIN(user_isMigrate) AS user_isMigrate
             FROM usrData
             JOIN usrGroups ON usergroup_id = user_groupId

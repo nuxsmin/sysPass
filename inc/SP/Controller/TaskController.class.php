@@ -81,8 +81,6 @@ class TaskController
      */
     public function doAction()
     {
-        session_write_close();
-
         $source = Request::analyze('source');
 
         if ($this->dir === false || !$this->getLock($source)) {

@@ -124,13 +124,14 @@ class CryptMasterPass
      *
      * @param $randomKey string con la clave utilizada para encriptar
      * @return string con la clave maestra desencriptada
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Defuse\Crypto\Exception\BadFormatException
      */
     public static function getTempMasterPass($randomKey)
     {
-        $securedKey = Crypt::unlockSecuredKey($randomKey, ConfigDB::getValue('tempmaster_passkey'));
+        $securedKey = Crypt::unlockSecuredKey(ConfigDB::getValue('tempmaster_passkey'), $randomKey);
 
-        return Crypt::decrypt(ConfigDB::getValue('tempmaster_pass'), $securedKey);
+        return Crypt::decrypt(ConfigDB::getValue('tempmaster_pass'), $securedKey, $randomKey);
     }
 }

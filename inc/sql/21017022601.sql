@@ -22,4 +22,5 @@ CREATE TABLE `track` (
   INDEX `IDX_userId` (`track_userId` ASC),
   INDEX `IDX_time-ip-source` (`track_time` ASC, `track_ipv4` ASC, `track_ipv6` ASC, `track_source` ASC)
 ) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+ALTER TABLE `usrData` ADD COLUMN `user_isChangedPass` BIT(1) NULL DEFAULT b'0' AFTER `user_isChangePass`;
 

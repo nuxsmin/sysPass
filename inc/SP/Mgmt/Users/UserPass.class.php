@@ -26,6 +26,7 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die();
 
+use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Controller\LoginController;
@@ -60,15 +61,14 @@ class UserPass extends UserBase
     const MPASS_CHANGED = 3;
     // Comprobar la clave maestra con la calve del usuario anterior
     const MPASS_CHECKOLD = 4;
-
-    /**
-     * @var string
-     */
-    private static $clearUserMPass = '';
     /**
      * @var bool
      */
     public static $gotMPass = false;
+    /**
+     * @var string
+     */
+    private static $clearUserMPass = '';
 
     /**
      * Category constructor.
@@ -181,21 +181,28 @@ class UserPass extends UserBase
             return self::MPASS_CHANGED;
         } elseif ($UserData->isUserIsMigrate() === 1) {
             return UpgradeUser::upgradeMasterKey($UserData) ? self::MPASS_OK : self::MPASS_WRONG;
+        } elseif ($key === null && $UserData->isUserIsChangedPass() === 1) {
+            return self::MPASS_CHECKOLD;
         } else {
-            $securedKey = Crypt::unlockSecuredKey($UserData->getUserMKey(), self::getKey($UserData, $key));
-            $userMPass = Crypt::decrypt($UserData->getUserMPass(), $securedKey, self::getKey($UserData, $key));
+            try {
+                $securedKey = Crypt::unlockSecuredKey($UserData->getUserMKey(), self::getKey($UserData, $key));
+                $userMPass = Crypt::decrypt($UserData->getUserMPass(), $securedKey, self::getKey($UserData, $key));
 
-            // Comprobamos el hash de la clave del usuario con la guardada
-            if (Hash::checkHashKey($userMPass, $configHashMPass)) {
-                self::$gotMPass = true;
+                // Comprobamos el hash de la clave del usuario con la guardada
+                if (Hash::checkHashKey($userMPass, $configHashMPass)) {
+                    self::$gotMPass = true;
+                    self::$clearUserMPass = $userMPass;
 
-                CryptSession::saveSessionKey($userMPass);
+                    CryptSession::saveSessionKey($userMPass);
 
-                return self::MPASS_OK;
+                    return self::MPASS_OK;
+                }
+            } catch (WrongKeyOrModifiedCiphertextException $e) {
+                return self::MPASS_CHECKOLD;
             }
         }
 
-        return self::MPASS_CHECKOLD;
+        return self::MPASS_WRONG;
     }
 
     /**
@@ -250,7 +257,8 @@ class UserPass extends UserBase
                     user_mPass = ?,
                     user_mKey = ?,
                     user_lastUpdateMPass = UNIX_TIMESTAMP(),
-                    user_isMigrate = 0
+                    user_isMigrate = 0,
+                    user_isChangedPass = 0 
                     WHERE user_id = ? LIMIT 1';
 
                 $Data = new QueryData();
