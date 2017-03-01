@@ -44,7 +44,9 @@ sysPass.Actions = function (Common) {
         main: {
             login: "/ajax/ajax_doLogin.php",
             install: "/ajax/ajax_install.php",
-            getUpdates: "/ajax/ajax_checkUpds.php"
+            upgrade: "/ajax/ajax_upgrade.php",
+            getUpdates: "/ajax/ajax_checkUpds.php",
+            task: "/ajax/ajax_task.php"
         },
         checks: "/ajax/ajax_checkConnection.php",
         config: {
@@ -399,6 +401,70 @@ sysPass.Actions = function (Common) {
                 }
             });
         },
+        upgrade: function ($obj) {
+            log.info("main:upgrade");
+
+            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
+
+            showDialog({
+                text: atext,
+                negative: {
+                    title: Common.config().LANG[44],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        Common.msg.error(Common.config().LANG[44]);
+                    }
+                },
+                positive: {
+                    title: Common.config().LANG[43],
+                    onClick: function (e) {
+                        var $useTask = $obj.find("input[name='useTask']");
+                        var $taskStatus = $("#taskStatus");
+
+                        $taskStatus.empty().html(Common.config().LANG[62]);
+
+                        if ($useTask.length > 0 && $useTask.val() == 1) {
+                            var optsTask = Common.appRequests().getRequestOpts();
+                            optsTask.url = ajaxUrl.main.task;
+                            optsTask.data = {
+                                source: $obj.find("input[name='lock']").val(),
+                                taskId: $obj.find("input[name='taskId']").val()
+                            };
+
+                            var task = Common.appRequests().getActionEvent(optsTask, function (result) {
+                                var text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
+                                text += "<br>" + Common.config().LANG[62];
+
+                                $taskStatus.empty().html(text);
+                            });
+                        }
+
+                        var opts = Common.appRequests().getRequestOpts();
+                        opts.url = ajaxUrl.main.upgrade;
+                        opts.method = "get";
+                        opts.useFullLoading = true;
+                        opts.data = $obj.serialize();
+
+                        Common.appRequests().getActionCall(opts, function (json) {
+                            Common.msg.out(json);
+
+                            if (json.status !== 0) {
+                                $obj.find(":input[name=h]").val("");
+                            } else {
+                                if (task !== undefined) {
+                                    task.close();
+                                }
+
+                                setTimeout(function () {
+                                    Common.redirect("index.php");
+                                }, 5000);
+                            }
+                        });
+                    }
+                }
+            });
+        },
         getUpdates: function ($obj) {
             log.info("main:getUpdates");
 
@@ -515,9 +581,41 @@ sysPass.Actions = function (Common) {
                 positive: {
                     title: Common.config().LANG[43],
                     onClick: function (e) {
-                        config.save($obj);
+                        var $useTask = $obj.find("input[name='useTask']");
+                        var $taskStatus = $("#taskStatus");
 
-                        $obj.find(":input[type=password]").val("");
+                        $taskStatus.empty().html(Common.config().LANG[62]);
+
+                        if ($useTask.length > 0 && $useTask.val() == 1) {
+                            var optsTask = Common.appRequests().getRequestOpts();
+                            optsTask.url = ajaxUrl.main.task;
+                            optsTask.data = {
+                                source: $obj.find("input[name='lock']").val(),
+                                taskId: $obj.find("input[name='taskId']").val()
+                            };
+
+                            var task = Common.appRequests().getActionEvent(optsTask, function (result) {
+                                var text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
+                                text += "<br>" + Common.config().LANG[62];
+
+                                $taskStatus.empty().html(text);
+                            });
+                        }
+
+                        var opts = Common.appRequests().getRequestOpts();
+                        opts.url = ajaxUrl.config.save;
+                        opts.useFullLoading = true;
+                        opts.data = $obj.serialize();
+
+                        Common.appRequests().getActionCall(opts, function (json) {
+                            Common.msg.out(json);
+
+                            $obj.find(":input[type=password]").val("");
+
+                            if (task !== undefined) {
+                                task.close();
+                            }
+                        });
                     }
                 }
             });
@@ -528,6 +626,7 @@ sysPass.Actions = function (Common) {
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.config.export;
             opts.method = "post";
+            opts.useFullLoading = true;
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {

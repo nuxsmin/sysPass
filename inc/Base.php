@@ -38,8 +38,13 @@ define('EXTENSIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'Exts');
 define('PLUGINS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'Plugins');
 define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
 define('SQL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'sql');
+define('LOG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'syspass.log');
 
 define('DEBUG', false);
+
+// Required random_compat polyfill for random_bytes() and random_int()
+// @see https://github.com/paragonie/random_compat/tree/v2.0.4#random_compat
+require_once EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'random_compat' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'random.php';
 
 require 'SplClassLoader.php';
 
@@ -66,7 +71,9 @@ $timeStart = Init::microtime_float();
  */
 function debugLog($data, $printLastCaller = false)
 {
-    error_log(print_r($data, true));
+    if (!error_log(date('Y-m-d H:i:s') . ' - ' . print_r($data, true) . PHP_EOL, 3, LOG_FILE)) {
+        error_log(print_r($data, true));
+    }
 
     if ($printLastCaller === true) {
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
@@ -74,7 +81,11 @@ function debugLog($data, $printLastCaller = false)
 
         for ($i = 1; $i <= $n - 1; $i++) {
             $class = isset($backtrace[$i]['class']) ? $backtrace[$i]['class'] : '';
-            error_log(sprintf('Caller %d: %s\%s', $i, $class, $backtrace[$i]['function']));
+            $line = sprintf('Caller %d: %s\%s', $i, $class, $backtrace[$i]['function']);
+
+            if (!error_log($line . PHP_EOL, 3, LOG_FILE)) {
+                error_log($line);
+            }
         }
     }
 }
@@ -83,7 +94,7 @@ function debugLog($data, $printLastCaller = false)
  * Alias gettext function
  *
  * @param string $string
- * @param bool   $tranlate Si es necesario traducir
+ * @param bool $tranlate Si es necesario traducir
  * @return string
  */
 function __($string, $tranlate = true)

@@ -87,6 +87,11 @@ sysPass.Main = function () {
         },
         warn: function (msg) {
             console.warn(msg);
+        },
+        debug: function (msg) {
+            if (config.DEBUG === true) {
+                console.debug(msg);
+            }
         }
     };
 
@@ -184,7 +189,7 @@ sysPass.Main = function () {
                         msg.sticky(description);
                         break;
                     default:
-                        return;
+                        msg.error(description);
                 }
             }
         },

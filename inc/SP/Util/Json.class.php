@@ -38,14 +38,22 @@ class Json
     /**
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
-     * @param JsonResponse $json
+     * @param JsonResponse $JsonResponse
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
      */
-    public static function returnJson(JsonResponse $json)
+    public static function returnJson(JsonResponse $JsonResponse)
     {
         header('Content-type: application/json');
-        exit(self::getJson($json));
+
+        try {
+            exit(self::getJson($JsonResponse));
+        } catch (SPException $e) {
+            $JsonResponse = new JsonResponse();
+            $JsonResponse->setDescription($e->getMessage());
+            $JsonResponse->addMessage($e->getHint());
+
+            exit(json_encode($JsonResponse));
+        }
     }
 
     /**

@@ -43,18 +43,34 @@ use SP\Util\Checks;
         <?php endif; ?>
 
         <?php if ($AccountAcl->isShowLink() && $AccountAcl->isShowViewPass() && $accountData->getAccountParentId() === 0 && $accountIsHistory !== 1): ?>
-            <li>
-                <button id="btnLink" type="button"
-                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPublicLink()->getClassButton(); ?>"
-                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW; ?>"
-                        data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
-                        data-item-id="<?php echo $accountId; ?>"
-                        data-sk="<?php echo $sk; ?>"
-                        data-onclick="link/save"
-                        title="<?php echo __('Crear Enlace Público'); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
-                </button>
-            </li>
+            <?php if ($publicLinkUrl === null): ?>
+                <li>
+                    <button id="btnLink" type="button"
+                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPublicLink()->getClassButton(); ?>"
+                            data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW; ?>"
+                            data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                            data-item-id="<?php echo $accountId; ?>"
+                            data-sk="<?php echo $sk; ?>"
+                            data-onclick="link/save"
+                            title="<?php echo __('Crear Enlace Público'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
+                    </button>
+                </li>
+            <?php else: ?>
+                <li>
+                    <button id="btnLink" type="button"
+                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPublicLink()->getClassButton(); ?>"
+                            data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_PUBLICLINKS_REFRESH; ?>"
+                            data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                            data-item-id="<?php echo $publicLinkId; ?>"
+                            data-activetab="<?php echo $accountId; ?>"
+                            data-sk="<?php echo $sk; ?>"
+                            data-onclick="link/refresh"
+                            title="<?php echo __('Actualizar Enlace'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
+                    </button>
+                </li>
+            <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($AccountAcl->isShowViewPass()): ?>

@@ -25,6 +25,7 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
+use SP\Core\TaskFactory;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -43,33 +44,32 @@ class Customer
      */
     public static function fixCustomerId($customerId)
     {
-        $Data = new QueryData();
-        $Data->setQuery('SELECT customer_id FROM customers ORDER BY customer_id');
-
-        $customers = DB::getResultsArray($Data);
-
-        $paramsIn = trim(str_repeat(',?', count($customers)), ',');
-        $Data->addParam($customerId);
-
-        foreach ($customers as $customer) {
-            $Data->addParam($customer->customer_id);
-        }
+        TaskFactory::$Message->setTask(__FUNCTION__);
+        TaskFactory::$Message->setMessage(__('Actualizando IDs de clientes'));
+        TaskFactory::sendTaskMessage();
 
         try {
             DB::beginTransaction();
 
+            if ($customerId === 0) {
+                $customerId = self::createOrphanCustomer();
+            }
+
+            $Data = new QueryData();
+            $Data->addParam($customerId);
+
             $query = /** @lang SQL */
-                'UPDATE accHistory SET acchistory_customerId = ? WHERE acchistory_customerId NOT IN (' . $paramsIn . ') OR acchistory_customerId IS NULL';
+                'UPDATE accHistory SET acchistory_customerId = ? WHERE acchistory_customerId NOT IN (SELECT customer_id FROM customers ORDER BY customer_id) OR acchistory_customerId IS NULL';
             $Data->setQuery($query);
 
             DB::getQuery($Data);
 
             $query = /** @lang SQL */
-                'UPDATE accounts SET account_customerId = ? WHERE account_customerId NOT IN (' . $paramsIn . ') OR account_customerId IS NULL';
+                'UPDATE accounts SET account_customerId = ? WHERE account_customerId NOT IN (SELECT customer_id FROM customers ORDER BY customer_id) OR account_customerId IS NULL';
             $Data->setQuery($query);
 
             DB::getQuery($Data);
-
+            
             DB::endTransaction();
 
             return true;
@@ -78,5 +78,27 @@ class Customer
 
             return false;
         }
+    }
+
+    /**
+     * Crear un cliente para elementos huérfanos
+     *
+     * @return int
+     */
+    public static function createOrphanCustomer()
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO customers SET
+            customer_name = \'Orphan customer\',
+            customer_hash = MD5(\'Orphan customer\'),
+            customer_description = \'Created by the upgrade process\'';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setOnErrorMessage(__('Error al crear el cliente', false));
+
+        DB::getQuery($Data);
+
+        return DB::getLastId();
     }
 }

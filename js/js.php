@@ -51,7 +51,8 @@ if (!$file) {
             ->addFile('moment.min.js')
             ->addFile('moment-timezone.min.js')
             ->addFile('toastr.min.js')
-            ->addFile('jquery.magnific-popup.min.js');
+            ->addFile('jquery.magnific-popup.min.js')
+            ->addFile('eventsource.min.js');
     } elseif ($group === 1) {
         $Minify->addFile('app.min.js')
             ->addFile('app-triggers.min.js')

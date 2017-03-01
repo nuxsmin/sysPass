@@ -34,6 +34,7 @@ use SP\Auth\Ldap\LdapStd;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\Util\Checks;
 
 defined('APP_ROOT') || die();
@@ -52,17 +53,17 @@ class Auth
      */
     protected $auths = [];
     /**
-     * @var UserData
+     * @var UserLoginData
      */
     protected $UserData;
 
     /**
      * Auth constructor.
      *
-     * @param UserData $UserData
+     * @param UserLoginData $UserData
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function __construct(UserData $UserData)
+    public function __construct(UserLoginData $UserData)
     {
         $this->UserData = $UserData;
 
@@ -146,6 +147,8 @@ class Auth
      * se ejecuta el proceso para actualizar la clave.
      *
      * @return DatabaseAuthData
+     * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function authDatabase()
     {

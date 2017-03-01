@@ -44,9 +44,6 @@ class ProfileUtil
      * Migrar los perfiles con formato anterior a v1.2
      *
      * @return bool
-     * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function migrateProfiles()
     {

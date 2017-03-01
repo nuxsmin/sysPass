@@ -110,6 +110,11 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
     /**
      * @return $this
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws SPException
      */
     public function add()
@@ -123,7 +128,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $this->itemData->setMaxCountViews(Config::getConfig()->getPublinksMaxViews());
         $this->calcDateExpire();
         $this->createLinkHash();
-        $this->createLinkPass();
+        $this->setLinkData();
 
         $query = /** @lang SQL */
             'INSERT INTO publicLinks
@@ -186,6 +191,9 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
     /**
      * @return $this
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws SPException
      */
     public function refresh()
@@ -194,7 +202,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
         $this->calcDateExpire();
         $this->createLinkHash(true);
-        $this->createLinkPass();
+        $this->setLinkData();
 
         $query = /** @lang SQL */
             'UPDATE publicLinks
@@ -359,7 +367,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function getHashForItem($itemId)
     {
         $query = /** @lang SQL */
-            'SELECT publicLink_hash FROM publicLinks WHERE publicLink_itemId = ? LIMIT 1';
+            'SELECT publicLink_id, publicLink_hash FROM publicLinks WHERE publicLink_itemId = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());

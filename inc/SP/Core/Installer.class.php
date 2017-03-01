@@ -30,12 +30,13 @@ use PDOException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupData;
 use SP\DataModel\InstallData;
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Users\User;
@@ -226,7 +227,10 @@ class Installer
                 $sth->execute([$this->InstallData->getDbUser(), $this->InstallData->getDbAuthHost()]);
 
                 // Si no existe el usuario, se intenta crear
-                if ((int)$sth->fetchColumn() === 0) {
+                if ((int)$sth->fetchColumn() === 0
+                    // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
+                    && $this->InstallData->getDbUser() != $this->Config->getDbUser()
+                ) {
                     $this->createDBUser();
                 }
             } catch (PDOException $e) {
@@ -362,13 +366,15 @@ class Installer
             $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHost() . '`');
             $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHostDns() . '`');
             $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`%`');
+
+            debugLog('Rollback');
+
+            return true;
         } catch (PDOException $e) {
             debugLog($e->getMessage());
 
             return false;
         }
-
-        return true;
     }
 
     /**
@@ -387,8 +393,8 @@ class Installer
                 __('No es posible crear la BBDD de la aplicación. Descárguela de nuevo.', false));
         }
 
-        // Usar la base de datos de sysPass
         try {
+            // Usar la base de datos de sysPass
             $this->DB->exec('USE `' . $this->InstallData->getDbName() . '`');
         } catch (PDOException $e) {
             throw new SPException(SPException::SP_CRITICAL,
@@ -443,59 +449,44 @@ class Installer
      */
     private function createAdminAccount()
     {
-        $GroupData = new GroupData();
-        $GroupData->setUsergroupName('Admins');
-        $GroupData->setUsergroupDescription('sysPass Admins');
-
         try {
+            $GroupData = new GroupData();
+            $GroupData->setUsergroupName('Admins');
+            $GroupData->setUsergroupDescription('sysPass Admins');
+
             Group::getItem($GroupData)->add();
-        } catch (SPException $e) {
-            $this->rollback();
-            throw new SPException(SPException::SP_CRITICAL,
-                __('Error al crear el grupo "admin"', false),
-                __('Informe al desarrollador', false));
-        }
 
-        $ProfileData = new ProfileData();
-        $ProfileData->setUserprofileName('Admin');
+            $ProfileData = new ProfileData();
+            $ProfileData->setUserprofileName('Admin');
 
-        try {
             Profile::getItem($ProfileData)->add();
-        } catch (SPException $e) {
-            $this->rollback();
-            throw new SPException(SPException::SP_CRITICAL,
-                __('Error al crear el perfil "admin"', false),
-                __('Informe al desarrollador', false));
-        }
 
-        // Datos del usuario
-        $UserData = new UserData();
-        $UserData->setUserGroupId($GroupData->getUsergroupId());
-        $UserData->setUserProfileId($ProfileData->getUserprofileId());
-        $UserData->setUserLogin($this->InstallData->getAdminLogin());
-        $UserData->setUserPass($this->InstallData->getAdminPass());
-        $UserData->setUserName('Admin');
-        $UserData->setUserIsAdminApp(1);
+            // Datos del usuario
+            $UserData = new UserLoginData();
+            $UserData->setUserGroupId($GroupData->getUsergroupId());
+            $UserData->setUserProfileId($ProfileData->getUserprofileId());
+            $UserData->setUserLogin($this->InstallData->getAdminLogin());
+            $UserData->setLogin($this->InstallData->getAdminLogin());
+            $UserData->setUserPass($this->InstallData->getAdminPass());
+            $UserData->setLoginPass($this->InstallData->getAdminPass());
+            $UserData->setUserName('Admin');
+            $UserData->setUserIsAdminApp(1);
 
-        try {
             User::getItem($UserData)->add();
-        } catch (SPException $e) {
+
+            // Guardar el hash de la clave maestra
+            ConfigDB::setCacheConfigValue('masterPwd', Hash::hashKey($this->InstallData->getMasterPassword()));
+            ConfigDB::setCacheConfigValue('lastupdatempass', time());
+            ConfigDB::writeConfig(true);
+
+            if (!UserPass::updateUserMPass($this->InstallData->getMasterPassword(), $UserData)) {
+                throw new SPException(SPException::SP_CRITICAL,
+                    __('Error al actualizar la clave maestra del usuario "admin"', false));
+            }
+        } catch (\Exception $e) {
             $this->rollback();
             throw new SPException(SPException::SP_CRITICAL,
-                __('Error al crear el usuario "admin"', false),
-                __('Informe al desarrollador', false));
-        }
-
-        // Guardar el hash de la clave maestra
-        ConfigDB::setCacheConfigValue('masterPwd', Crypt::mkHashPassword($this->InstallData->getMasterPassword()));
-        ConfigDB::setCacheConfigValue('lastupdatempass', time());
-        ConfigDB::writeConfig(true);
-
-        if (!UserPass::getItem($UserData)->updateUserMPass($this->InstallData->getMasterPassword())) {
-            $this->rollback();
-
-            throw new SPException(SPException::SP_CRITICAL,
-                __('Error al actualizar la clave maestra del usuario "admin"', false),
+                $e->getMessage(),
                 __('Informe al desarrollador', false));
         }
     }

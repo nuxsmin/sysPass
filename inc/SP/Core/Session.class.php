@@ -27,6 +27,7 @@ namespace SP\Core;
 use SP\Account\AccountAcl;
 use SP\Account\AccountSearch;
 use SP\Config\ConfigData;
+use SP\Core\Crypt\Vault;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
@@ -50,7 +51,7 @@ class Session
      *
      * @param UserData $UserData
      */
-    public static function setUserData($UserData = null)
+    public static function setUserData(UserData $UserData = null)
     {
         self::setSessionKey('userData', $UserData);
     }
@@ -235,66 +236,6 @@ class Session
     public static function setSecurityKey($sk)
     {
         self::setSessionKey('sk', $sk);
-    }
-
-    /**
-     * Devuelve la clave maestra encriptada
-     *
-     * @return string
-     */
-    public static function getMPass()
-    {
-        return self::getSessionKey('mPass');
-    }
-
-    /**
-     * Establecer la clave maestra encriptada
-     *
-     * @param $mpass string La clave maestra
-     */
-    public static function setMPass($mpass)
-    {
-        self::setSessionKey('mPass', $mpass);
-    }
-
-    /**
-     * Devuelve la clave usada para encriptar la clave maestra
-     *
-     * @return string
-     */
-    public static function getMPassPwd()
-    {
-        return self::getSessionKey('mPassPwd');
-    }
-
-    /**
-     * Establece la clave usada para encriptar la clave maestra
-     *
-     * @param $mPassPwd string La clave usada
-     */
-    public static function setMPassPwd($mPassPwd)
-    {
-        self::setSessionKey('mPassPwd', $mPassPwd);
-    }
-
-    /**
-     * Devuelve el vector de inicialización de la clave maestra
-     *
-     * @return string
-     */
-    public static function getMPassIV()
-    {
-        return self::getSessionKey('mPassIV');
-    }
-
-    /**
-     * Establece el vector de inicialización de la clave maestra
-     *
-     * @param $mPassIV string El vector de inicialización
-     */
-    public static function setMPassIV($mPassIV)
-    {
-        self::setSessionKey('mPassIV', $mPassIV);
     }
 
     /**
@@ -683,5 +624,65 @@ class Session
         }
 
         return null;
+    }
+
+    /**
+     * Establece si se ha actulizado la aplicación
+     *
+     * @param bool $bool
+     */
+    public static function setAppUpdated($bool = true)
+    {
+        self::setSessionKey('appupdated', $bool);
+    }
+
+    /**
+     * Devuelve si se ha actulizado la aplicación
+     *
+     * @return bool
+     */
+    public static function getAppUpdated()
+    {
+        return self::getSessionKey('appupdated', false);
+    }
+
+    /**
+     * Devuelve la clave maestra encriptada
+     *
+     * @return Vault
+     */
+    public static function getVault()
+    {
+        return self::getSessionKey('vault');
+    }
+
+    /**
+     * Establecer la clave maestra encriptada
+     *
+     * @param Vault $vault
+     */
+    public static function setVault(Vault $vault)
+    {
+        self::setSessionKey('vault', $vault);
+    }
+
+    /**
+     * Devuelve la tarea activa
+     *
+     * @return Task
+     */
+    public static function getTask()
+    {
+        return self::getSessionKey('task');
+    }
+
+    /**
+     * Establecer la tarea activa
+     *
+     * @param Task $task
+     */
+    public static function setTask(Task $task = null)
+    {
+        self::setSessionKey('task', $task);
     }
 }

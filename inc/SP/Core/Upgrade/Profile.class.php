@@ -25,6 +25,8 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
+use SP\Core\TaskFactory;
+use SP\DataModel\ProfileData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -35,6 +37,8 @@ use SP\Storage\QueryData;
  */
 class Profile
 {
+    protected static $orphanProfileId;
+
     /**
      * Actualizar registros con perfiles no existentes
      *
@@ -44,23 +48,22 @@ class Profile
     public static function fixProfilesId($profileId)
     {
         $Data = new QueryData();
-        $Data->setQuery('SELECT userprofile_id FROM usrProfiles ORDER BY userprofile_id');
-
-        $profiles = DB::getResultsArray($Data);
-
-        $paramsIn = trim(str_repeat(',?', count($profiles)), ',');
-        $Data->addParam($profileId);
-
-        foreach ($profiles as $profile) {
-            $Data->addParam($profile->userprofile_id);
-        }
 
         try {
+            TaskFactory::$Message->setTask(__FUNCTION__);
+            TaskFactory::$Message->setMessage(__('Actualizando IDs de perfil'));
+            TaskFactory::sendTaskMessage();
+
             DB::beginTransaction();
 
+            if ($profileId === 0){
+                $profileId = self::$orphanProfileId ?: self::createOrphanProfile();
+            }
+
             $query = /** @lang SQL */
-                'UPDATE usrData SET user_profileId = ? WHERE user_profileId NOT IN (' . $paramsIn . ') OR user_profileId IS NULL';
+                'UPDATE usrData SET user_profileId = ? WHERE user_profileId NOT IN (SELECT userprofile_id FROM usrProfiles ORDER BY userprofile_id) OR user_profileId IS NULL';
             $Data->setQuery($query);
+            $Data->addParam($profileId);
 
             DB::getQuery($Data);
 
@@ -72,5 +75,31 @@ class Profile
 
             return false;
         }
+    }
+
+    /**
+     * Crear un perfil para elementos huérfanos
+     *
+     * @return int
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public static function createOrphanProfile()
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO usrProfiles SET
+            userprofile_name = \'Orphan profile\',
+            userProfile_profile = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(serialize(new ProfileData()));
+        $Data->setOnErrorMessage(__('Error al crear perfil', false));
+
+        DB::getQuery($Data);
+
+        self::$orphanProfileId = DB::getLastId();
+
+        return self::$orphanProfileId;
     }
 }

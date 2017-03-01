@@ -24,19 +24,20 @@
 
 namespace SP\Account;
 
-use SP\Core\Crypt;
+use Defuse\Crypto\Exception\CryptoException;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\GroupAccountsData;
-use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Groups\GroupAccounts;
 use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
-use SP\Util\Checks;
 
 defined('APP_ROOT') || die();
 
@@ -157,7 +158,7 @@ class Account extends AccountBase implements AccountInterface
             . 'dst.account_otherUserEdit = src.acchistory_otherUserEdit + 0,'
             . 'dst.account_otherGroupEdit = src.acchistory_otherGroupEdit + 0,'
             . 'dst.account_pass = src.acchistory_pass,'
-            . 'dst.account_IV = src.acchistory_IV,'
+            . 'dst.account_key = src.acchistory_key,'
             . 'dst.account_passDate = src.acchistory_passDate,'
             . 'dst.account_passDateChange = src.acchistory_passDateChange, '
             . 'dst.account_parentId = src.acchistory_parentId, '
@@ -215,6 +216,11 @@ class Account extends AccountBase implements AccountInterface
      *
      * @param bool $encryptPass Encriptar la clave?
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws SPException
      */
     public function createAccount($encryptPass = true)
@@ -231,7 +237,7 @@ class Account extends AccountBase implements AccountInterface
             . 'account_login = :accountLogin,'
             . 'account_url = :accountUrl,'
             . 'account_pass = :accountPass,'
-            . 'account_IV = :accountIV,'
+            . 'account_key = :accountKey,'
             . 'account_notes = :accountNotes,'
             . 'account_dateAdd = NOW(),'
             . 'account_userId = :accountUserId,'
@@ -253,7 +259,7 @@ class Account extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountLogin(), 'accountLogin');
         $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
         $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
-        $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
+        $Data->addParam($this->accountData->getAccountKey(), 'accountKey');
         $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
         $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
         $Data->addParam($this->accountData->getAccountUserGroupId() ?: Session::getUserData()->getUserGroupId(), 'accountUserGroupId');
@@ -300,13 +306,23 @@ class Account extends AccountBase implements AccountInterface
      *
      * @param string $masterPass Clave maestra a utilizar
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    protected function setPasswordEncrypted($masterPass = null)
+    public function setPasswordEncrypted($masterPass = null)
     {
-        $pass = Crypt::encryptData($this->accountData->getAccountPass(), $masterPass);
+        try {
+            $masterPass = $masterPass ?: CryptSession::getSessionKey();
+            $securedKey = Crypt::makeSecuredKey($masterPass);
 
-        $this->accountData->setAccountPass($pass['data']);
-        $this->accountData->setAccountIV($pass['iv']);
+            $this->accountData->setAccountPass(Crypt::encrypt($this->accountData->getAccountPass(), $securedKey, $masterPass));
+            $this->accountData->setAccountKey($securedKey);
+
+            if (strlen($securedKey) > 1000 || strlen($this->accountData->getAccountPass()) > 1000) {
+                throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+            }
+        } catch (CryptoException $e) {
+            throw new SPException(SPException::SP_ERROR, __('Error interno', false));
+        }
     }
 
     /**
@@ -346,18 +362,19 @@ class Account extends AccountBase implements AccountInterface
     /**
      * Incrementa el contador de visitas de una cuenta en la BBDD
      *
+     * @param int $id
      * @return bool
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function incrementViewCounter()
+    public function incrementViewCounter($id = null)
     {
         $query = /** @lang SQL */
             'UPDATE accounts SET account_countView = (account_countView + 1) WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId());
+        $Data->addParam($id ?: $this->accountData->getAccountId());
 
         return DB::getQuery($Data);
     }
@@ -365,123 +382,21 @@ class Account extends AccountBase implements AccountInterface
     /**
      * Incrementa el contador de vista de clave de una cuenta en la BBDD
      *
+     * @param null $id
      * @return bool
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function incrementDecryptCounter()
+    public function incrementDecryptCounter($id = null)
     {
         $query = /** @lang SQL */
             'UPDATE accounts SET account_countDecrypt = (account_countDecrypt + 1) WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId());
+        $Data->addParam($id ?: $this->accountData->getAccountId());
 
         return DB::getQuery($Data);
-    }
-
-    /**
-     * Actualiza las claves de todas las cuentas con la nueva clave maestra.
-     *
-     * @param string $currentMasterPass con la clave maestra actual
-     * @param string $newMasterPass     con la nueva clave maestra
-     * @param string $newHash           con el nuevo hash de la clave maestra
-     * @return bool
-     * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null)
-    {
-        $accountsOk = [];
-        $userId = Session::getUserData()->getUserId();
-        $demoEnabled = Checks::demoIsEnabled();
-        $errorCount = 0;
-
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Actualizar Clave Maestra', false));
-        $LogMessage->addDescription(__('Inicio', false));
-        $Log->writeLog(true);
-
-        if (!Crypt::checkCryptModule()) {
-            $LogMessage->addDescription(__('Error en el módulo de encriptación', false));
-            $Log->setLogLevel(Log::ERROR);
-            $Log->writeLog();
-            return false;
-        }
-
-        $accountsPass = $this->getAccountsPassData();
-
-        if (!$accountsPass) {
-            $LogMessage->addDescription(__('Error al obtener las claves de las cuentas', false));
-            $Log->setLogLevel(Log::ERROR);
-            $Log->writeLog();
-            return false;
-        }
-
-        foreach ($accountsPass as $account) {
-            $this->accountData->setAccountId($account->account_id);
-            $this->accountData->setAccountUserEditId($userId);
-
-            // No realizar cambios si está en modo demo
-            if ($demoEnabled) {
-                $accountsOk[] = $this->accountData->getAccountId();
-                continue;
-            }
-
-            if (empty($account->account_pass)) {
-                $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf(' % s(%d)', $account->account_name, $account->account_id));
-                continue;
-            }
-
-            if (strlen($account->account_IV) < 32) {
-                $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf(' % s(%d)', $account->account_name, $account->account_id));
-            }
-
-            $decryptedPass = Crypt::getDecrypt($account->account_pass, $account->account_IV, $currentMasterPass);
-            $this->accountData->setAccountPass($decryptedPass);
-            $this->setPasswordEncrypted($newMasterPass);
-
-            if ($this->accountData->getAccountPass() === false) {
-                $errorCount++;
-                $LogMessage->addDetails(__('No es posible desencriptar la clave de la cuenta', false), sprintf(' % s(%d)', $account->account_name, $account->account_id));
-                continue;
-            }
-
-            try {
-                $this->updateAccountPass(true);
-                $accountsOk[] = $this->accountData->getAccountId();
-            } catch (SPException $e) {
-                $errorCount++;
-                $LogMessage->addDetails(__('Fallo al actualizar la clave de la cuenta', false), sprintf(' % s(%d)', $account->account_name, $account->account_id));
-                continue;
-            }
-        }
-
-        $LogMessage->addDetails(__('Cuentas actualizadas', false), implode(',', $accountsOk));
-        $LogMessage->addDetails(__('Errores', false), $errorCount);
-        $Log->writeLog();
-
-        Email::sendEmail($LogMessage);
-
-        return true;
-    }
-
-    /**
-     * Obtener los datos relativos a la clave de todas las cuentas.
-     *
-     * @return array Con los datos de la clave
-     */
-    protected function getAccountsPassData()
-    {
-        $query = /** @lang SQL */
-            'SELECT account_id, account_name, account_pass, account_IV FROM accounts';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        return DB::getResultsArray($Data);
     }
 
     /**
@@ -489,6 +404,8 @@ class Account extends AccountBase implements AccountInterface
      *
      * @param bool $isMassive para no actualizar el histórico ni enviar mensajes
      * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function updateAccountPass($isMassive = false)
@@ -503,7 +420,7 @@ class Account extends AccountBase implements AccountInterface
         $query = /** @lang SQL */
             'UPDATE accounts SET '
             . 'account_pass = :accountPass,'
-            . 'account_IV = :accountIV,'
+            . 'account_key = :accountKey,'
             . 'account_userEditId = :accountUserEditId,'
             . 'account_dateEdit = NOW(), '
             . 'account_passDate = UNIX_TIMESTAMP(), '
@@ -513,7 +430,7 @@ class Account extends AccountBase implements AccountInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
-        $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
+        $Data->addParam($this->accountData->getAccountKey(), 'accountKey');
         $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
         $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
         $Data->addParam($this->accountData->getAccountId(), 'accountId');
@@ -538,7 +455,7 @@ class Account extends AccountBase implements AccountInterface
             . 'account_userGroupId,'
             . 'account_login,'
             . 'account_pass,'
-            . 'account_IV,'
+            . 'account_key,'
             . 'customer_name '
             . 'FROM accounts '
             . 'LEFT JOIN customers ON account_customerId = customer_id '
@@ -554,5 +471,45 @@ class Account extends AccountBase implements AccountInterface
         $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($this->accountData->getAccountId()));
 
         return DB::getResults($Data);
+    }
+
+    /**
+     * Obtener los datos de una cuenta.
+     * Esta funcion realiza la consulta a la BBDD y guarda los datos en las variables de la clase.
+     *
+     * @return AccountExtData
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getDataForLink()
+    {
+        $query = /** @lang SQL */
+            'SELECT account_name,'
+            . 'account_login,'
+            . 'account_pass,'
+            . 'account_key,'
+            . 'account_url,'
+            . 'account_notes,'
+            . 'category_name,'
+            . 'customer_name '
+            . 'FROM accounts '
+            . 'LEFT JOIN customers ON account_customerId = customer_id '
+            . 'LEFT JOIN categories ON account_categoryId = category_id '
+            . 'WHERE account_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setMapClass($this->accountData);
+        $Data->addParam($this->accountData->getAccountId());
+
+        /** @var AccountExtData|array $queryRes */
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes === false) {
+            throw new SPException(SPException::SP_CRITICAL, __('No se pudieron obtener los datos de la cuenta', false));
+        } elseif (is_array($queryRes) && count($queryRes) === 0) {
+            throw new SPException(SPException::SP_CRITICAL, __('La cuenta no existe', false));
+        }
+
+        return $this->accountData;
     }
 }

@@ -197,10 +197,51 @@ sysPass.Requests = function (Common) {
         })).done(callbackOk);
     };
 
+    /**
+     * Realizar una acción mediante envío de eventos
+     * @param opts
+     * @param callbackProgress
+     * @param callbackEnd
+     */
+    var getActionEvent = function (opts, callbackProgress, callbackEnd) {
+        var url = (!opts.url.startsWith("http", 0) && !opts.url.startsWith("https", 0)) ? Common.config().APP_ROOT + opts.url : opts.url;
+        url += "?" + $.param(opts.data);
+
+        var source = new EventSource(url);
+
+        //a message is received
+        source.addEventListener("message", function (e) {
+            var result = JSON.parse(e.data);
+
+            log.debug(result);
+
+            if (result.end === 1) {
+                log.info("getActionEvent:Ending");
+                source.close();
+
+                if (typeof callbackEnd === "function") {
+                    callbackEnd(result);
+                }
+            } else {
+                if (typeof callbackProgress === "function") {
+                    callbackProgress(result);
+                }
+            }
+        });
+
+        source.addEventListener("error", function (e) {
+            log.error("getActionEvent:Error occured");
+            source.close();
+        });
+
+        return source;
+    };
+
     return {
         getRequestOpts: getRequestOpts,
         getActionCall: getActionCall,
         getActionPromise: getActionPromise,
+        getActionEvent: getActionEvent,
         history: history
     };
 };

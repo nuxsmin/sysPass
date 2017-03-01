@@ -77,9 +77,9 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public $account_pass = '';
     /**
-     * @var string El vector de inicialización de la cuenta.
+     * @var string La clave de encriptación de la cuenta
      */
-    public $account_IV = '';
+    public $account_key = '';
     /**
      * @var string Las nosta de la cuenta.
      */
@@ -207,17 +207,17 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     /**
      * @return string
      */
-    public function getAccountIV()
+    public function getAccountKey()
     {
-        return $this->account_IV;
+        return $this->account_key;
     }
 
     /**
-     * @param string $account_IV
+     * @param string $account_key
      */
-    public function setAccountIV($account_IV)
+    public function setAccountKey($account_key)
     {
-        $this->account_IV = $account_IV;
+        $this->account_key = $account_key;
     }
 
     /**

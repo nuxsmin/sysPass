@@ -25,6 +25,7 @@
 namespace SP\Mgmt\Users;
 
 use SP\Config\Config;
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\LogMessage;
 use SP\Log\Email;
@@ -77,7 +78,6 @@ class UserLdap extends UserBase implements ItemInterface
             throw new SPException(SPException::SP_INFO, __('Login/email de usuario duplicados', false));
         }
 
-        $passdata = UserPass::makeUserPassHash($this->itemData->getUserPass());
         $groupId = Config::getConfig()->getLdapDefaultGroup();
         $profileId = Config::getConfig()->getLdapDefaultProfile();
         $this->itemData->setUserIsDisabled(($groupId === 0 || $profileId === 0) ? 1 : 0);
@@ -91,14 +91,14 @@ class UserLdap extends UserBase implements ItemInterface
             user_groupId = ?,
             user_profileId = ?,
             user_mPass = \'\',
-            user_mIV = \'\',
+            user_mKey = \'\',
             user_isAdminApp = ?,
             user_isAdminAcc = ?,
             user_isDisabled = ?,
             user_isChangePass = ?,
             user_isLdap = 1,
             user_pass = ?,
-            user_hashSalt = ?';
+            user_hashSalt = \'\'';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -112,8 +112,7 @@ class UserLdap extends UserBase implements ItemInterface
         $Data->addParam((int)$this->itemData->isUserIsAdminAcc());
         $Data->addParam((int)$this->itemData->isUserIsDisabled());
         $Data->addParam((int)$this->itemData->isUserIsChangePass());
-        $Data->addParam($passdata['pass']);
-        $Data->addParam($passdata['salt']);
+        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
         $Data->setOnErrorMessage(__('Error al guardar los datos de LDAP', false));
 
         DB::getQuery($Data);
@@ -177,11 +176,9 @@ class UserLdap extends UserBase implements ItemInterface
      */
     public function update()
     {
-        $passdata = UserPass::makeUserPassHash($this->itemData->getUserPass());
-
         $query = 'UPDATE usrData SET 
             user_pass = ?,
-            user_hashSalt = ?,
+            user_hashSalt = \'\',
             user_name = ?,
             user_email = ?,
             user_lastUpdate = NOW(),
@@ -190,8 +187,7 @@ class UserLdap extends UserBase implements ItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($passdata['pass']);
-        $Data->addParam($passdata['salt']);
+        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
         $Data->addParam($this->itemData->getUserName());
         $Data->addParam($this->itemData->getUserEmail());
         $Data->addParam($this->itemData->getUserLogin());

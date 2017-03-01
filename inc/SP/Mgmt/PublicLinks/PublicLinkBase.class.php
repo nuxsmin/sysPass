@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,10 +26,12 @@ namespace SP\Mgmt\PublicLinks;
 
 defined('APP_ROOT') || die();
 
+use SP\Account\Account;
 use SP\Config\Config;
-use SP\Core\Crypt;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\SPException;
-use SP\Core\SessionUtil;
+use SP\DataModel\AccountExtData;
 use SP\DataModel\PublicLinkData;
 use SP\Mgmt\ItemBase;
 use SP\DataModel\PublicLinkBaseData;
@@ -71,14 +73,44 @@ abstract class PublicLinkBase extends ItemBase
      * Devolver la clave y el IV para el enlace
      *
      * @throws SPException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected final function createLinkPass()
     {
-        $pass = Crypt::generateAesKey($this->createLinkHash());
-        $cryptPass = Crypt::encryptData(SessionUtil::getSessionMPass(), $pass);
+        $key = Config::getConfig()->getPasswordSalt() . $this->createLinkHash();
+        $securedKey = Crypt::makeSecuredKey($key);
 
-        $this->itemData->setPass($cryptPass['data']);
-        $this->itemData->setPassIV($cryptPass['iv']);
+        $this->itemData->setPass(Crypt::encrypt(CryptSession::getSessionKey(), $securedKey, $key));
+        $this->itemData->setPassIV($securedKey);
+    }
+
+    /**
+     * Obtener los datos de una cuenta y encriptarlos para el enlace
+     *
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    protected final function setLinkData()
+    {
+        // Obtener los datos de la cuenta
+        $Account = new Account(new AccountExtData($this->itemData->getItemId()));
+        $AccountData = $Account->getDataForLink();
+
+        $key = CryptSession::getSessionKey();
+        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $key);
+        $AccountData->setAccountPass(Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $key));
+        $AccountData->setAccountKey(null);
+
+        // Encriptar los datos de la cuenta
+        $linkKey = Config::getConfig()->getPasswordSalt() . $this->createLinkHash();
+        $linkSecuredKey = Crypt::makeSecuredKey($linkKey);
+
+        $this->itemData->setData(Crypt::encrypt(serialize($AccountData), $linkSecuredKey, $linkKey));
+        $this->itemData->setPassIV($linkSecuredKey);
     }
 
     /**

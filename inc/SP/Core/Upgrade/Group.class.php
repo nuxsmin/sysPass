@@ -25,6 +25,7 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
+use SP\Core\TaskFactory;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -35,36 +36,41 @@ use SP\Storage\QueryData;
 class Group
 {
     /**
+     * @var int
+     */
+    protected static $orphanGroupId;
+
+    /**
      * Actualizar registros con grupos no existentes
      * @param int $groupId Id de grupo por defecto
      * @return bool
      */
     public static function fixGroupId($groupId)
     {
-        $Data = new QueryData();
-        $Data->setQuery('SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id');
-
-        $groups = DB::getResultsArray($Data);
-
-        $paramsIn = trim(str_repeat(',?', count($groups)), ',');
-        $Data->addParam($groupId);
-
-        foreach ($groups as $group) {
-            $Data->addParam($group->usergroup_id);
-        }
+        TaskFactory::$Message->setTask(__FUNCTION__);
+        TaskFactory::$Message->setMessage(__('Actualizando IDs de grupos'));
+        TaskFactory::sendTaskMessage();
 
         try {
             DB::beginTransaction();
 
+            if ($groupId === 0){
+                $groupId = self::$orphanGroupId ?: self::createOrphanGroup();
+            }
+
+            $Data = new QueryData();
+
             $query = /** @lang SQL */
-                'UPDATE usrData SET user_groupId = ? WHERE user_groupId NOT IN (' . $paramsIn . ') OR user_groupId IS NULL';
+                'UPDATE usrData SET user_groupId = ? WHERE user_groupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR user_groupId IS NULL';
             $Data->setQuery($query);
+            $Data->addParam($groupId);
 
             DB::getQuery($Data);
 
             $query = /** @lang SQL */
-                'DELETE FROM usrToGroups WHERE usertogroup_groupId <> ? AND usertogroup_groupId NOT IN (' . $paramsIn . ') OR usertogroup_groupId IS NULL';
+                'DELETE FROM usrToGroups WHERE usertogroup_groupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR usertogroup_groupId IS NULL';
             $Data->setQuery($query);
+            $Data->setParams([]);
 
             DB::getQuery($Data);
 
@@ -76,5 +82,30 @@ class Group
 
             return false;
         }
+    }
+
+    /**
+     * Crear un grupo para elementos huérfanos
+     *
+     * @return int
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public static function createOrphanGroup()
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO usrGroups SET
+            usergroup_name = \'Orphan group\',
+            usergroup_description = \'Created by the upgrade process\'';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setOnErrorMessage(__('Error al crear el grupo', false));
+
+        DB::getQuery($Data);
+
+        self::$orphanGroupId = DB::getLastId();
+
+        return self::$orphanGroupId;
     }
 }

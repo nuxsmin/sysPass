@@ -50,7 +50,7 @@ class UserPassData extends DataModelBase
     /**
      * @var string
      */
-    public $user_mIV = '';
+    public $user_mKey = '';
     /**
      * @var int
      */
@@ -107,17 +107,17 @@ class UserPassData extends DataModelBase
     /**
      * @return string
      */
-    public function getUserMIV()
+    public function getUserMKey()
     {
-        return $this->user_mIV;
+        return $this->user_mKey;
     }
 
     /**
-     * @param string $user_mIV
+     * @param string $user_mKey
      */
-    public function setUserMIV($user_mIV)
+    public function setUserMKey($user_mKey)
     {
-        $this->user_mIV = $user_mIV;
+        $this->user_mKey = $user_mKey;
     }
 
     /**

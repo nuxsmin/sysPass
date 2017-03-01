@@ -26,6 +26,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
+use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
@@ -37,7 +38,9 @@ use SP\Core\Messages\NoticeMessage;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
+use SP\Core\Task;
 use SP\Core\Template;
+use SP\Core\Upgrade\Account;
 use SP\Core\Upgrade\Check;
 use SP\DataModel\NoticeData;
 use SP\Html\DataGrid\DataGridAction;
@@ -64,8 +67,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page       El nombre de página para la clase del body
-     * @param bool   $initialize Si es una inicialización completa
+     * @param string $page El nombre de página para la clase del body
+     * @param bool $initialize Si es una inicialización completa
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -329,7 +332,9 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('useLayout', false);
         $this->view->assign('mailEnabled', Checks::mailIsEnabled());
         $this->view->assign('isLogout', Request::analyze('logout', false, true));
-        $this->view->assign('updated', Init::$UPDATED === true);
+        $this->view->assign('updated', Session::getAppUpdated());
+
+        Session::setAppUpdated(false);
 
         $getParams = [];
 
@@ -420,9 +425,11 @@ class MainController extends ControllerBase implements ActionsInterface
     }
 
     /**
-     * Obtener los datos para el interface de actualización de BD
+     * Obtener los datos para el interface de actualización de componentes
+     *
+     * @param $version
      */
-    public function getUpgrade()
+    public function getUpgrade($version)
     {
         $this->setPage('upgrade');
 
@@ -431,20 +438,32 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
 
-        $this->view->assign('action', Request::analyze('a'));
-        $this->view->assign('time', Request::analyze('t'));
-        $this->view->assign('upgrade', $this->view->action === 'upgrade');
-        $this->view->assign('checkConstraints', Check::checkConstraints());
+        $action = Request::analyze('a');
+        $type = Request::analyze('type');
 
-        $constraints = [];
+        $this->view->assign('action', $action);
+        $this->view->assign('type', $type);
+        $this->view->assign('version', $version);
+        $this->view->assign('upgradeVersion', implode('.', Util::getVersion(true)));
+        $this->view->assign('taskId', Task::genTaskId('masterpass'));
 
-        foreach ($this->view->checkConstraints as $key => $val) {
-            if ($val > 0) {
-                $constraints[] = sprintf('%s : %s', $key, $val);
+        if ($version < 1316011001) {
+            $this->view->assign('checkConstraints', Check::checkConstraints());
+
+            $constraints = [];
+
+            foreach ($this->view->checkConstraints as $key => $val) {
+                if ($val > 0) {
+                    $constraints[] = sprintf('%s : %s', $key, $val);
+                }
             }
+
+            $this->view->assign('constraints', $constraints);
         }
 
-        $this->view->assign('constraints', $constraints);
+        if ($version < 21017022601) {
+            $this->view->assign('numAccounts', AccountUtil::getTotalNumAccounts());
+        }
 
         $this->view();
         exit();

@@ -26,6 +26,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
+use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
@@ -37,6 +38,7 @@ use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
+use SP\Core\Task;
 use SP\Core\Template;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
@@ -311,6 +313,9 @@ class ConfigController extends ControllerBase implements ActionsInterface
         }
 
         $this->view->addTemplate('encryption');
+
+        $this->view->assign('numAccounts', AccountUtil::getTotalNumAccounts());
+        $this->view->assign('taskId', Task::genTaskId('masterpass'));
 
         $this->view->assign('lastUpdateMPass', isset($this->configDB['lastupdatempass']) ? $this->configDB['lastupdatempass'] : 0);
         $this->view->assign('tempMasterPassTime', isset($this->configDB['tempmaster_passtime']) ? $this->configDB['tempmaster_passtime'] : 0);

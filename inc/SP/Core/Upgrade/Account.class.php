@@ -25,6 +25,7 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
+use SP\Core\TaskFactory;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -42,6 +43,10 @@ class Account
      */
     public static function fixAccountsId()
     {
+        TaskFactory::$Message->setTask(__FUNCTION__);
+        TaskFactory::$Message->setMessage(__('Actualizando IDs de cuentas'));
+        TaskFactory::sendTaskMessage();
+
         try {
             DB::beginTransaction();
 

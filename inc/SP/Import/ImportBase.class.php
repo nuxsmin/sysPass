@@ -25,7 +25,8 @@
 namespace SP\Import;
 
 use SP\Account\Account;
-use SP\Core\Crypt;
+use SP\Core\Crypt\Crypt;
+use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\LogMessage;
 use SP\DataModel\AccountExtData;
@@ -126,7 +127,11 @@ abstract class ImportBase implements ImportInterface
         }
 
         if ($this->ImportParams->getImportMasterPwd() !== '') {
-            $pass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->ImportParams->getImportMasterPwd());
+            $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
+            $pass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey);
+
+            // TODO: importar con encriptación anterior
+//            $pass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
             $AccountData->setAccountPass($pass);
         }
 

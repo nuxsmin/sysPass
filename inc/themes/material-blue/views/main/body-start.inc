@@ -5,6 +5,7 @@
     </noscript>
     <div id="wrap-loading">
         <div id="loading" class="mdl-spinner mdl-spinner--single-color mdl-js-spinner"></div>
+        <div id="taskStatus"></div>
     </div>
     <div id="container" class="<?php echo $page; ?>" data-page="<?php echo $page; ?>">
         <?php if ($useLayout === true): ?>

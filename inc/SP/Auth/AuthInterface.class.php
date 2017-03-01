@@ -24,7 +24,7 @@
 
 namespace SP\Auth;
 
-use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 
 /**
  * Interface AuthInterface
@@ -35,8 +35,8 @@ interface AuthInterface
     /**
      * Autentificar al usuario
      *
-     * @param UserData $UserData Datos del usuario
+     * @param UserLoginData $UserData Datos del usuario
      * @return mixed|AuthDataBase
      */
-    public function authenticate(UserData $UserData);
+    public function authenticate(UserLoginData $UserData);
 }

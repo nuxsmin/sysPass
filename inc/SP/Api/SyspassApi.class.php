@@ -24,14 +24,15 @@
 
 namespace SP\Api;
 
+defined('APP_ROOT') || die();
+
 use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountSearch;
 use SP\Account\AccountUtil;
-use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\Core\Backup;
-use SP\Core\Crypt;
+use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
@@ -41,8 +42,6 @@ use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Customers\CustomerSearch;
-
-defined('APP_ROOT') || die();
 
 /**
  * Class Api para la gestión de peticiones a la API de sysPass
@@ -55,6 +54,9 @@ class SyspassApi extends ApiBase
      * Devolver la clave de una cuenta
      *
      * @return string La cadena en formato JSON
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getAccountPassword()
@@ -84,15 +86,18 @@ class SyspassApi extends ApiBase
         $LogMessage->addDetails(__('Origen', false), 'API');
         $this->Log->writeLog();
 
+        $mPass = $this->getMPass();
+        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $mPass);
+
         $ret = [
             'itemId' => $accountId,
-            'pass' => Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV(), $this->mPass)
+            'pass' => Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $mPass)
         ];
 
         if ($this->getParam('details', false, 0)) {
             // Para evitar los caracteres especiales
             $AccountData->setAccountPass('');
-            $AccountData->setAccountIV('');
+            $AccountData->setAccountKey('');
 
             $ret['details'] = $AccountData;
         }
@@ -152,6 +157,11 @@ class SyspassApi extends ApiBase
      * Añadir una nueva cuenta
      *
      * @return string La cadena en formato JSON
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function addAccount()
@@ -172,7 +182,8 @@ class SyspassApi extends ApiBase
 
         $Account = new Account($AccountData);
 
-        $Account->createAccount();
+        $Account->setPasswordEncrypted($this->getMPass());
+        $Account->createAccount(false);
 
         $LogMessage = $this->Log->getLogMessage();
         $LogMessage->setAction(__('Crear Cuenta', false));
@@ -453,7 +464,7 @@ class SyspassApi extends ApiBase
                 'id' => ActionsInterface::ACTION_ACC_VIEW_PASS,
                 'help' => [
                     'id' => __('Id de la cuenta'),
-                    'userPass' => __('Clave del usuario asociado al token'),
+                    'tokenPass' => __('Clave del token'),
                     'details' => __('Devolver detalles en la respuesta')
                 ]
             ],
@@ -469,8 +480,7 @@ class SyspassApi extends ApiBase
             'getAccountData' => [
                 'id' => ActionsInterface::ACTION_ACC_VIEW,
                 'help' => [
-                    'id' => __('Id de la cuenta'),
-                    'userPass' => __('Clave del usuario asociado al token')
+                    'id' => __('Id de la cuenta')
                 ]
             ],
             'deleteAccount' => [
@@ -482,7 +492,7 @@ class SyspassApi extends ApiBase
             'addAccount' => [
                 'id' => ActionsInterface::ACTION_ACC_NEW,
                 'help' => [
-                    'userPass' => __('Clave del usuario asociado al token'),
+                    'tokenPass' => __('Clave del token'),
                     'name' => __('Nombre de cuenta'),
                     'categoryId' => __('Id de categoría'),
                     'customerId' => __('Id de cliente'),
@@ -537,5 +547,13 @@ class SyspassApi extends ApiBase
                 ]
             ]
         ];
+    }
+
+    /**
+     * @return bool
+     */
+    protected function passIsNeeded()
+    {
+        return $this->actionId === ActionsInterface::ACTION_ACC_VIEW_PASS;
     }
 }

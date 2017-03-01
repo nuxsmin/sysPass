@@ -29,11 +29,9 @@ use SP\Account\AccountFavorites;
 use SP\Account\AccountHistory;
 use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
-use SP\Api\ApiTokens;
 use SP\Auth\AuthUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Messages\LogMessage;
-use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\NoticeData;
@@ -52,6 +50,7 @@ use SP\Forms\UserForm;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Mgmt\ApiTokens\ApiToken;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\CustomFields\CustomField;
@@ -212,6 +211,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     protected function userAction()
     {
@@ -299,7 +299,6 @@ class ItemActionController implements ItemControllerInterface
     /**
      * Guardar los datos de los campos personalizados del módulo
      *
-     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     protected function addCustomFieldData()
@@ -314,7 +313,6 @@ class ItemActionController implements ItemControllerInterface
     /**
      * Actualizar los datos de los campos personalizados del módulo
      *
-     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\SPException
      */
     protected function updateCustomFieldData()
@@ -595,37 +593,48 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function tokenAction()
     {
         $Form = new ApiTokenForm($this->itemId);
 
+        $refresh = Request::analyze('refreshtoken', false, false, true);
+
         switch ($this->actionId) {
             case ActionsInterface::ACTION_MGM_APITOKENS_NEW:
                 $Form->validate($this->actionId);
-                $Form->getItemData()->addToken();
+
+                if ($refresh === true) {
+                    ApiToken::getItem($Form->getItemData())->refreshToken()->add();
+                } else {
+                    ApiToken::getItem($Form->getItemData())->add();
+                }
 
                 $this->LogMessage->setAction(__('Crear Autorización', false));
                 $this->LogMessage->addDescription(__('Autorización creada', false));
-                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getUserId()));
+                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getAuthtokenUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_APITOKENS_EDIT:
                 $Form->validate($this->actionId);
-                $Form->getItemData()->updateToken();
+
+                if ($refresh === true) {
+                    ApiToken::getItem($Form->getItemData())->refreshToken()->update();
+                } else {
+                    ApiToken::getItem($Form->getItemData())->update();
+                }
 
                 $this->LogMessage->setAction(__('Actualizar Autorización', false));
                 $this->LogMessage->addDescription(__('Autorización actualizada', false));
-                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getUserId()));
+                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getAuthtokenUserId()));
                 break;
             case ActionsInterface::ACTION_MGM_APITOKENS_DELETE:
-                $ApiToken = new ApiTokens();
-
                 if (is_array($this->itemId)) {
-                    $ApiToken->deleteTokenBatch($this->itemId);
+                    ApiToken::getItem()->deleteBatch($this->itemId);
 
                     $this->LogMessage->addDescription(__('Autorizaciones eliminadas', false));
                 } else {
-                    $ApiToken->deleteToken($this->itemId);
+                    ApiToken::getItem()->delete($this->itemId);
 
                     $this->LogMessage->addDescription(__('Autorización eliminada', false));
                 }
@@ -694,6 +703,9 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \phpmailer\phpmailerException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     protected function publicLinkAction()
     {
@@ -884,6 +896,8 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function accountAction()
     {
@@ -963,6 +977,56 @@ class ItemActionController implements ItemControllerInterface
                 } elseif ($numAccounts === 1) {
                     $this->LogMessage->addDescription(__('Cuenta eliminada', false));
                     $this->LogMessage->addDetails(__('Nombre', false), $accounts->account_name);
+                }
+                break;
+        }
+
+        Email::sendEmail($this->LogMessage);
+
+        $this->JsonResponse->setStatus(0);
+    }
+
+    /**
+     * Acción para eliminar una cuenta del historial
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function accountHistoryAction()
+    {
+        $Account = new AccountHistory();
+
+        switch ($this->actionId) {
+            case ActionsInterface::ACTION_MGM_ACCOUNTS_EDIT_RESTORE:
+                AccountHistoryUtil::restoreFromHistory($this->itemId, Request::analyze('accountId', 0));
+
+                $this->LogMessage->setAction(__('Restaurar Cuenta', false));
+                $this->LogMessage->addDescription(__('Cuenta restaurada', false));
+                $this->LogMessage->addDetails(__('Nombre', false), AccountUtil::getAccountNameById($this->itemId));
+
+                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
+                break;
+            case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE_HISTORY:
+                if (is_array($this->itemId)) {
+                    $accounts = AccountHistoryUtil::getAccountNameByIdBatch($this->itemId);
+                    $numAccounts = count($accounts);
+                } else {
+                    $accounts = AccountHistoryUtil::getAccountNameById($this->itemId);
+                    $numAccounts = 1;
+                }
+
+                $Account->deleteAccount($this->itemId);
+
+                $this->LogMessage->setAction(__('Eliminar Cuenta (H)', false));
+
+                if ($numAccounts > 1) {
+                    $this->LogMessage->addDescription(__('Cuentas eliminadas', false));
+
+                    foreach ($accounts as $account) {
+                        $this->LogMessage->addDetails(__('Nombre', false), $account->acchistory_name);
+                    }
+                } elseif ($numAccounts === 1) {
+                    $this->LogMessage->addDescription(__('Cuenta eliminada', false));
+                    $this->LogMessage->addDetails(__('Nombre', false), $accounts->acchistory_name);
                 }
                 break;
         }
@@ -1127,58 +1191,7 @@ class ItemActionController implements ItemControllerInterface
             Notice::getItem($NoticeData)->add();
         }
 
-
         $this->LogMessage->addDescription(__('Solicitud realizada', false));
-        $this->JsonResponse->setStatus(0);
-    }
-
-    /**
-     * Acción para eliminar una cuenta del historial
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function accountHistoryAction()
-    {
-        $Account = new AccountHistory();
-
-        switch ($this->actionId) {
-            case ActionsInterface::ACTION_MGM_ACCOUNTS_EDIT_RESTORE:
-                AccountHistoryUtil::restoreFromHistory($this->itemId, Request::analyze('accountId', 0));
-
-                $this->LogMessage->setAction(__('Restaurar Cuenta', false));
-                $this->LogMessage->addDescription(__('Cuenta restaurada', false));
-                $this->LogMessage->addDetails(__('Nombre', false), AccountUtil::getAccountNameById($this->itemId));
-
-                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
-                break;
-            case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE_HISTORY:
-                if (is_array($this->itemId)) {
-                    $accounts = AccountHistoryUtil::getAccountNameByIdBatch($this->itemId);
-                    $numAccounts = count($accounts);
-                } else {
-                    $accounts = AccountHistoryUtil::getAccountNameById($this->itemId);
-                    $numAccounts = 1;
-                }
-
-                $Account->deleteAccount($this->itemId);
-
-                $this->LogMessage->setAction(__('Eliminar Cuenta (H)', false));
-
-                if ($numAccounts > 1) {
-                    $this->LogMessage->addDescription(__('Cuentas eliminadas', false));
-
-                    foreach ($accounts as $account) {
-                        $this->LogMessage->addDetails(__('Nombre', false), $account->acchistory_name);
-                    }
-                } elseif ($numAccounts === 1) {
-                    $this->LogMessage->addDescription(__('Cuenta eliminada', false));
-                    $this->LogMessage->addDetails(__('Nombre', false), $accounts->acchistory_name);
-                }
-                break;
-        }
-
-        Email::sendEmail($this->LogMessage);
-
         $this->JsonResponse->setStatus(0);
     }
 }

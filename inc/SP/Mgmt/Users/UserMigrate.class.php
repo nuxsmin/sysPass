@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,8 +26,11 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupUsersData;
+use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Groups\GroupUsers;
@@ -64,49 +67,51 @@ class UserMigrate
     /**
      * Actualizar la clave de un usuario desde phpPMS.
      *
-     * @param string $userLogin con el login del usuario
-     * @param string $userPass  con la clave del usuario
+     * @param UserLoginData $UserData
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      *
      * Esta función actualiza la clave de un usuario que ha sido migrado desde phpPMS
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
-    public static function migrateUser($userLogin, $userPass)
+    public static function migrateUserPass(UserLoginData $UserData)
     {
-        $passdata = UserPass::makeUserPassHash($userPass);
+        $passOk = ($UserData->getUserPass() === sha1($UserData->getUserHashSalt() . $UserData->getLoginPass())
+            || $UserData->getUserPass() === md5($UserData->getLoginPass())
+            || hash_equals($UserData->getUserPass(), crypt($UserData->getLoginPass(), $UserData->getUserHashSalt()))
+            || Hash::checkHashKey($UserData->getLoginPass(), $UserData->getUserPass()));
 
-        $query = /** @lang SQL */
-            'UPDATE usrData SET
+        if ($passOk) {
+            $query = /** @lang SQL */
+                'UPDATE usrData SET
             user_pass = ?,
-            user_hashSalt = ?,
+            user_hashSalt = \'\',
             user_lastUpdate = NOW(),
             user_isMigrate = 0
-            WHERE user_login = ?
-            AND user_isMigrate = 1
-            AND (user_pass = SHA1(CONCAT(user_hashSalt,?))
-            OR user_pass = MD5(?)) LIMIT 1';
+            WHERE user_login = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($passdata['pass']);
-        $Data->addParam($passdata['salt']);
-        $Data->addParam($userLogin);
-        $Data->addParam($userPass);
-        $Data->addParam($userPass);
-        $Data->setOnErrorMessage(__('Error al migrar cuenta de usuario', false));
+            $Data = new QueryData();
+            $Data->setQuery($query);
+            $Data->addParam(Hash::hashKey($UserData->getLoginPass()));
+            $Data->addParam($UserData->getLogin());
+            $Data->setOnErrorMessage(__('Error al migrar cuenta de usuario', false));
 
-        DB::getQuery($Data);
+            DB::getQuery($Data);
 
-        $Log = new Log();
-        $Log->getLogMessage()
-            ->setAction(__FUNCTION__)
-            ->addDescription(__('Usuario actualizado', false))
-            ->addDetails(__('Login', false), $userLogin);
-        $Log->writeLog();
+            $Log = new Log();
+            $Log->getLogMessage()
+                ->setAction(__FUNCTION__)
+                ->addDescription(__('Usuario actualizado', false))
+                ->addDetails(__('Login', false), $UserData->getLogin());
+            $Log->writeLog();
 
-        Email::sendEmail($Log->getLogMessage());
+            Email::sendEmail($Log->getLogMessage());
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

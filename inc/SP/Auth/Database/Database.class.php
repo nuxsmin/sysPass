@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,10 +25,12 @@
 namespace SP\Auth\Database;
 
 use SP\Auth\AuthInterface;
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPassData;
 use SP\Log\Log;
+use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserMigrate;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -43,9 +45,27 @@ use SP\Storage\QueryData;
 class Database implements AuthInterface
 {
     /**
-     * @var UserData $UserData
+     * @var UserLoginData $UserData
      */
     protected $UserData;
+
+    /**
+     * Autentificar al usuario
+     *
+     * @param UserLoginData $UserData Datos del usuario
+     * @return DatabaseAuthData
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
+     */
+    public function authenticate(UserLoginData $UserData)
+    {
+        $this->UserData = $UserData;
+
+        $AuthData = new DatabaseAuthData();
+        $AuthData->setAuthenticated($this->authUser());
+
+        return $AuthData;
+    }
 
     /**
      * Autentificación de usuarios con BD.
@@ -54,56 +74,28 @@ class Database implements AuthInterface
      * se ejecuta el proceso para actualizar la clave.
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     protected function authUser()
     {
-        if (UserMigrate::checkUserIsMigrate($this->UserData->getUserLogin())) {
-            try {
-                UserMigrate::migrateUser($this->UserData->getUserLogin(), $this->UserData->getUserPass());
-            } catch (SPException $e) {
-                $Log = new Log();
-                $LogMessage = $Log->getLogMessage();
-                $LogMessage->setAction(__FUNCTION__);
-                $LogMessage->addDescription($e->getMessage());
-                $LogMessage->addDetails(__('Login', false), $this->UserData->getUserLogin());
-                $Log->writeLog();
+        try {
+            User::getItem($this->UserData)->getByLogin($this->UserData->getLogin());
 
+            if ($this->UserData->isUserIsMigrate() && !UserMigrate::migrateUserPass($this->UserData)) {
                 return false;
             }
+
+            return Hash::checkHashKey($this->UserData->getLoginPass(), $this->UserData->getUserPass());
+        } catch (SPException $e) {
+            $Log = new Log();
+            $LogMessage = $Log->getLogMessage();
+            $LogMessage->setAction(__FUNCTION__);
+            $LogMessage->addDescription($e->getMessage());
+            $LogMessage->addDetails(__('Login', false), $this->UserData->getLogin());
+            $Log->writeLog();
+
+            return false;
         }
-
-        $query = /** @lang SQL */
-            'SELECT user_pass, user_hashSalt
-            FROM usrData
-            WHERE user_login = ? 
-            AND user_isMigrate = 0 LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setMapClassName(UserPassData::class);
-        $Data->setQuery($query);
-        $Data->addParam($this->UserData->getUserLogin());
-
-        /** @var UserPassData $queryRes */
-        $queryRes = DB::getResults($Data);
-
-        return ($queryRes !== false
-            && $Data->getQueryNumRows() === 1
-            && $queryRes->getUserPass() === crypt($this->UserData->getUserPass(), $queryRes->getUserHashSalt()));
-    }
-
-    /**
-     * Autentificar al usuario
-     *
-     * @param UserData $UserData Datos del usuario
-     * @return DatabaseAuthData
-     */
-    public function authenticate(UserData $UserData)
-    {
-        $this->UserData = $UserData;
-
-        $AuthData = new DatabaseAuthData();
-        $AuthData->setAuthenticated($this->authUser());
-
-        return $AuthData;
     }
 }

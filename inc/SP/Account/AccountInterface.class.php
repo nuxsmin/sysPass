@@ -51,12 +51,4 @@ interface AccountInterface
      * @return mixed
      */
     public function deleteAccount($id);
-
-    /**
-     * @param      $currentMasterPass
-     * @param      $newMasterPass
-     * @param null $newHash
-     * @return mixed
-     */
-    public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null);
 }

@@ -43,7 +43,7 @@ class Util
     /**
      * Generar una clave aleatoria
      *
-     * @param int $length Longitud de la clave
+     * @param int  $length     Longitud de la clave
      * @param bool $useNumbers Usar números
      * @param bool $useSpecial Usar carácteres especiales
      * @param bool $checKStrength
@@ -121,9 +121,13 @@ class Util
      */
     public static function generateRandomBytes($length = 30)
     {
+        if (function_exists('random_bytes')) {
+            return bin2hex(random_bytes($length));
+        }
+
         // Try to use openssl_random_pseudo_bytes
         if (function_exists('openssl_random_pseudo_bytes')) {
-            $pseudo_byte = bin2hex(openssl_random_pseudo_bytes($length));
+            $pseudo_byte = bin2hex(openssl_random_pseudo_bytes($length, $strong));
             return substr($pseudo_byte, 0, $length); // Truncate it to match the length
         }
 
@@ -174,7 +178,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '2.0';
+        return '2.1';
     }
 
     /**
@@ -242,10 +246,10 @@ class Util
     /**
      * Obtener datos desde una URL usando CURL
      *
-     * @param string $url
-     * @param array $data
+     * @param string    $url
+     * @param array     $data
      * @param bool|null $useCookie
-     * @param bool $weak
+     * @param bool      $weak
      * @return bool|string
      * @throws SPException
      */
@@ -368,8 +372,8 @@ class Util
      */
     public static function getVersion($retBuild = false)
     {
-        $build = '17022001';
-        $version = [2, 0, 0];
+        $build = '17022601';
+        $version = [2, 1, 0];
 
         if ($retBuild) {
             $version[] = $build;
@@ -449,8 +453,8 @@ class Util
      * such as 'false','N','yes','on','off', etc.
      *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
-     * @param mixed $in The variable to check
-     * @param bool $strict If set to false, consider everything that is not false to
+     * @param mixed $in     The variable to check
+     * @param bool  $strict If set to false, consider everything that is not false to
      *                      be true.
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
      */
@@ -524,7 +528,7 @@ class Util
     /**
      * Cast an object to another class, keeping the properties, but changing the methods
      *
-     * @param string $class Class name
+     * @param string        $class Class name
      * @param string|object $object
      * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
@@ -580,9 +584,9 @@ class Util
     /**
      * Comprobar si un valor existe en un array de objetos
      *
-     * @param array $objectArray
+     * @param array  $objectArray
      * @param string $method
-     * @param mixed $value
+     * @param mixed  $value
      * @return bool
      */
     public static function checkInObjectArray(array $objectArray, $method, $value)
@@ -598,6 +602,7 @@ class Util
 
     /**
      * Bloquear la aplicación
+     *
      * @param bool $setMaintenance
      */
     public static function lockApp($setMaintenance = true)
@@ -612,6 +617,7 @@ class Util
 
     /**
      * Desbloquear la aplicación
+     *
      * @param bool $unsetMaintenance
      */
     public static function unlockApp($unsetMaintenance = true)
@@ -632,5 +638,52 @@ class Util
     public static function getAppLock()
     {
         return (int)ConfigDB::getValue('lock', 0);
+    }
+
+    /**
+     * Devolver el tiempo aproximado en segundos de una operación
+     *
+     * @param $startTime
+     * @param $numItems
+     * @param $totalItems
+     *
+     * @return array Con el tiempo estimado y los elementos por segundo
+     */
+    public static function getETA($startTime, $numItems, $totalItems)
+    {
+        if ($numItems > 0 && $totalItems > 0) {
+            $runtime = time() - $startTime;
+            $eta = (int)((($totalItems * $runtime) / $numItems) - $runtime);
+
+            return [$eta, $numItems / $runtime];
+        }
+
+        return [0, 0];
+    }
+
+    /**
+     * Comprueba y devuelve un directorio temporal válido
+     *
+     * @return bool|string
+     */
+    public static function getTempDir()
+    {
+        $sysTmp = sys_get_temp_dir();
+        $appTmp = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'tmp';
+        $file = 'syspass.test';
+
+        if (file_exists($appTmp . DIRECTORY_SEPARATOR . $file)) {
+            return $appTmp;
+        } elseif (file_exists($sysTmp . DIRECTORY_SEPARATOR . $file)) {
+            return $sysTmp;
+        }
+
+        if (is_dir($appTmp) || @mkdir($appTmp)) {
+            if (touch($appTmp . DIRECTORY_SEPARATOR . $file)) {
+                return $appTmp;
+            }
+        }
+
+        return touch($sysTmp . DIRECTORY_SEPARATOR . $file) ? $sysTmp : false;
     }
 }

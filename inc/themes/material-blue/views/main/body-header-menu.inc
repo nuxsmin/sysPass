@@ -1,7 +1,13 @@
 <header class="mdl-layout__header mdl-color--indigo-400">
     <div class="mdl-layout__header-row">
         <!-- Title -->
-        <span class="mdl-layout-icon"><img class="logo" src="<?php echo $logonobg; ?>" alt="logo"/></span>
+        <span class="mdl-layout-icon">
+            <img class="logo btn-menu" src="<?php echo $logonobg; ?>"
+                 alt="logo"
+                 data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>"
+                 data-view="search"
+                 data-historyReset="1"/>
+        </span>
         <!--        <span class="mdl-layout-title">--><?php //echo '#', $appInfo['appname']; ?><!--</span>-->
         <?php if ($loggedIn): ?>
             <!-- Add spacer, to align navigation to the right -->

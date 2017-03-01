@@ -48,7 +48,7 @@ class CustomFieldBaseData extends DataModelBase
     /**
      * @var string
      */
-    public $customfielddata_iv = '';
+    public $customfielddata_key = '';
     /**
      * @var string
      */
@@ -133,17 +133,17 @@ class CustomFieldBaseData extends DataModelBase
     /**
      * @return string
      */
-    public function getCustomfielddataIv()
+    public function getCustomfielddataKey()
     {
-        return $this->customfielddata_iv;
+        return $this->customfielddata_key;
     }
 
     /**
-     * @param string $customfielddata_iv
+     * @param string $customfielddata_key
      */
-    public function setCustomfielddataIv($customfielddata_iv)
+    public function setCustomfielddataKey($customfielddata_key)
     {
-        $this->customfielddata_iv = $customfielddata_iv;
+        $this->customfielddata_key = $customfielddata_key;
     }
 
     /**

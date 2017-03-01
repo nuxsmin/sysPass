@@ -24,22 +24,22 @@
 
 namespace SP\Controller;
 
-use SP\Account\Account;
-use SP\Account\AccountHistory;
+use SP\Account\AccountCrypt;
+use SP\Account\AccountHistoryCrypt;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
 use SP\Core\Backup;
-use SP\Core\Crypt;
+use SP\Core\Crypt\Hash;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\CryptMasterPass;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
-use SP\Core\SessionUtil;
+use SP\Core\Task;
 use SP\Core\XmlExport;
-use SP\Html\Html;
 use SP\Http\Request;
 use SP\Import\Import;
 use SP\Import\ImportParams;
@@ -421,7 +421,6 @@ class ConfigActionController implements ItemControllerInterface
      */
     protected function mailAction()
     {
-        $Log = Log::newLog(__('Modificar Configuración', false));
         $Config = Session::getConfig();
 
         // Mail
@@ -483,7 +482,7 @@ class ConfigActionController implements ItemControllerInterface
         $confirmPassChange = Request::analyze('confirmPassChange', 0, false, 1);
         $noAccountPassChange = Request::analyze('chkNoAccountChange', 0, false, 1);
 
-        if (!UserPass::getItem(Session::getUserData())->checkUserUpdateMPass()) {
+        if (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
             $this->JsonResponse->setDescription(__('Clave maestra actualizada', false));
             $this->JsonResponse->addMessage(__('Reinicie la sesión para cambiarla', false));
             $this->JsonResponse->setStatus(100);
@@ -502,7 +501,7 @@ class ConfigActionController implements ItemControllerInterface
         } elseif ($newMasterPass !== $newMasterPassR) {
             $this->JsonResponse->setDescription(__('Las claves maestras no coinciden', false));
             return;
-        } elseif (!Crypt::checkHashPass($currentMasterPass, ConfigDB::getValue('masterPwd'), true)) {
+        } elseif (!Hash::checkHashKey($currentMasterPass, ConfigDB::getValue('masterPwd'))) {
             $this->JsonResponse->setDescription(__('La clave maestra actual no coincide', false));
             return;
         }
@@ -512,8 +511,6 @@ class ConfigActionController implements ItemControllerInterface
             return;
         }
 
-        $hashMPass = Crypt::mkHashPassword($newMasterPass);
-
         if (!$noAccountPassChange) {
             Util::lockApp();
 
@@ -522,19 +519,26 @@ class ConfigActionController implements ItemControllerInterface
                 return;
             }
 
-            $Account = new Account();
+            $Task = new Task(__FUNCTION__, Request::analyze('taskId'));
+            $Task->register();
 
-            if (!$Account->updateAccountsMasterPass($currentMasterPass, $newMasterPass)) {
+            $Account = new AccountCrypt();
+
+            if (!$Account->updatePass($currentMasterPass, $newMasterPass, $Task)) {
                 DB::rollbackTransaction();
+
+                $Task->end();
 
                 $this->JsonResponse->setDescription(__('Errores al actualizar las claves de las cuentas', false));
                 return;
             }
 
-            $AccountHistory = new AccountHistory();
+            $AccountHistory = new AccountHistoryCrypt();
 
-            if (!$AccountHistory->updateAccountsMasterPass($currentMasterPass, $newMasterPass, $hashMPass)) {
+            if (!$AccountHistory->updatePass($currentMasterPass, $newMasterPass, $Task)) {
                 DB::rollbackTransaction();
+
+                $Task->end();
 
                 $this->JsonResponse->setDescription(__('Errores al actualizar las claves de las cuentas del histórico', false));
                 return;
@@ -543,19 +547,25 @@ class ConfigActionController implements ItemControllerInterface
             if (!CustomFieldsUtil::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)) {
                 DB::rollbackTransaction();
 
+                $Task->end();
+
                 $this->JsonResponse->setDescription(__('Errores al actualizar datos de campos personalizados', false));
                 return;
             }
 
             if (!DB::endTransaction()) {
+                $Task->end();
+
                 $this->JsonResponse->setDescription(__('No es posible finalizar una transacción', false));
                 return;
             }
 
+            $Task->end();
+
             Util::unlockApp();
         }
 
-        ConfigDB::setCacheConfigValue('masterPwd', $hashMPass);
+        ConfigDB::setCacheConfigValue('masterPwd', Hash::hashKey($newMasterPass));
         ConfigDB::setCacheConfigValue('lastupdatempass', time());
 
         $this->LogMessage->setAction(__('Actualizar Clave Maestra', false));
@@ -574,6 +584,10 @@ class ConfigActionController implements ItemControllerInterface
 
     /**
      * Regenerar el hash de la clave maestra
+     *
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected function masterPassRefreshAction()
     {
@@ -584,7 +598,7 @@ class ConfigActionController implements ItemControllerInterface
 
         $this->LogMessage->setAction(__('Actualizar Clave Maestra', false));
 
-        if (ConfigDB::setValue('masterPwd', Crypt::mkHashPassword(SessionUtil::getSessionMPass()))) {
+        if (ConfigDB::setValue('masterPwd', Hash::hashKey(CryptSession::getSessionKey()))) {
             $this->LogMessage->addDescription(__('Hash de clave maestra actualizado', false));
 
             $this->JsonResponse->setStatus(0);
@@ -600,6 +614,9 @@ class ConfigActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \phpmailer\phpmailerException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected function tempMasterPassAction()
     {

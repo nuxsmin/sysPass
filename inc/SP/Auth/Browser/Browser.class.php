@@ -25,7 +25,7 @@
 namespace SP\Auth\Browser;
 
 use SP\Auth\AuthInterface;
-use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 
 /**
  * Class Browser
@@ -39,13 +39,13 @@ class Browser implements AuthInterface
     /**
      * Autentificar al usuario
      *
-     * @param UserData $UserData Datos del usuario
+     * @param UserLoginData $UserData Datos del usuario
      * @return BrowserAuthData
      */
-    public function authenticate(UserData $UserData)
+    public function authenticate(UserLoginData $UserData)
     {
         $AuthData = new BrowserAuthData();
-        $AuthData->setAuthenticated($this->checkServerAuthUser($UserData->getUserLogin()));
+        $AuthData->setAuthenticated($this->checkServerAuthUser($UserData->getLogin()));
 
         return $AuthData;
     }

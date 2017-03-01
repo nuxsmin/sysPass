@@ -25,6 +25,7 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
+use SP\Core\TaskFactory;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -43,29 +44,28 @@ class Category
      */
     public static function fixCategoriesId($categoryId)
     {
-        $Data = new QueryData();
-        $Data->setQuery('SELECT category_id FROM categories ORDER BY category_id');
-
-        $categories = DB::getResultsArray($Data);
-
-        $paramsIn = trim(str_repeat(',?', count($categories)), ',');
-        $Data->addParam($categoryId);
-
-        foreach ($categories as $category) {
-            $Data->addParam($category->category_id);
-        }
+        TaskFactory::$Message->setTask(__FUNCTION__);
+        TaskFactory::$Message->setMessage(__('Actualizando IDs de categorías'));
+        TaskFactory::sendTaskMessage();
 
         try {
             DB::beginTransaction();
 
+            if ($categoryId === 0) {
+                $categoryId = self::createOrphanCategory();
+            }
+
+            $Data = new QueryData();
+            $Data->addParam($categoryId);
+
             $query = /** @lang SQL */
-                'UPDATE accHistory SET acchistory_categoryId = ? WHERE acchistory_categoryId NOT IN (' . $paramsIn . ') OR acchistory_categoryId IS NULL';
+                'UPDATE accHistory SET acchistory_categoryId = ? WHERE acchistory_categoryId NOT IN (SELECT category_id FROM categories ORDER BY category_id) OR acchistory_categoryId IS NULL';
             $Data->setQuery($query);
 
             DB::getQuery($Data);
 
             $query = /** @lang SQL */
-                'UPDATE accounts SET account_categoryId = ? WHERE account_categoryId NOT IN (' . $paramsIn . ') OR account_categoryId IS NULL';
+                'UPDATE accounts SET account_categoryId = ? WHERE account_categoryId NOT IN (SELECT category_id FROM categories ORDER BY category_id) OR account_categoryId IS NULL';
             $Data->setQuery($query);
 
             DB::getQuery($Data);
@@ -78,5 +78,26 @@ class Category
 
             return false;
         }
+    }
+
+    /**
+     * Crear una categoría para elementos huérfanos
+     *
+     * @return int
+     */
+    public static function createOrphanCategory()
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO categories SET
+            category_name = \'Orphan category\',
+            category_description = \'Created by the upgrade process\'';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setOnErrorMessage(__('Error al crear la categoría', false));
+
+        DB::getQuery($Data);
+
+        return DB::getLastId();
     }
 }

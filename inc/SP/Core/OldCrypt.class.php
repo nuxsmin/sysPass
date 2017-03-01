@@ -36,52 +36,9 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de realizar el encriptado/desencriptado de claves
  */
-class Crypt
+class OldCrypt
 {
     public static $strInitialVector;
-
-    /**
-     * Comprobar el hash de una clave.
-     *
-     * @param string $pwd         con la clave a comprobar
-     * @param string $checkedHash con el hash a comprobar
-     * @param bool   $isMPass     si es la clave maestra
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public static function checkHashPass($pwd, $checkedHash, $isMPass = false)
-    {
-        if ($isMPass) {
-            // Comprobar si el hash está en formato anterior a 12002
-            if (strlen($checkedHash) === 128) {
-                $check = (hash('sha256', substr($checkedHash, 0, 64) . $pwd) === substr($checkedHash, 64, 64));
-
-                if ($check) {
-                    $newHash = self::mkHashPassword($pwd);
-
-                    AccountHistory::updateAccountsMPassHash($newHash);
-
-                    ConfigDB::setValue('masterPwd', $newHash);
-                    Log::writeNewLog(__('Aviso', false), __('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.', false), Log::NOTICE);
-                }
-
-                return $check;
-
-            // Hash de clave maestra anterior a 2.0.0.17013101
-            } elseif (hash_equals(crypt($pwd, substr($checkedHash, 0, 72)), substr($checkedHash, 72))) {
-                ConfigDB::setValue('masterPwd', Crypt::mkHashPassword($pwd));
-
-                Log::writeNewLog(__('Aviso', false), __('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.', false), Log::NOTICE);
-                return true;
-            }
-        }
-
-        // Timing attacks...
-//        usleep(mt_rand(100000, 300000));
-
-        // Obtener el hash de la clave y la clave para generar una clave y comparar
-        return hash_equals(crypt($pwd, substr($checkedHash, 0, 30)), substr($checkedHash, 30));
-    }
 
     /**
      * Generar un hash de una clave utilizando un salt.
@@ -206,7 +163,7 @@ class Crypt
         }
 
         // Comprobar el módulo de encriptación
-        if (!Crypt::checkCryptModule()) {
+        if (!OldCrypt::checkCryptModule()) {
             throw new SPException(
                 SPException::SP_CRITICAL,
                 __('Error interno', false),
@@ -214,8 +171,9 @@ class Crypt
             );
         }
 
+        // FIXME
         // Encriptar datos
-        $encData['data'] = Crypt::mkEncrypt($data, $pwd);
+        $encData['data'] = OldCrypt::mkEncrypt($data, $pwd);
 
         if (!empty($data) && ($encData['data'] === false || null === $encData['data'])) {
             throw new SPException(
@@ -225,7 +183,7 @@ class Crypt
             );
         }
 
-        $encData['iv'] = Crypt::$strInitialVector;
+        $encData['iv'] = OldCrypt::$strInitialVector;
 
         return $encData;
     }

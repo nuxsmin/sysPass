@@ -120,7 +120,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
-        $Data->setOnErrorMessage(__('Error al eliminar archivo', false));
+        $Data->setOnErrorMessage(__('Error al eliminar el archivo', false));
 
         DB::getQuery($Data);
 

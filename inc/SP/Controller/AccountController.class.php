@@ -34,12 +34,14 @@ use SP\Account\UserAccounts;
 use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
-use SP\Core\Crypt;
+use SP\Core\Crypt\Crypt;
+use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
+use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\PublicLinkData;
@@ -121,21 +123,11 @@ class AccountController extends ControllerBase implements ActionsInterface
      * Obtener la vista de detalles de cuenta para enlaces públicos
      *
      * @param PublicLinkData $PublicLinkData
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\FileNotFoundException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
      *
      */
     public function getAccountFromLink(PublicLinkData $PublicLinkData)
     {
         $this->setAction(self::ACTION_ACC_VIEW);
-
-        // Obtener los datos de la cuenta antes y comprobar el acceso
-        if (!$this->setAccountData()) {
-            return false;
-        }
 
         $this->view->addTemplate('account-link');
         $this->view->assign('title',
@@ -145,48 +137,27 @@ class AccountController extends ControllerBase implements ActionsInterface
                 'icon' => $this->icons->getIconView()->getIcon()
             ]
         );
-        $this->Account->incrementViewCounter();
-        $this->Account->incrementDecryptCounter();
-        $AccountPassData = $this->Account->getAccountPassData();
 
-        // Desencriptar la clave de la cuenta
-        $pass = Crypt::generateAesKey($PublicLinkData->getLinkHash());
-        $masterPass = Crypt::getDecrypt($PublicLinkData->getPass(), $PublicLinkData->getPassIV(), $pass);
-        $accountPass = Crypt::getDecrypt($AccountPassData->getAccountPass(), $AccountPassData->getAccountIV(), $masterPass);
+        try {
+            $Account = new Account();
+            $Account->incrementViewCounter($PublicLinkData->getItemId());
+            $Account->incrementDecryptCounter($PublicLinkData->getItemId());
 
-        $this->view->assign('useImage', Config::getConfig()->isPublinksImageEnabled() || Config::getConfig()->isAccountPassToImage());
+            $key = Config::getConfig()->getPasswordSalt() . $PublicLinkData->getLinkHash();
+            $securedKey = Crypt::unlockSecuredKey($PublicLinkData->getPassIV(), $key);
 
-        if ($this->view->useImage) {
-            $accountPass = ImageUtil::convertText($accountPass);
+            /** @var AccountExtData $AccountData */
+            $AccountData = unserialize(Crypt::decrypt($PublicLinkData->getData(), $securedKey, $key));
+
+            $this->view->assign('useImage', Config::getConfig()->isPublinksImageEnabled() || Config::getConfig()->isAccountPassToImage());
+
+            $accountPass = $this->view->useImage ? ImageUtil::convertText($AccountData->getAccountPass()) : $AccountData->getAccountPass();
+
+            $this->view->assign('accountPass', $accountPass);
+            $this->view->assign('accountData', $AccountData);
+        } catch (\Exception $e) {
+            $this->showError(self::ERR_EXCEPTION);
         }
-
-        $this->view->assign('accountPass', $accountPass);
-    }
-
-    /**
-     * Establecer las variables que contienen la información de la cuenta.
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    private function setAccountData()
-    {
-        $Account = new Account(new AccountExtData($this->getId()));
-        $this->Account = $Account;
-        $this->AccountData = $Account->getData();
-
-        $this->view->assign('accountId', $this->getId());
-        $this->view->assign('accountData', $this->AccountData);
-        $this->view->assign('gotData', $this->isGotData());
-
-        return true;
-    }
-
-    /**
-     * @return int
-     */
-    private function getId()
-    {
-        return $this->id;
     }
 
     /**
@@ -278,7 +249,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         if (!Acl::checkUserAccess($this->getAction())) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
-        } elseif (!UserPass::getItem($this->UserData)->checkUserUpdateMPass()) {
+        } elseif (!UserPass::checkUserUpdateMPass($this->UserData->getUserId())) {
             $this->showError(self::ERR_UPDATE_MPASS);
             return false;
         } elseif ($this->id > 0) {
@@ -314,8 +285,9 @@ class AccountController extends ControllerBase implements ActionsInterface
 
             $PublicLinkData = PublicLink::getItem()->getHashForItem($this->getId());
 
-            $publicLinkUrl = (Checks::publicLinksIsEnabled() && $PublicLinkData ? Init::$WEBURI . '/index.php?h=' . $PublicLinkData->getPublicLinkHash() . '&a=link' : '');
+            $publicLinkUrl = (Checks::publicLinksIsEnabled() && $PublicLinkData ? Init::$WEBURI . '/index.php?h=' . $PublicLinkData->getPublicLinkHash() . '&a=link' : null);
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
+            $this->view->assign('publicLinkId', $PublicLinkData ? $PublicLinkData->getPublicLinkId() : 0);
 
             $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
             $this->view->assign('accountPassDateChange', date('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: 0));
@@ -353,6 +325,14 @@ class AccountController extends ControllerBase implements ActionsInterface
     }
 
     /**
+     * @return int
+     */
+    private function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @return \SP\Account\Account|AccountHistory
      */
     private function getAccount()
@@ -386,6 +366,24 @@ class AccountController extends ControllerBase implements ActionsInterface
         );
 
         $this->setCommonData();
+    }
+
+    /**
+     * Establecer las variables que contienen la información de la cuenta.
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    private function setAccountData()
+    {
+        $Account = new Account(new AccountExtData($this->getId()));
+        $this->Account = $Account;
+        $this->AccountData = $Account->getData();
+
+        $this->view->assign('accountId', $this->getId());
+        $this->view->assign('accountData', $this->AccountData);
+        $this->view->assign('gotData', $this->isGotData());
+
+        return true;
     }
 
     /**

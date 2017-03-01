@@ -83,5 +83,6 @@ $stringsJsLang = [
     58 => __('Esta acción restablecerá todos los datos del plugin. Desea continuar?'),
     59 => __('Este proceso puede durar algo de tiempo. Desea continuar?'),
     60 => __('Aviso'),
-    61 => __('Sesión finalizada')
+    61 => __('Sesión finalizada'),
+    62 => __('Realizando tarea. Por favor, no cierre la ventana/pestaña del navegador.')
 ];

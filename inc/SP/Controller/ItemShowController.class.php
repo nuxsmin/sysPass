@@ -29,15 +29,17 @@ defined('APP_ROOT') || die();
 use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
-use SP\Api\ApiTokensUtil;
+use SP\Mgmt\ApiTokens\ApiTokensUtil;
 use SP\Core\ActionsInterface;
-use SP\Core\Crypt;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\ItemException;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\AccountExtData;
+use SP\DataModel\ApiTokenData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
@@ -46,10 +48,10 @@ use SP\DataModel\GroupData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\TagData;
 use SP\DataModel\UserData;
-use SP\DataModel\UserPassData;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Mgmt\ApiTokens\ApiToken;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\CustomFields\CustomField;
@@ -65,10 +67,10 @@ use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
+use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 use SP\Util\ImageUtil;
 use SP\Util\Json;
-use SP\Util\Util;
 
 /**
  * Class AccItemMgmt
@@ -391,18 +393,19 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->module = self::ACTION_MGM_APITOKENS;
         $this->view->addTemplate('tokens');
 
-        $token = ApiTokensUtil::getTokens($this->itemId, true);
+        $ApiTokenData = $this->itemId ? ApiToken::getItem()->getById($this->itemId) : new ApiTokenData();
 
         $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('actions', ApiTokensUtil::getTokenActions());
-        $this->view->assign('token', $token);
-        $this->view->assign('gotData', is_object($token));
+        $this->view->assign('ApiTokenData', $ApiTokenData);
+        $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_MGM_APITOKENS_VIEW) ? 'disabled' : '');
+        $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 
         if ($this->view->isView === true) {
             $Log = Log::newLog(__('Autorizaciones', false));
             $LogMessage = $Log->getLogMessage();
             $LogMessage->addDescription(__('Token de autorización visualizado'));
-            $LogMessage->addDetails(__('Usuario'), $token->user_login);
+            $LogMessage->addDetails(__('Usuario'), UserUtil::getUserLoginById($ApiTokenData->authtoken_userId));
             $Log->writeLog();
 
             Email::sendEmail($LogMessage);
@@ -477,6 +480,9 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function getAccountPass()
     {
@@ -504,16 +510,15 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $AccountAcl = new AccountAcl($Account, ActionsInterface::ACTION_ACC_VIEW_PASS);
         $Acl = $AccountAcl->getAcl();
 
-        $UserPass = new UserPass(new UserPassData());
-        $UserPass->getItemData()->setUserId(Session::getUserData()->getUserId());
-
         if (!$Acl->isShowViewPass()) {
             throw new ItemException(__('No tiene permisos para acceder a esta cuenta', false));
-        } elseif (!$UserPass->checkUserUpdateMPass()) {
+        } elseif (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
             throw new ItemException(__('Clave maestra actualizada', false) . '<br>' . __('Reinicie la sesión para cambiarla', false));
         }
 
-        $accountClearPass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV());
+        $key = CryptSession::getSessionKey();
+        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $key);
+        $accountClearPass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $key);
 
         if (!$isHistory) {
             $Account->incrementDecryptCounter();

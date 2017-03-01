@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -73,6 +73,10 @@ class UserData extends UserPassData implements DataModelInterface
      * @var bool
      */
     public $user_isChangePass = 0;
+    /**
+     * @var bool
+     */
+    public $user_isChangedPass = 0;
     /**
      * @var bool
      */
@@ -388,5 +392,21 @@ class UserData extends UserPassData implements DataModelInterface
     public function getName()
     {
         return $this->user_name;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUserIsChangedPass()
+    {
+        return (int)$this->user_isChangedPass;
+    }
+
+    /**
+     * @param bool $user_isChangedPass
+     */
+    public function setUserIsChangedPass($user_isChangedPass)
+    {
+        $this->user_isChangedPass = (int)$user_isChangedPass;
     }
 }

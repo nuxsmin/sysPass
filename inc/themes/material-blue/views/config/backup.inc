@@ -179,7 +179,7 @@
                     <div id="help_export" class="help-box" title="<?php echo $icons->getIconHelp()->getTitle(); ?>">
                         <p class="help-text"><?php echo __('La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass.'); ?></p>
 
-                        <p class="help-text"><?php echo __('Los elementos exportados son cuentas, clientes y categorías.'); ?></p>
+                        <p class="help-text"><?php echo __('Los elementos exportados son cuentas, clientes, categorías y etiquetas.'); ?></p>
 
                         <p class="help-text"><?php echo __('Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad.'); ?></p>
 

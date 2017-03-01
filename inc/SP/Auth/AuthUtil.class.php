@@ -31,8 +31,6 @@ use SP\DataModel\UserPassRecoverData;
 use SP\Html\Html;
 use SP\Log\Email;
 use SP\Mgmt\Users\UserPassRecover;
-use SP\Storage\DB;
-use SP\Storage\QueryData;
 use SP\Util\Util;
 
 /**
@@ -77,32 +75,6 @@ class AuthUtil
         }
 
         return false;
-    }
-
-    /**
-     * Comprobar el token de seguridad
-     *
-     * @param $actionId int El id de la accion
-     * @param $token    string El token de seguridad
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public static function checkAuthToken($actionId, $token)
-    {
-        $query = /** @lang SQL */
-            'SELECT authtoken_id
-            FROM authTokens
-            WHERE authtoken_actionId = ?
-            AND authtoken_token = ? LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($actionId);
-        $Data->addParam($token);
-
-        DB::getQuery($Data);
-
-        return $Data->getQueryNumRows() === 1;
     }
 
     /**

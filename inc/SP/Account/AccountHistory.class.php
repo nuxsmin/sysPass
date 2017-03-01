@@ -25,7 +25,7 @@
 namespace SP\Account;
 
 use SP\Config\ConfigDB;
-use SP\Core\Crypt;
+use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 use SP\Storage\DB;
@@ -115,7 +115,7 @@ class AccountHistory extends AccountBase implements AccountInterface
                 . 'account_login,'
                 . 'account_url,'
                 . 'account_pass,'
-                . 'account_IV,'
+                . 'account_key,'
                 . 'account_notes,'
                 . 'account_countView,'
                 . 'account_countDecrypt,'
@@ -143,7 +143,7 @@ class AccountHistory extends AccountBase implements AccountInterface
                 . 'account_login,'
                 . 'account_url,'
                 . 'account_pass,'
-                . 'account_IV,'
+                . 'account_key,'
                 . 'account_notes,'
                 . 'account_countView,'
                 . 'account_countDecrypt,'
@@ -171,7 +171,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_login,'
             . 'acchistory_url,'
             . 'acchistory_pass,'
-            . 'acchistory_IV,'
+            . 'acchistory_key,'
             . 'acchistory_notes,'
             . 'acchistory_countView,'
             . 'acchistory_countDecrypt,'
@@ -243,116 +243,6 @@ class AccountHistory extends AccountBase implements AccountInterface
     }
 
     /**
-     * Actualiza las claves de todas las cuentas en el histórico con la nueva clave maestra.
-     *
-     * @param string $currentMasterPass con la clave maestra actual
-     * @param string $newMasterPass     con la nueva clave maestra
-     * @param string $newHash           con el nuevo hash de la clave maestra
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null)
-    {
-        $accountsOk = [];
-        $errorCount = 0;
-        $demoEnabled = Checks::demoIsEnabled();
-
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Actualizar Clave Maestra (H)', false));
-        $LogMessage->addDescription(__('Inicio', false));
-        $Log->writeLog(true);
-
-        if (!Crypt::checkCryptModule()) {
-            $Log->setLogLevel(Log::ERROR);
-            $LogMessage->addDescription(__('Error en el módulo de encriptación', false));
-            $Log->writeLog();
-            return false;
-        }
-
-        $accountsPass = $this->getAccountsPassData();
-
-        if (!$accountsPass) {
-            $Log->setLogLevel(Log::ERROR);
-            $LogMessage->addDescription(__('Error al obtener las claves de las cuentas', false));
-            $Log->writeLog();
-            return false;
-        }
-
-        $AccountDataBase = new \stdClass();
-        $AccountDataBase->id = 0;
-        $AccountDataBase->pass = '';
-        $AccountDataBase->iv = '';
-        $AccountDataBase->hash = $newHash;
-
-        foreach ($accountsPass as $account) {
-            $AccountData = clone $AccountDataBase;
-            $AccountData->id = $account->acchistory_id;
-
-            // No realizar cambios si está en modo demo
-            if ($demoEnabled) {
-                $accountsOk[] = $account->acchistory_id;
-                continue;
-            }
-
-            if (!$this->checkAccountMPass()) {
-                $errorCount++;
-                $LogMessage->addDetails(__('La clave maestra del registro no coincide', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
-                continue;
-            }
-
-            if ($account->acchistory_pass === '') {
-                $LogMessage->addDetails(__('Clave de cuenta vacía', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
-                continue;
-            }
-
-            if (strlen($account->acchistory_IV) < 32) {
-                $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
-            }
-
-            $decryptedPass = Crypt::getDecrypt($account->acchistory_pass, $account->acchistory_IV, $currentMasterPass);
-            $AccountData->pass = Crypt::mkEncrypt($decryptedPass, $newMasterPass);
-            $AccountData->iv = Crypt::$strInitialVector;
-
-            if ($AccountData->pass === false) {
-                $errorCount++;
-                $LogMessage->addDetails(__('No es posible desencriptar la clave de la cuenta', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
-                continue;
-            }
-
-            try {
-                $this->updateAccountPass($AccountData);
-                $accountsOk[] = $account->acchistory_id;
-            } catch (SPException $e) {
-                $errorCount++;
-                $LogMessage->addDetails(__('Fallo al actualizar la clave del histórico', false), sprintf('%s (%d)', $account->acchistory_name, $account->acchistory_id));
-            }
-        }
-
-        $LogMessage->addDetails(__('Cuentas actualizadas', false), implode(',', $accountsOk));
-        $LogMessage->addDetails(__('Errores', false), $errorCount);
-        $Log->writeLog();
-
-        return true;
-    }
-
-    /**
-     * Obtener los datos relativos a la clave de todas las cuentas del histórico.
-     *
-     * @return false|array con los datos de la clave
-     */
-    protected function getAccountsPassData()
-    {
-        $query = /** @lang SQL */
-            'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_IV FROM accHistory';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        return DB::getResultsArray($Data);
-    }
-
-    /**
      * Comprueba el hash de la clave maestra del registro de histórico de una cuenta.
      *
      * @param int $id opcional, con el Id del registro a comprobar
@@ -387,16 +277,16 @@ class AccountHistory extends AccountBase implements AccountInterface
         $query = /** @lang SQL */
             'UPDATE accHistory SET '
             . 'acchistory_pass = :accountPass,'
-            . 'acchistory_IV = :accountIV,'
-            . 'acchistory_mPassHash = :newHash '
+            . 'acchistory_key = :accountKey,'
+            . 'acchistory_mPassHash = :hash '
             . 'WHERE acchistory_id = :id';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($AccountData->id, 'id');
         $Data->addParam($AccountData->pass, 'accountPass');
-        $Data->addParam($AccountData->iv, 'accountIV');
-        $Data->addParam($AccountData->hash, 'newHash');
+        $Data->addParam($AccountData->key, 'accountKey');
+        $Data->addParam($AccountData->hash, 'hash');
 
         return DB::getQuery($Data);
     }
@@ -415,7 +305,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_userGroupId AS account_userGroupId,'
             . 'acchistory_login AS account_login,'
             . 'acchistory_pass AS account_pass,'
-            . 'acchistory_IV AS account_IV,'
+            . 'acchistory_key AS account_key,'
             . 'customer_name '
             . 'FROM accHistory '
             . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
@@ -463,7 +353,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_login as account_login,'
             . 'acchistory_url as account_url,'
             . 'acchistory_pass as account_pass,'
-            . 'acchistory_IV as account_IV,'
+            . 'acchistory_key as account_key,'
             . 'acchistory_notes as account_notes,'
             . 'acchistory_countView as account_countView,'
             . 'acchistory_countDecrypt as account_countDecrypt,'
@@ -527,7 +417,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_login = :accountLogin,'
             . 'acchistory_url = :accountUrl,'
             . 'acchistory_pass = :accountPass,'
-            . 'acchistory_IV = :accountIV,'
+            . 'acchistory_key = :accountKey,'
             . 'acchistory_notes = :accountNotes,'
             . 'acchistory_dateAdd = :accountDateAdd,'
             . 'acchistory_dateEdit = :accountDateEdit,'
@@ -552,7 +442,7 @@ class AccountHistory extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountLogin(), 'accountLogin');
         $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
         $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
-        $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
+        $Data->addParam($this->accountData->getAccountKey(), 'accountKey');
         $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
         $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
         $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');

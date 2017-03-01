@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,6 +27,7 @@ namespace SP\Core;
 use SP\Config\Config;
 use SP\DataModel\UserData;
 use SP\Mgmt\Profiles\Profile;
+use SP\Core\Crypt\Session as CryptSession;
 
 defined('APP_ROOT') || die();
 
@@ -61,26 +62,15 @@ class SessionUtil
     }
 
     /**
-     * Guardar la clave maestra encriptada en la sesión
-     *
-     * @param $masterPass
-     */
-    public static function saveSessionMPass($masterPass)
-    {
-        $sessionMasterPass = Crypt::mkCustomMPassEncrypt(Crypt::generateAesKey(session_id()), $masterPass);
-
-        Session::setMPass($sessionMasterPass[0]);
-        Session::setMPassIV($sessionMasterPass[1]);
-    }
-
-    /**
      * Desencriptar la clave maestra de la sesión.
      *
      * @return string con la clave maestra
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      */
     public static function getSessionMPass()
     {
-        return Crypt::getDecrypt(Session::getMPass(), Session::getMPassIV(), Crypt::generateAesKey(session_id()));
+        return CryptSession::getSessionKey();
     }
 
     /**
@@ -120,7 +110,7 @@ class SessionUtil
      */
     public static function cleanSession()
     {
-        foreach ($_SESSION as $key => $value){
+        foreach ($_SESSION as $key => $value) {
             unset($_SESSION[$key]);
         }
 
@@ -150,5 +140,24 @@ class SessionUtil
 //        Session::unsetSessionKey('sessiontype');
 //        Session::unsetSessionKey('config');
 //        Session::unsetSessionKey('configTime');
+    }
+
+    /**
+     * Regenerad el ID de sesión
+     */
+    public static function regenerate()
+    {
+        session_regenerate_id(true);
+        Session::setSidStartTime(time());
+    }
+
+    /**
+     * Destruir la sesión y reiniciar
+     */
+    public static function restart()
+    {
+        session_unset();
+        session_destroy();
+        session_start();
     }
 }

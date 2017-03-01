@@ -35,7 +35,7 @@ interface FormInterface
      * Validar el formulario
      *
      * @param $action
-     * @return bool
+     * @return FormInterface
      * @throws \SP\Core\Exceptions\ValidationException
      */
     public function validate($action);

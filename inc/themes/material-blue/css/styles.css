@@ -153,6 +153,18 @@ pre, code, samp, kbd {
       position: absolute;
       top: 50%;
       left: 50%; }
+    #wrap-loading.overlay-full #taskStatus {
+      display: block; }
+  #wrap-loading #taskStatus {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 55%;
+    width: 100%;
+    text-align: center;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 1em 0; }
 
 #container {
   margin: auto;
@@ -530,8 +542,8 @@ pre, code, samp, kbd {
   padding: .3em 0; }
 
 #box-popup {
-  min-width: 25em;
-  max-width: 50em;
+  min-width: 30em;
+  max-width: 60em;
   margin: 5em auto;
   padding: 0;
   background-color: #fff; }

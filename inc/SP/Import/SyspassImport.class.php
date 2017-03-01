@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,7 +24,9 @@
 
 namespace SP\Import;
 
-use SP\Core\Crypt;
+use SP\Core\Crypt\Crypt;
+use SP\Core\OldCrypt;
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
@@ -105,16 +107,20 @@ class SyspassImport extends ImportBase
     {
         $hash = $this->xmlDOM->getElementsByTagName('Encrypted')->item(0)->getAttribute('hash');
 
-        if ($hash !== '' && !Crypt::checkHashPass($this->ImportParams->getImportPwd(), $hash)) {
+        if ($hash !== '' && !Hash::checkHashKey($this->ImportParams->getImportPwd(), $hash)) {
             throw new SPException(SPException::SP_ERROR, __('Clave de encriptación incorrecta', false));
         }
 
         foreach ($this->xmlDOM->getElementsByTagName('Data') as $node) {
             /** @var $node \DOMElement */
             $data = base64_decode($node->nodeValue);
-            $iv = base64_decode($node->getAttribute('iv'));
 
-            $xmlDecrypted = Crypt::getDecrypt($data, $iv, $this->ImportParams->getImportPwd());
+            if ($iv = base64_decode($node->getAttribute('iv'))) {
+                $xmlDecrypted = OldCrypt::getDecrypt($data, $iv, $this->ImportParams->getImportPwd());
+            } else {
+                $securedKey = Crypt::unlockSecuredKey($node->getAttribute('key'), $this->ImportParams->getImportPwd());
+                $xmlDecrypted = Crypt::decrypt($data, $securedKey);
+            }
 
             $newXmlData = new \DOMDocument();
 //            $newXmlData->preserveWhiteSpace = true;
@@ -270,7 +276,7 @@ class SyspassImport extends ImportBase
                         $AccountData->setAccountPass(base64_decode($accountNode->nodeValue));
                         break;
                     case 'passiv';
-                        $AccountData->setAccountIV(base64_decode($accountNode->nodeValue));
+                        $AccountData->setAccountKey(base64_decode($accountNode->nodeValue));
                         break;
                     case 'notes';
                         $AccountData->setAccountNotes($accountNode->nodeValue);

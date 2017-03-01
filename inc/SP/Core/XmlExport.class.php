@@ -24,8 +24,11 @@
 
 namespace SP\Core;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountUtil;
 use SP\Config\Config;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\Log\Email;
@@ -270,22 +273,22 @@ class XmlExport
                 $nodeXML = $this->xml->saveXML($node);
 
                 // Crear los datos encriptados con la información del nodo
-                $encrypted = Crypt::mkEncrypt($nodeXML, $this->exportPass);
-                $encryptedIV = Crypt::$strInitialVector;
+                $securedKey = Crypt::makeSecuredKey($this->exportPass);
+                $encrypted = Crypt::encrypt($nodeXML, $securedKey);
 
                 // Buscar si existe ya un nodo para el conjunto de datos encriptados
                 $encryptedNode = $this->root->getElementsByTagName('Encrypted')->item(0);
 
                 if (!$encryptedNode instanceof \DOMElement) {
                     $encryptedNode = $this->xml->createElement('Encrypted');
-                    $encryptedNode->setAttribute('hash', Crypt::mkHashPassword($this->exportPass));
+                    $encryptedNode->setAttribute('hash', Hash::hashKey($this->exportPass));
                 }
 
                 // Crear el nodo hijo con los datos encriptados
                 $encryptedData = $this->xml->createElement('Data', base64_encode($encrypted));
 
-                $encryptedDataIV = $this->xml->createAttribute('iv');
-                $encryptedDataIV->value = base64_encode($encryptedIV);
+                $encryptedDataIV = $this->xml->createAttribute('key');
+                $encryptedDataIV->value = $securedKey;
 
                 // Añadir nodos de datos
                 $encryptedData->appendChild($encryptedDataIV);
@@ -298,6 +301,8 @@ class XmlExport
             }
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+        } catch (CryptoException $e) {
+            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
         }
     }
 
@@ -305,6 +310,8 @@ class XmlExport
      * Crear el nodo con los datos de los clientes
      *
      * #@throws SPException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     private function createCustomers()
     {
