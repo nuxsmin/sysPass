@@ -27,6 +27,7 @@ namespace SP\Controller;
 use SP\Config\Config;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\Session;
+use SP\Core\TaskFactory;
 use SP\Core\Upgrade\Upgrade;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -51,6 +52,7 @@ class MainActionController
     {
         $version = Request::analyze('version', $version);
         $type = Request::analyze('type');
+        $taskId = Request::analyze('taskId');
 
         if (Request::analyze('a') === 'upgrade'
             && Request::analyze('upgrade', 0) === 1
@@ -65,12 +67,17 @@ class MainActionController
                     throw new ValidationException(__('Es necesario confirmar la actualización', false));
                 }
 
+                TaskFactory::createTask('upgrade', $taskId);
+
                 $this->upgrade($version, $type);
+
 
                 $JsonResponse->setDescription(__('Aplicación actualizada correctamente', false));
                 $JsonResponse->addMessage(__('En 5 segundos será redirigido al login', false));
                 $JsonResponse->setStatus(0);
             } catch (\Exception $e) {
+                TaskFactory::endTask();
+
                 $JsonResponse->setDescription($e->getMessage());
             }
 
@@ -93,6 +100,8 @@ class MainActionController
     private function upgrade($version, $type)
     {
         Upgrade::doUpgrade($version);
+
+        TaskFactory::endTask();
 
         $Config = Config::getConfig();
         $Config->setMaintenance(false);

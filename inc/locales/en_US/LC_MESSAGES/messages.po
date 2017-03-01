@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-26 11:46+0100\n"
-"PO-Revision-Date: 2017-02-26 13:19+0100\n"
+"POT-Creation-Date: 2017-02-28 12:31+0100\n"
+"PO-Revision-Date: 2017-02-28 12:31+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -69,7 +69,7 @@ msgstr "Invalid file"
 #: ../../../../ajax/ajax_filesMgmt.php:104
 #: ../../../../ajax/ajax_filesMgmt.php:166
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:841
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:352
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:372
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:95
 #: ../../../../inc/themes/material-blue/views/config/import.inc:66
 #: ../../../../inc/themes/material-blue/views/config/import.inc:69
@@ -155,7 +155,7 @@ msgstr "Account"
 #: ../../../../inc/SP/Controller/LoginController.class.php:512
 #: ../../../../inc/SP/Controller/LoginController.class.php:530
 #: ../../../../inc/SP/Controller/LoginController.class.php:538
-#: ../../../../inc/SP/Controller/MainActionController.class.php:118
+#: ../../../../inc/SP/Controller/MainActionController.class.php:116
 #: ../../../../inc/SP/Core/Init.class.php:445
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:96
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:75
@@ -278,10 +278,10 @@ msgstr "Error while creating the account"
 
 #: ../../../../inc/SP/Account/Account.class.php:321
 #: ../../../../inc/SP/Account/Account.class.php:324
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:127
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:237
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:137
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:256
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:138
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:258
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:149
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:278
 #: ../../../../inc/SP/Api/ApiBase.class.php:200
 #: ../../../../inc/SP/Api/ApiBase.class.php:203
 #: ../../../../inc/SP/Api/ApiRequest.class.php:147
@@ -321,54 +321,54 @@ msgstr "Error while deleting the account"
 msgid "Error al actualizar la clave"
 msgstr "Error while updating the password"
 
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:66
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:102
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:188
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:216
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:68
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:94
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:199
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:218
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:558
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:586
 msgid "Actualizar Clave Maestra"
 msgstr "Update Master Password"
 
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:67
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:189
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:70
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:198
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:69
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:200
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:72
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:210
 msgid "Inicio"
 msgstr "Start"
 
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:71
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:74
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:73
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:76
 msgid "Error en el módulo de encriptación"
 msgstr "Error on the encryption module"
 
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:81
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:196
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:83
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:207
 msgid "Error al obtener las claves de las cuentas"
 msgstr "Error while retrieving the accounts' passwords"
 
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:103
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:144
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:217
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:254
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:110
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:154
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:231
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:273
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:113
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:155
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:237
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:275
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:121
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:166
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:252
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:295
 msgid "Cuentas actualizadas"
 msgstr "Accounts updated"
 
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:137
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:140
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:247
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:250
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:148
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:151
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:268
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:271
 msgid "Fallo al actualizar la clave de la cuenta"
 msgstr "Error while updating the account's password"
 
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:145
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:255
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:155
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:274
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:156
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:276
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:167
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:296
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1077
 msgid "Errores"
 msgstr "Errors"
@@ -385,29 +385,29 @@ msgstr "Error while deleting favorite"
 msgid "Error al actualizar el historial"
 msgstr "Error while updating history"
 
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:69
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:109
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:197
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:230
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:71
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:102
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:209
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:233
 msgid "Actualizar Clave Maestra (H)"
 msgstr "Update Master Password (H)"
 
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:84
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:205
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:86
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:217
 #: ../../../../inc/themes/material-blue/views/accountsearch/index.inc:11
 #: ../../../../inc/themes/material-blue/views/eventlog/eventlog.inc:11
 msgid "No se encontraron registros"
 msgstr "No records found"
 
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:124
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:243
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:136
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:265
 msgid "La clave maestra del registro no coincide"
 msgstr "The record's master password does not match"
 
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:147
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:150
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:266
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:269
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:159
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:162
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:288
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:291
 msgid "Fallo al actualizar la clave del histórico"
 msgstr "Error on updating the history's master password"
 
@@ -969,8 +969,8 @@ msgid "Modificar configuración"
 msgstr "Update Configuration"
 
 #: ../../../../inc/SP/Config/ConfigDB.class.php:149
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:325
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:331
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:345
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:351
 msgid "Parámetro"
 msgstr "Parameter"
 
@@ -1115,10 +1115,10 @@ msgid "Conexión correcta"
 msgstr "Connection successful"
 
 #: ../../../../inc/SP/Controller/ChecksController.class.php:138
-#: ../../../../inc/SP/Controller/MainActionController.class.php:117
+#: ../../../../inc/SP/Controller/MainActionController.class.php:115
 #: ../../../../inc/SP/Core/Init.class.php:444
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:139
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:345
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:147
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:365
 #: ../../../../inc/themes/material-blue/views/config/info.inc:40
 #: ../../../../inc/themes/material-blue/views/itemshow/plugins.inc:25
 msgid "Versión"
@@ -1307,7 +1307,7 @@ msgid "La clave maestra actual no coincide"
 msgstr "The current master password does not match"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:518
-#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:59
+#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:70
 #: ../../../../inc/SP/Import/Import.class.php:89
 msgid "No es posible iniciar una transacción"
 msgstr "Unable to start a transaction"
@@ -1325,7 +1325,7 @@ msgid "Errores al actualizar datos de campos personalizados"
 msgstr "Error while updating the custom fields data"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:548
-#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:68
+#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:80
 #: ../../../../inc/SP/Import/Import.class.php:95
 msgid "No es posible finalizar una transacción"
 msgstr "Unable to finish a transaction"
@@ -2377,7 +2377,7 @@ msgstr "Using temporary password"
 #: ../../../../inc/SP/Controller/LoginController.class.php:319
 #: ../../../../inc/SP/Controller/LoginController.class.php:338
 #: ../../../../inc/SP/Controller/LoginController.class.php:340
-#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:61
+#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:72
 msgid "Clave maestra incorrecta"
 msgstr "Wrong Master Password"
 
@@ -2410,7 +2410,7 @@ msgid "Autentificación"
 msgstr "Authentication"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:60
-#: ../../../../inc/SP/Controller/MainActionController.class.php:115
+#: ../../../../inc/SP/Controller/MainActionController.class.php:113
 #: ../../../../inc/SP/Core/Init.class.php:442
 msgid "Actualización"
 msgstr "Update"
@@ -2432,7 +2432,7 @@ msgstr "Application successfully updated"
 msgid "En 5 segundos será redirigido al login"
 msgstr "You will be redirected to log in within 5 seconds"
 
-#: ../../../../inc/SP/Controller/MainActionController.class.php:116
+#: ../../../../inc/SP/Controller/MainActionController.class.php:114
 #: ../../../../inc/SP/Core/Init.class.php:443 ../../../../res/upgrade.php:121
 msgid "Actualización de versión realizada."
 msgstr "Version updating done."
@@ -2509,6 +2509,10 @@ msgstr "Link viewed"
 #: ../../../../inc/SP/Controller/MainController.class.php:607
 msgid "Agente"
 msgstr "Agent"
+
+#: ../../../../inc/SP/Controller/TaskController.class.php:140
+msgid "Esperando actualización de progreso ..."
+msgstr "Waiting for progress updating ..."
 
 #: ../../../../inc/SP/Controller/UserPreferencesController.class.php:90
 msgid "Preferencias"
@@ -2939,16 +2943,16 @@ msgstr "Template does not contain files"
 msgid "Error al crear la categoría"
 msgstr "Error while creating the category"
 
-#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:104
-#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:115
+#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:122
+#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:133
 #: ../../../../inc/SP/Log/Email.class.php:141
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:70
 #: ../../../../js/strings.js.php:85
 msgid "Aviso"
 msgstr "Warning"
 
-#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:104
-#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:115
+#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:122
+#: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:133
 msgid ""
 "Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción."
 msgstr ""
@@ -2959,12 +2963,12 @@ msgstr ""
 msgid "Error al crear el cliente"
 msgstr "Error while creating the customer"
 
-#: ../../../../inc/SP/Core/Upgrade/Group.class.php:87
+#: ../../../../inc/SP/Core/Upgrade/Group.class.php:98
 #: ../../../../inc/SP/Mgmt/Groups/Group.class.php:67
 msgid "Error al crear el grupo"
 msgstr "Error while creating the group"
 
-#: ../../../../inc/SP/Core/Upgrade/Profile.class.php:84
+#: ../../../../inc/SP/Core/Upgrade/Profile.class.php:92
 #: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:68
 msgid "Error al crear perfil"
 msgstr "Error while creating the profile"
@@ -2982,7 +2986,7 @@ msgid "Compruebe el registro de eventos para más detalles"
 msgstr "Please, check the event log for more details"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:79
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:156
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:166
 msgid "Error al aplicar la actualización de la Base de Datos"
 msgstr "Error while updating the database"
 
@@ -2990,42 +2994,48 @@ msgstr "Error while updating the database"
 msgid "Error al aplicar la actualización de la aplicación"
 msgstr "Error while applying the application update"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:138
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:146
 msgid "Actualizar BBDD"
 msgstr "Update DB"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:144
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:152
 msgid "No es necesario actualizar la Base de Datos."
 msgstr "Database update not needed."
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:168
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:178
 msgid "Actualización de la Base de Datos realizada correctamente."
 msgstr "Database updating was completed successfully."
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:312
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:235
+#: ../../../../inc/SP/Mgmt/Users/User.class.php:336
+#: ../../../../inc/SP/Mgmt/Users/User.class.php:393
+msgid "Error al obtener los datos del usuario"
+msgstr "Error while retrieving the user's data"
+
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:332
 msgid "Actualizar Configuración"
 msgstr "Update Configuration"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:351
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:371
 msgid "Error al actualizar la configuración"
 msgstr "Error while updating the configuration"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:478
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:498
 msgid "La aplicación necesita actualizarse"
 msgstr "The application needs to be updated"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:478
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:498
 #, php-format
 msgid "Si es un administrador pulse en el enlace: %s"
 msgstr "If you are an administrator, click on the link: %s"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:478
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:498
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:57
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:162
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:167
 msgid "Actualizar"
 msgstr "Update"
 
-#: ../../../../inc/SP/Core/Upgrade/User.class.php:149
+#: ../../../../inc/SP/Core/Upgrade/User.class.php:151
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:88
 msgid "Error al crear el usuario"
 msgstr "Error while creating the user"
@@ -3671,11 +3681,6 @@ msgstr "Error while retrieving the users"
 msgid "Error al modificar la clave"
 msgstr "Error while updating the password"
 
-#: ../../../../inc/SP/Mgmt/Users/User.class.php:336
-#: ../../../../inc/SP/Mgmt/Users/User.class.php:393
-msgid "Error al obtener los datos del usuario"
-msgstr "Error while retrieving the user's data"
-
 #: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:108
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:54
 msgid "Usuario de LDAP"
@@ -4148,6 +4153,11 @@ msgstr "This action will reset all plugin data. Do you want to continue?"
 #: ../../../../js/strings.js.php:84
 msgid "Este proceso puede durar algo de tiempo. Desea continuar?"
 msgstr "This process could long some time. Do you wish to continue?"
+
+#: ../../../../js/strings.js.php:87
+msgid ""
+"Realizando tarea. Por favor, no cierre la ventana/pestaña del navegador."
+msgstr "Performing task. Please, do not close the browser window/tab."
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:67
 #: ../../../../inc/themes/material-blue/views/account/account.inc:135
@@ -5885,21 +5895,21 @@ msgstr ""
 #, php-format
 msgid ""
 "Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo."
-msgstr "It will be updated %s accounts. This process could take a some time."
+msgstr "It will be updated %s accounts. This process could take some time."
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:135
 msgid "Introducir login de usuario válido"
 msgstr "Enter a valid user login"
 
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:141
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:146
 msgid "He realizado una copia de seguridad completa de sysPass"
 msgstr "I've done a full sysPass backup"
 
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:154
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:159
 msgid "Por favor espere mientras el proceso se ejecuta"
 msgstr "Please, wait while the process is running"
 
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:164
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:169
 msgid "Iniciar Actualización"
 msgstr "Start Update"
 
@@ -5950,9 +5960,3 @@ msgstr "Search results of '%s'"
 #: ../../../../inc/themes/material-blue/views/wiki/wikipage.inc:23
 msgid "Página"
 msgstr "Page"
-
-#~ msgid "Error al eliminar archivo"
-#~ msgstr "Error while deleting the file"
-
-#~ msgid "Error al aplicar la actualización de la Base de Datos."
-#~ msgstr "Error while updating database."

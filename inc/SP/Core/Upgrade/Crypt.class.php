@@ -31,9 +31,6 @@ use SP\Config\ConfigDB;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
-use SP\Core\Messages\TaskMessage;
-use SP\Core\Session;
-use SP\Core\Task;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Mgmt\Users\UserMigrate;
@@ -58,12 +55,6 @@ class Crypt
         global $timeStart;
 
         try {
-            $Task = new Task(__FUNCTION__);
-
-            Session::setTask($Task);
-
-            session_write_close();
-
             AccountHistoryCrypt::$currentMPassHash = ConfigDB::getValue('masterPwd');
 
             if (!DB::beginTransaction()) {
@@ -82,19 +73,11 @@ class Crypt
 
             debugLog('Total time: ' . (Init::microtime_float() - $timeStart));
 
-            $Task->end();
-
-            session_start();
-
             return true;
         } catch (\Exception $e) {
             if (DB::rollbackTransaction()) {
                 debugLog('Rollback: ' . __METHOD__);
             }
-
-            $Task->end();
-
-            session_start();
 
             throw $e;
         }
@@ -126,8 +109,8 @@ class Crypt
 
             // Hash de clave maestra anterior a 2.0.0.17013101
             // Hash de clave maestra anterior a 2.0.0.17021601
-        } elseif (hash_equals(crypt($masterPass, substr($configHashMPass, 0, 72)), substr($configHashMPass, 72))
-            || hash_equals(crypt($masterPass, substr($configHashMPass, 0, 30)), substr($configHashMPass, 30))
+        } elseif ((substr($configHashMPass, 72) !== false && hash_equals(crypt($masterPass, substr($configHashMPass, 0, 72)), substr($configHashMPass, 72)))
+            || (substr($configHashMPass, 30) !== false && hash_equals(crypt($masterPass, substr($configHashMPass, 0, 30)), substr($configHashMPass, 30)))
         ) {
             ConfigDB::setValue('masterPwd', Hash::hashKey($masterPass));
             Log::writeNewLog(__('Aviso', false), __('Se ha regenerado el HASH de clave maestra. No es necesaria ninguna acción.', false), Log::NOTICE);

@@ -88,17 +88,20 @@
                     <td class="descField"></td>
                     <td class="valField">
                         <div
-                            class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
+                                class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
                         <?php echo __('Guarde la nueva clave en un lugar seguro.'); ?>
                         <br>
                         <div
-                            class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
+                                class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
                         <?php echo __('Se volverán a encriptar las claves de todas las cuentas.'); ?>
                         <br>
                         <div
-                            class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
+                                class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
                         <?php echo __('Los usuarios deberán de introducir la nueva clave maestra.'); ?>
                         <br>
+                        <div
+                                class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
+                        <strong><?php printf(__('Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo.'), $numAccounts); ?></strong>
                         <br>
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="confirmPassChange">
                             <input type="checkbox" id="confirmPassChange" class="mdl-switch__input"
@@ -108,6 +111,13 @@
                     </td>
                 </tr>
             </table>
+
+            <?php if ($numAccounts >= 500): ?>
+                <input type="hidden" name="useTask" value="1">
+                <input type="hidden" name="taskId" value="<?php echo $taskId; ?>">
+                <input type="hidden" name="lock" value="masterpass">
+            <?php endif; ?>
+
             <input type="hidden" name="activeTab" value="<?php echo $encryption_tabIndex; ?>"/>
             <input type="hidden" name="actionId"
                    value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION; ?>"/>
@@ -133,16 +143,16 @@
                     </div>
                 </li>
                 <?php if ($isAdminApp): ?>
-                <li>
-                    <button type="button"
-                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
-                            data-onclick="config/refreshMpass"
-                            data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION_REFRESH; ?>"
-                            data-sk="<?php echo $sk; ?>"
-                            title="<?php echo __('Actualizar hash de clave maestra'); ?>">
-                        <i class="material-icons"><?php echo $icons->getIconRefresh()->getIcon(); ?></i>
-                    </button>
-                </li>
+                    <li>
+                        <button type="button"
+                                class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
+                                data-onclick="config/refreshMpass"
+                                data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION_REFRESH; ?>"
+                                data-sk="<?php echo $sk; ?>"
+                                title="<?php echo __('Actualizar hash de clave maestra'); ?>">
+                            <i class="material-icons"><?php echo $icons->getIconRefresh()->getIcon(); ?></i>
+                        </button>
+                    </li>
                 <?php endif; ?>
                 <li>
                     <button form="frmCrypt"

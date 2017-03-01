@@ -134,6 +134,12 @@
                         <label class="mdl-textfield__label"
                                for="userlogin"><?php echo __('Introducir login de usuario válido'); ?></label>
                     </div>
+
+                    <?php if ($numAccounts >= 500): ?>
+                        <input type="hidden" name="useTask" value="1">
+                        <input type="hidden" name="taskId" value="<?php echo $taskId; ?>">
+                        <input type="hidden" name="lock" value="upgrade">
+                    <?php endif; ?>
                 <?php endif; ?>
 
                 <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="chkConfirm">
@@ -144,7 +150,6 @@
                 <input type="hidden" name="a" value="<?php echo $action; ?>">
                 <input type="hidden" name="type" value="<?php echo $type; ?>">
                 <input type="hidden" name="version" value="<?php echo $version; ?>">
-                <input type="hidden" name="lock" value="upgrade">
                 <input type="hidden" name="upgrade" value="1">
             </fieldset>
 

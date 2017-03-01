@@ -51,7 +51,7 @@ class Session
      *
      * @param UserData $UserData
      */
-    public static function setUserData($UserData = null)
+    public static function setUserData(UserData $UserData = null)
     {
         self::setSessionKey('userData', $UserData);
     }
@@ -681,7 +681,7 @@ class Session
      *
      * @param Task $task
      */
-    public static function setTask(Task $task)
+    public static function setTask(Task $task = null)
     {
         self::setSessionKey('task', $task);
     }

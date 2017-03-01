@@ -27,6 +27,7 @@ namespace SP\Core\Upgrade;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\OldCrypt;
+use SP\Core\TaskFactory;
 use SP\DataModel\UserLoginData;
 use SP\Mgmt\Users\UserPass;
 use SP\Storage\DB;
@@ -47,6 +48,10 @@ class User
      */
     public static function fixUsersId($userId)
     {
+        TaskFactory::$Message->setTask(__FUNCTION__);
+        TaskFactory::$Message->setMessage(__('Actualizando IDs de usuarios'));
+        TaskFactory::sendTaskMessage();
+
         try {
             DB::beginTransaction();
 

@@ -25,6 +25,7 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
+use SP\Core\TaskFactory;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -43,6 +44,10 @@ class Category
      */
     public static function fixCategoriesId($categoryId)
     {
+        TaskFactory::$Message->setTask(__FUNCTION__);
+        TaskFactory::$Message->setMessage(__('Actualizando IDs de categorías'));
+        TaskFactory::sendTaskMessage();
+
         try {
             DB::beginTransaction();
 

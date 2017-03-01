@@ -296,4 +296,20 @@ class AccountUtil
 
         return DB::getResultsArray($Data);
     }
+
+    /**
+     * Devolver el número de cuentas a procesar
+     *
+     * @return int
+     */
+    public static function getTotalNumAccounts()
+    {
+        $query = /** @lang SQL */
+            'SELECT SUM(n) AS num FROM (SELECT COUNT(*) AS n FROM accounts UNION SELECT COUNT(*) AS n FROM accHistory) a';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return (int)DB::getResults($Data)->num;
+    }
 }

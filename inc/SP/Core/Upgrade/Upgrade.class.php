@@ -32,6 +32,7 @@ use SP\Controller\MainActionController;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Session as CoreSession;
+use SP\Core\TaskFactory;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -109,10 +110,18 @@ class Upgrade
      */
     private static function auxPreDbUpgrade($version)
     {
+        if ((int)ConfigDB::getValue('version') >= $version) {
+            return true;
+        }
+
         switch ($version) {
             case 1316011001:
+                debugLog(__FUNCTION__ . ': ' . $version);
+
                 return self::upgradeDB(1300000000);
             case 1316100601:
+                debugLog(__FUNCTION__ . ': ' . $version);
+
                 return
                     Account::fixAccountsId()
                     && UserUpgrade::fixUsersId(Request::analyze('userid', 0))
@@ -145,6 +154,12 @@ class Upgrade
             $Log->writeLog();
             return true;
         }
+
+        TaskFactory::$Message->setTask(__('Actualizar BBDD'));
+        TaskFactory::$Message->setMessage(sprintf('%s : %s', __('Versión'), $version));
+        TaskFactory::sendTaskMessage();
+
+        debugLog(__FUNCTION__ . ': ' . $version);
 
         $Data = new QueryData();
 
@@ -221,10 +236,17 @@ class Upgrade
                 $masterPass = Request::analyzeEncrypted('masterkey');
                 $UserData = User::getItem()->getByLogin(Request::analyze('userlogin'));
 
+                if (!is_object($UserData)) {
+                    throw new SPException(SPException::SP_ERROR, __('Error al obtener los datos del usuario', false));
+                }
+
+                @session_start();
+
                 CoreSession::setUserData($UserData);
 
+                @session_write_close();
+
                 return $dbResult === true
-                    && is_object($UserData)
                     && !empty($masterPass)
                     && Crypt::migrate($masterPass);
         }
@@ -243,12 +265,20 @@ class Upgrade
         try {
             switch ($version) {
                 case 12001:
+                    debugLog(__FUNCTION__ . ': ' . $version);
+
                     return (ProfileUtil::migrateProfiles() && UserMigrate::migrateUsersGroup());
                 case 12002:
+                    debugLog(__FUNCTION__ . ': ' . $version);
+
                     return UserMigrate::setMigrateUsers();
                 case 20017010901:
+                    debugLog(__FUNCTION__ . ': ' . $version);
+
                     return CustomFieldsUtil::migrateCustomFields() && UserPreferencesUtil::migrate();
                 case 20017011202:
+                    debugLog(__FUNCTION__ . ': ' . $version);
+
                     return UserPreferencesUtil::migrate();
             }
         } catch (SPException $e) {
@@ -284,6 +314,8 @@ class Upgrade
             if (version_compare($version, $upgradeVersion) < 0) {
                 switch ($upgradeVersion) {
                     case 20017011202:
+                        debugLog(__FUNCTION__ . ': ' . $version);
+
                         $Config->setSiteTheme('material-blue');
                         $Config->setConfigVersion($upgradeVersion);
                         Config::saveConfig($Config, false);

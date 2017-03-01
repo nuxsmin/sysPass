@@ -25,6 +25,7 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
+use SP\Core\TaskFactory;
 use SP\DataModel\ProfileData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -49,6 +50,10 @@ class Profile
         $Data = new QueryData();
 
         try {
+            TaskFactory::$Message->setTask(__FUNCTION__);
+            TaskFactory::$Message->setMessage(__('Actualizando IDs de perfil'));
+            TaskFactory::sendTaskMessage();
+
             DB::beginTransaction();
 
             if ($profileId === 0){

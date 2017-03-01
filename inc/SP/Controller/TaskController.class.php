@@ -25,9 +25,9 @@
 namespace SP\Controller;
 
 use SP\Core\Messages\TaskMessage;
-use SP\Core\Session;
 use SP\Core\Task;
 use SP\Http\Request;
+use SP\Util\Util;
 
 /**
  * Class TaskController
@@ -52,6 +52,27 @@ class TaskController
      * @var string Archivo de bloqueo
      */
     protected $lockFile;
+    /**
+     * @var string Directorio de las tareas
+     */
+    protected $dir;
+    /**
+     * @var string ID de la tarea
+     */
+    protected $taskId;
+    /**
+     * @var string Archivo de la tarea
+     */
+    protected $taskFile;
+
+    /**
+     * TaskController constructor.
+     */
+    public function __construct()
+    {
+        $this->dir = Util::getTempDir();
+        $this->taskId = Request::analyze('taskId');
+    }
 
     /**
      * Realizar acción
@@ -60,58 +81,57 @@ class TaskController
      */
     public function doAction()
     {
+        session_write_close();
+
         $source = Request::analyze('source');
 
-        if ($this->checkWait($source)) {
+        if ($this->dir === false || !$this->getLock($source)) {
             return false;
         }
 
+        $this->taskFile = $this->dir . DIRECTORY_SEPARATOR . $this->taskId . '.task';
+
         $count = 0;
 
-        do {
-            session_write_close();
-
+        while (!$this->checkTaskRegistered() || !$this->checkTaskFile()) {
             if ($count >= $this->startupWaitCount) {
                 debugLog('Aborting ...');
 
-                $this->removeLock();
-
-                return false;
+                die(1);
             }
 
-            debugLog('Waiting task ...');
+            debugLog('Waiting for task ...');
 
-            sleep($this->startupWaitTime);
-
-            session_start();
-
-            $this->Task = Session::getTask();
             $count++;
-        } while (!is_object($this->Task));
-
-        session_write_close();
-
-        if ($this->checkFile()) {
-            $this->readTaskStatus();
+            sleep($this->startupWaitTime);
         }
 
-        $this->removeLock();
+        $this->readTaskStatus();
 
-        return true;
+        die(0);
     }
 
     /**
-     * Comprobar si hay una tarea a la espera
+     * Comprueba si una tarea ha sido registrada en la sesión
      *
-     * @param $source
      * @return bool
      */
-    protected function checkWait($source)
+    protected function checkTaskRegistered()
     {
-        $this->lockFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $source . '.lock';
+        if (is_object($this->Task)) {
+            debugLog('Task detected: ' . $this->Task->getTaskId());
 
-        if (file_exists($this->lockFile) || !touch($this->lockFile)) {
             return true;
+        }
+
+        if (file_exists($this->taskFile)) {
+            $task = file_get_contents($this->taskFile);
+
+            if ($task !== false) {
+                $this->Task = unserialize($task);
+            }
+
+            return is_object($this->Task);
         }
 
         return false;
@@ -120,33 +140,35 @@ class TaskController
     /**
      *  Comprobar si el archivo de salida de la tarea existe
      */
-    protected function checkFile()
+    protected function checkTaskFile()
     {
-        return file_exists($this->Task->getFile());
+        return file_exists($this->Task->getFileOut());
     }
 
     /**
-     * Leer el estdo de una tarea y enviarlo
+     * Leer el estado de una tarea y enviarlo
      */
     protected function readTaskStatus()
     {
+        debugLog('Tracking task: ' . $this->Task->getTaskId());
+
         $id = 0;
         $failCount = 0;
-        $file = $this->Task->getFile();
+        $file = $this->Task->getFileOut();
         $interval = $this->Task->getInterval();
 
         $Message = new TaskMessage();
         $Message->setTask($this->Task->getTaskId());
         $Message->setMessage(__('Esperando actualización de progreso ...'));
 
-        while ($failCount <= 10) {
+        while ($failCount <= 30 && file_exists($this->taskFile)) {
             $content = file_get_contents($file);
 
-            if ($content !== false) {
+            if (!empty($content)) {
                 $this->sendMessage($id, $content);
                 $id++;
             } else {
-                debugLog($Message->composeText());
+                debugLog($Message->composeJson());
 
                 $this->sendMessage($id, $Message->composeJson());
                 $failCount++;
@@ -171,6 +193,33 @@ class TaskController
     }
 
     /**
+     * Comprobar si hay una tarea a la espera
+     *
+     * @param $source
+     * @return bool
+     */
+    protected function checkWait($source)
+    {
+        $this->lockFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $source . '.lock';
+
+        if (file_exists($this->lockFile)) {
+            $timeout = $this->startupWaitCount * $this->startupWaitTime;
+
+            if (filemtime($this->lockFile) + $timeout < time()) {
+                unlink($this->lockFile);
+
+                return false;
+            }
+
+            return true;
+        }
+
+        touch($this->lockFile);
+
+        return false;
+    }
+
+    /**
      * Eliminar bloqueo
      */
     protected function removeLock()
@@ -178,5 +227,43 @@ class TaskController
         debugLog(__METHOD__);
 
         unlink($this->lockFile);
+    }
+
+    /**
+     * Obtener un bloqueo para la ejecución de la tarea
+     *
+     * @param $source
+     *
+     * @return bool
+     */
+    private function getLock($source)
+    {
+        if ($source === '') {
+            $source = 'task';
+        }
+
+        $this->lockFile = $this->dir . DIRECTORY_SEPARATOR . $source . '.lock';
+
+        if (file_exists($this->lockFile)) {
+            $timeout = $this->startupWaitCount * $this->startupWaitTime;
+
+            if (filemtime($this->lockFile) + $timeout < time()) {
+                unlink($this->lockFile);
+
+                return $this->updateLock();
+            }
+
+            return false;
+        } else {
+            return $this->updateLock();
+        }
+    }
+
+    /**
+     * Actualizar el tiempo del archivo de bloqueo
+     */
+    protected function updateLock()
+    {
+        return file_put_contents($this->lockFile, time()) !== false;
     }
 }

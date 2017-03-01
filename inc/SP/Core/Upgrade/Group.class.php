@@ -25,6 +25,7 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
+use SP\Core\TaskFactory;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -46,6 +47,10 @@ class Group
      */
     public static function fixGroupId($groupId)
     {
+        TaskFactory::$Message->setTask(__FUNCTION__);
+        TaskFactory::$Message->setMessage(__('Actualizando IDs de grupos'));
+        TaskFactory::sendTaskMessage();
+
         try {
             DB::beginTransaction();
 

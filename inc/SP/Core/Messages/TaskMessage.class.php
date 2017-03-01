@@ -36,6 +36,10 @@ class TaskMessage implements MessageInterface, JsonSerializable
     /**
      * @var string
      */
+    protected $taskId;
+    /**
+     * @var string
+     */
     protected $task;
     /**
      * @var string
@@ -142,6 +146,7 @@ class TaskMessage implements MessageInterface, JsonSerializable
     public function composeText()
     {
         return implode(PHP_EOL, [
+            'taskId' => $this->taskId,
             'task' => $this->task,
             'message' => $this->message,
             'time' => $this->time,
@@ -158,6 +163,7 @@ class TaskMessage implements MessageInterface, JsonSerializable
     public function composeHtml()
     {
         return [
+            'taskId' => $this->taskId,
             'task' => $this->task,
             'message' => $this->message,
             'time' => $this->time,
@@ -185,5 +191,21 @@ class TaskMessage implements MessageInterface, JsonSerializable
     public function jsonSerialize()
     {
         return get_object_vars($this);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTaskId()
+    {
+        return $this->taskId;
+    }
+
+    /**
+     * @param string $taskId
+     */
+    public function setTaskId($taskId)
+    {
+        $this->taskId = $taskId;
     }
 }

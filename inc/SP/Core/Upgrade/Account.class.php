@@ -25,6 +25,7 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
+use SP\Core\TaskFactory;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -42,6 +43,10 @@ class Account
      */
     public static function fixAccountsId()
     {
+        TaskFactory::$Message->setTask(__FUNCTION__);
+        TaskFactory::$Message->setMessage(__('Actualizando IDs de cuentas'));
+        TaskFactory::sendTaskMessage();
+
         try {
             DB::beginTransaction();
 
@@ -60,21 +65,5 @@ class Account
 
             return false;
         }
-    }
-
-    /**
-     * Devolver el número de cuentas a procesar
-     *
-     * @return int
-     */
-    public static function getNumAccounts()
-    {
-        $query = /** @lang SQL */
-            'SELECT SUM(n) AS num FROM (SELECT COUNT(*) AS n FROM accounts UNION SELECT COUNT(*) AS n FROM accHistory) a';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        return (int)DB::getResults($Data)->num;
     }
 }

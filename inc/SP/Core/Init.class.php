@@ -563,7 +563,7 @@ class Init
 
             if ($check === true
                 || Checks::isAjax()
-                || Request::analyze('a') === 'upgrade'
+                || (Request::analyze('a') === 'upgrade' && Request::analyze('type') !== '')
                 || Request::analyze('nodbupgrade', 0) === 1
                 || (self::$LOCK > 0 && self::isLoggedIn() && self::$LOCK === Session::getUserData()->getUserId())
             ) {

@@ -287,7 +287,7 @@ class AccountController extends ControllerBase implements ActionsInterface
 
             $publicLinkUrl = (Checks::publicLinksIsEnabled() && $PublicLinkData ? Init::$WEBURI . '/index.php?h=' . $PublicLinkData->getPublicLinkHash() . '&a=link' : null);
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
-            $this->view->assign('publicLinkId', $PublicLinkData->getPublicLinkId());
+            $this->view->assign('publicLinkId', $PublicLinkData ? $PublicLinkData->getPublicLinkId() : 0);
 
             $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
             $this->view->assign('accountPassDateChange', date('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: 0));
@@ -322,6 +322,14 @@ class AccountController extends ControllerBase implements ActionsInterface
     private function getCustomFieldsForItem()
     {
         $this->view->assign('customFields', CustomField::getItem(new CustomFieldData(ActionsInterface::ACTION_ACC))->getById($this->getId()));
+    }
+
+    /**
+     * @return int
+     */
+    private function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -376,14 +384,6 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('gotData', $this->isGotData());
 
         return true;
-    }
-
-    /**
-     * @return int
-     */
-    private function getId()
-    {
-        return $this->id;
     }
 
     /**

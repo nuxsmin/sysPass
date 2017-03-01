@@ -38,6 +38,7 @@ use SP\Core\Init;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
+use SP\Core\Task;
 use SP\Core\XmlExport;
 use SP\Http\Request;
 use SP\Import\Import;
@@ -420,7 +421,6 @@ class ConfigActionController implements ItemControllerInterface
      */
     protected function mailAction()
     {
-        $Log = Log::newLog(__('Modificar Configuración', false));
         $Config = Session::getConfig();
 
         // Mail
@@ -519,10 +519,15 @@ class ConfigActionController implements ItemControllerInterface
                 return;
             }
 
+            $Task = new Task(__FUNCTION__, Request::analyze('taskId'));
+            $Task->register();
+
             $Account = new AccountCrypt();
 
-            if (!$Account->updatePass($currentMasterPass, $newMasterPass)) {
+            if (!$Account->updatePass($currentMasterPass, $newMasterPass, $Task)) {
                 DB::rollbackTransaction();
+
+                $Task->end();
 
                 $this->JsonResponse->setDescription(__('Errores al actualizar las claves de las cuentas', false));
                 return;
@@ -530,8 +535,10 @@ class ConfigActionController implements ItemControllerInterface
 
             $AccountHistory = new AccountHistoryCrypt();
 
-            if (!$AccountHistory->updatePass($currentMasterPass, $newMasterPass)) {
+            if (!$AccountHistory->updatePass($currentMasterPass, $newMasterPass, $Task)) {
                 DB::rollbackTransaction();
+
+                $Task->end();
 
                 $this->JsonResponse->setDescription(__('Errores al actualizar las claves de las cuentas del histórico', false));
                 return;
@@ -540,14 +547,20 @@ class ConfigActionController implements ItemControllerInterface
             if (!CustomFieldsUtil::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)) {
                 DB::rollbackTransaction();
 
+                $Task->end();
+
                 $this->JsonResponse->setDescription(__('Errores al actualizar datos de campos personalizados', false));
                 return;
             }
 
             if (!DB::endTransaction()) {
+                $Task->end();
+
                 $this->JsonResponse->setDescription(__('No es posible finalizar una transacción', false));
                 return;
             }
+
+            $Task->end();
 
             Util::unlockApp();
         }

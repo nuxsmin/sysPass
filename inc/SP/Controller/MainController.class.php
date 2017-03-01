@@ -26,6 +26,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
+use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
@@ -37,6 +38,7 @@ use SP\Core\Messages\NoticeMessage;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
+use SP\Core\Task;
 use SP\Core\Template;
 use SP\Core\Upgrade\Account;
 use SP\Core\Upgrade\Check;
@@ -443,6 +445,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('type', $type);
         $this->view->assign('version', $version);
         $this->view->assign('upgradeVersion', implode('.', Util::getVersion(true)));
+        $this->view->assign('taskId', Task::genTaskId('masterpass'));
 
         if ($version < 1316011001) {
             $this->view->assign('checkConstraints', Check::checkConstraints());
@@ -459,7 +462,7 @@ class MainController extends ControllerBase implements ActionsInterface
         }
 
         if ($version < 21017022601) {
-            $this->view->assign('numAccounts', Account::getNumAccounts());
+            $this->view->assign('numAccounts', AccountUtil::getTotalNumAccounts());
         }
 
         $this->view();

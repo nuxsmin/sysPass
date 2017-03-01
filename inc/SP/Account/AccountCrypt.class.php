@@ -32,6 +32,7 @@ use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\Core\Task;
+use SP\Core\TaskFactory;
 use SP\DataModel\AccountData;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -51,7 +52,7 @@ class AccountCrypt
      * Actualiza las claves de todas las cuentas con la clave maestra actual
      * usando nueva encriptación.
      *
-     * @param $currentMasterPass
+     * @param string $currentMasterPass
      * @return bool
      */
     public function updateOldPass(&$currentMasterPass)
@@ -87,10 +88,9 @@ class AccountCrypt
         }
 
         $AccountDataBase = new AccountData();
-        $Task = Session::getTask();
 
-        $Message = new TaskMessage();
-        $Message->setTask(__('Actualizar Clave Maestra'));
+        TaskFactory::$Message->setTask(__('Actualizar Clave Maestra'));
+        TaskFactory::sendTaskMessage();
 
         $counter = 0;
         $startTime = time();
@@ -107,11 +107,10 @@ class AccountCrypt
             if ($counter % 100 === 0) {
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
 
-                $Message->setMessage(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
-                $Message->setProgress(round(($counter * 100) / $numAccounts, 2));
-                $Message->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
-
-                $Task->writeJsonStatusAndFlush($Message);
+                TaskFactory::$Message->setMessage(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
+                TaskFactory::$Message->setProgress(round(($counter * 100) / $numAccounts, 2));
+                TaskFactory::$Message->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
+                TaskFactory::sendTaskMessage();
             }
 
             $AccountData = clone $AccountDataBase;
@@ -178,11 +177,12 @@ class AccountCrypt
     /**
      * Actualiza las claves de todas las cuentas con la nueva clave maestra.
      *
-     * @param $currentMasterPass
-     * @param $newMasterPass
+     * @param string $currentMasterPass
+     * @param string $newMasterPass
+     * @param Task   $Task
      * @return bool
      */
-    public function updatePass($currentMasterPass, $newMasterPass)
+    public function updatePass($currentMasterPass, $newMasterPass, Task $Task)
     {
         set_time_limit(0);
 
@@ -208,10 +208,12 @@ class AccountCrypt
         }
 
         $AccountDataBase = new AccountData();
-        $Task = new Task(__FUNCTION__);
 
         $Message = new TaskMessage();
+        $Message->setTaskId($Task->getTaskId());
         $Message->setTask(__('Actualizar Clave Maestra'));
+
+        $Task->writeJsonStatusAndFlush($Message);
 
         $counter = 0;
         $startTime = time();

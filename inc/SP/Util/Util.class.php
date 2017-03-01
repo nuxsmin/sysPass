@@ -43,7 +43,7 @@ class Util
     /**
      * Generar una clave aleatoria
      *
-     * @param int $length Longitud de la clave
+     * @param int  $length     Longitud de la clave
      * @param bool $useNumbers Usar números
      * @param bool $useSpecial Usar carácteres especiales
      * @param bool $checKStrength
@@ -246,10 +246,10 @@ class Util
     /**
      * Obtener datos desde una URL usando CURL
      *
-     * @param string $url
-     * @param array $data
+     * @param string    $url
+     * @param array     $data
      * @param bool|null $useCookie
-     * @param bool $weak
+     * @param bool      $weak
      * @return bool|string
      * @throws SPException
      */
@@ -453,8 +453,8 @@ class Util
      * such as 'false','N','yes','on','off', etc.
      *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
-     * @param mixed $in The variable to check
-     * @param bool $strict If set to false, consider everything that is not false to
+     * @param mixed $in     The variable to check
+     * @param bool  $strict If set to false, consider everything that is not false to
      *                      be true.
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
      */
@@ -528,7 +528,7 @@ class Util
     /**
      * Cast an object to another class, keeping the properties, but changing the methods
      *
-     * @param string $class Class name
+     * @param string        $class Class name
      * @param string|object $object
      * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
@@ -584,9 +584,9 @@ class Util
     /**
      * Comprobar si un valor existe en un array de objetos
      *
-     * @param array $objectArray
+     * @param array  $objectArray
      * @param string $method
-     * @param mixed $value
+     * @param mixed  $value
      * @return bool
      */
     public static function checkInObjectArray(array $objectArray, $method, $value)
@@ -659,5 +659,31 @@ class Util
         }
 
         return [0, 0];
+    }
+
+    /**
+     * Comprueba y devuelve un directorio temporal válido
+     *
+     * @return bool|string
+     */
+    public static function getTempDir()
+    {
+        $sysTmp = sys_get_temp_dir();
+        $appTmp = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'tmp';
+        $file = 'syspass.test';
+
+        if (file_exists($appTmp . DIRECTORY_SEPARATOR . $file)) {
+            return $appTmp;
+        } elseif (file_exists($sysTmp . DIRECTORY_SEPARATOR . $file)) {
+            return $sysTmp;
+        }
+
+        if (is_dir($appTmp) || @mkdir($appTmp)) {
+            if (touch($appTmp . DIRECTORY_SEPARATOR . $file)) {
+                return $appTmp;
+            }
+        }
+
+        return touch($sysTmp . DIRECTORY_SEPARATOR . $file) ? $sysTmp : false;
     }
 }

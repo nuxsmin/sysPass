@@ -25,6 +25,7 @@
 namespace SP\Core;
 
 use SP\Core\Messages\TaskMessage;
+use SP\Util\Util;
 
 /**
  * Class Task
@@ -42,9 +43,13 @@ class Task
      */
     protected $taskId;
     /**
+     * @var string Ruta y archivo salida de la tarea
+     */
+    protected $fileOut;
+    /**
      * @var string Ruta y archivo de la tarea
      */
-    protected $file;
+    protected $fileTask;
     /**
      * @var resource Manejador del archivo
      */
@@ -62,11 +67,12 @@ class Task
      * Task constructor.
      *
      * @param string $name Nombre de la tarea
+     * @param string $id
      */
-    public function __construct($name)
+    public function __construct($name, $id)
     {
         $this->name = $name;
-        $this->taskId = uniqid($this->name, true);
+        $this->taskId = $id;
         $this->initialized = $this->checkFile();
     }
 
@@ -77,29 +83,41 @@ class Task
      */
     protected function checkFile()
     {
-        $fileName = $this->taskId . '.out';
-        $fileTmp = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+        $tempDir = Util::getTempDir();
 
-        if (touch($fileTmp)) {
-            $this->file = $fileTmp;
-        } else {
-            $fileTmpAlt = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . $fileName;
-            $dirAlt = dirname($fileTmpAlt);
+        if ($tempDir !== false) {
+            $this->fileOut = $tempDir . DIRECTORY_SEPARATOR . $this->taskId . '.out';
+            $this->fileTask = $tempDir . DIRECTORY_SEPARATOR . $this->taskId . '.task';
 
-            if (!file_exists($dirAlt) && !mkdir($dirAlt)) {
-                return false;
-            }
+            $this->deleteTaskFiles();
 
-            if (!touch($fileTmpAlt)) {
-                return false;
-            }
-
-            $this->file = $fileTmpAlt;
+            return true;
         }
 
-        debugLog('Start Task: ' . $this->name);
+        return false;
+    }
 
-        return true;
+    /**
+     * Eliminar los archivos de la tarea no usados
+     */
+    protected function deleteTaskFiles()
+    {
+        $filesOut = dirname($this->fileOut) . DIRECTORY_SEPARATOR . $this->taskId . '*.out';
+        $filesTask = dirname($this->fileOut) . DIRECTORY_SEPARATOR . $this->taskId . '*.task';
+
+        array_map('unlink', glob($filesOut));
+        array_map('unlink', glob($filesTask));
+    }
+
+    /**
+     * Generar un ID de tarea
+     *
+     * @param $name
+     * @return string
+     */
+    public static function genTaskId($name)
+    {
+        return uniqid($name, true);
     }
 
     /**
@@ -120,7 +138,7 @@ class Task
     protected function openFile()
     {
         if ($this->initialized === false
-            || !$this->fileHandler = fopen($this->file, 'wb')
+            || !$this->fileHandler = fopen($this->fileOut, 'wb')
         ) {
             return false;
         }
@@ -157,7 +175,7 @@ class Task
     {
         return $this->initialized === true
             && !is_resource($this->fileHandler)
-            && file_put_contents($this->file, $Message->composeText()) !== false;
+            && file_put_contents($this->fileOut, $Message->composeText()) !== false;
     }
 
     /**
@@ -170,19 +188,34 @@ class Task
     {
         return $this->initialized === true
             && !is_resource($this->fileHandler)
-            && file_put_contents($this->file, $Message->composeJson()) !== false;
+            && file_put_contents($this->fileOut, $Message->composeJson()) !== false;
     }
 
     /**
      * Iniciar la tarea
      *
+     * @param bool $startSession
      * @return bool
      */
-    public function end()
+    public function end($startSession = true)
     {
-        debugLog('End Task: ' . $this->name);
+        if ($startSession) {
+            session_start();
+        }
 
-        return $this->closeFile() && @unlink($this->file);
+        $this->deregister();
+
+        return $this->closeFile() && @unlink($this->fileOut);
+    }
+
+    /**
+     * Desregistrar la tarea en la sesión
+     */
+    public function deregister()
+    {
+        debugLog('Deregister Task: ' . $this->name);
+
+        unlink($this->fileTask);
     }
 
     /**
@@ -226,8 +259,34 @@ class Task
     /**
      * @return string
      */
-    public function getFile()
+    public function getFileOut()
     {
-        return $this->file;
+        return $this->fileOut;
+    }
+
+    /**
+     * Registrar la tarea en la sesión.
+     *
+     * Es necesario bloquear la sesión para permitir la ejecución de otros scripts
+     *
+     * @param bool $lockSession Bloquear la sesión
+     */
+    public function register($lockSession = true)
+    {
+        debugLog('Register Task: ' . $this->name);
+
+        file_put_contents($this->fileTask, serialize($this));
+
+        if ($lockSession === true) {
+            session_write_close();
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileTask()
+    {
+        return $this->fileTask;
     }
 }

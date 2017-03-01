@@ -25,6 +25,7 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
+use SP\Core\TaskFactory;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -43,6 +44,10 @@ class Customer
      */
     public static function fixCustomerId($customerId)
     {
+        TaskFactory::$Message->setTask(__FUNCTION__);
+        TaskFactory::$Message->setMessage(__('Actualizando IDs de clientes'));
+        TaskFactory::sendTaskMessage();
+
         try {
             DB::beginTransaction();
 
