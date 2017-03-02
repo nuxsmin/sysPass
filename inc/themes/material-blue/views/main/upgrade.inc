@@ -154,6 +154,7 @@
                 <input type="hidden" name="type" value="<?php echo $type; ?>">
                 <input type="hidden" name="version" value="<?php echo $version; ?>">
                 <input type="hidden" name="upgrade" value="1">
+                <input type="hidden" name="isAjax" value="1">
             </fieldset>
 
             <div>
