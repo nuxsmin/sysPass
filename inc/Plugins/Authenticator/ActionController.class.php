@@ -26,7 +26,6 @@ namespace Plugins\Authenticator;
 
 use SP\Controller\ItemControllerInterface;
 use SP\Controller\RequestControllerTrait;
-use SP\Core\ActionsInterface;
 use SP\Core\Plugin\PluginDataStore;
 use SP\Core\Session as CoreSession;
 use SP\DataModel\PluginData;

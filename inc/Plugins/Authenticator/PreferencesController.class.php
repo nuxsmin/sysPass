@@ -82,11 +82,11 @@ class PreferencesController
             if (!$AuthenticatorData->isTwofaEnabled()) {
                 $IV = Util::generateRandomBytes();
                 $AuthenticatorData->setIV($IV);
-
-                Session::setUserData($AuthenticatorData);
             } else {
                 $IV = $AuthenticatorData->getIV();
             }
+
+            Session::setUserData($AuthenticatorData);
 
             $twoFa = new Authenticator($UserData->getUserId(), $UserData->getUserLogin(), $IV);
 
