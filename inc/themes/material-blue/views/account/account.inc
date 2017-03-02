@@ -169,7 +169,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
                                   name="notes" tabindex="9"
-                                  maxlength="1000" <?php echo $readonly; ?>><?php echo $gotData ? $accountData->getAccountNotes() : ''; ?></textarea>
+                                  maxlength="5000" <?php echo $readonly; ?>><?php echo $gotData ? $accountData->getAccountNotes() : ''; ?></textarea>
                         <label class="mdl-textfield__label"
                                for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
                     </div>
