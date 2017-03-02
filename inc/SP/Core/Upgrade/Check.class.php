@@ -42,11 +42,13 @@ class Check
     {
         $query = /** @lang SQL */
             'SELECT * FROM 
-            (SELECT COUNT(*) AS accounts_user FROM accounts WHERE account_userId NOT IN (SELECT user_id FROM usrData) OR account_userId IS NULL) a,
+            (SELECT COUNT(*) AS accounts_user FROM accounts WHERE account_userId NOT IN (SELECT user_id FROM usrData) OR account_userId IS NULL) au,
+            (SELECT COUNT(*) AS accounts_group FROM accounts WHERE account_userGroupId NOT IN (SELECT usergroup_id FROM usrGroups) OR account_userGroupId IS NULL) ag,
             (SELECT COUNT(*) AS accounts_useredit FROM accounts WHERE account_userEditId NOT IN (SELECT user_id FROM usrData) OR account_userEditId IS NULL) b,
             (SELECT COUNT(*) AS accounts_category FROM accounts WHERE account_categoryId NOT IN (SELECT category_id FROM categories) OR account_categoryId IS NULL) c,
             (SELECT COUNT(*) AS accounts_customer FROM accounts WHERE account_customerId NOT IN (SELECT customer_id FROM customers) OR account_customerId IS NULL) d,
-            (SELECT COUNT(*) AS accountshistory_user FROM accHistory WHERE acchistory_userId NOT IN (SELECT user_id FROM usrData) OR acchistory_userId IS NULL) e,
+            (SELECT COUNT(*) AS accountshistory_user FROM accHistory WHERE acchistory_userId NOT IN (SELECT user_id FROM usrData) OR acchistory_userId IS NULL) eu,
+            (SELECT COUNT(*) AS accountshistory_group FROM accHistory WHERE acchistory_userGroupId NOT IN (SELECT usergroup_id FROM usrGroups) OR acchistory_userGroupId IS NULL) eg,
             (SELECT COUNT(*) AS accountshistory_useredit FROM accHistory WHERE acchistory_userEditId NOT IN (SELECT user_id FROM usrData) OR acchistory_userEditId IS NULL) f,
             (SELECT COUNT(*) AS accountshistory_category FROM accHistory WHERE acchistory_categoryId NOT IN (SELECT category_id FROM categories) OR acchistory_categoryId IS NULL) g,
             (SELECT COUNT(*) AS accountshistory_customer FROM accHistory WHERE acchistory_customerId NOT IN (SELECT customer_id FROM customers) OR acchistory_customerId IS NULL) h,

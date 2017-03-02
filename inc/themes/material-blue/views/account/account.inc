@@ -44,7 +44,8 @@
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $gotData ? $accountData->getAccountName() : ''; ?>" <?php echo $readonly; ?>>
+                               value="<?php echo $gotData ? $accountData->getAccountName() : ''; ?>" <?php echo $readonly; ?>
+                               tabindex="1">
                         <label class="mdl-textfield__label" for="name"><?php echo __('Nombre de cuenta'); ?></label>
                     </div>
                 </td>
@@ -55,7 +56,7 @@
                     <div class="lowres-title"><?php echo __('Cliente'); ?></div>
 
                     <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer"
-                            required <?php echo $disabled; ?>>
+                            tabindex="2" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
                         <?php foreach ($customers as $customer): ?>
                             <option
@@ -78,7 +79,7 @@
                     <div class="lowres-title"><?php echo __('Categoría'); ?></div>
 
                     <select id="selCategory" name="categoryId" class="select-box sel-chosen-category"
-                            required <?php echo $disabled; ?>>
+                            tabindex="3" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
                         <?php foreach ($categories as $category): ?>
                             <option
@@ -100,7 +101,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="url" name="url" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="255"
+                               maxlength="255" tabindex="4"
                                value="<?php echo $gotData ? $accountData->getAccountUrl() : ''; ?>" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label" for="name"><?php echo __('URL o IP de acceso'); ?></label>
                     </div>
@@ -112,7 +113,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50"
+                               maxlength="50" tabindex="5"
                                value="<?php echo $gotData ? $accountData->getAccountLogin() : ''; ?>" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label" for="name"><?php echo __('Usuario de acceso'); ?></label>
                     </div>
@@ -125,7 +126,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="accountpass" name="pass" type="password" required
                                    class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
-                                   maxlength="255"
+                                   maxlength="255" tabindex="6"
                                    autocomplete="off">
                             <label class="mdl-textfield__label" for="accountpass"><?php echo __('Clave'); ?></label>
                         </div>
@@ -137,7 +138,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="accountpassR" name="passR" type="password" required
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="255" autocomplete="off">
+                                   tabindex="7" maxlength="255" autocomplete="off">
                             <label class="mdl-textfield__label"
                                    for="accountpassR"><?php echo __('Clave (repetir)'); ?></label>
                         </div>
@@ -151,6 +152,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="accountpassdatechange" name="accountpassdatechange" type="date"
                                    class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
+                                   tabindex="8"
                                    value="<?php echo $accountPassDateChange; ?>" <?php echo $readonly; ?>>
                             <label class="mdl-textfield__label"
                                    for="accountpassdatechange"><?php echo __('Fecha'); ?></label>
@@ -166,7 +168,7 @@
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
-                                  name="notes"
+                                  name="notes" tabindex="9"
                                   maxlength="1000" <?php echo $readonly; ?>><?php echo $gotData ? $accountData->getAccountNotes() : ''; ?></textarea>
                         <label class="mdl-textfield__label"
                                for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
@@ -178,7 +180,7 @@
                     <div class="lowres-title"><?php echo __('Etiquetas'); ?></div>
 
                     <?php if (!$isView): ?>
-                        <select id="selTags" name="tags[]" multiple="multiple">
+                        <select id="selTags" name="tags[]" multiple="multiple" tabindex="10">
                             <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
                         </select>
                     <?php else: ?>
@@ -194,7 +196,7 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Cuenta Vinculada'); ?></div>
 
-                        <select id="selParentAccount" name="parentAccountId"
+                        <select id="selParentAccount" name="parentAccountId" tabindex="11"
                                 class="select-box select-box-deselect" <?php echo $disabled; ?>
                                 data-sk="<?php echo $sk; ?>"
                                 data-item-type="<?php echo \SP\Core\ItemsTypeInterface::ITEM_ACCOUNTS_USER; ?>"
@@ -211,7 +213,7 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Historial'); ?></div>
 
-                        <select id="historyId" name="historyId" class="select-box"
+                        <select id="historyId" name="historyId" class="select-box" tabindex="12"
                                 data-action-id="<?php echo SP\Core\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>"
                                 data-onchange="account/showHistory">
                             <option value=""><?php echo __('Seleccionar fecha'); ?></option>

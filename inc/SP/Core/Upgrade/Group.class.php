@@ -59,11 +59,23 @@ class Group
             }
 
             $Data = new QueryData();
+            $Data->addParam($groupId);
+
+            $query = /** @lang SQL */
+                'UPDATE accounts SET account_userGroupId = ? WHERE account_userGroupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR account_userGroupId IS NULL';
+            $Data->setQuery($query);
+
+            DB::getQuery($Data);
+
+            $query = /** @lang SQL */
+                'UPDATE accHistory SET acchistory_userGroupId = ? WHERE acchistory_userGroupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR acchistory_userGroupId IS NULL';
+            $Data->setQuery($query);
+
+            DB::getQuery($Data);
 
             $query = /** @lang SQL */
                 'UPDATE usrData SET user_groupId = ? WHERE user_groupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR user_groupId IS NULL';
             $Data->setQuery($query);
-            $Data->addParam($groupId);
 
             DB::getQuery($Data);
 

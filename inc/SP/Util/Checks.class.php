@@ -303,7 +303,8 @@ class Checks
      */
     public static function isAjax()
     {
-        return Request::getRequestHeaders('X-Requested-With') === 'XMLHttpRequest';
+        return Request::getRequestHeaders('X-Requested-With') === 'XMLHttpRequest'
+            || Request::analyze('isAjax', false, true);
     }
 
     /**

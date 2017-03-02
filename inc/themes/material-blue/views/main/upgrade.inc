@@ -84,7 +84,10 @@
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($checkConstraints->users_group > 0): ?>
+                    <?php if ($checkConstraints->users_group > 0
+                        || $checkConstraints->accounts_group > 0
+                        || $checkConstraints->accountshistory_group > 0
+                    ): ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="groupid" name="groupid" type="number"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
