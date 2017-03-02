@@ -473,6 +473,8 @@ class LoginController
         $this->LogMessage->addDetails(__('Servidor LDAP', false), $LdapAuthData->getServer());
 
         try {
+            $this->UserData->setUserLogin($this->UserData->getLogin());
+
             // Verificamos si el usuario existe en la BBDD
             if (UserLdap::checkLDAPUserInDB($this->UserData->getLogin())) {
                 // Actualizamos el usuario de LDAP en MySQL
