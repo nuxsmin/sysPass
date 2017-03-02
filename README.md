@@ -25,7 +25,7 @@ Detalles de instalación y documentación en Doc https://doc.syspass.org
 
 PHP web based Password Manager for business and personal use.
 
-- [x] AES-256 encryption in CBC mode
+- [x] AES-256 encryption in CTR mode
 - [x] RSA for sending passwords from forms
 - [x] Two factor authentication
 - [x] HTML5 and Ajax interface
@@ -46,9 +46,9 @@ Installation instructions and documentation at Doc https://doc.syspass.org
 
 #### ACTUALIZAR / UPDATE
 
-Para actualizar desde 1.2 seguir los pasos en https://doc.syspass.org/es/updating.html
+Para actualizar desde versiones anteriores seguir los pasos en http://doc.syspass.org/es/updating/v2_1.html
 
-In order to update from 1.2 you need to follow the steps at https://doc.syspass.org/en/updating.html
+In order to update from earlier versions you need to follow the steps on http://doc.syspass.org/en/updating/v2_1.html
 
 ----------------
 
@@ -63,5 +63,7 @@ a copy on 'COPYING' file.
 https://syspass.org
 
 https://demo.syspass.org
+
+https://doc.syspass.org
 
 https://github.com/nuxsmin/sysPass
