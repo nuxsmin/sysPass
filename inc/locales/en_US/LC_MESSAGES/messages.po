@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-01 01:52+0100\n"
-"PO-Revision-Date: 2017-03-01 01:53+0100\n"
+"PO-Revision-Date: 2017-03-02 22:45+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -584,7 +584,7 @@ msgstr "Remove Account"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:978
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1028
 msgid "Cuenta eliminada"
-msgstr "Account deleted"
+msgstr "Account removed"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:280
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:548

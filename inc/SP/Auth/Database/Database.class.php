@@ -28,12 +28,9 @@ use SP\Auth\AuthInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
-use SP\DataModel\UserPassData;
 use SP\Log\Log;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserMigrate;
-use SP\Storage\DB;
-use SP\Storage\QueryData;
 
 /**
  * Class Database

@@ -976,7 +976,7 @@ class ItemActionController implements ItemControllerInterface
                     }
                 } elseif ($numAccounts === 1) {
                     $this->LogMessage->addDescription(__('Cuenta eliminada', false));
-                    $this->LogMessage->addDetails(__('Nombre', false), $accounts->account_name);
+                    $this->LogMessage->addDetails(__('Nombre', false), $accounts);
                 }
                 break;
         }
