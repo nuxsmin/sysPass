@@ -1,0 +1,112 @@
+<?php
+/**
+ * sysPass
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Core\Crypt;
+
+use Defuse\Crypto\Exception\CryptoException;
+use Defuse\Crypto\Key;
+
+
+/**
+ * Class CryptSessionHandler
+ *
+ * @package SP\Core\Crypt
+ */
+class CryptSessionHandler extends \SessionHandler
+{
+    /**
+     * @var Key
+     */
+    private $Key;
+
+    /**
+     * Session constructor.
+     *
+     * @param Key $Key
+     */
+    public function __construct(Key $Key)
+    {
+        $this->Key = $Key;
+    }
+
+    /**
+     * Read session data
+     *
+     * @link  http://php.net/manual/en/sessionhandler.read.php
+     * @param string $id         The session id to read data for.
+     * @return string <p>
+     *                           Returns an encoded string of the read data.
+     *                           If nothing was read, it must return an empty string.
+     *                           Note this value is returned internally to PHP for processing.
+     *                           </p>
+     * @since 5.4.0
+     */
+    public function read($id)
+    {
+        $data = parent::read($id);
+
+        if (!$data) {
+            return '';
+        } else {
+            try {
+                return Crypt::decrypt($data, $this->Key);
+            } catch (CryptoException $e) {
+                debugLog($e->getMessage());
+
+                return '';
+            }
+        }
+    }
+
+    /**
+     * Write session data
+     *
+     * @link  http://php.net/manual/en/sessionhandler.write.php
+     * @param string $id           The session id.
+     * @param string $data         <p>
+     *                             The encoded session data. This data is the
+     *                             result of the PHP internally encoding
+     *                             the $_SESSION superglobal to a serialized
+     *                             string and passing it as this parameter.
+     *                             Please note sessions use an alternative serialization method.
+     *                             </p>
+     * @return bool <p>
+     *                             The return value (usually TRUE on success, FALSE on failure).
+     *                             Note this value is returned internally to PHP for processing.
+     *                             </p>
+     * @since 5.4.0
+     */
+    public function write($id, $data)
+    {
+        try {
+            $data = Crypt::encrypt($data, $this->Key);
+
+            return parent::write($id, $data);
+        } catch (CryptoException $e) {
+            debugLog($e->getMessage());
+
+            return false;
+        }
+    }
+}

@@ -29,6 +29,8 @@ use SP\Account\AccountAcl;
 use SP\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Controller\MainController;
+use SP\Core\Crypt\Cookie;
+use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Upgrade\Upgrade;
@@ -181,9 +183,6 @@ class Init
         // Comprobar acciones en URL
         self::checkPreLoginActions();
 
-        // Intentar establecer el tiempo de vida de la sesión en PHP
-        @ini_set('gc_maxlifetime', self::getSessionLifeTime());
-
         if (!Config::getConfig()->isInstalled()) {
             Session::setUserData();
         }
@@ -298,7 +297,14 @@ class Init
     private static function startSession()
     {
         // Evita que javascript acceda a las cookies de sesion de PHP
-        ini_set('session.cookie_httponly', '1');
+        @ini_set('session.cookie_httponly', '1');
+        @ini_set('session.save_handler', 'files');
+
+        $Key = Cookie::getKey();
+
+        if ($Key !== false) {
+            session_set_save_handler(new CryptSessionHandler($Key), true);
+        }
 
         // Si la sesión no puede ser iniciada, devolver un error 500
         if (session_start() === false) {
@@ -659,6 +665,9 @@ class Init
 
         // Regenerar el Id de sesión periódicamente para evitar fijación
         if ($sidStartTime === 0) {
+            // Intentar establecer el tiempo de vida de la sesión en PHP
+            @ini_set('session.gc_maxlifetime', self::getSessionLifeTime());
+
             Session::setSidStartTime(time());
             Session::setStartActivity(time());
         } else if (!$inMaintenance
