@@ -197,9 +197,9 @@ class LogMessage extends MessageBase
      */
     public function composeText()
     {
-        $message[] = $this->action;
-        $message[] = $this->getDescription();
-        $message[] = $this->getDetails();
+        $message[] = $this->getAction(true);
+        $message[] = $this->getDescription(true);
+        $message[] = $this->getDetails(true);
 
         return implode(PHP_EOL, $message);
     }

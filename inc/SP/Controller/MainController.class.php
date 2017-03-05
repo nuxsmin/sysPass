@@ -42,6 +42,7 @@ use SP\Core\Task;
 use SP\Core\Template;
 use SP\Core\Upgrade\Account;
 use SP\Core\Upgrade\Check;
+use SP\Core\Upgrade\Upgrade;
 use SP\DataModel\NoticeData;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\Html;
@@ -67,8 +68,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page El nombre de página para la clase del body
-     * @param bool $initialize Si es una inicialización completa
+     * @param string $page       El nombre de página para la clase del body
+     * @param bool   $initialize Si es una inicialización completa
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -447,7 +448,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('upgradeVersion', implode('.', Util::getVersion(true)));
         $this->view->assign('taskId', Task::genTaskId('masterpass'));
 
-        if ($version < 1316011001) {
+        if (Upgrade::checkVersion($version, '130.16011001')) {
             $this->view->assign('checkConstraints', Check::checkConstraints());
 
             $constraints = [];
@@ -461,7 +462,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->assign('constraints', $constraints);
         }
 
-        if ($version < 21017022601) {
+        if (Upgrade::checkVersion($version, '210.17022601')) {
             $this->view->assign('numAccounts', AccountUtil::getTotalNumAccounts());
         }
 

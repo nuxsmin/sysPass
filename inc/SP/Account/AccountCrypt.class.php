@@ -111,6 +111,8 @@ class AccountCrypt
                 TaskFactory::$Message->setProgress(round(($counter * 100) / $numAccounts, 2));
                 TaskFactory::$Message->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
                 TaskFactory::sendTaskMessage();
+
+                debugLog(TaskFactory::$Message->composeText());
             }
 
             $AccountData = clone $AccountDataBase;
@@ -235,6 +237,8 @@ class AccountCrypt
                 $Message->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
 
                 $Task->writeJsonStatusAndFlush($Message);
+
+                debugLog($Message->composeText());
             }
 
             $AccountData = clone $AccountDataBase;

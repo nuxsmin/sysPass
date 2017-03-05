@@ -188,7 +188,7 @@ class Init
         }
 
         // Si es una petición AJAX
-        if (Request::analyze('isAjax', false, true)) {
+        if (Checks::isAjax()) {
             return;
         }
 

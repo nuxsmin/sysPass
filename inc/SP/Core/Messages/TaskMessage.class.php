@@ -145,7 +145,7 @@ class TaskMessage implements MessageInterface, JsonSerializable
      */
     public function composeText()
     {
-        return implode(PHP_EOL, [
+        return implode(';', [
             'taskId' => $this->taskId,
             'task' => $this->task,
             'message' => $this->message,

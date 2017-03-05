@@ -27,7 +27,7 @@
                     <?php echo __('Este código se encuentra en el archivo de configuración de sysPass con la etiqueta "upgradeKey"'); ?>
                 </div>
 
-                <?php if ($version < 1316011001 && count($constraints) > 0): ?>
+                <?php if (\SP\Core\Upgrade\Upgrade::checkVersion($version, '130.16011001') && count($constraints) > 0): ?>
                     <div>
                         <ul class="errors">
                             <li class="msg-warning">
@@ -108,7 +108,7 @@
                     <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if ($version < 21017022601): ?>
+                <?php if (\SP\Core\Upgrade\Upgrade::checkVersion($version, '210.17022601')): ?>
                     <div>
                         <ul class="errors">
                             <li class="msg-warning">

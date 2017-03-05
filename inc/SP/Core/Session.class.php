@@ -667,22 +667,26 @@ class Session
     }
 
     /**
-     * Devuelve la tarea activa
+     * Devuelve si es necesario comprobar la versión de la aplicación
+     * para actualizar
      *
-     * @return Task
+     * @return bool
      */
-    public static function getTask()
+    public static function getUpgradeChecked()
     {
-        return self::getSessionKey('task');
+        return self::getSessionKey('upgradechecked', true);
     }
 
     /**
-     * Establecer la tarea activa
+     * Establecer si es necesario comprobar la versión de la aplicación
+     * para actualizar
      *
-     * @param Task $task
+     * @param bool $upgradechecked
      */
-    public static function setTask(Task $task = null)
+    public static function setUpgradeChecked($upgradechecked = false)
     {
-        self::setSessionKey('task', $task);
+        self::setSessionKey('upgradechecked', $upgradechecked);
     }
+
+
 }

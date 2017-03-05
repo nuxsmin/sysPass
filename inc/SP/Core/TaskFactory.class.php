@@ -52,7 +52,7 @@ class TaskFactory
     {
         if (self::$Task === null) {
             self::$Task = new Task($name, $id);
-            self::$Task->register();
+            self::$Task->register(false);
         }
 
         self::$Message = new TaskMessage();
@@ -65,7 +65,7 @@ class TaskFactory
     public static function endTask()
     {
         if (self::$Task !== null) {
-            self::$Task->end();
+            self::$Task->end(false);
             self::$Task = null;
         }
     }

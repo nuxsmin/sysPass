@@ -26,6 +26,7 @@ namespace SP\Controller;
 
 use SP\Config\Config;
 use SP\Core\Exceptions\ValidationException;
+use SP\Core\Messages\TaskMessage;
 use SP\Core\Session;
 use SP\Core\TaskFactory;
 use SP\Core\Upgrade\Upgrade;
@@ -45,10 +46,10 @@ class MainActionController
     /**
      * Realizar acción
      *
-     * @param int $version
+     * @param string $version
      * @return bool
      */
-    public function doAction($version = 0)
+    public function doAction($version = '')
     {
         $version = Request::analyze('version', $version);
         $type = Request::analyze('type');
@@ -70,7 +71,6 @@ class MainActionController
                 TaskFactory::createTask('upgrade', $taskId);
 
                 $this->upgrade($version, $type);
-
 
                 $JsonResponse->setDescription(__('Aplicación actualizada correctamente', false));
                 $JsonResponse->addMessage(__('En 5 segundos será redirigido al login', false));

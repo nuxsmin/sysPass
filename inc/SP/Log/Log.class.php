@@ -148,7 +148,7 @@ class Log extends ActionLog
             || self::$logDbEnabled === 0
             || DiFactory::getDBStorage()->getDbStatus() === 1
         ) {
-            debugLog('Action: ' . $this->LogMessage->getAction() . ' -- Description: ' . $this->LogMessage->getDescription() . ' -- Details: ' . $this->LogMessage->getDetails());
+            debugLog('Action: ' . $this->LogMessage->getAction(true) . ' -- Description: ' . $this->LogMessage->getDescription(true) . ' -- Details: ' . $this->LogMessage->getDetails(true));
 
             return false;
         }

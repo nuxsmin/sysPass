@@ -369,14 +369,18 @@ class Util
      * Devuelve la versión de sysPass.
      *
      * @param bool $retBuild devolver el número de compilación
+     * @param bool $normalized
+     *
      * @return array con el número de versión
      */
-    public static function getVersion($retBuild = false)
+    public static function getVersion($retBuild = false, $normalized = false)
     {
-        $build = '17030201';
+        $build = 17030201;
         $version = [2, 1, 0];
 
-        if ($retBuild) {
+        if ($normalized === true) {
+            return [implode('', $version), $build];
+        } elseif ($retBuild === true) {
             $version[] = $build;
         }
 
