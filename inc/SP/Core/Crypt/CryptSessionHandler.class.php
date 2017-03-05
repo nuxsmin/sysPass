@@ -78,11 +78,12 @@ class CryptSessionHandler extends \SessionHandler
 
                 return Crypt::decrypt($data, $this->Key);
             } catch (CryptoException $e) {
-                debugLog($e->getMessage());
-
                 self::$isSecured = false;
 
-                return '';
+                debugLog($e->getMessage());
+                debugLog('Session data not encrypted.');
+
+                return $data;
             }
         }
     }
@@ -111,12 +112,13 @@ class CryptSessionHandler extends \SessionHandler
             $data = Crypt::encrypt($data, $this->Key);
 
             self::$isSecured = true;
-
-            return parent::write($id, $data);
         } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+            self::$isSecured = false;
 
-            return false;
+            debugLog('Could not encrypt session data.');
+            debugLog($e->getMessage());
         }
+
+        return parent::write($id, $data);
     }
 }

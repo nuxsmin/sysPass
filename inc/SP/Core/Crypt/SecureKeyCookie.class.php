@@ -115,8 +115,6 @@ class SecureKeyCookie extends Cookie
             return false;
         }
 
-        debugLog('Generating a new session key.');
-
         try {
             $this->SecuredKey = Key::createNewRandomKey();
 
@@ -125,9 +123,13 @@ class SecureKeyCookie extends Cookie
 
 //            $timeout = ini_get('session.gc_maxlifetime') ?: 3600;
 
-            if (setcookie(SecureKeyCookie::COOKIE_NAME, $this->sign(serialize($Vault), $key), 0, Init::$WEBURI, Checks::httpsEnabled())) {
+            if (setcookie(SecureKeyCookie::COOKIE_NAME, $this->sign(serialize($Vault), $key), 0, Init::$WEBURI, Request::getRequestHeaders('HTTP_HOST'))) {
+                debugLog('Generating a new session key.');
+
                 return $this->SecuredKey;
             } else {
+                debugLog('Could not generate session key cookie.');
+
                 unset($this->SecuredKey);
             }
         } catch (CryptoException $e) {
