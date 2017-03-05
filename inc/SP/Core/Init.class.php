@@ -29,7 +29,7 @@ use SP\Account\AccountAcl;
 use SP\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Controller\MainController;
-use SP\Core\Crypt\Cookie;
+use SP\Core\Crypt\SecureKeyCookie;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Plugin\PluginUtil;
@@ -110,11 +110,11 @@ class Init
         // Establecer el lenguaje por defecto
         Language::setLocales('en_US');
 
-        // Iniciar la sesión de PHP
-        self::startSession();
-
         //  Establecer las rutas de la aplicación
         self::setPaths();
+
+        // Iniciar la sesión de PHP
+        self::startSession();
 
         // Cargar la configuración
         self::loadConfig();
@@ -300,7 +300,7 @@ class Init
         @ini_set('session.cookie_httponly', '1');
         @ini_set('session.save_handler', 'files');
 
-        $Key = Cookie::getKey();
+        $Key = SecureKeyCookie::getKey();
 
         if ($Key !== false) {
             session_set_save_handler(new CryptSessionHandler($Key), true);
@@ -569,8 +569,8 @@ class Init
 
             if ($check === true
                 || Checks::isAjax()
-                || (Request::analyze('a') === 'upgrade' && Request::analyze('type') !== '')
                 || Request::analyze('nodbupgrade', 0) === 1
+                || (Request::analyze('a') === 'upgrade' && Request::analyze('type') !== '')
                 || (self::$LOCK > 0 && self::isLoggedIn() && self::$LOCK === Session::getUserData()->getUserId())
             ) {
                 return true;

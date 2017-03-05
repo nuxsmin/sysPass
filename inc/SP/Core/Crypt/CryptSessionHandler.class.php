@@ -36,6 +36,10 @@ use Defuse\Crypto\Key;
 class CryptSessionHandler extends \SessionHandler
 {
     /**
+     * @var bool Indica si la sesión está encriptada
+     */
+    public static $isSecured = false;
+    /**
      * @var Key
      */
     private $Key;
@@ -70,9 +74,13 @@ class CryptSessionHandler extends \SessionHandler
             return '';
         } else {
             try {
+                self::$isSecured = true;
+
                 return Crypt::decrypt($data, $this->Key);
             } catch (CryptoException $e) {
                 debugLog($e->getMessage());
+
+                self::$isSecured = false;
 
                 return '';
             }
@@ -101,6 +109,8 @@ class CryptSessionHandler extends \SessionHandler
     {
         try {
             $data = Crypt::encrypt($data, $this->Key);
+
+            self::$isSecured = true;
 
             return parent::write($id, $data);
         } catch (CryptoException $e) {

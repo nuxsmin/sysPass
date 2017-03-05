@@ -61,7 +61,7 @@ class Email
         if ($isEvent === true) {
             $performer = Session::getUserData()->getUserLogin() ?: __('N/D');
             $body[] = sprintf('%s: %s', Html::strongText(__('Acción')), $LogMessage->getAction(true));
-            $body[] = sprintf('%s: %s (%s)', Html::strongText(__('Realizado por')), $performer, $_SERVER['REMOTE_ADDR']);
+            $body[] = sprintf('%s: %s (%s)', Html::strongText(__('Realizado por')), $performer, Util::getClientAddress());
 
             $Mail->addCC(Config::getConfig()->getMailFrom());
         }

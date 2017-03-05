@@ -29,6 +29,7 @@ defined('APP_ROOT') || die();
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\TrackData;
 use SP\Mgmt\Tracks\Track;
+use SP\Util\Util;
 
 /**
  * Class ApiUtil
@@ -47,7 +48,7 @@ class ApiUtil
         try {
             $TrackData = new TrackData();
             $TrackData->setTrackSource('API');
-            $TrackData->setTrackIp($_SERVER['REMOTE_ADDR']);
+            $TrackData->setTrackIp(Util::getClientAddress());
 
             Track::getItem($TrackData)->add();
         } catch (SPException $e) {

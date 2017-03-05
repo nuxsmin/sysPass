@@ -66,7 +66,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function addLinkView()
     {
         $this->itemData->addCountViews();
-        $this->updateUseInfo($_SERVER['REMOTE_ADDR']);
+        $this->updateUseInfo(Util::getClientAddress());
 
         $Log = new Log();
         $LogMessage = $Log->getLogMessage();

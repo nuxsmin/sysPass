@@ -165,23 +165,23 @@ class Log extends ActionLog
 
         $description = trim($this->LogMessage->getDescription(true) . PHP_EOL . $this->LogMessage->getDetails(true));
 
-        $query = 'INSERT INTO log SET ' .
-            'log_date = UNIX_TIMESTAMP(),' .
-            'log_login = :login,' .
-            'log_userId = :userId,' .
-            'log_ipAddress = :ipAddress,' .
-            'log_action = :action,' .
-            'log_level = :level,' .
-            'log_description = :description';
+        $query = 'INSERT INTO log SET 
+            log_date = UNIX_TIMESTAMP(),
+            log_login = ?,
+            log_userId = ?,
+            log_ipAddress = ?,
+            log_action = ?,
+            log_level = ?,
+            log_description = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(Session::getUserData()->getUserLogin(), 'login');
-        $Data->addParam(Session::getUserData()->getUserId(), 'userId');
-        $Data->addParam($_SERVER['REMOTE_ADDR'], 'ipAddress');
-        $Data->addParam(utf8_encode($this->LogMessage->getAction(true)), 'action');
-        $Data->addParam($this->getLogLevel(), 'level');
-        $Data->addParam(utf8_encode($description), 'description');
+        $Data->addParam(Session::getUserData()->getUserLogin());
+        $Data->addParam(Session::getUserData()->getUserId());
+        $Data->addParam(Util::getClientAddress());
+        $Data->addParam(utf8_encode($this->LogMessage->getAction(true)));
+        $Data->addParam($this->getLogLevel());
+        $Data->addParam(utf8_encode($description));
 
         if ($resetDescription === true) {
             $this->LogMessage->resetDescription();
@@ -217,7 +217,7 @@ class Log extends ActionLog
         $msg .= $this->LogMessage->getAction(true) . '|';
         $msg .= $description . '|';
         $msg .= '0|';
-        $msg .= sprintf('ip_addr="%s" user_name="%s"', $_SERVER['REMOTE_ADDR'], Session::getUserData()->getUserLogin());
+        $msg .= sprintf('ip_addr="%s" user_name="%s"', Util::getClientAddress(), Session::getUserData()->getUserLogin());
 
         $Syslog = new Syslog();
         $Syslog->setIsRemote(Checks::remoteSyslogIsEnabled());

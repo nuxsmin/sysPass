@@ -24,99 +24,40 @@
 
 namespace SP\Core\Crypt;
 
-use Defuse\Crypto\Exception\CryptoException;
-use Defuse\Crypto\Key;
-use SP\Core\Init;
-use SP\Http\Request;
-use SP\Util\Checks;
-
 /**
  * Class Cookie
  *
  * @package SP\Core\Crypt
  */
-class Cookie
+abstract class Cookie
 {
     /**
-     * Nombre de la cookie
-     */
-    const COOKIE_NAME = 'SYSPASS_SK';
-    /**
-     * @var Key
-     */
-    public static $Key;
-
-    /**
-     * Obtener una llave de encriptación
+     * Firmar la cookie para autentificación
      *
-     * @param string $key
-     * @return Key|false|string
-     */
-    public static function getKey($key = null)
-    {
-        $key = $key === null ? self::getCypher() : $key;
-
-        if (isset($_COOKIE[Cookie::COOKIE_NAME])) {
-            /** @var Vault $Vault */
-            $Vault = unserialize($_COOKIE[Cookie::COOKIE_NAME]);
-
-            if ($Vault !== false
-                && ($Vault instanceof Vault) === true
-            ) {
-                try {
-                    return Key::loadFromAsciiSafeString($Vault->getData($key));
-                } catch (CryptoException $e) {
-                    debugLog($e->getMessage());
-
-                    return false;
-                }
-            }
-        } elseif ((self::$Key instanceof Key) === true) {
-            return self::$Key;
-        } else {
-            return self::saveKey($key);
-        }
-
-        return false;
-    }
-
-    /**
-     * Devolver la llave de cifrado
-     *
+     * @param string $data
+     * @param string $cypher
      * @return string
      */
-    private static function getCypher()
+    protected final function sign($data, $cypher)
     {
-        return md5(Request::getRequestHeaders('User-Agent'));
+        $data = base64_encode($data);
+
+        return hash_hmac('sha256', $data, $cypher) . ';' . $data;
     }
 
     /**
-     * Guardar una llave de encriptación
+     * Comprobar la firma de la cookie y devolver los datos
      *
-     * @param $key
-     * @return Key|bool
+     * @param string $data
+     * @param string $cypher
+     * @return bool|string
      */
-    public static function saveKey($key)
+    protected final function getCookieData($data, $cypher)
     {
-        if (empty($key)) {
-            return false;
-        }
+        list($signature, $data) = explode(';', $data, 2);
 
-        try {
-            self::$Key = Key::createNewRandomKey();
-
-            $Vault = new Vault();
-            $Vault->saveData(self::$Key->saveToAsciiSafeString(), $key);
-
-//            $timeout = ini_get('session.gc_maxlifetime') ?: 3600;
-
-            if (setcookie(Cookie::COOKIE_NAME, serialize($Vault), 0, Init::$WEBURI, Checks::httpsEnabled())) {
-                return self::$Key;
-            } else {
-                self::$Key = null;
-            }
-        } catch (CryptoException $e) {
-            debugLog($e->getMessage());
+        if (!empty($signature) && !empty($data)) {
+            return hash_equals($signature, hash_hmac('sha256', $data, $cypher)) ? base64_decode($data) : false;
         }
 
         return false;

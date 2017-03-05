@@ -25,6 +25,7 @@
 namespace SP\Core;
 
 use SP\Config\Config;
+use SP\Http\Request;
 use SP\Mgmt\Users\UserPreferences;
 
 defined('APP_ROOT') || die();
@@ -126,8 +127,10 @@ class Language
      */
     private function getBrowserLang()
     {
-        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            return str_replace('-', '_', substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
+        $lang = Request::getRequestHeaders('HTTP_ACCEPT_LANGUAGE');
+
+        if ($lang) {
+            return str_replace('-', '_', substr($lang, 0, 5));
         } else {
             return '';
         }

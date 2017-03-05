@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-01 01:52+0100\n"
-"PO-Revision-Date: 2017-03-02 22:45+0100\n"
+"POT-Creation-Date: 2017-03-05 08:22+0100\n"
+"PO-Revision-Date: 2017-03-05 08:24+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -152,11 +152,11 @@ msgstr "Account"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:749
 #: ../../../../inc/SP/Controller/LoginController.class.php:445
 #: ../../../../inc/SP/Controller/LoginController.class.php:472
-#: ../../../../inc/SP/Controller/LoginController.class.php:512
-#: ../../../../inc/SP/Controller/LoginController.class.php:530
-#: ../../../../inc/SP/Controller/LoginController.class.php:538
+#: ../../../../inc/SP/Controller/LoginController.class.php:514
+#: ../../../../inc/SP/Controller/LoginController.class.php:532
+#: ../../../../inc/SP/Controller/LoginController.class.php:540
 #: ../../../../inc/SP/Controller/MainActionController.class.php:125
-#: ../../../../inc/SP/Core/Init.class.php:445
+#: ../../../../inc/SP/Core/Init.class.php:451
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:96
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:75
 #: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:31
@@ -218,7 +218,7 @@ msgid "Compruebe datos de usuario o consulte con el administrador"
 msgstr "Please, check the user data or contact to the administrator"
 
 #: ../../../../ajax/ajax_passReset.php:88
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:321
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:329
 msgid "Modificar Clave Usuario"
 msgstr "Edit User Password"
 
@@ -229,14 +229,14 @@ msgid "Clave actualizada"
 msgstr "Password updated"
 
 #: ../../../../ajax/ajax_passReset.php:102
-#: ../../../../inc/SP/Auth/Database/Database.class.php:95
+#: ../../../../inc/SP/Auth/Database/Database.class.php:92
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:474
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:231
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:246
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:267
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:278
 #: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:106
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:322
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:330
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:37
 #: ../../../../inc/themes/material-blue/views/itemshow/userspass.inc:23
 msgid "Login"
@@ -285,14 +285,14 @@ msgstr "Error while creating the account"
 #: ../../../../inc/SP/Api/ApiBase.class.php:200
 #: ../../../../inc/SP/Api/ApiBase.class.php:203
 #: ../../../../inc/SP/Api/ApiRequest.class.php:147
-#: ../../../../inc/SP/Api/ApiUtil.class.php:54
+#: ../../../../inc/SP/Api/ApiUtil.class.php:55
 #: ../../../../inc/SP/Controller/LoginController.class.php:199
 #: ../../../../inc/SP/Controller/LoginController.class.php:227
 #: ../../../../inc/SP/Controller/LoginController.class.php:246
 #: ../../../../inc/SP/Controller/LoginController.class.php:342
 #: ../../../../inc/SP/Controller/LoginController.class.php:373
 #: ../../../../inc/SP/Controller/LoginController.class.php:463
-#: ../../../../inc/SP/Controller/LoginController.class.php:487
+#: ../../../../inc/SP/Controller/LoginController.class.php:489
 #: ../../../../inc/SP/Core/OldCrypt.class.php:169
 #: ../../../../inc/SP/Core/OldCrypt.class.php:181
 #: ../../../../inc/SP/Import/XmlFileImport.class.php:106
@@ -307,7 +307,7 @@ msgstr "Error while creating the account"
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:159
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:208
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:229
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:245
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:252
 #: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:134
 msgid "Error interno"
 msgstr "Internal error"
@@ -702,7 +702,7 @@ msgstr "Customer Id to filter on"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:496
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:18
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:16
-#: ../../../../inc/themes/material-blue/views/account/account.inc:48
+#: ../../../../inc/themes/material-blue/views/account/account.inc:49
 #: ../../../../inc/themes/material-blue/views/account/request.inc:19
 msgid "Nombre de cuenta"
 msgstr "Account name"
@@ -726,8 +726,8 @@ msgstr "Customer Id"
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:76
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:79
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:87
-#: ../../../../inc/themes/material-blue/views/account/account.inc:123
-#: ../../../../inc/themes/material-blue/views/account/account.inc:130
+#: ../../../../inc/themes/material-blue/views/account/account.inc:124
+#: ../../../../inc/themes/material-blue/views/account/account.inc:131
 #: ../../../../inc/themes/material-blue/views/account/viewpass.inc:31
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:266
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:269
@@ -751,18 +751,18 @@ msgid "Clave"
 msgstr "Password"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:500
-#: ../../../../inc/themes/material-blue/views/account/account.inc:117
+#: ../../../../inc/themes/material-blue/views/account/account.inc:118
 msgid "Usuario de acceso"
 msgstr "Access user"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:501
-#: ../../../../inc/themes/material-blue/views/account/account.inc:105
+#: ../../../../inc/themes/material-blue/views/account/account.inc:106
 msgid "URL o IP de acceso"
 msgstr "Access URL or IP"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:502
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:72
-#: ../../../../inc/themes/material-blue/views/account/account.inc:172
+#: ../../../../inc/themes/material-blue/views/account/account.inc:174
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:135
 msgid "Notas sobre la cuenta"
 msgstr "Notes about the account"
@@ -881,9 +881,9 @@ msgstr "Error while searching the user on LDAP"
 #: ../../../../inc/SP/Controller/LoginController.class.php:260
 #: ../../../../inc/SP/Controller/LoginController.class.php:367
 #: ../../../../inc/SP/Controller/LoginController.class.php:446
-#: ../../../../inc/SP/Controller/LoginController.class.php:506
-#: ../../../../inc/SP/Controller/LoginController.class.php:531
-#: ../../../../inc/SP/Core/Init.class.php:609
+#: ../../../../inc/SP/Controller/LoginController.class.php:508
+#: ../../../../inc/SP/Controller/LoginController.class.php:533
+#: ../../../../inc/SP/Core/Init.class.php:615
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:77
 #: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:99
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:64
@@ -892,7 +892,7 @@ msgstr "Error while searching the user on LDAP"
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:51
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:54
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:60
-#: ../../../../inc/themes/material-blue/views/account/account.inc:110
+#: ../../../../inc/themes/material-blue/views/account/account.inc:111
 #: ../../../../inc/themes/material-blue/views/account/viewpass.inc:20
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:63
 #: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:47
@@ -1040,8 +1040,8 @@ msgstr "More Actions"
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:29
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:21
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:27
-#: ../../../../inc/themes/material-blue/views/account/account.inc:53
-#: ../../../../inc/themes/material-blue/views/account/account.inc:55
+#: ../../../../inc/themes/material-blue/views/account/account.inc:54
+#: ../../../../inc/themes/material-blue/views/account/account.inc:56
 #: ../../../../inc/themes/material-blue/views/account/request.inc:24
 #: ../../../../inc/themes/material-blue/views/account/request.inc:31
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:21
@@ -1059,8 +1059,8 @@ msgstr "Sort by Name"
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:361
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:32
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:38
-#: ../../../../inc/themes/material-blue/views/account/account.inc:76
-#: ../../../../inc/themes/material-blue/views/account/account.inc:78
+#: ../../../../inc/themes/material-blue/views/account/account.inc:77
+#: ../../../../inc/themes/material-blue/views/account/account.inc:79
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:57
 msgid "Categoría"
 msgstr "Category"
@@ -1078,7 +1078,7 @@ msgstr "Sort by Username"
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:40
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:43
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:49
-#: ../../../../inc/themes/material-blue/views/account/account.inc:99
+#: ../../../../inc/themes/material-blue/views/account/account.inc:100
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:68
 msgid "URL / IP"
 msgstr "URL / IP"
@@ -1116,7 +1116,7 @@ msgstr "Connection successful"
 
 #: ../../../../inc/SP/Controller/ChecksController.class.php:138
 #: ../../../../inc/SP/Controller/MainActionController.class.php:124
-#: ../../../../inc/SP/Core/Init.class.php:444
+#: ../../../../inc/SP/Core/Init.class.php:450
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:148
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:159
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:374
@@ -1158,7 +1158,7 @@ msgid "Sección"
 msgstr "Section"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:211
-#: ../../../../inc/SP/Controller/ConfigController.class.php:153
+#: ../../../../inc/SP/Controller/ConfigController.class.php:154
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:226
 #: ../../../../inc/themes/material-blue/views/main/install.inc:132
 msgid "General"
@@ -1192,7 +1192,7 @@ msgid "El tamaño máximo por archivo es de 16MB"
 msgstr "The maximum size per file is 16MB"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:300
-#: ../../../../inc/SP/Controller/ConfigController.class.php:202
+#: ../../../../inc/SP/Controller/ConfigController.class.php:203
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:365
 #: ../../../../inc/SP/Controller/MainController.class.php:615
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:90
@@ -1228,7 +1228,7 @@ msgid "DokuWiki deshabilitada"
 msgstr "DokuWiki disabled"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:364
-#: ../../../../inc/SP/Controller/ConfigController.class.php:234
+#: ../../../../inc/SP/Controller/ConfigController.class.php:235
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:63
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:10
 msgid "Wiki"
@@ -1247,7 +1247,7 @@ msgid "LDAP deshabilitado"
 msgstr "LDAP disabled"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:411
-#: ../../../../inc/SP/Controller/ConfigController.class.php:267
+#: ../../../../inc/SP/Controller/ConfigController.class.php:268
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:7
 msgid "LDAP"
 msgstr "LDAP"
@@ -1265,7 +1265,7 @@ msgid "Correo deshabilitado"
 msgstr "Mail disabled"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:464
-#: ../../../../inc/SP/Controller/ConfigController.class.php:298
+#: ../../../../inc/SP/Controller/ConfigController.class.php:299
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:7
 msgid "Correo"
 msgstr "Mail"
@@ -1391,45 +1391,45 @@ msgstr "Error while exporting"
 msgid "Proceso de exportación finalizado"
 msgstr "Export process finished"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:327
+#: ../../../../inc/SP/Controller/ConfigController.class.php:328
 #: ../../../../inc/SP/Core/Acl.class.php:217
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:233
 msgid "Encriptación"
 msgstr "Encryption"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:372
+#: ../../../../inc/SP/Controller/ConfigController.class.php:373
 msgid "Último backup"
 msgstr "Last backup"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:372
+#: ../../../../inc/SP/Controller/ConfigController.class.php:373
 msgid "No se encontraron backups"
 msgstr "There aren't any backups available"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:383
+#: ../../../../inc/SP/Controller/ConfigController.class.php:384
 msgid "Última exportación"
 msgstr "Last export"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:383
+#: ../../../../inc/SP/Controller/ConfigController.class.php:384
 msgid "No se encontró archivo de exportación"
 msgstr "No export file found"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:385
+#: ../../../../inc/SP/Controller/ConfigController.class.php:386
 #: ../../../../inc/SP/Core/Acl.class.php:218
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:7
 msgid "Copia de Seguridad"
 msgstr "Backup"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:407
+#: ../../../../inc/SP/Controller/ConfigController.class.php:408
 #: ../../../../inc/SP/Import/Import.class.php:66
 #: ../../../../inc/SP/Import/ImportBase.class.php:78
 msgid "Importar Cuentas"
 msgstr "Import Accounts"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:430
+#: ../../../../inc/SP/Controller/ConfigController.class.php:431
 msgid "No instalado"
 msgstr "Not installed"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:432
+#: ../../../../inc/SP/Controller/ConfigController.class.php:434
 #: ../../../../inc/SP/Controller/MainController.class.php:617
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:77
 msgid "Información"
@@ -1444,7 +1444,7 @@ msgstr "Option unavailable"
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:277
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:278
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:280
-#: ../../../../inc/SP/Core/Init.class.php:309
+#: ../../../../inc/SP/Core/Init.class.php:315
 msgid "Consulte con el administrador"
 msgstr "Please contact to the administrator"
 
@@ -1509,7 +1509,7 @@ msgstr "Search for Category"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:90
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:91
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:191
-#: ../../../../inc/themes/material-blue/views/account/account.inc:89
+#: ../../../../inc/themes/material-blue/views/account/account.inc:90
 msgid "Nueva Categoría"
 msgstr "New Category"
 
@@ -1533,7 +1533,7 @@ msgstr "Search for Customer"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:164
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:165
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:178
-#: ../../../../inc/themes/material-blue/views/account/account.inc:66
+#: ../../../../inc/themes/material-blue/views/account/account.inc:67
 msgid "Nuevo Cliente"
 msgstr "New Customer"
 
@@ -1553,7 +1553,7 @@ msgstr "Module"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:222
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:59
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:130
-#: ../../../../inc/themes/material-blue/views/account/account.inc:256
+#: ../../../../inc/themes/material-blue/views/account/account.inc:258
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:175
 msgid "Campos Personalizados"
 msgstr "Custom Fields"
@@ -1616,7 +1616,7 @@ msgstr "Search for Account"
 #: ../../../../inc/SP/Controller/Grids/Notices.class.php:54
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:65
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:85
-#: ../../../../inc/themes/material-blue/views/account/account.inc:156
+#: ../../../../inc/themes/material-blue/views/account/account.inc:158
 #: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:64
 #: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:71
 #: ../../../../inc/themes/material-blue/views/wiki/wikipage.inc:24
@@ -1862,8 +1862,8 @@ msgid "Eliminar Enlace"
 msgstr "Delete Link"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:926
-#: ../../../../inc/themes/material-blue/views/account/account.inc:176
 #: ../../../../inc/themes/material-blue/views/account/account.inc:178
+#: ../../../../inc/themes/material-blue/views/account/account.inc:180
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:210
 msgid "Etiquetas"
 msgstr "Tags"
@@ -2348,8 +2348,8 @@ msgstr "User/Pass not entered"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:150
 #: ../../../../inc/SP/Controller/LoginController.class.php:449
-#: ../../../../inc/SP/Controller/LoginController.class.php:505
-#: ../../../../inc/SP/Controller/LoginController.class.php:529
+#: ../../../../inc/SP/Controller/LoginController.class.php:507
+#: ../../../../inc/SP/Controller/LoginController.class.php:531
 msgid "Login incorrecto"
 msgstr "Incorrect login"
 
@@ -2405,13 +2405,13 @@ msgstr "The user has no associated groups"
 msgid "Servidor LDAP"
 msgstr "LDAP Server"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:532
+#: ../../../../inc/SP/Controller/LoginController.class.php:534
 msgid "Autentificación"
 msgstr "Authentication"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:62
 #: ../../../../inc/SP/Controller/MainActionController.class.php:122
-#: ../../../../inc/SP/Core/Init.class.php:442
+#: ../../../../inc/SP/Core/Init.class.php:448
 msgid "Actualización"
 msgstr "Update"
 
@@ -2433,7 +2433,7 @@ msgid "En 5 segundos será redirigido al login"
 msgstr "You will be redirected to log in within 5 seconds"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:123
-#: ../../../../inc/SP/Core/Init.class.php:443 ../../../../res/upgrade.php:121
+#: ../../../../inc/SP/Core/Init.class.php:449 ../../../../res/upgrade.php:121
 msgid "Actualización de versión realizada."
 msgstr "Version updating done."
 
@@ -2456,12 +2456,12 @@ msgid "Registro de Eventos"
 msgstr "Event Log"
 
 #: ../../../../inc/SP/Controller/MainController.class.php:367
-#: ../../../../inc/SP/Core/Init.class.php:138
+#: ../../../../inc/SP/Core/Init.class.php:140
 msgid "Versión de PHP requerida >= "
 msgstr "Required PHP version >="
 
 #: ../../../../inc/SP/Controller/MainController.class.php:368
-#: ../../../../inc/SP/Core/Init.class.php:139
+#: ../../../../inc/SP/Core/Init.class.php:141
 msgid ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "Please update the PHP version to run sysPass"
@@ -2674,56 +2674,56 @@ msgstr "Observer not initialized"
 msgid "Es necesario un objeto"
 msgstr "An object is needed"
 
-#: ../../../../inc/SP/Core/Init.class.php:166
+#: ../../../../inc/SP/Core/Init.class.php:168
 msgid "Error en la verificación de la base de datos"
 msgstr "Error while checking the database"
 
-#: ../../../../inc/SP/Core/Init.class.php:305
+#: ../../../../inc/SP/Core/Init.class.php:311
 msgid "Sesión"
 msgstr "Session"
 
-#: ../../../../inc/SP/Core/Init.class.php:305
-#: ../../../../inc/SP/Core/Init.class.php:309
+#: ../../../../inc/SP/Core/Init.class.php:311
+#: ../../../../inc/SP/Core/Init.class.php:315
 msgid "La sesión no puede ser inicializada"
 msgstr "Session cannot be initialized"
 
-#: ../../../../inc/SP/Core/Init.class.php:465
+#: ../../../../inc/SP/Core/Init.class.php:471
 msgid "El directorio \"/config\" no existe"
 msgstr "The \"/config\" directory does not exist."
 
-#: ../../../../inc/SP/Core/Init.class.php:470
+#: ../../../../inc/SP/Core/Init.class.php:476
 msgid "No es posible escribir en el directorio \"config\""
 msgstr "Unable to write into the \"/config\" directory"
 
-#: ../../../../inc/SP/Core/Init.class.php:477
+#: ../../../../inc/SP/Core/Init.class.php:483
 msgid "Los permisos del directorio \"/config\" son incorrectos"
 msgstr "The \"/config\" directory permissions are wrong"
 
-#: ../../../../inc/SP/Core/Init.class.php:477
+#: ../../../../inc/SP/Core/Init.class.php:483
 msgid "Actual:"
 msgstr "Current:"
 
-#: ../../../../inc/SP/Core/Init.class.php:477
+#: ../../../../inc/SP/Core/Init.class.php:483
 msgid "Necesario: 750"
 msgstr "Needed: 750"
 
-#: ../../../../inc/SP/Core/Init.class.php:573
+#: ../../../../inc/SP/Core/Init.class.php:579
 msgid "Aplicación en mantenimiento"
 msgstr "Application in maintenance"
 
-#: ../../../../inc/SP/Core/Init.class.php:573
+#: ../../../../inc/SP/Core/Init.class.php:579
 msgid "En breve estará operativa"
 msgstr "It will be running shortly"
 
-#: ../../../../inc/SP/Core/Init.class.php:608
+#: ../../../../inc/SP/Core/Init.class.php:614
 msgid "Finalizar sesión"
 msgstr "Logout session"
 
-#: ../../../../inc/SP/Core/Init.class.php:610
+#: ../../../../inc/SP/Core/Init.class.php:616
 msgid "Tiempo inactivo"
 msgstr "Inactive time"
 
-#: ../../../../inc/SP/Core/Init.class.php:611
+#: ../../../../inc/SP/Core/Init.class.php:617
 msgid "Tiempo total"
 msgstr "Total time"
 
@@ -2979,7 +2979,7 @@ msgstr "Error while creating the customer"
 msgid "Actualizando IDs de grupos"
 msgstr "Updating groups ID"
 
-#: ../../../../inc/SP/Core/Upgrade/Group.class.php:103
+#: ../../../../inc/SP/Core/Upgrade/Group.class.php:115
 #: ../../../../inc/SP/Mgmt/Groups/Group.class.php:67
 msgid "Error al crear el grupo"
 msgstr "Error while creating the group"
@@ -3028,8 +3028,8 @@ msgid "Actualización de la Base de Datos realizada correctamente."
 msgstr "Database updating was completed successfully."
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:240
-#: ../../../../inc/SP/Mgmt/Users/User.class.php:336
-#: ../../../../inc/SP/Mgmt/Users/User.class.php:393
+#: ../../../../inc/SP/Mgmt/Users/User.class.php:338
+#: ../../../../inc/SP/Mgmt/Users/User.class.php:396
 msgid "Error al obtener los datos del usuario"
 msgstr "Error while retrieving the user's data"
 
@@ -3052,7 +3052,7 @@ msgstr "If you are an administrator, click on the link: %s"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:507
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:57
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:168
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:172
 msgid "Actualizar"
 msgstr "Update"
 
@@ -3183,7 +3183,7 @@ msgstr "An email is needed"
 msgid "No es posible eliminar, usuario en uso"
 msgstr "Unable to delete, user in use"
 
-#: ../../../../inc/SP/Http/Request.class.php:51
+#: ../../../../inc/SP/Http/Request.class.php:53
 msgid "No es posible acceder directamente a este archivo"
 msgstr "Unable to access to this file"
 
@@ -3701,8 +3701,8 @@ msgstr "Error while updating the user"
 msgid "Error al obtener los usuarios"
 msgstr "Error while retrieving the users"
 
-#: ../../../../inc/SP/Mgmt/Users/User.class.php:279
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:315
+#: ../../../../inc/SP/Mgmt/Users/User.class.php:280
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:323
 msgid "Error al modificar la clave"
 msgstr "Error while updating the password"
 
@@ -3814,7 +3814,7 @@ msgstr "Error while sending the data"
 msgid "Error de codificación"
 msgstr "Encoding error"
 
-#: ../../../../inc/SP/Util/Util.class.php:320
+#: ../../../../inc/SP/Util/Util.class.php:321
 msgid "Respuesta"
 msgstr "Response"
 
@@ -4035,13 +4035,13 @@ msgid "Seleccionar Perfil"
 msgstr "Select Profile"
 
 #: ../../../../js/strings.js.php:50
-#: ../../../../inc/themes/material-blue/views/account/account.inc:59
+#: ../../../../inc/themes/material-blue/views/account/account.inc:60
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:49
 msgid "Seleccionar Cliente"
 msgstr "Select Customer"
 
 #: ../../../../js/strings.js.php:51
-#: ../../../../inc/themes/material-blue/views/account/account.inc:82
+#: ../../../../inc/themes/material-blue/views/account/account.inc:83
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:57
 msgid "Seleccionar Categoría"
 msgstr "Select Category"
@@ -4185,8 +4185,8 @@ msgid ""
 msgstr "Performing task. Please, do not close the browser window/tab."
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:67
-#: ../../../../inc/themes/material-blue/views/account/account.inc:135
-#: ../../../../inc/themes/material-blue/views/account/account.inc:142
+#: ../../../../inc/themes/material-blue/views/account/account.inc:136
+#: ../../../../inc/themes/material-blue/views/account/account.inc:143
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:115
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:122
 #: ../../../../inc/themes/material-blue/views/itemshow/userspass.inc:47
@@ -4197,14 +4197,14 @@ msgid "Clave (repetir)"
 msgstr "Password (repeat)"
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:78
-#: ../../../../inc/themes/material-blue/views/account/account.inc:149
+#: ../../../../inc/themes/material-blue/views/account/account.inc:150
 #: ../../../../inc/themes/material-blue/views/account/details.inc:131
 #: ../../../../inc/themes/material-blue/views/account/details.inc:133
 msgid "Fecha Caducidad Clave"
 msgstr "Password Expiry Date"
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:88
-#: ../../../../inc/themes/material-blue/views/account/account.inc:160
+#: ../../../../inc/themes/material-blue/views/account/account.inc:162
 msgid "Seleccionar Fecha"
 msgstr "Select date"
 
@@ -4216,7 +4216,7 @@ msgstr "Select date"
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:286
 #: ../../../../inc/themes/material-blue/views/config/general.inc:29
 #: ../../../../inc/themes/material-blue/views/config/import.inc:89
-#: ../../../../inc/themes/material-blue/views/config/info.inc:128
+#: ../../../../inc/themes/material-blue/views/config/info.inc:145
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:283
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:150
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:276
@@ -4226,7 +4226,7 @@ msgid "Atrás"
 msgstr "Back"
 
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:65
-#: ../../../../inc/themes/material-blue/views/account/account.inc:165
+#: ../../../../inc/themes/material-blue/views/account/account.inc:167
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:140
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:129
 msgid "Notas"
@@ -4285,30 +4285,30 @@ msgstr "Private for Group"
 msgid "Histórico"
 msgstr "History"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:182
+#: ../../../../inc/themes/material-blue/views/account/account.inc:184
 msgid "Seleccionar Etiquetas"
 msgstr "Select Tags"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:193
 #: ../../../../inc/themes/material-blue/views/account/account.inc:195
+#: ../../../../inc/themes/material-blue/views/account/account.inc:197
 #: ../../../../inc/themes/material-blue/views/account/viewpass.inc:9
 msgid "Cuenta Vinculada"
 msgstr "Linked Account"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:203
+#: ../../../../inc/themes/material-blue/views/account/account.inc:205
 msgid "Seleccionar Cuenta"
 msgstr "Select Account"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:210
 #: ../../../../inc/themes/material-blue/views/account/account.inc:212
+#: ../../../../inc/themes/material-blue/views/account/account.inc:214
 msgid "Historial"
 msgstr "History"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:217
+#: ../../../../inc/themes/material-blue/views/account/account.inc:219
 msgid "Seleccionar fecha"
 msgstr "Select date"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:229
+#: ../../../../inc/themes/material-blue/views/account/account.inc:231
 #: ../../../../inc/themes/material-blue/views/account/details.inc:35
 #: ../../../../inc/themes/material-blue/views/account/details.inc:37
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:199
@@ -4316,9 +4316,9 @@ msgstr "Select date"
 msgid "Última Modificación"
 msgstr "Last Modification"
 
-#: ../../../../inc/themes/material-blue/views/account/account.inc:236
 #: ../../../../inc/themes/material-blue/views/account/account.inc:238
-#: ../../../../inc/themes/material-blue/views/account/account.inc:241
+#: ../../../../inc/themes/material-blue/views/account/account.inc:240
+#: ../../../../inc/themes/material-blue/views/account/account.inc:243
 msgid "Enlace Público"
 msgstr "Public Link"
 
@@ -4750,7 +4750,7 @@ msgstr "Last Change"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:29
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:37
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:127
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:130
 msgid "Clave Maestra actual"
 msgstr "Current Master Password"
 
@@ -4785,7 +4785,7 @@ msgid "Los usuarios deberán de introducir la nueva clave maestra."
 msgstr "Users will need to enter the new Master Password."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:104
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:115
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:118
 #, php-format
 msgid ""
 "Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo."
@@ -4812,7 +4812,7 @@ msgstr ""
 "that includes numbers, letters and symbols."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:142
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:117
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:120
 #, php-format
 msgid "Para más información consulte: %s"
 msgstr "You could get more info on: %s"
@@ -5189,7 +5189,24 @@ msgstr ""
 "locales. More info at Wiki."
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:99
-#: ../../../../inc/themes/material-blue/views/config/info.inc:102
+#: ../../../../inc/themes/material-blue/views/config/info.inc:109
+msgid "Sesión Encriptada"
+msgstr "Encrypted Session"
+
+#: ../../../../inc/themes/material-blue/views/config/info.inc:104
+msgid "Indica si los datos de la sesión están encriptados en el servidor"
+msgstr "Tells whether the session data are encrypted in the server or not"
+
+#: ../../../../inc/themes/material-blue/views/config/info.inc:111
+msgid "Sí"
+msgstr "Yes"
+
+#: ../../../../inc/themes/material-blue/views/config/info.inc:111
+msgid "No"
+msgstr "No"
+
+#: ../../../../inc/themes/material-blue/views/config/info.inc:116
+#: ../../../../inc/themes/material-blue/views/config/info.inc:119
 msgid "Plugins Cargados"
 msgstr "Loaded Plugins"
 
@@ -5907,15 +5924,15 @@ msgstr "Enter a valid category ID for the accounts"
 msgid "Introducir un ID de cliente válido para cuentas"
 msgstr "Enter a valid customer ID for the accounts"
 
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:93
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:96
 msgid "Introducir un ID de grupo válido para usuarios"
 msgstr "Enter a valid group ID for the users"
 
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:103
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:106
 msgid "Introducir un ID de perfil válido para usuarios"
 msgstr "Enter a valid profile ID for the users"
 
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:113
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:116
 msgid ""
 "Esta actualización utiliza un nuevo esquema de encriptación, por lo que es "
 "necesario reencriptar los datos almacenados"
@@ -5923,19 +5940,19 @@ msgstr ""
 "This update uses a new encryption schema, so it will be needed to reencrypt "
 "the whole encrypted data."
 
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:135
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:138
 msgid "Introducir login de usuario válido"
 msgstr "Enter a valid user login"
 
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:147
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:150
 msgid "He realizado una copia de seguridad completa de sysPass"
 msgstr "I've done a full sysPass backup"
 
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:160
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:164
 msgid "Por favor espere mientras el proceso se ejecuta"
 msgstr "Please, wait while the process is running"
 
-#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:170
+#: ../../../../inc/themes/material-blue/views/main/upgrade.inc:174
 msgid "Iniciar Actualización"
 msgstr "Start Update"
 

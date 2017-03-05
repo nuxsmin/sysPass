@@ -190,7 +190,7 @@ class LoginController
         try {
             $TrackData = new TrackData();
             $TrackData->setTrackSource('Login');
-            $TrackData->setTrackIp($_SERVER['REMOTE_ADDR']);
+            $TrackData->setTrackIp(Util::getClientAddress());
 
             $attempts = count(Track::getItem($TrackData)->getTracksForClientFromTime(time() - self::TIME_TRACKING));
         } catch (SPException $e) {
@@ -220,7 +220,7 @@ class LoginController
         try {
             $TrackData = new TrackData();
             $TrackData->setTrackSource('Login');
-            $TrackData->setTrackIp($_SERVER['REMOTE_ADDR']);
+            $TrackData->setTrackIp(Util::getClientAddress());
 
             Track::getItem($TrackData)->add();
         } catch (SPException $e) {

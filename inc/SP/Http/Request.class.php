@@ -44,9 +44,11 @@ class Request
      */
     public static function checkReferer($method)
     {
-        if (!isset($_SERVER['HTTP_REFERER'])
+        $referer = self::getRequestHeaders('HTTP_REFERER');
+
+        if (!$referer
             || $_SERVER['REQUEST_METHOD'] !== strtoupper($method)
-            || !preg_match('#' . Init::$WEBROOT . '/.*$#', $_SERVER['HTTP_REFERER'])
+            || !preg_match('#' . Init::$WEBROOT . '/.*$#', $referer)
         ) {
             Init::initError(__('No es posible acceder directamente a este archivo'));
             exit();
@@ -83,11 +85,11 @@ class Request
      * Obtener los valores de variables $_GET y $_POST
      * y devolverlos limpios con el tipo correcto o esperado.
      *
-     * @param string $param con el parámetro a consultar
-     * @param mixed $default valor por defecto a devolver
-     * @param bool $check comprobar si el parámetro está presente
-     * @param mixed $force valor devuelto si el parámeto está definido
-     * @param bool $sanitize escapar/eliminar carácteres especiales
+     * @param string $param    con el parámetro a consultar
+     * @param mixed  $default  valor por defecto a devolver
+     * @param bool   $check    comprobar si el parámetro está presente
+     * @param mixed  $force    valor devuelto si el parámeto está definido
+     * @param bool   $sanitize escapar/eliminar carácteres especiales
      * @return mixed si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
      */
     public static function analyze($param, $default = '', $check = false, $force = false, $sanitize = true)
@@ -148,13 +150,13 @@ class Request
      */
     public static function getRequestHeaders($header = '')
     {
-        $headers = self::getApacheHeaders();
-
         if (!empty($header)) {
-            return array_key_exists($header, $headers) ? trim($headers[$header]) : '';
+            $header = strpos($header, 'HTTP_') === false ? 'HTTP_' . str_replace('-', '_', strtoupper($header)) : $header;
+
+            return isset($_SERVER[$header]) ? $_SERVER[$header] : '';
         }
 
-        return $headers;
+        return self::getApacheHeaders();
     }
 
     /**
@@ -162,7 +164,7 @@ class Request
      *
      * @return array
      */
-    public static function getApacheHeaders()
+    private static function getApacheHeaders()
     {
         if (function_exists('\apache_request_headers')) {
             return apache_request_headers();
@@ -172,7 +174,7 @@ class Request
 
         foreach ($_SERVER as $key => $value) {
             if (strpos($key, 'HTTP_') === 0) {
-                $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
+                $key = ucwords(strtolower(str_replace('_', '-', substr($key, 5))), '-');
                 $headers[$key] = $value;
             } else {
                 $headers[$key] = $value;

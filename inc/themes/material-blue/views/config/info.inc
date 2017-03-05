@@ -96,6 +96,23 @@
             </tr>
             <tr>
                 <td class="descField">
+                    <?php echo __('Sesión Encriptada'); ?>
+                    <div id="help-infosession"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-infosession">
+                        <p>
+                            <?php echo __('Indica si los datos de la sesión están encriptados en el servidor'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <div class="lowres-title"><?php echo __('Sesión Encriptada'); ?></div>
+
+                    <?php echo $securedSession ? __('Sí') : __('No'); ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
                     <?php echo __('Plugins Cargados'); ?>
                 </td>
                 <td class="valField">

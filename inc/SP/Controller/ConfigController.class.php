@@ -31,6 +31,7 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
+use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\CryptMasterPass;
 use SP\Core\DiFactory;
 use SP\Core\Init;
@@ -428,6 +429,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('configBackupDate', date('r', $this->configDB['config_backupdate']));
         $this->view->assign('plugins', PluginUtil::getLoadedPlugins());
         $this->view->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', Config::getConfig()->getSiteLang(), __('No instalado')));
+        $this->view->assign('securedSession', CryptSessionHandler::$isSecured);
 
         $this->view->append('tabs', ['title' => __('Información')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'info');

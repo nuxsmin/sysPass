@@ -30,6 +30,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Session;
 use SP\Html\Html;
+use SP\Http\Request;
 use SP\Log\Log;
 use SP\Log\LogUtil;
 
@@ -685,5 +686,15 @@ class Util
         }
 
         return touch($sysTmp . DIRECTORY_SEPARATOR . $file) ? $sysTmp : false;
+    }
+
+    /**
+     * Devolver la dirección IP del cliente
+     *
+     * @return string
+     */
+    public static function getClientAddress()
+    {
+        return Request::getRequestHeaders('X-Forwarded-For') ?: $_SERVER['REMOTE_ADDR'];
     }
 }
