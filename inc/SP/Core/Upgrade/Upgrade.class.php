@@ -153,13 +153,10 @@ class Upgrade
             list($version, $build) = explode('.', $version, 2);
             list($upgradeVersion, $upgradeBuild) = explode('.', $upgradeable, 2);
 
-            $versionRes = $version < $upgradeVersion;
+            $versionRes = (int)$version <= (int)$upgradeVersion;
 
-            if (($versionRes && empty($upgradeBuild)) ||
-                ($versionRes
-                    && !empty($build)
-                    && !empty($upgradeBuild)
-                    && $build < $upgradeBuild)
+            if (($versionRes && (int)$upgradeBuild === 0)
+                || ($versionRes && (int)$build < (int)$upgradeBuild)
             ) {
                 return true;
             }

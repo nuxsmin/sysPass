@@ -63,6 +63,14 @@ abstract class ImportBase implements ImportInterface
      * @var int
      */
     protected $counter = 0;
+    /**
+     * @var int
+     */
+    protected $version = 0;
+    /**
+     * @var bool Indica si el hash de la clave suministrada es igual a la actual
+     */
+    protected $mPassValidHash = false;
 
     /**
      * ImportBase constructor.
@@ -126,27 +134,35 @@ abstract class ImportBase implements ImportInterface
             return false;
         }
 
-        if ($this->ImportParams->getImportMasterPwd() !== '') {
-            $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
-            $pass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey);
-
-            // TODO: importar con encriptación anterior
-//            $pass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
-            $AccountData->setAccountPass($pass);
-        }
-
-        $AccountData->setAccountUserId($this->ImportParams->getDefaultUser());
-        $AccountData->setAccountUserGroupId($this->ImportParams->getDefaultGroup());
-
         try {
+            $AccountData->setAccountUserId($this->ImportParams->getDefaultUser());
+            $AccountData->setAccountUserGroupId($this->ImportParams->getDefaultGroup());
+
+            if ($this->mPassValidHash === false && $this->ImportParams->getImportMasterPwd() !== '') {
+                if ($this->version >= 210) {
+                    $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
+                    $pass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $this->ImportParams->getImportMasterPwd());
+                } else {
+                    $pass = OldCrypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
+                }
+
+                $AccountData->setAccountPass($pass);
+                $AccountData->setAccountKey('');
+            }
+
+            $encrypt = $AccountData->getAccountKey() === '';
+
             $Account = new Account($AccountData);
-            $Account->createAccount();
+            $Account->createAccount($encrypt);
 
             $this->LogMessage->addDetails(__('Cuenta creada', false), $AccountData->getAccountName());
             $this->counter++;
         } catch (SPException $e) {
             $this->LogMessage->addDetails($e->getMessage(), $AccountData->getAccountName());
             $this->LogMessage->addDetails(__('Error', false), $e->getHint());
+        } catch (\Exception $e) {
+            $this->LogMessage->addDetails(__('Error', false), $e->getMessage());
+            $this->LogMessage->addDetails(__('Cuenta', false), $AccountData->getAccountName());
         }
 
         return true;

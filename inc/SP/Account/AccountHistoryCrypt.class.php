@@ -192,10 +192,9 @@ class AccountHistoryCrypt
      *
      * @param string $currentMasterPass
      * @param string $newMasterPass
-     * @param Task   $Task
      * @return bool
      */
-    public function updatePass($currentMasterPass, $newMasterPass, Task $Task)
+    public function updatePass($currentMasterPass, $newMasterPass)
     {
         set_time_limit(0);
 
@@ -225,11 +224,8 @@ class AccountHistoryCrypt
         $AccountDataBase->key = '';
         $AccountDataBase->hash = Hash::hashKey($newMasterPass);
 
-        $Message = new TaskMessage();
-        $Message->setTaskId($Task->getTaskId());
-        $Message->setTask(__('Actualizar Clave Maestra (H)'));
-
-        $Task->writeJsonStatusAndFlush($Message);
+        TaskFactory::$Message->setTask(__('Actualizar Clave Maestra (H)'));
+        TaskFactory::sendTaskMessage();
 
         $counter = 0;
         $startTime = time();
@@ -246,13 +242,13 @@ class AccountHistoryCrypt
             if ($counter % 100 === 0) {
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
 
-                $Message->setMessage(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
-                $Message->setProgress(round(($counter * 100) / $numAccounts, 2));
-                $Message->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
+                TaskFactory::$Message->setMessage(__('Cuentas actualizadas') . ': ' . $counter . '/' . $numAccounts);
+                TaskFactory::$Message->setProgress(round(($counter * 100) / $numAccounts, 2));
+                TaskFactory::$Message->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
 
-                $Task->writeJsonStatusAndFlush($Message);
+                TaskFactory::sendTaskMessage();
 
-                debugLog($Message->composeText());
+                debugLog(TaskFactory::$Message->composeText());
             }
 
             $AccountData = clone $AccountDataBase;

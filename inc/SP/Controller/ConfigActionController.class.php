@@ -39,6 +39,7 @@ use SP\Core\Messages\LogMessage;
 use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
 use SP\Core\Task;
+use SP\Core\TaskFactory;
 use SP\Core\XmlExport;
 use SP\Http\Request;
 use SP\Import\Import;
@@ -519,15 +520,14 @@ class ConfigActionController implements ItemControllerInterface
                 return;
             }
 
-            $Task = new Task(__FUNCTION__, Request::analyze('taskId'));
-            $Task->register();
+            TaskFactory::createTask(__FUNCTION__, Request::analyze('taskId'));
 
             $Account = new AccountCrypt();
 
-            if (!$Account->updatePass($currentMasterPass, $newMasterPass, $Task)) {
+            if (!$Account->updatePass($currentMasterPass, $newMasterPass)) {
                 DB::rollbackTransaction();
 
-                $Task->end();
+                TaskFactory::endTask();
 
                 $this->JsonResponse->setDescription(__('Errores al actualizar las claves de las cuentas', false));
                 return;
@@ -535,10 +535,10 @@ class ConfigActionController implements ItemControllerInterface
 
             $AccountHistory = new AccountHistoryCrypt();
 
-            if (!$AccountHistory->updatePass($currentMasterPass, $newMasterPass, $Task)) {
+            if (!$AccountHistory->updatePass($currentMasterPass, $newMasterPass)) {
                 DB::rollbackTransaction();
 
-                $Task->end();
+                TaskFactory::endTask();
 
                 $this->JsonResponse->setDescription(__('Errores al actualizar las claves de las cuentas del histórico', false));
                 return;
@@ -547,20 +547,20 @@ class ConfigActionController implements ItemControllerInterface
             if (!CustomFieldsUtil::updateCustomFieldsCrypt($currentMasterPass, $newMasterPass)) {
                 DB::rollbackTransaction();
 
-                $Task->end();
+                TaskFactory::endTask();
 
                 $this->JsonResponse->setDescription(__('Errores al actualizar datos de campos personalizados', false));
                 return;
             }
 
             if (!DB::endTransaction()) {
-                $Task->end();
+                TaskFactory::endTask();
 
                 $this->JsonResponse->setDescription(__('No es posible finalizar una transacción', false));
                 return;
             }
 
-            $Task->end();
+            TaskFactory::endTask();
 
             Util::unlockApp();
         }

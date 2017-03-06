@@ -24,6 +24,8 @@
 
 namespace SP\Import;
 
+use DOMXPath;
+use SP\Config\ConfigDB;
 use SP\Core\Crypt\Crypt;
 use SP\Core\OldCrypt;
 use SP\Core\Crypt\Hash;
@@ -65,11 +67,16 @@ class SyspassImport extends ImportBase
      * Iniciar la importación desde sysPass.
      *
      * @throws SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function doImport()
     {
         try {
+            if ($this->ImportParams->getImportMasterPwd() !== ''){
+                $this->mPassValidHash = Hash::checkHashKey($this->ImportParams->getImportMasterPwd(), ConfigDB::getValue('masterPwd'));
+            }
+
+            $this->getXmlVersion();
+
             if ($this->detectEncrypted()) {
                 if ($this->ImportParams->getImportPwd() === '') {
                     throw new SPException(SPException::SP_ERROR, __('Clave de encriptación no indicada', false));
@@ -77,15 +84,25 @@ class SyspassImport extends ImportBase
 
                 $this->processEncrypted();
             }
+
             $this->processCategories();
             $this->processCustomers();
             $this->processTags();
             $this->processAccounts();
         } catch (SPException $e) {
             throw $e;
-        } catch (\DOMException $e) {
+        } catch (\Exception $e) {
             throw new SPException(SPException::SP_CRITICAL, $e->getMessage());
         }
+    }
+
+    /**
+     * Obtener la versión del XML
+     */
+    protected function getXmlVersion()
+    {
+        $DomXpath = new DOMXPath($this->xmlDOM);
+        $this->version = (int)str_replace('.', '', $DomXpath->query('/Root/Meta/Version')->item(0)->nodeValue);
     }
 
     /**
@@ -102,6 +119,7 @@ class SyspassImport extends ImportBase
      * Procesar los datos encriptados y añadirlos al árbol DOM desencriptados
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected function processEncrypted()
     {
@@ -115,11 +133,11 @@ class SyspassImport extends ImportBase
             /** @var $node \DOMElement */
             $data = base64_decode($node->nodeValue);
 
-            if ($iv = base64_decode($node->getAttribute('iv'))) {
-                $xmlDecrypted = OldCrypt::getDecrypt($data, $iv, $this->ImportParams->getImportPwd());
-            } else {
+            if ($this->version >= 210) {
                 $securedKey = Crypt::unlockSecuredKey($node->getAttribute('key'), $this->ImportParams->getImportPwd());
-                $xmlDecrypted = Crypt::decrypt($data, $securedKey);
+                $xmlDecrypted = Crypt::decrypt($data, $securedKey, $this->ImportParams->getImportPwd());
+            } else {
+                $xmlDecrypted = OldCrypt::getDecrypt($data, base64_decode($node->getAttribute('iv'), $this->ImportParams->getImportPwd()));
             }
 
             $newXmlData = new \DOMDocument();
@@ -273,10 +291,10 @@ class SyspassImport extends ImportBase
                         $AccountData->setAccountUrl($accountNode->nodeValue);
                         break;
                     case 'pass';
-                        $AccountData->setAccountPass(base64_decode($accountNode->nodeValue));
+                        $AccountData->setAccountPass($accountNode->nodeValue);
                         break;
-                    case 'passiv';
-                        $AccountData->setAccountKey(base64_decode($accountNode->nodeValue));
+                    case 'key';
+                        $AccountData->setAccountKey($accountNode->nodeValue);
                         break;
                     case 'notes';
                         $AccountData->setAccountNotes($accountNode->nodeValue);

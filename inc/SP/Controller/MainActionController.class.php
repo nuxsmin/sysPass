@@ -26,7 +26,6 @@ namespace SP\Controller;
 
 use SP\Config\Config;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\Messages\TaskMessage;
 use SP\Core\Session;
 use SP\Core\TaskFactory;
 use SP\Core\Upgrade\Upgrade;

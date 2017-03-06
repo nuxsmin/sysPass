@@ -45,6 +45,7 @@ sysPass.Main = function () {
         passLength: 0,
         minPasswordLength: 8,
         complexity: {
+            chars: true,
             numbers: true,
             symbols: true,
             uppercase: true,

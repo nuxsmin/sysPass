@@ -365,7 +365,7 @@ class Installer
             $this->DB->exec('DROP DATABASE IF EXISTS `' . $this->InstallData->getDbName() . '`');
             $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHost() . '`');
             $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`' . $this->InstallData->getDbAuthHostDns() . '`');
-            $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`%`');
+//            $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`%`');
 
             debugLog('Rollback');
 

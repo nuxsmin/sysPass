@@ -84,5 +84,6 @@ $stringsJsLang = [
     59 => __('Este proceso puede durar algo de tiempo. Desea continuar?'),
     60 => __('Aviso'),
     61 => __('Sesión finalizada'),
-    62 => __('Realizando tarea. Por favor, no cierre la ventana/pestaña del navegador.')
+    62 => __('Realizando tarea. Por favor, no cierre la ventana/pestaña del navegador.'),
+    63 => __('Incluir Letras')
 ];

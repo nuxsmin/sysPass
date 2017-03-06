@@ -274,7 +274,7 @@ class XmlExport
 
                 // Crear los datos encriptados con la información del nodo
                 $securedKey = Crypt::makeSecuredKey($this->exportPass);
-                $encrypted = Crypt::encrypt($nodeXML, $securedKey);
+                $encrypted = Crypt::encrypt($nodeXML, $securedKey, $this->exportPass);
 
                 // Buscar si existe ya un nodo para el conjunto de datos encriptados
                 $encryptedNode = $this->root->getElementsByTagName('Encrypted')->item(0);
@@ -310,8 +310,6 @@ class XmlExport
      * Crear el nodo con los datos de los clientes
      *
      * #@throws SPException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     private function createCustomers()
     {
@@ -404,8 +402,8 @@ class XmlExport
                 $accountLogin = $this->xml->createElement('login', $this->escapeChars($account->account_login));
                 $accountUrl = $this->xml->createElement('url', $this->escapeChars($account->account_url));
                 $accountNotes = $this->xml->createElement('notes', $this->escapeChars($account->account_notes));
-                $accountPass = $this->xml->createElement('pass', $this->escapeChars(base64_encode($account->account_pass)));
-                $accountIV = $this->xml->createElement('passiv', $this->escapeChars(base64_encode($account->account_IV)));
+                $accountPass = $this->xml->createElement('pass', $this->escapeChars($account->account_pass));
+                $accountIV = $this->xml->createElement('key', $this->escapeChars($account->account_key));
 
                 // Crear el nodo de cuenta
                 $nodeAccount = $this->xml->createElement('Account');

@@ -68,33 +68,33 @@ sysPass.Theme = function (Common) {
     };
 
     // Función para generar claves aleatorias.
-    // By Uzbekjon from  http://jquery-howto.blogspot.com.es
     var password = function ($target) {
-        var iteration = 0,
-            genPassword = "",
-            randomNumber;
+        var i = 0;
+        var chars = "";
+        var genPassword = "";
 
-        while (iteration < Common.passwordData.complexity.numlength) {
-            randomNumber = (Math.floor((Math.random() * 100)) % 94) + 33;
-            if (!Common.passwordData.complexity.symbols) {
-                if ((randomNumber >= 33 && randomNumber <= 47) ||
-                    (randomNumber >= 58 && randomNumber <= 64) ||
-                    (randomNumber >= 91 && randomNumber <= 96) ||
-                    (randomNumber >= 123 && randomNumber <= 126)) {
-                    continue;
-                }
+        var getRandomChar = function (min, max) {
+            return chars.charAt(Math.floor((Math.random() * max) + min));
+        };
+
+        if (Common.passwordData.complexity.symbols) {
+            chars += "!\"\\·@|#$~%&/()=?'¿¡^*[]·;,_-{}<>";
+        }
+
+        if (Common.passwordData.complexity.numbers) {
+            chars += "1234567890";
+        }
+
+        if (Common.passwordData.complexity.chars) {
+            chars += "abcdefghijklmnopqrstuvwxyz";
+
+            if (Common.passwordData.complexity.uppercase) {
+                chars += String("abcdefghijklmnopqrstuvwxyz").toUpperCase();
             }
+        }
 
-            if (!Common.passwordData.complexity.numbers && randomNumber >= 48 && randomNumber <= 57) {
-                continue;
-            }
-
-            if (!Common.passwordData.complexity.uppercase && randomNumber >= 65 && randomNumber <= 90) {
-                continue;
-            }
-
-            iteration++;
-            genPassword += String.fromCharCode(randomNumber);
+        for (;i++<=Common.passwordData.complexity.numlength;) {
+            genPassword += getRandomChar(0, chars.length - 1);
         }
 
         $("#viewPass").attr("title", genPassword);
@@ -135,6 +135,10 @@ sysPass.Theme = function (Common) {
 
         var content =
             "<div id=\"box-complexity\"><div>" +
+            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-chars\">" +
+            "<input type=\"checkbox\" id=\"checkbox-chars\" class=\"mdl-checkbox__input\" name=\"checkbox-chars\" checked/>" +
+            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[63] + "</span>" +
+            "</label>" +
             "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-numbers\">" +
             "<input type=\"checkbox\" id=\"checkbox-numbers\" class=\"mdl-checkbox__input\" name=\"checkbox-numbers\" checked/>" +
             "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[35] + "</span>" +
@@ -163,6 +167,7 @@ sysPass.Theme = function (Common) {
                 onClick: function (e) {
                     e.preventDefault();
 
+                    Common.passwordData.complexity.chars = $("#checkbox-chars").is(":checked");
                     Common.passwordData.complexity.numbers = $("#checkbox-numbers").is(":checked");
                     Common.passwordData.complexity.uppercase = $("#checkbox-uppercase").is(":checked");
                     Common.passwordData.complexity.symbols = $("#checkbox-symbols").is(":checked");
@@ -172,6 +177,7 @@ sysPass.Theme = function (Common) {
             cancelable: true,
             contentStyle: {"max-width": "300px"},
             onLoaded: function () {
+                $("#checkbox-chars").prop("checked", Common.passwordData.complexity.chars);
                 $("#checkbox-numbers").prop("checked", Common.passwordData.complexity.numbers);
                 $("#checkbox-uppercase").prop("checked", Common.passwordData.complexity.uppercase);
                 $("#checkbox-symbols").prop("checked", Common.passwordData.complexity.symbols);
