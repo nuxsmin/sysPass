@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2017-03-05 08:33+0100\n"
+"POT-Creation-Date: 2017-03-06 21:49+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: Alexander Titov,Alex Us\n"
@@ -61,7 +61,7 @@ msgstr "Ошибочный файл"
 #: ../../../../ajax/ajax_filesMgmt.php:104
 #: ../../../../ajax/ajax_filesMgmt.php:166
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:841
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:381
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:437
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:95
 #: ../../../../inc/themes/material-blue/views/config/import.inc:66
 #: ../../../../inc/themes/material-blue/views/config/import.inc:69
@@ -128,7 +128,8 @@ msgstr "ID"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:839
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1160
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:530
-#: ../../../../inc/SP/Controller/MainController.class.php:608
+#: ../../../../inc/SP/Controller/MainController.class.php:609
+#: ../../../../inc/SP/Import/ImportBase.class.php:165
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:94
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:76
 #: ../../../../inc/themes/material-blue/views/itemshow/publiclinks.inc:11
@@ -148,7 +149,7 @@ msgstr "Учетная запись"
 #: ../../../../inc/SP/Controller/LoginController.class.php:514
 #: ../../../../inc/SP/Controller/LoginController.class.php:532
 #: ../../../../inc/SP/Controller/LoginController.class.php:540
-#: ../../../../inc/SP/Controller/MainActionController.class.php:125
+#: ../../../../inc/SP/Controller/MainActionController.class.php:124
 #: ../../../../inc/SP/Core/Init.class.php:451
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:96
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:75
@@ -278,9 +279,9 @@ msgstr "Ошибка при создании учетной записи"
 
 #: ../../../../inc/SP/Account/Account.class.php:321
 #: ../../../../inc/SP/Account/Account.class.php:324
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:134
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:254
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:145
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:136
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:253
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:147
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:273
 #: ../../../../inc/SP/Api/ApiBase.class.php:200
 #: ../../../../inc/SP/Api/ApiBase.class.php:203
@@ -325,17 +326,17 @@ msgstr "Ошибка при изменении пароля"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:69
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:92
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:196
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:214
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:197
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:213
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:571
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:599
 msgid "Actualizar Clave Maestra"
 msgstr "Изменить мастер-пароль"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:70
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:197
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:198
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:73
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:207
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:208
 msgid "Inicio"
 msgstr "Старт"
 
@@ -346,33 +347,33 @@ msgid "Error en el módulo de encriptación"
 msgstr "Ошибка в модуле шифрования"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:84
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:204
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:205
 #, fuzzy
 msgid "Error al obtener las claves de las cuentas"
 msgstr "Ошибка получения паролей для учетной записи"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:110
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:151
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:233
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:271
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:153
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:231
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:270
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:117
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:162
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:247
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:164
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:245
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:290
 msgid "Cuentas actualizadas"
 msgstr "Обновлены учетные записи"
 
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:144
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:147
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:264
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:267
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:146
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:149
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:263
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:266
 #, fuzzy
 msgid "Fallo al actualizar la clave de la cuenta"
 msgstr "Ошибка изменения пароля учетной записи"
 
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:152
-#: ../../../../inc/SP/Account/AccountCrypt.class.php:272
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:163
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:154
+#: ../../../../inc/SP/Account/AccountCrypt.class.php:271
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:165
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:291
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1077
 msgid "Errores"
@@ -392,25 +393,25 @@ msgstr "Ошибка при обновлении истории"
 
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:72
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:99
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:206
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:228
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:207
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:227
 msgid "Actualizar Clave Maestra (H)"
 msgstr "Изменить мастер-пароль (H)"
 
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:87
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:214
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:215
 #: ../../../../inc/themes/material-blue/views/accountsearch/index.inc:11
 #: ../../../../inc/themes/material-blue/views/eventlog/eventlog.inc:11
 msgid "No se encontraron registros"
 msgstr "Записи не найдены"
 
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:132
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:134
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:260
 msgid "La clave maestra del registro no coincide"
 msgstr "Мастер-пароль не совпадает"
 
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:155
-#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:158
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:157
+#: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:160
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:283
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:286
 #, fuzzy
@@ -488,7 +489,7 @@ msgstr "Показать пароль"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:319
 #: ../../../../inc/SP/Api/SyspassApi.class.php:372
 #: ../../../../inc/SP/Api/SyspassApi.class.php:408
-#: ../../../../inc/SP/Controller/MainController.class.php:609
+#: ../../../../inc/SP/Controller/MainController.class.php:610
 #: ../../../../inc/SP/Util/Wiki/DokuWikiApiBase.class.php:197
 msgid "Origen"
 msgstr "Источник"
@@ -500,7 +501,7 @@ msgstr "Добавить учетную запись"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:190
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:923
-#: ../../../../inc/SP/Import/ImportBase.class.php:145
+#: ../../../../inc/SP/Import/ImportBase.class.php:158
 msgid "Cuenta creada"
 msgstr "Учетная запись создана"
 
@@ -605,7 +606,7 @@ msgstr "Добавить категорию"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:281
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:549
-#: ../../../../inc/SP/Import/ImportBase.class.php:166
+#: ../../../../inc/SP/Import/ImportBase.class.php:182
 msgid "Categoría creada"
 msgstr "Категория создана"
 
@@ -634,7 +635,7 @@ msgstr "Добавить заказчика"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:370
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:487
-#: ../../../../inc/SP/Import/ImportBase.class.php:188
+#: ../../../../inc/SP/Import/ImportBase.class.php:204
 msgid "Cliente creado"
 msgstr "Заказчик добавлен"
 
@@ -975,7 +976,7 @@ msgstr "Пользователь не состоит в группе"
 
 #: ../../../../inc/SP/Config/ConfigDB.class.php:107
 #: ../../../../inc/SP/Config/ConfigDB.class.php:147
-#: ../../../../inc/SP/Controller/MainController.class.php:295
+#: ../../../../inc/SP/Controller/MainController.class.php:296
 #: ../../../../inc/SP/Core/Acl.class.php:215
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:75
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:216
@@ -989,8 +990,8 @@ msgid "Modificar configuración"
 msgstr "Изменить конфигурацию"
 
 #: ../../../../inc/SP/Config/ConfigDB.class.php:149
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:354
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:360
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:410
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:416
 msgid "Parámetro"
 msgstr "Параметр"
 
@@ -1008,7 +1009,7 @@ msgid "Detalles de Cuenta"
 msgstr "Детали учетной записи"
 
 #: ../../../../inc/SP/Controller/AccountController.class.php:227
-#: ../../../../inc/SP/Controller/MainController.class.php:265
+#: ../../../../inc/SP/Controller/MainController.class.php:266
 #: ../../../../inc/SP/Core/Acl.class.php:187
 msgid "Nueva Cuenta"
 msgstr "Новая учетная запись"
@@ -1119,10 +1120,11 @@ msgstr "Параметры DokuWiki не заданы"
 
 #: ../../../../inc/SP/Controller/ChecksController.class.php:135
 #: ../../../../inc/SP/Import/CsvImportBase.class.php:113
-#: ../../../../inc/SP/Import/ImportBase.class.php:149
-#: ../../../../inc/SP/Import/ImportBase.class.php:171
-#: ../../../../inc/SP/Import/ImportBase.class.php:193
-#: ../../../../inc/SP/Import/ImportBase.class.php:215
+#: ../../../../inc/SP/Import/ImportBase.class.php:162
+#: ../../../../inc/SP/Import/ImportBase.class.php:164
+#: ../../../../inc/SP/Import/ImportBase.class.php:187
+#: ../../../../inc/SP/Import/ImportBase.class.php:209
+#: ../../../../inc/SP/Import/ImportBase.class.php:231
 #: ../../../../inc/SP/Log/Email.class.php:92
 #: ../../../../inc/SP/Log/Email.class.php:93
 #: ../../../../inc/SP/Log/Email.class.php:203
@@ -1136,11 +1138,11 @@ msgid "Conexión correcta"
 msgstr "Успешное подключение"
 
 #: ../../../../inc/SP/Controller/ChecksController.class.php:138
-#: ../../../../inc/SP/Controller/MainActionController.class.php:124
+#: ../../../../inc/SP/Controller/MainActionController.class.php:123
 #: ../../../../inc/SP/Core/Init.class.php:450
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:148
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:159
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:374
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:207
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:220
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:430
 #: ../../../../inc/themes/material-blue/views/config/info.inc:40
 #: ../../../../inc/themes/material-blue/views/itemshow/plugins.inc:25
 msgid "Versión"
@@ -1150,43 +1152,43 @@ msgstr "Версия"
 msgid "Error de conexión a DokuWiki"
 msgstr "Ошибка при подключении к DokuWiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:173
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:174
 msgid "Faltan parámetros de syslog remoto"
 msgstr "Пропущены параметры удаленного syslog"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:182
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:183
 msgid "Syslog remoto deshabilitado"
 msgstr "Удаленный syslog отключен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:195
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:196
 msgid "Faltan parámetros de Proxy"
 msgstr "Не указаны все параметры прокси"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:204
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:205
 msgid "Proxy habiltado"
 msgstr "Прокси включен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:208
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:209
 msgid "Proxy deshabilitado"
 msgstr "Прокси выключен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:211
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:300
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:364
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:411
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:464
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:212
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:301
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:365
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:412
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:465
 msgid "Sección"
 msgstr "Раздел"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:211
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:212
 #: ../../../../inc/SP/Controller/ConfigController.class.php:154
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:226
 #: ../../../../inc/themes/material-blue/views/main/install.inc:132
 msgid "General"
 msgstr "Основное"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:228
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:510
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:229
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:511
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:595
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:666
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:716
@@ -1196,27 +1198,27 @@ msgstr "Основное"
 msgid "Ey, esto es una DEMO!!"
 msgstr "Ey, это DEMO!!"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:242
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:243
 msgid "Configuración actualizada"
 msgstr "Конфигурация изменена"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:244
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:245
 #, fuzzy
 msgid "Error al guardar la configuración"
 msgstr "Ошибка при сохранении конфигурации"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:248
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:249
 msgid "Modificar Configuración"
 msgstr "Изменить конфигурацию"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:281
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:282
 msgid "El tamaño máximo por archivo es de 16MB"
 msgstr "Максимальный размер файла 16MB"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:300
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:301
 #: ../../../../inc/SP/Controller/ConfigController.class.php:203
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:365
-#: ../../../../inc/SP/Controller/MainController.class.php:615
+#: ../../../../inc/SP/Controller/MainController.class.php:616
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:90
 #: ../../../../inc/themes/material-blue/views/account/linkedAccounts.inc:13
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:30
@@ -1225,74 +1227,74 @@ msgstr "Максимальный размер файла 16MB"
 msgid "Cuentas"
 msgstr "Учетные записи"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:322
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:323
 msgid "Faltan parámetros de Wiki"
 msgstr "Пропущены настройки Wiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:330
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:331
 msgid "Wiki habiltada"
 msgstr "WiKi включен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:334
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:335
 msgid "Wiki deshabilitada"
 msgstr "WiKi выключен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:347
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:348
 msgid "Faltan parámetros de DokuWiki"
 msgstr "Пропущены параметры DokuWiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:357
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:358
 msgid "DokuWiki habiltada"
 msgstr "DokuWiki включен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:361
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:362
 msgid "DokuWiki deshabilitada"
 msgstr "DokuWiki выключен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:364
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:365
 #: ../../../../inc/SP/Controller/ConfigController.class.php:235
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:63
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:10
 msgid "Wiki"
 msgstr "Wiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:391
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:392
 msgid "Faltan parámetros de LDAP"
 msgstr "Пропущены настройки LDAP"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:404
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:405
 msgid "LDAP habiltado"
 msgstr "LDAP включен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:408
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:409
 msgid "LDAP deshabilitado"
 msgstr "LDAP выключен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:411
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:412
 #: ../../../../inc/SP/Controller/ConfigController.class.php:268
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:7
 msgid "LDAP"
 msgstr "LDAP"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:439
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:440
 msgid "Faltan parámetros de Correo"
 msgstr "Пропущены настройки почты"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:455
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:456
 msgid "Correo habiltado"
 msgstr "Email включен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:461
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:462
 msgid "Correo deshabilitado"
 msgstr "Email выключен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:464
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:465
 #: ../../../../inc/SP/Controller/ConfigController.class.php:299
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:7
 msgid "Correo"
 msgstr "Mail"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:486
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:487
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:574
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:279
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:516
@@ -1301,7 +1303,7 @@ msgstr "Mail"
 msgid "Clave maestra actualizada"
 msgstr "Мастер-пароль изменен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:487
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:488
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:576
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:279
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:516
@@ -1309,27 +1311,27 @@ msgstr "Мастер-пароль изменен"
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Перезайдите для вступления изменений"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:491
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:492
 msgid "Clave maestra no indicada"
 msgstr "Необходим мастер-пароль"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:494
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:495
 msgid "Se ha de confirmar el cambio de clave"
 msgstr "Изменение пароля должно быть подтверждено"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:499
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:500
 msgid "Las claves son idénticas"
 msgstr "Пароли одинаковы"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:502
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:503
 msgid "Las claves maestras no coinciden"
 msgstr "Мастер-пароль не совпадает"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:505
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:506
 msgid "La clave maestra actual no coincide"
 msgstr "Текущий мастер-пароль ошибочен"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:518
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:519
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:61
 #: ../../../../inc/SP/Import/Import.class.php:89
 msgid "No es posible iniciar una transacción"
@@ -1450,7 +1452,7 @@ msgstr "Backup"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:408
 #: ../../../../inc/SP/Import/Import.class.php:66
-#: ../../../../inc/SP/Import/ImportBase.class.php:78
+#: ../../../../inc/SP/Import/ImportBase.class.php:86
 msgid "Importar Cuentas"
 msgstr "Импорт учетных записей"
 
@@ -1459,7 +1461,7 @@ msgid "No instalado"
 msgstr "Не установлено"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:434
-#: ../../../../inc/SP/Controller/MainController.class.php:617
+#: ../../../../inc/SP/Controller/MainController.class.php:618
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:77
 msgid "Información"
 msgstr "Информация"
@@ -1962,7 +1964,7 @@ msgid "Leída"
 msgstr "Чтение"
 
 #: ../../../../inc/SP/Controller/Grids/Notices.class.php:76
-#: ../../../../inc/SP/Controller/MainController.class.php:314
+#: ../../../../inc/SP/Controller/MainController.class.php:315
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:79
 msgid "Notificaciones"
 msgstr "Уведомления"
@@ -2184,7 +2186,7 @@ msgid "Crear Etiqueta"
 msgstr "Добавить тег"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:780
-#: ../../../../inc/SP/Import/ImportBase.class.php:210
+#: ../../../../inc/SP/Import/ImportBase.class.php:226
 msgid "Etiqueta creada"
 msgstr "Тег добавлен"
 
@@ -2445,7 +2447,7 @@ msgid "Autentificación"
 msgstr "Аутентификация"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:62
-#: ../../../../inc/SP/Controller/MainActionController.class.php:122
+#: ../../../../inc/SP/Controller/MainActionController.class.php:121
 #: ../../../../inc/SP/Core/Init.class.php:448
 msgid "Actualización"
 msgstr "Обновить"
@@ -2458,91 +2460,91 @@ msgstr "Wrong security code"
 msgid "Es necesario confirmar la actualización"
 msgstr "The updating need to be confirmed"
 
-#: ../../../../inc/SP/Controller/MainActionController.class.php:75
+#: ../../../../inc/SP/Controller/MainActionController.class.php:74
 #: ../../../../inc/themes/material-blue/views/main/login.inc:81
 msgid "Aplicación actualizada correctamente"
 msgstr "Программа успешно обновлена"
 
-#: ../../../../inc/SP/Controller/MainActionController.class.php:76
+#: ../../../../inc/SP/Controller/MainActionController.class.php:75
 msgid "En 5 segundos será redirigido al login"
 msgstr "You will be redirected to log in within 5 seconds"
 
-#: ../../../../inc/SP/Controller/MainActionController.class.php:123
+#: ../../../../inc/SP/Controller/MainActionController.class.php:122
 #: ../../../../inc/SP/Core/Init.class.php:449 ../../../../res/upgrade.php:121
 msgid "Actualización de versión realizada."
 msgstr "Обновление версии завершено."
 
-#: ../../../../inc/SP/Controller/MainController.class.php:256
+#: ../../../../inc/SP/Controller/MainController.class.php:257
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:72
 msgid "Buscar"
 msgstr "Поиск"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:275
+#: ../../../../inc/SP/Controller/MainController.class.php:276
 msgid "Usuarios y Accesos"
 msgstr "Пользователи и доступы"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:285
+#: ../../../../inc/SP/Controller/MainController.class.php:286
 msgid "Elementos y Personalización"
 msgstr "Элементы персонализации"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:305
+#: ../../../../inc/SP/Controller/MainController.class.php:306
 #: ../../../../inc/themes/material-blue/views/eventlog/eventlog.inc:7
 msgid "Registro de Eventos"
 msgstr "Журнал событий"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:367
+#: ../../../../inc/SP/Controller/MainController.class.php:368
 #: ../../../../inc/SP/Core/Init.class.php:140
 msgid "Versión de PHP requerida >= "
 msgstr "Необходим PHP версии >= "
 
-#: ../../../../inc/SP/Controller/MainController.class.php:368
+#: ../../../../inc/SP/Controller/MainController.class.php:369
 #: ../../../../inc/SP/Core/Init.class.php:141
 msgid ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "Пожалуйста, обновите PHP для использования sysPass"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:378
+#: ../../../../inc/SP/Controller/MainController.class.php:379
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:265
 msgid "Módulo no disponible"
 msgstr "Модуль недоступен"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:379
+#: ../../../../inc/SP/Controller/MainController.class.php:380
 msgid "Sin este módulo la aplicación puede no funcionar correctamente."
 msgstr "Без этого модуля программа не может работать корректно"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:387
+#: ../../../../inc/SP/Controller/MainController.class.php:388
 msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
 msgstr "Данная версия PHP уязвима NULL Byte attack (CVE-2006-7243)"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:388
+#: ../../../../inc/SP/Controller/MainController.class.php:389
 msgid "Actualice la versión de PHP para usar sysPass de forma segura"
 msgstr "Пожалуйста, обновите версию PHP для безопасного использования sysPass"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:394
+#: ../../../../inc/SP/Controller/MainController.class.php:395
 msgid "No se encuentra el generador de números aleatorios."
 msgstr "Не могу найти генератор случайных чисел."
 
-#: ../../../../inc/SP/Controller/MainController.class.php:395
+#: ../../../../inc/SP/Controller/MainController.class.php:396
 msgid ""
 "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
 msgstr ""
 "Без этой функции, атакующий может завладеть вашим аккаунтом при сбросе "
 "пароля."
 
-#: ../../../../inc/SP/Controller/MainController.class.php:492
+#: ../../../../inc/SP/Controller/MainController.class.php:493
 msgid "Descargar nueva versión"
 msgstr "Скачать новую версию"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:504
+#: ../../../../inc/SP/Controller/MainController.class.php:505
 msgid "Avisos de sysPass"
 msgstr "Уведомления sysPass"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:607
+#: ../../../../inc/SP/Controller/MainController.class.php:608
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:74
 msgid "Enlace visualizado"
 msgstr "Ссылка показана"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:610
+#: ../../../../inc/SP/Controller/MainController.class.php:611
 msgid "Agente"
 msgstr "Агент"
 
@@ -2669,13 +2671,13 @@ msgid "Copia de la aplicación y base de datos realizada correctamente"
 msgstr "Резервная копия программы и базы успешно создана"
 
 #: ../../../../inc/SP/Core/Backup.class.php:102
-#: ../../../../inc/SP/Core/XmlExport.class.php:522
+#: ../../../../inc/SP/Core/XmlExport.class.php:520
 #, php-format
 msgid "No es posible crear el directorio de backups (\"%s\")"
 msgstr "Невозможно создать каталог резервных копий (\"%s\")"
 
 #: ../../../../inc/SP/Core/Backup.class.php:106
-#: ../../../../inc/SP/Core/XmlExport.class.php:528
+#: ../../../../inc/SP/Core/XmlExport.class.php:526
 #, fuzzy
 msgid "Compruebe los permisos del directorio de backups"
 msgstr "Проверьте права на папку резервных копий"
@@ -3054,67 +3056,67 @@ msgstr "Updating profiles ID"
 msgid "Error al crear perfil"
 msgstr "Ошибка при создании профиля"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:74
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:97
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:83
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:110
 #, fuzzy
 msgid "Error al aplicar la actualización auxiliar"
 msgstr "Ошибка применения дополнительного обновления"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:75
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:81
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:84
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:90
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:98
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:101
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:111
 msgid "Compruebe el registro de eventos para más detalles"
 msgstr "См. журнал событий для получения подробностей."
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:80
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:171
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:89
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:232
 #, fuzzy
 msgid "Error al aplicar la actualización de la Base de Datos"
 msgstr "Ошибка обновления базы данных"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:89
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:100
 msgid "Error al aplicar la actualización de la aplicación"
 msgstr "Error while applying the application update"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:147
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:158
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:206
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:219
 msgid "Actualizar BBDD"
 msgstr "Обновление БД"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:153
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:212
 msgid "No es necesario actualizar la Base de Datos."
 msgstr "Обновление базы данных не требуется."
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:183
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:246
 msgid "Actualización de la Base de Datos realizada correctamente."
 msgstr "Обновление базы данных завершено успешно."
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:240
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:300
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:338
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:396
 #, fuzzy
 msgid "Error al obtener los datos del usuario"
 msgstr "Ошибка при получении данных пользователя"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:341
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:397
 msgid "Actualizar Configuración"
 msgstr "Обновить конфигурацию"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:380
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:436
 msgid "Error al actualizar la configuración"
 msgstr "Ошибка при обновлении конфигурации"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:507
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:552
 msgid "La aplicación necesita actualizarse"
 msgstr "Необходимо обновить программу"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:507
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:552
 #, php-format
 msgid "Si es un administrador pulse en el enlace: %s"
 msgstr "Если Вы администратор, нажмите на ссылку: %s"
 
-#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:507
+#: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:552
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:57
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:172
 msgid "Actualizar"
@@ -3143,7 +3145,7 @@ msgstr "Ошибка при экспорте учетных записей"
 msgid "Exportación de cuentas realizada correctamente"
 msgstr "Экспорт успешно выполнен"
 
-#: ../../../../inc/SP/Core/XmlExport.class.php:485
+#: ../../../../inc/SP/Core/XmlExport.class.php:483
 #, fuzzy
 msgid "Error al crear el archivo XML"
 msgstr "Ошибка создания файла XML"
@@ -3334,20 +3336,20 @@ msgstr "Помощь"
 msgid "Importación finalizada"
 msgstr "Импорт завершен"
 
-#: ../../../../inc/SP/Import/ImportBase.class.php:122
+#: ../../../../inc/SP/Import/ImportBase.class.php:130
 msgid "Id de categoría no definido. No es posible importar cuenta."
 msgstr "ID категории не задано. Невозможно импортировать учетную запись."
 
-#: ../../../../inc/SP/Import/ImportBase.class.php:125
+#: ../../../../inc/SP/Import/ImportBase.class.php:133
 msgid "Id de cliente no definido. No es posible importar cuenta."
 msgstr "ID заказчика не задано. Невозможно импортировать учетную запись."
 
-#: ../../../../inc/SP/Import/SyspassImport.class.php:75
+#: ../../../../inc/SP/Import/SyspassImport.class.php:82
 msgid "Clave de encriptación no indicada"
 msgstr "Пароль шифрования не задан"
 
-#: ../../../../inc/SP/Import/SyspassImport.class.php:111
-#: ../../../../inc/SP/Import/SyspassImport.class.php:128
+#: ../../../../inc/SP/Import/SyspassImport.class.php:129
+#: ../../../../inc/SP/Import/SyspassImport.class.php:146
 msgid "Clave de encriptación incorrecta"
 msgstr "Wrong encryption password"
 
@@ -4307,6 +4309,11 @@ msgstr "Это длительный процесс. Продолжить?"
 msgid ""
 "Realizando tarea. Por favor, no cierre la ventana/pestaña del navegador."
 msgstr "Performing task. Please, do not close the browser window/tab."
+
+#: ../../../../js/strings.js.php:88
+#, fuzzy
+msgid "Incluir Letras"
+msgstr "Include Letters"
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:67
 #: ../../../../inc/themes/material-blue/views/account/account.inc:136
