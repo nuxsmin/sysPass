@@ -299,14 +299,16 @@ class Util
         if ($useCookie) {
             $cookie = self::getUserCookieFile();
 
-            if (!Session::getCurlCookieSession()) {
-                curl_setopt($ch, CURLOPT_COOKIESESSION, true);
-                curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
+            if ($cookie) {
+                if (!Session::getCurlCookieSession()) {
+                    curl_setopt($ch, CURLOPT_COOKIESESSION, true);
+                    curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie);
 
-                Session::setCurlCookieSession(true);
+                    Session::setCurlCookieSession(true);
+                }
+
+                curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
             }
-
-            curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie);
         }
 
         $data = curl_exec($ch);
@@ -331,11 +333,39 @@ class Util
     /**
      * Devuelve el nombre de archivo a utilizar para las cookies del usuario
      *
-     * @return string
+     * @return string|false
      */
     public static function getUserCookieFile()
     {
-        return '/tmp/' . md5('syspass-' . Session::getUserData()->getUserLogin());
+        $tempDir = self::getTempDir();
+
+        return $tempDir ? $tempDir . DIRECTORY_SEPARATOR . md5('syspass-' . Session::getUserData()->getUserLogin()) : false;
+    }
+
+    /**
+     * Comprueba y devuelve un directorio temporal válido
+     *
+     * @return bool|string
+     */
+    public static function getTempDir()
+    {
+        $sysTmp = sys_get_temp_dir();
+        $appTmp = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'tmp';
+        $file = 'syspass.test';
+
+        if (file_exists($appTmp . DIRECTORY_SEPARATOR . $file)) {
+            return $appTmp;
+        } elseif (file_exists($sysTmp . DIRECTORY_SEPARATOR . $file)) {
+            return $sysTmp;
+        }
+
+        if (is_dir($appTmp) || @mkdir($appTmp)) {
+            if (touch($appTmp . DIRECTORY_SEPARATOR . $file)) {
+                return $appTmp;
+            }
+        }
+
+        return touch($sysTmp . DIRECTORY_SEPARATOR . $file) ? $sysTmp : false;
     }
 
     /**
@@ -664,32 +694,6 @@ class Util
         }
 
         return [0, 0];
-    }
-
-    /**
-     * Comprueba y devuelve un directorio temporal válido
-     *
-     * @return bool|string
-     */
-    public static function getTempDir()
-    {
-        $sysTmp = sys_get_temp_dir();
-        $appTmp = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'tmp';
-        $file = 'syspass.test';
-
-        if (file_exists($appTmp . DIRECTORY_SEPARATOR . $file)) {
-            return $appTmp;
-        } elseif (file_exists($sysTmp . DIRECTORY_SEPARATOR . $file)) {
-            return $sysTmp;
-        }
-
-        if (is_dir($appTmp) || @mkdir($appTmp)) {
-            if (touch($appTmp . DIRECTORY_SEPARATOR . $file)) {
-                return $appTmp;
-            }
-        }
-
-        return touch($sysTmp . DIRECTORY_SEPARATOR . $file) ? $sysTmp : false;
     }
 
     /**
