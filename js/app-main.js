@@ -189,6 +189,10 @@ sysPass.Main = function () {
                         msg.ok(description);
                         msg.sticky(description);
                         break;
+                    case 101:
+                        msg.error(description);
+                        msg.sticky(description);
+                        break;
                     default:
                         msg.error(description);
                 }

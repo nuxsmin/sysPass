@@ -311,7 +311,7 @@ sysPass.Actions = function (Common) {
                 if (json.status == 0) {
                     setTimeout(function () {
                         Common.redirect("index.php");
-                    }, 1000);
+                    }, 2000);
                 }
             });
         }

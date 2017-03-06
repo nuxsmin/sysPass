@@ -55,7 +55,7 @@ class AuthUtil
             && !$UserData->isUserIsLdap()
             && !UserPassRecover::checkPassRecoverLimit($UserData)
         ) {
-            $hash = Util::generateRandomBytes();
+            $hash = Util::generateRandomBytes(16);
 
             $LogMessage = new LogMessage();
             $LogMessage->setAction(__('Cambio de Clave'));

@@ -263,7 +263,7 @@ class LoginController
 
             throw new AuthException(SPException::SP_INFO, __('Usuario deshabilitado', false), '', self::STATUS_USER_DISABLED);
         } elseif ($this->UserData->isUserIsChangePass()) {
-            $hash = Util::generateRandomBytes();
+            $hash = Util::generateRandomBytes(16);
 
             $UserPassRecoverData = new UserPassRecoverData();
             $UserPassRecoverData->setUserpassrUserId($this->UserData->getUserId());

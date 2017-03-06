@@ -27,7 +27,6 @@ use SP\Core\SessionUtil;
 use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Http\Response;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Users\User;
@@ -81,7 +80,6 @@ if ($userLogin && $userEmail) {
 
     Email::sendEmail($LogMessage);
 
-    $JsonResponse->setStatus(0);
     $JsonResponse->setDescription($LogMessage->getDescription());
     Json::returnJson($JsonResponse);
 } elseif ($userPass && $userPassR && $userPass === $userPassR) {
@@ -106,5 +104,6 @@ if ($userLogin && $userEmail) {
     $JsonResponse->setDescription($LogMessage->getDescription());
     Json::returnJson($JsonResponse);
 } else {
-    Response::printJson(__('La clave es incorrecta o no coincide'));
+    $JsonResponse->setDescription(_('La clave es incorrecta o no coincide'));
+    Json::returnJson($JsonResponse);
 }
