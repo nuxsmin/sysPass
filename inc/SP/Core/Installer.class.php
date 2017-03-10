@@ -241,11 +241,11 @@ class Installer
 
             // Guardar el nuevo usuario/clave de conexión a la BD
             $this->Config->setDbUser($this->InstallData->getDbUser());
-            $this->Config->setDbPass(utf8_encode($this->InstallData->getDbPass()));
+            $this->Config->setDbPass($this->InstallData->getDbPass());
         } else {
             // Guardar el usuario/clave de conexión a la BD
             $this->Config->setDbUser($this->InstallData->getDbAdminUser());
-            $this->Config->setDbPass(utf8_encode($this->InstallData->getDbAdminPass()));
+            $this->Config->setDbPass($this->InstallData->getDbAdminPass());
         }
 
         try {
