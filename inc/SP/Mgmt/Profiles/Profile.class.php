@@ -38,9 +38,10 @@ use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
 
-
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los perfiles de usuarios.
+ *
+ * @property ProfileData $itemData
  */
 class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
 {

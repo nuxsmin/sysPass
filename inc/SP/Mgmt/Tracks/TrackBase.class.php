@@ -26,40 +26,28 @@ namespace SP\Mgmt\Tracks;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\TrackData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class TrackBase
  *
  * @package SP\Mgmt\Tracks
  */
-abstract class TrackBase extends ItemBase
+abstract class TrackBase implements ItemBaseInterface
 {
-    /** @var TrackData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Track constructor.
+     * Inicializar la clase
      *
-     * @param $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel(TrackData::class);
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * Devolver los datos del elemento
-     * @return TrackData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(TrackData::class);
     }
 }

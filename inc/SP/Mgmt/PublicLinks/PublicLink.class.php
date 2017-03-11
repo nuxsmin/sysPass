@@ -46,6 +46,7 @@ defined('APP_ROOT') || die();
  * Class PublicLink para la creación de enlaces públicos
  *
  * @package SP
+ * @property PublicLinkBaseData $itemData
  */
 class PublicLink extends PublicLinkBase implements ItemInterface
 {

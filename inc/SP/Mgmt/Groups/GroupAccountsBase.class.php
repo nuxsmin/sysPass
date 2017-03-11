@@ -24,8 +24,10 @@
 
 namespace SP\Mgmt\Groups;
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\GroupAccountsData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 defined('APP_ROOT') || die();
 
@@ -34,30 +36,18 @@ defined('APP_ROOT') || die();
  *
  * @package SP\Mgmt\Groups
  */
-abstract class GroupAccountsBase extends ItemBase
+abstract class GroupAccountsBase implements ItemBaseInterface
 {
-    /** @var GroupAccountsData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param GroupAccountsData $itemData
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\GroupAccountsData');
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * @return GroupAccountsData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(GroupAccountsData::class);
     }
 }

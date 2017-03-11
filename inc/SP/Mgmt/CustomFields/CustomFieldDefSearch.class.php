@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -40,18 +40,6 @@ use SP\Util\Util;
  */
 class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterface
 {
-    /**
-     * Category constructor.
-     *
-     * @param CustomFieldDefData $itemData
-     */
-    public function __construct($itemData = null)
-    {
-        $this->setDataModel('SP\DataModel\CustomFieldDefData');
-
-        parent::__construct($itemData);
-    }
-
     /**
      * @param ItemSearchData $SearchData
      * @return array|\SP\DataModel\CustomFieldDefData[]
@@ -94,5 +82,16 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
         $customFields['count'] = $Data->getQueryNumRows();
 
         return $customFields;
+    }
+
+    /**
+     * Inicializar la clase
+     *
+     * @return void
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
+    protected function init()
+    {
+        $this->setDataModel(CustomFieldDefData::class);
     }
 }

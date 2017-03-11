@@ -26,36 +26,28 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\UserPassRecoverData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class UserPassRecoverBase
  *
  * @package SP\Mgmt\Users
  */
-abstract class UserPassRecoverBase extends ItemBase
+abstract class UserPassRecoverBase implements ItemBaseInterface
 {
-    /** @var UserPassRecoverData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param UserPassRecoverData $itemData
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        $this->setDataModel('SP\DataModel\UserPassRecoverData');
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * @return UserPassRecoverData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(UserPassRecoverData::class);
     }
 }

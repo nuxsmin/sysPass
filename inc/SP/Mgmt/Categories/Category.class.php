@@ -27,21 +27,18 @@ namespace SP\Mgmt\Categories;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
-use SP\DataModel\CustomFieldData;
-use SP\Log\Log;
-use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-
 /**
  * Esta clase es la encargada de realizar las operaciones sobre las categorías de sysPass.
+ *
+ * @property CategoryData $itemData
  */
 class Category extends CategoryBase implements ItemInterface, ItemSelectInterface
 {

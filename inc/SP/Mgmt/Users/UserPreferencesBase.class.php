@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,39 +26,28 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\UserPreferencesData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class UserPreferencesBase
  *
  * @package SP\Mgmt\Users
  */
-abstract class UserPreferencesBase extends ItemBase
+abstract class UserPreferencesBase implements ItemBaseInterface
 {
-    /** @var UserPreferencesData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param UserPreferencesData $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel(UserPreferencesData::class);
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * @return UserPreferencesData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(UserPreferencesData::class);
     }
 }

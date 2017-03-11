@@ -26,39 +26,29 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\UserData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class UserBase
  *
  * @package SP
+ * @property UserData $itemdata
  */
-abstract class UserBase extends ItemBase
+abstract class UserBase implements ItemBaseInterface
 {
-    /** @var UserData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param UserData $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel(UserData::class);
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * @return UserData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(UserData::class);
     }
 }

@@ -41,6 +41,7 @@ use SP\Util\Util;
  * Class ApiToken
  *
  * @package SP\Mgmt\ApiTokens
+ * @property ApiTokenData $itemData
  */
 class ApiToken extends ApiTokenBase implements ItemInterface
 {

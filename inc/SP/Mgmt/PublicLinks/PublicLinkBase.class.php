@@ -30,43 +30,32 @@ use SP\Account\Account;
 use SP\Config\Config;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
-use SP\DataModel\PublicLinkData;
-use SP\Mgmt\ItemBase;
 use SP\DataModel\PublicLinkBaseData;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class PublicLinks para la gestión de enlaces públicos
  *
  * @package SP
+ * @property PublicLinkBaseData $itemData
  */
-abstract class PublicLinkBase extends ItemBase
+abstract class PublicLinkBase implements ItemBaseInterface
 {
-    /** @var PublicLinkData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param PublicLinkData $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel(PublicLinkBaseData::class);
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * @return PublicLinkData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(PublicLinkBaseData::class);
     }
 
     /**
@@ -84,6 +73,26 @@ abstract class PublicLinkBase extends ItemBase
 
         $this->itemData->setPass(Crypt::encrypt(CryptSession::getSessionKey(), $securedKey, $key));
         $this->itemData->setPassIV($securedKey);
+    }
+
+    /**
+     * Generar el hash para el enlace
+     *
+     * @param bool $refresh Si es necesario regenerar el hash
+     * @return string
+     */
+    protected final function createLinkHash($refresh = false)
+    {
+        if ($refresh === true
+            || $this->itemData->getLinkHash() === ''
+        ) {
+            $hash = hash('sha256', uniqid('sysPassPublicLink', true));
+
+            $this->itemData->setPublicLinkHash($hash);
+            $this->itemData->setLinkHash($hash);
+        }
+
+        return $this->itemData->getLinkHash();
     }
 
     /**
@@ -114,29 +123,7 @@ abstract class PublicLinkBase extends ItemBase
     }
 
     /**
-     * Generar el hash para el enlace
-     *
-     * @param bool $refresh Si es necesario regenerar el hash
-     * @return string
-     */
-    protected final function createLinkHash($refresh = false)
-    {
-        if ($refresh === true
-            || $this->itemData->getLinkHash() === ''
-        ) {
-            $hash = hash('sha256', uniqid('sysPassPublicLink', true));
-
-            $this->itemData->setPublicLinkHash($hash);
-            $this->itemData->setLinkHash($hash);
-        }
-
-        return $this->itemData->getLinkHash();
-    }
-
-    /**
      * Devolver el tiempo de caducidad del enlace
-     *
-     * @return int
      */
     protected final function calcDateExpire()
     {

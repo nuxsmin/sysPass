@@ -32,6 +32,7 @@ use SP\Config\ConfigDB;
 use SP\Controller\LoginController;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Upgrade\User as UpgradeUser;
@@ -48,19 +49,21 @@ use SP\Core\Crypt\Session as CryptSession;
  * Class UserPass para la gestión de las claves de un usuario
  *
  * @package SP
+ * @property UserPassData $itemData
  */
 class UserPass extends UserBase
 {
-    // La clave maestra incorrecta
     const MPASS_WRONG = 0;
-    // La clave maestra correcta
+
+    // La clave maestra incorrecta
     const MPASS_OK = 1;
-    // La clave maestra no está guardada
+    // La clave maestra correcta
     const MPASS_NOTSET = 2;
-    // La clave maestra ha cambiado
+    // La clave maestra no está guardada
     const MPASS_CHANGED = 3;
-    // Comprobar la clave maestra con la calve del usuario anterior
+    // La clave maestra ha cambiado
     const MPASS_CHECKOLD = 4;
+    // Comprobar la clave maestra con la calve del usuario anterior
     /**
      * @var bool
      */
@@ -69,19 +72,6 @@ class UserPass extends UserBase
      * @var string
      */
     private static $clearUserMPass = '';
-
-    /**
-     * Category constructor.
-     *
-     * @param UserPassData $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     */
-    public function __construct($itemData = null)
-    {
-        $this->setDataModel(UserPassData::class);
-
-        parent::__construct($itemData);
-    }
 
     /**
      * Obtener el IV del usuario a partir del Id.
@@ -333,5 +323,16 @@ class UserPass extends UserBase
         Email::sendEmail($Log->getLogMessage());
 
         return $this;
+    }
+
+    /**
+     * Inicializar la clase
+     *
+     * @return void
+     * @throws InvalidClassException
+     */
+    protected function init()
+    {
+        $this->setDataModel(UserPassData::class);
     }
 }

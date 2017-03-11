@@ -36,6 +36,7 @@ use SP\Storage\QueryData;
  * Class Notice
  *
  * @package SP\Mgmt\Notices
+ * @property NoticeData $itemData
  */
 class Notice extends NoticeBase implements ItemInterface
 {

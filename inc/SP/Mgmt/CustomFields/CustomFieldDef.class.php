@@ -38,23 +38,11 @@ use SP\Util\Util;
  * Class CustomFieldDef para la gestión de definiciones de campos personalizados
  *
  * @package SP
+ * @property CustomFieldDefData $itemData
  */
 class CustomFieldDef extends CustomFieldBase implements ItemInterface
 {
     use ItemTrait;
-
-    /**
-     * Category constructor.
-     *
-     * @param CustomFieldDefData $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     */
-    public function __construct($itemData = null)
-    {
-        $this->setDataModel(CustomFieldDefData::class);
-
-        parent::__construct($itemData);
-    }
 
     /**
      * @return mixed
@@ -286,5 +274,16 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->setParams($ids);
 
         return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Inicializar la clase
+     *
+     * @return void
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
+    protected function init()
+    {
+        $this->setDataModel(CustomFieldDefData::class);
     }
 }

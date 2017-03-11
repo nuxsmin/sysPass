@@ -39,6 +39,7 @@ use SP\Util\Util;
  * Class UsersPreferences para la gestion de las preferencias de usuarios
  *
  * @package SP
+ * @property UserPreferencesData $itemData
  */
 class UserPreferences extends UserPreferencesBase implements ItemInterface
 {

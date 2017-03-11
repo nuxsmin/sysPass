@@ -30,7 +30,6 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\LogMessage;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -41,7 +40,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-class UserLdap extends UserBase implements ItemInterface
+class UserLdap extends User
 {
     /**
      * Comprobar si los datos del usuario de LDAP están en la BBDD.
@@ -54,7 +53,7 @@ class UserLdap extends UserBase implements ItemInterface
     public static function checkLDAPUserInDB($userLogin)
     {
         $query = /** @lang SQL */
-            'SELECT user_login FROM usrData WHERE user_login = ? LIMIT 1';
+            'SELECT user_login FROM usrData WHERE LOWER(user_login) = LOWER(?) LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -149,7 +148,7 @@ class UserLdap extends UserBase implements ItemInterface
         $query = /** @lang SQL */
             'SELECT user_login, user_email
             FROM usrData
-            WHERE UPPER(user_login) = UPPER(?) OR UPPER(user_email) = UPPER(?)';
+            WHERE LOWER(user_login) = LOWER(?) OR LOWER(user_email) = LOWER(?)';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -159,15 +158,6 @@ class UserLdap extends UserBase implements ItemInterface
         DB::getQuery($Data);
 
         return $Data->getQueryNumRows() > 0;
-    }
-
-    /**
-     * @param $id int
-     * @return mixed
-     */
-    public function delete($id)
-    {
-        // TODO: Implement delete() method.
     }
 
     /**
@@ -183,7 +173,7 @@ class UserLdap extends UserBase implements ItemInterface
             user_email = ?,
             user_lastUpdate = NOW(),
             user_isLdap = 1 
-            WHERE user_login = ? LIMIT 1';
+            WHERE LOWER(user_login) = LOWER(?) LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -199,58 +189,31 @@ class UserLdap extends UserBase implements ItemInterface
     }
 
     /**
-     * @param $id int
-     * @return mixed
-     */
-    public function getById($id)
-    {
-        // TODO: Implement getById() method.
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAll()
-    {
-        // TODO: Implement getAll() method.
-    }
-
-    /**
-     * @param $id int
-     * @return mixed
-     */
-    public function checkInUse($id)
-    {
-        // TODO: Implement checkInUse() method.
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkDuplicatedOnUpdate()
-    {
-        // TODO: Implement checkDuplicatedOnUpdate() method.
-    }
-
-    /**
-     * Eliminar elementos en lote
-     *
-     * @param array $ids
      * @return $this
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function deleteBatch(array $ids)
+    public function updateOnLogin()
     {
-        // TODO: Implement deleteBatch() method.
-    }
+        $query = 'UPDATE usrData SET 
+            user_pass = ?,
+            user_hashSalt = \'\',
+            user_name = ?,
+            user_email = ?,
+            user_lastUpdate = NOW(),
+            user_lastLogin = NOW(),
+            user_isLdap = 1 
+            WHERE LOWER(user_login) = LOWER(?) LIMIT 1';
 
-    /**
-     * Devolver los elementos con los ids especificados
-     *
-     * @param array $ids
-     * @return mixed
-     */
-    public function getByIdBatch(array $ids)
-    {
-        // TODO: Implement getByIdBatch() method.
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
+        $Data->addParam($this->itemData->getUserName());
+        $Data->addParam($this->itemData->getUserEmail());
+        $Data->addParam($this->itemData->getUserLogin());
+        $Data->setOnErrorMessage(__('Error al actualizar la clave del usuario en la BBDD', false));
+
+        DB::getQuery($Data);
+
+        return $this;
     }
 }

@@ -35,6 +35,7 @@ use SP\Storage\QueryData;
  * Class Plugin
  *
  * @package SP\Mgmt\Plugins
+ * @property PluginData $itemData
  */
 class Plugin extends PluginBase implements ItemInterface
 {

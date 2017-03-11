@@ -26,41 +26,28 @@ namespace SP\Mgmt\ApiTokens;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\ApiTokenData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class ApiTokensBase
  *
  * @package SP\Mgmt\ApiTokens
  */
-abstract class ApiTokenBase extends ItemBase
+abstract class ApiTokenBase implements ItemBaseInterface
 {
-    /** @var ApiTokenData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * ApiTokensBase constructor.
+     * Inicializar la clase
      *
-     * @param $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel(ApiTokenData::class);
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * Devolver los datos del elemento
-     *
-     * @return ApiTokenData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(ApiTokenData::class);
     }
 }

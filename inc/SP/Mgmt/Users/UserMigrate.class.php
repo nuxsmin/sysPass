@@ -29,7 +29,6 @@ defined('APP_ROOT') || die();
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupUsersData;
-use SP\DataModel\UserData;
 use SP\DataModel\UserLoginData;
 use SP\Log\Email;
 use SP\Log\Log;
