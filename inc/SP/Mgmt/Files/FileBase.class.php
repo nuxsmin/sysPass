@@ -24,40 +24,28 @@
 
 namespace SP\Mgmt\Files;
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\FileData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class FileBase
  *
  * @package SP\Mgmt\Files
  */
-abstract class FileBase extends ItemBase
+abstract class FileBase implements ItemBaseInterface
 {
-    /** @var FileData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param FileData $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel(FileData::class);
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * Devolver los datos del elemento
-     * @return FileData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(FileData::class);
     }
 }

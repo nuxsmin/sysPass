@@ -28,13 +28,8 @@ namespace SP\Mgmt\Customers;
 defined('APP_ROOT') || die();
 
 use SP\Account\AccountUtil;
-use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Session;
 use SP\DataModel\CustomerData;
-use SP\DataModel\CustomFieldData;
-use SP\Log\Log;
-use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;
@@ -43,6 +38,8 @@ use SP\Storage\QueryData;
 
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los clientes de sysPass
+ *
+ * @property CustomerData $itemData
  */
 class Customer extends CustomerBase implements ItemInterface, ItemSelectInterface
 {

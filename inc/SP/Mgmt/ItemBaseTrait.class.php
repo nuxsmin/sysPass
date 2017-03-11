@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -30,11 +30,11 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\DataModelInterface;
 
 /**
- * Class ItemBase
+ * Class ItemBaseTrait
  *
  * @package SP\Mgmt
  */
-abstract class ItemBase
+trait ItemBaseTrait
 {
     /**
      * @var string
@@ -53,6 +53,8 @@ abstract class ItemBase
      */
     public function __construct($itemData = null)
     {
+        $this->init();
+
         if (null !== $itemData) {
             $this->setItemData($itemData);
         } else {
@@ -100,7 +102,7 @@ abstract class ItemBase
      */
     public final function setItemData($itemData)
     {
-        if (null !== $this->dataModel && !$itemData instanceof $this->dataModel) {
+        if (null !== $this->dataModel && ($itemData instanceof $this->dataModel) === false) {
             throw new InvalidClassException(SPException::SP_ERROR, $this->dataModel);
         }
 
@@ -119,17 +121,24 @@ abstract class ItemBase
 
     /**
      * @param string $dataModel
-     * @return $this
+     * @return static
      * @throws InvalidClassException
      */
     protected final function setDataModel($dataModel)
     {
         if (false === class_exists($dataModel)) {
-            throw new InvalidClassException($dataModel);
+            throw new InvalidClassException(SPException::SP_ERROR, $dataModel);
         }
 
         $this->dataModel = $dataModel;
 
         return $this;
     }
+
+    /**
+     * Inicializar la clase
+     *
+     * @return void
+     */
+    protected abstract function init();
 }

@@ -29,7 +29,7 @@ use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
 use SP\Storage\DBStorageInterface;
 use SP\Storage\FileStorageInterface;
 use SP\Storage\MySQLHandler;
@@ -51,7 +51,7 @@ class DiFactory
      */
     private static $DBFactory;
     /**
-     * @var ItemBase[]
+     * @var ItemBaseInterface[]
      */
     private static $ItemFactory = [];
     /**
@@ -96,21 +96,23 @@ class DiFactory
      *
      * @param  string $caller   La clase del objeto
      * @param  mixed  $itemData Los datos del elemento
-     * @return ItemBase
+     * @return ItemBaseInterface
      */
     public static final function getItem($caller, $itemData = null)
     {
 //        error_log(count(self::$ItemFactory) . '-' . (memory_get_usage() / 1000));
 
         try {
-            if (isset(self::$ItemFactory[$caller])) {
-                return (null !== $itemData) ? self::$ItemFactory[$caller]->setItemData($itemData) : self::$ItemFactory[$caller];
+            if (!isset(self::$ItemFactory[$caller])) {
+                self::$ItemFactory[$caller] = new $caller($itemData);
+
+                return self::$ItemFactory[$caller];
             }
+
+            return (null !== $itemData) ? self::$ItemFactory[$caller]->setItemData($itemData) : self::$ItemFactory[$caller];
         } catch (InvalidClassException $e) {
             debugLog('Invalid class for item data: ' . $e->getMessage(), true);
         }
-
-        self::$ItemFactory[$caller] = new $caller($itemData);
 
         return self::$ItemFactory[$caller];
     }

@@ -26,7 +26,6 @@ namespace SP\Mgmt\Groups;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupAccountsData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemTrait;
@@ -37,6 +36,7 @@ use SP\Storage\QueryData;
  * Class GroupAccounts
  *
  * @package SP\Mgmt\Groups
+ * @property GroupAccountsData $itemData
  */
 class GroupAccounts extends GroupAccountsBase implements ItemInterface
 {

@@ -38,6 +38,7 @@ use SP\Storage\QueryData;
  * Class Tags
  *
  * @package SP\Mgmt\Tags
+ * @property TagData $itemData
  */
 class Tag extends TagBase implements ItemInterface, ItemSelectInterface
 {

@@ -24,39 +24,28 @@
 
 namespace SP\Mgmt\Groups;
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\GroupData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class GroupBase
  *
  * @package SP\Mgmt\Groups
  */
-abstract class GroupBase extends ItemBase
+abstract class GroupBase implements ItemBaseInterface
 {
-    /** @var GroupData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param GroupData $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel(GroupData::class);
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * @return GroupData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(GroupData::class);
     }
 }

@@ -51,7 +51,9 @@ class UserUtil
     public static function checkUserMail(UserData $UserData)
     {
         $query = /** @lang SQL */
-            'SELECT user_id FROM usrData WHERE user_login = ? AND user_email = ? LIMIT 1';
+            'SELECT user_id FROM usrData 
+            WHERE LOWER(user_login) = LOWER(?) 
+            AND LOWER(user_email) = LOWER(?) LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);

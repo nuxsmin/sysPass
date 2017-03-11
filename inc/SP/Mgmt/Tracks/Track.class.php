@@ -24,6 +24,7 @@
 
 namespace SP\Mgmt\Tracks;
 
+use SP\DataModel\TrackData;
 use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -32,6 +33,7 @@ use SP\Storage\QueryData;
  * Class Track
  *
  * @package SP\Mgmt\Tracks
+ * @property TrackData $itemData
  */
 class Track extends TrackBase implements ItemInterface
 {

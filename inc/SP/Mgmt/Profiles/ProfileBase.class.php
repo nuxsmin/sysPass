@@ -24,8 +24,10 @@
 
 namespace SP\Mgmt\Profiles;
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\ProfileData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 defined('APP_ROOT') || die();
 
@@ -34,31 +36,18 @@ defined('APP_ROOT') || die();
  *
  * @package SP
  */
-abstract class ProfileBase extends ItemBase
+abstract class ProfileBase implements ItemBaseInterface
 {
-    /** @var ProfileData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param ProfileData $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel(ProfileData::class);
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * @return ProfileData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(ProfileData::class);
     }
 }

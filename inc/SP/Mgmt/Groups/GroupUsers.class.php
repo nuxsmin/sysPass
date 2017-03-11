@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -38,6 +38,7 @@ use SP\Storage\QueryData;
  * Class GroupUser
  *
  * @package SP\Mgmt\Groups
+ * @property GroupUsersData $itemData
  */
 class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInterface
 {
@@ -45,30 +46,12 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
 
     /**
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function add()
+    public function update()
     {
-        if (!is_array($this->itemData->getUsers())
-            || count($this->itemData->getUsers()) === 0
-        ) {
-            return $this;
-        }
-
-        $query = /** @lang SQL */
-            'INSERT INTO usrToGroups (usertogroup_userId, usertogroup_groupId) VALUES ' . $this->getParamsFromArray($this->itemData->getUsers(), '(?,?)');
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        foreach ($this->itemData->getUsers() as $user){
-            $Data->addParam($user);
-            $Data->addParam($this->itemData->getUsertogroupGroupId());
-        }
-
-        $Data->setOnErrorMessage(__('Error al asignar los usuarios al grupo', false));
-
-        DB::getQuery($Data);
+        $this->delete($this->itemData->getUsertogroupGroupId());
+        $this->add();
 
         return $this;
     }
@@ -95,12 +78,30 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
 
     /**
      * @return $this
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
-    public function update()
+    public function add()
     {
-        $this->delete($this->itemData->getUsertogroupGroupId());
-        $this->add();
+        if (!is_array($this->itemData->getUsers())
+            || count($this->itemData->getUsers()) === 0
+        ) {
+            return $this;
+        }
+
+        $query = /** @lang SQL */
+            'INSERT INTO usrToGroups (usertogroup_userId, usertogroup_groupId) VALUES ' . $this->getParamsFromArray($this->itemData->getUsers(), '(?,?)');
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        foreach ($this->itemData->getUsers() as $user) {
+            $Data->addParam($user);
+            $Data->addParam($this->itemData->getUsertogroupGroupId());
+        }
+
+        $Data->setOnErrorMessage(__('Error al asignar los usuarios al grupo', false));
+
+        DB::getQuery($Data);
 
         return $this;
     }

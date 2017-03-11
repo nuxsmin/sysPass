@@ -26,40 +26,28 @@ namespace SP\Mgmt\Notices;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\NoticeData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class NoticeBase
  *
  * @package SP\Mgmt\Notices
  */
-abstract class NoticeBase extends ItemBase
+abstract class NoticeBase implements ItemBaseInterface
 {
-    /** @var NoticeData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Notice constructor.
+     * Inicializar la clase
      *
-     * @param $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel(NoticeData::class);
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * Devolver los datos del elemento
-     * @return NoticeData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(NoticeData::class);
     }
 }

@@ -42,6 +42,8 @@ defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de realizar operaciones con archivos de las cuentas de sysPass
+ *
+ * @property FileData $itemData
  */
 class File extends FileBase implements ItemInterface, ItemSelectInterface
 {

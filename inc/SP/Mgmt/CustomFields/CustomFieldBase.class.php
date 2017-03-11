@@ -26,42 +26,15 @@ namespace SP\Mgmt\CustomFields;
 
 defined('APP_ROOT') || die();
 
-use SP\DataModel\CustomFieldBaseData;
-use SP\DataModel\CustomFieldData;
-use SP\DataModel\CustomFieldDefData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class CustomFieldsBase para la definición de campos personalizados
  *
  * @package SP
  */
-abstract class CustomFieldBase extends ItemBase
+abstract class CustomFieldBase implements ItemBaseInterface
 {
-    /** @var CustomFieldBaseData|CustomFieldDefData|CustomFieldData */
-    protected $itemData;
-
-    /**
-     * Category constructor.
-     *
-     * @param CustomFieldBaseData $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     */
-    public function __construct($itemData = null)
-    {
-        if (!$this->dataModel) {
-            $this->setDataModel(CustomFieldBaseData::class);
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * Devolver los datos del elemento
-     * @return CustomFieldBaseData|CustomFieldDefData|CustomFieldData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
-    }
+    use ItemBaseTrait;
 }

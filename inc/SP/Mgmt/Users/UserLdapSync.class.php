@@ -32,6 +32,11 @@ use SP\DataModel\UserData;
 use SP\Log\Log;
 use SP\Util\Util;
 
+/**
+ * Class UserLdapSync
+ *
+ * @package SP\Mgmt\Users
+ */
 class UserLdapSync
 {
     /**

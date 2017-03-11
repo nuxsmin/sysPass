@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -40,34 +40,11 @@ use SP\Util\Util;
 /**
  * Class CustomFields para la gestión de campos personalizados de los módulos
  *
- * @package SP
+ * @package SP\Mgmt\CustomFields
+ * @property CustomFieldData $itemData
  */
 class CustomField extends CustomFieldBase implements ItemInterface
 {
-    /**
-     * @param CustomFieldData $itemData
-     * @param int             $customFieldDefId
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     */
-    public function __construct($itemData, $customFieldDefId = null)
-    {
-        $this->setDataModel(CustomFieldData::class);
-
-        parent::__construct($itemData);
-
-        if (null !== $customFieldDefId) {
-            $field = CustomFieldDef::getItem()->getById($customFieldDefId);
-
-            $itemData->setDefinitionId($customFieldDefId);
-            $itemData->setModule($field->getModule());
-            $itemData->setName($field->getName());
-            $itemData->setType($field->getType());
-        }
-
-        $this->itemData = $itemData;
-    }
-
     /**
      * @return mixed
      * @throws \SP\Core\Exceptions\QueryException
@@ -380,5 +357,16 @@ class CustomField extends CustomFieldBase implements ItemInterface
     public function getByIdBatch(array $ids)
     {
         // TODO: Implement getByIdBatch() method.
+    }
+
+    /**
+     * Inicializar la clase
+     *
+     * @return void
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
+    protected function init()
+    {
+        $this->setDataModel(CustomFieldData::class);
     }
 }

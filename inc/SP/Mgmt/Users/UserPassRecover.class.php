@@ -37,6 +37,7 @@ defined('APP_ROOT') || die();
  * Class UserPassRecover para la gestión de recuperaciones de claves de usuarios
  *
  * @package SP
+ * @property UserPassRecoverData $itemData
  */
 class UserPassRecover extends UserPassRecoverBase implements ItemInterface
 {

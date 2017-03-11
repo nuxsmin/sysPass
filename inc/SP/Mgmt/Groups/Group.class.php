@@ -28,7 +28,6 @@ namespace SP\Mgmt\Groups;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupData;
 use SP\DataModel\GroupUsersData;
-use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;
@@ -39,6 +38,8 @@ defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los grupos de usuarios.
+ *
+ * @property GroupData $itemData
  */
 class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 {

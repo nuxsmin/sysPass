@@ -26,40 +26,28 @@ namespace SP\Mgmt\Categories;
 
 defined('APP_ROOT') || die();
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\CategoryData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class CategoryBase
  *
  * @package SP\Mgmt\Categories
  */
-abstract class CategoryBase extends ItemBase
+abstract class CategoryBase implements ItemBaseInterface
 {
-    /** @var CategoryData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param $itemData
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel(CategoryData::class);
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * Devolver los datos del elemento
-     * @return CategoryData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(CategoryData::class);
     }
 }
