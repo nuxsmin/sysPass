@@ -28,7 +28,6 @@ use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Key;
 use SP\Core\Init;
 use SP\Http\Request;
-use SP\Util\Checks;
 use SP\Util\Util;
 
 /**
@@ -123,7 +122,7 @@ class SecureKeyCookie extends Cookie
 
 //            $timeout = ini_get('session.gc_maxlifetime') ?: 3600;
 
-            if (setcookie(SecureKeyCookie::COOKIE_NAME, $this->sign(serialize($Vault), $key), 0, Init::$WEBURI, Request::getRequestHeaders('HTTP_HOST'))) {
+            if (setcookie(SecureKeyCookie::COOKIE_NAME, $this->sign(serialize($Vault), $key), 0, Init::$WEBROOT)) {
                 debugLog('Generating a new session key.');
 
                 return $this->SecuredKey;
