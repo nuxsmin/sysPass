@@ -40,7 +40,7 @@ define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
 define('SQL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'sql');
 define('LOG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'syspass.log');
 
-define('DEBUG', true);
+define('DEBUG', false);
 
 // Required random_compat polyfill for random_bytes() and random_int()
 // @see https://github.com/paragonie/random_compat/tree/v2.0.4#random_compat
