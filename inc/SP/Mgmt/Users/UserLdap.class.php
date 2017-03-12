@@ -139,6 +139,7 @@ class UserLdap extends User
     }
 
     /**
+     * Comprobar duplicados por login e email en minúsculas
      * @return bool
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
