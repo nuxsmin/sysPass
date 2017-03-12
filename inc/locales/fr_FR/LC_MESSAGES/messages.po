@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-06 21:47+0100\n"
-"PO-Revision-Date: 2017-03-06 21:47+0100\n"
+"POT-Creation-Date: 2017-03-12 23:46+0100\n"
+"PO-Revision-Date: 2017-03-12 23:47+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: fr_FR\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 1.6.10\n"
-"X-Contributors: \n"
+"X-Contributors: Fabiem, Jérémy D., akirohs, aurelien\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: ../../../..\n"
 
@@ -27,7 +27,7 @@ msgstr "Gestion des fichiers désactivée"
 #: ../../../../ajax/ajax_accSearch.php:44
 #: ../../../../ajax/ajax_filesMgmt.php:54
 #: ../../../../ajax/ajax_filesMgmt.php:70
-#: ../../../../ajax/ajax_passReset.php:49
+#: ../../../../ajax/ajax_passReset.php:48
 #: ../../../../ajax/ajax_userPrefsSave.php:58
 msgid "CONSULTA INVÁLIDA"
 msgstr "REQUETE INVALIDE"
@@ -39,7 +39,7 @@ msgid "La sesión no se ha iniciado o ha caducado"
 msgstr "Session non démarrée ou expirée"
 
 #: ../../../../ajax/ajax_filesMgmt.php:73
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:93
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:95
 msgid "Subir Archivo"
 msgstr "Envoyer Fichier"
 
@@ -64,7 +64,7 @@ msgstr "Fichier invalide"
 #: ../../../../ajax/ajax_filesMgmt.php:166
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:841
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:437
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:95
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:97
 #: ../../../../inc/themes/material-blue/views/config/import.inc:66
 #: ../../../../inc/themes/material-blue/views/config/import.inc:69
 msgid "Archivo"
@@ -75,7 +75,6 @@ msgstr "Fichier"
 #: ../../../../inc/SP/Import/FileImport.class.php:113
 #: ../../../../inc/SP/Import/FileImport.class.php:157
 #: ../../../../inc/SP/Import/FileImport.class.php:185
-#, fuzzy
 msgid "Error interno al leer el archivo"
 msgstr "Erreur interne à la lecture du fichier"
 
@@ -86,7 +85,7 @@ msgstr "Taille de fichier dépassé"
 #: ../../../../ajax/ajax_filesMgmt.php:125
 #: ../../../../ajax/ajax_filesMgmt.php:168
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:284
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:97
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:99
 msgid "Tamaño"
 msgstr "Taille"
 
@@ -95,7 +94,7 @@ msgid "Archivo guardado"
 msgstr "Fichier sauvegardé"
 
 #: ../../../../ajax/ajax_filesMgmt.php:146
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:77
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:79
 msgid "No se pudo guardar el archivo"
 msgstr "Erreur pendant la sauvegarde du fichier"
 
@@ -132,8 +131,8 @@ msgstr "ID"
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:530
 #: ../../../../inc/SP/Controller/MainController.class.php:609
 #: ../../../../inc/SP/Import/ImportBase.class.php:165
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:94
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:76
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:96
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:77
 #: ../../../../inc/themes/material-blue/views/itemshow/publiclinks.inc:11
 #: ../../../../inc/themes/material-blue/views/itemshow/publiclinks.inc:13
 msgid "Cuenta"
@@ -153,8 +152,8 @@ msgstr "Compte"
 #: ../../../../inc/SP/Controller/LoginController.class.php:540
 #: ../../../../inc/SP/Controller/MainActionController.class.php:124
 #: ../../../../inc/SP/Core/Init.class.php:451
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:96
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:75
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:98
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:76
 #: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:31
 #: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:33
 #: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:39
@@ -168,8 +167,7 @@ msgid "Archivo eliminado"
 msgstr "Fichier supprimé"
 
 #: ../../../../ajax/ajax_filesMgmt.php:206
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:123
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:125
 msgid "Error al eliminar el archivo"
 msgstr "Erreur pendant la suppression du fichier"
 
@@ -190,57 +188,57 @@ msgstr "Paramètres incorrects"
 msgid "Instalación finalizada"
 msgstr "Installation terminée"
 
-#: ../../../../ajax/ajax_passReset.php:62
+#: ../../../../ajax/ajax_passReset.php:61
 msgid "Recuperación de Clave"
 msgstr "Recupération de Mot de Passe"
 
-#: ../../../../ajax/ajax_passReset.php:63
+#: ../../../../ajax/ajax_passReset.php:62
 msgid "Solicitado para"
 msgstr "Requis pour"
 
-#: ../../../../ajax/ajax_passReset.php:70
+#: ../../../../ajax/ajax_passReset.php:69
 msgid "Solicitud enviada"
 msgstr "Requête envoyée"
 
-#: ../../../../ajax/ajax_passReset.php:74
+#: ../../../../ajax/ajax_passReset.php:73
 msgid "En breve recibirá un correo para completar la solicitud."
 msgstr "Vous recevrez un courriel de confirmation sous peu"
 
-#: ../../../../ajax/ajax_passReset.php:78
+#: ../../../../ajax/ajax_passReset.php:77
 msgid "Solicitud no enviada"
 msgstr "Demande non envoyée"
 
-#: ../../../../ajax/ajax_passReset.php:79
+#: ../../../../ajax/ajax_passReset.php:78
 msgid "Compruebe datos de usuario o consulte con el administrador"
 msgstr ""
 "Veuillez vérifier les données de l'utilisateur ou contacter l'administrateur"
 
-#: ../../../../ajax/ajax_passReset.php:88
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:329
+#: ../../../../ajax/ajax_passReset.php:86
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:319
 msgid "Modificar Clave Usuario"
 msgstr "Modifier le Mot de Passe Utilisateur"
 
-#: ../../../../ajax/ajax_passReset.php:101
+#: ../../../../ajax/ajax_passReset.php:99
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:276
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:942
 msgid "Clave actualizada"
 msgstr "Mot de passe actualisé"
 
-#: ../../../../ajax/ajax_passReset.php:102
+#: ../../../../ajax/ajax_passReset.php:100
 #: ../../../../inc/SP/Auth/Database/Database.class.php:92
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:474
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:231
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:246
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:267
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:278
-#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:106
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:330
+#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:105
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:320
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:37
 #: ../../../../inc/themes/material-blue/views/itemshow/userspass.inc:23
 msgid "Login"
 msgstr "Login"
 
-#: ../../../../ajax/ajax_passReset.php:109
+#: ../../../../ajax/ajax_passReset.php:107
 msgid "La clave es incorrecta o no coincide"
 msgstr "Le mot de passe est incorrect ou ne correspond pas"
 
@@ -250,13 +248,11 @@ msgid "Preferencias actualizadas"
 msgstr "Préférences mises à jour"
 
 #: ../../../../inc/SP/Account/Account.class.php:127
-#, fuzzy
 msgid "Error al modificar la cuenta"
 msgstr "Erreur pendant la modification du compte"
 
 #: ../../../../inc/SP/Account/Account.class.php:173
 #: ../../../../inc/SP/Account/AccountHistoryUtil.class.php:154
-#, fuzzy
 msgid "Error al restaurar cuenta"
 msgstr "Erreur pendant la restauration du compte"
 
@@ -264,18 +260,15 @@ msgstr "Erreur pendant la restauration du compte"
 #: ../../../../inc/SP/Account/Account.class.php:508
 #: ../../../../inc/SP/Account/AccountHistory.class.php:216
 #: ../../../../inc/SP/Account/AccountHistory.class.php:393
-#, fuzzy
 msgid "No se pudieron obtener los datos de la cuenta"
 msgstr "Erreur lors de la récupération des données du compte"
 
 #: ../../../../inc/SP/Account/Account.class.php:203
 #: ../../../../inc/SP/Account/Account.class.php:510
-#, fuzzy
 msgid "La cuenta no existe"
 msgstr "Le compte n'existe pas"
 
 #: ../../../../inc/SP/Account/Account.class.php:273
-#, fuzzy
 msgid "Error al crear la cuenta"
 msgstr "Erreur pendant la création du compte"
 
@@ -299,30 +292,28 @@ msgstr "Erreur pendant la création du compte"
 #: ../../../../inc/SP/Core/OldCrypt.class.php:169
 #: ../../../../inc/SP/Core/OldCrypt.class.php:181
 #: ../../../../inc/SP/Import/XmlFileImport.class.php:106
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:88
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:174
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:229
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:292
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:356
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomField.class.php:94
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomField.class.php:161
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:89
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:175
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:230
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:293
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:357
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomField.class.php:71
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomField.class.php:138
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:88
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:159
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:208
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:229
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:252
-#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:134
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:242
+#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:135
 msgid "Error interno"
 msgstr "Erreur Interne"
 
 #: ../../../../inc/SP/Account/Account.class.php:355
 #: ../../../../inc/SP/Account/AccountHistory.class.php:516
-#, fuzzy
 msgid "Error al eliminar la cuenta"
 msgstr "Erreur pendant la suppression du compte"
 
 #: ../../../../inc/SP/Account/Account.class.php:437
-#, fuzzy
 msgid "Error al actualizar la clave"
 msgstr "Erreur pendant l'actualisation du mot de passe"
 
@@ -344,13 +335,11 @@ msgstr "Début"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:74
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:77
-#, fuzzy
 msgid "Error en el módulo de encriptación"
 msgstr "Erreur dans le module de chiffrement"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:84
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:205
-#, fuzzy
 msgid "Error al obtener las claves de las cuentas"
 msgstr "Erreur pendant la récupération des mots de passe des comptes"
 
@@ -369,7 +358,6 @@ msgstr "Comptes à jour"
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:149
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:263
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:266
-#, fuzzy
 msgid "Fallo al actualizar la clave de la cuenta"
 msgstr "Erreur à la mise à jour des mots de passe des comptes"
 
@@ -416,32 +404,26 @@ msgstr "L'enregistrement du mot de passe maître ne correspond pas"
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:160
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:283
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:286
-#, fuzzy
 msgid "Fallo al actualizar la clave del histórico"
 msgstr "Erreur pendant la mise à jour du Mot de passe Maître de l'historique"
 
 #: ../../../../inc/SP/Account/AccountTags.class.php:90
-#, fuzzy
 msgid "Error al añadir las etiquetas de la cuenta"
 msgstr "Erreur en ajoutant des étiquettes de compte"
 
 #: ../../../../inc/SP/Account/AccountTags.class.php:129
-#, fuzzy
 msgid "Error al eliminar las etiquetas de la cuenta"
 msgstr "Erreur lors de la suppression des tags du compte"
 
 #: ../../../../inc/SP/Account/AccountUtil.class.php:132
-#, fuzzy
 msgid "No se pudieron obtener los datos de las cuentas"
 msgstr "Impossible de récupérer les données des comptes"
 
 #: ../../../../inc/SP/Account/UserAccounts.class.php:89
-#, fuzzy
 msgid "Error al eliminar usuarios asociados a la cuenta"
 msgstr "Erreur pendant la suppression des utilisateurs du compte"
 
 #: ../../../../inc/SP/Account/UserAccounts.class.php:130
-#, fuzzy
 msgid "Error al actualizar los usuarios de la cuenta"
 msgstr "Erreur pendant la modification des comptes utilisateurs"
 
@@ -462,7 +444,7 @@ msgstr "Donnée invalide"
 #: ../../../../inc/SP/Api/ApiRequest.class.php:155
 #: ../../../../inc/SP/Controller/LoginController.class.php:209
 msgid "Intentos excedidos"
-msgstr "Attempts exceeded"
+msgstr "Tentatives dépassées"
 
 #: ../../../../inc/SP/Api/ApiRequest.class.php:177
 #: ../../../../inc/SP/Import/XmlImportTrait.class.php:74
@@ -591,7 +573,6 @@ msgstr "Compte introuvable"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:969
 #: ../../../../inc/SP/Core/Acl.class.php:192
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:39
-#, fuzzy
 msgid "Eliminar Cuenta"
 msgstr "Supprimer Compte"
 
@@ -613,7 +594,7 @@ msgid "Categoría creada"
 msgstr "Catégorie ajoutée"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:310
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:127
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:124
 msgid "Categoría no encontrada"
 msgstr "Catégorie introuvable"
 
@@ -642,7 +623,7 @@ msgid "Cliente creado"
 msgstr "Client ajouté"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:399
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:132
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:129
 msgid "Cliente no encontrado"
 msgstr "Client introuvable"
 
@@ -667,7 +648,6 @@ msgstr "Processus de sauvegarde terminé"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:435
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:721
 #: ../../../../inc/SP/Core/Backup.class.php:75
-#, fuzzy
 msgid "Error al realizar el backup"
 msgstr "Erreur pendant la sauvegarde"
 
@@ -678,7 +658,6 @@ msgstr "Erreur pendant la sauvegarde"
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:722
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1084
 #: ../../../../inc/SP/Import/Import.class.php:115
-#, fuzzy
 msgid "Revise el registro de eventos para más detalles"
 msgstr "Veuillez consulter le journal des évènements pour plus de détails"
 
@@ -691,10 +670,9 @@ msgstr "ID du Compte"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:467
 #: ../../../../inc/SP/Api/SyspassApi.class.php:495
 msgid "Clave del token"
-msgstr "Token's Password"
+msgstr "Mot de Passe Token"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:468
-#, fuzzy
 msgid "Devolver detalles en la respuesta"
 msgstr "Envoyer les détails de la réponse"
 
@@ -845,7 +823,6 @@ msgstr ""
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:118
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:446
 #: ../../../../inc/SP/Controller/ChecksController.class.php:92
-#, fuzzy
 msgid "Los parámetros de LDAP no están configurados"
 msgstr "Les paramètres LDAP ne sont pas définis"
 
@@ -855,7 +832,7 @@ msgid "Conexión a LDAP correcta"
 msgstr "Connexion LDAP OK"
 
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:133
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:67
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:72
 msgid "Objetos encontrados"
 msgstr "Objets trouvés"
 
@@ -885,7 +862,6 @@ msgid "Error al buscar objetos en DN base"
 msgstr "Erreur pendant la recherche d'objets dans la base DN"
 
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:546
-#, fuzzy
 msgid "Error al localizar el usuario en LDAP"
 msgstr "Erreur pendant la recherche de l'utilisateur dans l'annuaire LDAP"
 
@@ -907,8 +883,8 @@ msgstr "Erreur pendant la recherche de l'utilisateur dans l'annuaire LDAP"
 #: ../../../../inc/SP/Controller/LoginController.class.php:508
 #: ../../../../inc/SP/Controller/LoginController.class.php:533
 #: ../../../../inc/SP/Core/Init.class.php:615
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:77
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:99
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:78
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:104
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:64
 #: ../../../../res/test.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:45
@@ -939,7 +915,6 @@ msgid "Usuario"
 msgstr "Utilisateur"
 
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:580
-#, fuzzy
 msgid "Error al buscar RDN de grupo"
 msgstr "Erreur pendant la recherche RDN du groupe"
 
@@ -1117,7 +1092,6 @@ msgid "Objetos encontrados: %d"
 msgstr "Objet trouvé : %d"
 
 #: ../../../../inc/SP/Controller/ChecksController.class.php:127
-#, fuzzy
 msgid "Los parámetros de DokuWiki no están configurados"
 msgstr "Les paramètres de Dokuwiki ne sont pas définis"
 
@@ -1206,7 +1180,6 @@ msgid "Configuración actualizada"
 msgstr "Configuration actualisée"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:245
-#, fuzzy
 msgid "Error al guardar la configuración"
 msgstr "Erreur lors de la sauvegarde de la configuration"
 
@@ -1340,17 +1313,14 @@ msgid "No es posible iniciar una transacción"
 msgstr "Impossible de démarrer une transaction"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:532
-#, fuzzy
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Erreur pendant la modification des mots de passe des comptes"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:543
-#, fuzzy
 msgid "Errores al actualizar las claves de las cuentas del histórico"
 msgstr "Erreur lors de la mise à jour des mots de passe dans l'historique"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:552
-#, fuzzy
 msgid "Errores al actualizar datos de campos personalizados"
 msgstr "Erreur pendant la mise à jour de champs personnalisés"
 
@@ -1361,7 +1331,6 @@ msgid "No es posible finalizar una transacción"
 msgstr "Impossible de terminer la transaction"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:579
-#, fuzzy
 msgid "Error al guardar el hash de la clave maestra"
 msgstr "Erreur pendant la sauvegarde du hash du Mot de passe Maître"
 
@@ -1400,12 +1369,10 @@ msgid "La nueva clave es: %s"
 msgstr "Le nouveau Mot de Passe Maître est: %s"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:641
-#, fuzzy
 msgid "No olvide acceder lo antes posible para guardar los cambios."
 msgstr "N'oubliez pas de vous reconnecter pour enregistrer les changements"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:652
-#, fuzzy
 msgid "Error al generar clave temporal"
 msgstr "Erreur pendant la génération du mot de passe temporaire"
 
@@ -1434,7 +1401,6 @@ msgid "Último backup"
 msgstr "Dernière sauvegarde"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:373
-#, fuzzy
 msgid "No se encontraron backups"
 msgstr "Il n'y a pas de sauvegardes disponible"
 
@@ -2020,7 +1986,7 @@ msgid "Actualizar Usuario"
 msgstr "Mettre à jour l'Utilisateur"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:244
-#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:105
+#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:104
 msgid "Usuario actualizado"
 msgstr "Utilisateur actualisé"
 
@@ -2158,7 +2124,6 @@ msgid "Campo eliminado"
 msgstr "Champ supprimé"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:722
-#, fuzzy
 msgid "Crear Enlace"
 msgstr "Ajouter un Lien"
 
@@ -2270,7 +2235,6 @@ msgid "Usuarios importados"
 msgstr "Utilisateurs importés"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1081
-#, fuzzy
 msgid "Error al importar usuarios de LDAP"
 msgstr "Erreur durant l'importation LDAP"
 
@@ -2348,7 +2312,7 @@ msgid "Ver Autorización"
 msgstr "Voir Autorisation"
 
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:216
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:73
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:74
 msgid "Ver Enlace Público"
 msgstr "Voir Lien Public"
 
@@ -2391,10 +2355,9 @@ msgstr "Login incorrect"
 #: ../../../../inc/SP/Controller/LoginController.class.php:207
 #, php-format
 msgid "Intentos excedidos (%d/%d)"
-msgstr "Attempts exceeded (%d/%d)"
+msgstr "Tentatives dépassées (%d/%d)"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:244
-#, fuzzy
 msgid "Error al obtener los datos del usuario de la BBDD"
 msgstr ""
 "Erreur pendant la récupération des données utilisateur à partir de la base "
@@ -2416,7 +2379,6 @@ msgstr "Utilisation d'un mot de passe temporaire"
 #: ../../../../inc/SP/Controller/LoginController.class.php:338
 #: ../../../../inc/SP/Controller/LoginController.class.php:340
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:63
-#, fuzzy
 msgid "Clave maestra incorrecta"
 msgstr "Mot de Passe Maître invalide"
 
@@ -2425,12 +2387,10 @@ msgid "Es necesaria su clave anterior"
 msgstr "Mot de passe précédent nécessaire"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:333
-#, fuzzy
 msgid "La clave maestra no ha sido guardada o es incorrecta"
 msgstr "Mot de Passe Maître non sauvegardé ou incorrect"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:371
-#, fuzzy
 msgid "Error al obtener la clave maestra del usuario"
 msgstr "Impossible de récupérer le Mot de Passe Maître de l'utilisateur"
 
@@ -2549,7 +2509,7 @@ msgid "Avisos de sysPass"
 msgstr "Notifications de sysPass"
 
 #: ../../../../inc/SP/Controller/MainController.class.php:608
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:74
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:75
 msgid "Enlace visualizado"
 msgstr "Lien visualisé"
 
@@ -2559,7 +2519,7 @@ msgstr "Agent"
 
 #: ../../../../inc/SP/Controller/TaskController.class.php:160
 msgid "Esperando actualización de progreso ..."
-msgstr "Waiting for progress updating ..."
+msgstr "Patientez pendant la mise à jour"
 
 #: ../../../../inc/SP/Controller/UserPreferencesController.class.php:90
 msgid "Preferencias"
@@ -2570,7 +2530,6 @@ msgid "Acceso denegado"
 msgstr "Accès refusé"
 
 #: ../../../../inc/SP/Core/Acl.class.php:184
-#, fuzzy
 msgid "Buscar Cuentas"
 msgstr "Rechercher des Comptes"
 
@@ -2688,7 +2647,6 @@ msgstr "Impossible de créer le répertoire de sauvegarde (\"%s\")"
 
 #: ../../../../inc/SP/Core/Backup.class.php:106
 #: ../../../../inc/SP/Core/XmlExport.class.php:526
-#, fuzzy
 msgid "Compruebe los permisos del directorio de backups"
 msgstr "Vérifiez les permissions du dossier de sauvegarde"
 
@@ -2697,7 +2655,6 @@ msgid "Esta operación sólo es posible en entornos Linux"
 msgstr "Cette opération est uniquement possible en environnement Linux"
 
 #: ../../../../inc/SP/Core/Backup.class.php:251
-#, fuzzy
 msgid "Error al realizar backup en modo compatibilidad"
 msgstr "Erreur pendant la sauvegarde en mode compatibilité"
 
@@ -2726,7 +2683,6 @@ msgid "Es necesario un objeto"
 msgstr "Un objet est nécessaire"
 
 #: ../../../../inc/SP/Core/Init.class.php:168
-#, fuzzy
 msgid "Error en la verificación de la base de datos"
 msgstr "Erreur pendant la vérification de la base de données"
 
@@ -2780,17 +2736,14 @@ msgid "Tiempo total"
 msgstr "Temps total"
 
 #: ../../../../inc/SP/Core/Installer.class.php:139
-#, fuzzy
 msgid "Indicar nombre de usuario admin"
 msgstr "Saisir le nom de l'utilisateur admin"
 
 #: ../../../../inc/SP/Core/Installer.class.php:140
-#, fuzzy
 msgid "Usuario admin para acceso a la aplicación"
 msgstr "Utilisateur administrateur pour se connecter à l'application"
 
 #: ../../../../inc/SP/Core/Installer.class.php:144
-#, fuzzy
 msgid "Indicar la clave de admin"
 msgstr "Saisir le mot de passe administrateur"
 
@@ -2799,7 +2752,6 @@ msgid "Clave del usuario admin de la aplicación"
 msgstr "Mot de passe administrateur de l'application"
 
 #: ../../../../inc/SP/Core/Installer.class.php:149
-#, fuzzy
 msgid "Indicar la clave maestra"
 msgstr "Saisir le Mot de Passe Maître"
 
@@ -2816,7 +2768,6 @@ msgid "La longitud de la clave maestra ha de ser mayor de 11 caracteres"
 msgstr "La longueur du Mot de Passe Maître doit être de 11 caractères minimum"
 
 #: ../../../../inc/SP/Core/Installer.class.php:159
-#, fuzzy
 msgid "Indicar el usuario de la BBDD"
 msgstr "Saisir l'utilisateur de la base de données"
 
@@ -2825,7 +2776,6 @@ msgid "Usuario con permisos de administrador de la Base de Datos"
 msgstr "Un utilisateur avec des droits d'administration sur la base de données"
 
 #: ../../../../inc/SP/Core/Installer.class.php:164
-#, fuzzy
 msgid "Indicar la clave de la BBDD"
 msgstr "Saisir le mot de passe de la base de données"
 
@@ -2834,7 +2784,6 @@ msgid "Clave del usuario administrador de la Base de Datos"
 msgstr "Mot de passe administrateur de la base de données"
 
 #: ../../../../inc/SP/Core/Installer.class.php:169
-#, fuzzy
 msgid "Indicar el nombre de la BBDD"
 msgstr "Saisir le nom de la base de données"
 
@@ -2852,7 +2801,6 @@ msgstr ""
 "Veuillez supprimer les points (\".\") dans le nommage de la base de données"
 
 #: ../../../../inc/SP/Core/Installer.class.php:179
-#, fuzzy
 msgid "Indicar el servidor de la BBDD"
 msgstr "Saisir le serveur de base de données"
 
@@ -2870,7 +2818,6 @@ msgstr "Impossible de se connecter à la base de données"
 #: ../../../../inc/SP/Core/Installer.class.php:204
 #: ../../../../inc/SP/Storage/MySQLHandler.class.php:133
 #: ../../../../inc/SP/Storage/MySQLHandler.class.php:137
-#, fuzzy
 msgid "Compruebe los datos de conexión"
 msgstr "Veuillez vérifier les paramètres de connexion"
 
@@ -2893,13 +2840,11 @@ msgid "La BBDD ya existe"
 msgstr "La base de données existe déjà"
 
 #: ../../../../inc/SP/Core/Installer.class.php:302
-#, fuzzy
 msgid "Indique una nueva Base de Datos o elimine la existente"
 msgstr ""
 "Saisissez une nouvelle base de données ou supprimez celle qui existe déjà"
 
 #: ../../../../inc/SP/Core/Installer.class.php:305
-#, fuzzy
 msgid "La BBDD no existe"
 msgstr "La base de données n'existe pas"
 
@@ -2909,19 +2854,17 @@ msgstr "Vous devez créer et définir les permissions nécessaires"
 
 #: ../../../../inc/SP/Core/Installer.class.php:316
 #: ../../../../inc/SP/Core/Installer.class.php:419
-#, fuzzy
 msgid "Error al crear la BBDD"
 msgstr "Erreur pendant la création de la base de données"
 
 #: ../../../../inc/SP/Core/Installer.class.php:317
 #: ../../../../inc/SP/Core/Installer.class.php:337
-#, fuzzy
 msgid "Verifique los permisos del usuario de la Base de Datos"
 msgstr ""
 "Veuillez vérifier les permissions de l'utilisateur de la base de données"
 
 #: ../../../../inc/SP/Core/Installer.class.php:336
-#, fuzzy, php-format
+#, php-format
 msgid "Error al establecer permisos de la BBDD ('%s')"
 msgstr ""
 "Erreur lors du paramétrage des permissions de la base de données ('%s')"
@@ -2937,7 +2880,6 @@ msgstr ""
 "télécharger de nouveau."
 
 #: ../../../../inc/SP/Core/Installer.class.php:401
-#, fuzzy
 msgid "Error al seleccionar la BBDD"
 msgstr "Erreur pendant la sélection de la base de données"
 
@@ -2962,7 +2904,6 @@ msgid "Intente de nuevo la instalación"
 msgstr "Veuillez réessayer l'installation"
 
 #: ../../../../inc/SP/Core/Installer.class.php:484
-#, fuzzy
 msgid "Error al actualizar la clave maestra del usuario \"admin\""
 msgstr ""
 "Erreur pendant l'actualisation du Mot de Passe Maître pour l'utilisateur "
@@ -2977,7 +2918,6 @@ msgid "No se puede usar el módulo de encriptación"
 msgstr "Le module de chiffrement ne peut pas être chargé"
 
 #: ../../../../inc/SP/Core/OldCrypt.class.php:182
-#, fuzzy
 msgid "Error al generar datos cifrados"
 msgstr "Erreur pendant la création des données de chiffrement"
 
@@ -2988,7 +2928,7 @@ msgstr "Nouveau plugin"
 #: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:106
 #: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:108
 #: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:161
-#, fuzzy, php-format
+#, php-format
 msgid "No es posible cargar el plugin \"%s\""
 msgstr "Impossible de charger le plugin \"%s\""
 
@@ -3017,15 +2957,14 @@ msgstr "Le modèle ne contient pas de fichiers"
 
 #: ../../../../inc/SP/Core/Upgrade/Account.class.php:47
 msgid "Actualizando IDs de cuentas"
-msgstr "Updating accounts ID"
+msgstr "Mise à jour des ID comptes"
 
 #: ../../../../inc/SP/Core/Upgrade/Category.class.php:48
 msgid "Actualizando IDs de categorías"
-msgstr "Updating categories ID"
+msgstr "Mise à jour des ID catégories"
 
 #: ../../../../inc/SP/Core/Upgrade/Category.class.php:97
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:68
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:65
 msgid "Error al crear la categoría"
 msgstr "Erreur pendant la création de la catégorie"
 
@@ -3047,37 +2986,33 @@ msgstr ""
 
 #: ../../../../inc/SP/Core/Upgrade/Customer.class.php:48
 msgid "Actualizando IDs de clientes"
-msgstr "Updating customers ID"
+msgstr "Mise à jour des ID clients"
 
 #: ../../../../inc/SP/Core/Upgrade/Customer.class.php:98
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:72
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:69
 msgid "Error al crear el cliente"
 msgstr "Erreur pendant la création du client"
 
 #: ../../../../inc/SP/Core/Upgrade/Group.class.php:51
 msgid "Actualizando IDs de grupos"
-msgstr "Updating groups ID"
+msgstr "Mise à jour des ID groupes"
 
 #: ../../../../inc/SP/Core/Upgrade/Group.class.php:115
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:67
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:68
 msgid "Error al crear el grupo"
 msgstr "Erreur pendant la création du groupe"
 
 #: ../../../../inc/SP/Core/Upgrade/Profile.class.php:54
 msgid "Actualizando IDs de perfil"
-msgstr "Updating profiles ID"
+msgstr "Mise à jour des ID profils"
 
 #: ../../../../inc/SP/Core/Upgrade/Profile.class.php:97
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:68
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:69
 msgid "Error al crear perfil"
 msgstr "Erreur lors de la création du profil"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:83
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:110
-#, fuzzy
 msgid "Error al aplicar la actualización auxiliar"
 msgstr "Erreur lors de l'application d'une mise à jour auxiliaire"
 
@@ -3090,7 +3025,6 @@ msgstr "Veuillez consulter le journal des évènements pour plus de détails"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:89
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:232
-#, fuzzy
 msgid "Error al aplicar la actualización de la Base de Datos"
 msgstr "Erreur pendant la mise à jour de la base de données"
 
@@ -3114,7 +3048,6 @@ msgstr "Mise à jour de la base de données effectuée"
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:300
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:338
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:396
-#, fuzzy
 msgid "Error al obtener los datos del usuario"
 msgstr "Erreur lors de la récupération des données utilisateurs"
 
@@ -3143,11 +3076,10 @@ msgstr "Mise à jour"
 
 #: ../../../../inc/SP/Core/Upgrade/User.class.php:52
 msgid "Actualizando IDs de usuarios"
-msgstr "Updating users ID"
+msgstr "Mise à jour des ID utilisateurs"
 
 #: ../../../../inc/SP/Core/Upgrade/User.class.php:156
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:88
-#, fuzzy
 msgid "Error al crear el usuario"
 msgstr "Erreur pendant la création de l'utilisateur"
 
@@ -3156,7 +3088,6 @@ msgid "Exportar XML"
 msgstr "Exporter XML"
 
 #: ../../../../inc/SP/Core/XmlExport.class.php:146
-#, fuzzy
 msgid "Error al realizar la exportación de cuentas"
 msgstr "Erreur pendant l'exportation de comptes"
 
@@ -3165,13 +3096,12 @@ msgid "Exportación de cuentas realizada correctamente"
 msgstr "Export réalisé avec succès"
 
 #: ../../../../inc/SP/Core/XmlExport.class.php:483
-#, fuzzy
 msgid "Error al crear el archivo XML"
 msgstr "Erreur pendant la création du fichier XML"
 
 #: ../../../../inc/SP/DataModel/TrackData.class.php:154
 msgid "IP inválida"
-msgstr "Invalid IP"
+msgstr "IP invalide"
 
 #: ../../../../inc/SP/Forms/AccountForm.class.php:134
 msgid "Es necesaria una clave"
@@ -3272,7 +3202,6 @@ msgid "No es posible eliminar, usuario en uso"
 msgstr "Impossible à supprimer, utilisateur en cours d'utilisation"
 
 #: ../../../../inc/SP/Http/Request.class.php:53
-#, fuzzy
 msgid "No es posible acceder directamente a este archivo"
 msgstr "Impossible d'accéder directement à ce fichier"
 
@@ -3292,12 +3221,11 @@ msgid "El número de campos es incorrecto (%d)"
 msgstr "Mauvais numéro de champs (%d)"
 
 #: ../../../../inc/SP/Import/CsvImportBase.class.php:85
-#, fuzzy, php-format
+#, php-format
 msgid "Compruebe el formato del archivo CSV en línea %s"
 msgstr "Veuillez vérifier le format CSV à la ligne %s"
 
 #: ../../../../inc/SP/Import/CsvImportBase.class.php:111
-#, fuzzy
 msgid "Error importando cuenta"
 msgstr "Erreur pendant l'importation des comptes"
 
@@ -3314,7 +3242,6 @@ msgid "Verifique los permisos del usuario del servidor web"
 msgstr "Veuillez vérifier les permissions de l'utilisateur du serveur web"
 
 #: ../../../../inc/SP/Import/FileImport.class.php:98
-#, fuzzy
 msgid "Compruebe la extensión del archivo"
 msgstr "Veuillez vérifier l'extension de fichier"
 
@@ -3324,7 +3251,6 @@ msgstr "Veuillez vérifier la configuration PHP pour le transfert de fichier"
 
 #: ../../../../inc/SP/Import/FileImport.class.php:158
 #: ../../../../inc/SP/Import/FileImport.class.php:186
-#, fuzzy
 msgid "Compruebe los permisos del directorio temporal"
 msgstr "Veuillez vérifiez les permissions du dossier temporaire"
 
@@ -3383,7 +3309,6 @@ msgstr ""
 "exportés"
 
 #: ../../../../inc/SP/Import/XmlFileImport.class.php:107
-#, fuzzy
 msgid "No es posible procesar el archivo XML"
 msgstr "Impossible de traiter le fichier XML"
 
@@ -3425,12 +3350,10 @@ msgstr "CC"
 
 #: ../../../../inc/SP/Log/Email.class.php:91
 #: ../../../../inc/SP/Log/Email.class.php:202
-#, fuzzy
 msgid "Error al enviar correo"
 msgstr "Erreur pendant l'envoi du courriel"
 
 #: ../../../../inc/SP/Log/Log.class.php:95
-#, fuzzy
 msgid "Error al vaciar el registro de eventos"
 msgstr "Erreur pendant le nettoyage du journal d'évènements"
 
@@ -3439,55 +3362,50 @@ msgstr "Erreur pendant le nettoyage du journal d'évènements"
 msgid "Extensión '%s' no cargada"
 msgstr "L'extension '%s' n'est pas chargée"
 
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:59
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:197
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:60
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:198
 msgid "La autorización ya existe"
 msgstr "L'autorisation existe déjà"
 
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:179
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:180
 msgid "Token no encontrado"
-msgstr "Token not found"
+msgstr "Token non trouvé"
 
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:57
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:54
 msgid "Categoría duplicada"
 msgstr "Catégorie dupliqué"
 
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:122
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:119
 msgid "Error al eliminar la categoría"
 msgstr "Erreur pendant la suppression de la catégorie"
 
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:177
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:174
 msgid "Nombre de categoría duplicado"
 msgstr "Nom de catégorie dupliqué"
 
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:193
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:190
 msgid "Error al actualizar la categoría"
 msgstr "Erreur pendant l'actualisation de la catégorie"
 
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:72
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:60
 msgid "Error al crear el campo personalizado"
 msgstr "Erreur durant la création d'un champ personnalisé"
 
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:87
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:96
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:75
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:84
 msgid "Error al eliminar el campo personalizado"
 msgstr "Erreur durant la suppression d'un champ personnalisé"
 
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:140
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:128
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:290
-#, fuzzy
 msgid "Error al actualizar el campo personalizado"
 msgstr "Erreur durant la mise à jour de la catégorie"
 
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:174
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:162
 msgid "Campo personalizado no encontrado"
 msgstr "Champ personnalisé non trouvé"
 
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:227
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:215
 msgid "No se encontraron campos personalizados"
 msgstr "Champs personnalisé non trouvés"
 
@@ -3523,7 +3441,6 @@ msgstr "Zone de texte"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:72
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:143
-#, fuzzy
 msgid "No hay datos de campos personalizados"
 msgstr "Pas de donnée de champs personnalisés"
 
@@ -3543,157 +3460,139 @@ msgid "Registros actualizados"
 msgstr "Enregistrements à jour"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:263
-#, fuzzy
 msgid "Error al migrar campos personalizados"
 msgstr "Erreur lors de la migration de champs personnalisé"
 
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:58
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:182
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:55
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:179
 msgid "Cliente duplicado"
 msgstr "Client dupliqué"
 
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:118
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:115
 msgid "No es posible eliminar"
 msgstr "Impossible à supprimer"
 
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:127
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:124
 msgid "Error al eliminar el cliente"
 msgstr "Erreur pendant la suppression du client"
 
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:198
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:195
 msgid "Error al actualizar el cliente"
 msgstr "Erreur pendant l'actualisation du client"
 
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:101
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:103
 msgid "Archivo subido"
 msgstr "Fichier envoyé"
 
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:128
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:130
 msgid "Archivo no encontrado"
 msgstr "Fichier introuvable"
 
 #: ../../../../inc/SP/Mgmt/Files/FileUtil.class.php:102
-#, fuzzy
 msgid "Error al eliminar archivos asociados a la cuenta"
 msgstr "Erreur pendant la supression des fichiers du compte"
 
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:57
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:193
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:58
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:194
 msgid "Nombre de grupo duplicado"
 msgstr "Nom de groupe dupliqué"
 
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:110
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:111
 msgid "Grupo en uso"
 msgstr "Groupe en cours d'utilisation"
 
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:119
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:120
 msgid "Error al eliminar el grupo"
 msgstr "Erreur pendant la suppression du groupe"
 
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:124
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:125
 msgid "Grupo no encontrado"
 msgstr "Groupe introuvable"
 
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:204
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:205
 msgid "Error al actualizar el grupo"
 msgstr "Erreur pendant l'actualisation du groupe"
 
 #: ../../../../inc/SP/Mgmt/Groups/GroupAccounts.class.php:70
-#, fuzzy
 msgid "Error al eliminar grupos asociados a la cuenta"
 msgstr "Erreur pendant la suppression du groupe du compte"
 
 #: ../../../../inc/SP/Mgmt/Groups/GroupAccounts.class.php:100
-#, fuzzy
 msgid "Error al actualizar los grupos secundarios"
 msgstr "Erreur pendant l'actualisation des groupes secondaires"
 
-#: ../../../../inc/SP/Mgmt/Groups/GroupUsers.class.php:69
-msgid "Error al asignar los usuarios al grupo"
-msgstr "Erreur pendant la suppression de l'utilisateur du groupe"
-
-#: ../../../../inc/SP/Mgmt/Groups/GroupUsers.class.php:89
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Groups/GroupUsers.class.php:72
 msgid "Error al eliminar los usuarios del grupo"
 msgstr "Erreur pendant la suppression des utilisateurs du groupe"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:69
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Groups/GroupUsers.class.php:102
+msgid "Error al asignar los usuarios al grupo"
+msgstr "Erreur pendant la suppression de l'utilisateur du groupe"
+
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:70
 msgid "Error al crear la notificación"
 msgstr "Erreur lors de l'ajout de la notification"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:94
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:95
 msgid "Error al eliminar la notificación"
 msgstr "Erreur lors de la suppression de la notification"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:99
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:100
 msgid "Notificación no encontrada"
 msgstr "Notification introuvable"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:132
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:244
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:133
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:245
 msgid "Error al modificar la notificación"
 msgstr "Erreur lors de la mise à jour de la notification"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:167
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:168
 msgid "Error al obtener la notificación"
 msgstr "Erreur lors de la récupération de la notification"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:198
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:284
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:318
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:354
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:199
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:285
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:319
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:355
 msgid "Error al obtener las notificaciones"
 msgstr "Erreur lors de la récupération des notifications"
 
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:59
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:60
 msgid "Error al crear el plugin"
 msgstr "Erreur lors de l'ajout du plugin"
 
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:83
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:84
 msgid "Error al eliminar el plugin"
 msgstr "Erreur lors de la suppression du plugin"
 
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:88
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:89
 msgid "Plugin no encontrado"
 msgstr "Plugin introuvable"
 
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:115
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:219
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:243
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:116
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:220
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:244
 msgid "Error al actualizar el plugin"
 msgstr "Erreur lors de la mise à jour du plugin"
 
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:56
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:182
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:57
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:183
 msgid "Nombre de perfil duplicado"
 msgstr "Nom de profil dupliqué"
 
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:105
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:106
 msgid "Perfil en uso"
 msgstr "Profil en cours d'utilisation"
 
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:114
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:115
 msgid "Error al eliminar perfil"
 msgstr "Erreur lors de la suppression du profil"
 
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:119
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:120
 msgid "Perfil no encontrado"
 msgstr "Profil introuvable"
 
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:196
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:197
 msgid "Error al modificar perfil"
 msgstr "Erreur lors de la modification du profil"
 
@@ -3702,7 +3601,6 @@ msgid "Migrar Perfiles"
 msgstr "Migrer Profils"
 
 #: ../../../../inc/SP/Mgmt/Profiles/ProfileUtil.class.php:82
-#, fuzzy
 msgid "Error al obtener perfiles"
 msgstr "Erreur pendant l'obtention des profils"
 
@@ -3711,112 +3609,102 @@ msgid "Operación realizada correctamente"
 msgstr "Opération faite avec succès"
 
 #: ../../../../inc/SP/Mgmt/Profiles/ProfileUtil.class.php:149
-#, fuzzy
 msgid "Fallo al realizar la operación"
 msgstr "Erreur pendant l'opération"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:104
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:105
 msgid "Error al actualizar enlace"
 msgstr "Erreur lors de la mise à jour du lien"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:123
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:124
 msgid "Enlace ya creado"
 msgstr "Lien déjà créé"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:144
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:145
 msgid "Error al crear enlace"
 msgstr "Erreur lors de la création du lien"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:181
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:182
 msgid "Error al eliminar enlace"
 msgstr "Erreur lors de la suppression du lien"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:186
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:187
 msgid "Enlace no encontrado"
 msgstr "Lien introuvable"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:218
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:219
 msgid "Error al renovar enlace"
 msgstr "Erreur lors du renouvellement du lien"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:247
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:346
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:380
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:248
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:347
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:381
 msgid "Error al obtener enlace"
 msgstr "Erreur lors de la récupération du lien"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:298
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:299
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLinkSearch.class.php:72
 msgid "ON"
 msgstr "ON"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:298
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:299
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLinkSearch.class.php:72
 msgid "OFF"
 msgstr "OFF"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:53
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:126
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:54
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:127
 msgid "Etiqueta duplicada"
 msgstr "Tag dupliqué"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:63
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:64
 msgid "Error al crear etiqueta"
 msgstr "Erreur lors de la création du tag"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:108
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:109
 msgid "Error al eliminar etiqueta"
 msgstr "Erreur lors de la suppression du tag"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:113
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:114
 msgid "Etiqueta no encontrada"
 msgstr "Tag introuvable"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:137
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:138
 msgid "Error al actualizar etiqueta"
 msgstr "Erreur lors de la mise à jour du tag"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:180
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:181
 msgid "Error al obtener etiqueta"
 msgstr "Erreur lors de la récupération du tag"
 
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:59
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:61
 msgid "Error al crear track"
-msgstr "Error while creating track"
+msgstr "Erreur lors de la création de la piste"
 
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:82
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:84
 msgid "Error al eliminar track"
-msgstr "Error while removing the track"
+msgstr "Erreur lors de la suppression de la piste"
 
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:110
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:112
 msgid "Error al actualizar track"
-msgstr "Error while updating the track"
+msgstr "Erreur lors de la mise à jour de la piste"
 
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:137
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:139
 msgid "Error al obtener track"
-msgstr "Error while retrieving the track"
+msgstr "Erreur lors de la récupération de la piste"
 
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:161
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:236
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:163
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:238
 msgid "Error al obtener tracks"
-msgstr "Error while retrieving the tracks"
+msgstr "Erreur lors de la récupération des pistes"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:54
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:150
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:78
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:77
 msgid "Login/email de usuario duplicados"
 msgstr "Login/courriel utilisateur dupliqué"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:130
-#, fuzzy
 msgid "Error al eliminar el usuario"
 msgstr "Erreur pendant la suppression de l'utilisateur"
 
@@ -3825,98 +3713,87 @@ msgid "Usuario no encontrado"
 msgstr "Utilisateur introuvable"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:181
-#, fuzzy
 msgid "Error al actualizar el usuario"
 msgstr "Erreur pendant l'actualisation de l'utilisateur"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:246
-#, fuzzy
 msgid "Error al obtener los usuarios"
 msgstr "Erreur pendant la récupération des utilisateurs"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:280
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:323
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:313
 msgid "Error al modificar la clave"
 msgstr "Erreur pendant la modification du mot de passe"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:108
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:107
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:54
 msgid "Usuario de LDAP"
 msgstr "Utilisateur LDAP"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:116
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:115
 msgid "Error al guardar los datos de LDAP"
 msgstr "Erreur pendant la sauvegarde des données utilisateur LDAP"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:124
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:123
 msgid "Activación Cuenta"
 msgstr "Activation de Compte"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:125
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:124
 msgid "Su cuenta está pendiente de activación."
 msgstr "Votre compte est en attente d'activation."
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:126
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:125
 msgid "En breve recibirá un email de confirmación."
 msgstr "Vous recevrez un courriel de confirmation sous peu."
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:133
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:132
 msgid "Nuevo usuario de LDAP"
 msgstr "Nouvel utilisateur LDAP"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:194
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:185
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:214
 msgid "Error al actualizar la clave del usuario en la BBDD"
 msgstr ""
 "Erreur pendant l'actualisation du mot de passe utilisateur dans la base de "
 "données"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:60
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:65
 msgid "Sincronización LDAP"
 msgstr "Synchronisation LDAP"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:110
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:115
 msgid "No se encontraron objetos para sincronizar"
 msgstr "Il n'y a pas d'objet à synchroniser"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:116
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:121
 msgid "Sincronización finalizada"
 msgstr "Synchronisation terminée"
 
-#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:98
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:97
 msgid "Error al migrar cuenta de usuario"
 msgstr "Erreur lors de la migration de compte utilisateur"
 
-#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:138
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:137
 msgid "Error al obtener grupo de usuarios"
 msgstr "Erreur lors de la récupération du groupe des utilisateurs"
 
-#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:153
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:152
 msgid "Error al migrar grupo del usuario"
 msgstr "Erreur pendant la migration du groupe de l'utilisateur"
 
-#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:110
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:111
 msgid "Error en comprobación de hash"
 msgstr "Erreur lors de la vérification du hash"
 
-#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:112
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:113
 msgid "Hash inválido o expirado"
 msgstr "Hash invalide ou expiré"
 
-#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:158
+#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:159
 msgid "Error al generar el hash de recuperación"
 msgstr "Erreur lors de la génération du hash de récupération"
 
-#: ../../../../inc/SP/Mgmt/Users/UserPreferences.class.php:79
-#, fuzzy
+#: ../../../../inc/SP/Mgmt/Users/UserPreferences.class.php:80
 msgid "Error al actualizar preferencias"
 msgstr "Erreur pendant l'actualisation des préférences"
 
@@ -3944,7 +3821,6 @@ msgid "No es posible leer/escribir el archivo: %s"
 msgstr "Impossible de lire/écrire le fichier: %s"
 
 #: ../../../../inc/SP/Storage/XmlHandler.class.php:161
-#, fuzzy
 msgid "No hay elementos para guardar"
 msgstr "Il n'y a pas d'objet à sauvegarder"
 
@@ -3953,7 +3829,6 @@ msgid "Socket no inicializado"
 msgstr "Socket non initialisé"
 
 #: ../../../../inc/SP/Util/Connection.class.php:127
-#, fuzzy
 msgid "Error al enviar datos"
 msgstr "Erreur lors de l'envoi de donnée"
 
@@ -3961,7 +3836,7 @@ msgstr "Erreur lors de l'envoi de donnée"
 msgid "Error de codificación"
 msgstr "Erreur d'encodage"
 
-#: ../../../../inc/SP/Util/Util.class.php:321
+#: ../../../../inc/SP/Util/Util.class.php:323
 msgid "Respuesta"
 msgstr "Réponse"
 
@@ -3970,7 +3845,6 @@ msgid "Fallo de autentificación"
 msgstr "Erreur d'authentification"
 
 #: ../../../../inc/SP/Util/Wiki/DokuWikiApiBase.class.php:173
-#, fuzzy
 msgid "Error al realizar la consulta"
 msgstr "Erreur durant la requête"
 
@@ -4008,7 +3882,6 @@ msgstr "Admin de l'Application"
 
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:53
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:155
-#, fuzzy
 msgid "Admin Cuentas"
 msgstr "Admin des Comptes"
 
@@ -4269,7 +4142,7 @@ msgstr "Accepter"
 
 #: ../../../../js/strings.js.php:69
 msgid "Cancelar"
-msgstr "Annulé"
+msgstr "Annuler"
 
 #: ../../../../js/strings.js.php:70
 msgid "Clave Copiada al Portapapeles"
@@ -4329,19 +4202,19 @@ msgstr ""
 "continuer ?"
 
 #: ../../../../js/strings.js.php:84
-#, fuzzy
 msgid "Este proceso puede durar algo de tiempo. Desea continuar?"
 msgstr "Cette action peut être longue. Souhaitez-vous continuer ?"
 
 #: ../../../../js/strings.js.php:87
 msgid ""
 "Realizando tarea. Por favor, no cierre la ventana/pestaña del navegador."
-msgstr "Performing task. Please, do not close the browser window/tab."
+msgstr ""
+"Tâches en cours de réalisation. Merci de ne pas fermer la fenêtre ou "
+"l'onglet du navigateur."
 
 #: ../../../../js/strings.js.php:88
-#, fuzzy
 msgid "Incluir Letras"
-msgstr "Include Letters"
+msgstr "Inclure des Lettres"
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:67
 #: ../../../../inc/themes/material-blue/views/account/account.inc:136
@@ -4595,26 +4468,22 @@ msgid "Parámetros especiales:"
 msgstr "Paramètres spéciaux de recherche :"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:25
-#, fuzzy
 msgid "Buscar cuentas a las que 'login' tenga acceso"
-msgstr "Rechercher les comptes pour lesquels le 'login' a les droits d'accès."
+msgstr "Rechercher les comptes pour lesquels 'login' a les droits d'accès."
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:26
-#, fuzzy
 msgid "Devolver las cuentas en las que 'login' es propietario"
-msgstr "Rechercher les comptes pour lesquels le 'login' a les droits d'accès."
+msgstr "Récupérer les comptes pour lesquels 'login' est le propriétaire."
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:27
-#, fuzzy
 msgid "Buscar cuentas a las que 'group_name' tenga acceso"
 msgstr ""
-"Rechercher les comptes pour lesquels le 'group_name' a les droits d'accès."
+"Rechercher les comptes pour lesquels 'group_name' a les droits d'accès."
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:28
-#, fuzzy
 msgid "Devolver las cuentas con grupo principal 'group_name'"
 msgstr ""
-"Rechercher les comptes pour lesquels le groupe principal est \"group_name\"."
+"Récupérer les comptes pour lesquels le groupe principal est 'group_name'."
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:29
 msgid "Buscar cuentas con archivos con el nombre 'file_name'"
@@ -4711,7 +4580,6 @@ msgstr "Image pour visualiser le mot de passe"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:106
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:146
-#, fuzzy
 msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
 msgstr "Active l'affichage des résultats de recherche comme format carte."
 
@@ -4771,7 +4639,6 @@ msgid "Usar imagen para clave"
 msgstr "Utiliser une image pour le mot de passe"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:218
-#, fuzzy
 msgid "Habilita la subida/descarga de archivos para las cuentas."
 msgstr "Active l'envoi et le téléchargement des fichiers pour les comptes."
 
@@ -4840,7 +4707,6 @@ msgid "Copia sysPass"
 msgstr "Sauvegarde sysPass"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:43
-#, fuzzy
 msgid "No hay backups para descargar"
 msgstr "Il n'y a pas de sauvegarde à télécharger"
 
@@ -4854,7 +4720,6 @@ msgstr ""
 "configuration."
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:73
-#, fuzzy
 msgid ""
 "Con este método es posible guardar todos los datos de sysPass en otro lugar "
 "o utilizarlos para hacer la aplicación portable."
@@ -4868,7 +4733,6 @@ msgid "Exportar Cuentas"
 msgstr "Exporter les comptes"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:122
-#, fuzzy
 msgid "No hay archivos XML para descargar"
 msgstr "Il n'y a aucun fichier XML à télécharger"
 
@@ -4892,7 +4756,7 @@ msgstr ""
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:182
 msgid "Los elementos exportados son cuentas, clientes, categorías y etiquetas."
-msgstr "The exported items are accounts, customers, categories and tags."
+msgstr "Les objets exportés sont des comptes, clients, catégories et tags."
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:184
 msgid ""
@@ -4966,7 +4830,7 @@ msgstr "Les utilisateurs devront saisir un nouveau Mot de Passe Maître."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:104
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:118
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo."
 msgstr "Cette action va mettre à jour %s comptes. Ceci peut prendre un moment."
@@ -5039,7 +4903,6 @@ msgid "Enviar correo"
 msgstr "Envoyer un courriel"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:300
-#, fuzzy
 msgid ""
 "La clave temporal es utilizada como clave maestra para los usuarios que "
 "necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
@@ -5047,8 +4910,7 @@ msgid ""
 msgstr ""
 "Le mot de passe temporaire est utilisé comme Mot de Passe Maître pour les "
 "utilisateurs qui ont besoin de le saisir pendant le login. De cette manière, "
-"il n'est nul besoin de leur demander de saisir le véritable Mot de Passe "
-"Maître."
+"il n'est pas nécessaire de leur communiquer le véritable Mot de Passe Maître."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:306
 msgid "Generar"
@@ -5152,7 +5014,6 @@ msgid "Tema Visual"
 msgstr "Thème Visuel"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:41
-#, fuzzy
 msgid ""
 "Establece el tema visual global de la aplicación. Es posible establecer un "
 "tema visual por usuario en las preferencias."
@@ -5186,7 +5047,6 @@ msgid "Habilitar depuración"
 msgstr "Activer le mode debug"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:114
-#, fuzzy
 msgid ""
 "En este modo no se puede acceder a la aplicación. Para deshabilitarlo es "
 "necesario modificar el archivo de configuración."
@@ -5211,7 +5071,6 @@ msgid "Comprobar actualizaciones"
 msgstr "Vérifier les mises à jour"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:150
-#, fuzzy
 msgid ""
 "Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo "
 "para los usuarios administradores)."
@@ -5233,7 +5092,6 @@ msgid "Usuario por Defecto"
 msgstr "Utilisateur par Défaut"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:19
-#, fuzzy
 msgid "Define el usuario por defecto para las cuentas importadas."
 msgstr "Définis l'utilisateur par défaut pour les comptes importés."
 
@@ -5245,7 +5103,6 @@ msgid "Grupo por Defecto"
 msgstr "Groupe par Défaut"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:45
-#, fuzzy
 msgid "Define el grupo por defecto para las cuentas importadas."
 msgstr "Définis le groupe par défaut pour les comptes importés."
 
@@ -5254,7 +5111,6 @@ msgid "Soltar archivo aquí o click para seleccionar"
 msgstr "Déposer les fichiers ici ou cliquer pour les sélectionner"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:102
-#, fuzzy
 msgid ""
 "Permite realizar la importación de Cuentas, Categorías y Clientes desde "
 "archivos XML y CSV."
@@ -5298,7 +5154,6 @@ msgstr ""
 "\"notes\""
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:114
-#, fuzzy
 msgid ""
 "En todos los casos, si el cliente o la categoría no están creados, se crean "
 "automáticamente."
@@ -5390,14 +5245,14 @@ msgstr ""
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:99
 #: ../../../../inc/themes/material-blue/views/config/info.inc:109
-#, fuzzy
 msgid "Sesión Encriptada"
-msgstr "Session terminée"
+msgstr "Session Chiffrée"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:104
-#, fuzzy
 msgid "Indica si los datos de la sesión están encriptados en el servidor"
-msgstr "Tells whether the session data are encrypted in the server or not"
+msgstr ""
+"Indique si les données de session sont chiffrées sur le serveur ou si elles "
+"ne le sont pas"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:111
 msgid "Sí"
@@ -5413,7 +5268,6 @@ msgid "Plugins Cargados"
 msgstr "Plugins Chargés"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:22
-#, fuzzy
 msgid "Habilita de autentificación mediante servidor LDAP."
 msgstr "Active l'authentification couplé à un serveur LDAP."
 
@@ -5434,7 +5288,6 @@ msgid "Active Directory"
 msgstr "Active Directory"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:67
-#, fuzzy
 msgid "Nombre o dirección IP del servidor de LDAP."
 msgstr "Le nom d'hôte ou l'adresse IP du serveur LDAP."
 
@@ -5472,7 +5325,6 @@ msgid "Base en la que realizar la búsqueda de usuarios de LDAP."
 msgstr "Base dans laquelle se fera la recherche des utilisateurs LDAP."
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:179
-#, fuzzy
 msgid ""
 "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
 msgstr ""
@@ -5484,7 +5336,6 @@ msgid "Este grupo debe de estar ubicado en la base de búsquedas de LDAP."
 msgstr "Ce groupe a besoin d'être placé dans la base de recherche LDAP."
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:212
-#, fuzzy
 msgid ""
 "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Définis le groupe par défaut pour les nouveaux utilisateurs LDAP."
@@ -5495,7 +5346,6 @@ msgid "Perfil por Defecto"
 msgstr "Profil par Défaut"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:236
-#, fuzzy
 msgid ""
 "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Définis le profil par défaut pour les nouveaux utilisateurs LDAP."
@@ -5528,7 +5378,6 @@ msgid "Dirección de correo de envío"
 msgstr "Adresse courriel du destinataire"
 
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:124
-#, fuzzy
 msgid ""
 "Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
 "cuentas sin permisos."
@@ -5541,7 +5390,6 @@ msgid "Habilitar peticiones por correo"
 msgstr "Activer les demandes par courriel"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:20
-#, fuzzy
 msgid ""
 "Habilita la opción de añadir un enlace a Wiki externa para los resultados de "
 "la búsqueda."
@@ -5559,7 +5407,6 @@ msgid "URL de búsqueda Wiki"
 msgstr "URL de recherche Wiki"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:41
-#, fuzzy
 msgid "URL que utiliza la wiki para realizar una búsqueda de una página."
 msgstr "URL que le Wiki utilise pour faire une recherche d'entrée."
 
@@ -5580,7 +5427,6 @@ msgid "URL de página en Wiki"
 msgstr "URL de page Wiki"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:74
-#, fuzzy
 msgid "URL que utiliza la wiki para acceder a los detalles de una página."
 msgstr "URL qu'utilise Wiki pour accéder aux détails d'une page."
 
@@ -5731,12 +5577,10 @@ msgid "Nombre del perfil"
 msgstr "Nom du profil"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:40
-#, fuzzy
 msgid "Crear nueva cuenta"
 msgstr "Créer nouveau compte"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:40
-#, fuzzy
 msgid "Crear"
 msgstr "Créer"
 
@@ -5769,7 +5613,6 @@ msgid "Editar Clave"
 msgstr "Éditer Mot de Passe"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:82
-#, fuzzy
 msgid "Eliminar cuenta"
 msgstr "Supprimer compte"
 
@@ -5958,12 +5801,10 @@ msgid "Hay %d notificaciones pendientes"
 msgstr "Il y a %d de notification(s) non-lue(s)"
 
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:41
-#, fuzzy
 msgid "No hay no hay notificaciones pendientes"
 msgstr "Il n'y a pas de notifications en attente"
 
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:74
-#, fuzzy
 msgid "Indica si la conexión utiliza HTTPS."
 msgstr "Indique si la connexion utilise le protocol HTTPS."
 
@@ -6116,7 +5957,6 @@ msgid "Código de Seguridad"
 msgstr "Code de Sécurité"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:27
-#, fuzzy
 msgid ""
 "Este código se encuentra en el archivo de configuración de sysPass con la "
 "etiqueta \"upgradeKey\""
@@ -6125,7 +5965,6 @@ msgstr ""
 "nom de tag \"upgradekey\""
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:35
-#, fuzzy
 msgid ""
 "Se han encontrado elementos huérfanos. Por favor, modifique estos elementos "
 "o indique los IDs por defecto para los elementos huérfanos."
@@ -6135,32 +5974,27 @@ msgstr ""
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:37
 msgid "Si no se indican los IDs, se crearán nuevos elementos."
-msgstr "If the items IDs are not set, they will be created."
+msgstr "Si les ID objets ne sont pas paramétrés, ils seront créés"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:59
-#, fuzzy
 msgid "Introducir un ID de usuario válido para cuentas"
 msgstr "Saisir un ID utilisateur valide pour les comptes"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:71
-#, fuzzy
 msgid "Introducir un ID de categoría válido para cuentas"
 msgstr "Saisir un ID catégorie valide pour les comptes"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:83
-#, fuzzy
 msgid "Introducir un ID de cliente válido para cuentas"
 msgstr "Saisir un ID client valide pour les comptes"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:96
-#, fuzzy
 msgid "Introducir un ID de grupo válido para usuarios"
-msgstr "Saisir un ID groupe valide pour les comptes"
+msgstr "Saisir un ID groupe valide pour les utilisateurs"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:106
-#, fuzzy
 msgid "Introducir un ID de perfil válido para usuarios"
-msgstr "Saisir un ID profil valide pour les comptes"
+msgstr "Saisir un ID profil valide pour les utilisateurs"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:116
 msgid ""
@@ -6176,9 +6010,7 @@ msgstr "Saisir un login de connexion valide"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:150
 msgid "He realizado una copia de seguridad completa de sysPass"
-msgstr ""
-"Les objets orphelins ont été trouvé. Modifiez ces objets ou saisir leur ID "
-"par défaut."
+msgstr "Sauvegarde complète de sysPass effectuée"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:164
 msgid "Por favor espere mientras el proceso se ejecuta"
@@ -6197,7 +6029,6 @@ msgid "Global"
 msgstr "Global"
 
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:92
-#, fuzzy
 msgid ""
 "Ordena los resultados de búsqueda por el número de visitas de las cuentas."
 msgstr "Trie les résultats de recherche sur le nombre de visite des comptes."
