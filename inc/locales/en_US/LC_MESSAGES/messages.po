@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-06 21:41+0100\n"
-"PO-Revision-Date: 2017-03-06 21:44+0100\n"
+"PO-Revision-Date: 2017-03-13 00:28+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -188,7 +188,7 @@ msgstr "Invalid Action"
 #: ../../../../inc/SP/Api/ApiBase.class.php:175
 #: ../../../../inc/SP/Api/ApiRequest.class.php:210
 msgid "Parámetros incorrectos"
-msgstr "Incorrect parameters"
+msgstr "Wrong parameters"
 
 #: ../../../../ajax/ajax_install.php:58
 msgid "Instalación finalizada"
@@ -2353,7 +2353,7 @@ msgstr "User/Pass not entered"
 #: ../../../../inc/SP/Controller/LoginController.class.php:507
 #: ../../../../inc/SP/Controller/LoginController.class.php:531
 msgid "Login incorrecto"
-msgstr "Incorrect login"
+msgstr "Wrong login"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:207
 #, php-format
@@ -4806,7 +4806,7 @@ msgid ""
 "La clave maestra es utilizada para encriptar las claves de las cuentas de "
 "sysPass para mantenerlas seguras."
 msgstr ""
-"The Master Password is used to encryt sysPass accounts passwords and keep "
+"The Master Password is used to encrypt sysPass accounts passwords and keep "
 "them safe."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:140

@@ -156,7 +156,7 @@ sysPass.Theme = function (Common) {
             "<label class=\"mdl-textfield__label\" for=\"passlength\">" + Common.config().LANG[38] + "</label>" +
             "</div></div></div>";
 
-        showDialog({
+        mdlDialog().show({
             title: Common.config().LANG[29],
             text: content,
             negative: {

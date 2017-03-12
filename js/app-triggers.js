@@ -148,7 +148,7 @@ sysPass.Triggers = function (Common) {
             var $this = $(this);
             var helpText = $("#" + $this.data("help")).html();
 
-            showDialog({
+            mdlDialog().show({
                 title: Common.config().LANG[54],
                 text: helpText,
                 positive: {
