@@ -406,7 +406,7 @@ sysPass.Actions = function (Common) {
 
             var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
 
-            showDialog({
+            mdlDialog().show({
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
@@ -566,7 +566,7 @@ sysPass.Actions = function (Common) {
         masterpass: function ($obj) {
             var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
 
-            showDialog({
+            mdlDialog().show({
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
@@ -724,7 +724,7 @@ sysPass.Actions = function (Common) {
 
             var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[15] + "</p></div>";
 
-            showDialog({
+            mdlDialog().show({
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
@@ -778,7 +778,7 @@ sysPass.Actions = function (Common) {
 
             var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[48] + "</p></div>";
 
-            showDialog({
+            mdlDialog().show({
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
@@ -856,7 +856,7 @@ sysPass.Actions = function (Common) {
 
             var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[3] + "</p></div>";
 
-            showDialog({
+            mdlDialog().show({
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
@@ -1141,7 +1141,7 @@ sysPass.Actions = function (Common) {
                 }
             }
 
-            showDialog({
+            mdlDialog().show({
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
@@ -1232,7 +1232,7 @@ sysPass.Actions = function (Common) {
 
             var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[57] + "</p></div>";
 
-            showDialog({
+            mdlDialog().show({
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
@@ -1294,7 +1294,7 @@ sysPass.Actions = function (Common) {
         clear: function ($obj) {
             var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[20] + "</p></div>";
 
-            showDialog({
+            mdlDialog().show({
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
@@ -1392,7 +1392,7 @@ sysPass.Actions = function (Common) {
 
             var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[58] + "</p></div>";
 
-            showDialog({
+            mdlDialog().show({
                 text: atext,
                 negative: {
                     title: Common.config().LANG[44],
