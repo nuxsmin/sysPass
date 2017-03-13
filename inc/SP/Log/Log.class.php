@@ -178,7 +178,7 @@ class Log extends ActionLog
         $Data->setQuery($query);
         $Data->addParam(Session::getUserData()->getUserLogin());
         $Data->addParam(Session::getUserData()->getUserId());
-        $Data->addParam(Util::getClientAddress());
+        $Data->addParam(Util::getClientAddress(true));
         $Data->addParam(utf8_encode($this->LogMessage->getAction(true)));
         $Data->addParam($this->getLogLevel());
         $Data->addParam(utf8_encode($description));
