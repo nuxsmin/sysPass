@@ -193,7 +193,19 @@ sysPass.Triggers = function (Common) {
                 Common.appActions().doAction({actionId: $this.data("action-id")}, $this.data("view"));
             });
 
+            $("#btnLogout").click(function (e) {
+                Common.appActions().main.logout();
+            });
+
+            $("#btnPrefs").click(function (e) {
+                Common.appActions().doAction({actionId: $(this).data("action-id")});
+            });
+
             Common.appActions().doAction({actionId: 1}, "search");
+
+            if (typeof Common.appTheme().viewsTriggers.main === "function") {
+                Common.appTheme().viewsTriggers.main();
+            }
         },
         search: function () {
             log.info("views:search");
@@ -243,13 +255,6 @@ sysPass.Triggers = function (Common) {
         footer: function () {
             log.info("views:footer");
 
-            $("#btnLogout").click(function (e) {
-                Common.appActions().main.logout();
-            });
-
-            $("#btnPrefs").click(function (e) {
-                Common.appActions().doAction({actionId: $(this).data("action-id")});
-            });
         },
         common: function ($container) {
             log.info("views:common");

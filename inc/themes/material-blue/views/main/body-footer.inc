@@ -6,52 +6,16 @@
     <div id="footer-left" class="footer-parts">
         <?php if ($loadApp === true): ?>
             <div id="session">
-                <i id="btnLogout" class="material-icons">exit_to_app</i>
-                <span for="btnLogout"
-                      class="mdl-tooltip mdl-tooltip--top"><?php echo __('Salir'); ?></span>
-
-                <?php if ($showPassIcon): ?>
-                    <i id="btnUserPass" class="btn-action material-icons"
-                       data-onclick="appMgmt/show"
-                       data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>"
-                       data-item-id="<?php echo $userId; ?>"
-                       data-sk="<?php echo $sk; ?>">security</i>
-                    <span for="btnUserPass"
-                          class="mdl-tooltip mdl-tooltip--top"><?php echo __('Cambiar Clave de Usuario'); ?></span>
-                <?php endif; ?>
-                <i id="btnPrefs" class="material-icons"
-                   data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>">account_circle</i>
-                <span for="btnPrefs"
-                      class="mdl-tooltip mdl-tooltip--top"><?php echo __('Preferencias de usuario'); ?></span>
-
-                <?php if ($userNotices > 0): ?>
-                    <div id="notices-user"
-                         class="btn-menu material-icons mdl-badge mdl-badge--overlap mdl-color-text--amber-200"
-                         data-badge="<?php echo $userNotices; ?>"
-                         data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>">notifications
-                    </div>
-                    <span for="notices-user"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf(__('Hay %d notificaciones pendientes'), $userNotices); ?></span>
-                <?php else: ?>
-                    <div id="notices-user" class="btn-menu material-icons mdl-badge mdl-badge--overlap"
-                         data-badge="0" data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>">
-                        notifications
-                    </div>
-                    <span for="notices-user"
-                          class="mdl-tooltip mdl-tooltip--top"><?php echo __('No hay no hay notificaciones pendientes'); ?></span>
-                <?php endif; ?>
-
                 <span id="user-info">
-                    <span id="user-name-footer"><?php echo $userName; ?></span>
-                    <span for="user-name-footer"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $userGroup); ?></span>
-
                     <?php /** @var \SP\Html\Assets\IconInterface $userType */
                     if ($userType !== null): ?>
                         <i id="user-type-footer" class="material-icons"><?php echo $userType->getIcon(); ?></i>
                         <span for="user-type-footer"
                               class="mdl-tooltip mdl-tooltip--top"><?php echo $userType->getTitle(); ?></span>
                     <?php endif; ?>
+                    <span id="user-name-footer"><?php echo $userName; ?></span>
+                    <span for="user-name-footer"
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $userGroup); ?></span>
                 </span>
             </div>
         <?php endif; ?>

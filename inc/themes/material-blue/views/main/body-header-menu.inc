@@ -26,6 +26,57 @@
                     <span for="btn-<?php echo $action->getId(); ?>"
                           class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                 <?php endforeach; ?>
+
+                <?php if ($userNotices > 0): ?>
+                    <a id="notices-user" class="btn-menu mdl-navigation__link"
+                         data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>"
+                         data-historyreset="1"
+                         data-view="notices">
+                        <i class="material-icons mdl-badge mdl-badge--overlap" data-badge="<?php echo $userNotices; ?>">notifications</i>
+                    </a>
+
+                    <span for="notices-user"
+                          class="mdl-tooltip mdl-tooltip--bottom"><?php printf(__('Hay %d notificaciones pendientes'), $userNotices); ?></span>
+                <?php else: ?>
+                    <a id="notices-user" class="btn-menu mdl-navigation__link"
+                         data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>"
+                         data-historyreset="1"
+                         data-view="notices">
+                        <i class="material-icons mdl-badge mdl-badge--overlap" data-badge="0">notifications</i>
+                    </a>
+                    <span for="notices-user"
+                          class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('No hay no hay notificaciones pendientes'); ?></span>
+                <?php endif; ?>
+
+                <!-- User's menu -->
+                <!-- Right aligned menu below button -->
+                <button id="users-menu-lower-right"
+                        class="mdl-button mdl-js-button mdl-button--icon">
+                    <i class="material-icons">more_vert</i>
+                </button>
+
+                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                    for="users-menu-lower-right">
+                    <?php if ($showPassIcon): ?>
+                        <li id="btnUserPass" class="btn-action mdl-menu__item"
+                            data-onclick="appMgmt/show"
+                            data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>"
+                            data-item-id="<?php echo $userId; ?>"
+                            data-sk="<?php echo $sk; ?>">
+                            <i class="material-icons">security</i>
+                            <?php echo __('Cambiar Clave de Usuario'); ?>
+                        </li>
+                    <?php endif; ?>
+                    <li id="btnPrefs" class="mdl-menu__item"
+                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>">
+                        <i class="material-icons">account_circle</i>
+                        <?php echo __('Preferencias de usuario'); ?>
+                    </li>
+                    <li id="btnLogout" class="mdl-menu__item">
+                        <i class="material-icons">exit_to_app</i>
+                        <?php echo __('Salir'); ?>
+                    </li>
+                </ul>
             </nav>
         <?php endif; ?>
     </div>
@@ -47,6 +98,25 @@
                     <?php echo $action->getTitle(); ?>
                 </a>
             <?php endforeach; ?>
+
+            <?php if ($userNotices > 0): ?>
+                <a id="notices-user" class="btn-menu mdl-navigation__link"
+                     data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>"
+                     data-historyreset="1"
+                     data-view="notices">
+                    <i class="material-icons mdl-badge mdl-badge--overlap" data-badge="<?php echo $userNotices; ?>">notifications</i>
+                    <?php echo __('Notificaciones'); ?>
+                </a>
+            <?php else: ?>
+                <a id="notices-user" class="btn-menu mdl-navigation__link"
+                     data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>"
+                     data-historyreset="1"
+                     data-view="notices">
+                    <i class="material-icons mdl-badge mdl-badge--overlap" data-badge="0">notifications</i>
+                    <?php echo __('Notificaciones'); ?>
+                </a>
+            <?php endif; ?>
+
             <?php if ($showPassIcon): ?>
                 <a class="btn-action mdl-navigation__link"
                    title="<?php echo __('Cambiar Clave de Usuario'); ?>"

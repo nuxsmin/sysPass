@@ -309,14 +309,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
             $this->view->append('actions', $ActionEventlog);
         }
-
-        $ActionNotice = new DataGridAction();
-        $ActionNotice->setId(self::ACTION_NOT);
-        $ActionNotice->setTitle(__('Notificaciones'));
-        $ActionNotice->setIcon($this->icons->getIconNotices());
-        $ActionNotice->setData(['historyReset' => 1, 'view' => 'notices']);
-
-        $this->view->append('actions', $ActionNotice);
     }
 
     /**

@@ -93,7 +93,7 @@ sysPass.Theme = function (Common) {
             }
         }
 
-        for (;i++<=Common.passwordData.complexity.numlength;) {
+        for (; i++ <= Common.passwordData.complexity.numlength;) {
             genPassword += getRandomChar(0, chars.length - 1);
         }
 
@@ -327,6 +327,14 @@ sysPass.Theme = function (Common) {
      * Triggers que se ejecutan en determinadas vistas
      */
     var viewsTriggers = {
+        main: function () {
+            var layout = document.querySelector(".mdl-layout");
+            var $drawer = $(".mdl-layout__drawer");
+
+            $drawer.find("a").click(function () {
+                layout.MaterialLayout.toggleDrawer();
+            });
+        },
         search: function () {
             var $frmSearch = $("#frmSearch");
             var $resContent = $("#res-content");
