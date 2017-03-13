@@ -85,5 +85,6 @@ $stringsJsLang = [
     60 => __('Aviso'),
     61 => __('Sesión finalizada'),
     62 => __('Realizando tarea. Por favor, no cierre la ventana/pestaña del navegador.'),
-    63 => __('Incluir Letras')
+    63 => __('Incluir Letras'),
+    64 => __('Cookies deshabilitadas. La aplicación no funcionará correctamente.')
 ];

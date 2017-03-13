@@ -34,7 +34,8 @@ sysPass.Main = function () {
         CHECK_UPDATES: false, // Comprobar actualizaciones
         TIMEZONE: "",
         LOCALE: "",
-        DEBUG: ""
+        DEBUG: "",
+        COOKIES_ENABLED: false
     };
 
     // Variable para determinar si una clave de cuenta ha sido copiada al portapapeles
@@ -231,6 +232,10 @@ sysPass.Main = function () {
                 appActions.main.getUpdates();
             }
 
+            if (config.COOKIES_ENABLED === false) {
+                msg.sticky(config.LANG[64]);
+            }
+
             initializeClipboard();
             setupCallbacks();
             checkLogout();
@@ -273,6 +278,7 @@ sysPass.Main = function () {
             config.LOCALE = json.locale;
             config.DEBUG = json.debug;
             config.MAX_FILE_SIZE = parseInt(json.max_file_size);
+            config.COOKIES_ENABLED = json.cookies_enabled;
 
             if (typeof callback === "function") {
                 callback();

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-12 23:43+0100\n"
-"PO-Revision-Date: 2017-03-12 23:44+0100\n"
+"POT-Creation-Date: 2017-03-13 22:55+0100\n"
+"PO-Revision-Date: 2017-03-13 23:03+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: de_DE\n"
@@ -147,11 +147,11 @@ msgstr "Konto"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:724
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:734
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:749
-#: ../../../../inc/SP/Controller/LoginController.class.php:445
-#: ../../../../inc/SP/Controller/LoginController.class.php:472
-#: ../../../../inc/SP/Controller/LoginController.class.php:514
-#: ../../../../inc/SP/Controller/LoginController.class.php:532
-#: ../../../../inc/SP/Controller/LoginController.class.php:540
+#: ../../../../inc/SP/Controller/LoginController.class.php:446
+#: ../../../../inc/SP/Controller/LoginController.class.php:473
+#: ../../../../inc/SP/Controller/LoginController.class.php:515
+#: ../../../../inc/SP/Controller/LoginController.class.php:533
+#: ../../../../inc/SP/Controller/LoginController.class.php:541
 #: ../../../../inc/SP/Controller/MainActionController.class.php:124
 #: ../../../../inc/SP/Core/Init.class.php:451
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:98
@@ -290,13 +290,13 @@ msgstr "Fehler beim Anlegen des Kontos"
 #: ../../../../inc/SP/Api/ApiBase.class.php:203
 #: ../../../../inc/SP/Api/ApiRequest.class.php:147
 #: ../../../../inc/SP/Api/ApiUtil.class.php:55
-#: ../../../../inc/SP/Controller/LoginController.class.php:199
-#: ../../../../inc/SP/Controller/LoginController.class.php:227
-#: ../../../../inc/SP/Controller/LoginController.class.php:246
-#: ../../../../inc/SP/Controller/LoginController.class.php:342
-#: ../../../../inc/SP/Controller/LoginController.class.php:373
-#: ../../../../inc/SP/Controller/LoginController.class.php:463
-#: ../../../../inc/SP/Controller/LoginController.class.php:489
+#: ../../../../inc/SP/Controller/LoginController.class.php:200
+#: ../../../../inc/SP/Controller/LoginController.class.php:228
+#: ../../../../inc/SP/Controller/LoginController.class.php:247
+#: ../../../../inc/SP/Controller/LoginController.class.php:343
+#: ../../../../inc/SP/Controller/LoginController.class.php:374
+#: ../../../../inc/SP/Controller/LoginController.class.php:464
+#: ../../../../inc/SP/Controller/LoginController.class.php:490
 #: ../../../../inc/SP/Core/OldCrypt.class.php:169
 #: ../../../../inc/SP/Core/OldCrypt.class.php:181
 #: ../../../../inc/SP/Import/XmlFileImport.class.php:106
@@ -461,7 +461,7 @@ msgid "Datos inválidos"
 msgstr "Ungültige Daten"
 
 #: ../../../../inc/SP/Api/ApiRequest.class.php:155
-#: ../../../../inc/SP/Controller/LoginController.class.php:209
+#: ../../../../inc/SP/Controller/LoginController.class.php:210
 msgid "Intentos excedidos"
 msgstr "Versuche überschritten"
 
@@ -901,11 +901,11 @@ msgstr "Fehler beim Suchen des Benutzers in LDAP"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:736
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:751
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:408
-#: ../../../../inc/SP/Controller/LoginController.class.php:260
-#: ../../../../inc/SP/Controller/LoginController.class.php:367
-#: ../../../../inc/SP/Controller/LoginController.class.php:446
-#: ../../../../inc/SP/Controller/LoginController.class.php:508
-#: ../../../../inc/SP/Controller/LoginController.class.php:533
+#: ../../../../inc/SP/Controller/LoginController.class.php:261
+#: ../../../../inc/SP/Controller/LoginController.class.php:368
+#: ../../../../inc/SP/Controller/LoginController.class.php:447
+#: ../../../../inc/SP/Controller/LoginController.class.php:509
+#: ../../../../inc/SP/Controller/LoginController.class.php:534
 #: ../../../../inc/SP/Core/Init.class.php:615
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:78
 #: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:104
@@ -949,7 +949,7 @@ msgstr "Fehler beim Suchen nach Gruppen RDN"
 #: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:156
 #: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:108
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:476
-#: ../../../../inc/SP/Controller/LoginController.class.php:369
+#: ../../../../inc/SP/Controller/LoginController.class.php:370
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:248
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:251
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:174
@@ -1301,8 +1301,8 @@ msgstr "E-Mail"
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:574
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:279
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:516
-#: ../../../../inc/SP/Controller/LoginController.class.php:311
-#: ../../../../inc/SP/Controller/LoginController.class.php:321
+#: ../../../../inc/SP/Controller/LoginController.class.php:312
+#: ../../../../inc/SP/Controller/LoginController.class.php:322
 msgid "Clave maestra actualizada"
 msgstr "Master-Passwort aktualisiert"
 
@@ -1684,7 +1684,7 @@ msgid "Restaurar Cuenta"
 msgstr "Wiederherstellen Konto"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:475
-#: ../../../../inc/SP/Controller/LoginController.class.php:368
+#: ../../../../inc/SP/Controller/LoginController.class.php:369
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:55
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:57
 msgid "Perfil"
@@ -2384,69 +2384,69 @@ msgid "Usuario/Clave no introducidos"
 msgstr "Keine Benutzername/Passwort eingegeben"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:150
-#: ../../../../inc/SP/Controller/LoginController.class.php:449
-#: ../../../../inc/SP/Controller/LoginController.class.php:507
-#: ../../../../inc/SP/Controller/LoginController.class.php:531
+#: ../../../../inc/SP/Controller/LoginController.class.php:450
+#: ../../../../inc/SP/Controller/LoginController.class.php:508
+#: ../../../../inc/SP/Controller/LoginController.class.php:532
 msgid "Login incorrecto"
 msgstr "Fehlerhafte Anmeldung"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:207
+#: ../../../../inc/SP/Controller/LoginController.class.php:208
 #, php-format
 msgid "Intentos excedidos (%d/%d)"
 msgstr "Versuche überschritten (%d/%d)"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:244
+#: ../../../../inc/SP/Controller/LoginController.class.php:245
 #, fuzzy
 msgid "Error al obtener los datos del usuario de la BBDD"
 msgstr "Fehler beim Laden der Benutzerdaten aus der Datenbank"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:259
-#: ../../../../inc/SP/Controller/LoginController.class.php:264
+#: ../../../../inc/SP/Controller/LoginController.class.php:260
+#: ../../../../inc/SP/Controller/LoginController.class.php:265
 msgid "Usuario deshabilitado"
 msgstr "Benutzer gespert"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:299
+#: ../../../../inc/SP/Controller/LoginController.class.php:300
 msgid "Usando clave temporal"
 msgstr "Temporäres Kennwort verwenden"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:305
-#: ../../../../inc/SP/Controller/LoginController.class.php:309
-#: ../../../../inc/SP/Controller/LoginController.class.php:315
-#: ../../../../inc/SP/Controller/LoginController.class.php:319
-#: ../../../../inc/SP/Controller/LoginController.class.php:338
-#: ../../../../inc/SP/Controller/LoginController.class.php:340
+#: ../../../../inc/SP/Controller/LoginController.class.php:306
+#: ../../../../inc/SP/Controller/LoginController.class.php:310
+#: ../../../../inc/SP/Controller/LoginController.class.php:316
+#: ../../../../inc/SP/Controller/LoginController.class.php:320
+#: ../../../../inc/SP/Controller/LoginController.class.php:339
+#: ../../../../inc/SP/Controller/LoginController.class.php:341
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:63
 #, fuzzy
 msgid "Clave maestra incorrecta"
 msgstr "Ungültiges Master-Passwort"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:326
+#: ../../../../inc/SP/Controller/LoginController.class.php:327
 msgid "Es necesaria su clave anterior"
 msgstr "Ihr altes Passwort wird benötigt"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:333
+#: ../../../../inc/SP/Controller/LoginController.class.php:334
 #, fuzzy
 msgid "La clave maestra no ha sido guardada o es incorrecta"
 msgstr "Master-Passwort ist nicht sicher oder stimmt nicht"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:371
+#: ../../../../inc/SP/Controller/LoginController.class.php:372
 #, fuzzy
 msgid "Error al obtener la clave maestra del usuario"
 msgstr "Fehler beim Abrufen des Master Pass"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:455
+#: ../../../../inc/SP/Controller/LoginController.class.php:456
 msgid "Cuenta expirada"
 msgstr "Konto abgelaufen"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:459
+#: ../../../../inc/SP/Controller/LoginController.class.php:460
 msgid "El usuario no tiene grupos asociados"
 msgstr "Der Benutzer hat keine zugewiesene Gruppe"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:473
+#: ../../../../inc/SP/Controller/LoginController.class.php:474
 msgid "Servidor LDAP"
 msgstr "LDAP Server"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:534
+#: ../../../../inc/SP/Controller/LoginController.class.php:535
 msgid "Autentificación"
 msgstr "Authentifizierung"
 
@@ -3158,7 +3158,8 @@ msgstr "Export erfolgreich abgeschlossen"
 msgid "Error al crear el archivo XML"
 msgstr "Fehler beim erstellen der XML Datei"
 
-#: ../../../../inc/SP/DataModel/TrackData.class.php:154
+#: ../../../../inc/SP/DataModel/TrackData.class.php:155
+#: ../../../../inc/SP/DataModel/TrackData.class.php:157
 msgid "IP inválida"
 msgstr "Ungültige IP"
 
@@ -4327,6 +4328,11 @@ msgstr "Führe Aktion aus. Bitte das Browserfenster/Tab nicht schließen."
 #: ../../../../js/strings.js.php:88
 msgid "Incluir Letras"
 msgstr "Buchstaben einschließen"
+
+#: ../../../../js/strings.js.php:89
+#, fuzzy
+msgid "Cookies deshabilitadas. La aplicación no funcionará correctamente."
+msgstr "Cookies disabled. The application won't work properly."
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:67
 #: ../../../../inc/themes/material-blue/views/account/account.inc:136

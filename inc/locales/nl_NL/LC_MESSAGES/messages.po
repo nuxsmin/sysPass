@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2017-03-06 21:50+0100\n"
+"POT-Creation-Date: 2017-03-13 22:56+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nlmaca\n"
@@ -26,7 +26,7 @@ msgstr "Bestands management uitgeschakeld"
 #: ../../../../ajax/ajax_accSearch.php:44
 #: ../../../../ajax/ajax_filesMgmt.php:54
 #: ../../../../ajax/ajax_filesMgmt.php:70
-#: ../../../../ajax/ajax_passReset.php:49
+#: ../../../../ajax/ajax_passReset.php:48
 #: ../../../../ajax/ajax_userPrefsSave.php:58
 msgid "CONSULTA INVÁLIDA"
 msgstr "Ongeldige Query"
@@ -38,7 +38,7 @@ msgid "La sesión no se ha iniciado o ha caducado"
 msgstr "Sessie nog niet gestart of er is een timeout opgetreden"
 
 #: ../../../../ajax/ajax_filesMgmt.php:73
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:93
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:95
 msgid "Subir Archivo"
 msgstr "Bestand uploaden"
 
@@ -64,7 +64,7 @@ msgstr "Ongeldig bestand"
 #: ../../../../ajax/ajax_filesMgmt.php:166
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:841
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:437
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:95
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:97
 #: ../../../../inc/themes/material-blue/views/config/import.inc:66
 #: ../../../../inc/themes/material-blue/views/config/import.inc:69
 msgid "Archivo"
@@ -86,7 +86,7 @@ msgstr "File size exceeded"
 #: ../../../../ajax/ajax_filesMgmt.php:125
 #: ../../../../ajax/ajax_filesMgmt.php:168
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:284
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:97
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:99
 msgid "Tamaño"
 msgstr "Grootte"
 
@@ -95,7 +95,7 @@ msgid "Archivo guardado"
 msgstr "Bestand opgeslagen"
 
 #: ../../../../ajax/ajax_filesMgmt.php:146
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:77
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:79
 msgid "No se pudo guardar el archivo"
 msgstr "Fout bij opslaan van bestand"
 
@@ -132,8 +132,8 @@ msgstr "ID"
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:530
 #: ../../../../inc/SP/Controller/MainController.class.php:609
 #: ../../../../inc/SP/Import/ImportBase.class.php:165
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:94
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:76
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:96
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:77
 #: ../../../../inc/themes/material-blue/views/itemshow/publiclinks.inc:11
 #: ../../../../inc/themes/material-blue/views/itemshow/publiclinks.inc:13
 msgid "Cuenta"
@@ -146,15 +146,15 @@ msgstr "Account"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:724
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:734
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:749
-#: ../../../../inc/SP/Controller/LoginController.class.php:445
-#: ../../../../inc/SP/Controller/LoginController.class.php:472
-#: ../../../../inc/SP/Controller/LoginController.class.php:514
-#: ../../../../inc/SP/Controller/LoginController.class.php:532
-#: ../../../../inc/SP/Controller/LoginController.class.php:540
+#: ../../../../inc/SP/Controller/LoginController.class.php:446
+#: ../../../../inc/SP/Controller/LoginController.class.php:473
+#: ../../../../inc/SP/Controller/LoginController.class.php:515
+#: ../../../../inc/SP/Controller/LoginController.class.php:533
+#: ../../../../inc/SP/Controller/LoginController.class.php:541
 #: ../../../../inc/SP/Controller/MainActionController.class.php:124
 #: ../../../../inc/SP/Core/Init.class.php:451
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:96
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:75
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:98
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:76
 #: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:31
 #: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:33
 #: ../../../../inc/themes/material-blue/views/noticeshow/notices.inc:39
@@ -168,7 +168,7 @@ msgid "Archivo eliminado"
 msgstr "Bestand verwijderd"
 
 #: ../../../../ajax/ajax_filesMgmt.php:206
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:123
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:125
 #, fuzzy
 msgid "Error al eliminar el archivo"
 msgstr "Fout bij verwijderen bestand"
@@ -190,56 +190,56 @@ msgstr "Foutieve parameters"
 msgid "Instalación finalizada"
 msgstr "Installatie afgerond"
 
-#: ../../../../ajax/ajax_passReset.php:62
+#: ../../../../ajax/ajax_passReset.php:61
 msgid "Recuperación de Clave"
 msgstr "Wachtwoord Herstel"
 
-#: ../../../../ajax/ajax_passReset.php:63
+#: ../../../../ajax/ajax_passReset.php:62
 msgid "Solicitado para"
 msgstr "Aangevraagd voor"
 
-#: ../../../../ajax/ajax_passReset.php:70
+#: ../../../../ajax/ajax_passReset.php:69
 msgid "Solicitud enviada"
 msgstr "Aanvraag verstuurd"
 
-#: ../../../../ajax/ajax_passReset.php:74
+#: ../../../../ajax/ajax_passReset.php:73
 msgid "En breve recibirá un correo para completar la solicitud."
 msgstr "U ontvanget een email om de aanvraag te bevestigen"
 
-#: ../../../../ajax/ajax_passReset.php:78
+#: ../../../../ajax/ajax_passReset.php:77
 msgid "Solicitud no enviada"
 msgstr "Request not sent"
 
-#: ../../../../ajax/ajax_passReset.php:79
+#: ../../../../ajax/ajax_passReset.php:78
 msgid "Compruebe datos de usuario o consulte con el administrador"
 msgstr "Please, check the user data or contact to the administrator"
 
-#: ../../../../ajax/ajax_passReset.php:88
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:329
+#: ../../../../ajax/ajax_passReset.php:86
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:319
 msgid "Modificar Clave Usuario"
 msgstr "Wijzig Gebruikers Wachtwoord"
 
-#: ../../../../ajax/ajax_passReset.php:101
+#: ../../../../ajax/ajax_passReset.php:99
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:276
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:942
 msgid "Clave actualizada"
 msgstr "Wachtwoord bijgewerkt"
 
-#: ../../../../ajax/ajax_passReset.php:102
+#: ../../../../ajax/ajax_passReset.php:100
 #: ../../../../inc/SP/Auth/Database/Database.class.php:92
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:474
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:231
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:246
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:267
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:278
-#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:106
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:330
+#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:105
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:320
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:37
 #: ../../../../inc/themes/material-blue/views/itemshow/userspass.inc:23
 msgid "Login"
 msgstr "Inloggen"
 
-#: ../../../../ajax/ajax_passReset.php:109
+#: ../../../../ajax/ajax_passReset.php:107
 #, fuzzy
 msgid "La clave es incorrecta o no coincide"
 msgstr "Het wachtwoord is onjuist of matched niet"
@@ -288,29 +288,29 @@ msgstr "Fout bij account aanmaken"
 #: ../../../../inc/SP/Api/ApiBase.class.php:203
 #: ../../../../inc/SP/Api/ApiRequest.class.php:147
 #: ../../../../inc/SP/Api/ApiUtil.class.php:55
-#: ../../../../inc/SP/Controller/LoginController.class.php:199
-#: ../../../../inc/SP/Controller/LoginController.class.php:227
-#: ../../../../inc/SP/Controller/LoginController.class.php:246
-#: ../../../../inc/SP/Controller/LoginController.class.php:342
-#: ../../../../inc/SP/Controller/LoginController.class.php:373
-#: ../../../../inc/SP/Controller/LoginController.class.php:463
-#: ../../../../inc/SP/Controller/LoginController.class.php:489
+#: ../../../../inc/SP/Controller/LoginController.class.php:200
+#: ../../../../inc/SP/Controller/LoginController.class.php:228
+#: ../../../../inc/SP/Controller/LoginController.class.php:247
+#: ../../../../inc/SP/Controller/LoginController.class.php:343
+#: ../../../../inc/SP/Controller/LoginController.class.php:374
+#: ../../../../inc/SP/Controller/LoginController.class.php:464
+#: ../../../../inc/SP/Controller/LoginController.class.php:490
 #: ../../../../inc/SP/Core/OldCrypt.class.php:169
 #: ../../../../inc/SP/Core/OldCrypt.class.php:181
 #: ../../../../inc/SP/Import/XmlFileImport.class.php:106
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:88
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:174
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:229
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:292
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:356
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomField.class.php:94
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomField.class.php:161
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:89
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:175
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:230
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:293
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:357
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomField.class.php:71
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomField.class.php:138
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:88
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:159
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:208
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:229
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:252
-#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:134
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:242
+#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:135
 msgid "Error interno"
 msgstr "Interne fout"
 
@@ -457,7 +457,7 @@ msgid "Datos inválidos"
 msgstr "Invalid data"
 
 #: ../../../../inc/SP/Api/ApiRequest.class.php:155
-#: ../../../../inc/SP/Controller/LoginController.class.php:209
+#: ../../../../inc/SP/Controller/LoginController.class.php:210
 msgid "Intentos excedidos"
 msgstr "Attempts exceeded"
 
@@ -610,7 +610,7 @@ msgid "Categoría creada"
 msgstr "Categorie toegevoegd"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:310
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:127
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:124
 msgid "Categoría no encontrada"
 msgstr "Category not found"
 
@@ -639,7 +639,7 @@ msgid "Cliente creado"
 msgstr "Klant toegevoegd"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:399
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:132
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:129
 msgid "Cliente no encontrado"
 msgstr "Klant niet gevonden"
 
@@ -849,7 +849,7 @@ msgid "Conexión a LDAP correcta"
 msgstr "LDAP connectie gelukt"
 
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:133
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:67
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:72
 msgid "Objetos encontrados"
 msgstr "Objecten gevonden"
 
@@ -895,14 +895,14 @@ msgstr "Fout bij het zoeken gebruiker in DLS"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:736
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:751
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:408
-#: ../../../../inc/SP/Controller/LoginController.class.php:260
-#: ../../../../inc/SP/Controller/LoginController.class.php:367
-#: ../../../../inc/SP/Controller/LoginController.class.php:446
-#: ../../../../inc/SP/Controller/LoginController.class.php:508
-#: ../../../../inc/SP/Controller/LoginController.class.php:533
+#: ../../../../inc/SP/Controller/LoginController.class.php:261
+#: ../../../../inc/SP/Controller/LoginController.class.php:368
+#: ../../../../inc/SP/Controller/LoginController.class.php:447
+#: ../../../../inc/SP/Controller/LoginController.class.php:509
+#: ../../../../inc/SP/Controller/LoginController.class.php:534
 #: ../../../../inc/SP/Core/Init.class.php:615
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:77
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:99
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:78
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:104
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:64
 #: ../../../../res/test.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:45
@@ -943,7 +943,7 @@ msgstr "Fout bij zoeken in groep RDN"
 #: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:156
 #: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:108
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:476
-#: ../../../../inc/SP/Controller/LoginController.class.php:369
+#: ../../../../inc/SP/Controller/LoginController.class.php:370
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:248
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:251
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:174
@@ -1293,8 +1293,8 @@ msgstr "Email"
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:574
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:279
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:516
-#: ../../../../inc/SP/Controller/LoginController.class.php:311
-#: ../../../../inc/SP/Controller/LoginController.class.php:321
+#: ../../../../inc/SP/Controller/LoginController.class.php:312
+#: ../../../../inc/SP/Controller/LoginController.class.php:322
 msgid "Clave maestra actualizada"
 msgstr "Master Wachtwoord bijgewerkt"
 
@@ -1676,7 +1676,7 @@ msgid "Restaurar Cuenta"
 msgstr "Account Herstel"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:475
-#: ../../../../inc/SP/Controller/LoginController.class.php:368
+#: ../../../../inc/SP/Controller/LoginController.class.php:369
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:55
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:57
 msgid "Perfil"
@@ -2014,7 +2014,7 @@ msgid "Actualizar Usuario"
 msgstr "Update User"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:244
-#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:105
+#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:104
 msgid "Usuario actualizado"
 msgstr "Gebruiker bijgewerkt"
 
@@ -2340,7 +2340,7 @@ msgid "Ver Autorización"
 msgstr "Bekijk Autorisatie"
 
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:216
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:73
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:74
 msgid "Ver Enlace Público"
 msgstr "View Public Link"
 
@@ -2374,68 +2374,68 @@ msgid "Usuario/Clave no introducidos"
 msgstr "Gebruiker/Wachtwoord niet ingevuld"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:150
-#: ../../../../inc/SP/Controller/LoginController.class.php:449
-#: ../../../../inc/SP/Controller/LoginController.class.php:507
-#: ../../../../inc/SP/Controller/LoginController.class.php:531
+#: ../../../../inc/SP/Controller/LoginController.class.php:450
+#: ../../../../inc/SP/Controller/LoginController.class.php:508
+#: ../../../../inc/SP/Controller/LoginController.class.php:532
 msgid "Login incorrecto"
 msgstr "Foutieve login"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:207
+#: ../../../../inc/SP/Controller/LoginController.class.php:208
 #, php-format
 msgid "Intentos excedidos (%d/%d)"
 msgstr "Attempts exceeded (%d/%d)"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:244
+#: ../../../../inc/SP/Controller/LoginController.class.php:245
 #, fuzzy
 msgid "Error al obtener los datos del usuario de la BBDD"
 msgstr "Fout bij ophalen gebruiker data vanuit de DB"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:259
-#: ../../../../inc/SP/Controller/LoginController.class.php:264
+#: ../../../../inc/SP/Controller/LoginController.class.php:260
+#: ../../../../inc/SP/Controller/LoginController.class.php:265
 msgid "Usuario deshabilitado"
 msgstr "Gebruiker uitgeschakeld"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:299
+#: ../../../../inc/SP/Controller/LoginController.class.php:300
 msgid "Usando clave temporal"
 msgstr "Using temporary password"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:305
-#: ../../../../inc/SP/Controller/LoginController.class.php:309
-#: ../../../../inc/SP/Controller/LoginController.class.php:315
-#: ../../../../inc/SP/Controller/LoginController.class.php:319
-#: ../../../../inc/SP/Controller/LoginController.class.php:338
-#: ../../../../inc/SP/Controller/LoginController.class.php:340
+#: ../../../../inc/SP/Controller/LoginController.class.php:306
+#: ../../../../inc/SP/Controller/LoginController.class.php:310
+#: ../../../../inc/SP/Controller/LoginController.class.php:316
+#: ../../../../inc/SP/Controller/LoginController.class.php:320
+#: ../../../../inc/SP/Controller/LoginController.class.php:339
+#: ../../../../inc/SP/Controller/LoginController.class.php:341
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:63
 #, fuzzy
 msgid "Clave maestra incorrecta"
 msgstr "Ongeldig Master Wachtwoord"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:326
+#: ../../../../inc/SP/Controller/LoginController.class.php:327
 msgid "Es necesaria su clave anterior"
 msgstr "Your previous password is needed"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:333
+#: ../../../../inc/SP/Controller/LoginController.class.php:334
 #, fuzzy
 msgid "La clave maestra no ha sido guardada o es incorrecta"
 msgstr "Het Master Wachtwoord is niet opgeslagen"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:371
+#: ../../../../inc/SP/Controller/LoginController.class.php:372
 msgid "Error al obtener la clave maestra del usuario"
 msgstr "Error while retrieving the user's Master Pass"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:455
+#: ../../../../inc/SP/Controller/LoginController.class.php:456
 msgid "Cuenta expirada"
 msgstr "Account verlopen"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:459
+#: ../../../../inc/SP/Controller/LoginController.class.php:460
 msgid "El usuario no tiene grupos asociados"
 msgstr "De gebruiker heeft geen geassocieerde groepen"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:473
+#: ../../../../inc/SP/Controller/LoginController.class.php:474
 msgid "Servidor LDAP"
 msgstr "LDAP Server"
 
-#: ../../../../inc/SP/Controller/LoginController.class.php:534
+#: ../../../../inc/SP/Controller/LoginController.class.php:535
 msgid "Autentificación"
 msgstr "Authenticatie"
 
@@ -2534,7 +2534,7 @@ msgid "Avisos de sysPass"
 msgstr "sysPass Mededelingen"
 
 #: ../../../../inc/SP/Controller/MainController.class.php:608
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:74
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:75
 msgid "Enlace visualizado"
 msgstr "Link viewed"
 
@@ -3003,7 +3003,7 @@ msgid "Actualizando IDs de categorías"
 msgstr "Updating categories ID"
 
 #: ../../../../inc/SP/Core/Upgrade/Category.class.php:97
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:68
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:65
 #, fuzzy
 msgid "Error al crear la categoría"
 msgstr "Fout bij het creeeren van de categorie"
@@ -3029,7 +3029,7 @@ msgid "Actualizando IDs de clientes"
 msgstr "Updating customers ID"
 
 #: ../../../../inc/SP/Core/Upgrade/Customer.class.php:98
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:72
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:69
 #, fuzzy
 msgid "Error al crear el cliente"
 msgstr "Fout bij aanmaken klant"
@@ -3039,7 +3039,7 @@ msgid "Actualizando IDs de grupos"
 msgstr "Updating groups ID"
 
 #: ../../../../inc/SP/Core/Upgrade/Group.class.php:115
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:67
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:68
 #, fuzzy
 msgid "Error al crear el grupo"
 msgstr "Fout bij aanmaken groep"
@@ -3049,7 +3049,7 @@ msgid "Actualizando IDs de perfil"
 msgstr "Updating profiles ID"
 
 #: ../../../../inc/SP/Core/Upgrade/Profile.class.php:97
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:68
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:69
 msgid "Error al crear perfil"
 msgstr "Error while creating the profile"
 
@@ -3146,7 +3146,8 @@ msgstr "Export succesvol afgerond"
 msgid "Error al crear el archivo XML"
 msgstr "Fout bij het creeeren van het XML bestand"
 
-#: ../../../../inc/SP/DataModel/TrackData.class.php:154
+#: ../../../../inc/SP/DataModel/TrackData.class.php:155
+#: ../../../../inc/SP/DataModel/TrackData.class.php:157
 msgid "IP inválida"
 msgstr "Invalid IP"
 
@@ -3416,52 +3417,52 @@ msgstr "Fout bij opschonen Event Log"
 msgid "Extensión '%s' no cargada"
 msgstr "Extension '%s' not loaded"
 
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:59
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:197
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:60
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:198
 msgid "La autorización ya existe"
 msgstr "De autorisatie bestaat al"
 
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:179
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:180
 msgid "Token no encontrado"
 msgstr "Token not found"
 
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:57
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:54
 msgid "Categoría duplicada"
 msgstr "Duplicated category"
 
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:122
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:119
 #, fuzzy
 msgid "Error al eliminar la categoría"
 msgstr "Fout bij verwijderen categorie"
 
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:177
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:174
 msgid "Nombre de categoría duplicado"
 msgstr "Dubbele categorie naam"
 
-#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:193
+#: ../../../../inc/SP/Mgmt/Categories/Category.class.php:190
 #, fuzzy
 msgid "Error al actualizar la categoría"
 msgstr "Fout bij wijzigen categorie"
 
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:72
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:60
 msgid "Error al crear el campo personalizado"
 msgstr "Error while creating the custom field"
 
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:87
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:96
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:75
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:84
 msgid "Error al eliminar el campo personalizado"
 msgstr "Error while removing the custom field"
 
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:140
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:128
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:290
 msgid "Error al actualizar el campo personalizado"
 msgstr "Error while updating the custom field"
 
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:174
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:162
 msgid "Campo personalizado no encontrado"
 msgstr "Custom field not found"
 
-#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:227
+#: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:215
 msgid "No se encontraron campos personalizados"
 msgstr "Custom fields not found"
 
@@ -3520,31 +3521,31 @@ msgstr "Gegevvens bijgewerkt"
 msgid "Error al migrar campos personalizados"
 msgstr "Error while migrating the custom fields"
 
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:58
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:182
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:55
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:179
 #, fuzzy
 msgid "Cliente duplicado"
 msgstr "Dubbele klant"
 
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:118
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:115
 msgid "No es posible eliminar"
 msgstr "Fout bij verwijderen"
 
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:127
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:124
 #, fuzzy
 msgid "Error al eliminar el cliente"
 msgstr "Fout bij verwijderen klant"
 
-#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:198
+#: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:195
 #, fuzzy
 msgid "Error al actualizar el cliente"
 msgstr "Fout bij bijwerken klant"
 
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:101
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:103
 msgid "Archivo subido"
 msgstr "File uploaded"
 
-#: ../../../../inc/SP/Mgmt/Files/File.class.php:128
+#: ../../../../inc/SP/Mgmt/Files/File.class.php:130
 msgid "Archivo no encontrado"
 msgstr "File not found"
 
@@ -3553,25 +3554,25 @@ msgstr "File not found"
 msgid "Error al eliminar archivos asociados a la cuenta"
 msgstr "Error bij verwijderen account's bestanden"
 
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:57
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:193
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:58
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:194
 msgid "Nombre de grupo duplicado"
 msgstr "Dubbele groepnaam"
 
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:110
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:111
 msgid "Grupo en uso"
 msgstr "Group in use"
 
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:119
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:120
 #, fuzzy
 msgid "Error al eliminar el grupo"
 msgstr "Fout bij verwijderen groep"
 
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:124
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:125
 msgid "Grupo no encontrado"
 msgstr "Group not found"
 
-#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:204
+#: ../../../../inc/SP/Mgmt/Groups/Group.class.php:205
 #, fuzzy
 msgid "Error al actualizar el grupo"
 msgstr "Fout bij bijwerken groep"
@@ -3586,79 +3587,79 @@ msgstr "Error bij verwijderen account's groepen"
 msgid "Error al actualizar los grupos secundarios"
 msgstr "Fout bij het updaten van de secundaire groep"
 
-#: ../../../../inc/SP/Mgmt/Groups/GroupUsers.class.php:69
-msgid "Error al asignar los usuarios al grupo"
-msgstr "Error while setting users in the group"
-
-#: ../../../../inc/SP/Mgmt/Groups/GroupUsers.class.php:89
+#: ../../../../inc/SP/Mgmt/Groups/GroupUsers.class.php:72
 #, fuzzy
 msgid "Error al eliminar los usuarios del grupo"
 msgstr "Fout bij verwijderen groep gebruikers"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:69
+#: ../../../../inc/SP/Mgmt/Groups/GroupUsers.class.php:102
+msgid "Error al asignar los usuarios al grupo"
+msgstr "Error while setting users in the group"
+
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:70
 msgid "Error al crear la notificación"
 msgstr "Error while adding the notification"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:94
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:95
 msgid "Error al eliminar la notificación"
 msgstr "Error while deleting the notification"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:99
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:100
 msgid "Notificación no encontrada"
 msgstr "Notification not found"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:132
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:244
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:133
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:245
 msgid "Error al modificar la notificación"
 msgstr "Error while updating the notification"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:167
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:168
 msgid "Error al obtener la notificación"
 msgstr "Error while retrieving notification"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:198
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:284
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:318
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:354
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:199
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:285
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:319
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:355
 msgid "Error al obtener las notificaciones"
 msgstr "Error while retrieving the notifications"
 
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:59
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:60
 msgid "Error al crear el plugin"
 msgstr "Error while adding the plugin"
 
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:83
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:84
 msgid "Error al eliminar el plugin"
 msgstr "Error while deleting the plugin"
 
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:88
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:89
 msgid "Plugin no encontrado"
 msgstr "Plugin not found"
 
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:115
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:219
-#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:243
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:116
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:220
+#: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:244
 msgid "Error al actualizar el plugin"
 msgstr "Error while updating the plugin"
 
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:56
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:182
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:57
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:183
 msgid "Nombre de perfil duplicado"
 msgstr "Dubbele profiel naam"
 
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:105
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:106
 msgid "Perfil en uso"
 msgstr "Profile in use"
 
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:114
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:115
 msgid "Error al eliminar perfil"
 msgstr "Error while removing the profile"
 
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:119
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:120
 msgid "Perfil no encontrado"
 msgstr "Profile not found"
 
-#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:196
+#: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:197
 msgid "Error al modificar perfil"
 msgstr "Error while updating the profile"
 
@@ -3680,95 +3681,95 @@ msgstr "Operatie succesvol"
 msgid "Fallo al realizar la operación"
 msgstr "Fout bij het uitvoeren van het process"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:104
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:105
 msgid "Error al actualizar enlace"
 msgstr "Error while updating the link"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:123
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:124
 msgid "Enlace ya creado"
 msgstr "Link already created"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:144
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:145
 msgid "Error al crear enlace"
 msgstr "Error while creating the link"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:181
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:182
 msgid "Error al eliminar enlace"
 msgstr "Error while removing the link"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:186
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:187
 msgid "Enlace no encontrado"
 msgstr "Link not found"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:218
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:219
 msgid "Error al renovar enlace"
 msgstr "Error while renewing link"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:247
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:346
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:380
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:248
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:347
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:381
 msgid "Error al obtener enlace"
 msgstr "Error while retrieving the link"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:298
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:299
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLinkSearch.class.php:72
 msgid "ON"
 msgstr "ON"
 
-#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:298
+#: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:299
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLinkSearch.class.php:72
 msgid "OFF"
 msgstr "OFF"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:53
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:126
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:54
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:127
 msgid "Etiqueta duplicada"
 msgstr "Duplicated tag"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:63
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:64
 msgid "Error al crear etiqueta"
 msgstr "Error while creating the tag"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:108
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:109
 msgid "Error al eliminar etiqueta"
 msgstr "Error while removing the tag"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:113
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:114
 msgid "Etiqueta no encontrada"
 msgstr "Tag not found"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:137
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:138
 msgid "Error al actualizar etiqueta"
 msgstr "Error while updating the tag"
 
-#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:180
+#: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:181
 msgid "Error al obtener etiqueta"
 msgstr "Error while retrieving the tag"
 
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:59
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:61
 msgid "Error al crear track"
 msgstr "Error while creating track"
 
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:82
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:84
 msgid "Error al eliminar track"
 msgstr "Error while removing the track"
 
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:110
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:112
 msgid "Error al actualizar track"
 msgstr "Error while updating the track"
 
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:137
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:139
 msgid "Error al obtener track"
 msgstr "Error while retrieving the track"
 
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:161
-#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:236
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:163
+#: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:238
 msgid "Error al obtener tracks"
 msgstr "Error while retrieving the tracks"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:54
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:150
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:78
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:77
 msgid "Login/email de usuario duplicados"
 msgstr "Duplicated user login/email"
 
@@ -3792,80 +3793,81 @@ msgid "Error al obtener los usuarios"
 msgstr "Fout bij het ophalen van gebruikers"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:280
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:323
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:313
 #, fuzzy
 msgid "Error al modificar la clave"
 msgstr "Fout bij wachtwoord wijzigen"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:108
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:107
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:54
 msgid "Usuario de LDAP"
 msgstr "LDAP Gebruiker"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:116
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:115
 #, fuzzy
 msgid "Error al guardar los datos de LDAP"
 msgstr "Fout bij opslaan van LDAP gebruikers data"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:124
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:123
 msgid "Activación Cuenta"
 msgstr "Account Activatie"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:125
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:124
 msgid "Su cuenta está pendiente de activación."
 msgstr "Uw account is in behandeling"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:126
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:125
 msgid "En breve recibirá un email de confirmación."
 msgstr "Uw krijgt binnenkort een bevestigings email"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:133
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:132
 msgid "Nuevo usuario de LDAP"
 msgstr "Nieuwe LDAP Gebruiker"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:194
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:185
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:214
 #, fuzzy
 msgid "Error al actualizar la clave del usuario en la BBDD"
 msgstr "Fout bij bijwerken gebruiker wachtwoord in de Database"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:60
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:65
 msgid "Sincronización LDAP"
 msgstr "LDAP synchronization"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:110
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:115
 msgid "No se encontraron objetos para sincronizar"
 msgstr "There aren't any objects to synchronize"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:116
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:121
 msgid "Sincronización finalizada"
 msgstr "Synchronization finished"
 
-#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:98
+#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:97
 msgid "Error al migrar cuenta de usuario"
 msgstr "Error while migrating the user account"
 
-#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:138
+#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:137
 msgid "Error al obtener grupo de usuarios"
 msgstr "Error while retrieving the users group"
 
-#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:153
+#: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:152
 #, fuzzy
 msgid "Error al migrar grupo del usuario"
 msgstr "Fout bij het migreren van de Gebruikers Groep"
 
-#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:110
+#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:111
 msgid "Error en comprobación de hash"
 msgstr "Error while checking hash"
 
-#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:112
+#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:113
 msgid "Hash inválido o expirado"
 msgstr "Wrong hash or expired"
 
-#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:158
+#: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:159
 msgid "Error al generar el hash de recuperación"
 msgstr "Error while generating the recovering hash"
 
-#: ../../../../inc/SP/Mgmt/Users/UserPreferences.class.php:79
+#: ../../../../inc/SP/Mgmt/Users/UserPreferences.class.php:80
 #, fuzzy
 msgid "Error al actualizar preferencias"
 msgstr "Fout bij updaten voorkeuren"
@@ -3910,7 +3912,7 @@ msgstr "Error while sending the data"
 msgid "Error de codificación"
 msgstr "Codering Fout"
 
-#: ../../../../inc/SP/Util/Util.class.php:321
+#: ../../../../inc/SP/Util/Util.class.php:323
 msgid "Respuesta"
 msgstr "Response"
 
@@ -4285,6 +4287,11 @@ msgstr "Performing task. Please, do not close the browser window/tab."
 #, fuzzy
 msgid "Incluir Letras"
 msgstr "Include Letters"
+
+#: ../../../../js/strings.js.php:89
+#, fuzzy
+msgid "Cookies deshabilitadas. La aplicación no funcionará correctamente."
+msgstr "Cookies disabled. The application won't work properly."
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:67
 #: ../../../../inc/themes/material-blue/views/account/account.inc:136
