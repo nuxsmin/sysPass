@@ -195,6 +195,7 @@ class LoginController
             $attempts = count(Track::getItem($TrackData)->getTracksForClientFromTime(time() - self::TIME_TRACKING));
         } catch (SPException $e) {
             $this->LogMessage->addDescription($e->getMessage());
+            $this->LogMessage->addDescription($e->getHint());
 
             throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
         }
