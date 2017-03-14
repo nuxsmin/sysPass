@@ -470,8 +470,8 @@
       text-align: left;
     }
     .search-filters {
-      > * {
-        margin: 0 1em;
+      & > * {
+        margin: 0 .5em;
       }
       .filter-buttons {
         display: inline-block;
@@ -1204,8 +1204,8 @@ fieldset.warning {
   }
 
   .mdl-data-table {
-    table-layout:fixed;
-    width:100%;
+    table-layout: fixed;
+    width: 100%;
   }
 
   .table-responsive {
@@ -1216,7 +1216,7 @@ fieldset.warning {
       text-overflow: ellipsis;
       -o-text-overflow: ellipsis;
     }
-    .cell-actions i{
+    .cell-actions i {
       display: block !important;
     }
   }

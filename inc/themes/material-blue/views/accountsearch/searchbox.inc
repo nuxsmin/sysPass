@@ -60,7 +60,9 @@
                             value="<?php echo $category->id; ?>" <?php echo ((int)$category->id === $searchCategory) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
                 <?php endforeach; ?>
             </select>
+        </div>
 
+        <div class="search-filters">
             <div class="filter-buttons">
                 <button type="button" id="btn-favorite"
                         class="icon-searchfav mdl-button mdl-js-button mdl-button--icon" tabindex="5">

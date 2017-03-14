@@ -482,7 +482,7 @@ pre, code, samp, kbd {
     align-items: center;
     text-align: left; }
   #content #searchbox .search-filters > * {
-    margin: 0 1em; }
+    margin: 0 .5em; }
   #content #searchbox .search-filters .filter-buttons {
     display: inline-block; }
   #content #searchbox .search-filters .filter-slider {
