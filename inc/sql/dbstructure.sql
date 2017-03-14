@@ -192,7 +192,7 @@ CREATE TABLE `accHistory` (
   `acchistory_categoryId` smallint(5) unsigned NOT NULL,
   `acchistory_login` varchar(50) NOT NULL,
   `acchistory_url` varchar(255) DEFAULT NULL,
-  `acchistory_pass` varbinary(500) NOT NULL,
+  `acchistory_pass` varbinary(1000) NOT NULL,
   `acchistory_key` varbinary(1000) NOT NULL,
   `acchistory_notes` text NOT NULL,
   `acchistory_countView` int(10) unsigned NOT NULL DEFAULT '0',
