@@ -600,27 +600,17 @@ sysPass.Main = function () {
 
         clipboard.on("success", function (e) {
             msg.ok(config.LANG[45]);
-        });
-
-        clipboard.on("error", function (e) {
+        }).on("error", function (e) {
             msg.error(config.LANG[46]);
         });
 
         // Portapapeles para claves visualizadas
+        var clipboardDialog = new Clipboard(".dialog-clip-button");
 
-        // Inicializar el objeto para copiar al portapapeles
-        var clipboardPass = new Clipboard(".dialog-clip-pass-button");
-        var clipboardUser = new Clipboard(".dialog-clip-user-button");
+        clipboardDialog.on("success", function (e) {
+            $(".dialog-text").removeClass("dialog-clip-copy");
+            $(e.trigger.dataset.clipboardTarget).addClass("dialog-clip-copy");
 
-        clipboardPass.on("success", function (e) {
-            $(".dialog-user-text").removeClass("dialog-clip-copy");
-            $(".dialog-pass-text").addClass("dialog-clip-copy");
-            e.clearSelection();
-        });
-
-        clipboardUser.on("success", function (e) {
-            $(".dialog-pass-text").removeClass("dialog-clip-copy");
-            $(".dialog-user-text").addClass("dialog-clip-copy");
             e.clearSelection();
         });
 
