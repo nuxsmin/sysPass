@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2017-03-13 23:08+0100\n"
+"POT-Creation-Date: 2017-03-15 23:04+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: \n"
@@ -64,7 +64,7 @@ msgstr "Érvénytelen fájl"
 
 #: ../../../../ajax/ajax_filesMgmt.php:104
 #: ../../../../ajax/ajax_filesMgmt.php:166
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:841
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:842
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:437
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:97
 #: ../../../../inc/themes/material-blue/views/config/import.inc:66
@@ -126,13 +126,13 @@ msgstr "ID"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:85
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:280
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:832
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:725
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:735
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:750
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:839
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1160
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:726
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:736
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:751
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:840
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1166
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:530
-#: ../../../../inc/SP/Controller/MainController.class.php:609
+#: ../../../../inc/SP/Controller/MainController.class.php:601
 #: ../../../../inc/SP/Import/ImportBase.class.php:165
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:96
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:77
@@ -145,9 +145,9 @@ msgstr "Fiók"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:206
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:283
 #: ../../../../inc/SP/Controller/Grids/Notices.class.php:55
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:724
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:734
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:749
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:725
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:735
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:750
 #: ../../../../inc/SP/Controller/LoginController.class.php:446
 #: ../../../../inc/SP/Controller/LoginController.class.php:473
 #: ../../../../inc/SP/Controller/LoginController.class.php:515
@@ -165,7 +165,7 @@ msgid "Tipo"
 msgstr "Típus"
 
 #: ../../../../ajax/ajax_filesMgmt.php:204
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:833
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:834
 msgid "Archivo eliminado"
 msgstr "Fájl törölve"
 
@@ -222,18 +222,18 @@ msgid "Modificar Clave Usuario"
 msgstr "Felhasználó jelszavának szerkesztése"
 
 #: ../../../../ajax/ajax_passReset.php:99
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:276
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:942
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:277
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:943
 msgid "Clave actualizada"
 msgstr "Jelszó frissítve"
 
 #: ../../../../ajax/ajax_passReset.php:100
 #: ../../../../inc/SP/Auth/Database/Database.class.php:92
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:474
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:231
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:246
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:267
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:278
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:232
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:247
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:268
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:279
 #: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:105
 #: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:320
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:37
@@ -380,7 +380,7 @@ msgstr "Hiba a fiók jelszavának frissítése közben"
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:271
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:165
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:291
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1077
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1083
 msgid "Errores"
 msgstr "Errors"
 
@@ -493,18 +493,18 @@ msgstr "Jelszó"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:319
 #: ../../../../inc/SP/Api/SyspassApi.class.php:372
 #: ../../../../inc/SP/Api/SyspassApi.class.php:408
-#: ../../../../inc/SP/Controller/MainController.class.php:610
+#: ../../../../inc/SP/Controller/MainController.class.php:602
 #: ../../../../inc/SP/Util/Wiki/DokuWikiApiBase.class.php:197
 msgid "Origen"
 msgstr "Source"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:189
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:922
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:923
 msgid "Crear Cuenta"
 msgstr "Add Account"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:190
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:923
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:924
 #: ../../../../inc/SP/Import/ImportBase.class.php:158
 msgid "Cuenta creada"
 msgstr "Fiók hozzáadva"
@@ -526,39 +526,39 @@ msgstr "Fiók hozzáadva"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:592
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:666
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:912
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:230
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:245
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:266
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:277
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:366
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:374
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:394
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:426
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:434
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:454
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:488
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:496
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:516
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:550
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:558
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:579
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:670
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:677
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:781
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:788
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:806
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:868
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:876
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:883
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:924
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:934
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:943
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:952
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:975
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:979
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1004
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1025
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1029
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:231
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:246
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:267
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:278
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:367
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:375
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:395
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:427
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:435
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:455
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:489
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:497
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:517
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:551
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:559
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:580
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:671
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:678
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:782
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:789
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:807
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:869
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:877
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:884
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:925
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:935
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:944
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:953
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:976
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:980
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1005
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1026
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1030
 #: ../../../../inc/SP/Core/Plugin/PluginDataStore.class.php:77
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:12
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:9
@@ -590,7 +590,7 @@ msgstr "Account not found"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:384
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:454
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:455
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:969
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:970
 #: ../../../../inc/SP/Core/Acl.class.php:192
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:39
 #, fuzzy
@@ -598,18 +598,18 @@ msgid "Eliminar Cuenta"
 msgstr "Fiók törlése"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:228
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:978
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1028
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:979
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1029
 msgid "Cuenta eliminada"
 msgstr "Fiók törölve"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:280
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:548
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:549
 msgid "Crear Categoría"
 msgstr "Add Category"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:281
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:549
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:550
 #: ../../../../inc/SP/Import/ImportBase.class.php:182
 msgid "Categoría creada"
 msgstr "Kategória hozzáadva"
@@ -622,23 +622,23 @@ msgstr "Category not found"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:316
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:111
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:112
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:576
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:577
 #: ../../../../inc/SP/Core/Acl.class.php:200
 msgid "Eliminar Categoría"
 msgstr "Kategória törlése"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:317
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:571
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:572
 msgid "Categoría eliminada"
 msgstr "Kategória törölve"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:369
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:486
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:487
 msgid "Crear Cliente"
 msgstr "Add Customer"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:370
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:487
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:488
 #: ../../../../inc/SP/Import/ImportBase.class.php:204
 msgid "Cliente creado"
 msgstr "Ügyfél hozzáadva"
@@ -651,13 +651,13 @@ msgstr "Nincs ügyfél találat"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:405
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:185
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:186
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:513
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:514
 #: ../../../../inc/SP/Core/Acl.class.php:205
 msgid "Eliminar Cliente"
 msgstr "Ügyfél törlése"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:406
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:508
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:509
 msgid "Cliente eliminado"
 msgstr "Ügyfél törölve"
 
@@ -678,7 +678,7 @@ msgstr "Hiba Archiválás közben"
 #: ../../../../inc/SP/Controller/ChecksController.class.php:142
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:699
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:722
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1084
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1090
 #: ../../../../inc/SP/Import/Import.class.php:115
 #, fuzzy
 msgid "Revise el registro de eventos para más detalles"
@@ -853,7 +853,7 @@ msgid "Conexión a LDAP correcta"
 msgstr "LDAP kapcsolat"
 
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:133
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:72
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:75
 msgid "Objetos encontrados"
 msgstr "Objektum találatok"
 
@@ -893,11 +893,11 @@ msgstr "Hiba az LDAP felhasználók keresése közben"
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:368
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:748
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:835
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:616
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:629
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:726
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:736
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:751
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:617
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:630
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:727
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:737
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:752
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:408
 #: ../../../../inc/SP/Controller/LoginController.class.php:261
 #: ../../../../inc/SP/Controller/LoginController.class.php:368
@@ -906,7 +906,7 @@ msgstr "Hiba az LDAP felhasználók keresése közben"
 #: ../../../../inc/SP/Controller/LoginController.class.php:534
 #: ../../../../inc/SP/Core/Init.class.php:615
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:78
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:104
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:108
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:64
 #: ../../../../res/test.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:45
@@ -954,8 +954,8 @@ msgstr "Hiba az RDN csoport keresése közben"
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:201
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:71
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:73
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:47
-#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:67
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:18
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:137
 msgid "Grupo"
 msgstr "Csoport"
 
@@ -1059,8 +1059,8 @@ msgstr "Több akció"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:281
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:350
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:403
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:840
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1161
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:841
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1167
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:23
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:29
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:21
@@ -1225,7 +1225,7 @@ msgstr "Maximálisan feltölthetõ fájl mérete 16MB"
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:301
 #: ../../../../inc/SP/Controller/ConfigController.class.php:203
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:365
-#: ../../../../inc/SP/Controller/MainController.class.php:616
+#: ../../../../inc/SP/Controller/MainController.class.php:608
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:90
 #: ../../../../inc/themes/material-blue/views/account/linkedAccounts.inc:13
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:30
@@ -1481,7 +1481,7 @@ msgid "No instalado"
 msgstr "Not installed"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:434
-#: ../../../../inc/SP/Controller/MainController.class.php:618
+#: ../../../../inc/SP/Controller/MainController.class.php:610
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:77
 #, fuzzy
 msgid "Información"
@@ -1538,7 +1538,7 @@ msgstr "Search for Events"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:131
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:593
 #: ../../../../inc/SP/Controller/Grids/Notices.class.php:57
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1162
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1168
 #: ../../../../inc/themes/material-blue/views/eventlog/eventlog.inc:37
 #: ../../../../inc/themes/material-blue/views/itemshow/categories.inc:28
 #: ../../../../inc/themes/material-blue/views/itemshow/customers.inc:32
@@ -1631,7 +1631,7 @@ msgstr "Módosítás"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:261
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:262
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:690
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:691
 #, fuzzy
 msgid "Eliminar Campo"
 msgstr "Profil törlése"
@@ -1658,7 +1658,7 @@ msgstr "Fájl megtekintése"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:330
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:331
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:836
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:837
 #: ../../../../inc/themes/material-blue/views/account/files-list.inc:26
 msgid "Eliminar Archivo"
 msgstr "Fájl törlése"
@@ -1700,8 +1700,8 @@ msgstr "Accounts (H)"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:444
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:445
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:950
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1002
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:951
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1003
 msgid "Restaurar Cuenta"
 msgstr "Restore Számla"
 
@@ -1738,8 +1738,8 @@ msgstr "Új felhasználó"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:529
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:530
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1072
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:292
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1073
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:315
 msgid "Importar usuarios de LDAP"
 msgstr "Import users from LDAP"
 
@@ -1756,15 +1756,15 @@ msgstr "Felhasználó módosítás"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:562
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:563
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:20
-#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:52
-#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:58
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:67
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:122
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:128
 msgid "Cambiar Clave de Usuario"
 msgstr "Változás felhasználói jelszó"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:573
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:574
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:263
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:264
 msgid "Eliminar Usuario"
 msgstr "felhasználó törlése"
 
@@ -1793,7 +1793,7 @@ msgstr "Csoport módosítás"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:647
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:648
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:391
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:392
 msgid "Eliminar Grupo"
 msgstr "Csoport törlése"
 
@@ -1826,7 +1826,7 @@ msgstr "Profil módosítás"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:729
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:730
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:451
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:452
 msgid "Eliminar Perfil"
 msgstr "Profil törlése"
 
@@ -1868,7 +1868,7 @@ msgstr "Módosítás"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:813
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:814
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:642
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:643
 #, fuzzy
 msgid "Eliminar Autorización"
 msgstr "Profil törlése"
@@ -1919,7 +1919,7 @@ msgstr "Renew Link"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:893
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:894
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:754
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:755
 msgid "Eliminar Enlace"
 msgstr "Delete Link"
 
@@ -1948,7 +1948,7 @@ msgstr "Edit Tag"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:965
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:966
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:803
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:804
 msgid "Eliminar Etiqueta"
 msgstr "Delete Tag"
 
@@ -1995,8 +1995,9 @@ msgid "Leída"
 msgstr "Read"
 
 #: ../../../../inc/SP/Controller/Grids/Notices.class.php:76
-#: ../../../../inc/SP/Controller/MainController.class.php:315
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:79
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:108
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:116
 msgid "Notificaciones"
 msgstr "Notifications"
 
@@ -2032,329 +2033,329 @@ msgstr "Edit Notification"
 msgid "Eliminar Notificación"
 msgstr "Delete Notification"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:228
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:229
 msgid "Crear Usuario"
 msgstr "Add User"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:229
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:230
 msgid "Usuario creado"
 msgstr "Felhasználó hozzáadva"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:236
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:237
 #, fuzzy
 msgid "No se pudo realizar la petición de cambio de clave."
 msgstr "Nem sikerült végrehajtani a jelszócsere kérelmet."
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:243
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:244
 msgid "Actualizar Usuario"
 msgstr "Update User"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:244
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:245
 #: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:104
 msgid "Usuario actualizado"
 msgstr "Felhasználó frissítve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:252
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:253
 msgid "Usuarios eliminados"
 msgstr "Users deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:258
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:259
 msgid "Usuario eliminado"
 msgstr "Felhasználó törölve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:275
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:276
 msgid "Actualizar Clave Usuario"
 msgstr "Update User's Password"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:364
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:365
 msgid "Crear Grupo"
 msgstr "Add Group"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:365
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:366
 msgid "Grupo creado"
 msgstr "Csoport hozzáadva"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:372
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:373
 msgid "Actualizar Grupo"
 msgstr "Update Group"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:373
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:374
 msgid "Grupo actualizado"
 msgstr "Csoport frissítve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:380
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:381
 msgid "Grupos eliminados"
 msgstr "Groups deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:386
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:387
 msgid "Grupo eliminado"
 msgstr "Csoport törölve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:424
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:425
 msgid "Crear Perfil"
 msgstr "Add Profile"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:425
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:426
 msgid "Perfil creado"
 msgstr "Profil hozzáadva"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:432
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:433
 msgid "Actualizar Perfil"
 msgstr "Update Profile"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:433
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:434
 msgid "Perfil actualizado"
 msgstr "Profil frissítve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:440
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:441
 msgid "Perfiles eliminados"
 msgstr "Profiles deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:446
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:447
 msgid "Perfil eliminado"
 msgstr "Profil törölve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:494
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:495
 msgid "Actualizar Cliente"
 msgstr "Frissítse az ügyfelet"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:495
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:496
 msgid "Cliente actualizado"
 msgstr "Ügyfél frissítve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:502
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:503
 msgid "Clientes eliminados"
 msgstr "Customers deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:556
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:557
 msgid "Actualizar Categoría"
 msgstr "Update Category"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:557
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:558
 msgid "Categoría actualizada"
 msgstr "Kategória frissítve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:565
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:566
 msgid "Categorías eliminadas"
 msgstr "Categories deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:614
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:615
 msgid "Crear Autorización"
 msgstr "Add Authorization"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:615
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:616
 #, fuzzy
 msgid "Autorización creada"
 msgstr "Fiók hozzáadva"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:627
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:628
 #, fuzzy
 msgid "Actualizar Autorización"
 msgstr "Frissítés Számla"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:628
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:629
 #, fuzzy
 msgid "Autorización actualizada"
 msgstr "Fiók frissítve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:635
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:636
 msgid "Autorizaciones eliminadas"
 msgstr "Authorizations deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:639
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:640
 #, fuzzy
 msgid "Autorización eliminada"
 msgstr "Fiók törölve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:668
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:669
 msgid "Crear Campo"
 msgstr "Add Field"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:669
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:670
 #, fuzzy
 msgid "Campo creado"
 msgstr "Felhasználó hozzáadva"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:675
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:676
 msgid "Actualizar Campo"
 msgstr "Update Field"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:676
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:677
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:288
 #, fuzzy
 msgid "Campo actualizado"
 msgstr "Frissítve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:683
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:684
 msgid "Campos eliminados"
 msgstr "Fields deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:687
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:688
 #, fuzzy
 msgid "Campo eliminado"
 msgstr "Felhasználó törölve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:722
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:723
 msgid "Crear Enlace"
 msgstr "Create Link"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:723
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:724
 msgid "Enlace creado"
 msgstr "Link created"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:732
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:733
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:69
 msgid "Actualizar Enlace"
 msgstr "Update Link"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:733
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:734
 msgid "Enlace actualizado"
 msgstr "Link updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:742
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:743
 msgid "Enlaces eliminados"
 msgstr "Links deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:748
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:749
 msgid "Enlace eliminado"
 msgstr "Link deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:779
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:780
 msgid "Crear Etiqueta"
 msgstr "Add Tag"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:780
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:781
 #: ../../../../inc/SP/Import/ImportBase.class.php:226
 msgid "Etiqueta creada"
 msgstr "Tag added"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:786
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:787
 msgid "Actualizar Etiqueta"
 msgstr "Update Tag"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:787
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:788
 msgid "Etiqueta actualizada"
 msgstr "Tag updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:794
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:795
 msgid "Etiquetas eliminadas"
 msgstr "Tags deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:800
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:801
 msgid "Etiqueta eliminada"
 msgstr "Tag removed"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:827
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:828
 msgid "Archivos eliminados"
 msgstr "Files deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:866
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:874
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:881
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:867
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:875
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:882
 msgid "Actualizar Plugin"
 msgstr "Update Plugin"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:867
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:868
 msgid "Plugin habilitado"
 msgstr "Plugin enabled"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:875
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:876
 msgid "Plugin deshabilitado"
 msgstr "Plugin disabled"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:882
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:883
 msgid "Plugin restablecido"
 msgstr "Plugin reset"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:932
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:941
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:933
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:942
 msgid "Actualizar Cuenta"
 msgstr "Frissítés Számla"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:933
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:934
 msgid "Cuenta actualizada"
 msgstr "Fiók frissítve"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:951
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1003
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:952
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1004
 msgid "Cuenta restaurada"
 msgstr "Fiók restaurált"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:972
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1022
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:973
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1023
 msgid "Cuentas eliminadas"
 msgstr "Accounts removed"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1019
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1020
 msgid "Eliminar Cuenta (H)"
 msgstr "Delete Account (H)"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1053
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1054
 msgid "Favorito añadido"
 msgstr "Favorite added"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1058
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1059
 msgid "Favorito eliminado"
 msgstr "Favorite deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1075
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1081
 msgid "Importación de usuarios de LDAP realizada"
 msgstr "LDAP users import finished"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1076
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1082
 msgid "Usuarios importados"
 msgstr "Imported users"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1081
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1087
 msgid "Error al importar usuarios de LDAP"
 msgstr "Error while importing the LDAP users"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1099
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1105
 msgid "Notificación leída"
 msgstr "Notification read"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1107
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1113
 msgid "Notificación creada"
 msgstr "Notification created"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1115
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1121
 msgid "Notificación actualizada"
 msgstr "Notification updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1121
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1127
 msgid "Notificaciones eliminadas"
 msgstr "Notifications deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1125
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1131
 msgid "Notificación eliminada"
 msgstr "Notification deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1143
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1149
 #: ../../../../inc/SP/Forms/NoticeForm.class.php:95
 msgid "Es necesaria una descripción"
 msgstr "Leírás szükséges"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1158
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1164
 msgid "Solicitud de Modificación de Cuenta"
 msgstr "Kérés fiók módosításához"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1159
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1165
 msgid "Solicitante"
 msgstr "Kérõ"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1177
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1183
 msgid "Solicitud enviada por correo"
 msgstr "Request sent by email"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1179
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1185
 msgid "Solicitud no enviada por correo"
 msgstr "Request not sent by email"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1188
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1194
 msgid "Solicitud"
 msgstr "Request"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1194
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1200
 msgid "Solicitud realizada"
 msgstr "Request done"
 
@@ -2541,60 +2542,60 @@ msgstr "Profil törlése"
 msgid "Registro de Eventos"
 msgstr "Esemény napló"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:368
+#: ../../../../inc/SP/Controller/MainController.class.php:360
 #: ../../../../inc/SP/Core/Init.class.php:140
 #, fuzzy
 msgid "Versión de PHP requerida >= "
 msgstr "Szükséges PHP verzió> = 5.1"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:369
+#: ../../../../inc/SP/Controller/MainController.class.php:361
 #: ../../../../inc/SP/Core/Init.class.php:141
 #, fuzzy
 msgid ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:379
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:265
+#: ../../../../inc/SP/Controller/MainController.class.php:371
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:288
 msgid "Módulo no disponible"
 msgstr "Modul nem elérhetõ"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:380
+#: ../../../../inc/SP/Controller/MainController.class.php:372
 msgid "Sin este módulo la aplicación puede no funcionar correctamente."
 msgstr "E modul nélkül az alkalmazás nem futtatható megfelelõen"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:388
+#: ../../../../inc/SP/Controller/MainController.class.php:380
 msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
 msgstr ""
 "Ez a PHP verzió sérülékeny a NULL Byte támadásokkal szemben (CVE-2006-7243)"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:389
+#: ../../../../inc/SP/Controller/MainController.class.php:381
 msgid "Actualice la versión de PHP para usar sysPass de forma segura"
 msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:395
+#: ../../../../inc/SP/Controller/MainController.class.php:387
 msgid "No se encuentra el generador de números aleatorios."
 msgstr "Nem találom a véletlen szám generátort"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:396
+#: ../../../../inc/SP/Controller/MainController.class.php:388
 msgid ""
 "Sin esta función un atacante puede utilizar su cuenta al resetear la clave"
 msgstr "E funkció nélkül egy támadó alapállapotba állíthatja jelszavát"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:493
+#: ../../../../inc/SP/Controller/MainController.class.php:485
 msgid "Descargar nueva versión"
 msgstr "Új verzió letöltése"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:505
+#: ../../../../inc/SP/Controller/MainController.class.php:497
 msgid "Avisos de sysPass"
 msgstr "sysPass Notices"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:608
+#: ../../../../inc/SP/Controller/MainController.class.php:600
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:75
 msgid "Enlace visualizado"
 msgstr "Link viewed"
 
-#: ../../../../inc/SP/Controller/MainController.class.php:611
+#: ../../../../inc/SP/Controller/MainController.class.php:603
 msgid "Agente"
 msgstr "Agent"
 
@@ -3912,21 +3913,21 @@ msgstr "Hamarosan megerõsítésre váró emailt küldünk"
 msgid "Nuevo usuario de LDAP"
 msgstr "LDAP felhasználó"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:185
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:214
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:186
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:215
 #, fuzzy
 msgid "Error al actualizar la clave del usuario en la BBDD"
 msgstr "Adatbázis Hiba a felhasználói jelszó frissítése közben"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:65
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:66
 msgid "Sincronización LDAP"
 msgstr "LDAP synchronization"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:115
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:120
 msgid "No se encontraron objetos para sincronizar"
 msgstr "There aren't any objects to synchronize"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:121
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:126
 msgid "Sincronización finalizada"
 msgstr "Synchronization finished"
 
@@ -4348,12 +4349,12 @@ msgid "Limpiar Selección"
 msgstr "Clear Selection"
 
 #: ../../../../js/strings.js.php:77
-#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:68
+#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:70
 msgid "Mostrar Favoritos"
 msgstr "Show Favorites"
 
 #: ../../../../js/strings.js.php:78
-#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:68
+#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:70
 msgid "Mostrar Todos"
 msgstr "Show All"
 
@@ -4426,7 +4427,7 @@ msgstr "Select date"
 #: ../../../../inc/themes/material-blue/views/config/general.inc:29
 #: ../../../../inc/themes/material-blue/views/config/import.inc:89
 #: ../../../../inc/themes/material-blue/views/config/info.inc:145
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:283
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:306
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:150
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:276
 #: ../../../../inc/themes/material-blue/views/eventlog/eventlog.inc:137
@@ -4680,19 +4681,19 @@ msgstr "Get the private accounts for the current user"
 msgid "Búsqueda global"
 msgstr "Globális keresés"
 
-#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:71
+#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:73
 msgid "Filtrar Favoritos"
 msgstr "Favorites Filtering"
 
-#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:85
+#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:87
 msgid "Cuentas por página"
 msgstr "Fiók/oldal"
 
-#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:91
+#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:93
 msgid "Más Filtros"
 msgstr "More Filters"
 
-#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:96
+#: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:98
 msgid "Seleccionar Etiqueta"
 msgstr "Select Tag"
 
@@ -5555,7 +5556,19 @@ msgid ""
 msgstr "Define the default users profile for new LDAP users"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:255
-#: ../../../../inc/themes/material-blue/views/config/ldap.inc:258
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:265
+#, fuzzy
+msgid "Atributo Login"
+msgstr "Login Attribute"
+
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:260
+#, fuzzy
+msgid ""
+"Define el atributo a utilizar para el login del usuario en la importación."
+msgstr "Defines the attribute for the user's login when importing."
+
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:278
+#: ../../../../inc/themes/material-blue/views/config/ldap.inc:281
 msgid "Resultados"
 msgstr "Results"
 
@@ -6005,50 +6018,50 @@ msgstr "Utolsó belépés"
 msgid "Fecha Clave Maestra"
 msgstr "Mester jelszó dátum"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:11
-#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:75
-#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:78
-msgid "Salir"
-msgstr "Kijelentkezés"
-
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:25
-#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:62
-#, fuzzy
-msgid "Preferencias de usuario"
-msgstr "Dupla felhasználó bejelentkezés"
-
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:34
-#, php-format
-msgid "Hay %d notificaciones pendientes"
-msgstr "There are %d unread notifications"
-
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:41
-msgid "No hay no hay notificaciones pendientes"
-msgstr "There aren't any pending notifications"
-
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:74
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:38
 msgid "Indica si la conexión utiliza HTTPS."
 msgstr "Tells whether the connection uses HTTPS or not."
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:74
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:38
 msgid ""
 "Las claves de formularios enviados se encriptan mediante PKI, el resto de "
 "datos no."
 msgstr ""
 "The passwords sent from the forms are encrypted with PKI, the other data not."
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:79
-#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:88
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:43
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:158
 msgid "Demo"
 msgstr "Demo"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:90
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:54
 msgid "Ayuda :: FAQ :: Changelog"
 msgstr "Segítség :: GYIK :: Változások Listája"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:94
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:58
 msgid "Un proyecto de cygnux.org"
 msgstr "A cygnux.org projekt"
+
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:39
+#, php-format
+msgid "Hay %d notificaciones pendientes"
+msgstr "There are %d unread notifications"
+
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:48
+msgid "No hay no hay notificaciones pendientes"
+msgstr "There aren't any pending notifications"
+
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:73
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:132
+#, fuzzy
+msgid "Preferencias de usuario"
+msgstr "Dupla felhasználó bejelentkezés"
+
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:77
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:145
+#: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:148
+msgid "Salir"
+msgstr "Kijelentkezés"
 
 #: ../../../../inc/themes/material-blue/views/main/body-start.inc:4
 msgid "Javascript es necesario para el correcto funcionamiento"

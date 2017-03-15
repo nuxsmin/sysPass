@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -55,18 +55,24 @@ class UserLdapSync
     /**
      * Sincronizar usuarios de LDAP
      *
+     * @param array $options
      * @return bool
      * @throws \phpmailer\phpmailerException
      */
-    public static function run()
+    public static function run(array &$options)
     {
         $Log = new Log();
         $LogMessage = $Log->getLogMessage();
         $LogMessage->setAction(__('Sincronización LDAP', false));
 
-        $Ldap = Config::getConfig()->isLdapAds() ? new LdapMsAds() : new LdapStd();
+        $Ldap = Config::getConfig()->isLdapAds() || $options['isADS'] ? new LdapMsAds() : new LdapStd();
 
         $ldapObjects = $Ldap->findObjects();
+
+        if (!$ldapObjects) {
+            return false;
+        }
+
         self::$totalObjects = (int)$ldapObjects['count'];
 
         $LogMessage->addDetails(__('Objetos encontrados', false), self::$totalObjects);
@@ -75,9 +81,9 @@ class UserLdapSync
             $UserData = new UserData();
 
             foreach ($ldapObjects as $result) {
-                $User = clone $UserData;
-
                 if (is_array($result)) {
+                    $User = clone $UserData;
+
                     foreach ($result as $attribute => $values) {
 
                         $value = $values[0];
@@ -87,27 +93,29 @@ class UserLdapSync
                             case 'fullname':
                                 $User->setUserName($value);
                                 break;
-                            case 'login':
-                            case 'samaccountname':
-                            case 'uid':
-                                $User->setUserLogin(strtolower($value));
+                            case $options['loginAttribute']:
+                                $User->setUserLogin($value);
                                 break;
                             case 'mail':
-                                $User->setUserEmail(strtolower($value));
+                                $User->setUserEmail($value);
                                 break;
                         }
                     }
 
-                    $User->setUserPass(Util::generateRandomBytes());
+                    if (!empty($User->getUserName())
+                        && !empty($User->getUserLogin())
+                    ) {
+                        $User->setUserPass(Util::generateRandomBytes());
 
-                    try {
-                        $LogMessage->addDetails(__('Usuario', false), sprintf('%s (%s)', $User->getUserName(), $User->getUserLogin()));
-                        UserLdap::getItem($User)->add();
+                        try {
+                            $LogMessage->addDetails(__('Usuario', false), sprintf('%s (%s)', $User->getUserName(), $User->getUserLogin()));
+                            UserLdap::getItem($User)->add();
 
-                        self::$syncedObjects++;
-                    } catch (SPException $e) {
-                        self::$errorObjects++;
-                        $LogMessage->addDescription($e->getMessage());
+                            self::$syncedObjects++;
+                        } catch (SPException $e) {
+                            self::$errorObjects++;
+                            $LogMessage->addDescription($e->getMessage());
+                        }
                     }
                 }
             }

@@ -405,7 +405,7 @@ class Util
      */
     public static function getVersion($retBuild = false, $normalized = false)
     {
-        $build = 17031401;
+        $build = 17031501;
         $version = [2, 1, 2];
 
         if ($normalized === true) {

@@ -221,7 +221,7 @@
                                 <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
                                 <?php foreach ($groups as $group): ?>
                                     <option
-                                        value="<?php echo $group->id; ?>" <?php echo $group->id === $ldapDefaultGroup ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
+                                            value="<?php echo $group->id; ?>" <?php echo $group->id === $ldapDefaultGroup ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -245,8 +245,31 @@
                                 <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
                                 <?php foreach ($profiles as $profile): ?>
                                     <option
-                                        value="<?php echo $profile->id; ?>" <?php echo ($profile->id === $ldapDefaultProfile) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
+                                            value="<?php echo $profile->id; ?>" <?php echo ($profile->id === $ldapDefaultProfile) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
                                 <?php endforeach; ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="descField">
+                            <?php echo __('Atributo Login'); ?>
+                            <div id="help-ldap_loginattribute"
+                                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                            <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_loginattribute">
+                                <p>
+                                    <?php echo __('Define el atributo a utilizar para el login del usuario en la importación.'); ?>
+                                </p>
+                            </div>
+                        </td>
+                        <td class="valField">
+                            <div class="lowres-title"><?php echo __('Atributo Login'); ?></div>
+
+                            <select id="ldap_loginattribute" name="ldap_loginattribute"
+                                    class="select-box" required>
+                                <option value="samaccountname" selected>sAMAccountName</option>
+                                <option value="userprincipalname">userPrincipalName</option>
+                                <option value="uid">uid</option>
+                                <option value="login">login</option>
                             </select>
                         </td>
                     </tr>

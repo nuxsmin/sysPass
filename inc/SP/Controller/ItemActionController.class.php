@@ -68,6 +68,7 @@ use SP\Mgmt\Users\UserLdapSync;
 use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 use SP\Util\Json;
+use SP\Util\Util;
 
 /**
  * Class AjaxSaveController
@@ -1071,7 +1072,12 @@ class ItemActionController implements ItemControllerInterface
     {
         $this->LogMessage->setAction(__('Importar usuarios de LDAP', false));
 
-        if (UserLdapSync::run()) {
+        $options = [
+            'loginAttribute' => Request::analyze('ldap_loginattribute'),
+            'isADS' => Util::boolval(Request::analyze('ldap_ads'))
+        ];
+
+        if (UserLdapSync::run($options)) {
             $this->LogMessage->addDescription(__('Importación de usuarios de LDAP realizada', false));
             $this->LogMessage->addDetails(__('Usuarios importados', false), sprintf('%d/%d', UserLdapSync::$syncedObjects, UserLdapSync::$totalObjects));
             $this->LogMessage->addDetails(__('Errores', false), UserLdapSync::$errorObjects);

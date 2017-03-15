@@ -149,11 +149,12 @@ class UserLdap extends User
         $query = /** @lang SQL */
             'SELECT user_login, user_email
             FROM usrData
-            WHERE LOWER(user_login) = LOWER(?) OR LOWER(user_email) = LOWER(?)';
+            WHERE LOWER(user_login) = LOWER(?) OR (? <> \'\' AND LOWER(user_email) = LOWER(?))';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserEmail());
         $Data->addParam($this->itemData->getUserEmail());
 
         DB::getQuery($Data);
