@@ -113,8 +113,8 @@ class AccountsSearchItem
      */
     public function isShowRequest()
     {
-        return (!$this->isShow()
-            && (AccountsSearchItem::$requestEnabled || AccountsSearchItem::$isDemoMode));
+        return ((!$this->showView || !$this->showEdit || !$this->showDelete)
+            && AccountsSearchItem::$requestEnabled);
     }
 
     /**
