@@ -113,7 +113,7 @@ class UserLdap extends User
         $Data->addParam((int)$this->itemData->isUserIsAdminAcc());
         $Data->addParam((int)$this->itemData->isUserIsDisabled());
         $Data->addParam((int)$this->itemData->isUserIsChangePass());
-        $Data->addParam(Hash::hashKey($this->itemData->getLoginPass()));
+        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
         $Data->setOnErrorMessage(__('Error al guardar los datos de LDAP', false));
 
         DB::getQuery($Data);
