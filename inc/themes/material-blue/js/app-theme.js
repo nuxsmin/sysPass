@@ -339,10 +339,13 @@ sysPass.Theme = function (Common) {
             var $frmSearch = $("#frmSearch");
             var $resContent = $("#res-content");
 
+            $frmSearch.find("button.btn-clear").on("click", function (e) {
+                $(".icon-searchfav").find("i").removeClass("mdl-color-text--amber-A200");
+            });
+
             $frmSearch.find(".icon-searchfav").on("click", function () {
                 var $icon = $(this).find("i");
                 var $searchfav = $frmSearch.find("input[name='searchfav']");
-
 
                 if ($searchfav.val() == 0) {
                     $icon.addClass("mdl-color-text--amber-A200");

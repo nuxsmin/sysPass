@@ -479,7 +479,7 @@ class LoginController
             // Verificamos si el usuario existe en la BBDD
             if (UserLdap::checkLDAPUserInDB($this->UserData->getLogin())) {
                 // Actualizamos el usuario de LDAP en MySQL
-                UserLdap::getItem($this->UserData)->update();
+                UserLdap::getItem($this->UserData)->updateOnLogin();
             } else {
                 // Creamos el usuario de LDAP en MySQL
                 UserLdap::getItem($this->UserData)->add();

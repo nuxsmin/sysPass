@@ -28,6 +28,7 @@ use SP\Config\Config;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\LogMessage;
+use SP\DataModel\UserLoginData;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
@@ -39,6 +40,7 @@ defined('APP_ROOT') || die();
  * Class UserLdap
  *
  * @package SP
+ * @property UserLoginData $itemData
  */
 class UserLdap extends User
 {
@@ -111,7 +113,7 @@ class UserLdap extends User
         $Data->addParam((int)$this->itemData->isUserIsAdminAcc());
         $Data->addParam((int)$this->itemData->isUserIsDisabled());
         $Data->addParam((int)$this->itemData->isUserIsChangePass());
-        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
+        $Data->addParam(Hash::hashKey($this->itemData->getLoginPass()));
         $Data->setOnErrorMessage(__('Error al guardar los datos de LDAP', false));
 
         DB::getQuery($Data);
@@ -208,7 +210,7 @@ class UserLdap extends User
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
+        $Data->addParam(Hash::hashKey($this->itemData->getLoginPass()));
         $Data->addParam($this->itemData->getUserName());
         $Data->addParam($this->itemData->getUserEmail());
         $Data->addParam($this->itemData->getUserLogin());
