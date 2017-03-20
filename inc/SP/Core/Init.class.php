@@ -81,6 +81,14 @@ class Init
      * @var string
      */
     private static $SUBURI = '';
+    /**
+     * @var bool Indica si la versión de PHP es correcta
+     */
+    private static $checkPhpVersion;
+    /**
+     * @var bool Indica si el script requiere inicialización
+     */
+    private static $checkInitSourceInclude;
 
     /**
      * Inicializar la aplicación.
@@ -94,6 +102,9 @@ class Init
      */
     public static function start()
     {
+        self::$checkPhpVersion = Checks::checkPhpVersion();
+        self::$checkInitSourceInclude = self::checkInitSourceInclude();
+
         if (date_default_timezone_get() === 'UTC') {
             date_default_timezone_set('UTC');
         }
@@ -116,45 +127,46 @@ class Init
         // Iniciar la sesión de PHP
         self::startSession();
 
-        // Cargar la configuración
-        self::loadConfig();
-
-        // Cargar el lenguaje
-        Language::setLanguage();
-
-        // Establecer el tema de sysPass
-        DiFactory::getTheme();
-
-        // Comprobar si es necesario cambiar a HTTPS
-        self::checkHttps();
-
-        // Comprobar si es necesario inicialización
-        if (self::checkInitSourceInclude() ||
-            ((defined('IS_INSTALLER') || defined('IS_UPGRADE')) && Checks::isAjax())
-        ) {
-            return;
-        }
-
-        if (!Checks::checkPhpVersion()) {
+        if (!self::$checkPhpVersion && !self::$checkInitSourceInclude) {
             self::initError(
                 __('Versión de PHP requerida >= ') . ' 5.6.0 <= 7.0',
                 __('Actualice la versión de PHP para que la aplicación funcione correctamente'));
         }
 
         // Volver a cargar la configuración si se recarga la página
-        if (Request::checkReload()) {
-            Config::loadConfig(true);
+        if (!Request::checkReload()) {
+            // Cargar la configuración
+            self::loadConfig();
+
+            // Cargar el lenguaje
+            Language::setLanguage();
+
+            // Establecer el tema de sysPass
+            DiFactory::getTheme();
+        } else {
+            // Cargar la configuración
+            self::loadConfig(true);
 
             // Restablecer el idioma y el tema visual
             Language::setLanguage(true);
             DiFactory::getTheme()->initTheme(true);
 
-            if (self::isLoggedIn()) {
+            if (self::isLoggedIn() === true) {
                 // Recargar los permisos del perfil de usuario
                 Session::setUserProfile(Profile::getItem()->getById(Session::getUserData()->getUserProfileId()));
                 // Reset de los datos de ACL de cuentas
                 AccountAcl::resetData();
             }
+        }
+
+        // Comprobar si es necesario cambiar a HTTPS
+        self::checkHttps();
+
+        // Comprobar si es necesario inicialización
+        if (self::$checkInitSourceInclude ||
+            ((defined('IS_INSTALLER') || defined('IS_UPGRADE')) && Checks::isAjax())
+        ) {
+            return;
         }
 
         // Comprobar si está instalado
@@ -182,10 +194,6 @@ class Init
 
         // Comprobar acciones en URL
         self::checkPreLoginActions();
-
-        if (!Config::getConfig()->isInstalled()) {
-            Session::setUserData();
-        }
 
         // Si es una petición AJAX
         if (Checks::isAjax()) {
@@ -290,66 +298,6 @@ class Init
     }
 
     /**
-     * Iniciar la sesión PHP
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    private static function startSession()
-    {
-        // Evita que javascript acceda a las cookies de sesion de PHP
-        @ini_set('session.cookie_httponly', '1');
-        @ini_set('session.save_handler', 'files');
-
-        $Key = SecureKeyCookie::getKey();
-
-        if ($Key !== false) {
-            session_set_save_handler(new CryptSessionHandler($Key), true);
-        }
-
-        // Si la sesión no puede ser iniciada, devolver un error 500
-        if (session_start() === false) {
-            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
-
-            header('HTTP/1.1 500 Internal Server Error');
-
-            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
-        }
-    }
-
-    /**
-     * Devuelve un error utilizando la plantilla de error o en formato JSON
-     *
-     * @param string $message con la descripción del error
-     * @param string $hint    opcional, con una ayuda sobre el error
-     * @param bool   $headers
-     */
-    public static function initError($message, $hint = '', $headers = false)
-    {
-        debugLog(__FUNCTION__);
-        debugLog(__($message));
-        debugLog(__($hint));
-
-        if (Checks::isJson()) {
-            $JsonResponse = new JsonResponse();
-            $JsonResponse->setDescription($message);
-            $JsonResponse->addMessage($hint);
-            Json::returnJson($JsonResponse);
-        } elseif ($headers === true) {
-            header('HTTP/1.1 503 Service Temporarily Unavailable');
-            header('Status: 503 Service Temporarily Unavailable');
-            header('Retry-After: 120');
-        }
-
-        SessionUtil::cleanSession();
-
-        $Tpl = new Template();
-        $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => __($message), 'hint' => __($hint)]);
-
-        $Controller = new MainController($Tpl, 'error', !Checks::isAjax());
-        $Controller->getError();
-    }
-
-    /**
      * Establecer las rutas de la aplicación.
      * Esta función establece las rutas del sistema de archivos y web de la aplicación.
      * La variables de clase definidas son $SERVERROOT, $WEBROOT y $SUBURI
@@ -393,11 +341,85 @@ class Init
     }
 
     /**
-     * Cargar la configuración
+     * Comprobar el archivo que realiza el include necesita inicialización.
+     *
+     * @returns bool
+     */
+    private static function checkInitSourceInclude()
+    {
+        $srcScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
+        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php', 'ajax_task.php'];
+
+        return in_array($srcScript, $skipInit, true);
+    }
+
+    /**
+     * Devuelve un error utilizando la plantilla de error o en formato JSON
+     *
+     * @param string $message con la descripción del error
+     * @param string $hint    opcional, con una ayuda sobre el error
+     * @param bool   $headers
+     */
+    public static function initError($message, $hint = '', $headers = false)
+    {
+        debugLog(__FUNCTION__);
+        debugLog(__($message));
+        debugLog(__($hint));
+
+        if (Checks::isJson()) {
+            $JsonResponse = new JsonResponse();
+            $JsonResponse->setDescription($message);
+            $JsonResponse->addMessage($hint);
+            Json::returnJson($JsonResponse);
+        } elseif ($headers === true) {
+            header('HTTP/1.1 503 Service Temporarily Unavailable');
+            header('Status: 503 Service Temporarily Unavailable');
+            header('Retry-After: 120');
+        }
+
+        SessionUtil::cleanSession();
+
+        $Tpl = new Template();
+        $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => __($message), 'hint' => __($hint)]);
+
+        $Controller = new MainController($Tpl, 'error', !Checks::isAjax());
+        $Controller->getError();
+    }
+
+    /**
+     * Iniciar la sesión PHP
      *
      * @throws \SP\Core\Exceptions\SPException
      */
-    private static function loadConfig()
+    private static function startSession()
+    {
+        // Evita que javascript acceda a las cookies de sesion de PHP
+        @ini_set('session.cookie_httponly', '1');
+        @ini_set('session.save_handler', 'files');
+
+        $Key = SecureKeyCookie::getKey();
+
+        if ($Key !== false && self::$checkPhpVersion) {
+            session_set_save_handler(new CryptSessionHandler($Key), true);
+        }
+
+        // Si la sesión no puede ser iniciada, devolver un error 500
+        if (session_start() === false) {
+            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
+
+            header('HTTP/1.1 500 Internal Server Error');
+
+            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
+        }
+    }
+
+    /**
+     * Cargar la configuración
+     *
+     * @param bool $reload Recargar la configuración
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    private static function loadConfig($reload = false)
     {
         // Comprobar si es una versión antigua
         self::checkConfigVersion();
@@ -405,7 +427,7 @@ class Init
         // Comprobar la configuración y cargar
         self::checkConfig();
 
-        Config::loadConfig();
+        Config::loadConfig($reload);
     }
 
     /**
@@ -482,19 +504,6 @@ class Init
             clearstatcache();
             self::initError(__('Los permisos del directorio "/config" son incorrectos'), __('Actual:') . ' ' . $configPerms . ' - ' . __('Necesario: 750'));
         }
-    }
-
-    /**
-     * Comprobar el archivo que realiza el include necesita inicialización.
-     *
-     * @returns bool
-     */
-    private static function checkInitSourceInclude()
-    {
-        $srcScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
-        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php', 'ajax_task.php'];
-
-        return in_array($srcScript, $skipInit, true);
     }
 
     /**

@@ -183,6 +183,10 @@ sysPass.Triggers = function (Common) {
         main: function () {
             log.info("views:main");
 
+            if (!Clipboard.isSupported()) {
+                Common.msg.info(Common.config().LANG[65]);
+            }
+
             $(".btn-menu").click(function () {
                 var $this = $(this);
 

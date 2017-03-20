@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-15 23:04+0100\n"
-"PO-Revision-Date: 2017-03-15 23:04+0100\n"
+"POT-Creation-Date: 2017-03-20 23:26+0100\n"
+"PO-Revision-Date: 2017-03-20 23:26+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: fr_FR\n"
@@ -151,7 +151,7 @@ msgstr "Compte"
 #: ../../../../inc/SP/Controller/LoginController.class.php:533
 #: ../../../../inc/SP/Controller/LoginController.class.php:541
 #: ../../../../inc/SP/Controller/MainActionController.class.php:124
-#: ../../../../inc/SP/Core/Init.class.php:451
+#: ../../../../inc/SP/Core/Init.class.php:473
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:98
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:76
 #: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:31
@@ -832,7 +832,7 @@ msgid "Conexión a LDAP correcta"
 msgstr "Connexion LDAP OK"
 
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:133
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:75
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:78
 msgid "Objetos encontrados"
 msgstr "Objets trouvés"
 
@@ -882,9 +882,9 @@ msgstr "Erreur pendant la recherche de l'utilisateur dans l'annuaire LDAP"
 #: ../../../../inc/SP/Controller/LoginController.class.php:447
 #: ../../../../inc/SP/Controller/LoginController.class.php:509
 #: ../../../../inc/SP/Controller/LoginController.class.php:534
-#: ../../../../inc/SP/Core/Init.class.php:615
+#: ../../../../inc/SP/Core/Init.class.php:624
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:78
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:108
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:111
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:64
 #: ../../../../res/test.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:45
@@ -1116,7 +1116,7 @@ msgstr "Connexion réussie"
 
 #: ../../../../inc/SP/Controller/ChecksController.class.php:138
 #: ../../../../inc/SP/Controller/MainActionController.class.php:123
-#: ../../../../inc/SP/Core/Init.class.php:450
+#: ../../../../inc/SP/Core/Init.class.php:472
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:207
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:220
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:430
@@ -1443,7 +1443,7 @@ msgstr "Option indisponible"
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:277
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:278
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:280
-#: ../../../../inc/SP/Core/Init.class.php:315
+#: ../../../../inc/SP/Core/Init.class.php:412
 msgid "Consulte con el administrador"
 msgstr "Veuillez contacter votre administrateur"
 
@@ -2413,7 +2413,7 @@ msgstr "Authentification"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:62
 #: ../../../../inc/SP/Controller/MainActionController.class.php:121
-#: ../../../../inc/SP/Core/Init.class.php:448
+#: ../../../../inc/SP/Core/Init.class.php:470
 msgid "Actualización"
 msgstr "Actualisation"
 
@@ -2435,7 +2435,7 @@ msgid "En 5 segundos será redirigido al login"
 msgstr "Vous allez être redirigé vers l'écran de connexion dans 5 secondes"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:122
-#: ../../../../inc/SP/Core/Init.class.php:449 ../../../../res/upgrade.php:121
+#: ../../../../inc/SP/Core/Init.class.php:471 ../../../../res/upgrade.php:121
 msgid "Actualización de versión realizada."
 msgstr "Mise à jour de version effectuée."
 
@@ -2458,12 +2458,12 @@ msgid "Registro de Eventos"
 msgstr "Journal d'évènements"
 
 #: ../../../../inc/SP/Controller/MainController.class.php:360
-#: ../../../../inc/SP/Core/Init.class.php:140
+#: ../../../../inc/SP/Core/Init.class.php:132
 msgid "Versión de PHP requerida >= "
 msgstr "Version PHP requise >="
 
 #: ../../../../inc/SP/Controller/MainController.class.php:361
-#: ../../../../inc/SP/Core/Init.class.php:141
+#: ../../../../inc/SP/Core/Init.class.php:133
 msgid ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr ""
@@ -2683,56 +2683,56 @@ msgstr "Observateur non initialisé"
 msgid "Es necesario un objeto"
 msgstr "Un objet est nécessaire"
 
-#: ../../../../inc/SP/Core/Init.class.php:168
+#: ../../../../inc/SP/Core/Init.class.php:180
 msgid "Error en la verificación de la base de datos"
 msgstr "Erreur pendant la vérification de la base de données"
 
-#: ../../../../inc/SP/Core/Init.class.php:311
+#: ../../../../inc/SP/Core/Init.class.php:408
 msgid "Sesión"
 msgstr "Session"
 
-#: ../../../../inc/SP/Core/Init.class.php:311
-#: ../../../../inc/SP/Core/Init.class.php:315
+#: ../../../../inc/SP/Core/Init.class.php:408
+#: ../../../../inc/SP/Core/Init.class.php:412
 msgid "La sesión no puede ser inicializada"
 msgstr "La session ne peut pas être initialisée"
 
-#: ../../../../inc/SP/Core/Init.class.php:471
+#: ../../../../inc/SP/Core/Init.class.php:493
 msgid "El directorio \"/config\" no existe"
 msgstr "Le dossier \"/config\" n'existe pas"
 
-#: ../../../../inc/SP/Core/Init.class.php:476
+#: ../../../../inc/SP/Core/Init.class.php:498
 msgid "No es posible escribir en el directorio \"config\""
 msgstr "Impossible d'écrire dans le dossier \"/config\""
 
-#: ../../../../inc/SP/Core/Init.class.php:483
+#: ../../../../inc/SP/Core/Init.class.php:505
 msgid "Los permisos del directorio \"/config\" son incorrectos"
 msgstr "Les permissions du dossier \"/config\" sont incorrectes"
 
-#: ../../../../inc/SP/Core/Init.class.php:483
+#: ../../../../inc/SP/Core/Init.class.php:505
 msgid "Actual:"
 msgstr "Actuel :"
 
-#: ../../../../inc/SP/Core/Init.class.php:483
+#: ../../../../inc/SP/Core/Init.class.php:505
 msgid "Necesario: 750"
 msgstr "Nécessaire : 750"
 
-#: ../../../../inc/SP/Core/Init.class.php:579
+#: ../../../../inc/SP/Core/Init.class.php:588
 msgid "Aplicación en mantenimiento"
 msgstr "Application en maintenance"
 
-#: ../../../../inc/SP/Core/Init.class.php:579
+#: ../../../../inc/SP/Core/Init.class.php:588
 msgid "En breve estará operativa"
 msgstr "Sera opérationnel sous peu"
 
-#: ../../../../inc/SP/Core/Init.class.php:614
+#: ../../../../inc/SP/Core/Init.class.php:623
 msgid "Finalizar sesión"
 msgstr "Déconnexion"
 
-#: ../../../../inc/SP/Core/Init.class.php:616
+#: ../../../../inc/SP/Core/Init.class.php:625
 msgid "Tiempo inactivo"
 msgstr "Temps d'inactivité"
 
-#: ../../../../inc/SP/Core/Init.class.php:617
+#: ../../../../inc/SP/Core/Init.class.php:626
 msgid "Tiempo total"
 msgstr "Temps total"
 
@@ -3702,7 +3702,7 @@ msgstr "Erreur lors de la récupération des pistes"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:54
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:150
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:77
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:79
 msgid "Login/email de usuario duplicados"
 msgstr "Login/courriel utilisateur dupliqué"
 
@@ -3727,33 +3727,33 @@ msgstr "Erreur pendant la récupération des utilisateurs"
 msgid "Error al modificar la clave"
 msgstr "Erreur pendant la modification du mot de passe"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:107
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:109
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:54
 msgid "Usuario de LDAP"
 msgstr "Utilisateur LDAP"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:115
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:117
 msgid "Error al guardar los datos de LDAP"
 msgstr "Erreur pendant la sauvegarde des données utilisateur LDAP"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:123
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:125
 msgid "Activación Cuenta"
 msgstr "Activation de Compte"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:124
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:126
 msgid "Su cuenta está pendiente de activación."
 msgstr "Votre compte est en attente d'activation."
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:125
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:127
 msgid "En breve recibirá un email de confirmación."
 msgstr "Vous recevrez un courriel de confirmation sous peu."
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:132
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:134
 msgid "Nuevo usuario de LDAP"
 msgstr "Nouvel utilisateur LDAP"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:186
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:215
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:188
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:217
 msgid "Error al actualizar la clave del usuario en la BBDD"
 msgstr ""
 "Erreur pendant l'actualisation du mot de passe utilisateur dans la base de "
@@ -3763,11 +3763,11 @@ msgstr ""
 msgid "Sincronización LDAP"
 msgstr "Synchronisation LDAP"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:120
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:123
 msgid "No se encontraron objetos para sincronizar"
 msgstr "Il n'y a pas d'objet à synchroniser"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:126
+#: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:129
 msgid "Sincronización finalizada"
 msgstr "Synchronisation terminée"
 
@@ -4222,6 +4222,11 @@ msgstr "Inclure des Lettres"
 #, fuzzy
 msgid "Cookies deshabilitadas. La aplicación no funcionará correctamente."
 msgstr "Cookies disabled. The application won't work properly."
+
+#: ../../../../js/strings.js.php:90
+#, fuzzy
+msgid "Portapapeles no soportado por el navegador."
+msgstr "Clipboard not supported by your browser."
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:67
 #: ../../../../inc/themes/material-blue/views/account/account.inc:136

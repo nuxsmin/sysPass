@@ -591,7 +591,7 @@ sysPass.Main = function () {
         log.info("initializeClipboard");
 
         if (!Clipboard.isSupported()) {
-            log.warn('Clipboard actions not supported');
+            log.warn(config.LANG[65]);
             return;
         }
 
