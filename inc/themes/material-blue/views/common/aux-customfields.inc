@@ -21,7 +21,7 @@ foreach ($customFields as $index => $field):?>
             <?php endif; ?>
         </td>
         <td class="valField">
-            <?php if ($field->getDefinition()->getType() === CustomFieldTypes::TYPE_COLOR): ?>
+            <?php if ($field->getDefinition()->getType() === CustomFieldTypes::TYPE_COLOR && $isView): ?>
                 <span class="round custom-input-color"
                       style="background-color: <?php echo $field->getValue(); ?>;"></span>
             <?php elseif ($field->getDefinition()->getType() === CustomFieldTypes::TYPE_PASSWORD): ?>
