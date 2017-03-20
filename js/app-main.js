@@ -590,6 +590,10 @@ sysPass.Main = function () {
     var initializeClipboard = function () {
         log.info("initializeClipboard");
 
+        if (!Clipboard.isSupported()) {
+            log.warn('Clipboard actions not supported');
+            return;
+        }
 
         var clipboard = new Clipboard(".clip-pass-button", {
             async: function (trigger) {
