@@ -944,13 +944,7 @@ sysPass.Actions = function (Common) {
                 isAjax: 1
             };
 
-            var response = Common.appRequests().getActionCall(opts);
-
-            if (response.responseJSON.csrf !== undefined) {
-                Common.sk.set(response.responseJSON.csrf);
-            }
-
-            return response;
+            return Common.appRequests().getActionCall(opts);
         },
         copy: function ($obj) {
             log.info("account:copy");

@@ -590,11 +590,16 @@ sysPass.Main = function () {
     var initializeClipboard = function () {
         log.info("initializeClipboard");
 
-        var clipboard = new Clipboard(".clip-pass-button", {
-            text: function (trigger) {
-                var pass = appActions.account.copypass($(trigger));
 
-                return pass.responseJSON.data.accpass;
+        var clipboard = new Clipboard(".clip-pass-button", {
+            async: function (trigger) {
+                var _this = this;
+
+                return appActions.account.copypass($(trigger)).then(function (json) {
+                    sk.set(json.csrf);
+
+                    _this.asyncText = json.data.accpass;
+                });
             }
         });
 
@@ -618,6 +623,7 @@ sysPass.Main = function () {
 
         clipboardIcon.on("success", function (e) {
             msg.ok(config.LANG[45]);
+
             e.clearSelection();
         });
     };
