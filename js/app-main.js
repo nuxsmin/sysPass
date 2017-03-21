@@ -590,45 +590,45 @@ sysPass.Main = function () {
     var initializeClipboard = function () {
         log.info("initializeClipboard");
 
-        if (!Clipboard.isSupported()) {
+        if (!clipboard.isSupported()) {
             log.warn(config.LANG[65]);
             return;
         }
 
-        var clipboard = new Clipboard(".clip-pass-button", {
-            async: function (trigger) {
-                var _this = this;
+        $("body").on("click", ".clip-pass-button", function () {
+            var json = appActions.account.copypass($(this)).done(function (json) {
+                sk.set(json.csrf);
+            });
 
-                return appActions.account.copypass($(trigger)).then(function (json) {
-                    sk.set(json.csrf);
+            clipboard.copy(json.responseJSON.data.accpass).then(
+                function () {
+                    msg.ok(config.LANG[45]);
+                },
+                function (err) {
+                    msg.error(config.LANG[46]);
+                }
+            );
+        }).on("click", ".dialog-clip-button", function () {
+            var $target = $(this.dataset.clipboardTarget);
 
-                    _this.asyncText = json.data.accpass;
-                });
-            }
-        });
-
-        clipboard.on("success", function (e) {
-            msg.ok(config.LANG[45]);
-        }).on("error", function (e) {
-            msg.error(config.LANG[46]);
-        });
-
-        // Portapapeles para claves visualizadas
-        var clipboardDialog = new Clipboard(".dialog-clip-button");
-
-        clipboardDialog.on("success", function (e) {
-            $(".dialog-text").removeClass("dialog-clip-copy");
-            $(e.trigger.dataset.clipboardTarget).addClass("dialog-clip-copy");
-
-            e.clearSelection();
-        });
-
-        var clipboardIcon = new Clipboard(".clip-pass-icon");
-
-        clipboardIcon.on("success", function (e) {
-            msg.ok(config.LANG[45]);
-
-            e.clearSelection();
+            clipboard.copy($target.text()).then(
+                function () {
+                    $(".dialog-text").removeClass("dialog-clip-copy");
+                    $target.addClass("dialog-clip-copy");
+                },
+                function (err) {
+                    msg.error(config.LANG[46]);
+                }
+            );
+        }).on("click", ".clip-pass-icon", function () {
+            clipboard.copy(decodeEntities(this.dataset.clipboardText)).then(
+                function () {
+                    msg.ok(config.LANG[45]);
+                },
+                function (err) {
+                    msg.error(config.LANG[46]);
+                }
+            );
         });
     };
 
@@ -769,6 +769,30 @@ sysPass.Main = function () {
 
         return image;
     };
+
+    /**
+     * @author http://stackoverflow.com/users/24950/robert-k
+     * @link http://stackoverflow.com/questions/5796718/html-entity-decode
+     */
+    var decodeEntities = (function () {
+        // this prevents any overhead from creating the object each time
+        var element = document.createElement("div");
+
+        function decodeHTMLEntities(str) {
+            if (str && typeof str === "string") {
+                // strip script/html tags
+                str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, "");
+                str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, "");
+                element.innerHTML = str;
+                str = element.textContent;
+                element.textContent = "";
+            }
+
+            return str;
+        }
+
+        return decodeHTMLEntities;
+    })();
 
     // Objeto con métodos y propiedades protegidas
     var getProtected = function () {

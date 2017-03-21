@@ -183,7 +183,7 @@ sysPass.Triggers = function (Common) {
         main: function () {
             log.info("views:main");
 
-            if (!Clipboard.isSupported()) {
+            if (!clipboard.isSupported()) {
                 Common.msg.info(Common.config().LANG[65]);
             }
 
