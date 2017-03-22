@@ -621,7 +621,9 @@ sysPass.Main = function () {
                 }
             );
         }).on("click", ".clip-pass-icon", function () {
-            clipboard.copy(decodeEntities(this.dataset.clipboardText)).then(
+            var $target = $(this.dataset.clipboardTarget);
+
+            clipboard.copy(decodeEntities($target.val())).then(
                 function () {
                     msg.ok(config.LANG[45]);
                 },
