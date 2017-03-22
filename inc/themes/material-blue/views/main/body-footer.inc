@@ -45,7 +45,7 @@
 
             <?php if ($isDemoMode): ?>
                 <span class="status-info">
-                    <i class="material-icons <?php echo $icons->getIconPlay()->getClass(); ?>" title="<?php echo __('Demo'); ?>"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
+                    <i class="material-icons mdl-color-text--teal-500" title="<?php echo __('Demo'); ?>">play_circle_outline</i>
                 </span>
             <?php endif; ?>
 
