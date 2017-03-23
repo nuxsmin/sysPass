@@ -289,7 +289,7 @@
     <?php include $this->includeTemplate('actions'); ?>
 </div>
 <script>
-    $(function () {
+    (function () {
         <?php if (!$isView): ?>
         $('input:text:visible:first').focus();
 
@@ -307,5 +307,5 @@
         <?php endif; ?>
 
         sysPassApp.sk.set("<?php echo $sk; ?>");
-    });
+    })();
 </script>

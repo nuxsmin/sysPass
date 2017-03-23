@@ -257,9 +257,13 @@ sysPass.Theme = function (Common) {
         $container.find(".passwordfield__input-show").each(function () {
             var $this = $(this);
             var $icon = $("<i class=\"showpass material-icons\" title=\"" + Common.config().LANG[32] + "\">remove_red_eye</i>");
-            var $clip = $("<i class=\"clip-pass-icon material-icons\" title=\"" + Common.config().LANG[34] + "\" data-clipboard-target=\"#" + $this.attr("id") + "\">content_paste</i>");
 
-            $this.parent().after($clip).after($icon);
+            if ($this.data("clipboard") === 1) {
+                var $clip = $("<i class=\"clip-pass-icon material-icons\" title=\"" + Common.config().LANG[34] + "\" data-clipboard-target=\"#" + $this.attr("id") + "\">content_paste</i>");
+                $this.parent().after($clip).after($icon);
+            } else {
+                $this.parent().after($icon);
+            }
 
             // Crear evento para mostrar clave generada/introducida
             $icon.on("mouseover", function () {

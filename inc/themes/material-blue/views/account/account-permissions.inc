@@ -116,7 +116,7 @@
         $(function () {
             var $accesses = $("#data-accesses");
 
-            if ($accesses.context.childNodes.length === 1) {
+            if ($accesses[0].childNodes.length === 1) {
                 $accesses.parent(".data").hide();
             }
 
@@ -144,8 +144,7 @@
                 plugins: ['remove_button'],
                 options: <?php echo $otherGroupsJson; ?>
             });
-        })
-        ;
+        });
     </script>
 <?php endif; ?>
 

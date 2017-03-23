@@ -3,10 +3,10 @@
 <?php endforeach; ?>
 
 <script type="text/javascript">
-    $(document).on("DOMContentLoaded", function (e) {
+    $(document).ready(function (e) {
         "use strict";
 
-        sysPassApp.log.info("DOMContentLoaded");
+        sysPassApp.log.info("ready");
 
         sysPassApp.sk.set("<?php echo $sk; ?>");
     });
