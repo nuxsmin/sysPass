@@ -149,17 +149,17 @@ class Upgrade
 
         if (PHP_INT_SIZE > 4) {
             return version_compare($version, $upgradeable) === -1;
-        } else {
-            list($version, $build) = explode('.', $version, 2);
-            list($upgradeVersion, $upgradeBuild) = explode('.', $upgradeable, 2);
+        }
 
-            $versionRes = (int)$version <= (int)$upgradeVersion;
+        list($version, $build) = explode('.', $version, 2);
+        list($upgradeVersion, $upgradeBuild) = explode('.', $upgradeable, 2);
 
-            if (($versionRes && (int)$upgradeBuild === 0)
-                || ($versionRes && (int)$build < (int)$upgradeBuild)
-            ) {
-                return true;
-            }
+        $versionRes = (int)$version <= (int)$upgradeVersion;
+
+        if (($versionRes && (int)$upgradeBuild === 0)
+            || ($versionRes && (int)$build < (int)$upgradeBuild)
+        ) {
+            return true;
         }
 
         return false;

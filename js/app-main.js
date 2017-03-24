@@ -219,13 +219,13 @@ sysPass.Main = function () {
         appActions = sysPass.Actions(oProtected);
         appRequests = sysPass.Requests(oProtected);
 
-        getEnvironment(function () {
+        if (typeof sysPass.Theme === "function") {
+            appTheme = sysPass.Theme(oProtected);
+        }
+
+        getEnvironment().then(function () {
             if (config.PK !== "") {
                 bindPassEncrypt();
-            }
-
-            if (typeof sysPass.Theme === "function") {
-                appTheme = sysPass.Theme(oProtected);
             }
 
             if (config.CHECK_UPDATES === true) {
@@ -245,7 +245,7 @@ sysPass.Main = function () {
     /**
      * Obtener las variables de entorno de sysPass
      */
-    var getEnvironment = function (callback) {
+    var getEnvironment = function () {
         log.info("getEnvironment");
 
         var path = window.location.pathname.split("/");
@@ -264,11 +264,11 @@ sysPass.Main = function () {
         var opts = appRequests.getRequestOpts();
         opts.url = "/ajax/ajax_getEnvironment.php";
         opts.method = "get";
-        opts.async = false;
+        // opts.async = false;
         opts.useLoading = false;
         opts.data = {isAjax: 1};
 
-        appRequests.getActionCall(opts, function (json) {
+        return appRequests.getActionCall(opts, function (json) {
             // config.APP_ROOT = json.app_root;
             config.LANG = json.lang;
             config.PK = json.pk;
@@ -279,10 +279,6 @@ sysPass.Main = function () {
             config.DEBUG = json.debug;
             config.MAX_FILE_SIZE = parseInt(json.max_file_size);
             config.COOKIES_ENABLED = json.cookies_enabled;
-
-            if (typeof callback === "function") {
-                callback();
-            }
         });
     };
 
@@ -549,27 +545,6 @@ sysPass.Main = function () {
     };
 
     /**
-     * Detectar los imputs del tipo checkbox para generar botones
-     *
-     * @param container El contenedor donde buscar
-     */
-    var checkboxDetect = function (container) {
-        $(container).find(".checkbox").button({
-            icons: {primary: "ui-icon-transferthick-e-w"}
-        }).click(
-            function () {
-                var $this = $(this);
-
-                if ($this.prop("checked") === true) {
-                    $this.button("option", "label", config.LANG[40]);
-                } else {
-                    $this.button("option", "label", config.LANG[41]);
-                }
-            }
-        );
-    };
-
-    /**
      * Encriptar el valor de un campo del formulario
      *
      * @param $input El id del campo
@@ -669,7 +644,7 @@ sysPass.Main = function () {
      * @param $obj
      */
     var evalAction = function (evalFn, $obj) {
-        console.info("Eval: " + evalFn);
+        log.info("Eval: " + evalFn);
 
         if (typeof evalFn === "function") {
             evalFn($obj);
@@ -838,7 +813,6 @@ sysPass.Main = function () {
             passToClip: passToClip,
             passwordData: passwordData,
             outputResult: outputResult,
-            checkboxDetect: checkboxDetect,
             checkPassLevel: checkPassLevel,
             encryptFormValue: encryptFormValue,
             fileUpload: fileUpload,
