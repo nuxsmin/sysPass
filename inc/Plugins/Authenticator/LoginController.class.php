@@ -107,20 +107,18 @@ class LoginController
 
         $userId = Request::analyze('i', 0);
 
-        if (!isset($data[$userId]) || $data[$userId]->getExpireDays() === null) {
+        if (!isset($data[$userId]) || empty($data[$userId]->getExpireDays())) {
             return;
         }
 
-
-
-        if (count(Notice::getItem($NoticeData)->getByUserCurrentDate()) > 0) {
+        if (count(Notice::getItem()->getByUserCurrentDate()) > 0) {
             return;
         }
 
         $expireTime = $data[$userId]->getDate() + ($data[$userId]->getExpireDays() * 86400);
         $timeRemaining = $expireTime - time();
 
-        $NoticeData = new NoticeData();
+        $NoticeData = Notice::getItem()->getItemData();
         $NoticeData->setNoticeComponent($this->Plugin->getName());
         $NoticeData->setNoticeUserId($userId);
         $NoticeData->setNoticeType(_t('authenticator', 'Aviso Caducidad'));
