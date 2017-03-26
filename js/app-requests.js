@@ -34,6 +34,25 @@ sysPass.Requests = function (Common) {
      */
     var _history = [];
 
+    var requestOpts = {
+        type: "json",
+        url: "",
+        method: "post",
+        callback: "",
+        async: true,
+        data: "",
+        cache: false,
+        processData: true,
+        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+        timeout: 0,
+        addHistory: false,
+        hash: "",
+        useLoading: true,
+        useFullLoading: false
+    };
+
+    Object.seal(requestOpts);
+
     /**
      * Manejo del historial de consultas AJAX
      *
@@ -81,27 +100,10 @@ sysPass.Requests = function (Common) {
     /**
      * Prototipo de objeto para peticiones
      *
-     * @returns {opts}
+     * @returns {requestOpts}
      */
     var getRequestOpts = function () {
-        var opts = {
-            type: "json",
-            url: "",
-            method: "post",
-            callback: "",
-            async: true,
-            data: "",
-            cache: false,
-            processData: true,
-            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-            timeout: 0,
-            addHistory: false,
-            hash: "",
-            useLoading: true,
-            useFullLoading: false
-        };
-
-        return Object.create(opts);
+        return Object.create(requestOpts);
     };
 
     /**
@@ -116,7 +118,7 @@ sysPass.Requests = function (Common) {
 
         var url = (!opts.url.startsWith("http", 0) && !opts.url.startsWith("https", 0)) ? Common.config().APP_ROOT + opts.url : opts.url;
 
-        var $ajax = $.ajax({
+        return $.ajax({
             dataType: opts.type,
             url: url,
             method: opts.method,
@@ -167,34 +169,6 @@ sysPass.Requests = function (Common) {
                 Common.appTheme().ajax.complete();
             }
         });
-
-        // Common.log.info($ajax);
-
-        return $ajax;
-    };
-
-    /**
-     * Realizar una acción con Ajax mediante promises
-     *
-     * @param opts
-     * @param callbackOk
-     */
-    var getActionPromise = function (opts, callbackOk) {
-        log.info("getActionPromise");
-
-        var url = (!opts.url.startsWith("http", 0) && !opts.url.startsWith("https", 0)) ? Common.config().APP_ROOT + opts.url : opts.url;
-
-        $.when($.ajax({
-            dataType: opts.type,
-            url: url,
-            method: opts.method,
-            async: opts.async,
-            data: opts.data,
-            cache: opts.cache,
-            processData: opts.processData,
-            contentType: opts.contentType,
-            timeout: opts.timeout
-        })).done(callbackOk);
     };
 
     /**
@@ -240,7 +214,6 @@ sysPass.Requests = function (Common) {
     return {
         getRequestOpts: getRequestOpts,
         getActionCall: getActionCall,
-        getActionPromise: getActionPromise,
         getActionEvent: getActionEvent,
         history: history
     };

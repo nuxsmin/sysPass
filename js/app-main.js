@@ -38,9 +38,6 @@ sysPass.Main = function () {
         COOKIES_ENABLED: false
     };
 
-    // Variable para determinar si una clave de cuenta ha sido copiada al portapapeles
-    var passToClip = 0;
-
     // Atributos del generador de claves
     var passwordData = {
         passLength: 0,
@@ -53,6 +50,8 @@ sysPass.Main = function () {
             numlength: 12
         }
     };
+
+    Object.seal(passwordData);
 
     // Objeto con las funciones propias del tema visual
     var appTheme = {};
@@ -96,6 +95,8 @@ sysPass.Main = function () {
             }
         }
     };
+
+    Object.freeze(log);
 
     // Opciones para Toastr
     toastr.options = {
@@ -206,14 +207,62 @@ sysPass.Main = function () {
         }
     };
 
+    Object.freeze(msg);
+
     /**
      * Inicialización
      */
     var init = function () {
         log.info("init");
 
-        oPublic = getPublic();
-        oProtected = getProtected();
+        // Objeto con métodos y propiedades públicas
+        oPublic = {
+            actions: function () {
+                return appActions;
+            },
+            triggers: function () {
+                return appTriggers;
+            },
+            theme: function () {
+                return appTheme;
+            },
+            sk: sk,
+            msg: msg,
+            log: log,
+            passwordData: passwordData,
+            outputResult: outputResult,
+            checkPassLevel: checkPassLevel,
+            encryptFormValue: encryptFormValue,
+            fileUpload: fileUpload,
+            redirect: redirect,
+            scrollUp: scrollUp,
+            setContentSize: setContentSize
+        };
+
+        // Objeto con métodos y propiedades protegidas
+        oProtected = $.extend({
+            log: log,
+            config: function () {
+                return config;
+            },
+            appTheme: function () {
+                return appTheme;
+            },
+            appActions: function () {
+                return appActions;
+            },
+            appTriggers: function () {
+                return appTriggers;
+            },
+            appRequests: function () {
+                return appRequests;
+            },
+            evalAction: evalAction,
+            resizeImage: resizeImage
+        }, oPublic);
+
+        Object.freeze(oPublic);
+        Object.freeze(oProtected);
 
         appTriggers = sysPass.Triggers(oProtected);
         appActions = sysPass.Actions(oProtected);
@@ -240,6 +289,8 @@ sysPass.Main = function () {
             setupCallbacks();
             checkLogout();
         });
+
+        return oPublic;
     };
 
     /**
@@ -279,6 +330,8 @@ sysPass.Main = function () {
             config.DEBUG = json.debug;
             config.MAX_FILE_SIZE = parseInt(json.max_file_size);
             config.COOKIES_ENABLED = json.cookies_enabled;
+
+            Object.freeze(config);
         });
     };
 
@@ -771,58 +824,5 @@ sysPass.Main = function () {
         return decodeHTMLEntities;
     })();
 
-    // Objeto con métodos y propiedades protegidas
-    var getProtected = function () {
-        return $.extend({
-            log: log,
-            config: function () {
-                return config;
-            },
-            appTheme: function () {
-                return appTheme;
-            },
-            appActions: function () {
-                return appActions;
-            },
-            appTriggers: function () {
-                return appTriggers;
-            },
-            appRequests: function () {
-                return appRequests;
-            },
-            evalAction: evalAction,
-            resizeImage: resizeImage
-        }, oPublic);
-    };
-
-    // Objeto con métodos y propiedades públicas
-    var getPublic = function () {
-        return {
-            actions: function () {
-                return appActions;
-            },
-            triggers: function () {
-                return appTriggers;
-            },
-            theme: function () {
-                return appTheme;
-            },
-            sk: sk,
-            msg: msg,
-            log: log,
-            passToClip: passToClip,
-            passwordData: passwordData,
-            outputResult: outputResult,
-            checkPassLevel: checkPassLevel,
-            encryptFormValue: encryptFormValue,
-            fileUpload: fileUpload,
-            redirect: redirect,
-            scrollUp: scrollUp,
-            setContentSize: setContentSize
-        };
-    };
-
-    init();
-
-    return oPublic;
+    return init();
 };
