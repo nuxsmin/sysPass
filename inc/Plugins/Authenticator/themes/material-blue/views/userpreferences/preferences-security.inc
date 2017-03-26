@@ -85,7 +85,7 @@
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="expiredays" name="expiredays" type="number" step="1"
-                                   min="1" max="720" class="mdl-textfield__input mdl-color-text--indigo-400"
+                                   min="0" max="720" class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php echo $expireDays ?: 90; ?>" required/>
                             <label class="mdl-textfield__label"
                                    for="expiredays"><?php echo _t('authenticator', 'Días'); ?></label>
