@@ -79,6 +79,8 @@ sysPass.Actions = function (Common) {
         }
     };
 
+    Object.freeze(ajaxUrl);
+
     // Función para cargar el contenido de la acción del menú seleccionada
     var doAction = function (obj, view) {
         var data = {

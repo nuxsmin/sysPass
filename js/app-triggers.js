@@ -163,7 +163,7 @@ sysPass.Triggers = function (Common) {
             var $this = $(this);
 
             $this.find("input:text, input:password, input:file, textarea").val("").parent("div").removeClass("is-dirty");
-            $this.find("input:radio, input:checkbox").removeAttr("checked").removeAttr("selected");
+            $this.find("input:radio, input:checkbox").prop("checked", false).prop("selected", false);
             $this.find("input[name='start'], input[name='skey'], input[name='sorder']").val(0);
 
             $this.find("select").each(function () {
@@ -183,7 +183,7 @@ sysPass.Triggers = function (Common) {
         main: function () {
             log.info("views:main");
 
-            if (!Clipboard.isSupported()) {
+            if (!clipboard.isSupported()) {
                 Common.msg.info(Common.config().LANG[65]);
             }
 

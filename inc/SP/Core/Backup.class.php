@@ -247,7 +247,9 @@ class Backup
         if (!class_exists(\PharData::class)) {
             if (Checks::checkIsWindows()) {
                 throw new SPException(SPException::SP_CRITICAL, __('Esta operación sólo es posible en entornos Linux', false));
-            } elseif (!self::backupAppLegacyLinux($backupFile)) {
+            }
+
+            if (!self::backupAppLegacyLinux($backupFile)) {
                 throw new SPException(SPException::SP_CRITICAL, __('Error al realizar backup en modo compatibilidad', false));
             }
 

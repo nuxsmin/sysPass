@@ -38,9 +38,6 @@ sysPass.Main = function () {
         COOKIES_ENABLED: false
     };
 
-    // Variable para determinar si una clave de cuenta ha sido copiada al portapapeles
-    var passToClip = 0;
-
     // Atributos del generador de claves
     var passwordData = {
         passLength: 0,
@@ -53,6 +50,8 @@ sysPass.Main = function () {
             numlength: 12
         }
     };
+
+    Object.seal(passwordData);
 
     // Objeto con las funciones propias del tema visual
     var appTheme = {};
@@ -96,6 +95,8 @@ sysPass.Main = function () {
             }
         }
     };
+
+    Object.freeze(log);
 
     // Opciones para Toastr
     toastr.options = {
@@ -206,26 +207,74 @@ sysPass.Main = function () {
         }
     };
 
+    Object.freeze(msg);
+
     /**
      * Inicialización
      */
     var init = function () {
         log.info("init");
 
-        oPublic = getPublic();
-        oProtected = getProtected();
+        // Objeto con métodos y propiedades públicas
+        oPublic = {
+            actions: function () {
+                return appActions;
+            },
+            triggers: function () {
+                return appTriggers;
+            },
+            theme: function () {
+                return appTheme;
+            },
+            sk: sk,
+            msg: msg,
+            log: log,
+            passwordData: passwordData,
+            outputResult: outputResult,
+            checkPassLevel: checkPassLevel,
+            encryptFormValue: encryptFormValue,
+            fileUpload: fileUpload,
+            redirect: redirect,
+            scrollUp: scrollUp,
+            setContentSize: setContentSize
+        };
+
+        // Objeto con métodos y propiedades protegidas
+        oProtected = $.extend({
+            log: log,
+            config: function () {
+                return config;
+            },
+            appTheme: function () {
+                return appTheme;
+            },
+            appActions: function () {
+                return appActions;
+            },
+            appTriggers: function () {
+                return appTriggers;
+            },
+            appRequests: function () {
+                return appRequests;
+            },
+            evalAction: evalAction,
+            resizeImage: resizeImage
+        }, oPublic);
+
+        Object.freeze(oPublic);
+        Object.freeze(oProtected);
 
         appTriggers = sysPass.Triggers(oProtected);
         appActions = sysPass.Actions(oProtected);
         appRequests = sysPass.Requests(oProtected);
 
-        getEnvironment(function () {
+        if (typeof sysPass.Theme === "function") {
+            appTheme = sysPass.Theme(oProtected);
+        }
+
+        getEnvironment().then(function () {
             if (config.PK !== "") {
                 bindPassEncrypt();
-            }
-
-            if (typeof sysPass.Theme === "function") {
-                appTheme = sysPass.Theme(oProtected);
             }
 
             if (config.CHECK_UPDATES === true) {
@@ -240,12 +289,14 @@ sysPass.Main = function () {
             setupCallbacks();
             checkLogout();
         });
+
+        return oPublic;
     };
 
     /**
      * Obtener las variables de entorno de sysPass
      */
-    var getEnvironment = function (callback) {
+    var getEnvironment = function () {
         log.info("getEnvironment");
 
         var path = window.location.pathname.split("/");
@@ -264,11 +315,11 @@ sysPass.Main = function () {
         var opts = appRequests.getRequestOpts();
         opts.url = "/ajax/ajax_getEnvironment.php";
         opts.method = "get";
-        opts.async = false;
+        // opts.async = false;
         opts.useLoading = false;
         opts.data = {isAjax: 1};
 
-        appRequests.getActionCall(opts, function (json) {
+        return appRequests.getActionCall(opts, function (json) {
             // config.APP_ROOT = json.app_root;
             config.LANG = json.lang;
             config.PK = json.pk;
@@ -280,9 +331,7 @@ sysPass.Main = function () {
             config.MAX_FILE_SIZE = parseInt(json.max_file_size);
             config.COOKIES_ENABLED = json.cookies_enabled;
 
-            if (typeof callback === "function") {
-                callback();
-            }
+            Object.freeze(config);
         });
     };
 
@@ -549,27 +598,6 @@ sysPass.Main = function () {
     };
 
     /**
-     * Detectar los imputs del tipo checkbox para generar botones
-     *
-     * @param container El contenedor donde buscar
-     */
-    var checkboxDetect = function (container) {
-        $(container).find(".checkbox").button({
-            icons: {primary: "ui-icon-transferthick-e-w"}
-        }).click(
-            function () {
-                var $this = $(this);
-
-                if ($this.prop("checked") === true) {
-                    $this.button("option", "label", config.LANG[40]);
-                } else {
-                    $this.button("option", "label", config.LANG[41]);
-                }
-            }
-        );
-    };
-
-    /**
      * Encriptar el valor de un campo del formulario
      *
      * @param $input El id del campo
@@ -590,45 +618,47 @@ sysPass.Main = function () {
     var initializeClipboard = function () {
         log.info("initializeClipboard");
 
-        if (!Clipboard.isSupported()) {
+        if (!clipboard.isSupported()) {
             log.warn(config.LANG[65]);
             return;
         }
 
-        var clipboard = new Clipboard(".clip-pass-button", {
-            async: function (trigger) {
-                var _this = this;
+        $("body").on("click", ".clip-pass-button", function () {
+            var json = appActions.account.copypass($(this)).done(function (json) {
+                sk.set(json.csrf);
+            });
 
-                return appActions.account.copypass($(trigger)).then(function (json) {
-                    sk.set(json.csrf);
+            clipboard.copy(json.responseJSON.data.accpass).then(
+                function () {
+                    msg.ok(config.LANG[45]);
+                },
+                function (err) {
+                    msg.error(config.LANG[46]);
+                }
+            );
+        }).on("click", ".dialog-clip-button", function () {
+            var $target = $(this.dataset.clipboardTarget);
 
-                    _this.asyncText = json.data.accpass;
-                });
-            }
-        });
+            clipboard.copy($target.text()).then(
+                function () {
+                    $(".dialog-text").removeClass("dialog-clip-copy");
+                    $target.addClass("dialog-clip-copy");
+                },
+                function (err) {
+                    msg.error(config.LANG[46]);
+                }
+            );
+        }).on("click", ".clip-pass-icon", function () {
+            var $target = $(this.dataset.clipboardTarget);
 
-        clipboard.on("success", function (e) {
-            msg.ok(config.LANG[45]);
-        }).on("error", function (e) {
-            msg.error(config.LANG[46]);
-        });
-
-        // Portapapeles para claves visualizadas
-        var clipboardDialog = new Clipboard(".dialog-clip-button");
-
-        clipboardDialog.on("success", function (e) {
-            $(".dialog-text").removeClass("dialog-clip-copy");
-            $(e.trigger.dataset.clipboardTarget).addClass("dialog-clip-copy");
-
-            e.clearSelection();
-        });
-
-        var clipboardIcon = new Clipboard(".clip-pass-icon");
-
-        clipboardIcon.on("success", function (e) {
-            msg.ok(config.LANG[45]);
-
-            e.clearSelection();
+            clipboard.copy(decodeEntities($target.val())).then(
+                function () {
+                    msg.ok(config.LANG[45]);
+                },
+                function (err) {
+                    msg.error(config.LANG[46]);
+                }
+            );
         });
     };
 
@@ -667,7 +697,7 @@ sysPass.Main = function () {
      * @param $obj
      */
     var evalAction = function (evalFn, $obj) {
-        console.info("Eval: " + evalFn);
+        log.info("Eval: " + evalFn);
 
         if (typeof evalFn === "function") {
             evalFn($obj);
@@ -770,59 +800,29 @@ sysPass.Main = function () {
         return image;
     };
 
-    // Objeto con métodos y propiedades protegidas
-    var getProtected = function () {
-        return $.extend({
-            log: log,
-            config: function () {
-                return config;
-            },
-            appTheme: function () {
-                return appTheme;
-            },
-            appActions: function () {
-                return appActions;
-            },
-            appTriggers: function () {
-                return appTriggers;
-            },
-            appRequests: function () {
-                return appRequests;
-            },
-            evalAction: evalAction,
-            resizeImage: resizeImage
-        }, oPublic);
-    };
+    /**
+     * @author http://stackoverflow.com/users/24950/robert-k
+     * @link http://stackoverflow.com/questions/5796718/html-entity-decode
+     */
+    var decodeEntities = (function () {
+        // this prevents any overhead from creating the object each time
+        var element = document.createElement("div");
 
-    // Objeto con métodos y propiedades públicas
-    var getPublic = function () {
-        return {
-            actions: function () {
-                return appActions;
-            },
-            triggers: function () {
-                return appTriggers;
-            },
-            theme: function () {
-                return appTheme;
-            },
-            sk: sk,
-            msg: msg,
-            log: log,
-            passToClip: passToClip,
-            passwordData: passwordData,
-            outputResult: outputResult,
-            checkboxDetect: checkboxDetect,
-            checkPassLevel: checkPassLevel,
-            encryptFormValue: encryptFormValue,
-            fileUpload: fileUpload,
-            redirect: redirect,
-            scrollUp: scrollUp,
-            setContentSize: setContentSize
-        };
-    };
+        function decodeHTMLEntities(str) {
+            if (str && typeof str === "string") {
+                // strip script/html tags
+                str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, "");
+                str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, "");
+                element.innerHTML = str;
+                str = element.textContent;
+                element.textContent = "";
+            }
 
-    init();
+            return str;
+        }
 
-    return oPublic;
+        return decodeHTMLEntities;
+    })();
+
+    return init();
 };

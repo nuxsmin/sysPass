@@ -16,7 +16,7 @@ var mdlDialog = function () {
         if (options.hideOther) {
             // remove existing dialogs
             $('.dialog-container').remove();
-            $(document).unbind("keyup.dialog");
+            $(document).off("keyup.dialog");
         }
 
         $('<div id="' + options.id + '" class="dialog-container"><div class="mdl-card mdl-shadow--16dp" id="' + options.id + '_content"></div></div>').appendTo("body");
@@ -80,7 +80,7 @@ var mdlDialog = function () {
             dialog.click(function () {
                 hideDialog(dialog);
             });
-            $(document).bind("keyup.dialog", function (e) {
+            $(document).on("keyup.dialog", function (e) {
                 if (e.which == 27)
                     hideDialog(dialog);
             });
@@ -99,7 +99,7 @@ var mdlDialog = function () {
     }
 
     function hideDialog(dialog) {
-        $(document).unbind("keyup.dialog");
+        $(document).off("keyup.dialog");
         dialog.css({opacity: 0});
         setTimeout(function () {
             dialog.remove();

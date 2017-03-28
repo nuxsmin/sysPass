@@ -39,8 +39,8 @@ if (!$file) {
     $Minify->setBase(__DIR__);
 
     if ($group === 0) {
-        $Minify->addFile('jquery-1.11.2.min.js')
-            ->addFile('jquery-ui.min.js')
+        $Minify->addFile('jquery-3.2.0.min.js')
+            ->addFile('jquery-migrate-3.0.0.min.js')
             ->addFile('jquery.fileDownload.min.js')
             ->addFile('clipboard.min.js')
             ->addFile('selectize.min.js')

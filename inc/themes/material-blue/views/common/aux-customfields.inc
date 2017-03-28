@@ -30,8 +30,9 @@ foreach ($customFields as $index => $field):?>
                            name="customfield[<?php echo $field->getDefinitionId(); ?>]"
                            type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__no-pki <?php echo $isView ? 'passwordfield__input-show' : 'passwordfield__input'; ?>"
+                           data-clipboard="1"
                            maxlength="500"
-                           value="<?php echo (!$showViewCustomPass && $field->getCleanValue() !== '') ? '***' : $field->getCleanValue(); ?>" <?php echo $field->getDefinition()->isRequired() ? 'required' : ''; ?> <?php echo $readonly; ?>>
+                           value="<?php echo (!$showViewCustomPass && $field->getValue() !== '') ? '***' : $field->getSafeHtmlValue(); ?>" <?php echo $field->getDefinition()->isRequired() ? 'required' : ''; ?> <?php echo $readonly; ?>>
                     <label class="mdl-textfield__label"
                            for="<?php echo $field->getDefinition()->getFormId(); ?>"><?php echo $field->getDefinition()->getName(); ?></label>
                 </div>

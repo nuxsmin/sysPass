@@ -3702,7 +3702,7 @@
 					return function() {
 						// override the item rendering method to add the button to each
 						if (options.append) {
-							var id = $(self.$input.context).attr('id');
+							var id = $(self.$input[0]).attr('id');
 							var selectizer = $('#'+id);
 	
 							var render_item = self.settings.render.item;
