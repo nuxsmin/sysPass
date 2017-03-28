@@ -3,9 +3,9 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-20 23:26+0100\n"
-"PO-Revision-Date: 2017-03-20 23:26+0100\n"
+"PO-Revision-Date: 2017-03-24 01:22+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
-"Language-Team:  <language@syspass.org>\n"
+"Language-Team: <language@syspass.org>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13,7 +13,7 @@ msgstr ""
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 2.0beta5\n"
 "X-Contributors: Lukas, Normo, Erik B., GoatMaster, Thomas L., madcoda9000, "
 "CyrosX, Sascha H.\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -76,7 +76,6 @@ msgstr "Datei"
 #: ../../../../inc/SP/Import/FileImport.class.php:113
 #: ../../../../inc/SP/Import/FileImport.class.php:157
 #: ../../../../inc/SP/Import/FileImport.class.php:185
-#, fuzzy
 msgid "Error interno al leer el archivo"
 msgstr "Interner Fehler beim Lesen der Datei"
 
@@ -170,7 +169,6 @@ msgstr "Datei gelöscht"
 
 #: ../../../../ajax/ajax_filesMgmt.php:206
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:125
-#, fuzzy
 msgid "Error al eliminar el archivo"
 msgstr "Fehler beim Löschen der Datei"
 
@@ -201,7 +199,7 @@ msgstr "Anfrage für"
 
 #: ../../../../ajax/ajax_passReset.php:69
 msgid "Solicitud enviada"
-msgstr "Anfrage verschickt."
+msgstr "Anfrage wurde abgeschickt."
 
 #: ../../../../ajax/ajax_passReset.php:73
 msgid "En breve recibirá un correo para completar la solicitud."
@@ -209,17 +207,18 @@ msgstr "Sie bekommen in Kürze eine E-Mail, um die Anfrage zu beenden"
 
 #: ../../../../ajax/ajax_passReset.php:77
 msgid "Solicitud no enviada"
-msgstr "Anfrage nicht abgeschickt"
+msgstr "Anfrage wurde nicht abgeschickt"
 
 #: ../../../../ajax/ajax_passReset.php:78
 msgid "Compruebe datos de usuario o consulte con el administrador"
 msgstr ""
-"Bitte überprüfen Sie die Benutzerdaten oder kontaktieren den Administrator"
+"Bitte überprüfen Sie die Benutzerdaten oder kontaktieren Sie den "
+"Administrator"
 
 #: ../../../../ajax/ajax_passReset.php:86
 #: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:319
 msgid "Modificar Clave Usuario"
-msgstr "Benutzer-Passwort ändern"
+msgstr "Passwort ändern"
 
 #: ../../../../ajax/ajax_passReset.php:99
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:277
@@ -243,7 +242,7 @@ msgstr "Anmeldung"
 
 #: ../../../../ajax/ajax_passReset.php:107
 msgid "La clave es incorrecta o no coincide"
-msgstr "Falsches Passwort oder kein übereinstimmendes Passwort"
+msgstr "Falsches oder nicht übereinsimmendes Passwort"
 
 #: ../../../../ajax/ajax_userPrefsSave.php:90
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:83
@@ -251,32 +250,27 @@ msgid "Preferencias actualizadas"
 msgstr "Einstellungen aktualisiert"
 
 #: ../../../../inc/SP/Account/Account.class.php:127
-#, fuzzy
 msgid "Error al modificar la cuenta"
 msgstr "Fehler beim Ändern des Kontos"
 
 #: ../../../../inc/SP/Account/Account.class.php:173
 #: ../../../../inc/SP/Account/AccountHistoryUtil.class.php:154
-#, fuzzy
 msgid "Error al restaurar cuenta"
-msgstr "Fehler bei der Wiederherstellung der Rechnung"
+msgstr "Fehler bei der Wiederherstellung des Kontos"
 
 #: ../../../../inc/SP/Account/Account.class.php:201
 #: ../../../../inc/SP/Account/Account.class.php:508
 #: ../../../../inc/SP/Account/AccountHistory.class.php:216
 #: ../../../../inc/SP/Account/AccountHistory.class.php:393
-#, fuzzy
 msgid "No se pudieron obtener los datos de la cuenta"
 msgstr "Fehler beim Laden der Kontodaten"
 
 #: ../../../../inc/SP/Account/Account.class.php:203
 #: ../../../../inc/SP/Account/Account.class.php:510
-#, fuzzy
 msgid "La cuenta no existe"
 msgstr "Konto existiert nicht"
 
 #: ../../../../inc/SP/Account/Account.class.php:273
-#, fuzzy
 msgid "Error al crear la cuenta"
 msgstr "Fehler beim Anlegen des Kontos"
 
@@ -318,12 +312,10 @@ msgstr "Interner Fehler"
 
 #: ../../../../inc/SP/Account/Account.class.php:355
 #: ../../../../inc/SP/Account/AccountHistory.class.php:516
-#, fuzzy
 msgid "Error al eliminar la cuenta"
 msgstr "Fehler beim Löschen des Kontos"
 
 #: ../../../../inc/SP/Account/Account.class.php:437
-#, fuzzy
 msgid "Error al actualizar la clave"
 msgstr "Fehler beim Ändern des Passworts"
 
@@ -345,13 +337,11 @@ msgstr "Start"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:74
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:77
-#, fuzzy
 msgid "Error en el módulo de encriptación"
 msgstr "Fehler im Verschlüsselungsmodul"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:84
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:205
-#, fuzzy
 msgid "Error al obtener las claves de las cuentas"
 msgstr "Fehler beim Laden der Konto-Passwörter"
 
@@ -364,15 +354,14 @@ msgstr "Fehler beim Laden der Konto-Passwörter"
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:245
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:290
 msgid "Cuentas actualizadas"
-msgstr "Accounts aktualisiert"
+msgstr "Konten wurden aktualisiert"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:146
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:149
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:263
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:266
-#, fuzzy
 msgid "Fallo al actualizar la clave de la cuenta"
-msgstr "Fehler beim Ändern des Passworts eines Kontos "
+msgstr "Fehler beim Ändern des Kontopassworts"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:154
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:271
@@ -417,32 +406,26 @@ msgstr "Master-Passwort stimmt nicht"
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:160
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:283
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:286
-#, fuzzy
 msgid "Fallo al actualizar la clave del histórico"
 msgstr "Fehler beim Ändern des Master-Passworts"
 
 #: ../../../../inc/SP/Account/AccountTags.class.php:90
-#, fuzzy
 msgid "Error al añadir las etiquetas de la cuenta"
 msgstr "Fehler beim Hinzufügen von Konto-Tags"
 
 #: ../../../../inc/SP/Account/AccountTags.class.php:129
-#, fuzzy
 msgid "Error al eliminar las etiquetas de la cuenta"
 msgstr "Fehler beim Entfernen von Tags des Kontos"
 
 #: ../../../../inc/SP/Account/AccountUtil.class.php:132
-#, fuzzy
 msgid "No se pudieron obtener los datos de las cuentas"
-msgstr "Es war nicht möglich die Konten zu laden"
+msgstr "Es war nicht möglich, die Konten zu laden"
 
 #: ../../../../inc/SP/Account/UserAccounts.class.php:89
-#, fuzzy
 msgid "Error al eliminar usuarios asociados a la cuenta"
 msgstr "Fehler beim Löschen der Benutzer eines Kontos"
 
 #: ../../../../inc/SP/Account/UserAccounts.class.php:130
-#, fuzzy
 msgid "Error al actualizar los usuarios de la cuenta"
 msgstr "Fehler beim Ändern der Benutzer eines Kontos"
 
@@ -592,7 +575,6 @@ msgstr "Konto nicht gefunden"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:970
 #: ../../../../inc/SP/Core/Acl.class.php:192
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:39
-#, fuzzy
 msgid "Eliminar Cuenta"
 msgstr "Konto löschen"
 
@@ -668,7 +650,6 @@ msgstr "Sicherung fertig gestellt"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:435
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:721
 #: ../../../../inc/SP/Core/Backup.class.php:75
-#, fuzzy
 msgid "Error al realizar el backup"
 msgstr "Fehler beim Ausführen des Backups"
 
@@ -679,9 +660,8 @@ msgstr "Fehler beim Ausführen des Backups"
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:722
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1090
 #: ../../../../inc/SP/Import/Import.class.php:115
-#, fuzzy
 msgid "Revise el registro de eventos para más detalles"
-msgstr "Mehr Details in den Log Dateien"
+msgstr "Mehr Details in den Log-Dateien"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:466
 #: ../../../../inc/SP/Api/SyspassApi.class.php:483
@@ -845,7 +825,6 @@ msgstr ""
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:118
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:446
 #: ../../../../inc/SP/Controller/ChecksController.class.php:92
-#, fuzzy
 msgid "Los parámetros de LDAP no están configurados"
 msgstr "LDAP-Parameter sind nicht gesetzt"
 
@@ -885,7 +864,6 @@ msgid "Error al buscar objetos en DN base"
 msgstr "Fehler beim Suchen nach Objekten in der Base-DN"
 
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:546
-#, fuzzy
 msgid "Error al localizar el usuario en LDAP"
 msgstr "Fehler beim Suchen des Benutzers in LDAP"
 
@@ -939,7 +917,6 @@ msgid "Usuario"
 msgstr "Benutzer"
 
 #: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:580
-#, fuzzy
 msgid "Error al buscar RDN de grupo"
 msgstr "Fehler beim Suchen nach Gruppen RDN"
 
@@ -1117,7 +1094,6 @@ msgid "Objetos encontrados: %d"
 msgstr "Objekte gefunden: %d"
 
 #: ../../../../inc/SP/Controller/ChecksController.class.php:127
-#, fuzzy
 msgid "Los parámetros de DokuWiki no están configurados"
 msgstr "DokuWiki Einstellungen sind nicht konfiguriert"
 
@@ -1206,9 +1182,8 @@ msgid "Configuración actualizada"
 msgstr "Konfiguration aktualisiert"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:245
-#, fuzzy
 msgid "Error al guardar la configuración"
-msgstr "Fehler beim Spesichern der Konfiguration"
+msgstr "Fehler beim Speichern der Konfiguration"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:249
 msgid "Modificar Configuración"
@@ -1340,19 +1315,16 @@ msgid "No es posible iniciar una transacción"
 msgstr "Eine Transaktion konnte nicht gestartet werden"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:532
-#, fuzzy
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Fehler beim Aktualisieren der Passwörter"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:543
-#, fuzzy
 msgid "Errores al actualizar las claves de las cuentas del histórico"
-msgstr "Fehler beim Aktualisieren des Kontopasswörter in der History"
+msgstr "Fehler beim Aktualisieren des Kontopasswörter in dem Verlauf"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:552
-#, fuzzy
 msgid "Errores al actualizar datos de campos personalizados"
-msgstr "Fehler beim aktualisieren der Benutzerfelder"
+msgstr "Fehler beim Aktualisieren der Benutzerfelder"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:559
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:71
@@ -1361,9 +1333,8 @@ msgid "No es posible finalizar una transacción"
 msgstr "Eine Transaktion konnte nicht abgeschlossen werden"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:579
-#, fuzzy
 msgid "Error al guardar el hash de la clave maestra"
-msgstr "Fehler beim Speichern des Hash für das Master-Passwort"
+msgstr "Fehler beim Speichern des Hashs für das Master-Passwort"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:602
 msgid "Hash de clave maestra actualizado"
@@ -1400,16 +1371,14 @@ msgid "La nueva clave es: %s"
 msgstr "Neues Master Passwort ist: %s"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:641
-#, fuzzy
 msgid "No olvide acceder lo antes posible para guardar los cambios."
 msgstr ""
 "Bitte vergessen Sie nicht, sich so schnell wie möglich anzumelden, um die "
 "Änderungen zu speichern."
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:652
-#, fuzzy
 msgid "Error al generar clave temporal"
-msgstr "Fehler beim erstellen eines temporären Passwortes"
+msgstr "Fehler beim Erstellen eines temporären Passwortes"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:693
 #: ../../../../inc/SP/Forms/AccountForm.class.php:136
@@ -1436,7 +1405,6 @@ msgid "Último backup"
 msgstr "Letztes Backup"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:373
-#, fuzzy
 msgid "No se encontraron backups"
 msgstr "Keine Backups vorhanden"
 
@@ -2161,7 +2129,6 @@ msgid "Campo eliminado"
 msgstr "Feld gelöscht"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:723
-#, fuzzy
 msgid "Crear Enlace"
 msgstr "Link hinzufügen"
 
@@ -2273,7 +2240,6 @@ msgid "Usuarios importados"
 msgstr "Importierte Benutzer"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1087
-#, fuzzy
 msgid "Error al importar usuarios de LDAP"
 msgstr "Fehler beim Import von LDAP-Benutzern"
 
@@ -2358,7 +2324,7 @@ msgstr "Öffentlichen Link anzeigen"
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:229
 #: ../../../../js/strings.js.php:72
 msgid "Clave de Cuenta"
-msgstr "Account Passwort"
+msgstr "Kontopasswort"
 
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:233
 msgid "Detalles de Plugin"
@@ -2397,7 +2363,6 @@ msgid "Intentos excedidos (%d/%d)"
 msgstr "Versuche überschritten (%d/%d)"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:245
-#, fuzzy
 msgid "Error al obtener los datos del usuario de la BBDD"
 msgstr "Fehler beim Laden der Benutzerdaten aus der Datenbank"
 
@@ -2417,7 +2382,6 @@ msgstr "Temporäres Kennwort verwenden"
 #: ../../../../inc/SP/Controller/LoginController.class.php:339
 #: ../../../../inc/SP/Controller/LoginController.class.php:341
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:63
-#, fuzzy
 msgid "Clave maestra incorrecta"
 msgstr "Ungültiges Master-Passwort"
 
@@ -2426,14 +2390,12 @@ msgid "Es necesaria su clave anterior"
 msgstr "Ihr altes Passwort wird benötigt"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:334
-#, fuzzy
 msgid "La clave maestra no ha sido guardada o es incorrecta"
-msgstr "Master-Passwort ist nicht sicher oder stimmt nicht"
+msgstr "Master-Passwort ist nicht sicher oder ist nicht korrekt"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:372
-#, fuzzy
 msgid "Error al obtener la clave maestra del usuario"
-msgstr "Fehler beim Abrufen des Master Pass"
+msgstr "Fehler beim Abrufen des Master-Passworts"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:456
 msgid "Cuenta expirada"
@@ -2570,7 +2532,6 @@ msgid "Acceso denegado"
 msgstr "Zugang verweigert"
 
 #: ../../../../inc/SP/Core/Acl.class.php:184
-#, fuzzy
 msgid "Buscar Cuentas"
 msgstr "Benutzer suchen"
 
@@ -2687,16 +2648,14 @@ msgstr "Backup Verzeichnis (\"%s\") kann nicht erstellt werden"
 
 #: ../../../../inc/SP/Core/Backup.class.php:106
 #: ../../../../inc/SP/Core/XmlExport.class.php:526
-#, fuzzy
 msgid "Compruebe los permisos del directorio de backups"
-msgstr "Bitte überprüfen Sie die Zugriffsrechte des Backup₋Verzeichnisses"
+msgstr "Bitte überprüfen Sie die Zugriffsrechte des Backup-Verzeichnisses"
 
 #: ../../../../inc/SP/Core/Backup.class.php:249
 msgid "Esta operación sólo es posible en entornos Linux"
 msgstr "Diese Funktion is nur in einer Linux-Umgebung verfügbar"
 
 #: ../../../../inc/SP/Core/Backup.class.php:251
-#, fuzzy
 msgid "Error al realizar backup en modo compatibilidad"
 msgstr "Fehler während der Durchführung der Sicherung im Kompatibilitätsmodus"
 
@@ -2725,9 +2684,8 @@ msgid "Es necesario un objeto"
 msgstr "Ein Objekt wird benötigt"
 
 #: ../../../../inc/SP/Core/Init.class.php:180
-#, fuzzy
 msgid "Error en la verificación de la base de datos"
-msgstr "Fehler beim der Datenbanküberprüfung"
+msgstr "Fehler bei der Datenbanküberprüfung"
 
 #: ../../../../inc/SP/Core/Init.class.php:408
 msgid "Sesión"
@@ -2779,17 +2737,14 @@ msgid "Tiempo total"
 msgstr "Gesamtzeit"
 
 #: ../../../../inc/SP/Core/Installer.class.php:139
-#, fuzzy
 msgid "Indicar nombre de usuario admin"
-msgstr "Benutzername des Administrators eingeben"
+msgstr "Benutzernamen des Administrators eingeben"
 
 #: ../../../../inc/SP/Core/Installer.class.php:140
-#, fuzzy
 msgid "Usuario admin para acceso a la aplicación"
-msgstr "Administrator der Anwendung"
+msgstr "Anwendungs-Administrator"
 
 #: ../../../../inc/SP/Core/Installer.class.php:144
-#, fuzzy
 msgid "Indicar la clave de admin"
 msgstr "Administrator-Passwort eingeben"
 
@@ -2798,13 +2753,12 @@ msgid "Clave del usuario admin de la aplicación"
 msgstr "Administrationspasswort der Anwendung"
 
 #: ../../../../inc/SP/Core/Installer.class.php:149
-#, fuzzy
 msgid "Indicar la clave maestra"
 msgstr "Master-Passwort eingeben"
 
 #: ../../../../inc/SP/Core/Installer.class.php:150
 msgid "Clave maestra para encriptar las claves"
-msgstr "Master-Passwords zum Verschlüsseln der Passwörter"
+msgstr "Master-Passwort zum Verschlüsseln der Passwörter"
 
 #: ../../../../inc/SP/Core/Installer.class.php:154
 msgid "Clave maestra muy corta"
@@ -2815,7 +2769,6 @@ msgid "La longitud de la clave maestra ha de ser mayor de 11 caracteres"
 msgstr "Master-Password muss mindestens 11 Zeichen lang sein"
 
 #: ../../../../inc/SP/Core/Installer.class.php:159
-#, fuzzy
 msgid "Indicar el usuario de la BBDD"
 msgstr "Datenbankbenutzer eingeben"
 
@@ -2824,7 +2777,6 @@ msgid "Usuario con permisos de administrador de la Base de Datos"
 msgstr "Ein Benutzer mit administrativen Rechten in der Datenbank"
 
 #: ../../../../inc/SP/Core/Installer.class.php:164
-#, fuzzy
 msgid "Indicar la clave de la BBDD"
 msgstr "Geben Sie das Passwort für die Datenbank ein"
 
@@ -2833,9 +2785,8 @@ msgid "Clave del usuario administrador de la Base de Datos"
 msgstr "Passwort des Datenbankadministrators"
 
 #: ../../../../inc/SP/Core/Installer.class.php:169
-#, fuzzy
 msgid "Indicar el nombre de la BBDD"
-msgstr "Datenbankname eingeben"
+msgstr "Datenbanknamen eingeben"
 
 #: ../../../../inc/SP/Core/Installer.class.php:170
 msgid "Nombre para la BBDD de la aplicación pej. syspass"
@@ -2850,13 +2801,12 @@ msgid "Elimine los puntos del nombre de la Base de Datos"
 msgstr "Bitte entferne die Punkte aus dem Datenbanknamen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:179
-#, fuzzy
 msgid "Indicar el servidor de la BBDD"
 msgstr "Datenbank-Server eingeben"
 
 #: ../../../../inc/SP/Core/Installer.class.php:180
 msgid "Servidor donde se instalará la Base de Datos"
-msgstr "Server auf dem die Datenbank installiert wird"
+msgstr "Server, auf dem die Datenbank installiert wird"
 
 #: ../../../../inc/SP/Core/Installer.class.php:203
 #: ../../../../inc/SP/Storage/MySQLHandler.class.php:133
@@ -2868,7 +2818,6 @@ msgstr "Verbindung zum Datenbank-Server kann nicht hergestellt werden"
 #: ../../../../inc/SP/Core/Installer.class.php:204
 #: ../../../../inc/SP/Storage/MySQLHandler.class.php:133
 #: ../../../../inc/SP/Storage/MySQLHandler.class.php:137
-#, fuzzy
 msgid "Compruebe los datos de conexión"
 msgstr "Bitte überprüfen Sie Ihre Verbindungseinstellungen"
 
@@ -2891,12 +2840,10 @@ msgid "La BBDD ya existe"
 msgstr "Datenbank existiert bereits"
 
 #: ../../../../inc/SP/Core/Installer.class.php:302
-#, fuzzy
 msgid "Indique una nueva Base de Datos o elimine la existente"
 msgstr "Neuen Datenbanknamen eingeben oder bestehende Datenbank löschen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:305
-#, fuzzy
 msgid "La BBDD no existe"
 msgstr "Datenbank existiert nicht"
 
@@ -2906,18 +2853,16 @@ msgstr "Sie müssen es erstellen und die nötigen Rechte zuweisen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:316
 #: ../../../../inc/SP/Core/Installer.class.php:419
-#, fuzzy
 msgid "Error al crear la BBDD"
 msgstr "Fehler beim Anlegen der Datenbank"
 
 #: ../../../../inc/SP/Core/Installer.class.php:317
 #: ../../../../inc/SP/Core/Installer.class.php:337
-#, fuzzy
 msgid "Verifique los permisos del usuario de la Base de Datos"
 msgstr "Bitte überprüfen Sie die Datenbank-Zugriffsberechtigungen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:336
-#, fuzzy, php-format
+#, php-format
 msgid "Error al establecer permisos de la BBDD ('%s')"
 msgstr "Fehler beim Konfigurieren der Datenbankberechtigungen ('%s')"
 
@@ -2931,7 +2876,6 @@ msgstr ""
 "Anwendungsdatenbank kann nicht angelegt werden. Bitte erneut herunterladen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:401
-#, fuzzy
 msgid "Error al seleccionar la BBDD"
 msgstr "Fehler beim Auswählen der Datenbank"
 
@@ -2954,7 +2898,6 @@ msgid "Intente de nuevo la instalación"
 msgstr "Bitte die Installation erneut versuchen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:484
-#, fuzzy
 msgid "Error al actualizar la clave maestra del usuario \"admin\""
 msgstr "Fehler beim Ändern des Master-Passworts des Benutzers \"admin\""
 
@@ -2967,7 +2910,6 @@ msgid "No se puede usar el módulo de encriptación"
 msgstr "Kryptographie-Modul konnte nicht geladen werden"
 
 #: ../../../../inc/SP/Core/OldCrypt.class.php:182
-#, fuzzy
 msgid "Error al generar datos cifrados"
 msgstr "Fehler beim Erzeugen der verschlüsselten Daten"
 
@@ -2978,7 +2920,7 @@ msgstr "Neues Plugin"
 #: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:106
 #: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:108
 #: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:161
-#, fuzzy, php-format
+#, php-format
 msgid "No es posible cargar el plugin \"%s\""
 msgstr "Plugin \"%s\" konnte nicht hochgeladen werden"
 
@@ -3015,7 +2957,6 @@ msgstr "Aktualisiere die ID der Kategorien"
 
 #: ../../../../inc/SP/Core/Upgrade/Category.class.php:97
 #: ../../../../inc/SP/Mgmt/Categories/Category.class.php:65
-#, fuzzy
 msgid "Error al crear la categoría"
 msgstr "Fehler beim Anlegen der Kategorie"
 
@@ -3041,7 +2982,6 @@ msgstr "Aktualisiere die ID der Kunden"
 
 #: ../../../../inc/SP/Core/Upgrade/Customer.class.php:98
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:69
-#, fuzzy
 msgid "Error al crear el cliente"
 msgstr "Fehler beim Anlegen des Kunden"
 
@@ -3051,7 +2991,6 @@ msgstr "Aktualisiere die ID der Gruppen"
 
 #: ../../../../inc/SP/Core/Upgrade/Group.class.php:115
 #: ../../../../inc/SP/Mgmt/Groups/Group.class.php:68
-#, fuzzy
 msgid "Error al crear el grupo"
 msgstr "Fehler beim Anlegen der Gruppe"
 
@@ -3061,15 +3000,13 @@ msgstr "Aktualisiere die ID der Profile"
 
 #: ../../../../inc/SP/Core/Upgrade/Profile.class.php:97
 #: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:69
-#, fuzzy
 msgid "Error al crear perfil"
 msgstr "Fehler beim Erstellen des Profils"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:83
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:110
-#, fuzzy
 msgid "Error al aplicar la actualización auxiliar"
-msgstr "Ein Fehler beim Update ist aufgetreten"
+msgstr "Ein Fehler ist beim Update aufgetreten"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:84
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:90
@@ -3080,7 +3017,6 @@ msgstr "Bitte schauen Sie in das Protokoll für weitere Details"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:89
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:232
-#, fuzzy
 msgid "Error al aplicar la actualización de la Base de Datos"
 msgstr "Fehler beim Aktualisieren der Datenbank"
 
@@ -3104,7 +3040,6 @@ msgstr "Aktualisierung der Datenbank war erfolgreich."
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:300
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:338
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:396
-#, fuzzy
 msgid "Error al obtener los datos del usuario"
 msgstr "Fehler beim Abrufen der Benutzerdaten"
 
@@ -3137,7 +3072,6 @@ msgstr "Aktualisiere die ID der Benutzer"
 
 #: ../../../../inc/SP/Core/Upgrade/User.class.php:156
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:88
-#, fuzzy
 msgid "Error al crear el usuario"
 msgstr "Fehler beim Anlegen des Benutzers"
 
@@ -3146,18 +3080,16 @@ msgid "Exportar XML"
 msgstr "XML Export"
 
 #: ../../../../inc/SP/Core/XmlExport.class.php:146
-#, fuzzy
 msgid "Error al realizar la exportación de cuentas"
-msgstr "Fehler beim exportieren der Accounts"
+msgstr "Fehler beim Exportieren der Konten"
 
 #: ../../../../inc/SP/Core/XmlExport.class.php:155
 msgid "Exportación de cuentas realizada correctamente"
 msgstr "Export erfolgreich abgeschlossen"
 
 #: ../../../../inc/SP/Core/XmlExport.class.php:483
-#, fuzzy
 msgid "Error al crear el archivo XML"
-msgstr "Fehler beim erstellen der XML Datei"
+msgstr "Fehler beim Erstellen der XML Datei"
 
 #: ../../../../inc/SP/DataModel/TrackData.class.php:155
 #: ../../../../inc/SP/DataModel/TrackData.class.php:157
@@ -3263,7 +3195,6 @@ msgid "No es posible eliminar, usuario en uso"
 msgstr "Benutzer kann nicht gelöscht werden, wird noch benutzt"
 
 #: ../../../../inc/SP/Http/Request.class.php:53
-#, fuzzy
 msgid "No es posible acceder directamente a este archivo"
 msgstr "Auf diese Datei darf nicht direkt zugegriffen werden"
 
@@ -3283,12 +3214,11 @@ msgid "El número de campos es incorrecto (%d)"
 msgstr "Falsche Anzahl an Feldern (%d)"
 
 #: ../../../../inc/SP/Import/CsvImportBase.class.php:85
-#, fuzzy, php-format
+#, php-format
 msgid "Compruebe el formato del archivo CSV en línea %s"
-msgstr "Bitte das CSV-Format in Zeile %s überprüfen"
+msgstr "Bitte die CSV-Datei in Zeile %s überprüfen"
 
 #: ../../../../inc/SP/Import/CsvImportBase.class.php:111
-#, fuzzy
 msgid "Error importando cuenta"
 msgstr "Fehler beim Importieren des Kontos"
 
@@ -3305,24 +3235,22 @@ msgid "Verifique los permisos del usuario del servidor web"
 msgstr "Bitte überprüfen Sie die Zugriffsberechtigungen des Web-Servers"
 
 #: ../../../../inc/SP/Import/FileImport.class.php:98
-#, fuzzy
 msgid "Compruebe la extensión del archivo"
-msgstr "Bitte überprüfe die Dateierweiterung"
+msgstr "Bitte überprüfen Sie die Dateierweiterung"
 
 #: ../../../../inc/SP/Import/FileImport.class.php:114
 msgid "Compruebe la configuración de PHP para subir archivos"
-msgstr "Bitte überprüfe die PHP-Konfiguration zum Hochladen von Dateien"
+msgstr "Bitte überprüfen Sie die PHP-Konfiguration zum Hochladen von Dateien"
 
 #: ../../../../inc/SP/Import/FileImport.class.php:158
 #: ../../../../inc/SP/Import/FileImport.class.php:186
-#, fuzzy
 msgid "Compruebe los permisos del directorio temporal"
-msgstr "Bitte überprüfe die Zugriffsrechte des temporären Verzeichnisses"
+msgstr "Bitte überprüfen Sie die Zugriffsrechte des temporären Verzeichnisses"
 
 #: ../../../../inc/SP/Import/Import.class.php:83
-#, fuzzy, php-format
+#, php-format
 msgid "Tipo mime no soportado (\"%s\")"
-msgstr "Mime-Type nicht unterstüzt"
+msgstr "Mime-Typ (\"%s\") wird nicht unterstützt"
 
 #: ../../../../inc/SP/Import/Import.class.php:84
 msgid "Compruebe el formato del archivo"
@@ -3374,7 +3302,6 @@ msgstr ""
 "werden"
 
 #: ../../../../inc/SP/Import/XmlFileImport.class.php:107
-#, fuzzy
 msgid "No es posible procesar el archivo XML"
 msgstr "XML-Datei kann nicht verarbeitet werden"
 
@@ -3416,12 +3343,10 @@ msgstr "CC"
 
 #: ../../../../inc/SP/Log/Email.class.php:91
 #: ../../../../inc/SP/Log/Email.class.php:202
-#, fuzzy
 msgid "Error al enviar correo"
-msgstr "Fehler beim Sender der Mail"
+msgstr "Fehler beim Senden der E-Mail"
 
 #: ../../../../inc/SP/Log/Log.class.php:95
-#, fuzzy
 msgid "Error al vaciar el registro de eventos"
 msgstr "Fehler beim Löschen des Ereignisprotokolls"
 
@@ -3444,7 +3369,6 @@ msgid "Categoría duplicada"
 msgstr "Kategorie doppelt"
 
 #: ../../../../inc/SP/Mgmt/Categories/Category.class.php:119
-#, fuzzy
 msgid "Error al eliminar la categoría"
 msgstr "Fehler beim Löschen einer Kategorie"
 
@@ -3453,24 +3377,20 @@ msgid "Nombre de categoría duplicado"
 msgstr "Kategoriename dupliziert"
 
 #: ../../../../inc/SP/Mgmt/Categories/Category.class.php:190
-#, fuzzy
 msgid "Error al actualizar la categoría"
 msgstr "Fehler beim Ändern der Kategorie"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:60
-#, fuzzy
 msgid "Error al crear el campo personalizado"
 msgstr "Fehler beim Anlegen eines Nutzerfelds"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:75
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:84
-#, fuzzy
 msgid "Error al eliminar el campo personalizado"
 msgstr "Fehler beim Entfernen eines Nutzerfelds"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldDef.class.php:128
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:290
-#, fuzzy
 msgid "Error al actualizar el campo personalizado"
 msgstr "Fehler beim Aktualisieren eines Nutzerfelds"
 
@@ -3514,7 +3434,6 @@ msgstr "Textbereich"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:72
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:143
-#, fuzzy
 msgid "No hay datos de campos personalizados"
 msgstr "Keine Daten aus benutzerdefinierten Feldern"
 
@@ -3534,26 +3453,23 @@ msgid "Registros actualizados"
 msgstr "Datensätze aktualisiert"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:263
-#, fuzzy
 msgid "Error al migrar campos personalizados"
 msgstr "Fehler beim Migrieren von Nutzerfeldern"
 
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:55
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:179
 msgid "Cliente duplicado"
-msgstr "Doppelter Kunde"
+msgstr "Kunde bereits vorhanden"
 
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:115
 msgid "No es posible eliminar"
 msgstr "Kann nicht gelöscht werden"
 
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:124
-#, fuzzy
 msgid "Error al eliminar el cliente"
 msgstr "Fehler beim Löschen des Kunden"
 
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:195
-#, fuzzy
 msgid "Error al actualizar el cliente"
 msgstr "Fehler beim Ändern des Kunden"
 
@@ -3566,7 +3482,6 @@ msgid "Archivo no encontrado"
 msgstr "Datei nicht gefunden"
 
 #: ../../../../inc/SP/Mgmt/Files/FileUtil.class.php:102
-#, fuzzy
 msgid "Error al eliminar archivos asociados a la cuenta"
 msgstr "Fehler beim Löschen der Dateien eines Kontos"
 
@@ -3580,7 +3495,6 @@ msgid "Grupo en uso"
 msgstr "Grupper wird verwendet"
 
 #: ../../../../inc/SP/Mgmt/Groups/Group.class.php:120
-#, fuzzy
 msgid "Error al eliminar el grupo"
 msgstr "Fehler beim Löschen der Gruppe"
 
@@ -3589,22 +3503,18 @@ msgid "Grupo no encontrado"
 msgstr "Gruppe nicht gefunden"
 
 #: ../../../../inc/SP/Mgmt/Groups/Group.class.php:205
-#, fuzzy
 msgid "Error al actualizar el grupo"
 msgstr "Fehler beim Ändern der Gruppe"
 
 #: ../../../../inc/SP/Mgmt/Groups/GroupAccounts.class.php:70
-#, fuzzy
 msgid "Error al eliminar grupos asociados a la cuenta"
 msgstr "Fehler beim Löschen der Guppen eines Kontos"
 
 #: ../../../../inc/SP/Mgmt/Groups/GroupAccounts.class.php:100
-#, fuzzy
 msgid "Error al actualizar los grupos secundarios"
 msgstr "Fehler beim Ändern der Gruppe"
 
 #: ../../../../inc/SP/Mgmt/Groups/GroupUsers.class.php:72
-#, fuzzy
 msgid "Error al eliminar los usuarios del grupo"
 msgstr "Fehler beim löschen von Gruppennutzern"
 
@@ -3613,12 +3523,10 @@ msgid "Error al asignar los usuarios al grupo"
 msgstr "Fehler beim Festlegen von Benutzern in der Gruppe"
 
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:70
-#, fuzzy
 msgid "Error al crear la notificación"
 msgstr "Fehler beim Hinzufügen der Benachrichtigung"
 
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:95
-#, fuzzy
 msgid "Error al eliminar la notificación"
 msgstr "Fehler beim Löschen der Benachrichtigung"
 
@@ -3628,7 +3536,6 @@ msgstr "Benachrichtigung nicht gefunden"
 
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:133
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:245
-#, fuzzy
 msgid "Error al modificar la notificación"
 msgstr "Fehler beim Löschen der Benachrichtigung"
 
@@ -3640,17 +3547,14 @@ msgstr "Fehler beim Abrufen der Benachrichtigung"
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:285
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:319
 #: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:355
-#, fuzzy
 msgid "Error al obtener las notificaciones"
 msgstr "Fehler beim Abrufen der Benachrichtigungen"
 
 #: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:60
-#, fuzzy
 msgid "Error al crear el plugin"
 msgstr "Fehler beim Hinzufügen des Plugins"
 
 #: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:84
-#, fuzzy
 msgid "Error al eliminar el plugin"
 msgstr "Fehler beim Löschen des Plugins"
 
@@ -3661,7 +3565,6 @@ msgstr "Plugin nicht gefunden"
 #: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:116
 #: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:220
 #: ../../../../inc/SP/Mgmt/Plugins/Plugin.class.php:244
-#, fuzzy
 msgid "Error al actualizar el plugin"
 msgstr "Fehler beim Aktualisieren des Plugins"
 
@@ -3675,7 +3578,6 @@ msgid "Perfil en uso"
 msgstr "Profil in Verwendung"
 
 #: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:115
-#, fuzzy
 msgid "Error al eliminar perfil"
 msgstr "Fehler beim Entfernen des Profils"
 
@@ -3684,7 +3586,6 @@ msgid "Perfil no encontrado"
 msgstr "Profil nicht gefunden"
 
 #: ../../../../inc/SP/Mgmt/Profiles/Profile.class.php:197
-#, fuzzy
 msgid "Error al modificar perfil"
 msgstr "Fehler beim Anpassen des Profils"
 
@@ -3693,21 +3594,18 @@ msgid "Migrar Perfiles"
 msgstr "Profile migrieren"
 
 #: ../../../../inc/SP/Mgmt/Profiles/ProfileUtil.class.php:82
-#, fuzzy
 msgid "Error al obtener perfiles"
-msgstr "Fehlerm beim abrufen von Profilen"
+msgstr "Fehler beim Abrufen von Profilen"
 
 #: ../../../../inc/SP/Mgmt/Profiles/ProfileUtil.class.php:144
 msgid "Operación realizada correctamente"
 msgstr "Operation erfolgreich ausgeführt"
 
 #: ../../../../inc/SP/Mgmt/Profiles/ProfileUtil.class.php:149
-#, fuzzy
 msgid "Fallo al realizar la operación"
-msgstr "Fehler beim durchführen der Operation"
+msgstr "Fehler beim Durchführen der Operation"
 
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:105
-#, fuzzy
 msgid "Error al actualizar enlace"
 msgstr "Fehler beim Aktualisieren des Links"
 
@@ -3716,12 +3614,10 @@ msgid "Enlace ya creado"
 msgstr "Link bereits erstellt"
 
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:145
-#, fuzzy
 msgid "Error al crear enlace"
 msgstr "Fehler beim Erstellen des Links"
 
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:182
-#, fuzzy
 msgid "Error al eliminar enlace"
 msgstr "Fehler beim Entfernen des Links"
 
@@ -3736,7 +3632,6 @@ msgstr "Fehler beim Erneuern des Links"
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:248
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:347
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:381
-#, fuzzy
 msgid "Error al obtener enlace"
 msgstr "Fehler beim Abrufen des Links"
 
@@ -3753,15 +3648,13 @@ msgstr "AUS"
 #: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:54
 #: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:127
 msgid "Etiqueta duplicada"
-msgstr "Tag doppelt"
+msgstr "Tag bereits vorhanden"
 
 #: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:64
-#, fuzzy
 msgid "Error al crear etiqueta"
 msgstr "Fehler beim Anlegen des Tags"
 
 #: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:109
-#, fuzzy
 msgid "Error al eliminar etiqueta"
 msgstr "Fehler beim Entfernen des Tags"
 
@@ -3770,44 +3663,41 @@ msgid "Etiqueta no encontrada"
 msgstr "Tag nicht gefunden"
 
 #: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:138
-#, fuzzy
 msgid "Error al actualizar etiqueta"
 msgstr "Fehler beim Aktualisieren des Tags"
 
 #: ../../../../inc/SP/Mgmt/Tags/Tag.class.php:181
-#, fuzzy
 msgid "Error al obtener etiqueta"
 msgstr "Fehler beim Abrufen des Tags"
 
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:61
 msgid "Error al crear track"
-msgstr "Fehler beim erstellen der Spur"
+msgstr "Fehler beim Erstellen der Spur"
 
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:84
 msgid "Error al eliminar track"
-msgstr "Fehler beim entfernen der Spur"
+msgstr "Fehler beim Entfernen der Spur"
 
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:112
 msgid "Error al actualizar track"
-msgstr "Fehler beim aktualisieren der Spur"
+msgstr "Fehler beim Aktualisieren der Spur"
 
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:139
 msgid "Error al obtener track"
-msgstr "Fehler beim empfangen der Spur"
+msgstr "Fehler beim Empfangen der Spur"
 
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:163
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:238
 msgid "Error al obtener tracks"
-msgstr "Fehler beim empfangen der Spuren"
+msgstr "Fehler beim Empfangen der Spuren"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:54
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:150
 #: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:79
 msgid "Login/email de usuario duplicados"
-msgstr "Benutzer-Login/E-Mail doppelt"
+msgstr "Benutzer-Login/E-Mail bereits vorhanden"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:130
-#, fuzzy
 msgid "Error al eliminar el usuario"
 msgstr "Fehler beim Löschen des Benutzers"
 
@@ -3816,18 +3706,15 @@ msgid "Usuario no encontrado"
 msgstr "Benutzer nicht gefunden"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:181
-#, fuzzy
 msgid "Error al actualizar el usuario"
 msgstr "Fehler beim Ändern des Benutzers"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:246
-#, fuzzy
 msgid "Error al obtener los usuarios"
 msgstr "Fehler beim Laden der Benutzer"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:280
 #: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:313
-#, fuzzy
 msgid "Error al modificar la clave"
 msgstr "Fehler beim Ändern des Passworts"
 
@@ -3837,7 +3724,6 @@ msgid "Usuario de LDAP"
 msgstr "LDAP-Benutzer"
 
 #: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:117
-#, fuzzy
 msgid "Error al guardar los datos de LDAP"
 msgstr "Fehler beim Speichern der LDAP-Benutzerdaten"
 
@@ -3859,16 +3745,14 @@ msgstr "Neuer LDAP Benutzer"
 
 #: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:188
 #: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:217
-#, fuzzy
 msgid "Error al actualizar la clave del usuario en la BBDD"
-msgstr "Fehler beim Ändern des Benutzer-Passworts in der BD"
+msgstr "Fehler beim Ändern des Benutzer-Passworts in der Datenbank"
 
 #: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:66
 msgid "Sincronización LDAP"
 msgstr "LDAP-Synchronisation"
 
 #: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:123
-#, fuzzy
 msgid "No se encontraron objetos para sincronizar"
 msgstr "Es gibt keine zu synchronisierende Objekte"
 
@@ -3877,27 +3761,22 @@ msgid "Sincronización finalizada"
 msgstr "Synchronisation abgeschlossen"
 
 #: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:97
-#, fuzzy
 msgid "Error al migrar cuenta de usuario"
 msgstr "Fehler beim Migrieren des Benutzerkontos"
 
 #: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:137
-#, fuzzy
 msgid "Error al obtener grupo de usuarios"
 msgstr "Fehler beim Abrufen der Gruppen des Benutzers"
 
 #: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:152
-#, fuzzy
 msgid "Error al migrar grupo del usuario"
 msgstr "Migrieren der Nutzergruppen ist fehlgeschlagen"
 
 #: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:111
-#, fuzzy
 msgid "Error en comprobación de hash"
 msgstr "Fehler beim Überprüfen des Hash-Wertes"
 
 #: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:113
-#, fuzzy
 msgid "Hash inválido o expirado"
 msgstr "Ungültiger oder abgelaufener Hash-Wert"
 
@@ -3906,17 +3785,15 @@ msgid "Error al generar el hash de recuperación"
 msgstr "Fehler beim Erstellen des Hash-Wertes zur Wiederherstellung"
 
 #: ../../../../inc/SP/Mgmt/Users/UserPreferences.class.php:80
-#, fuzzy
 msgid "Error al actualizar preferencias"
-msgstr "Fehler beim aktualisieren der Einstellungen"
+msgstr "Fehler beim Aktualisieren der Einstellungen"
 
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:57
 msgid "Actualizando preferencias"
 msgstr "Einstellungen aktualisieren"
 
 #: ../../../../inc/SP/Storage/DB.class.php:285
-#: ../../../../inc/SP/Storage/DB.class.php:330
-#: ../../../../js/strings.js.php:26
+#: ../../../../inc/SP/Storage/DB.class.php:330 ../../../../js/strings.js.php:26
 msgid "Error en la consulta"
 msgstr "Fehler bei der Abfrage"
 
@@ -3934,16 +3811,14 @@ msgid "No es posible leer/escribir el archivo: %s"
 msgstr "Datei %s konnte nicht gelesen/geschrieben werden"
 
 #: ../../../../inc/SP/Storage/XmlHandler.class.php:161
-#, fuzzy
 msgid "No hay elementos para guardar"
-msgstr "Keine zu speichernden Elemente"
+msgstr "Keine zu speichernden Elemente vorhanden"
 
 #: ../../../../inc/SP/Util/Connection.class.php:120
 msgid "Socket no inicializado"
 msgstr "Socket nicht initialisiert"
 
 #: ../../../../inc/SP/Util/Connection.class.php:127
-#, fuzzy
 msgid "Error al enviar datos"
 msgstr "Fehler beim Senden der Daten"
 
@@ -3960,7 +3835,6 @@ msgid "Fallo de autentificación"
 msgstr "Authentifizierungsfehler"
 
 #: ../../../../inc/SP/Util/Wiki/DokuWikiApiBase.class.php:173
-#, fuzzy
 msgid "Error al realizar la consulta"
 msgstr "Fehler beim Ausführen der Anfrage"
 
@@ -3998,7 +3872,6 @@ msgstr "Anwendungs-Administrator"
 
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:53
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:155
-#, fuzzy
 msgid "Admin Cuentas"
 msgstr "Konto-Administrator"
 
@@ -4079,7 +3952,7 @@ msgstr "Sitzung beendet"
 
 #: ../../../../js/strings.js.php:29
 msgid "Borrar la cuenta?"
-msgstr "Account löschen?"
+msgstr "Konto löschen?"
 
 #: ../../../../js/strings.js.php:30
 msgid "Borrar el usuario?"
@@ -4087,7 +3960,7 @@ msgstr "Benutzer löschen?"
 
 #: ../../../../js/strings.js.php:31
 msgid "Guarde la configuración para que sea efectiva"
-msgstr "Bitte speichern Sie die Konfiguration, um wirksam"
+msgstr "Bitte speichern Sie die Konfiguration"
 
 #: ../../../../js/strings.js.php:32
 msgid "Clave Generada"
@@ -4095,15 +3968,15 @@ msgstr "Generiertes Passwort"
 
 #: ../../../../js/strings.js.php:33
 msgid "Nivel alto"
-msgstr "Hohe"
+msgstr "Hohes Niveau"
 
 #: ../../../../js/strings.js.php:34
 msgid "Nivel medio"
-msgstr "Mittelstufe"
+msgstr "Mittleres Niveau"
 
 #: ../../../../js/strings.js.php:35
 msgid "Nivel bajo"
-msgstr "Low-Pegel"
+msgstr "Niedriges Niveau"
 
 #: ../../../../js/strings.js.php:36
 msgid "Nivel muy alto"
@@ -4115,7 +3988,7 @@ msgstr "Verwenden Sie mindestens 8 Zeichen"
 
 #: ../../../../js/strings.js.php:38
 msgid "Borrar elemento?"
-msgstr "Artikel löschen?"
+msgstr "Element löschen?"
 
 #: ../../../../js/strings.js.php:39
 #: ../../../../inc/themes/material-blue/views/wiki/wikipage.inc:8
@@ -4133,7 +4006,7 @@ msgstr "Datei löschen?"
 
 #: ../../../../js/strings.js.php:42
 msgid "Su navegador no soporta subir archivos con HTML5"
-msgstr "Ihr Browser unterstützt keine Hochladen von Dateien in HTML5"
+msgstr "Ihr Browser unterstützt kein Hochladen von Dateien über HTML5"
 
 #: ../../../../js/strings.js.php:43
 msgid "Demasiados archivos"
@@ -4191,7 +4064,7 @@ msgstr "Kein Ergebnis"
 
 #: ../../../../js/strings.js.php:53
 msgid "Opciones de clave"
-msgstr "Password Optionen"
+msgstr "Passwort-Optionen"
 
 #: ../../../../js/strings.js.php:54
 msgid "Generar clave aleatoria"
@@ -4203,7 +4076,7 @@ msgstr "Komplexität"
 
 #: ../../../../js/strings.js.php:56
 msgid "Restablecer"
-msgstr "Reset"
+msgstr "Zurücksetzen"
 
 #: ../../../../js/strings.js.php:57
 msgid "Nivel de fortaleza de la clave"
@@ -4225,15 +4098,15 @@ msgstr "Passwort kopieren"
 
 #: ../../../../js/strings.js.php:61
 msgid "Incluir Números"
-msgstr "Einbezogene Nummbern"
+msgstr "Ziffern verwenden"
 
 #: ../../../../js/strings.js.php:62
 msgid "Incluir Mayúsculas"
-msgstr "Benötigt Großbuchstaben"
+msgstr "Großbuchstaben verwenden"
 
 #: ../../../../js/strings.js.php:63
 msgid "Incluir Símbolos"
-msgstr "Benötigt Symbole"
+msgstr "Symbole verwenden"
 
 #: ../../../../js/strings.js.php:64
 msgid "Longitud"
@@ -4317,9 +4190,8 @@ msgstr ""
 "Diese Aktion wird all Plugindaten zurücksetzen. Möchten Sie fortfahren?"
 
 #: ../../../../js/strings.js.php:84
-#, fuzzy
 msgid "Este proceso puede durar algo de tiempo. Desea continuar?"
-msgstr "Dieser Vorgang könnte lange dauern. Möchten Sie fortfahren?"
+msgstr "Dieser Vorgang könnte länger dauern. Möchten Sie fortfahren?"
 
 #: ../../../../js/strings.js.php:87
 msgid ""
@@ -4331,14 +4203,14 @@ msgid "Incluir Letras"
 msgstr "Buchstaben einschließen"
 
 #: ../../../../js/strings.js.php:89
-#, fuzzy
 msgid "Cookies deshabilitadas. La aplicación no funcionará correctamente."
-msgstr "Cookies disabled. The application won't work properly."
+msgstr ""
+"Cookies sind deaktiviert, weshalb die Anwendung nicht ordnungsgemäß "
+"funktionieren kann."
 
 #: ../../../../js/strings.js.php:90
-#, fuzzy
 msgid "Portapapeles no soportado por el navegador."
-msgstr "Clipboard not supported by your browser."
+msgstr "Zwischenablage wird nicht vom Browser unterstützt."
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:67
 #: ../../../../inc/themes/material-blue/views/account/account.inc:136
@@ -4708,9 +4580,8 @@ msgstr "Bild zur Anzeige des Passworts"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:106
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:146
-#, fuzzy
 msgid "Muestra los resultados de búsqueda de cuentas en formato tarjeta."
-msgstr "Zeigt die Ergebnisse einer Konten-Suche im Visitenkarten-Format an."
+msgstr "Zeigt die Ergebnisse der Kontensuche im Visitenkartenformat an."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:116
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:155
@@ -4768,9 +4639,8 @@ msgid "Usar imagen para clave"
 msgstr "Verwende ein Bild für das Passwort"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:218
-#, fuzzy
 msgid "Habilita la subida/descarga de archivos para las cuentas."
-msgstr "Einschalten von Hoch- und Herunterladen von Kontodateien."
+msgstr "Einschalten von Up- und Download von Dateien innerhalb von Konten."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:228
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:203
@@ -4837,7 +4707,6 @@ msgid "Copia sysPass"
 msgstr "sysPass Sicherung"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:43
-#, fuzzy
 msgid "No hay backups para descargar"
 msgstr "Es sind keine Backups zum Herunterladen vorhanden"
 
@@ -4850,23 +4719,21 @@ msgstr ""
 "von Anwendungsdateien und der Konfiguration."
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:73
-#, fuzzy
 msgid ""
 "Con este método es posible guardar todos los datos de sysPass en otro lugar "
 "o utilizarlos para hacer la aplicación portable."
 msgstr ""
-"Mit dieser Methode ist es möglich alle sysPass Daten an einem anderen Platz "
-"zu speichern. Sie kann auch genutzt werden um die Anwendung portable zu "
-"machen."
+"Mit dieser Methode ist es möglich, alle sysPass Daten an einem anderen Platz "
+"zu speichern. Sie kann auch dafür verwendet werden, um die Anwendung "
+"portabel zu machen."
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:88
 msgid "Exportar Cuentas"
 msgstr "Konten exportieren"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:122
-#, fuzzy
 msgid "No hay archivos XML para descargar"
-msgstr "Keine Dateien zum Herunterladen vorhanden"
+msgstr "Keine XML-Daten zum Herunterladen vorhanden"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:129
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:137
@@ -4959,10 +4826,10 @@ msgstr "All Benutzer müssen das neue Master-Passwort eingeben."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:104
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:118
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo."
-msgstr "Es werden %s accounts aktualisiert. Das kann etwas dauern."
+msgstr "Es werden %s Konten aktualisiert. Dies kann etwas dauern."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:109
 msgid "Confirmar cambio"
@@ -5030,15 +4897,14 @@ msgid "Enviar correo"
 msgstr "E-Mail senden"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:300
-#, fuzzy
 msgid ""
 "La clave temporal es utilizada como clave maestra para los usuarios que "
 "necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
 "la clave maestra original."
 msgstr ""
-"Das temporäre Passwort wird benutzt als Master Passwort für die Benutzer, "
-"welche dieses während der Anmeldung eingeben müssen. So gibt es keinen Grund "
-"den Benutzern das wirkliche Master Passwort zu sagen."
+"Das temporäre Passwort dient als Master Passwort für die Benutzer, welche "
+"dieses während der Anmeldung eingeben müssen. Somit brauchen Benutzern das "
+"wahre Master Passwort nicht zu erfahren."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:306
 msgid "Generar"
@@ -5123,8 +4989,8 @@ msgid ""
 "Establece el idioma global de la aplicación. Es posible establecer un idioma "
 "por usuario en las preferencias."
 msgstr ""
-"Setzen Sie die globale Sprache. Der Nutzer kann seine Sprache in den "
-"Nutzereinstellungen wählen."
+"Setzen Sie die globale Sprache fest. Jeder Nutzer kann seine eigene Sprache "
+"in den Nutzereinstellungen wählen."
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:19
 msgid ""
@@ -5142,13 +5008,12 @@ msgid "Tema Visual"
 msgstr "Visuelles Thema"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:41
-#, fuzzy
 msgid ""
 "Establece el tema visual global de la aplicación. Es posible establecer un "
 "tema visual por usuario en las preferencias."
 msgstr ""
-"Definieren des globalen visuellen Themas. Jeder Nutzer kann ein persönliches "
-"visuelles Thema in den Nutzereinstellungen wählen."
+"Definieren des globalen visuellen Themas. Jeder Nutzer kann sein "
+"persönliches visuelles Thema in den Nutzereinstellungen wählen."
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:59
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:67
@@ -5174,12 +5039,11 @@ msgid "Habilitar depuración"
 msgstr "Debugging einschalten"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:114
-#, fuzzy
 msgid ""
 "En este modo no se puede acceder a la aplicación. Para deshabilitarlo es "
 "necesario modificar el archivo de configuración."
 msgstr ""
-"In diesem Modus kann sich niemand anmelden. Dies kann nur in der "
+"In diesem Modus kann sich niemand anmelden. Dies kann nur über die "
 "Konfigurationsdatei geändert werden."
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:122
@@ -5197,7 +5061,6 @@ msgid "Comprobar actualizaciones"
 msgstr "Nach Updates schauen"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:150
-#, fuzzy
 msgid ""
 "Comprobar si existen notificaciones de seguridad o avisos de sysPass (sólo "
 "para los usuarios administradores)."
@@ -5217,7 +5080,6 @@ msgid "Usuario por Defecto"
 msgstr "Standardnutzer"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:19
-#, fuzzy
 msgid "Define el usuario por defecto para las cuentas importadas."
 msgstr "Definiert den Standardbenutzer für den Kontoimport."
 
@@ -5229,7 +5091,6 @@ msgid "Grupo por Defecto"
 msgstr "Standard-Gruppe"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:45
-#, fuzzy
 msgid "Define el grupo por defecto para las cuentas importadas."
 msgstr "Definiert die Standardgruppe für den Kontoimport."
 
@@ -5238,12 +5099,11 @@ msgid "Soltar archivo aquí o click para seleccionar"
 msgstr "Dateien hier fallen lassen oder zum selektieren anklicken"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:102
-#, fuzzy
 msgid ""
 "Permite realizar la importación de Cuentas, Categorías y Clientes desde "
 "archivos XML y CSV."
 msgstr ""
-"Erlaubt Konten, Kategorien und Kunden aus einer XML oder CSV Datei zu "
+"Erlaubt es, Konten, Kategorien und Kunden aus einer XML- oder CSV-Datei zu "
 "importieren."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:104
@@ -5278,13 +5138,12 @@ msgstr ""
 "\"Notizen\""
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:114
-#, fuzzy
 msgid ""
 "En todos los casos, si el cliente o la categoría no están creados, se crean "
 "automáticamente."
 msgstr ""
-"In allen Fällen, sofern der Kunden- oder Kategorienname noch nicht "
-"existieren, wird dieser automatisch erstellt."
+"In dem Fall, dass der Kunden- oder Kategorienname noch nicht existiert, wird "
+"dieser automatisch erstellt."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:121
 msgid "XML"
@@ -5366,8 +5225,9 @@ msgid ""
 "Si no está instalado, es necesario instalar las locales en el sistema "
 "operativo. Más información en Wiki."
 msgstr ""
-"Wenn es nicht installiert ist, musst du die richtigen "
-"Betriebssystemgebietsschemas installieren. Weitere Informationen unter Wiki"
+"Wenn nicht installiert, müssen Sie die richtigen "
+"Betriebssystemgebietsschemas installieren. Weitere Informationen finden Sie "
+"im Wiki."
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:99
 #: ../../../../inc/themes/material-blue/views/config/info.inc:109
@@ -5377,7 +5237,7 @@ msgstr "Verschlüsselte Sitzung"
 #: ../../../../inc/themes/material-blue/views/config/info.inc:104
 msgid "Indica si los datos de la sesión están encriptados en el servidor"
 msgstr ""
-"Zeigt an ob die Sitzungadaten auf dem Server verschlüsselt sind oder nicht"
+"Zeigt an, ob die Sitzungsdaten auf dem Server verschlüsselt sind oder nicht"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:111
 msgid "Sí"
@@ -5393,9 +5253,8 @@ msgid "Plugins Cargados"
 msgstr "Geladene Plugins"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:22
-#, fuzzy
 msgid "Habilita de autentificación mediante servidor LDAP."
-msgstr "Aktiviert authentifizierung mit einem LDAP Server."
+msgstr "Aktiviert die Authentifizierung über einen LDAP-Server."
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:26
 msgid "Este método utilizará MySQL en caso de fallo."
@@ -5414,9 +5273,8 @@ msgid "Active Directory"
 msgstr "Active Directory"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:67
-#, fuzzy
 msgid "Nombre o dirección IP del servidor de LDAP."
-msgstr "Hostname oder IP Adresse des LDAP Servers"
+msgstr "Hostname oder IP-Adresse des LDAP-Servers"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:71
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:102
@@ -5452,17 +5310,16 @@ msgid "Base en la que realizar la búsqueda de usuarios de LDAP."
 msgstr "LDAP Basis für die LDAP Nutzer-Suche"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:179
-#, fuzzy
 msgid ""
 "Grupo de LDAP al que debe de pertenecer el usuario para permitir el acceso."
-msgstr "LDAP Gruppe, zu welcher der Benutzer gehören muss, um sich anzumelden."
+msgstr ""
+"LDAP Gruppe, zu welcher der Benutzer gehören muss, um sich anmelden zu können"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:183
 msgid "Este grupo debe de estar ubicado en la base de búsquedas de LDAP."
-msgstr "Diese Gruppe muss in der LDAP Suchbasis platziert werden."
+msgstr "Diese Gruppe muss in der LDAP Suchbasis platziert werden"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:212
-#, fuzzy
 msgid ""
 "Define el grupo de usuarios por defecto para los nuevos usuarios de LDAP."
 msgstr "Legen Sie die Standard-Gruppe für neue LDAP-Benutzer fest"
@@ -5473,22 +5330,19 @@ msgid "Perfil por Defecto"
 msgstr "Standard-Profil"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:236
-#, fuzzy
 msgid ""
 "Define el perfil de usuarios por defecto para los nuevos usuarios de LDAP."
-msgstr "Definiert das Standardprofil für neu erstellte LDAP Benutzer."
+msgstr "Definiert das Standardprofil für neu erstellte LDAP Benutzer"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:255
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:265
-#, fuzzy
 msgid "Atributo Login"
-msgstr "Login Attribute"
+msgstr "Login Attribut"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:260
-#, fuzzy
 msgid ""
 "Define el atributo a utilizar para el login del usuario en la importación."
-msgstr "Defines the attribute for the user's login when importing."
+msgstr "Definiert das Attribut für den Benutzerlogin beim Import"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:278
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:281
@@ -5518,13 +5372,12 @@ msgid "Dirección de correo de envío"
 msgstr "E-Mail-Adresse des Empfängers"
 
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:124
-#, fuzzy
 msgid ""
 "Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
 "cuentas sin permisos."
 msgstr ""
 "Erlaubt, dass Nutzer Änderungen an oder Zugriff auf Konten, zu denen sie "
-"keinen Zugriff haben, erbitten können."
+"keinen Zugriff haben, anfragen können."
 
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:133
 msgid "Habilitar peticiones por correo"
@@ -5554,7 +5407,7 @@ msgstr "URL, welche das Wiki zur Inhaltssuche nutzt."
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:45
 msgid "Como parámetro se utiliza el nombre del cliente."
-msgstr "Der Kundenname wird benutzt als Parameter."
+msgstr "Kundenname als Parameter benutzen."
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:49
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:82
@@ -5569,9 +5422,8 @@ msgid "URL de página en Wiki"
 msgstr "Wiki URL"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:74
-#, fuzzy
 msgid "URL que utiliza la wiki para acceder a los detalles de una página."
-msgstr "URL, welche das Wiki für den Inhaltszugriff nutzt."
+msgstr "URL für das Wiki mit den Seitendetails."
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:78
 msgid ""
@@ -5630,7 +5482,7 @@ msgstr "DokuWiki-Basis-URL"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:214
 msgid "Usuario para conectar a la API de DokuWiki."
-msgstr "Benutzer zum Verbinden zur DokuWiki API"
+msgstr "Benutzer zum Verbinden mit der DokuWiki API"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:242
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:258
@@ -5659,7 +5511,7 @@ msgstr "IP"
 
 #: ../../../../inc/themes/material-blue/views/grid/datagrid-nav-full.inc:11
 msgid "Filtro ON"
-msgstr "Filter Eingeschaltet"
+msgstr "Filter eingeschaltet"
 
 #: ../../../../inc/themes/material-blue/views/grid/datatabs-grid.inc:102
 msgid "Eliminar Seleccionados"
@@ -5719,12 +5571,10 @@ msgid "Nombre del perfil"
 msgstr "Profilname"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:40
-#, fuzzy
 msgid "Crear nueva cuenta"
-msgstr "Neuen Account erstellen"
+msgstr "Neues Konto erstellen"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:40
-#, fuzzy
 msgid "Crear"
 msgstr "Erstellen"
 
@@ -5757,9 +5607,8 @@ msgid "Editar Clave"
 msgstr "Passwort ändern"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:82
-#, fuzzy
 msgid "Eliminar cuenta"
-msgstr "Account löschen"
+msgstr "Konto löschen"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:89
 msgid "Ver archivos de cuenta"
@@ -5804,7 +5653,7 @@ msgstr "Profilverwaltung"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:161
 msgid "Gestión de categorías"
-msgstr "Kategorienverwaltung"
+msgstr "Kategorieverwaltung"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:168
 msgid "Gestión de clientes"
@@ -5812,7 +5661,7 @@ msgstr "Kundenverwaltung"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:175
 msgid "Gestión de campos personalizados"
-msgstr "Spezifische Feld Verwaltung"
+msgstr "Spezifische Felderverwaltung"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:182
 msgid "Gestión de autorizaciones API"
@@ -5844,7 +5693,7 @@ msgstr "Sicherung"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:247
 msgid "Realizar importación de cuentas"
-msgstr "Accountimport"
+msgstr "Kontoimport"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:253
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:255
@@ -5930,9 +5779,8 @@ msgid "Fecha Clave Maestra"
 msgstr "Datum des Master-Passworts"
 
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:38
-#, fuzzy
 msgid "Indica si la conexión utiliza HTTPS."
-msgstr "Zeigt, ob die Verbindung HTTPS nutzt"
+msgstr "Zeigt, ob die Verbindung über HTTPS aufgebaut wurde"
 
 #: ../../../../inc/themes/material-blue/views/main/body-footer.inc:38
 msgid ""
@@ -5961,9 +5809,8 @@ msgid "Hay %d notificaciones pendientes"
 msgstr "Es gibt %d ungelesene Benachrichtigungen"
 
 #: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:48
-#, fuzzy
 msgid "No hay no hay notificaciones pendientes"
-msgstr "Anstehende Benachrichtigungen sind nicht vorhanden"
+msgstr "Keine neuen Benachrichtigungen"
 
 #: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:73
 #: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:132
@@ -6007,7 +5854,7 @@ msgstr "DB Zugriffsbenutzer"
 
 #: ../../../../inc/themes/material-blue/views/main/install.inc:85
 msgid "Usuario con permisos de administrador de MySQL"
-msgstr "Benutzer mit MySQL Admin Rechte"
+msgstr "Benutzer mit MySQL-Administratorrechten"
 
 #: ../../../../inc/themes/material-blue/views/main/install.inc:93
 msgid "Clave acceso BBDD"
@@ -6060,7 +5907,7 @@ msgstr "Passwortänderung initiiert."
 
 #: ../../../../inc/themes/material-blue/views/main/passreset.inc:25
 msgid "Email del Usuario"
-msgstr "Benutzer-E-Mail"
+msgstr "Benutzer E-Mail"
 
 #: ../../../../inc/themes/material-blue/views/main/passreset.inc:55
 msgid "Volver a iniciar sesión"
@@ -6102,49 +5949,42 @@ msgid "Código de Seguridad"
 msgstr "Sicherheitscode"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:27
-#, fuzzy
 msgid ""
 "Este código se encuentra en el archivo de configuración de sysPass con la "
 "etiqueta \"upgradeKey\""
 msgstr ""
-"Dieser Code ist in der sysPass Konfigurationsdatei mit dem Tag-Namen "
-"\"upgradekey\" gesetzt"
+"Diesen Code finden Sie in der sysPass Konfigurationsdatei mit dem Tag-Namen "
+"\"upgradekey\""
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:35
-#, fuzzy
 msgid ""
 "Se han encontrado elementos huérfanos. Por favor, modifique estos elementos "
 "o indique los IDs por defecto para los elementos huérfanos."
 msgstr ""
-"Einige verwaiste Einträge wurden gefunden. Bitte ändern Sie diese Einträge "
-"oder geben Sie die Default-IDs für sie ein."
+"Einige verwaiste Konten wurden gefunden. Bitte ändern Sie diese Einträge "
+"oder geben Sie die Standard-IDs für diese ein."
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:37
 msgid "Si no se indican los IDs, se crearán nuevos elementos."
 msgstr "Wenn die ID des Objektes nicht gesetzt ist, wird sie erstellt."
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:59
-#, fuzzy
 msgid "Introducir un ID de usuario válido para cuentas"
-msgstr "Bitte geben Sie eine gültige Benitzer-ID für die Accounts ein"
+msgstr "Bitte geben Sie einen gültigen Benutzernamen für die Konten ein"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:71
-#, fuzzy
 msgid "Introducir un ID de categoría válido para cuentas"
-msgstr "Bitte geben Sie eine gültige Kategorie-ID für die Accounts ein"
+msgstr "Bitte geben Sie eine gültige Kategorie-ID für die Konten ein"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:83
-#, fuzzy
 msgid "Introducir un ID de cliente válido para cuentas"
-msgstr "Bitte geben Sie eine gültige Customer-ID für die Accounts ein"
+msgstr "Bitte geben Sie eine gültige Customer-ID für die Konten ein"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:96
-#, fuzzy
 msgid "Introducir un ID de grupo válido para usuarios"
 msgstr "Bitte geben Sie eine gültige Gruppen-ID für die Benutzer ein"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:106
-#, fuzzy
 msgid "Introducir un ID de perfil válido para usuarios"
 msgstr "Bitte geben Sie eine gültige Profil-ID für die Benutzer ein"
 
@@ -6154,19 +5994,19 @@ msgid ""
 "necesario reencriptar los datos almacenados"
 msgstr ""
 "Das Update verwendet ein neues Verschlüsselungsschema. Es ist erforderlich, "
-"dass alle verschlüsselten Daten zu aktualisieren."
+"dass alle verschlüsselten Daten aktualisiert werden."
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:138
 msgid "Introducir login de usuario válido"
-msgstr "Bitte gültigen Kontonamen angeben"
+msgstr "Bitte einen gültigen Kontonamen angeben"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:150
 msgid "He realizado una copia de seguridad completa de sysPass"
-msgstr "Ich habe eine vollständige sysPass Sicherung durchgeführt"
+msgstr "Ich habe eine vollständige sysPass-Sicherung durchgeführt."
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:164
 msgid "Por favor espere mientras el proceso se ejecuta"
-msgstr "Bitte warten Sie, während der Vorgang andauert"
+msgstr "Vorgang läuft. Bitte warten."
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:174
 msgid "Iniciar Actualización"
@@ -6181,14 +6021,14 @@ msgid "Global"
 msgstr "Global"
 
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:92
-#, fuzzy
 msgid ""
 "Ordena los resultados de búsqueda por el número de visitas de las cuentas."
-msgstr "Sortiert Kontensuchresultate anhand der Anzahl der Kontenzugriffe."
+msgstr ""
+"Sortiert das Suchergebnis der Konten anhand der Anzahl der Kontenzugriffe."
 
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:100
 msgid "Ordenar resultados por visitas"
-msgstr "Sortiere Suchresultate nach Aufrufen"
+msgstr "Suchergebnis nach Aufrufen sortieren"
 
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:110
 msgid "Mostrar una barra de navegación superior en las búsquedas."
@@ -6196,12 +6036,13 @@ msgstr "Zeigt eine Navigationsleiste oberhalb der Suchresultate."
 
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:118
 msgid "Barra de navegación superior"
-msgstr "Navigationsleiste oben"
+msgstr "Obere Navigationsleiste"
 
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:128
 msgid ""
 "Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas."
-msgstr "Erlaubt die versteckten Aktionen der Kontensuchseite anzuzeigen."
+msgstr ""
+"Ermöglicht es, die versteckten Aktionen der Kontensuchmaske anzuzeigen."
 
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:137
 msgid "Mostrar Acciones Ocultas"
