@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 2.0beta5\n"
 "X-Contributors: Lukas, Normo, Erik B., GoatMaster, Thomas L., madcoda9000, "
-"CyrosX, Sascha H.\n"
+"CyrosX, Sascha H., alexanderbuhler \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: ../../../..\n"
 
