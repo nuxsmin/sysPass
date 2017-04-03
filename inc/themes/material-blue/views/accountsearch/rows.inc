@@ -73,6 +73,9 @@
                                 <div class="field-text"><?php echo $AccountSearchItem->getShortUrl(); ?></div>
                             <?php endif; ?>
                         </div>
+                    <?php else: ?>
+                        <div class="field-user field-text label-field"></div>
+                        <div class="field-url field-text label-field"></div>
                     <?php endif; ?>
                 </div>
                 <div class="label-row-down">

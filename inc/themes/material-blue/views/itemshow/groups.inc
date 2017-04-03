@@ -50,7 +50,7 @@
                         <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
                         <?php /** @var array $users */
                         foreach ($users as $user): ?>
-                            <?php $selected = \SP\Util\Util::checkInObjectArray($groupUsers, 'getUsertogroupUserId', $user->id) ? 'selected' : ''; ?>
+                            <?php $selected = \SP\Util\Util::checkInObjectArrayMethod($groupUsers, 'getUsertogroupUserId', $user->id) ? 'selected' : ''; ?>
                             <option
                                 value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
                         <?php endforeach; ?>

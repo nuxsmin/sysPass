@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-03 13:23+0100\n"
-"PO-Revision-Date: 2017-04-03 13:25+0100\n"
+"POT-Creation-Date: 2017-04-03 17:40+0100\n"
+"PO-Revision-Date: 2017-04-03 17:42+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -326,8 +326,8 @@ msgstr "Error while updating the password"
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:92
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:197
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:213
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:591
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:619
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:593
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:621
 msgid "Actualizar Clave Maestra"
 msgstr "Update Master Password"
 
@@ -646,12 +646,12 @@ msgid "Cliente eliminado"
 msgstr "Customer deleted"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:429
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:746
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:748
 msgid "Proceso de backup finalizado"
 msgstr "Backup process finished"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:435
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:741
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:743
 #: ../../../../inc/SP/Core/Backup.class.php:75
 msgid "Error al realizar el backup"
 msgstr "Error while doing the backup"
@@ -659,8 +659,8 @@ msgstr "Error while doing the backup"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:436
 #: ../../../../inc/SP/Controller/ChecksController.class.php:113
 #: ../../../../inc/SP/Controller/ChecksController.class.php:142
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:719
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:742
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:721
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:744
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1090
 #: ../../../../inc/SP/Import/Import.class.php:115
 msgid "Revise el registro de eventos para más detalles"
@@ -719,7 +719,7 @@ msgid "Id de cliente"
 msgstr "Customer Id"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:499
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:652
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:654
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:56
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:62
@@ -1151,10 +1151,10 @@ msgid "Proxy deshabilitado"
 msgstr "Proxy disabled"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:223
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:307
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:375
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:424
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:477
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:309
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:377
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:426
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:479
 msgid "Sección"
 msgstr "Section"
 
@@ -1166,10 +1166,10 @@ msgid "General"
 msgstr "General"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:237
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:531
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:615
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:686
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:736
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:533
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:617
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:688
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:738
 #: ../../../../inc/SP/Forms/UserForm.class.php:96
 #: ../../../../inc/SP/Forms/UserForm.class.php:108
 #: ../../../../inc/SP/Forms/UserForm.class.php:122
@@ -1188,12 +1188,12 @@ msgstr "Error while saving the configuration"
 msgid "Modificar Configuración"
 msgstr "Edit Configuration"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:288
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:290
 msgid "El tamaño máximo por archivo es de 16MB"
 msgstr "The maximum size per file is 16MB"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:307
-#: ../../../../inc/SP/Controller/ConfigController.class.php:204
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:309
+#: ../../../../inc/SP/Controller/ConfigController.class.php:205
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:365
 #: ../../../../inc/SP/Controller/MainController.class.php:608
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:90
@@ -1204,75 +1204,75 @@ msgstr "The maximum size per file is 16MB"
 msgid "Cuentas"
 msgstr "Accounts"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:329
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:331
 msgid "Faltan parámetros de Wiki"
 msgstr "Missing Wiki parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:339
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:341
 msgid "Wiki habiltada"
 msgstr "Wiki enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:343
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:345
 msgid "Wiki deshabilitada"
 msgstr "Wiki disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:356
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:358
 msgid "Faltan parámetros de DokuWiki"
 msgstr "Missing DokuWiki parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:368
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:370
 msgid "DokuWiki habiltada"
 msgstr "DokuWiki enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:372
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:374
 msgid "DokuWiki deshabilitada"
 msgstr "DokuWiki disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:375
-#: ../../../../inc/SP/Controller/ConfigController.class.php:236
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:377
+#: ../../../../inc/SP/Controller/ConfigController.class.php:237
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:63
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:10
 msgid "Wiki"
 msgstr "Wiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:402
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:404
 msgid "Faltan parámetros de LDAP"
 msgstr "Missing LDAP parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:417
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:419
 msgid "LDAP habiltado"
 msgstr "LDAP enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:421
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:423
 msgid "LDAP deshabilitado"
 msgstr "LDAP disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:424
-#: ../../../../inc/SP/Controller/ConfigController.class.php:269
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:426
+#: ../../../../inc/SP/Controller/ConfigController.class.php:270
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:7
 msgid "LDAP"
 msgstr "LDAP"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:450
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:452
 msgid "Faltan parámetros de Correo"
 msgstr "Missing Mail parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:468
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:470
 msgid "Correo habiltado"
 msgstr "Mail enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:474
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:476
 msgid "Correo deshabilitado"
 msgstr "Mail disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:477
-#: ../../../../inc/SP/Controller/ConfigController.class.php:300
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:479
+#: ../../../../inc/SP/Controller/ConfigController.class.php:301
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:7
 msgid "Correo"
 msgstr "Mail"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:499
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:594
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:501
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:596
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:279
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:516
 #: ../../../../inc/SP/Controller/LoginController.class.php:312
@@ -1280,83 +1280,83 @@ msgstr "Mail"
 msgid "Clave maestra actualizada"
 msgstr "Master Password updated"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:500
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:596
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:502
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:598
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:279
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:516
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Please, restart the session for update it"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:506
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:508
 msgid "Clave maestra no indicada"
 msgstr "Master Password needed"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:511
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:513
 msgid "Se ha de confirmar el cambio de clave"
 msgstr "The password update must be confirmed"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:516
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:518
 msgid "Las claves son idénticas"
 msgstr "The passwords are the same"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:521
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:523
 msgid "Las claves maestras no coinciden"
 msgstr "The master passwords do not match"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:526
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:528
 msgid "La clave maestra actual no coincide"
 msgstr "The current master password does not match"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:539
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:541
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:61
 #: ../../../../inc/SP/Import/Import.class.php:89
 msgid "No es posible iniciar una transacción"
 msgstr "Unable to start a transaction"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:552
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:554
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Error while updating the accounts' passwords"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:563
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:565
 msgid "Errores al actualizar las claves de las cuentas del histórico"
 msgstr "Error while updating the accounts' passwords in history"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:572
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:574
 msgid "Errores al actualizar datos de campos personalizados"
 msgstr "Error while updating the custom fields data"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:579
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:581
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:71
 #: ../../../../inc/SP/Import/Import.class.php:95
 msgid "No es posible finalizar una transacción"
 msgstr "Unable to finish a transaction"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:599
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:601
 msgid "Error al guardar el hash de la clave maestra"
 msgstr "Error while saving the Master Password's hash"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:622
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:624
 msgid "Hash de clave maestra actualizado"
 msgstr "Master password hash updated"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:626
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:628
 msgid "Error al actualizar el hash de la clave maestra"
 msgstr "Error while updating the master password hash"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:648
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:650
 msgid "Generar Clave Temporal"
 msgstr "Generate Temporary Password"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:651
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:653
 msgid "Clave Temporal Generada"
 msgstr "Temporary Password Generated"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:656
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:658
 #, php-format
 msgid "Clave Maestra %s"
 msgstr "Master Password %s"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:657
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:659
 msgid ""
 "Se ha generado una nueva clave para el acceso a sysPass y se solicitará en "
 "el siguiente inicio."
@@ -1364,73 +1364,73 @@ msgstr ""
 "A new sysPass master password has been generated, so the next time you log "
 "into the application it will be requested."
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:659
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:661
 #, php-format
 msgid "La nueva clave es: %s"
 msgstr "The new Master Password is: %s"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:661
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:663
 msgid "No olvide acceder lo antes posible para guardar los cambios."
 msgstr ""
 "Please, don't forget to log in as soon as possible to save the changes."
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:672
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:674
 msgid "Error al generar clave temporal"
 msgstr "Error while generating the temporary password"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:713
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:715
 #: ../../../../inc/SP/Forms/AccountForm.class.php:136
 #: ../../../../inc/SP/Forms/UserForm.class.php:112
 msgid "Las claves no coinciden"
 msgstr "The passwords do not match"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:718
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:720
 msgid "Error al realizar la exportación"
 msgstr "Error while exporting"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:723
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:725
 msgid "Proceso de exportación finalizado"
 msgstr "Export process finished"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:329
+#: ../../../../inc/SP/Controller/ConfigController.class.php:330
 #: ../../../../inc/SP/Core/Acl.class.php:217
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:233
 msgid "Encriptación"
 msgstr "Encryption"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:374
+#: ../../../../inc/SP/Controller/ConfigController.class.php:375
 msgid "Último backup"
 msgstr "Last backup"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:374
+#: ../../../../inc/SP/Controller/ConfigController.class.php:375
 msgid "No se encontraron backups"
 msgstr "There aren't any backups available"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:385
+#: ../../../../inc/SP/Controller/ConfigController.class.php:386
 msgid "Última exportación"
 msgstr "Last export"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:385
+#: ../../../../inc/SP/Controller/ConfigController.class.php:386
 msgid "No se encontró archivo de exportación"
 msgstr "No export file found"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:387
+#: ../../../../inc/SP/Controller/ConfigController.class.php:388
 #: ../../../../inc/SP/Core/Acl.class.php:218
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:7
 msgid "Copia de Seguridad"
 msgstr "Backup"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:409
+#: ../../../../inc/SP/Controller/ConfigController.class.php:410
 #: ../../../../inc/SP/Import/Import.class.php:66
 #: ../../../../inc/SP/Import/ImportBase.class.php:86
 msgid "Importar Cuentas"
 msgstr "Import Accounts"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:432
+#: ../../../../inc/SP/Controller/ConfigController.class.php:433
 msgid "No instalado"
 msgstr "Not installed"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:435
+#: ../../../../inc/SP/Controller/ConfigController.class.php:436
 #: ../../../../inc/SP/Controller/MainController.class.php:610
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:77
 msgid "Información"
@@ -1585,7 +1585,7 @@ msgstr "Delete Field"
 #: ../../../../inc/SP/Core/Acl.class.php:193
 #: ../../../../inc/themes/material-blue/views/account/files.inc:5
 #: ../../../../inc/themes/material-blue/views/account/files.inc:15
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:208
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:231
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:89
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:203
 msgid "Archivos"
@@ -4138,12 +4138,12 @@ msgid "Recibir notificaciones?"
 msgstr "Send notifies?"
 
 #: ../../../../js/strings.js.php:74
-#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:133
+#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:136
 msgid "Marcar Favorito"
 msgstr "Mark as Favorite"
 
 #: ../../../../js/strings.js.php:75
-#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:123
+#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:126
 msgid "Eliminar Favorito"
 msgstr "Delete Favorite"
 
@@ -4227,7 +4227,7 @@ msgstr "Select date"
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:102
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:25
 #: ../../../../inc/themes/material-blue/views/account/request.inc:58
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:297
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:320
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:167
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:286
 #: ../../../../inc/themes/material-blue/views/config/general.inc:29
@@ -4243,7 +4243,7 @@ msgstr "Back"
 
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:65
 #: ../../../../inc/themes/material-blue/views/account/account.inc:167
-#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:140
+#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:143
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:129
 msgid "Notas"
 msgstr "Notes"
@@ -4253,7 +4253,7 @@ msgid "Accesos"
 msgstr "Accesses"
 
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:20
-#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:104
+#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:107
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:117
 msgid "Permisos"
 msgstr "Permissions"
@@ -4279,7 +4279,7 @@ msgid "Grupo Principal"
 msgstr "Main Group"
 
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:87
-#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:111
+#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:114
 msgid "Cuenta Privada"
 msgstr "Private Account"
 
@@ -4430,20 +4430,20 @@ msgstr "Search in Wiki"
 msgid "Abrir enlace a"
 msgstr "Open link to"
 
-#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:95
+#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:98
 msgid "Clave Caducada"
 msgstr "Password Expired"
 
-#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:149
+#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:152
 msgid "Archivos adjuntos"
 msgstr "Attachments"
 
-#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:159
-#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:170
+#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:162
+#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:173
 msgid "Enlace a Wiki"
 msgstr "Link to Wiki"
 
-#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:162
+#: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:165
 msgid "Ver en Wiki"
 msgstr "View at Wiki"
 
@@ -4568,75 +4568,93 @@ msgstr "Enables to show account's search results on a card like format."
 msgid "Resultados en Tarjetas"
 msgstr "Results like Cards"
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:123
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:126
+msgid ""
+"Habilita el acceso a los usuarios que estén incluidos en los grupos "
+"secundarios."
+msgstr "Grants access to the users that are included in the secondary groups."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:129
+msgid ""
+"Por defecto el usuario de un grupo secundario es permitido si el grupo "
+"secundario está establecido como el primario del usuario."
+msgstr ""
+"By default, the user in a secondary group is granted if the secondary group "
+"is set as the user's main group."
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:139
+msgid "Acceso Grupos Secundarios"
+msgstr "Secondary Groups Access"
+
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:146
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:189
 msgid "Enlaces Públicos"
 msgstr "Public Links"
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:133
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:156
 msgid ""
 "Habilita la posibilidad de generar enlaces públicos para ver los detalles de "
 "una cuenta."
 msgstr ""
 "Enables the ability to create public links to view an account's details"
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:137
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:160
 msgid ""
 "Las cuentas enlazadas serán visibles por cualquiera que disponga del enlace."
 msgstr "The linked accounts will be visible by anyone that have the link."
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:141
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:164
 msgid ""
 "Para crear enlaces, los usuarios tienen que tener activada la opción en su "
 "perfl."
 msgstr ""
 "To create links, the users must have activated the option in their profiles."
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:151
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:174
 msgid "Habilitar Enlaces Públicos"
 msgstr "Enable Public Links"
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:157
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:166
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:180
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:189
 msgid "Tiempo de caducidad"
 msgstr "Expire time"
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:172
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:181
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:195
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:204
 msgid "Número máximo  de visitas"
 msgstr "Maximum visits"
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:191
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:214
 msgid "La clave de la cuenta es visualizada como una imagen."
 msgstr "The account password is shown as image."
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:201
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:224
 msgid "Usar imagen para clave"
 msgstr "Use an image for password"
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:218
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:241
 msgid "Habilita la subida/descarga de archivos para las cuentas."
 msgstr "Enables the uploading and downloading of accounts files."
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:228
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:251
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:203
 msgid "Gestión de archivos"
 msgstr "Files management"
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:234
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:252
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:257
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:275
 msgid "Extensiones de archivos permitidas"
 msgstr "Allowed file extensions"
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:239
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:262
 msgid "Extensiones permitidas para la subida de archivos."
 msgstr "Allowed file extensions for uploading."
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:243
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:266
 msgid "Se permite un máximo de 4 caracteres."
 msgstr "Max 4 characters allowed."
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:247
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:270
 msgid ""
 "Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
 "configuración."
@@ -4644,19 +4662,19 @@ msgstr ""
 "Write the extension and press enter to add. Remember to save the "
 "configuration."
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:260
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:283
 msgid "Tamaño máximo de archivo"
 msgstr "Maximum file size"
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:265
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:288
 msgid "Establece el tamaño máximo para subir archivos."
 msgstr "Set the maximum file size for uploading."
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:269
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:292
 msgid "El máximo absuluto es de 16MB."
 msgstr "The absolute maximum is 16MB."
 
-#: ../../../../inc/themes/material-blue/views/config/accounts.inc:280
+#: ../../../../inc/themes/material-blue/views/config/accounts.inc:303
 msgid "Tamaño máximo de archivo en kilobytes"
 msgstr "Maximum file size in kilobytes"
 

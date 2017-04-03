@@ -177,4 +177,44 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     {
         // TODO: Implement getByIdBatch() method.
     }
+
+    /**
+     * Comprobar si un usuario está en el grupo
+     *
+     * @param $userId
+     * @param $groupId
+     * @return bool
+     */
+    public function checkUserInGroup($groupId, $userId)
+    {
+        $query = /** @lang SQL */
+            'SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = ? AND usertogroup_userId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($groupId);
+        $Data->addParam($userId);
+
+        DB::getResults($Data);
+
+        return ($Data->getQueryNumRows() === 1);
+    }
+
+    /**
+     * Devolver los grupos a los que pertenece el usuario
+     *
+     * @param $userId
+     * @return array
+     */
+    public function getGroupsForUser($userId)
+    {
+        $query = /** @lang SQL */
+            'SELECT usertogroup_groupId AS groupId FROM usrToGroups WHERE usertogroup_userId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userId);
+
+        return DB::getResultsArray($Data);
+    }
 }

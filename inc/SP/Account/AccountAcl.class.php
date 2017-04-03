@@ -24,12 +24,14 @@
 
 namespace SP\Account;
 
+use SP\Config\Config;
 use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\DataModel\UserData;
 use SP\Mgmt\Groups\GroupUsers;
 use SP\Util\Checks;
+use SP\Util\Util;
 
 /**
  * Class AccountAcl
@@ -143,7 +145,7 @@ class AccountAcl
      * AccountAcl constructor.
      *
      * @param AccountBase $Account
-     * @param int         $action
+     * @param int $action
      */
     public function __construct(AccountBase $Account = null, $action)
     {
@@ -433,16 +435,23 @@ class AccountAcl
     {
         $AccountData = $this->Account->getAccountData();
 
-        // Comprobar si el usuario está vinculado desde un grupo
-        foreach (GroupUsers::getItem()->getById($AccountData->getAccountUserGroupId()) as $GroupUsersData) {
-            if ($GroupUsersData->getUsertogroupUserId() === $this->UserData->getUserId()) {
-                return true;
-            }
+        // Comprobar si el usuario está vinculado desde el grupo principal de la cuenta
+        if (GroupUsers::getItem()->checkUserInGroup($AccountData->getAccountUserGroupId(), $this->UserData->getUserId())) {
+            return true;
         }
 
-        // Comprobar si el grupo del usuario está vinculado como grupo secundario de la cuenta
+        // Grupos en los que se encuentra el usuario
+        $groupsId = GroupUsers::getItem()->getGroupsForUser($this->UserData->getUserId());
+
+        // Comprobar si el grupo del usuario está vinculado desde los grupos secundarios de la cuenta
         foreach ($AccountData->getUserGroupsId() as $groupId) {
-            if ($groupId === $this->UserData->getUserGroupId()) {
+            // Consultar el grupo principal del usuario
+            if ($groupId === $this->UserData->getUserGroupId()
+                // o... permitir los grupos que no sean el principal del usuario?
+                || (Config::getConfig()->isAccountFullGroupAccess()
+                    // Comprobar si el usuario está vinculado desde los grupos secundarios de la cuenta
+                    && Util::checkInObjectArray($groupsId, 'groupId', $groupId))
+            ) {
                 return true;
             }
         }

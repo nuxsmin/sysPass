@@ -341,6 +341,10 @@ class ConfigData implements JsonSerializable
      * @var bool
      */
     private $encryptSession = false;
+    /**
+     * @var bool
+     */
+    private $accountFullGroupAccess = false;
 
     /**
      * @return boolean
@@ -1807,6 +1811,25 @@ class ConfigData implements JsonSerializable
     public function setEncryptSession($encryptSession)
     {
         $this->encryptSession = (bool)$encryptSession;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccountFullGroupAccess()
+    {
+        return (bool)$this->accountFullGroupAccess;
+    }
+
+    /**
+     * @param bool $accountFullGroupAccess
+     * @return $this
+     */
+    public function setAccountFullGroupAccess($accountFullGroupAccess)
+    {
+        $this->accountFullGroupAccess = (bool)$accountFullGroupAccess;
 
         return $this;
     }

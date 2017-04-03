@@ -424,7 +424,7 @@ class AccountSearch
             $arrQueryWhere[] = '(' . implode(' AND ', $arrFilterSelect) . ')';
         }
 
-        $arrQueryWhere = array_merge($arrQueryWhere, AccountUtil::getAccountFilterUser($Data));
+        $arrQueryWhere = array_merge($arrQueryWhere, AccountUtil::getAccountFilterUser($Data, $this->globalSearch));
 
         if ($this->limitCount > 0) {
             $queryLimit = '?, ?';

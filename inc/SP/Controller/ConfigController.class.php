@@ -193,6 +193,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('chkAccountPassToImage', $this->Config->isAccountPassToImage() ? 'checked="checked"' : '');
         $this->view->assign('chkAccountLink', $this->Config->isAccountLink() ? 'checked="checked"' : '');
         $this->view->assign('accountCount', $this->Config->getAccountCount());
+        $this->view->assign('chkAccountFullGroupAccess', $this->Config->isAccountFullGroupAccess() ? 'checked="checked"' : '');
 
         // PublicLinks
         $this->view->assign('chkPubLinks', $this->Config->isPublinksEnabled() ? 'checked="checked"' : '');

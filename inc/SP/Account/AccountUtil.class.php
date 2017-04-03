@@ -240,23 +240,38 @@ class AccountUtil
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      *
      * @param QueryData $Data
+     * @param bool $useGlobalSearch
      * @return array
      */
-    public static function getAccountFilterUser(QueryData $Data)
+    public static function getAccountFilterUser(QueryData $Data, $useGlobalSearch = false)
     {
         if (!Session::getUserData()->isUserIsAdminApp()
             && !Session::getUserData()->isUserIsAdminAcc()
-            && !(Session::getUserProfile()->isAccGlobalSearch() && Config::getConfig()->isGlobalSearch())
+            && !($useGlobalSearch && Session::getUserProfile()->isAccGlobalSearch() && Config::getConfig()->isGlobalSearch())
         ) {
+            // Filtro usuario y grupo
             $filterUser[] = 'account_userId = ?';
             $Data->addParam(Session::getUserData()->getUserId());
             $filterUser[] = 'account_userGroupId = ?';
             $Data->addParam(Session::getUserData()->getUserGroupId());
-            $filterUser[] = 'account_id IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)';
+
+            // Filtro de cuenta en usuarios y grupos secundarios
+            $filterUser[] = /** @lang SQL */
+                'account_id IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)';
             $Data->addParam(Session::getUserData()->getUserId());
             $Data->addParam(Session::getUserData()->getUserGroupId());
-            $filterUser[] = 'account_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = account_userGroupId AND usertogroup_userId = ?)';
+
+            // Filtro de grupo principal de cuenta en grupos que incluyen al usuario
+            $filterUser[] = /** @lang SQL */
+                'account_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = account_userGroupId AND usertogroup_userId = ?)';
             $Data->addParam(Session::getUserData()->getUserId());
+
+            if (Config::getConfig()->isAccountFullGroupAccess()) {
+                // Filtro de grupos secundarios en grupos que incluyen al usuario
+                $filterUser[] = /** @lang SQL */
+                    'account_id = (SELECT accgroup_accountId AS accountId FROM accGroups INNER JOIN usrToGroups ON usertogroup_groupId = accgroup_groupId WHERE accgroup_accountId = account_id AND usertogroup_userId = ?)';
+                $Data->addParam(Session::getUserData()->getUserId());
+            }
 
             $queryWhere[] = '(' . implode(' OR ', $filterUser) . ')';
         }

@@ -117,6 +117,29 @@
                         </label>
                     </td>
                 </tr>
+                <tr>
+                    <td class="descField">
+                        <div id="help-account_fullgroup_access"
+                             class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                        <div class="mdl-tooltip mdl-tooltip--large" for="help-account_fullgroup_access">
+                            <p>
+                                <?php echo __('Habilita el acceso a los usuarios que estén incluidos en los grupos secundarios.'); ?>
+                            </p>
+                            <p>
+                                <?php echo __('Por defecto el usuario de un grupo secundario es permitido si el grupo secundario está establecido como el primario del usuario.'); ?>
+                            </p>
+                        </div>
+                    </td>
+                    <td class="valField">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_fullgroup_access">
+                            <input type="checkbox" id="account_fullgroup_access"
+                                   class="mdl-switch__input mdl-color-text--indigo-400"
+                                   name="account_fullgroup_access"
+                                <?php echo $chkAccountFullGroupAccess; ?>/>
+                            <span class="mdl-switch__label"><?php echo __('Acceso Grupos Secundarios'); ?></span>
+                        </label>
+                    </td>
+                </tr>
             </table>
 
             <div id="title" class="midroundup titleNormal">

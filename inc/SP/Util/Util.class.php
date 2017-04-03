@@ -109,9 +109,9 @@ class Util
             } while (in_array(0, $strength, true));
 
             return implode($pass);
-        } else {
-            return implode($passGen());
         }
+
+        return implode($passGen());
     }
 
     /**
@@ -233,12 +233,12 @@ class Util
                         'title' => $title,
                         'description' => $description,
                         'date' => $date];
-                } else {
-                    return true;
                 }
-            } else {
-                return false;
+
+                return true;
             }
+
+            return false;
         }
 
         return false;
@@ -355,7 +355,9 @@ class Util
 
         if (file_exists($appTmp . DIRECTORY_SEPARATOR . $file)) {
             return $appTmp;
-        } elseif (file_exists($sysTmp . DIRECTORY_SEPARATOR . $file)) {
+        }
+
+        if (file_exists($sysTmp . DIRECTORY_SEPARATOR . $file)) {
             return $sysTmp;
         }
 
@@ -405,7 +407,7 @@ class Util
      */
     public static function getVersion($retBuild = false, $normalized = false)
     {
-        $build = 17040301;
+        $build = 17040302;
         $version = [2, 1, 5];
 
         if ($normalized === true) {
@@ -456,9 +458,9 @@ class Util
             }
 
             return $notices;
-        } else {
-            debugLog($noticesData->message);
         }
+
+        debugLog($noticesData->message);
 
         return false;
     }
@@ -502,16 +504,15 @@ class Util
         // if not strict, we only have to check if something is false
         if (in_array($in, array('false', 'no', 'n', '0', 'off', false, 0), true) || !$in) {
             return false;
-        } else if ($strict) {
-            // if strict, check the equivalent true values
-            if (in_array($in, array('true', 'yes', 'y', '1', 'on', true, 1), true)) {
-                return true;
-            }
-        } else {
-            // not strict? let the regular php bool check figure it out (will
-            // largely default to true)
-            return ($in ? true : false);
         }
+
+        if ($strict && in_array($in, array('true', 'yes', 'y', '1', 'on', true, 1), true)) {
+            return true;
+        }
+
+        // not strict? let the regular php bool check figure it out (will
+        // largely default to true)
+        return ($in ? true : false);
     }
 
     /**
@@ -593,9 +594,9 @@ class Util
             }
 
             return unserialize($replace);
-        } else {
-            return $object;
         }
+
+        return $object;
     }
 
     /**
@@ -626,10 +627,29 @@ class Util
      * @param mixed $value
      * @return bool
      */
-    public static function checkInObjectArray(array $objectArray, $method, $value)
+    public static function checkInObjectArrayMethod(array $objectArray, $method, $value)
     {
         foreach ($objectArray as $object) {
-            if ($object->$method() === $value) {
+            if (is_callable([$object, $method]) && $object->$method() === $value) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Comprobar si un valor existe en un array de objetos
+     *
+     * @param array $objectArray
+     * @param string $property
+     * @param mixed $value
+     * @return bool
+     */
+    public static function checkInObjectArray(array $objectArray, $property, $value)
+    {
+        foreach ($objectArray as $object) {
+            if (isset($object->$property) && $object->$property == $value) {
                 return true;
             }
         }

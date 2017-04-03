@@ -270,12 +270,14 @@ class ConfigActionController implements ItemControllerInterface
         $globalSearchEnabled = Request::analyze('globalsearch', false, false, true);
         $accountPassToImageEnabled = Request::analyze('account_passtoimage', false, false, true);
         $accountLinkEnabled = Request::analyze('account_link', false, false, true);
+        $accountFullGroupAccessEnabled = Request::analyze('account_fullgroup_access', false, false, true);
         $accountCount = Request::analyze('account_count', 10);
         $resultsAsCardsEnabled = Request::analyze('resultsascards', false, false, true);
 
         $this->ConfigData->setGlobalSearch($globalSearchEnabled);
         $this->ConfigData->setAccountPassToImage($accountPassToImageEnabled);
         $this->ConfigData->setAccountLink($accountLinkEnabled);
+        $this->ConfigData->setAccountFullGroupAccess($accountFullGroupAccessEnabled);
         $this->ConfigData->setAccountCount($accountCount);
         $this->ConfigData->setResultsAsCards($resultsAsCardsEnabled);
 
