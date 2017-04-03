@@ -47,10 +47,9 @@ class Config
      */
     public static function loadConfig($reload = false)
     {
-        $ConfigData = Session::getConfig();
+        $ConfigData = self::$Config instanceof ConfigData ? self::$Config : Session::getConfig();
 
         if ($reload === true
-            || Session::getReload()
             || !is_object($ConfigData)
             || time() >= (Session::getConfigTime() + $ConfigData->getSessionTimeout() / 2)
         ) {
@@ -67,7 +66,7 @@ class Config
      */
     private static function arrayMapper()
     {
-        if (is_object(self::$Config)) {
+        if (self::$Config instanceof ConfigData) {
             return self::$Config;
         }
 
@@ -94,7 +93,7 @@ class Config
 
     /**
      * @param ConfigData $Config
-     * @param bool       $backup
+     * @param bool $backup
      */
     public static function saveConfig(ConfigData $Config = null, $backup = true)
     {
@@ -118,9 +117,15 @@ class Config
      */
     public static function getConfig()
     {
-        $Config = Session::getConfig();
+        if (self::$Config instanceof ConfigData) {
+            return self::$Config;
+        }
 
-        return is_object($Config) ? $Config : self::arrayMapper();
+        $ConfigData = Session::getConfig();
+
+        self::$Config = $ConfigData instanceof ConfigData ? $ConfigData : self::arrayMapper();
+
+        return self::$Config;
     }
 
     /**

@@ -134,6 +134,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('chkMaintenance', $this->Config->isMaintenance() ? 'checked="checked"' : '');
         $this->view->assign('chkUpdates', $this->Config->isCheckUpdates() ? 'checked="checked"' : '');
         $this->view->assign('chkNotices', $this->Config->isChecknotices() ? 'checked="checked"' : '');
+        $this->view->assign('chkEncryptSession', $this->Config->isEncryptSession() ? 'checked="checked"' : '');
         $this->view->assign('sessionTimeout', $this->Config->getSessionTimeout());
 
         // Events

@@ -27,6 +27,7 @@ namespace SP\Controller;
 use SP\Account\AccountCrypt;
 use SP\Account\AccountHistoryCrypt;
 use SP\Config\Config;
+use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
 use SP\Core\Backup;
@@ -38,7 +39,6 @@ use SP\Core\Init;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
-use SP\Core\Task;
 use SP\Core\TaskFactory;
 use SP\Core\XmlExport;
 use SP\Http\Request;
@@ -64,11 +64,18 @@ class ConfigActionController implements ItemControllerInterface
     use RequestControllerTrait;
 
     /**
+     * @var ConfigData
+     */
+    private $ConfigData;
+
+    /**
      * ConfigActionController constructor.
      */
     public function __construct()
     {
         $this->init();
+
+        $this->ConfigData = Config::getConfig();
     }
 
     /**
@@ -139,8 +146,6 @@ class ConfigActionController implements ItemControllerInterface
      */
     protected function generalAction()
     {
-        $Config = Session::getConfig();
-
         // General
         $siteLang = Request::analyze('sitelang');
         $siteTheme = Request::analyze('sitetheme', 'material-blue');
@@ -150,15 +155,17 @@ class ConfigActionController implements ItemControllerInterface
         $maintenanceEnabled = Request::analyze('maintenance', false, false, true);
         $checkUpdatesEnabled = Request::analyze('updates', false, false, true);
         $checkNoticesEnabled = Request::analyze('notices', false, false, true);
+        $encryptSessionEnabled = Request::analyze('encryptsession', false, false, true);
 
-        $Config->setSiteLang($siteLang);
-        $Config->setSiteTheme($siteTheme);
-        $Config->setSessionTimeout($sessionTimeout);
-        $Config->setHttpsEnabled($httpsEnabled);
-        $Config->setDebug($debugEnabled);
-        $Config->setMaintenance($maintenanceEnabled);
-        $Config->setCheckUpdates($checkUpdatesEnabled);
-        $Config->setChecknotices($checkNoticesEnabled);
+        $this->ConfigData->setSiteLang($siteLang);
+        $this->ConfigData->setSiteTheme($siteTheme);
+        $this->ConfigData->setSessionTimeout($sessionTimeout);
+        $this->ConfigData->setHttpsEnabled($httpsEnabled);
+        $this->ConfigData->setDebug($debugEnabled);
+        $this->ConfigData->setMaintenance($maintenanceEnabled);
+        $this->ConfigData->setCheckUpdates($checkUpdatesEnabled);
+        $this->ConfigData->setChecknotices($checkNoticesEnabled);
+        $this->ConfigData->setEncryptSession($encryptSessionEnabled);
 
         // Events
         $logEnabled = Request::analyze('log_enabled', false, false, true);
@@ -167,18 +174,20 @@ class ConfigActionController implements ItemControllerInterface
         $syslogServer = Request::analyze('remotesyslog_server');
         $syslogPort = Request::analyze('remotesyslog_port', 0);
 
-        $Config->setLogEnabled($logEnabled);
-        $Config->setSyslogEnabled($syslogEnabled);
+        $this->ConfigData->setLogEnabled($logEnabled);
+        $this->ConfigData->setSyslogEnabled($syslogEnabled);
 
         if ($remoteSyslogEnabled && (!$syslogServer || !$syslogPort)) {
             $this->JsonResponse->setDescription(__('Faltan parámetros de syslog remoto', false));
             return;
-        } elseif ($remoteSyslogEnabled) {
-            $Config->setSyslogRemoteEnabled($remoteSyslogEnabled);
-            $Config->setSyslogServer($syslogServer);
-            $Config->setSyslogPort($syslogPort);
-        } elseif ($Config->isSyslogEnabled()) {
-            $Config->setSyslogRemoteEnabled(false);
+        }
+
+        if ($remoteSyslogEnabled) {
+            $this->ConfigData->setSyslogRemoteEnabled($remoteSyslogEnabled);
+            $this->ConfigData->setSyslogServer($syslogServer);
+            $this->ConfigData->setSyslogPort($syslogPort);
+        } elseif ($this->ConfigData->isSyslogEnabled()) {
+            $this->ConfigData->setSyslogRemoteEnabled(false);
 
             $this->LogMessage->addDescription(__('Syslog remoto deshabilitado', false));
         }
@@ -195,24 +204,23 @@ class ConfigActionController implements ItemControllerInterface
         if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
             $this->JsonResponse->setDescription(__('Faltan parámetros de Proxy', false));
             return;
-        } elseif ($proxyEnabled) {
-            $Config->setProxyEnabled(true);
-            $Config->setProxyServer($proxyServer);
-            $Config->setProxyPort($proxyPort);
-            $Config->setProxyUser($proxyUser);
-            $Config->setProxyPass($proxyPass);
+        }
+
+        if ($proxyEnabled) {
+            $this->ConfigData->setProxyEnabled(true);
+            $this->ConfigData->setProxyServer($proxyServer);
+            $this->ConfigData->setProxyPort($proxyPort);
+            $this->ConfigData->setProxyUser($proxyUser);
+            $this->ConfigData->setProxyPass($proxyPass);
 
             $this->LogMessage->addDescription(__('Proxy habiltado', false));
-        } elseif ($Config->isProxyEnabled()) {
-            $Config->setProxyEnabled(false);
+        } elseif ($this->ConfigData->isProxyEnabled()) {
+            $this->ConfigData->setProxyEnabled(false);
 
             $this->LogMessage->addDescription(__('Proxy deshabilitado', false));
         }
 
         $this->LogMessage->addDetails(__('Sección', false), __('General', false));
-
-        // Recargar la aplicación completa para establecer nuevos valores
-//        Util::reload();
 
         $this->saveConfig();
     }
@@ -230,7 +238,7 @@ class ConfigActionController implements ItemControllerInterface
                 return;
             }
 
-            Config::saveConfig();
+            Config::saveConfig($this->ConfigData);
 
             if (Config::getConfig()->isMaintenance()) {
                 Util::lockApp(false);
@@ -258,8 +266,6 @@ class ConfigActionController implements ItemControllerInterface
      */
     protected function accountsAction()
     {
-        $Config = Session::getConfig();
-
         // Accounts
         $globalSearchEnabled = Request::analyze('globalsearch', false, false, true);
         $accountPassToImageEnabled = Request::analyze('account_passtoimage', false, false, true);
@@ -267,11 +273,11 @@ class ConfigActionController implements ItemControllerInterface
         $accountCount = Request::analyze('account_count', 10);
         $resultsAsCardsEnabled = Request::analyze('resultsascards', false, false, true);
 
-        $Config->setGlobalSearch($globalSearchEnabled);
-        $Config->setAccountPassToImage($accountPassToImageEnabled);
-        $Config->setAccountLink($accountLinkEnabled);
-        $Config->setAccountCount($accountCount);
-        $Config->setResultsAsCards($resultsAsCardsEnabled);
+        $this->ConfigData->setGlobalSearch($globalSearchEnabled);
+        $this->ConfigData->setAccountPassToImage($accountPassToImageEnabled);
+        $this->ConfigData->setAccountLink($accountLinkEnabled);
+        $this->ConfigData->setAccountCount($accountCount);
+        $this->ConfigData->setResultsAsCards($resultsAsCardsEnabled);
 
         // Files
         $filesEnabled = Request::analyze('files_enabled', false, false, true);
@@ -283,9 +289,9 @@ class ConfigActionController implements ItemControllerInterface
             return;
         }
 
-        $Config->setFilesAllowedExts($filesAllowedExts);
-        $Config->setFilesEnabled($filesEnabled);
-        $Config->setFilesAllowedSize($filesAllowedSize);
+        $this->ConfigData->setFilesAllowedExts($filesAllowedExts);
+        $this->ConfigData->setFilesEnabled($filesEnabled);
+        $this->ConfigData->setFilesAllowedSize($filesAllowedSize);
 
         // Public Links
         $pubLinksEnabled = Request::analyze('publinks_enabled', false, false, true);
@@ -293,10 +299,10 @@ class ConfigActionController implements ItemControllerInterface
         $pubLinksMaxTime = Request::analyze('publinks_maxtime', 10);
         $pubLinksMaxViews = Request::analyze('publinks_maxviews', 3);
 
-        $Config->setPublinksEnabled($pubLinksEnabled);
-        $Config->setPublinksImageEnabled($pubLinksImageEnabled);
-        $Config->setPublinksMaxTime($pubLinksMaxTime * 60);
-        $Config->setPublinksMaxViews($pubLinksMaxViews);
+        $this->ConfigData->setPublinksEnabled($pubLinksEnabled);
+        $this->ConfigData->setPublinksImageEnabled($pubLinksImageEnabled);
+        $this->ConfigData->setPublinksMaxTime($pubLinksMaxTime * 60);
+        $this->ConfigData->setPublinksMaxViews($pubLinksMaxViews);
 
         $this->LogMessage->addDetails(__('Sección', false), __('Cuentas', false));
 
@@ -322,15 +328,17 @@ class ConfigActionController implements ItemControllerInterface
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
             $this->JsonResponse->setDescription(__('Faltan parámetros de Wiki', false));
             return;
-        } elseif ($wikiEnabled) {
-            $Config->setWikiEnabled(true);
-            $Config->setWikiSearchurl($wikiSearchUrl);
-            $Config->setWikiPageurl($wikiPageUrl);
-            $Config->setWikiFilter(explode(',', $wikiFilter));
+        }
+
+        if ($wikiEnabled) {
+            $this->ConfigData->setWikiEnabled(true);
+            $this->ConfigData->setWikiSearchurl($wikiSearchUrl);
+            $this->ConfigData->setWikiPageurl($wikiPageUrl);
+            $this->ConfigData->setWikiFilter(explode(',', $wikiFilter));
 
             $this->LogMessage->addDescription(__('Wiki habiltada', false));
-        } elseif ($Config->isWikiEnabled()) {
-            $Config->setWikiEnabled(false);
+        } elseif ($this->ConfigData->isWikiEnabled()) {
+            $this->ConfigData->setWikiEnabled(false);
 
             $this->LogMessage->addDescription(__('Wiki deshabilitada', false));
         }
@@ -347,17 +355,19 @@ class ConfigActionController implements ItemControllerInterface
         if ($dokuWikiEnabled && (!$dokuWikiUrl || !$dokuWikiUrlBase)) {
             $this->JsonResponse->setDescription(__('Faltan parámetros de DokuWiki', false));
             return;
-        } elseif ($dokuWikiEnabled) {
-            $Config->setDokuwikiEnabled(true);
-            $Config->setDokuwikiUrl($dokuWikiUrl);
-            $Config->setDokuwikiUrlBase(trim($dokuWikiUrlBase, '/'));
-            $Config->setDokuwikiUser($dokuWikiUser);
-            $Config->setDokuwikiPass($dokuWikiPass);
-            $Config->setDokuwikiNamespace($dokuWikiNamespace);
+        }
+
+        if ($dokuWikiEnabled) {
+            $this->ConfigData->setDokuwikiEnabled(true);
+            $this->ConfigData->setDokuwikiUrl($dokuWikiUrl);
+            $this->ConfigData->setDokuwikiUrlBase(trim($dokuWikiUrlBase, '/'));
+            $this->ConfigData->setDokuwikiUser($dokuWikiUser);
+            $this->ConfigData->setDokuwikiPass($dokuWikiPass);
+            $this->ConfigData->setDokuwikiNamespace($dokuWikiNamespace);
 
             $this->LogMessage->addDescription(__('DokuWiki habiltada', false));
         } elseif ($Config->isDokuwikiEnabled()) {
-            $Config->setDokuwikiEnabled(false);
+            $this->ConfigData->setDokuwikiEnabled(false);
 
             $this->LogMessage->addDescription(__('DokuWiki deshabilitada', false));
         }
@@ -391,19 +401,21 @@ class ConfigActionController implements ItemControllerInterface
         if ($ldapEnabled && (!$ldapServer || !$ldapBase || !$ldapBindUser)) {
             $this->JsonResponse->setDescription(__('Faltan parámetros de LDAP'));
             return;
-        } elseif ($ldapEnabled) {
-            $Config->setLdapEnabled(true);
-            $Config->setLdapAds($ldapADSEnabled);
-            $Config->setLdapServer($ldapServer);
-            $Config->setLdapBase($ldapBase);
-            $Config->setLdapGroup($ldapGroup);
-            $Config->setLdapDefaultGroup($ldapDefaultGroup);
-            $Config->setLdapDefaultProfile($ldapDefaultProfile);
-            $Config->setLdapBindUser($ldapBindUser);
-            $Config->setLdapBindPass($ldapBindPass);
+        }
+
+        if ($ldapEnabled) {
+            $this->ConfigData->setLdapEnabled(true);
+            $this->ConfigData->setLdapAds($ldapADSEnabled);
+            $this->ConfigData->setLdapServer($ldapServer);
+            $this->ConfigData->setLdapBase($ldapBase);
+            $this->ConfigData->setLdapGroup($ldapGroup);
+            $this->ConfigData->setLdapDefaultGroup($ldapDefaultGroup);
+            $this->ConfigData->setLdapDefaultProfile($ldapDefaultProfile);
+            $this->ConfigData->setLdapBindUser($ldapBindUser);
+            $this->ConfigData->setLdapBindPass($ldapBindPass);
 
             $this->LogMessage->addDescription(__('LDAP habiltado', false));
-        } elseif ($Config->isLdapEnabled()) {
+        } elseif ($this->ConfigData->isLdapEnabled()) {
             $Config->setLdapEnabled(false);
 
             $this->LogMessage->addDescription(__('LDAP deshabilitado', false));
@@ -422,8 +434,6 @@ class ConfigActionController implements ItemControllerInterface
      */
     protected function mailAction()
     {
-        $Config = Session::getConfig();
-
         // Mail
         $mailEnabled = Request::analyze('mail_enabled', false, false, true);
         $mailServer = Request::analyze('mail_server');
@@ -439,25 +449,27 @@ class ConfigActionController implements ItemControllerInterface
         if ($mailEnabled && (!$mailServer || !$mailFrom)) {
             $this->JsonResponse->setDescription(__('Faltan parámetros de Correo'));
             return;
-        } elseif ($mailEnabled) {
-            $Config->setMailEnabled(true);
-            $Config->setMailRequestsEnabled($mailRequests);
-            $Config->setMailServer($mailServer);
-            $Config->setMailPort($mailPort);
-            $Config->setMailSecurity($mailSecurity);
-            $Config->setMailFrom($mailFrom);
+        }
+
+        if ($mailEnabled) {
+            $this->ConfigData->setMailEnabled(true);
+            $this->ConfigData->setMailRequestsEnabled($mailRequests);
+            $this->ConfigData->setMailServer($mailServer);
+            $this->ConfigData->setMailPort($mailPort);
+            $this->ConfigData->setMailSecurity($mailSecurity);
+            $this->ConfigData->setMailFrom($mailFrom);
 
             if ($mailAuth) {
-                $Config->setMailAuthenabled($mailAuth);
-                $Config->setMailUser($mailUser);
-                $Config->setMailPass($mailPass);
+                $this->ConfigData->setMailAuthenabled($mailAuth);
+                $this->ConfigData->setMailUser($mailUser);
+                $this->ConfigData->setMailPass($mailPass);
             }
 
             $this->LogMessage->addDescription(__('Correo habiltado', false));
-        } elseif ($Config->isMailEnabled()) {
-            $Config->setMailEnabled(false);
-            $Config->setMailRequestsEnabled(false);
-            $Config->setMailAuthenabled(false);
+        } elseif ($this->ConfigData->isMailEnabled()) {
+            $this->ConfigData->setMailEnabled(false);
+            $this->ConfigData->setMailRequestsEnabled(false);
+            $this->ConfigData->setMailAuthenabled(false);
 
             $this->LogMessage->addDescription(__('Correo deshabilitado', false));
         }
@@ -488,10 +500,14 @@ class ConfigActionController implements ItemControllerInterface
             $this->JsonResponse->addMessage(__('Reinicie la sesión para cambiarla', false));
             $this->JsonResponse->setStatus(100);
             return;
-        } elseif (empty($newMasterPass) || empty($currentMasterPass)) {
+        }
+
+        if (empty($newMasterPass) || empty($currentMasterPass)) {
             $this->JsonResponse->setDescription(__('Clave maestra no indicada'));
             return;
-        } elseif ($confirmPassChange === false) {
+        }
+
+        if ($confirmPassChange === false) {
             $this->JsonResponse->setDescription(__('Se ha de confirmar el cambio de clave', false));
             return;
         }
@@ -499,10 +515,14 @@ class ConfigActionController implements ItemControllerInterface
         if ($newMasterPass === $currentMasterPass) {
             $this->JsonResponse->setDescription(__('Las claves son idénticas', false));
             return;
-        } elseif ($newMasterPass !== $newMasterPassR) {
+        }
+
+        if ($newMasterPass !== $newMasterPassR) {
             $this->JsonResponse->setDescription(__('Las claves maestras no coinciden', false));
             return;
-        } elseif (!Hash::checkHashKey($currentMasterPass, ConfigDB::getValue('masterPwd'))) {
+        }
+
+        if (!Hash::checkHashKey($currentMasterPass, ConfigDB::getValue('masterPwd'))) {
             $this->JsonResponse->setDescription(__('La clave maestra actual no coincide', false));
             return;
         }

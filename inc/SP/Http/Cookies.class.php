@@ -24,8 +24,6 @@
 
 namespace SP\Http;
 
-use SP\Core\Crypt\SecureKeyCookie;
-
 /**
  * Class Cookies
  *
@@ -40,6 +38,6 @@ class Cookies
      */
     public static function checkCookies()
     {
-        return isset($_COOKIE[SecureKeyCookie::COOKIE_NAME]);
+        return isset($_COOKIE[session_name()]);
     }
 }

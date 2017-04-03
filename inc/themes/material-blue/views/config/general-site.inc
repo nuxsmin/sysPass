@@ -159,4 +159,25 @@
             </label>
         </td>
     </tr>
+    <tr>
+        <td class="descField">
+            <div id="help-encryptsession"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+            <div class="mdl-tooltip mdl-tooltip--large" for="help-encryptsession">
+                <p>
+                    <?php echo __('Encriptar los datos de la sesión de PHP.'); ?>
+                </p>
+                <p>
+                    <?php echo __('Esta funcionalidad incrementa la seguridad de las sesiones de PHP ya que los datos almacenados no serán legibles.'); ?>
+                </p>
+            </div>
+        </td>
+        <td class="valField">
+            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="encryptsession">
+                <input type="checkbox" id="encryptsession" class="mdl-switch__input mdl-color-text--indigo-400" name="encryptsession"
+                    <?php echo $chkEncryptSession; ?>/>
+                <span class="mdl-switch__label"><?php echo __('Encriptar Sesión'); ?></span>
+            </label>
+        </td>
+    </tr>
 </table>

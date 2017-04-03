@@ -113,7 +113,7 @@ class XmlHandler implements FileStorageInterface
      */
     protected function readChildNodes(DOMNodeList $NodeList)
     {
-        $nodes = array();
+        $nodes = [];
 
         foreach ($NodeList as $node) {
             /** @var $node DOMNode */
@@ -177,9 +177,9 @@ class XmlHandler implements FileStorageInterface
     /**
      * Crear los nodos hijos recursivamente a partir de un array multidimensional
      *
-     * @param mixed   $items
+     * @param mixed $items
      * @param DOMNode $Node
-     * @param null    $type
+     * @param null $type
      */
     protected function writeChildNodes($items, DOMNode $Node, $type = null)
     {
@@ -191,13 +191,11 @@ class XmlHandler implements FileStorageInterface
                 $newNode = $this->Dom->createElement($key);
             }
 
-            if (is_array($value) || is_object($value)) {
-                if (is_object($value)) {
-                    $newNode->setAttribute('class', get_class($value));
-                    $newNode->appendChild($this->Dom->createTextNode(base64_encode(serialize($value))));
-                } else {
-                    $this->writeChildNodes($value, $newNode, $key);
-                }
+            if (is_array($value)) {
+                $this->writeChildNodes($value, $newNode, $key);
+            } else if (is_object($value)) {
+                $newNode->setAttribute('class', get_class($value));
+                $newNode->appendChild($this->Dom->createTextNode(base64_encode(serialize($value))));
             } else {
                 $newNode->appendChild($this->Dom->createTextNode(trim($value)));
             }
@@ -210,7 +208,7 @@ class XmlHandler implements FileStorageInterface
      * Analizar el tipo de elementos
      *
      * @param mixed $items
-     * @param bool  $serialize
+     * @param bool $serialize
      * @return array
      */
     protected function analyzeItems($items, $serialize = false)
@@ -219,12 +217,13 @@ class XmlHandler implements FileStorageInterface
             ksort($items);
 
             return $items;
-        } elseif (is_object($items)) {
+        }
 
+        if (is_object($items)) {
             return $serialize ? serialize($items) : $this->analyzeObject($items);
         }
 
-        return array();
+        return [];
 
     }
 
@@ -236,7 +235,7 @@ class XmlHandler implements FileStorageInterface
      */
     protected function analyzeObject($object)
     {
-        $items = array();
+        $items = [];
         $Reflection = new ReflectionObject($object);
 
         foreach ($Reflection->getProperties() as $property) {

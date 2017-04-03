@@ -124,19 +124,22 @@ class Init
         //  Establecer las rutas de la aplicación
         self::setPaths();
 
-        // Iniciar la sesión de PHP
-        self::startSession();
-
         if (!self::$checkPhpVersion && !self::$checkInitSourceInclude) {
             self::initError(
                 __('Versión de PHP requerida >= ') . ' 5.6.0 <= 7.0',
                 __('Actualice la versión de PHP para que la aplicación funcione correctamente'));
         }
 
+        // Comprobar la configuración
+        self::checkConfig();
+
+        // Iniciar la sesión de PHP
+        self::startSession(Config::getConfig()->isEncryptSession());
+
         // Volver a cargar la configuración si se recarga la página
         if (!Request::checkReload()) {
             // Cargar la configuración
-            self::loadConfig();
+            Config::loadConfig();
 
             // Cargar el lenguaje
             Language::setLanguage();
@@ -145,7 +148,7 @@ class Init
             DiFactory::getTheme();
         } else {
             // Cargar la configuración
-            self::loadConfig(true);
+            Config::loadConfig(true);
 
             // Restablecer el idioma y el tema visual
             Language::setLanguage(true);
@@ -217,6 +220,19 @@ class Init
 
         // El usuario no está logado y no es una petición, redirigir al login
         self::goLogin();
+    }
+
+    /**
+     * Comprobar el archivo que realiza el include necesita inicialización.
+     *
+     * @returns bool
+     */
+    private static function checkInitSourceInclude()
+    {
+        $srcScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
+        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php', 'ajax_task.php'];
+
+        return in_array($srcScript, $skipInit, true);
     }
 
     /**
@@ -341,24 +357,40 @@ class Init
     }
 
     /**
-     * Comprobar el archivo que realiza el include necesita inicialización.
+     * Iniciar la sesión PHP
      *
-     * @returns bool
+     * @param bool $encrypt Encriptar la sesión de PHP
      */
-    private static function checkInitSourceInclude()
+    private static function startSession($encrypt = false)
     {
-        $srcScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
-        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php', 'ajax_task.php'];
+        // Evita que javascript acceda a las cookies de sesion de PHP
+        @ini_set('session.cookie_httponly', '1');
+        @ini_set('session.save_handler', 'files');
 
-        return in_array($srcScript, $skipInit, true);
+        if ($encrypt === true) {
+            $Key = SecureKeyCookie::getKey();
+
+            if ($Key !== false && self::$checkPhpVersion) {
+                session_set_save_handler(new CryptSessionHandler($Key), true);
+            }
+        }
+
+        // Si la sesión no puede ser iniciada, devolver un error 500
+        if (session_start() === false) {
+            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
+
+            header('HTTP/1.1 500 Internal Server Error');
+
+            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
+        }
     }
 
     /**
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
-     * @param string $hint    opcional, con una ayuda sobre el error
-     * @param bool   $headers
+     * @param string $hint opcional, con una ayuda sobre el error
+     * @param bool $headers
      */
     public static function initError($message, $hint = '', $headers = false)
     {
@@ -387,47 +419,17 @@ class Init
     }
 
     /**
-     * Iniciar la sesión PHP
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    private static function startSession()
-    {
-        // Evita que javascript acceda a las cookies de sesion de PHP
-        @ini_set('session.cookie_httponly', '1');
-        @ini_set('session.save_handler', 'files');
-
-        $Key = SecureKeyCookie::getKey();
-
-        if ($Key !== false && self::$checkPhpVersion) {
-            session_set_save_handler(new CryptSessionHandler($Key), true);
-        }
-
-        // Si la sesión no puede ser iniciada, devolver un error 500
-        if (session_start() === false) {
-            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
-
-            header('HTTP/1.1 500 Internal Server Error');
-
-            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
-        }
-    }
-
-    /**
      * Cargar la configuración
      *
-     * @param bool $reload Recargar la configuración
      * @throws \SP\Core\Exceptions\SPException
      */
-    private static function loadConfig($reload = false)
+    private static function checkConfig()
     {
         // Comprobar si es una versión antigua
         self::checkConfigVersion();
 
         // Comprobar la configuración y cargar
-        self::checkConfig();
-
-        Config::loadConfig($reload);
+        self::checkConfigDir();
     }
 
     /**
@@ -482,7 +484,7 @@ class Init
      *
      * @throws \SP\Core\Exceptions\SPException
      */
-    private static function checkConfig()
+    private static function checkConfigDir()
     {
         if (self::checkInitSourceInclude()) {
             return;
@@ -507,18 +509,6 @@ class Init
     }
 
     /**
-     * Comprobar y forzar (si es necesario) la conexión HTTPS
-     */
-    private static function checkHttps()
-    {
-        if (Checks::forceHttpsIsEnabled() && !Checks::httpsEnabled()) {
-            $port = ($_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
-            $fullUrl = 'https://' . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
-            header('Location: ' . $fullUrl);
-        }
-    }
-
-    /**
      * Comprobar si el usuario está logado.
      *
      * @returns bool
@@ -528,6 +518,18 @@ class Init
         return (DiFactory::getDBStorage()->getDbStatus() === 0
             && Session::getUserData()->getUserLogin()
             && is_object(Session::getUserPreferences()));
+    }
+
+    /**
+     * Comprobar y forzar (si es necesario) la conexión HTTPS
+     */
+    private static function checkHttps()
+    {
+        if (Checks::forceHttpsIsEnabled() && !Checks::httpsEnabled()) {
+            $port = ($_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
+            $fullUrl = 'https://' . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
+            header('Location: ' . $fullUrl);
+        }
     }
 
     /**

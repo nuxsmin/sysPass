@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
-"POT-Creation-Date: 2017-03-20 23:27+0100\n"
+"POT-Creation-Date: 2017-04-03 13:31+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: wseredynski\n"
@@ -150,7 +150,7 @@ msgstr "Konto"
 #: ../../../../inc/SP/Controller/LoginController.class.php:533
 #: ../../../../inc/SP/Controller/LoginController.class.php:541
 #: ../../../../inc/SP/Controller/MainActionController.class.php:124
-#: ../../../../inc/SP/Core/Init.class.php:473
+#: ../../../../inc/SP/Core/Init.class.php:475
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:98
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:76
 #: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:31
@@ -328,8 +328,8 @@ msgstr "Błąd poczas aktualizacji hasła"
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:92
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:197
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:213
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:571
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:599
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:591
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:619
 msgid "Actualizar Clave Maestra"
 msgstr "Zaktualizuj główne hasło"
 
@@ -657,12 +657,12 @@ msgid "Cliente eliminado"
 msgstr "Klient został usunięty"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:429
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:726
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:746
 msgid "Proceso de backup finalizado"
 msgstr "Operacja wykonywania kopii zapasowych została ukończona"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:435
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:721
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:741
 #: ../../../../inc/SP/Core/Backup.class.php:75
 #, fuzzy
 msgid "Error al realizar el backup"
@@ -671,8 +671,8 @@ msgstr "Bład podczas tworzenia kopii zapasowej"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:436
 #: ../../../../inc/SP/Controller/ChecksController.class.php:113
 #: ../../../../inc/SP/Controller/ChecksController.class.php:142
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:699
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:722
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:719
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:742
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1090
 #: ../../../../inc/SP/Import/Import.class.php:115
 #, fuzzy
@@ -733,7 +733,7 @@ msgid "Id de cliente"
 msgstr "Id klienta"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:499
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:632
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:652
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:56
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:62
@@ -900,11 +900,10 @@ msgstr "Błąd podczas szukania użytkownika w LDAPie"
 #: ../../../../inc/SP/Controller/LoginController.class.php:447
 #: ../../../../inc/SP/Controller/LoginController.class.php:509
 #: ../../../../inc/SP/Controller/LoginController.class.php:534
-#: ../../../../inc/SP/Core/Init.class.php:624
+#: ../../../../inc/SP/Core/Init.class.php:626
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:78
 #: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:111
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:64
-#: ../../../../res/test.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:45
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:51
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:54
@@ -950,7 +949,7 @@ msgstr "Błąd podczas wyszukiwania grupy RDN"
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:201
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:71
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:73
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:18
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:21
 #: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:137
 msgid "Grupo"
 msgstr "Grupa"
@@ -1136,7 +1135,7 @@ msgstr "Połączenie ustanowione"
 
 #: ../../../../inc/SP/Controller/ChecksController.class.php:138
 #: ../../../../inc/SP/Controller/MainActionController.class.php:123
-#: ../../../../inc/SP/Core/Init.class.php:472
+#: ../../../../inc/SP/Core/Init.class.php:474
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:207
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:220
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:430
@@ -1149,71 +1148,71 @@ msgstr "Wersja"
 msgid "Error de conexión a DokuWiki"
 msgstr "Błąd połączenia z DokuWiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:174
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:181
 msgid "Faltan parámetros de syslog remoto"
 msgstr "Brakujące parametry zdalnego syslogu"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:183
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:192
 msgid "Syslog remoto deshabilitado"
 msgstr "Zdalny syslog wyłączony"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:196
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:205
 msgid "Faltan parámetros de Proxy"
 msgstr "Brak parametrów proxy"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:205
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:216
 msgid "Proxy habiltado"
 msgstr "Proxy włączone"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:209
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:220
 msgid "Proxy deshabilitado"
 msgstr "Proxy wyłączone"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:212
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:301
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:365
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:412
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:465
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:223
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:307
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:375
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:424
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:477
 msgid "Sección"
 msgstr "Sekcja"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:212
-#: ../../../../inc/SP/Controller/ConfigController.class.php:154
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:223
+#: ../../../../inc/SP/Controller/ConfigController.class.php:155
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:226
 #: ../../../../inc/themes/material-blue/views/main/install.inc:132
 msgid "General"
 msgstr "Ogólne"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:229
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:511
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:595
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:666
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:716
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:237
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:531
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:615
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:686
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:736
 #: ../../../../inc/SP/Forms/UserForm.class.php:96
 #: ../../../../inc/SP/Forms/UserForm.class.php:108
 #: ../../../../inc/SP/Forms/UserForm.class.php:122
 msgid "Ey, esto es una DEMO!!"
 msgstr "UWAGA - to jest demo!!"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:243
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:251
 msgid "Configuración actualizada"
 msgstr "Konfiguracja została zaktualizowana"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:245
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:253
 #, fuzzy
 msgid "Error al guardar la configuración"
 msgstr "Błąd zapisu konfiguracji"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:249
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:257
 msgid "Modificar Configuración"
 msgstr "Edytuj konfigurację"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:282
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:288
 msgid "El tamaño máximo por archivo es de 16MB"
 msgstr "Maksymalny rozmiar pliku to 16 MB"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:301
-#: ../../../../inc/SP/Controller/ConfigController.class.php:203
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:307
+#: ../../../../inc/SP/Controller/ConfigController.class.php:204
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:365
 #: ../../../../inc/SP/Controller/MainController.class.php:608
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:90
@@ -1224,75 +1223,75 @@ msgstr "Maksymalny rozmiar pliku to 16 MB"
 msgid "Cuentas"
 msgstr "Konta"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:323
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:329
 msgid "Faltan parámetros de Wiki"
 msgstr "Brak parametrów Wiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:331
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:339
 msgid "Wiki habiltada"
 msgstr "Wiki włączone"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:335
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:343
 msgid "Wiki deshabilitada"
 msgstr "Wiki wyłączone"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:348
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:356
 msgid "Faltan parámetros de DokuWiki"
 msgstr "Brakujące parametry DokuWiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:358
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:368
 msgid "DokuWiki habiltada"
 msgstr "DokuWiki włączona"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:362
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:372
 msgid "DokuWiki deshabilitada"
 msgstr "DokuWiki wyłączona"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:365
-#: ../../../../inc/SP/Controller/ConfigController.class.php:235
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:375
+#: ../../../../inc/SP/Controller/ConfigController.class.php:236
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:63
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:10
 msgid "Wiki"
 msgstr "Wiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:392
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:402
 msgid "Faltan parámetros de LDAP"
 msgstr "Brak parametrów (LDAP)"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:405
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:417
 msgid "LDAP habiltado"
 msgstr "LDAP włączony"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:409
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:421
 msgid "LDAP deshabilitado"
 msgstr "LDAP wyłączony"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:412
-#: ../../../../inc/SP/Controller/ConfigController.class.php:268
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:424
+#: ../../../../inc/SP/Controller/ConfigController.class.php:269
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:7
 msgid "LDAP"
 msgstr "LDAP"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:440
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:450
 msgid "Faltan parámetros de Correo"
 msgstr "Brak parametów związanych z pocztą"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:456
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:468
 msgid "Correo habiltado"
 msgstr "Poczta jest aktywna"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:462
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:474
 msgid "Correo deshabilitado"
 msgstr "Poczta jest nieaktuwa"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:465
-#: ../../../../inc/SP/Controller/ConfigController.class.php:299
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:477
+#: ../../../../inc/SP/Controller/ConfigController.class.php:300
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:7
 msgid "Correo"
 msgstr "Poczta"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:487
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:574
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:499
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:594
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:279
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:516
 #: ../../../../inc/SP/Controller/LoginController.class.php:312
@@ -1300,88 +1299,88 @@ msgstr "Poczta"
 msgid "Clave maestra actualizada"
 msgstr "Główne hasło zostało zaktualizowane"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:488
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:576
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:500
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:596
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:279
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:516
 #, fuzzy
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Zresatruj sesję aby zaktualizować"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:492
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:506
 msgid "Clave maestra no indicada"
 msgstr "Główne hasło jest wymagane"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:495
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:511
 msgid "Se ha de confirmar el cambio de clave"
 msgstr "Zmiana hasła musi zostać potwierdzona"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:500
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:516
 msgid "Las claves son idénticas"
 msgstr "Hasła są takie same"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:503
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:521
 msgid "Las claves maestras no coinciden"
 msgstr "Główne hasła nie pasują do siebie"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:506
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:526
 msgid "La clave maestra actual no coincide"
 msgstr "Obecne główne hasło nie jest poprawne"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:519
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:539
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:61
 #: ../../../../inc/SP/Import/Import.class.php:89
 msgid "No es posible iniciar una transacción"
 msgstr "Unable to start a transaction"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:532
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:552
 #, fuzzy
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Błąd podczas aktualizacji haseł dla kont"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:543
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:563
 #, fuzzy
 msgid "Errores al actualizar las claves de las cuentas del histórico"
 msgstr "Błąd podczas akutalizacji haseł dla kont (historia)"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:552
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:572
 #, fuzzy
 msgid "Errores al actualizar datos de campos personalizados"
 msgstr "Błąd podczas aktualizacji dany w polach niestandardowych "
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:559
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:579
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:71
 #: ../../../../inc/SP/Import/Import.class.php:95
 msgid "No es posible finalizar una transacción"
 msgstr "Unable to finish a transaction"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:579
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:599
 #, fuzzy
 msgid "Error al guardar el hash de la clave maestra"
 msgstr "Błąd poczas zapisywania głównego hasła"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:602
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:622
 msgid "Hash de clave maestra actualizado"
 msgstr "Zaktualizowano hash głównego hasła"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:606
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:626
 msgid "Error al actualizar el hash de la clave maestra"
 msgstr "Błąd podczas aktualizacji hasha głównego hasła"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:628
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:648
 msgid "Generar Clave Temporal"
 msgstr "Wygeneruj hasło tymczasowe"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:631
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:651
 msgid "Clave Temporal Generada"
 msgstr "Hasło tymczasowe zostało wygenerowane"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:636
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:656
 #, php-format
 msgid "Clave Maestra %s"
 msgstr "Master Password %s"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:637
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:657
 msgid ""
 "Se ha generado una nueva clave para el acceso a sysPass y se solicitará en "
 "el siguiente inicio."
@@ -1389,76 +1388,76 @@ msgstr ""
 "A new sysPass master password has been generated, so the next time you log "
 "into the application it will be requested."
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:639
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:659
 #, php-format
 msgid "La nueva clave es: %s"
 msgstr "The new Master Password is: %s"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:641
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:661
 msgid "No olvide acceder lo antes posible para guardar los cambios."
 msgstr ""
 "Please, don't forget to log in as soon as possible to save the changes."
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:652
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:672
 #, fuzzy
 msgid "Error al generar clave temporal"
 msgstr "Błąd poczas generowania hasła tymczasowego"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:693
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:713
 #: ../../../../inc/SP/Forms/AccountForm.class.php:136
 #: ../../../../inc/SP/Forms/UserForm.class.php:112
 msgid "Las claves no coinciden"
 msgstr "Hasła nie pasują do siebie"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:698
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:718
 #, fuzzy
 msgid "Error al realizar la exportación"
 msgstr "Wystąpił błąd podczas eksportu"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:703
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:723
 msgid "Proceso de exportación finalizado"
 msgstr "Operacja eksportu została zakończona"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:328
+#: ../../../../inc/SP/Controller/ConfigController.class.php:329
 #: ../../../../inc/SP/Core/Acl.class.php:217
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:233
 msgid "Encriptación"
 msgstr "Szyfrowanie"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:373
+#: ../../../../inc/SP/Controller/ConfigController.class.php:374
 msgid "Último backup"
 msgstr "Ostatania kopia bezpieczeństwa"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:373
+#: ../../../../inc/SP/Controller/ConfigController.class.php:374
 #, fuzzy
 msgid "No se encontraron backups"
 msgstr "Brak dostępnych kopii bezpieczeństwa"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:384
+#: ../../../../inc/SP/Controller/ConfigController.class.php:385
 msgid "Última exportación"
 msgstr "Ostani eksport"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:384
+#: ../../../../inc/SP/Controller/ConfigController.class.php:385
 msgid "No se encontró archivo de exportación"
 msgstr "Brak plików eksportu"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:386
+#: ../../../../inc/SP/Controller/ConfigController.class.php:387
 #: ../../../../inc/SP/Core/Acl.class.php:218
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:7
 msgid "Copia de Seguridad"
 msgstr "Kopia zapasowa"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:408
+#: ../../../../inc/SP/Controller/ConfigController.class.php:409
 #: ../../../../inc/SP/Import/Import.class.php:66
 #: ../../../../inc/SP/Import/ImportBase.class.php:86
 msgid "Importar Cuentas"
 msgstr "Importuj konta"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:431
+#: ../../../../inc/SP/Controller/ConfigController.class.php:432
 msgid "No instalado"
 msgstr "Not installed"
 
-#: ../../../../inc/SP/Controller/ConfigController.class.php:434
+#: ../../../../inc/SP/Controller/ConfigController.class.php:435
 #: ../../../../inc/SP/Controller/MainController.class.php:610
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:77
 msgid "Información"
@@ -1473,7 +1472,7 @@ msgstr "Opcja jest niedostępna"
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:277
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:278
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:280
-#: ../../../../inc/SP/Core/Init.class.php:412
+#: ../../../../inc/SP/Core/Init.class.php:384
 msgid "Consulte con el administrador"
 msgstr "Skontaktuj się z administratorem"
 
@@ -2447,7 +2446,7 @@ msgstr "Autentykacja"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:62
 #: ../../../../inc/SP/Controller/MainActionController.class.php:121
-#: ../../../../inc/SP/Core/Init.class.php:470
+#: ../../../../inc/SP/Core/Init.class.php:472
 msgid "Actualización"
 msgstr "Aktualizuj"
 
@@ -2469,7 +2468,7 @@ msgid "En 5 segundos será redirigido al login"
 msgstr "You will be redirected to log in within 5 seconds"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:122
-#: ../../../../inc/SP/Core/Init.class.php:471 ../../../../res/upgrade.php:121
+#: ../../../../inc/SP/Core/Init.class.php:473
 msgid "Actualización de versión realizada."
 msgstr "Aktualizacja wersji została zakończona"
 
@@ -2492,12 +2491,12 @@ msgid "Registro de Eventos"
 msgstr "Log"
 
 #: ../../../../inc/SP/Controller/MainController.class.php:360
-#: ../../../../inc/SP/Core/Init.class.php:132
+#: ../../../../inc/SP/Core/Init.class.php:129
 msgid "Versión de PHP requerida >= "
 msgstr "Wymagana wersja PHP >="
 
 #: ../../../../inc/SP/Controller/MainController.class.php:361
-#: ../../../../inc/SP/Core/Init.class.php:133
+#: ../../../../inc/SP/Core/Init.class.php:130
 msgid ""
 "Actualice la versión de PHP para que la aplicación funcione correctamente"
 msgstr "SysPass wymaga wyższej wersji PHP"
@@ -2684,7 +2683,7 @@ msgstr "Sprawdź uprawnienia dla katalogu backup"
 msgid "Esta operación sólo es posible en entornos Linux"
 msgstr "Ta operacja jest możliwa tylko w środowiskach Linux"
 
-#: ../../../../inc/SP/Core/Backup.class.php:251
+#: ../../../../inc/SP/Core/Backup.class.php:253
 #, fuzzy
 msgid "Error al realizar backup en modo compatibilidad"
 msgstr "Błąd podczas wykonywania kopii zapasowej (tryb kompatybilności)"
@@ -2713,58 +2712,58 @@ msgstr "Obserwator nie został zainicjalizowany"
 msgid "Es necesario un objeto"
 msgstr "Objekt jest wymagany"
 
-#: ../../../../inc/SP/Core/Init.class.php:180
+#: ../../../../inc/SP/Core/Init.class.php:183
 #, fuzzy
 msgid "Error en la verificación de la base de datos"
 msgstr "Błąd podczas sprawdzania bazy danych"
 
-#: ../../../../inc/SP/Core/Init.class.php:408
+#: ../../../../inc/SP/Core/Init.class.php:380
 msgid "Sesión"
 msgstr "Session"
 
-#: ../../../../inc/SP/Core/Init.class.php:408
-#: ../../../../inc/SP/Core/Init.class.php:412
+#: ../../../../inc/SP/Core/Init.class.php:380
+#: ../../../../inc/SP/Core/Init.class.php:384
 msgid "La sesión no puede ser inicializada"
 msgstr "Sesja nie może zostać zainicjalizowana"
 
-#: ../../../../inc/SP/Core/Init.class.php:493
+#: ../../../../inc/SP/Core/Init.class.php:495
 msgid "El directorio \"/config\" no existe"
 msgstr "Katalog \"config\" nie istnieje"
 
-#: ../../../../inc/SP/Core/Init.class.php:498
+#: ../../../../inc/SP/Core/Init.class.php:500
 msgid "No es posible escribir en el directorio \"config\""
 msgstr "Nie można zapisywać do katalogu \"config\""
 
-#: ../../../../inc/SP/Core/Init.class.php:505
+#: ../../../../inc/SP/Core/Init.class.php:507
 #, fuzzy
 msgid "Los permisos del directorio \"/config\" son incorrectos"
 msgstr "Katalog \"config\" ma nieprawidłowe uprawnienia"
 
-#: ../../../../inc/SP/Core/Init.class.php:505
+#: ../../../../inc/SP/Core/Init.class.php:507
 msgid "Actual:"
 msgstr "Bieżący:"
 
-#: ../../../../inc/SP/Core/Init.class.php:505
+#: ../../../../inc/SP/Core/Init.class.php:507
 msgid "Necesario: 750"
 msgstr "Potrzeba: 750"
 
-#: ../../../../inc/SP/Core/Init.class.php:588
+#: ../../../../inc/SP/Core/Init.class.php:590
 msgid "Aplicación en mantenimiento"
 msgstr "Aplikacja w trybie serwisowania"
 
-#: ../../../../inc/SP/Core/Init.class.php:588
+#: ../../../../inc/SP/Core/Init.class.php:590
 msgid "En breve estará operativa"
 msgstr "Wkrótce będzie dostępna"
 
-#: ../../../../inc/SP/Core/Init.class.php:623
+#: ../../../../inc/SP/Core/Init.class.php:625
 msgid "Finalizar sesión"
 msgstr "Wyloguj sesję"
 
-#: ../../../../inc/SP/Core/Init.class.php:625
+#: ../../../../inc/SP/Core/Init.class.php:627
 msgid "Tiempo inactivo"
 msgstr "Czas nieaktywności"
 
-#: ../../../../inc/SP/Core/Init.class.php:626
+#: ../../../../inc/SP/Core/Init.class.php:628
 msgid "Tiempo total"
 msgstr "Czas całkowity"
 
@@ -3602,34 +3601,34 @@ msgstr "Błąd podczas usuwania grup użytkowników"
 msgid "Error al asignar los usuarios al grupo"
 msgstr "Błąd przypisywania użytkowników do grupy"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:70
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:71
 #, fuzzy
 msgid "Error al crear la notificación"
 msgstr "Błąd przy dodawaniu powiadomień"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:95
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:96
 #, fuzzy
 msgid "Error al eliminar la notificación"
 msgstr "Błąd przy usuwaniu powiadomień"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:100
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:101
 msgid "Notificación no encontrada"
 msgstr "Notification not found"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:133
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:245
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:134
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:246
 #, fuzzy
 msgid "Error al modificar la notificación"
 msgstr "Błąd aktualizacji powiadomień"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:168
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:169
 msgid "Error al obtener la notificación"
 msgstr "Błąd pobierania powiadomień"
 
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:199
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:285
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:319
-#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:355
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:200
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:286
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:320
+#: ../../../../inc/SP/Mgmt/Notices/Notice.class.php:356
 #, fuzzy
 msgid "Error al obtener las notificaciones"
 msgstr "Błąd pobierania powiadomień"
@@ -5180,6 +5179,25 @@ msgstr ""
 msgid "Comprobar notificaciones"
 msgstr "Sprawdź uwagi"
 
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:168
+#, fuzzy
+msgid "Encriptar los datos de la sesión de PHP."
+msgstr "Encrypt PHP session data."
+
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:171
+#, fuzzy
+msgid ""
+"Esta funcionalidad incrementa la seguridad de las sesiones de PHP ya que los "
+"datos almacenados no serán legibles."
+msgstr ""
+"This feature increases the PHP sessions security, because the stored data "
+"won't be readable."
+
+#: ../../../../inc/themes/material-blue/views/config/general-site.inc:179
+#, fuzzy
+msgid "Encriptar Sesión"
+msgstr "Encrypt Session"
+
 #: ../../../../inc/themes/material-blue/views/config/import.inc:8
 msgid "Importar CSV/XML"
 msgstr "Import CSV/XML"
@@ -5895,12 +5913,12 @@ msgstr "Ostatnie logowanie"
 msgid "Fecha Clave Maestra"
 msgstr "Data głównego hasła"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:38
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:39
 #, fuzzy
 msgid "Indica si la conexión utiliza HTTPS."
 msgstr "Informuje czy połączenie używa HTTPS"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:38
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:39
 msgid ""
 "Las claves de formularios enviados se encriptan mediante PKI, el resto de "
 "datos no."
@@ -5908,16 +5926,16 @@ msgstr ""
 "Hasła wysyłane przez formularze są zaszyfrowane przez PKI, pozostałe dane "
 "nie są."
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:43
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:48
 #: ../../../../inc/themes/material-blue/views/main/body-header-menu.inc:158
 msgid "Demo"
 msgstr "Demo"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:54
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:60
 msgid "Ayuda :: FAQ :: Changelog"
 msgstr "Pomoc :: FAQ :: Lista zmian"
 
-#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:58
+#: ../../../../inc/themes/material-blue/views/main/body-footer.inc:64
 msgid "Un proyecto de cygnux.org"
 msgstr "Projekt cygnux.org"
 

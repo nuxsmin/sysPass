@@ -337,6 +337,10 @@ class ConfigData implements JsonSerializable
      * @var string
      */
     private $configSaver = '';
+    /**
+     * @var bool
+     */
+    private $encryptSession = false;
 
     /**
      * @return boolean
@@ -1716,7 +1720,7 @@ class ConfigData implements JsonSerializable
      */
     public function setDbPort($dbPort)
     {
-        $this->dbPort = intval($dbPort);
+        $this->dbPort = (int)$dbPort;
 
         return $this;
     }
@@ -1786,5 +1790,24 @@ class ConfigData implements JsonSerializable
     public function setDbSocket($dbSocket)
     {
         $this->dbSocket = $dbSocket;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEncryptSession()
+    {
+        return (bool)$this->encryptSession;
+    }
+
+    /**
+     * @param bool $encryptSession
+     * @return $this
+     */
+    public function setEncryptSession($encryptSession)
+    {
+        $this->encryptSession = (bool)$encryptSession;
+
+        return $this;
     }
 }
