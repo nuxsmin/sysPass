@@ -71,7 +71,13 @@ class UserPreferencesUtil
 
                     if ($Preferences->isUse2Fa()) {
                         self::migrateTwoFA($User);
+
+                        $Preferences->setUse2Fa(0);
                     }
+
+                    $Preferences->setUserId($User->getUserId());
+
+                    UserPreferences::getItem($Preferences)->update();
                 }
             } catch (SPException $e) {
                 $LogMessage->addDescription($e->getMessage());
@@ -111,10 +117,5 @@ class UserPreferencesUtil
         $PluginData->setPluginData(serialize($data));
 
         Plugin::getItem($PluginData)->update();
-
-        $UserPreferences = $UserData->getUserPreferences();
-        $UserPreferences->setUse2Fa(0);
-        $UserPreferences->setUserId($UserData->getUserId());
-        UserPreferences::getItem($UserPreferences)->update();
     }
 }
