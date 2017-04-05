@@ -49,6 +49,10 @@ class CustomerData extends DataModelBase implements DataModelInterface
      * @var string
      */
     public $customer_hash = '';
+    /**
+     * @var int
+     */
+    public $customer_isGlobal = 0;
 
     /**
      * CustomerData constructor.
@@ -134,5 +138,21 @@ class CustomerData extends DataModelBase implements DataModelInterface
     public function getName()
     {
         return $this->customer_name;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCustomerIsGlobal()
+    {
+        return (int)$this->customer_isGlobal;
+    }
+
+    /**
+     * @param int $customer_isGlobal
+     */
+    public function setCustomerIsGlobal($customer_isGlobal)
+    {
+        $this->customer_isGlobal = (bool)$customer_isGlobal;
     }
 }

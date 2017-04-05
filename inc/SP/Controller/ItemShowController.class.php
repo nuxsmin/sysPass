@@ -512,7 +512,9 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         if (!$Acl->isShowViewPass()) {
             throw new ItemException(__('No tiene permisos para acceder a esta cuenta', false));
-        } elseif (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
+        }
+
+        if (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
             throw new ItemException(__('Clave maestra actualizada', false) . '<br>' . __('Reinicie la sesión para cambiarla', false));
         }
 

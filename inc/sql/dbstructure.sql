@@ -17,6 +17,7 @@ CREATE TABLE `customers` (
   `customer_name` varchar(100) NOT NULL,
   `customer_hash` varbinary(40) NOT NULL,
   `customer_description` varchar(255) DEFAULT NULL,
+  `customer_isGlobal` bit DEFAULT b'0',
   PRIMARY KEY (`customer_id`),
   KEY `IDX_name` (`customer_name`,`customer_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -29,7 +30,7 @@ CREATE TABLE `categories` (
   `category_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `category_name` varchar(50) NOT NULL,
   `category_hash` varbinary(40) NOT NULL,
-  `category_description` varchar(255) DEFAULT NULL,
+  `category_description` varchar(255) DEFAULT NULL
   PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

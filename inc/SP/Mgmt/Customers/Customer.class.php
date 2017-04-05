@@ -59,12 +59,14 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
             'INSERT INTO customers
             SET customer_name = ?,
             customer_description = ?,
+            customer_isGlobal = ?,
             customer_hash = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getCustomerName());
         $Data->addParam($this->itemData->getCustomerDescription());
+        $Data->addParam($this->itemData->getCustomerIsGlobal());
         $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
         $Data->setOnErrorMessage(__('Error al crear el cliente', false));
 
@@ -159,7 +161,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT customer_id, customer_name, customer_description FROM customers WHERE customer_id = ? LIMIT 1';
+            'SELECT customer_id, customer_name, customer_description, customer_isGlobal FROM customers WHERE customer_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -183,6 +185,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
             'UPDATE customers
             SET customer_name = ?,
             customer_description = ?,
+            customer_isGlobal = ?,
             customer_hash = ?
             WHERE customer_id = ? LIMIT 1';
 
@@ -190,6 +193,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getCustomerName());
         $Data->addParam($this->itemData->getCustomerDescription());
+        $Data->addParam($this->itemData->getCustomerIsGlobal());
         $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
         $Data->addParam($this->itemData->getCustomerId());
         $Data->setOnErrorMessage(__('Error al actualizar el cliente', false));
@@ -225,7 +229,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT customer_id, customer_name, customer_description FROM customers ORDER BY customer_name';
+            'SELECT customer_id, customer_name, customer_description, customer_isGlobal FROM customers ORDER BY customer_name';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -250,7 +254,8 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
             'SELECT customer_id as id, customer_name as name 
             FROM accounts 
             RIGHT JOIN customers ON customer_id = account_customerId
-            WHERE account_customerId IS NULL 
+            WHERE account_customerId IS NULL
+            OR customer_isGlobal = 1
             OR (' . implode(' AND ', $queryWhere) . ')
             GROUP BY customer_id
             ORDER BY customer_name';
@@ -273,7 +278,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         }
 
         $query = /** @lang SQL */
-            'SELECT customer_id, customer_name, customer_description FROM customers WHERE customer_id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT customer_id, customer_name, customer_description, customer_isGlobal FROM customers WHERE customer_id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
