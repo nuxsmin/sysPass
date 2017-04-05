@@ -620,44 +620,6 @@ class Util
     }
 
     /**
-     * Comprobar si un valor existe en un array de objetos
-     *
-     * @param array $objectArray
-     * @param string $method
-     * @param mixed $value
-     * @return bool
-     */
-    public static function checkInObjectArrayMethod(array $objectArray, $method, $value)
-    {
-        foreach ($objectArray as $object) {
-            if (is_callable([$object, $method]) && $object->$method() === $value) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Comprobar si un valor existe en un array de objetos
-     *
-     * @param array $objectArray
-     * @param string $property
-     * @param mixed $value
-     * @return bool
-     */
-    public static function checkInObjectArray(array $objectArray, $property, $value)
-    {
-        foreach ($objectArray as $object) {
-            if (isset($object->$property) && $object->$property == $value) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Bloquear la aplicación
      *
      * @param bool $setMaintenance

@@ -1,4 +1,6 @@
 <?php
+use SP\Util\ArrayUtil;
+
 /** @var $icons \Theme\Icons */
 /** @var $group \SP\DataModel\GroupData */
 /** @var $groupUsers \SP\DataModel\GroupUsersData */
@@ -50,7 +52,7 @@
                         <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
                         <?php /** @var array $users */
                         foreach ($users as $user): ?>
-                            <?php $selected = \SP\Util\Util::checkInObjectArrayMethod($groupUsers, 'getUsertogroupUserId', $user->id) ? 'selected' : ''; ?>
+                            <?php $selected = ArrayUtil::checkInObjectArrayMethod($groupUsers, 'getUsertogroupUserId', $user->id) ? 'selected' : ''; ?>
                             <option
                                 value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
                         <?php endforeach; ?>

@@ -25,7 +25,6 @@
 namespace SP\Util;
 
 use SP\Config\Config;
-use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
 
 /**

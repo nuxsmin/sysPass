@@ -74,7 +74,7 @@ class Connection implements ConnectionInterface
      * Obtener un socket
      *
      * @param $type int EL tipo de socket TCP/UDP
-     * @return mixed
+     * @return resource
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getSocket($type)
@@ -96,6 +96,8 @@ class Connection implements ConnectionInterface
         }
 
         stream_set_timeout($this->socket, self::SOCKET_TIMEOUT);
+
+        return $this->socket;
     }
 
     /**

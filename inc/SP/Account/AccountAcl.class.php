@@ -30,8 +30,8 @@ use SP\Core\ActionsInterface;
 use SP\Core\Session;
 use SP\DataModel\UserData;
 use SP\Mgmt\Groups\GroupUsers;
+use SP\Util\ArrayUtil;
 use SP\Util\Checks;
-use SP\Util\Util;
 
 /**
  * Class AccountAcl
@@ -450,7 +450,7 @@ class AccountAcl
                 // o... permitir los grupos que no sean el principal del usuario?
                 || (Config::getConfig()->isAccountFullGroupAccess()
                     // Comprobar si el usuario está vinculado desde los grupos secundarios de la cuenta
-                    && Util::checkInObjectArray($groupsId, 'groupId', $groupId))
+                    && ArrayUtil::checkInObjectArray($groupsId, 'groupId', $groupId))
             ) {
                 return true;
             }
