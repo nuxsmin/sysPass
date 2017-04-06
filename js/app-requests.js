@@ -107,6 +107,16 @@ sysPass.Requests = function (Common) {
     };
 
     /**
+     * Devolver la URL para peticiones Ajax
+     *
+     * @param url
+     * @returns {*}
+     */
+    var getUrl = function (url) {
+        return (url.indexOf("http") === 0 && url.indexOf("https") === 0) ? Common.config().APP_ROOT + url : url;
+    };
+
+    /**
      * Llama a una acción mediante AJAX
      *
      * @param opts
@@ -116,11 +126,9 @@ sysPass.Requests = function (Common) {
     var getActionCall = function (opts, callbackOk, callbackError) {
         log.info("getActionCall");
 
-        var url = (!opts.url.startsWith("http", 0) && !opts.url.startsWith("https", 0)) ? Common.config().APP_ROOT + opts.url : opts.url;
-
         return $.ajax({
             dataType: opts.type,
-            url: url,
+            url: getUrl(opts.url),
             method: opts.method,
             async: opts.async,
             data: opts.data,
@@ -178,7 +186,7 @@ sysPass.Requests = function (Common) {
      * @param callbackEnd
      */
     var getActionEvent = function (opts, callbackProgress, callbackEnd) {
-        var url = (!opts.url.startsWith("http", 0) && !opts.url.startsWith("https", 0)) ? Common.config().APP_ROOT + opts.url : opts.url;
+        var url = getUrl(opts.url);
         url += "?" + $.param(opts.data);
 
         var source = new EventSource(url);
