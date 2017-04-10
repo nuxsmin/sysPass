@@ -413,7 +413,7 @@ sysPass.Theme = function (Common) {
                 }
             });
 
-            if ($tagsSelect.selectedOptions.length > 0) {
+            if ($tagsSelect.selectedIndex > 0) {
                 $showFilter.trigger("click");
             }
         },
