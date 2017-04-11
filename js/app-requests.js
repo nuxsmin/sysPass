@@ -113,7 +113,7 @@ sysPass.Requests = function (Common) {
      * @returns {*}
      */
     var getUrl = function (url) {
-        return (url.indexOf("http") === 0 && url.indexOf("https") === 0) ? Common.config().APP_ROOT + url : url;
+        return (url.indexOf("http") === -1 && url.indexOf("https") === -1) ? Common.config().APP_ROOT + url : url;
     };
 
     /**
