@@ -46,6 +46,7 @@ use SP\Core\SessionUtil;
 use SP\DataModel\TrackData;
 use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPassRecoverData;
+use SP\DataModel\UserPreferencesData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Log\Log;
@@ -385,10 +386,15 @@ class LoginController
      */
     protected function loadUserPreferences()
     {
+        if (Checks::demoIsEnabled()) {
+            Session::setUserPreferences(new UserPreferencesData());
+        } else {
+            Session::setUserPreferences($this->UserData->getUserPreferences());
+        }
+
         Language::setLanguage(true);
         DiFactory::getTheme()->initTheme(true);
 
-        Session::setUserPreferences($this->UserData->getUserPreferences());
         Session::setSessionType(Session::SESSION_INTERACTIVE);
         Session::setAuthCompleted(true);
 

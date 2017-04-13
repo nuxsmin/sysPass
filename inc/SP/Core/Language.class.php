@@ -93,9 +93,7 @@ class Language
      */
     private function getUserLang()
     {
-        $userId = Session::getUserData()->getUserId();
-
-        return ($userId > 0) ? UserPreferences::getItem()->getById($userId)->getLang() : '';
+        return (Session::getUserData()->getUserId() > 0) ? Session::getUserPreferences()->getLang() : '';
     }
 
     /**
