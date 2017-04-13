@@ -195,9 +195,10 @@
   .data {
     width: 100%;
     padding: 10px;
-    border: 1px solid #c9c9c9;
+    //border: 1px solid #d9d9d9;
     margin: 0 auto;
-    background-color: #f9f9f9;
+    background-color: #fff;
+    @include box-shadow();
     #history-icon {
       position: relative;
       top: 5em;
