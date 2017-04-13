@@ -59,7 +59,9 @@ class Crypt
 
             if (!DB::beginTransaction()) {
                 throw new SPException(SPException::SP_ERROR, __('No es posible iniciar una transacción', false));
-            } elseif (!self::migrateHash($masterPass)) {
+            }
+
+            if (!self::migrateHash($masterPass)) {
                 throw new SPException(SPException::SP_INFO, __('Clave maestra incorrecta', false));
             }
 

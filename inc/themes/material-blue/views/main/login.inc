@@ -21,7 +21,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="pass" name="pass" type="password"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="80"
+                                   maxlength="255"
                                    autocomplete="off">
                             <label class="mdl-textfield__label"
                                    for="pass"><?php echo __('Clave'); ?></label>
@@ -33,7 +33,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="oldpass" name="oldpass" type="password"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="80" autocomplete="off">
+                                   maxlength="255" autocomplete="off">
                             <label class="mdl-textfield__label"
                                    for="oldpass"><?php echo __('Clave Anterior'); ?></label>
                         </div>
@@ -44,7 +44,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="mpass" name="mpass" type="password"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="80" autocomplete="off">
+                                   maxlength="255" autocomplete="off">
                             <label class="mdl-textfield__label"
                                    for="mpass"><?php echo __('Clave Maestra'); ?></label>
                         </div>
