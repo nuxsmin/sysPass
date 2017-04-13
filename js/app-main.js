@@ -337,6 +337,7 @@ sysPass.Main = function () {
 
     // Objeto para leer/escribir el token de seguridad
     var sk = {
+        current: "",
         get: function () {
             log.info("sk:get");
             return $("#container").attr("data-sk");
@@ -344,6 +345,8 @@ sysPass.Main = function () {
         set: function (sk) {
             log.info("sk:set");
             $("#container").attr("data-sk", sk);
+
+            sk.current = sk;
         }
     };
 

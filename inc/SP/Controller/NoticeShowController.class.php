@@ -109,6 +109,8 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
             $this->JsonResponse->setDescription($e->getMessage());
         }
 
+        $this->JsonResponse->setCsrf($this->view->sk);
+
         Json::returnJson($this->JsonResponse);
     }
 
