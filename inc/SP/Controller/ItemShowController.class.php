@@ -245,6 +245,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             $this->JsonResponse->setDescription($e->getMessage());
         }
 
+        $this->JsonResponse->setCsrf($this->view->sk);
+
         Json::returnJson($this->JsonResponse);
     }
 
@@ -515,6 +517,10 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         }
 
         if (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
+            throw new ItemException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
+        }
+
+        if (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
             throw new ItemException(__('Clave maestra actualizada', false) . '<br>' . __('Reinicie la sesión para cambiarla', false));
         }
 
@@ -560,7 +566,6 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             'useimage' => $useImage
         ];
 
-        $this->JsonResponse->setCsrf($this->view->sk);
         $this->JsonResponse->setData($data);
     }
 

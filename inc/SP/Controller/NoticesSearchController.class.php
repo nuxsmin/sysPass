@@ -99,11 +99,12 @@ class NoticesSearchController extends GridItemsSearchController implements Actio
                     $this->invalidAction();
             }
 
-            $this->JsonResponse->setCsrf($this->view->sk);
             $this->JsonResponse->setData(['html' => $this->render()]);
         } catch (\Exception $e) {
             $this->JsonResponse->setDescription($e->getMessage());
         }
+
+        $this->JsonResponse->setCsrf($this->view->sk);
 
         Json::returnJson($this->JsonResponse);
     }

@@ -288,7 +288,7 @@ sysPass.Actions = function (Common) {
             opts.data = {
                 actionId: $obj.data("action-id"),
                 itemId: $obj.data("item-id"),
-                sk: $obj.data("sk"),
+                sk: Common.sk.get(),
                 isAjax: 1
             };
 
@@ -1094,8 +1094,6 @@ sysPass.Actions = function (Common) {
             log.info("appMgmt:show");
 
             if ($obj.data("item-dst") || $obj.data("activetab") === undefined) {
-                log.info($obj.data("activetab"));
-
                 appMgmt.refreshTab = false;
             }
 

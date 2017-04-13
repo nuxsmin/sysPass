@@ -169,9 +169,13 @@ sysPass.Requests = function (Common) {
                     callbackError();
                 }
             },
-            complete: function () {
+            complete: function (response) {
                 if (opts.useLoading === true) {
                     Common.appTheme().loading.hide();
+                }
+
+                if (opts.type === "json" && response.responseJSON.csrf !== undefined && response.responseJSON.csrf !== "") {
+                    Common.sk.set(response.responseJSON.csrf);
                 }
 
                 Common.appTheme().ajax.complete();

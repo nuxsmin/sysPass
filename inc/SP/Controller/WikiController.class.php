@@ -85,6 +85,8 @@ class WikiController extends ControllerBase implements ActionsInterface
             $this->JsonResponse->setDescription($e->getMessage());
         }
 
+        $this->JsonResponse->setCsrf($this->view->sk);
+
         Json::returnJson($this->JsonResponse);
     }
 
