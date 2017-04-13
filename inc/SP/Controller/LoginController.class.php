@@ -263,7 +263,9 @@ class LoginController
             $this->addTracking();
 
             throw new AuthException(SPException::SP_INFO, __('Usuario deshabilitado', false), '', self::STATUS_USER_DISABLED);
-        } elseif ($this->UserData->isUserIsChangePass()) {
+        }
+
+        if ($this->UserData->isUserIsChangePass()) {
             $hash = Util::generateRandomBytes(16);
 
             $UserPassRecoverData = new UserPassRecoverData();
@@ -308,9 +310,9 @@ class LoginController
                     $this->addTracking();
 
                     throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
-                } else {
-                    $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
                 }
+
+                $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
             } else if ($oldPass) {
                 if (!UserPass::updateMasterPassFromOldPass($oldPass, $this->UserData)) {
                     $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
@@ -318,9 +320,9 @@ class LoginController
                     $this->addTracking();
 
                     throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
-                } else {
-                    $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
                 }
+
+                $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
             } else {
                 switch (UserPass::loadUserMPass($this->UserData)) {
                     case UserPass::MPASS_CHECKOLD:
@@ -452,19 +454,23 @@ class LoginController
                 $this->addTracking();
 
                 throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
-            } elseif ($LdapAuthData->getStatusCode() === 701) {
+            }
+
+            if ($LdapAuthData->getStatusCode() === 701) {
                 $this->LogMessage->addDescription(__('Cuenta expirada', false));
 
                 throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_USER_DISABLED);
-            } else if ($LdapAuthData->getStatusCode() === 702) {
+            }
+
+            if ($LdapAuthData->getStatusCode() === 702) {
                 $this->LogMessage->addDescription(__('El usuario no tiene grupos asociados', false));
 
                 throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_USER_DISABLED);
-            } else {
-                $this->LogMessage->addDescription(__('Error interno', false));
-
-                throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INTERNAL_ERROR);
             }
+
+            $this->LogMessage->addDescription(__('Error interno', false));
+
+            throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INTERNAL_ERROR);
         }
 
         $this->UserData->setUserName($LdapAuthData->getName());
@@ -511,7 +517,9 @@ class LoginController
             $this->addTracking();
 
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
-        } elseif ($AuthData->getAuthenticated() === 1) {
+        }
+
+        if ($AuthData->getAuthenticated() === 1) {
             $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
         }
 
@@ -537,7 +545,9 @@ class LoginController
             $this->addTracking();
 
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
-        } elseif ($AuthData->getAuthenticated() === 1) {
+        }
+
+        if ($AuthData->getAuthenticated() === 1) {
             $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
         }
     }

@@ -100,7 +100,9 @@ class AccountCrypt
             if ($demoEnabled) {
                 $accountsOk[] = $account->account_id;
                 continue;
-            } elseif ($LogMessage->getDetailsCounter() >= 100) {
+            }
+
+            if ($LogMessage->getDetailsCounter() >= 100) {
                 $Log->writeLog(false, true);
             }
 
