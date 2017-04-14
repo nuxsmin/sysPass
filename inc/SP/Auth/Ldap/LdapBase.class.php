@@ -63,6 +63,10 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      */
     protected $server;
     /**
+     * @var int
+     */
+    protected $serverPort;
+    /**
      * @var string
      */
     protected $searchBase;
@@ -161,7 +165,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             @ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
         }
 
-        $this->ldapHandler = @ldap_connect($this->server);
+        $this->ldapHandler = @ldap_connect($this->server, $this->serverPort);
 
         // Conexión al servidor LDAP
         if (!is_resource($this->ldapHandler)) {
@@ -320,6 +324,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     public function setServer($server)
     {
         $this->server = $server;
+        $this->serverPort = $this->getServerPort();
     }
 
     /**
@@ -437,6 +442,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     {
         $this->searchBase = Config::getConfig()->getLdapBase();
         $this->server = $this->pickServer();
+        $this->serverPort = $this->getServerPort();
         $this->bindDn = Config::getConfig()->getLdapBindUser();
         $this->bindPass = Config::getConfig()->getLdapBindPass();
         $this->group = Config::getConfig()->getLdapGroup();
@@ -452,6 +458,16 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         $this->LdapAuthData->setServer($this->server);
 
         return true;
+    }
+
+    /**
+     * Devolver el puerto del servidor si está establecido
+     *
+     * @return int
+     */
+    protected function getServerPort()
+    {
+        return preg_match('/[\d\.]+:(\d+)/', $this->server, $port) ? $port[1] : 389;
     }
 
     /**
