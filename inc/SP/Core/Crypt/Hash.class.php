@@ -32,6 +32,11 @@ namespace SP\Core\Crypt;
 class Hash
 {
     /**
+     * Longitud máxima aceptada para hashing
+     */
+    const MAX_KEY_LENGTH = 72;
+
+    /**
      * Comprobar el hash de una clave.
      *
      * @param string $key  con la clave a comprobar
@@ -41,7 +46,27 @@ class Hash
      */
     public static function checkHashKey($key, $hash)
     {
-        return password_verify($key, $hash);
+        return password_verify(self::getKey($key), $hash);
+    }
+
+    /**
+     * Devolver la clave preparada. Se crea un hash si supera la longitud máxima.
+     *
+     * @param string $key
+     * @param bool   $isCheck Indica si la operación es de comprobación o no
+     * @return string
+     */
+    private static function getKey(&$key, $isCheck = true)
+    {
+        if (mb_strlen($key) > Hash::MAX_KEY_LENGTH) {
+            $key = hash('sha256', $key);
+
+            if ($isCheck === false) {
+                debugLog('[INFO] Password string shortened using SHA256 and then BCRYPT');
+            }
+        }
+
+        return $key;
     }
 
     /**
@@ -52,6 +77,6 @@ class Hash
      */
     public static function hashKey($key)
     {
-        return password_hash($key, PASSWORD_BCRYPT);
+        return password_hash(self::getKey($key, false), PASSWORD_BCRYPT);
     }
 }
