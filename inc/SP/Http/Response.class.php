@@ -24,6 +24,7 @@
 
 namespace SP\Http;
 
+use SP\Core\Exceptions\SPException;
 use SP\Util\Json;
 
 defined('APP_ROOT') || die();
@@ -83,8 +84,20 @@ class Response
             $json = $data;
         }
 
-        header('Content-type: application/json');
-        exit(Json::getJson($json));
+        header('Content-type: application/json; charset=utf-8');
+
+        try {
+            exit(Json::getJson($json));
+        } catch (SPException $e) {
+            $data['status'] = 1;
+            $data['description'] = __($e->getMessage());
+
+            if (isset($data['html'])) {
+                $data['html'] = __($e->getMessage());
+            }
+
+            exit(json_encode($data));
+        }
     }
 
     /**

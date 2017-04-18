@@ -110,6 +110,6 @@ class FileUtil
      */
     public static function isImage(FileData $FileData)
     {
-        return in_array(strtoupper($FileData->getAccfileExtension()), FileUtil::$imageExtensions);
+        return in_array(mb_strtoupper($FileData->getAccfileExtension()), FileUtil::$imageExtensions);
     }
 }

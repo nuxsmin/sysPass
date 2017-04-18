@@ -89,7 +89,7 @@ class FileImport
 
         if ($fileData['name']) {
             // Comprobamos la extensión del archivo
-            $fileExtension = strtoupper(pathinfo($fileData['name'], PATHINFO_EXTENSION));
+            $fileExtension = mb_strtoupper(pathinfo($fileData['name'], PATHINFO_EXTENSION));
 
             if ($fileExtension !== 'CSV' && $fileExtension !== 'XML') {
                 throw new SPException(

@@ -24,7 +24,7 @@
                                title="<?php echo __('Buscar en Wiki'); ?>">
                                 <span class="mdl-chip mdl-chip--contact">
                                     <span style="background-color: <?php echo $AccountSearchItem->getColor(); ?>;"
-                                          class="mdl-chip__contact mdl-color-text--white"><?php echo strtoupper($AccountSearchData->getCustomerName()[0]); ?></span>
+                                          class="mdl-chip__contact mdl-color-text--white"><?php echo mb_strtoupper(mb_substr($AccountSearchData->getCustomerName(), 0, 1)); ?></span>
                                     <span class="mdl-chip__text"
                                           title="<?php echo $AccountSearchData->getCustomerName(); ?>"><?php echo $AccountSearchItem->getShortCustomerName(); ?></span>
                                 </span>
@@ -32,7 +32,7 @@
                         <?php else: ?>
                             <span class="mdl-chip mdl-chip--contact">
                                 <span style="background-color: <?php echo $AccountSearchItem->getColor(); ?>;"
-                                      class="mdl-chip__contact mdl-color-text--white"><?php echo strtoupper($AccountSearchData->getCustomerName()[0]); ?></span>
+                                      class="mdl-chip__contact mdl-color-text--white"><?php echo mb_strtoupper(mb_substr($AccountSearchData->getCustomerName(), 0, 1)); ?></span>
                                 <span class="mdl-chip__text"
                                       title="<?php echo $AccountSearchData->getCustomerName(); ?>"><?php echo $AccountSearchItem->getShortCustomerName(); ?></span>
                             </span>

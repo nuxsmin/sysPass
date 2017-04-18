@@ -90,7 +90,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
 
     if ($FileData->getAccfileName() !== '') {
         // Comprobamos la extensión del archivo
-        $FileData->setAccfileExtension(strtoupper(pathinfo($FileData->getAccfileName(), PATHINFO_EXTENSION)));
+        $FileData->setAccfileExtension(mb_strtoupper(pathinfo($FileData->getAccfileName(), PATHINFO_EXTENSION)));
 
         if (!in_array($FileData->getAccfileExtension(), $allowedExts)) {
             $LogMessage->addDescription(__('Tipo de archivo no soportado', false));
@@ -186,7 +186,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
             exit('<img src="data:' . $FileData->getAccfileType() . ';base64, ' . $imgData . '" border="0" /><div class="title">' . $FileData->getAccfileName() . '</div>');
 //            } elseif ( strtoupper($fileExt) == "PDF" ){
 //                echo '<object data="data:application/pdf;base64, '.base64_encode($fileData).'" type="application/pdf"></object>';
-        } elseif (strtoupper($FileData->getAccfileExtension()) === 'TXT') {
+        } elseif (mb_strtoupper($FileData->getAccfileExtension()) === 'TXT') {
             exit('<pre>' . htmlentities($FileData->getAccfileContent()) . '</pre>');
         } else {
             exit();

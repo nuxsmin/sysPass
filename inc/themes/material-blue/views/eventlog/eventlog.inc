@@ -57,7 +57,7 @@
                     <?php echo utf8_decode($log->log_action); ?>
                 </td>
                 <td class="cell">
-                    <?php echo strtoupper($log->log_login); ?>
+                    <?php echo mb_strtoupper($log->log_login); ?>
                 </td>
                 <td class="cell">
                     <?php echo $isDemoMode ? preg_replace('#\d+#', '*', $log->log_ipAddress) : $log->log_ipAddress; ?>

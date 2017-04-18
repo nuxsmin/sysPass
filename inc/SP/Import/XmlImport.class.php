@@ -96,7 +96,7 @@ class XmlImport implements ImportInterface
         $this->Import->setXmlDOM($XmlFileImport->getXmlDOM());
         $this->Import->setLogMessage($this->LogMessage);
 
-        $this->LogMessage->addDescription(sprintf(__('Formato detectado: %s'), strtoupper($format)));
+        $this->LogMessage->addDescription(sprintf(__('Formato detectado: %s'), mb_strtoupper($format)));
 
         $this->Import->doImport();
     }
