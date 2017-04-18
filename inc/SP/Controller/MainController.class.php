@@ -238,8 +238,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $this->view->assign('userType', $userType);
         $this->view->assign('userId', $this->UserData->getUserId());
-        $this->view->assign('userLogin', strtoupper($this->UserData->getUserLogin()));
-        $this->view->assign('userName', $this->UserData->getUserName() ?: strtoupper($this->view->userLogin));
+        $this->view->assign('userLogin', mb_strtoupper($this->UserData->getUserLogin()));
+        $this->view->assign('userName', $this->UserData->getUserName() ?: mb_strtoupper($this->view->userLogin));
         $this->view->assign('userGroup', $this->UserData->getUsergroupName());
         $this->view->assign('showPassIcon', !(Config::getConfig()->isLdapEnabled() && $this->UserData->isUserIsLdap()));
         $this->view->assign('userNotices', count(Notice::getItem()->getAllActiveForUser()));

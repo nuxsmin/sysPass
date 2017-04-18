@@ -43,7 +43,7 @@ class Json
      */
     public static function returnJson(JsonResponse $JsonResponse)
     {
-        header('Content-type: application/json');
+        header('Content-type: application/json; charset=utf-8');
 
         try {
             exit(self::getJson($JsonResponse));
@@ -65,7 +65,7 @@ class Json
      */
     public static function getJson($data)
     {
-        $json = json_encode($data);
+        $json = json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR);
 
         if ($json === false) {
             throw new SPException(SPException::SP_CRITICAL, __('Error de codificación', false), json_last_error_msg());
