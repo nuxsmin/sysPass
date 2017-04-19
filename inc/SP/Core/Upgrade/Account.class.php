@@ -57,6 +57,12 @@ class Account
 
             DB::getQuery($Data);
 
+            $query = /** @lang SQL */
+                'DELETE FROM accGroups WHERE accgroup_accountId NOT IN (SELECT account_id FROM accounts) OR accgroup_accountId IS NULL';
+            $Data->setQuery($query);
+
+            DB::getQuery($Data);
+
             DB::endTransaction();
 
             return true;
