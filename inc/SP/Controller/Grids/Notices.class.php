@@ -99,17 +99,17 @@ class Notices extends GridBase
             $GridActionNew->setOnClickFunction('notice/show');
 
             $Grid->setDataActions($GridActionNew);
-        };
+        }
 
-        $GridActionNew = new DataGridAction();
-        $GridActionNew->setId(self::ACTION_NOT_USER_VIEW);
-        $GridActionNew->setType(DataGridActionType::VIEW_ITEM);
-        $GridActionNew->setName(__('Ver Notificación'));
-        $GridActionNew->setTitle(__('Ver Notificación'));
-        $GridActionNew->setIcon($this->icons->getIconView());
-        $GridActionNew->setOnClickFunction('notice/show');
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(self::ACTION_NOT_USER_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionView->setName(__('Ver Notificación'));
+        $GridActionView->setTitle(__('Ver Notificación'));
+        $GridActionView->setIcon($this->icons->getIconView());
+        $GridActionView->setOnClickFunction('notice/show');
 
-        $Grid->setDataActions($GridActionNew);
+        $Grid->setDataActions($GridActionView);
 
         $GridActionCheck = new DataGridAction();
         $GridActionCheck->setId(self::ACTION_NOT_USER_CHECK);
@@ -117,7 +117,7 @@ class Notices extends GridBase
         $GridActionCheck->setTitle(__('Marcar Notificación'));
         $GridActionCheck->setIcon($this->icons->getIconEnabled());
         $GridActionCheck->setOnClickFunction('notice/check');
-        $GridActionCheck->setFilterRowSource('notice_checked', 1);
+        $GridActionCheck->setFilterRowSource('notice_checked');
 
         $Grid->setDataActions($GridActionCheck);
 
@@ -139,9 +139,9 @@ class Notices extends GridBase
         $GridActionDel->setOnClickFunction('appMgmt/delete');
 
         if (!$isAdminApp) {
-            $GridActionCheck->setFilterRowSource('notice_sticky', 1);
-            $GridActionEdit->setFilterRowSource('notice_sticky', 1);
-            $GridActionDel->setFilterRowSource('notice_sticky', 1);
+            $GridActionCheck->setFilterRowSource('notice_sticky');
+            $GridActionEdit->setFilterRowSource('notice_sticky');
+            $GridActionDel->setFilterRowSource('notice_sticky');
         }
 
         $Grid->setDataActions($GridActionDel);
