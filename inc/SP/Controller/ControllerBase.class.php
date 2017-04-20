@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,21 +19,20 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Acl;
+use SP\Core\DiFactory;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Session;
-use SP\Core\Exceptions\SPException;
-use SP\Core\DiFactory;
 use SP\Core\Template;
 use SP\Core\UI\ThemeIconsBase;
 use SP\DataModel\ProfileData;
@@ -53,6 +52,7 @@ abstract class ControllerBase
     const ERR_PAGE_NO_PERMISSION = 2;
     const ERR_UPDATE_MPASS = 3;
     const ERR_OPERATION_NO_PERMISSION = 4;
+    const ERR_EXCEPTION = 5;
 
     /**
      * Instancia del motor de plantillas a utilizar
@@ -94,6 +94,10 @@ abstract class ControllerBase
      * @var EventDispatcherInterface
      */
     protected $EventDispatcher;
+    /**
+     * @var bool
+     */
+    protected $loggedIn = false;
 
     /**
      * Constructor
@@ -127,12 +131,10 @@ abstract class ControllerBase
 
     private function setViewVars()
     {
-        global $timeStart;
-
         $this->UserData = Session::getUserData();
         $this->UserProfileData = Session::getUserProfile();
 
-        $this->view->assign('timeStart', $timeStart);
+        $this->view->assign('timeStart', $_SERVER['REQUEST_TIME_FLOAT']);
         $this->view->assign('icons', $this->icons);
         $this->view->assign('SessionUserData', $this->UserData);
     }
@@ -156,23 +158,27 @@ abstract class ControllerBase
     }
 
     /**
-     * Renderizar los datos de la plantilla y mostrarlos
-     *
-     * @throws FileNotFoundException
+     * Mostrar los datos de la plantilla
      */
     public function view()
     {
-        echo $this->view->render();
+        try {
+            echo $this->view->render();
+        } catch (FileNotFoundException $e) {
+            debugLog($e->getMessage(), true);
+        }
     }
 
     /**
      * Renderizar los datos de la plantilla y devolverlos
-     *
-     * @throws FileNotFoundException
      */
     public function render()
     {
-        return $this->view->render();
+        try {
+            return $this->view->render();
+        } catch (FileNotFoundException $e) {
+            debugLog($e->getMessage(), true);
+        }
     }
 
     /**
@@ -184,7 +190,7 @@ abstract class ControllerBase
 
         $this->view->addTemplate('debug', 'common');
 
-        $this->view->assign('time', Init::microtime_float() - $this->view->timeStart);
+        $this->view->assign('time', getElapsedTime());
         $this->view->assign('memInit', $memInit / 1000);
         $this->view->assign('memEnd', memory_get_usage() / 1000);
     }
@@ -238,6 +244,66 @@ abstract class ControllerBase
     }
 
     /**
+     * @return bool
+     */
+    public function isLoggedIn()
+    {
+        return $this->loggedIn;
+    }
+
+    /**
+     * @param bool $loggedIn
+     */
+    public function setLoggedIn($loggedIn)
+    {
+        $this->loggedIn = (bool)$loggedIn;
+        $this->view->assign('loggedIn', $this->loggedIn);
+    }
+
+    /**
+     * Establecer la plantilla de error con el código indicado.
+     *
+     * @param int  $type int con el tipo de error
+     * @param bool $reset
+     * @param bool $fancy
+     */
+    public function showError($type, $reset = true, $fancy = false)
+    {
+        $errorsTypes = [
+            self::ERR_UNAVAILABLE => ['txt' => __('Opción no disponible'), 'hint' => __('Consulte con el administrador')],
+            self::ERR_ACCOUNT_NO_PERMISSION => ['txt' => __('No tiene permisos para acceder a esta cuenta'), 'hint' => __('Consulte con el administrador')],
+            self::ERR_PAGE_NO_PERMISSION => ['txt' => __('No tiene permisos para acceder a esta página'), 'hint' => __('Consulte con el administrador')],
+            self::ERR_OPERATION_NO_PERMISSION => ['txt' => __('No tiene permisos para realizar esta operación'), 'hint' => __('Consulte con el administrador')],
+            self::ERR_UPDATE_MPASS => ['txt' => __('Clave maestra actualizada'), 'hint' => __('Reinicie la sesión para cambiarla')],
+            self::ERR_EXCEPTION => ['txt' => __('Se ha producido una excepción'), 'hint' => __('Consulte con el administrador')]
+        ];
+
+        if ($reset) {
+            $this->view->resetTemplates();
+        }
+
+        if ($fancy) {
+            $this->view->addTemplate('errorfancy');
+        } else {
+            $this->view->addTemplate('error', 'main');
+        }
+
+        $this->view->append('errors',
+            [
+                'type' => SPException::SP_WARNING,
+                'description' => $errorsTypes[$type]['txt'],
+                'hint' => $errorsTypes[$type]['hint']]
+        );
+    }
+
+    /**
+     * Realizar las acciones del controlador
+     *
+     * @param mixed $type Tipo de acción
+     */
+    public abstract function doAction($type = null);
+
+    /**
      * Establecer la instancia del motor de plantillas a utilizar.
      *
      * @param Template $template
@@ -263,46 +329,4 @@ abstract class ControllerBase
 
         return Session::getUserData()->isUserIsAdminApp() || Acl::checkUserAccess($checkAction);
     }
-
-    /**
-     * Establecer la plantilla de error con el código indicado.
-     *
-     * @param int  $type int con el tipo de error
-     * @param bool $reset
-     * @param bool $fancy
-     */
-    public function showError($type, $reset = true, $fancy = false)
-    {
-        $errorsTypes = [
-            self::ERR_UNAVAILABLE => ['txt' => _('Opción no disponible'), 'hint' => _('Consulte con el administrador')],
-            self::ERR_ACCOUNT_NO_PERMISSION => ['txt' => _('No tiene permisos para acceder a esta cuenta'), 'hint' => _('Consulte con el administrador')],
-            self::ERR_PAGE_NO_PERMISSION => ['txt' => _('No tiene permisos para acceder a esta página'), 'hint' => _('Consulte con el administrador')],
-            self::ERR_OPERATION_NO_PERMISSION => ['txt' => _('No tiene permisos para realizar esta operación'), 'hint' => _('Consulte con el administrador')],
-            self::ERR_UPDATE_MPASS => ['txt' => _('Clave maestra actualizada'), 'hint' => _('Reinicie la sesión para cambiarla')]
-        ];
-
-        if ($reset) {
-            $this->view->resetTemplates();
-        }
-
-        if ($fancy) {
-            $this->view->addTemplate('errorfancy');
-        } else {
-            $this->view->addTemplate('error');
-        }
-
-        $this->view->append('errors',
-            [
-                'type' => SPException::SP_WARNING,
-                'description' => $errorsTypes[$type]['txt'],
-                'hint' => $errorsTypes[$type]['hint']]
-        );
-    }
-
-    /**
-     * Realizar las accione del controlador
-     *
-     * @param mixed $type Tipo de acción
-     */
-    public abstract function doAction($type = null);
 }

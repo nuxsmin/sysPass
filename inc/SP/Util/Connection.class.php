@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -75,7 +74,7 @@ class Connection implements ConnectionInterface
      * Obtener un socket
      *
      * @param $type int EL tipo de socket TCP/UDP
-     * @return mixed
+     * @return resource
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getSocket($type)
@@ -97,6 +96,8 @@ class Connection implements ConnectionInterface
         }
 
         stream_set_timeout($this->socket, self::SOCKET_TIMEOUT);
+
+        return $this->socket;
     }
 
     /**
@@ -118,14 +119,14 @@ class Connection implements ConnectionInterface
     public function send($message)
     {
         if (!is_resource($this->socket)) {
-            throw new SPException(SPException::SP_WARNING, _('Socket no inicializado'));
+            throw new SPException(SPException::SP_WARNING, __('Socket no inicializado', false));
         }
 
         $nBytes = @fwrite($this->socket, $message);
 //        $nBytes = @socket_sendto($this->_socket, $message, strlen($message), 0, $this->_host, $this->port);
 
         if ($nBytes === false) {
-            throw new SPException(SPException::SP_WARNING, _('Error al enviar datos'), $this->getSocketError());
+            throw new SPException(SPException::SP_WARNING, __('Error al enviar datos', false), $this->getSocketError());
         }
 
         return $nBytes;

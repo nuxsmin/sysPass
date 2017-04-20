@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,19 +19,19 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Users;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupUsersData;
+use SP\DataModel\UserLoginData;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Groups\GroupUsers;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -66,53 +66,65 @@ class UserMigrate
     /**
      * Actualizar la clave de un usuario desde phpPMS.
      *
-     * @param string $userLogin con el login del usuario
-     * @param string $userPass  con la clave del usuario
+     * @param UserLoginData $UserData
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      *
      * Esta función actualiza la clave de un usuario que ha sido migrado desde phpPMS
-     * @throws \SP\Core\Exceptions\SPException
      */
-    public static function migrateUser($userLogin, $userPass)
+    public static function migrateUserPass(UserLoginData $UserData)
     {
-        $passdata = UserPass::makeUserPassHash($userPass);
+        $passOk = ($UserData->getUserPass() === sha1($UserData->getUserHashSalt() . $UserData->getLoginPass())
+            || $UserData->getUserPass() === md5($UserData->getLoginPass())
+            || hash_equals($UserData->getUserPass(), crypt($UserData->getLoginPass(), $UserData->getUserHashSalt()))
+            || Hash::checkHashKey($UserData->getLoginPass(), $UserData->getUserPass()));
 
-        $query = /** @lang SQL */
-            'UPDATE usrData SET
+        if ($passOk) {
+            $query = /** @lang SQL */
+                'UPDATE usrData SET
             user_pass = ?,
-            user_hashSalt = ?,
+            user_hashSalt = \'\',
             user_lastUpdate = NOW(),
             user_isMigrate = 0
-            WHERE user_login = ?
-            AND user_isMigrate = 1
-            AND (user_pass = SHA1(CONCAT(user_hashSalt,?))
-            OR user_pass = MD5(?)) LIMIT 1';
+            WHERE user_login = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($passdata['pass']);
-        $Data->addParam($passdata['salt']);
-        $Data->addParam($userLogin);
-        $Data->addParam($userPass);
-        $Data->addParam($userPass);
+            $Data = new QueryData();
+            $Data->setQuery($query);
+            $Data->addParam(Hash::hashKey($UserData->getLoginPass()));
+            $Data->addParam($UserData->getLogin());
+            $Data->setOnErrorMessage(__('Error al migrar cuenta de usuario', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al migrar cuenta de usuario'));
+            DB::getQuery($Data);
+
+            $Log = new Log();
+            $Log->getLogMessage()
+                ->setAction(__FUNCTION__)
+                ->addDescription(__('Usuario actualizado', false))
+                ->addDetails(__('Login', false), $UserData->getLogin());
+            $Log->writeLog();
+
+            Email::sendEmail($Log->getLogMessage());
+
+            return true;
         }
 
-        $Log = new Log(__FUNCTION__);
-        $Log->addDescription(_('Usuario actualizado'));
-        $Log->addDetails(_('Login'), $userLogin);
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
+        return false;
     }
 
     /**
      * Migrar el grupo de los usuarios a la nueva tabla
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public static function migrateUsersGroup()
     {
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__FUNCTION__);
+
         $query = /** @lang SQL */
             'SELECT user_id, user_groupId FROM usrData';
 
@@ -122,7 +134,11 @@ class UserMigrate
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener grupo de usuarios'));
+            $LogMessage->addDescription(__('Error al obtener grupo de usuarios', false));
+            $Log->setLogLevel(Log::ERROR);
+            $Log->writeLog();
+
+            throw new SPException(SPException::SP_ERROR, $LogMessage->getDescription());
         }
 
         foreach ($queryRes as $user) {
@@ -133,15 +149,21 @@ class UserMigrate
             try {
                 GroupUsers::getItem($GroupUsers)->update();
             } catch (SPException $e) {
-                Log::writeNewLog(_('Migrar Grupos'), sprintf('%s (%s)', _('Error al migrar grupo del usuario'), $user->user_id), Log::ERROR);
+                $LogMessage->addDetails(__('Error al migrar grupo del usuario', false), $user->user_id);
+                $Log->setLogLevel(Log::ERROR);
             }
         }
+
+        $Log->writeLog();
 
         return true;
     }
 
     /**
      * Establecer el campo isMigrate de cada usuario
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public static function setMigrateUsers()
     {

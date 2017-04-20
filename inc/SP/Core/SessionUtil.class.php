@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
@@ -28,10 +27,9 @@ namespace SP\Core;
 use SP\Config\Config;
 use SP\DataModel\UserData;
 use SP\Mgmt\Profiles\Profile;
-use SP\Mgmt\Profiles\ProfileUtil;
-use SP\Mgmt\Users\User;
+use SP\Core\Crypt\Session as CryptSession;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class SessionUtil para las utilidades de la sesión
@@ -54,6 +52,7 @@ class SessionUtil
     /**
      * Establecer la clave pública RSA en la sessión
      *
+     * @throws \phpseclib\Exception\FileNotFoundException
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function loadPublicKey()
@@ -63,31 +62,15 @@ class SessionUtil
     }
 
     /**
-     * Guardar la clave maestra encriptada en la sesión
-     *
-     * @param $masterPass
-     * @return bool
-     */
-    public static function saveSessionMPass($masterPass)
-    {
-        $mPassPwd = Crypt::generateAesKey(session_id());
-        $sessionMasterPass = Crypt::mkCustomMPassEncrypt($mPassPwd, $masterPass);
-
-        Session::setMPass($sessionMasterPass[0]);
-        Session::setMPassIV($sessionMasterPass[1]);
-
-        return true;
-    }
-
-    /**
      * Desencriptar la clave maestra de la sesión.
      *
      * @return string con la clave maestra
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      */
     public static function getSessionMPass()
     {
-        $cryptPass = Crypt::generateAesKey(session_id());
-        return Crypt::getDecrypt(Session::getMPass(), Session::getMPassIV(), $cryptPass);
+        return CryptSession::getSessionKey();
     }
 
     /**
@@ -127,7 +110,7 @@ class SessionUtil
      */
     public static function cleanSession()
     {
-        foreach ($_SESSION as $key => $value){
+        foreach ($_SESSION as $key => $value) {
             unset($_SESSION[$key]);
         }
 
@@ -157,5 +140,24 @@ class SessionUtil
 //        Session::unsetSessionKey('sessiontype');
 //        Session::unsetSessionKey('config');
 //        Session::unsetSessionKey('configTime');
+    }
+
+    /**
+     * Regenerad el ID de sesión
+     */
+    public static function regenerate()
+    {
+        session_regenerate_id(true);
+        Session::setSidStartTime(time());
+    }
+
+    /**
+     * Destruir la sesión y reiniciar
+     */
+    public static function restart()
+    {
+        session_unset();
+        session_destroy();
+        session_start();
     }
 }

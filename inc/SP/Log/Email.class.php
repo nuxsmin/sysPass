@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,17 +19,19 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Log;
 
-use PHPMailer;
+use phpmailer\PHPMailer;
+use phpmailer\phpmailerException;
 use SP\Config\Config;
-use SP\Html\Html;
 use SP\Core\Init;
+use SP\Core\Messages\LogMessage;
+use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
+use SP\Html\Html;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -43,65 +45,56 @@ class Email
     /**
      * Enviar un email utilizando la clase PHPMailer.
      *
-     * @param Log    $log     con el objeto del tipo Log
-     * @param string $mailTo  con el destinatario
-     * @param bool   $isEvent para indicar si es um
+     * @param LogMessage $LogMessage con el objeto del tipo Log
+     * @param string $mailTo con el destinatario
+     * @param bool $isEvent para indicar si es um
      * @return bool
      */
-    public static function sendEmail(Log $log, $mailTo = '', $isEvent = true)
+    public static function sendEmail(LogMessage $LogMessage, $mailTo = '', $isEvent = true)
     {
         if (!Checks::mailIsEnabled()) {
             return false;
         }
 
-        $Mail = self::getEmailObject($mailTo, utf8_decode($log->getAction()));
-
-        if (!is_object($Mail)) {
-            return false;
-        }
-
-        $Mail->isHTML();
-        $log->setNewLineHtml(true);
+        $Mail = self::getMailer($mailTo, $LogMessage->getAction(true));
 
         if ($isEvent === true) {
-            $performer = Session::getUserData()->getUserLogin() ?: _('N/D');
-            $body[] = sprintf('%s: %s', Html::strongText(_('Acción')), utf8_decode($log->getAction()));
-            $body[] = sprintf('%s: %s (%s)', Html::strongText(_('Realizado por')), $performer, $_SERVER['REMOTE_ADDR']);
+            $performer = Session::getUserData()->getUserLogin() ?: __('N/D');
+            $body[] = sprintf('%s: %s', Html::strongText(__('Acción')), $LogMessage->getAction(true));
+            $body[] = sprintf('%s: %s (%s)', Html::strongText(__('Realizado por')), $performer, Util::getClientAddress(true));
 
             $Mail->addCC(Config::getConfig()->getMailFrom());
         }
 
-        $body[] = utf8_decode($log->getDescription());
-        $body[] = utf8_decode($log->getDetails());
-        $body[] = '';
-        $body[] = '--';
-        $body[] = Util::getAppInfo('appname') . ' - ' . Util::getAppInfo('appdesc');
-        $body[] = Html::anchorText(Init::$WEBURI);
+        $body[] = $LogMessage->getHtmlDescription(true);
+        $body[] = $LogMessage->getHtmlDetails(true);
 
+        $Mail->isHTML();
+        $Mail->Body = implode(Log::NEWLINE_HTML, array_merge($body, Email::getEmailFooter()));
 
-        $Mail->Body = implode(Log::NEWLINE_HTML, $body);
+        $LogMessage = new LogMessage();
+        $LogMessage->setAction(__('Enviar Email', false));
+        $Log = new Log($LogMessage);
 
-        $sendMail = $Mail->send();
+        try {
+            $Mail->send();
+            $LogMessage->addDescription(__('Correo enviado', false));
+            $LogMessage->addDetails(__('Destinatario', false), $mailTo);
 
-        $Log = new Log(_('Enviar Email'));
+            if ($isEvent === true) {
+                $LogMessage->addDetails(__('CC', false), Config::getConfig()->getMailFrom());
+            }
 
-        // Enviar correo
-        if ($sendMail) {
-            $Log->addDescription(_('Correo enviado'));
-        } else {
-            $Log->addDescription(_('Error al enviar correo'));
-            $Log->addDescription('ERROR: ' . $Mail->ErrorInfo);
+            $Log->writeLog();
+            return true;
+        } catch (phpmailerException $e) {
+            $LogMessage->addDescription(__('Error al enviar correo', false));
+            $LogMessage->addDetails(__('Error', false), $e->getMessage());
+            $LogMessage->addDetails(__('Error', false), $Mail->ErrorInfo);
+            $Log->writeLog();
         }
 
-        $Log->addDescription(_('Destinatario') . ': ' . $mailTo);
-
-        if ($isEvent === true){
-            $Log->addDescription(_('CC') . ': ' . Config::getConfig()->getMailFrom());
-        }
-
-        $Log->writeLog();
-
-        return $sendMail;
+        return false;
     }
 
     /**
@@ -109,9 +102,9 @@ class Email
      *
      * @param string $mailTo con la dirección del destinatario
      * @param string $action con la acción realizada
-     * @return false|\phpmailer\PHPMailer
+     * @return false|PHPMailer
      */
-    private static function getEmailObject($mailTo, $action)
+    private static function getMailer($mailTo, $action)
     {
         $appName = Util::getAppInfo('appname');
         $mailFrom = Config::getConfig()->getMailFrom();
@@ -119,30 +112,24 @@ class Email
         $mailPort = Config::getConfig()->getMailPort();
         $mailAuth = Config::getConfig()->isMailAuthenabled();
 
-        if ($mailAuth) {
-            $mailUser = Config::getConfig()->getMailUser();
-            $mailPass = Config::getConfig()->getMailPass();
-        }
-
-        if (!$mailServer) {
-            return false;
-        }
-
         if (empty($mailTo)) {
             $mailTo = $mailFrom;
         }
 
-        $Mail = new \phpmailer\PHPMailer();
+        $Mail = new PHPMailer();
 
+        $Mail->SMTPAutoTLS = false;
         $Mail->isSMTP();
         $Mail->CharSet = 'utf-8';
         $Mail->Host = $mailServer;
         $Mail->Port = $mailPort;
+
         if ($mailAuth) {
             $Mail->SMTPAuth = $mailAuth;
-            $Mail->Username = $mailUser;
-            $Mail->Password = $mailPass;
+            $Mail->Username = Config::getConfig()->getMailUser();
+            $Mail->Password = Config::getConfig()->getMailPass();
         }
+
         $Mail->SMTPSecure = strtolower(Config::getConfig()->getMailSecurity());
         //$mail->SMTPDebug = 2;
         //$mail->Debugoutput = 'error_log';
@@ -151,8 +138,73 @@ class Email
         $Mail->addAddress($mailTo);
         $Mail->addReplyTo($mailFrom, $appName);
         $Mail->WordWrap = 100;
-        $Mail->Subject = $appName . ' (' . _('Aviso') . ') - ' . $action;
+        $Mail->Subject = sprintf('%s (%s) - %s', $appName, __('Aviso'), $action);
 
         return $Mail;
+    }
+
+    /**
+     * Devolver el pie del email con la firma de la aplicación
+     *
+     * @return array
+     */
+    protected function getEmailFooter()
+    {
+        return [
+            '',
+            '--',
+            sprintf('%s - %s', Util::getAppInfo('appname'), Util::getAppInfo('appdesc')),
+            Html::anchorText(Init::$WEBURI)
+        ];
+    }
+
+    /**
+     * Enviar un correo a varios destinatarios.
+     *
+     * Se envía en copia oculta.
+     *
+     * @param NoticeMessage $Message
+     * @param array $mailTo
+     * @return bool
+     */
+    public static function sendEmailBatch(NoticeMessage $Message, array $mailTo)
+    {
+        if (!Checks::mailIsEnabled()) {
+            return false;
+        }
+
+        $Mail = self::getMailer(Config::getConfig()->getMailFrom(), $Message->getTitle());
+        $Mail->isHTML();
+
+        foreach ($mailTo as $recipient) {
+            $Mail->addBCC($recipient->user_email, $recipient->user_name);
+        }
+
+        if (empty($Message->getFooter())) {
+            $Message->setFooter(self::getEmailFooter());
+        }
+
+        $Mail->Body = $Message->composeHtml();
+        $Mail->AltBody = $Message->composeText();
+
+        $LogMessage = new LogMessage();
+        $LogMessage->setAction(__('Enviar Email', false));
+        $LogMessage->addDetails(__('Destinatario', false), implode(';', array_keys($Mail->getAllRecipientAddresses())));
+
+        $Log = new Log($LogMessage);
+
+        try {
+            $Mail->send();
+            $LogMessage->addDescription(__('Correo enviado', false));
+            $Log->writeLog();
+            return true;
+        } catch (phpmailerException $e) {
+            $LogMessage->addDescription(__('Error al enviar correo', false));
+            $LogMessage->addDetails(__('Error', false), $e->getMessage());
+            $LogMessage->addDetails(__('Error', false), $Mail->ErrorInfo);
+            $Log->writeLog();
+        }
+
+        return false;
     }
 }

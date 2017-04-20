@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Profiles;
@@ -32,7 +31,7 @@ use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ProfileUtil
@@ -48,7 +47,9 @@ class ProfileUtil
      */
     public static function migrateProfiles()
     {
-        $Log = new Log(_('Migrar Perfiles'));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Migrar Perfiles', false));
 
         $query = /** @lang SQL */
             'SELECT userprofile_id AS id,
@@ -78,8 +79,9 @@ class ProfileUtil
         $queryRes = DB::getResultsArray($Data);
 
         if (count($queryRes) === 0) {
+            $LogMessage->addDescription(__('Error al obtener perfiles', false));
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al obtener perfiles'));
+            $Log->writeLog();
             return false;
         }
 
@@ -136,19 +138,19 @@ class ProfileUtil
 
         $Data->setQuery($query);
 
-        $queryRes = DB::getQuery($Data);
+        try {
+            DB::getQuery($Data);
 
-        if ($queryRes) {
-            $Log->addDescription(_('Operación realizada correctamente'));
-        } else {
-            $Log->addDescription(_('Fallo al realizar la operación'));
+            $LogMessage->addDescription(__('Operación realizada correctamente', false));
+            $Log->writeLog();
+            Email::sendEmail($LogMessage);
+            return true;
+        } catch (SPException $e) {
+            $LogMessage->addDescription(__('Fallo al realizar la operación', false));
+            $Log->writeLog();
+            Email::sendEmail($LogMessage);
+            return false;
         }
-
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
-
-        return $queryRes;
     }
 
     /**

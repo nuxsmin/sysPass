@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,26 +19,25 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Api;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
-use SP\Auth\Auth;
-use SP\Auth\AuthDataBase;
-use SP\Auth\AuthResult;
-use SP\Auth\AuthUtil;
-use SP\Core\Acl;
+use Defuse\Crypto\Exception\CryptoException;
+use SP\Core\Crypt\Hash;
+use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\InvalidArgumentException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\Core\Exceptions\SPException;
-use SP\DataModel\UserData;
+use SP\DataModel\ApiTokenData;
+use SP\DataModel\UserLoginData;
+use SP\Log\Log;
+use SP\Mgmt\ApiTokens\ApiToken;
 use SP\Mgmt\Users\User;
-use SP\Mgmt\Users\UserPass;
 use SP\Util\Json;
 
 /**
@@ -48,12 +47,6 @@ use SP\Util\Json;
  */
 abstract class ApiBase implements ApiInterface
 {
-    /**
-     * Acción a realizar
-     *
-     * @var
-     */
-    protected $action;
     /**
      * El ID de la acción
      *
@@ -77,61 +70,48 @@ abstract class ApiBase implements ApiInterface
      *
      * @var mixed
      */
-    protected $params;
+    protected $data;
     /**
-     * @var string
-     */
-    protected $mPass = '';
-    /**
-     * @var UserData
+     * @var UserLoginData
      */
     protected $UserData;
+    /**
+     * @var Log
+     */
+    protected $Log;
+    /**
+     * @var ApiTokenData
+     */
+    protected $ApiTokenData;
 
     /**
-     * @param $params
+     * @param $data
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function __construct($params)
+    public function __construct($data)
     {
-        $this->action = $params->action;
-        $this->actionId = $this->getActionId($params->action);
+        $this->actionId = $this->getActionId($data->method);
+        $this->ApiTokenData = ApiToken::getItem()->getTokenByToken($this->actionId, $data->params->authToken);
 
-        if (!AuthUtil::checkAuthToken($this->actionId, $params->authToken)) {
-            throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+        if ($this->ApiTokenData === false) {
+            ApiUtil::addTracking();
+
+            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
         }
 
-        $this->params = $params;
-        $this->userId = ApiTokensUtil::getUserIdForToken($params->authToken);
+        $this->data = $data;
+
+        $this->userId = $this->ApiTokenData->getAuthtokenUserId();
 
         $this->loadUserData();
 
-        if ($this->getParam('userPass') !== null) {
+        if ($this->passIsNeeded()) {
             $this->doAuth();
         }
 
         Session::setSessionType(Session::SESSION_API);
-    }
 
-    /**
-     * Devolver el valor de un parámetro
-     *
-     * @param string $name     Nombre del parámetro
-     * @param bool   $required Si es requerido
-     * @param mixed  $default  Valor por defecto
-     * @return int|string
-     * @throws SPException
-     */
-    protected function getParam($name, $required = false, $default = null)
-    {
-        if ($required === true && !isset($this->params->$name)) {
-            throw new InvalidArgumentException(SPException::SP_WARNING, _('Parámetros incorrectos'), $this->getHelp($this->action));
-        }
-
-        if (isset($this->params->$name)) {
-            return $this->params->$name;
-        }
-
-        return $default;
+        $this->Log = new Log();
     }
 
     /**
@@ -150,19 +130,19 @@ abstract class ApiBase implements ApiInterface
     /**
      * Cargar los datos del usuario
      *
-     * @return UserData
      * @throws \SP\Core\Exceptions\SPException
      */
     protected function loadUserData()
     {
-        $UserData = new UserData();
-        $UserData->setUserId($this->userId);
-        $UserData->setUserPass($this->getParam('userPass'));
-
-        $this->UserData = User::getItem($UserData)->getById($this->userId);
+        $this->UserData = User::getItem()->getById($this->ApiTokenData->getAuthtokenUserId());
 
         SessionUtil::loadUserSession($this->UserData);
     }
+
+    /**
+     * @return bool
+     */
+    protected abstract function passIsNeeded();
 
     /**
      * Realizar la autentificación del usuario
@@ -171,32 +151,56 @@ abstract class ApiBase implements ApiInterface
      */
     protected function doAuth()
     {
-        $Auth = new Auth($this->UserData);
-        $resAuth = $Auth->doAuth();
+        if ($this->UserData->isUserIsDisabled()
+            || !Hash::checkHashKey($this->getParam('tokenPass', true), $this->ApiTokenData->getAuthtokenHash())
+        ) {
+            ApiUtil::addTracking();
 
-        if ($resAuth !== false) {
-            /** @var AuthResult $AuthResult */
-            foreach ($resAuth as $AuthResult) {
-                $data = $AuthResult->getData();
+            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
+        }
+    }
 
-                if ($data->getAuthenticated() && $data->getStatusCode() === 0) {
-                    break;
-                }
-            }
-        } else {
-            throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+    /**
+     * Devolver el valor de un parámetro
+     *
+     * @param string $name     Nombre del parámetro
+     * @param bool   $required Si es requerido
+     * @param mixed  $default  Valor por defecto
+     * @return int|string
+     * @throws SPException
+     */
+    protected function getParam($name, $required = false, $default = null)
+    {
+        if ($required === true && !isset($this->data->params->$name)) {
+            throw new InvalidArgumentException(SPException::SP_WARNING, __('Parámetros incorrectos', false), $this->getHelp($this->data->method));
         }
 
-        $UserPass = UserPass::getItem($this->UserData);
+        if (isset($this->data->params->$name)) {
+            return $this->data->params->$name;
+        }
 
-        if (!$this->UserData->isUserIsDisabled()
-            && $UserPass->checkUserUpdateMPass()
-            && $UserPass->loadUserMPass()
-        ) {
-            $this->auth = true;
-            $this->mPass = $UserPass->getClearUserMPass();
-        } else {
-            throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+        return $default;
+    }
+
+    /**
+     * Devolver la clave maestra
+     *
+     * @return string
+     * @throws SPException
+     */
+    protected function getMPass()
+    {
+        try {
+            /** @var Vault $Vault */
+            $Vault = unserialize($this->ApiTokenData->getAuthtokenVault());
+
+            if ($Vault && $pass = $Vault->getData($this->getParam('tokenPass') . $this->getParam('authToken'))) {
+                return $pass;
+            } else {
+                throw new SPException(SPException::SP_ERROR, __('Error interno', false), __('Datos inválidos', false));
+            }
+        } catch (CryptoException $e) {
+            throw new SPException(SPException::SP_ERROR, __('Error interno', false), $e->getMessage());
         }
     }
 
@@ -209,12 +213,16 @@ abstract class ApiBase implements ApiInterface
     protected function checkActionAccess($action)
     {
         if ($this->actionId !== $action) {
-            throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+            ApiUtil::addTracking();
+
+            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
         }
     }
 
     /**
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
+     *
+     * {"jsonrpc": "2.0", "result": 19, "id": 3}
      *
      * @param string $data Los datos a devolver
      * @return string La cadena en formato JSON
@@ -223,9 +231,9 @@ abstract class ApiBase implements ApiInterface
     protected function wrapJSON(&$data)
     {
         $json = [
-            'action' => Acl::getActionName($this->actionId, true),
-            'params' => $this->params,
-            'data' => $data
+            'jsonrpc' => '2.0',
+            'result' => $data,
+            'id' => $this->data->id
         ];
 
         return Json::getJson($json);
@@ -239,7 +247,9 @@ abstract class ApiBase implements ApiInterface
     protected function checkAuth()
     {
         if ($this->auth === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Acceso no permitido'));
+            ApiUtil::addTracking();
+
+            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
         }
     }
 }

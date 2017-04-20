@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid;
 
 use SP\Html\Assets\IconInterface;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class DataGridAction para crear una acción para cada elemento de la matriz de datos
@@ -71,13 +70,13 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @var array
      */
-    protected $_onClickArgs = array();
+    protected $_onClickArgs = [];
     /**
      * El icono de la acción
      *
      * @var IconInterface
      */
-    protected $_icon = null;
+    protected $_icon;
     /**
      * Si se debe de omitir para los elementos del listado
      *
@@ -89,7 +88,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @var string
      */
-    protected $_filterRowSource = '';
+    protected $_filterRowSource;
     /**
      * Si es una acción de ayuda
      *
@@ -135,6 +134,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * @param string $class
      * @param string $method
      * @return $this
+     * @throws \ReflectionException
      */
     public function setReflectionFilter($class, $method)
     {
@@ -227,7 +227,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function getOnClick()
     {
-        $args = array();
+        $args = [];
 
         foreach ($this->_onClickArgs as $arg) {
             $args[] = (!is_numeric($arg) && $arg !== 'this') ? '\'' . $arg . '\'' : $arg;
@@ -302,12 +302,15 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
+     * Filtro para mostrar la acción
+     *
      * @param $rowSource string
+     * @param mixed $value Valor a filtrar
      * @return $this
      */
-    public function setFilterRowSource($rowSource)
+    public function setFilterRowSource($rowSource, $value = 1)
     {
-        $this->_filterRowSource = $rowSource;
+        $this->_filterRowSource[] = ['field' => $rowSource, 'value' => $value];
 
         return $this;
     }

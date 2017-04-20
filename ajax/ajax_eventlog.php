@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,35 +19,23 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use SP\Controller\EventlogController;
 use SP\Core\Init;
-use SP\Core\Template;
 use SP\Http\Request;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-Request::checkReferer('POST');
+Request::checkReferer('GET');
 
 if (!Init::isLoggedIn()) {
     \SP\Util\Util::logout();
 }
 
-$start = Request::analyze('start', 0);
-$clear = Request::analyze('clear', 0);
-$sk = Request::analyze('sk', false);
-
-$Tpl = new Template();
-$Tpl->assign('limitStart', $start);
-$Tpl->assign('clear', $clear);
-$Tpl->assign('sk', $sk);
-$Tpl->assign('queryTimeStart', microtime());
-$Controller = new EventlogController($Tpl);
-$Controller->checkClear();
-$Controller->getEventlog();
-echo $Tpl->render();
+$Controller = new EventlogController();
+$Controller->doAction();
+$Controller->view();

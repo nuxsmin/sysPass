@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,21 +19,21 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\ActionsInterface;
-use SP\Core\Session;
+use SP\Core\Messages\LogMessage;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
 use SP\Html\DataGrid\DataGridPager;
+use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Log;
 use SP\Util\Checks;
@@ -48,7 +48,11 @@ class EventlogController extends ControllerBase implements ActionsInterface
     /**
      * Número de máximo de registros por página
      */
-    const MAX_ROWS = 30;
+    const MAX_ROWS = 50;
+    /**
+     * @var
+     */
+    protected $limitStart;
 
     /**
      * Constructor
@@ -60,6 +64,45 @@ class EventlogController extends ControllerBase implements ActionsInterface
         parent::__construct($template);
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
+    }
+
+    /**
+     * Realizar las acciones del controlador
+     *
+     * @param mixed $type Tipo de acción
+     */
+    public function doAction($type = null)
+    {
+        $this->limitStart = Request::analyze('start', 0);
+
+        $this->checkClear();
+        $this->getEventlog();
+
+        $this->EventDispatcher->notifyEvent('show.eventlog', $this);
+    }
+
+    /**
+     * Comprobar si es necesario limpiar el registro de eventos
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function checkClear()
+    {
+        $clear = Request::analyze('clear', 0);
+
+        if ($clear === 1
+            && $this->view->sk
+            && SessionUtil::checkSessionKey($this->view->sk)
+        ) {
+            Log::clearEvents();
+
+            Log::writeNewLogAndEmail(__('Vaciar Eventos', false), __('Vaciar registro de eventos', false), null);
+
+            Response::printJson(__('Registro de eventos vaciado', false), 0);
+        }
     }
 
     /**
@@ -79,35 +122,18 @@ class EventlogController extends ControllerBase implements ActionsInterface
         $GridActionSearch->setId(self::ACTION_EVL);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchEvent');
-        $GridActionSearch->setTitle(_('Buscar Evento'));
+        $GridActionSearch->setTitle(__('Buscar Evento'));
         $GridActionSearch->setOnSubmitFunction('eventlog/search');
 
         $this->view->assign('rowClass', 'row_even');
         $this->view->assign('isDemoMode', Checks::demoIsEnabled() || !$this->UserData->isUserIsAdminApp());
-        $this->view->assign('limitStart', isset($this->view->limitStart) ? (int)$this->view->limitStart : 0);
-        $this->view->assign('events', Log::getEvents($this->view->limitStart, self::MAX_ROWS));
+        $this->view->assign('limitStart', $this->limitStart);
+        $this->view->assign('events', Log::getEvents($this->limitStart, self::MAX_ROWS));
 
         $Pager = $this->getPager($GridActionSearch);
         $Pager->setTotalRows(Log::$numRows);
 
         $this->view->assign('Pager', $Pager);
-    }
-
-    /**
-     * Comprobar si es necesario limpiar el registro de eventos
-     */
-    public function checkClear()
-    {
-        if ($this->view->clear
-            && $this->view->sk
-            && SessionUtil::checkSessionKey($this->view->sk)
-        ) {
-            if (Log::clearEvents()) {
-                Response::printJson(_('Registro de eventos vaciado'), 0, 'sysPassUtil.Common.doAction(' . ActionsInterface::ACTION_EVL . '); sysPassUtil.Common.scrollUp();');
-            } else {
-                Response::printJson(_('Error al vaciar el registro de eventos'));
-            }
-        }
     }
 
     /**
@@ -121,7 +147,7 @@ class EventlogController extends ControllerBase implements ActionsInterface
         $GridPager = new DataGridPager();
         $GridPager->setSourceAction($sourceAction);
         $GridPager->setOnClickFunction('eventlog/nav');
-        $GridPager->setLimitStart($this->view->limitStart);
+        $GridPager->setLimitStart($this->limitStart);
         $GridPager->setLimitCount(self::MAX_ROWS);
         $GridPager->setIconPrev($this->icons->getIconNavPrev());
         $GridPager->setIconNext($this->icons->getIconNavNext());
@@ -129,17 +155,5 @@ class EventlogController extends ControllerBase implements ActionsInterface
         $GridPager->setIconLast($this->icons->getIconNavLast());
 
         return $GridPager;
-    }
-
-    /**
-     * Realizar las accione del controlador
-     *
-     * @param mixed $type Tipo de acción
-     */
-    public function doAction($type = null)
-    {
-        $this->getEventlog();
-
-        $this->EventDispatcher->notifyEvent('show.eventlog', $this);
     }
 }

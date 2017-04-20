@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\UI;
@@ -31,7 +30,7 @@ use SP\Core\Session;
 use SP\Mgmt\Users\UserPreferences;
 use Theme\Icons;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class Theme
@@ -102,9 +101,7 @@ class Theme implements ThemeInterface
      */
     protected function getUserTheme()
     {
-        $userId = Session::getUserData()->getUserId();
-
-        return ($userId > 0) ? UserPreferences::getItem()->getById($userId)->getTheme() : '';
+        return (Session::getUserData()->getUserId() > 0) ? Session::getUserPreferences()->getTheme() : '';
     }
 
     /**

@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,22 +19,20 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Account;
 
 use SP\Config\ConfigDB;
-use SP\Core\Crypt;
-use SP\Storage\DB;
-use SP\Log\Log;
+use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
+use SP\Log\Log;
+use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
-use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class AccountHistory par el manejo del historial de cuentas
@@ -70,24 +68,24 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'FROM accHistory '
             . 'LEFT JOIN usrData u1 ON acchistory_userEditId = u1.user_id '
             . 'LEFT JOIN usrData u2 ON acchistory_userId = u2.user_id '
-            . 'WHERE acchistory_accountId = :id '
+            . 'WHERE acchistory_accountId = ? '
             . 'ORDER BY acchistory_id DESC';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'id');
-
-        $queryRes = DB::getResultsArray($Data);
+        $Data->addParam($accountId);
 
         $arrHistory = [];
 
-        foreach ($queryRes as $history) {
+        foreach (DB::getResultsArray($Data) as $history) {
             // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
-            if ($history->acchistory_dateEdit === null || $history->acchistory_dateEdit == '0000-00-00 00:00:00') {
-                $arrHistory[$history->acchistory_id] = $history->acchistory_dateAdd . ' - ' . $history->user_add;
+            if (empty($history->acchistory_dateEdit) || $history->acchistory_dateEdit === '0000-00-00 00:00:00') {
+                $date = $history->acchistory_dateAdd . ' - ' . $history->user_add;
             } else {
-                $arrHistory[$history->acchistory_id] = $history->acchistory_dateEdit . ' - ' . $history->user_edit;
+                $date = $history->acchistory_dateEdit . ' - ' . $history->user_edit;
             }
+
+            $arrHistory[$history->acchistory_id] = $date;
         }
 
         return $arrHistory;
@@ -96,12 +94,74 @@ class AccountHistory extends AccountBase implements AccountInterface
     /**
      * Crear un nuevo registro de histório de cuenta en la BBDD.
      *
-     * @param int  $id       el id de la cuenta primaria
-     * @param bool $isDelete indica que la cuenta es eliminada
+     * @param int|array $id       Id de la cuenta primaria
+     * @param bool      $isDelete indica que la cuenta es eliminada
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function addHistory($id, $isDelete = false)
     {
+        $Data = new QueryData();
+        $Data->addParam(($isDelete === false) ? 1 : 0);
+        $Data->addParam(($isDelete === true) ? 1 : 0);
+        $Data->addParam(ConfigDB::getValue('masterPwd'));
+
+        if (is_array($id)) {
+            $querySelect = /** @lang SQL */
+                'SELECT account_id,'
+                . 'account_categoryId,'
+                . 'account_customerId,'
+                . 'account_name,'
+                . 'account_login,'
+                . 'account_url,'
+                . 'account_pass,'
+                . 'account_key,'
+                . 'account_notes,'
+                . 'account_countView,'
+                . 'account_countDecrypt,'
+                . 'account_dateAdd,'
+                . 'account_dateEdit,'
+                . 'account_userId,'
+                . 'account_userGroupId,'
+                . 'account_userEditId,'
+                . 'account_otherUserEdit,'
+                . 'account_otherGroupEdit,'
+                . 'account_isPrivate,'
+                . 'account_isPrivateGroup,'
+                . '?,?,? '
+                . 'FROM accounts WHERE account_id IN (' . implode(',', array_fill(0, count($id), '?')) . ')';
+
+            foreach ($id as $param) {
+                $Data->addParam($param);
+            }
+        } else {
+            $querySelect = /** @lang SQL */
+                'SELECT account_id,'
+                . 'account_categoryId,'
+                . 'account_customerId,'
+                . 'account_name,'
+                . 'account_login,'
+                . 'account_url,'
+                . 'account_pass,'
+                . 'account_key,'
+                . 'account_notes,'
+                . 'account_countView,'
+                . 'account_countDecrypt,'
+                . 'account_dateAdd,'
+                . 'account_dateEdit,'
+                . 'account_userId,'
+                . 'account_userGroupId,'
+                . 'account_userEditId,'
+                . 'account_otherUserEdit,'
+                . 'account_otherGroupEdit,'
+                . 'account_isPrivate,'
+                . 'account_isPrivateGroup,'
+                . '?,?,? '
+                . 'FROM accounts WHERE account_id = ?';
+
+            $Data->addParam($id);
+        }
+
         $query = /** @lang SQL */
             'INSERT INTO accHistory '
             . '(acchistory_accountId,'
@@ -111,7 +171,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_login,'
             . 'acchistory_url,'
             . 'acchistory_pass,'
-            . 'acchistory_IV,'
+            . 'acchistory_key,'
             . 'acchistory_notes,'
             . 'acchistory_countView,'
             . 'acchistory_countDecrypt,'
@@ -122,38 +182,14 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_userEditId,'
             . 'acchistory_otherUserEdit,'
             . 'acchistory_otherGroupEdit,'
+            . 'accHistory_isPrivate,'
+            . 'accHistory_isPrivateGroup,'
             . 'acchistory_isModify,'
             . 'acchistory_isDeleted,'
-            . 'acchistory_mPassHash) '
-            . 'SELECT account_id,'
-            . 'account_categoryId,'
-            . 'account_customerId,'
-            . 'account_name,'
-            . 'account_login,'
-            . 'account_url,'
-            . 'account_pass,'
-            . 'account_IV,'
-            . 'account_notes,'
-            . 'account_countView,'
-            . 'account_countDecrypt,'
-            . 'account_dateAdd,'
-            . 'account_dateEdit,'
-            . 'account_userId,'
-            . 'account_userGroupId,'
-            . 'account_userEditId,'
-            . 'account_otherUserEdit,'
-            . 'account_otherGroupEdit,'
-            . ':isModify,'
-            . ':isDelete,'
-            . ':masterPwd '
-            . 'FROM accounts WHERE account_id = :account_id';
+            . 'acchistory_mPassHash)';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id, 'account_id');
-        $Data->addParam(($isDelete === false) ? 1 : 0, 'isModify');
-        $Data->addParam(($isDelete === true) ? 1 : 0, 'isDelete');
-        $Data->addParam(ConfigDB::getValue('masterPwd'), 'masterPwd');
+        $Data->setQuery($query . ' ' . $querySelect);
+        $Data->setOnErrorMessage(__('Error al actualizar el historial', false));
 
         return DB::getQuery($Data);
     }
@@ -168,16 +204,16 @@ class AccountHistory extends AccountBase implements AccountInterface
     public static function getAccountIdFromId($historyId)
     {
         $query = /** @lang SQL */
-            'SELECT acchistory_accountId FROM accHistory WHERE acchistory_id = :id LIMIT 1';
+            'SELECT acchistory_accountId FROM accHistory WHERE acchistory_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($historyId, 'id');
+        $Data->addParam($historyId);
 
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'), 0);
+            throw new SPException(SPException::SP_CRITICAL, __('No se pudieron obtener los datos de la cuenta', false), 0);
         }
 
         return $queryRes->acchistory_accountId;
@@ -188,150 +224,22 @@ class AccountHistory extends AccountBase implements AccountInterface
      *
      * @param $newHash string El nuevo hash de la clave maestra
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function updateAccountsMPassHash($newHash)
     {
         $query = /** @lang SQL */
             'UPDATE accHistory SET '
-            . 'acchistory_mPassHash = :newHash '
-            . 'WHERE acchistory_mPassHash = :oldHash';
+            . 'acchistory_mPassHash = ? '
+            . 'WHERE acchistory_mPassHash = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($newHash, 'newHash');
-        $Data->addParam(ConfigDB::getValue('masterPwd'), 'oldHash');
+        $Data->addParam($newHash);
+        $Data->addParam(ConfigDB::getValue('masterPwd'));
 
         return DB::getQuery($Data);
-    }
-
-    /**
-     * Actualiza las claves de todas las cuentas en el histórico con la nueva clave maestra.
-     *
-     * @param string $currentMasterPass con la clave maestra actual
-     * @param string $newMasterPass     con la nueva clave maestra
-     * @param string $newHash           con el nuevo hash de la clave maestra
-     * @return bool
-     */
-    public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null)
-    {
-        $idOk = array();
-        $errorCount = 0;
-        $demoEnabled = Checks::demoIsEnabled();
-
-        $Log = new Log(_('Actualizar Clave Maestra (H)'));
-        $Log->addDescription(_('Inicio'));
-        $Log->writeLog();
-
-        $Log->resetDescription();
-
-        if (!Crypt::checkCryptModule()) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error en el módulo de encriptación'));
-            $Log->writeLog();
-            return false;
-        }
-
-        $accountsPass = $this->getAccountsPassData();
-
-        if (!$accountsPass) {
-            $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al obtener las claves de las cuentas'));
-            $Log->writeLog();
-            return false;
-        }
-
-        $AccountDataBase = new \stdClass();
-        $AccountDataBase->id = 0;
-        $AccountDataBase->pass = '';
-        $AccountDataBase->iv = '';
-        $AccountDataBase->hash = $newHash;
-
-        foreach ($accountsPass as $account) {
-            $AccountData = clone $AccountDataBase;
-            $AccountData->id = $account->acchistory_id;
-
-            // No realizar cambios si está en modo demo
-            if ($demoEnabled) {
-                $idOk[] = $account->acchistory_id;
-                continue;
-            }
-
-            if (!$this->checkAccountMPass()) {
-                $errorCount++;
-                $Log->addDescription(_('La clave maestra del registro no coincide'));
-                $Log->addDetails('ID', $account->acchistory_id);
-                $Log->addDetails(_('Nombre'), $account->acchistory_name);
-                continue;
-            }
-
-            if ($account->acchistory_pass === '') {
-                $Log->addDescription(_('Clave de cuenta vacía'));
-                $Log->addDetails('ID', $account->acchistory_id);
-                $Log->addDetails(_('Nombre'), $account->acchistory_name);
-                continue;
-            }
-
-            if (strlen($account->acchistory_IV) < 32) {
-                $Log->addDescription(_('IV de encriptación incorrecto'));;
-                $Log->addDetails('ID', $account->acchistory_id);
-                $Log->addDetails(_('Nombre'), $account->acchistory_name);
-            }
-
-            $decryptedPass = Crypt::getDecrypt($account->acchistory_pass, $account->acchistory_IV);
-            $AccountData->pass = Crypt::mkEncrypt($decryptedPass, $newMasterPass);
-            $AccountData->iv = Crypt::$strInitialVector;
-
-            if ($AccountData->pass === false) {
-                $errorCount++;
-                $Log->addDescription(_('No es posible desencriptar la clave de la cuenta'));
-                $Log->addDetails('ID', $account->acchistory_id);
-                $Log->addDetails(_('Nombre'), $account->acchistory_name);
-                continue;
-            }
-
-            if (!$this->updateAccountPass($AccountData)) {
-                $errorCount++;
-                $Log->addDescription(_('Fallo al actualizar la clave del histórico'));
-                $Log->addDetails('ID', $account->acchistory_id);
-                $Log->addDetails(_('Nombre'), $account->acchistory_name);
-                continue;
-            }
-
-            $idOk[] = $account->acchistory_id;
-        }
-
-        // Vaciar el array de mensaje de log
-        if (count($Log->getDescription()) > 0) {
-            $Log->writeLog();
-            $Log->resetDescription();
-        }
-
-        if ($idOk) {
-            $Log->addDetails(_('Registros actualizados'), implode(',', $idOk));
-            $Log->writeLog();
-            $Log->resetDescription();
-        }
-
-        $Log->addDescription(_('Fin'));
-        $Log->writeLog();
-
-        return true;
-    }
-
-    /**
-     * Obtener los datos relativos a la clave de todas las cuentas del histórico.
-     *
-     * @return false|array con los datos de la clave
-     */
-    protected function getAccountsPassData()
-    {
-        $query = /** @lang SQL */
-            'SELECT acchistory_id, acchistory_name, acchistory_pass, acchistory_IV FROM accHistory';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        return DB::getResultsArray($Data);
     }
 
     /**
@@ -345,13 +253,13 @@ class AccountHistory extends AccountBase implements AccountInterface
         $query = /** @lang SQL */
             'SELECT acchistory_mPassHash ' .
             'FROM accHistory ' .
-            'WHERE acchistory_id = :id ' .
-            'AND acchistory_mPassHash = :mPassHash';
+            'WHERE acchistory_id = ? ' .
+            'AND acchistory_mPassHash = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(null === $id ? $this->accountData->getAccountId() : $id, 'id');
-        $Data->addParam(ConfigDB::getValue('masterPwd'), 'mPassHash');
+        $Data->addParam(null === $id ? $this->accountData->getAccountId() : $id);
+        $Data->addParam(ConfigDB::getValue('masterPwd'));
 
         return (DB::getResults($Data) !== false);
     }
@@ -361,22 +269,24 @@ class AccountHistory extends AccountBase implements AccountInterface
      *
      * @param object $AccountData Objeto con los datos de la cuenta
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function updateAccountPass($AccountData)
     {
         $query = /** @lang SQL */
             'UPDATE accHistory SET '
             . 'acchistory_pass = :accountPass,'
-            . 'acchistory_IV = :accountIV,'
-            . 'acchistory_mPassHash = :newHash '
+            . 'acchistory_key = :accountKey,'
+            . 'acchistory_mPassHash = :hash '
             . 'WHERE acchistory_id = :id';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($AccountData->id, 'id');
         $Data->addParam($AccountData->pass, 'accountPass');
-        $Data->addParam($AccountData->iv, 'accountIV');
-        $Data->addParam($AccountData->hash, 'newHash');
+        $Data->addParam($AccountData->key, 'accountKey');
+        $Data->addParam($AccountData->hash, 'hash');
 
         return DB::getQuery($Data);
     }
@@ -395,16 +305,16 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_userGroupId AS account_userGroupId,'
             . 'acchistory_login AS account_login,'
             . 'acchistory_pass AS account_pass,'
-            . 'acchistory_IV AS account_IV,'
+            . 'acchistory_key AS account_key,'
             . 'customer_name '
             . 'FROM accHistory '
             . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
-            . 'WHERE acchistory_id = :id LIMIT 1';
+            . 'WHERE acchistory_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClass($this->accountData);
-        $Data->addParam($this->getId(), 'id');
+        $Data->addParam($this->getId());
 
         return DB::getResults($Data);
     }
@@ -443,7 +353,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_login as account_login,'
             . 'acchistory_url as account_url,'
             . 'acchistory_pass as account_pass,'
-            . 'acchistory_IV as account_IV,'
+            . 'acchistory_key as account_key,'
             . 'acchistory_notes as account_notes,'
             . 'acchistory_countView as account_countView,'
             . 'acchistory_countDecrypt as account_countDecrypt,'
@@ -456,6 +366,8 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_isDeleted,'
             . 'acchistory_otherUserEdit + 0 AS account_otherUserEdit,'
             . 'acchistory_otherGroupEdit + 0 AS account_otherGroupEdit,'
+            . 'acchistory_isPrivate + 0 AS account_isPrivate,'
+            . 'acchistory_isPrivateGroup + 0 AS account_isPrivateGroup,'
             . 'u1.user_name,'
             . 'u1.user_login,'
             . 'usergroup_name,'
@@ -468,17 +380,17 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'LEFT JOIN usrData u1 ON acchistory_userId = u1.user_id '
             . 'LEFT JOIN usrData u2 ON acchistory_userEditId = u2.user_id '
             . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
-            . 'WHERE acchistory_id = :id LIMIT 1';
+            . 'WHERE acchistory_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClass($this->accountData);
-        $Data->addParam($this->getId(), 'id');
+        $Data->addParam($this->getId());
 
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('No se pudieron obtener los datos de la cuenta'));
+            throw new SPException(SPException::SP_CRITICAL, __('No se pudieron obtener los datos de la cuenta', false));
         }
 
         $this->accountData = $queryRes;
@@ -489,9 +401,12 @@ class AccountHistory extends AccountBase implements AccountInterface
     /**
      * Crear una cuenta en el historial
      *
+     * @param bool $encryptPass
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function createAccount()
+    public function createAccount($encryptPass = true)
     {
         $query = /** @lang SQL */
             'INSERT INTO accHistory SET '
@@ -502,7 +417,7 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_login = :accountLogin,'
             . 'acchistory_url = :accountUrl,'
             . 'acchistory_pass = :accountPass,'
-            . 'acchistory_IV = :accountIV,'
+            . 'acchistory_key = :accountKey,'
             . 'acchistory_notes = :accountNotes,'
             . 'acchistory_dateAdd = :accountDateAdd,'
             . 'acchistory_dateEdit = :accountDateEdit,'
@@ -512,6 +427,8 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_userGroupId = :accountUserGroupId,'
             . 'acchistory_otherUserEdit = :accountOtherUserEdit,'
             . 'acchistory_otherGroupEdit = :accountOtherGroupEdit,'
+            . 'acchistory_isPrivate = :isPrivate,'
+            . 'acchistory_isPrivateGroup = :isPrivateGroup,'
             . 'acchistory_isModify = :isModify,'
             . 'acchistory_isDeleted = :isDelete,'
             . 'acchistory_mPassHash = :masterPwd';
@@ -525,21 +442,19 @@ class AccountHistory extends AccountBase implements AccountInterface
         $Data->addParam($this->accountData->getAccountLogin(), 'accountLogin');
         $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
         $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
-        $Data->addParam($this->accountData->getAccountIV(), 'accountIV');
+        $Data->addParam($this->accountData->getAccountKey(), 'accountKey');
         $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
         $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
         $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
         $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
         $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
+        $Data->addParam($this->accountData->getAccountIsPrivate(), 'isPrivate');
+        $Data->addParam($this->accountData->getAccountIsPrivateGroup(), 'isPrivateGroup');
         $Data->addParam($this->isIsModify(), 'isModify');
         $Data->addParam($this->isIsDelete(), 'isDelete');
         $Data->addParam(ConfigDB::getValue('masterPwd'), 'masterPwd');
 
-        if (DB::getQuery($Data) === false) {
-            return false;
-        }
-
-        return true;
+        return DB::getQuery($Data);
     }
 
     /**
@@ -577,21 +492,31 @@ class AccountHistory extends AccountBase implements AccountInterface
     /**
      * Eliminar una cuenta del historial
      *
+     * @param $id
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function deleteAccount()
+    public function deleteAccount($id)
     {
+        if (is_array($id)) {
+            foreach ($id as $accountId) {
+                $this->deleteAccount($accountId);
+            }
+
+            return true;
+        }
+
         $query = /** @lang SQL */
-            'DELETE FROM accHistory WHERE acchistory_id = :id LIMIT 1';
+            'DELETE FROM accHistory WHERE acchistory_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->getId(), 'id');
+        $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar la cuenta', false));
 
-        if (DB::getQuery($Data) === false) {
-            return false;
-        }
+        DB::getQuery($Data);
 
-        return true;
+        return $Data->getQueryNumRows() === 1;
     }
 }

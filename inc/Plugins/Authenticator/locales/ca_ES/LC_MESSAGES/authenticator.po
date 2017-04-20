@@ -1,0 +1,128 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: sysPass\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-03 22:10+0100\n"
+"PO-Revision-Date: 2017-02-03 22:10+0100\n"
+"Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
+"Language-Team:  <language@syspass.org>\n"
+"Language: ca_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.10\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-KeywordsList: _t:2\n"
+"X-Poedit-SearchPath-0: ../../..\n"
+
+#: ../../../ActionController.class.php:112
+#: ../../../ActionController.class.php:178
+msgid "Código incorrecto"
+msgstr "Codi incorrecte"
+
+#: ../../../ActionController.class.php:117
+msgid "Ey, esto es una DEMO!!"
+msgstr "Ey, això és una DEMO!!"
+
+#: ../../../ActionController.class.php:143
+msgid "Preferencias actualizadas"
+msgstr "Preferències actualitzades"
+
+#: ../../../ActionController.class.php:172
+msgid "Código correcto"
+msgstr "Codi correcte"
+
+#: ../../../LoginController.class.php:126
+#, fuzzy
+msgid "Aviso Caducidad"
+msgstr "Data Edició"
+
+#: ../../../LoginController.class.php:131
+#, php-format
+msgid "El código 2FA se ha de restablecer en %d días"
+msgstr "El codi 2FA s'ha de restablir en %d dies."
+
+#: ../../../LoginController.class.php:137
+msgid ""
+"El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias"
+msgstr ""
+"El codi 2FA ha caducat. Es necessari restablir-ho des de les preferències."
+
+#: ../../../PreferencesController.class.php:97
+msgid "Seguridad"
+msgstr "Seguretat"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:7
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:40
+msgid "Autentificación en 2 pasos"
+msgstr "Autenticació en 2 passos"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:13
+msgid "Introducir código"
+msgstr "Introduir codi"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:27
+msgid "Volver a iniciar sesión"
+msgstr "Tornar a iniciar sessió"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:28
+msgid "Volver"
+msgstr "Tornar"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:32
+msgid "Acceder"
+msgstr "Accedir"
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:34
+msgid "Solicitar"
+msgstr "Sol·licitar"
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:29
+msgid "Autentificación"
+msgstr "Autenticació"
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:45
+msgid ""
+"Habilita la autentificación en 2 pasos que requiere de la introducción de un "
+"token generado por una aplicación como Google Authenticator."
+msgstr ""
+"Habilita l'autenticació en 2 passos que requereix de la introducció d'un "
+"token generat per una aplicació com Google Authenticator."
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:49
+msgid ""
+"Escanee el código QR proporcionado y a continuación introduzca la clave de 6 "
+"dígitos."
+msgstr ""
+"Escanegi el codi QR proporcionat i a continuació introdueixi la clau de 6 "
+"dígits."
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:58
+msgid "Activar"
+msgstr "Activar"
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:64
+msgid "Error al obtener el código QR. Inténtelo de nuevo"
+msgstr "Error en obtenir el codi QR. Intenti-ho de nou"
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:74
+msgid "Código"
+msgstr "Codi"
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:80
+msgid ""
+"Una vez activada, sólo es posible acceder si se dispone del dispositivo "
+"generador de códigos asociado."
+msgstr ""
+"Una vegada activada, només és possible accedir si es disposa del dispositiu "
+"generador de codis associat."
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:84
+#, fuzzy
+msgid "Días Caducidad"
+msgstr "Data Edició"
+
+#: ../../../themes/material-blue/views/userpreferences/preferences-security.inc:91
+msgid "Días"
+msgstr "Dies"

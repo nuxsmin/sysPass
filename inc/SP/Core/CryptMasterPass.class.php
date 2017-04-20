@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,16 +19,19 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
 
 use SP\Config\ConfigDB;
+use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Hash;
+use SP\Log\Log;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class CryptMasterPass para la gestión de la clave maestra
@@ -38,24 +41,28 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class CryptMasterPass
 {
     /**
+     * Número máximo de intentos
+     */
+    const MAX_ATTEMPTS = 50;
+
+    /**
      * Crea una clave temporal para encriptar la clave maestra y guardarla.
      *
      * @param int $maxTime El tiempo máximo de validez de la clave
      * @return bool|string
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public static function setTempMasterPass($maxTime = 14400)
     {
         // Encriptar la clave maestra con hash aleatorio generado
-        $randomKey = Crypt::generateAesKey(Util::generateRandomBytes());
-        $pass = Crypt::mkCustomMPassEncrypt($randomKey, SessionUtil::getSessionMPass());
+        $randomKey = Util::generateRandomBytes(32);
+        $securedKey = Crypt::makeSecuredKey($randomKey);
 
-        if (!is_array($pass)) {
-            return false;
-        }
-
-        ConfigDB::setCacheConfigValue('tempmaster_pass', bin2hex($pass[0]));
-        ConfigDB::setCacheConfigValue('tempmaster_passiv', bin2hex($pass[1]));
-        ConfigDB::setCacheConfigValue('tempmaster_passhash', Crypt::mkHashPassword($randomKey));
+        ConfigDB::setCacheConfigValue('tempmaster_pass', Crypt::encrypt(CryptSession::getSessionKey(), $securedKey, $randomKey));
+        ConfigDB::setCacheConfigValue('tempmaster_passkey', $securedKey);
+        ConfigDB::setCacheConfigValue('tempmaster_passhash', Hash::hashKey($randomKey));
         ConfigDB::setCacheConfigValue('tempmaster_passtime', time());
         ConfigDB::setCacheConfigValue('tempmaster_maxtime', time() + $maxTime);
         ConfigDB::setCacheConfigValue('tempmaster_attempts', 0);
@@ -75,26 +82,35 @@ class CryptMasterPass
      *
      * @param string $pass clave a comprobar
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkTempMasterPass($pass)
     {
-        $passTime = ConfigDB::getValue('tempmaster_passtime');
-        $passMaxTime = ConfigDB::getValue('tempmaster_maxtime');
-        $attempts = ConfigDB::getValue('tempmaster_attempts');
+        $passTime = (int)ConfigDB::getValue('tempmaster_passtime');
+        $passMaxTime = (int)ConfigDB::getValue('tempmaster_maxtime');
+        $attempts = (int)ConfigDB::getValue('tempmaster_attempts');
 
-        // Comprobar si el tiempo de validez se ha superado
-        if ($passTime !== false && time() - $passTime > $passMaxTime || $attempts >= 5) {
+        // Comprobar si el tiempo de validez o los intentos se han superado
+        if ($passMaxTime === 0) {
+            Log::writeNewLog(__FUNCTION__, __('Clave temporal caducada', false), Log::INFO);
+
+            return false;
+        } elseif ((!empty($passTime) && time() > $passMaxTime)
+            || $attempts >= self::MAX_ATTEMPTS
+        ) {
             ConfigDB::setCacheConfigValue('tempmaster_pass', '');
-            ConfigDB::setCacheConfigValue('tempmaster_passiv', '');
+            ConfigDB::setCacheConfigValue('tempmaster_passkey', '');
             ConfigDB::setCacheConfigValue('tempmaster_passhash', '');
+            ConfigDB::setCacheConfigValue('tempmaster_maxtime', 0);
+            ConfigDB::setCacheConfigValue('tempmaster_attempts', 0);
             ConfigDB::writeConfig();
+
+            Log::writeNewLog(__FUNCTION__, __('Clave temporal caducada', false), Log::INFO);
 
             return false;
         }
 
-        Crypt::checkHashPass($pass, ConfigDB::getValue('tempmaster_passhash'));
-
-        $isValid = Crypt::checkHashPass($pass, ConfigDB::getValue('tempmaster_passhash'));
+        $isValid = Hash::checkHashKey($pass, ConfigDB::getValue('tempmaster_passhash'));
 
         if (!$isValid) {
             ConfigDB::setValue('tempmaster_attempts', $attempts + 1, false);
@@ -106,14 +122,16 @@ class CryptMasterPass
     /**
      * Devuelve la clave maestra que ha sido encriptada con la clave temporal
      *
-     * @param $pass string con la clave utilizada para encriptar
+     * @param $randomKey string con la clave utilizada para encriptar
      * @return string con la clave maestra desencriptada
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      */
-    public static function getTempMasterPass($pass)
+    public static function getTempMasterPass($randomKey)
     {
-        $passLogin = hex2bin(ConfigDB::getValue('tempmaster_pass'));
-        $passLoginIV = hex2bin(ConfigDB::getValue('tempmaster_passiv'));
+        $securedKey = Crypt::unlockSecuredKey(ConfigDB::getValue('tempmaster_passkey'), $randomKey);
 
-        return Crypt::getDecrypt($passLogin, $passLoginIV, $pass);
+        return Crypt::decrypt(ConfigDB::getValue('tempmaster_pass'), $securedKey, $randomKey);
     }
 }

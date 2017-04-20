@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use SP\Config\Config;
@@ -29,6 +28,7 @@ use SP\Controller\AccountSearchController;
 use SP\Controller\ConfigController;
 use SP\Controller\EventlogController;
 use SP\Controller\ItemListController;
+use SP\Controller\NoticesController;
 use SP\Controller\UserPreferencesController;
 use SP\Core\ActionsInterface;
 use SP\Core\DiFactory;
@@ -43,7 +43,7 @@ define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-Request::checkReferer('POST');
+Request::checkReferer('GET');
 
 if (!Init::isLoggedIn()) {
     Util::logout();
@@ -52,7 +52,7 @@ if (!Init::isLoggedIn()) {
 Util::checkReload();
 
 if (!Request::analyze('actionId', 0, true)) {
-    Response::printHtmlError(_('Parámetros incorrectos'));
+    Response::printHtmlError(__('Parámetros incorrectos'));
 }
 
 $actionId = Request::analyze('actionId', 0);
@@ -127,6 +127,11 @@ switch ($actionId) {
         $Controller = new UserPreferencesController($Tpl);
         $Controller->doAction();
         break;
+    case ActionsInterface::ACTION_NOT:
+    case ActionsInterface::ACTION_NOT_USER:
+        $Controller = new NoticesController($Tpl);
+        $Controller->doAction();
+        break;
 }
 
 // Se comprueba si se debe de mostrar la vista de depuración
@@ -134,5 +139,4 @@ if (Session::getUserData()->isUserIsAdminApp() && Config::getConfig()->isDebug()
     $Controller->getDebug();
 }
 
-$Tpl->addTemplate('js-common', 'common');
 $Controller->view();

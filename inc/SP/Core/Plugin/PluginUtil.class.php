@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,10 +24,10 @@
 
 namespace SP\Core\Plugin;
 
+use ReflectionClass;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
-use SP\DataModel\PluginData;
 use SP\Log\Log;
-use SP\Mgmt\Plugins\Plugin;
 
 /**
  * Class PluginUtil
@@ -73,65 +73,42 @@ class PluginUtil
      *
      * @param string $name Nombre del plugin
      * @return bool|PluginInterface
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function loadPlugin($name)
     {
         $name = ucfirst($name);
 
-        if (in_array($name, Session::getPluginsDisabled())) {
+        if (in_array($name, Session::getPluginsDisabled(), true)) {
             return false;
         }
-
-        $pluginClass = 'Plugins\\' . $name . '\\' . $name . 'Plugin';
 
         if (isset(self::$loadedPlugins[$name])) {
             return self::$loadedPlugins[$name];
         }
 
         try {
-            $PluginData = self::getDataFromDb($name);
+            $pluginClass = 'Plugins\\' . $name . '\\' . $name . 'Plugin';
 
-            if ($PluginData->getPluginEnabled() === 0) {
-                self::$disabledPlugins[] = $name;
-                return false;
-            }
+            $Reflection = new ReflectionClass($pluginClass);
 
-            $Reflection = new \ReflectionClass($pluginClass);
-
-            /** @var PluginBase $Plugin */
+            /** @var PluginInterface $Plugin */
             $Plugin = $Reflection->newInstance();
-            $Plugin->setData(unserialize($PluginData->getPluginData()));
-            $Plugin->init();
 
-            self::$loadedPlugins[$name] = $Plugin;
+            if (PluginDataStore::load($Plugin) === true) {
+                self::$loadedPlugins[$name] = $Plugin;
 
-            return $Plugin;
+                return $Plugin;
+            } else {
+                self::$disabledPlugins[] = $name;
+            }
         } catch (\ReflectionException $e) {
-            Log::writeNewLog(__FUNCTION__, sprintf(_('No es posible cargar el plugin "%s"'), $name));
+            Log::writeNewLog(__FUNCTION__, sprintf(__('No es posible cargar el plugin "%s"'), $name));
+        } catch (SPException $e) {
+            Log::writeNewLog(__FUNCTION__, sprintf(__('No es posible cargar el plugin "%s"'), $name));
         }
 
         return false;
-    }
-
-    /**
-     * Obtiene los datos del plugin desde la BD
-     *
-     * @param $pluginName
-     * @return PluginData
-     */
-    public static function getDataFromDb($pluginName)
-    {
-        $PluginData = Plugin::getItem()->getByName($pluginName);
-
-        if (!is_object($PluginData)) {
-            $PluginData = new PluginData();
-            $PluginData->setPluginName($pluginName);
-            $PluginData->setPluginEnabled(0);
-
-            Plugin::getItem($PluginData)->add();
-        }
-
-        return $PluginData;
     }
 
     /**
@@ -147,10 +124,43 @@ class PluginUtil
     /**
      * Devolver los plugins deshabilidatos
      *
-     * @return array
+     * @return string[]
      */
     public static function getDisabledPlugins()
     {
         return self::$disabledPlugins;
+    }
+
+    /**
+     * Obtener la información de un plugin
+     *
+     * @param string $name Nombre del plugin
+     * @return bool|PluginInterface
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public static function getPluginInfo($name)
+    {
+        $name = ucfirst($name);
+
+        $pluginClass = 'Plugins\\' . $name . '\\' . $name . 'Plugin';
+
+        if (isset(self::$loadedPlugins[$name])) {
+            return self::$loadedPlugins[$name];
+        }
+
+        try {
+            $Reflection = new \ReflectionClass($pluginClass);
+
+            /** @var PluginBase $Plugin */
+            $Plugin = $Reflection->newInstance();
+
+            self::$loadedPlugins[$name] = $Plugin;
+
+            return $Plugin;
+        } catch (\ReflectionException $e) {
+            Log::writeNewLog(__FUNCTION__, sprintf(__('No es posible cargar el plugin "%s"'), $name));
+        }
+
+        return false;
     }
 }

@@ -4,37 +4,47 @@
 <div id="tabs-<?php echo $backup_tabIndex; ?>" class="mdl-tabs__panel">
     <div class="tab-data">
         <div id="title" class="midroundup titleNormal">
-            <?php echo _('Copia de Seguridad'); ?>
+            <?php echo __('Copia de Seguridad'); ?>
         </div>
 
         <table class="data round">
             <tr>
                 <td class="descField">
-                    <?php echo _('Resultado'); ?>
+                    <?php echo __('Resultado'); ?>
                 </td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Resultado'); ?></div>
+
                     <?php echo $lastBackupTime; ?>
                 </td>
             </tr>
-            <tr>
-                <td class="descField">
-                    <?php echo _('Descargar Actual'); ?>
-                </td>
-                <td class="valField">
-                    <?php if (file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute'])): ?>
-                        <a href="<?php echo $backupDbFile['relative']; ?>"
-                           download="<?php echo $backupDbFile['filename']; ?>" class="download">
-                            Backup BBDD
-                        </a>
+            <?php if ($isAdminApp): ?>
+                <tr>
+                    <td class="descField">
+                        <?php echo __('Descargar Actual'); ?>
+                    </td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
 
-                        <a href="<?php echo $backupFile['relative']; ?>"
-                           download="<?php echo $backupFile['filename']; ?>" class="download">
-                            Backup <?php echo $siteName; ?>
-                        </a>
-                    <?php else: echo _('No hay backups para descargar'); ?>
-                    <?php endif; ?>
-                </td>
-            </tr>
+                        <?php if (file_exists($backupFile['absolute']) && file_exists($backupDbFile['absolute'])): ?>
+                            <a href="<?php echo $backupDbFile['relative']; ?>"
+                               download="<?php echo $backupDbFile['filename']; ?>" class="download">
+                                <button type="button" class="mdl-button mdl-js-button">
+                                    <?php echo __('Copia BBDD'); ?>
+                                </button>
+                            </a>
+
+                            <a href="<?php echo $backupFile['relative']; ?>"
+                               download="<?php echo $backupFile['filename']; ?>" class="download">
+                                <button type="button" class="mdl-button mdl-js-button">
+                                    <?php echo __('Copia sysPass'); ?>
+                                </button>
+                            </a>
+                        <?php else: echo __('No hay backups para descargar'); ?>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
         </table>
 
         <form method="post" name="frmBackup" id="frmBackup" class="form-action"
@@ -57,10 +67,10 @@
                         <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
                     </button>
 
-                    <div id="help_backup" class="help-box" title="<?php echo _('Ayuda'); ?>">
-                        <p class="help-text"><?php echo _('La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración.'); ?></p>
+                    <div id="help_backup" class="help-box" title="<?php echo __('Ayuda'); ?>">
+                        <p class="help-text"><?php echo __('La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración.'); ?></p>
 
-                        <p class="help-text"><?php echo _('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
+                        <p class="help-text"><?php echo __('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
                     </div>
                 </li>
                 <li>
@@ -75,7 +85,7 @@
         </div>
 
         <div id="title" class="midroundup titleNormal">
-            <?php echo _('Exportar Cuentas'); ?>
+            <?php echo __('Exportar Cuentas'); ?>
         </div>
 
         <form method="post" name="frmExport" id="frmExport" class="form-action"
@@ -85,30 +95,38 @@
             <table class="data round">
                 <tr>
                     <td class="descField">
-                        <?php echo _('Resultado'); ?>
+                        <?php echo __('Resultado'); ?>
                     </td>
                     <td class="valField">
+                        <div class="lowres-title"><?php echo __('Resultado'); ?></div>
+
                         <?php echo $lastExportTime; ?>
                     </td>
                 </tr>
+                <?php if ($isAdminApp): ?>
+                    <tr>
+                        <td class="descField">
+                            <?php echo __('Descargar Actual'); ?>
+                        </td>
+                        <td class="valField">
+                            <div class="lowres-title"><?php echo __('Descargar Actual'); ?></div>
+
+                            <?php if (file_exists($exportFile['absolute'])): ?>
+                                <a href="<?php echo $exportFile['relative']; ?>"
+                                   download="<?php echo $exportFile['filename']; ?>"
+                                   class="download">
+                                    <button type="button" class="mdl-button mdl-js-button">
+                                        XML <?php echo $siteName; ?>
+                                    </button>
+                                </a>
+                            <?php else: echo __('No hay archivos XML para descargar'); ?>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endif; ?>
                 <tr>
                     <td class="descField">
-                        <?php echo _('Descargar Actual'); ?>
-                    </td>
-                    <td class="valField">
-                        <?php if (file_exists($exportFile['absolute'])): ?>
-                            <a href="<?php echo $exportFile['relative']; ?>"
-                               download="<?php echo $exportFile['filename']; ?>"
-                               class="download">
-                                XML <?php echo $siteName; ?></>
-                            </a>
-                        <?php else: echo _('No hay archivos XML para descargar'); ?>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField">
-                        <?php echo _('Clave de Exportación'); ?>
+                        <?php echo __('Clave de Exportación'); ?>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -116,13 +134,13 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                    maxlength="255"/>
                             <label class="mdl-textfield__label"
-                                   for="exportPwd"><?php echo _('Clave de Exportación'); ?></label>
+                                   for="exportPwd"><?php echo __('Clave de Exportación'); ?></label>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td class="descField">
-                        <?php echo _('Clave de Exportación (repetir)'); ?>
+                        <?php echo __('Clave de Exportación (repetir)'); ?>
                     </td>
                     <td class="valField">
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -130,7 +148,7 @@
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="255"/>
                             <label class="mdl-textfield__label"
-                                   for="exportPwdR"><?php echo _('Clave de Exportación (repetir)'); ?></label>
+                                   for="exportPwdR"><?php echo __('Clave de Exportación (repetir)'); ?></label>
                         </div>
                     </td>
                 </tr>
@@ -144,6 +162,13 @@
         <div class="tab-actions">
             <ul>
                 <li>
+                    <button id="btnBack" type="button"
+                            class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                            title="<?php echo __('Atrás'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    </button>
+                </li>
+                <li>
                     <button id="help_export_button" type="button"
                             class="btn-help mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                             title="<?php echo $icons->getIconHelp()->getTitle(); ?>"
@@ -152,17 +177,16 @@
                     </button>
 
                     <div id="help_export" class="help-box" title="<?php echo $icons->getIconHelp()->getTitle(); ?>">
-                        <p class="help-text"><?php echo _('La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass.'); ?></p>
+                        <p class="help-text"><?php echo __('La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass.'); ?></p>
 
-                        <p class="help-text"><?php echo _('Los elementos exportados son cuentas, clientes y categorías.'); ?></p>
+                        <p class="help-text"><?php echo __('Los elementos exportados son cuentas, clientes, categorías y etiquetas.'); ?></p>
 
-                        <p class="help-text"><?php echo _('Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad.'); ?></p>
+                        <p class="help-text"><?php echo __('Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad.'); ?></p>
 
-                        <p class="help-text"><?php echo _('Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML.'); ?></p>
+                        <p class="help-text"><?php echo __('Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML.'); ?></p>
                     </div>
                 </li>
                 <li>
-
                     <button form="frmExport"
                             class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
                             title="<?php echo $icons->getIconPlay()->getTitle(); ?>">

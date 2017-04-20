@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Account;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Config\Config;
 use SP\Core\Session;
@@ -48,7 +47,7 @@ class AccountsSearchItem
     /** @var bool */
     public static $optionalActions = false;
     /** @var bool */
-    public static $requestEnabled = false;
+    public static $requestEnabled = true;
     /** @var bool */
     public static $wikiEnabled = false;
     /** @var bool */
@@ -98,9 +97,7 @@ class AccountsSearchItem
      */
     public function isFavorite()
     {
-        $favorites = AccountFavorites::getFavorites(Session::getUserData()->getUserId());
-
-        return in_array($this->AccountSearchData->getAccountId(), $favorites);
+        return $this->favorite;
     }
 
     /**
@@ -116,8 +113,8 @@ class AccountsSearchItem
      */
     public function isShowRequest()
     {
-        return (!$this->isShow()
-            && (AccountsSearchItem::$requestEnabled || AccountsSearchItem::$isDemoMode));
+        return ((!$this->showView || !$this->showEdit || !$this->showDelete)
+            && AccountsSearchItem::$requestEnabled);
     }
 
     /**
@@ -248,15 +245,73 @@ class AccountsSearchItem
     {
         $accesses = sprintf('<em>(G) %s*</em><br>', $this->AccountSearchData->getUsergroupName());
 
-        foreach (GroupAccountsUtil::getGroupsInfoForAccount($this->AccountSearchData->getAccountId()) as $group) {
+        foreach ($this->getCacheGroups() as $group) {
             $accesses .= sprintf('<em>(G) %s</em><br>', $group->getUsergroupName());
         }
 
-        foreach (UserAccounts::getUsersInfoForAccount($this->AccountSearchData->getAccountId()) as $user) {
+        foreach ($this->getCacheUsers() as $user) {
             $accesses .= sprintf('<em>(U) %s</em><br>', $user->getUserLogin());
         }
 
         return $accesses;
+    }
+
+    /**
+     * Devuelve los grupos de la cuenta desde la cache
+     *
+     * @param bool $keys
+     * @return array
+     */
+    public function getCacheGroups($keys = false)
+    {
+        $cache = $this->getCache();
+
+        return $keys === true ? array_keys($cache['groups']) : $cache['groups'];
+    }
+
+    /**
+     * Devolver los accesos desde la caché
+     *
+     * @return array
+     */
+    protected function getCache()
+    {
+        $accountId = $this->AccountSearchData->getAccountId();
+        $cacheName = 'accountsCache';
+
+        if (!isset($_SESSION[$cacheName][$accountId])
+            || $_SESSION[$cacheName][$accountId]['time'] < (int)strtotime($this->AccountSearchData->getAccountDateEdit())
+        ) {
+            $session =& $_SESSION[$cacheName][$accountId];
+
+            $session['users'] = [];
+            $session['groups'] = [];
+
+            foreach (UserAccounts::getUsersInfoForAccount($accountId) as $UserData) {
+                $session['users'][$UserData->getUserId()] = $UserData;
+            }
+
+            foreach (GroupAccountsUtil::getGroupsInfoForAccount($accountId) as $GroupData) {
+                $session['groups'][$GroupData->getUsergroupId()] = $GroupData;
+            }
+
+            $session['time'] = time();
+        }
+
+        return $_SESSION[$cacheName][$accountId];
+    }
+
+    /**
+     * Devuelve los usuarios de la cuenta desde la cache
+     *
+     * @param bool $keys
+     * @return array
+     */
+    public function getCacheUsers($keys = false)
+    {
+        $cache = $this->getCache();
+
+        return $keys === true ? array_keys($cache['users']) : $cache['users'];
     }
 
     /**

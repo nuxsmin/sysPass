@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -53,25 +53,12 @@ class CustomFieldDefForm extends FormBase implements FormInterface
         switch ($action) {
             case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW:
             case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
         return true;
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkCommon()
-    {
-        if (!$this->CustomFieldDefData->getName()) {
-            throw new ValidationException(_('Nombre del campo no indicado'));
-        } elseif ($this->CustomFieldDefData->getType() === 0) {
-            throw new ValidationException(_('Tipo del campo no indicado'));
-        } elseif ($this->CustomFieldDefData->getModule() === 0) {
-            throw new ValidationException(_('Módulo del campo no indicado'));
-        }
     }
 
     /**
@@ -82,6 +69,7 @@ class CustomFieldDefForm extends FormBase implements FormInterface
     protected function analyzeRequestData()
     {
         $this->CustomFieldDefData = new CustomFieldDefData();
+        $this->CustomFieldDefData->setCustomfielddefId($this->itemId);
         $this->CustomFieldDefData->setId($this->itemId);
         $this->CustomFieldDefData->setName(Request::analyze('name'));
         $this->CustomFieldDefData->setType(Request::analyze('type', 0));
@@ -91,7 +79,21 @@ class CustomFieldDefForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return mixed
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->CustomFieldDefData->getName()) {
+            throw new ValidationException(__('Nombre del campo no indicado', false));
+        } elseif ($this->CustomFieldDefData->getType() === 0) {
+            throw new ValidationException(__('Tipo del campo no indicado', false));
+        } elseif ($this->CustomFieldDefData->getModule() === 0) {
+            throw new ValidationException(__('Módulo del campo no indicado', false));
+        }
+    }
+
+    /**
+     * @return CustomFieldDefData
      */
     public function getItemData()
     {

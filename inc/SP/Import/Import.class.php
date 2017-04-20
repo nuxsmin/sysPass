@@ -5,7 +5,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -20,17 +20,18 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Import;
 
+use SP\Core\Exceptions\SPException;
+use SP\Core\Messages\LogMessage;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Core\Exceptions\SPException;
+use SP\Storage\DB;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de importar cuentas.
@@ -38,63 +39,32 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
 class Import
 {
     /**
-     * @var string
+     * @var ImportParams Parámetros de importación
      */
-    public static $importPwd = '';
-    /**
-     * @var int
-     */
-    public static $defUser = 0;
-    /**
-     * @var int
-     */
-    public static $defGroup = 0;
-    /**
-     * @var string
-     */
-    public static $csvDelimiter = '';
+    protected $ImportParams;
 
     /**
-     * @param string $importPwd
+     * Import constructor.
+     *
+     * @param ImportParams $ImportParams
      */
-    public static function setImportPwd($importPwd)
+    public function __construct(ImportParams $ImportParams)
     {
-        self::$importPwd = $importPwd;
-    }
-
-    /**
-     * @param int $defUser
-     */
-    public static function setDefUser($defUser)
-    {
-        self::$defUser = $defUser;
-    }
-
-    /**
-     * @param int $defGroup
-     */
-    public static function setDefGroup($defGroup)
-    {
-        self::$defGroup = $defGroup;
-    }
-
-    /**
-     * @param string $csvDelimiter
-     */
-    public static function setCsvDelimiter($csvDelimiter)
-    {
-        self::$csvDelimiter = $csvDelimiter;
+        $this->ImportParams = $ImportParams;
     }
 
     /**
      * Iniciar la importación de cuentas.
      *
-     * @param array  $fileData  Los datos del archivo
-     * @return array resultado del proceso
+     * @param array $fileData Los datos del archivo
+     * @return LogMessage
+     * @throws SPException
      */
-    public static function doImport(&$fileData)
+    public function doImport(&$fileData)
     {
-        $Log = new Log(_('Importar Cuentas'));
+        $LogMessage = new LogMessage();
+        $LogMessage->setAction(__('Importar Cuentas', false));
+        $Log = new Log($LogMessage);
 
         try {
             $file = new FileImport($fileData);
@@ -102,44 +72,48 @@ class Import
             switch ($file->getFileType()) {
                 case 'text/csv':
                 case 'application/vnd.ms-excel':
-                    $import = new CsvImport($file);
-                    $import->setFieldDelimiter(self::$csvDelimiter);
+                    $Import = new CsvImport($file, $this->ImportParams, $LogMessage);
                     break;
                 case 'text/xml':
-                    $import = new XmlImport($file);
-                    $import->setImportPass(self::$importPwd);
+                    $Import = new XmlImport($file, $this->ImportParams, $LogMessage);
                     break;
                 default:
                     throw new SPException(
                         SPException::SP_WARNING,
-                        _('Tipo mime no soportado'),
-                        _('Compruebe el formato del archivo')
+                        sprintf(__('Tipo mime no soportado ("%s")'), $file->getFileType()),
+                        __('Compruebe el formato del archivo', false)
                     );
             }
 
-            $import->setUserId(self::$defUser);
-            $import->setUserGroupId(self::$defGroup);
-            $import->doImport();
+            if (!DB::beginTransaction()) {
+                throw new SPException(SPException::SP_ERROR, __('No es posible iniciar una transacción', false));
+            }
+
+            $Import->doImport();
+
+            if (!DB::endTransaction()) {
+                throw new SPException(SPException::SP_ERROR, __('No es posible finalizar una transacción', false));
+            }
+
+            $LogMessage->addDetails(__('Cuentas importadas'), $Import->getCounter());
         } catch (SPException $e) {
+            DB::rollbackTransaction();
+
+            $LogMessage->addDescription($e->getMessage());
+            $LogMessage->addDetails(__('Ayuda', false), $e->getHint());
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription($e->getMessage());
-            $Log->addDetails(_('Ayuda'), $e->getHint());
             $Log->writeLog();
 
-            $result['error'] = array('description' => $e->getMessage(), 'hint' => $e->getHint());
-            return $result;
+            throw $e;
         }
 
-        $Log->addDescription(_('Importación finalizada'));
-        $Log->writeLog();
+        $Log->writeLog(true);
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
-        $result['ok'] = array(
-            _('Importación finalizada'),
-            _('Revise el registro de eventos para más detalles')
-        );
+        $LogMessage->addDescription(__('Importación finalizada', false));
+        $LogMessage->addDescription(__('Revise el registro de eventos para más detalles', false));
 
-        return $result;
+        return $LogMessage;
     }
 }

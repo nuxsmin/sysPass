@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,23 +19,21 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\PublicLinks;
 
 use SP\Account\AccountUtil;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Mgmt\ItemSearchInterface;
-use SP\Storage\DB;
 use SP\Mgmt\Users\UserUtil;
+use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class PublicLinkUtil con utilidades para la gestión de enlaces
@@ -51,7 +49,7 @@ class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\PublicLinkListData');
+        $Data->setMapClassName(PublicLinkListData::class);
         $Data->setSelect('publicLink_id, publicLink_hash, publicLink_linkData');
         $Data->setFrom('publicLinks');
         $Data->setLimit('?,?');
@@ -60,25 +58,18 @@ class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
 
         DB::setFullRowCount();
 
+        /** @var PublicLinkListData[] $queryRes */
         $queryRes = DB::getResultsArray($Data);
 
         $publicLinks = [];
         $publicLinks['count'] = $Data->getQueryNumRows();
 
         foreach ($queryRes as $PublicLinkListData) {
-            /**
-             * @var PublicLinkListData $PublicLinkListData
-             * @var PublicLinkData $PublicLinkData
-             */
-            $PublicLinkData = unserialize($PublicLinkListData->getPublicLinkLinkData());
-
-            if (get_class($PublicLinkData) === '__PHP_Incomplete_Class') {
-                $PublicLinkData = Util::castToClass($this->getDataModel(), $PublicLinkData);
-            }
+            $PublicLinkData = Util::castToClass($this->getDataModel(), $PublicLinkListData->getPublicLinkLinkData());
 
             $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
             $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getUserId()));
-            $PublicLinkListData->setNotify(($PublicLinkData->isNotify()) ? _('ON') : _('OFF'));
+            $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? __('ON') : __('OFF'));
             $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getDateAdd()));
             $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getDateExpire()));
             $PublicLinkListData->setCountViews($PublicLinkData->getCountViews() . '/' . $PublicLinkData->getMaxCountViews());

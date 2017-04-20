@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,42 +19,43 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Import;
 
 use SimpleXMLElement;
-use SP\DataModel\AccountData;
-use SP\Core\Crypt;
-use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountExtData;
+use SP\DataModel\CategoryData;
+use SP\DataModel\CustomerData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de importar cuentas desde KeePassX
  */
-class KeepassXImport extends XmlImportBase
+class KeepassXImport extends ImportBase
 {
+    use XmlImportTrait;
+
     /**
      * @var int
      */
-    private $customerId = 0;
-    /**
-     * @var int
-     */
-    private $categoryId = 0;
+    protected $customerId = 0;
 
     /**
      * Iniciar la importación desde KeePassX.
      *
      * @throws \SP\Core\Exceptions\SPException
      * @return bool
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function doImport()
     {
-        $this->customerId = $this->addCustomer('KeePassX');
+        $customerData = new CustomerData(null, 'KeePassX');
+        $this->addCustomer($customerData);
+
+        $this->customerId = $customerData->getCustomerId();
 
         $this->processCategories($this->xml);
     }
@@ -64,6 +65,7 @@ class KeepassXImport extends XmlImportBase
      *
      * @param SimpleXMLElement $xml con objeto XML del archivo de KeePass
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function processCategories(SimpleXMLElement $xml)
     {
@@ -73,10 +75,11 @@ class KeepassXImport extends XmlImportBase
                     // Analizar grupo
                     if ($node->group->entry) {
                         // Crear la categoría
-                        $this->categoryId = $this->addCategory($group->title, 'KeePassX');
+                        $CategoryData = new CategoryData(null, $group->title, 'KeePassX');
+                        $this->addCategory($CategoryData);
 
                         // Crear cuentas
-                        $this->processAccounts($group->entry);
+                        $this->processAccounts($group->entry, $CategoryData->getCategoryId());
                     }
 
                     if ($group->group) {
@@ -87,11 +90,11 @@ class KeepassXImport extends XmlImportBase
             }
 
             if ($node->entry) {
-                // Crear la categoría
-                $this->categoryId = $this->addCategory($node->title, 'KeePassX');
+                $CategoryData = new CategoryData(null, $node->title, 'KeePassX');
+                $this->addCategory($CategoryData);
 
                 // Crear cuentas
-                $this->processAccounts($node->entry);
+                $this->processAccounts($node->entry, $CategoryData->getCategoryId());
             }
         }
     }
@@ -100,28 +103,26 @@ class KeepassXImport extends XmlImportBase
      * Obtener los datos de las entradas de KeePass.
      *
      * @param SimpleXMLElement $entries El objeto XML con las entradas
+     * @param int $categoryId Id de la categoría
      * @throws \SP\Core\Exceptions\SPException
      */
-    protected function processAccounts(SimpleXMLElement $entries)
+    protected function processAccounts(SimpleXMLElement $entries, $categoryId)
     {
         foreach ($entries as $entry) {
-            $notes = isset($entry->comment) ? (string)$entry->comment : '';
-            $password = isset($entry->password) ? (string)$entry->password : '';
             $name = isset($entry->title) ? (string)$entry->title : '';
+            $password = isset($entry->password) ? (string)$entry->password : '';
             $url = isset($entry->url) ? (string)$entry->url : '';
+            $notes = isset($entry->comment) ? (string)$entry->comment : '';
             $username = isset($entry->username) ? (string)$entry->username : '';
 
-            $passData = Crypt::encryptData($password);
-
-            $AccountData = new AccountData();
-            $AccountData->setAccountPass($passData['data']);
-            $AccountData->setAccountIV($passData['iv']);
+            $AccountData = new AccountExtData();
+            $AccountData->setAccountPass($password);
             $AccountData->setAccountNotes($notes);
             $AccountData->setAccountName($name);
             $AccountData->setAccountUrl($url);
             $AccountData->setAccountLogin($username);
             $AccountData->setAccountCustomerId($this->customerId);
-            $AccountData->setAccountCategoryId($this->categoryId);
+            $AccountData->setAccountCategoryId($categoryId);
 
             $this->addAccount($AccountData);
         }

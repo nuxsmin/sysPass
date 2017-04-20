@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin 
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
+use SP\Controller\Grids\Items;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\Util\Checks;
@@ -43,7 +43,7 @@ abstract class GridTabControllerBase extends ControllerBase
      */
     const MAX_NUM_ACTIONS = 3;
     /**
-     * @var Grids
+     * @var mixed
      */
     protected $Grids;
 
@@ -65,7 +65,7 @@ abstract class GridTabControllerBase extends ControllerBase
      */
     public function useTabs()
     {
-        $this->Grids = new Grids();
+        $this->Grids = new Items();
         $this->Grids->setQueryTimeStart($this->view->queryTimeStart);
 
         $this->view->addTemplate('datatabs-grid', 'grid');

@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Files;
@@ -71,6 +70,8 @@ class FileUtil
      *
      * @param int $accountId con el Id de la cuenta
      * @return int con el número de archivos
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function countAccountFiles($accountId)
     {
@@ -98,10 +99,9 @@ class FileUtil
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($accountId);
+        $Data->setOnErrorMessage(__('Error al eliminar archivos asociados a la cuenta', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_WARNING, _('Error al eliminar archivos asociados a la cuenta'));
-        }
+        DB::getQuery($Data);
     }
 
     /**
@@ -110,6 +110,6 @@ class FileUtil
      */
     public static function isImage(FileData $FileData)
     {
-        return in_array(strtoupper($FileData->getAccfileExtension()), FileUtil::$imageExtensions);
+        return in_array(mb_strtoupper($FileData->getAccfileExtension()), FileUtil::$imageExtensions);
     }
 }

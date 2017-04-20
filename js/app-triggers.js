@@ -3,7 +3,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -69,7 +69,7 @@ sysPass.Triggers = function (Common) {
 
         $container.find("#wikifilter").selectize({
             create: true,
-            createFilter: new RegExp("^[a-z0-9\._-]+$", "i"),
+            createFilter: new RegExp("^[a-z0-9:\._-]+$", "i"),
             plugins: ["remove_button"]
         });
     };
@@ -148,7 +148,7 @@ sysPass.Triggers = function (Common) {
             var $this = $(this);
             var helpText = $("#" + $this.data("help")).html();
 
-            showDialog({
+            mdlDialog().show({
                 title: Common.config().LANG[54],
                 text: helpText,
                 positive: {
@@ -163,7 +163,7 @@ sysPass.Triggers = function (Common) {
             var $this = $(this);
 
             $this.find("input:text, input:password, input:file, textarea").val("").parent("div").removeClass("is-dirty");
-            $this.find("input:radio, input:checkbox").removeAttr("checked").removeAttr("selected");
+            $this.find("input:radio, input:checkbox").prop("checked", false).prop("selected", false);
             $this.find("input[name='start'], input[name='skey'], input[name='sorder']").val(0);
 
             $this.find("select").each(function () {
@@ -171,6 +171,8 @@ sysPass.Triggers = function (Common) {
             });
 
             $this.submit();
+        }).on("click", ".btn-popup-close", function (e) {
+            $.magnificPopup.close();
         });
     };
 
@@ -181,7 +183,9 @@ sysPass.Triggers = function (Common) {
         main: function () {
             log.info("views:main");
 
-            bodyHooks();
+            if (!clipboard.isSupported()) {
+                Common.msg.info(Common.config().LANG[65]);
+            }
 
             $(".btn-menu").click(function () {
                 var $this = $(this);
@@ -190,15 +194,39 @@ sysPass.Triggers = function (Common) {
                     Common.appRequests().history.reset();
                 }
 
+                Common.appActions().doAction({actionId: $this.data("action-id")}, $this.data("view"));
+            });
+
+            $("#btnLogout").click(function (e) {
+                Common.appActions().main.logout();
+            });
+
+            $("#btnPrefs").click(function (e) {
                 Common.appActions().doAction({actionId: $(this).data("action-id")});
             });
 
-            Common.appActions().doAction({actionId: 1});
+            Common.appActions().doAction({actionId: 1}, "search");
+
+            if (typeof Common.appTheme().viewsTriggers.main === "function") {
+                Common.appTheme().viewsTriggers.main();
+            }
         },
         search: function () {
             log.info("views:search");
 
             var $frmSearch = $("#frmSearch");
+
+            if ($frmSearch.length === 0) {
+                return;
+            }
+
+            $frmSearch.find("input[name='search']").on('keyup', function (e) {
+                e.preventDefault();
+
+                if (e.which === 13 || e.keyCode === 13) {
+                    $frmSearch.submit();
+                }
+            });
 
             $frmSearch.find("select, #rpp").on("change", function () {
                 $frmSearch.submit();
@@ -214,12 +242,10 @@ sysPass.Triggers = function (Common) {
 
             $frmSearch.find("input:text:visible:first").focus();
 
-            $("#chkgsearch").click(
-                function () {
+            $("#globalSearch").click(function () {
                     var val = $(this).prop("checked") == true ? 1 : 0;
 
                     $frmSearch.find("input[name='gsearch']").val(val);
-
                     $frmSearch.submit();
                 }
             );
@@ -230,38 +256,20 @@ sysPass.Triggers = function (Common) {
         },
         login: function () {
             log.info("views:login");
-
-            bodyHooks();
-
-            $("#boxLogout").fadeOut(1500, function () {
-                location.href = Common.config().APP_ROOT + "/index.php";
-            });
-        },
-        twofa: function () {
-            log.info("views:twofa");
-
-            bodyHooks();
         },
         passreset: function () {
             log.info("views:passreset");
 
-            bodyHooks();
+            var $form = $("#frmPassReset");
+
+            Common.appTheme().passwordDetect($form);
         },
         footer: function () {
             log.info("views:footer");
 
-            $("#btnLogout").click(function (e) {
-                Common.appActions().main.logout();
-            });
-
-            $("#btnPrefs").click(function (e) {
-                Common.appActions().doAction({actionId: $(this).data("action-id")});
-            });
         },
-        common: function (container) {
+        common: function ($container) {
             log.info("views:common");
-
-            var $container = $(container);
 
             selectDetect($container);
 
@@ -274,6 +282,8 @@ sysPass.Triggers = function (Common) {
             if (typeof Common.appTheme().viewsTriggers.common === "function") {
                 Common.appTheme().viewsTriggers.common($container);
             }
+
+            Common.appTriggers().updateFormHash($container);
         },
         datatabs: function (active) {
             log.info("views:datatabs");
@@ -298,25 +308,15 @@ sysPass.Triggers = function (Common) {
 
                 upload.url = Common.appActions().ajaxUrl.config.import;
                 upload.beforeSendAction = function () {
-                    upload.requestData({
+                    upload.setRequestData({
                         sk: Common.sk.get(),
                         csvDelimiter: $("#csvDelimiter").val(),
                         importPwd: $("#importPwd").val(),
+                        importMasterPwd: $("#importMasterPwd").val(),
                         import_defaultuser: $("#import_defaultuser").val(),
                         import_defaultgroup: $("#import_defaultgroup").val()
                     });
                 };
-            }
-
-            var $form = $(".form-action");
-
-            if ($form.length > 0) {
-                $form.each(function () {
-                    var $this = $(this);
-                    if (typeof $this.attr("data-hash") !== "undefined") {
-                        $this.attr("data-hash", SparkMD5.hash($this.serialize(), false));
-                    }
-                });
             }
         },
         account: function () {
@@ -339,50 +339,48 @@ sysPass.Triggers = function (Common) {
                 };
             }
 
-            var $form = $(".form-action");
-
-            if ($form.length > 0) {
-                $form.attr("data-hash", SparkMD5.hash($form.serialize(), false));
-            }
-
             var $extraInfo = $(".show-extra-info");
 
             if ($extraInfo.length > 0) {
                 $extraInfo.on("click", function () {
                     var $this = $(this);
-                    var $table = $($this.data("target"));
+                    var $target = $($this.data("target"));
 
-                    if ($this.data("state") == 0) {
-                        $table.show("blind", "slow");
-                        $this.data("state", "1");
+                    if ($target.is(":hidden")) {
+                        $target.slideDown("slow");
                         $this.html($this.data("icon-up"));
                     } else {
-                        $table.hide("blind", "slow");
-                        $this.data("state", "0");
+                        $target.slideUp("slow");
                         $this.html($this.data("icon-down"));
                     }
                 });
             }
 
-            $("#selParentAccount").on("change", function () {
-                var $this = $(this);
-                var $pass = $("#accountpass,#accountpassR");
+            var $selParentAccount = $("#selParentAccount");
 
-                if ($this[0].value > 0) {
-                    $pass.each(function () {
-                        $(this).prop("disabled", "true");
-                    });
-                } else {
-                    $pass.each(function () {
-                        $(this).prop("disabled", "");
-                    });
-                }
-            });
+            if ($selParentAccount.length > 0) {
+                $selParentAccount.on("change", function () {
+                    var $this = $(this);
+                    var $pass = $("#accountpass,#accountpassR");
+
+                    if ($this[0].value > 0) {
+                        $pass.each(function () {
+                            $(this).prop("disabled", "true");
+                            $(this).prop("required", "false");
+                        });
+                    } else {
+                        $pass.each(function () {
+                            $(this).prop("disabled", "");
+                            $(this).prop("required", "true");
+                        });
+                    }
+                });
+
+                Common.appActions().items.get($selParentAccount);
+            }
         },
         install: function () {
             log.info("views:install");
-
-            bodyHooks();
 
             var $form = $("#frmInstall");
 
@@ -403,9 +401,34 @@ sysPass.Triggers = function (Common) {
         });
     };
 
+    /**
+     * Actualizar el hash de los formularios de acción
+     */
+    var updateFormHash = function ($container) {
+        log.info("updateFormHash");
+
+        var $form;
+
+        if ($container !== undefined) {
+            $form = $container.find(".form-action[data-hash]");
+        } else {
+            $form = $(".form-action[data-hash]");
+        }
+
+        if ($form.length > 0) {
+            $form.each(function () {
+                var $this = $(this);
+
+                $this.attr("data-hash", SparkMD5.hash($this.serialize(), false));
+            });
+        }
+    };
+
     return {
         views: views,
         selectDetect: selectDetect,
-        updateSk: updateSk
+        updateSk: updateSk,
+        updateFormHash: updateFormHash,
+        bodyHooks: bodyHooks
     };
 };

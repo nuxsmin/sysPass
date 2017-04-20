@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin 
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\DataModel;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class PublicLinkData
@@ -82,6 +81,10 @@ class PublicLinkData extends PublicLinkBaseData
      * @var array
      */
     protected $useInfo = [];
+    /**
+     * @var string
+     */
+    protected $data;
 
     /**
      * @return int
@@ -152,7 +155,7 @@ class PublicLinkData extends PublicLinkBaseData
      */
     public function isNotify()
     {
-        return $this->notify;
+        return (bool)$this->notify;
     }
 
     /**
@@ -289,5 +292,21 @@ class PublicLinkData extends PublicLinkBaseData
     public function addUseInfo($useInfo)
     {
         $this->useInfo[] = $useInfo;
+    }
+
+    /**
+     * @return string
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param string $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
     }
 }

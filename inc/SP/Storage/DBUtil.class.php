@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage;
@@ -38,10 +37,40 @@ use SP\Core\Exceptions\SPException;
 class DBUtil
 {
     /**
+     * @var array Tablas de la BBDD
+     */
+    public static $tables = [
+        'customers',
+        'categories',
+        'tags',
+        'usrGroups',
+        'usrProfiles',
+        'usrData',
+        'accounts',
+        'accFavorites',
+        'accFiles',
+        'accGroups',
+        'accHistory',
+        'accTags',
+        'accUsers',
+        'authTokens',
+        'config',
+        'customFieldsDef',
+        'customFieldsData',
+        'log',
+        'publicLinks',
+        'usrPassRecover',
+        'usrToGroups',
+        'plugins',
+        'notices',
+        'account_data_v',
+        'account_search_v'
+    ];
+
+    /**
      * Comprobar que la base de datos existe.
      *
      * @return bool
-     * @throws SPException
      */
     public static function checkDatabaseExist()
     {
@@ -52,13 +81,12 @@ class DBUtil
                 'SELECT COUNT(*) 
                 FROM information_schema.tables
                 WHERE table_schema = \'' . Config::getConfig()->getDbName() . '\'
-                AND table_name = \'usrData\'';
+                AND table_name IN (\'customers\', \'categories\', \'accounts\', \'usrData\', \'config\', \'log\' )';
 
-            if ((int)$db->query($query)->fetchColumn() !== 0) {
-                return true;
-            }
+            return (int)$db->query($query)->fetchColumn() === 6;
         } catch (\Exception $e) {
-            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
+            debugLog($e->getMessage());
+            debugLog($e->getCode());
         }
 
         return false;
@@ -93,12 +121,12 @@ class DBUtil
         try {
             $db = DiFactory::getDBStorage()->getConnection();
 
-            $attributes = array(
+            $attributes = [
                 'SERVER_VERSION',
                 'CLIENT_VERSION',
                 'SERVER_INFO',
                 'CONNECTION_STATUS',
-            );
+            ];
 
             foreach ($attributes as $val) {
                 $dbinfo[$val] = $db->getAttribute(constant('PDO::ATTR_' . $val));

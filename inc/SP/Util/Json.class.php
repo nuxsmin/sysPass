@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -39,14 +38,22 @@ class Json
     /**
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
-     * @param JsonResponse $json
+     * @param JsonResponse $JsonResponse
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
      */
-    public static function returnJson(JsonResponse $json)
+    public static function returnJson(JsonResponse $JsonResponse)
     {
-        header('Content-type: application/json');
-        exit(self::getJson($json));
+        header('Content-type: application/json; charset=utf-8');
+
+        try {
+            exit(self::getJson($JsonResponse));
+        } catch (SPException $e) {
+            $JsonResponse = new JsonResponse();
+            $JsonResponse->setDescription($e->getMessage());
+            $JsonResponse->addMessage($e->getHint());
+
+            exit(json_encode($JsonResponse));
+        }
     }
 
     /**
@@ -58,10 +65,10 @@ class Json
      */
     public static function getJson($data)
     {
-        $json = json_encode(self::safeJson($data));
+        $json = json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR);
 
         if ($json === false) {
-            throw new SPException(SPException::SP_CRITICAL, sprintf('%s : %s', _('Error de codificación'), json_last_error_msg()));
+            throw new SPException(SPException::SP_CRITICAL, __('Error de codificación', false), json_last_error_msg());
         }
 
         return $json;
@@ -80,16 +87,20 @@ class Json
                 function (&$value) {
                     if (is_object($value)) {
                         foreach ($value as &$attribute) {
-                            self::safeJsonString($attribute);
+                            if (is_string($attribute) && $attribute !== '') {
+                                self::safeJsonString($attribute);
+                            }
                         }
 
                         return $value;
-                    } else {
+                    } elseif (is_string($value) && $value !== '') {
                         return self::safeJsonString($value);
+                    } else {
+                        return $value;
                     }
                 }
             );
-        } elseif (is_string($data)) {
+        } elseif (is_string($data) && $data !== '') {
             return self::safeJsonString($data);
         }
 
@@ -104,9 +115,11 @@ class Json
      */
     public static function safeJsonString(&$string)
     {
-        $strFrom = array("\\", '"', "'");
-        $strTo = array("\\", '\"', "\'");
+        $strFrom = ['\\', '"', '\''];
+        $strTo = ['\\', '\"', '\\\''];
 
-        return str_replace($strFrom, $strTo, $string);
+        $string = str_replace($strFrom, $strTo, $string);
+
+        return $string;
     }
 }

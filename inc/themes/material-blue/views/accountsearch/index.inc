@@ -5,10 +5,11 @@
  * @var $this    SP\Core\Template
  */
 ?>
-<?php if ($data->getData()->getDataCount() === 0): ?>
-    <div class="noRes round"><?php echo _('No se encontraron registros'); ?></div>
-<?php else: ?>
-    <div id="res-content">
+
+<div id="res-content">
+    <?php if ($data->getData()->getDataCount() === 0): ?>
+        <div class="noRes round"><?php echo __('No se encontraron registros'); ?></div>
+    <?php else: ?>
         <!-- Data Header-->
         <div id="search-header">
             <?php include $data->getDataHeaderTemplate(); ?>
@@ -30,5 +31,5 @@
         <div id="search-pager-bottom">
             <?php include $data->getDataPagerTemplate(); ?>
         </div>
-    </div>
-<?php endif; ?>
+    <?php endif; ?>
+</div>

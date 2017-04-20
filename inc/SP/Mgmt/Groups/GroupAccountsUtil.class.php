@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Groups;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\DataModel\GroupData;
 use SP\Storage\DB;
@@ -55,7 +54,7 @@ class GroupAccountsUtil
             ORDER BY usergroup_name';
 
         $Data = new QueryData();
-        $Data->setMapClassName('\SP\DataModel\GroupData');
+        $Data->setMapClassName(GroupData::class);
         $Data->setQuery($query);
         $Data->addParam($accountId);
 

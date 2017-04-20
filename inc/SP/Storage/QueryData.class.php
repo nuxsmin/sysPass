@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage;
@@ -82,8 +81,18 @@ class QueryData
      * @var int
      */
     protected $queryNumRows = 0;
+    /**
+     * @var int Código de estado tras realizar la consulta
+     */
+    protected $queryStatus = 0;
+    /**
+     * @var string
+     */
+    protected $onErrorMessage;
 
     /**
+     * Añadir un parámetro a la consulta
+     *
      * @param $value
      * @param $name
      */
@@ -173,9 +182,11 @@ class QueryData
     }
 
     /**
+     * Establecer los parámetros de la consulta
+     *
      * @param array $data
      */
-    public function setParams($data)
+    public function setParams(array $data)
     {
         $this->data = $data;
     }
@@ -194,42 +205,6 @@ class QueryData
     public function setSelect($select)
     {
         $this->select = 'SELECT ' . $select;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFrom()
-    {
-        return $this->from;
-    }
-
-    /**
-     * @param string $from
-     */
-    public function setFrom($from)
-    {
-        if ($from !== '') {
-            $this->from = 'FROM ' . $from;
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getWhere()
-    {
-        return $this->where;
-    }
-
-    /**
-     * @param string $where
-     */
-    public function setWhere($where)
-    {
-        if ($where !== '') {
-            $this->where = 'WHERE ' . $where;
-        }
     }
 
     /**
@@ -281,6 +256,42 @@ class QueryData
     }
 
     /**
+     * @return string
+     */
+    public function getFrom()
+    {
+        return $this->from;
+    }
+
+    /**
+     * @param string $from
+     */
+    public function setFrom($from)
+    {
+        if ($from !== '') {
+            $this->from = 'FROM ' . $from;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getWhere()
+    {
+        return $this->where;
+    }
+
+    /**
+     * @param string $where
+     */
+    public function setWhere($where)
+    {
+        if ($where !== '') {
+            $this->where = 'WHERE ' . $where;
+        }
+    }
+
+    /**
      * @return int
      */
     public function getQueryNumRows()
@@ -294,5 +305,37 @@ class QueryData
     public function setQueryNumRows($queryNumRows)
     {
         $this->queryNumRows = (int)$queryNumRows;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQueryStatus()
+    {
+        return $this->queryStatus;
+    }
+
+    /**
+     * @param int $queryStatus
+     */
+    public function setQueryStatus($queryStatus)
+    {
+        $this->queryStatus = $queryStatus;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOnErrorMessage()
+    {
+        return $this->onErrorMessage;
+    }
+
+    /**
+     * @param string $onErrorMessage
+     */
+    public function setOnErrorMessage($onErrorMessage)
+    {
+        $this->onErrorMessage = $onErrorMessage;
     }
 }

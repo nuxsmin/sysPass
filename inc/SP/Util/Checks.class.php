@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,14 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
 
 use SP\Config\Config;
-use SP\Core\Exceptions\SPException;
+use SP\Http\Request;
 
 /**
  * Class Checks utilidades de comprobación
@@ -35,7 +34,6 @@ use SP\Core\Exceptions\SPException;
  */
 class Checks
 {
-
     /**
      * Comprobar si la función de números aleatorios está disponible.
      *
@@ -71,22 +69,11 @@ class Checks
     /**
      * Comprobar la versión de PHP.
      *
-     * @return array
+     * @return bool
      */
     public static function checkPhpVersion()
     {
-        $error = [];
-        $needsVersion = '5.3.0';
-
-        if (version_compare(PHP_VERSION, $needsVersion, '>=') < 0) {
-            $error[] = array(
-                'type' => SPException::SP_CRITICAL,
-                'description' => _('Versión de PHP requerida >= ') . $needsVersion,
-                'hint' => _('Actualice la versión de PHP para que la aplicación funcione correctamente')
-            );
-        }
-
-        return $error;
+        return version_compare(PHP_VERSION, '5.6.0', '>=') && version_compare(PHP_VERSION, '7.1.0') === -1;
     }
 
     /**
@@ -114,19 +101,15 @@ class Checks
             'mbstring'
         ];
 
-        $error = [];
+        $missing = [];
 
         foreach ($modsNeed as $module) {
             if (!extension_loaded($module)) {
-                $error[] = [
-                    'type' => SPException::SP_WARNING,
-                    'description' => sprintf('%s (%s)', _('Módulo no disponible'), $module),
-                    'hint' => _('Sin este módulo la aplicación puede no funcionar correctamente.')
-                ];
+                $missing[] = $module;
             }
         }
 
-        return $error;
+        return $missing;
     }
 
     /**
@@ -166,7 +149,7 @@ class Checks
      */
     public static function demoIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isDemoEnabled());
+        return Config::getConfig()->isDemoEnabled();
     }
 
     /**
@@ -176,7 +159,7 @@ class Checks
      */
     public static function fileIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isFilesEnabled());
+        return Config::getConfig()->isFilesEnabled();
     }
 
     /**
@@ -186,7 +169,7 @@ class Checks
      */
     public static function mailIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isMailEnabled());
+        return Config::getConfig()->isMailEnabled();
     }
 
     /**
@@ -196,7 +179,7 @@ class Checks
      */
     public static function wikiIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isWikiEnabled());
+        return Config::getConfig()->isWikiEnabled();
     }
 
     /**
@@ -206,7 +189,7 @@ class Checks
      */
     public static function dokuWikiIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isDokuwikiEnabled());
+        return Config::getConfig()->isDokuwikiEnabled();
     }
 
     /**
@@ -216,7 +199,7 @@ class Checks
      */
     public static function mailrequestIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isMailRequestsEnabled());
+        return Config::getConfig()->isMailRequestsEnabled();
     }
 
     /**
@@ -226,7 +209,7 @@ class Checks
      */
     public static function ldapIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isLdapEnabled());
+        return Config::getConfig()->isLdapEnabled();
     }
 
     /**
@@ -236,7 +219,7 @@ class Checks
      */
     public static function logIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isLogEnabled());
+        return Config::getConfig()->isLogEnabled();
     }
 
     /**
@@ -246,7 +229,7 @@ class Checks
      */
     public static function syslogIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isSyslogEnabled());
+        return Config::getConfig()->isSyslogEnabled();
     }
 
     /**
@@ -256,7 +239,7 @@ class Checks
      */
     public static function remoteSyslogIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isSyslogRemoteEnabled());
+        return Config::getConfig()->isSyslogRemoteEnabled();
     }
 
 
@@ -267,7 +250,7 @@ class Checks
      */
     public static function resultsCardsIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isResultsAsCards());
+        return Config::getConfig()->isResultsAsCards();
     }
 
     /**
@@ -277,7 +260,7 @@ class Checks
      */
     public static function accountPassToImageIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isAccountPassToImage());
+        return Config::getConfig()->isAccountPassToImage();
     }
 
     /**
@@ -287,7 +270,7 @@ class Checks
      */
     public static function forceHttpsIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isHttpsEnabled());
+        return Config::getConfig()->isHttpsEnabled();
     }
 
     /**
@@ -297,7 +280,7 @@ class Checks
      */
     public static function publicLinksIsEnabled()
     {
-        return Util::boolval(Config::getConfig()->isPublinksEnabled());
+        return Config::getConfig()->isPublinksEnabled();
     }
 
     /**
@@ -310,5 +293,26 @@ class Checks
         return
             (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
             || $_SERVER['SERVER_PORT'] === 443;
+    }
+
+    /**
+     * Comprobar si la petición es Ajax
+     *
+     * @return bool
+     */
+    public static function isAjax()
+    {
+        return Request::getRequestHeaders('X-Requested-With') === 'XMLHttpRequest'
+            || Request::analyze('isAjax', false, true);
+    }
+
+    /**
+     * Comprobar si la petición es en formato JSON
+     *
+     * @return bool
+     */
+    public static function isJson()
+    {
+        return strpos(Request::getRequestHeaders('Accept'), 'application/json') === 0;
     }
 }

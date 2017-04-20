@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Account;
@@ -44,18 +43,19 @@ class AccountFavorites
      */
     public static function getFavorites($userId)
     {
-        $query = 'SELECT accfavorite_accountId FROM accFavorites WHERE accfavorite_userId = :userId';
+        $query = /** @lang SQL */
+            'SELECT accfavorite_accountId FROM accFavorites WHERE accfavorite_userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($userId, 'userId');
+        $Data->addParam($userId);
 
         $queryRes = DB::getResultsArray($Data);
 
         $favorites = [];
 
         foreach($queryRes as $favorite){
-            $favorites[] = $favorite->accfavorite_accountId;
+            $favorites[] = (int)$favorite->accfavorite_accountId;
         }
 
         return $favorites;
@@ -70,16 +70,16 @@ class AccountFavorites
      */
     public static function addFavorite($accountId, $userId)
     {
-        $query = 'INSERT INTO accFavorites SET accfavorite_accountId = :accountId, accfavorite_userId = :userId';
+        $query = /** @lang SQL */
+            'INSERT INTO accFavorites SET accfavorite_accountId = ?, accfavorite_userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'accountId');
-        $Data->addParam($userId, 'userId');
+        $Data->addParam($accountId);
+        $Data->addParam($userId);
+        $Data->setOnErrorMessage(__('Error al añadir favorito', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al añadir favorito'));
-        }
+        DB::getQuery($Data);
     }
 
     /**
@@ -87,19 +87,20 @@ class AccountFavorites
      *
      * @param $accountId int El Id de la cuenta
      * @param $userId    int El Id del usuario
+     * @return bool
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function deleteFavorite($accountId, $userId)
     {
-        $query = 'DELETE FROM accFavorites WHERE accfavorite_accountId = :accountId AND accfavorite_userId = :userId';
+        $query = /** @lang SQL */
+            'DELETE FROM accFavorites WHERE accfavorite_accountId = ? AND accfavorite_userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($accountId, 'accountId');
-        $Data->addParam($userId, 'userId');
+        $Data->addParam($accountId);
+        $Data->addParam($userId);
+        $Data->setOnErrorMessage(__('Error al eliminar favorito', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al eliminar favorito'));
-        }
+        DB::getQuery($Data);
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\CustomFields;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\DataModel\CustomFieldDefData;
 use SP\DataModel\ItemSearchData;
@@ -41,18 +40,6 @@ use SP\Util\Util;
  */
 class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterface
 {
-    /**
-     * Category constructor.
-     *
-     * @param CustomFieldDefData $itemData
-     */
-    public function __construct($itemData = null)
-    {
-        $this->setDataModel('SP\DataModel\CustomFieldDefData');
-
-        parent::__construct($itemData);
-    }
-
     /**
      * @param ItemSearchData $SearchData
      * @return array|\SP\DataModel\CustomFieldDefData[]
@@ -71,20 +58,15 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
 
         DB::setFullRowCount();
 
+        /** @var CustomFieldDefData[] $queryRes */
         $queryRes = DB::getResultsArray($Data);
 
         $customFields = [];
 
         foreach ($queryRes as $CustomField) {
-            /**
-             * @var CustomFieldDefData $CustomField
-             * @var CustomFieldDefData $fieldDef
-             */
-            $fieldDef = unserialize($CustomField->getCustomfielddefField());
 
-            if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-                $fieldDef = Util::castToClass($this->getDataModel(), $fieldDef);
-            }
+            /** @var CustomFieldDefData $fieldDef */
+            $fieldDef = Util::castToClass($this->getDataModel(), $CustomField->getCustomfielddefField());
 
             if ($SearchData->getSeachString() === ''
                 || stripos($fieldDef->getName(), $SearchData->getSeachString()) !== false
@@ -100,5 +82,16 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
         $customFields['count'] = $Data->getQueryNumRows();
 
         return $customFields;
+    }
+
+    /**
+     * Inicializar la clase
+     *
+     * @return void
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
+    protected function init()
+    {
+        $this->setDataModel(CustomFieldDefData::class);
     }
 }

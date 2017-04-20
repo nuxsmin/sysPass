@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
@@ -28,14 +27,14 @@ namespace SP\Core;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Email;
-use SP\Storage\DB;
 use SP\Log\Log;
+use SP\Storage\DB;
 use SP\Storage\DBUtil;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de realizar la copia y restauración de sysPass.
@@ -46,22 +45,26 @@ class Backup
      * Realizar backup de la BBDD y aplicación.
      *
      * @return bool
+     * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function doBackup()
     {
-        $Log = new Log(_('Realizar Backup'));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Realizar Backup', false));
 
         $siteName = Util::getAppInfo('appname');
         $backupDir = Init::$SERVERROOT;
 
         // Generar hash unico para evitar descargas no permitidas
-        $backupUniqueHash = uniqid();
+        $backupUniqueHash = sha1(uniqid('sysPassBackup', true));
         Config::getConfig()->setBackupHash($backupUniqueHash);
         Config::saveConfig();
 
         $backupDstDir = $backupDir . DIRECTORY_SEPARATOR . 'backup';
         $bakFileApp = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '-' . $backupUniqueHash . '.tar';
-        $bakFileDB = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . 'db-' . $backupUniqueHash . '.sql';
+        $bakFileDB = $backupDstDir . DIRECTORY_SEPARATOR . $siteName . '_db-' . $backupUniqueHash . '.sql';
 
         try {
             self::checkBackupDir($backupDstDir);
@@ -69,29 +72,60 @@ class Backup
             self::backupTables('*', $bakFileDB);
             self::backupApp($bakFileApp);
         } catch (\Exception $e) {
+            $LogMessage->addDescription(__('Error al realizar el backup', false));
+            $LogMessage->addDetails($e->getCode(), $e->getMessage());
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al realizar el backup'));
-            $Log->addDetails($e->getCode(), $e->getMessage());
             $Log->writeLog();
 
-            Email::sendEmail($Log);
+            Email::sendEmail($LogMessage);
             return false;
         }
 
-        $Log->addDescription(_('Copia de la aplicación y base de datos realizada correctamente'));
+        $LogMessage->addDescription(__('Copia de la aplicación y base de datos realizada correctamente', false));
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
         return true;
+    }
+
+    /**
+     * Comprobar y crear el directorio de backups.
+     *
+     * @param string $backupDir ruta del directorio de backup
+     * @throws SPException
+     * @return bool
+     */
+    private static function checkBackupDir($backupDir)
+    {
+        if (@mkdir($backupDir, 0750) === false && is_dir($backupDir) === false) {
+            throw new SPException(SPException::SP_CRITICAL, sprintf(__('No es posible crear el directorio de backups ("%s")'), $backupDir));
+        }
+
+        if (!is_writable($backupDir)) {
+            throw new SPException(SPException::SP_CRITICAL, __('Compruebe los permisos del directorio de backups', false));
+        }
+
+        return true;
+    }
+
+    /**
+     * Eliminar las copias de seguridad anteriores
+     *
+     * @param string $backupDir El directorio de backups
+     */
+    private static function deleteOldBackups($backupDir)
+    {
+        array_map('unlink', glob($backupDir . DIRECTORY_SEPARATOR . '*.tar.gz'));
+        array_map('unlink', glob($backupDir . DIRECTORY_SEPARATOR . '*.sql'));
     }
 
     /**
      * Backup de las tablas de la BBDD.
      * Utilizar '*' para toda la BBDD o 'table1 table2 table3...'
      *
-     * @param string $tables
-     * @param string $backupFile
+     * @param string|array $tables
+     * @param string       $backupFile
      * @throws SPException
      * @return bool
      */
@@ -104,10 +138,8 @@ class Backup
 
             $Data = new QueryData();
 
-            if ($tables == '*') {
-                $Data->setQuery('SHOW TABLES');
-
-                $resTables = DB::getResults($Data);
+            if ($tables === '*') {
+                $resTables = DBUtil::$tables;
             } else {
                 $resTables = is_array($tables) ? $tables : explode(',', $tables);
             }
@@ -121,23 +153,45 @@ class Backup
             $sqlOut .= 'USE `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
             fwrite($handle, $sqlOut);
 
+            $sqlOutViews = '';
             // Recorrer las tablas y almacenar los datos
             foreach ($resTables as $table) {
-                $tableName = $table->{'Tables_in_' . $dbname};
+                $tableName = is_object($table) ? $table->{'Tables_in_' . $dbname} : $table;
 
                 $Data->setQuery('SHOW CREATE TABLE ' . $tableName);
 
-                $sqlOut = '-- ' . PHP_EOL;
-                $sqlOut .= '-- Table ' . strtoupper($tableName) . PHP_EOL;
-                $sqlOut .= '-- ' . PHP_EOL;
-
                 // Consulta para crear la tabla
-                $sqlOut .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
                 $txtCreate = DB::getResults($Data);
-                $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
-                fwrite($handle, $sqlOut);
 
-                $Data->setQuery('SELECT * FROM ' . $tableName);
+                if (isset($txtCreate->{'Create Table'})) {
+                    $sqlOut = '-- ' . PHP_EOL;
+                    $sqlOut .= '-- Table ' . strtoupper($tableName) . PHP_EOL;
+                    $sqlOut .= '-- ' . PHP_EOL;
+                    $sqlOut .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
+                    $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
+                    fwrite($handle, $sqlOut);
+                } elseif ($txtCreate->{'Create View'}) {
+                    $sqlOutViews .= '-- ' . PHP_EOL;
+                    $sqlOutViews .= '-- View ' . strtoupper($tableName) . PHP_EOL;
+                    $sqlOutViews .= '-- ' . PHP_EOL;
+                    $sqlOutViews .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
+                    $sqlOutViews .= $txtCreate->{'Create View'} . ';' . PHP_EOL . PHP_EOL;
+                }
+
+                fwrite($handle, PHP_EOL . PHP_EOL);
+            }
+
+            // Guardar las vistas
+            fwrite($handle, $sqlOutViews);
+
+            // Guardar los datos
+            foreach ($resTables as $tableName) {
+                // No guardar las vistas!
+                if (strrpos($tableName, '_v') !== false) {
+                    continue;
+                }
+
+                $Data->setQuery('SELECT * FROM `' . $tableName . '`');
 
                 // Consulta para obtener los registros de la tabla
                 $queryRes = DB::getResultsRaw($Data);
@@ -161,10 +215,9 @@ class Backup
 
                         $field++;
                     }
+
                     fwrite($handle, ');' . PHP_EOL);
                 }
-
-                fwrite($handle, PHP_EOL . PHP_EOL);
             }
 
             $sqlOut = '--' . PHP_EOL;
@@ -191,11 +244,13 @@ class Backup
      */
     private static function backupApp($backupFile)
     {
-        if (!class_exists('PharData')) {
+        if (!class_exists(\PharData::class)) {
             if (Checks::checkIsWindows()) {
-                throw new SPException(SPException::SP_CRITICAL, _('Esta operación sólo es posible en entornos Linux'));
-            } elseif (!self::backupAppLegacyLinux($backupFile)) {
-                throw new SPException(SPException::SP_CRITICAL, _('Error al realizar backup en modo compatibilidad'));
+                throw new SPException(SPException::SP_CRITICAL, __('Esta operación sólo es posible en entornos Linux', false));
+            }
+
+            if (!self::backupAppLegacyLinux($backupFile)) {
+                throw new SPException(SPException::SP_CRITICAL, __('Error al realizar backup en modo compatibilidad', false));
             }
 
             return true;
@@ -236,38 +291,5 @@ class Backup
         exec($command, $resOut, $resBakApp);
 
         return $resBakApp;
-    }
-
-    /**
-     * Comprobar y crear el directorio de backups.
-     *
-     * @param string $backupDir ruta del directorio de backup
-     * @throws SPException
-     * @return bool
-     */
-    private static function checkBackupDir($backupDir)
-    {
-        if (!is_dir($backupDir)) {
-            if (!@mkdir($backupDir, 0550)) {
-                throw new SPException(SPException::SP_CRITICAL, _('No es posible crear el directorio de backups') . ' (' . $backupDir . ')');
-            }
-        }
-
-        if (!is_writable($backupDir)) {
-            throw new SPException(SPException::SP_CRITICAL, _('Compruebe los permisos del directorio de backups'));
-        }
-
-        return true;
-    }
-
-    /**
-     * Eliminar las copias de seguridad anteriores
-     *
-     * @param string $backupDir El directorio de backups
-     */
-    private static function deleteOldBackups($backupDir)
-    {
-        array_map('unlink', glob($backupDir . DIRECTORY_SEPARATOR . '*.tar.gz'));
-        array_map('unlink', glob($backupDir . DIRECTORY_SEPARATOR . '*.sql'));
     }
 }

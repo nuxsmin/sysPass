@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,49 +19,22 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\CustomFields;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
-use SP\DataModel\CustomFieldBaseData;
-use SP\DataModel\CustomFieldData;
-use SP\DataModel\CustomFieldDefData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class CustomFieldsBase para la definición de campos personalizados
  *
  * @package SP
  */
-abstract class CustomFieldBase extends ItemBase
+abstract class CustomFieldBase implements ItemBaseInterface
 {
-    /** @var CustomFieldBaseData|CustomFieldDefData|CustomFieldData */
-    protected $itemData;
-
-    /**
-     * Category constructor.
-     *
-     * @param CustomFieldBaseData $itemData
-     */
-    public function __construct($itemData = null)
-    {
-        if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\CustomFieldBaseData');
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * Devolver los datos del elemento
-     * @return CustomFieldBaseData|CustomFieldDefData|CustomFieldData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
-    }
+    use ItemBaseTrait;
 }

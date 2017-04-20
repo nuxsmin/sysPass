@@ -4,11 +4,11 @@
 ?>
 
 <div id="title" class="midroundup titleNormal">
-    <?php echo _('Registro de Eventos'); ?>
+    <?php echo __('Registro de Eventos'); ?>
 </div>
 
 <?php if (!$events): ?>
-    <?php die('<div class="noRes round">' . _('No se encontraron registros') . '</div>'); ?>
+    <?php die('<div class="noRes round">' . __('No se encontraron registros') . '</div>'); ?>
 <?php endif; ?>
 
 <div id="resEventLog">
@@ -16,25 +16,25 @@
         <thead>
         <tr class="header-grey">
             <th>
-                <?php echo _('ID'); ?>
+                <?php echo __('ID'); ?>
             </th>
             <th>
-                <?php echo _('Fecha / Hora'); ?>
+                <?php echo __('Fecha / Hora'); ?>
             </th>
             <th>
-                <?php echo _('Nivel'); ?>
+                <?php echo __('Nivel'); ?>
 
             <th>
-                <?php echo _('Evento'); ?>
+                <?php echo __('Evento'); ?>
             </th>
             <th>
-                <?php echo _('Usuario'); ?>
+                <?php echo __('Usuario'); ?>
             </th>
             <th>
-                <?php echo _('IP'); ?>
+                <?php echo __('IP'); ?>
             </th>
             <th class="cell-description">
-                <?php echo _('Descripción'); ?>
+                <?php echo __('Descripción'); ?>
             </th>
         </tr>
         </thead>
@@ -57,7 +57,7 @@
                     <?php echo utf8_decode($log->log_action); ?>
                 </td>
                 <td class="cell">
-                    <?php echo strtoupper($log->log_login); ?>
+                    <?php echo mb_strtoupper($log->log_login); ?>
                 </td>
                 <td class="cell">
                     <?php echo $isDemoMode ? preg_replace('#\d+#', '*', $log->log_ipAddress) : $log->log_ipAddress; ?>
@@ -132,9 +132,16 @@
 <div class="item-actions">
     <ul>
         <li>
+            <button id="btnBack" type="button"
+                    class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                    title="<?php echo __('Atrás'); ?>">
+                <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+            </button>
+        </li>
+        <li>
             <button
                 class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconClear()->getClassButton(); ?>"
-                title="<?php echo _('Vaciar registro de eventos'); ?>"
+                title="<?php echo __('Vaciar registro de eventos'); ?>"
                 data-onclick="eventlog/clear"
                 data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_EVL; ?>">
                 <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>

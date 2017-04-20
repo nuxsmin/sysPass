@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -58,5 +58,13 @@ class PublicLinkForm implements FormInterface
     public function validate($action)
     {
         return true;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItemData()
+    {
+        // TODO: Implement getItemData() method.
     }
 }

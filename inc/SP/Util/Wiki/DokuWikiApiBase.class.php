@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util\Wiki;
@@ -28,7 +27,6 @@ namespace SP\Util\Wiki;
 use DOMDocument;
 use DOMException;
 use SP\Config\Config;
-use SP\Core\Session;
 use SP\Core\Exceptions\SPException;
 use SP\Http\XMLRPCResponseParse;
 use SP\Log\Log;
@@ -130,11 +128,11 @@ abstract class DokuWikiApiBase
             $xmlValue = $this->xml->createElement('value');
 
             if (is_numeric($value)) {
-                $xmlValue->appendChild($this->xml->createElement('int', intval($value)));
+                $xmlValue->appendChild($this->xml->createElement('int', (int)$value));
             } elseif (is_string($value)) {
                 $xmlValue->appendChild($this->xml->createElement('string', $value));
             } elseif (is_bool($value)) {
-                $xmlValue->appendChild($this->xml->createElement('boolean', intval($value)));
+                $xmlValue->appendChild($this->xml->createElement('boolean', (int)$value));
             }
 
             $xmlParam->appendChild($xmlValue);
@@ -150,10 +148,10 @@ abstract class DokuWikiApiBase
     protected function callWiki()
     {
         try {
-            $data['type'] = array('Content-Type: text/xml');
+            $data['type'] = ['Content-Type: text/xml'];
             $data['data'] = $this->xml->saveXML();
 
-            return Util::getDataFromUrl($this->apiUrl, $data, true);
+            return Util::getDataFromUrl($this->apiUrl, $data, true, true);
         } catch (SPException $e) {
             throw $e;
         }
@@ -172,7 +170,7 @@ abstract class DokuWikiApiBase
         if (count($error) > 0) {
             throw new SPException(
                 SPException::SP_WARNING,
-                _('Error al realizar la consulta'),
+                __('Error al realizar la consulta', false),
                 $error['faultString']
             );
         }
@@ -182,34 +180,43 @@ abstract class DokuWikiApiBase
      * Escribir el error en el registro de eventos
      *
      * @param \SP\Core\Exceptions\SPException $e
+     * @param string                          $source Origen del error
      */
-    protected function logException(SPException $e)
+    protected function logException(SPException $e, $source = null)
     {
-        $Log = new Log('DokuWiki API', $e->getMessage(), LogLevel::ERROR);
+        $Log = new Log();
+        $LogMessgae = $Log->getLogMessage();
+        $LogMessgae->setAction('DokuWiki API');
+        $LogMessgae->addDescription($e->getMessage());
 
         if ($e->getHint()) {
-            $Log->addDetails('Error', $e->getHint());
+            $LogMessgae->addDetails(__('Error', false), $e->getHint());
         }
 
+        if (null !== $source) {
+            $LogMessgae->addDetails(__('Origen', false), $source);
+        }
+
+        $Log->setLogLevel(LogLevel::ERROR);
         $Log->writeLog();
     }
 
     /**
      * Establecer los datos de conexión a la API de DokuWiki
      *
-     * @param string $url La URL de conexión
+     * @param string $url  La URL de conexión
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
      * @throws SPException
      */
     protected function setConnectionData($url, $user, $pass)
     {
-        $this->apiUrl = (empty($url)) ? Config::getConfig()->getDokuwikiUrl() : $url;
-        $this->apiUser = (empty($user)) ? Config::getConfig()->getDokuwikiUser() : $user;
-        $this->apiPassword = (empty($pass)) ? Config::getConfig()->getDokuwikiPass() : $pass;
+        $this->apiUrl = empty($url) ? Config::getConfig()->getDokuwikiUrl() : $url;
+        $this->apiUser = empty($user) ? Config::getConfig()->getDokuwikiUser() : $user;
+        $this->apiPassword = empty($pass) ? Config::getConfig()->getDokuwikiPass() : $pass;
 
-        if (empty($this->apiUrl)){
-            throw new SPException(SPException::SP_WARNING, _('URL de conexión no establecida'));
+        if (empty($this->apiUrl)) {
+            throw new SPException(SPException::SP_WARNING, __('URL de conexión no establecida', false));
         }
     }
 }

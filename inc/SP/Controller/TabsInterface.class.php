@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin
+ * @author nuxsmin 
  * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *

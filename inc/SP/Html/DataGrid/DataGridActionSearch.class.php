@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin 
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class DataGridActionSearch para definir una acción de búsqueda de datos
@@ -44,7 +43,7 @@ class DataGridActionSearch extends DataGridActionBase
      *
      * @var array
      */
-    private $_onSubmitArgs = array();
+    private $_onSubmitArgs = [];
 
     /**
      * DataGridActionSearch constructor.
@@ -63,7 +62,7 @@ class DataGridActionSearch extends DataGridActionBase
      */
     public function getOnSubmit()
     {
-        $args = array();
+        $args = [];
 
         foreach ($this->_onSubmitArgs as $arg) {
             $args[] = (!is_numeric($arg) && $arg !== 'this') ? '\'' . $arg . '\'' : $arg;

@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,29 +19,32 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
+use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
-use SP\Api\ApiTokensUtil;
 use SP\Config\Config;
+use SP\Controller\Grids\Items;
 use SP\Core\ActionsInterface;
+use SP\Core\Exceptions\SPException;
+use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
+use SP\Mgmt\ApiTokens\ApiTokenSearch;
 use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\CustomerSearch;
 use SP\Mgmt\CustomFields\CustomFieldDefSearch;
 use SP\Mgmt\Files\FileSearch;
 use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Groups\GroupSearch;
+use SP\Mgmt\Plugins\PluginSearch;
 use SP\Mgmt\Profiles\ProfileSearch;
 use SP\Mgmt\PublicLinks\PublicLinkSearch;
-use SP\Core\Template;
 use SP\Mgmt\Tags\TagSearch;
 use SP\Mgmt\Users\UserSearch;
 use SP\Util\Checks;
@@ -97,36 +100,41 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      * Realizar las accione del controlador
      *
      * @param mixed $type Tipo de acción
-     * @throws \InvalidArgumentException
      */
     public function doAction($type = null)
     {
-        $this->useTabs();
+        try {
+            $this->useTabs();
 
-        if ($type === self::TYPE_ACCOUNTS) {
-            $this->getCategories();
-            $this->getCustomers();
-            $this->getCustomFields();
-            $this->getFiles();
-            $this->getAccounts();
-            $this->getTags();
+            if ($type === self::TYPE_ACCOUNTS) {
+                $this->getCategories();
+                $this->getCustomers();
+                $this->getCustomFields();
+                $this->getFiles();
+                $this->getAccounts();
+                $this->getAccountsHistory();
+                $this->getTags();
+                $this->getPluginsList();
 
-            $this->EventDispatcher->notifyEvent('show.itemlist.accounts', $this);
-        } elseif ($type === self::TYPE_ACCESSES) {
-            $this->getUsersList();
-            $this->getGroupsList();
-            $this->getProfilesList();
-            $this->getAPITokensList();
-            $this->getPublicLinksList();
+                $this->EventDispatcher->notifyEvent('show.itemlist.accounts', $this);
+            } elseif ($type === self::TYPE_ACCESSES) {
+                $this->getUsersList();
+                $this->getGroupsList();
+                $this->getProfilesList();
+                $this->getAPITokensList();
+                $this->getPublicLinksList();
 
-            $this->EventDispatcher->notifyEvent('show.itemlist.accesses', $this);
+                $this->EventDispatcher->notifyEvent('show.itemlist.accesses', $this);
+            }
+        } catch (SPException $e) {
+            $this->showError(self::ERR_EXCEPTION);
         }
     }
 
     /**
      * Obtener los datos para la pestaña de categorías
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getCategories()
     {
@@ -136,7 +144,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getCategoriesGrid();
+        $Grid = $this->getGrids()->getCategoriesGrid();
         $Grid->getData()->setData(CategorySearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -144,9 +152,17 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     }
 
     /**
+     * @return Items
+     */
+    public function getGrids()
+    {
+        return $this->Grids;
+    }
+
+    /**
      * Obtener los datos para la pestaña de clientes
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getCustomers()
     {
@@ -156,7 +172,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getCustomersGrid();
+        $Grid = $this->getGrids()->getCustomersGrid();
         $Grid->getData()->setData(CustomerSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -166,7 +182,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de campos personalizados
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getCustomFields()
     {
@@ -176,7 +192,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getCustomFieldsGrid();
+        $Grid = $this->getGrids()->getCustomFieldsGrid();
         $Grid->getData()->setData(CustomFieldDefSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -186,7 +202,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de archivos
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getFiles()
     {
@@ -200,7 +216,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getFilesGrid();
+        $Grid = $this->getGrids()->getFilesGrid();
         $Grid->getData()->setData(FileSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -210,7 +226,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de cuentas
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getAccounts()
     {
@@ -220,8 +236,28 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getAccountsGrid();
+        $Grid = $this->getGrids()->getAccountsGrid();
         $Grid->getData()->setData(AccountUtil::getAccountsMgmtSearch($this->ItemSearchData));
+        $Grid->updatePager();
+
+        $this->view->append('tabs', $Grid);
+    }
+
+    /**
+     * Obtener los datos para la pestaña de cuentas en el histórico
+     *
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     */
+    public function getAccountsHistory()
+    {
+        $this->setAction(self::ACTION_MGM_ACCOUNTS_HISTORY);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $Grid = $this->getGrids()->getAccountsHistoryGrid();
+        $Grid->getData()->setData(AccountHistoryUtil::getAccountsMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
         $this->view->append('tabs', $Grid);
@@ -230,7 +266,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de etiquetas
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getTags()
     {
@@ -240,8 +276,28 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getTagsGrid();
+        $Grid = $this->getGrids()->getTagsGrid();
         $Grid->getData()->setData(TagSearch::getItem()->getMgmtSearch($this->ItemSearchData));
+        $Grid->updatePager();
+
+        $this->view->append('tabs', $Grid);
+    }
+
+    /**
+     * Obtener los datos para la pestaña de tokens de API
+     *
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     */
+    public function getPluginsList()
+    {
+        $this->setAction(self::ACTION_MGM_PLUGINS);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $Grid = $this->getGrids()->getPluginsGrid();
+        $Grid->getData()->setData(PluginSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
         $this->view->append('tabs', $Grid);
@@ -250,7 +306,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de usuarios
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getUsersList()
     {
@@ -260,7 +316,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getUsersGrid();
+        $Grid = $this->getGrids()->getUsersGrid();
         $Grid->getData()->setData(UserSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -270,7 +326,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de grupos
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getGroupsList()
     {
@@ -280,7 +336,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getGroupsGrid();
+        $Grid = $this->getGrids()->getGroupsGrid();
         $Grid->getData()->setData(GroupSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -290,7 +346,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de perfiles
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getProfilesList()
     {
@@ -300,7 +356,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getProfilesGrid();
+        $Grid = $this->getGrids()->getProfilesGrid();
         $Grid->getData()->setData(ProfileSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
@@ -310,7 +366,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de tokens de API
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getAPITokensList()
     {
@@ -320,8 +376,8 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getTokensGrid();
-        $Grid->getData()->setData(ApiTokensUtil::getTokensMgmtSearch($this->ItemSearchData));
+        $Grid = $this->getGrids()->getTokensGrid();
+        $Grid->getData()->setData(ApiTokenSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 
         $this->view->append('tabs', $Grid);
@@ -330,7 +386,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Obtener los datos para la pestaña de tokens de API
      *
-     * @throws \InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function getPublicLinksList()
     {
@@ -344,7 +400,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $Grid = $this->Grids->getPublicLinksGrid();
+        $Grid = $this->getGrids()->getPublicLinksGrid();
         $Grid->getData()->setData(PublicLinkSearch::getItem()->getMgmtSearch($this->ItemSearchData));
         $Grid->updatePager();
 

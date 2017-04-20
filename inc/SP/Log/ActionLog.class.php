@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Log;
-use SP\Html\Html;
+
+use SP\Core\Messages\LogMessage;
 
 /**
  * Clase abstracta ActionLog para la gestión de mensajes de eventos
@@ -38,93 +38,28 @@ abstract class ActionLog extends LogLevel
      */
     const NEWLINE_TXT = PHP_EOL;
     /**
-     * Constante de nueva línea para descriciones en formato HTML
+     * Constante de nueva línea para descripciones en formato HTML
      */
     const NEWLINE_HTML = '<br>';
-    /**
-     * Acción realizada
-     *
-     * @var string
-     */
-    protected $action = __CLASS__;
-    /**
-     * Detalles de la acción
-     *
-     * @var array
-     */
-    protected $description;
-    /**
-     * Formato de nueva línea en HTML
-     *
-     * @var bool
-     */
-    protected $newLineHtml = false;
     /**
      * @var string
      */
     protected $logLevel = '';
     /**
-     * @var array
+     * @var LogMessage
      */
-    protected $details;
+    protected $LogMessage;
 
     /**
      * Contructor
      *
-     * @param string $action      La acción realizada
-     * @param string $description La descripción de la acción realizada
-     * @param string $level       El nivel del mensaje
+     * @param LogMessage $LogMessage
+     * @param string     $level El nivel del mensaje
      */
-    public function __construct($action = null, $description = null, $level = Log::INFO)
+    public function __construct(LogMessage $LogMessage = null, $level = Log::INFO)
     {
-        if (null !== $action) {
-            $this->setAction($action);
-        }
-
-        if (null !== $description) {
-            $this->addDescription($description);
-        }
-
+        $this->LogMessage = $LogMessage ?: new LogMessage();
         $this->logLevel = $level;
-    }
-
-    /**
-     * Establece la descripción de la acción realizada
-     *
-     * @param string $description
-     */
-    public function addDescription($description = '')
-    {
-        $this->description[] = $this->formatString($description);
-    }
-
-    /**
-     * Establece la descripción de la acción realizada en formato HTML
-     *
-     * @param string $description
-     */
-    public function addDescriptionHtml($description = '')
-    {
-        $this->addDescription(Html::strongText($description));
-    }
-
-    /**
-     * Añadir una línea en blanco a la descripción
-     */
-    public function addDescriptionLine()
-    {
-        $this->description[] = '';
-    }
-
-    /**
-     * Formatear una cadena para guardarla en el registro
-     *
-     * @param $string string La cadena a formatear
-     * @return string
-     */
-    private function formatString($string)
-    {
-        return strip_tags(utf8_encode($string));
     }
 
     /**
@@ -144,102 +79,18 @@ abstract class ActionLog extends LogLevel
     }
 
     /**
-     * Devuelve los detalles de la acción realizada
-     *
-     * @return string
+     * @return LogMessage
      */
-    public function getDetails()
+    public function getLogMessage()
     {
-        if (null === $this->details) {
-            return '';
-        }
-
-        if (count($this->details) > 1) {
-            $newline = ($this->newLineHtml === false) ? PHP_EOL : self::NEWLINE_HTML;
-
-            return implode($newline, $this->details);
-        }
-
-        return $this->details[0];
+        return $this->LogMessage;
     }
 
     /**
-     * Devuelve la acción realizada
-     *
-     * @return string
+     * @param LogMessage $LogMessage
      */
-    public function getAction()
+    public function setLogMessage(LogMessage $LogMessage)
     {
-        return $this->action;
-    }
-
-    /**
-     * Establece la acción realizada
-     *
-     * @param string $action
-     */
-    public function setAction($action)
-    {
-        $this->action = $this->formatString($action);
-    }
-
-    /**
-     * Devuelve la descripción de la acción realizada
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        if (null === $this->description) {
-            return '';
-        }
-
-        if (count($this->description) > 1) {
-            $newline = ($this->newLineHtml === false) ? PHP_EOL : self::NEWLINE_HTML;
-
-            return implode($newline, $this->description);
-        }
-
-        return $this->description[0];
-    }
-
-    /**
-     * Establece los detalles de la acción realizada
-     *
-     * @param $key   string
-     * @param $value string
-     */
-    public function addDetails($key, $value)
-    {
-        $this->details[] = sprintf('%s: %s', $this->formatString($key), $this->formatString($value));
-    }
-
-    /**
-     * Añadir detalle en formato HTML. Se resalta el texto clave.
-     *
-     * @param $key string
-     * @param $value string
-     */
-    public function addDetailsHtml($key, $value)
-    {
-        $this->addDetails(Html::strongText($key), $value);
-    }
-
-    /**
-     * Establecer el formato de nueva línea a HTML
-     *
-     * @param $bool bool
-     */
-    public function setNewLineHtml($bool)
-    {
-        $this->newLineHtml = $bool;
-    }
-
-    /**
-     * Restablecer la variable de descripcion
-     */
-    public function resetDescription()
-    {
-        $this->description = null;
+        $this->LogMessage = $LogMessage;
     }
 }

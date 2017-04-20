@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,38 +19,39 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
 use SP\Account\AccountUtil;
-use SP\Core\Acl;
+use SP\Account\UserAccounts;
 use SP\Config\Config;
+use SP\Core\Acl;
 use SP\Core\ActionsInterface;
-use SP\Core\Crypt;
+use SP\Core\Crypt\Crypt;
+use SP\Core\OldCrypt;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
+use SP\Core\Session;
+use SP\Core\SessionUtil;
 use SP\Core\Template;
+use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\PublicLinkData;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Groups\GroupAccountsUtil;
-use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
-use SP\Core\Session;
-use SP\Core\SessionUtil;
-use SP\Core\Exceptions\SPException;
-use SP\Account\UserAccounts;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
@@ -64,6 +65,10 @@ use SP\Util\Json;
  */
 class AccountController extends ControllerBase implements ActionsInterface
 {
+    /**
+     * @var AccountAcl
+     */
+    protected $AccountAcl;
     /**
      * @var Account|AccountHistory instancia para el manejo de datos de una cuenta
      */
@@ -115,6 +120,94 @@ class AccountController extends ControllerBase implements ActionsInterface
     }
 
     /**
+     * Obtener la vista de detalles de cuenta para enlaces públicos
+     *
+     * @param PublicLinkData $PublicLinkData
+     *
+     */
+    public function getAccountFromLink(PublicLinkData $PublicLinkData)
+    {
+        $this->setAction(self::ACTION_ACC_VIEW);
+
+        $this->view->addTemplate('account-link');
+        $this->view->assign('title',
+            [
+                'class' => 'titleNormal',
+                'name' => __('Detalles de Cuenta'),
+                'icon' => $this->icons->getIconView()->getIcon()
+            ]
+        );
+
+        try {
+            $Account = new Account();
+            $Account->incrementViewCounter($PublicLinkData->getItemId());
+            $Account->incrementDecryptCounter($PublicLinkData->getItemId());
+
+            $key = Config::getConfig()->getPasswordSalt() . $PublicLinkData->getLinkHash();
+            $securedKey = Crypt::unlockSecuredKey($PublicLinkData->getPassIV(), $key);
+
+            /** @var AccountExtData $AccountData */
+            $AccountData = unserialize(Crypt::decrypt($PublicLinkData->getData(), $securedKey, $key));
+
+            $this->view->assign('useImage', Config::getConfig()->isPublinksImageEnabled() || Config::getConfig()->isAccountPassToImage());
+
+            $accountPass = $this->view->useImage ? ImageUtil::convertText($AccountData->getAccountPass()) : $AccountData->getAccountPass();
+
+            $this->view->assign('accountPass', $accountPass);
+            $this->view->assign('accountData', $AccountData);
+        } catch (\Exception $e) {
+            $this->showError(self::ERR_EXCEPTION);
+        }
+    }
+
+    /**
+     * Realizar las acciones del controlador
+     *
+     * @param mixed $type Tipo de acción
+     */
+    public function doAction($type = null)
+    {
+        try {
+            switch ($type) {
+                case ActionsInterface::ACTION_ACC_NEW:
+                    $this->getNewAccount();
+                    $this->EventDispatcher->notifyEvent('show.account.new', $this);
+                    break;
+                case ActionsInterface::ACTION_ACC_COPY:
+                    $this->getCopyAccount();
+                    $this->EventDispatcher->notifyEvent('show.account.copy', $this);
+                    break;
+                case ActionsInterface::ACTION_ACC_EDIT:
+                    $this->getEditAccount();
+                    $this->EventDispatcher->notifyEvent('show.account.edit', $this);
+                    break;
+                case ActionsInterface::ACTION_ACC_EDIT_PASS:
+                    $this->getEditPassAccount();
+                    $this->EventDispatcher->notifyEvent('show.account.editpass', $this);
+                    break;
+                case ActionsInterface::ACTION_ACC_VIEW:
+                    $this->getViewAccount();
+                    $this->EventDispatcher->notifyEvent('show.account.view', $this);
+                    break;
+                case ActionsInterface::ACTION_ACC_VIEW_HISTORY:
+                    $this->getViewHistoryAccount();
+                    $this->EventDispatcher->notifyEvent('show.account.viewhistory', $this);
+                    break;
+                case ActionsInterface::ACTION_ACC_DELETE:
+                    $this->getDeleteAccount();
+                    $this->EventDispatcher->notifyEvent('show.account.delete', $this);
+                    break;
+                case ActionsInterface::ACTION_ACC_REQUEST:
+                    $this->getRequestAccountAccess();
+                    $this->EventDispatcher->notifyEvent('show.account.request', $this);
+                    break;
+            }
+        } catch (SPException $e) {
+            $this->showError(self::ERR_EXCEPTION);
+        }
+    }
+
+    /**
      * Obtener los datos para mostrar el interface para nueva cuenta
      *
      * @throws \SP\Core\Exceptions\SPException
@@ -131,7 +224,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleGreen',
-                'name' => _('Nueva Cuenta'),
+                'name' => __('Nueva Cuenta'),
                 'icon' => $this->icons->getIconAdd()->getIcon()
             ]
         );
@@ -150,17 +243,19 @@ class AccountController extends ControllerBase implements ActionsInterface
     {
         $this->view->assign('showLogo', false);
 
+        $Acl = new AccountAcl($this->Account, $this->getAction());
+        $this->AccountAcl = $Acl;
+
         if (!Acl::checkUserAccess($this->getAction())) {
             $this->showError(self::ERR_PAGE_NO_PERMISSION);
             return false;
-        } elseif (!UserPass::getItem($this->UserData)->checkUserUpdateMPass()) {
+        } elseif (!UserPass::checkUserUpdateMPass($this->UserData->getUserId())) {
             $this->showError(self::ERR_UPDATE_MPASS);
             return false;
         } elseif ($this->id > 0) {
-            $Acl = new Acl($this->getAction());
-            $Acl->setAccountData($this->Account->getAccountDataForACL());
+            $this->AccountAcl = $Acl->getAcl();
 
-            if (!$Acl->checkAccountAccess()) {
+            if (!$this->AccountAcl->checkAccountAccess()) {
                 $this->showError(self::ERR_ACCOUNT_NO_PERMISSION);
                 return false;
             }
@@ -184,31 +279,32 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->view->assign('accountOtherGroups', GroupAccountsUtil::getGroupsInfoForAccount($this->getId()));
             $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->getAccount()->getAccountData()->getTags())));
             $this->view->assign('historyData', AccountHistory::getAccountList($this->AccountData->getAccountId()));
-            $this->view->assign('isModified', $this->AccountData->getAccountDateEdit() && $this->AccountData->getAccountDateEdit() !== '0000-00-00 00:00:00');
+            $this->view->assign('isModified', strtotime($this->AccountData->getAccountDateEdit()) !== false);
             $this->view->assign('maxFileSize', round(Config::getConfig()->getFilesAllowedSize() / 1024, 1));
             $this->view->assign('filesAllowedExts', implode(',', Config::getConfig()->getFilesAllowedExts()));
 
             $PublicLinkData = PublicLink::getItem()->getHashForItem($this->getId());
 
-            $publicLinkUrl = (Checks::publicLinksIsEnabled() && $PublicLinkData ? Init::$WEBURI . '/?h=' . $PublicLinkData->getPublicLinkHash() . '&a=link' : '');
+            $publicLinkUrl = (Checks::publicLinksIsEnabled() && $PublicLinkData ? Init::$WEBURI . '/index.php?h=' . $PublicLinkData->getPublicLinkHash() . '&a=link' : null);
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
+            $this->view->assign('publicLinkId', $PublicLinkData ? $PublicLinkData->getPublicLinkId() : 0);
 
-            $this->view->assign('accountPassDate', gmdate('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
-            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange()));
+            $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
+            $this->view->assign('accountPassDateChange', date('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: 0));
         } else {
-            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', time() + 2592000));
+            $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
         }
 
         $this->view->assign('actionId', $this->getAction());
-        $this->view->assign('accountParentId', Session::getLastAcountId());
         $this->view->assign('categories', Category::getItem()->getItemsForSelect());
-        $this->view->assign('customers', Customer::getItem()->getItemsForSelect());
+        $this->view->assign('customers', Customer::getItem()->getItemsForSelectByUser());
         $this->view->assign('otherUsers', UserUtil::getUsersLogin());
         $this->view->assign('otherUsersJson', Json::getJson($this->view->otherUsers));
         $this->view->assign('otherGroups', Group::getItem()->getItemsForSelect());
         $this->view->assign('otherGroupsJson', Json::getJson($this->view->otherGroups));
         $this->view->assign('tagsJson', Json::getJson(Tag::getItem()->getItemsForSelect()));
         $this->view->assign('allowPrivate', $this->UserProfileData->isAccPrivate());
+        $this->view->assign('allowPrivateGroup', $this->UserProfileData->isAccPrivateGroup());
 
         $this->view->assign('otherAccounts', AccountUtil::getAccountsForUser($this->getId()));
         $this->view->assign('linkedAccounts', AccountUtil::getLinkedAccounts($this->getId()));
@@ -216,11 +312,8 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
         $this->view->assign('readonly', $this->view->isView ? 'readonly' : '');
 
-        $AccountAcl = new AccountAcl();
-        $AccountAcl->setModified($this->isGotData() ? $this->view->isModified : false);
-        $AccountAcl->getAcl($this->getAccount(), $this->getAction());
-        $this->view->assign('AccountAcl', $AccountAcl);
-        $this->view->assign('showViewPass', $this->UserProfileData->isAccViewPass());
+        $this->view->assign('showViewCustomPass', $this->AccountAcl->isShowViewPass());
+        $this->view->assign('AccountAcl', $this->AccountAcl);
     }
 
     /**
@@ -267,7 +360,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleGreen',
-                'name' => _('Copiar Cuenta'),
+                'name' => __('Copiar Cuenta'),
                 'icon' => $this->icons->getIconCopy()->getIcon()
             ]
         );
@@ -278,26 +371,25 @@ class AccountController extends ControllerBase implements ActionsInterface
     /**
      * Establecer las variables que contienen la información de la cuenta.
      *
-     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function setAccountData()
     {
-        try {
-            $Account = new Account(new AccountExtData($this->getId()));
-            $this->Account = $Account;
-            $this->AccountData = $Account->getData();
+        $Account = new Account(new AccountExtData($this->getId()));
+        $this->Account = $Account;
+        $this->AccountData = $Account->getData();
 
-            $this->view->assign('accountId', $this->getId());
-            $this->view->assign('accountData', $this->AccountData);
-            $this->view->assign('gotData', $this->isGotData());
-        } catch (SPException $e) {
-            return false;
-        }
+        $this->view->assign('accountId', $this->getId());
+        $this->view->assign('accountData', $this->AccountData);
+        $this->view->assign('gotData', $this->isGotData());
+
         return true;
     }
 
     /**
      * Obtener los datos para mostrar el interface para editar cuenta
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getEditAccount()
     {
@@ -314,7 +406,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleOrange',
-                'name' => _('Editar Cuenta'),
+                'name' => __('Editar Cuenta'),
                 'icon' => $this->icons->getIconEdit()->getIcon()
             ]
         );
@@ -323,117 +415,9 @@ class AccountController extends ControllerBase implements ActionsInterface
     }
 
     /**
-     * Obtener los datos para mostrar el interface de eliminar cuenta
-     */
-    public function getDeleteAccount()
-    {
-        $this->setAction(self::ACTION_ACC_DELETE);
-
-        // Obtener los datos de la cuenta antes y comprobar el acceso
-        $isOk = ($this->setAccountData() && $this->checkAccess());
-
-        if (!$isOk) {
-            return;
-        }
-
-        $this->view->addTemplate('account');
-        $this->view->assign('title',
-            [
-                'class' => 'titleRed',
-                'name' => _('Eliminar Cuenta'),
-                'icon' => $this->icons->getIconDelete()->getIcon()
-            ]
-        );
-
-        $this->setCommonData();
-    }
-
-    /**
-     * Obtener los datos para mostrar el interface para ver cuenta
-     */
-    public function getViewAccount()
-    {
-        $this->setAction(self::ACTION_ACC_VIEW);
-
-        // Obtener los datos de la cuenta antes y comprobar el acceso
-        $isOk = ($this->setAccountData() && $this->checkAccess());
-
-        if (!$isOk) {
-            return;
-        }
-
-        $this->view->addTemplate('account');
-        $this->view->assign('title',
-            [
-                'class' => 'titleNormal',
-                'name' => _('Detalles de Cuenta'),
-                'icon' => $this->icons->getIconView()->getIcon()
-            ]
-        );
-
-        $this->view->assign('isView', true);
-
-        $this->Account->incrementViewCounter();
-
-        $this->setCommonData();
-    }
-
-    /**
-     * Obtener los datos para mostrar el interface para ver cuenta en fecha concreta
-     */
-    public function getViewHistoryAccount()
-    {
-        $this->setAction(self::ACTION_ACC_VIEW_HISTORY);
-
-        // Obtener los datos de la cuenta antes y comprobar el acceso
-        $isOk = ($this->setAccountDataHistory() && $this->checkAccess());
-
-        if (!$isOk) {
-            return;
-        }
-
-        $this->view->addTemplate('account');
-        $this->view->assign('title',
-            [
-                'class' => 'titleNormal',
-                'name' => _('Detalles de Cuenta'),
-                'icon' => 'access_time'
-            ]
-        );
-
-        $this->view->assign('isView', true);
-        $this->Account->setAccountIsHistory(1);
-
-        $this->setCommonData();
-    }
-
-    /**
-     * Establecer las variables que contienen la información de la cuenta en una fecha concreta.
-     *
-     * @return bool
-     */
-    private function setAccountDataHistory()
-    {
-        try {
-            $Account = new AccountHistory(new AccountExtData());
-            $Account->setId($this->getId());
-            $this->Account = $Account;
-            $this->AccountData = $Account->getData();
-
-            $this->view->assign('accountId', $this->AccountData->getAccountId());
-            $this->view->assign('accountData', $this->AccountData);
-            $this->view->assign('gotData', $this->isGotData());
-
-            $this->view->assign('accountHistoryId', $this->getId());
-        } catch (SPException $e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Obtener los datos para mostrar el interface para modificar la clave de cuenta
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getEditPassAccount()
     {
@@ -450,7 +434,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->view->assign('title',
             [
                 'class' => 'titleOrange',
-                'name' => _('Modificar Clave de Cuenta'),
+                'name' => __('Modificar Clave de Cuenta'),
                 'icon' => $this->icons->getIconEditPass()->getIcon()
             ]
         );
@@ -459,7 +443,121 @@ class AccountController extends ControllerBase implements ActionsInterface
     }
 
     /**
+     * Obtener los datos para mostrar el interface para ver cuenta
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getViewAccount()
+    {
+        $this->setAction(self::ACTION_ACC_VIEW);
+
+        // Obtener los datos de la cuenta antes y comprobar el acceso
+        $isOk = ($this->setAccountData() && $this->checkAccess());
+
+        if (!$isOk) {
+            return;
+        }
+
+        $this->view->addTemplate('account');
+        $this->view->assign('title',
+            [
+                'class' => 'titleNormal',
+                'name' => __('Detalles de Cuenta'),
+                'icon' => $this->icons->getIconView()->getIcon()
+            ]
+        );
+
+        $this->view->assign('isView', true);
+
+        $this->Account->incrementViewCounter();
+
+        $this->setCommonData();
+    }
+
+    /**
+     * Obtener los datos para mostrar el interface para ver cuenta en fecha concreta
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getViewHistoryAccount()
+    {
+        $this->setAction(self::ACTION_ACC_VIEW_HISTORY);
+
+        // Obtener los datos de la cuenta antes y comprobar el acceso
+        $isOk = ($this->setAccountDataHistory() && $this->checkAccess());
+
+        if (!$isOk) {
+            return;
+        }
+
+        $this->view->addTemplate('account');
+        $this->view->assign('title',
+            [
+                'class' => 'titleNormal',
+                'name' => __('Detalles de Cuenta'),
+                'icon' => 'access_time'
+            ]
+        );
+
+        $this->view->assign('isView', true);
+        $this->Account->setAccountIsHistory(1);
+
+        $this->setCommonData();
+    }
+
+    /**
+     * Establecer las variables que contienen la información de la cuenta en una fecha concreta.
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    private function setAccountDataHistory()
+    {
+        $Account = new AccountHistory(new AccountExtData());
+        $Account->setId($this->getId());
+        $this->Account = $Account;
+        $this->AccountData = $Account->getData();
+
+        $this->view->assign('accountId', $this->AccountData->getAccountId());
+        $this->view->assign('accountData', $this->AccountData);
+        $this->view->assign('gotData', $this->isGotData());
+
+        $this->view->assign('accountHistoryId', $this->getId());
+
+        return true;
+    }
+
+    /**
+     * Obtener los datos para mostrar el interface de eliminar cuenta
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getDeleteAccount()
+    {
+        $this->setAction(self::ACTION_ACC_DELETE);
+
+        // Obtener los datos de la cuenta antes y comprobar el acceso
+        $isOk = ($this->setAccountData() && $this->checkAccess());
+
+        if (!$isOk) {
+            return;
+        }
+
+        $this->view->addTemplate('account');
+        $this->view->assign('title',
+            [
+                'class' => 'titleRed',
+                'name' => __('Eliminar Cuenta'),
+                'icon' => $this->icons->getIconDelete()->getIcon()
+            ]
+        );
+
+        $this->setCommonData();
+    }
+
+    /**
      * Obtener los datos para mostrar el interface de solicitud de cambios en una cuenta
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getRequestAccountAccess()
     {
@@ -467,98 +565,5 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->setAccountData();
 
         $this->view->addTemplate('request');
-    }
-
-    /**
-     * Obtener la vista de detalles de cuenta para enlaces públicos
-     *
-     * @param PublicLinkData $PublicLinkData
-     * @return bool
-     */
-    public function getAccountFromLink(PublicLinkData $PublicLinkData)
-    {
-        $this->setAction(self::ACTION_ACC_VIEW);
-
-        // Obtener los datos de la cuenta antes y comprobar el acceso
-        if (!$this->setAccountData()) {
-            return false;
-        }
-
-        $this->view->addTemplate('account-link');
-        $this->view->assign('title',
-            [
-                'class' => 'titleNormal',
-                'name' => _('Detalles de Cuenta'),
-                'icon' => $this->icons->getIconView()->getIcon()
-            ]
-        );
-        $this->Account->incrementViewCounter();
-        $this->Account->incrementDecryptCounter();
-        $AccountPassData = $this->Account->getAccountPassData();
-
-        // Desencriptar la clave de la cuenta
-        $pass = Crypt::generateAesKey($PublicLinkData->getLinkHash());
-        $masterPass = Crypt::getDecrypt($PublicLinkData->getPass(), $PublicLinkData->getPassIV(), $pass);
-        $accountPass = Crypt::getDecrypt($AccountPassData->pass, $AccountPassData->iv, $masterPass);
-
-        $this->view->assign('useImage', Config::getConfig()->isPublinksImageEnabled());
-
-        if ($this->view->useImage) {
-            $accountPass = ImageUtil::convertText($accountPass);
-        }
-
-        $this->view->assign('accountPass', $accountPass);
-    }
-
-    /**
-     * @param Account|AccountHistory $account
-     */
-    private function setAccount($account)
-    {
-        $this->Account = $account;
-    }
-
-    /**
-     * Realizar las accione del controlador
-     *
-     * @param mixed $type Tipo de acción
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function doAction($type = null)
-    {
-        switch ($type) {
-            case ActionsInterface::ACTION_ACC_NEW:
-                $this->getNewAccount();
-                $this->EventDispatcher->notifyEvent('show.account.new', $this);
-                break;
-            case ActionsInterface::ACTION_ACC_COPY:
-                $this->getCopyAccount();
-                $this->EventDispatcher->notifyEvent('show.account.copy', $this);
-                break;
-            case ActionsInterface::ACTION_ACC_EDIT:
-                $this->getEditAccount();
-                $this->EventDispatcher->notifyEvent('show.account.edit', $this);
-                break;
-            case ActionsInterface::ACTION_ACC_EDIT_PASS:
-                $this->getEditPassAccount();
-                $this->EventDispatcher->notifyEvent('show.account.editpass', $this);
-                break;
-            case ActionsInterface::ACTION_ACC_VIEW:
-                $this->getViewAccount();
-                $this->EventDispatcher->notifyEvent('show.account.view', $this);
-                break;
-            case ActionsInterface::ACTION_ACC_VIEW_HISTORY:
-                $this->getViewHistoryAccount();
-                $this->EventDispatcher->notifyEvent('show.account.viewhistory', $this);
-                break;
-            case ActionsInterface::ACTION_ACC_DELETE:
-                $this->getDeleteAccount();
-                $this->EventDispatcher->notifyEvent('show.account.delete', $this);
-                break;
-            case ActionsInterface::ACTION_ACC_REQUEST:
-                $this->getRequestAccountAccess();
-                $this->EventDispatcher->notifyEvent('show.account.request', $this);
-                break;
-        }
     }
 }

@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage;
@@ -33,6 +32,7 @@ use ReflectionObject;
 
 /**
  * Class XmlHandler para manejo básico de documentos XML
+ *
  * @package SMD\Storage
  */
 class XmlHandler implements FileStorageInterface
@@ -56,19 +56,12 @@ class XmlHandler implements FileStorageInterface
 
     /**
      * XmlHandler constructor.
+     *
      * @param $file
      */
     public function __construct($file)
     {
         $this->file = $file;
-    }
-
-    /**
-     * Crear un nuevo documento XML
-     */
-    private function setDOM()
-    {
-        $this->Dom = new DOMDocument('1.0', 'utf-8');
     }
 
     /**
@@ -81,7 +74,7 @@ class XmlHandler implements FileStorageInterface
     public function load($tag = 'root')
     {
         if (!$this->checkSourceFile()) {
-            throw new \Exception(sprintf(_('No es posible leer/escribir el archivo: %s'), $this->file));
+            throw new \Exception(sprintf(__('No es posible leer/escribir el archivo: %s', false), $this->file));
         }
 
         $this->setDOM();
@@ -105,6 +98,14 @@ class XmlHandler implements FileStorageInterface
     }
 
     /**
+     * Crear un nuevo documento XML
+     */
+    private function setDOM()
+    {
+        $this->Dom = new DOMDocument('1.0', 'utf-8');
+    }
+
+    /**
      * Leer de forma recursiva los nodos hijos y devolver un array multidimensional
      *
      * @param DOMNodeList $NodeList
@@ -112,7 +113,7 @@ class XmlHandler implements FileStorageInterface
      */
     protected function readChildNodes(DOMNodeList $NodeList)
     {
-        $nodes = array();
+        $nodes = [];
 
         foreach ($NodeList as $node) {
             /** @var $node DOMNode */
@@ -157,7 +158,7 @@ class XmlHandler implements FileStorageInterface
     public function save($tag = 'root')
     {
         if (null === $this->items) {
-            throw new \Exception(_('No hay elementos para guardar'));
+            throw new \Exception(__('No hay elementos para guardar', false));
         }
 
         $this->setDOM();
@@ -190,13 +191,11 @@ class XmlHandler implements FileStorageInterface
                 $newNode = $this->Dom->createElement($key);
             }
 
-            if (is_array($value) || is_object($value)) {
-                if (is_object($value)) {
-                    $newNode->setAttribute('class', get_class($value));
-                    $newNode->appendChild($this->Dom->createTextNode(base64_encode(serialize($value))));
-                } else {
-                    $this->writeChildNodes($value, $newNode, $key);
-                }
+            if (is_array($value)) {
+                $this->writeChildNodes($value, $newNode, $key);
+            } else if (is_object($value)) {
+                $newNode->setAttribute('class', get_class($value));
+                $newNode->appendChild($this->Dom->createTextNode(base64_encode(serialize($value))));
             } else {
                 $newNode->appendChild($this->Dom->createTextNode(trim($value)));
             }
@@ -218,12 +217,13 @@ class XmlHandler implements FileStorageInterface
             ksort($items);
 
             return $items;
-        } elseif (is_object($items)) {
+        }
 
+        if (is_object($items)) {
             return $serialize ? serialize($items) : $this->analyzeObject($items);
         }
 
-        return array();
+        return [];
 
     }
 
@@ -235,14 +235,14 @@ class XmlHandler implements FileStorageInterface
      */
     protected function analyzeObject($object)
     {
-        $items = array();
+        $items = [];
         $Reflection = new ReflectionObject($object);
 
         foreach ($Reflection->getProperties() as $property) {
             $property->setAccessible(true);
             $value = $property->getValue($object);
 
-            if (is_numeric($value) || is_bool($value)){
+            if (is_numeric($value) || is_bool($value)) {
                 $items[$property->getName()] = (int)$value;
             } else {
                 $items[$property->getName()] = $value;

@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,11 +23,7 @@
  */
 
 use SP\Controller\ItemsController;
-use SP\Core\Init;
-use SP\Core\SessionUtil;
 use SP\Http\Request;
-use SP\Http\Response;
-use SP\Util\Util;
 
 define('APP_ROOT', '..');
 
@@ -35,22 +31,5 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('GET');
 
-if (!Init::isLoggedIn()) {
-    Util::logout();
-}
-
-$itemType = Request::analyze('itemType', false);
-$sk = Request::analyze('sk', false);
-
-if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJson(_('CONSULTA INVÁLIDA'));
-}
-
 $Controller = new ItemsController();
-
-$data = [
-    'sk' => SessionUtil::getSessionKey(),
-    'items' => $Controller->getItems($itemType)
-];
-
-Response::printJson($data, 0);
+$Controller->doAction();

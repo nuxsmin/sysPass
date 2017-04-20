@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,18 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Storage;
 
-use \PDO;
+use PDO;
 use SP\Config\Config;
-use SP\Core\Init;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Init;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class MySQLHandler
@@ -47,6 +46,10 @@ class MySQLHandler implements DBStorageInterface
      * @var string
      */
     private $dbHost = '';
+    /**
+     * @var string
+     */
+    private $dbSocket;
     /**
      * @var int
      */
@@ -104,6 +107,7 @@ class MySQLHandler implements DBStorageInterface
         $Config = Config::getConfig();
 
         $this->dbHost = $Config->getDbHost();
+        $this->dbSocket = $Config->getDbSocket();
         $this->dbUser = $Config->getDbUser();
         $this->dbPass = $Config->getDbPass();
         $this->dbName = $Config->getDbName();
@@ -116,6 +120,7 @@ class MySQLHandler implements DBStorageInterface
      *
      * @throws \SP\Core\Exceptions\SPException
      * @return PDO
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
 
     public function getConnection()
@@ -125,18 +130,25 @@ class MySQLHandler implements DBStorageInterface
 
             if (empty($this->dbHost) || empty($this->dbUser) || empty($this->dbPass) || empty($this->dbName)) {
                 if ($isInstalled) {
-                    Init::initError(_('No es posible conectar con la BD'), _('Compruebe los datos de conexión'));
+                    Init::initError(__('No es posible conectar con la BD'), __('Compruebe los datos de conexión'));
                 } else {
                     throw new SPException(SPException::SP_CRITICAL,
-                        _('No es posible conectar con la BD'),
-                        _('Compruebe los datos de conexión'));
+                        __('No es posible conectar con la BD', false),
+                        __('Compruebe los datos de conexión', false));
                 }
             }
 
             try {
-                $dsn = 'mysql:host=' . $this->dbHost . ';port=' . $this->dbPort . ';dbname=' . $this->dbName . ';charset=utf8';
-//                $this->db = new PDO($dsn, $dbuser, $dbpass, array(PDO::ATTR_PERSISTENT => true));
-                $this->db = new PDO($dsn, $this->dbUser, $this->dbPass);
+                $opts = [PDO::ATTR_EMULATE_PREPARES => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+
+                if (empty($this->dbSocket)) {
+                    $dsn = 'mysql:host=' . $this->dbHost . ';port=' . $this->dbPort . ';dbname=' . $this->dbName . ';charset=utf8';
+                } else {
+                    $dsn = 'mysql:unix_socket=' . $this->dbSocket . ';dbname=' . $this->dbName . ';charset=utf8';
+                }
+
+                $this->db = new PDO($dsn, $this->dbUser, $this->dbPass, $opts);
+//                $this->db = new PDO($dsn, $this->dbUser, $this->dbPass);
                 $this->dbStatus = 0;
             } catch (\Exception $e) {
                 if ($isInstalled) {
@@ -145,16 +157,13 @@ class MySQLHandler implements DBStorageInterface
                         Config::saveConfig();
                     }
                     Init::initError(
-                        _('No es posible conectar con la BD'),
+                        __('No es posible conectar con la BD'),
                         'Error ' . $e->getCode() . ': ' . $e->getMessage());
                 } else {
                     throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
                 }
             }
         }
-
-        $this->db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         return $this->db;
     }

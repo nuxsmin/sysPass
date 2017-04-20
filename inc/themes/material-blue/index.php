@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017 Rubén Domínguez nuxsmin@syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,21 +26,21 @@
 $themeInfo = [
     'name' => 'Material Blue',
     'creator' => 'nuxsmin',
-    'version' => '1.0',
-    'targetversion' => '1.2.0',
+    'version' => '2.0',
+    'targetversion' => '2.0.0',
     'js' => [
         'bootstrap-material-datetimepicker.min.js',
         'material.min.js',
-        'mdl-jquery-modal-dialog.js',
+        'mdl-jquery-modal-dialog.min.js',
         'app-theme.min.js'
     ],
     'css' => [
         'fonts.min.css',
         'material.min.css',
         'material-custom.min.css',
-        'bootstrap-material-datetimepicker.min.css',
+        'mdl-datetimepicker.min.css',
         'mdl-jquery-modal-dialog.min.css',
-        'selectize.bootstrap3.min.css',
+        'selectize.custom.min.css',
         'toastr.min.css',
         'styles.min.css'
     ]

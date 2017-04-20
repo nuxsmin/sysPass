@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,18 +19,18 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Users;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
@@ -39,9 +39,12 @@ use SP\Util\Util;
  * Class UsersPreferences para la gestion de las preferencias de usuarios
  *
  * @package SP
+ * @property UserPreferencesData $itemData
  */
 class UserPreferences extends UserPreferencesBase implements ItemInterface
 {
+    use ItemTrait;
+
     /**
      * @return mixed
      */
@@ -74,10 +77,9 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam(serialize($this->itemData));
         $Data->addParam($this->itemData->getUserId());
+        $Data->setOnErrorMessage(__('Error al actualizar preferencias', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al actualizar preferencias'));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -99,19 +101,14 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
         /** @var UserData $queryRes */
         $queryRes = DB::getResults($Data);
 
-        if ($queryRes === false || null === $queryRes->getUserPreferences()) {
+        if ($queryRes === false
+            || $queryRes->getUserPreferences() === null
+            || $queryRes->getUserPreferences() === ''
+        ) {
             return $this->getItemData();
         }
 
-        $UserPreferencesData = unserialize($queryRes->getUserPreferences());
-
-        if ($UserPreferencesData === false) {
-            return new UserPreferencesData();
-        } elseif (get_class($UserPreferencesData) === '__PHP_Incomplete_Class') {
-            $UserPreferencesData = Util::castToClass($this->getDataModel(), $UserPreferencesData);
-        }
-
-        return $UserPreferencesData;
+        return Util::castToClass($this->getDataModel(), $queryRes->getUserPreferences(), 'SP\UserPreferences');
     }
 
     /**
@@ -145,5 +142,16 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
     public function checkDuplicatedOnAdd()
     {
         // TODO: Implement checkDuplicatedOnAdd() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        // TODO: Implement getByIdBatch() method.
     }
 }

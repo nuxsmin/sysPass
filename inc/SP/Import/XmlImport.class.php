@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,16 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Import;
 
-use SP\Core\Exceptions\SPException;
-use SP\Log\Log;
+use SP\Core\Messages\LogMessage;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase XmlImport para usarla como envoltorio para llamar a la clase que corresponda
@@ -36,39 +34,80 @@ defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'
  *
  * @package SP
  */
-class XmlImport extends XmlImportBase
+class XmlImport implements ImportInterface
 {
+    /**
+     * @var FileImport
+     */
+    protected $File;
+    /**
+     * @var ImportParams
+     */
+    protected $ImportParams;
+    /**
+     * @var LogMessage
+     */
+    protected $LogMessage;
+    /**
+     * @var ImportBase
+     */
+    protected $Import;
+
+    /**
+     * XmlImport constructor.
+     *
+     * @param FileImport   $File
+     * @param ImportParams $ImportParams
+     * @param LogMessage   $LogMessage
+     */
+    public function __construct(FileImport $File, ImportParams $ImportParams, LogMessage $LogMessage)
+    {
+        $this->File = $File;
+        $this->ImportParams = $ImportParams;
+        $this->LogMessage = $LogMessage;
+    }
+
     /**
      * Iniciar la importación desde XML.
      *
-     * @throws SPException
-     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function doImport()
     {
-        $import = null;
-        $format = $this->detectXMLFormat();
+        $XmlFileImport = new XmlFileImport($this->File);
+
+        $format = $XmlFileImport->detectXMLFormat();
 
         switch ($format) {
             case 'syspass':
-                $import = new SyspassImport($this->file);
+                $this->Import = new SyspassImport();
                 break;
             case 'keepass':
-                $import = new KeepassImport($this->file);
+                $this->Import = new KeepassImport();
                 break;
             case 'keepassx':
-                $import = new KeepassXImport($this->file);
+                $this->Import = new KeepassXImport();
                 break;
+            default:
+                return;
         }
 
-        if (is_object($import)){
-            Log::writeNewLog(_('Importar Cuentas'), _('Inicio'));
-            Log::writeNewLog(_('Importar Cuentas'), _('Formato detectado') . ': ' . strtoupper($format));
+        $this->Import->setImportParams($this->ImportParams);
+        $this->Import->setXmlDOM($XmlFileImport->getXmlDOM());
+        $this->Import->setLogMessage($this->LogMessage);
 
-            $import->setUserId($this->getUserId());
-            $import->setUserGroupId($this->getUserGroupId());
-            $import->setImportPass($this->getImportPass());
-            $import->doImport();
-        }
+        $this->LogMessage->addDescription(sprintf(__('Formato detectado: %s'), mb_strtoupper($format)));
+
+        $this->Import->doImport();
+    }
+
+    /**
+     * Devolver el contador de objetos importados
+     *
+     * @return int
+     */
+    public function getCounter()
+    {
+        return $this->Import->getCounter();
     }
 }

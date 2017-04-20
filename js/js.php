@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use SP\Html\Minify;
@@ -40,9 +39,9 @@ if (!$file) {
     $Minify->setBase(__DIR__);
 
     if ($group === 0) {
-        $Minify->addFile('jquery-1.11.2.min.js')
+        $Minify->addFile('jquery-3.2.0.min.js')
+            ->addFile('jquery-migrate-3.0.0.min.js')
             ->addFile('jquery.fileDownload.min.js')
-            ->addFile('jquery.tagsinput.min.js')
             ->addFile('clipboard.min.js')
             ->addFile('selectize.min.js')
             ->addFile('selectize-plugins.min.js')
@@ -52,17 +51,17 @@ if (!$file) {
             ->addFile('moment.min.js')
             ->addFile('moment-timezone.min.js')
             ->addFile('toastr.min.js')
-            ->addFile('jquery.magnific-popup.min.js');
+            ->addFile('jquery.magnific-popup.min.js')
+            ->addFile('eventsource.min.js');
     } elseif ($group === 1) {
-        // FIXME: utilizar versiones .min
-        $Minify->addFile('app.js')
-            ->addFile('app-triggers.js')
-            ->addFile('app-actions.js')
-            ->addFile('app-requests.js')
-            ->addFile('app-main.js');
+        $Minify->addFile('app.min.js')
+            ->addFile('app-triggers.min.js')
+            ->addFile('app-actions.min.js')
+            ->addFile('app-requests.min.js')
+            ->addFile('app-main.min.js');
     }
 
-    $Minify->getMinified(true);
+    $Minify->getMinified();
 } elseif ($file && $base) {
     $Minify = new Minify();
     $Minify->setType(Minify::FILETYPE_JS);

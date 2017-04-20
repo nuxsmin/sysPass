@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Tags;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\TagData;
@@ -39,6 +38,7 @@ use SP\Storage\QueryData;
  * Class Tags
  *
  * @package SP\Mgmt\Tags
+ * @property TagData $itemData
  */
 class Tag extends TagBase implements ItemInterface, ItemSelectInterface
 {
@@ -51,7 +51,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, _('Etiqueta duplicada'));
+            throw new SPException(SPException::SP_INFO, __('Etiqueta duplicada', false));
         }
 
         $query = /** @lang SQL */
@@ -61,10 +61,9 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getTagName());
         $Data->addParam($this->itemData->getTagHash());
+        $Data->setOnErrorMessage(__('Error al crear etiqueta', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al crear etiqueta'));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -76,38 +75,43 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function checkDuplicatedOnAdd()
     {
         $query = /** @lang SQL */
-            'SELECT tag_hash FROM tags WHERE tag_hash = ?';
+            'SELECT tag_id FROM tags WHERE tag_hash = ?';
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getTagHash());
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
+        $queryRes = DB::getResults($Data);
+
+        if ($queryRes !== false) {
+            if ($Data->getQueryNumRows() === 0) {
+                return false;
+            } elseif ($Data->getQueryNumRows() === 1) {
+                $this->itemData->setTagId($queryRes->tag_id);
+            }
+        }
+
+        return true;
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId) {
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
         $query = /** @lang SQL */
             'DELETE FROM tags WHERE tag_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar etiqueta', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al eliminar etiqueta'));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Etiqueta no encontrada', false));
         }
 
         return $this;
@@ -120,7 +124,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_INFO, _('Etiqueta duplicada'));
+            throw new SPException(SPException::SP_INFO, __('Etiqueta duplicada', false));
         }
 
         $query = /** @lang SQL */
@@ -131,10 +135,9 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getTagName());
         $Data->addParam($this->itemData->getTagHash());
         $Data->addParam($this->itemData->getTagId());
+        $Data->setOnErrorMessage(__('Error al actualizar etiqueta', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al actualizar etiqueta'));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -152,7 +155,9 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getTagHash());
         $Data->addParam($this->itemData->getTagId());
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() > 0);
+        DB::getQuery($Data);
+
+        return $Data->getQueryNumRows() > 0;
     }
 
     /**
@@ -173,7 +178,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener etiqueta'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener etiqueta', false));
         }
 
         return $queryRes;
@@ -185,7 +190,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT tag_id, tag_name FROM tags ORDER BY tag_name';
+            'SELECT tag_id, tag_name, tag_hash FROM tags ORDER BY tag_name';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -201,5 +206,28 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function checkInUse($id)
     {
         // TODO: Implement checkInUse() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return TagData[]
+     */
+    public function getByIdBatch(array $ids)
+    {
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT tag_id, tag_name FROM tags WHERE tag_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DB::getResultsArray($Data);
     }
 }

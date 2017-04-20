@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,20 +19,21 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
 
+use SP\Account\AccountAcl;
 use SP\Account\AccountSearch;
 use SP\Config\ConfigData;
+use SP\Core\Crypt\Vault;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Mgmt\Users\UserPreferences;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase para manejar la variable de sesion
@@ -50,7 +51,7 @@ class Session
      *
      * @param UserData $UserData
      */
-    public static function setUserData($UserData = null)
+    public static function setUserData(UserData $UserData = null)
     {
         self::setSessionKey('userData', $UserData);
     }
@@ -58,12 +59,24 @@ class Session
     /**
      * Establecer una variable de sesión
      *
-     * @param mixed $key   El nombre de la variable
-     * @param mixed $value El valor de la variable
+     * @param string $key   El nombre de la variable
+     * @param mixed  $value El valor de la variable
      */
     public static function setSessionKey($key, $value)
     {
         $_SESSION[$key] = $value;
+    }
+
+    /**
+     * Establecer una variable de sesión para un plugin
+     *
+     * @param string $plugin Nombre del plugin
+     * @param string $key    El nombre de la variable
+     * @param mixed  $value  El valor de la variable
+     */
+    public static function setPluginKey($plugin, $key, $value)
+    {
+        $_SESSION[$plugin][$key] = $value;
     }
 
     /**
@@ -79,17 +92,31 @@ class Session
     /**
      * Devolver una variable de sesión
      *
-     * @param mixed $key
-     * @param mixed $default
+     * @param string $key
+     * @param mixed  $default
      * @return mixed
      */
     public static function getSessionKey($key, $default = '')
     {
         if (isset($_SESSION[$key])) {
-            if (is_numeric($default)) {
-                return (int)$_SESSION[$key];
-            }
-            return $_SESSION[$key];
+            return is_numeric($default) ? (int)$_SESSION[$key] : $_SESSION[$key];
+        }
+
+        return $default;
+    }
+
+    /**
+     * Devolver una variable de sesión
+     *
+     * @param string $plugin
+     * @param string $key
+     * @param mixed  $default
+     * @return mixed
+     */
+    public static function getPluginKey($plugin, $key, $default = '')
+    {
+        if (isset($_SESSION[$plugin][$key])) {
+            return is_numeric($default) ? (int)$_SESSION[$plugin][$key] : $_SESSION[$plugin][$key];
         }
 
         return $default;
@@ -212,66 +239,6 @@ class Session
     }
 
     /**
-     * Devuelve la clave maestra encriptada
-     *
-     * @return string
-     */
-    public static function getMPass()
-    {
-        return self::getSessionKey('mPass');
-    }
-
-    /**
-     * Establecer la clave maestra encriptada
-     *
-     * @param $mpass string La clave maestra
-     */
-    public static function setMPass($mpass)
-    {
-        self::setSessionKey('mPass', $mpass);
-    }
-
-    /**
-     * Devuelve la clave usada para encriptar la clave maestra
-     *
-     * @return string
-     */
-    public static function getMPassPwd()
-    {
-        return self::getSessionKey('mPassPwd');
-    }
-
-    /**
-     * Establece la clave usada para encriptar la clave maestra
-     *
-     * @param $mPassPwd string La clave usada
-     */
-    public static function setMPassPwd($mPassPwd)
-    {
-        self::setSessionKey('mPassPwd', $mPassPwd);
-    }
-
-    /**
-     * Devuelve el vector de inicialización de la clave maestra
-     *
-     * @return string
-     */
-    public static function getMPassIV()
-    {
-        return self::getSessionKey('mPassIV');
-    }
-
-    /**
-     * Establece el vector de inicialización de la clave maestra
-     *
-     * @param $mPassIV string El vector de inicialización
-     */
-    public static function setMPassIV($mPassIV)
-    {
-        self::setSessionKey('mPassIV', $mPassIV);
-    }
-
-    /**
      * Devuelve la hora en la que el SID de sesión fue creado
      *
      * @return int
@@ -369,26 +336,6 @@ class Session
     public static function setTheme($theme)
     {
         self::setSessionKey('theme', $theme);
-    }
-
-    /**
-     * Devuelve si el usuario ha pasado la autentificación en 2 pasos
-     *
-     * @return bool
-     */
-    public static function get2FApassed()
-    {
-        return self::getSessionKey('2fapass', false);
-    }
-
-    /**
-     * Establece esi el usuario ha pasado la autentificación en 2 pasos
-     *
-     * @param $passed bool
-     */
-    public static function set2FApassed($passed)
-    {
-        self::setSessionKey('2fapass', $passed);
     }
 
     /**
@@ -634,4 +581,112 @@ class Session
     {
         unset($_SESSION[$key]);
     }
+
+    /**
+     * Establecer si el usuario está completamente autorizado
+     *
+     * @param $bool
+     */
+    public static function setAuthCompleted($bool)
+    {
+        self::setSessionKey('authCompleted', (bool)$bool);
+    }
+
+    /**
+     * Devolver si el usuario está completamente logeado
+     */
+    public static function getAuthCompleted()
+    {
+        return self::getSessionKey('authCompleted', false);
+    }
+
+    /**
+     * Establecer la ACL de una cuenta
+     *
+     * @param AccountAcl $AccountAcl
+     */
+    public static function setAccountAcl(AccountAcl $AccountAcl)
+    {
+        $_SESSION['accountAcl'][$AccountAcl->getAccountId()] = $AccountAcl;
+    }
+
+    /**
+     * Devolver la ACL de una cuenta
+     *
+     * @param $accountId
+     *
+     * @return null|AccountAcl
+     */
+    public static function getAccountAcl($accountId)
+    {
+        if (isset($_SESSION['accountAcl'][$accountId])) {
+            return $_SESSION['accountAcl'][$accountId];
+        }
+
+        return null;
+    }
+
+    /**
+     * Establece si se ha actulizado la aplicación
+     *
+     * @param bool $bool
+     */
+    public static function setAppUpdated($bool = true)
+    {
+        self::setSessionKey('appupdated', $bool);
+    }
+
+    /**
+     * Devuelve si se ha actulizado la aplicación
+     *
+     * @return bool
+     */
+    public static function getAppUpdated()
+    {
+        return self::getSessionKey('appupdated', false);
+    }
+
+    /**
+     * Devuelve la clave maestra encriptada
+     *
+     * @return Vault
+     */
+    public static function getVault()
+    {
+        return self::getSessionKey('vault');
+    }
+
+    /**
+     * Establecer la clave maestra encriptada
+     *
+     * @param Vault $vault
+     */
+    public static function setVault(Vault $vault)
+    {
+        self::setSessionKey('vault', $vault);
+    }
+
+    /**
+     * Devuelve si es necesario comprobar la versión de la aplicación
+     * para actualizar
+     *
+     * @return bool
+     */
+    public static function getUpgradeChecked()
+    {
+        return self::getSessionKey('upgradechecked', true);
+    }
+
+    /**
+     * Establecer si es necesario comprobar la versión de la aplicación
+     * para actualizar
+     *
+     * @param bool $upgradechecked
+     */
+    public static function setUpgradeChecked($upgradechecked = false)
+    {
+        self::setSessionKey('upgradechecked', $upgradechecked);
+    }
+
+
 }

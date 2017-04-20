@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -53,29 +53,12 @@ class CategoryForm extends FormBase implements FormInterface
         switch ($action) {
             case ActionsInterface::ACTION_MGM_CATEGORIES_NEW:
             case ActionsInterface::ACTION_MGM_CATEGORIES_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
         return true;
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkCommon()
-    {
-        if (!$this->CategoryData->getCategoryName()) {
-            throw new ValidationException(_('Es necesario un nombre de categoría'));
-        }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getItemData()
-    {
-        return $this->CategoryData;
     }
 
     /**
@@ -89,5 +72,23 @@ class CategoryForm extends FormBase implements FormInterface
         $this->CategoryData->setCategoryId($this->itemId);
         $this->CategoryData->setCategoryName(Request::analyze('name'));
         $this->CategoryData->setCategoryDescription(Request::analyze('description'));
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->CategoryData->getCategoryName()) {
+            throw new ValidationException(__('Es necesario un nombre de categoría', false));
+        }
+    }
+
+    /**
+     * @return CategoryData
+     */
+    public function getItemData()
+    {
+        return $this->CategoryData;
     }
 }

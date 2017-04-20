@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -53,29 +53,12 @@ class ProfileForm extends FormBase implements FormInterface
         switch ($action) {
             case ActionsInterface::ACTION_USR_PROFILES_NEW:
             case ActionsInterface::ACTION_USR_PROFILES_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
         return true;
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkCommon()
-    {
-        if (!$this->ProfileData->getUserprofileName()) {
-            throw new ValidationException(_('Es necesario un nombre de perfil'));
-        }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getItemData()
-    {
-        return $this->ProfileData;
     }
 
     /**
@@ -98,6 +81,7 @@ class ProfileForm extends FormBase implements FormInterface
         $this->ProfileData->setAccFiles(Request::analyze('profile_accfiles', 0, false, 1));
         $this->ProfileData->setAccPublicLinks(Request::analyze('profile_accpublinks', 0, false, 1));
         $this->ProfileData->setAccPrivate(Request::analyze('profile_accprivate', 0, false, 1));
+        $this->ProfileData->setAccPrivateGroup(Request::analyze('profile_accprivategroup', 0, false, 1));
         $this->ProfileData->setAccPermission(Request::analyze('profile_accpermissions', 0, false, 1));
         $this->ProfileData->setAccGlobalSearch(Request::analyze('profile_accglobalsearch', 0, false, 1));
         $this->ProfileData->setConfigGeneral(Request::analyze('profile_config', 0, false, 1));
@@ -116,5 +100,23 @@ class ProfileForm extends FormBase implements FormInterface
         $this->ProfileData->setMgmFiles(Request::analyze('profile_files', 0, false, 1));
         $this->ProfileData->setMgmTags(Request::analyze('profile_tags', 0, false, 1));
         $this->ProfileData->setEvl(Request::analyze('profile_eventlog', 0, false, 1));
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->ProfileData->getUserprofileName()) {
+            throw new ValidationException(__('Es necesario un nombre de perfil', false));
+        }
+    }
+
+    /**
+     * @return ProfileData
+     */
+    public function getItemData()
+    {
+        return $this->ProfileData;
     }
 }

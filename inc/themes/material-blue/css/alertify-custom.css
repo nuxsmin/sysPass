@@ -1,0 +1,40 @@
+.alertify-log-error {
+    color: #ecf0f1;
+    background: #f44336 !important;
+    background: rgba(244, 67, 54, .9) !important;
+    border: 1px solid #f44336
+}
+
+.alertify-log-success {
+    color: #ecf0f1;
+    background: #009688;
+    background: rgba(0, 150, 136, .9) !important;
+    border: 1px solid #009688
+}
+
+.alertify-button-cancel, .alertify-button-cancel:active, .alertify-button-cancel:focus, .alertify-button-cancel:hover {
+    color: #fff;
+    background: #f44336 !important;
+    background: rgba(244, 67, 54, .7) !important;
+}
+
+.alertify-button-cancel:active, .alertify-button-cancel:focus, .alertify-button-cancel:hover {
+    color: #fff;
+    background: #f44336 !important;
+    background: rgba(244, 67, 54, .9) !important;
+    border-color: #f44336;
+}
+
+.alertify-button-ok, .alertify-button-ok:active, .alertify-button-ok:focus, .alertify-button-ok:hover {
+    color: #fff;
+    background: #009688;
+    background: rgba(0, 150, 136, .9) !important;
+    border-color: #009688;
+}
+
+.alertify-button-ok:active, .alertify-button-ok:focus, .alertify-button-ok:hover {
+    color: #fff;
+    background: #009688;
+    background: rgba(0, 150, 136, .7) !important;
+    border-color: #009688;
+}

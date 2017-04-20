@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\DataModel;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use JsonSerializable;
 use SP\Util\Json;
@@ -78,9 +77,9 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public $account_pass = '';
     /**
-     * @var string El vector de inicialización de la cuenta.
+     * @var string La clave de encriptación de la cuenta
      */
-    public $account_IV = '';
+    public $account_key = '';
     /**
      * @var string Las nosta de la cuenta.
      */
@@ -113,6 +112,10 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      * @var int
      */
     public $account_isPrivate = 0;
+    /**
+     * @var int
+     */
+    public $account_isPrivateGroup = 0;
     /**
      * @var int
      */
@@ -204,17 +207,17 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     /**
      * @return string
      */
-    public function getAccountIV()
+    public function getAccountKey()
     {
-        return $this->account_IV;
+        return $this->account_key;
     }
 
     /**
-     * @param string $account_IV
+     * @param string $account_key
      */
-    public function setAccountIV($account_IV)
+    public function setAccountKey($account_key)
     {
-        $this->account_IV = $account_IV;
+        $this->account_key = $account_key;
     }
 
     /**
@@ -520,5 +523,21 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     public function setAccountParentId($account_parentId)
     {
         $this->account_parentId = (int)$account_parentId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountIsPrivateGroup()
+    {
+        return (int)$this->account_isPrivateGroup;
+    }
+
+    /**
+     * @param int $account_isPrivateGroup
+     */
+    public function setAccountIsPrivateGroup($account_isPrivateGroup)
+    {
+        $this->account_isPrivateGroup = (int)$account_isPrivateGroup;
     }
 }

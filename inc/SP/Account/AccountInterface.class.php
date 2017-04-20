@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Account;
@@ -29,7 +28,7 @@ use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountHistoryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Interface AccountInterface con la definición de métodos comunes a las cuentas
@@ -42,20 +41,14 @@ interface AccountInterface
     public function getData();
 
     /**
+     * @param bool $encryptPass Si se encripta la clave de la cuenta
      * @return mixed
      */
-    public function createAccount();
+    public function createAccount($encryptPass = true);
 
     /**
+     * @param $id
      * @return mixed
      */
-    public function deleteAccount();
-
-    /**
-     * @param      $currentMasterPass
-     * @param      $newMasterPass
-     * @param null $newHash
-     * @return mixed
-     */
-    public function updateAccountsMasterPass($currentMasterPass, $newMasterPass, $newHash = null);
+    public function deleteAccount($id);
 }

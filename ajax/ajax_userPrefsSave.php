@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use Plugins\Authenticator\Authenticator;
@@ -49,14 +48,14 @@ $Json = new JsonResponse();
 
 if (!Init::isLoggedIn()) {
     $Json->setStatus(10);
-    $Json->setDescription(_('La sesión no se ha iniciado o ha caducado'));
+    $Json->setDescription(__('La sesión no se ha iniciado o ha caducado'));
     Json::returnJson($Json);
 }
 
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    $Json->setDescription(_('CONSULTA INVÁLIDA'));
+    $Json->setDescription(__('CONSULTA INVÁLIDA'));
     Json::returnJson($Json);
 }
 
@@ -75,6 +74,7 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
     $UserPreferencesData->setSortViews(Request::analyze('sort_views', false, false, true));
     $UserPreferencesData->setTopNavbar(Request::analyze('top_navbar', false, false, true));
     $UserPreferencesData->setOptionalActions(Request::analyze('optional_actions', false, false, true));
+    $UserPreferencesData->setResultsAsCards(Request::analyze('resultsascards', false, false, true));
 
     try {
         UserPreferences::getItem($UserPreferencesData)->update();
@@ -87,47 +87,13 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
         Util::reload();
 
         $Json->setStatus(0);
-        $Json->setDescription(_('Preferencias actualizadas'));
-    } catch (SPException $e) {
-        $Json->setDescription($e->getMessage());
-    }
-
-    Json::returnJson($Json);
-} else if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_SECURITY) {
-    if (Checks::demoIsEnabled() && Session::getUserData()->getUserLogin() === 'demo') {
-        $Json->setDescription(_('Ey, esto es una DEMO!!'));
-        Json::returnJson($Json);
-    }
-
-    // Variables POST del formulario
-    $twoFaEnabled = Request::analyze('security_2faenabled', 0, false, 1);
-    $pin = Request::analyze('security_pin', 0);
-
-    $userLogin = UserUtil::getUserLoginById($itemId);
-    $twoFa = new Authenticator($itemId, $userLogin);
-
-    if (!$twoFa->verifyKey($pin)) {
-        $Json->setDescription(_('Código incorrecto'));
-        Json::returnJson($Json);
-    }
-
-    try {
-        $UserPreferencesData = UserPreferences::getItem()->getById($itemId);
-        $UserPreferencesData->setUserId($itemId);
-        $UserPreferencesData->setUse2Fa(Util::boolval($twoFaEnabled));
-        UserPreferences::getItem($UserPreferencesData)->update();
-
-        // Actualizar las preferencias en la sesión
-        Session::setUserPreferences($UserPreferencesData);
-
-        $Json->setStatus(0);
-        $Json->setDescription(_('Preferencias actualizadas'));
+        $Json->setDescription(__('Preferencias actualizadas'));
     } catch (SPException $e) {
         $Json->setDescription($e->getMessage());
     }
 
     Json::returnJson($Json);
 } else {
-    $Json->setDescription(_('Acción Inválida'));
+    $Json->setDescription(__('Acción Inválida'));
     Json::returnJson($Json);
 }

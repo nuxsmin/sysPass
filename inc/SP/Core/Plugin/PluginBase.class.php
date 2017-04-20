@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,8 +23,6 @@
  */
 
 namespace SP\Core\Plugin;
-
-use SP\Core\DiFactory;
 
 /**
  * Class PluginBase
@@ -46,17 +44,19 @@ abstract class PluginBase implements PluginInterface
      */
     protected $themeDir;
     /**
-     * @var string
+     * @var mixed
      */
     protected $data;
+    /**
+     * @var int
+     */
+    protected $enabled;
 
     /**
      * PluginBase constructor.
      */
     public final function __construct()
     {
-        DiFactory::getEventDispatcher()->attach($this);
-
         $this->init();
     }
 
@@ -93,7 +93,7 @@ abstract class PluginBase implements PluginInterface
     }
 
     /**
-     * @return string
+     * @return mixed
      */
     public function getData()
     {
@@ -101,10 +101,38 @@ abstract class PluginBase implements PluginInterface
     }
 
     /**
-     * @param string $data
+     * @param mixed $data
      */
     public function setData($data)
     {
         $this->data = $data;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEnabled()
+    {
+        return (int)$this->enabled;
+    }
+
+    /**
+     * @param int $enabled
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = (int)$enabled;
+    }
+
+    /**
+     * Establecer las locales del plugin
+     */
+    protected function setLocales()
+    {
+        $locales = $this->getBase() . DIRECTORY_SEPARATOR . 'locales';
+        $name = strtolower($this->getName());
+
+        bindtextdomain($name, $locales);
+        bind_textdomain_codeset($name, 'UTF-8');
     }
 }

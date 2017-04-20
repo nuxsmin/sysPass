@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,36 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Core\Init;
+use SP\Controller\WikiController;
 use SP\Http\Request;
-use SP\Http\Response;
 
 define('APP_ROOT', '..');
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
-Request::checkReferer('POST');
+Request::checkReferer('GET');
 
-if (!Init::isLoggedIn()) {
-    Response::printJson(_('La sesión no se ha iniciado o ha caducado'), 10);
-}
-
-$actionId = Request::analyze('actionId', 0);
-
-$Controller = new \SP\Controller\WikiController();
-
-switch ($actionId) {
-    case \SP\Core\ActionsInterface::ACTION_WIKI_VIEW:
-        $pageName = Request::analyze('pageName');
-        $Controller->getWikiPage($pageName);
-        break;
-    default:
-        exit();
-        break;
-}
-
-$Controller->view();
+$Controller = new WikiController();
+$Controller->doAction();

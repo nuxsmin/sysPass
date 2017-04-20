@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,16 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
 
 use SP\Config\Config;
+use SP\Http\Request;
 use SP\Mgmt\Users\UserPreferences;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class Language para el manejo del lenguaje utilizado por la aplicación
@@ -49,6 +49,18 @@ class Language
      * @var string
      */
     public static $globalLang = '';
+    /**
+     * Estado de la localización. false si no existe
+     *
+     * @var string|false
+     */
+    public static $localeStatus;
+    /**
+     * Si se ha establecido a las de la App
+     *
+     * @var bool
+     */
+    protected static $appSet = false;
 
     /**
      * Establecer el lenguaje a utilizar
@@ -81,9 +93,7 @@ class Language
      */
     private function getUserLang()
     {
-        $userId = Session::getUserData()->getUserId();
-
-        return ($userId > 0) ? UserPreferences::getItem()->getById($userId)->getLang() : '';
+        return (Session::getUserData()->getUserId() > 0) ? Session::getUserPreferences()->getLang() : '';
     }
 
     /**
@@ -115,8 +125,10 @@ class Language
      */
     private function getBrowserLang()
     {
-        if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            return str_replace('-', '_', substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 5));
+        $lang = Request::getRequestHeaders('HTTP_ACCEPT_LANGUAGE');
+
+        if ($lang) {
+            return str_replace('-', '_', substr($lang, 0, 5));
         } else {
             return '';
         }
@@ -138,13 +150,14 @@ class Language
      *
      * @param string $lang El lenguaje a utilizar
      */
-    private static function setLocales($lang)
+    public static function setLocales($lang)
     {
         $lang .= '.utf8';
+        $fallback = 'en_US.utf8';
 
         putenv('LANG=' . $lang);
-        setlocale(LC_MESSAGES, $lang);
-        setlocale(LC_ALL, $lang);
+        self::$localeStatus = setlocale(LC_MESSAGES, [$lang, $fallback]);
+        setlocale(LC_ALL, [$lang, $fallback]);
         bindtextdomain('messages', LOCALES_PATH);
         textdomain('messages');
         bind_textdomain_codeset('messages', 'UTF-8');
@@ -163,23 +176,32 @@ class Language
             'English' => 'en_US',
             'Deutsch' => 'de_DE',
             'Magyar' => 'hu_HU',
-            'Français' => 'fr_FR'
+            'Français' => 'fr_FR',
+            'Polski' => 'po_PO',
+            'русский' => 'ru_RU',
+            'Nederlands' => 'nl_NL'
         ];
     }
 
     /**
-     * Establecer el lenguaje global para las trdducciones
+     * Establecer el lenguaje global para las traducciones
      */
     public static function setAppLocales()
     {
-        self::setLocales(self::$globalLang);
+        if (Config::getConfig()->getSiteLang() !== Session::getLocale()) {
+            self::setLocales(Config::getConfig()->getSiteLang());
+            self::$appSet = true;
+        }
     }
 
     /**
-     * Restablecer el lenguaje global para las trdducciones
+     * Restablecer el lenguaje global para las traducciones
      */
     public static function unsetAppLocales()
     {
-        self::setLocales(Session::getLocale());
+        if (self::$appSet === true) {
+            self::setLocales(Session::getLocale());
+            self::$appSet = false;
+        }
     }
 }

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,46 +19,35 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Profiles;
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\ProfileData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase ProfileBase para la definición de perfiles de acceso de usuarios
  *
  * @package SP
  */
-abstract class ProfileBase extends ItemBase
+abstract class ProfileBase implements ItemBaseInterface
 {
-    /** @var ProfileData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param ProfileData $itemData
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\ProfileData');
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * @return ProfileData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(ProfileData::class);
     }
 }

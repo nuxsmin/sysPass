@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\DataModel;
@@ -74,6 +73,10 @@ class UserPreferencesData
      * @var bool
      */
     public $optionalActions = false;
+    /**
+     * @var bool
+     */
+    public $resultsAsCards = false;
 
     /**
      * @return boolean
@@ -228,14 +231,33 @@ class UserPreferencesData
      * @return void
      * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.sleep
      */
-    function __wakeup()
+    public function __wakeup()
     {
         // Para realizar la conversión de nombre de propiedades que empiezan por _
         foreach (get_object_vars($this) as $name => $value) {
-            if (substr($name, 0, 1) === '_') {
+            if (strpos($name, '_') === 0) {
                 $newName = substr($name, 1);
                 $this->$newName = $value;
+
+                // Borrar la variable anterior
+                unset($this->$name);
             }
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isResultsAsCards()
+    {
+        return $this->resultsAsCards;
+    }
+
+    /**
+     * @param bool $resultsAsCards
+     */
+    public function setResultsAsCards($resultsAsCards)
+    {
+        $this->resultsAsCards = $resultsAsCards;
     }
 }

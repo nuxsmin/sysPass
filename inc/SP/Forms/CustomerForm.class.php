@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -53,29 +53,12 @@ class CustomerForm extends FormBase implements FormInterface
         switch ($action) {
             case ActionsInterface::ACTION_MGM_CUSTOMERS_NEW:
             case ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
         return true;
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkCommon()
-    {
-        if (!$this->CustomerData->getCustomerName()) {
-            throw new ValidationException(_('Es necesario un nombre de cliente'));
-        }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getItemData()
-    {
-        return $this->CustomerData;
     }
 
     /**
@@ -89,5 +72,23 @@ class CustomerForm extends FormBase implements FormInterface
         $this->CustomerData->setCustomerId($this->itemId);
         $this->CustomerData->setCustomerName(Request::analyze('name'));
         $this->CustomerData->setCustomerDescription(Request::analyze('description'));
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->CustomerData->getCustomerName()) {
+            throw new ValidationException(__('Es necesario un nombre de cliente', false));
+        }
+    }
+
+    /**
+     * @return CustomerData
+     */
+    public function getItemData()
+    {
+        return $this->CustomerData;
     }
 }

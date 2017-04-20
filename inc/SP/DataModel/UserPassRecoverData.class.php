@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin 
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\DataModel;
@@ -47,14 +46,14 @@ class UserPassRecoverData extends DataModelBase
     /**
      * @var bool
      */
-    public $userpassr_used = false;
+    public $userpassr_used = 0;
 
     /**
      * @return int
      */
     public function getUserpassrUserId()
     {
-        return $this->userpassr_userId;
+        return (int)$this->userpassr_userId;
     }
 
     /**
@@ -62,7 +61,7 @@ class UserPassRecoverData extends DataModelBase
      */
     public function setUserpassrUserId($userpassr_userId)
     {
-        $this->userpassr_userId = $userpassr_userId;
+        $this->userpassr_userId = (int)$userpassr_userId;
     }
 
     /**
@@ -102,7 +101,7 @@ class UserPassRecoverData extends DataModelBase
      */
     public function isUserpassrUsed()
     {
-        return $this->userpassr_used;
+        return (int)$this->userpassr_used;
     }
 
     /**
@@ -110,7 +109,7 @@ class UserPassRecoverData extends DataModelBase
      */
     public function setUserpassrUsed($userpassr_used)
     {
-        $this->userpassr_used = $userpassr_used;
+        $this->userpassr_used = (int)$userpassr_used;
     }
     
 }

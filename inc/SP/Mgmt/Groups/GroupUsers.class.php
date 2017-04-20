@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Groups;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupUsersData;
@@ -39,6 +38,7 @@ use SP\Storage\QueryData;
  * Class GroupUser
  *
  * @package SP\Mgmt\Groups
+ * @property GroupUsersData $itemData
  */
 class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInterface
 {
@@ -46,32 +46,12 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
 
     /**
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function add()
+    public function update()
     {
-        if (!is_array($this->itemData->getUsers())
-            || count($this->itemData->getUsers()) === 0
-        ) {
-            return $this;
-        }
-
-        $params = array_fill(0, count($this->itemData->getUsers()), '(?,?)');
-
-        $query = /** @lang SQL */
-            'INSERT INTO usrToGroups (usertogroup_userId, usertogroup_groupId) VALUES ' . implode(',', $params);
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        foreach ($this->itemData->getUsers() as $user){
-            $Data->addParam($user);
-            $Data->addParam($this->itemData->getUsertogroupGroupId());
-        }
-
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al asignar los usuarios al grupo'));
-        }
+        $this->delete($this->itemData->getUsertogroupGroupId());
+        $this->add();
 
         return $this;
     }
@@ -89,21 +69,39 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar los usuarios del grupo', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al eliminar los usuarios del grupo'));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
 
     /**
      * @return $this
+     * @throws SPException
      */
-    public function update()
+    public function add()
     {
-        $this->delete($this->itemData->getUsertogroupGroupId());
-        $this->add();
+        if (!is_array($this->itemData->getUsers())
+            || count($this->itemData->getUsers()) === 0
+        ) {
+            return $this;
+        }
+
+        $query = /** @lang SQL */
+            'INSERT INTO usrToGroups (usertogroup_userId, usertogroup_groupId) VALUES ' . $this->getParamsFromArray($this->itemData->getUsers(), '(?,?)');
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        foreach ($this->itemData->getUsers() as $user) {
+            $Data->addParam($user);
+            $Data->addParam($this->itemData->getUsertogroupGroupId());
+        }
+
+        $Data->setOnErrorMessage(__('Error al asignar los usuarios al grupo', false));
+
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -167,5 +165,56 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     public function checkDuplicatedOnAdd()
     {
         // TODO: Implement checkDuplicatedOnAdd() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        // TODO: Implement getByIdBatch() method.
+    }
+
+    /**
+     * Comprobar si un usuario está en el grupo
+     *
+     * @param $userId
+     * @param $groupId
+     * @return bool
+     */
+    public function checkUserInGroup($groupId, $userId)
+    {
+        $query = /** @lang SQL */
+            'SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = ? AND usertogroup_userId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($groupId);
+        $Data->addParam($userId);
+
+        DB::getResults($Data);
+
+        return ($Data->getQueryNumRows() === 1);
+    }
+
+    /**
+     * Devolver los grupos a los que pertenece el usuario
+     *
+     * @param $userId
+     * @return array
+     */
+    public function getGroupsForUser($userId)
+    {
+        $query = /** @lang SQL */
+            'SELECT usertogroup_groupId AS groupId FROM usrToGroups WHERE usertogroup_userId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($userId);
+
+        return DB::getResultsArray($Data);
     }
 }

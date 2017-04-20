@@ -3,16 +3,10 @@
 <?php endforeach; ?>
 
 <script type="text/javascript">
-    $(document).on("DOMContentLoaded", function (e) {
+    $(document).ready(function (e) {
         "use strict";
 
-        sysPassApp.log.info("DOMContentLoaded");
-
-        <?php if ($loggedIn): ?>
-            sysPassApp.triggers().views.main();
-        <?php elseif ($isInstalled === false): ?>
-            sysPassApp.triggers().views.install();
-        <?php endif; ?>
+        sysPassApp.log.info("ready");
 
         sysPassApp.sk.set("<?php echo $sk; ?>");
     });

@@ -6,7 +6,7 @@
  */
 ?>
 
-<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable data-table">
+<table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable table-responsive data-table">
     <thead>
     <tr>
         <?php foreach ($data->getHeader()->getHeaders() as $header): ?>

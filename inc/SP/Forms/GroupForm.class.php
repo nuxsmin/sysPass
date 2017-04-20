@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -53,29 +53,12 @@ class GroupForm extends FormBase implements FormInterface
         switch ($action) {
             case ActionsInterface::ACTION_USR_GROUPS_NEW:
             case ActionsInterface::ACTION_USR_GROUPS_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
         return true;
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkCommon()
-    {
-        if (!$this->GroupData->getUsergroupName()) {
-            throw new ValidationException(_('Es necesario un nombre de grupo'));
-        }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getItemData()
-    {
-        return $this->GroupData;
     }
 
     /**
@@ -90,5 +73,23 @@ class GroupForm extends FormBase implements FormInterface
         $this->GroupData->setUsergroupName(Request::analyze('name'));
         $this->GroupData->setUsergroupDescription(Request::analyze('description'));
         $this->GroupData->setUsers(Request::analyze('users', 0));
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->GroupData->getUsergroupName()) {
+            throw new ValidationException(__('Es necesario un nombre de grupo', false));
+        }
+    }
+
+    /**
+     * @return GroupData
+     */
+    public function getItemData()
+    {
+        return $this->GroupData;
     }
 }

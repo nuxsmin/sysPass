@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util;
@@ -28,7 +27,7 @@ namespace SP\Util;
 use SP\Core\Init;
 use SP\Log\LogUtil;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ImageUtil para la manipulación de imágenes
@@ -42,6 +41,7 @@ class ImageUtil
      *
      * @param $text string El texto a convertir
      * @return bool|string
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function convertText($text)
     {
@@ -51,7 +51,9 @@ class ImageUtil
             return false;
         }
 
-        $im = @imagecreatetruecolor(strlen($text) * 20, 30);
+        $width = strlen($text) * 10;
+
+        $im = @imagecreatetruecolor($width, 30);
 
         if ($im === false) {
             return false;
@@ -62,7 +64,7 @@ class ImageUtil
 //        $shadowColor = imagecolorallocate($im, 128, 128, 128);
         $fgColor = imagecolorallocate($im, 128, 128, 128);
 
-        imagefilledrectangle($im, 0, 0, strlen($text) * 20, 29, $bgColor);
+        imagefilledrectangle($im, 0, 0, $width, 30, $bgColor);
 
         // Ruta de la fuente
         $font = Init::$SERVERROOT . '/css/fonts/NotoSans-Regular-webfont.ttf';
@@ -71,7 +73,7 @@ class ImageUtil
 //        imagettftext($im, 14, 0, 13, 23, $shadowColor, $font, $text);
 
         // Crear el texto
-        imagettftext($im, 12, 0, 10, 20, $fgColor, $font, $text);
+        imagettftext($im, 10, 0, 10, 20, $fgColor, $font, $text);
 
         // Devolver la imagen
         ob_start();

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -35,6 +35,8 @@ use SplSubject;
  */
 class AuthenticatorPlugin extends PluginBase
 {
+    const PLUGIN_NAME = 'Authenticator';
+
     /**
      * Receive update from subject
      *
@@ -54,8 +56,14 @@ class AuthenticatorPlugin extends PluginBase
      */
     public function init()
     {
+        if (!is_array($this->data)) {
+            $this->data = [];
+        }
+
         $this->base = __DIR__;
         $this->themeDir = __DIR__ . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . DiFactory::getTheme()->getThemeName();
+
+        $this->setLocales();
     }
 
     /**
@@ -63,15 +71,24 @@ class AuthenticatorPlugin extends PluginBase
      *
      * @param string $event Nombre del evento
      * @param mixed  $object
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function updateEvent($event, $object)
     {
-        if ($event === 'show.preferences') {
-            $Controller = new PreferencesController($object, $this);
-            $Controller->getSecurityTab();
-        } elseif ($event === 'main.prelogin.2fa') {
-            $Controller = new LoginController($object, $this);
-            $Controller->get2FA();
+        switch ($event){
+            case 'user.preferences':
+                $Controller = new PreferencesController($object, $this);
+                $Controller->getSecurityTab();
+                break;
+            case 'main.prelogin.2fa':
+                $Controller = new LoginController($this);
+                $Controller->get2FA($object);
+                break;
+            case 'login.preferences':
+                $Controller = new LoginController($this);
+                $Controller->checkLogin();
+                break;
         }
     }
 
@@ -82,7 +99,7 @@ class AuthenticatorPlugin extends PluginBase
      */
     public function getEvents()
     {
-        return ['show.preferences', 'main.prelogin.2fa'];
+        return ['user.preferences', 'main.prelogin.2fa', 'login.preferences'];
     }
 
     /**
@@ -142,6 +159,14 @@ class AuthenticatorPlugin extends PluginBase
      */
     public function getName()
     {
-        return 'Authenticator';
+        return self::PLUGIN_NAME;
+    }
+
+    /**
+     * @return array|AuthenticatorData[]
+     */
+    public function getData()
+    {
+        return (array)parent::getData();
     }
 }

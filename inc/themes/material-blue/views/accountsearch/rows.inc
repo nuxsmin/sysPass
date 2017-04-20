@@ -18,13 +18,13 @@
             <div class="label-left">
                 <div class="label-row-up">
                     <div class="field-customer label-field">
-                        <div class="field-name"><?php echo _('Cliente'); ?></div>
+                        <div class="field-name-hidden"><?php echo __('Cliente'); ?></div>
                         <?php if (!empty($AccountSearchItem->getCustomerLink())): ?>
                             <a href="<?php echo $AccountSearchItem->getCustomerLink(); ?>" target="blank"
-                               title="<?php echo _('Buscar en Wiki'); ?>">
+                               title="<?php echo __('Buscar en Wiki'); ?>">
                                 <span class="mdl-chip mdl-chip--contact">
                                     <span style="background-color: <?php echo $AccountSearchItem->getColor(); ?>;"
-                                          class="mdl-chip__contact mdl-color-text--white"><?php echo strtoupper($AccountSearchData->getCustomerName()[0]); ?></span>
+                                          class="mdl-chip__contact mdl-color-text--white"><?php echo mb_ucfirst($AccountSearchData->getCustomerName()); ?></span>
                                     <span class="mdl-chip__text"
                                           title="<?php echo $AccountSearchData->getCustomerName(); ?>"><?php echo $AccountSearchItem->getShortCustomerName(); ?></span>
                                 </span>
@@ -32,20 +32,20 @@
                         <?php else: ?>
                             <span class="mdl-chip mdl-chip--contact">
                                 <span style="background-color: <?php echo $AccountSearchItem->getColor(); ?>;"
-                                      class="mdl-chip__contact mdl-color-text--white"><?php echo strtoupper($AccountSearchData->getCustomerName()[0]); ?></span>
+                                      class="mdl-chip__contact mdl-color-text--white"><?php echo mb_ucfirst($AccountSearchData->getCustomerName()); ?></span>
                                 <span class="mdl-chip__text"
                                       title="<?php echo $AccountSearchData->getCustomerName(); ?>"><?php echo $AccountSearchItem->getShortCustomerName(); ?></span>
                             </span>
                         <?php endif; ?>
                     </div>
 
-                    <div class="field-account label-field">
-                        <div class="field-name"><?php echo _('Nombre'); ?></div>
+                    <div class="field-account field-text label-field">
+                        <div class="field-name"><?php echo __('Nombre'); ?></div>
                         <?php if ($AccountSearchItem->isShow() && $AccountSearchItem->getLink()): ?>
-                            <a title="<?php echo _('Detalles de Cuenta'); ?>" class="btn-action"
+                            <a title="<?php echo __('Detalles de Cuenta'); ?>" class="btn-action"
                                data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
                                data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
-                               data-onclick="account/view"><?php echo $AccountSearchData->getAccountName(); ?></a>
+                               data-onclick="account/show"><?php echo $AccountSearchData->getAccountName(); ?></a>
                         <?php else: ?>
                             <div class="field-text">
                                 <?php echo $AccountSearchData->getAccountName(); ?>
@@ -53,26 +53,29 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="field-category label-field">
-                        <div class="field-name"><?php echo _('Categoría'); ?></div>
+                    <div class="field-category field-text label-field">
+                        <div class="field-name"><?php echo __('Categoría'); ?></div>
                         <div class="field-text"><?php echo $AccountSearchData->getCategoryName(); ?></div>
                     </div>
 
                     <?php if ($AccountSearchItem->isShow()): ?>
-                        <div class="field-user label-field">
-                            <div class="field-name"><?php echo _('Usuario'); ?></div>
+                        <div class="field-user field-text label-field">
+                            <div class="field-name"><?php echo __('Usuario'); ?></div>
                             <div class="field-text"><?php echo $AccountSearchItem->getShortLogin(); ?></div>
                         </div>
 
-                        <div class="field-url label-field">
-                            <div class="field-name"><?php echo _('URL / IP'); ?></div>
+                        <div class="field-url field-text label-field">
+                            <div class="field-name"><?php echo __('URL / IP'); ?></div>
                             <?php if ($AccountSearchItem->isUrlIslink()): ?>
                                 <a href="<?php echo $AccountSearchData->getAccountUrl(); ?>" target="_blank"
-                                   title="<?php echo _('Abrir enlace a'), ': ', $AccountSearchData->getAccountUrl(); ?>"><?php echo $AccountSearchItem->getShortUrl(); ?></a>
+                                   title="<?php echo __('Abrir enlace a'), ': ', $AccountSearchData->getAccountUrl(); ?>"><?php echo $AccountSearchItem->getShortUrl(); ?></a>
                             <?php else: ?>
                                 <div class="field-text"><?php echo $AccountSearchItem->getShortUrl(); ?></div>
                             <?php endif; ?>
                         </div>
+                    <?php else: ?>
+                        <div class="field-user field-text label-field"></div>
+                        <div class="field-url field-text label-field"></div>
                     <?php endif; ?>
                 </div>
                 <div class="label-row-down">
@@ -84,15 +87,15 @@
                 </div>
             </div>
             <div class="label-right">
-                <?php if ($AccountSearchItem->isShow()): ?>
-                    <div class="account-info">
+                <div class="account-info">
+                    <?php if ($AccountSearchItem->isShow()): ?>
                         <?php if ($AccountSearchItem->isPasswordExpired()): ?>
                             <i id="icon-expired-<?php echo $AccountSearchData->getAccountId(); ?>"
                                class="material-icons <?php echo $icons->getIconWarning()->getClass(); ?>">
                                 <?php echo $icons->getIconWarning()->getIcon(); ?></i>
                             <span
-                                for="icon-expired-<?php echo $AccountSearchData->getAccountId(); ?>"
-                                class="mdl-tooltip mdl-tooltip--top"><?php echo _('Clave Caducada'); ?></span>
+                                    for="icon-expired-<?php echo $AccountSearchData->getAccountId(); ?>"
+                                    class="mdl-tooltip mdl-tooltip--top"><?php echo __('Clave Caducada'); ?></span>
                         <?php endif; ?>
 
                         <?php if ($AccountSearchData->getAccountIsPrivate() === 0): ?>
@@ -101,14 +104,14 @@
 
                             <div class="mdl-tooltip mdl-tooltip--top"
                                  for="accesses-<?php echo $AccountSearchData->getAccountId(); ?>">
-                                <?php echo _('Permisos'), '<br>', $AccountSearchItem->getAccesses(); ?>
+                                <?php echo __('Permisos'), '<br>', $AccountSearchItem->getAccesses(); ?>
                             </div>
                         <?php else: ?>
                             <i id="icon-private-<?php echo $AccountSearchData->getAccountId(); ?>"
                                class="material-icons">lock</i>
                             <span
-                                for="icon-private-<?php echo $AccountSearchData->getAccountId(); ?>"
-                                class="mdl-tooltip mdl-tooltip--top"><?php echo _('Cuenta Privada'); ?></span>
+                                    for="icon-private-<?php echo $AccountSearchData->getAccountId(); ?>"
+                                    class="mdl-tooltip mdl-tooltip--top"><?php echo __('Cuenta Privada'); ?></span>
                         <?php endif; ?>
 
                         <?php if ($AccountSearchItem->isFavorite()): ?>
@@ -119,8 +122,8 @@
                                data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
                                data-status="<?php echo 'on'; ?>">star</i>
                             <span
-                                for="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
-                                class="mdl-tooltip mdl-tooltip--top"><?php echo _('Eliminar Favorito'); ?></span>
+                                    for="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
+                                    class="mdl-tooltip mdl-tooltip--top"><?php echo __('Eliminar Favorito'); ?></span>
                         <?php else: ?>
                             <i id="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
                                class="material-icons icon-favorite"
@@ -129,15 +132,15 @@
                                data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
                                data-status="<?php echo 'off'; ?>">star_border</i>
                             <span
-                                for="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
-                                class="mdl-tooltip mdl-tooltip--top"><?php echo _('Marcar Favorito'); ?></span>
+                                    for="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
+                                    class="mdl-tooltip mdl-tooltip--top"><?php echo __('Marcar Favorito'); ?></span>
                         <?php endif; ?>
 
                         <?php if ($AccountSearchData->getAccountNotes() !== ''): ?>
                             <i id="notes-<?php echo $AccountSearchData->getAccountId(); ?>" class="material-icons">speaker_notes</i>
                             <div class="mdl-tooltip mdl-tooltip--top"
                                  for="notes-<?php echo $AccountSearchData->getAccountId(); ?>">
-                                <?php echo _('Notas'), '<br>', $AccountSearchItem->getShortNotes(); ?>
+                                <?php echo __('Notas'), '<br>', $AccountSearchItem->getShortNotes(); ?>
                             </div>
                         <?php endif; ?>
 
@@ -146,7 +149,7 @@
                                class="material-icons">attach_file</i>
                             <div class="mdl-tooltip mdl-tooltip--top"
                                  for="attachments-<?php echo $AccountSearchData->getAccountId(); ?>">
-                                <?php echo _('Archivos adjuntos'), ': ', $AccountSearchItem->getNumFiles(); ?>
+                                <?php echo __('Archivos adjuntos'), ': ', $AccountSearchItem->getNumFiles(); ?>
                             </div>
                         <?php endif; ?>
 
@@ -156,24 +159,25 @@
                                     <a href="<?php echo $wikiPageUrl, $AccountSearchData->getAccountName(); ?>"
                                        target="_blank">
                                         <i class="material-icons"
-                                           title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
+                                           title="<?php echo __('Enlace a Wiki'); ?>">library_books</i>
                                     </a>
                                     <i class="btn-action material-icons fg-green100"
-                                       title="<?php echo _('Ver en Wiki'); ?>"
+                                       title="<?php echo __('Ver en Wiki'); ?>"
                                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>"
-                                       data-item-id="<?php echo $AccountSearchData->getAccountName(); ?>"
+                                       data-pagename="<?php echo $AccountSearchData->getAccountName(); ?>"
                                        data-onclick="wiki/show">library_books</i>
                                 <?php else: ?>
                                     <a href="<?php echo $wikiPageUrl, $AccountSearchData->getAccountName(); ?>"
                                        target="_blank">
                                         <i class="material-icons"
-                                           title="<?php echo _('Enlace a Wiki'); ?>">library_books</i>
+                                           title="<?php echo __('Enlace a Wiki'); ?>">library_books</i>
                                     </a>
                                 <?php endif; ?>
                             <?php endif; ?>
                         <?php endif; ?>
-                    </div>
-                <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+
 
                 <?php if ($AccountSearchItem->isShow() || $AccountSearchItem->isShowRequest()): ?>
                     <div class="account-actions">
@@ -187,8 +191,8 @@
                                         <?php echo 'data-', $name, '=', '"', $actionData, '"'; ?>
                                     <?php endforeach; ?>><?php echo $action->getIcon()->getIcon(); ?></i>
                                 <span
-                                    for="btn-action-<?php echo $AccountSearchData->getAccountId(), '-', $action->getIcon()->getIcon(); ?>"
-                                    class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
+                                        for="btn-action-<?php echo $AccountSearchData->getAccountId(), '-', $action->getIcon()->getIcon(); ?>"
+                                        class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                             <?php endif; ?>
                         <?php endforeach; ?>
 

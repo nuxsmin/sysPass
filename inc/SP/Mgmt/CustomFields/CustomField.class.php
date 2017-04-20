@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\CustomFields;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
-use SP\Core\Crypt;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefData;
 use SP\Mgmt\ItemInterface;
@@ -38,62 +40,49 @@ use SP\Util\Util;
 /**
  * Class CustomFields para la gestión de campos personalizados de los módulos
  *
- * @package SP
+ * @package SP\Mgmt\CustomFields
+ * @property CustomFieldData $itemData
  */
 class CustomField extends CustomFieldBase implements ItemInterface
 {
     /**
-     * @param CustomFieldData $itemData
-     * @param int             $customFieldDefId
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     */
-    public function __construct($itemData, $customFieldDefId = null)
-    {
-        $this->setDataModel('SP\DataModel\CustomFieldData');
-
-        parent::__construct($itemData);
-
-        if (null !== $customFieldDefId) {
-            $field = CustomFieldDef::getItem()->getById($customFieldDefId);
-
-            $itemData->setDefinitionId($customFieldDefId);
-            $itemData->setModule($field->getModule());
-            $itemData->setName($field->getName());
-            $itemData->setType($field->getType());
-        }
-
-        $this->itemData = $itemData;
-    }
-
-    /**
      * @return mixed
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function update()
     {
-        $exists = $this->checkIfExists();
+        $exists = $this->checkExists();
 
-        if ($this->itemData->getValue() !== '' && !$exists) {
+        if (!$exists && $this->itemData->getValue() !== '') {
             return $this->add();
-        } elseif ($this->itemData->getValue() === '' && $exists) {
+        } elseif ($exists && $this->itemData->getValue() === '') {
             return $this->delete($this->itemData->getId());
         }
 
-        $cryptData = Crypt::encryptData($this->itemData->getValue());
+        $sessionKey = CryptSession::getSessionKey();
+        $securedKey = Crypt::makeSecuredKey($sessionKey);
+
+        if (strlen($securedKey) > 1000) {
+            throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+        }
 
         $query = /** @lang SQL */
             'UPDATE customFieldsData SET
             customfielddata_data = ?,
-            customfielddata_iv = ?
+            customfielddata_key = ?
             WHERE customfielddata_moduleId = ?
             AND customfielddata_itemId = ?
             AND customfielddata_defId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($cryptData['data']);
-        $Data->addParam($cryptData['iv']);
+        $Data->addParam(Crypt::encrypt($this->itemData->getValue(), $securedKey, $sessionKey));
+        $Data->addParam($securedKey);
         $Data->addParam($this->itemData->getModule());
         $Data->addParam($this->itemData->getId());
         $Data->addParam($this->itemData->getDefinitionId());
@@ -105,8 +94,9 @@ class CustomField extends CustomFieldBase implements ItemInterface
      * Comprueba si el elemento tiene campos personalizados con datos
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
-    protected function checkIfExists()
+    protected function checkExists()
     {
         $query = /** @lang SQL */
             'SELECT customfielddata_id
@@ -128,6 +118,11 @@ class CustomField extends CustomFieldBase implements ItemInterface
 
     /**
      * @return mixed
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function add()
@@ -136,7 +131,12 @@ class CustomField extends CustomFieldBase implements ItemInterface
             return true;
         }
 
-        $cryptData = Crypt::encryptData($this->itemData->getValue());
+        $sessionKey = CryptSession::getSessionKey();
+        $securedKey = Crypt::makeSecuredKey($sessionKey);
+
+        if (strlen($securedKey) > 1000) {
+            throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+        }
 
         $query = /** @lang SQL */
             'INSERT INTO customFieldsData SET
@@ -144,36 +144,26 @@ class CustomField extends CustomFieldBase implements ItemInterface
             customfielddata_moduleId = ?,
             customfielddata_defId = ?,
             customfielddata_data = ?,
-            customfielddata_iv = ?';
+            customfielddata_key = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getId());
         $Data->addParam($this->itemData->getModule());
         $Data->addParam($this->itemData->getDefinitionId());
-        $Data->addParam($cryptData['data']);
-        $Data->addParam($cryptData['iv']);
+        $Data->addParam(Crypt::encrypt($this->itemData->getValue(), $securedKey, $sessionKey));
+        $Data->addParam($securedKey);
 
-        $queryRes = DB::getQuery($Data);
-
-        return $queryRes;
+        return DB::getQuery($Data);
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return mixed
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId){
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
         $query = /** @lang SQL */
             'DELETE FROM customFieldsData
             WHERE customfielddata_itemId = ?
@@ -184,9 +174,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $Data->addParam($id);
         $Data->addParam($this->itemData->getCustomfielddataModuleId());
 
-        $queryRes = DB::getQuery($Data);
-
-        return $queryRes;
+        return DB::getQuery($Data);
     }
 
     /**
@@ -199,7 +187,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
             'SELECT customfielddata_id,
             customfielddef_id,
             customfielddata_data,
-            customfielddata_iv,
+            customfielddata_key,
             customfielddef_field
             FROM customFieldsData
             JOIN customFieldsDef ON customfielddata_defId = customfielddef_id
@@ -210,7 +198,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
             0 as customfielddata_id,
             customfielddef_id,
             "" as customfielddata_data,
-            "" as customfielddata_iv,
+            "" as customfielddata_key,
             customfielddef_field
             FROM customFieldsDef
             WHERE customfielddef_module = ?
@@ -231,20 +219,14 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $Data->addParam($this->itemData->getModule());
         $Data->addParam($id);
 
+        /** @var CustomFieldData[] $queryRes */
         $queryRes = DB::getResultsArray($Data);
 
         $customFields = [];
 
         foreach ($queryRes as $CustomFieldData) {
-            /**
-             * @var CustomFieldData    $CustomFieldData
-             * @var CustomFieldDefData $fieldDef
-             */
-            $fieldDef = unserialize($CustomFieldData->getCustomfielddefField());
-
-            if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-                $fieldDef = Util::castToClass('SP\DataModel\CustomFieldDefData', $fieldDef);
-            }
+            /** @var CustomFieldDefData $fieldDef */
+            $fieldDef = Util::castToClass(CustomFieldDefData::class, $CustomFieldData->getCustomfielddefField());
 
             $CustomFieldData->setDefinition($fieldDef);
             $CustomFieldData->setDefinitionId($CustomFieldData->getCustomfielddefId());
@@ -262,11 +244,14 @@ class CustomField extends CustomFieldBase implements ItemInterface
      *
      * @param CustomFieldData $CustomFieldData
      * @return string
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected function unencryptData(CustomFieldData $CustomFieldData)
     {
         if ($CustomFieldData->getCustomfielddataData() !== '') {
-            return $this->formatValue(Crypt::getDecrypt($CustomFieldData->getCustomfielddataData(), $CustomFieldData->getCustomfielddataIv()));
+            $securedKey = Crypt::unlockSecuredKey($CustomFieldData->getCustomfielddataKey(), CryptSession::getSessionKey());
+
+            return $this->formatValue(Crypt::decrypt($CustomFieldData->getCustomfielddataData(), $securedKey));
         }
 
         return '';
@@ -299,10 +284,11 @@ class CustomField extends CustomFieldBase implements ItemInterface
             WHERE customfielddef_module = ?';
 
         $Data = new QueryData();
-        $Data->setMapClassName('SP\DataModel\CustomFieldDefData');
+        $Data->setMapClassName(CustomFieldDefData::class);
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getModule());
 
+        /** @var CustomFieldDefData[] $queryRes */
         $queryRes = DB::getResultsArray($Data);
 
         if (count($queryRes) === 0) {
@@ -310,16 +296,8 @@ class CustomField extends CustomFieldBase implements ItemInterface
         }
 
         foreach ($queryRes as $CustomFieldDef) {
-            /**
-             * @var CustomFieldDefData $CustomFieldDef
-             * @var CustomFieldDefData $fieldDef
-             */
-
-            $fieldDef = unserialize($CustomFieldDef->getCustomfielddefField());
-
-            if (get_class($fieldDef) === '__PHP_Incomplete_Class') {
-                $fieldDef = Util::castToClass('SP\DataModel\CustomFieldDefData', $fieldDef);
-            }
+            /** @var CustomFieldDefData $fieldDef */
+            $fieldDef = Util::castToClass(CustomFieldDefData::class, $CustomFieldDef->getCustomfielddefField());
 
             $CustomFieldData = new CustomFieldData();
             $CustomFieldData->setDefinition($fieldDef);
@@ -357,5 +335,38 @@ class CustomField extends CustomFieldBase implements ItemInterface
     public function checkDuplicatedOnAdd()
     {
         // TODO: Implement checkDuplicatedOnAdd() method.
+    }
+
+    /**
+     * Eliminar elementos en lote
+     *
+     * @param array $ids
+     * @return $this
+     */
+    public function deleteBatch(array $ids)
+    {
+        // TODO: Implement deleteBatch() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        // TODO: Implement getByIdBatch() method.
+    }
+
+    /**
+     * Inicializar la clase
+     *
+     * @return void
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     */
+    protected function init()
+    {
+        $this->setDataModel(CustomFieldData::class);
     }
 }

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,10 +25,13 @@
 namespace SP\Controller;
 
 use SP\Core\Init;
+use SP\Core\Messages\LogMessage;
 use SP\Core\SessionUtil;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
+use SP\Util\Checks;
 use SP\Util\Json;
+use SP\Util\Util;
 
 /**
  * Class RequestControllerTrait
@@ -52,18 +55,24 @@ trait RequestControllerTrait
     /**
      * @var JsonResponse
      */
-    protected $jsonResponse;
+    protected $JsonResponse;
     /**
      * @var string
      */
     protected $sk;
+    /**
+     * @var LogMessage
+     */
+    protected $LogMessage;
 
     /**
      * inicializar las propiedades
+     *
+     * @internal param array $checKItems Lista de elementos a analizar
      */
     protected function init()
     {
-        $this->jsonResponse = new JsonResponse();
+        $this->JsonResponse = new JsonResponse();
 
         $this->checkSession();
         $this->analyzeRequest();
@@ -91,23 +100,28 @@ trait RequestControllerTrait
         }
     }
 
+    /**
+     * Acción no disponible
+     */
     protected function invalidAction()
     {
-        $this->jsonResponse->setDescription(_('Acción Inválida'));
-        Json::returnJson($this->jsonResponse);
+        $this->JsonResponse->setDescription(__('Acción Inválida', false));
+        Json::returnJson($this->JsonResponse);
     }
 
     /**
      * Comprobar si la sesión está activa
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     protected function checkSession()
     {
         if (!Init::isLoggedIn()) {
-            $this->jsonResponse->setDescription(_('La sesión no se ha iniciado o ha caducado'));
-            $this->jsonResponse->setStatus(10);
-            Json::returnJson($this->jsonResponse);
+            if (Checks::isJson()) {
+                $this->JsonResponse->setDescription(__('La sesión no se ha iniciado o ha caducado', false));
+                $this->JsonResponse->setStatus(10);
+                Json::returnJson($this->JsonResponse);
+            } else {
+                Util::logout();
+            }
         }
     }
 }

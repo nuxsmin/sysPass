@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use phpseclib\Crypt\RSA;
 use phpseclib\Exception\FileNotFoundException;
@@ -46,7 +45,7 @@ class CryptPKI
     {
         if (!file_exists($this->getPublicKeyFile()) || !file_exists($this->getPrivateKeyFile())) {
             if (!$this->createKeys()) {
-                throw new SPException(SPException::SP_CRITICAL, _('No es posible generar las claves RSA'));
+                throw new SPException(SPException::SP_CRITICAL, __('No es posible generar las claves RSA', false));
             }
         }
     }
@@ -92,6 +91,7 @@ class CryptPKI
      *
      * @param string $data los datos a encriptar
      * @return string
+     * @throws \phpseclib\Exception\FileNotFoundException
      */
     public function encryptRSA($data)
     {
@@ -106,15 +106,16 @@ class CryptPKI
      * Devuelve la clave pública desde el archivo
      *
      * @return string
+     * @throws \phpseclib\Exception\FileNotFoundException
      */
     public function getPublicKey()
     {
         $file = $this->getPublicKeyFile();
 
         if (!file_exists($file)) {
-            Log::writeNewLog(__FUNCTION__, _('El archivo de clave no existe'), Log::NOTICE);
+            Log::writeNewLog(__FUNCTION__, __('El archivo de clave no existe', false), Log::NOTICE);
 
-            throw new FileNotFoundException(_('El archivo de clave no existe'));
+            throw new FileNotFoundException(__('El archivo de clave no existe'));
         }
 
         return file_get_contents($file);
@@ -125,6 +126,7 @@ class CryptPKI
      *
      * @param string $data los datos a desencriptar
      * @return string
+     * @throws \phpseclib\Exception\FileNotFoundException
      */
     public function decryptRSA($data)
     {
@@ -139,15 +141,16 @@ class CryptPKI
      * Devuelve la clave privada desde el archivo
      *
      * @return string
+     * @throws \phpseclib\Exception\FileNotFoundException
      */
     private function getPrivateKey()
     {
         $file = $this->getPrivateKeyFile();
 
         if (!file_exists($file)) {
-            Log::writeNewLog(__FUNCTION__, _('El archivo de clave no existe'), Log::NOTICE);
+            Log::writeNewLog(__FUNCTION__, __('El archivo de clave no existe', false), Log::NOTICE);
 
-            throw new FileNotFoundException(_('El archivo de clave no existe'));
+            throw new FileNotFoundException(__('El archivo de clave no existe'));
         }
 
         return file_get_contents($file);

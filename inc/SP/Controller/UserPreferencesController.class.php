@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,21 +19,18 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
-use Plugins\Authenticator\Authenticator;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
-use SP\Core\Language;
-use SP\Core\Session;
-use SP\Core\SessionUtil;
 use SP\Core\DiFactory;
+use SP\Core\Language;
+use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\UserPreferencesData;
 use SP\Mgmt\Users\UserPreferences;
@@ -70,26 +67,6 @@ class UserPreferencesController extends TabControllerBase implements ActionsInte
     }
 
     /**
-     * Obtener la pestaña de seguridad
-     */
-    public function getSecurityTab()
-    {
-        $this->setAction(self::ACTION_USR_PREFERENCES_SECURITY);
-
-        $this->view->addTemplate('preferences-security');
-
-        $twoFa = new Authenticator($this->userId, Session::getUserData()->getUserLogin());
-
-        $this->view->assign('qrCode', !$this->userPrefs->isUse2Fa() ? $twoFa->getUserQRCode(): '');
-        $this->view->assign('userId', $this->userId);
-        $this->view->assign('chk2FAEnabled', $this->userPrefs->isUse2Fa());
-
-        $this->view->append('tabs', ['title' => _('Seguridad')]);
-        $this->view->assign('tabIndex', $this->getTabIndex(), 'security');
-        $this->view->assign('actionId', $this->getAction(), 'security');
-    }
-
-    /**
      * Obtener la pestaña de preferencias
      */
     public function getPreferencesTab()
@@ -104,12 +81,13 @@ class UserPreferencesController extends TabControllerBase implements ActionsInte
         $this->view->assign('themesAvailable', DiFactory::getTheme()->getThemesAvailable());
         $this->view->assign('currentTheme', $this->userPrefs->getTheme() ?: Config::getConfig()->getSiteTheme());
         $this->view->assign('chkAccountLink', $this->userPrefs->isAccountLink() ? 'checked="checked"' : '');
-        $this->view->assign('resultsPerPage', $this->userPrefs->getResultsPerPage() ? $this->userPrefs->getResultsPerPage() : Config::getConfig()->getAccountCount());
+        $this->view->assign('resultsPerPage', $this->userPrefs->getResultsPerPage() ?: Config::getConfig()->getAccountCount());
         $this->view->assign('chkSortViews', $this->userPrefs->isSortViews() ? 'checked="checked"' : '');
         $this->view->assign('chkTopNavbar', $this->userPrefs->isTopNavbar() ? 'checked="checked"' : '');
         $this->view->assign('chkOptionalActions', $this->userPrefs->isOptionalActions() ? 'checked="checked"' : '');
+        $this->view->assign('chkResultsAsCards', $this->userPrefs->isResultsAsCards() ? 'checked="checked"' : '');
 
-        $this->view->assign('tabIndex', $this->addTab(_('Preferencias')), 'preferences');
+        $this->view->assign('tabIndex', $this->addTab(__('Preferencias')), 'preferences');
         $this->view->assign('actionId', $this->getAction(), 'preferences');
     }
 
@@ -123,7 +101,8 @@ class UserPreferencesController extends TabControllerBase implements ActionsInte
         $this->view->addTemplate('tabs-start', 'common');
 
         $this->getPreferencesTab();
-        $this->EventDispatcher->notifyEvent('show.preferences', $this);
+
+        $this->EventDispatcher->notifyEvent('user.preferences', $this);
 
         $this->view->addTemplate('tabs-end', 'common');
     }

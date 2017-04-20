@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\DataModel\FileData;
@@ -51,11 +51,11 @@ if (!Init::isLoggedIn()) {
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printJson(_('CONSULTA INVÁLIDA'));
+    Response::printJson(__('CONSULTA INVÁLIDA'));
 }
 
 if (!Checks::fileIsEnabled()) {
-    Response::printJson(_('Gestión de archivos deshabilitada'));
+    Response::printJson(__('Gestión de archivos deshabilitada'));
 }
 
 $actionId = Request::analyze('actionId', 0);
@@ -63,22 +63,23 @@ $accountId = Request::analyze('itemId', 0);
 $fileId = Request::analyze('fileId', 0);
 
 $Log = new Log();
+$LogMessage = $Log->getLogMessage();
 
 if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
     if ($accountId === 0 || !is_array($_FILES['inFile'])) {
-        Response::printJson(_('CONSULTA INVÁLIDA'));
+        Response::printJson(__('CONSULTA INVÁLIDA'));
     }
 
-    $Log->setAction(_('Subir Archivo'));
+    $LogMessage->setAction(__('Subir Archivo', false));
 
     $allowedExts = Config::getConfig()->getFilesAllowedExts();
     $allowedSize = Config::getConfig()->getFilesAllowedSize();
 
     if (count($allowedExts) === 0) {
-        $Log->addDescription(_('No hay extensiones permitidas'));
+        $LogMessage->addDescription(__('No hay extensiones permitidas', false));
         $Log->writeLog();
 
-        Response::printJson($Log->getDescription());
+        Response::printJson($LogMessage->getDescription());
     }
 
     $FileData = new FileData();
@@ -89,21 +90,21 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
 
     if ($FileData->getAccfileName() !== '') {
         // Comprobamos la extensión del archivo
-        $FileData->setAccfileExtension(strtoupper(pathinfo($FileData->getAccfileName(), PATHINFO_EXTENSION)));
+        $FileData->setAccfileExtension(mb_strtoupper(pathinfo($FileData->getAccfileName(), PATHINFO_EXTENSION)));
 
         if (!in_array($FileData->getAccfileExtension(), $allowedExts)) {
-            $Log->addDescription(_('Tipo de archivo no soportado'));
-            $Log->addDetails(_('Extensión'), $FileData->getAccfileExtension());
+            $LogMessage->addDescription(__('Tipo de archivo no soportado', false));
+            $LogMessage->addDetails(__('Extensión', false), $FileData->getAccfileExtension());
             $Log->writeLog();
 
-            Response::printJson($Log->getDescription());
+            Response::printJson($LogMessage->getDescription());
         }
     } else {
-        $Log->addDescription(_('Archivo inválido'));
-        $Log->addDetails(_('Archivo'), $FileData->getAccfileName());
+        $LogMessage->addDescription(__('Archivo inválido', false));
+        $LogMessage->addDetails(__('Archivo', false), $FileData->getAccfileName());
         $Log->writeLog();
 
-        Response::printJson($Log->getDescription());
+        Response::printJson($LogMessage->getDescription());
     }
 
     // Variables con información del archivo
@@ -113,34 +114,36 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
         // Registramos el máximo tamaño permitido por PHP
         Util::getMaxUpload();
 
-        $Log->addDescription(_('Error interno al leer el archivo'));
+        $LogMessage->addDescription(__('Error interno al leer el archivo', false));
         $Log->writeLog();
 
-        Response::printJson($Log->getDescription());
+        Response::printJson($LogMessage->getDescription());
     }
 
     if ($FileData->getAccfileSize() > ($allowedSize * 1000)) {
-        $Log->addDescription(_('Tamaño de archivo superado'));
-        $Log->addDetails(_('Tamaño'), $FileData->getRoundSize() . 'KB');
+        $LogMessage->addDescription(__('Tamaño de archivo superado', false));
+        $LogMessage->addDetails(__('Tamaño', false), $FileData->getRoundSize() . 'KB');
         $Log->writeLog();
 
-        Response::printJson($Log->getDescription());
+        Response::printJson($LogMessage->getDescription());
     }
 
     // Leemos el archivo a una variable
     $FileData->setAccfileContent(file_get_contents($tmpName));
 
     if ($FileData->getAccfileContent() === false) {
-        $Log->addDescription(_('Error interno al leer el archivo'));
+        $LogMessage->addDescription(__('Error interno al leer el archivo', false));
         $Log->writeLog();
 
-        Response::printJson($Log->getDescription());
+        Response::printJson($LogMessage->getDescription());
     }
 
-    if (File::getItem($FileData)->add()) {
-        Response::printJson(_('Archivo guardado'), 0);
-    } else {
-        Response::printJson(_('No se pudo guardar el archivo'));
+    try {
+        File::getItem($FileData)->add();
+
+        Response::printJson(__('Archivo guardado'), 0);
+    } catch (SPException $e) {
+        Response::printJson(__('No se pudo guardar el archivo'));
     }
 } elseif ($actionId === ActionsInterface::ACTION_ACC_FILES_DOWNLOAD
     || $actionId === ActionsInterface::ACTION_ACC_FILES_VIEW
@@ -148,21 +151,21 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
 ) {
     // Verificamos que el ID sea numérico
     if (!is_numeric($fileId) || $fileId === 0) {
-        Response::printJson(_('No es un ID de archivo válido'));
+        Response::printJson(__('No es un ID de archivo válido'));
     }
 
     $FileData = File::getItem()->getById($fileId);
 
     if (!$FileData) {
-        Response::printJson(_('El archivo no existe'));
+        Response::printJson(__('El archivo no existe'));
     }
 
-    $Log->setAction(_('Descargar Archivo'));
-    $Log->addDetails(_('ID'), $fileId);
-    $Log->addDetails(_('Cuenta'), AccountUtil::getAccountNameById($FileData->getAccfileAccountId()));
-    $Log->addDetails(_('Archivo'), $FileData->getAccfileName());
-    $Log->addDetails(_('Tipo'), $FileData->getAccfileType());
-    $Log->addDetails(_('Tamaño'), $FileData->getRoundSize() . 'KB');
+    $LogMessage->setAction(__('Descargar Archivo', false));
+    $LogMessage->addDetails(__('ID', false), $fileId);
+    $LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($FileData->getAccfileAccountId()));
+    $LogMessage->addDetails(__('Archivo', false), $FileData->getAccfileName());
+    $LogMessage->addDetails(__('Tipo', false), $FileData->getAccfileType());
+    $LogMessage->addDetails(__('Tamaño', false), $FileData->getRoundSize() . 'KB');
     $Log->writeLog();
 
     if ($actionId === ActionsInterface::ACTION_ACC_FILES_DOWNLOAD) {
@@ -183,7 +186,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
             exit('<img src="data:' . $FileData->getAccfileType() . ';base64, ' . $imgData . '" border="0" /><div class="title">' . $FileData->getAccfileName() . '</div>');
 //            } elseif ( strtoupper($fileExt) == "PDF" ){
 //                echo '<object data="data:application/pdf;base64, '.base64_encode($fileData).'" type="application/pdf"></object>';
-        } elseif (strtoupper($FileData->getAccfileExtension()) === 'TXT') {
+        } elseif (mb_strtoupper($FileData->getAccfileExtension()) === 'TXT') {
             exit('<pre>' . htmlentities($FileData->getAccfileContent()) . '</pre>');
         } else {
             exit();
@@ -192,12 +195,16 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
 } elseif ($actionId === ActionsInterface::ACTION_ACC_FILES_DELETE) {
     // Verificamos que el ID sea numérico
     if (!is_numeric($fileId) || $fileId === 0) {
-        Response::printJson(_('No es un ID de archivo válido'));
-    } elseif (File::getItem()->delete($fileId)) {
-        Response::printJson(_('Archivo eliminado'), 0);
+        Response::printJson(__('No es un ID de archivo válido'));
     }
 
-    Response::printJson(_('Error al eliminar el archivo'));
+    try {
+        File::getItem()->delete($fileId);
+
+        Response::printJson(__('Archivo eliminado'), 0);
+    } catch (SPException $e) {
+        Response::printJson(__('Error al eliminar el archivo'));
+    }
 } else {
-    Response::printJson(_('Acción Inválida'));
+    Response::printJson(__('Acción Inválida'));
 }

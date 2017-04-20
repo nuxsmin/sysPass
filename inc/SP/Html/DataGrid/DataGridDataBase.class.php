@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid;
 
 use SP\Html\Assets\IconInterface;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class DataGridDataBase para establecer el origen de datos de la matriz
@@ -123,12 +122,13 @@ abstract class DataGridDataBase implements DataGridDataInterface
     }
 
     /**
-     * @param string   $source
+     * @param string $source
      * @param IconInterface $icon
+     * @param mixed $value Valor para mostrar el icono
      */
-    public function addDataRowSourceWithIcon($source, IconInterface $icon)
+    public function addDataRowSourceWithIcon($source, IconInterface $icon, $value = 1)
     {
-        $this->_sourcesWithIcon[] = array($source, $icon);
+        $this->_sourcesWithIcon[] = ['field' => $source, 'icon' => $icon, 'value' => $value];
     }
 
     /**

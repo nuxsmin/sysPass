@@ -6,6 +6,28 @@ use SP\Util\Checks;
 ?>
 <div class="item-actions">
     <ul>
+        <?php if ($gotData && $accountIsHistory): ?>
+            <li>
+                <button id="btnBack" type="button"
+                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                        data-item-id="<?php echo $accountId; ?>"
+                        data-sk="<?php echo $sk; ?>"
+                        data-onclick="account/show"
+                        title="<?php echo __('Ver Actual'); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                </button>
+            </li>
+        <?php else: ?>
+            <li>
+                <button id="btnBack" type="button"
+                        class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                        title="<?php echo __('Atrás'); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                </button>
+            </li>
+        <?php endif; ?>
+
         <?php if ($AccountAcl->isShowDelete()): ?>
             <li>
                 <button id="btnDelete" type="button"
@@ -14,24 +36,41 @@ use SP\Util\Checks;
                         data-item-id="<?php echo $accountId; ?>"
                         data-sk="<?php echo $sk; ?>"
                         data-onclick="account/delete"
-                        title="<?php echo _('Eliminar Cuenta'); ?>">
+                        title="<?php echo __('Eliminar Cuenta'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconDelete()->getIcon(); ?></i>
                 </button>
             </li>
         <?php endif; ?>
 
         <?php if ($AccountAcl->isShowLink() && $AccountAcl->isShowViewPass() && $accountData->getAccountParentId() === 0 && $accountIsHistory !== 1): ?>
-            <li>
-                <button id="btnLink" type="button"
-                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPublicLink()->getClassButton(); ?>"
-                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW; ?>"
-                        data-item-id="<?php echo $accountId; ?>"
-                        data-sk="<?php echo $sk; ?>"
-                        data-onclick="link/save"
-                        title="<?php echo _('Crear Enlace Público'); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
-                </button>
-            </li>
+            <?php if ($publicLinkUrl === null): ?>
+                <li>
+                    <button id="btnLink" type="button"
+                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPublicLink()->getClassButton(); ?>"
+                            data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW; ?>"
+                            data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                            data-item-id="<?php echo $accountId; ?>"
+                            data-sk="<?php echo $sk; ?>"
+                            data-onclick="link/save"
+                            title="<?php echo __('Crear Enlace Público'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
+                    </button>
+                </li>
+            <?php else: ?>
+                <li>
+                    <button id="btnLink" type="button"
+                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPublicLink()->getClassButton(); ?>"
+                            data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_PUBLICLINKS_REFRESH; ?>"
+                            data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                            data-item-id="<?php echo $publicLinkId; ?>"
+                            data-activetab="<?php echo $accountId; ?>"
+                            data-sk="<?php echo $sk; ?>"
+                            data-onclick="link/refresh"
+                            title="<?php echo __('Actualizar Enlace'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
+                    </button>
+                </li>
+            <?php endif; ?>
         <?php endif; ?>
 
         <?php if ($AccountAcl->isShowViewPass()): ?>
@@ -45,14 +84,14 @@ use SP\Util\Checks;
                         data-sk="<?php echo $sk; ?>"
                         data-onclick="account/showpass"
                         data-history="<?php echo $accountIsHistory; ?>"
-                        title="<?php echo _('Ver Clave'); ?>">
+                        title="<?php echo __('Ver Clave'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconViewPass()->getIcon(); ?></i>
                 </button>
             </li>
             <?php if (!Checks::accountPassToImageIsEnabled()): ?>
                 <li>
                     <button id="btnClipPass"
-                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconClipboard()->getClassButton(); ?> clip-pass-button"
+                            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconClipboard()->getClassButton(); ?> clip-pass-button"
                             data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS; ?>"
                             data-item-id="<?php echo $accountIsHistory !== 1 ? $accountId : $accountHistoryId; ?>"
                             data-parent-id="<?php echo $accountData->getAccountParentId(); ?>"
@@ -60,11 +99,25 @@ use SP\Util\Checks;
                             data-sk="<?php echo $sk; ?>"
                             data-history="<?php echo $accountIsHistory; ?>"
                             data-onclick="account/copypass"
-                            title="<?php echo _('Copiar Clave en Portapapeles'); ?>">
+                            title="<?php echo __('Copiar Clave en Portapapeles'); ?>">
                         <i class="material-icons"><?php echo $icons->getIconClipboard()->getIcon(); ?></i>
                     </button>
                 </li>
             <?php endif; ?>
+        <?php endif; ?>
+
+        <?php if ($AccountAcl->isShowCopy()): ?>
+            <li>
+                <button id="btnEdit" type="button"
+                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCopy()->getClassButton(); ?>"
+                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_COPY; ?>"
+                        data-item-id="<?php echo $accountId; ?>"
+                        data-sk="<?php echo $sk; ?>"
+                        data-onclick="account/copy"
+                        title="<?php echo __('Copiar Cuenta'); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconCopy()->getIcon(); ?></i>
+                </button>
+            </li>
         <?php endif; ?>
 
         <?php if ($AccountAcl->isShowEditPass()): ?>
@@ -76,30 +129,8 @@ use SP\Util\Checks;
                         data-parent-id="<?php echo $accountData->getAccountParentId(); ?>"
                         data-sk="<?php echo $sk; ?>"
                         data-onclick="account/editpass"
-                        title="<?php echo _('Modificar Clave de Cuenta'); ?>">
+                        title="<?php echo __('Modificar Clave de Cuenta'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconEditPass()->getIcon(); ?></i>
-                </button>
-            </li>
-        <?php endif; ?>
-
-        <?php if ($gotData && $accountIsHistory): ?>
-            <li>
-                <button id="btnBack" type="button"
-                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
-                        data-item-id="<?php echo $accountId; ?>"
-                        data-sk="<?php echo $sk; ?>"
-                        data-onclick="account/show"
-                        title="<?php echo _('Ver Actual'); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-                </button>
-            </li>
-        <?php else: ?>
-            <li>
-                <button id="btnBack" type="button"
-                        class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                        title="<?php echo _('Atrás'); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
                 </button>
             </li>
         <?php endif; ?>
@@ -112,7 +143,7 @@ use SP\Util\Checks;
                         data-item-id="<?php echo $accountId; ?>"
                         data-sk="<?php echo $sk; ?>"
                         data-onclick="account/edit"
-                        title="<?php echo _('Modificar Cuenta'); ?>">
+                        title="<?php echo __('Modificar Cuenta'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconEdit()->getIcon(); ?></i>
                 </button>
             </li>
@@ -124,7 +155,7 @@ use SP\Util\Checks;
                         data-item-id="<?php echo $accountId; ?>"
                         data-sk="<?php echo $sk; ?>"
                         data-onclick="account/edit"
-                        title="<?php echo _('Solicitar Modificación'); ?>">
+                        title="<?php echo __('Solicitar Modificación'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconEmail()->getIcon(); ?></i>
                 </button>
             </li>
@@ -134,7 +165,7 @@ use SP\Util\Checks;
             <li>
                 <button id="btnRestore" name="btnRestore" type="submit" form="frmAccountRestore"
                         class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconRestore()->getClassButton(); ?>"
-                        title="<?php echo _('Restaurar cuenta desde este punto'); ?>">
+                        title="<?php echo __('Restaurar cuenta desde este punto'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconRestore()->getIcon(); ?></i>
                 </button>
             </li>
@@ -142,7 +173,7 @@ use SP\Util\Checks;
             <li>
                 <button id="btnSave" name="btnSave" type="submit" form="frmAccount"
                         class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                        title="<?php echo _('Guardar'); ?>">
+                        title="<?php echo __('Guardar'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
                 </button>
             </li>

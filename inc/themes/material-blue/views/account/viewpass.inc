@@ -3,26 +3,32 @@
 /** @var  \SP\Core\UI\ThemeIconsBase $icons */
 ?>
 <div id="box-popup" class="box-password-view">
-    <h2 class="center"><?php echo $header; ?></h2>
+    <?php if (!$isLinked): ?>
+        <h2 class="center"><?php echo $header; ?></h2>
+    <?php else: ?>
+        <h2 class="center"><?php echo $header; ?>&nbsp;<i title="<?php echo __('Cuenta Vinculada'); ?>"
+                                                          class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
+        </h2>
+    <?php endif; ?>
     <table>
         <tbody>
         <tr>
-            <td class="dialog-user-text"><?php echo $login; ?></td>
+            <td class="dialog-text dialog-user-text"><?php echo $login; ?></td>
             <td class="right">
-                <button class="dialog-clip-user-button mdl-button mdl-js-button mdl-js-ripple-effect"
-                        title="<?php echo _('Copiar Usuario'); ?>" data-clipboard-target=".dialog-user-text">
-                    <?php echo _('Usuario'); ?>
+                <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
+                        title="<?php echo __('Copiar Usuario'); ?>" data-clipboard-target=".dialog-user-text">
+                    <?php echo __('Usuario'); ?>
                     <i class="material-icons"><?php echo $icons->getIconClipboard()->getIcon(); ?></i>
                 </button>
             </td>
         </tr>
         <tr>
             <?php if (!$isImage): ?>
-                <td class="dialog-pass-text"><?php echo $pass; ?></td>
+                <td class="dialog-text dialog-pass-text"><?php echo $pass; ?></td>
                 <td class="right">
-                    <button class="dialog-clip-pass-button mdl-button mdl-js-button mdl-js-ripple-effect"
-                            title="<?php echo _('Copiar Clave'); ?>" data-clipboard-target=".dialog-pass-text">
-                        <?php echo _('Clave'); ?>
+                    <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
+                            title="<?php echo __('Copiar Clave'); ?>" data-clipboard-target=".dialog-pass-text">
+                        <?php echo __('Clave'); ?>
                         <i class="material-icons"><?php echo $icons->getIconClipboard()->getIcon(); ?></i>
                     </button>
                 </td>

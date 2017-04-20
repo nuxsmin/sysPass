@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,14 +25,12 @@
 namespace SP\Auth;
 
 use SP\Core\Init;
+use SP\Core\Messages\LogMessage;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPassRecoverData;
 use SP\Html\Html;
 use SP\Log\Email;
-use SP\Log\Log;
 use SP\Mgmt\Users\UserPassRecover;
-use SP\Storage\DB;
-use SP\Storage\QueryData;
 use SP\Util\Util;
 
 /**
@@ -47,6 +45,9 @@ class AuthUtil
      *
      * @param UserData $UserData
      * @return bool
+     * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function mailPassRecover(UserData $UserData)
     {
@@ -54,53 +55,26 @@ class AuthUtil
             && !$UserData->isUserIsLdap()
             && !UserPassRecover::checkPassRecoverLimit($UserData)
         ) {
-            $hash = Util::generateRandomBytes();
+            $hash = Util::generateRandomBytes(16);
 
-            $Log = new Log(_('Cambio de Clave'));
-
-            $Log->addDescriptionHtml(_('Se ha solicitado el cambio de su clave de usuario.'));
-            $Log->addDescriptionLine();
-            $Log->addDescription(_('Para completar el proceso es necesario que acceda a la siguiente URL:'));
-            $Log->addDescriptionLine();
-            $Log->addDescription(Html::anchorText(Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time()));
-            $Log->addDescriptionLine();
-            $Log->addDescription(_('Si no ha solicitado esta acción, ignore este mensaje.'));
+            $LogMessage = new LogMessage();
+            $LogMessage->setAction(__('Cambio de Clave'));
+            $LogMessage->addDescriptionHtml(__('Se ha solicitado el cambio de su clave de usuario.'));
+            $LogMessage->addDescriptionLine();
+            $LogMessage->addDescription(__('Para completar el proceso es necesario que acceda a la siguiente URL:'));
+            $LogMessage->addDescriptionLine();
+            $LogMessage->addDescription(Html::anchorText(Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time()));
+            $LogMessage->addDescriptionLine();
+            $LogMessage->addDescription(__('Si no ha solicitado esta acción, ignore este mensaje.'));
 
             $UserPassRecoverData = new UserPassRecoverData();
             $UserPassRecoverData->setUserpassrUserId($UserData->getUserId());
             $UserPassRecoverData->setUserpassrHash($hash);
 
-            return (Email::sendEmail($Log, $UserData->getUserEmail(), false) && UserPassRecover::getItem($UserPassRecoverData)->add());
+            return (Email::sendEmail($LogMessage, $UserData->getUserEmail(), false) && UserPassRecover::getItem($UserPassRecoverData)->add());
         }
 
         return false;
-    }
-
-    /**
-     * Comprobar el token de seguridad
-     *
-     * @param $actionId int El id de la accion
-     * @param $token    string El token de seguridad
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public static function checkAuthToken($actionId, $token)
-    {
-        $query = /** @lang SQL */
-            'SELECT authtoken_id
-            FROM authTokens
-            WHERE authtoken_actionId = ?
-            AND authtoken_token = ?
-            LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($actionId);
-        $Data->addParam($token);
-
-        DB::getQuery($Data);
-
-        return ($Data->getQueryNumRows() === 1);
     }
 
     /**

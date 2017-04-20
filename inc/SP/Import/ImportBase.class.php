@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,275 +19,218 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Import;
 
 use SP\Account\Account;
-use SP\DataModel\AccountData;
+use SP\Core\Crypt\Crypt;
+use SP\Core\OldCrypt;
+use SP\Core\Exceptions\SPException;
+use SP\Core\Messages\LogMessage;
+use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
-use SP\Mgmt\Customers\Customer;
+use SP\DataModel\TagData;
+use SP\Log\Log;
 use SP\Mgmt\Categories\Category;
-use SP\Core\Session;
+use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\Tags\Tag;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ImportBase abstracta para manejo de archivos de importación
  *
  * @package SP
  */
-abstract class ImportBase
+abstract class ImportBase implements ImportInterface
 {
     /**
-     * El id de usuario propietario de la cuenta.
-     *
-     * @var int
+     * @var ImportParams
      */
-    public $userId = 0;
-    /**
-     * El id del grupo propietario de la cuenta.
-     *
-     * @var int
-     */
-    public $userGroupId = 0;
-    /**
-     * Nombre de la categoría.
-     *
-     * @var string
-     */
-    protected $categoryName = '';
-    /**
-     * Nombre del cliente.
-     *
-     * @var string
-     */
-    protected $customerName = '';
-    /**
-     * Descrición de la categoría.
-     *
-     * @var string
-     */
-    protected $categoryDescription = '';
-    /**
-     * Descripción del cliente.
-     *
-     * @var string
-     */
-    protected $customerDescription = '';
+    protected $ImportParams;
     /**
      * @var FileImport
      */
     protected $file;
     /**
-     * La clave de importación
+     * @var LogMessage
+     */
+    protected $LogMessage;
+    /**
+     * @var int
+     */
+    protected $counter = 0;
+    /**
+     * @var int
+     */
+    protected $version = 0;
+    /**
+     * @var bool Indica si el hash de la clave suministrada es igual a la actual
+     */
+    protected $mPassValidHash = false;
+
+    /**
+     * ImportBase constructor.
      *
-     * @var string
+     * @param FileImport   $File
+     * @param ImportParams $ImportParams
+     * @param LogMessage   $LogMessage
      */
-    protected $importPass;
-
-    /**
-     * @return string
-     */
-    public function getImportPass()
+    public function __construct(FileImport $File = null, ImportParams $ImportParams = null, LogMessage $LogMessage = null)
     {
-        return $this->importPass;
+        $this->file = $File;
+        $this->ImportParams = $ImportParams;
+        $this->LogMessage = null !== $LogMessage ? $LogMessage : new LogMessage(__('Importar Cuentas', false));
     }
 
     /**
-     * @param string $importPass
+     * @return LogMessage
      */
-    public function setImportPass($importPass)
+    public function getLogMessage()
     {
-        $this->importPass = $importPass;
+        return $this->LogMessage;
     }
 
     /**
-     * Iniciar la importación desde XML.
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     * @return bool
+     * @param LogMessage $LogMessage
      */
-    public abstract function doImport();
-
-    /**
-     * @return string
-     */
-    public function getCategoryName()
+    public function setLogMessage($LogMessage)
     {
-        return $this->categoryName;
+        $this->LogMessage = $LogMessage;
     }
 
     /**
-     * @param string $categoryName
+     * @return int
      */
-    public function setCategoryName($categoryName)
+    public function getCounter()
     {
-        $this->categoryName = $categoryName;
+        return $this->counter;
     }
 
     /**
-     * @return string
+     * @param ImportParams $ImportParams
      */
-    public function getCategoryDescription()
+    public function setImportParams($ImportParams)
     {
-        return $this->categoryDescription;
-    }
-
-    /**
-     * @param string $categoryDescription
-     */
-    public function setCategoryDescription($categoryDescription)
-    {
-        $this->categoryDescription = $categoryDescription;
-    }
-
-    /**
-     * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
-     *
-     * @return bool
-     */
-    protected function parseFileHeader()
-    {
-        $handle = @fopen($this->file->getTmpFile(), 'r');
-        $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
-
-        if ($handle) {
-            // No. de líneas a leer como máximo
-            $maxLines = 5;
-            $count = 0;
-
-            while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines) {
-                if (preg_match($headersRegex, $buffer, $app)) {
-                    fclose($handle);
-                    return strtolower($app[0]);
-                }
-                $count++;
-            }
-
-            fclose($handle);
-        }
-
-        return false;
+        $this->ImportParams = $ImportParams;
     }
 
     /**
      * Añadir una cuenta desde un archivo importado.
      *
-     * @param \SP\DataModel\AccountData $AccountData
+     * @param \SP\DataModel\AccountExtData $AccountData
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
      */
-    protected function addAccount(AccountData $AccountData)
+    protected function addAccount(AccountExtData $AccountData)
     {
-        $userId = $this->getUserId();
-        $groupId = $this->getUserGroupId();
-
-        if (null === $userId || $userId === 0) {
-            $this->setUserId(Session::getUserData()->getUserId());
+        if ($AccountData->getAccountCategoryId() === 0) {
+            Log::writeNewLog(__FUNCTION__, __('Id de categoría no definido. No es posible importar cuenta.', false), Log::INFO);
+            return false;
+        } elseif ($AccountData->getAccountCustomerId() === 0) {
+            Log::writeNewLog(__FUNCTION__, __('Id de cliente no definido. No es posible importar cuenta.', false), Log::INFO);
+            return false;
         }
 
-        if (null === $groupId || $groupId === 0) {
-            $this->setUserGroupId(Session::getUserData()->getUserGroupId());
+        try {
+            $AccountData->setAccountUserId($this->ImportParams->getDefaultUser());
+            $AccountData->setAccountUserGroupId($this->ImportParams->getDefaultGroup());
+
+            if ($this->mPassValidHash === false && $this->ImportParams->getImportMasterPwd() !== '') {
+                if ($this->version >= 210) {
+                    $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
+                    $pass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $this->ImportParams->getImportMasterPwd());
+                } else {
+                    $pass = OldCrypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
+                }
+
+                $AccountData->setAccountPass($pass);
+                $AccountData->setAccountKey('');
+            }
+
+            $encrypt = $AccountData->getAccountKey() === '';
+
+            $Account = new Account($AccountData);
+            $Account->createAccount($encrypt);
+
+            $this->LogMessage->addDetails(__('Cuenta creada', false), $AccountData->getAccountName());
+            $this->counter++;
+        } catch (SPException $e) {
+            $this->LogMessage->addDetails($e->getMessage(), $AccountData->getAccountName());
+            $this->LogMessage->addDetails(__('Error', false), $e->getHint());
+        } catch (\Exception $e) {
+            $this->LogMessage->addDetails(__('Error', false), $e->getMessage());
+            $this->LogMessage->addDetails(__('Cuenta', false), $AccountData->getAccountName());
         }
 
-        $Account = new Account($AccountData);
-        $Account->createAccount();
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     * @param int $userId
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserGroupId()
-    {
-        return $this->userGroupId;
-    }
-
-    /**
-     * @param int $userGroupId
-     */
-    public function setUserGroupId($userGroupId)
-    {
-        $this->userGroupId = $userGroupId;
+        return true;
     }
 
     /**
      * Añadir una categoría y devolver el Id
      *
-     * @param $name
-     * @param $description
-     * @return int
-     * @throws \SP\Core\Exceptions\SPException
+     * @param CategoryData $CategoryData
+     * @return Category|null
      */
-    protected function addCategory($name, $description = null)
+    protected function addCategory(CategoryData $CategoryData)
     {
-        $CategoryData = new CategoryData($name, $description);
+        try {
+            $Category = Category::getItem($CategoryData)->add();
 
-        return Category::getItem($CategoryData)->add()->getItemData()->getCategoryId();
+            $this->LogMessage->addDetails(__('Categoría creada', false), $CategoryData->getCategoryName());
+
+            return $Category;
+        } catch (SPException $e) {
+            $this->LogMessage->addDetails($e->getMessage(), $CategoryData->category_name);
+            $this->LogMessage->addDetails(__('Error', false), $e->getHint());
+        }
+
+        return null;
     }
 
     /**
      * Añadir un cliente y devolver el Id
      *
-     * @param $name
-     * @param $description
-     * @return int
+     * @param CustomerData $CustomerData
+     * @return Customer|null
      */
-    protected function addCustomer($name, $description = null)
+    protected function addCustomer(CustomerData $CustomerData)
     {
-        $CustomerData = new CustomerData($name, $description);
+        try {
+            $Customer = Customer::getItem($CustomerData)->add();
 
-        return Customer::getItem($CustomerData)->add()->getItemData()->getCustomerId();
+            $this->LogMessage->addDetails(__('Cliente creado', false), $CustomerData->getCustomerName());
+
+            return $Customer;
+        } catch (SPException $e) {
+            $this->LogMessage->addDetails($e->getMessage(), $CustomerData->getCustomerName());
+            $this->LogMessage->addDetails(__('Error', false), $e->getHint());
+        }
+
+        return null;
     }
 
     /**
-     * @return string
+     * Añadir una etiqueta y devolver el Id
+     *
+     * @param TagData $TagData
+     * @return Tag|null
      */
-    public function getCustomerName()
+    protected function addTag(TagData $TagData)
     {
-        return $this->customerName;
-    }
+        try {
+            $Tag = Tag::getItem($TagData)->add();
 
-    /**
-     * @param string $customerName
-     */
-    public function setCustomerName($customerName)
-    {
-        $this->customerName = $customerName;
-    }
+            $this->LogMessage->addDetails(__('Etiqueta creada', false), $TagData->getTagName());
 
-    /**
-     * @return string
-     */
-    public function getCustomerDescription()
-    {
-        return $this->customerDescription;
-    }
+            return $Tag;
+        } catch (SPException $e) {
+            $this->LogMessage->addDetails($e->getMessage(), $TagData->getTagName());
+            $this->LogMessage->addDetails(__('Error', false), $e->getHint());
+        }
 
-    /**
-     * @param string $customerDescription
-     */
-    public function setCustomerDescription($customerDescription)
-    {
-        $this->customerDescription = $customerDescription;
+        return null;
     }
 }

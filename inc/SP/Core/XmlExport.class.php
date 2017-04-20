@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,23 +19,26 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountUtil;
 use SP\Config\Config;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\Log\Email;
-use SP\Mgmt\Customers\Customer;
 use SP\Log\Log;
 use SP\Mgmt\Categories\Category;
+use SP\Mgmt\Customers\Customer;
+use SP\Mgmt\Tags\Tag;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase XmlExport para realizar la exportación de las cuentas de sysPass a formato XML
@@ -55,7 +58,7 @@ class XmlExport
     /**
      * @var string
      */
-    private $exportPass = null;
+    private $exportPass;
     /**
      * @var bool
      */
@@ -87,7 +90,7 @@ class XmlExport
     {
         $xml = new XmlExport();
 
-        if (!is_null($pass) && !empty($pass)) {
+        if (null !== $pass && !empty($pass)) {
             $xml->setExportPass($pass);
             $xml->setEncrypted(true);
         }
@@ -121,10 +124,13 @@ class XmlExport
      * Crear el documento XML y guardarlo
      *
      * @return bool
+     * @throws \phpmailer\phpmailerException
      */
     public function makeXML()
     {
-        $Log = new Log(_('Exportar XML'));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Exportar XML', false));
 
         try {
             $this->checkExportDir();
@@ -132,23 +138,24 @@ class XmlExport
             $this->createMeta();
             $this->createCategories();
             $this->createCustomers();
+            $this->createTags();
             $this->createAccounts();
             $this->createHash();
             $this->writeXML();
         } catch (SPException $e) {
+            $LogMessage->addDescription(__('Error al realizar la exportación de cuentas', false));
+            $LogMessage->addDetails($e->getMessage(), $e->getHint());
             $Log->setLogLevel(Log::ERROR);
-            $Log->addDescription(_('Error al realizar la exportación de cuentas'));
-            $Log->addDetails($e->getMessage(), $e->getHint());
             $Log->writeLog();
 
-            Email::sendEmail($Log);
+            Email::sendEmail($LogMessage);
             return false;
         }
 
-        $Log->addDescription(_('Exportación de cuentas realizada correctamente'));
+        $LogMessage->addDescription(__('Exportación de cuentas realizada correctamente', false));
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
         return true;
     }
@@ -244,8 +251,8 @@ class XmlExport
      */
     private function escapeChars($data)
     {
-        $arrStrFrom = array("&", "<", ">", "\"", "\'");
-        $arrStrTo = array("&#38;", "&#60;", "&#62;", "&#34;", "&#39;");
+        $arrStrFrom = ['&', '<', '>', '"', '\''];
+        $arrStrTo = ['&#38;', '&#60;', '&#62;', '&#34;', '&#39;'];
 
         return str_replace($arrStrFrom, $arrStrTo, $data);
     }
@@ -266,21 +273,22 @@ class XmlExport
                 $nodeXML = $this->xml->saveXML($node);
 
                 // Crear los datos encriptados con la información del nodo
-                $encrypted = Crypt::mkEncrypt($nodeXML, $this->exportPass);
-                $encryptedIV = Crypt::$strInitialVector;
+                $securedKey = Crypt::makeSecuredKey($this->exportPass);
+                $encrypted = Crypt::encrypt($nodeXML, $securedKey, $this->exportPass);
 
                 // Buscar si existe ya un nodo para el conjunto de datos encriptados
                 $encryptedNode = $this->root->getElementsByTagName('Encrypted')->item(0);
 
                 if (!$encryptedNode instanceof \DOMElement) {
                     $encryptedNode = $this->xml->createElement('Encrypted');
+                    $encryptedNode->setAttribute('hash', Hash::hashKey($this->exportPass));
                 }
 
                 // Crear el nodo hijo con los datos encriptados
                 $encryptedData = $this->xml->createElement('Data', base64_encode($encrypted));
 
-                $encryptedDataIV = $this->xml->createAttribute('iv');
-                $encryptedDataIV->value = base64_encode($encryptedIV);
+                $encryptedDataIV = $this->xml->createAttribute('key');
+                $encryptedDataIV->value = $securedKey;
 
                 // Añadir nodos de datos
                 $encryptedData->appendChild($encryptedDataIV);
@@ -292,6 +300,8 @@ class XmlExport
                 $this->root->appendChild($node);
             }
         } catch (\DOMException $e) {
+            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+        } catch (CryptoException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
         }
     }
@@ -316,20 +326,53 @@ class XmlExport
             foreach ($customers as $CustomerData) {
                 $customerName = $this->xml->createElement('name', $this->escapeChars($CustomerData->getCustomerName()));
                 $customerDescription = $this->xml->createElement('description', $this->escapeChars($CustomerData->getCustomerDescription()));
-                $customerHash = $this->xml->createElement('hash', $this->escapeChars($CustomerData->getCustomerHash()));
 
-                // Crear el nodo de categoría
+                // Crear el nodo de clientes
                 $nodeCustomer = $this->xml->createElement('Customer');
                 $nodeCustomer->setAttribute('id', $CustomerData->getCustomerId());
                 $nodeCustomer->appendChild($customerName);
                 $nodeCustomer->appendChild($customerDescription);
-                $nodeCustomer->appendChild($customerHash);
 
-                // Añadir categoría al nodo de categorías
+                // Añadir cliente al nodo de clientes
                 $nodeCustomers->appendChild($nodeCustomer);
             }
 
             $this->appendNode($nodeCustomers);
+        } catch (\DOMException $e) {
+            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+        }
+    }
+
+    /**
+     * Crear el nodo con los datos de las etiquetas
+     *
+     * #@throws SPException
+     */
+    private function createTags()
+    {
+        $Tags = Tag::getItem()->getAll();
+
+        if (count($Tags) === 0) {
+            return;
+        }
+
+        try {
+            // Crear el nodo de etiquetas
+            $nodeTags= $this->xml->createElement('Tags');
+
+            foreach ($Tags as $TagData) {
+                $tagName = $this->xml->createElement('name', $this->escapeChars($TagData->getTagName()));
+
+                // Crear el nodo de etiquetas
+                $nodeTag = $this->xml->createElement('Tag');
+                $nodeTag->setAttribute('id', $TagData->getTagId());
+                $nodeTag->appendChild($tagName);
+
+                // Añadir etiqueta al nodo de etiquetas
+                $nodeTags->appendChild($nodeTag);
+            }
+
+            $this->appendNode($nodeTags);
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
         }
@@ -359,8 +402,8 @@ class XmlExport
                 $accountLogin = $this->xml->createElement('login', $this->escapeChars($account->account_login));
                 $accountUrl = $this->xml->createElement('url', $this->escapeChars($account->account_url));
                 $accountNotes = $this->xml->createElement('notes', $this->escapeChars($account->account_notes));
-                $accountPass = $this->xml->createElement('pass', $this->escapeChars(base64_encode($account->account_pass)));
-                $accountIV = $this->xml->createElement('passiv', $this->escapeChars(base64_encode($account->account_IV)));
+                $accountPass = $this->xml->createElement('pass', $this->escapeChars($account->account_pass));
+                $accountIV = $this->xml->createElement('key', $this->escapeChars($account->account_key));
 
                 // Crear el nodo de cuenta
                 $nodeAccount = $this->xml->createElement('Account');
@@ -386,14 +429,16 @@ class XmlExport
 
     /**
      * Crear el hash del archivo XML e insertarlo en el árbol DOM
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function createHash()
     {
         try {
             if ($this->encrypted === true) {
-                $hash = md5($this->getNodeXML('Encrypted'));
+                $hash = sha1($this->getNodeXML('Encrypted'));
             } else {
-                $hash = md5($this->getNodeXML('Categories') . $this->getNodeXML('Customers') . $this->getNodeXML('Accounts'));
+                $hash = sha1($this->getNodeXML('Categories') . $this->getNodeXML('Customers') . $this->getNodeXML('Accounts'));
             }
 
             $metaHash = $this->xml->createElement('Hash', $hash);
@@ -435,7 +480,7 @@ class XmlExport
             $this->xml->preserveWhiteSpace = false;
 
             if (!$this->xml->save($this->exportFile)) {
-                throw new SPException(SPException::SP_CRITICAL, _('Error al crear el archivo XML'));
+                throw new SPException(SPException::SP_CRITICAL, __('Error al crear el archivo XML', false));
             }
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
@@ -448,7 +493,7 @@ class XmlExport
     private function setExportFile()
     {
         // Generar hash unico para evitar descargas no permitidas
-        $exportUniqueHash = uniqid();
+        $exportUniqueHash = sha1(uniqid('sysPassExport', true));
         Config::getConfig()->setExportHash($exportUniqueHash);
         Config::saveConfig();
 
@@ -464,24 +509,6 @@ class XmlExport
     }
 
     /**
-     * Devolver el archivo XML con las cabeceras HTTP
-     */
-    private function sendFileToBrowser($file)
-    {
-        // Enviamos el archivo al navegador
-        header('Set-Cookie: fileDownload=true; path=/');
-        header('Cache-Control: max-age=60, must-revalidate');
-        header("Content-length: " . filesize($file));
-        Header('Content-type: text/xml');
-//        header("Content-type: " . filetype($this->_exportFile));
-        header("Content-Disposition: attachment; filename=\"$file\"");
-        header("Content-Description: PHP Generated Data");
-//        header("Content-transfer-encoding: binary");
-
-        return file_get_contents($file);
-    }
-
-    /**
      * Comprobar y crear el directorio de exportación.
      *
      * @throws SPException
@@ -489,14 +516,14 @@ class XmlExport
      */
     private function checkExportDir()
     {
-        if (!is_dir($this->exportDir)) {
-            if (!@mkdir($this->exportDir, 0550)) {
-                throw new SPException(SPException::SP_CRITICAL, _('No es posible crear el directorio de backups') . ' (' . $this->exportDir . ')');
-            }
+        if (@mkdir($this->exportDir, 0750) === false && is_dir($this->exportDir) === false) {
+            throw new SPException(SPException::SP_CRITICAL, sprintf(__('No es posible crear el directorio de backups ("%s")'), $this->exportDir));
         }
 
+        clearstatcache(true, $this->exportDir);
+
         if (!is_writable($this->exportDir)) {
-            throw new SPException(SPException::SP_CRITICAL, _('Compruebe los permisos del directorio de backups'));
+            throw new SPException(SPException::SP_CRITICAL, __('Compruebe los permisos del directorio de backups', false));
         }
 
         return true;

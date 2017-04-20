@@ -9,7 +9,7 @@
  *
  * Useful resources are as follows:
  *
- *  - {@link http://en.wikipedia.org/wiki/Blowfish_(cipher) Wikipedia description of Blowfish}
+ *  - {@link http://en.wikipedia.org/wiki/Blowfish__(cipher) Wikipedia description of Blowfish}
  *
  * Here's a short example of how to use this library:
  * <code>

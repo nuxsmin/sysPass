@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -55,7 +55,7 @@ try {
     $Installer->install();
 
     $Json->setStatus(0);
-    $Json->setDescription(_('Instalación finalizada'));
+    $Json->setDescription(__('Instalación finalizada'));
 } catch (SPException $e) {
     $Json->setDescription($e->getMessage());
     $Json->addMessage($e->getHint());

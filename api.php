@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.or
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,35 +19,22 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use SP\Api\ApiRequest;
-use SP\Core\Init;
-use SP\Http\Response;
+use SP\Log\Log;
 
 define('APP_ROOT', '.');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
-
-Init::setLogging();
 
 header('Content-type: application/json');
 
 try {
     $ApiRequest = new ApiRequest();
     exit($ApiRequest->runApi());
-} catch (\SP\Core\Exceptions\InvalidArgumentException $e) {
-    Response::printJson(
-        [
-            'message' => $e->getMessage(),
-            'help' => $e->getHint()
-        ]);
 } catch (Exception $e) {
-    Response::printJson(
-        [
-            'message' => $e->getMessage(),
-            'help' => ApiRequest::getHelp()
-        ]);
+    Log::writeNewLog('API', $e->getMessage(), Log::ERROR);
+    exit($ApiRequest->formatJsonError($e));
 }

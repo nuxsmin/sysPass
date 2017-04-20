@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,16 +19,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Users;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
-use SP\Core\Session;
-use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
@@ -48,18 +45,24 @@ class UserUtil
      *
      * @param UserData $UserData
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function checkUserMail(UserData $UserData)
     {
         $query = /** @lang SQL */
-            'SELECT user_id FROM usrData WHERE user_login = ? AND user_email = ? LIMIT 1';
+            'SELECT user_id FROM usrData 
+            WHERE LOWER(user_login) = LOWER(?) 
+            AND LOWER(user_email) = LOWER(?) LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($UserData->getUserLogin());
         $Data->addParam($UserData->getUserEmail());
 
-        return (DB::getQuery($Data) === true && $Data->getQueryNumRows() === 1);
+        DB::getQuery($Data);
+
+        return $Data->getQueryNumRows() === 1;
     }
 
     /**
@@ -91,6 +94,8 @@ class UserUtil
      *
      * @param $userId int El id del usuario
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function setUserLastLogin($userId)
     {
@@ -145,4 +150,47 @@ class UserUtil
         return DB::getResultsArray($Data);
     }
 
+    /**
+     * Obtener el email de los usuarios de un grupo
+     *
+     * @param $groupId
+     * @return array
+     */
+    public static function getUserGroupEmail($groupId)
+    {
+        $query = /** @lang SQL */
+            'SELECT user_id, user_login, user_name, user_email 
+            FROM usrData 
+            LEFT JOIN usrToGroups ON usertogroup_userId = user_id
+            WHERE user_email IS NOT NULL 
+            AND user_groupId = ? OR usertogroup_groupId = ?
+            AND user_isDisabled = 0
+            ORDER BY user_login';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($groupId);
+        $Data->addParam($groupId);
+
+        return DB::getResultsArray($Data);
+    }
+
+    /**
+     * Obtener el email de los usuarios
+     *
+     * @return array
+     */
+    public static function getUsersEmail()
+    {
+        $query = /** @lang SQL */
+            'SELECT user_id, user_login, user_name, user_email 
+            FROM usrData 
+            WHERE user_email IS NOT NULL AND user_isDisabled = 0
+            ORDER BY user_login';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return DB::getResultsArray($Data);
+    }
 }

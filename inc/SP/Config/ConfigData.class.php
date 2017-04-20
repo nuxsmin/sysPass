@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Config;
@@ -129,6 +128,10 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
+    private $dbSocket;
+    /**
+     * @var string
+     */
     private $dbName = '';
     /**
      * @var string
@@ -197,7 +200,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $ldapGroup = '*';
+    private $ldapGroup = '';
     /**
      * @var string
      */
@@ -334,6 +337,14 @@ class ConfigData implements JsonSerializable
      * @var string
      */
     private $configSaver = '';
+    /**
+     * @var bool
+     */
+    private $encryptSession = false;
+    /**
+     * @var bool
+     */
+    private $accountFullGroupAccess = false;
 
     /**
      * @return boolean
@@ -967,15 +978,19 @@ class ConfigData implements JsonSerializable
      */
     public function getFilesAllowedExts()
     {
-        return is_array($this->filesAllowedExts) ? $this->filesAllowedExts : array();
+        return is_array($this->filesAllowedExts) ? $this->filesAllowedExts : [];
     }
 
     /**
      * @param array $filesAllowedExts
      * @return $this
      */
-    public function setFilesAllowedExts($filesAllowedExts)
+    public function setFilesAllowedExts($filesAllowedExts = [])
     {
+        if (!is_array($filesAllowedExts)) {
+            $filesAllowedExts = ConfigUtil::filesExtsAdapter($filesAllowedExts);
+        }
+
         $this->filesAllowedExts = $filesAllowedExts;
 
         return $this;
@@ -1709,7 +1724,7 @@ class ConfigData implements JsonSerializable
      */
     public function setDbPort($dbPort)
     {
-        $this->dbPort = intval($dbPort);
+        $this->dbPort = (int)$dbPort;
 
         return $this;
     }
@@ -1761,6 +1776,60 @@ class ConfigData implements JsonSerializable
     public function setConfigSaver($configSaver)
     {
         $this->configSaver = $configSaver;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDbSocket()
+    {
+        return $this->dbSocket;
+    }
+
+    /**
+     * @param string $dbSocket
+     */
+    public function setDbSocket($dbSocket)
+    {
+        $this->dbSocket = $dbSocket;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEncryptSession()
+    {
+        return (bool)$this->encryptSession;
+    }
+
+    /**
+     * @param bool $encryptSession
+     * @return $this
+     */
+    public function setEncryptSession($encryptSession)
+    {
+        $this->encryptSession = (bool)$encryptSession;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccountFullGroupAccess()
+    {
+        return (bool)$this->accountFullGroupAccess;
+    }
+
+    /**
+     * @param bool $accountFullGroupAccess
+     * @return $this
+     */
+    public function setAccountFullGroupAccess($accountFullGroupAccess)
+    {
+        $this->accountFullGroupAccess = (bool)$accountFullGroupAccess;
 
         return $this;
     }

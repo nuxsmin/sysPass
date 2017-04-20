@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,31 +19,22 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Account;
 
 use SP\Config\Config;
 use SP\Core\Acl;
-use SP\Core\ActionsInterface;
-use SP\DataModel\AccountData;
-use SP\DataModel\AccountExtData;
+use SP\Core\Session;
 use SP\DataModel\AccountSearchData;
-use SP\Log\Log;
-use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Mgmt\Groups\GroupUtil;
 use SP\Mgmt\Users\User;
 use SP\Storage\DB;
-use SP\Mgmt\Groups\Group;
-use SP\Html\Html;
-use SP\Core\Session;
-use SP\Mgmt\Users\UserUtil;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class AccountSearch para la gestión de búsquedas de cuentas
@@ -314,29 +305,38 @@ class AccountSearch
 
         $accountsData['count'] = self::$queryNumRows;
 
+        $accountLinkEnabled = Session::getUserPreferences()->isAccountLink() || Config::getConfig()->isAccountLink();
+        $favorites = AccountFavorites::getFavorites(Session::getUserData()->getUserId());
+
         foreach ($results as $AccountSearchData) {
             // Establecer los datos de la cuenta
             $Account = new Account($AccountSearchData);
 
+            // Propiedades de búsqueda de cada cuenta
+            $AccountSearchItems = new AccountsSearchItem($AccountSearchData);
+
+            // Obtener la ACL de la cuenta
+            $AccountAcl = new AccountAcl($Account, Acl::ACTION_ACC_SEARCH);
+
             if (!$AccountSearchData->getAccountIsPrivate()) {
-                $AccountSearchData->setUsersId($Account->getUsersAccount());
-                $AccountSearchData->setUserGroupsId($Account->getGroupsAccount());
+                $AccountSearchData->setUsersId($AccountSearchItems->getCacheUsers(true));
+                $AccountSearchData->setUserGroupsId($AccountSearchItems->getCacheGroups(true));
             }
 
             $AccountSearchData->setTags(AccountTags::getTags($Account->getAccountData()));
 
-            // Obtener la ACL de la cuenta
-            $AccountAcl = new AccountAcl();
-            $AccountAcl->getAcl($Account, Acl::ACTION_ACC_SEARCH);
+            // Obtener la ACL
+            $Acl = $AccountAcl->getAcl();
 
-            $AccountSearchItems = new AccountsSearchItem($AccountSearchData);
             $AccountSearchItems->setTextMaxLength($maxTextLength);
             $AccountSearchItems->setColor($this->pickAccountColor($AccountSearchData->getAccountCustomerId()));
-            $AccountSearchItems->setShowView($AccountAcl->isShowView());
-            $AccountSearchItems->setShowViewPass($AccountAcl->isShowViewPass());
-            $AccountSearchItems->setShowEdit($AccountAcl->isShowEdit());
-            $AccountSearchItems->setShowCopy($AccountAcl->isShowCopy());
-            $AccountSearchItems->setShowDelete($AccountAcl->isShowDelete());
+            $AccountSearchItems->setShowView($Acl->isShowView());
+            $AccountSearchItems->setShowViewPass($Acl->isShowViewPass());
+            $AccountSearchItems->setShowEdit($Acl->isShowEdit());
+            $AccountSearchItems->setShowCopy($Acl->isShowCopy());
+            $AccountSearchItems->setShowDelete($Acl->isShowDelete());
+            $AccountSearchItems->setLink($accountLinkEnabled);
+            $AccountSearchItems->setFavorite(in_array($AccountSearchData->getAccountId(), $favorites, true));
 
             $accountsData[] = $AccountSearchItems;
         }
@@ -351,11 +351,8 @@ class AccountSearch
      */
     public function getAccounts()
     {
-        $isAdmin = (Session::getUserData()->isUserIsAdminApp() || Session::getUserData()->isUserIsAdminAcc());
-
         $arrFilterCommon = [];
         $arrFilterSelect = [];
-        $arrFilterUser = [];
         $arrayQueryJoin = [];
         $arrQueryWhere = [];
         $queryLimit = '';
@@ -363,7 +360,7 @@ class AccountSearch
         $Data = new QueryData();
         $Data->setMapClassName(AccountSearchData::class);
 
-        if ($this->txtSearch !== null) {
+        if ($this->txtSearch !== null && $this->txtSearch !== '') {
             // Analizar la cadena de búsqueda por etiquetas especiales
             $stringFilters = $this->analyzeQueryString();
 
@@ -427,22 +424,7 @@ class AccountSearch
             $arrQueryWhere[] = '(' . implode(' AND ', $arrFilterSelect) . ')';
         }
 
-        if (!$isAdmin && !$this->globalSearch) {
-            $arrFilterUser[] = 'account_userId = ?';
-            $Data->addParam(Session::getUserData()->getUserId());
-            $arrFilterUser[] = 'account_userGroupId = ?';
-            $Data->addParam(Session::getUserData()->getUserGroupId());
-            $arrFilterUser[] = 'account_id IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)';
-            $Data->addParam(Session::getUserData()->getUserId());
-            $Data->addParam(Session::getUserData()->getUserGroupId());
-            $arrFilterUser[] = 'account_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = account_userGroupId AND usertogroup_userId = ?)';
-            $Data->addParam(Session::getUserData()->getUserId());
-
-            $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterUser) . ')';
-        }
-
-        $arrQueryWhere[] = '(account_isPrivate = 0 OR (account_isPrivate = 1 AND account_userId = ?))';
-        $Data->addParam(Session::getUserData()->getUserId());
+        $arrQueryWhere = array_merge($arrQueryWhere, AccountUtil::getAccountFilterUser($Data, $this->globalSearch));
 
         if ($this->limitCount > 0) {
             $queryLimit = '?, ?';
@@ -490,12 +472,13 @@ class AccountSearch
      * con las columnas y los valores a buscar.
      *
      * @return array|bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     private function analyzeQueryString()
     {
-        preg_match('/(user|group|file|expired|private|owner|maingroup):(.*)/i', $this->txtSearch, $filters);
-
-        if (!is_array($filters) || count($filters) === 0) {
+        if (!preg_match('/^(user|group|file|owner|maingroup):"([\w\.]+)"$/i', $this->txtSearch, $filters)
+            && !preg_match('/^(expired|private):$/i', $this->txtSearch, $filters)
+        ) {
             return [];
         }
 
@@ -504,6 +487,11 @@ class AccountSearch
         switch ($filters[1]) {
             case 'user':
                 $UserData = User::getItem()->getByLogin($filters[2]);
+
+                if (!is_object($UserData)) {
+                    return [];
+                }
+
                 $filtersData[] = [
                     'type' => 'user',
                     'query' => 'account_userId = ? OR account_id IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)',
@@ -512,6 +500,11 @@ class AccountSearch
                 break;
             case 'owner':
                 $UserData = User::getItem()->getByLogin($filters[2]);
+
+                if (!is_object($UserData)) {
+                    return [];
+                }
+
                 $filtersData[] = [
                     'type' => 'user',
                     'query' => 'account_userId = ?',
@@ -520,6 +513,11 @@ class AccountSearch
                 break;
             case 'group':
                 $GroupData = GroupUtil::getGroupIdByName($filters[2]);
+
+                if (!is_object($GroupData)) {
+                    return [];
+                }
+
                 $filtersData[] = [
                     'type' => 'group',
                     'query' => 'account_userGroupId = ? OR account_id IN (SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)',
@@ -528,6 +526,11 @@ class AccountSearch
                 break;
             case 'maingroup':
                 $GroupData = GroupUtil::getGroupIdByName($filters[2]);
+
+                if (!is_object($GroupData)) {
+                    return [];
+                }
+
                 $filtersData[] = [
                     'type' => 'group',
                     'query' => 'account_userGroupId = ?',
@@ -553,8 +556,8 @@ class AccountSearch
                 $filtersData[] =
                     [
                         'type' => 'private',
-                        'query' => 'account_isPrivate = 1 AND account_userId = ?',
-                        'values' => [Session::getUserData()->getUserId()]
+                        'query' => '(account_isPrivate = 1 AND account_userId = ?) OR (account_isPrivateGroup = 1 AND account_userGroupId = ?)',
+                        'values' => [Session::getUserData()->getUserId(), Session::getUserData()->getUserGroupId()]
                     ];
                 break;
             default:
@@ -650,9 +653,8 @@ class AccountSearch
     {
         $accountColor = Session::getAccountColor();
 
-        if (!isset($accountColor)
-            || !is_array($accountColor)
-            || !isset($accountColor[$id])
+        if (!is_array($accountColor)
+            || !isset($accountColor, $accountColor[$id])
         ) {
             // Se asigna el color de forma aleatoria a cada id
             $color = array_rand(self::$colors);

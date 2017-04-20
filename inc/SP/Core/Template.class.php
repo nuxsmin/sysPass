@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,16 +19,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use InvalidArgumentException;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Exceptions\SPException;
 use SP\Core\UI\ThemeInterface;
 
 /**
@@ -88,7 +88,7 @@ class Template
         try {
             $template = $this->checkTemplate($file, $base);
             $this->setTemplate($template);
-        } catch (InvalidArgumentException $e) {
+        } catch (FileNotFoundException $e) {
             return false;
         }
 
@@ -100,8 +100,8 @@ class Template
      *
      * @param string $template Con el nombre del archivo
      * @return string La ruta al archivo de la plantilla
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      * @param string $base     Directorio base para la plantilla
-     * @throws \InvalidArgumentException
      */
     private function checkTemplate($template, $base = null)
     {
@@ -122,9 +122,9 @@ class Template
         $file = ($useBase === false) ? $this->Theme->getViewsPath() . DIRECTORY_SEPARATOR . $template : $template;
 
         if (!is_readable($file)) {
-            debugLog(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template));
-//            Log::writeNewLog(__FUNCTION__, sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template), Log::ERROR);
-            throw new InvalidArgumentException(sprintf(_('No es posible obtener la plantilla "%s" : %s'), $file, $template));
+            debugLog(sprintf(__('No es posible obtener la plantilla "%s" : %s'), $file, $template));
+//            Log::writeNewLog(__FUNCTION__, sprintf(__('No es posible obtener la plantilla "%s" : %s'), $file, $template), Log::ERROR);
+            throw new FileNotFoundException(SPException::SP_ERROR, sprintf(__('No es posible obtener la plantilla "%s" : %s'), $file, $template));
         }
 
         return $file;
@@ -178,9 +178,9 @@ class Template
     public function __get($name)
     {
         if (!array_key_exists($name, $this->vars)) {
-            debugLog(sprintf(_('No es posible obtener la variable "%s"'), $name));
+            debugLog(sprintf(__('No es posible obtener la variable "%s"'), $name));
 
-            throw new InvalidArgumentException(sprintf(_('No es posible obtener la variable "%s"'), $name));
+            throw new InvalidArgumentException(sprintf(__('No es posible obtener la variable "%s"'), $name));
         }
 
         return $this->vars[$name];
@@ -223,9 +223,9 @@ class Template
     public function __unset($name)
     {
         if (!array_key_exists($name, $this->vars)) {
-            debugLog(sprintf(_('No es posible destruir la variable "%s"'), $name));
+            debugLog(sprintf(__('No es posible destruir la variable "%s"'), $name));
 
-            throw new InvalidArgumentException(sprintf(_('No es posible destruir la variable "%s"'), $name));
+            throw new InvalidArgumentException(sprintf(__('No es posible destruir la variable "%s"'), $name));
         }
 
         unset($this->vars[$name]);
@@ -242,7 +242,7 @@ class Template
     public function render()
     {
         if (count($this->file) === 0) {
-            throw new FileNotFoundException(_('La plantilla no contiene archivos'));
+            throw new FileNotFoundException(SPException::SP_ERROR, __('La plantilla no contiene archivos'));
         }
 
         extract($this->vars, EXTR_SKIP);
@@ -299,7 +299,7 @@ class Template
      */
     public function resetTemplates()
     {
-        $this->file = array();
+        $this->file = [];
     }
 
     /**
@@ -307,7 +307,7 @@ class Template
      */
     public function resetVariables()
     {
-        $this->vars = array();
+        $this->vars = [];
     }
 
     /**

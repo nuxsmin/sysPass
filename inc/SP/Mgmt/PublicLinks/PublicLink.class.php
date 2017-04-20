@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,37 +19,39 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\PublicLinks;
 
 use SP\Account\AccountUtil;
 use SP\Config\Config;
+use SP\Core\Exceptions\SPException;
+use SP\Core\Session;
 use SP\DataModel\PublicLinkBaseData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
-use SP\Html\Html;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Core\Session;
-use SP\Core\Exceptions\SPException;
 use SP\Mgmt\ItemInterface;
-use SP\Storage\DB;
+use SP\Mgmt\ItemTrait;
 use SP\Mgmt\Users\UserUtil;
+use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class PublicLink para la creación de enlaces públicos
  *
  * @package SP
+ * @property PublicLinkBaseData $itemData
  */
 class PublicLink extends PublicLinkBase implements ItemInterface
 {
+    use ItemTrait;
+
     /**
      * Tipos de enlaces
      */
@@ -59,22 +61,25 @@ class PublicLink extends PublicLinkBase implements ItemInterface
      * Incrementar el contador de visitas de un enlace
      *
      * @return bool
+     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function addLinkView()
     {
         $this->itemData->addCountViews();
-        $this->updateUseInfo($_SERVER['REMOTE_ADDR']);
+        $this->updateUseInfo(Util::getClientAddress(true));
 
-        $Log = new Log(_('Ver Enlace Público'));
-        $Log->addDescription(_('Enlace visualizado'));
-        $Log->addDetails(Html::strongText(_('Tipo')), $this->itemData->getTypeId());
-        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->itemData->getItemId()));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->itemData->getUserId()));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Ver Enlace Público', false));
+        $LogMessage->addDescription(__('Enlace visualizado', false));
+        $LogMessage->addDetails(__('Tipo', false), $this->itemData->getTypeId());
+        $LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($this->itemData->getItemId()));
+        $LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($this->itemData->getUserId()));
         $Log->writeLog();
 
         if ($this->itemData->isNotify()) {
-            Email::sendEmail($Log);
+            Email::sendEmail($LogMessage);
         }
 
         return $this->update();
@@ -97,22 +102,26 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam(serialize($this->itemData));
         $Data->addParam($this->itemData->getLinkHash());
         $Data->addParam($this->itemData->getPublicLinkId());
+        $Data->setOnErrorMessage(__('Error al actualizar enlace', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al actualizar enlace'));
-        }
+        DB::getQuery($Data);
 
         return true;
     }
 
     /**
      * @return $this
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws SPException
      */
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, _('Enlace ya creado'));
+            throw new SPException(SPException::SP_INFO, __('Enlace ya creado', false));
         }
 
         $this->itemData->setDateAdd(time());
@@ -120,7 +129,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $this->itemData->setMaxCountViews(Config::getConfig()->getPublinksMaxViews());
         $this->calcDateExpire();
         $this->createLinkHash();
-        $this->createLinkPass();
+        $this->setLinkData();
 
         $query = /** @lang SQL */
             'INSERT INTO publicLinks
@@ -133,19 +142,9 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam($this->itemData->getPublicLinkHash());
         $Data->addParam($this->itemData->getPublicLinkItemId());
         $Data->addParam(serialize($this->itemData));
+        $Data->setOnErrorMessage(__('Error al crear enlace', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al crear enlace'));
-        }
-
-        $Log = new Log(_('Nuevo Enlace'));
-        $Log->addDescription(_('Enlace creado'));
-        $Log->addDetails(Html::strongText(_('Tipo')), $this->itemData->getTypeId());
-        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->itemData->getItemId()));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->itemData->getUserId()));
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -168,43 +167,34 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     }
 
     /**
-     * @param $id int|array
+     * @param $id int
      * @return $this
      * @throws SPException
      */
     public function delete($id)
     {
-        if (is_array($id)) {
-            foreach ($id as $itemId){
-                $this->delete($itemId);
-            }
-
-            return $this;
-        }
-
         $query = /** @lang SQL */
             'DELETE FROM publicLinks WHERE publicLink_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar enlace', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al eliminar enlace'));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Enlace no encontrado', false));
         }
-
-        $Log = new Log(_('Eliminar Enlace'));
-        $Log->addDescription(_('Enlace eliminado'));
-        $Log->addDetails(Html::strongText(_('ID')), $this->itemData->getPublicLinkId());
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
 
     /**
      * @return $this
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws SPException
      */
     public function refresh()
@@ -213,7 +203,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
         $this->calcDateExpire();
         $this->createLinkHash(true);
-        $this->createLinkPass();
+        $this->setLinkData();
 
         $query = /** @lang SQL */
             'UPDATE publicLinks
@@ -226,19 +216,9 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->addParam(serialize($this->itemData));
         $Data->addParam($this->itemData->getPublicLinkHash());
         $Data->addParam($this->itemData->getPublicLinkId());
+        $Data->setOnErrorMessage(__('Error al renovar enlace', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al renovar enlace'));
-        }
-
-        $Log = new Log(_('Actualizar Enlace'));
-        $Log->addDescription(_('Enlace actualizado'));
-        $Log->addDetails(Html::strongText(_('Tipo')), $this->itemData->getTypeId());
-        $Log->addDetails(Html::strongText(_('Cuenta')), AccountUtil::getAccountNameById($this->itemData->getItemId()));
-        $Log->addDetails(Html::strongText(_('Usuario')), UserUtil::getUserLoginById($this->itemData->getUserId()));
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -261,22 +241,15 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
+        /** @var PublicLinkBaseData $queryRes */
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener enlace', false));
         }
 
-        /**
-         * @var $queryRes   PublicLinkBaseData
-         * @var $PublicLink PublicLinkData
-         */
-        $PublicLink = unserialize($queryRes->getPublicLinkLinkData());
-
-        if (get_class($PublicLink) === '__PHP_Incomplete_Class') {
-            $PublicLink = Util::castToClass($this->getDataModel(), $PublicLink);
-        }
-
+        /** @var $PublicLink PublicLinkData */
+        $PublicLink = Util::castToClass($this->getDataModel(), $queryRes->getPublicLinkLinkData());
         $PublicLink->setPublicLinkId($id);
 
         return $PublicLink;
@@ -294,20 +267,14 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
+        /** @var PublicLinkData[] $queryRes */
+        $queryRes = DB::getResultsArray($Data);
+
         $publicLinks = [];
 
-        foreach (DB::getResultsArray($Data) as $PublicLinkListData) {
-            /**
-             * @var PublicLinkData     $PublicLinkData
-             * @var PublicLinkListData $PublicLinkListData
-             */
-
-            $PublicLinkData = unserialize($PublicLinkListData->getPublicLinkLinkData());
-
-            if (get_class($PublicLinkData) === '__PHP_Incomplete_Class') {
-                $PublicLinkData = Util::castToClass($this->getDataModel(), $PublicLinkData);
-            }
-
+        foreach ($queryRes as $PublicLinkListData) {
+            /** @var PublicLinkData $PublicLinkData */
+            $PublicLinkData = Util::castToClass($this->getDataModel(), $PublicLinkListData->getPublicLinkLinkData());
             $PublicLinkData->setPublicLinkId($PublicLinkListData->getPublicLinkId());
 
             $publicLinks[] = $this->getItemForList($PublicLinkData);
@@ -329,7 +296,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $PublicLinkListData->setPublicLinkHash($PublicLinkData->getLinkHash());
         $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
         $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getUserId()));
-        $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? _('ON') : _('OFF'));
+        $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? __('ON') : __('OFF'));
         $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getDateAdd()));
         $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getDateExpire()));
         $PublicLinkListData->setCountViews($PublicLinkData->getCountViews() . '/' . $PublicLinkData->getMaxCountViews());
@@ -373,27 +340,22 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($hash);
 
+        /** @var PublicLinkBaseData $queryRes */
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
-        } elseif (count($queryRes) > 0) {
-            /**
-             * @var $queryRes   PublicLinkBaseData
-             * @var $PublicLink PublicLinkData
-             */
-            $PublicLink = unserialize($queryRes->getPublicLinkLinkData());
-
-            if (get_class($PublicLink) === '__PHP_Incomplete_Class') {
-                $PublicLink = Util::castToClass($this->getDataModel(), $PublicLink);
-            }
-
-            $PublicLink->setPublicLinkId($queryRes->getPublicLinkId());
-
-            return $PublicLink;
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener enlace', false));
+        } elseif (is_array($queryRes)) {
+            return false;
         }
 
-        return false;
+        /**
+         * @var $PublicLink PublicLinkData
+         */
+        $PublicLink = Util::castToClass($this->getDataModel(), $queryRes->getPublicLinkLinkData());
+        $PublicLink->setPublicLinkId($queryRes->getPublicLinkId());
+
+        return $PublicLink;
     }
 
     /**
@@ -406,7 +368,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function getHashForItem($itemId)
     {
         $query = /** @lang SQL */
-            'SELECT publicLink_hash FROM publicLinks WHERE publicLink_itemId = ? LIMIT 1';
+            'SELECT publicLink_id, publicLink_hash FROM publicLinks WHERE publicLink_itemId = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -416,9 +378,31 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al obtener enlace'));
+            throw new SPException(SPException::SP_ERROR, __('Error al obtener enlace', false));
         }
 
         return $queryRes;
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getByIdBatch(array $ids)
+    {
+        $query = /** @lang SQL */
+            'SELECT publicLink_id,
+            publicLink_hash
+            FROM publicLinks WHERE publicLink_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DB::getResultsArray($Data);
     }
 }

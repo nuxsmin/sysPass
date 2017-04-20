@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,44 +19,33 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Groups;
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\GroupData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
 /**
  * Class GroupBase
  *
  * @package SP\Mgmt\Groups
  */
-abstract class GroupBase extends ItemBase
+abstract class GroupBase implements ItemBaseInterface
 {
-    /** @var GroupData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param GroupData $itemData
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\GroupData');
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * @return GroupData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(GroupData::class);
     }
 }

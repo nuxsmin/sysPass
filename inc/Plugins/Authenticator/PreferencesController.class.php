@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,8 +26,11 @@ namespace Plugins\Authenticator;
 
 use InvalidArgumentException;
 use SP\Controller\TabControllerBase;
-use SP\Core\ActionsInterface;
+use SP\Core\OldCrypt;
 use SP\Core\Plugin\PluginBase;
+use SP\Core\Plugin\PluginInterface;
+use SP\Util\ArrayUtil;
+use SP\Util\Util;
 
 /**
  * Class Controller
@@ -49,9 +52,9 @@ class PreferencesController
      * Controller constructor.
      *
      * @param TabControllerBase $Controller
-     * @param PluginBase        $Plugin
+     * @param PluginInterface $Plugin
      */
-    public function __construct(TabControllerBase $Controller, PluginBase $Plugin)
+    public function __construct(TabControllerBase $Controller, PluginInterface $Plugin)
     {
         $this->Controller = $Controller;
         $this->Plugin = $Plugin;
@@ -64,19 +67,36 @@ class PreferencesController
     {
         $base = $this->Plugin->getThemeDir() . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'userpreferences';
 
+        // Datos del usuario de la sesión
         $UserData = $this->Controller->getUserData();
+
+        // Buscar al usuario en los datos del plugin
+        /** @var AuthenticatorData $AuthenticatorData */
+        $AuthenticatorData = ArrayUtil::searchInObject($this->Plugin->getData(), 'userId', $UserData->getUserId(), new AuthenticatorData());
 
         $this->Controller->view->addTemplate('preferences-security', $base);
 
         try {
-            $twoFa = new Authenticator($UserData->getUserId(), $UserData->getUserLogin());
+            $IV = null;
 
-            $this->Controller->view->assign('qrCode', !$UserData->getUserPreferences()->isUse2Fa() ? $twoFa->getUserQRCode() : '');
+            if (!$AuthenticatorData->isTwofaEnabled()) {
+                $IV = Util::generateRandomBytes();
+                $AuthenticatorData->setIV($IV);
+            } else {
+                $IV = $AuthenticatorData->getIV();
+            }
+
+            Session::setUserData($AuthenticatorData);
+
+            $twoFa = new Authenticator($UserData->getUserId(), $UserData->getUserLogin(), $IV);
+
+            $this->Controller->view->assign('qrCode', !$AuthenticatorData->isTwofaEnabled() ? $twoFa->getUserQRCode() : '');
             $this->Controller->view->assign('userId', $UserData->getUserId());
-            $this->Controller->view->assign('chk2FAEnabled', $UserData->getUserPreferences()->isUse2Fa());
+            $this->Controller->view->assign('chk2FAEnabled', $AuthenticatorData->isTwofaEnabled());
+            $this->Controller->view->assign('expireDays', $AuthenticatorData->getExpireDays());
 
-            $this->Controller->view->assign('tabIndex', $this->Controller->addTab(_('Seguridad')), 'security');
-            $this->Controller->view->assign('actionId', ActionsInterface::ACTION_USR_PREFERENCES_SECURITY, 'security');
+            $this->Controller->view->assign('tabIndex', $this->Controller->addTab(_t('authenticator', 'Seguridad')), 'security');
+            $this->Controller->view->assign('actionId', ActionController::ACTION_TWOFA_SAVE, 'security');
         } catch (InvalidArgumentException $e) {
         }
     }

@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Users;
@@ -32,12 +31,13 @@ use SP\Mgmt\ItemInterface;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class UserPassRecover para la gestión de recuperaciones de claves de usuarios
  *
  * @package SP
+ * @property UserPassRecoverData $itemData
  */
 class UserPassRecover extends UserPassRecoverBase implements ItemInterface
 {
@@ -72,7 +72,13 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
         $Data->addParam($UserData->getUserId());
         $Data->addParam(time() - self::MAX_PASS_RECOVER_TIME);
 
-        return (DB::getQuery($Data) === false || $Data->getQueryNumRows() >= self::MAX_PASS_RECOVER_LIMIT);
+        try {
+            DB::getQuery($Data);
+        } catch (SPException $e) {
+            return false;
+        }
+
+        return $Data->getQueryNumRows() >= self::MAX_PASS_RECOVER_LIMIT;
     }
 
     /**
@@ -102,9 +108,9 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
         $queryRes = DB::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error en comprobación de hash'));
+            throw new SPException(SPException::SP_ERROR, __('Error en comprobación de hash', false));
         } elseif ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, _('Hash inválido o expirado'));
+            throw new SPException(SPException::SP_INFO, __('Hash inválido o expirado', false));
         }
 
         $this->itemData = $queryRes;
@@ -126,10 +132,9 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserpassrHash());
+        $Data->setOnErrorMessage(__('Error interno', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error interno'));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -151,10 +156,9 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserpassrUserId());
         $Data->addParam($this->itemData->getUserpassrHash());
+        $Data->setOnErrorMessage(__('Error al generar el hash de recuperación', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_ERROR, _('Error al generar el hash de recuperación'));
-        }
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -208,5 +212,27 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
     public function checkDuplicatedOnAdd()
     {
         // TODO: Implement checkDuplicatedOnAdd() method.
+    }
+
+    /**
+     * Eliminar elementos en lote
+     *
+     * @param array $ids
+     * @return $this
+     */
+    public function deleteBatch(array $ids)
+    {
+        // TODO: Implement deleteBatch() method.
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return mixed
+     */
+    public function getByIdBatch(array $ids)
+    {
+        // TODO: Implement getByIdBatch() method.
     }
 }

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Auth;
@@ -35,9 +34,10 @@ use SP\Auth\Ldap\LdapStd;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\Util\Checks;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class Auth
@@ -53,23 +53,27 @@ class Auth
      */
     protected $auths = [];
     /**
-     * @var UserData
+     * @var UserLoginData
      */
     protected $UserData;
 
     /**
      * Auth constructor.
      *
-     * @param UserData $UserData
+     * @param UserLoginData $UserData
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function __construct(UserData $UserData)
+    public function __construct(UserLoginData $UserData)
     {
         $this->UserData = $UserData;
 
-        $this->registerAuth('authLdap');
-        $this->registerAuth('authDatabase');
         $this->registerAuth('authBrowser');
+
+        if (Checks::ldapIsAvailable() && Checks::ldapIsEnabled()) {
+            $this->registerAuth('authLdap');
+        }
+
+        $this->registerAuth('authDatabase');
     }
 
     /**
@@ -81,9 +85,9 @@ class Auth
     protected function registerAuth($auth)
     {
         if (array_key_exists($auth, $this->auths)) {
-            throw new SPException(SPException::SP_ERROR, _('Método ya inicializado'), __FUNCTION__);
+            throw new SPException(SPException::SP_ERROR, __('Método ya inicializado', false), __FUNCTION__);
         } elseif (!method_exists($this, $auth)) {
-            throw new SPException(SPException::SP_ERROR, _('Método no disponible'), __FUNCTION__);
+            throw new SPException(SPException::SP_ERROR, __('Método no disponible', false), __FUNCTION__);
         }
 
         $this->auths[$auth] = $auth;
@@ -116,12 +120,6 @@ class Auth
      */
     public function authLdap()
     {
-        if (!Checks::ldapIsAvailable()
-            || !Checks::ldapIsEnabled()
-        ) {
-            return false;
-        }
-
         $Ldap = Config::getConfig()->isLdapAds() ? new LdapMsAds() : new LdapStd();
 
         $LdapAuthData = $Ldap->getLdapAuthData();
@@ -138,6 +136,7 @@ class Auth
         }
 
         $LdapAuthData->setAuthenticated(1);
+
         return $LdapAuthData;
     }
 
@@ -148,6 +147,8 @@ class Auth
      * se ejecuta el proceso para actualizar la clave.
      *
      * @return DatabaseAuthData
+     * @throws \phpmailer\phpmailerException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function authDatabase()
     {

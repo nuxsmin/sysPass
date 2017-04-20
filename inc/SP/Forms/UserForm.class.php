@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -55,13 +55,16 @@ class UserForm extends FormBase implements FormInterface
     {
         switch ($action) {
             case ActionsInterface::ACTION_USR_USERS_NEW:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 $this->checkPass();
                 break;
             case ActionsInterface::ACTION_USR_USERS_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
             case ActionsInterface::ACTION_USR_USERS_EDITPASS:
+                $this->analyzeRequestData();
                 $this->checkPass();
                 break;
             case ActionsInterface::ACTION_USR_USERS_DELETE:
@@ -80,17 +83,17 @@ class UserForm extends FormBase implements FormInterface
         $isLdap = Request::analyze('isLdap', 0);
 
         if (!$isLdap && !$this->UserData->getUserName()) {
-            throw new ValidationException(_('Es necesario un nombre de usuario'));
+            throw new ValidationException(__('Es necesario un nombre de usuario', false));
         } elseif (!$isLdap && !$this->UserData->getUserLogin()) {
-            throw new ValidationException(_('Es necesario un login'));
+            throw new ValidationException(__('Es necesario un login', false));
         } elseif (!$this->UserData->getUserProfileId()) {
-            throw new ValidationException(_('Es necesario un perfil'));
+            throw new ValidationException(__('Es necesario un perfil', false));
         } elseif (!$this->UserData->getUserGroupId()) {
-            throw new ValidationException(_('Es necesario un grupo'));
+            throw new ValidationException(__('Es necesario un grupo', false));
         } elseif (!$isLdap && !$this->UserData->getUserEmail()) {
-            throw new ValidationException(_('Es necesario un email'));
+            throw new ValidationException(__('Es necesario un email', false));
         } elseif (Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp() && $this->UserData->getUserLogin() === 'demo') {
-            throw new ValidationException(_('Ey, esto es una DEMO!!'));
+            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
         }
     }
 
@@ -101,12 +104,12 @@ class UserForm extends FormBase implements FormInterface
     {
         $userPassR = Request::analyzeEncrypted('passR');
 
-        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->UserData->getUserId()) === 'demo') {
-            throw new ValidationException(_('Ey, esto es una DEMO!!'));
+        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
+            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
         } elseif (!$userPassR || !$this->UserData->getUserPass()) {
-            throw new ValidationException(_('La clave no puede estar en blanco'));
+            throw new ValidationException(__('La clave no puede estar en blanco', false));
         } elseif ($this->UserData->getUserPass() !== $userPassR) {
-            throw new ValidationException(_('Las claves no coinciden'));
+            throw new ValidationException(__('Las claves no coinciden', false));
         }
     }
 
@@ -115,11 +118,22 @@ class UserForm extends FormBase implements FormInterface
      */
     protected function checkDelete()
     {
-        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->UserData->getUserId()) === 'demo') {
-            throw new ValidationException(_('Ey, esto es una DEMO!!'));
-        } elseif ($this->UserData->getUserId() === Session::getUserData()->getUserId()) {
-            throw new ValidationException(_('No es posible eliminar, usuario en uso'));
+        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
+            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
+        } elseif (
+            (!is_array($this->itemId) === Session::getUserData()->getUserId())
+            || (is_array($this->itemId) && in_array(Session::getUserData()->getUserId(), $this->itemId))
+        ) {
+            throw new ValidationException(__('No es posible eliminar, usuario en uso', false));
         }
+    }
+
+    /**
+     * @return UserData
+     */
+    public function getItemData()
+    {
+        return $this->UserData;
     }
 
     /**
@@ -142,13 +156,5 @@ class UserForm extends FormBase implements FormInterface
         $this->UserData->setUserIsDisabled(Request::analyze('disabled', 0, false, 1));
         $this->UserData->setUserIsChangePass(Request::analyze('changepass', 0, false, 1));
         $this->UserData->setUserPass(Request::analyzeEncrypted('pass'));
-    }
-
-    /**
-     * @return UserData
-     */
-    public function getItemData()
-    {
-        return $this->UserData;
     }
 }

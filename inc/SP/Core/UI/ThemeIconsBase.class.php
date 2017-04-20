@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core\UI;
@@ -28,7 +27,7 @@ namespace SP\Core\UI;
 use SP\Html\Assets\FontIcon;
 use SP\Html\Assets\ImageIcon;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ThemeIconsBase para la implementación de los iconos del tema visual
@@ -63,6 +62,8 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     protected $iconLdapUser;
     /** @var  FontIcon|ImageIcon */
     protected $iconDisabled;
+    /** @var  FontIcon|ImageIcon */
+    protected $iconEnabled;
     /** @var  FontIcon|ImageIcon */
     protected $iconViewPass;
     /** @var  FontIcon|ImageIcon */
@@ -113,6 +114,10 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     protected $iconInfo;
     /** @var  FontIcon|ImageIcon */
     protected $iconCritical;
+    /** @var  FontIcon|ImageIcon */
+    protected $iconNotices;
+    /** @var  FontIcon|ImageIcon */
+    protected $iconRemove;
 
     /**
      * Icons constructor.
@@ -480,5 +485,53 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     public function setIconCritical($iconCritical)
     {
         $this->iconCritical = $iconCritical;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconEnabled()
+    {
+        return $this->iconEnabled;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconEnabled
+     */
+    public function setIconEnabled($iconEnabled)
+    {
+        $this->iconEnabled = $iconEnabled;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconNotices()
+    {
+        return $this->iconNotices;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconNotices
+     */
+    public function setIconNotices($iconNotices)
+    {
+        $this->iconNotices = $iconNotices;
+    }
+
+    /**
+     * @return FontIcon|ImageIcon
+     */
+    public function getIconRemove()
+    {
+        return $this->iconRemove;
+    }
+
+    /**
+     * @param FontIcon|ImageIcon $iconRemove
+     */
+    public function setIconRemove($iconRemove)
+    {
+        $this->iconRemove = $iconRemove;
     }
 }

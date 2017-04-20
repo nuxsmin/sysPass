@@ -32,7 +32,7 @@
                                       class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                             </li>
                         <?php elseif ($action->getType() === \SP\Html\DataGrid\DataGridActionType::SEARCH_ITEM): ?>
-                            <li class="datagrid-action-search" style="width: auto;">
+                            <li class="datagrid-action-search">
                                 <form method="post" id="<?php echo $action->getName(); ?>"
                                       name="<?php echo $action->getName(); ?>"
                                       class="form-action"
@@ -99,7 +99,7 @@
                                         data-activetab="<?php echo $index; ?>"
                                         data-selection="#data-table-<?php echo $data->getId(); ?>">
                                         <i class="material-icons <?php echo $action->getIcon()->getClass(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>
-                                        <?php echo _('Eliminar Seleccionados'); ?>
+                                        <?php echo __('Eliminar Seleccionados'); ?>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
@@ -118,7 +118,3 @@
         </script>
     <?php endforeach; ?>
 </div> <!-- End Tabs-->
-
-<script type="text/javascript">
-    sysPassApp.triggers().views.datatabs();
-</script>

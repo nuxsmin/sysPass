@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html;
@@ -30,7 +29,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Http\Request;
 use SP\Util\Util;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class Minify para la gestión de archivos JS y CSS
@@ -66,7 +65,7 @@ class Minify
 
     /**
      * @param string $path
-     * @param bool   $checkPath
+     * @param bool $checkPath
      * @return $this
      */
     public function setBase($path, $checkPath = false)
@@ -103,9 +102,13 @@ class Minify
         header($expire);
 
         // Devolver código 304 si la versión es la misma y no se solicita refrescar
-        if ($etag === $etagMatch && !($cacheControl === 'no-cache' || $pragma === 'no-cache')) {
+        if ($etag === $etagMatch
+            && !($cacheControl === 'no-cache'
+                || $cacheControl === 'max-age=0'
+                || $pragma === 'no-cache')
+        ) {
             header($_SERVER['SERVER_PROTOCOL'] . ' 304 Not Modified');
-            exit;
+            exit();
         }
 
         if ($this->type === self::FILETYPE_JS) {
@@ -205,7 +208,7 @@ class Minify
      * Añadir un archivo
      *
      * @param string $file
-     * @param bool   $minify Si es necesario reducir
+     * @param bool $minify Si es necesario reducir
      * @return $this
      */
     public function addFile($file, $minify = true)

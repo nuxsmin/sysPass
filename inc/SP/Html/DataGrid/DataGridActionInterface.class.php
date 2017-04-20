@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Html\DataGrid;
 
 use SP\Html\Assets\IconInterface;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Interface DataGridActionInterface
@@ -113,8 +112,10 @@ interface DataGridActionInterface
 
     /**
      * @param $rowSource string
+     * @param mixed $value Valor a filtrar
+     * @return
      */
-    public function setFilterRowSource($rowSource);
+    public function setFilterRowSource($rowSource, $value = 1);
 
     /**
      * @return string
@@ -151,4 +152,20 @@ interface DataGridActionInterface
      * @param mixed  $data Los datos del atributo
      */
     public function addData($name, $data);
+
+    /**
+     * Devolver el método reflexivo que determina si se muestra la acción
+     *
+     * @return \ReflectionMethod
+     */
+    public function getReflectionFilter();
+
+    /**
+     * Establecer el método reflexivo que determina si se muestra la acción
+     *
+     * @param string $class
+     * @param string $method
+     * @return $this
+     */
+    public function setReflectionFilter($class, $method);
 }

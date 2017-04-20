@@ -6,29 +6,32 @@
 ?>
 
 <div id="box-popup">
-    <h2 class="center"><?php echo $header; ?></H2>
+    <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmCustomFields" id="frmCustomFields" class="form-action"
           data-onsubmit="appMgmt/save"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMFIELDS; ?>">
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMFIELDS; ?>"
+          data-hash="">
         <table class="popup-data">
             <tbody>
             <tr>
-                <td class="descField"><?php echo _('Nombre'); ?></td>
+                <td class="descField"><?php echo __('Nombre'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" value="<?php echo $field->getName(); ?>">
                         <label class="mdl-textfield__label"
-                               for="name"><?php echo _('Nombre del campo'); ?></label>
+                               for="name"><?php echo __('Nombre del campo'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Tipo'); ?></td>
+                <td class="descField"><?php echo __('Tipo'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Tipo'); ?></div>
+
                     <select name="type" id="sel-type" size="1" class="select-box">
                         <?php foreach ($types as $id => $type): ?>
                             <option
@@ -38,8 +41,10 @@
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Módulo'); ?></td>
+                <td class="descField"><?php echo __('Módulo'); ?></td>
                 <td class="valField">
+                    <div class="lowres-title"><?php echo __('Módulo'); ?></div>
+
                     <select name="module" id="sel-module" size="1" class="select-box">
                         <?php foreach ($modules as $id => $module): ?>
                             <option
@@ -49,24 +54,24 @@
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Texto Ayuda'); ?></td>
+                <td class="descField"><?php echo __('Texto Ayuda'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="help" name="help" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $field->getHelp(); ?>">
                         <label class="mdl-textfield__label"
-                               for="help"><?php echo _('Ayuda del campo'); ?></label>
+                               for="help"><?php echo __('Ayuda del campo'); ?></label>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo _('Obligatorio'); ?></td>
+                <td class="descField"></td>
                 <td class="valField">
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="required">
                         <input type="checkbox" id="required" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="required"
                             <?php echo $field->isRequired() ? 'checked' : ''; ?>/>
-                        <span class="mdl-switch__label"></span>
+                        <span class="mdl-switch__label"><?php echo __('Obligatorio'); ?></span>
                     </label>
                 </td>
             </tr

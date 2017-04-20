@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,21 +19,22 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Config\Config;
 use SP\Core\ActionsInterface;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Template;
+use SP\Http\Request;
 use SP\Util\Checks;
+use SP\Util\Json;
 use SP\Util\Wiki\DokuWikiApi;
 
 /**
@@ -43,6 +44,8 @@ use SP\Util\Wiki\DokuWikiApi;
  */
 class WikiController extends ControllerBase implements ActionsInterface
 {
+    use RequestControllerTrait;
+
     /**
      * Constructor
      *
@@ -52,18 +55,48 @@ class WikiController extends ControllerBase implements ActionsInterface
     {
         parent::__construct($template);
 
+        $this->init();
+
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('isDemoMode', Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp());
         $this->view->assign('isDisabled', (Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp()) ? 'DISABLED' : '');
     }
 
     /**
-     * Obtener los datos para la ficha de una página de la Wiki
+     * Realizar las acciones del controlador
      *
-     * @param string $pageName El nombre de la página
+     * @param mixed $type Tipo de acción
      */
-    public function getWikiPage($pageName)
+    public function doAction($type = null)
     {
+        try {
+            switch ($this->actionId) {
+                case self::ACTION_WIKI_VIEW:
+                    $this->getWikiPage();
+                    break;
+                default:
+                    $this->invalidAction();
+            }
+
+            if (count($this->JsonResponse->getData()) === 0) {
+                $this->JsonResponse->setData(['html' => $this->render()]);
+            }
+        } catch (\Exception $e) {
+            $this->JsonResponse->setDescription($e->getMessage());
+        }
+
+        $this->JsonResponse->setCsrf($this->view->sk);
+
+        Json::returnJson($this->JsonResponse);
+    }
+
+    /**
+     * Obtener los datos para la ficha de una página de la Wiki
+     */
+    public function getWikiPage()
+    {
+        $pageName = Request::analyze('pageName');
+
         $this->view->addTemplate('wikipage');
 
         $pageData = '';
@@ -76,12 +109,16 @@ class WikiController extends ControllerBase implements ActionsInterface
             $DokuWikiApi = new DokuWikiApi();
             $headerData = $DokuWikiApi->getTitle();
             $pageData = $DokuWikiApi->getPage($pageName);
-            $pageInfo = $DokuWikiApi->getPageInfo($pageName);
 
-            if (is_array($pageData) && empty($pageData[0])) {
-                $pageSearch = $DokuWikiApi->getSearch($pageName);
+            if ($pageData !== false) {
+                if (is_array($pageData) && empty($pageData[0])) {
+                    $pageSearch = $DokuWikiApi->getSearch($pageName);
+                } else {
+                    $pageInfo = $DokuWikiApi->getPageInfo($pageName);
+                }
             }
         } catch (SPException $e) {
+//            $DokuWikiApi->getPageList();
         }
 
         $this->view->assign('pageName', $pageName);
@@ -90,5 +127,7 @@ class WikiController extends ControllerBase implements ActionsInterface
         $this->view->assign('pageSearch', $pageSearch);
         $this->view->assign('pageInfo', $pageInfo);
         $this->view->assign('header', $headerData);
+
+        $this->JsonResponse->setStatus(0);
     }
 }

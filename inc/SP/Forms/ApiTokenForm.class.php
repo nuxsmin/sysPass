@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,10 +24,11 @@
 
 namespace SP\Forms;
 
-use SP\Api\ApiTokens;
 use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
+use SP\DataModel\ApiTokenData;
 use SP\Http\Request;
+use SP\Mgmt\ApiTokens\ApiTokensUtil;
 
 /**
  * Class ApiTokenForm
@@ -37,15 +38,15 @@ use SP\Http\Request;
 class ApiTokenForm extends FormBase implements FormInterface
 {
     /**
-     * @var ApiTokens
+     * @var ApiTokenData
      */
-    protected $ApiTokens;
+    protected $ApiTokenData;
 
     /**
      * Validar el formulario
      *
      * @param $action
-     * @return bool
+     * @return ApiTokenForm
      * @throws \SP\Core\Exceptions\ValidationException
      */
     public function validate($action)
@@ -53,31 +54,12 @@ class ApiTokenForm extends FormBase implements FormInterface
         switch ($action) {
             case ActionsInterface::ACTION_MGM_APITOKENS_NEW:
             case ActionsInterface::ACTION_MGM_APITOKENS_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
-        return true;
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkCommon()
-    {
-        if ($this->ApiTokens->getUserId() === 0) {
-            throw new ValidationException(_('Usuario no indicado'));
-        } elseif ($this->ApiTokens->getActionId() === 0) {
-            throw new ValidationException(_('Acción no indicada'));
-        }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getItemData()
-    {
-        return $this->ApiTokens;
+        return $this;
     }
 
     /**
@@ -87,10 +69,34 @@ class ApiTokenForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->ApiTokens = new ApiTokens();
-        $this->ApiTokens->setTokenId($this->itemId);
-        $this->ApiTokens->setUserId(Request::analyze('users', 0));
-        $this->ApiTokens->setActionId(Request::analyze('actions', 0));
-        $this->ApiTokens->setRefreshToken(Request::analyze('refreshtoken', false, false, true));
+        $this->ApiTokenData = new ApiTokenData();
+        $this->ApiTokenData->setAuthtokenId($this->itemId);
+        $this->ApiTokenData->setAuthtokenUserId(Request::analyze('users', 0));
+        $this->ApiTokenData->setAuthtokenActionId(Request::analyze('actions', 0));
+        $this->ApiTokenData->setAuthtokenHash(Request::analyzeEncrypted('pass'));
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if ($this->ApiTokenData->getAuthtokenUserId() === 0) {
+            throw new ValidationException(__('Usuario no indicado', false));
+        } elseif ($this->ApiTokenData->getAuthtokenActionId() === 0) {
+            throw new ValidationException(__('Acción no indicada', false));
+        } elseif ($this->ApiTokenData->getAuthtokenActionId() === ActionsInterface::ACTION_ACC_VIEW_PASS
+            && $this->ApiTokenData->getAuthtokenHash() === ''
+        ) {
+            throw new ValidationException(__('La clave no puede estar en blanco', false));
+        }
+    }
+
+    /**
+     * @return ApiTokenData
+     */
+    public function getItemData()
+    {
+        return $this->ApiTokenData;
     }
 }

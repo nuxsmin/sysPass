@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -53,21 +53,12 @@ class TagForm extends FormBase implements FormInterface
         switch ($action) {
             case ActionsInterface::ACTION_MGM_TAGS_NEW:
             case ActionsInterface::ACTION_MGM_TAGS_EDIT:
+                $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
         }
 
         return true;
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkCommon()
-    {
-        if (!$this->TagData->getTagName()) {
-            throw new ValidationException(_('Es necesario un nombre de etiqueta'));
-        }
     }
 
     /**
@@ -83,7 +74,17 @@ class TagForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return mixed
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->TagData->getTagName()) {
+            throw new ValidationException(__('Es necesario un nombre de etiqueta', false));
+        }
+    }
+
+    /**
+     * @return TagData
      */
     public function getItemData()
     {

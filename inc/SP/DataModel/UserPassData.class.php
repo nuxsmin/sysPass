@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\DataModel;
@@ -51,7 +50,7 @@ class UserPassData extends DataModelBase
     /**
      * @var string
      */
-    public $user_mIV = '';
+    public $user_mKey = '';
     /**
      * @var int
      */
@@ -108,17 +107,17 @@ class UserPassData extends DataModelBase
     /**
      * @return string
      */
-    public function getUserMIV()
+    public function getUserMKey()
     {
-        return $this->user_mIV;
+        return $this->user_mKey;
     }
 
     /**
-     * @param string $user_mIV
+     * @param string $user_mKey
      */
-    public function setUserMIV($user_mIV)
+    public function setUserMKey($user_mKey)
     {
-        $this->user_mIV = $user_mIV;
+        $this->user_mKey = $user_mKey;
     }
 
     /**

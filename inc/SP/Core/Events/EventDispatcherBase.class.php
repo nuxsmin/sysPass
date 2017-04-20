@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -56,7 +56,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
 
         if (array_key_exists($observerClass, $this->observers)) {
             return;
-//            throw new InvalidClassException(sprintf(_('Observador ya inicializado "%s"'), $observerClass));
+//            throw new InvalidClassException(sprintf(__('Observador ya inicializado "%s"'), $observerClass));
         }
 
         $this->observers[$observerClass] = $observer;
@@ -77,7 +77,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
         $observerClass = get_class($observer);
 
         if (!array_key_exists($observerClass, $this->observers)) {
-            throw new InvalidClassException(_('Observador no inicializado'));
+            throw new InvalidClassException(__('Observador no inicializado'));
         }
 
         unset($this->observers[$observerClass]);
@@ -107,7 +107,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
     public function notifyEvent($event, $object)
     {
         if (!is_object($object)) {
-            throw new InvalidArgumentException(SPException::SP_ERROR, _('Es necesario un objeto'));
+            throw new InvalidArgumentException(SPException::SP_ERROR, __('Es necesario un objeto'));
         }
 
         foreach ($this->observers as $observer) {

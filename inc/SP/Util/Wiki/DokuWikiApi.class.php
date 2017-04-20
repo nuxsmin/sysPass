@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,19 +19,18 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Util\Wiki;
 
 use SP\Config\Config;
-use SP\Core\Session;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Session;
 use SP\Log\Log;
 use SP\Log\LogLevel;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class DokuWikiApi para realizar consultas a la API de DokuWiki
@@ -48,7 +47,7 @@ class DokuWikiApi extends DokuWikiApiBase
     /**
      * Constructor
      *
-     * @param string $url  La URL de conexión
+     * @param string $url La URL de conexión
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
      * @throws \SP\Core\Exceptions\SPException
@@ -66,7 +65,7 @@ class DokuWikiApi extends DokuWikiApiBase
                 Session::setDokuWikiSession($resLogin[0]);
 
                 if ($resLogin[0] === false) {
-                    throw new SPException(SPException::SP_WARNING, _('Fallo de autentificación'));
+                    throw new SPException(SPException::SP_WARNING, __('Fallo de autentificación', false));
                 }
             }
 
@@ -83,7 +82,7 @@ class DokuWikiApi extends DokuWikiApiBase
     /**
      * Comprobar la conexión a DokuWiki
      *
-     * @param string $url  La URL de conexión
+     * @param string $url La URL de conexión
      * @param string $user El usuario de conexión
      * @param string $pass La clave de conexión
      * @return DokuWikiApi
@@ -110,12 +109,14 @@ class DokuWikiApi extends DokuWikiApiBase
     {
         try {
             $this->createMsg('dokuwiki.getPagelist');
+            $this->addParam($this->namespace);
+            $this->addParam(['depth' => 0]);
             $Res = new DokuWikiApiParse($this->callWiki());
             $this->catchError($Res);
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -136,7 +137,7 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -161,7 +162,7 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -182,7 +183,7 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -207,7 +208,7 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -226,7 +227,7 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }
@@ -245,7 +246,28 @@ class DokuWikiApi extends DokuWikiApiBase
 
             return $Res->parseParams();
         } catch (SPException $e) {
-            $this->logException($e);
+            $this->logException($e, __FUNCTION__);
+            return false;
+        }
+    }
+
+    /**
+     * Obtener los permisos de la página
+     *
+     * @param $page
+     * @return array|bool
+     */
+    public function getAcl($page)
+    {
+        try {
+            $this->createMsg('wiki.aclCheck');
+            $this->addParam($page);
+            $Res = new DokuWikiApiParse($this->callWiki());
+            $this->catchError($Res);
+
+            return $Res->parseParams();
+        } catch (SPException $e) {
+            $this->logException($e, __FUNCTION__);
             return false;
         }
     }

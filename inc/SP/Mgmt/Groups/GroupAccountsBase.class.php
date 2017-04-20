@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,46 +19,35 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Mgmt\Groups;
 
+use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\GroupAccountsData;
-use SP\Mgmt\ItemBase;
+use SP\Mgmt\ItemBaseInterface;
+use SP\Mgmt\ItemBaseTrait;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class GroupAccountsBase
  *
  * @package SP\Mgmt\Groups
  */
-abstract class GroupAccountsBase extends ItemBase
+abstract class GroupAccountsBase implements ItemBaseInterface
 {
-    /** @var GroupAccountsData */
-    protected $itemData;
+    use ItemBaseTrait;
 
     /**
-     * Category constructor.
+     * Inicializar la clase
      *
-     * @param GroupAccountsData $itemData
+     * @return void
+     * @throws InvalidClassException
      */
-    public function __construct($itemData = null)
+    protected function init()
     {
-        if (!$this->dataModel) {
-            $this->setDataModel('SP\DataModel\GroupAccountsData');
-        }
-
-        parent::__construct($itemData);
-    }
-
-    /**
-     * @return GroupAccountsData
-     */
-    public function getItemData()
-    {
-        return parent::getItemData();
+        $this->setDataModel(GroupAccountsData::class);
     }
 }

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 use SP\Controller\ItemListController;
@@ -41,14 +40,14 @@ if (!Init::isLoggedIn()) {
 }
 
 if (!Checks::fileIsEnabled()) {
-    echo _('Gestión de archivos deshabilitada');
+    echo __('Gestión de archivos deshabilitada');
     return false;
 }
 
 $sk = Request::analyze('sk', false);
 
 if (!$sk || !SessionUtil::checkSessionKey($sk)) {
-    Response::printHtmlError(_('CONSULTA INVÁLIDA'));
+    Response::printHtmlError(__('CONSULTA INVÁLIDA'));
 }
 
 $Controller = new ItemListController();

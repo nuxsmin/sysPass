@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2016 Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,13 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\DataModel;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class CustomFieldData
@@ -49,7 +48,7 @@ class CustomFieldBaseData extends DataModelBase
     /**
      * @var string
      */
-    public $customfielddata_iv = '';
+    public $customfielddata_key = '';
     /**
      * @var string
      */
@@ -134,17 +133,17 @@ class CustomFieldBaseData extends DataModelBase
     /**
      * @return string
      */
-    public function getCustomfielddataIv()
+    public function getCustomfielddataKey()
     {
-        return $this->customfielddata_iv;
+        return $this->customfielddata_key;
     }
 
     /**
-     * @param string $customfielddata_iv
+     * @param string $customfielddata_key
      */
-    public function setCustomfielddataIv($customfielddata_iv)
+    public function setCustomfielddataKey($customfielddata_key)
     {
-        $this->customfielddata_iv = $customfielddata_iv;
+        $this->customfielddata_key = $customfielddata_key;
     }
 
     /**

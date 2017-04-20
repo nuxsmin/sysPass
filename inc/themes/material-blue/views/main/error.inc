@@ -4,14 +4,13 @@
  */
 ?>
 <div id="actions" align="center">
-    <?php include $this->includeTemplate('error-list'); ?>
+    <?php include $this->includeTemplate('error-list', 'main'); ?>
 
     <div class="buttons">
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
-                onclick="window.location.href='index.php'">
+        <button id="btnBack" class="btn-back mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
             <i class="material-icons"
-               title="<?php echo _('Volver'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-            <?php echo _('Volver'); ?>
+               title="<?php echo __('Volver'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+            <?php echo __('Volver'); ?>
         </button>
     </div>
 </div>

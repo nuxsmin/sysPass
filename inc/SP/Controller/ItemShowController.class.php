@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,26 +19,27 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 use SP\Account\Account;
+use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
-use SP\Api\ApiTokensUtil;
-use SP\Core\Acl;
+use SP\Mgmt\ApiTokens\ApiTokensUtil;
 use SP\Core\ActionsInterface;
-use SP\Core\Crypt;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\ItemException;
-use SP\Core\Init;
+use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\AccountExtData;
+use SP\DataModel\ApiTokenData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
 use SP\DataModel\CustomFieldData;
@@ -47,27 +48,29 @@ use SP\DataModel\GroupData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\TagData;
 use SP\DataModel\UserData;
-use SP\DataModel\UserPassData;
 use SP\Http\Request;
+use SP\Log\Email;
 use SP\Log\Log;
+use SP\Mgmt\ApiTokens\ApiToken;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\CustomFields\CustomFieldDef;
 use SP\Mgmt\CustomFields\CustomFieldTypes;
 use SP\Mgmt\Files\FileUtil;
-use SP\Mgmt\Groups\GroupUsers;
-use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Groups\Group;
+use SP\Mgmt\Groups\GroupUsers;
+use SP\Mgmt\Plugins\Plugin;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Profiles\ProfileUtil;
+use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
+use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 use SP\Util\ImageUtil;
 use SP\Util\Json;
-use SP\Util\Util;
 
 /**
  * Class AccItemMgmt
@@ -91,6 +94,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      * Constructor
      *
      * @param $template Template con instancia de plantilla
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function __construct(Template $template = null)
     {
@@ -104,155 +108,154 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('activeTab', $this->activeTab);
         $this->view->assign('actionId', $this->actionId);
         $this->view->assign('isView', false);
-        $this->view->assign('showViewPass', true);
-    }
-
-    /**
-     * Comprobar si la sesión está activa
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function checkSession()
-    {
-        if (!Init::isLoggedIn()) {
-            Util::logout();
-        }
+        $this->view->assign('showViewCustomPass', true);
+        $this->view->assign('readonly', '');
     }
 
     /**
      * Realizar la acción solicitada en la la petición HTTP
      *
+     * @param mixed $type Tipo de acción
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function doAction()
+    public function doAction($type = null)
     {
         try {
             switch ($this->actionId) {
                 case self::ACTION_USR_USERS_VIEW:
-                    $this->view->assign('header', _('Ver Usuario'));
+                    $this->view->assign('header', __('Ver Usuario'));
                     $this->view->assign('isView', true);
                     $this->getUser();
                     break;
                 case self::ACTION_USR_USERS_EDIT:
-                    $this->view->assign('header', _('Editar Usuario'));
+                    $this->view->assign('header', __('Editar Usuario'));
                     $this->getUser();
                     break;
                 case self::ACTION_USR_USERS_EDITPASS:
-                    $this->view->assign('header', _('Cambio de Clave'));
+                    $this->view->assign('header', __('Cambio de Clave'));
                     $this->getUserPass();
                     break;
                 case self::ACTION_USR_USERS_NEW:
-                    $this->view->assign('header', _('Nuevo Usuario'));
+                    $this->view->assign('header', __('Nuevo Usuario'));
                     $this->getUser();
                     break;
                 case self::ACTION_USR_GROUPS_VIEW:
-                    $this->view->assign('header', _('Ver Grupo'));
+                    $this->view->assign('header', __('Ver Grupo'));
                     $this->view->assign('isView', true);
                     $this->getGroup();
                     break;
                 case self::ACTION_USR_GROUPS_EDIT:
-                    $this->view->assign('header', _('Editar Grupo'));
+                    $this->view->assign('header', __('Editar Grupo'));
                     $this->getGroup();
                     break;
                 case self::ACTION_USR_GROUPS_NEW:
-                    $this->view->assign('header', _('Nuevo Grupo'));
+                    $this->view->assign('header', __('Nuevo Grupo'));
                     $this->getGroup();
                     break;
                 case self::ACTION_USR_PROFILES_VIEW:
-                    $this->view->assign('header', _('Ver Perfil'));
+                    $this->view->assign('header', __('Ver Perfil'));
                     $this->view->assign('isView', true);
                     $this->getProfile();
                     break;
                 case self::ACTION_USR_PROFILES_EDIT:
-                    $this->view->assign('header', _('Editar Perfil'));
+                    $this->view->assign('header', __('Editar Perfil'));
                     $this->getProfile();
                     break;
                 case self::ACTION_USR_PROFILES_NEW:
-                    $this->view->assign('header', _('Nuevo Perfil'));
+                    $this->view->assign('header', __('Nuevo Perfil'));
                     $this->getProfile();
                     break;
                 case self::ACTION_MGM_CUSTOMERS_VIEW:
-                    $this->view->assign('header', _('Ver Cliente'));
+                    $this->view->assign('header', __('Ver Cliente'));
                     $this->view->assign('isView', true);
                     $this->getCustomer();
                     break;
                 case self::ACTION_MGM_CUSTOMERS_EDIT:
-                    $this->view->assign('header', _('Editar Cliente'));
+                    $this->view->assign('header', __('Editar Cliente'));
                     $this->getCustomer();
                     break;
                 case self::ACTION_MGM_CUSTOMERS_NEW:
-                    $this->view->assign('header', _('Nuevo Cliente'));
+                    $this->view->assign('header', __('Nuevo Cliente'));
                     $this->getCustomer();
                     break;
                 case self::ACTION_MGM_CATEGORIES_VIEW:
-                    $this->view->assign('header', _('Ver Categoría'));
+                    $this->view->assign('header', __('Ver Categoría'));
                     $this->view->assign('isView', true);
                     $this->getCategory();
                     break;
                 case self::ACTION_MGM_CATEGORIES_EDIT:
-                    $this->view->assign('header', _('Editar Categoría'));
+                    $this->view->assign('header', __('Editar Categoría'));
                     $this->getCategory();
                     break;
                 case self::ACTION_MGM_CATEGORIES_NEW:
-                    $this->view->assign('header', _('Nueva Categoría'));
+                    $this->view->assign('header', __('Nueva Categoría'));
                     $this->getCategory();
                     break;
                 case self::ACTION_MGM_APITOKENS_VIEW:
-                    $this->view->assign('header', _('Ver Autorización'));
+                    $this->view->assign('header', __('Ver Autorización'));
                     $this->view->assign('isView', true);
                     $this->getToken();
                     break;
                 case self::ACTION_MGM_APITOKENS_NEW:
-                    $this->view->assign('header', _('Nueva Autorización'));
+                    $this->view->assign('header', __('Nueva Autorización'));
                     $this->getToken();
                     break;
                 case self::ACTION_MGM_APITOKENS_EDIT:
-                    $this->view->assign('header', _('Editar Autorización'));
+                    $this->view->assign('header', __('Editar Autorización'));
                     $this->getToken();
                     break;
                 case self::ACTION_MGM_CUSTOMFIELDS_NEW:
-                    $this->view->assign('header', _('Nuevo Campo'));
+                    $this->view->assign('header', __('Nuevo Campo'));
                     $this->getCustomField();
                     break;
                 case self::ACTION_MGM_CUSTOMFIELDS_EDIT:
-                    $this->view->assign('header', _('Editar Campo'));
+                    $this->view->assign('header', __('Editar Campo'));
                     $this->getCustomField();
                     break;
                 case self::ACTION_MGM_PUBLICLINKS_VIEW:
-                    $this->view->assign('header', _('Ver Enlace Público'));
+                    $this->view->assign('header', __('Ver Enlace Público'));
                     $this->view->assign('isView', true);
                     $this->getPublicLink();
                     break;
                 case self::ACTION_MGM_TAGS_NEW:
-                    $this->view->assign('header', _('Nueva Etiqueta'));
+                    $this->view->assign('header', __('Nueva Etiqueta'));
                     $this->getTag();
                     break;
                 case self::ACTION_MGM_TAGS_EDIT:
-                    $this->view->assign('header', _('Editar Etiqueta'));
+                    $this->view->assign('header', __('Editar Etiqueta'));
                     $this->getTag();
                     break;
                 case self::ACTION_ACC_VIEW_PASS:
-                    $this->view->assign('header', _('Clave de Cuenta'));
+                    $this->view->assign('header', __('Clave de Cuenta'));
                     $this->getAccountPass();
+                    break;
+                case self::ACTION_MGM_PLUGINS_VIEW:
+                    $this->view->assign('header', __('Detalles de Plugin'));
+                    $this->view->assign('isView', true);
+                    $this->getPlugin();
                     break;
                 default:
                     $this->invalidAction();
             }
 
-            if (count($this->jsonResponse->getData()) === 0) {
-                $this->jsonResponse->setData(['html' => $this->render()]);
+            if (count($this->JsonResponse->getData()) === 0) {
+                $this->JsonResponse->setData(['html' => $this->render()]);
             }
         } catch (\Exception $e) {
-            $this->jsonResponse->setDescription($e->getMessage());
+            $this->JsonResponse->setDescription($e->getMessage());
         }
 
-        Json::returnJson($this->jsonResponse);
+        $this->JsonResponse->setCsrf($this->view->sk);
+
+        Json::returnJson($this->JsonResponse);
     }
 
     /**
      * Obtener los datos para la ficha de usuario
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getUser()
     {
@@ -260,18 +263,20 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->addTemplate('users');
 
         $this->view->assign('user', $this->itemId ? User::getItem()->getById($this->itemId) : new UserData());
-        $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::ACTION_USR_USERS_VIEW) ? 'disabled' : '');
+        $this->view->assign('isDisabled', $this->view->actionId === self::ACTION_USR_USERS_VIEW ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
         $this->view->assign('groups', Group::getItem()->getItemsForSelect());
         $this->view->assign('profiles', Profile::getItem()->getItemsForSelect());
 
         $this->getCustomFieldsForItem();
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
      * Obtener la lista de campos personalizados y sus valores
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getCustomFieldsForItem()
     {
@@ -280,6 +285,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
     /**
      * Inicializar la vista de cambio de clave de usuario
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function getUserPass()
     {
@@ -294,11 +301,14 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('user', User::getItem()->getById($this->itemId));
         $this->view->addTemplate('userspass');
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
      * Obtener los datos para la ficha de grupo
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getGroup()
     {
@@ -311,11 +321,14 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->getCustomFieldsForItem();
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
      * Obtener los datos para la ficha de perfil
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getProfile()
     {
@@ -332,11 +345,14 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             $this->view->assign('usedBy', ProfileUtil::getProfileInUsersName($this->itemId));
         }
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
      * Obtener los datos para la ficha de cliente
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getCustomer()
     {
@@ -346,11 +362,14 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('customer', $this->itemId ? Customer::getItem()->getById($this->itemId) : new CustomerData());
         $this->getCustomFieldsForItem();
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
      * Obtener los datos para la ficha de categoría
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getCategory()
     {
@@ -360,34 +379,49 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('category', $this->itemId ? Category::getItem()->getById($this->itemId) : new CategoryData());
         $this->getCustomFieldsForItem();
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
      * Obtener los datos para la ficha de tokens de API
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \phpmailer\phpmailerException
      */
     protected function getToken()
     {
         $this->module = self::ACTION_MGM_APITOKENS;
         $this->view->addTemplate('tokens');
 
-        $token = ApiTokensUtil::getTokens($this->itemId, true);
+        $ApiTokenData = $this->itemId ? ApiToken::getItem()->getById($this->itemId) : new ApiTokenData();
 
         $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('actions', ApiTokensUtil::getTokenActions());
-        $this->view->assign('token', $token);
-        $this->view->assign('gotData', is_object($token));
+        $this->view->assign('ApiTokenData', $ApiTokenData);
+        $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_MGM_APITOKENS_VIEW) ? 'disabled' : '');
+        $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 
         if ($this->view->isView === true) {
-            $msg = sprintf('%s ;;Usuario: %s', _('Token de autorización visualizado'), $token->user_login);
-            Log::writeNewLogAndEmail(_('Autorizaciones'), $msg);
+            $Log = Log::newLog(__('Autorizaciones', false));
+            $LogMessage = $Log->getLogMessage();
+            $LogMessage->addDescription(__('Token de autorización visualizado'));
+            $LogMessage->addDetails(__('Usuario'), UserUtil::getUserLoginById($ApiTokenData->authtoken_userId));
+            $Log->writeLog();
+
+            Email::sendEmail($LogMessage);
         }
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
      * Obtener los datos para la ficha de campo personalizado
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function getCustomField()
     {
@@ -396,18 +430,19 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $customField = $this->itemId ? CustomFieldDef::getItem()->getById($this->itemId) : new CustomFieldDefData();
 
-        $this->view->assign('customField', $customField);
         $this->view->assign('field', $customField);
         $this->view->assign('types', CustomFieldTypes::getFieldsTypes());
         $this->view->assign('modules', CustomFieldTypes::getFieldsModules());
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
      * Obtener los datos para la ficha de enlace público
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getPublicLink()
     {
@@ -418,13 +453,15 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->view->assign('link', $PublicLink->getItemForList($PublicLink->getById($this->itemId)));
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
      * Obtener los datos para la ficha de categoría
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function getTag()
     {
@@ -433,33 +470,21 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->view->assign('tag', $this->itemId ? Tag::getItem()->getById($this->itemId) : new TagData());
 
-        $this->jsonResponse->setStatus(0);
-    }
-
-    /**
-     * Obtener los datos para la vista de archivos de una cuenta
-     */
-    protected function getAccountFiles()
-    {
-        $this->setAction(self::ACTION_ACC_FILES);
-
-        $this->view->assign('accountId', Request::analyze('id', 0));
-        $this->view->assign('deleteEnabled', Request::analyze('del', 0));
-        $this->view->assign('files', FileUtil::getAccountFiles($this->view->accountId));
-
-        if (!is_array($this->view->files) || count($this->view->files) === 0) {
-            return;
-        }
-
-        $this->view->addTemplate('files');
-
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
     }
 
     /**
      * Mostrar la clave de una cuenta
      *
      * @throws ItemException
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function getAccountPass()
     {
@@ -481,30 +506,33 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $Account->getAccountPassData();
 
         if ($isHistory && !$Account->checkAccountMPass()) {
-            throw new ItemException(_('La clave maestra no coincide'));
+            throw new ItemException(__('La clave maestra no coincide', false));
         }
 
-        $Acl = new Acl(Acl::ACTION_ACC_VIEW_PASS);
-        $Acl->setAccountData($Account->getAccountDataForACL());
+        $AccountAcl = new AccountAcl($Account, ActionsInterface::ACTION_ACC_VIEW_PASS);
+        $Acl = $AccountAcl->getAcl();
 
-        $UserPass = new UserPass(new UserPassData());
-        $UserPass->getItemData()->setUserId(Session::getUserData()->getUserId());
-
-        if (!Acl::checkUserAccess(Acl::ACTION_ACC_VIEW_PASS) || !$Acl->checkAccountAccess()) {
-            throw new ItemException(_('No tiene permisos para acceder a esta cuenta'));
-        } elseif (!$UserPass->checkUserUpdateMPass()) {
-            throw new ItemException(_('Clave maestra actualizada') . '<br>' . _('Reinicie la sesión para cambiarla'));
+        if (!$Acl->isShowViewPass()) {
+            throw new ItemException(__('No tiene permisos para acceder a esta cuenta', false));
         }
 
-        $accountClearPass = Crypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountIV());
+        if (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
+            throw new ItemException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
+        }
+
+        $key = CryptSession::getSessionKey();
+        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $key);
+        $accountClearPass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $key);
 
         if (!$isHistory) {
             $Account->incrementDecryptCounter();
 
-            $log = new Log(_('Ver Clave'));
-            $log->addDetails(_('ID'), $this->itemId);
-            $log->addDetails(_('Cuenta'), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
-            $log->writeLog();
+            $Log = new Log();
+            $LogMessage = $Log->getLogMessage();
+            $LogMessage->setAction(__('Ver Clave', false));
+            $LogMessage->addDetails(__('ID', false), $this->itemId);
+            $LogMessage->addDetails(__('Cuenta', false), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
+            $Log->writeLog();
         }
 
         $useImage = (int)Checks::accountPassToImageIsEnabled();
@@ -515,7 +543,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             $pass = ImageUtil::convertText($accountClearPass);
         }
 
-        $this->jsonResponse->setStatus(0);
+        $this->JsonResponse->setStatus(0);
 
         if ($isFull) {
             $this->view->addTemplate('viewpass', 'account');
@@ -523,6 +551,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             $this->view->assign('login', $AccountData->getAccountLogin());
             $this->view->assign('pass', $pass);
             $this->view->assign('isImage', $useImage);
+            $this->view->assign('isLinked', Request::analyze('isLinked', 0));
 
             return;
         }
@@ -533,7 +562,49 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             'useimage' => $useImage
         ];
 
-        $this->jsonResponse->setCsrf($this->view->sk);
-        $this->jsonResponse->setData($data);
+        $this->JsonResponse->setData($data);
+    }
+
+    /**
+     * Obtener los datos para la vista de plugins
+     *
+     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     */
+    protected function getPlugin()
+    {
+        $this->module = self::ACTION_MGM_PLUGINS;
+        $this->view->addTemplate('plugins');
+
+        $Plugin = Plugin::getItem()->getById($this->itemId);
+
+        $this->view->assign('isReadonly', $this->view->isView ? 'readonly' : '');
+        $this->view->assign('plugin', $Plugin);
+        $this->view->assign('pluginInfo', PluginUtil::getPluginInfo($Plugin->getPluginName()));
+
+        $this->JsonResponse->setStatus(0);
+    }
+
+    /**
+     * Obtener los datos para la vista de archivos de una cuenta
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     */
+    protected function getAccountFiles()
+    {
+        $this->setAction(self::ACTION_ACC_FILES);
+
+        $this->view->assign('accountId', Request::analyze('id', 0));
+        $this->view->assign('deleteEnabled', Request::analyze('del', 0));
+        $this->view->assign('files', FileUtil::getAccountFiles($this->view->accountId));
+
+        if (!is_array($this->view->files) || count($this->view->files) === 0) {
+            return;
+        }
+
+        $this->view->addTemplate('files');
+
+        $this->JsonResponse->setStatus(0);
     }
 }

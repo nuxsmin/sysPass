@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
@@ -94,15 +93,26 @@ interface ActionsInterface
     const ACTION_MGM_FILES_DELETE = 663;
     const ACTION_MGM_FILES_SEARCH = 665;
     const ACTION_MGM_ACCOUNTS = 67;
+    const ACTION_MGM_ACCOUNTS_HISTORY = 6701;
     const ACTION_MGM_ACCOUNTS_VIEW = 671;
     const ACTION_MGM_ACCOUNTS_DELETE = 673;
+    const ACTION_MGM_ACCOUNTS_DELETE_HISTORY = 6731;
     const ACTION_MGM_ACCOUNTS_SEARCH = 675;
+    const ACTION_MGM_ACCOUNTS_SEARCH_HISTORY = 6751;
+    const ACTION_MGM_ACCOUNTS_EDIT_RESTORE = 6771;
     const ACTION_MGM_TAGS = 68;
     const ACTION_MGM_TAGS_NEW = 680;
     const ACTION_MGM_TAGS_VIEW = 681;
     const ACTION_MGM_TAGS_EDIT = 682;
     const ACTION_MGM_TAGS_DELETE = 683;
     const ACTION_MGM_TAGS_SEARCH = 685;
+    const ACTION_MGM_PLUGINS = 69;
+    const ACTION_MGM_PLUGINS_NEW = 690;
+    const ACTION_MGM_PLUGINS_VIEW = 691;
+    const ACTION_MGM_PLUGINS_SEARCH = 695;
+    const ACTION_MGM_PLUGINS_ENABLE= 696;
+    const ACTION_MGM_PLUGINS_DISABLE= 697;
+    const ACTION_MGM_PLUGINS_RESET= 698;
     const ACTION_USR = 70;
     const ACTION_USR_USERS = 71;
     const ACTION_USR_USERS_VIEW = 710;
@@ -127,15 +137,25 @@ interface ActionsInterface
     const ACTION_USR_PREFERENCES_GENERAL = 741;
     const ACTION_USR_PREFERENCES_SECURITY = 742;
     const ACTION_USR_SYNC_LDAP = 751;
+    const ACTION_NOT = 760;
+    const ACTION_NOT_USER = 761;
+    const ACTION_NOT_USER_VIEW = 7610;
+    const ACTION_NOT_USER_NEW = 7611;
+    const ACTION_NOT_USER_EDIT = 7612;
+    const ACTION_NOT_USER_DELETE = 7613;
+    const ACTION_NOT_USER_CHECK = 7614;
+    const ACTION_NOT_USER_SEARCH = 7615;
     const ACTION_CFG = 80;
-    const ACTION_CFG_GENERAL = 81;
-    const ACTION_CFG_ENCRYPTION = 82;
-    const ACTION_CFG_ENCRYPTION_TEMPPASS = 83;
-    const ACTION_CFG_BACKUP = 84;
-    const ACTION_CFG_IMPORT = 85;
-    const ACTION_CFG_EXPORT = 86;
-    const ACTION_CFG_WIKI = 87;
-    const ACTION_CFG_LDAP = 88;
-    const ACTION_CFG_MAIL = 89;
+    const ACTION_CFG_GENERAL = 801;
+    const ACTION_CFG_ENCRYPTION = 802;
+    const ACTION_CFG_ENCRYPTION_REFRESH = 8021;
+    const ACTION_CFG_ENCRYPTION_TEMPPASS = 803;
+    const ACTION_CFG_BACKUP = 804;
+    const ACTION_CFG_IMPORT = 805;
+    const ACTION_CFG_EXPORT = 806;
+    const ACTION_CFG_WIKI = 807;
+    const ACTION_CFG_LDAP = 808;
+    const ACTION_CFG_MAIL = 809;
+    const ACTION_CFG_ACCOUNTS = 810;
     const ACTION_EVL = 90;
 }

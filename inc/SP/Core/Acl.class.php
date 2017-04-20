@@ -5,7 +5,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -20,21 +20,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Core;
 
-use SP\DataModel\AccountData;
-use SP\Controller;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\UserData;
-use SP\Mgmt\Groups\Group;
 use SP\Log\Log;
 use SP\Mgmt\Groups\GroupUsers;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
@@ -45,34 +41,6 @@ class Acl implements ActionsInterface
      * @var int
      */
     protected $actionId;
-    /**
-     * @var AccountExtData
-     */
-    protected $AccountData;
-    /**
-     * @var UserData
-     */
-    protected $UserData;
-    /**
-     * @var bool
-     */
-    protected $userInGroups = false;
-    /**
-     * @var bool
-     */
-    protected $userInUsers = false;
-    /**
-     * @var bool
-     */
-    protected $resultView = false;
-    /**
-     * @var bool
-     */
-    protected $resultEdit = false;
-    /**
-     * @var bool
-     */
-    private $compileAccountAccess = false;
 
     /**
      * Acl constructor.
@@ -82,7 +50,6 @@ class Acl implements ActionsInterface
     public function __construct($actionId = null)
     {
         $this->actionId = $actionId;
-        $this->UserData = Session::getUserData();
     }
 
     /**
@@ -136,6 +103,8 @@ class Acl implements ActionsInterface
             case self::ACTION_CFG:
                 return ($curUserProfile->isConfigGeneral() || $curUserProfile->isConfigEncryption() || $curUserProfile->isConfigBackup() || $curUserProfile->isConfigImport());
             case self::ACTION_CFG_GENERAL:
+            case self::ACTION_MGM_PLUGINS:
+            case self::ACTION_CFG_ACCOUNTS:
                 return $curUserProfile->isConfigGeneral();
             case self::ACTION_CFG_IMPORT:
                 return $curUserProfile->isConfigImport();
@@ -155,6 +124,8 @@ class Acl implements ActionsInterface
                 return ($curUserProfile->isMgmPublicLinks() || $curUserProfile->isAccPublicLinks());
             case self::ACTION_MGM_ACCOUNTS:
             case self::ACTION_MGM_ACCOUNTS_SEARCH:
+            case self::ACTION_MGM_ACCOUNTS_HISTORY:
+            case self::ACTION_MGM_ACCOUNTS_SEARCH_HISTORY:
                 return $curUserProfile->isMgmAccounts();
             case self::ACTION_MGM_FILES:
             case self::ACTION_MGM_FILES_SEARCH:
@@ -184,9 +155,17 @@ class Acl implements ActionsInterface
                 return $curUserProfile->isMgmApiTokens();
             case self::ACTION_EVL:
                 return $curUserProfile->isEvl();
+            case self::ACTION_NOT:
+            case self::ACTION_NOT_USER:
+                return true;
         }
 
-        Log::writeNewLog(__FUNCTION__, sprintf(_('Denegado acceso a %s'), self::getActionName($action)), Log::NOTICE);
+        $Log = new Log();
+        $Log->getLogMessage()
+            ->setAction(__FUNCTION__)
+            ->addDetails(__('Acceso denegado', false), self::getActionName($action, false, false));
+        $Log->setLogLevel(Log::NOTICE);
+        $Log->writeLog();
 
         return false;
     }
@@ -196,49 +175,50 @@ class Acl implements ActionsInterface
      *
      * @param int  $action    El id de la acción
      * @param bool $shortName Si se devuelve el nombre corto de la acción
+     * @param bool $translate
      * @return string
      */
-    public static function getActionName($action, $shortName = false)
+    public static function getActionName($action, $shortName = false, $translate = true)
     {
         $actionName = [
-            self::ACTION_ACC_SEARCH => ['acc_search', _('Buscar Cuentas')],
-            self::ACTION_ACC_VIEW => ['acc_view', _('Ver Cuenta')],
-            self::ACTION_ACC_COPY => ['acc_copy', _('Copiar Cuenta')],
-            self::ACTION_ACC_NEW => ['acc_new', _('Nueva Cuenta')],
-            self::ACTION_ACC_EDIT => ['acc_edit', _('Editar Cuenta')],
-            self::ACTION_ACC_EDIT_PASS => ['acc_editpass', _('Editar Clave de Cuenta')],
-            self::ACTION_ACC_VIEW_HISTORY => ['acc_viewhist', _('Ver Historial')],
-            self::ACTION_ACC_VIEW_PASS => ['acc_viewpass', _('Ver Clave')],
-            self::ACTION_ACC_DELETE => ['acc_delete', _('Eliminar Cuenta')],
-            self::ACTION_ACC_FILES => ['acc_files', _('Archivos')],
-            self::ACTION_ACC_REQUEST => ['acc_request', _('Peticiones')],
-            self::ACTION_MGM => ['mgm', _('Gestión Aplicación')],
-            self::ACTION_MGM_CATEGORIES => ['mgm_categories', _('Gestión Categorías')],
-            self::ACTION_MGM_CATEGORIES_SEARCH => ['mgm_categories_search', _('Buscar Categorías')],
-            self::ACTION_MGM_CATEGORIES_NEW => ['mgm_categories_add', _('Añadir Categoría')],
-            self::ACTION_MGM_CATEGORIES_EDIT => ['mgm_categories_edit', _('Editar Categoría')],
-            self::ACTION_MGM_CATEGORIES_DELETE => ['mgm_categories_delete', _('Eliminar Categoría')],
-            self::ACTION_MGM_CUSTOMERS => ['mgm_customers', _('Gestión Clientes')],
-            self::ACTION_MGM_CUSTOMERS_SEARCH => ['mgm_customers', _('Buscar Clientes')],
-            self::ACTION_MGM_CUSTOMERS_NEW => ['mgm_customers_add', _('Añadir Cliente')],
-            self::ACTION_MGM_CUSTOMERS_EDIT => ['mgm_customers_edit', _('Editar Cliente')],
-            self::ACTION_MGM_CUSTOMERS_DELETE => ['mgm_customers_delete', _('Eliminar Cliente')],
-            self::ACTION_MGM_CUSTOMFIELDS => ['mgm_customfields', _('Gestión Campos Personalizados')],
-            self::ACTION_MGM_APITOKENS => ['mgm_apitokens', _('Gestión Autorizaciones API')],
-            self::ACTION_MGM_FILES => ['mgm_files', _('Gestión de Archivos')],
-            self::ACTION_MGM_ACCOUNTS => ['mgm_accounts', _('Gestión de Cuentas')],
-            self::ACTION_MGM_TAGS => ['mgm_tags', _('Gestión de Etiquetas')],
-            self::ACTION_USR => ['usr', _('Gestión Usuarios')],
-            self::ACTION_USR_USERS => ['usr_users', _('Gestión Usuarios')],
-            self::ACTION_USR_GROUPS => ['usr_groups', _('Gestión Grupos')],
-            self::ACTION_USR_PROFILES => ['usr_profiles', _('Gestión Perfiles')],
-            self::ACTION_CFG => ['cfg', _('Configuración')],
-            self::ACTION_CFG_GENERAL => ['cfg_general', _('Configuración General')],
-            self::ACTION_CFG_ENCRYPTION => ['cfg_encryption', _('Encriptación')],
-            self::ACTION_CFG_BACKUP => ['cfg_backup', _('Copia de Seguridad')],
-            self::ACTION_CFG_EXPORT => ['cfg_export', _('Exportar')],
-            self::ACTION_CFG_IMPORT => ['cfg_import', _('Importar')],
-            self::ACTION_EVL => 'evl'
+            self::ACTION_ACC_SEARCH => ['acc_search', __('Buscar Cuentas', $translate)],
+            self::ACTION_ACC_VIEW => ['acc_view', __('Ver Cuenta', $translate)],
+            self::ACTION_ACC_COPY => ['acc_copy', __('Copiar Cuenta', $translate)],
+            self::ACTION_ACC_NEW => ['acc_new', __('Nueva Cuenta', $translate)],
+            self::ACTION_ACC_EDIT => ['acc_edit', __('Editar Cuenta', $translate)],
+            self::ACTION_ACC_EDIT_PASS => ['acc_editpass', __('Editar Clave de Cuenta', $translate)],
+            self::ACTION_ACC_VIEW_HISTORY => ['acc_viewhist', __('Ver Historial', $translate)],
+            self::ACTION_ACC_VIEW_PASS => ['acc_viewpass', __('Ver Clave', $translate)],
+            self::ACTION_ACC_DELETE => ['acc_delete', __('Eliminar Cuenta', $translate)],
+            self::ACTION_ACC_FILES => ['acc_files', __('Archivos', $translate)],
+            self::ACTION_ACC_REQUEST => ['acc_request', __('Peticiones', $translate)],
+            self::ACTION_MGM => ['mgm', __('Gestión Aplicación', $translate)],
+            self::ACTION_MGM_CATEGORIES => ['mgm_categories', __('Gestión Categorías', $translate)],
+            self::ACTION_MGM_CATEGORIES_SEARCH => ['mgm_categories_search', __('Buscar Categorías', $translate)],
+            self::ACTION_MGM_CATEGORIES_NEW => ['mgm_categories_add', __('Añadir Categoría', $translate)],
+            self::ACTION_MGM_CATEGORIES_EDIT => ['mgm_categories_edit', __('Editar Categoría', $translate)],
+            self::ACTION_MGM_CATEGORIES_DELETE => ['mgm_categories_delete', __('Eliminar Categoría', $translate)],
+            self::ACTION_MGM_CUSTOMERS => ['mgm_customers', __('Gestión Clientes', $translate)],
+            self::ACTION_MGM_CUSTOMERS_SEARCH => ['mgm_customers', __('Buscar Clientes', $translate)],
+            self::ACTION_MGM_CUSTOMERS_NEW => ['mgm_customers_add', __('Añadir Cliente', $translate)],
+            self::ACTION_MGM_CUSTOMERS_EDIT => ['mgm_customers_edit', __('Editar Cliente', $translate)],
+            self::ACTION_MGM_CUSTOMERS_DELETE => ['mgm_customers_delete', __('Eliminar Cliente', $translate)],
+            self::ACTION_MGM_CUSTOMFIELDS => ['mgm_customfields', __('Gestión Campos Personalizados', $translate)],
+            self::ACTION_MGM_APITOKENS => ['mgm_apitokens', __('Gestión Autorizaciones API', $translate)],
+            self::ACTION_MGM_FILES => ['mgm_files', __('Gestión de Archivos', $translate)],
+            self::ACTION_MGM_ACCOUNTS => ['mgm_accounts', __('Gestión de Cuentas', $translate)],
+            self::ACTION_MGM_TAGS => ['mgm_tags', __('Gestión de Etiquetas', $translate)],
+            self::ACTION_USR => ['usr', __('Gestión Usuarios', $translate)],
+            self::ACTION_USR_USERS => ['usr_users', __('Gestión Usuarios', $translate)],
+            self::ACTION_USR_GROUPS => ['usr_groups', __('Gestión Grupos', $translate)],
+            self::ACTION_USR_PROFILES => ['usr_profiles', __('Gestión Perfiles', $translate)],
+            self::ACTION_CFG => ['cfg', __('Configuración', $translate)],
+            self::ACTION_CFG_GENERAL => ['cfg_general', __('Configuración General', $translate)],
+            self::ACTION_CFG_ENCRYPTION => ['cfg_encryption', __('Encriptación', $translate)],
+            self::ACTION_CFG_BACKUP => ['cfg_backup', __('Copia de Seguridad', $translate)],
+            self::ACTION_CFG_EXPORT => ['cfg_export', __('Exportar', $translate)],
+            self::ACTION_CFG_IMPORT => ['cfg_import', __('Importar', $translate)],
+            self::ACTION_EVL => ['cfg_evl', __('Log de Eventos', $translate)]
         ];
 
         if (!isset($actionName[$action])) {
@@ -250,94 +230,5 @@ class Acl implements ActionsInterface
         }
 
         return $actionName[$action][1];
-    }
-
-    /**
-     * Comprueba los permisos de acceso a una cuenta.
-     *
-     * @param null $actionId
-     * @return bool
-     */
-    public function checkAccountAccess($actionId = null)
-    {
-        if ($this->UserData->isUserIsAdminApp()
-            || $this->UserData->isUserIsAdminAcc()
-        ) {
-            return true;
-        }
-
-        if ($this->compileAccountAccess === false) {
-            $this->compileAccountAccess();
-        }
-
-        $action = null === $actionId ? $this->actionId : $actionId;
-
-        switch ($action) {
-            case self::ACTION_ACC_VIEW:
-            case self::ACTION_ACC_VIEW_PASS:
-            case self::ACTION_ACC_VIEW_HISTORY:
-            case self::ACTION_ACC_COPY:
-                return $this->resultView;
-            case self::ACTION_ACC_EDIT:
-            case self::ACTION_ACC_DELETE:
-            case self::ACTION_ACC_EDIT_PASS:
-                return $this->resultEdit;
-            default:
-                return false;
-        }
-    }
-
-    /**
-     * Evaluar la ACL
-     */
-    protected function compileAccountAccess()
-    {
-        $this->userInGroups = $this->getIsUserInGroups();
-        $this->userInUsers = in_array($this->UserData->getUserId(), $this->AccountData->getAccountUsersId());
-
-        $this->resultView = ($this->UserData->getUserId() === $this->AccountData->getAccountUserId()
-            || $this->UserData->getUserGroupId() === $this->AccountData->getAccountUserGroupId()
-            || $this->userInUsers
-            || $this->userInGroups);
-
-        $this->resultEdit = ($this->UserData->getUserId() === $this->AccountData->getAccountUserId()
-            || $this->UserData->getUserGroupId() === $this->AccountData->getAccountUserGroupId()
-            || ($this->userInUsers && $this->AccountData->getAccountOtherUserEdit())
-            || ($this->userInGroups && $this->AccountData->getAccountOtherGroupEdit()));
-
-        $this->compileAccountAccess = true;
-    }
-
-    /**
-     * Comprobar si el usuario o el grupo del usuario se encuentran los grupos asociados a la
-     * cuenta.
-     *
-     * @return bool
-     */
-    protected function getIsUserInGroups()
-    {
-        // Comprobar si el usuario está vinculado desde un grupo
-        foreach (GroupUsers::getItem()->getById($this->AccountData->getAccountUserGroupId()) as $GroupUsersData) {
-            if ($GroupUsersData->getUsertogroupUserId() === $this->UserData->getUserId()) {
-                return true;
-            }
-        }
-
-        // Comprobar si el grupo del usuario está vinculado como grupo secundario de la cuenta
-        foreach ($this->AccountData->getUserGroupsId() as $groupId) {
-            if ($groupId === $this->UserData->getUserGroupId()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param AccountExtData $AccountData
-     */
-    public function setAccountData($AccountData)
-    {
-        $this->AccountData = $AccountData;
     }
 }

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,8 +19,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Config;
@@ -29,7 +28,7 @@ use ReflectionObject;
 use SP\Core\DiFactory;
 use SP\Core\Session;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Esta clase es responsable de leer y escribir la configuración del archivo config.php
@@ -48,10 +47,9 @@ class Config
      */
     public static function loadConfig($reload = false)
     {
-        $ConfigData = Session::getConfig();
+        $ConfigData = self::$Config instanceof ConfigData ? self::$Config : Session::getConfig();
 
         if ($reload === true
-            || Session::getReload()
             || !is_object($ConfigData)
             || time() >= (Session::getConfigTime() + $ConfigData->getSessionTimeout() / 2)
         ) {
@@ -68,7 +66,7 @@ class Config
      */
     private static function arrayMapper()
     {
-        if (is_object(self::$Config)) {
+        if (self::$Config instanceof ConfigData) {
             return self::$Config;
         }
 
@@ -95,7 +93,7 @@ class Config
 
     /**
      * @param ConfigData $Config
-     * @param bool       $backup
+     * @param bool $backup
      */
     public static function saveConfig(ConfigData $Config = null, $backup = true)
     {
@@ -119,13 +117,21 @@ class Config
      */
     public static function getConfig()
     {
-        $Config = Session::getConfig();
+        if (self::$Config instanceof ConfigData) {
+            return self::$Config;
+        }
 
-        return is_object($Config) ? $Config : self::arrayMapper();
+        $ConfigData = Session::getConfig();
+
+        self::$Config = $ConfigData instanceof ConfigData ? $ConfigData : self::arrayMapper();
+
+        return self::$Config;
     }
 
     /**
      * Realizar un backup de la configuración en la BD
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     private static function backupToDB()
     {

@@ -27,18 +27,42 @@ sysPass.Plugin.Authenticator = function (Common) {
     var log = Common.log;
     var base = "/inc/Plugins/Authenticator";
 
-    var twofa = function ($obj) {
-        log.info("Authenticator:twofa");
+    var twofa = {
+        check: function ($obj) {
+            log.info("Authenticator:twofa:check");
 
-        var opts = Common.appRequests().getRequestOpts();
-        opts.url = base + "/ajax/ajax_save.php";
-        opts.data = $obj.serialize();
+            var opts = Common.appRequests().getRequestOpts();
+            opts.url = base + "/ajax/ajax_actions.php";
+            opts.data = $obj.serialize();
 
-        Common.appRequests().getActionCall(opts, function (json) {
-            Common.msg.out(json);
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
 
-            Common.appActions().doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
-        });
+                if (json.status == 0) {
+                    setTimeout(function () {
+                        Common.redirect("index.php");
+                    }, 1000);
+                }
+            });
+        },
+        save: function ($obj) {
+            log.info("Authenticator:twofa:save");
+
+            var opts = Common.appRequests().getRequestOpts();
+            opts.url = base + "/ajax/ajax_actions.php";
+            opts.data = $obj.serialize();
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+
+                if (json.status === 0) {
+                    Common.appActions().doAction({
+                        actionId: $obj.data("nextaction-id"),
+                        itemId: $obj.data("activetab")
+                    });
+                }
+            });
+        }
     };
 
     var init = function () {

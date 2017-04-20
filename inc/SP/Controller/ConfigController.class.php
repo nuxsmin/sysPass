@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,24 +19,27 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Controller;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
+use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
+use SP\Core\Crypt\CryptSessionHandler;
+use SP\Core\CryptMasterPass;
+use SP\Core\DiFactory;
 use SP\Core\Init;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Core\SessionUtil;
-use SP\Core\DiFactory;
+use SP\Core\Task;
 use SP\Core\Template;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
@@ -93,6 +96,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('tabs-start', 'common');
 
         $this->getGeneralTab();
+        $this->getAccountsTab();
         $this->getWikiTab();
         $this->getLdapTab();
         $this->getMailTab();
@@ -111,7 +115,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getGeneralTab()
+    protected function getGeneralTab()
     {
         $this->setAction(self::ACTION_CFG_GENERAL);
 
@@ -130,6 +134,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('chkMaintenance', $this->Config->isMaintenance() ? 'checked="checked"' : '');
         $this->view->assign('chkUpdates', $this->Config->isCheckUpdates() ? 'checked="checked"' : '');
         $this->view->assign('chkNotices', $this->Config->isChecknotices() ? 'checked="checked"' : '');
+        $this->view->assign('chkEncryptSession', $this->Config->isEncryptSession() ? 'checked="checked"' : '');
         $this->view->assign('sessionTimeout', $this->Config->getSessionTimeout());
 
         // Events
@@ -139,24 +144,6 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('remoteSyslogServer', $this->Config->getSyslogServer());
         $this->view->assign('remoteSyslogPort', $this->Config->getSyslogPort());
 
-        // Files
-        $this->view->assign('chkFiles', $this->Config->isFilesEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('filesAllowedExts', implode(',', $this->Config->getFilesAllowedExts()));
-        $this->view->assign('filesAllowedSize', $this->Config->getFilesAllowedSize());
-
-        // Accounts
-        $this->view->assign('chkGlobalSearch', $this->Config->isGlobalSearch() ? 'checked="checked"' : '');
-        $this->view->assign('chkResultsAsCards', $this->Config->isResultsAsCards() ? 'checked="checked"' : '');
-        $this->view->assign('chkAccountPassToImage', $this->Config->isAccountPassToImage() ? 'checked="checked"' : '');
-        $this->view->assign('chkAccountLink', $this->Config->isAccountLink() ? 'checked="checked"' : '');
-        $this->view->assign('accountCount', $this->Config->getAccountCount());
-
-        // PublicLinks
-        $this->view->assign('chkPubLinks', $this->Config->isPublinksImageEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkPubLinksImage', $this->Config->isPublinksImageEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('pubLinksMaxTime', $this->Config->getPublinksMaxTime() / 60);
-        $this->view->assign('pubLinksMaxViews', $this->Config->getPublinksMaxViews());
-
         // Proxy
         $this->view->assign('chkProxy', $this->Config->isProxyEnabled() ? 'checked="checked"' : '');
         $this->view->assign('proxyServer', $this->Config->getProxyServer());
@@ -165,7 +152,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('proxyPass', $this->Config->getProxyPass());
 
         $this->view->assign('actionId', $this->getAction(), 'config');
-        $this->view->append('tabs', ['title' => _('General')]);
+        $this->view->append('tabs', ['title' => __('General')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'config');
     }
 
@@ -183,11 +170,48 @@ class ConfigController extends ControllerBase implements ActionsInterface
     }
 
     /**
+     * Obtener la pestaña de cuentas
+     */
+    protected function getAccountsTab()
+    {
+        $this->setAction(self::ACTION_CFG_ACCOUNTS);
+
+        if (!$this->checkAccess()) {
+            return;
+        }
+
+        $this->view->addTemplate('accounts');
+
+        // Files
+        $this->view->assign('chkFiles', $this->Config->isFilesEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('filesAllowedExts', implode(',', $this->Config->getFilesAllowedExts()));
+        $this->view->assign('filesAllowedSize', $this->Config->getFilesAllowedSize());
+
+        // Accounts
+        $this->view->assign('chkGlobalSearch', $this->Config->isGlobalSearch() ? 'checked="checked"' : '');
+        $this->view->assign('chkResultsAsCards', $this->Config->isResultsAsCards() ? 'checked="checked"' : '');
+        $this->view->assign('chkAccountPassToImage', $this->Config->isAccountPassToImage() ? 'checked="checked"' : '');
+        $this->view->assign('chkAccountLink', $this->Config->isAccountLink() ? 'checked="checked"' : '');
+        $this->view->assign('accountCount', $this->Config->getAccountCount());
+        $this->view->assign('chkAccountFullGroupAccess', $this->Config->isAccountFullGroupAccess() ? 'checked="checked"' : '');
+
+        // PublicLinks
+        $this->view->assign('chkPubLinks', $this->Config->isPublinksEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('chkPubLinksImage', $this->Config->isPublinksImageEnabled() ? 'checked="checked"' : '');
+        $this->view->assign('pubLinksMaxTime', $this->Config->getPublinksMaxTime() / 60);
+        $this->view->assign('pubLinksMaxViews', $this->Config->getPublinksMaxViews());
+
+        $this->view->assign('actionId', $this->getAction(), 'accounts');
+        $this->view->append('tabs', ['title' => __('Cuentas')]);
+        $this->view->assign('tabIndex', $this->getTabIndex(), 'accounts');
+    }
+
+    /**
      * Obtener la pestaña de Wiki
      *
      * @return void
      */
-    public function getWikiTab()
+    protected function getWikiTab()
     {
         $this->setAction(self::ACTION_CFG_WIKI);
 
@@ -210,7 +234,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('dokuWikiNamespace', $this->Config->getDokuwikiNamespace());
 
         $this->view->assign('actionId', $this->getAction(), 'wiki');
-        $this->view->append('tabs', ['title' => _('Wiki')]);
+        $this->view->append('tabs', ['title' => __('Wiki')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'wiki');
     }
 
@@ -219,7 +243,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getLdapTab()
+    protected function getLdapTab()
     {
         $this->setAction(self::ACTION_CFG_LDAP);
 
@@ -243,7 +267,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('ldapDefaultProfile', $this->Config->getLdapDefaultProfile());
 
         $this->view->assign('actionId', $this->getAction(), 'ldap');
-        $this->view->append('tabs', ['title' => _('LDAP')]);
+        $this->view->append('tabs', ['title' => __('LDAP')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'ldap');
     }
 
@@ -252,7 +276,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getMailTab()
+    protected function getMailTab()
     {
         $this->setAction(self::ACTION_CFG_MAIL);
 
@@ -274,7 +298,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('mailSecurity', ['SSL', 'TLS']);
 
         $this->view->assign('actionId', $this->getAction(), 'mail');
-        $this->view->append('tabs', ['title' => _('Correo')]);
+        $this->view->append('tabs', ['title' => __('Correo')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'mail');
     }
 
@@ -283,7 +307,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getEncryptionTab()
+    protected function getEncryptionTab()
     {
         $this->setAction(self::ACTION_CFG_ENCRYPTION);
 
@@ -293,12 +317,17 @@ class ConfigController extends ControllerBase implements ActionsInterface
 
         $this->view->addTemplate('encryption');
 
+        $this->view->assign('numAccounts', AccountUtil::getTotalNumAccounts());
+        $this->view->assign('taskId', Task::genTaskId('masterpass'));
+
         $this->view->assign('lastUpdateMPass', isset($this->configDB['lastupdatempass']) ? $this->configDB['lastupdatempass'] : 0);
         $this->view->assign('tempMasterPassTime', isset($this->configDB['tempmaster_passtime']) ? $this->configDB['tempmaster_passtime'] : 0);
         $this->view->assign('tempMasterMaxTime', isset($this->configDB['tempmaster_maxtime']) ? $this->configDB['tempmaster_maxtime'] : 0);
+        $this->view->assign('tempMasterAttempts', isset($this->configDB['tempmaster_attempts']) ? sprintf('%d/%d', $this->configDB['tempmaster_attempts'], CryptMasterPass::MAX_ATTEMPTS) : 0);
         $this->view->assign('tempMasterPass', Session::getTemporaryMasterPass());
+        $this->view->assign('groups', Group::getItem()->getItemsForSelect());
 
-        $this->view->append('tabs', ['title' => _('Encriptación')]);
+        $this->view->append('tabs', ['title' => __('Encriptación')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'encryption');
     }
 
@@ -307,7 +336,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getBackupTab()
+    protected function getBackupTab()
     {
         $this->setAction(self::ACTION_CFG_BACKUP);
 
@@ -320,30 +349,43 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('siteName', Util::getAppInfo('appname'));
         $this->view->assign('backupDir', Init::$SERVERROOT . '/backup');
         $this->view->assign('backupPath', Init::$WEBROOT . '/backup');
+        $this->view->assign('isAdminApp', $this->UserData->isUserIsAdminApp());
 
         $backupHash = $this->Config->getBackupHash();
         $exportHash = $this->Config->getExportHash();
 
+        $backupFile = $this->view->siteName . '-' . $backupHash . '.tar.gz';
+
         $this->view->assign('backupFile',
-            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '-' . $backupHash . '.tar.gz',
-                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '-' . $backupHash . '.tar.gz',
-                'filename' => $this->view->siteName . '-' . $backupHash . '.tar.gz')
+            ['absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $backupFile,
+                'relative' => $this->view->backupPath . '/' . $backupFile,
+                'filename' => $backupFile]
         );
+
+        $backupDbFile = $this->view->siteName . '_db-' . $backupHash . '.sql';
+
         $this->view->assign('backupDbFile',
-            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . 'db-' . $backupHash . '.sql',
-                'relative' => $this->view->backupPath . '/' . $this->view->siteName . 'db-' . $backupHash . '.sql',
-                'filename' => $this->view->siteName . 'db-' . $backupHash . '.sql')
+            ['absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $backupDbFile,
+                'relative' => $this->view->backupPath . '/' . $backupDbFile,
+                'filename' => $backupDbFile]
         );
-        $this->view->assign('lastBackupTime', file_exists($this->view->backupFile['absolute']) ? _('Último backup') . ': ' . date('r', filemtime($this->view->backupFile['absolute'])) : _('No se encontraron backups'));
+
+        clearstatcache(true, $this->view->backupFile['absolute']);
+        clearstatcache(true, $this->view->backupDbFile['absolute']);
+        $this->view->assign('lastBackupTime', file_exists($this->view->backupFile['absolute']) ? __('Último backup') . ': ' . date('r', filemtime($this->view->backupFile['absolute'])) : __('No se encontraron backups'));
+
+        $exportFile = $this->view->siteName . '-' . $exportHash . '.xml';
 
         $this->view->assign('exportFile',
-            array('absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $this->view->siteName . '-' . $exportHash . '.xml',
-                'relative' => $this->view->backupPath . '/' . $this->view->siteName . '-' . $exportHash . '.xml',
-                'filename' => $this->view->siteName . '-' . $exportHash . '.xml')
+            ['absolute' => $this->view->backupDir . DIRECTORY_SEPARATOR . $exportFile,
+                'relative' => $this->view->backupPath . '/' . $exportFile,
+                'filename' => $exportFile]
         );
-        $this->view->assign('lastExportTime', file_exists($this->view->exportFile['absolute']) ? _('Última exportación') . ': ' . date('r', filemtime($this->view->exportFile['absolute'])) : _('No se encontró archivo de exportación'));
 
-        $this->view->append('tabs', ['title' => _('Copia de Seguridad')]);
+        clearstatcache(true, $this->view->exportFile['absolute']);
+        $this->view->assign('lastExportTime', file_exists($this->view->exportFile['absolute']) ? __('Última exportación') . ': ' . date('r', filemtime($this->view->exportFile['absolute'])) : __('No se encontró archivo de exportación'));
+
+        $this->view->append('tabs', ['title' => __('Copia de Seguridad')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'backup');
     }
 
@@ -352,7 +394,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getImportTab()
+    protected function getImportTab()
     {
         $this->setAction(self::ACTION_CFG_IMPORT);
 
@@ -365,7 +407,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('groups', Group::getItem()->getItemsForSelect());
         $this->view->assign('users', User::getItem()->getItemsForSelect());
 
-        $this->view->append('tabs', ['title' => _('Importar Cuentas')]);
+        $this->view->append('tabs', ['title' => __('Importar Cuentas')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'import');
     }
 
@@ -374,7 +416,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      *
      * @return void
      */
-    public function getInfoTab()
+    protected function getInfoTab()
     {
         $this->setAction(self::ACTION_CFG_GENERAL);
 
@@ -388,8 +430,10 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('dbName', $this->Config->getDbName() . '@' . $this->Config->getDbHost());
         $this->view->assign('configBackupDate', date('r', $this->configDB['config_backupdate']));
         $this->view->assign('plugins', PluginUtil::getLoadedPlugins());
+        $this->view->assign('locale', Language::$localeStatus ?: sprintf('%s (%s)', Config::getConfig()->getSiteLang(), __('No instalado')));
+        $this->view->assign('securedSession', CryptSessionHandler::$isSecured);
 
-        $this->view->append('tabs', ['title' => _('Información')]);
+        $this->view->append('tabs', ['title' => __('Información')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'info');
     }
 }

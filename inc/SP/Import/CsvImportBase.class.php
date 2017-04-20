@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,22 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Import;
 
-use SP\DataModel\AccountData;
-use SP\Core\Crypt;
+use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
-use SP\Mgmt\Customers\Customer;
-use SP\Log\Log;
-use SP\Mgmt\Categories\Category;
-use SP\Core\Exceptions\SPException;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Clase CsvImportBase para base de clases de importación desde archivos CSV
@@ -50,34 +45,7 @@ abstract class CsvImportBase extends ImportBase
     /**
      * @var array
      */
-    protected $mapFields = array();
-    /**
-     * @var string
-     */
-    protected $fieldDelimiter = ';';
-
-    /**
-     * Constructor
-     *
-     * @param $file FileImport Instancia de la clase FileImport
-     * @throws SPException
-     */
-    public function __construct($file)
-    {
-        try {
-            $this->file = $file;
-        } catch (SPException $e) {
-            throw $e;
-        }
-    }
-
-    /**
-     * @param string $fieldDelimiter
-     */
-    public function setFieldDelimiter($fieldDelimiter)
-    {
-        $this->fieldDelimiter = $fieldDelimiter;
-    }
+    protected $mapFields = [];
 
     /**
      * @param int $numFields
@@ -104,63 +72,46 @@ abstract class CsvImportBase extends ImportBase
     {
         $line = 0;
 
-        $Log = new Log(_('Importar Cuentas'));
-
         foreach ($this->file->getFileContent() as $data) {
             $line++;
-            $fields = explode($this->fieldDelimiter, $data);
+            $fields = str_getcsv($data, $this->ImportParams->getCsvDelimiter(), '"');
             $numfields = count($fields);
 
             // Comprobar el número de campos de la línea
             if ($numfields !== $this->numFields) {
                 throw new SPException(
                     SPException::SP_CRITICAL,
-                    sprintf(_('El número de campos es incorrecto (%d)'), $numfields),
-                    sprintf(_('Compruebe el formato del archivo CSV en línea %s'), $line)
+                    sprintf(__('El número de campos es incorrecto (%d)', false), $numfields),
+                    sprintf(__('Compruebe el formato del archivo CSV en línea %s', false), $line)
                 );
             }
-
-            // Eliminar las " del principio/fin de los campos
-            array_walk($fields,
-                function (&$value, $key) {
-                    $value = trim($value, '"');
-                }
-            );
 
             // Asignar los valores del array a variables
             list($accountName, $customerName, $categoryName, $url, $login, $password, $notes) = $fields;
 
-            // Obtener los ids de cliente, categoría y la clave encriptada
-            $customerId = Customer::getItem(new CustomerData(null, $customerName))->add()->getItemData()->getCustomerId();
-            $categoryId = Category::getItem(new CategoryData(null, $categoryName))->add()->getItemData()->getCategoryId();
-            $pass = Crypt::encryptData($password);
+            // Obtener los ids de cliente y categoría
+            $CustomerData = new CustomerData(null, $customerName);
+            $this->addCustomer($CustomerData);
+            $CategoryData = new CategoryData(null, $categoryName);
+            $this->addCategory($CategoryData);
 
             // Crear la nueva cuenta
-            $AccountData = new AccountData();
+            $AccountData = new AccountExtData();
             $AccountData->setAccountName($accountName);
             $AccountData->setAccountLogin($login);
-            $AccountData->setAccountCategoryId($categoryId);
-            $AccountData->setAccountCustomerId($customerId);
+            $AccountData->setAccountCustomerId($CustomerData->getCustomerId());
+            $AccountData->setAccountCategoryId($CategoryData->getCategoryId());
             $AccountData->setAccountNotes($notes);
             $AccountData->setAccountUrl($url);
-            $AccountData->setAccountPass($pass['data']);
-            $AccountData->setAccountIV($pass['iv']);
+            $AccountData->setAccountPass($password);
 
             try {
                 $this->addAccount($AccountData);
-
-                $Log->addDescription(sprintf(_('Cuenta importada: %s'), $accountName));
             } catch (SPException $e) {
-                // Escribir los mensajes pendientes
-                $Log->writeLog(true);
-                $Log->addDescription(_('Error importando cuenta'));
-                $Log->addDescription(sprintf(_('Error procesando línea %s'), $line));
-                $Log->addDescription($e->getMessage());
-                // Flush y reset
-                $Log->writeLog(true);
+                $this->LogMessage->addDetails(__('Error importando cuenta', false), $accountName);
+                $this->LogMessage->addDetails(__('Error procesando línea', false), $line);
+                $this->LogMessage->addDetails(__('Error', false), $e->getMessage());
             }
         }
-
-        $Log->writeLog();
     }
 }

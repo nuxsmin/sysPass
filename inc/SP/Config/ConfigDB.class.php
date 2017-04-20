@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,18 +19,18 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Config;
 
-use SP\Storage\DB;
+use SP\Core\Exceptions\SPException;
 use SP\Log\Email;
 use SP\Log\Log;
+use SP\Storage\DB;
 use SP\Storage\QueryData;
 
-defined('APP_ROOT') || die(_('No es posible acceder directamente a este archivo'));
+defined('APP_ROOT') || die();
 
 /**
  * Class ConfigDB para la gestión de la configuración en la BD
@@ -95,16 +95,20 @@ class ConfigDB implements ConfigInterface
             $Data->addParam($param, 'param');
             $Data->addParam($value, 'value');
 
-            if (DB::getQuery($Data) === false) {
+            try {
+                DB::getQuery($Data);
+            } catch (SPException $e) {
                 return false;
             }
         }
 
-        $Log = new Log(_('Configuración'));
-        $Log->addDescription(_('Modificar configuración'));
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Configuración', false));
+        $LogMessage->addDescription(__('Modificar configuración', false));
         $Log->writeLog();
 
-        Email::sendEmail($Log);
+        Email::sendEmail($LogMessage);
 
         return true;
     }
@@ -112,9 +116,9 @@ class ConfigDB implements ConfigInterface
     /**
      * Guardar un parámetro de configuración en la BBDD.
      *
-     * @param string $param con el parámetro a guardar
-     * @param string $value con el valor a guardar
-     * @param bool   $email enviar email?
+     * @param string $param     con el parámetro a guardar
+     * @param string $value     con el valor a guardar
+     * @param bool   $email     enviar email?
      * @param bool   $hideValue Ocultar el valor del registro en el log
      * @return bool
      */
@@ -132,22 +136,26 @@ class ConfigDB implements ConfigInterface
         $Data->addParam($value, 'value');
         $Data->addParam($value, 'valuedup');
 
-        if (DB::getQuery($Data) === false) {
+        try {
+            DB::getQuery($Data);
+        } catch (SPException $e) {
             return false;
         }
 
-        $log = new Log(_('Configuración'));
-        $log->addDescription(_('Modificar configuración'));
-        $log->addDetails(_('Parámetro'), $param);
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Configuración', false));
+        $LogMessage->addDescription(__('Modificar configuración', false));
+        $LogMessage->addDetails(__('Parámetro', false), $param);
 
         if ($hideValue === false) {
-            $log->addDetails(_('Valor'), $value);
+            $LogMessage->addDetails(__('Valor', false), $value);
         }
 
-        $log->writeLog();
+        $Log->writeLog();
 
         if ($email === true) {
-            Email::sendEmail($log);
+            Email::sendEmail($LogMessage);
         }
 
         return true;
@@ -157,7 +165,7 @@ class ConfigDB implements ConfigInterface
      * Actualizar el array de parámetros de configuración
      *
      * @param $param   string La clave a actualizar
-     * @param $value mixed El valor a actualizar
+     * @param $value   mixed El valor a actualizar
      */
     public static function setCacheConfigValue($param, $value)
     {
@@ -182,7 +190,7 @@ class ConfigDB implements ConfigInterface
     /**
      * Obtiene un valor desde la configuración en la BBDD.
      *
-     * @param string $param con el parámetro de configuración
+     * @param string $param   con el parámetro de configuración
      * @param string $default El valor por defecto
      * @return false|string con el valor
      */
@@ -208,6 +216,8 @@ class ConfigDB implements ConfigInterface
      *
      * @param string $param clave
      * @return bool
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function deleteParam($param)
     {
@@ -217,6 +227,6 @@ class ConfigDB implements ConfigInterface
         $Data->setQuery($query);
         $Data->addParam($param, 'param');
 
-        return (DB::getQuery($Data) !== false);
+        return DB::getQuery($Data);
     }
 }

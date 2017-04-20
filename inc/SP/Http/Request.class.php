@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author    nuxsmin
- * @link      http://${PROJECT_LINK}
- * @copyright 2012-2015 Rubén Domínguez nuxsmin@${PROJECT_LINK}
+ * @link      http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -19,15 +19,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- *
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SP\Http;
 
 use SP\Core\CryptPKI;
-use SP\Html\Html;
 use SP\Core\Init;
+use SP\Html\Html;
 
 /**
  * Clase Request para la gestión de peticiones HTTP
@@ -40,14 +39,18 @@ class Request
      * Comprobar el método utilizado para enviar un formulario.
      *
      * @param string $method con el método utilizado.
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkReferer($method)
     {
-        if (!isset($_SERVER['HTTP_REFERER'])
+        $referer = self::getRequestHeaders('HTTP_REFERER');
+
+        if (!$referer
             || $_SERVER['REQUEST_METHOD'] !== strtoupper($method)
-            || !preg_match('#' . Init::$WEBROOT . '/.*$#', $_SERVER['HTTP_REFERER'])
+            || !preg_match('#' . Init::$WEBROOT . '/.*$#', $referer)
         ) {
-            Init::initError(_('No es posible acceder directamente a este archivo'));
+            Init::initError(__('No es posible acceder directamente a este archivo'));
             exit();
         }
     }
@@ -71,7 +74,7 @@ class Request
             $CryptPKI = new CryptPKI();
             $clearData = $CryptPKI->decryptRSA(base64_decode($encryptedData));
         } catch (\Exception $e) {
-            error_log($e->getMessage());
+            debugLog($e->getMessage());
             return $encryptedData;
         }
 
@@ -91,28 +94,15 @@ class Request
      */
     public static function analyze($param, $default = '', $check = false, $force = false, $sanitize = true)
     {
-        switch ($_SERVER['REQUEST_METHOD']) {
-            case 'GET':
-                if (!isset($_GET[$param])) {
-                    return ($force) ? !$force : $default;
-                }
-                $value = &$_GET[$param];
-                break;
-            case 'POST':
-                if (!isset($_POST[$param])) {
-                    return ($force) ? !$force : $default;
-                }
-                $value = &$_POST[$param];
-                break;
-        }
-
-        if ($check) {
+        if (!isset($_REQUEST[$param])) {
+            return $force ? !$force : $default;
+        } elseif ($check) {
             return true;
         } elseif ($force) {
             return $force;
         }
 
-        return self::parse($value, $default, $sanitize);
+        return self::parse($_REQUEST[$param], $default, $sanitize);
     }
 
     /**
@@ -123,7 +113,7 @@ class Request
      * @param $sanitize  bool   limpiar una cadena de caracteres
      * @return mixed
      */
-    protected static function parse(&$value, $default, $sanitize)
+    public static function parse(&$value, $default, $sanitize)
     {
         if (is_array($value)) {
             foreach ($value as &$data) {
@@ -131,15 +121,11 @@ class Request
             }
 
             return $value;
-        }
-
-        if ((is_numeric($value) || is_numeric($default))
+        } elseif ((is_numeric($value) || is_numeric($default))
             && !is_string($default)
         ) {
             return (int)$value;
-        }
-
-        if (is_string($value)) {
+        } elseif (is_string($value)) {
             return ($sanitize === true) ? Html::sanitize($value) : (string)$value;
         }
 
@@ -160,23 +146,17 @@ class Request
      * Devolver las cabeceras enviadas desde el cliente.
      *
      * @param string $header nombre de la cabecera a devolver
-     * @return array
+     * @return array|string
      */
     public static function getRequestHeaders($header = '')
     {
-        if (!function_exists('\apache_request_headers')) {
-            $headers = self::getApacheHeaders();
-        } else {
-            $headers = apache_request_headers();
+        if (!empty($header)) {
+            $header = strpos($header, 'HTTP_') === false ? 'HTTP_' . str_replace('-', '_', strtoupper($header)) : $header;
+
+            return isset($_SERVER[$header]) ? $_SERVER[$header] : '';
         }
 
-        if (!empty($header) && array_key_exists($header, $headers)) {
-            return $headers[$header];
-        } elseif (!empty($header)) {
-            return false;
-        }
-
-        return $headers;
+        return self::getApacheHeaders();
     }
 
     /**
@@ -184,13 +164,17 @@ class Request
      *
      * @return array
      */
-    public static function getApacheHeaders()
+    private static function getApacheHeaders()
     {
+        if (function_exists('\apache_request_headers')) {
+            return apache_request_headers();
+        }
+
         $headers = [];
 
         foreach ($_SERVER as $key => $value) {
             if (strpos($key, 'HTTP_') === 0) {
-                $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
+                $key = ucwords(strtolower(str_replace('_', '-', substr($key, 5))), '-');
                 $headers[$key] = $value;
             } else {
                 $headers[$key] = $value;
@@ -207,7 +191,7 @@ class Request
     {
         $params = [];
 
-        foreach ($_POST as $param => $value) {
+        foreach ($_REQUEST as $param => $value) {
             Html::sanitize($param);
             Html::sanitize($value);
 
@@ -217,6 +201,18 @@ class Request
         }
 
         return count($params) > 0 ? '?' . implode('&', $params) : '';
+    }
+
+    /**
+     * Devuelve un nombre de archivo seguro
+     *
+     * @param      $file
+     * @param null $base
+     * @return string
+     */
+    public static function getSecureAppFile($file, $base = null)
+    {
+        return basename(self::getSecureAppPath($file, $base));
     }
 
     /**
@@ -239,17 +235,5 @@ class Request
         } else {
             return $realPath;
         }
-    }
-
-    /**
-     * Devuelve un nombre de archivo seguro
-     *
-     * @param      $file
-     * @param null $base
-     * @return string
-     */
-    public static function getSecureAppFile($file, $base = null)
-    {
-        return basename(self::getSecureAppPath($file, $base));
     }
 }

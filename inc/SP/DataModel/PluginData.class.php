@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -46,7 +46,7 @@ class PluginData extends DataModelBase implements DataModelInterface
     /**
      * @var int
      */
-    public $plugin_enabled;
+    public $plugin_enabled = 0;
 
     /**
      * @return int

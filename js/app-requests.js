@@ -3,7 +3,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2016, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -33,6 +33,25 @@ sysPass.Requests = function (Common) {
      * @private
      */
     var _history = [];
+
+    var requestOpts = {
+        type: "json",
+        url: "",
+        method: "post",
+        callback: "",
+        async: true,
+        data: "",
+        cache: false,
+        processData: true,
+        contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+        timeout: 0,
+        addHistory: false,
+        hash: "",
+        useLoading: true,
+        useFullLoading: false
+    };
+
+    Object.seal(requestOpts);
 
     /**
      * Manejo del historial de consultas AJAX
@@ -81,26 +100,20 @@ sysPass.Requests = function (Common) {
     /**
      * Prototipo de objeto para peticiones
      *
-     * @returns {opts}
+     * @returns {requestOpts}
      */
     var getRequestOpts = function () {
-        var opts = {
-            type: "json",
-            url: "",
-            method: "post",
-            callback: "",
-            async: true,
-            data: "",
-            cache: false,
-            processData: true,
-            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-            timeout: 0,
-            addHistory: false,
-            hash: "",
-            useLoading: true
-        };
+        return Object.create(requestOpts);
+    };
 
-        return Object.create(opts);
+    /**
+     * Devolver la URL para peticiones Ajax
+     *
+     * @param url
+     * @returns {*}
+     */
+    var getUrl = function (url) {
+        return (url.indexOf("http") === -1 && url.indexOf("https") === -1) ? Common.config().APP_ROOT + url : url;
     };
 
     /**
@@ -113,11 +126,9 @@ sysPass.Requests = function (Common) {
     var getActionCall = function (opts, callbackOk, callbackError) {
         log.info("getActionCall");
 
-        var url = !opts.url.startsWith("http", 0) ? Common.config().APP_ROOT + opts.url : opts.url;
-
-        var $ajax = $.ajax({
+        return $.ajax({
             dataType: opts.type,
-            url: url,
+            url: getUrl(opts.url),
             method: opts.method,
             async: opts.async,
             data: opts.data,
@@ -127,7 +138,7 @@ sysPass.Requests = function (Common) {
             timeout: opts.timeout,
             beforeSend: function () {
                 if (opts.useLoading === true) {
-                    Common.appTheme().loading.show();
+                    Common.appTheme().loading.show(opts.useFullLoading);
                 }
             },
             success: function (response) {
@@ -158,23 +169,64 @@ sysPass.Requests = function (Common) {
                     callbackError();
                 }
             },
-            complete: function () {
+            complete: function (response) {
                 if (opts.useLoading === true) {
                     Common.appTheme().loading.hide();
+                }
+
+                if (opts.type === "json" && response.responseJSON.csrf !== undefined && response.responseJSON.csrf !== "") {
+                    Common.sk.set(response.responseJSON.csrf);
                 }
 
                 Common.appTheme().ajax.complete();
             }
         });
+    };
 
-        // Common.log.info($ajax);
+    /**
+     * Realizar una acción mediante envío de eventos
+     * @param opts
+     * @param callbackProgress
+     * @param callbackEnd
+     */
+    var getActionEvent = function (opts, callbackProgress, callbackEnd) {
+        var url = getUrl(opts.url);
+        url += "?" + $.param(opts.data);
 
-        return $ajax;
+        var source = new EventSource(url);
+
+        //a message is received
+        source.addEventListener("message", function (e) {
+            var result = JSON.parse(e.data);
+
+            log.debug(result);
+
+            if (result.end === 1) {
+                log.info("getActionEvent:Ending");
+                source.close();
+
+                if (typeof callbackEnd === "function") {
+                    callbackEnd(result);
+                }
+            } else {
+                if (typeof callbackProgress === "function") {
+                    callbackProgress(result);
+                }
+            }
+        });
+
+        source.addEventListener("error", function (e) {
+            log.error("getActionEvent:Error occured");
+            source.close();
+        });
+
+        return source;
     };
 
     return {
         getRequestOpts: getRequestOpts,
         getActionCall: getActionCall,
+        getActionEvent: getActionEvent,
         history: history
     };
 };

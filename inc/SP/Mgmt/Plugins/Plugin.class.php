@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,10 +26,8 @@ namespace SP\Mgmt\Plugins;
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\PluginData;
-use SP\Html\Html;
-use SP\Log\Email;
-use SP\Log\Log;
 use SP\Mgmt\ItemInterface;
+use SP\Mgmt\ItemTrait;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 
@@ -37,9 +35,11 @@ use SP\Storage\QueryData;
  * Class Plugin
  *
  * @package SP\Mgmt\Plugins
+ * @property PluginData $itemData
  */
 class Plugin extends PluginBase implements ItemInterface
 {
+    use ItemTrait;
 
     /**
      * Añade un nuevo plugin
@@ -57,18 +57,11 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($this->itemData->getPluginName());
         $Data->addParam($this->itemData->getPluginData());
         $Data->addParam($this->itemData->getPluginEnabled());
+        $Data->setOnErrorMessage(__('Error al crear el plugin', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al crear el plugin'));
-        }
+        DB::getQuery($Data);
 
         $this->itemData->setPluginId(DB::$lastId);
-
-        $Log = new Log(_('Nuevo Plugin'));
-        $Log->addDetails(Html::strongText(_('Plugin')), $this->itemData->getPluginName());
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
@@ -88,23 +81,20 @@ class Plugin extends PluginBase implements ItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($name);
+        $Data->setOnErrorMessage(__('Error al eliminar el plugin', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al eliminar el plugin'));
+        DB::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __('Plugin no encontrado', false));
         }
-
-        $Log = new Log(_('Eliminar Plugin'));
-        $Log->addDetails(Html::strongText(_('Plugin')), $name);
-
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
 
         return $this;
     }
 
     /**
      * Actualizar los datos de un plugin
+     *
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -123,16 +113,9 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($this->itemData->getPluginData());
         $Data->addParam($this->itemData->getPluginEnabled());
         $Data->addParam($this->itemData->getPluginName());
+        $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
 
-        if (DB::getQuery($Data) === false) {
-            throw new SPException(SPException::SP_CRITICAL, _('Error al actualizar el plugin'));
-        }
-
-        $Log = new Log(_('Modificar Plugin'));
-        $Log->addDetails(Html::strongText(_('Plugin')), $this->itemData->getPluginName());
-        $Log->writeLog();
-
-        Email::sendEmail($Log);
+        DB::getQuery($Data);
 
         return $this;
     }
@@ -141,12 +124,12 @@ class Plugin extends PluginBase implements ItemInterface
      * Devuelve los datos de un plugin por su id
      *
      * @param $id int
-     * @return mixed
+     * @return bool|PluginData
      */
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id, plugin_name, plugin_enabled FROM plugins WHERE plugin_id = ? LIMIT 1';
+            'SELECT plugin_id, plugin_name, plugin_data, BIN(plugin_enabled) AS plugin_enabled FROM plugins WHERE plugin_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -164,7 +147,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id, plugin_name, plugin_enabled FROM plugins ORDER BY plugin_name';
+            'SELECT plugin_id, plugin_name, BIN(plugin_enabled) AS plugin_enabled FROM plugins ORDER BY plugin_name';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -207,7 +190,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function getByName($name)
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id, plugin_name, plugin_enabled FROM plugins WHERE plugin_name = ? LIMIT 1';
+            'SELECT plugin_id, plugin_name, plugin_data, BIN(plugin_enabled) AS plugin_enabled FROM plugins WHERE plugin_name = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -215,5 +198,76 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($name);
 
         return DB::getResults($Data);
+    }
+
+    /**
+     * Cambiar el estado del plugin
+     *
+     * @return $this
+     * @throws SPException
+     */
+    public function toggle()
+    {
+        $query = /** @lang SQL */
+            'UPDATE plugins
+              SET plugin_enabled = ?
+              WHERE plugin_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getPluginEnabled());
+        $Data->addParam($this->itemData->getPluginId());
+        $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
+
+        DB::getQuery($Data);
+
+        return $this;
+    }
+
+    /**
+     * Restablecer los datos de un plugin
+     *
+     * @param int $id Id del plugin
+     * @return $this
+     * @throws SPException
+     */
+    public function reset($id)
+    {
+        $query = /** @lang SQL */
+            'UPDATE plugins
+              SET plugin_data = NULL 
+              WHERE plugin_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
+
+        DB::getQuery($Data);
+
+        return $this;
+    }
+
+    /**
+     * Devolver los elementos con los ids especificados
+     *
+     * @param array $ids
+     * @return PluginData[]
+     */
+    public function getByIdBatch(array $ids)
+    {
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT plugin_id, plugin_name, BIN(plugin_enabled) AS plugin_enabled FROM plugins WHERE plugin_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName($this->getDataModel());
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DB::getResultsArray($Data);
     }
 }
