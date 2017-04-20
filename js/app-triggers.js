@@ -220,6 +220,14 @@ sysPass.Triggers = function (Common) {
                 return;
             }
 
+            $frmSearch.find("input[name='search']").on('keyup', function (e) {
+                e.preventDefault();
+
+                if (e.which === 13 || e.keyCode === 13) {
+                    $frmSearch.submit();
+                }
+            });
+
             $frmSearch.find("select, #rpp").on("change", function () {
                 $frmSearch.submit();
             });

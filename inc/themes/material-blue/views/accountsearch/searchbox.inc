@@ -109,8 +109,6 @@
         <input type="hidden" name="searchfav" value="<?php echo $searchFavorites; ?>"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         <input type="hidden" name="isAjax" value="1">
-
-        <input type="submit" name="submit" style="display: none"/>
     </form>
 </div>
 <script type="text/javascript">
