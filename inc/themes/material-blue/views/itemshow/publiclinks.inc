@@ -74,7 +74,7 @@
                             <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 <i class="material-icons mdl-list__item-icon">access_time</i>
-                                    <?php printf('%s - %s', $useInfo['who'], date('Y-m-d H:i', $useInfo['time'])); ?>
+                                    <?php printf('%s - %s', $isDemo ? '*.*.*.*' : $useInfo['who'], date('Y-m-d H:i', $useInfo['time'])); ?>
                                 </span>
                             </li>
                         <?php endforeach; ?>
