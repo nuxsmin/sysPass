@@ -273,6 +273,29 @@
                             </select>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="descField">
+                            <?php echo __('Atributo Nombre'); ?>
+                            <div id="help-ldap_nameattribute"
+                                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                            <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_nameattribute">
+                                <p>
+                                    <?php echo __('Define el atributo a utilizar para el nombre del usuario en la importación.'); ?>
+                                </p>
+                            </div>
+                        </td>
+                        <td class="valField">
+                            <div class="lowres-title"><?php echo __('Atributo Nombre'); ?></div>
+
+                            <select id="ldap_nameattribute" name="ldap_nameattribute"
+                                    class="select-box" required>
+                                <option value="displayname" selected>displayName</option>
+                                <option value="fullname">fullName</option>
+                                <option value="cn">cn</option>
+                                <option value="name">name</option>
+                            </select>
+                        </td>
+                    </tr>
                     <tr id="ldap-results" style="display: none;">
                         <td class="descField">
                             <?php echo __('Resultados'); ?>

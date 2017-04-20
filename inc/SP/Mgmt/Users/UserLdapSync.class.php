@@ -89,8 +89,7 @@ class UserLdapSync
                         $value = $values[0];
 
                         switch (strtolower($attribute)) {
-                            case 'displayname':
-                            case 'fullname':
+                            case $options['nameAttribute']:
                                 $User->setUserName($value);
                                 break;
                             case $options['loginAttribute']:

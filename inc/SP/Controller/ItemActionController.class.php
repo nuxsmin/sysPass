@@ -1074,6 +1074,7 @@ class ItemActionController implements ItemControllerInterface
 
         $options = [
             'loginAttribute' => Request::analyze('ldap_loginattribute'),
+            'nameAttribute' => Request::analyze('ldap_nameattribute'),
             'isADS' => Util::boolval(Request::analyze('ldap_ads'))
         ];
 
