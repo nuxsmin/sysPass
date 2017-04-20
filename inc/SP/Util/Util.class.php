@@ -407,7 +407,7 @@ class Util
      */
     public static function getVersion($retBuild = false, $normalized = false)
     {
-        $build = 17041801;
+        $build = 17042001;
         $version = [2, 1, 7];
 
         if ($normalized === true) {
@@ -568,6 +568,7 @@ class Util
      *
      * @param string $class Class name
      * @param string|object $object
+     * @param string $srcClass Nombre de la clase serializada
      * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
      */
@@ -580,18 +581,18 @@ class Util
         if (get_class($object) === '__PHP_Incomplete_Class') {
             //  Elimina el nombre de la clase en los métodos privados
             if ($srcClass !== null) {
-                $replace = preg_replace_callback(
-                    '/:\d+:"\x00' . preg_quote($srcClass) . '\x00(\w+)"/',
+                $replaceSrc = preg_replace_callback(
+                    '/:\d+:"\x00' . preg_quote($srcClass, '/') . '\x00(\w+)"/',
                     function ($matches) {
                         return ':' . strlen($matches[1]) . ':"' . $matches[1] . '"';
                     },
                     serialize($object)
                 );
-
-                $replace = preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', $replace);
             } else {
-                $replace = preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', serialize($object));
+                $replaceSrc = serialize($object);
             }
+
+            $replace = preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', $replaceSrc);
 
             return unserialize($replace);
         }

@@ -73,7 +73,7 @@ class Crypt
                 throw new SPException(SPException::SP_ERROR, __('No es posible finalizar una transacción', false));
             }
 
-            debugLog('Total time: ' . (Init::microtime_float() - $timeStart));
+            debugLog('Total time: ' . (microtime_float() - $timeStart));
 
             return true;
         } catch (\Exception $e) {

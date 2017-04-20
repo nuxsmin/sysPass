@@ -192,7 +192,7 @@ abstract class ControllerBase
 
         $this->view->addTemplate('debug', 'common');
 
-        $this->view->assign('time', Init::microtime_float() - $this->view->timeStart);
+        $this->view->assign('time', microtime_float() - $this->view->timeStart);
         $this->view->assign('memInit', $memInit / 1000);
         $this->view->assign('memEnd', memory_get_usage() / 1000);
     }

@@ -46,7 +46,7 @@ define('DEBUG', false);
 // @see https://github.com/paragonie/random_compat/tree/v2.0.4#random_compat
 require_once EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'random_compat' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'random.php';
 
-require 'SplClassLoader.php';
+require __DIR__ . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
 
 $ClassLoader = new SplClassLoader('SP');
 $ClassLoader->setFileExtension('.class.php');
@@ -59,60 +59,11 @@ $ClassLoader->addExcluded('SP\\Mgmt\\CustomFieldDef');
 $ClassLoader->addExcluded('SP\\PublicLink');
 $ClassLoader->register();
 
+require __DIR__ . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
+
 // Empezar a calcular el tiempo y memoria utilizados
 $memInit = memory_get_usage();
-$timeStart = Init::microtime_float();
-
-/**
- * Función para enviar mensajes al log de errores
- *
- * @param mixed $data
- * @param bool $printLastCaller
- */
-function debugLog($data, $printLastCaller = false)
-{
-    if (!error_log(date('Y-m-d H:i:s') . ' - ' . print_r($data, true) . PHP_EOL, 3, LOG_FILE)) {
-        error_log(print_r($data, true));
-    }
-
-    if ($printLastCaller === true) {
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-        $n = count($backtrace);
-
-        for ($i = 1; $i <= $n - 1; $i++) {
-            $class = isset($backtrace[$i]['class']) ? $backtrace[$i]['class'] : '';
-            $line = sprintf('Caller %d: %s\%s', $i, $class, $backtrace[$i]['function']);
-
-            if (!error_log($line . PHP_EOL, 3, LOG_FILE)) {
-                error_log($line);
-            }
-        }
-    }
-}
-
-/**
- * Alias gettext function
- *
- * @param string $string
- * @param bool $tranlate Si es necesario traducir
- * @return string
- */
-function __($string, $tranlate = true)
-{
-    return $tranlate === true && $string !== '' && strlen($string) < 4096 ? gettext($string) : $string;
-}
-
-/**
- * Alias para obtener las locales de un dominio
- *
- * @param $domain
- * @param $message
- * @return string
- */
-function _t($domain, $message)
-{
-    return dgettext($domain, $message);
-}
+$timeStart = microtime_float();
 
 // Inicializar sysPass
 Init::start();

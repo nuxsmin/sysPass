@@ -286,7 +286,7 @@ class DB
         $LogMessage->addDescription(sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
         $LogMessage->addDetails('SQL', DBUtil::escape($query));
 
-        debugLog($LogMessage->getDescription(), true);
+        debugLog($LogMessage->getDescription(true), true);
         debugLog($LogMessage->getDetails());
 
         // Solo registrar eventos de ls BD si no son consultas del registro de eventos
