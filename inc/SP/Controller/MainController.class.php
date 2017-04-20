@@ -68,8 +68,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page       El nombre de página para la clase del body
-     * @param bool   $initialize Si es una inicialización completa
+     * @param string $page El nombre de página para la clase del body
+     * @param bool $initialize Si es una inicialización completa
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -138,26 +138,33 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getResourcesLinks()
     {
-        $jsVersionHash = md5(implode(Util::getVersion(true)));
+        $version = implode('', Util::getVersion(true));
+        $theme = DiFactory::getTheme();
+
+        $jsVersionHash = md5($version);
         $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?v=' . $jsVersionHash);
         $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?g=1&v=' . $jsVersionHash);
 
-        $themeInfo = DiFactory::getTheme()->getThemeInfo();
+        $themeInfo = $theme->getThemeInfo();
 
         if (isset($themeInfo['js'])) {
-            $themeJsBase = urlencode(DiFactory::getTheme()->getThemePath() . DIRECTORY_SEPARATOR . 'js');
+            $themeJsBase = urlencode($theme->getThemePath() . DIRECTORY_SEPARATOR . 'js');
             $themeJsFiles = urlencode(implode(',', $themeInfo['js']));
 
             $this->view->append('jsLinks', Init::$WEBROOT . '/js/js.php?f=' . $themeJsFiles . '&b=' . $themeJsBase . '&v=' . $jsVersionHash);
         }
 
-        $resultsAsCards = Init::isLoggedIn() && Session::getUserPreferences()->isResultsAsCards();
+        if (Init::isLoggedIn() && Session::getUserPreferences()->getUserId() > 0) {
+            $resultsAsCards = Session::getUserPreferences()->isResultsAsCards();
+        } else {
+            $resultsAsCards = Checks::resultsCardsIsEnabled();
+        }
 
-        $cssVersionHash = md5(implode(Util::getVersion(true)) . Checks::resultsCardsIsEnabled() . $resultsAsCards);
+        $cssVersionHash = md5($version . $resultsAsCards);
         $this->view->append('cssLinks', Init::$WEBROOT . '/css/css.php?v=' . $cssVersionHash);
 
         if (isset($themeInfo['css'])) {
-            if (Checks::resultsCardsIsEnabled() || $resultsAsCards) {
+            if ($resultsAsCards) {
                 $themeInfo['css'][] = 'search-card.min.css';
             } else {
                 $themeInfo['css'][] = 'search-grid.min.css';
@@ -167,7 +174,7 @@ class MainController extends ControllerBase implements ActionsInterface
                 $themeInfo['css'][] = 'styles-wiki.min.css';
             }
 
-            $themeCssBase = urlencode(DiFactory::getTheme()->getThemePath() . DIRECTORY_SEPARATOR . 'css');
+            $themeCssBase = urlencode($theme->getThemePath() . DIRECTORY_SEPARATOR . 'css');
             $themeCssFiles = urlencode(implode(',', $themeInfo['css']));
 
             $this->view->append('cssLinks', Init::$WEBROOT . '/css/css.php?f=' . $themeCssFiles . '&b=' . $themeCssBase . '&v=' . $jsVersionHash);

@@ -174,9 +174,11 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
             || $this->view->searchFavorites
             || $Search->isSortViews());
 
-        AccountsSearchItem::$accountLink = Session::getUserPreferences()->isAccountLink();
-        AccountsSearchItem::$topNavbar = Session::getUserPreferences()->isTopNavbar();
-        AccountsSearchItem::$optionalActions = Session::getUserPreferences()->isOptionalActions();
+        $UserPreferences = Session::getUserPreferences();
+
+        AccountsSearchItem::$accountLink = $UserPreferences->isAccountLink();
+        AccountsSearchItem::$topNavbar = $UserPreferences->isTopNavbar();
+        AccountsSearchItem::$optionalActions = $UserPreferences->isOptionalActions();
         AccountsSearchItem::$wikiEnabled = Checks::wikiIsEnabled();
         AccountsSearchItem::$dokuWikiEnabled = Checks::dokuWikiIsEnabled();
         AccountsSearchItem::$isDemoMode = Checks::demoIsEnabled();
@@ -313,9 +315,9 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridPager->setFilterOn($this->filterOn);
         $GridPager->setSourceAction(new DataGridActionSearch(self::ACTION_ACC_SEARCH));
 
-        $Preferences = Session::getUserPreferences();
+        $UserPreferences = Session::getUserPreferences();
 
-        $showOptionalActions = $Preferences->isOptionalActions() || $Preferences->isResultsAsCards() || Checks::resultsCardsIsEnabled();
+        $showOptionalActions = $UserPreferences->isOptionalActions() || $UserPreferences->isResultsAsCards() || ($UserPreferences->getUserId() === 0 && Checks::resultsCardsIsEnabled());
 
         $Grid = new DataGrid();
         $Grid->setId('gridSearch');
