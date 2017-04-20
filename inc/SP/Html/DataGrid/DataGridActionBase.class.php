@@ -134,6 +134,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * @param string $class
      * @param string $method
      * @return $this
+     * @throws \ReflectionException
      */
     public function setReflectionFilter($class, $method)
     {
@@ -309,7 +310,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      */
     public function setFilterRowSource($rowSource, $value = 1)
     {
-        $this->_filterRowSource = ['field' => $rowSource, 'value' => $value];
+        $this->_filterRowSource[] = ['field' => $rowSource, 'value' => $value];
 
         return $this;
     }
