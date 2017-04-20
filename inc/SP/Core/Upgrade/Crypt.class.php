@@ -52,8 +52,6 @@ class Crypt
      */
     public static function migrate(&$masterPass)
     {
-        global $timeStart;
-
         try {
             AccountHistoryCrypt::$currentMPassHash = ConfigDB::getValue('masterPwd');
 
@@ -73,7 +71,7 @@ class Crypt
                 throw new SPException(SPException::SP_ERROR, __('No es posible finalizar una transacción', false));
             }
 
-            debugLog('Total time: ' . (microtime_float() - $timeStart));
+            debugLog('Total time: ' . getElapsedTime());
 
             return true;
         } catch (\Exception $e) {

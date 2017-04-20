@@ -131,12 +131,10 @@ abstract class ControllerBase
 
     private function setViewVars()
     {
-        global $timeStart;
-
         $this->UserData = Session::getUserData();
         $this->UserProfileData = Session::getUserProfile();
 
-        $this->view->assign('timeStart', $timeStart);
+        $this->view->assign('timeStart', $_SERVER['REQUEST_TIME_FLOAT']);
         $this->view->assign('icons', $this->icons);
         $this->view->assign('SessionUserData', $this->UserData);
     }
@@ -192,7 +190,7 @@ abstract class ControllerBase
 
         $this->view->addTemplate('debug', 'common');
 
-        $this->view->assign('time', microtime_float() - $this->view->timeStart);
+        $this->view->assign('time', getElapsedTime());
         $this->view->assign('memInit', $memInit / 1000);
         $this->view->assign('memEnd', memory_get_usage() / 1000);
     }

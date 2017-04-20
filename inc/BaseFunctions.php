@@ -97,8 +97,7 @@ function mb_ucfirst($string)
  *
  * @returns float con el tiempo actual
  */
-function microtime_float()
+function getElapsedTime()
 {
-    list($usec, $sec) = explode(' ', microtime());
-    return ((float)$usec + (float)$sec);
+    return microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
 }

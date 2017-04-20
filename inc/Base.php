@@ -61,9 +61,8 @@ $ClassLoader->register();
 
 require __DIR__ . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
-// Empezar a calcular el tiempo y memoria utilizados
+// Empezar a calcular la memoria utilizada
 $memInit = memory_get_usage();
-$timeStart = microtime_float();
 
 // Inicializar sysPass
 Init::start();
