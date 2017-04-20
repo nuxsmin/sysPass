@@ -244,6 +244,7 @@ class Init
         if (isset($_SERVER['HTTP_XAUTHORIZATION']) && !isset($_SERVER['HTTP_AUTHORIZATION'])) {
             $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_XAUTHORIZATION'];
         }
+
         // Establecer las cabeceras de autentificación para apache+php-cgi
         if (isset($_SERVER['HTTP_AUTHORIZATION'])
             && preg_match('/Basic\s+(.*)$/i', $_SERVER['HTTP_AUTHORIZATION'], $matches)
@@ -252,6 +253,7 @@ class Init
             $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
             $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
         }
+
         // Establecer las cabeceras de autentificación para que apache+php-cgi funcione si la variable es renombrada por apache
         if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])
             && preg_match('/Basic\s+(.*)$/i', $_SERVER['REDIRECT_HTTP_AUTHORIZATION'], $matches)
@@ -281,7 +283,7 @@ class Init
         }
 
         if (!file_exists(LOG_FILE) && touch(LOG_FILE) && chmod(LOG_FILE, 0600)) {
-            error_log('Setup log file: ' . LOG_FILE);
+            debugLog('Setup log file: ' . LOG_FILE);
         }
     }
 
@@ -364,8 +366,8 @@ class Init
     private static function startSession($encrypt = false)
     {
         // Evita que javascript acceda a las cookies de sesion de PHP
-        @ini_set('session.cookie_httponly', '1');
-        @ini_set('session.save_handler', 'files');
+        ini_set('session.cookie_httponly', '1');
+        ini_set('session.save_handler', 'files');
 
         if ($encrypt === true) {
             $Key = SecureKeyCookie::getKey();
@@ -537,6 +539,7 @@ class Init
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
      */
     private static function checkInstalled()
     {
@@ -548,20 +551,20 @@ class Init
                 $url = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . self::$WEBROOT . '/index.php';
                 header("Location: $url");
                 exit();
-            } else {
-                if (Session::getAuthCompleted()) {
-                    session_destroy();
-
-                    self::start();
-                    return;
-                }
-
-                // Comprobar si sysPass está instalada o en modo mantenimiento
-                $Controller = new MainController();
-                $Controller->getInstaller();
-                $Controller->view();
-                exit();
             }
+
+            if (Session::getAuthCompleted()) {
+                session_destroy();
+
+                self::start();
+                return;
+            }
+
+            // Comprobar si sysPass está instalada o en modo mantenimiento
+            $Controller = new MainController();
+            $Controller->getInstaller();
+            $Controller->view();
+            exit();
         }
     }
 
@@ -785,17 +788,5 @@ class Init
         $Controller->doAction('postlogin.' . $action);
 
         return false;
-    }
-
-    /**
-     * Devuelve el tiempo actual en coma flotante.
-     * Esta función se utiliza para calcular el tiempo de renderizado con coma flotante
-     *
-     * @returns float con el tiempo actual
-     */
-    public static function microtime_float()
-    {
-        list($usec, $sec) = explode(' ', microtime());
-        return ((float)$usec + (float)$sec);
     }
 }
