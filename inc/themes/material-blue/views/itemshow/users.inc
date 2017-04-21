@@ -40,7 +40,7 @@ if ($user->getUserLogin() === 'demo') {
                         <input id="login" name="login" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $user->getUserLogin(); ?>"
-                               maxlength="80" <?php echo $user->isUserIsLdap() || $isReadonly ? $isReadonly : ''; ?>>
+                               maxlength="80" <?php echo $user->isUserIsLdap() || $isReadonly ? 'readonly' : ''; ?>>
                         <label class="mdl-textfield__label"
                                for="login"><?php echo __('Login de inicio de sesión'); ?></label>
                     </div>
