@@ -64,6 +64,7 @@ use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\User;
+use SP\Mgmt\Users\UserLdap;
 use SP\Mgmt\Users\UserLdapSync;
 use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
@@ -217,6 +218,7 @@ class ItemActionController implements ItemControllerInterface
     protected function userAction()
     {
         $Form = new UserForm($this->itemId);
+        $Form->setIsLdap(Request::analyze('isLdap', 0));
         $Form->validate($this->actionId);
 
         $this->setCustomFieldData(ActionsInterface::ACTION_USR_USERS);
@@ -224,6 +226,7 @@ class ItemActionController implements ItemControllerInterface
         switch ($this->actionId) {
             case ActionsInterface::ACTION_USR_USERS_NEW:
                 User::getItem($Form->getItemData())->add();
+
                 $this->addCustomFieldData();
 
                 $this->LogMessage->setAction(__('Crear Usuario', false));
@@ -238,7 +241,12 @@ class ItemActionController implements ItemControllerInterface
                 }
                 break;
             case ActionsInterface::ACTION_USR_USERS_EDIT:
-                User::getItem($Form->getItemData())->update();
+                if ($Form->getIsLdap()) {
+                    UserLdap::getItem($Form->getItemData())->update();
+                } else {
+                    User::getItem($Form->getItemData())->update();
+                }
+
                 $this->updateCustomFieldData();
 
                 $this->LogMessage->setAction(__('Actualizar Usuario', false));

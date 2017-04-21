@@ -43,6 +43,10 @@ class UserForm extends FormBase implements FormInterface
      * @var UserData
      */
     protected $UserData;
+    /**
+     * @var int
+     */
+    protected $isLdap = 0;
 
     /**
      * Validar el formulario
@@ -76,67 +80,6 @@ class UserForm extends FormBase implements FormInterface
     }
 
     /**
-     * @throws ValidationException
-     */
-    protected function checkCommon()
-    {
-        $isLdap = Request::analyze('isLdap', 0);
-
-        if (!$isLdap && !$this->UserData->getUserName()) {
-            throw new ValidationException(__('Es necesario un nombre de usuario', false));
-        } elseif (!$isLdap && !$this->UserData->getUserLogin()) {
-            throw new ValidationException(__('Es necesario un login', false));
-        } elseif (!$this->UserData->getUserProfileId()) {
-            throw new ValidationException(__('Es necesario un perfil', false));
-        } elseif (!$this->UserData->getUserGroupId()) {
-            throw new ValidationException(__('Es necesario un grupo', false));
-        } elseif (!$isLdap && !$this->UserData->getUserEmail()) {
-            throw new ValidationException(__('Es necesario un email', false));
-        } elseif (Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp() && $this->UserData->getUserLogin() === 'demo') {
-            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
-        }
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkPass()
-    {
-        $userPassR = Request::analyzeEncrypted('passR');
-
-        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
-            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
-        } elseif (!$userPassR || !$this->UserData->getUserPass()) {
-            throw new ValidationException(__('La clave no puede estar en blanco', false));
-        } elseif ($this->UserData->getUserPass() !== $userPassR) {
-            throw new ValidationException(__('Las claves no coinciden', false));
-        }
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    protected function checkDelete()
-    {
-        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
-            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
-        } elseif (
-            (!is_array($this->itemId) === Session::getUserData()->getUserId())
-            || (is_array($this->itemId) && in_array(Session::getUserData()->getUserId(), $this->itemId))
-        ) {
-            throw new ValidationException(__('No es posible eliminar, usuario en uso', false));
-        }
-    }
-
-    /**
-     * @return UserData
-     */
-    public function getItemData()
-    {
-        return $this->UserData;
-    }
-
-    /**
      * Analizar los datos de la petición HTTP
      *
      * @return void
@@ -156,5 +99,95 @@ class UserForm extends FormBase implements FormInterface
         $this->UserData->setUserIsDisabled(Request::analyze('disabled', 0, false, 1));
         $this->UserData->setUserIsChangePass(Request::analyze('changepass', 0, false, 1));
         $this->UserData->setUserPass(Request::analyzeEncrypted('pass'));
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->isLdap && !$this->UserData->getUserName()) {
+            throw new ValidationException(__('Es necesario un nombre de usuario', false));
+        }
+
+        if (!$this->isLdap && !$this->UserData->getUserLogin()) {
+            throw new ValidationException(__('Es necesario un login', false));
+        }
+
+        if (!$this->UserData->getUserProfileId()) {
+            throw new ValidationException(__('Es necesario un perfil', false));
+        }
+
+        if (!$this->UserData->getUserGroupId()) {
+            throw new ValidationException(__('Es necesario un grupo', false));
+        }
+
+        if (!$this->isLdap && !$this->UserData->getUserEmail()) {
+            throw new ValidationException(__('Es necesario un email', false));
+        }
+
+        if (Checks::demoIsEnabled() && !Session::getUserData()->isUserIsAdminApp() && $this->UserData->getUserLogin() === 'demo') {
+            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
+        }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkPass()
+    {
+        $userPassR = Request::analyzeEncrypted('passR');
+
+        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
+            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
+        }
+
+        if (!$userPassR || !$this->UserData->getUserPass()) {
+            throw new ValidationException(__('La clave no puede estar en blanco', false));
+        }
+
+        if ($this->UserData->getUserPass() !== $userPassR) {
+            throw new ValidationException(__('Las claves no coinciden', false));
+        }
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkDelete()
+    {
+        if (Checks::demoIsEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
+            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
+        }
+
+        if ((!is_array($this->itemId) === Session::getUserData()->getUserId())
+            || (is_array($this->itemId) && in_array(Session::getUserData()->getUserId(), $this->itemId))
+        ) {
+            throw new ValidationException(__('No es posible eliminar, usuario en uso', false));
+        }
+    }
+
+    /**
+     * @return UserData
+     */
+    public function getItemData()
+    {
+        return $this->UserData;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIsLdap()
+    {
+        return $this->isLdap;
+    }
+
+    /**
+     * @param int $isLdap
+     */
+    public function setIsLdap($isLdap)
+    {
+        $this->isLdap = $isLdap;
     }
 }

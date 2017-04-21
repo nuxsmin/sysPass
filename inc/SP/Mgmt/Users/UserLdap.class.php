@@ -68,9 +68,6 @@ class UserLdap extends User
 
     /**
      * @return mixed
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \phpmailer\phpmailerException
      * @throws SPException
      */
     public function add()
@@ -170,22 +167,32 @@ class UserLdap extends User
      */
     public function update()
     {
-        $query = 'UPDATE usrData SET 
-            user_pass = ?,
-            user_hashSalt = \'\',
+        $query = /** @lang SQL */
+            'UPDATE usrData SET
             user_name = ?,
             user_email = ?,
+            user_notes = ?,
+            user_groupId = ?,
+            user_profileId = ?,
+            user_isAdminApp = ?,
+            user_isAdminAcc = ?,
+            user_isDisabled = ?,
             user_lastUpdate = NOW(),
-            user_isLdap = 1 
-            WHERE LOWER(user_login) = LOWER(?) LIMIT 1';
+            user_isLdap = 1
+            WHERE user_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
         $Data->addParam($this->itemData->getUserName());
         $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam($this->itemData->getUserLogin());
-        $Data->setOnErrorMessage(__('Error al actualizar la clave del usuario en la BBDD', false));
+        $Data->addParam($this->itemData->getUserNotes());
+        $Data->addParam($this->itemData->getUserGroupId());
+        $Data->addParam($this->itemData->getUserProfileId());
+        $Data->addParam($this->itemData->isUserIsAdminApp());
+        $Data->addParam($this->itemData->isUserIsAdminAcc());
+        $Data->addParam($this->itemData->isUserIsDisabled());
+        $Data->addParam($this->itemData->getUserId());
+        $Data->setOnErrorMessage(__('Error al actualizar el usuario', false));
 
         DB::getQuery($Data);
 
