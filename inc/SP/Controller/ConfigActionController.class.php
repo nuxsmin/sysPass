@@ -318,8 +318,6 @@ class ConfigActionController implements ItemControllerInterface
      */
     protected function wikiAction()
     {
-        $Config = Session::getConfig();
-
         // Wiki
         $wikiEnabled = Request::analyze('wiki_enabled', false, false, true);
         $wikiSearchUrl = Request::analyze('wiki_searchurl');
@@ -368,7 +366,7 @@ class ConfigActionController implements ItemControllerInterface
             $this->ConfigData->setDokuwikiNamespace($dokuWikiNamespace);
 
             $this->LogMessage->addDescription(__('DokuWiki habiltada', false));
-        } elseif ($Config->isDokuwikiEnabled()) {
+        } elseif ($this->ConfigData->isDokuwikiEnabled()) {
             $this->ConfigData->setDokuwikiEnabled(false);
 
             $this->LogMessage->addDescription(__('DokuWiki deshabilitada', false));
@@ -386,8 +384,6 @@ class ConfigActionController implements ItemControllerInterface
      */
     protected function ldapAction()
     {
-        $Config = Session::getConfig();
-
         // LDAP
         $ldapEnabled = Request::analyze('ldap_enabled', false, false, true);
         $ldapADSEnabled = Request::analyze('ldap_ads', false, false, true);
@@ -418,7 +414,7 @@ class ConfigActionController implements ItemControllerInterface
 
             $this->LogMessage->addDescription(__('LDAP habiltado', false));
         } elseif ($this->ConfigData->isLdapEnabled()) {
-            $Config->setLdapEnabled(false);
+            $this->ConfigData->setLdapEnabled(false);
 
             $this->LogMessage->addDescription(__('LDAP deshabilitado', false));
         }
