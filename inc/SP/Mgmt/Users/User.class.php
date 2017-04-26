@@ -29,6 +29,7 @@ defined('APP_ROOT') || die();
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;
@@ -39,6 +40,7 @@ use SP\Storage\QueryData;
  * Class User
  *
  * @package SP
+ * @property UserData|UserLoginData $itemdata
  */
 class User extends UserBase implements ItemInterface, ItemSelectInterface
 {

@@ -35,7 +35,8 @@ sysPass.Main = function () {
         TIMEZONE: "",
         LOCALE: "",
         DEBUG: "",
-        COOKIES_ENABLED: false
+        COOKIES_ENABLED: false,
+        AUTHBASIC_AUTOLOGIN: false
     };
 
     // Atributos del generador de claves
@@ -273,21 +274,22 @@ sysPass.Main = function () {
         }
 
         getEnvironment().then(function () {
-            if (config.PK !== "") {
-                bindPassEncrypt();
-            }
+            if (!checkLogout()) {
+                if (config.PK !== "") {
+                    bindPassEncrypt();
+                }
 
-            if (config.CHECK_UPDATES === true) {
-                appActions.main.getUpdates();
-            }
+                if (config.CHECK_UPDATES === true) {
+                    appActions.main.getUpdates();
+                }
 
-            if (config.COOKIES_ENABLED === false) {
-                msg.sticky(config.LANG[64]);
-            }
+                if (config.COOKIES_ENABLED === false) {
+                    msg.sticky(config.LANG[64]);
+                }
 
-            initializeClipboard();
-            setupCallbacks();
-            checkLogout();
+                initializeClipboard();
+                setupCallbacks();
+            }
         });
 
         return oPublic;
@@ -330,6 +332,7 @@ sysPass.Main = function () {
             config.DEBUG = json.debug;
             config.MAX_FILE_SIZE = parseInt(json.max_file_size);
             config.COOKIES_ENABLED = json.cookies_enabled;
+            config.AUTHBASIC_AUTOLOGIN = json.authbasic_autologin;
 
             Object.freeze(config);
         });
@@ -394,7 +397,11 @@ sysPass.Main = function () {
             msg.sticky(config.LANG[61], function () {
                 redirect("index.php");
             });
+
+            return true;
         }
+
+        return false;
     };
 
     var redirect = function (url) {

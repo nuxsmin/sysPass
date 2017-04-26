@@ -49,7 +49,8 @@ $data = [
     'check_updates' => Session::getAuthCompleted() && ($Config->isCheckUpdates() || $Config->isChecknotices()) && (Session::getUserData()->isUserIsAdminApp() || Checks::demoIsEnabled()),
     'timezone' => date_default_timezone_get(),
     'debug' => DEBUG || $Config->isDebug(),
-    'cookies_enabled' => Cookies::checkCookies()
+    'cookies_enabled' => Cookies::checkCookies(),
+    'authbasic_autologin' => Config::getConfig()->isAuthBasicAutoLoginEnabled()
 ];
 
 try {

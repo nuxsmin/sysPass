@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -46,14 +46,38 @@ class Browser implements AuthInterface
     public function authenticate(UserLoginData $UserData)
     {
         $AuthData = new BrowserAuthData();
-        $AuthData->setAuthenticated($this->checkServerAuthUser($UserData->getLogin()));
+        $AuthData->setRequired($this->isMandatory());
 
-        if (Config::getConfig()->isAuthBasicAutoLoginEnabled()) {
-            $UserData->setLogin($_SERVER['PHP_AUTH_USER']);
-            $UserData->setLoginPass($_SERVER['PHP_AUTH_PW']);
+        if (!empty($UserData->getLogin()) && !empty($UserData->getLoginPass())) {
+            return $AuthData->setAuthenticated($this->checkServerAuthUser($UserData->getLogin()));
         }
 
-        return $AuthData;
+        if (Config::getConfig()->isAuthBasicAutoLoginEnabled()) {
+            $authUser = $this->getServerAuthUser();
+            $authPass = $this->getAuthPass();
+
+            if ($authUser !== null && $authPass !== null) {
+                $UserData->setLogin($authUser);
+                $UserData->setLoginPass($authPass);
+
+                $AuthData->setName($authUser);
+                return $AuthData->setAuthenticated(true);
+            }
+
+            return $AuthData->setAuthenticated(false);
+        }
+
+        return $AuthData->setAuthenticated($this->checkServerAuthUser($UserData->getLogin()));
+    }
+
+    /**
+     * Indica si es requerida para acceder a la aplicación
+     *
+     * @return boolean
+     */
+    public function isMandatory()
+    {
+        return false;
     }
 
     /**
@@ -88,6 +112,20 @@ class Browser implements AuthInterface
 
         if (isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) {
             return $_SERVER['REMOTE_USER'];
+        }
+
+        return null;
+    }
+
+    /**
+     * Devolver la clave del usuario autentificado por el servidor web
+     *
+     * @return string|null
+     */
+    protected function getAuthPass()
+    {
+        if (isset($_SERVER['PHP_AUTH_PW']) && !empty($_SERVER['PHP_AUTH_PW'])) {
+            return $_SERVER['PHP_AUTH_PW'];
         }
 
         return null;

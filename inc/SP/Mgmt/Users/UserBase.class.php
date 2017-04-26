@@ -28,6 +28,7 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\Mgmt\ItemBaseInterface;
 use SP\Mgmt\ItemBaseTrait;
 
@@ -35,7 +36,6 @@ use SP\Mgmt\ItemBaseTrait;
  * Class UserBase
  *
  * @package SP
- * @property UserData $itemdata
  */
 abstract class UserBase implements ItemBaseInterface
 {

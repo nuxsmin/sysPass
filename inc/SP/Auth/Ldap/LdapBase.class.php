@@ -109,6 +109,16 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     }
 
     /**
+     * Indica si es requerida para acceder a la aplicación
+     *
+     * @return boolean
+     */
+    public function isMandatory()
+    {
+        return false;
+    }
+
+    /**
      * Comprobar la conexión al servidor de LDAP.
      *
      * @return false|array Con el número de entradas encontradas
@@ -328,6 +338,16 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     }
 
     /**
+     * Devolver el puerto del servidor si está establecido
+     *
+     * @return int
+     */
+    protected function getServerPort()
+    {
+        return preg_match('/[\d\.]+:(\d+)/', $this->server, $port) ? $port[1] : 389;
+    }
+
+    /**
      * @return string
      */
     public function getSearchBase()
@@ -419,6 +439,8 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             return false;
         }
 
+        $this->LdapAuthData->setRequired($this->isMandatory());
+
         try {
             $this->setUserLogin($UserData->getLogin());
 
@@ -458,16 +480,6 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         $this->LdapAuthData->setServer($this->server);
 
         return true;
-    }
-
-    /**
-     * Devolver el puerto del servidor si está establecido
-     *
-     * @return int
-     */
-    protected function getServerPort()
-    {
-        return preg_match('/[\d\.]+:(\d+)/', $this->server, $port) ? $port[1] : 389;
     }
 
     /**

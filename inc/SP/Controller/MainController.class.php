@@ -68,8 +68,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page El nombre de página para la clase del body
-     * @param bool $initialize Si es una inicialización completa
+     * @param string $page       El nombre de página para la clase del body
+     * @param bool   $initialize Si es una inicialización completa
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -325,13 +325,20 @@ class MainController extends ControllerBase implements ActionsInterface
     {
         $this->setPage('login');
 
+        if (Session::getLoggedOut() === true) {
+            Session::setLoggedOut(false);
+
+            $this->view->assign('loggedOut', 1);
+        } else {
+            $this->view->assign('loggedOut', 0);
+        }
+
         $this->view->addTemplate('login');
         $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
 
         $this->view->assign('useLayout', false);
         $this->view->assign('mailEnabled', Checks::mailIsEnabled());
-        $this->view->assign('isLogout', Request::analyze('logout', false, true));
         $this->view->assign('updated', Session::getAppUpdated());
 
         Session::setAppUpdated(false);
@@ -346,6 +353,20 @@ class MainController extends ControllerBase implements ActionsInterface
         }
 
         $this->view->assign('getParams', $getParams);
+        $this->view();
+        exit();
+    }
+
+    /**
+     * Obtener los datos para el interface de logout
+     */
+    public function getLogout()
+    {
+        $this->setPage('logout');
+
+        $this->view->addTemplate('logout');
+        $this->view->addTemplate('body-footer');
+        $this->view->addTemplate('body-end');
         $this->view();
         exit();
     }

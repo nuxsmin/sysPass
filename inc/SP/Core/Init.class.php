@@ -208,7 +208,7 @@ class Init
 
             // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
             if ($AuthBrowser->checkServerAuthUser(Session::getUserData()->getUserLogin()) === false) {
-                self::logout();
+                self::goLogout();
                 // Denegar la redirección si la URL contiene una @
                 // Esto previene redirecciones como ?redirect_url=:user@domain.com
             } elseif (Request::analyze('redirect_url', '', true) && strpos('index.php', '@') === false) {
@@ -359,40 +359,11 @@ class Init
     }
 
     /**
-     * Iniciar la sesión PHP
-     *
-     * @param bool $encrypt Encriptar la sesión de PHP
-     */
-    private static function startSession($encrypt = false)
-    {
-        // Evita que javascript acceda a las cookies de sesion de PHP
-        ini_set('session.cookie_httponly', '1');
-        ini_set('session.save_handler', 'files');
-
-        if ($encrypt === true) {
-            $Key = SecureKeyCookie::getKey();
-
-            if ($Key !== false && self::$checkPhpVersion) {
-                session_set_save_handler(new CryptSessionHandler($Key), true);
-            }
-        }
-
-        // Si la sesión no puede ser iniciada, devolver un error 500
-        if (session_start() === false) {
-            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
-
-            header('HTTP/1.1 500 Internal Server Error');
-
-            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
-        }
-    }
-
-    /**
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
-     * @param string $hint opcional, con una ayuda sobre el error
-     * @param bool $headers
+     * @param string $hint    opcional, con una ayuda sobre el error
+     * @param bool   $headers
      */
     public static function initError($message, $hint = '', $headers = false)
     {
@@ -511,6 +482,35 @@ class Init
     }
 
     /**
+     * Iniciar la sesión PHP
+     *
+     * @param bool $encrypt Encriptar la sesión de PHP
+     */
+    private static function startSession($encrypt = false)
+    {
+        // Evita que javascript acceda a las cookies de sesion de PHP
+        ini_set('session.cookie_httponly', '1');
+        ini_set('session.save_handler', 'files');
+
+        if ($encrypt === true) {
+            $Key = SecureKeyCookie::getKey();
+
+            if ($Key !== false && self::$checkPhpVersion) {
+                session_set_save_handler(new CryptSessionHandler($Key), true);
+            }
+        }
+
+        // Si la sesión no puede ser iniciada, devolver un error 500
+        if (session_start() === false) {
+            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
+
+            header('HTTP/1.1 500 Internal Server Error');
+
+            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
+        }
+    }
+
+    /**
      * Comprobar si el usuario está logado.
      *
      * @returns bool
@@ -602,17 +602,23 @@ class Init
     private static function checkLogout()
     {
         if (Request::analyze('logout', false, true)) {
-            self::logout();
-            self::goLogin();
+            self::goLogout();
         }
     }
 
     /**
      * Deslogar el usuario actual y eliminar la información de sesión.
      */
-    private static function logout()
+    private static function goLogout()
     {
         self::wrLogoutInfo();
+
+        SessionUtil::cleanSession();
+
+        Session::setLoggedOut(true);
+
+        $Controller = new MainController();
+        $Controller->getLogout();
     }
 
     /**
@@ -630,17 +636,6 @@ class Init
         $LogMessage->addDetails(__('Tiempo inactivo', false), $inactiveTime . ' min.');
         $LogMessage->addDetails(__('Tiempo total', false), $totalTime . ' min.');
         $Log->writeLog();
-    }
-
-    /**
-     * Mostrar la página de login
-     */
-    private static function goLogin()
-    {
-        SessionUtil::cleanSession();
-
-        $Controller = new MainController();
-        $Controller->getLogin();
     }
 
     /**
@@ -760,6 +755,15 @@ class Init
         $Controller->doAction('prelogin.' . $action);
 
         return true;
+    }
+
+    /**
+     * Mostrar la página de login
+     */
+    private static function goLogin()
+    {
+        $Controller = new MainController();
+        $Controller->getLogin();
     }
 
     /**

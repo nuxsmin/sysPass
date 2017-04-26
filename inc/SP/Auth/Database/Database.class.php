@@ -59,6 +59,7 @@ class Database implements AuthInterface
         $this->UserData = $UserData;
 
         $AuthData = new DatabaseAuthData();
+        $AuthData->setRequired($this->isMandatory());
         $AuthData->setAuthenticated($this->authUser());
 
         return $AuthData;
@@ -94,5 +95,15 @@ class Database implements AuthInterface
 
             return false;
         }
+    }
+
+    /**
+     * Indica si es requerida para acceder a la aplicación
+     *
+     * @return boolean
+     */
+    public function isMandatory()
+    {
+        return true;
     }
 }

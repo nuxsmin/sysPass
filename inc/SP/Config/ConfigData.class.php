@@ -1851,7 +1851,7 @@ class ConfigData implements JsonSerializable
      */
     public function isAuthBasicEnabled()
     {
-        return $this->authBasicEnabled;
+        return (bool)$this->authBasicEnabled;
     }
 
     /**
@@ -1883,7 +1883,7 @@ class ConfigData implements JsonSerializable
      */
     public function isAuthBasicAutoLoginEnabled()
     {
-        return $this->authBasicAutoLoginEnabled;
+        return (bool)$this->authBasicAutoLoginEnabled;
     }
 
     /**

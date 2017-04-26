@@ -102,10 +102,13 @@ abstract class AuthDataBase
 
     /**
      * @param int $authenticated
+     * @return $this
      */
     public function setAuthenticated($authenticated)
     {
         $this->authenticated = (int)$authenticated;
+
+        return $this;
     }
 
     /**
