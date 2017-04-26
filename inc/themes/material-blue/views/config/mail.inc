@@ -17,7 +17,7 @@
                             <input type="checkbox" id="mail_enabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="mail_enabled"
-                                <?php echo $chkMail; ?>/>
+                                <?php echo $Config->isMailEnabled() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Habilitar notificaciones de correo'); ?></span>
                         </label>
                     </td>
@@ -30,7 +30,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="mail_server" name="mail_server" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $mailServer; ?>"/>
+                                   maxlength="128" value="<?php echo $Config->getMailServer(); ?>"/>
                             <label class="mdl-textfield__label" for="mail_server"><?php echo __('Servidor'); ?></label>
                         </div>
                     </td>
@@ -43,7 +43,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="mail_port" name="mail_port" type="number" pattern="[0-9]{1,5}"
                                    class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="5"
-                                   value="<?php echo $mailPort; ?>"/>
+                                   value="<?php echo $Config->getMailPort(); ?>"/>
                             <label class="mdl-textfield__label" for="mail_port"><?php echo __('Puerto'); ?></label>
                         </div>
                     </td>
@@ -54,7 +54,7 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_authenabled">
                             <input type="checkbox" id="mail_authenabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="mail_authenabled" <?php echo $chkMailAuth; ?>/>
+                                   name="mail_authenabled" <?php echo $Config->isMailAuthenabled() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Habilitar Autentificación'); ?></span>
                         </label>
                     </td>
@@ -67,7 +67,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="mail_user" name="mail_user" type="email"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="50" value="<?php echo $mailUser; ?>"/>
+                                   maxlength="50" value="<?php echo $Config->getMailUser(); ?>"/>
                             <label class="mdl-textfield__label" for="mail_user"><?php echo __('Usuario'); ?></label>
                         </div>
                     </td>
@@ -80,7 +80,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="mail_pass" name="mail_pass" type="password"
                                    class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
-                                   maxlength="128" value="<?php echo $mailPass; ?>"/>
+                                   maxlength="128" value="<?php echo $Config->getMailPass(); ?>"/>
                             <label class="mdl-textfield__label" for="mail_pass"><?php echo __('Clave'); ?></label>
                         </div>
                     </td>
@@ -96,7 +96,7 @@
                             <option value=""><?php echo __('Deshabilitada'); ?></option>
                             <?php foreach ($mailSecurity as $security): ?>
                                 <option
-                                    value="<?php echo $security; ?>" <?php echo ($currentMailSecurity == $security) ? 'selected' : ''; ?>><?php echo $security; ?></option>
+                                    value="<?php echo $security; ?>" <?php echo ($Config->getMailSecurity() == $security) ? 'selected' : ''; ?>><?php echo $security; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -109,7 +109,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="mail_from" name="mail_from" type="email"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $mailFrom; ?>"/>
+                                   maxlength="128" value="<?php echo $Config->getMailFrom(); ?>"/>
                             <label class="mdl-textfield__label"
                                    for="mail_from"><?php echo __('Dirección de correo de envío'); ?></label>
                         </div>
@@ -129,7 +129,7 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_requestsenabled">
                             <input type="checkbox" id="mail_requestsenabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="mail_requestsenabled" <?php echo $chkMailRequests; ?>/>
+                                   name="mail_requestsenabled" <?php echo $Config->isMailRequestsEnabled() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Habilitar peticiones por correo'); ?></span>
                         </label>
                     </td>

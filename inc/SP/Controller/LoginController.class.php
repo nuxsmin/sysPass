@@ -34,6 +34,7 @@ use SP\Auth\AuthUtil;
 use SP\Auth\Browser\BrowserAuthData;
 use SP\Auth\Database\DatabaseAuthData;
 use SP\Auth\Ldap\LdapAuthData;
+use SP\Config\Config;
 use SP\Core\CryptMasterPass;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\AuthException;
@@ -536,6 +537,7 @@ class LoginController
      * Comprobar si el cliente ha enviado las variables de autentificación
      *
      * @param BrowserAuthData $AuthData
+     * @return mixed
      * @throws \SP\Core\Exceptions\SPException
      * @throws AuthException
      */
@@ -555,6 +557,15 @@ class LoginController
 
         if ($AuthData->getAuthenticated() === 1) {
             $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
+
+            if (Config::getConfig()->isAuthBasicAutoLoginEnabled()) {
+                $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
+                $this->LogMessage->addDetails(__('Autentificación', false), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
+
+                return true;
+            }
         }
+
+        return null;
     }
 }

@@ -345,6 +345,18 @@ class ConfigData implements JsonSerializable
      * @var bool
      */
     private $accountFullGroupAccess = false;
+    /**
+     * @var bool
+     */
+    private $authBasicEnabled = true;
+    /**
+     * @var bool
+     */
+    private $authBasicAutoLoginEnabled = true;
+    /**
+     * @var string
+     */
+    private $authBasicDomain;
 
     /**
      * @return boolean
@@ -465,7 +477,7 @@ class ConfigData implements JsonSerializable
      */
     public function getLdapDefaultGroup()
     {
-        return $this->ldapDefaultGroup;
+        return (int)$this->ldapDefaultGroup;
     }
 
     /**
@@ -484,7 +496,7 @@ class ConfigData implements JsonSerializable
      */
     public function getLdapDefaultProfile()
     {
-        return $this->ldapDefaultProfile;
+        return (int)$this->ldapDefaultProfile;
     }
 
     /**
@@ -1832,5 +1844,53 @@ class ConfigData implements JsonSerializable
         $this->accountFullGroupAccess = (bool)$accountFullGroupAccess;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAuthBasicEnabled()
+    {
+        return $this->authBasicEnabled;
+    }
+
+    /**
+     * @param bool $authBasicEnabled
+     */
+    public function setAuthBasicEnabled($authBasicEnabled)
+    {
+        $this->authBasicEnabled = $authBasicEnabled;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthBasicDomain()
+    {
+        return $this->authBasicDomain;
+    }
+
+    /**
+     * @param string $authBasicDomain
+     */
+    public function setAuthBasicDomain($authBasicDomain)
+    {
+        $this->authBasicDomain = $authBasicDomain;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAuthBasicAutoLoginEnabled()
+    {
+        return $this->authBasicAutoLoginEnabled;
+    }
+
+    /**
+     * @param bool $authBasicAutoLoginEnabled
+     */
+    public function setAuthBasicAutoLoginEnabled($authBasicAutoLoginEnabled)
+    {
+        $this->authBasicAutoLoginEnabled = $authBasicAutoLoginEnabled;
     }
 }

@@ -26,7 +26,7 @@
             <select name="sitelang" id="sel-sitelang" size="1" class="select-box sel-chosen-ns">
                 <?php foreach ($langsAvailable as $langName => $langValue): ?>
                     <option
-                        value='<?php echo $langValue; ?>' <?php echo ($currentLang === $langValue) ? 'SELECTED' : ''; ?>><?php echo $langName; ?></option>
+                        value='<?php echo $langValue; ?>' <?php echo ($this->Config->getSiteLang() === $langValue) ? 'SELECTED' : ''; ?>><?php echo $langName; ?></option>
                 <?php endforeach; ?>
             </select>
         </td>
@@ -49,7 +49,7 @@
                     class="select-box sel-chosen-ns" >
                 <?php foreach ($themesAvailable as $themeDir => $themeName): ?>
                     <option
-                        value='<?php echo $themeDir; ?>' <?php echo ($currentTheme == $themeDir) ? "SELECTED" : ""; ?>><?php echo $themeName; ?></option>
+                        value='<?php echo $themeDir; ?>' <?php echo ($this->Config->getSiteTheme() === $themeDir) ? "SELECTED" : ""; ?>><?php echo $themeName; ?></option>
                 <?php endforeach; ?>
             </select>
         </td>
@@ -62,7 +62,7 @@
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="session_timeout" name="session_timeout" type="number" step="300"
                        pattern="[0-9]{2,4}" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="5"
-                       value="<?php echo $sessionTimeout; ?>"  required/>
+                       value="<?php echo $Config->getSessionTimeout(); ?>"  required/>
                 <label class="mdl-textfield__label"
                        for="session_timeout"><?php echo __('Timeout de sesión (s)'); ?></label>
             </div>
@@ -82,7 +82,7 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="https_enabled">
                 <input type="checkbox" id="https_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                        name="https_enabled"
-                    <?php echo $chkHttps; ?>/>
+                    <?php echo $Config->isHttpsEnabled() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Forzar HTTPS'); ?></span>
             </label>
         </td>
@@ -100,7 +100,7 @@
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="debug">
                 <input type="checkbox" id="debug" class="mdl-switch__input mdl-color-text--indigo-400" name="debug"
-                    <?php echo $chkDebug; ?>/>
+                    <?php echo $Config->isDebug() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Habilitar depuración'); ?></span>
             </label>
         </td>
@@ -118,7 +118,7 @@
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="maintenance">
                 <input type="checkbox" id="maintenance" class="mdl-switch__input mdl-color-text--indigo-400" name="maintenance"
-                    <?php echo $chkMaintenance; ?>/>
+                    <?php echo $Config->isMaintenance() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Modo mantenimiento'); ?></span>
             </label>
         </td>
@@ -136,7 +136,7 @@
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="updates">
                 <input type="checkbox" id="updates" class="mdl-switch__input mdl-color-text--indigo-400" name="updates"
-                    <?php echo $chkUpdates; ?>/>
+                    <?php echo $Config->isCheckUpdates() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Comprobar actualizaciones'); ?></span>
             </label>
         </td>
@@ -154,7 +154,7 @@
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="notices">
                 <input type="checkbox" id="notices" class="mdl-switch__input mdl-color-text--indigo-400" name="notices"
-                    <?php echo $chkNotices; ?>/>
+                    <?php echo $Config->isChecknotices() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Comprobar notificaciones'); ?></span>
             </label>
         </td>
@@ -175,7 +175,7 @@
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="encryptsession">
                 <input type="checkbox" id="encryptsession" class="mdl-switch__input mdl-color-text--indigo-400" name="encryptsession"
-                    <?php echo $chkEncryptSession; ?>/>
+                    <?php echo $Config->isEncryptSession() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Encriptar Sesión'); ?></span>
             </label>
         </td>

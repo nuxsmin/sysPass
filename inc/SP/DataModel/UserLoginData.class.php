@@ -41,6 +41,8 @@ class UserLoginData extends UserData
     protected $loginPass;
 
     /**
+     * Login del usuario introducido en el formulario
+     *
      * @return string
      */
     public function getLogin()
@@ -57,6 +59,8 @@ class UserLoginData extends UserData
     }
 
     /**
+     * Clave del usuario introducida en el formulario
+     *
      * @return string
      */
     public function getLoginPass()

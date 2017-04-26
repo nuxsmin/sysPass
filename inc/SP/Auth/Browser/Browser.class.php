@@ -25,6 +25,7 @@
 namespace SP\Auth\Browser;
 
 use SP\Auth\AuthInterface;
+use SP\Config\Config;
 use SP\DataModel\UserLoginData;
 
 /**
@@ -47,6 +48,11 @@ class Browser implements AuthInterface
         $AuthData = new BrowserAuthData();
         $AuthData->setAuthenticated($this->checkServerAuthUser($UserData->getLogin()));
 
+        if (Config::getConfig()->isAuthBasicAutoLoginEnabled()) {
+            $UserData->setLogin($_SERVER['PHP_AUTH_USER']);
+            $UserData->setLoginPass($_SERVER['PHP_AUTH_PW']);
+        }
+
         return $AuthData;
     }
 
@@ -58,6 +64,12 @@ class Browser implements AuthInterface
      */
     public function checkServerAuthUser($login)
     {
+        $domain = Config::getConfig()->getAuthBasicDomain();
+
+        if (!empty($domain)) {
+            $login = $this->getServerAuthUser() . '@' . $domain;
+        }
+
         $authUser = $this->getServerAuthUser();
 
         return $authUser === null ?: $authUser === $login;
@@ -72,7 +84,9 @@ class Browser implements AuthInterface
     {
         if (isset($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_USER'])) {
             return $_SERVER['PHP_AUTH_USER'];
-        } elseif (isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) {
+        }
+
+        if (isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) {
             return $_SERVER['REMOTE_USER'];
         }
 

@@ -36,13 +36,26 @@ use SP\Storage\DBUtil;
 trait ItemTrait
 {
     /**
+     * Cache de elementos para select
+     *
+     * @var array
+     */
+    private static $itemsSelectCache;
+
+    /**
      * Devolver los elementos para un campo select
      *
+     * @param bool $useCache Usar la cache de elementos si está creada
      * @return array
      */
-    public function getItemsForSelect()
+    public function getItemsForSelect($useCache = true)
     {
-        $items = [];
+        // Usar cache si está creada
+        if ($useCache === true && is_array(self::$itemsSelectCache)) {
+            return self::$itemsSelectCache;
+        }
+
+        self::$itemsSelectCache = [];
 
         /** @var DataModelInterface $item */
         /** @var ItemInterface $this */
@@ -51,10 +64,10 @@ trait ItemTrait
             $obj->id = (int)$item->getId();
             $obj->name = $item->getName();
 
-            $items[] = $obj;
+            self::$itemsSelectCache[] = $obj;
         }
 
-        return $items;
+        return self::$itemsSelectCache;
     }
 
     /**
@@ -99,7 +112,7 @@ trait ItemTrait
     /**
      * Devuelve una cadena con los parámetros para una consulta SQL desde un array
      *
-     * @param array  $items
+     * @param array $items
      * @param string $string Cadena a utilizar para los parámetros
      * @return string
      */

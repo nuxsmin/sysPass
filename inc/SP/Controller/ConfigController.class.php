@@ -84,6 +84,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('isDemoMode', Checks::demoIsEnabled() && !$this->UserData->isUserIsAdminApp());
         $this->view->assign('isDisabled', (Checks::demoIsEnabled() && !$this->UserData->isUserIsAdminApp()) ? 'disabled' : '');
+        $this->view->assign('Config', $this->Config);
     }
 
     /**
@@ -126,30 +127,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('general');
 
         $this->view->assign('langsAvailable', Language::getAvailableLanguages());
-        $this->view->assign('currentLang', $this->Config->getSiteLang());
         $this->view->assign('themesAvailable', DiFactory::getTheme()->getThemesAvailable());
-        $this->view->assign('currentTheme', $this->Config->getSiteTheme());
-        $this->view->assign('chkHttps', $this->Config->isHttpsEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkDebug', $this->Config->isDebug() ? 'checked="checked"' : '');
-        $this->view->assign('chkMaintenance', $this->Config->isMaintenance() ? 'checked="checked"' : '');
-        $this->view->assign('chkUpdates', $this->Config->isCheckUpdates() ? 'checked="checked"' : '');
-        $this->view->assign('chkNotices', $this->Config->isChecknotices() ? 'checked="checked"' : '');
-        $this->view->assign('chkEncryptSession', $this->Config->isEncryptSession() ? 'checked="checked"' : '');
-        $this->view->assign('sessionTimeout', $this->Config->getSessionTimeout());
-
-        // Events
-        $this->view->assign('chkLog', $this->Config->isLogEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkSyslog', $this->Config->isSyslogEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkRemoteSyslog', $this->Config->isSyslogRemoteEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('remoteSyslogServer', $this->Config->getSyslogServer());
-        $this->view->assign('remoteSyslogPort', $this->Config->getSyslogPort());
-
-        // Proxy
-        $this->view->assign('chkProxy', $this->Config->isProxyEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('proxyServer', $this->Config->getProxyServer());
-        $this->view->assign('proxyPort', $this->Config->getProxyPort());
-        $this->view->assign('proxyUser', $this->Config->getProxyUser());
-        $this->view->assign('proxyPass', $this->Config->getProxyPass());
 
         $this->view->assign('actionId', $this->getAction(), 'config');
         $this->view->append('tabs', ['title' => __('General')]);
@@ -182,25 +160,6 @@ class ConfigController extends ControllerBase implements ActionsInterface
 
         $this->view->addTemplate('accounts');
 
-        // Files
-        $this->view->assign('chkFiles', $this->Config->isFilesEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('filesAllowedExts', implode(',', $this->Config->getFilesAllowedExts()));
-        $this->view->assign('filesAllowedSize', $this->Config->getFilesAllowedSize());
-
-        // Accounts
-        $this->view->assign('chkGlobalSearch', $this->Config->isGlobalSearch() ? 'checked="checked"' : '');
-        $this->view->assign('chkResultsAsCards', $this->Config->isResultsAsCards() ? 'checked="checked"' : '');
-        $this->view->assign('chkAccountPassToImage', $this->Config->isAccountPassToImage() ? 'checked="checked"' : '');
-        $this->view->assign('chkAccountLink', $this->Config->isAccountLink() ? 'checked="checked"' : '');
-        $this->view->assign('accountCount', $this->Config->getAccountCount());
-        $this->view->assign('chkAccountFullGroupAccess', $this->Config->isAccountFullGroupAccess() ? 'checked="checked"' : '');
-
-        // PublicLinks
-        $this->view->assign('chkPubLinks', $this->Config->isPublinksEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkPubLinksImage', $this->Config->isPublinksImageEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('pubLinksMaxTime', $this->Config->getPublinksMaxTime() / 60);
-        $this->view->assign('pubLinksMaxViews', $this->Config->getPublinksMaxViews());
-
         $this->view->assign('actionId', $this->getAction(), 'accounts');
         $this->view->append('tabs', ['title' => __('Cuentas')]);
         $this->view->assign('tabIndex', $this->getTabIndex(), 'accounts');
@@ -220,18 +179,6 @@ class ConfigController extends ControllerBase implements ActionsInterface
         }
 
         $this->view->addTemplate('wiki');
-
-        $this->view->assign('chkWiki', $this->Config->isWikiEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('wikiSearchUrl', $this->Config->getWikiSearchurl());
-        $this->view->assign('wikiPageUrl', $this->Config->getWikiPageurl());
-        $this->view->assign('wikiFilter', implode(',', $this->Config->getWikiFilter()));
-
-        $this->view->assign('chkDokuWiki', $this->Config->isDokuwikiEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('dokuWikiUrl', $this->Config->getDokuwikiUrl());
-        $this->view->assign('dokuWikiUrlBase', $this->Config->getDokuwikiUrlBase());
-        $this->view->assign('dokuWikiUser', $this->Config->getDokuwikiUser());
-        $this->view->assign('dokuWikiPass', $this->Config->getDokuwikiPass());
-        $this->view->assign('dokuWikiNamespace', $this->Config->getDokuwikiNamespace());
 
         $this->view->assign('actionId', $this->getAction(), 'wiki');
         $this->view->append('tabs', ['title' => __('Wiki')]);
@@ -253,18 +200,9 @@ class ConfigController extends ControllerBase implements ActionsInterface
 
         $this->view->addTemplate('ldap');
 
-        $this->view->assign('chkLdap', $this->Config->isLdapEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkLdapADS', $this->Config->isLdapAds() ? 'checked="checked"' : '');
         $this->view->assign('ldapIsAvailable', Checks::ldapIsAvailable());
-        $this->view->assign('ldapServer', $this->Config->getLdapServer());
-        $this->view->assign('ldapBindUser', $this->Config->getLdapBindUser());
-        $this->view->assign('ldapBindPass', $this->Config->getLdapBindPass());
-        $this->view->assign('ldapBase', $this->Config->getLdapBase());
-        $this->view->assign('ldapGroup', $this->Config->getLdapGroup());
         $this->view->assign('groups', Group::getItem()->getItemsForSelect());
         $this->view->assign('profiles', Profile::getItem()->getItemsForSelect());
-        $this->view->assign('ldapDefaultGroup', $this->Config->getLdapDefaultGroup());
-        $this->view->assign('ldapDefaultProfile', $this->Config->getLdapDefaultProfile());
 
         $this->view->assign('actionId', $this->getAction(), 'ldap');
         $this->view->append('tabs', ['title' => __('LDAP')]);
@@ -286,15 +224,6 @@ class ConfigController extends ControllerBase implements ActionsInterface
 
         $this->view->addTemplate('mail');
 
-        $this->view->assign('chkMail', $this->Config->isMailEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkMailRequests', $this->Config->isMailRequestsEnabled() ? 'checked="checked"' : '');
-        $this->view->assign('chkMailAuth', $this->Config->isMailAuthenabled() ? 'checked="checked"' : '');
-        $this->view->assign('mailServer', $this->Config->getMailServer());
-        $this->view->assign('mailPort', $this->Config->getMailPort());
-        $this->view->assign('mailUser', $this->Config->getMailUser());
-        $this->view->assign('mailPass', $this->Config->getMailPass());
-        $this->view->assign('currentMailSecurity', $this->Config->getMailSecurity());
-        $this->view->assign('mailFrom', $this->Config->getMailFrom());
         $this->view->assign('mailSecurity', ['SSL', 'TLS']);
 
         $this->view->assign('actionId', $this->getAction(), 'mail');
