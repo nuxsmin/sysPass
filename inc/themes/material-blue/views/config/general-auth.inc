@@ -28,6 +28,13 @@
     <tr>
         <td class="descField">
             <?php echo __('Dominio'); ?>
+            <div id="help-domain"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+            <div class="mdl-tooltip mdl-tooltip--large" for="help-domain">
+                <p>
+                    <?php echo __('El dominio será añadido al nombre de usuario de sysPass para comprobarlo con el de Auth Basic.'); ?>
+                </p>
+            </div>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
