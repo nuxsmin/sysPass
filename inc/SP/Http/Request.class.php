@@ -35,6 +35,8 @@ use SP\Html\Html;
  */
 class Request
 {
+    private static $secureDirs = ['css', 'js'];
+
     /**
      * Comprobar el método utilizado para enviar un formulario.
      *
@@ -53,6 +55,48 @@ class Request
             Init::initError(__('No es posible acceder directamente a este archivo'));
             exit();
         }
+    }
+
+    /**
+     * Devolver las cabeceras enviadas desde el cliente.
+     *
+     * @param string $header nombre de la cabecera a devolver
+     * @return array|string
+     */
+    public static function getRequestHeaders($header = '')
+    {
+        if (!empty($header)) {
+            $header = strpos($header, 'HTTP_') === false ? 'HTTP_' . str_replace('-', '_', strtoupper($header)) : $header;
+
+            return isset($_SERVER[$header]) ? $_SERVER[$header] : '';
+        }
+
+        return self::getApacheHeaders();
+    }
+
+    /**
+     * Función que sustituye a apache_request_headers
+     *
+     * @return array
+     */
+    private static function getApacheHeaders()
+    {
+        if (function_exists('\apache_request_headers')) {
+            return apache_request_headers();
+        }
+
+        $headers = [];
+
+        foreach ($_SERVER as $key => $value) {
+            if (strpos($key, 'HTTP_') === 0) {
+                $key = ucwords(strtolower(str_replace('_', '-', substr($key, 5))), '-');
+                $headers[$key] = $value;
+            } else {
+                $headers[$key] = $value;
+            }
+        }
+
+        return $headers;
     }
 
     /**
@@ -143,48 +187,6 @@ class Request
     }
 
     /**
-     * Devolver las cabeceras enviadas desde el cliente.
-     *
-     * @param string $header nombre de la cabecera a devolver
-     * @return array|string
-     */
-    public static function getRequestHeaders($header = '')
-    {
-        if (!empty($header)) {
-            $header = strpos($header, 'HTTP_') === false ? 'HTTP_' . str_replace('-', '_', strtoupper($header)) : $header;
-
-            return isset($_SERVER[$header]) ? $_SERVER[$header] : '';
-        }
-
-        return self::getApacheHeaders();
-    }
-
-    /**
-     * Función que sustituye a apache_request_headers
-     *
-     * @return array
-     */
-    private static function getApacheHeaders()
-    {
-        if (function_exists('\apache_request_headers')) {
-            return apache_request_headers();
-        }
-
-        $headers = [];
-
-        foreach ($_SERVER as $key => $value) {
-            if (strpos($key, 'HTTP_') === 0) {
-                $key = ucwords(strtolower(str_replace('_', '-', substr($key, 5))), '-');
-                $headers[$key] = $value;
-            } else {
-                $headers[$key] = $value;
-            }
-        }
-
-        return $headers;
-    }
-
-    /**
      * Comprobar si existen parámetros pasados por POST para enviarlos por GET
      */
     public static function importUrlParamsToGet()
@@ -218,22 +220,26 @@ class Request
     /**
      * Devolver una ruta segura para
      *
-     * @param      $path
-     * @param null $base
+     * @param        $path
+     * @param string $base
      * @return string
      */
     public static function getSecureAppPath($path, $base = null)
     {
         if ($base === null) {
             $base = Init::$SERVERROOT;
+        } elseif (!in_array(basename($base), self::$secureDirs, true)) {
+            return '';
         }
 
         $realPath = realpath($base . DIRECTORY_SEPARATOR . $path);
 
-        if ($realPath === false || strpos($realPath, $base) !== 0) {
+        if ($realPath === false
+            || strpos($realPath, $base) !== 0
+        ) {
             return '';
-        } else {
-            return $realPath;
         }
+
+        return $realPath;
     }
 }
