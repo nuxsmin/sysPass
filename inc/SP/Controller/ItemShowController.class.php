@@ -520,10 +520,6 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             throw new ItemException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
         }
 
-        if (!UserPass::checkUserUpdateMPass(Session::getUserData()->getUserId())) {
-            throw new ItemException(__('Clave maestra actualizada', false) . '<br>' . __('Reinicie la sesión para cambiarla', false));
-        }
-
         $key = CryptSession::getSessionKey();
         $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $key);
         $accountClearPass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $key);

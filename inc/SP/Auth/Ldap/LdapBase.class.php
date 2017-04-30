@@ -338,16 +338,6 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     }
 
     /**
-     * Devolver el puerto del servidor si está establecido
-     *
-     * @return int
-     */
-    protected function getServerPort()
-    {
-        return preg_match('/[\d\.]+:(\d+)/', $this->server, $port) ? $port[1] : 389;
-    }
-
-    /**
      * @return string
      */
     public function getSearchBase()
@@ -480,6 +470,16 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         $this->LdapAuthData->setServer($this->server);
 
         return true;
+    }
+
+    /**
+     * Devolver el puerto del servidor si está establecido
+     *
+     * @return int
+     */
+    protected function getServerPort()
+    {
+        return preg_match('/[\d\.]+:(\d+)/', $this->server, $port) ? $port[1] : 389;
     }
 
     /**
