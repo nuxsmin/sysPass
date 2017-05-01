@@ -274,9 +274,9 @@ class ConfigData implements JsonSerializable
      */
     private $siteTheme = 'material-blue';
     /**
-     * @var int
+     * @var string
      */
-    private $configVersion = 0;
+    private $configVersion = '';
     /**
      * @var bool
      */
@@ -357,6 +357,14 @@ class ConfigData implements JsonSerializable
      * @var string
      */
     private $authBasicDomain;
+    /**
+     * @var int
+     */
+    private $ssoDefaultGroup = 0;
+    /**
+     * @var int
+     */
+    private $ssoDefaultProfile = 0;
 
     /**
      * @return boolean
@@ -1497,7 +1505,7 @@ class ConfigData implements JsonSerializable
      */
     public function setConfigVersion($configVersion)
     {
-        $this->configVersion = (int)$configVersion;
+        $this->configVersion = $configVersion;
 
         return $this;
     }
@@ -1892,5 +1900,37 @@ class ConfigData implements JsonSerializable
     public function setAuthBasicAutoLoginEnabled($authBasicAutoLoginEnabled)
     {
         $this->authBasicAutoLoginEnabled = $authBasicAutoLoginEnabled;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSsoDefaultGroup()
+    {
+        return $this->ssoDefaultGroup;
+    }
+
+    /**
+     * @param int $ssoDefaultGroup
+     */
+    public function setSsoDefaultGroup($ssoDefaultGroup)
+    {
+        $this->ssoDefaultGroup = $ssoDefaultGroup;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSsoDefaultProfile()
+    {
+        return $this->ssoDefaultProfile;
+    }
+
+    /**
+     * @param int $ssoDefaultProfile
+     */
+    public function setSsoDefaultProfile($ssoDefaultProfile)
+    {
+        $this->ssoDefaultProfile = $ssoDefaultProfile;
     }
 }

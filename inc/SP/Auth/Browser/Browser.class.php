@@ -46,14 +46,14 @@ class Browser implements AuthInterface
     public function authenticate(UserLoginData $UserData)
     {
         $AuthData = new BrowserAuthData();
-        $AuthData->setRequired($this->isMandatory());
+        $AuthData->setAuthGranted($this->isAuthGranted());
 
         if (!empty($UserData->getLogin()) && !empty($UserData->getLoginPass())) {
             return $AuthData->setAuthenticated($this->checkServerAuthUser($UserData->getLogin()));
         }
 
         if (Config::getConfig()->isAuthBasicAutoLoginEnabled()) {
-            $authUser = $this->getServerAuthUser();
+            $authUser = Browser::getServerAuthUser();
             $authPass = $this->getAuthPass();
 
             if ($authUser !== null && $authPass !== null) {
@@ -75,9 +75,9 @@ class Browser implements AuthInterface
      *
      * @return boolean
      */
-    public function isMandatory()
+    public function isAuthGranted()
     {
-        return false;
+        return Config::getConfig()->isAuthBasicAutoLoginEnabled();
     }
 
     /**
@@ -91,10 +91,10 @@ class Browser implements AuthInterface
         $domain = Config::getConfig()->getAuthBasicDomain();
 
         if (!empty($domain)) {
-            $login = $this->getServerAuthUser() . '@' . $domain;
+            $login = Browser::getServerAuthUser() . '@' . $domain;
         }
 
-        $authUser = $this->getServerAuthUser();
+        $authUser = Browser::getServerAuthUser();
 
         return $authUser === null ?: $authUser === $login;
     }
@@ -104,7 +104,7 @@ class Browser implements AuthInterface
      *
      * @return string
      */
-    public function getServerAuthUser()
+    public static function getServerAuthUser()
     {
         if (isset($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_USER'])) {
             return $_SERVER['PHP_AUTH_USER'];

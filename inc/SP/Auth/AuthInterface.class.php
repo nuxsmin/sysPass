@@ -45,5 +45,5 @@ interface AuthInterface
      *
      * @return boolean
      */
-    public function isMandatory();
+    public function isAuthGranted();
 }

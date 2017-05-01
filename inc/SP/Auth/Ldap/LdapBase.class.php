@@ -113,9 +113,9 @@ abstract class LdapBase implements LdapInterface, AuthInterface
      *
      * @return boolean
      */
-    public function isMandatory()
+    public function isAuthGranted()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -429,7 +429,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             return false;
         }
 
-        $this->LdapAuthData->setRequired($this->isMandatory());
+        $this->LdapAuthData->setAuthGranted($this->isAuthGranted());
 
         try {
             $this->setUserLogin($UserData->getLogin());

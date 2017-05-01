@@ -1,1 +1,0 @@
-ALTER TABLE `customers` ADD `customer_isGlobal` BIT(1) DEFAULT b'0' NULL;

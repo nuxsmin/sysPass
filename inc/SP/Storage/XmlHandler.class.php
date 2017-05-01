@@ -67,11 +67,11 @@ class XmlHandler implements FileStorageInterface
     /**
      * Cargar un archivo XML
      *
-     * @param string $tag
+     * @param string $node
      * @return FileStorageInterface
      * @throws \Exception
      */
-    public function load($tag = 'root')
+    public function load($node = 'root')
     {
         if (!$this->checkSourceFile()) {
             throw new \Exception(sprintf(__('No es posible leer/escribir el archivo: %s', false), $this->file));
@@ -81,7 +81,7 @@ class XmlHandler implements FileStorageInterface
         $this->items = [];
         $this->Dom->load($this->file);
 
-        $nodes = $this->Dom->getElementsByTagName($tag)->item(0)->childNodes;
+        $nodes = $this->Dom->getElementsByTagName($node)->item(0)->childNodes;
         $this->items = $this->readChildNodes($nodes);
 
         return $this;

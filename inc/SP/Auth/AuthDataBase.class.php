@@ -54,7 +54,7 @@ abstract class AuthDataBase
     /**
      * @var bool
      */
-    protected $required = false;
+    protected $authGranted = false;
     /**
      * @var bool
      */
@@ -144,19 +144,23 @@ abstract class AuthDataBase
     }
 
     /**
+     * Indica si es requerida para acceder a la aplicación
+     *
      * @return bool
      */
-    public function isRequired()
+    public function isAuthGranted()
     {
-        return (bool)$this->required;
+        return (bool)$this->authGranted;
     }
 
     /**
-     * @param bool $required
+     * Indica si es requerida para acceder a la aplicación
+     *
+     * @param bool $authGranted
      */
-    public function setRequired($required)
+    public function setAuthGranted($authGranted)
     {
-        $this->required = (bool)$required;
+        $this->authGranted = (bool)$authGranted;
     }
 
     /**

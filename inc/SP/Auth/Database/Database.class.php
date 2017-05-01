@@ -59,7 +59,7 @@ class Database implements AuthInterface
         $this->UserData = $UserData;
 
         $AuthData = new DatabaseAuthData();
-        $AuthData->setRequired($this->isMandatory());
+        $AuthData->setAuthGranted($this->isAuthGranted());
         $AuthData->setAuthenticated($this->authUser());
 
         return $AuthData;
@@ -102,7 +102,7 @@ class Database implements AuthInterface
      *
      * @return boolean
      */
-    public function isMandatory()
+    public function isAuthGranted()
     {
         return true;
     }

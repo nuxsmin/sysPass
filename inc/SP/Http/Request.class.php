@@ -35,6 +35,9 @@ use SP\Html\Html;
  */
 class Request
 {
+    /**
+     * @var array Directorios seguros para include
+     */
     private static $secureDirs = ['css', 'js'];
 
     /**
@@ -140,9 +143,13 @@ class Request
     {
         if (!isset($_REQUEST[$param])) {
             return $force ? !$force : $default;
-        } elseif ($check) {
+        }
+
+        if ($check) {
             return true;
-        } elseif ($force) {
+        }
+
+        if ($force) {
             return $force;
         }
 
@@ -165,11 +172,16 @@ class Request
             }
 
             return $value;
-        } elseif ((is_numeric($value) || is_numeric($default))
+        }
+
+        if ((is_numeric($value) || is_numeric($default))
             && !is_string($default)
         ) {
             return (int)$value;
-        } elseif (is_string($value)) {
+        }
+
+        if (is_string($value)
+        ) {
             return ($sanitize === true) ? Html::sanitize($value) : (string)$value;
         }
 

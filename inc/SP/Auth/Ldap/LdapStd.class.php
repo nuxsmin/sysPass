@@ -47,11 +47,11 @@ class LdapStd extends LdapBase
     {
         if (empty($this->group)) {
             return '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))';
-        } else {
-            $groupDN = $this->searchGroupDN();
-
-            return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
         }
+
+        $groupDN = $this->searchGroupDN();
+
+        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
     }
 
     /**
@@ -71,7 +71,7 @@ class LdapStd extends LdapBase
      */
     protected function getUserDnFilter()
     {
-        return '(&(|(samaccountname=' . $this->userLogin . ')(cn=' . $this->userLogin . ')(uid=' . $this->userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        return '(&(|(samaccountname=' . $this->userLogin . ')(cn=' . $this->userLogin . ')(uid=' . $this->userLogin . ')(userPrincipalName=' . $this->userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
     }
 
     /**

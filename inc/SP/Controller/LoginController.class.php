@@ -119,16 +119,8 @@ class LoginController
      */
     public function doLogin()
     {
-        $userLogin = Request::analyze('user');
-        $userPass = Request::analyzeEncrypted('pass');
-
-        if ((!$userLogin || !$userPass) && !Config::getConfig()->isAuthBasicAutoLoginEnabled()) {
-            $this->jsonResponse->setDescription(__('Usuario/Clave no introducidos', false));
-            Json::returnJson($this->jsonResponse);
-        }
-
-        $this->UserData->setLogin($userLogin);
-        $this->UserData->setLoginPass($userPass);
+        $this->UserData->setLogin(Request::analyze('user'));
+        $this->UserData->setLoginPass(Request::analyzeEncrypted('pass'));
 
         $Log = new Log($this->LogMessage);
 
@@ -143,7 +135,7 @@ class LoginController
 
                 /** @var AuthResult $AuthResult */
                 foreach ($result as $AuthResult) {
-                    if ($this->{$AuthResult->getAuth()}($AuthResult->getData()) === true && $AuthResult->isRequired() === true) {
+                    if ($this->{$AuthResult->getAuth()}($AuthResult->getData()) === true && $AuthResult->isAuthGranted() === true) {
                         break;
                     }
                 }
@@ -476,7 +468,7 @@ class LoginController
                 throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_USER_DISABLED);
             }
 
-            if (!$AuthData->isRequired()) {
+            if ($AuthData->isAuthGranted() === false) {
                 return false;
             }
 
@@ -523,7 +515,7 @@ class LoginController
     {
         // Autentificamos con la BBDD
         if ($AuthData->getAuthenticated() === 0) {
-            if (!$AuthData->isRequired()) {
+            if ($AuthData->isAuthGranted() === false) {
                 return false;
             }
 
@@ -554,7 +546,7 @@ class LoginController
     {
         // Comprobar si concide el login con la autentificación del servidor web
         if ($AuthData->getAuthenticated() === 0) {
-            if (!$AuthData->isRequired()) {
+            if ($AuthData->isAuthGranted() === false) {
                 return false;
             }
 

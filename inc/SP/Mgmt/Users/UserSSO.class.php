@@ -40,7 +40,6 @@ defined('APP_ROOT') || die();
  * Class UserSSO
  *
  * @package SP\Mgmt\Users
- * @property UserData|UserLoginData $itemdata
  */
 class UserSSO extends User
 {
@@ -55,10 +54,11 @@ class UserSSO extends User
     public function checkUserInDB($userLogin)
     {
         $query = /** @lang SQL */
-            'SELECT user_login FROM usrData WHERE LOWER(user_login) = LOWER(?) LIMIT 1';
+            'SELECT user_login FROM usrData WHERE LOWER(user_login) = LOWER(?) OR LOWER(user_ssoLogin) = LOWER(?) LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->addParam($userLogin);
         $Data->addParam($userLogin);
 
         DB::getQuery($Data);
@@ -77,15 +77,16 @@ class UserSSO extends User
             throw new SPException(SPException::SP_INFO, __('Login/email de usuario duplicados', false));
         }
 
-        // FIXME
-        $groupId = Config::getConfig()->getLdapDefaultGroup();
-        $profileId = Config::getConfig()->getLdapDefaultProfile();
+        $groupId = Config::getConfig()->getSsoDefaultGroup();
+        $profileId = Config::getConfig()->getSsoDefaultProfile();
+
         $this->itemData->setUserIsDisabled(($groupId === 0 || $profileId === 0) ? 1 : 0);
 
         $query = /** @lang SQL */
             'INSERT INTO usrData SET
             user_name = ?,
             user_login = ?,
+            user_ssoLogin = ?,
             user_notes = ?,
             user_groupId = ?,
             user_profileId = ?,
@@ -97,6 +98,7 @@ class UserSSO extends User
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->addParam($this->itemData->getLogin());
         $Data->addParam($this->itemData->getLogin());
         $Data->addParam($this->itemData->getLogin());
         $Data->addParam(__('Usuario de SSO'));
@@ -131,10 +133,11 @@ class UserSSO extends User
     public function checkDuplicatedOnAdd()
     {
         $query = /** @lang SQL */
-            'SELECT user_login FROM usrData WHERE LOWER(user_login) = LOWER(?)';
+            'SELECT user_login FROM usrData WHERE LOWER(user_login) = LOWER(?) OR LOWER(user_ssoLogin) = LOWER(?)';
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->addParam($this->itemData->getLogin());
         $Data->addParam($this->itemData->getLogin());
 
         DB::getQuery($Data);
@@ -155,12 +158,13 @@ class UserSSO extends User
             user_hashSalt = \'\',
             user_lastUpdate = NOW(),
             user_lastLogin = NOW()
-            WHERE LOWER(user_login) = LOWER(?) LIMIT 1';
+            WHERE LOWER(user_login) = LOWER(?) OR LOWER(user_ssoLogin) = LOWER(?) LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam(Hash::hashKey($this->itemData->getLoginPass()));
-        $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam($this->itemData->getLogin());
         $Data->setOnErrorMessage(__('Error al actualizar la clave del usuario en la BBDD', false));
 
         DB::getQuery($Data);

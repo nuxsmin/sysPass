@@ -28,6 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountAcl;
 use SP\Auth\Browser\Browser;
 use SP\Config\Config;
+use SP\Config\ConfigData;
 use SP\Controller\MainController;
 use SP\Core\Crypt\SecureKeyCookie;
 use SP\Core\Crypt\CryptSessionHandler;
@@ -138,9 +139,6 @@ class Init
 
         // Volver a cargar la configuración si se recarga la página
         if (!Request::checkReload()) {
-            // Cargar la configuración
-            Config::loadConfig();
-
             // Cargar el lenguaje
             Language::setLanguage();
 
@@ -207,12 +205,10 @@ class Init
             $AuthBrowser = new Browser();
 
             // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-            if ($AuthBrowser->checkServerAuthUser(Session::getUserData()->getUserLogin()) === false) {
+            if ($AuthBrowser->checkServerAuthUser(Session::getUserData()->getUserLogin()) === false
+                && $AuthBrowser->checkServerAuthUser(Session::getUserData()->getUserSsoLogin()) === false
+            ) {
                 self::goLogout();
-                // Denegar la redirección si la URL contiene una @
-                // Esto previene redirecciones como ?redirect_url=:user@domain.com
-            } elseif (Request::analyze('redirect_url', '', true) && strpos('index.php', '@') === false) {
-                header('Location: ' . 'index.php');
             }
 
             return;
@@ -398,57 +394,11 @@ class Init
      */
     private static function checkConfig()
     {
-        // Comprobar si es una versión antigua
-        self::checkConfigVersion();
-
         // Comprobar la configuración y cargar
         self::checkConfigDir();
-    }
 
-    /**
-     * Comprobar la versión de configuración y actualizarla
-     */
-    private static function checkConfigVersion()
-    {
-        $appVersion = (int)implode(Util::getVersion(true));
-
-        if (file_exists(CONFIG_FILE) && Upgrade::upgradeOldConfigFile($appVersion)) {
-            self::logConfigUpgrade($appVersion);
-
-            self::$UPDATED = true;
-
-            return;
-        }
-
-        $configVersion = (int)Config::getConfig()->getConfigVersion();
-
-        if (Config::getConfig()->isInstalled()
-            && $configVersion < $appVersion
-            && Upgrade::needConfigUpgrade($configVersion)
-            && Upgrade::upgradeConfig($configVersion)
-        ) {
-            self::logConfigUpgrade($appVersion);
-
-            self::$UPDATED = true;
-        }
-    }
-
-    /**
-     * Registrar la actualización de la configuración
-     *
-     * @param $version
-     */
-    private static function logConfigUpgrade($version)
-    {
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Actualización', false));
-        $LogMessage->addDescription(__('Actualización de versión realizada.', false));
-        $LogMessage->addDetails(__('Versión', false), $version);
-        $LogMessage->addDetails(__('Tipo', false), 'config');
-        $Log->writeLog();
-
-        Email::sendEmail($LogMessage);
+        // Comprobar si es una versión antigua
+        self::checkConfigVersion();
     }
 
     /**
@@ -479,6 +429,52 @@ class Init
             clearstatcache();
             self::initError(__('Los permisos del directorio "/config" son incorrectos'), __('Actual:') . ' ' . $configPerms . ' - ' . __('Necesario: 750'));
         }
+    }
+
+    /**
+     * Comprobar la versión de configuración y actualizarla
+     */
+    private static function checkConfigVersion()
+    {
+        $appVersion = implode('.', Util::getVersion(true, true));
+
+        if (file_exists(CONFIG_FILE) && Upgrade::upgradeOldConfigFile($appVersion)) {
+            self::logConfigUpgrade($appVersion);
+
+            self::$UPDATED = true;
+
+            return;
+        }
+
+        $configVersion = Upgrade::normalizeVersion(Config::getConfig()->getConfigVersion());
+
+        if (Config::getConfig()->isInstalled()
+            && Upgrade::checkVersion($configVersion, $appVersion)
+            && Upgrade::needConfigUpgrade($configVersion)
+            && Upgrade::upgradeConfig($configVersion)
+        ) {
+            self::logConfigUpgrade($appVersion);
+
+            self::$UPDATED = true;
+        }
+    }
+
+    /**
+     * Registrar la actualización de la configuración
+     *
+     * @param $version
+     */
+    private static function logConfigUpgrade($version)
+    {
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Actualización', false));
+        $LogMessage->addDescription(__('Actualización de versión realizada.', false));
+        $LogMessage->addDetails(__('Versión', false), $version);
+        $LogMessage->addDetails(__('Tipo', false), 'config');
+        $Log->writeLog();
+
+        Email::sendEmail($LogMessage);
     }
 
     /**

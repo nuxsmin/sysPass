@@ -40,6 +40,10 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @var string
      */
+    public $user_ssoLogin = '';
+    /**
+     * @var string
+     */
     public $user_name = '';
     /**
      * @var string
@@ -408,5 +412,21 @@ class UserData extends UserPassData implements DataModelInterface
     public function setUserIsChangedPass($user_isChangedPass)
     {
         $this->user_isChangedPass = (int)$user_isChangedPass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserSsoLogin()
+    {
+        return $this->user_ssoLogin;
+    }
+
+    /**
+     * @param string $user_ssoLogin
+     */
+    public function setUserSsoLogin($user_ssoLogin)
+    {
+        $this->user_ssoLogin = $user_ssoLogin;
     }
 }

@@ -22,6 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use SP\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Core\CryptPKI;
 use SP\Core\Init;
@@ -50,7 +51,7 @@ $data = [
     'timezone' => date_default_timezone_get(),
     'debug' => DEBUG || $Config->isDebug(),
     'cookies_enabled' => Cookies::checkCookies(),
-    'authbasic_autologin' => Config::getConfig()->isAuthBasicAutoLoginEnabled()
+    'authbasic_autologin' => Browser::getServerAuthUser() && Config::getConfig()->isAuthBasicAutoLoginEnabled()
 ];
 
 try {

@@ -42,7 +42,7 @@ class AuthResult
     /**
      * @var bool
      */
-    public $required = false;
+    public $authGranted = false;
 
     /**
      * AuthResult constructor.
@@ -54,7 +54,7 @@ class AuthResult
     {
         $this->auth = $auth;
         $this->data = $data;
-        $this->required = $data->isRequired();
+        $this->authGranted = $data->isAuthGranted();
     }
 
     /**
@@ -76,8 +76,8 @@ class AuthResult
     /**
      * @return bool
      */
-    public function isRequired()
+    public function isAuthGranted()
     {
-        return $this->required;
+        return $this->authGranted;
     }
 }
