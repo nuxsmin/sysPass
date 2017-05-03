@@ -547,14 +547,15 @@
 }
 
 #box-popup {
-  min-width: 30em;
-  max-width: 60em;
+  @include fit-ccntent();
+  min-width: 50em;
   margin: 5em auto;
   padding: 0;
   background-color: #fff;
   &.box-password-view {
+    @include fit-ccntent();
     min-width: 30em;
-    max-width: 35em;
+    //max-width: 35em;
   }
   > {
     h2 {

@@ -57,3 +57,8 @@ $color-grey: #555;
   border: 1px solid $color-blue-fg;
 }
 
+@mixin fit-ccntent() {
+  width: -webkit-min-content;
+  width: -moz-min-content;
+  width: min-content;
+}

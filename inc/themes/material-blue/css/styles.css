@@ -544,14 +544,18 @@ pre, code, samp, kbd {
   padding: .3em 0; }
 
 #box-popup {
-  min-width: 30em;
-  max-width: 60em;
+  width: -webkit-min-content;
+  width: -moz-min-content;
+  width: min-content;
+  min-width: 50em;
   margin: 5em auto;
   padding: 0;
   background-color: #fff; }
   #box-popup.box-password-view {
-    min-width: 30em;
-    max-width: 35em; }
+    width: -webkit-min-content;
+    width: -moz-min-content;
+    width: min-content;
+    min-width: 30em; }
   #box-popup > h2 {
     position: relative;
     width: 100%;

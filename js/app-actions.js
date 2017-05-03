@@ -915,6 +915,10 @@ sysPass.Actions = function (Common) {
 
                     showFloatingBox($obj, $container);
 
+                    timeout = setTimeout(function () {
+                        closeFloatingBox();
+                    }, 30000);
+
                     $container.on("mouseleave", function () {
                         clearTimeout(timeout);
                         timeout = setTimeout(function () {
