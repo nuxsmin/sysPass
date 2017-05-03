@@ -181,31 +181,30 @@
 
                 <?php if ($AccountSearchItem->isShow() || $AccountSearchItem->isShowRequest()): ?>
                     <div class="account-actions">
-                        <?php foreach ($data->getDataActions() as $action): ?>
-                            <?php if ($action->getReflectionFilter()->invoke($AccountSearchItem)): ?>
-                                <i id="btn-action-<?php echo $AccountSearchData->getAccountId(), '-', $action->getIcon()->getIcon(); ?>"
-                                   class="btn-action material-icons <?php echo $action->getIcon()->getClass(); ?>"
-                                   data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
-                                   data-parent-id="<?php echo $AccountSearchData->getAccountParentId(); ?>"
-                                    <?php foreach ($action->getData() as $name => $actionData): ?>
-                                        <?php echo 'data-', $name, '=', '"', $actionData, '"'; ?>
-                                    <?php endforeach; ?>><?php echo $action->getIcon()->getIcon(); ?></i>
-                                <span
-                                        for="btn-action-<?php echo $AccountSearchData->getAccountId(), '-', $action->getIcon()->getIcon(); ?>"
-                                        class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
-                            <?php endif; ?>
+                        <?php foreach ($data->getDataActionsFiltered($AccountSearchItem) as $action): ?>
+                            <i id="btn-action-<?php echo $AccountSearchData->getAccountId(), '-', $action->getIcon()->getIcon(); ?>"
+                               class="btn-action material-icons <?php echo $action->getIcon()->getClass(); ?>"
+                               data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
+                               data-parent-id="<?php echo $AccountSearchData->getAccountParentId(); ?>"
+                                <?php foreach ($action->getData() as $name => $actionData): ?>
+                                    <?php echo 'data-', $name, '=', '"', $actionData, '"'; ?>
+                                <?php endforeach; ?>><?php echo $action->getIcon()->getIcon(); ?></i>
+                            <span
+                                    for="btn-action-<?php echo $AccountSearchData->getAccountId(), '-', $action->getIcon()->getIcon(); ?>"
+                                    class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                         <?php endforeach; ?>
 
-                        <?php if (!$AccountSearchItem->isShowRequest() && count($data->getDataActionsMenu()) > 0): ?>
-                            <button id="actions-menu-lower-right-<?php echo $AccountSearchData->getAccountId(); ?>"
-                                    class="mdl-button mdl-js-button mdl-button--icon">
-                                <i class="material-icons">more_vert</i>
-                            </button>
-                            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
-                                for="actions-menu-lower-right-<?php echo $AccountSearchData->getAccountId(); ?>">
+                        <?php if (count($data->getDataActionsMenu()) > 0): ?>
+                            <?php $actionsMenu = $data->getDataActionsMenuFiltered($AccountSearchItem); ?>
+                            <?php if (count($actionsMenu) > 0): ?>
+                                <button id="actions-menu-lower-right-<?php echo $AccountSearchData->getAccountId(); ?>"
+                                        class="mdl-button mdl-js-button mdl-button--icon">
+                                    <i class="material-icons">more_vert</i>
+                                </button>
+                                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                                    for="actions-menu-lower-right-<?php echo $AccountSearchData->getAccountId(); ?>">
 
-                                <?php foreach ($data->getDataActionsMenu() as $actionMenu): ?>
-                                    <?php if ($actionMenu->getReflectionFilter()->invoke($AccountSearchItem)): ?>
+                                    <?php foreach ($actionsMenu as $actionMenu): ?>
                                         <li class="btn-action mdl-menu__item"
                                             data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
                                             data-parent-id="<?php echo $AccountSearchData->getAccountParentId(); ?>"
@@ -216,9 +215,9 @@
                                                title="<?php echo $actionMenu->getTitle(); ?>"><?php echo $actionMenu->getIcon()->getIcon(); ?></i>
                                             <?php echo $actionMenu->getName(); ?>
                                         </li>
-                                    <?php endif; ?>
-                                <?php endforeach; ?>
-                            </ul>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>

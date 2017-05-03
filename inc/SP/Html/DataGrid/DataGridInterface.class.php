@@ -67,7 +67,7 @@ interface DataGridInterface
 
     /**
      * @param DataGridActionInterface $action
-     * @param bool                    $isMenu Añadir al menu de acciones
+     * @param bool $isMenu Añadir al menu de acciones
      * @return $this
      */
     public function setDataActions(DataGridActionInterface $action, $isMenu = false);
@@ -177,4 +177,20 @@ interface DataGridInterface
      * @return DataGridActionInterface[]
      */
     public function getDataActionsMenu();
+
+    /**
+     * Devolver las acciones filtradas
+     *
+     * @param $filter
+     * @return DataGridActionInterface[]
+     */
+    public function getDataActionsFiltered($filter);
+
+    /**
+     * Devolver las acciones de menu filtradas
+     *
+     * @param $filter
+     * @return DataGridActionInterface[]
+     */
+    public function getDataActionsMenuFiltered($filter);
 }
