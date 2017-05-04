@@ -1250,7 +1250,8 @@ sysPass.Actions = function (Common) {
                             sk: Common.sk.get(),
                             isAjax: 1,
                             ldap_loginattribute: $("#ldap_loginattribute").val(),
-                            ldap_ads: $("#ldap_ads").prop('checked')
+                            ldap_nameattribute: $("#ldap_nameattribute").val(),
+                            ldap_ads: $("#ldap_ads").prop("checked")
                         };
 
                         Common.appRequests().getActionCall(opts, function (json) {
