@@ -148,7 +148,7 @@ class Email
      *
      * @return array
      */
-    protected function getEmailFooter()
+    protected static function getEmailFooter()
     {
         return [
             '',
