@@ -55,7 +55,7 @@ class Html
             $data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
 
             // Remove any attribute starting with "on" or xmlns
-            $data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
+            $data = preg_replace('#(<[^>]+?[\x00-\x20\x2f"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
 
             // Remove javascript: and vbscript: protocols
             $data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
