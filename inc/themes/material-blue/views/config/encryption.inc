@@ -154,13 +154,16 @@
                         </button>
                     </li>
                 <?php endif; ?>
-                <li>
-                    <button form="frmCrypt"
-                            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
-                            title="<?php echo $icons->getIconPlay()->getTitle(); ?>">
-                        <i class="material-icons"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
-                    </button>
-                </li>
+
+                <?php if ($numAccounts > 0): ?>
+                    <li>
+                        <button form="frmCrypt"
+                                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
+                                title="<?php echo $icons->getIconPlay()->getTitle(); ?>">
+                            <i class="material-icons"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
+                        </button>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
 
