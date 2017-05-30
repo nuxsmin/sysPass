@@ -62,6 +62,8 @@ class Import
      */
     public function doImport(&$fileData)
     {
+        set_time_limit(0);
+
         $LogMessage = new LogMessage();
         $LogMessage->setAction(__('Importar Cuentas', false));
         $Log = new Log($LogMessage);
