@@ -269,7 +269,7 @@ class AccountUtil
             if (Config::getConfig()->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
                 $filterUser[] = /** @lang SQL */
-                    'account_id = (SELECT accgroup_accountId AS accountId FROM accGroups INNER JOIN usrToGroups ON usertogroup_groupId = accgroup_groupId WHERE accgroup_accountId = account_id AND usertogroup_userId = ?)';
+                    'account_id = (SELECT accgroup_accountId AS accountId FROM accGroups INNER JOIN usrToGroups ON usertogroup_groupId = accgroup_groupId WHERE accgroup_accountId = account_id AND usertogroup_userId = ? LIMIT 1)';
                 $Data->addParam(Session::getUserData()->getUserId());
             }
 

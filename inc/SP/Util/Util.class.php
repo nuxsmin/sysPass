@@ -407,8 +407,8 @@ class Util
      */
     public static function getVersion($retBuild = false, $normalized = false)
     {
-        $build = 17053003;
-        $version = [2, 1, 10];
+        $build = 17060101;
+        $version = [2, 1, 11];
 
         if ($normalized === true) {
             return [implode('', $version), $build];
