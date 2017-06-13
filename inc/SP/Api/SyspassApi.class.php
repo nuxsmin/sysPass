@@ -554,6 +554,7 @@ class SyspassApi extends ApiBase
      */
     protected function passIsNeeded()
     {
-        return $this->actionId === ActionsInterface::ACTION_ACC_VIEW_PASS;
+        return $this->actionId === ActionsInterface::ACTION_ACC_VIEW_PASS
+            || $this->actionId === ActionsInterface::ACTION_ACC_NEW;
     }
 }
