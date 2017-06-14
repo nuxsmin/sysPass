@@ -79,7 +79,11 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $Data->addParam(Session::getUserData()->getUserId());
         $Data->addParam($token);
 
-        if ($this->itemData->getAuthtokenActionId() === ActionsInterface::ACTION_ACC_VIEW_PASS) {
+        $action = $this->itemData->getAuthtokenActionId();
+
+        if ($action === ActionsInterface::ACTION_ACC_VIEW_PASS
+            || $action === ActionsInterface::ACTION_ACC_NEW
+        ) {
             $Data->addParam(serialize($this->getSecureData($token)));
         } else {
             $Data->addParam(null);
@@ -219,7 +223,11 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $Data->addParam(Session::getUserData()->getUserId());
         $Data->addParam($token);
 
-        if ($this->itemData->getAuthtokenActionId() === ActionsInterface::ACTION_ACC_VIEW_PASS) {
+        $action = $this->itemData->getAuthtokenActionId();
+
+        if ($action === ActionsInterface::ACTION_ACC_VIEW_PASS
+            || $action === ActionsInterface::ACTION_ACC_NEW
+        ) {
             $Data->addParam(serialize($this->getSecureData($token)));
         } else {
             $Data->addParam(null);
