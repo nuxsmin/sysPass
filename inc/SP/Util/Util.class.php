@@ -24,6 +24,9 @@
 
 namespace SP\Util;
 
+use Defuse\Crypto\Core;
+use Defuse\Crypto\Crypto;
+use Defuse\Crypto\Encoding;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Core\Exceptions\SPException;
@@ -119,38 +122,11 @@ class Util
      *
      * @param int $length opcional, con la longitud de la cadena
      * @return string
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public static function generateRandomBytes($length = 30)
     {
-        if (function_exists('random_bytes')) {
-            return bin2hex(random_bytes($length));
-        }
-
-        // Try to use openssl_random_pseudo_bytes
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            $pseudo_byte = bin2hex(openssl_random_pseudo_bytes($length, $strong));
-            return substr($pseudo_byte, 0, $length); // Truncate it to match the length
-        }
-
-        // Try to use /dev/urandom
-        $fp = @file_get_contents('/dev/urandom', false, null, 0, $length);
-        if ($fp !== false) {
-            return substr(bin2hex($fp), 0, $length);
-        }
-
-        // Fallback to mt_rand()
-        $characters = '0123456789';
-        $characters .= 'abcdefghijklmnopqrstuvwxyz';
-        $characters .= strtoupper('abcdefghijklmnopqrstuvwxyz');
-        $charactersLength = strlen($characters) - 1;
-        $pseudo_byte = '';
-
-        // Select some random characters
-        for ($i = 0; $i < $length; $i++) {
-            $pseudo_byte .= $characters[mt_rand(0, $charactersLength)];
-        }
-
-        return $pseudo_byte;
+        return Encoding::binToHex(Core::secureRandom($length));
     }
 
 
