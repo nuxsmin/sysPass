@@ -166,7 +166,6 @@ class SyspassApi extends ApiBase
      */
     public function addAccount()
     {
-        $this->checkAuth();
         $this->checkActionAccess(ActionsInterface::ACTION_ACC_NEW);
 
         $AccountData = new AccountExtData();
