@@ -25,7 +25,6 @@
 namespace SP\Util;
 
 use Defuse\Crypto\Core;
-use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Encoding;
 use SP\Config\Config;
 use SP\Config\ConfigDB;
@@ -383,7 +382,7 @@ class Util
      */
     public static function getVersion($retBuild = false, $normalized = false)
     {
-        $build = 17061502;
+        $build = 17061503;
         $version = [2, 1, 11];
 
         if ($normalized === true) {
