@@ -52,7 +52,9 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         'groupmembership',
         'uid',
         'givenname',
-        'sn'
+        'sn',
+        'userprincipalname',
+        'cn'
     ];
     /**
      * @var resource

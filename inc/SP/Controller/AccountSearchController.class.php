@@ -204,6 +204,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
      * Devuelve la matriz a utilizar en la vista
      *
      * @return DataGrid
+     * @throws \ReflectionException
      */
     private function getGrid()
     {
@@ -245,40 +246,34 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionCopyPass->addData('action-sk', $this->sk);
         $GridActionCopyPass->addData('useclipboard', '1');
 
-        $EditIcon = $this->icons->getIconEdit();
-
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(self::ACTION_ACC_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(__('Editar Cuenta'));
         $GridActionEdit->setTitle(__('Editar Cuenta'));
-        $GridActionEdit->setIcon($EditIcon);
+        $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setReflectionFilter(AccountsSearchItem::class, 'isShowEdit');
         $GridActionEdit->addData('action-id', self::ACTION_ACC_EDIT);
         $GridActionEdit->addData('action-sk', $this->sk);
         $GridActionEdit->addData('onclick', 'account/edit');
-
-        $CopyIcon = $this->icons->getIconCopy();
 
         $GridActionCopy = new DataGridAction();
         $GridActionCopy->setId(self::ACTION_ACC_COPY);
         $GridActionCopy->setType(DataGridActionType::NEW_ITEM);
         $GridActionCopy->setName(__('Copiar Cuenta'));
         $GridActionCopy->setTitle(__('Copiar Cuenta'));
-        $GridActionCopy->setIcon($CopyIcon);
+        $GridActionCopy->setIcon($this->icons->getIconCopy());
         $GridActionCopy->setReflectionFilter(AccountsSearchItem::class, 'isShowCopy');
         $GridActionCopy->addData('action-id', self::ACTION_ACC_COPY);
         $GridActionCopy->addData('action-sk', $this->sk);
         $GridActionCopy->addData('onclick', 'account/copy');
-
-        $DeleteIcon = $this->icons->getIconDelete();
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(self::ACTION_ACC_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Cuenta'));
         $GridActionDel->setTitle(__('Eliminar Cuenta'));
-        $GridActionDel->setIcon($DeleteIcon);
+        $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setReflectionFilter(AccountsSearchItem::class, 'isShowDelete');
         $GridActionDel->addData('action-id', self::ACTION_ACC_DELETE);
         $GridActionDel->addData('action-sk', $this->sk);

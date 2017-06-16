@@ -95,7 +95,9 @@ class CryptMasterPass
             Log::writeNewLog(__FUNCTION__, __('Clave temporal caducada', false), Log::INFO);
 
             return false;
-        } elseif ((!empty($passTime) && time() > $passMaxTime)
+        }
+
+        if ((!empty($passTime) && time() > $passMaxTime)
             || $attempts >= self::MAX_ATTEMPTS
         ) {
             ConfigDB::setCacheConfigValue('tempmaster_pass', '');

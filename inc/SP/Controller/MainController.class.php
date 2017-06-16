@@ -68,8 +68,8 @@ class MainController extends ControllerBase implements ActionsInterface
      * Constructor
      *
      * @param        $template   Template con instancia de plantilla
-     * @param string $page El nombre de página para la clase del body
-     * @param bool $initialize Si es una inicialización completa
+     * @param string $page       El nombre de página para la clase del body
+     * @param bool   $initialize Si es una inicialización completa
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -348,7 +348,7 @@ class MainController extends ControllerBase implements ActionsInterface
         // Comprobar y parsear los parámetros GET para pasarlos como POST en los inputs
         if (count($_GET) > 0) {
             foreach ($_GET as $param => $value) {
-                $getParams['g_' . Html::sanitize($param)] = Html::sanitize($value);
+                $getParams['g_' . Html::sanitizeFull($param)] = Html::sanitizeFull($value);
             }
         }
 

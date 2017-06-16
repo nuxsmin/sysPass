@@ -33,6 +33,7 @@ use SP\Mgmt\Users\User;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
+use SP\Util\Filter;
 
 defined('APP_ROOT') || die();
 
@@ -188,7 +189,7 @@ class AccountSearch
      */
     public function setTxtSearch($txtSearch)
     {
-        $this->txtSearch = (string)$txtSearch;
+        $this->txtSearch = Filter::safeSearchString($txtSearch);
 
         return $this;
     }

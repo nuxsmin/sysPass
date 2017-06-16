@@ -166,7 +166,6 @@ class SyspassApi extends ApiBase
      */
     public function addAccount()
     {
-        $this->checkAuth();
         $this->checkActionAccess(ActionsInterface::ACTION_ACC_NEW);
 
         $AccountData = new AccountExtData();
@@ -554,6 +553,7 @@ class SyspassApi extends ApiBase
      */
     protected function passIsNeeded()
     {
-        return $this->actionId === ActionsInterface::ACTION_ACC_VIEW_PASS;
+        return $this->actionId === ActionsInterface::ACTION_ACC_VIEW_PASS
+            || $this->actionId === ActionsInterface::ACTION_ACC_NEW;
     }
 }

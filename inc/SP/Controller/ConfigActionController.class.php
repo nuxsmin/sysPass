@@ -670,7 +670,6 @@ class ConfigActionController implements ItemControllerInterface
 
         if ($tempMasterPass !== false && !empty($tempMasterPass)) {
             $this->LogMessage->addDescription(__('Clave Temporal Generada', false));
-            $this->LogMessage->addDetails(__('Clave', false), $tempMasterPass);
 
             if ($tempMasterEmail) {
                 $Message = new NoticeMessage();

@@ -79,7 +79,11 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $Data->addParam(Session::getUserData()->getUserId());
         $Data->addParam($token);
 
-        if ($this->itemData->getAuthtokenActionId() === ActionsInterface::ACTION_ACC_VIEW_PASS) {
+        $action = $this->itemData->getAuthtokenActionId();
+
+        if ($action === ActionsInterface::ACTION_ACC_VIEW_PASS
+            || $action === ActionsInterface::ACTION_ACC_NEW
+        ) {
             $Data->addParam(serialize($this->getSecureData($token)));
         } else {
             $Data->addParam(null);
@@ -219,7 +223,11 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $Data->addParam(Session::getUserData()->getUserId());
         $Data->addParam($token);
 
-        if ($this->itemData->getAuthtokenActionId() === ActionsInterface::ACTION_ACC_VIEW_PASS) {
+        $action = $this->itemData->getAuthtokenActionId();
+
+        if ($action === ActionsInterface::ACTION_ACC_VIEW_PASS
+            || $action === ActionsInterface::ACTION_ACC_NEW
+        ) {
             $Data->addParam(serialize($this->getSecureData($token)));
         } else {
             $Data->addParam(null);
@@ -274,13 +282,12 @@ class ApiToken extends ApiTokenBase implements ItemInterface
             SET authtoken_token = ?,
             authtoken_hash = ?,
             authtoken_vault = ?,
-            authtoken_pass = ?,
             authtoken_startDate = UNIX_TIMESTAMP() 
             WHERE authtoken_userId = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->generateToken());
+        $Data->addParam($token);
         $Data->addParam(Hash::hashKey($this->itemData->getAuthtokenHash()));
 
         if ($this->itemData->getAuthtokenActionId() === ActionsInterface::ACTION_ACC_VIEW_PASS) {

@@ -29,7 +29,6 @@ defined('APP_ROOT') || die();
 use SP\Core\ActionsInterface;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SplObjectStorage;
 
@@ -191,7 +190,7 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param DataGridActionInterface $action
-     * @param bool                    $isMenu Añadir al menu de acciones
+     * @param bool $isMenu Añadir al menu de acciones
      * @return $this
      */
     public function setDataActions(DataGridActionInterface $action, $isMenu = false)
@@ -233,7 +232,7 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para la cabecera
      *
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base     Directorio base para la plantilla
+     * @param string $base Directorio base para la plantilla
      * @return $this
      */
     public function setDataHeaderTemplate($template, $base = null)
@@ -308,7 +307,7 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para el paginador
      *
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base     Directorio base para la plantilla
+     * @param string $base Directorio base para la plantilla
      * @return $this
      */
     public function setDataPagerTemplate($template, $base = null)
@@ -334,7 +333,7 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base     Directorio base para la plantilla
+     * @param string $base Directorio base para la plantilla
      * @return mixed
      */
     public function setDataRowTemplate($template, $base = null)
@@ -416,5 +415,43 @@ abstract class DataGridBase implements DataGridInterface
     public function getDataActionsMenu()
     {
         return $this->_actionsMenu;
+    }
+
+    /**
+     * Devolver las acciones filtradas
+     *
+     * @param $filter
+     * @return DataGridActionInterface[]
+     */
+    public function getDataActionsFiltered($filter)
+    {
+        $actions = [];
+
+        foreach ($this->_actions as $action) {
+            if ($action->getReflectionFilter()->invoke($filter)) {
+                $actions[] = $action;
+            }
+        }
+
+        return $actions;
+    }
+
+    /**
+     * Devolver las acciones de menu filtradas
+     *
+     * @param $filter
+     * @return DataGridActionInterface[]
+     */
+    public function getDataActionsMenuFiltered($filter)
+    {
+        $actions = [];
+
+        foreach ($this->_actionsMenu as $action) {
+            if ($action->getReflectionFilter()->invoke($filter)) {
+                $actions[] = $action;
+            }
+        }
+
+        return $actions;
     }
 }

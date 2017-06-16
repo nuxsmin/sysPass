@@ -72,7 +72,20 @@ class ApiRequest
      */
     public function formatJsonError($e)
     {
-        $class = get_class($e);
+        $data = function () use ($e) {
+            $class = get_class($e);
+
+            if ($class === SPException::class
+                || $class === InvalidArgumentException::class
+            ) {
+                $hint = $e->getHint();
+
+                return is_array($hint) ? $hint : __($hint);
+            }
+
+            return '';
+        };
+
         $code = $e->getCode();
 
         $error = [
@@ -80,7 +93,7 @@ class ApiRequest
             'error' => [
                 'code' => $code,
                 'message' => __($e->getMessage()),
-                'data' => $class === SPException::class || $class === InvalidArgumentException::class ? __($e->getHint()) : ''
+                'data' => $data()
             ],
             'id' => ($code === -32700 || $code === -32600) ? null : $this->getId()
         ];
@@ -192,7 +205,9 @@ class ApiRequest
 
         if (!is_object($data) || json_last_error() !== JSON_ERROR_NONE) {
             throw new SPException(SPException::SP_WARNING, __('Datos inválidos', false), '', -32700);
-        } elseif (!isset($data->jsonrpc, $data->method, $data->params, $data->id)) {
+        }
+
+        if (!isset($data->jsonrpc, $data->method, $data->params, $data->id)) {
             throw new SPException(SPException::SP_WARNING, __('Formato incorrecto', false), '', -32600);
         }
 
