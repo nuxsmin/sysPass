@@ -88,7 +88,7 @@ class ChecksController implements ItemControllerInterface
         $ldapBindUser = Request::analyze('ldap_binduser');
         $ldapBindPass = Request::analyzeEncrypted('ldap_bindpass');
 
-        if (!$ldapServer || !$ldapBase || !$ldapBindUser || !$ldapBindPass) {
+        if (!$ldapServer || !$ldapBase) {
             $this->JsonResponse->setDescription(__('Los parámetros de LDAP no están configurados', false));
             return;
         }
