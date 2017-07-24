@@ -169,7 +169,7 @@ class Account extends AccountBase implements AccountInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id, 'id');
-        $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
+        $Data->addParam(Session::getUserData()->getUserId(), 'accountUserEditId');
         $Data->setOnErrorMessage(__('Error al restaurar cuenta', false));
 
         DB::getQuery($Data);

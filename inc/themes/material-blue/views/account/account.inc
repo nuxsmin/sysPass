@@ -17,7 +17,7 @@
 
     <?php if ($gotData && $accountIsHistory): ?>
         <form method="post" name="frmAccountRestore" id="frmAccountRestore" class="form-action"
-              data-onsubmit="account/restore" data-hash="">
+              data-onsubmit="account/restore">
             <input type="hidden" name="actionId"
                    value="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
             <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>
