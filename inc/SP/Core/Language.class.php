@@ -170,7 +170,7 @@ class Language
      */
     public static function getAvailableLanguages()
     {
-        return [
+        $langs = [
             'Español' => 'es_ES',
             'Catalá' => 'ca_ES',
             'English' => 'en_US',
@@ -179,8 +179,13 @@ class Language
             'Français' => 'fr_FR',
             'Polski' => 'po_PO',
             'русский' => 'ru_RU',
-            'Nederlands' => 'nl_NL'
+            'Nederlands' => 'nl_NL',
+            'Português' => 'pt_BR'
         ];
+
+        ksort($langs);
+
+        return $langs;
     }
 
     /**
