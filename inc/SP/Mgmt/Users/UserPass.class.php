@@ -128,7 +128,7 @@ class UserPass extends UserBase
     /**
      * Actualizar la clave maestra con la clave anterior del usuario
      *
-     * @param string        $oldUserPass
+     * @param string $oldUserPass
      * @param UserLoginData $UserData
      * @return bool
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
@@ -151,7 +151,7 @@ class UserPass extends UserBase
      * Comprueba la clave maestra del usuario.
      *
      * @param UserLoginData $UserData
-     * @param string        $key Clave de cifrado
+     * @param string $key Clave de cifrado
      * @return bool
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Defuse\Crypto\Exception\BadFormatException
@@ -177,8 +177,7 @@ class UserPass extends UserBase
             return UpgradeUser::upgradeMasterKey($UserData) ? self::MPASS_OK : self::MPASS_WRONG;
         }
 
-        if ($key === null && $UserData->isUserIsChangedPass() === 1
-        ) {
+        if ($key === null && $UserData->isUserIsChangedPass() === 1) {
             return self::MPASS_CHECKOLD;
         }
 
@@ -206,7 +205,7 @@ class UserPass extends UserBase
      * Obtener una clave de cifrado basada en la clave del usuario y un salt.
      *
      * @param UserLoginData $UserData
-     * @param string        $key Clave de cifrado
+     * @param string $key Clave de cifrado
      * @return string con la clave de cifrado
      */
     private static function getKey(UserLoginData $UserData, $key = null)
@@ -219,8 +218,8 @@ class UserPass extends UserBase
     /**
      * Actualizar la clave maestra del usuario en la BBDD.
      *
-     * @param string                 $userMPass con la clave maestra
-     * @param UserData|UserLoginData $UserData  $UserData
+     * @param string $userMPass con la clave maestra
+     * @param UserData|UserLoginData $UserData $UserData
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -312,6 +311,8 @@ class UserPass extends UserBase
             user_pass = ?,
             user_hashSalt = \'\',
             user_isChangePass = 0,
+            user_mPass = \'\',
+            user_mKey = \'\',
             user_lastUpdate = NOW() 
             WHERE user_id = ? LIMIT 1';
 
