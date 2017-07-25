@@ -264,7 +264,7 @@ class Backup
             }
 
             $archive = new \PharData($backupFile);
-            $archive->buildFromDirectory(Init::$SERVERROOT);
+            $archive->buildFromDirectory(Init::$SERVERROOT,'/^(?!backup).*$/');
             $archive->compress(\Phar::GZ);
 
             unlink($backupFile);
