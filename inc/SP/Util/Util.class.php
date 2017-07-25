@@ -328,21 +328,25 @@ class Util
         $appTmp = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'tmp';
         $file = 'syspass.test';
 
-        if (file_exists($appTmp . DIRECTORY_SEPARATOR . $file)) {
+        $checkDir = function ($dir) use ($file) {
+            if (file_exists($dir . DIRECTORY_SEPARATOR . $file)) {
+                return $dir;
+            }
+
+            if (is_dir($dir) || @mkdir($dir)) {
+                if (touch($dir . DIRECTORY_SEPARATOR . $file)) {
+                    return $dir;
+                }
+            }
+
+            return false;
+        };
+
+        if ($checkDir($appTmp)) {
             return $appTmp;
         }
 
-        if (file_exists($sysTmp . DIRECTORY_SEPARATOR . $file)) {
-            return $sysTmp;
-        }
-
-        if (is_dir($appTmp) || @mkdir($appTmp)) {
-            if (touch($appTmp . DIRECTORY_SEPARATOR . $file)) {
-                return $appTmp;
-            }
-        }
-
-        return touch($sysTmp . DIRECTORY_SEPARATOR . $file) ? $sysTmp : false;
+        return $checkDir($sysTmp);
     }
 
     /**
@@ -382,7 +386,7 @@ class Util
      */
     public static function getVersion($retBuild = false, $normalized = false)
     {
-        $build = 17072502;
+        $build = 17072503;
         $version = [2, 1, 12];
 
         if ($normalized === true) {
