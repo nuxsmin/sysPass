@@ -323,9 +323,10 @@ class Init
     private static function setPaths()
     {
         // Calcular los directorios raíz
-        $dir = substr(__DIR__, 0, strpos(__DIR__, str_replace('\\', '/', __NAMESPACE__)) - 1);
+//        $dir = substr(__DIR__, 0, strpos(__DIR__, str_replace('\\', '/', __NAMESPACE__)) - 1);
+//        self::$SERVERROOT = substr($dir, 0, strripos($dir, DIRECTORY_SEPARATOR));
 
-        self::$SERVERROOT = substr($dir, 0, strripos($dir, DIRECTORY_SEPARATOR));
+        self::$SERVERROOT = dirname(BASE_DIR);
 
         self::$SUBURI = str_replace("\\", '/', substr(realpath($_SERVER['SCRIPT_FILENAME']), strlen(self::$SERVERROOT)));
 
@@ -354,7 +355,7 @@ class Init
             self::$WEBROOT = '/' . self::$WEBROOT;
         }
 
-        $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://';
         self::$WEBURI .= $protocol . $_SERVER['HTTP_HOST'] . self::$WEBROOT;
     }
 

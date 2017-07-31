@@ -353,7 +353,7 @@ class Util
      * Devuelve información sobre la aplicación.
      *
      * @param string $index con la key a devolver
-     * @return array con las propiedades de la aplicación
+     * @return array|string con las propiedades de la aplicación
      */
     public static function getAppInfo($index = null)
     {
@@ -386,7 +386,7 @@ class Util
      */
     public static function getVersion($retBuild = false, $normalized = false)
     {
-        $build = 17073101;
+        $build = 17073102;
         $version = [2, 1, 12];
 
         if ($normalized === true) {
