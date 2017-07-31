@@ -204,7 +204,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Realizar la autentificación con el servidor de LDAP.
      *
-     * @param string $bindDn   con el DN del usuario
+     * @param string $bindDn con el DN del usuario
      * @param string $bindPass con la clave del usuario
      * @throws SPException
      * @return bool
@@ -257,8 +257,8 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     /**
      * Devolver los resultados de una paginación
      *
-     * @param string $filter     Filtro a utilizar
-     * @param array  $attributes Atributos a devolver
+     * @param string $filter Filtro a utilizar
+     * @param array $attributes Atributos a devolver
      * @return bool|array
      */
     protected function getResults($filter, array $attributes = null)
@@ -327,6 +327,16 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     {
         $this->server = $server;
         $this->serverPort = $this->getServerPort();
+    }
+
+    /**
+     * Devolver el puerto del servidor si está establecido
+     *
+     * @return int
+     */
+    protected function getServerPort()
+    {
+        return preg_match('/[\d\.]+:(\d+)/', $this->server, $port) ? $port[1] : 389;
     }
 
     /**
@@ -463,16 +473,6 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     }
 
     /**
-     * Devolver el puerto del servidor si está establecido
-     *
-     * @return int
-     */
-    protected function getServerPort()
-    {
-        return preg_match('/[\d\.]+:(\d+)/', $this->server, $port) ? $port[1] : 389;
-    }
-
-    /**
      * Obtener el servidor de LDAP a utilizar
      *
      * @return mixed
@@ -589,7 +589,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     protected function searchGroupDN()
     {
         $group = $this->getGroupName() ?: $this->group;
-        $filter = '(cn=' . $group . ')';
+        $filter = '(cn=' . ldap_escape($group) . ')';
 
         $searchResults = $this->getResults($filter, ['dn', 'cn']);
 

@@ -42,16 +42,17 @@ class LdapMsAds extends LdapBase
      * Devolver el filtro para comprobar la pertenecia al grupo
      *
      * @return mixed
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function getGroupDnFilter()
     {
         if (empty($this->group)) {
             return '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))';
-        } else {
-            $groupDN = $this->searchGroupDN();
-
-            return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
         }
+
+        $groupDN = ldap_escape($this->searchGroupDN());
+
+        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
     }
 
     /**
@@ -99,7 +100,9 @@ class LdapMsAds extends LdapBase
      */
     protected function getUserDnFilter()
     {
-        return '(&(|(samaccountname=' . $this->userLogin . ')(cn=' . $this->userLogin . ')(uid=' . $this->userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))(objectCategory=person))';
+        $userLogin = ldap_escape($this->userLogin);
+
+        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))(objectCategory=person))';
     }
 
     /**
@@ -125,7 +128,7 @@ class LdapMsAds extends LdapBase
         }
 
         $groupDN = $this->LdapAuthData->getGroupDn();
-        $filter = '(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . ')';
+        $filter = '(memberof:1.2.840.113556.1.4.1941:=' . ldap_escape($groupDN) . ')';
 
         $searchResults = $this->getResults($filter, ['sAMAccountName']);
 

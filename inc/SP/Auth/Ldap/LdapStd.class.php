@@ -47,11 +47,11 @@ class LdapStd extends LdapBase
     {
         if (empty($this->group)) {
             return '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))';
-        } else {
-            $groupDN = $this->searchGroupDN();
-
-            return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
         }
+
+        $groupDN = ldap_escape($this->searchGroupDN());
+
+        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
     }
 
     /**
@@ -71,7 +71,9 @@ class LdapStd extends LdapBase
      */
     protected function getUserDnFilter()
     {
-        return '(&(|(samaccountname=' . $this->userLogin . ')(cn=' . $this->userLogin . ')(uid=' . $this->userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        $userLogin = ldap_escape($this->userLogin);
+
+        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
     }
 
     /**
@@ -99,7 +101,7 @@ class LdapStd extends LdapBase
         $userDN = $this->LdapAuthData->getDn();
         $groupName = $this->getGroupName() ?: $this->group;
 
-        $filter = '(&(cn=' . $groupName . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
+        $filter = '(&(cn=' . ldap_escape($groupName) . ')(|(member=' . ldap_escape($userDN) . ')(uniqueMember=' . ldap_escape($userDN) . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
 
         $searchResults = $this->getResults($filter, ['member', 'uniqueMember']);
 
