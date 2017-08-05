@@ -31,7 +31,7 @@ msgstr "Preferences updated"
 
 #: ../../../ActionController.class.php:172
 msgid "Código correcto"
-msgstr "Rigth code"
+msgstr "Correct code"
 
 #: ../../../LoginController.class.php:126
 msgid "Aviso Caducidad"
