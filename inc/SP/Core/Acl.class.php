@@ -157,6 +157,7 @@ class Acl implements ActionsInterface
                 return $curUserProfile->isEvl();
             case self::ACTION_NOT:
             case self::ACTION_NOT_USER:
+            case self::ACTION_NOT_USER_SEARCH:
                 return true;
         }
 

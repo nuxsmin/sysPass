@@ -84,17 +84,22 @@ class NoticeSearch extends NoticeBase implements ItemSearchInterface
     public function getMgmtSearchUser(ItemSearchData $SearchData)
     {
         $Data = new QueryData();
-        $Data->setSelect('notice_id, notice_type, notice_component, notice_description, FROM_UNIXTIME(notice_date) AS notice_date, notice_checked, notice_userId, notice_sticky, notice_onlyAdmin');
+        $Data->setSelect('notice_id, notice_type, notice_component, notice_description, FROM_UNIXTIME(notice_date) AS notice_date, BIN(notice_checked) AS notice_checked, notice_userId, BIN(notice_sticky) as notice_sticky, BIN(notice_onlyAdmin) AS notice_onlyAdmin');
         $Data->setFrom('notices');
         $Data->setOrder('notice_date DESC');
 
+        $filterUser = '(notice_userId = ? OR (notice_userId = NULL AND BIN(notice_onlyAdmin) = 0) OR BIN(notice_sticky) = 1)';
+
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('(notice_type LIKE ? OR notice_component LIKE ? OR notice_description LIKE ?) AND notice_userId = ? AND notice_onlyAdmin = 0');
+            $Data->setWhere('(notice_type LIKE ? OR notice_component LIKE ? OR notice_description LIKE ?) AND ' . $filterUser);
 
             $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);
             $Data->addParam($search);
             $Data->addParam($search);
+            $Data->addParam(Session::getUserData()->getUserId());
+        } else {
+            $Data->setWhere($filterUser);
             $Data->addParam(Session::getUserData()->getUserId());
         }
 
