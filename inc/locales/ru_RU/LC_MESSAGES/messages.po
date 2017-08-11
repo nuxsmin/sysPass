@@ -13,6 +13,7 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _;gettext;gettext_noop;__\n"
 "X-Poedit-Basepath: .\n"
+"X-Contributors: Alexander Titov, Alex Us, Filipp\n"
 "X-Poedit-SearchPath-0: ../../../..\n"
 "X-Poedit-SearchPathExcluded-0: ../../../../inc/Plugins\n"
 
@@ -264,7 +265,7 @@ msgstr "Необходим email"
 #: ../../../../inc/SP/Forms/UserForm.class.php:108
 #: ../../../../inc/SP/Forms/UserForm.class.php:122
 msgid "Ey, esto es una DEMO!!"
-msgstr "Ey, это DEMO!!"
+msgstr "Эй, это DEMO!!"
 
 #: ../../../../inc/SP/Forms/ApiTokenForm.class.php:91
 #: ../../../../inc/SP/Forms/UserForm.class.php:110
@@ -635,7 +636,7 @@ msgstr "Конфигурация изменена"
 #: ../../../../inc/SP/Controller/LoginController.class.php:316
 #: ../../../../inc/SP/Controller/LoginController.class.php:326
 msgid "Clave maestra actualizada"
-msgstr "Мастер-пароль изменен"
+msgstr "Мастер-пароль актуален"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:502
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:598
@@ -1316,7 +1317,7 @@ msgstr "Записи изменены"
 #: ../../../../inc/SP/Core/Acl.class.php:184
 #, fuzzy
 msgid "Buscar Cuentas"
-msgstr "Поиск"
+msgstr "Поиск учетных записей"
 
 #: ../../../../inc/SP/Core/Acl.class.php:185
 msgid "Ver Cuenta"
@@ -1629,7 +1630,7 @@ msgstr "Ошибка импорта учетной записи"
 #: ../../../../inc/themes/material-blue/views/account/account.inc:258
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:175
 msgid "Campos Personalizados"
-msgstr "Настраиваемые поля"
+msgstr "Дополнительные поля"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:77
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:148
@@ -5673,7 +5674,7 @@ msgstr "Профили удалены"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:503
 msgid "Clientes eliminados"
-msgstr "Клиенты удалены"
+msgstr "Заказчики удалены"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:566
 msgid "Categorías eliminadas"
@@ -5895,267 +5896,270 @@ msgstr "CSV"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:220
 msgid "Cuenta no encontrada"
-msgstr "Account not found"
+msgstr "У"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:624
 msgid "Hash de clave maestra actualizado"
-msgstr "Master password hash updated"
+msgstr "Хэш мастер-пароля обновлен"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:628
 msgid "Error al actualizar el hash de la clave maestra"
-msgstr "Error while updating the master password hash"
+msgstr "Ошибка при обновлении хэша мастер-пароля"
 
 #: ../../../../inc/SP/Controller/Grids/Notices.class.php:126
 #: ../../../../inc/SP/Controller/Grids/Notices.class.php:127
 #: ../../../../inc/SP/Controller/NoticeShowController.class.php:98
 msgid "Editar Notificación"
-msgstr "Edit Notification"
+msgstr "Редактировать уведомление"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:253
 msgid "Usuarios eliminados"
-msgstr "Users deleted"
+msgstr "Пользователи удалены"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1122
 msgid "Notificación actualizada"
-msgstr "Notification updated"
+msgstr "Уведомление обновлено"
 
 #: ../../../../inc/SP/Storage/DB.class.php:350
 msgid "Restricción de integridad"
-msgstr "Integrity constraint"
+msgstr "Ограничение целостности"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:152
 msgid "Actualizar hash de clave maestra"
-msgstr "Update master password hash"
+msgstr "Обновить хэш мастер-пароля"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:416
 msgid "Modificada"
-msgstr "Modified"
+msgstr "Изменено"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:417
 msgid "Eliminada"
-msgstr "Removed"
+msgstr "Удалено"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:426
 msgid "Cuentas (H)"
-msgstr "Accounts (H)"
+msgstr "Группы"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1020
 msgid "Eliminar Cuenta (H)"
-msgstr "Delete Account (H)"
+msgstr "Удалить группы"
 
 #: ../../../../inc/SP/Import/SyspassImport.class.php:129
 #: ../../../../inc/SP/Import/SyspassImport.class.php:146
 msgid "Clave de encriptación incorrecta"
-msgstr "Wrong encryption password"
+msgstr "Неверный пароль шифрования"
 
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:71
 msgid "Área de Texto"
-msgstr "Text Area"
+msgstr "Текстовое поле"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:26
 msgid "Devolver las cuentas en las que 'login' es propietario"
-msgstr "Get the accounts in which the user login \"login\" is the owner"
+msgstr ""
+"Получить учетные записи, в которых пользователь \"login\" является владельцем"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:28
 msgid "Devolver las cuentas con grupo principal 'group_name'"
-msgstr "Get the accounts which have the main group name \"group_name\""
+msgstr ""
+"Получить учетные записи, имеющие название основной группы \"group_name\""
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:31
 msgid "Devolver las cuentas privadas del usuario actual"
-msgstr "Get the private accounts for the current user"
+msgstr "Получить приватные учетные записи для текущего пользователя"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:49
 msgid "OP Cache"
-msgstr "OP Cache"
+msgstr "OP кеш"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:65
 msgid "Código de seguridad incorrecto"
-msgstr "Wrong security code"
+msgstr "Неверный секретный код"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:67
 msgid "Es necesario confirmar la actualización"
-msgstr "The updating need to be confirmed"
+msgstr "Нужно подтверждение для обновления"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:75
 msgid "En 5 segundos será redirigido al login"
-msgstr "You will be redirected to log in within 5 seconds"
+msgstr "Вы будете перенаправлены на вход в течение 5 секунд"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:100
 msgid "Error al aplicar la actualización de la aplicación"
-msgstr "Error while applying the application update"
+msgstr "Ошибка при применении обновления"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:303
 msgid "Tamaño máximo de archivo en kilobytes"
-msgstr "Maximum file size in kilobytes"
+msgstr "Максимальный размер файла в килобайтах"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:12
 msgid "Actualización de Aplicación"
-msgstr "Application Update"
+msgstr "Обновление приложения"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:35
 msgid ""
 "Se han encontrado elementos huérfanos. Por favor, modifique estos elementos "
 "o indique los IDs por defecto para los elementos huérfanos."
 msgstr ""
-"Some orphaned items have been found. Please, modify those items or enter the "
-"default IDs for them."
+"Были найдены некоторые осиротевшие элементы. Пожалуйста, измените эти "
+"элементы или введите идентификаторы по умолчанию для них."
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:59
 msgid "Introducir un ID de usuario válido para cuentas"
-msgstr "Enter a valid user ID for the accounts"
+msgstr "Введите действительный идентификатор пользователя для учетных записей"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:71
 msgid "Introducir un ID de categoría válido para cuentas"
-msgstr "Enter a valid category ID for the accounts"
+msgstr "Введите действительный идентификатор категории для учетных записей"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:83
 msgid "Introducir un ID de cliente válido para cuentas"
-msgstr "Enter a valid customer ID for the accounts"
+msgstr "Введите действительный идентификатор заказчика для учетных записей"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:96
 msgid "Introducir un ID de grupo válido para usuarios"
-msgstr "Enter a valid group ID for the users"
+msgstr "Введите действительный идентификатор группы для пользователей"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:106
 msgid "Introducir un ID de perfil válido para usuarios"
-msgstr "Enter a valid profile ID for the users"
+msgstr "Введите действительный идентификатор профиля для пользователей"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:116
 msgid ""
 "Esta actualización utiliza un nuevo esquema de encriptación, por lo que es "
 "necesario reencriptar los datos almacenados"
 msgstr ""
-"This update uses a new encryption schema, so it will be needed to reencrypt "
-"the whole encrypted data."
+"Это обновление использует новую схему шифрования, поэтому потребуется "
+"перекодировать все зашифрованные данные."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:104
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:118
 msgid ""
 "Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo."
-msgstr "It will be updated %s accounts. This process could take a some time."
+msgstr "Будет обновлено %s записей. Этот процесс может занять некоторое время."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:142
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:120
 msgid "Para más información consulte: %s"
-msgstr "You could get more info on: %s"
+msgstr "Вы можете получить дополнительную информацию: %s"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:138
 msgid "Introducir login de usuario válido"
-msgstr "Enter a valid user login"
+msgstr "Введите существующий логин пользователя"
 
 #: ../../../../inc/SP/Api/ApiRequest.class.php:155
 #: ../../../../inc/SP/Controller/LoginController.class.php:211
 msgid "Intentos excedidos"
-msgstr "Attempts exceeded"
+msgstr "Много попыток"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:467
 #: ../../../../inc/SP/Api/SyspassApi.class.php:495
 msgid "Clave del token"
-msgstr "Token's Password"
+msgstr "Пароль токена"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:209
 msgid "Intentos excedidos (%d/%d)"
-msgstr "Attempts exceeded (%d/%d)"
+msgstr "Попыток осталось (%d/%d)"
 
 #: ../../../../inc/SP/DataModel/TrackData.class.php:155
 #: ../../../../inc/SP/DataModel/TrackData.class.php:157
 msgid "IP inválida"
-msgstr "Invalid IP"
+msgstr "Неверный IP"
 
 #: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:180
 msgid "Token no encontrado"
-msgstr "Token not found"
+msgstr "ТОкен не найден"
 
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:61
 msgid "Error al crear track"
-msgstr "Error while creating track"
+msgstr "Ошибка при создании трека"
 
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:84
 msgid "Error al eliminar track"
-msgstr "Error while removing the track"
+msgstr "Ошибка при удалении трека"
 
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:112
 msgid "Error al actualizar track"
-msgstr "Error while updating the track"
+msgstr "Ошибка при обновлении трека"
 
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:139
 msgid "Error al obtener track"
-msgstr "Error while retrieving the track"
+msgstr "Ошибка при извлечении трека"
 
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:163
 #: ../../../../inc/SP/Mgmt/Tracks/Track.class.php:238
 msgid "Error al obtener tracks"
-msgstr "Error while retrieving the tracks"
+msgstr "Ошибка при извлечении трека"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:182
 msgid "Los elementos exportados son cuentas, clientes, categorías y etiquetas."
-msgstr "The exported items are accounts, customers, categories and tags."
+msgstr ""
+"Экспортированные элементы - это учетные записи, заказчики, категории и теги."
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:37
 msgid "Si no se indican los IDs, se crearán nuevos elementos."
-msgstr "If the items IDs are not set, they will be created."
+msgstr "Если идентификаторы элементов не установлены, они будут созданы."
 
 #: ../../../../inc/SP/Controller/TaskController.class.php:160
 msgid "Esperando actualización de progreso ..."
-msgstr "Waiting for progress updating ..."
+msgstr "Подождите, обновление"
 
 #: ../../../../inc/SP/Core/Upgrade/Account.class.php:47
 msgid "Actualizando IDs de cuentas"
-msgstr "Updating accounts ID"
+msgstr "Обновление ID аккаунта"
 
 #: ../../../../inc/SP/Core/Upgrade/Category.class.php:48
 msgid "Actualizando IDs de categorías"
-msgstr "Updating categories ID"
+msgstr "Обновление ID категории"
 
 #: ../../../../inc/SP/Core/Upgrade/Customer.class.php:48
 msgid "Actualizando IDs de clientes"
-msgstr "Updating customers ID"
+msgstr "Обновление ID заказчика"
 
 #: ../../../../inc/SP/Core/Upgrade/Group.class.php:51
 msgid "Actualizando IDs de grupos"
-msgstr "Updating groups ID"
+msgstr "Обновление ID группы"
 
 #: ../../../../inc/SP/Core/Upgrade/Profile.class.php:54
 msgid "Actualizando IDs de perfil"
-msgstr "Updating profiles ID"
+msgstr "Обновление ID профиля"
 
 #: ../../../../inc/SP/Core/Upgrade/User.class.php:52
 msgid "Actualizando IDs de usuarios"
-msgstr "Updating users ID"
+msgstr "Обновление ID пользоввателя"
 
 #: ../../../../js/strings.js.php:87
 msgid ""
 "Realizando tarea. Por favor, no cierre la ventana/pestaña del navegador."
-msgstr "Performing task. Please, do not close the browser window/tab."
+msgstr "Выполнение задачи. Не закрывайте окно браузера / вкладку."
 
 #: ../../../../js/strings.js.php:88
 msgid "Incluir Letras"
-msgstr "Include Letters"
+msgstr "Включить письма"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:99
 #: ../../../../inc/themes/material-blue/views/config/info.inc:109
 msgid "Sesión Encriptada"
-msgstr "Encrypted Session"
+msgstr "Зашифрованная сессия"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:104
 msgid "Indica si los datos de la sesión están encriptados en el servidor"
-msgstr "Tells whether the session data are encrypted in the server or not"
+msgstr "Сообщает, зашифрованы ли данные сеанса на сервере или нет"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:111
 msgid "Sí"
-msgstr "Yes"
+msgstr "Да"
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:111
 msgid "No"
-msgstr "No"
+msgstr "Нет"
 
 #: ../../../../js/strings.js.php:89
 msgid "Cookies deshabilitadas. La aplicación no funcionará correctamente."
-msgstr "Cookies disabled. The application won't work properly."
+msgstr "Куки отключены. Приложение не будет работать должным образом."
 
 #: ../../../../js/strings.js.php:90
 msgid "Portapapeles no soportado por el navegador."
-msgstr "Clipboard not supported by your browser."
+msgstr "Буфер обмена не поддерживается вашим браузером."
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:255
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:265
@@ -6165,48 +6169,49 @@ msgstr "Login Attribute"
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:260
 msgid ""
 "Define el atributo a utilizar para el login del usuario en la importación."
-msgstr "Defines the attribute for the user's login when importing."
+msgstr "Определяет атрибут входа пользователя при импорте."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:126
 msgid ""
 "Habilita el acceso a los usuarios que estén incluidos en los grupos "
 "secundarios."
-msgstr "Grants access to the users that are included in the secondary groups."
+msgstr ""
+"Предоставляет доступ к пользователям, которые включены во вторичные группы."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:129
 msgid ""
 "Por defecto el usuario de un grupo secundario es permitido si el grupo "
 "secundario está establecido como el primario del usuario."
 msgstr ""
-"By default, the user in a secondary group is granted if the secondary group "
-"is set as the user's main group."
+"По умолчанию пользователь во вторичной группе предоставляется, если "
+"вторичная группа задана в качестве основной группы пользователя."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:139
 msgid "Acceso Grupos Secundarios"
-msgstr "Secondary Groups Access"
+msgstr "Доступ к дополнительным группам"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:168
 msgid "Encriptar los datos de la sesión de PHP."
-msgstr "Encrypt PHP session data"
+msgstr "Шифрование данных сеанса PHP"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:171
 msgid ""
 "Esta funcionalidad incrementa la seguridad de las sesiones de PHP ya que los "
 "datos almacenados no serán legibles."
 msgstr ""
-"This feature increases the PHP sessions security, because the stored data "
-"won't be readable."
+"Эта функция повышает безопасность сеансов PHP, поскольку сохраненные данные "
+"не будут читаемыми."
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:179
 msgid "Encriptar Sesión"
-msgstr "Encrypt Session"
+msgstr "Зашифровать сеанс"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:278
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:288
 msgid "Atributo Nombre"
-msgstr "Name Attribute"
+msgstr "Login Attribute"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:283
 msgid ""
 "Define el atributo a utilizar para el nombre del usuario en la importación."
-msgstr "Defines the attribute for the user's name when importing."
+msgstr "Определяет атрибут для имени пользователя при импорте."
