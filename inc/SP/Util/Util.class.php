@@ -154,7 +154,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '2.1';
+        return '2.2-dev';
     }
 
     /**
