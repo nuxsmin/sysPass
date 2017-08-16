@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,16 +24,21 @@
 
 namespace Plugins\Authenticator;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Controller\ItemControllerInterface;
 use SP\Controller\RequestControllerTrait;
+use SP\Core\Exceptions\SPException;
+use SP\Core\Messages\LogMessage;
 use SP\Core\Plugin\PluginDataStore;
 use SP\Core\Session as CoreSession;
 use SP\DataModel\PluginData;
 use SP\Http\Request;
+use SP\Log\Email;
 use SP\Mgmt\Plugins\Plugin;
 use SP\Util\ArrayUtil;
 use SP\Util\Checks;
 use SP\Util\Json;
+use SP\Util\Util;
 
 /**
  * Class ActionController
@@ -126,10 +131,18 @@ class ActionController implements ItemControllerInterface
             $AuthenticatorData->setExpireDays(Request::analyze('expiredays', 0));
             $AuthenticatorData->setDate(time());
 
+            try {
+                $AuthenticatorData->setRecoveryCodes($this->generateRecoveryCodes());
+            } catch (EnvironmentIsBrokenException $e) {
+                debugLog($e->getMessage());
+            }
+
             $data[$this->itemId] = $AuthenticatorData;
         } elseif (!$twofa_enabled) {
             unset($data[$this->itemId]);
         }
+
+        $this->savePluginUserData($AuthenticatorData);
 
         $PluginData = new PluginData();
         $PluginData->setPluginName($this->Plugin->getName());
@@ -145,6 +158,50 @@ class ActionController implements ItemControllerInterface
     }
 
     /**
+     * Generar códigos de recuperación
+     *
+     * @return array
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    protected function generateRecoveryCodes()
+    {
+        $codes = [];
+        $i = 1;
+
+        do {
+            $codes[] = Util::generateRandomBytes(10);
+            $i++;
+        } while ($i <= 10);
+
+        return $codes;
+    }
+
+    /**
+     * Guardar datos del Plugin
+     *
+     * @param AuthenticatorData $AuthenticatorData
+     * @return bool
+     */
+    protected function savePluginUserData(AuthenticatorData $AuthenticatorData)
+    {
+        $data = $this->Plugin->getData();
+        $data[$AuthenticatorData->getUserId()] = $AuthenticatorData;
+
+        $PluginData = new PluginData();
+        $PluginData->setPluginName($this->Plugin->getName());
+        $PluginData->setPluginEnabled(1);
+        $PluginData->setPluginData(serialize($data));
+
+        try {
+            Plugin::getItem($PluginData)->update();
+        } catch (SPException $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Comprobar el código 2FA
      *
      * @throws \InvalidArgumentException
@@ -154,10 +211,31 @@ class ActionController implements ItemControllerInterface
     {
         $userId = Request::analyze('itemId', 0);
         $pin = Request::analyze('security_pin');
+        $codeReset = Request::analyze('code_reset', false, false, true);
 
         // Buscar al usuario en los datos del plugin
         /** @var AuthenticatorData $AuthenticatorData */
         $AuthenticatorData = ArrayUtil::searchInObject($this->Plugin->getData(), 'userId', $userId, new AuthenticatorData());
+
+        if (strlen($pin) === 20 && $this->useRecoveryCode($AuthenticatorData, $pin)) {
+            Session::setTwoFApass(true);
+            CoreSession::setAuthCompleted(true);
+
+            $this->JsonResponse->setDescription(_t('authenticator', 'Código correcto'));
+            $this->JsonResponse->setStatus(0);
+
+            Json::returnJson($this->JsonResponse);
+        }
+
+        if ($codeReset && $this->sendResetEmail($AuthenticatorData)) {
+            Session::setTwoFApass(false);
+            CoreSession::setAuthCompleted(false);
+
+            $this->JsonResponse->setDescription(_t('authenticator', 'Email de recuperación enviado'));
+            $this->JsonResponse->setStatus(0);
+
+            Json::returnJson($this->JsonResponse);
+        }
 
         $TwoFa = new Authenticator($userId, CoreSession::getUserData()->getUserLogin(), $AuthenticatorData->getIV());
 
@@ -178,5 +256,94 @@ class ActionController implements ItemControllerInterface
         }
 
         Json::returnJson($this->JsonResponse);
+    }
+
+    /**
+     * Envial email con código de recuperación
+     *
+     * @param AuthenticatorData $AuthenticatorData
+     * @return bool
+     */
+    protected function sendResetEmail(AuthenticatorData $AuthenticatorData)
+    {
+        $email = CoreSession::getUserData()->getUserEmail();
+
+        if (!empty($email)) {
+
+            $code = $this->pickRecoveryCode($AuthenticatorData);
+
+            if ($code !== false) {
+                $LogMessage = new LogMessage();
+                $LogMessage->setAction(_t('authenticator', 'Recuperación de Código 2FA'));
+                $LogMessage->addDescriptionHtml(_t('authenticator', 'Se ha solicitado un código de recuperación para 2FA.'));
+                $LogMessage->addDescriptionLine();
+                $LogMessage->addDescription(sprintf(_t('authenticator', 'El código de recuperación es: %s'), $code));
+
+                return Email::sendEmail($LogMessage, $email);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Devolver un código de recuperación
+     *
+     * @param AuthenticatorData $AuthenticatorData
+     * @return mixed
+     */
+    protected function pickRecoveryCode(AuthenticatorData $AuthenticatorData)
+    {
+        if ($AuthenticatorData->getLastRecoveryTime() === 0) {
+            try {
+                $codes = $this->generateRecoveryCodes();
+            } catch (EnvironmentIsBrokenException $e) {
+                debugLog($e->getMessage());
+
+                return false;
+            }
+
+            $AuthenticatorData->setRecoveryCodes($codes);
+            $AuthenticatorData->setLastRecoveryTime(time());
+
+            if ($this->savePluginUserData($AuthenticatorData) === false) {
+                return false;
+            }
+        } else {
+            $codes = $AuthenticatorData->getRecoveryCodes();
+        }
+
+        $numCodes = count($codes);
+
+        if ($numCodes > 0) {
+            return $codes[$numCodes - 1];
+        }
+
+        return false;
+    }
+
+    /**
+     * Usar un código de recuperación y deshabilitar 2FA
+     *
+     * @param AuthenticatorData $AuthenticatorData
+     * @param                   $code
+     * @return bool|string
+     */
+    protected function useRecoveryCode(AuthenticatorData $AuthenticatorData, $code)
+    {
+        $codes = $AuthenticatorData->getRecoveryCodes();
+
+        if ($key = array_search($code, $codes) !== false) {
+
+            unset($codes[$key]);
+
+            $AuthenticatorData->setTwofaEnabled(false);
+            $AuthenticatorData->setRecoveryCodes($codes);
+            $AuthenticatorData->setLastRecoveryTime(time());
+
+            return $this->savePluginUserData($AuthenticatorData);
+        }
+
+        return false;
     }
 }

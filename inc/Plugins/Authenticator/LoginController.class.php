@@ -29,7 +29,6 @@ use SP\Core\Init;
 use SP\Core\Messages\NoticeMessage;
 use SP\Core\Plugin\PluginBase;
 use SP\Core\Session as CoreSession;
-use SP\DataModel\NoticeData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Mgmt\Notices\Notice;

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Authenticator\n"
-"POT-Creation-Date: 2017-02-13 16:11+0100\n"
-"PO-Revision-Date: 2017-02-13 16:12+0100\n"
+"POT-Creation-Date: 2017-08-16 02:43+0100\n"
+"PO-Revision-Date: 2017-08-16 02:43+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: language@syspass.org\n"
 "Language: en_US\n"
@@ -14,41 +14,59 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _t:2\n"
+"X-Contributors: wojtek\n"
 "X-Poedit-SearchPath-0: ../../..\n"
-"X-Contributors: wojtek"
 
-#: ../../../ActionController.class.php:112
-#: ../../../ActionController.class.php:178
+#: ../../../ActionController.class.php:116
+#: ../../../ActionController.class.php:255
 msgid "Código incorrecto"
 msgstr "Zły kod"
 
-#: ../../../ActionController.class.php:117
+#: ../../../ActionController.class.php:121
 msgid "Ey, esto es una DEMO!!"
 msgstr "Ej, to jest demo!!"
 
-#: ../../../ActionController.class.php:143
+#: ../../../ActionController.class.php:155
 msgid "Preferencias actualizadas"
 msgstr "Ustawienia zaktualizowane"
 
-#: ../../../ActionController.class.php:172
+#: ../../../ActionController.class.php:224
+#: ../../../ActionController.class.php:249
 msgid "Código correcto"
 msgstr "Prawidłowy kod"
 
-#: ../../../LoginController.class.php:126
+#: ../../../ActionController.class.php:234
+msgid "Email de recuperación enviado"
+msgstr ""
+
+#: ../../../ActionController.class.php:277
+msgid "Recuperación de Código 2FA"
+msgstr ""
+
+#: ../../../ActionController.class.php:278
+msgid "Se ha solicitado un código de recuperación para 2FA."
+msgstr ""
+
+#: ../../../ActionController.class.php:280
+#, php-format
+msgid "El código de recuperación es: %s"
+msgstr ""
+
+#: ../../../LoginController.class.php:123
 msgid "Aviso Caducidad"
 msgstr "Powiadomienie o wygaśnięciu"
 
-#: ../../../LoginController.class.php:131
+#: ../../../LoginController.class.php:128
 #, php-format
 msgid "El código 2FA se ha de restablecer en %d días"
 msgstr "2FA kod będzie musiał być zresetowany w ciągu %d dni"
 
-#: ../../../LoginController.class.php:137
+#: ../../../LoginController.class.php:134
 msgid ""
 "El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias"
 msgstr "Kod 2FA wygasł. Zresetuj go w zakładce z ustawieniami"
 
-#: ../../../PreferencesController.class.php:97
+#: ../../../PreferencesController.class.php:98
 msgid "Seguridad"
 msgstr "Bezpieczeństwo"
 
@@ -61,19 +79,23 @@ msgstr "Dwustopniowe logowanie"
 msgid "Introducir código"
 msgstr "Wprowadź kod"
 
-#: ../../../themes/material-blue/views/main/login-2fa.inc:27
+#: ../../../themes/material-blue/views/main/login-2fa.inc:17
+msgid "Olvidé mi código"
+msgstr ""
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:30
 msgid "Volver a iniciar sesión"
 msgstr "Wróć do logowania"
 
-#: ../../../themes/material-blue/views/main/login-2fa.inc:28
+#: ../../../themes/material-blue/views/main/login-2fa.inc:31
 msgid "Volver"
 msgstr "Wróć"
 
-#: ../../../themes/material-blue/views/main/login-2fa.inc:32
+#: ../../../themes/material-blue/views/main/login-2fa.inc:35
 msgid "Acceder"
 msgstr "Logowanie"
 
-#: ../../../themes/material-blue/views/main/login-2fa.inc:34
+#: ../../../themes/material-blue/views/main/login-2fa.inc:37
 msgid "Solicitar"
 msgstr "Żądanie"
 

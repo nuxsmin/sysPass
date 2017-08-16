@@ -7,12 +7,15 @@
                 <legend><?php echo _t('authenticator', 'Autentificación en 2 pasos'); ?></legend>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="security_pin" name="security_pin" type="text"
-                           pattern="[0-9]{6}" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="6"
+                           pattern="([0-9]{6}|[0-9a-f]{20})" class="mdl-textfield__input mdl-color-text--indigo-400" maxlength="20"
                            required/>
                     <label class="mdl-textfield__label"
                            for="security_pin"><?php echo _t('authenticator', 'Introducir código'); ?></label>
                 </div>
-                <br>
+                <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="code_reset">
+                    <input type="checkbox" name="code_reset" id="code_reset" class="mdl-checkbox__input">
+                    <span class="mdl-checkbox__label"><?php echo _t('authenticator', 'Olvidé mi código'); ?></span>
+                </label>
                 <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
                 <input type="hidden" name="itemId" value="<?php echo $userId; ?>"/>
                 <input type="hidden" name="time" value="<?php echo $time; ?>"/>

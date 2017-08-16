@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-03 22:09+0100\n"
-"PO-Revision-Date: 2017-02-03 22:09+0100\n"
+"POT-Creation-Date: 2017-08-16 02:42+0100\n"
+"PO-Revision-Date: 2017-08-16 02:42+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team:  <language@syspass.org>\n"
 "Language: de_DE\n"
@@ -16,41 +16,59 @@ msgstr ""
 "X-Poedit-KeywordsList: _t:2\n"
 "X-Poedit-SearchPath-0: ../../..\n"
 
-#: ../../../ActionController.class.php:112
-#: ../../../ActionController.class.php:178
+#: ../../../ActionController.class.php:116
+#: ../../../ActionController.class.php:255
 msgid "Código incorrecto"
 msgstr "Falscher Code"
 
-#: ../../../ActionController.class.php:117
+#: ../../../ActionController.class.php:121
 msgid "Ey, esto es una DEMO!!"
 msgstr "Hey, dies ist eine DEMO!!"
 
-#: ../../../ActionController.class.php:143
+#: ../../../ActionController.class.php:155
 msgid "Preferencias actualizadas"
 msgstr "Einstellungen aktualisiert"
 
-#: ../../../ActionController.class.php:172
+#: ../../../ActionController.class.php:224
+#: ../../../ActionController.class.php:249
 msgid "Código correcto"
 msgstr "Code bestätigt"
 
-#: ../../../LoginController.class.php:126
+#: ../../../ActionController.class.php:234
+msgid "Email de recuperación enviado"
+msgstr ""
+
+#: ../../../ActionController.class.php:277
+msgid "Recuperación de Código 2FA"
+msgstr ""
+
+#: ../../../ActionController.class.php:278
+msgid "Se ha solicitado un código de recuperación para 2FA."
+msgstr ""
+
+#: ../../../ActionController.class.php:280
+#, php-format
+msgid "El código de recuperación es: %s"
+msgstr ""
+
+#: ../../../LoginController.class.php:123
 #, fuzzy
 msgid "Aviso Caducidad"
 msgstr "Änderungsdatum"
 
-#: ../../../LoginController.class.php:131
+#: ../../../LoginController.class.php:128
 #, php-format
 msgid "El código 2FA se ha de restablecer en %d días"
 msgstr "Der 2FA-Code muss innerhalb von %d Tagen zurückgesetzt werden"
 
-#: ../../../LoginController.class.php:137
+#: ../../../LoginController.class.php:134
 msgid ""
 "El código 2FA ha caducado. Es necesario restablecerlo desde las preferencias"
 msgstr ""
 "Der 2FA Code ist abgelaufen. Du musst es auf der Registerkarte Einstellungen "
 "zurücksetzen"
 
-#: ../../../PreferencesController.class.php:97
+#: ../../../PreferencesController.class.php:98
 msgid "Seguridad"
 msgstr "Sicherheit"
 
@@ -63,19 +81,23 @@ msgstr "Zwei-Faktor Authentifizierung"
 msgid "Introducir código"
 msgstr "Code eingeben"
 
-#: ../../../themes/material-blue/views/main/login-2fa.inc:27
+#: ../../../themes/material-blue/views/main/login-2fa.inc:17
+msgid "Olvidé mi código"
+msgstr ""
+
+#: ../../../themes/material-blue/views/main/login-2fa.inc:30
 msgid "Volver a iniciar sesión"
 msgstr "Zurück zur Anmeldung"
 
-#: ../../../themes/material-blue/views/main/login-2fa.inc:28
+#: ../../../themes/material-blue/views/main/login-2fa.inc:31
 msgid "Volver"
 msgstr "Zurück"
 
-#: ../../../themes/material-blue/views/main/login-2fa.inc:32
+#: ../../../themes/material-blue/views/main/login-2fa.inc:35
 msgid "Acceder"
 msgstr "Anmeldung"
 
-#: ../../../themes/material-blue/views/main/login-2fa.inc:34
+#: ../../../themes/material-blue/views/main/login-2fa.inc:37
 msgid "Solicitar"
 msgstr "Anfrage"
 
