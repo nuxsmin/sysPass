@@ -41,7 +41,7 @@ msgstr "Ein Kontoname wird benötigt"
 #: ../../../../inc/SP/Forms/AccountForm.class.php:148
 #: ../../../../inc/SP/Forms/CustomerForm.class.php:83
 msgid "Es necesario un nombre de cliente"
-msgstr "Ein Kundenname wird benötigt"
+msgstr "Ein Bereichsname wird benötigt"
 
 #: ../../../../inc/SP/Forms/AccountForm.class.php:150
 msgid "Es necesario un usuario"
@@ -171,21 +171,21 @@ msgstr "Neues Profil"
 
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:169
 msgid "Ver Cliente"
-msgstr "Kunde anzeigen"
+msgstr "Bereich anzeigen"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:175
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:176
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:174
 #: ../../../../inc/SP/Core/Acl.class.php:204
 msgid "Editar Cliente"
-msgstr "Kunde ändern"
+msgstr "Bereich ändern"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:164
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:165
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:178
 #: ../../../../inc/themes/material-blue/views/account/account.inc:67
 msgid "Nuevo Cliente"
-msgstr "Neuer Kunde"
+msgstr "Neuer Bereich"
 
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:182
 msgid "Ver Categoría"
@@ -389,16 +389,16 @@ msgstr "Profil gelöscht"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:488
 #: ../../../../inc/SP/Import/ImportBase.class.php:204
 msgid "Cliente creado"
-msgstr "Kunde hinzugefügt"
+msgstr "Bereich hinzugefügt"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:496
 msgid "Cliente actualizado"
-msgstr "Kunde aktualisiert"
+msgstr "Bereich aktualisiert"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:406
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:509
 msgid "Cliente eliminado"
-msgstr "Kunde gelöscht"
+msgstr "Bereich gelöscht"
 
 #: ../../../../inc/SP/Forms/CategoryForm.class.php:83
 msgid "Es necesario un nombre de categoría"
@@ -1100,7 +1100,7 @@ msgstr "Konto"
 #: ../../../../inc/themes/material-blue/views/account/request.inc:31
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:21
 msgid "Cliente"
-msgstr "Kunde"
+msgstr "Bereich"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:57
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:131
@@ -1348,7 +1348,7 @@ msgstr "Kategorienverwaltung"
 
 #: ../../../../inc/SP/Core/Acl.class.php:201
 msgid "Gestión Clientes"
-msgstr "Kundenverwaltung"
+msgstr "Bereichsverwaltung"
 
 #: ../../../../inc/SP/Core/Acl.class.php:206
 msgid "Gestión Campos Personalizados"
@@ -1667,7 +1667,7 @@ msgstr "Kategorien"
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:92
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:168
 msgid "Clientes"
-msgstr "Kunden"
+msgstr "Bereiche"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:608
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:94
@@ -1679,27 +1679,27 @@ msgstr "Gruppen"
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:55
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:179
 msgid "Cliente duplicado"
-msgstr "Kunde bereits vorhanden"
+msgstr "Bereich bereits vorhanden"
 
 #: ../../../../inc/SP/Core/Upgrade/Customer.class.php:98
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:69
 #, fuzzy
 msgid "Error al crear el cliente"
-msgstr "Fehler beim Anlegen des Kunden"
+msgstr "Fehler beim Anlegen des Bereichs"
 
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:195
 #, fuzzy
 msgid "Error al actualizar el cliente"
-msgstr "Fehler beim Ändern des Kunden"
+msgstr "Fehler beim Ändern des Bereichs"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:495
 msgid "Actualizar Cliente"
-msgstr "Kunde ändern"
+msgstr "Bereich ändern"
 
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:124
 #, fuzzy
 msgid "Error al eliminar el cliente"
-msgstr "Fehler beim Löschen des Kunden"
+msgstr "Fehler beim Löschen des Bereichs"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:405
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:185
@@ -1707,7 +1707,7 @@ msgstr "Fehler beim Löschen des Kunden"
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:514
 #: ../../../../inc/SP/Core/Acl.class.php:205
 msgid "Eliminar Cliente"
-msgstr "Kunde löschen"
+msgstr "Bereich löschen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:203
 #: ../../../../inc/SP/Storage/MySQLHandler.class.php:133
@@ -2073,7 +2073,7 @@ msgstr "Ereignisprotokoll leeren"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:399
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:129
 msgid "Cliente no encontrado"
-msgstr "Kunde nicht gefunden"
+msgstr "Bereich nicht gefunden"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:246
 #, fuzzy
@@ -2354,7 +2354,7 @@ msgstr "Profil auswählen"
 #: ../../../../inc/themes/material-blue/views/account/account.inc:60
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:49
 msgid "Seleccionar Cliente"
-msgstr "Kunde auswählen"
+msgstr "Bereich auswählen"
 
 #: ../../../../js/strings.js.php:51
 #: ../../../../inc/themes/material-blue/views/account/account.inc:83
@@ -2633,7 +2633,7 @@ msgstr "sysPass Neuigkeiten"
 
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:350
 msgid "Ordenar por Cliente"
-msgstr "Nach Kunde sortieren"
+msgstr "Nach Bereich sortieren"
 
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:357
 msgid "Ordenar por Nombre"
@@ -3175,12 +3175,12 @@ msgstr ""
 #: ../../../../inc/SP/Api/SyspassApi.class.php:539
 #: ../../../../inc/themes/material-blue/views/itemshow/customers.inc:26
 msgid "Nombre del cliente"
-msgstr "Kundenname"
+msgstr "Bereichsname"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:540
 #: ../../../../inc/themes/material-blue/views/itemshow/customers.inc:39
 msgid "Descripción del cliente"
-msgstr "Beschreibung des Kunden"
+msgstr "Beschreibung des Bereichs"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:57
 msgid "Texto Ayuda"
@@ -3410,7 +3410,7 @@ msgid ""
 "Permite realizar la importación de Cuentas, Categorías y Clientes desde "
 "archivos XML y CSV."
 msgstr ""
-"Erlaubt es, Konten, Kategorien und Kunden aus einer XML- oder CSV-Datei zu "
+"Erlaubt es, Konten, Kategorien und Bereiche aus einer XML- oder CSV-Datei zu "
 "importieren."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:104
@@ -3429,7 +3429,7 @@ msgid ""
 "Para archivos de KeePass o KeePassX, el nombre del cliente será igual a "
 "KeePass o KeePassX y la categoría igual al nombre de los grupos."
 msgstr ""
-"Bei KeePass oder KeePassX Dateien wird der Kundenname \"KeePass\" oder "
+"Bei KeePass oder KeePassX Dateien wird der Berichsname \"KeePass\" oder "
 "\"KeePassX\" und die Kategorienamen wie die Gruppennamen sein."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:110
@@ -3441,7 +3441,7 @@ msgid ""
 "En todos los casos, si el cliente o la categoría no están creados, se crean "
 "automáticamente."
 msgstr ""
-"In dem Fall, dass der Kunden- oder Kategorienname noch nicht existiert, wird "
+"In dem Fall, dass der Bereich- oder Kategorienname noch nicht existiert, wird "
 "dieser automatisch erstellt."
 
 #: ../../../../inc/themes/material-blue/views/config/info.inc:5
@@ -3769,7 +3769,7 @@ msgstr "Kategorieverwaltung"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:168
 msgid "Gestión de clientes"
-msgstr "Kundenverwaltung"
+msgstr "Bereichsverwaltung"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:175
 msgid "Gestión de campos personalizados"
@@ -4001,7 +4001,7 @@ msgstr "URL, welche das Wiki zur Inhaltssuche nutzt."
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:45
 msgid "Como parámetro se utiliza el nombre del cliente."
-msgstr "Kundenname als Parameter benutzen."
+msgstr "Bereichsname als Parameter benutzen."
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:49
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:82
@@ -4247,7 +4247,7 @@ msgstr "Kategorie-ID zum Filtern"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:477
 msgid "Id de cliente a filtrar"
-msgstr "Kunden-ID zum Filtern"
+msgstr "Bereichs-ID zum Filtern"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:497
 #: ../../../../inc/SP/Api/SyspassApi.class.php:526
@@ -4257,7 +4257,7 @@ msgstr "Kategorie Id"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:498
 #: ../../../../inc/SP/Api/SyspassApi.class.php:546
 msgid "Id de cliente"
-msgstr "Kunden Id"
+msgstr "Bereichs Id"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:512
 msgid "Nombre de categoría a buscar"
@@ -4265,7 +4265,7 @@ msgstr "Zu suchender Kategoriename"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:532
 msgid "Nombre de cliente a buscar"
-msgstr "Zu suchender Kundenname"
+msgstr "Zu suchender Bereichsname"
 
 #: ../../../../inc/SP/Auth/Auth.class.php:88
 msgid "Método ya inicializado"
@@ -4341,7 +4341,7 @@ msgstr "Suche nach Kategorie"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:154
 msgid "Buscar Cliente"
-msgstr "Suche nach Kunde"
+msgstr "Suche nach Bereich"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:230
 msgid "Buscar Campo"
@@ -4630,11 +4630,11 @@ msgstr "Kategorie hinzufügen"
 
 #: ../../../../inc/SP/Core/Acl.class.php:202
 msgid "Buscar Clientes"
-msgstr "Kunden suchen"
+msgstr "Bereiche suchen"
 
 #: ../../../../inc/SP/Core/Acl.class.php:203
 msgid "Añadir Cliente"
-msgstr "Kunden hinzufügen"
+msgstr "Bereiche hinzufügen"
 
 #: ../../../../inc/SP/Core/Acl.class.php:208
 msgid "Gestión de Archivos"
@@ -4729,7 +4729,7 @@ msgstr "Kategorie-ID nicht definiert. Konto kann nicht importiert werden."
 
 #: ../../../../inc/SP/Import/ImportBase.class.php:133
 msgid "Id de cliente no definido. No es posible importar cuenta."
-msgstr "Kunden-ID nicht definiert. Kunde kann nicht importiert werden."
+msgstr "Bereichs-ID nicht definiert. Bereich kann nicht importiert werden."
 
 #: ../../../../inc/SP/Import/SyspassImport.class.php:82
 msgid "Clave de encriptación no indicada"
@@ -5553,7 +5553,7 @@ msgstr "Profil aktualisieren"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:369
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:487
 msgid "Crear Cliente"
-msgstr "Kunden hinzufügen"
+msgstr "Bereich hinzufügen"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:280
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:549
@@ -5637,7 +5637,7 @@ msgstr "Profile gelöscht"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:503
 msgid "Clientes eliminados"
-msgstr "Kunden gelöscht"
+msgstr "Bereich gelöscht"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:566
 msgid "Categorías eliminadas"
@@ -5784,7 +5784,7 @@ msgid ""
 "\"nombre_de_cuenta\";\"cliente\";\"categoría\";\"url\";\"usuario\";\"clave\";"
 "\"notas\""
 msgstr ""
-"Name\", \"Kunde\", \"Kategorie\", \"URL\", \"Benutzer\", \"Passwort\", "
+"Name\", \"Bereich\", \"Kategorie\", \"URL\", \"Benutzer\", \"Passwort\", "
 "\"Notizen\""
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:110
@@ -6064,7 +6064,7 @@ msgstr "Fehler beim Empfangen der Spuren"
 
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:182
 msgid "Los elementos exportados son cuentas, clientes, categorías y etiquetas."
-msgstr "Die exportierten Elemente sind Konten, Kunden, Kategorien und Tags"
+msgstr "Die exportierten Elemente sind Konten, Bereiche, Kategorien und Tags"
 
 #: ../../../../inc/themes/material-blue/views/main/upgrade.inc:37
 msgid "Si no se indican los IDs, se crearán nuevos elementos."
@@ -6084,7 +6084,7 @@ msgstr "Aktualisiere die ID der Kategorien"
 
 #: ../../../../inc/SP/Core/Upgrade/Customer.class.php:48
 msgid "Actualizando IDs de clientes"
-msgstr "Aktualisiere die ID der Kunden"
+msgstr "Aktualisiere die ID der Bereiche"
 
 #: ../../../../inc/SP/Core/Upgrade/Group.class.php:51
 msgid "Actualizando IDs de grupos"
