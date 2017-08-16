@@ -80,7 +80,15 @@ sysPass.Triggers = function (Common) {
      */
     var btnAction = function ($obj) {
         var onclick = $obj.data("onclick").split("/");
-        var actions = Common.appActions();
+        var actions;
+
+        var plugin = $obj.data("plugin");
+
+        if (typeof plugin !== "undefined") {
+            actions = sysPass.Plugin[plugin](Common);
+        } else {
+            actions = Common.appActions();
+        }
 
         if (onclick.length === 2) {
             actions[onclick[0]][onclick[1]]($obj);

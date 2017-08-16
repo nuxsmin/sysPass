@@ -483,11 +483,16 @@ sysPass.Theme = function (Common) {
      * @type {{getList: html.getList}}
      */
     var html = {
-        getList: function (items) {
+        getList: function (items, icon) {
             var $ul = $("<ul class=\"ldap-list-item mdl-list\"></ul>");
             var $li = $("<li class=\"mdl-list__item\"></li>");
             var $span = $("<span class=\"mdl-list__item-primary-content\"></span>");
-            var icon = "<i class=\"material-icons mdl-list__item-icon\">person</i>";
+
+            if (icon === undefined) {
+                icon = "<i class=\"material-icons mdl-list__item-icon\">person</i>";
+            } else {
+                icon = "<i class=\"material-icons mdl-list__item-icon\">" + icon + "</i>";
+            }
 
             items.forEach(function (value) {
                 var $spanClone = $span.clone();
