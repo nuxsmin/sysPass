@@ -87,5 +87,6 @@ $stringsJsLang = [
     62 => __('Realizando tarea. Por favor, no cierre la ventana/pestaña del navegador.'),
     63 => __('Incluir Letras'),
     64 => __('Cookies deshabilitadas. La aplicación no funcionará correctamente.'),
-    65 => __('Portapapeles no soportado por el navegador.')
+    65 => __('Portapapeles no soportado por el navegador.'),
+    66 => __('Hay una versión más reciente del plugin {0} ({1})')
 ];

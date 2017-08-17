@@ -84,8 +84,8 @@ sysPass.Triggers = function (Common) {
 
         var plugin = $obj.data("plugin");
 
-        if (typeof plugin !== "undefined") {
-            actions = sysPass.Plugin[plugin](Common);
+        if (plugin !== undefined && Common.appPlugins()[plugin] !== undefined) {
+            actions = Common.appPlugins()[plugin];
         } else {
             actions = Common.appActions();
         }
@@ -116,8 +116,8 @@ sysPass.Triggers = function (Common) {
         var plugin = $obj.data("plugin");
         var actions;
 
-        if (typeof plugin !== "undefined") {
-            actions = sysPass.Plugin[plugin](Common);
+        if (plugin !== undefined && Common.appPlugins()[plugin] !== undefined) {
+            actions = Common.appPlugins()[plugin];
         } else {
             actions = Common.appActions();
         }

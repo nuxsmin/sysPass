@@ -126,10 +126,10 @@ class JsonResponse implements \JsonSerializable
     }
 
     /**
-     * @param array $data
+     * @param array|\stdClass $data
      * @return JsonResponse
      */
-    public function setData(array $data)
+    public function setData($data)
     {
         $this->data = $data;
 

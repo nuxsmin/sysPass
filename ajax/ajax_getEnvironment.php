@@ -51,7 +51,8 @@ $data = [
     'timezone' => date_default_timezone_get(),
     'debug' => DEBUG || $Config->isDebug(),
     'cookies_enabled' => Cookies::checkCookies(),
-    'plugins' => PluginUtil::getEnabledPlugins()
+    'plugins' => PluginUtil::getEnabledPlugins(),
+    'loggedin' => Init::isLoggedIn()
 ];
 
 try {

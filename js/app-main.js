@@ -36,7 +36,8 @@ sysPass.Main = function () {
         LOCALE: "",
         DEBUG: "",
         COOKIES_ENABLED: false,
-        PLUGINS: []
+        PLUGINS: [],
+        LOGGEDIN: false
     };
 
     // Atributos del generador de claves
@@ -213,6 +214,15 @@ sysPass.Main = function () {
 
     Object.freeze(msg);
 
+    if (!String.format) {
+        String.format = function (format) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            return format.replace(/{(\d+)}/g, function (match, number) {
+                return typeof args[number] != 'undefined' ? args[number] : match;
+            });
+        };
+    }
+
     /**
      * Inicialización
      */
@@ -261,6 +271,9 @@ sysPass.Main = function () {
             appRequests: function () {
                 return appRequests;
             },
+            appPlugins: function () {
+                return appPlugins;
+            },
             evalAction: evalAction,
             resizeImage: resizeImage
         }, oPublic);
@@ -293,7 +306,10 @@ sysPass.Main = function () {
             setupCallbacks();
             checkLogout();
             initPlugins();
-            checkPluginUpdates();
+
+            if (config.LOGGEDIN === true && config.CHECK_UPDATES === true) {
+                checkPluginUpdates();
+            }
         });
 
         return oPublic;
@@ -337,6 +353,7 @@ sysPass.Main = function () {
             config.MAX_FILE_SIZE = parseInt(json.max_file_size);
             config.COOKIES_ENABLED = json.cookies_enabled;
             config.PLUGINS = json.plugins;
+            config.LOGGEDIN = json.loggedin;
 
             Object.freeze(config);
         });
@@ -840,11 +857,15 @@ sysPass.Main = function () {
     var initPlugins = function () {
         log.info("initPlugins");
 
-        for (var plugin in config.PLUGINS) {
+        for (var i = 0; i < config.PLUGINS.length; i++) {
+            var plugin = config.PLUGINS[i];
+
             if (typeof sysPass.Plugin[plugin] === "function") {
                 appPlugins[plugin] = sysPass.Plugin[plugin](oProtected);
             }
         }
+
+        Object.freeze(appPlugins);
     };
 
     /**
@@ -854,10 +875,12 @@ sysPass.Main = function () {
         log.info("checkPluginUpdates");
 
         for (var plugin in appPlugins) {
-            if (typeof appPlugins[plugin]["checkVersion"] === "function") {
-                appPlugins[plugin]["checkVersion"]().then(function (data) {
-                    log.info(data);
-                }) ;
+            if (typeof appPlugins[plugin].checkVersion === "function") {
+                appPlugins[plugin].checkVersion().then(function (json) {
+                    if (json.status === 0 && json.data.plugin !== undefined) {
+                        msg.info(String.format(config.LANG[66], json.data.plugin, json.data.remoteVersion));
+                    }
+                });
             }
         }
     };
