@@ -360,35 +360,6 @@ class Init
     }
 
     /**
-     * Iniciar la sesión PHP
-     *
-     * @param bool $encrypt Encriptar la sesión de PHP
-     */
-    private static function startSession($encrypt = false)
-    {
-        // Evita que javascript acceda a las cookies de sesion de PHP
-        ini_set('session.cookie_httponly', '1');
-        ini_set('session.save_handler', 'files');
-
-        if ($encrypt === true) {
-            $Key = SecureKeyCookie::getKey();
-
-            if ($Key !== false && self::$checkPhpVersion) {
-                session_set_save_handler(new CryptSessionHandler($Key), true);
-            }
-        }
-
-        // Si la sesión no puede ser iniciada, devolver un error 500
-        if (session_start() === false) {
-            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
-
-            header('HTTP/1.1 500 Internal Server Error');
-
-            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
-        }
-    }
-
-    /**
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
@@ -508,6 +479,35 @@ class Init
         if ($configPerms !== '750' && !Checks::checkIsWindows()) {
             clearstatcache();
             self::initError(__('Los permisos del directorio "/config" son incorrectos'), __('Actual:') . ' ' . $configPerms . ' - ' . __('Necesario: 750'));
+        }
+    }
+
+    /**
+     * Iniciar la sesión PHP
+     *
+     * @param bool $encrypt Encriptar la sesión de PHP
+     */
+    private static function startSession($encrypt = false)
+    {
+        // Evita que javascript acceda a las cookies de sesion de PHP
+        ini_set('session.cookie_httponly', '1');
+        ini_set('session.save_handler', 'files');
+
+        if ($encrypt === true) {
+            $Key = SecureKeyCookie::getKey();
+
+            if ($Key !== false && self::$checkPhpVersion) {
+                session_set_save_handler(new CryptSessionHandler($Key), true);
+            }
+        }
+
+        // Si la sesión no puede ser iniciada, devolver un error 500
+        if (session_start() === false) {
+            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
+
+            header('HTTP/1.1 500 Internal Server Error');
+
+            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
         }
     }
 

@@ -270,4 +270,20 @@ class Plugin extends PluginBase implements ItemInterface
 
         return DB::getResultsArray($Data);
     }
+
+    /**
+     * Devolver los plugins activados
+     *
+     * @return array
+     */
+    public function getEnabled()
+    {
+        $query = /** @lang SQL */
+            'SELECT plugin_name FROM plugins WHERE BIN(plugin_enabled) = 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return DB::getResultsArray($Data);
+    }
 }

@@ -28,6 +28,7 @@ use ReflectionClass;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
 use SP\Log\Log;
+use SP\Mgmt\Plugins\Plugin;
 
 /**
  * Class PluginUtil
@@ -37,7 +38,11 @@ use SP\Log\Log;
 class PluginUtil
 {
     /**
-     * @var array Plugins ya cargados
+     * @var array Plugins habilitados
+     */
+    private static $enabledPlugins;
+    /**
+     * @var PluginInterface[] Plugins ya cargados
      */
     private static $loadedPlugins = [];
     /**
@@ -99,9 +104,9 @@ class PluginUtil
                 self::$loadedPlugins[$name] = $Plugin;
 
                 return $Plugin;
-            } else {
-                self::$disabledPlugins[] = $name;
             }
+
+            self::$disabledPlugins[] = $name;
         } catch (\ReflectionException $e) {
             Log::writeNewLog(__FUNCTION__, sprintf(__('No es posible cargar el plugin "%s"'), $name));
         } catch (SPException $e) {
@@ -162,5 +167,23 @@ class PluginUtil
         }
 
         return false;
+    }
+
+    /**
+     * Devolver los plugins habilidatos
+     *
+     * @return PluginInterface[]
+     */
+    public static function getEnabledPlugins()
+    {
+        if (self::$enabledPlugins !== null) {
+            return self::$enabledPlugins;
+        }
+
+        foreach (Plugin::getItem()->getEnabled() as $plugin) {
+            self::$enabledPlugins[] = $plugin->plugin_name;
+        }
+
+        return self::$enabledPlugins;
     }
 }

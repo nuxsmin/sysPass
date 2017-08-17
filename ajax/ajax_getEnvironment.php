@@ -25,6 +25,7 @@
 use SP\Config\Config;
 use SP\Core\CryptPKI;
 use SP\Core\Init;
+use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session;
 use SP\Http\Cookies;
 use SP\Http\Request;
@@ -49,7 +50,8 @@ $data = [
     'check_updates' => Session::getAuthCompleted() && ($Config->isCheckUpdates() || $Config->isChecknotices()) && (Session::getUserData()->isUserIsAdminApp() || Checks::demoIsEnabled()),
     'timezone' => date_default_timezone_get(),
     'debug' => DEBUG || $Config->isDebug(),
-    'cookies_enabled' => Cookies::checkCookies()
+    'cookies_enabled' => Cookies::checkCookies(),
+    'plugins' => PluginUtil::getEnabledPlugins()
 ];
 
 try {

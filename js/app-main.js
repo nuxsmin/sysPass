@@ -35,7 +35,8 @@ sysPass.Main = function () {
         TIMEZONE: "",
         LOCALE: "",
         DEBUG: "",
-        COOKIES_ENABLED: false
+        COOKIES_ENABLED: false,
+        PLUGINS: []
     };
 
     // Atributos del generador de claves
@@ -64,6 +65,9 @@ sysPass.Main = function () {
 
     // Objeto con las funciones para peticiones de la aplicación
     var appRequests = {};
+
+    // Objeto con los plugins habilitados
+    var appPlugins = {};
 
     // Objeto con las propiedades públicas
     var oPublic = {};
@@ -288,6 +292,8 @@ sysPass.Main = function () {
             initializeClipboard();
             setupCallbacks();
             checkLogout();
+            initPlugins();
+            checkPluginUpdates();
         });
 
         return oPublic;
@@ -330,6 +336,7 @@ sysPass.Main = function () {
             config.DEBUG = json.debug;
             config.MAX_FILE_SIZE = parseInt(json.max_file_size);
             config.COOKIES_ENABLED = json.cookies_enabled;
+            config.PLUGINS = json.plugins;
 
             Object.freeze(config);
         });
@@ -826,6 +833,34 @@ sysPass.Main = function () {
 
         return decodeHTMLEntities;
     })();
+
+    /**
+     * Inicializar los plugins
+     */
+    var initPlugins = function () {
+        log.info("initPlugins");
+
+        for (var plugin in config.PLUGINS) {
+            if (typeof sysPass.Plugin[plugin] === "function") {
+                appPlugins[plugin] = sysPass.Plugin[plugin](oProtected);
+            }
+        }
+    };
+
+    /**
+     * Comprobar si hay actualizaciones de plugins
+     */
+    var checkPluginUpdates = function () {
+        log.info("checkPluginUpdates");
+
+        for (var plugin in appPlugins) {
+            if (typeof appPlugins[plugin]["checkVersion"] === "function") {
+                appPlugins[plugin]["checkVersion"]().then(function (data) {
+                    log.info(data);
+                }) ;
+            }
+        }
+    };
 
     return init();
 };
