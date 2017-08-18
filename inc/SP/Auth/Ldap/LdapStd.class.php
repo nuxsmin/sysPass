@@ -122,4 +122,17 @@ class LdapStd extends LdapBase
 
         return true;
     }
+
+    /**
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    protected function connect()
+    {
+        parent::connect();
+
+        @ldap_set_option($this->ldapHandler, LDAP_OPT_REFERRALS, 0);
+
+        return true;
+    }
 }
