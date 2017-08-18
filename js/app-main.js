@@ -652,17 +652,25 @@ sysPass.Main = function () {
 
         $("body").on("click", ".clip-pass-button", function () {
             var json = appActions.account.copypass($(this)).done(function (json) {
+                if (json.status !== 0) {
+                    msg.out(json);
+
+                    return false;
+                }
+
                 sk.set(json.csrf);
             });
 
-            clipboard.copy(json.responseJSON.data.accpass).then(
-                function () {
-                    msg.ok(config.LANG[45]);
-                },
-                function (err) {
-                    msg.error(config.LANG[46]);
-                }
-            );
+            if (json !== false) {
+                clipboard.copy(json.responseJSON.data.accpass).then(
+                    function () {
+                        msg.ok(config.LANG[45]);
+                    },
+                    function (err) {
+                        msg.error(config.LANG[46]);
+                    }
+                );
+            }
         }).on("click", ".dialog-clip-button", function () {
             var $target = $(this.dataset.clipboardTarget);
 
