@@ -37,7 +37,7 @@
                                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="userEditEnabled">
                                     <input name="userEditEnabled" type="checkbox" id="userEditEnabled"
                                            class="mdl-switch__input" <?php echo ($gotData && $accountData->getAccountOtherUserEdit()) ? 'checked' : ''; ?>/>
-                                    <span class="mdl-switch__label"><?php echo __('Hablitar edición'); ?></span>
+                                    <span class="mdl-switch__label"><?php echo __('Habilitar edición'); ?></span>
                                 </label>
                             </fieldset>
                         </div>
