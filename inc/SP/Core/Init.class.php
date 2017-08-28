@@ -529,7 +529,7 @@ class Init
     private static function checkHttps()
     {
         if (Checks::forceHttpsIsEnabled() && !Checks::httpsEnabled()) {
-            $port = ($_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : ':443';
+            $port = ((int)$_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
             $fullUrl = 'https://' . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
             header('Location: ' . $fullUrl);
         }
