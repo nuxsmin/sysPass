@@ -229,7 +229,14 @@ class LoginController
         try {
             $TrackData = new TrackData();
             $TrackData->setTrackSource('Login');
-            $TrackData->setTrackIp(Util::getClientAddress());
+
+            $forward = Request::getRequestHeaders('X-Forwarded-For');
+
+            if ($forward) {
+                $TrackData->setTrackIP($forward);
+            } else {
+                $TrackData->setTrackIp(Util::getClientAddress());
+            }
 
             Track::getItem($TrackData)->add();
         } catch (SPException $e) {
