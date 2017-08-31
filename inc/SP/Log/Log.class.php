@@ -165,7 +165,7 @@ class Log extends ActionLog
 
         $description = trim($this->LogMessage->getDescription(true) . PHP_EOL . $this->LogMessage->getDetails(true));
 
-        $query = 'INSERT INTO log SET 
+        $query = 'INSERT INTO log SET
             log_date = UNIX_TIMESTAMP(),
             log_login = ?,
             log_userId = ?,
@@ -178,7 +178,15 @@ class Log extends ActionLog
         $Data->setQuery($query);
         $Data->addParam(Session::getUserData()->getUserLogin());
         $Data->addParam(Session::getUserData()->getUserId());
-        $Data->addParam(Util::getClientAddress(true));
+
+        $forward = Request::getRequestHeaders('X-Forwarded-For');
+
+        if ($forward) {
+            $Data->addParam($forward);
+        } else {
+            $Data->addParam(Util::getClientAddress(true));
+        }
+
         $Data->addParam(utf8_encode($this->LogMessage->getAction(true)));
         $Data->addParam($this->getLogLevel());
         $Data->addParam(utf8_encode($description));

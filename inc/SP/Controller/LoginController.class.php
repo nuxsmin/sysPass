@@ -191,7 +191,14 @@ class LoginController
         try {
             $TrackData = new TrackData();
             $TrackData->setTrackSource('Login');
-            $TrackData->setTrackIp(Util::getClientAddress());
+
+            $forward = Request::getRequestHeaders('X-Forwarded-For');
+
+            if ($forward) {
+                $TrackData->setTrackIP($forward);
+            } else {
+                $TrackData->setTrackIp(Util::getClientAddress());
+            }
 
             $attempts = count(Track::getItem($TrackData)->getTracksForClientFromTime(time() - self::TIME_TRACKING));
         } catch (SPException $e) {
@@ -222,7 +229,14 @@ class LoginController
         try {
             $TrackData = new TrackData();
             $TrackData->setTrackSource('Login');
-            $TrackData->setTrackIp(Util::getClientAddress());
+
+            $forward = Request::getRequestHeaders('X-Forwarded-For');
+
+            if ($forward) {
+                $TrackData->setTrackIP($forward);
+            } else {
+                $TrackData->setTrackIp(Util::getClientAddress());
+            }
 
             Track::getItem($TrackData)->add();
         } catch (SPException $e) {
