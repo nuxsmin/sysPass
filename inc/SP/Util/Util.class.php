@@ -537,7 +537,7 @@ class Util
     public static function getServerUrl()
     {
         $urlScheme = Checks::httpsEnabled() ? 'https://' : 'http://';
-        $urlPort = ($_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
+        $urlPort = ((int)$_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
 
         return $urlScheme . $_SERVER['SERVER_NAME'] . $urlPort;
     }
