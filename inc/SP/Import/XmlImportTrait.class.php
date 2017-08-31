@@ -70,7 +70,9 @@ trait XmlImportTrait
             }
 
             return;
-        } elseif (!is_callable([$this, $callback])) {
+        }
+
+        if (!is_callable([$this, $callback])) {
             throw new SPException(SPException::SP_WARNING, __('Método inválido', false));
         }
 

@@ -25,6 +25,7 @@
 namespace SP\Core;
 
 use Defuse\Crypto\Exception\CryptoException;
+use SP\Account\AccountTags;
 use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Core\Crypt\Crypt;
@@ -121,6 +122,35 @@ class XmlExport
     }
 
     /**
+     * @param string $exportDir
+     */
+    public function setExportDir($exportDir)
+    {
+        $this->exportDir = $exportDir;
+    }
+
+    /**
+     * Genera el nombre del archivo usado para la exportación.
+     */
+    private function setExportFile()
+    {
+        // Generar hash unico para evitar descargas no permitidas
+        $exportUniqueHash = sha1(uniqid('sysPassExport', true));
+        Config::getConfig()->setExportHash($exportUniqueHash);
+        Config::saveConfig();
+
+        $this->exportFile = $this->exportDir . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '-' . $exportUniqueHash . '.xml';
+    }
+
+    /**
+     * Eliminar los archivos de exportación anteriores
+     */
+    private function deleteOldExports()
+    {
+        array_map('unlink', glob($this->exportDir . DIRECTORY_SEPARATOR . '*.xml'));
+    }
+
+    /**
      * Crear el documento XML y guardarlo
      *
      * @return bool
@@ -156,6 +186,27 @@ class XmlExport
         $Log->writeLog();
 
         Email::sendEmail($LogMessage);
+
+        return true;
+    }
+
+    /**
+     * Comprobar y crear el directorio de exportación.
+     *
+     * @throws SPException
+     * @return bool
+     */
+    private function checkExportDir()
+    {
+        if (@mkdir($this->exportDir, 0750) === false && is_dir($this->exportDir) === false) {
+            throw new SPException(SPException::SP_CRITICAL, sprintf(__('No es posible crear el directorio de backups ("%s")'), $this->exportDir));
+        }
+
+        clearstatcache(true, $this->exportDir);
+
+        if (!is_writable($this->exportDir)) {
+            throw new SPException(SPException::SP_CRITICAL, __('Compruebe los permisos del directorio de backups', false));
+        }
 
         return true;
     }
@@ -358,7 +409,7 @@ class XmlExport
 
         try {
             // Crear el nodo de etiquetas
-            $nodeTags= $this->xml->createElement('Tags');
+            $nodeTags = $this->xml->createElement('Tags');
 
             foreach ($Tags as $TagData) {
                 $tagName = $this->xml->createElement('name', $this->escapeChars($TagData->getTagName()));
@@ -404,6 +455,14 @@ class XmlExport
                 $accountNotes = $this->xml->createElement('notes', $this->escapeChars($account->account_notes));
                 $accountPass = $this->xml->createElement('pass', $this->escapeChars($account->account_pass));
                 $accountIV = $this->xml->createElement('key', $this->escapeChars($account->account_key));
+                $tags = $this->xml->createElement('tags');
+
+                foreach (AccountTags::getTagsForId($account->account_id) as $id => $name) {
+                    $tag = $this->xml->createElement('tag');
+                    $tag->setAttribute('id', $id);
+
+                    $tags->appendChild($tag);
+                }
 
                 // Crear el nodo de cuenta
                 $nodeAccount = $this->xml->createElement('Account');
@@ -416,6 +475,7 @@ class XmlExport
                 $nodeAccount->appendChild($accountNotes);
                 $nodeAccount->appendChild($accountPass);
                 $nodeAccount->appendChild($accountIV);
+                $nodeAccount->appendChild($tags);
 
                 // Añadir cuenta al nodo de cuentas
                 $nodeAccounts->appendChild($nodeAccount);
@@ -485,55 +545,5 @@ class XmlExport
         } catch (\DOMException $e) {
             throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
         }
-    }
-
-    /**
-     * Genera el nombre del archivo usado para la exportación.
-     */
-    private function setExportFile()
-    {
-        // Generar hash unico para evitar descargas no permitidas
-        $exportUniqueHash = sha1(uniqid('sysPassExport', true));
-        Config::getConfig()->setExportHash($exportUniqueHash);
-        Config::saveConfig();
-
-        $this->exportFile = $this->exportDir . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '-' . $exportUniqueHash . '.xml';
-    }
-
-    /**
-     * @param string $exportDir
-     */
-    public function setExportDir($exportDir)
-    {
-        $this->exportDir = $exportDir;
-    }
-
-    /**
-     * Comprobar y crear el directorio de exportación.
-     *
-     * @throws SPException
-     * @return bool
-     */
-    private function checkExportDir()
-    {
-        if (@mkdir($this->exportDir, 0750) === false && is_dir($this->exportDir) === false) {
-            throw new SPException(SPException::SP_CRITICAL, sprintf(__('No es posible crear el directorio de backups ("%s")'), $this->exportDir));
-        }
-
-        clearstatcache(true, $this->exportDir);
-
-        if (!is_writable($this->exportDir)) {
-            throw new SPException(SPException::SP_CRITICAL, __('Compruebe los permisos del directorio de backups', false));
-        }
-
-        return true;
-    }
-
-    /**
-     * Eliminar los archivos de exportación anteriores
-     */
-    private function deleteOldExports()
-    {
-        array_map('unlink', glob($this->exportDir . DIRECTORY_SEPARATOR . '*.xml'));
     }
 }

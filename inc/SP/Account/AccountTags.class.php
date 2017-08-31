@@ -63,6 +63,29 @@ class AccountTags
     }
 
     /**
+     * Devolver las etiquetas de una cuenta por id
+     *
+     * @param int $id Id de la cuenta
+     * @return array
+     */
+    public static function getTagsForId($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT tag_id, tag_name
+                FROM accTags
+                JOIN tags ON tag_id = acctag_tagId
+                WHERE acctag_accountId = ?
+                ORDER BY tag_name';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setUseKeyPair(true);
+        $Data->addParam($id);
+
+        return DB::getResultsArray($Data);
+    }
+
+    /**
      * Actualizar las etiquetas de una cuenta
      *
      * @param AccountExtData $accountData

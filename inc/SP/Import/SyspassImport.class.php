@@ -25,11 +25,13 @@
 namespace SP\Import;
 
 use DOMXPath;
+use SP\Account\AccountTags;
 use SP\Config\ConfigDB;
 use SP\Core\Crypt\Crypt;
 use SP\Core\OldCrypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;
@@ -71,7 +73,7 @@ class SyspassImport extends ImportBase
     public function doImport()
     {
         try {
-            if ($this->ImportParams->getImportMasterPwd() !== ''){
+            if ($this->ImportParams->getImportMasterPwd() !== '') {
                 $this->mPassValidHash = Hash::checkHashKey($this->ImportParams->getImportMasterPwd(), ConfigDB::getValue('masterPwd'));
             }
 
@@ -272,6 +274,7 @@ class SyspassImport extends ImportBase
 
         $AccountData = new AccountExtData();
 
+        /** @var \DOMElement $accountNode */
         foreach ($Account->childNodes as $accountNode) {
             if (isset($accountNode->tagName)) {
                 switch ($accountNode->tagName) {
@@ -299,10 +302,38 @@ class SyspassImport extends ImportBase
                     case 'notes';
                         $AccountData->setAccountNotes($accountNode->nodeValue);
                         break;
+                    case 'tags':
+                        $tags = $this->processAccountTags($accountNode->childNodes);
                 }
             }
         }
 
         $this->addAccount($AccountData);
+
+        if (isset($tags) && count($tags)) {
+            $this->addAccountTags($AccountData, $tags);
+        }
+    }
+
+    /**
+     * Procesar las etiquetas de la cuenta
+     *
+     * @param \DOMNodeList $nodes
+     * @return array
+     */
+    protected function processAccountTags(\DOMNodeList $nodes)
+    {
+        $tags = [];
+
+        if ($nodes->length > 0) {
+            /** @var \DOMElement $accountTagNode */
+            foreach ($nodes as $accountTagNode) {
+                if (isset($accountTagNode->tagName)) {
+                    $tags[] = $accountTagNode->getAttribute('id');
+                }
+            }
+        }
+
+        return $tags;
     }
 }

@@ -25,6 +25,7 @@
 namespace SP\Import;
 
 use SP\Account\Account;
+use SP\Account\AccountTags;
 use SP\Core\Crypt\Crypt;
 use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
@@ -75,9 +76,9 @@ abstract class ImportBase implements ImportInterface
     /**
      * ImportBase constructor.
      *
-     * @param FileImport   $File
+     * @param FileImport $File
      * @param ImportParams $ImportParams
-     * @param LogMessage   $LogMessage
+     * @param LogMessage $LogMessage
      */
     public function __construct(FileImport $File = null, ImportParams $ImportParams = null, LogMessage $LogMessage = null)
     {
@@ -129,7 +130,9 @@ abstract class ImportBase implements ImportInterface
         if ($AccountData->getAccountCategoryId() === 0) {
             Log::writeNewLog(__FUNCTION__, __('Id de categoría no definido. No es posible importar cuenta.', false), Log::INFO);
             return false;
-        } elseif ($AccountData->getAccountCustomerId() === 0) {
+        }
+
+        if ($AccountData->getAccountCustomerId() === 0) {
             Log::writeNewLog(__FUNCTION__, __('Id de cliente no definido. No es posible importar cuenta.', false), Log::INFO);
             return false;
         }
@@ -232,5 +235,24 @@ abstract class ImportBase implements ImportInterface
         }
 
         return null;
+    }
+
+    /**
+     * Añadir las etiquetas de la cuenta
+     *
+     * @param AccountExtData $accountExtData
+     * @param array $tags
+     */
+    protected function addAccountTags(AccountExtData $accountExtData, array $tags)
+    {
+        try {
+            $accountExtData->setTags($tags);
+
+            $AccountTags = new AccountTags();
+            $AccountTags->addTags($accountExtData);
+        } catch (SPException $e) {
+            $this->LogMessage->addDetails($e->getMessage(), $accountExtData->getAccountName());
+            $this->LogMessage->addDetails(__('Error', false), $e->getHint());
+        }
     }
 }
