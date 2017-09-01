@@ -62,7 +62,9 @@ class PluginUtil
 
         if ($pluginDirH) {
             while (false !== ($entry = readdir($pluginDirH))) {
-                if ($entry !== '.' && $entry !== '..') {
+                if (strpos($entry, '.') === false
+                    && is_dir(PLUGINS_PATH . '/' . $entry)
+                ) {
                     $plugins[] = $entry;
                 }
             }
