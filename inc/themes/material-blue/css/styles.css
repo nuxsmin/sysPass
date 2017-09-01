@@ -55,8 +55,7 @@ input.txtLong {
   width: 300px; }
 
 textarea {
-  width: 350px;
-  resize: none; }
+  width: 350px; }
 
 select.files {
   width: 250px; }
