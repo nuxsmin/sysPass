@@ -49,5 +49,6 @@ backup/*
 config/*
 res/
 tools/
+tmp/
 
 !.blank
