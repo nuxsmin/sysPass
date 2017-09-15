@@ -70,6 +70,11 @@ class Init
     public static $WEBURI = '';
 
     /**
+     * @var string The full URL to reach sysPass (e.g. https://sub.example.com/syspass/)
+     */
+    public static $WEBBASE = '';
+
+    /**
      * @var bool True if sysPass has been updated. Only for notices.
      */
     public static $UPDATED = false;
@@ -355,8 +360,53 @@ class Init
             self::$WEBROOT = '/' . self::$WEBROOT;
         }
 
-        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://';
-        self::$WEBURI .= $protocol . $_SERVER['HTTP_HOST'] . self::$WEBROOT;
+        self::$WEBBASE = self::retrieveWebBase();
+        self::$WEBURI .= self::$WEBBASE . self::$WEBROOT;
+    }
+
+    private static function retrieveWebBase() {
+        // Check in style of RFC 7239
+        $reProto = '/proto=.+(,|$)/i';
+        $reHost = '/host=.+(,|$)/i';
+        if (
+            isset($_SERVER['Forwarded']) &&
+            preg_match($reProto, $_SERVER['HTTP_FORWARDED'], $matchesProto) &&
+            preg_match($reHost, $_SERVER['HTTP_FORWARDED'], $matchesHost)
+        ) {
+            // Removes proto= and host=
+            $protocol = str_replace('proto=', '', strtolower($matchesProto[0]));
+            $host = str_replace('host=', '', strtolower($matchesHost[0]));
+
+            // Removes possible `"`-chars
+            $protocol = str_replace('"', '', $protocol);
+            $host = str_replace('"', '', $host);
+
+            // Check if prtocol and host are not empty
+            if (strlen($protocol) > 0 && strlen($host) > 0) {
+                return $protocol . '://' . $host;
+            }
+        }
+
+        // Check (deprecated) de facto standard
+        if (
+            isset($_SERVER['HTTP_X_FORWARDED_FOR']) &&
+            isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
+        ) {
+            // This only could be http or https
+            $protocol = str_replace('"', '', trim($_SERVER['HTTP_X_FORWARDED_PROTO']));
+
+            // This may be example.com or sub.example.com/syspass
+            $host = str_replace('"', '', trim($_SERVER['HTTP_X_FORWARDED_FOR']));
+
+            // Check if protocol and host are not empty
+            if (strlen($protocol) > 0 && strlen($host) > 0) {
+                return $protocol . '://' . $host;
+            }
+        }
+
+        // We got called directly
+        $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
+        return $protocol . $_SERVER['HTTP_HOST'];
     }
 
     /**
