@@ -41,6 +41,7 @@ use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
+use SP\Util\HttpUtil;
 use SP\Util\Json;
 use SP\Util\Util;
 use SP\Core\Crypt\Session as CryptSession;
@@ -65,14 +66,9 @@ class Init
     public static $WEBROOT = '';
 
     /**
-     * @var string The sysPass root path for http requests (e.g. syspass/)
-     */
-    public static $WEBURI = '';
-
-    /**
      * @var string The full URL to reach sysPass (e.g. https://sub.example.com/syspass/)
      */
-    public static $WEBBASE = '';
+    public static $WEBURI = '';
 
     /**
      * @var bool True if sysPass has been updated. Only for notices.
@@ -168,7 +164,7 @@ class Init
         }
 
         // Comprobar si es necesario cambiar a HTTPS
-        self::checkHttps();
+        HttpUtil::checkHttps();
 
         // Comprobar si es necesario inicialización
         if (self::$checkInitSourceInclude ||
@@ -360,61 +356,16 @@ class Init
             self::$WEBROOT = '/' . self::$WEBROOT;
         }
 
-        self::$WEBBASE = self::retrieveWebBase();
-        self::$WEBURI .= self::$WEBBASE . self::$WEBROOT;
+        self::$WEBURI = HttpUtil::getHttpHost() . self::$WEBROOT;
     }
 
-    private static function retrieveWebBase() {
-        // Check in style of RFC 7239
-        $reProto = '/proto=.+(,|$)/i';
-        $reHost = '/host=.+(,|$)/i';
-        if (
-            isset($_SERVER['Forwarded']) &&
-            preg_match($reProto, $_SERVER['HTTP_FORWARDED'], $matchesProto) &&
-            preg_match($reHost, $_SERVER['HTTP_FORWARDED'], $matchesHost)
-        ) {
-            // Removes proto= and host=
-            $protocol = str_replace('proto=', '', strtolower($matchesProto[0]));
-            $host = str_replace('host=', '', strtolower($matchesHost[0]));
-
-            // Removes possible `"`-chars
-            $protocol = str_replace('"', '', $protocol);
-            $host = str_replace('"', '', $host);
-
-            // Check if prtocol and host are not empty
-            if (strlen($protocol) > 0 && strlen($host) > 0) {
-                return $protocol . '://' . $host;
-            }
-        }
-
-        // Check (deprecated) de facto standard
-        if (
-            isset($_SERVER['HTTP_X_FORWARDED_FOR']) &&
-            isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
-        ) {
-            // This only could be http or https
-            $protocol = str_replace('"', '', trim($_SERVER['HTTP_X_FORWARDED_PROTO']));
-
-            // This may be example.com or sub.example.com/syspass
-            $host = str_replace('"', '', trim($_SERVER['HTTP_X_FORWARDED_FOR']));
-
-            // Check if protocol and host are not empty
-            if (strlen($protocol) > 0 && strlen($host) > 0) {
-                return $protocol . '://' . $host;
-            }
-        }
-
-        // We got called directly
-        $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
-        return $protocol . $_SERVER['HTTP_HOST'];
-    }
 
     /**
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
-     * @param string $hint opcional, con una ayuda sobre el error
-     * @param bool $headers
+     * @param string $hint    opcional, con una ayuda sobre el error
+     * @param bool   $headers
      */
     public static function initError($message, $hint = '', $headers = false)
     {
@@ -571,18 +522,6 @@ class Init
         return (DiFactory::getDBStorage()->getDbStatus() === 0
             && Session::getUserData()->getUserLogin()
             && is_object(Session::getUserPreferences()));
-    }
-
-    /**
-     * Comprobar y forzar (si es necesario) la conexión HTTPS
-     */
-    private static function checkHttps()
-    {
-        if (Checks::forceHttpsIsEnabled() && !Checks::httpsEnabled()) {
-            $port = ((int)$_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
-            $fullUrl = 'https://' . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
-            header('Location: ' . $fullUrl);
-        }
     }
 
     /**
