@@ -93,7 +93,7 @@ sysPass.Theme = function (Common) {
             }
         }
 
-        for (; i++ <= Common.passwordData.complexity.numlength;) {
+        for (; i++ < Common.passwordData.complexity.numlength;) {
             genPassword += getRandomChar(0, chars.length - 1);
         }
 
