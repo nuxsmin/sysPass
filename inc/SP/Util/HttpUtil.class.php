@@ -113,7 +113,7 @@ class HttpUtil
      */
     public static function getForwardedFor()
     {
-        if (preg_match_all('/for=["\[]*([\w.:]+)["\]]*[,;]?/i',
+        if (preg_match_all('/for="?\[?([\w.:]+)"?\]?[,;]?/i',
             Request::getRequestHeaders('HTTP_FORWARDED'), $matchesFor)) {
             return $matchesFor[1];
         }
