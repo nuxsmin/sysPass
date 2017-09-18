@@ -113,14 +113,18 @@ class HttpUtil
      */
     public static function getForwardedFor()
     {
-        if (preg_match_all('/for=([0-9\.]+)[,;]+/i',
+        if (preg_match_all('/for=["\[]*([\w.:]+)["\]]*[,;]?/i',
             Request::getRequestHeaders('HTTP_FORWARDED'), $matchesFor)) {
             return $matchesFor[1];
         }
 
-        if (preg_match_all('/([\w.:]+)(,|$)/',
-            Request::getRequestHeaders('HTTP_X_FORWARDED_FOR'), $matchesFor)) {
-            return $matchesFor[1];
+        $matchesFor = preg_split('/(?<=[\w])+,/i',
+            Request::getRequestHeaders('HTTP_X_FORWARDED_FOR'),
+            -1,
+            PREG_SPLIT_NO_EMPTY);
+
+        if (count($matchesFor) > 0) {
+            return $matchesFor;
         }
 
         return $_SERVER['REMOTE_ADDR'];
