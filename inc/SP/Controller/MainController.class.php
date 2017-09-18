@@ -54,6 +54,7 @@ use SP\Mgmt\Notices\Notice;
 use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Users\User;
 use SP\Util\Checks;
+use SP\Util\HttpUtil;
 use SP\Util\Util;
 
 /**
@@ -606,7 +607,7 @@ class MainController extends ControllerBase implements ActionsInterface
                     $Message = new NoticeMessage();
                     $Message->setTitle(__('Enlace visualizado'));
                     $Message->addDescription(sprintf('%s : %s', __('Cuenta'), $PublicLink->getItemId()));
-                    $Message->addDescription(sprintf('%s : %s', __('Origen'), Checks::demoIsEnabled() ? '*.*.*.*' : Util::getClientAddress(true)));
+                    $Message->addDescription(sprintf('%s : %s', __('Origen'), Checks::demoIsEnabled() ? '*.*.*.*' : HttpUtil::getClientAddress(true)));
                     $Message->addDescription(sprintf('%s : %s', __('Agente'), Request::getRequestHeaders('HTTP_USER_AGENT')));
                     $Message->addDescription(sprintf('HTTPS : %s', Checks::httpsEnabled() ? 'ON' : 'OFF'));
 

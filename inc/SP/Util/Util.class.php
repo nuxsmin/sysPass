@@ -386,7 +386,7 @@ class Util
      */
     public static function getVersion($retBuild = false, $normalized = false)
     {
-        $build = 17091801;
+        $build = 17091802;
         $version = [2, 1, 15];
 
         if ($normalized === true) {
@@ -658,24 +658,5 @@ class Util
         }
 
         return [0, 0];
-    }
-
-    /**
-     * Devolver la dirección IP del cliente
-     *
-     * @param bool $fullForwarded Devolver la cadena de forward completa
-     * @return string
-     */
-    public static function getClientAddress($fullForwarded = false)
-    {
-        $forwarded = Request::getRequestHeaders('X-Forwarded-For');
-
-        if ($forwarded !== '') {
-            if (preg_match_all('/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/', $forwarded, $matches)) {
-                return $fullForwarded ? implode(',', $matches[0]) : $matches[0][0];
-            }
-        }
-
-        return $_SERVER['REMOTE_ADDR'];
     }
 }

@@ -28,6 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Key;
 use SP\Core\Init;
 use SP\Http\Request;
+use SP\Util\HttpUtil;
 use SP\Util\Util;
 
 /**
@@ -99,7 +100,7 @@ class SecureKeyCookie extends Cookie
      */
     public function getCypher()
     {
-        return md5(Request::getRequestHeaders('User-Agent') . Util::getClientAddress());
+        return md5(Request::getRequestHeaders('User-Agent') . HttpUtil::getClientAddress());
     }
 
     /**

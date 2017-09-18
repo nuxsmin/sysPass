@@ -33,6 +33,7 @@ use SP\Core\Messages\NoticeMessage;
 use SP\Core\Session;
 use SP\Html\Html;
 use SP\Util\Checks;
+use SP\Util\HttpUtil;
 use SP\Util\Util;
 
 /**
@@ -61,7 +62,7 @@ class Email
         if ($isEvent === true) {
             $performer = Session::getUserData()->getUserLogin() ?: __('N/D');
             $body[] = sprintf('%s: %s', Html::strongText(__('Acción')), $LogMessage->getAction(true));
-            $body[] = sprintf('%s: %s (%s)', Html::strongText(__('Realizado por')), $performer, Util::getClientAddress(true));
+            $body[] = sprintf('%s: %s (%s)', Html::strongText(__('Realizado por')), $performer, HttpUtil::getClientAddress(true));
 
             $Mail->addCC(Config::getConfig()->getMailFrom());
         }

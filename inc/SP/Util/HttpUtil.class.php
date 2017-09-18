@@ -24,6 +24,8 @@
 
 namespace SP\Util;
 
+use SP\Http\Request;
+
 /**
  * Class HttpUtil
  *
@@ -52,33 +54,18 @@ class HttpUtil
      */
     public static function getHttpHost()
     {
-        // Check in style of RFC 7239
-        if (isset($_SERVER['HTTP_FORWARDED'])
-            && preg_match('/proto=(\w+);/i', $_SERVER['HTTP_FORWARDED'], $matchesProto)
-            && preg_match('/host=(\w+);/i', $_SERVER['HTTP_FORWARDED'], $matchesHost)
-        ) {
-            // Removes possible `"`-chars
-            $protocol = strtolower($matchesProto[0]);
-            $host = strtolower($matchesHost[0]);
+        $forwarded = self::getForwardedData();
 
-            // Check if prtocol and host are not empty
-            if (strlen($protocol) > 0 && strlen($host) > 0) {
-                return $protocol . '://' . $host;
-            }
+        // Check in style of RFC 7239
+        if (null !== $forwarded) {
+            return strtolower($forwarded['proto'] . '://' . $forwarded['host']);
         }
 
+        $xForward = self::getXForwardedData();
+
         // Check (deprecated) de facto standard
-        if (isset($_SERVER['HTTP_X_FORWARDED_HOST'], $_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-            // This only could be http or https
-            $protocol = str_replace('"', '', trim($_SERVER['HTTP_X_FORWARDED_PROTO']));
-
-            // This may be example.com or sub.example.com/syspass
-            $host = str_replace('"', '', trim($_SERVER['HTTP_X_FORWARDED_HOST']));
-
-            // Check if protocol and host are not empty
-            if (strlen($protocol) > 0 && strlen($host) > 0) {
-                return $protocol . '://' . $host;
-            }
+        if (null !== $xForward) {
+            return strtolower($xForward['proto'] . '://' . $xForward['host']);
         }
 
         // We got called directly
@@ -87,5 +74,99 @@ class HttpUtil
         }
 
         return 'http://' . $_SERVER['HTTP_HOST'];
+    }
+
+    /**
+     * Devolver datos de forward RFC 7239
+     *
+     * @see https://tools.ietf.org/html/rfc7239#section-7.5
+     * @return array|null
+     */
+    public static function getForwardedData()
+    {
+        $forwarded = Request::getRequestHeaders('HTTP_FORWARDED');
+
+        // Check in style of RFC 7239
+        if ($forwarded !== ''
+            && preg_match('/proto=(\w+);/i', $forwarded, $matchesProto)
+            && preg_match('/host=(\w+);/i', $forwarded, $matchesHost)
+        ) {
+            $data = [
+                'host ' => $matchesHost[0],
+                'proto' => $matchesProto[0],
+                'for' => self::getForwardedFor()
+            ];
+
+            // Check if protocol and host are not empty
+            if (!empty($data['proto']) && !empty($data['host'])) {
+                return $data;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Devolver la dirección IP del cliente a través de proxy o directo
+     *
+     * @return array|string
+     */
+    public static function getForwardedFor()
+    {
+        if (preg_match_all('/for=([0-9\.]+)[,;]+/i',
+            Request::getRequestHeaders('HTTP_FORWARDED'), $matchesFor)) {
+            return $matchesFor[1];
+        }
+
+        if (preg_match_all('/([\w.:]+)(,|$)/',
+            Request::getRequestHeaders('HTTP_X_FORWARDED_FOR'), $matchesFor)) {
+            return $matchesFor[1];
+        }
+
+        return $_SERVER['REMOTE_ADDR'];
+    }
+
+    /**
+     * Devolver datos de x-forward
+     *
+     * @return array|null
+     */
+    public static function getXForwardedData()
+    {
+        $forwardedHost = Request::getRequestHeaders('HTTP_X_FORWARDED_HOST');
+        $forwardedProto = Request::getRequestHeaders('HTTP_X_FORWARDED_PROTO');
+
+        // Check (deprecated) de facto standard
+        if (!empty($forwardedHost) && !empty($forwardedProto)) {
+            $data = [
+                'host' => trim(str_replace('"', '', $forwardedHost)),
+                'proto' => trim(str_replace('"', '', $forwardedProto)),
+                'for' => self::getForwardedFor()
+            ];
+
+            // Check if protocol and host are not empty
+            if (!empty($data['host']) && !empty($data['proto'])) {
+                return $data;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Devolver la dirección IP del cliente
+     *
+     * @param bool $fullForwarded Devolver la cadena de forward completa
+     * @return string|array
+     */
+    public static function getClientAddress($fullForwarded = false)
+    {
+        $forwarded = self::getForwardedFor();
+
+        if (is_array($forwarded)) {
+            return $fullForwarded ? implode(',', $forwarded) : $forwarded[0];
+        }
+
+        return $forwarded;
     }
 }

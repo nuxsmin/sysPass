@@ -59,6 +59,7 @@ use SP\Mgmt\Users\UserPassRecover;
 use SP\Mgmt\Users\UserPreferences;
 use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
+use SP\Util\HttpUtil;
 use SP\Util\Json;
 use SP\Util\Util;
 
@@ -191,7 +192,7 @@ class LoginController
         try {
             $TrackData = new TrackData();
             $TrackData->setTrackSource('Login');
-            $TrackData->setTrackIp(Util::getClientAddress());
+            $TrackData->setTrackIp(HttpUtil::getClientAddress());
 
             $attempts = count(Track::getItem($TrackData)->getTracksForClientFromTime(time() - self::TIME_TRACKING));
         } catch (SPException $e) {
@@ -222,7 +223,7 @@ class LoginController
         try {
             $TrackData = new TrackData();
             $TrackData->setTrackSource('Login');
-            $TrackData->setTrackIp(Util::getClientAddress());
+            $TrackData->setTrackIp(HttpUtil::getClientAddress());
 
             Track::getItem($TrackData)->add();
         } catch (SPException $e) {

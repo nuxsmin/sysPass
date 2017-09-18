@@ -32,6 +32,7 @@ use SP\Core\Session;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
+use SP\Util\HttpUtil;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -178,7 +179,7 @@ class Log extends ActionLog
         $Data->setQuery($query);
         $Data->addParam(Session::getUserData()->getUserLogin());
         $Data->addParam(Session::getUserData()->getUserId());
-        $Data->addParam(Util::getClientAddress(true));
+        $Data->addParam(HttpUtil::getClientAddress(true));
         $Data->addParam(utf8_encode($this->LogMessage->getAction(true)));
         $Data->addParam($this->getLogLevel());
         $Data->addParam(utf8_encode($description));
@@ -217,7 +218,7 @@ class Log extends ActionLog
         $msg .= $this->LogMessage->getAction(true) . '|';
         $msg .= $description . '|';
         $msg .= '0|';
-        $msg .= sprintf('ip_addr="%s" user_name="%s"', Util::getClientAddress(), Session::getUserData()->getUserLogin());
+        $msg .= sprintf('ip_addr="%s" user_name="%s"', HttpUtil::getClientAddress(), Session::getUserData()->getUserLogin());
 
         $Syslog = new Syslog();
         $Syslog->setIsRemote(Checks::remoteSyslogIsEnabled());

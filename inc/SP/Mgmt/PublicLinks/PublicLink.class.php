@@ -38,6 +38,7 @@ use SP\Mgmt\ItemTrait;
 use SP\Mgmt\Users\UserUtil;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
+use SP\Util\HttpUtil;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -67,7 +68,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function addLinkView()
     {
         $this->itemData->addCountViews();
-        $this->updateUseInfo(Util::getClientAddress(true));
+        $this->updateUseInfo(HttpUtil::getClientAddress(true));
 
         $Log = new Log();
         $LogMessage = $Log->getLogMessage();
