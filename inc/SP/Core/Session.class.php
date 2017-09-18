@@ -688,5 +688,23 @@ class Session
         self::setSessionKey('upgradechecked', $upgradechecked);
     }
 
+    /**
+     * Devuelve si se ha realizado un cierre de sesión
+     *
+     * @return bool
+     */
+    public static function getLoggedOut()
+    {
+        return self::getSessionKey('loggedout', false);
+    }
 
+    /**
+     * Establecer si se ha realizado un cierre de sesión
+     *
+     * @param bool $loggedout
+     */
+    public static function setLoggedOut($loggedout = false)
+    {
+        self::setSessionKey('loggedout', $loggedout);
+    }
 }

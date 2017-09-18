@@ -90,6 +90,7 @@ class UserForm extends FormBase implements FormInterface
         $this->UserData->setUserId($this->itemId);
         $this->UserData->setUserName(Request::analyze('name'));
         $this->UserData->setUserLogin(Request::analyze('login'));
+        $this->UserData->setUserSsoLogin(Request::analyze('login_sso'));
         $this->UserData->setUserEmail(Request::analyze('email'));
         $this->UserData->setUserNotes(Request::analyze('notes'));
         $this->UserData->setUserGroupId(Request::analyze('groupid', 0));

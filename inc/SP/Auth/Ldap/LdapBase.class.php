@@ -111,6 +111,16 @@ abstract class LdapBase implements LdapInterface, AuthInterface
     }
 
     /**
+     * Indica si es requerida para acceder a la aplicación
+     *
+     * @return boolean
+     */
+    public function isAuthGranted()
+    {
+        return true;
+    }
+
+    /**
      * Comprobar la conexión al servidor de LDAP.
      *
      * @return false|array Con el número de entradas encontradas
@@ -430,6 +440,8 @@ abstract class LdapBase implements LdapInterface, AuthInterface
         if (!$this->checkParams()) {
             return false;
         }
+
+        $this->LdapAuthData->setAuthGranted($this->isAuthGranted());
 
         try {
             $this->setUserLogin($UserData->getLogin());

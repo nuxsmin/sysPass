@@ -31,9 +31,5 @@ require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Bas
 
 Request::checkReferer('GET');
 
-if (!Request::analyze('login', false)) {
-    return;
-}
-
 $Controller = new LoginController();
 $Controller->doLogin();

@@ -26,7 +26,7 @@
                             <input type="checkbox" id="wiki_enabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="wiki_enabled"
-                                <?php echo $chkWiki; ?>/>
+                                <?php echo $Config->isWikiEnabled() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Habilitar enlaces Wiki'); ?></span>
                         </label>
                     </td>
@@ -58,7 +58,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="wiki_searchurl" name="wiki_searchurl" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="255" value="<?php echo $wikiSearchUrl; ?>">
+                                   maxlength="255" value="<?php echo $Config->getWikiSearchurl(); ?>">
                             <label class="mdl-textfield__label"
                                    for="wiki_searchurl"><?php echo __('URL de búsqueda Wiki'); ?></label>
                         </div>
@@ -91,7 +91,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="wiki_pageurl" name="wiki_pageurl" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="255" value="<?php echo $wikiPageUrl; ?>">
+                                   maxlength="255" value="<?php echo $Config->getWikiPageurl(); ?>">
                             <label class="mdl-textfield__label"
                                    for="wiki_pageurl"><?php echo __('URL de página en Wiki'); ?></label>
                         </div>
@@ -115,7 +115,7 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Prefijo para nombre de cuenta'); ?></div>
 
-                        <input type="text" name="wiki_filter" id="wikifilter" value="<?php echo $wikiFilter; ?>"/>
+                        <input type="text" name="wiki_filter" id="wikifilter" value="<?php echo implode(',', $Config->getWikiFilter()); ?>"/>
                     </td>
                 </tr>
             </table>
@@ -143,7 +143,7 @@
                             <input type="checkbox" id="dokuwiki_enabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="dokuwiki_enabled"
-                                <?php echo $chkDokuWiki; ?>/>
+                                <?php echo $Config->isDokuwikiEnabled() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Habilitar API de DokuWiki'); ?></span>
                         </label>
                     </td>
@@ -171,7 +171,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="dokuwiki_url" name="dokuwiki_url" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="255" value="<?php echo $dokuWikiUrl; ?>"/>
+                                   maxlength="255" value="<?php echo $Config->getDokuwikiUrl(); ?>"/>
                             <label class="mdl-textfield__label" for="dokuwiki_url"><?php echo __('URL API'); ?></label>
                         </div>
                     </td>
@@ -198,7 +198,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="dokuwiki_urlbase" name="dokuwiki_urlbase" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="255" value="<?php echo $dokuWikiUrlBase; ?>"/>
+                                   maxlength="255" value="<?php echo $Config->getDokuwikiUrlBase(); ?>"/>
                             <label class="mdl-textfield__label"
                                    for="dokuwiki_urlbase"><?php echo __('URL Base'); ?></label>
                         </div>
@@ -219,7 +219,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="dokuwiki_user" name="dokuwiki_user" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $dokuWikiUser; ?>"/>
+                                   maxlength="128" value="<?php echo $Config->getDokuwikiUser(); ?>"/>
                             <label class="mdl-textfield__label" for="dokuwiki_user"><?php echo __('Usuario'); ?></label>
                         </div>
                     </td>
@@ -232,7 +232,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="dokuwiki_pass" name="dokuwiki_pass" type="password"
                                    class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
-                                   maxlength="128" value="<?php echo $dokuWikiPass; ?>"/>
+                                   maxlength="128" value="<?php echo $Config->getDokuwikiPass(); ?>"/>
                             <label class="mdl-textfield__label" for="dokuwiki_pass"><?php echo __('Clave'); ?></label>
                         </div>
                     </td>
@@ -253,7 +253,7 @@
                             <input id="dokuwiki_namespace" name="dokuwiki_namespace" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="128"
-                                   value="<?php echo $dokuWikiNamespace; ?>"/>
+                                   value="<?php echo $Config->getDokuwikiNamespace(); ?>"/>
                             <label class="mdl-textfield__label"
                                    for="dokuwiki_namespace"><?php echo __('Namespace'); ?></label>
                         </div>

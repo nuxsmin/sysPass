@@ -34,6 +34,7 @@ use SP\Auth\AuthUtil;
 use SP\Auth\Browser\BrowserAuthData;
 use SP\Auth\Database\DatabaseAuthData;
 use SP\Auth\Ldap\LdapAuthData;
+use SP\Config\Config;
 use SP\Core\CryptMasterPass;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\AuthException;
@@ -57,6 +58,7 @@ use SP\Mgmt\Users\UserLdap;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserPassRecover;
 use SP\Mgmt\Users\UserPreferences;
+use SP\Mgmt\Users\UserSSO;
 use SP\Mgmt\Users\UserUtil;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
@@ -118,16 +120,8 @@ class LoginController
      */
     public function doLogin()
     {
-        $userLogin = Request::analyze('user');
-        $userPass = Request::analyzeEncrypted('pass');
-
-        if (!$userLogin || !$userPass) {
-            $this->jsonResponse->setDescription(__('Usuario/Clave no introducidos', false));
-            Json::returnJson($this->jsonResponse);
-        }
-
-        $this->UserData->setLogin($userLogin);
-        $this->UserData->setLoginPass($userPass);
+        $this->UserData->setLogin(Request::analyze('user'));
+        $this->UserData->setLoginPass(Request::analyzeEncrypted('pass'));
 
         $Log = new Log($this->LogMessage);
 
@@ -142,7 +136,7 @@ class LoginController
 
                 /** @var AuthResult $AuthResult */
                 foreach ($result as $AuthResult) {
-                    if ($this->{$AuthResult->getAuth()}($AuthResult->getData()) === true) {
+                    if ($this->{$AuthResult->getAuth()}($AuthResult->getData()) === true && $AuthResult->isAuthGranted() === true) {
                         break;
                     }
                 }
@@ -443,19 +437,19 @@ class LoginController
     /**
      * Autentificación LDAP
      *
-     * @param LdapAuthData $LdapAuthData
+     * @param LdapAuthData $AuthData
      * @return bool
      * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      * @throws AuthException
      */
-    protected function authLdap(LdapAuthData $LdapAuthData)
+    protected function authLdap(LdapAuthData $AuthData)
     {
-        if ($LdapAuthData->getStatusCode() > 0) {
+        if ($AuthData->getStatusCode() > 0) {
             $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
             $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
 
-            if ($LdapAuthData->getStatusCode() === 49) {
+            if ($AuthData->getStatusCode() === 49) {
                 $this->LogMessage->addDescription(__('Login incorrecto', false));
 
                 $this->addTracking();
@@ -463,16 +457,20 @@ class LoginController
                 throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
             }
 
-            if ($LdapAuthData->getStatusCode() === 701) {
+            if ($AuthData->getStatusCode() === 701) {
                 $this->LogMessage->addDescription(__('Cuenta expirada', false));
 
                 throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_USER_DISABLED);
             }
 
-            if ($LdapAuthData->getStatusCode() === 702) {
+            if ($AuthData->getStatusCode() === 702) {
                 $this->LogMessage->addDescription(__('El usuario no tiene grupos asociados', false));
 
                 throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_USER_DISABLED);
+            }
+
+            if ($AuthData->isAuthGranted() === false) {
+                return false;
             }
 
             $this->LogMessage->addDescription(__('Error interno', false));
@@ -480,11 +478,11 @@ class LoginController
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INTERNAL_ERROR);
         }
 
-        $this->UserData->setUserName($LdapAuthData->getName());
-        $this->UserData->setUserEmail($LdapAuthData->getEmail());
+        $this->UserData->setUserName($AuthData->getName());
+        $this->UserData->setUserEmail($AuthData->getEmail());
 
         $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
-        $this->LogMessage->addDetails(__('Servidor LDAP', false), $LdapAuthData->getServer());
+        $this->LogMessage->addDetails(__('Servidor LDAP', false), $AuthData->getServer());
 
         try {
             $this->UserData->setUserLogin($this->UserData->getLogin());
@@ -518,6 +516,10 @@ class LoginController
     {
         // Autentificamos con la BBDD
         if ($AuthData->getAuthenticated() === 0) {
+            if ($AuthData->isAuthGranted() === false) {
+                return false;
+            }
+
             $this->LogMessage->addDescription(__('Login incorrecto', false));
             $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
 
@@ -537,13 +539,18 @@ class LoginController
      * Comprobar si el cliente ha enviado las variables de autentificación
      *
      * @param BrowserAuthData $AuthData
-     * @throws \SP\Core\Exceptions\SPException
+     * @return mixed
+     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws AuthException
      */
     protected function authBrowser(BrowserAuthData $AuthData)
     {
         // Comprobar si concide el login con la autentificación del servidor web
         if ($AuthData->getAuthenticated() === 0) {
+            if ($AuthData->isAuthGranted() === false) {
+                return false;
+            }
+
             $this->LogMessage->addDescription(__('Login incorrecto', false));
             $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
             $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
@@ -554,8 +561,25 @@ class LoginController
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
         }
 
-        if ($AuthData->getAuthenticated() === 1) {
-            $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
+        $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
+
+        if (Config::getConfig()->isAuthBasicAutoLoginEnabled()) {
+            try {
+                if (!UserSSO::getItem($this->UserData)->checkUserInDB($this->UserData->getLogin())) {
+                    UserSSO::getItem()->add();
+                } else {
+                    UserSSO::getItem()->updateOnLogin();
+                }
+            } catch (SPException $e) {
+                throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
+            }
+
+            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
+            $this->LogMessage->addDetails(__('Autentificación', false), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
+
+            return true;
         }
+
+        return null;
     }
 }

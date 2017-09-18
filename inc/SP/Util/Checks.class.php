@@ -209,7 +209,7 @@ class Checks
      */
     public static function ldapIsEnabled()
     {
-        return Config::getConfig()->isLdapEnabled();
+        return Checks::ldapIsAvailable() && Config::getConfig()->isLdapEnabled();
     }
 
     /**
@@ -251,6 +251,16 @@ class Checks
     public static function resultsCardsIsEnabled()
     {
         return Config::getConfig()->isResultsAsCards();
+    }
+
+    /**
+     * Comprobar si está habilitada Auth Basic.
+     *
+     * @return bool
+     */
+    public static function authBasicIsEnabled()
+    {
+        return Config::getConfig()->isAuthBasicEnabled();
     }
 
     /**

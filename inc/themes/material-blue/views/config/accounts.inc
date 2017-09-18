@@ -29,7 +29,7 @@
                             <input id="account_count" name="account_count" type="number" step="6"
                                    pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="5"
-                                   value="<?php echo $accountCount; ?>" required/>
+                                   value="<?php echo $Config->getAccountCount(); ?>" required/>
                             <label class="mdl-textfield__label"
                                    for="account_count"><?php echo __('Número de resultados por página'); ?></label>
                         </div>
@@ -49,7 +49,7 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link">
                             <input type="checkbox" id="account_link"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="account_link" <?php echo $chkAccountLink; ?>/>
+                                   name="account_link" <?php echo $Config->isAccountLink() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Nombre de cuenta como enlace'); ?></span>
                         </label>
                     </td>
@@ -68,7 +68,7 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="globalsearch">
                             <input type="checkbox" id="globalsearch"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="globalsearch" <?php echo $chkGlobalSearch; ?>/>
+                                   name="globalsearch" <?php echo $Config->isGlobalSearch() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Búsquedas globales'); ?></span>
                         </label>
                     </td>
@@ -92,7 +92,7 @@
                             <input type="checkbox" id="account_passtoimage"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="account_passtoimage"
-                                <?php echo $chkAccountPassToImage; ?>/>
+                                <?php echo $Config->isAccountPassToImage() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Imagen para mostrar clave'); ?></span>
                         </label>
                     </td>
@@ -112,7 +112,7 @@
                             <input type="checkbox" id="resultsascards"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="resultsascards"
-                                <?php echo $chkResultsAsCards; ?>/>
+                                <?php echo $Config->isResultsAsCards() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Resultados en Tarjetas'); ?></span>
                         </label>
                     </td>
@@ -135,7 +135,7 @@
                             <input type="checkbox" id="account_fullgroup_access"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="account_fullgroup_access"
-                                <?php echo $chkAccountFullGroupAccess; ?>/>
+                                <?php echo $Config->isAccountFullGroupAccess() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Acceso Grupos Secundarios'); ?></span>
                         </label>
                     </td>
@@ -170,7 +170,7 @@
                             <input type="checkbox" id="publinks_enabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="publinks_enabled"
-                                <?php echo $chkPubLinks; ?>/>
+                                <?php echo $Config->isPublinksEnabled() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Habilitar Enlaces Públicos'); ?></span>
                         </label>
                     </td>
@@ -184,7 +184,7 @@
                             <input id="publinks_maxtime" name="publinks_maxtime" type="number" step="5"
                                    pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="5"
-                                   value="<?php echo $pubLinksMaxTime; ?>"/>
+                                   value="<?php echo $Config->getPublinksMaxTime() / 60; ?>"/>
                             <label class="mdl-textfield__label"
                                    for="publinks_maxtime"><?php echo __('Tiempo de caducidad'); ?></label>
                         </div>
@@ -199,7 +199,7 @@
                             <input id="publinks_maxviews" name="publinks_maxviews" type="number" step="1"
                                    pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="5"
-                                   value="<?php echo $pubLinksMaxViews; ?>"/>
+                                   value="<?php echo $Config->getPublinksMaxViews(); ?>"/>
                             <label class="mdl-textfield__label"
                                    for="publinks_maxviews"><?php echo __('Número máximo  de visitas'); ?></label>
                         </div>
@@ -220,7 +220,7 @@
                             <input type="checkbox" id="publinks_image_enabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="publinks_image_enabled"
-                                <?php echo $chkPubLinksImage; ?>/>
+                                <?php echo $Config->isPublinksImageEnabled() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Usar imagen para clave'); ?></span>
                         </label>
                     </td>
@@ -247,7 +247,7 @@
                             <input type="checkbox" id="files_enabled"
                                    class="mdl-switch__input mdl-color-text--indigo-400"
                                    name="files_enabled"
-                                <?php echo $chkFiles; ?>/>
+                                <?php echo $Config->isFilesEnabled() ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Gestión de archivos'); ?></span>
                         </label>
                     </td>
@@ -275,7 +275,7 @@
                         <div class="lowres-title"><?php echo __('Extensiones de archivos permitidas'); ?></div>
 
                         <input type="text" name="files_allowed_exts" id="allowed_exts"
-                               value="<?php echo $filesAllowedExts; ?>"/>
+                               value="<?php echo implode(',', $Config->getFilesAllowedExts()); ?>"/>
                     </td>
                 </tr>
                 <tr>
@@ -298,7 +298,7 @@
                             <input id="files_allowed_size" name="files_allowed_size" type="number" step="512"
                                    pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
                                    maxlength="5"
-                                   value="<?php echo $filesAllowedSize; ?>"/>
+                                   value="<?php echo $Config->getFilesAllowedSize(); ?>"/>
                             <label class="mdl-textfield__label"
                                    for="files_allowed_size"><?php echo __('Tamaño máximo de archivo en kilobytes'); ?></label>
                         </div>

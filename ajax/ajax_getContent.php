@@ -58,15 +58,17 @@ if (!Request::analyze('actionId', 0, true)) {
 $actionId = Request::analyze('actionId', 0);
 $itemId = Request::analyze('itemId', 0);
 
+$UserData = Session::getUserData();
+
 $Tpl = new Template();
 $Tpl->assign('actionId', $actionId);
 $Tpl->assign('id', $itemId);
 $Tpl->assign('activeTabId', $itemId);
 $Tpl->assign('queryTimeStart', microtime());
-$Tpl->assign('userId', Session::getUserData()->getUserId());
-$Tpl->assign('userGroupId', Session::getUserData()->getUserGroupId());
-$Tpl->assign('userIsAdminApp', Session::getUserData()->isUserIsAdminApp());
-$Tpl->assign('userIsAdminAcc', Session::getUserData()->isUserIsAdminAcc());
+$Tpl->assign('userId', $UserData->getUserId());
+$Tpl->assign('userGroupId', $UserData->getUserGroupId());
+$Tpl->assign('userIsAdminApp', $UserData->isUserIsAdminApp());
+$Tpl->assign('userIsAdminAcc', $UserData->isUserIsAdminAcc());
 $Tpl->assign('themeUri', DiFactory::getTheme()->getThemeUri());
 
 switch ($actionId) {
@@ -135,7 +137,7 @@ switch ($actionId) {
 }
 
 // Se comprueba si se debe de mostrar la vista de depuración
-if (Session::getUserData()->isUserIsAdminApp() && Config::getConfig()->isDebug()) {
+if ($UserData->isUserIsAdminApp() && Config::getConfig()->isDebug()) {
     $Controller->getDebug();
 }
 

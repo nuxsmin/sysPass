@@ -264,6 +264,16 @@ sysPass.Triggers = function (Common) {
         },
         login: function () {
             log.info("views:login");
+
+            var $frmLogin = $("#frmLogin");
+
+            if (Common.config().AUTHBASIC_AUTOLOGIN && $frmLogin.find("input[name='loggedOut']").val() === "0") {
+                log.info("views:login:autologin");
+
+                Common.msg.info(Common.config().LANG[66]);
+
+                Common.appActions().main.login($frmLogin);
+            }
         },
         passreset: function () {
             log.info("views:passreset");

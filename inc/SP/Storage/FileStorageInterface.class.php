@@ -32,9 +32,11 @@ namespace SP\Storage;
 interface FileStorageInterface
 {
     /**
+     * @param string $node
+     *
      * @return FileStorageInterface
      */
-    public function load();
+    public function load($node = '');
 
     /**
      * @return FileStorageInterface

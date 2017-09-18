@@ -29,6 +29,7 @@ defined('APP_ROOT') || die();
 use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
+use SP\Config\Config;
 use SP\Mgmt\ApiTokens\ApiTokensUtil;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt\Crypt;
@@ -265,6 +266,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('user', $this->itemId ? User::getItem()->getById($this->itemId) : new UserData());
         $this->view->assign('isDisabled', $this->view->actionId === self::ACTION_USR_USERS_VIEW ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
+        $this->view->assign('isUseSSO', Config::getConfig()->isAuthBasicAutoLoginEnabled());
         $this->view->assign('groups', Group::getItem()->getItemsForSelect());
         $this->view->assign('profiles', Profile::getItem()->getItemsForSelect());
 

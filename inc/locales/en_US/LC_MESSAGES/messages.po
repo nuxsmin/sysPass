@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 08:22+0100\n"
-"PO-Revision-Date: 2017-08-18 08:24+0100\n"
+"POT-Creation-Date: 2017-04-20 16:50+0100\n"
+"PO-Revision-Date: 2017-04-20 16:51+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -68,7 +68,7 @@ msgstr "Invalid file"
 
 #: ../../../../ajax/ajax_filesMgmt.php:104
 #: ../../../../ajax/ajax_filesMgmt.php:166
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:850
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:842
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:437
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:97
 #: ../../../../inc/themes/material-blue/views/config/import.inc:66
@@ -129,11 +129,11 @@ msgstr "ID"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:85
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:280
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:832
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:734
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:744
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:759
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:848
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1175
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:726
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:736
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:751
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:840
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1167
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:534
 #: ../../../../inc/SP/Controller/MainController.class.php:608
 #: ../../../../inc/SP/Import/ImportBase.class.php:165
@@ -148,16 +148,16 @@ msgstr "Account"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:206
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:283
 #: ../../../../inc/SP/Controller/Grids/Notices.class.php:55
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:733
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:743
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:758
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:725
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:735
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:750
 #: ../../../../inc/SP/Controller/LoginController.class.php:454
 #: ../../../../inc/SP/Controller/LoginController.class.php:485
 #: ../../../../inc/SP/Controller/LoginController.class.php:529
 #: ../../../../inc/SP/Controller/LoginController.class.php:547
 #: ../../../../inc/SP/Controller/LoginController.class.php:557
 #: ../../../../inc/SP/Controller/MainActionController.class.php:124
-#: ../../../../inc/SP/Core/Init.class.php:449
+#: ../../../../inc/SP/Core/Init.class.php:477
 #: ../../../../inc/SP/Mgmt/Files/File.class.php:98
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:76
 #: ../../../../inc/themes/material-blue/views/itemshow/customfields.inc:31
@@ -168,7 +168,7 @@ msgid "Tipo"
 msgstr "Type"
 
 #: ../../../../ajax/ajax_filesMgmt.php:204
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:842
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:834
 msgid "Archivo eliminado"
 msgstr "File deleted"
 
@@ -179,14 +179,14 @@ msgstr "Error while deleting the file"
 
 #: ../../../../ajax/ajax_filesMgmt.php:209
 #: ../../../../ajax/ajax_userPrefsSave.php:97
-#: ../../../../inc/SP/Api/ApiRequest.class.php:241
+#: ../../../../inc/SP/Api/ApiRequest.class.php:226
 #: ../../../../inc/SP/Controller/RequestControllerTrait.class.php:108
 msgid "Acción Inválida"
 msgstr "Invalid Action"
 
 #: ../../../../ajax/ajax_getContent.php:55
 #: ../../../../inc/SP/Api/ApiBase.class.php:175
-#: ../../../../inc/SP/Api/ApiRequest.class.php:225
+#: ../../../../inc/SP/Api/ApiRequest.class.php:210
 msgid "Parámetros incorrectos"
 msgstr "Wrong parameters"
 
@@ -219,25 +219,25 @@ msgid "Compruebe datos de usuario o consulte con el administrador"
 msgstr "Please, check the user data or contact to the administrator"
 
 #: ../../../../ajax/ajax_passReset.php:86
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:329
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:328
 msgid "Modificar Clave Usuario"
 msgstr "Edit User Password"
 
 #: ../../../../ajax/ajax_passReset.php:99
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:285
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:951
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:277
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:943
 msgid "Clave actualizada"
 msgstr "Password updated"
 
 #: ../../../../ajax/ajax_passReset.php:100
 #: ../../../../inc/SP/Auth/Database/Database.class.php:92
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:474
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:235
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:255
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:276
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:287
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:232
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:247
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:268
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:279
 #: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:105
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:330
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:329
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:37
 #: ../../../../inc/themes/material-blue/views/itemshow/userspass.inc:23
 msgid "Login"
@@ -285,7 +285,7 @@ msgstr "Error while creating the account"
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:273
 #: ../../../../inc/SP/Api/ApiBase.class.php:200
 #: ../../../../inc/SP/Api/ApiBase.class.php:203
-#: ../../../../inc/SP/Api/ApiRequest.class.php:160
+#: ../../../../inc/SP/Api/ApiRequest.class.php:147
 #: ../../../../inc/SP/Api/ApiUtil.class.php:55
 #: ../../../../inc/SP/Controller/LoginController.class.php:201
 #: ../../../../inc/SP/Controller/LoginController.class.php:229
@@ -297,18 +297,18 @@ msgstr "Error while creating the account"
 #: ../../../../inc/SP/Core/OldCrypt.class.php:169
 #: ../../../../inc/SP/Core/OldCrypt.class.php:181
 #: ../../../../inc/SP/Import/XmlFileImport.class.php:106
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:93
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:179
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:238
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:300
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:364
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:89
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:175
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:230
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:293
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:357
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomField.class.php:71
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomField.class.php:138
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:88
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:159
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:208
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:229
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:250
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:251
 #: ../../../../inc/SP/Mgmt/Users/UserPassRecover.class.php:135
 msgid "Error interno"
 msgstr "Internal error"
@@ -326,8 +326,8 @@ msgstr "Error while updating the password"
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:92
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:199
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:215
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:589
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:617
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:593
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:621
 msgid "Actualizar Clave Maestra"
 msgstr "Update Master Password"
 
@@ -370,7 +370,7 @@ msgstr "Error while updating the account's password"
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:273
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:165
 #: ../../../../inc/SP/Account/AccountHistoryCrypt.class.php:291
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1092
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1084
 msgid "Errores"
 msgstr "Errors"
 
@@ -442,29 +442,29 @@ msgid "Acceso no permitido"
 msgstr "Unauthorized access"
 
 #: ../../../../inc/SP/Api/ApiBase.class.php:200
-#: ../../../../inc/SP/Api/ApiRequest.class.php:207
+#: ../../../../inc/SP/Api/ApiRequest.class.php:194
 msgid "Datos inválidos"
 msgstr "Invalid data"
 
-#: ../../../../inc/SP/Api/ApiRequest.class.php:168
+#: ../../../../inc/SP/Api/ApiRequest.class.php:155
 #: ../../../../inc/SP/Controller/LoginController.class.php:211
 msgid "Intentos excedidos"
 msgstr "Attempts exceeded"
 
-#: ../../../../inc/SP/Api/ApiRequest.class.php:190
+#: ../../../../inc/SP/Api/ApiRequest.class.php:177
 #: ../../../../inc/SP/Import/XmlImportTrait.class.php:74
 msgid "Método inválido"
 msgstr "Invalid Method"
 
-#: ../../../../inc/SP/Api/ApiRequest.class.php:211
+#: ../../../../inc/SP/Api/ApiRequest.class.php:196
 msgid "Formato incorrecto"
 msgstr "Wrong format"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:83
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:224
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:225
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:226
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:532
-#: ../../../../inc/SP/Core/Acl.class.php:192
+#: ../../../../inc/SP/Core/Acl.class.php:191
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:48
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:87
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:54
@@ -472,35 +472,35 @@ msgid "Ver Clave"
 msgstr "View password"
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:86
+#: ../../../../inc/SP/Api/SyspassApi.class.php:192
+#: ../../../../inc/SP/Api/SyspassApi.class.php:230
+#: ../../../../inc/SP/Api/SyspassApi.class.php:283
+#: ../../../../inc/SP/Api/SyspassApi.class.php:319
+#: ../../../../inc/SP/Api/SyspassApi.class.php:372
+#: ../../../../inc/SP/Api/SyspassApi.class.php:408
+#: ../../../../inc/SP/Controller/MainController.class.php:609
+#: ../../../../inc/SP/Util/Wiki/DokuWikiApiBase.class.php:197
+msgid "Origen"
+msgstr "Source"
+
+#: ../../../../inc/SP/Api/SyspassApi.class.php:189
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:923
+msgid "Crear Cuenta"
+msgstr "Add Account"
+
+#: ../../../../inc/SP/Api/SyspassApi.class.php:190
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:924
+#: ../../../../inc/SP/Import/ImportBase.class.php:158
+msgid "Cuenta creada"
+msgstr "Account added"
+
 #: ../../../../inc/SP/Api/SyspassApi.class.php:191
 #: ../../../../inc/SP/Api/SyspassApi.class.php:229
 #: ../../../../inc/SP/Api/SyspassApi.class.php:282
 #: ../../../../inc/SP/Api/SyspassApi.class.php:318
 #: ../../../../inc/SP/Api/SyspassApi.class.php:371
 #: ../../../../inc/SP/Api/SyspassApi.class.php:407
-#: ../../../../inc/SP/Controller/MainController.class.php:609
-#: ../../../../inc/SP/Util/Wiki/DokuWikiApiBase.class.php:197
-msgid "Origen"
-msgstr "Source"
-
-#: ../../../../inc/SP/Api/SyspassApi.class.php:188
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:931
-msgid "Crear Cuenta"
-msgstr "Add Account"
-
-#: ../../../../inc/SP/Api/SyspassApi.class.php:189
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:932
-#: ../../../../inc/SP/Import/ImportBase.class.php:158
-msgid "Cuenta creada"
-msgstr "Account added"
-
-#: ../../../../inc/SP/Api/SyspassApi.class.php:190
-#: ../../../../inc/SP/Api/SyspassApi.class.php:228
-#: ../../../../inc/SP/Api/SyspassApi.class.php:281
-#: ../../../../inc/SP/Api/SyspassApi.class.php:317
-#: ../../../../inc/SP/Api/SyspassApi.class.php:370
-#: ../../../../inc/SP/Api/SyspassApi.class.php:406
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:351
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:356
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:56
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:130
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:205
@@ -511,39 +511,39 @@ msgstr "Account added"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:592
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:666
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:912
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:234
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:254
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:275
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:286
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:231
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:246
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:267
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:278
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:367
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:375
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:383
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:403
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:395
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:427
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:435
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:443
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:463
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:455
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:489
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:497
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:505
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:525
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:517
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:551
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:559
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:567
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:588
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:679
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:686
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:790
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:797
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:815
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:580
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:671
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:678
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:782
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:789
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:807
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:869
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:877
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:885
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:892
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:933
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:943
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:952
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:961
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:984
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:988
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1013
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1034
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1038
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:884
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:925
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:935
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:944
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:953
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:976
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:980
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1005
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1026
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1030
 #: ../../../../inc/SP/Core/Plugin/PluginDataStore.class.php:77
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:12
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:9
@@ -563,144 +563,144 @@ msgstr "Account added"
 msgid "Nombre"
 msgstr "Name"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:219
+#: ../../../../inc/SP/Api/SyspassApi.class.php:220
 msgid "Cuenta no encontrada"
 msgstr "Account not found"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:226
+#: ../../../../inc/SP/Api/SyspassApi.class.php:227
 #: ../../../../inc/SP/Controller/AccountController.class.php:549
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:274
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:275
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:279
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:280
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:383
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:384
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:454
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:455
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:978
-#: ../../../../inc/SP/Core/Acl.class.php:193
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:970
+#: ../../../../inc/SP/Core/Acl.class.php:192
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:39
 msgid "Eliminar Cuenta"
 msgstr "Remove Account"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:227
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:987
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1037
+#: ../../../../inc/SP/Api/SyspassApi.class.php:228
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:979
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1029
 msgid "Cuenta eliminada"
 msgstr "Account removed"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:279
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:557
+#: ../../../../inc/SP/Api/SyspassApi.class.php:280
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:549
 msgid "Crear Categoría"
 msgstr "Add Category"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:280
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:558
+#: ../../../../inc/SP/Api/SyspassApi.class.php:281
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:550
 #: ../../../../inc/SP/Import/ImportBase.class.php:182
 msgid "Categoría creada"
 msgstr "Category added"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:309
+#: ../../../../inc/SP/Api/SyspassApi.class.php:310
 #: ../../../../inc/SP/Mgmt/Categories/Category.class.php:124
 msgid "Categoría no encontrada"
 msgstr "Category not found"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:315
+#: ../../../../inc/SP/Api/SyspassApi.class.php:316
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:111
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:112
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:585
-#: ../../../../inc/SP/Core/Acl.class.php:201
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:577
+#: ../../../../inc/SP/Core/Acl.class.php:200
 msgid "Eliminar Categoría"
 msgstr "Delete Category"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:316
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:580
+#: ../../../../inc/SP/Api/SyspassApi.class.php:317
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:572
 msgid "Categoría eliminada"
 msgstr "Category deleted"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:368
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:495
+#: ../../../../inc/SP/Api/SyspassApi.class.php:369
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:487
 msgid "Crear Cliente"
 msgstr "Add Customer"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:369
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:496
+#: ../../../../inc/SP/Api/SyspassApi.class.php:370
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:488
 #: ../../../../inc/SP/Import/ImportBase.class.php:204
 msgid "Cliente creado"
 msgstr "Customer added"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:398
+#: ../../../../inc/SP/Api/SyspassApi.class.php:399
 #: ../../../../inc/SP/Mgmt/Customers/Customer.class.php:129
 msgid "Cliente no encontrado"
 msgstr "Customer not found"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:404
+#: ../../../../inc/SP/Api/SyspassApi.class.php:405
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:185
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:186
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:522
-#: ../../../../inc/SP/Core/Acl.class.php:206
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:514
+#: ../../../../inc/SP/Core/Acl.class.php:205
 msgid "Eliminar Cliente"
 msgstr "Delete Customer"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:405
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:517
+#: ../../../../inc/SP/Api/SyspassApi.class.php:406
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:509
 msgid "Cliente eliminado"
 msgstr "Customer deleted"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:428
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:743
+#: ../../../../inc/SP/Api/SyspassApi.class.php:429
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:748
 msgid "Proceso de backup finalizado"
 msgstr "Backup process finished"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:434
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:738
+#: ../../../../inc/SP/Api/SyspassApi.class.php:435
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:743
 #: ../../../../inc/SP/Core/Backup.class.php:75
 msgid "Error al realizar el backup"
 msgstr "Error while doing the backup"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:435
+#: ../../../../inc/SP/Api/SyspassApi.class.php:436
 #: ../../../../inc/SP/Controller/ChecksController.class.php:113
 #: ../../../../inc/SP/Controller/ChecksController.class.php:142
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:716
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:739
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1099
-#: ../../../../inc/SP/Import/Import.class.php:117
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:721
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:744
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1091
+#: ../../../../inc/SP/Import/Import.class.php:115
 msgid "Revise el registro de eventos para más detalles"
 msgstr "Please check out the event log for more details"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:465
-#: ../../../../inc/SP/Api/SyspassApi.class.php:482
-#: ../../../../inc/SP/Api/SyspassApi.class.php:488
+#: ../../../../inc/SP/Api/SyspassApi.class.php:466
+#: ../../../../inc/SP/Api/SyspassApi.class.php:483
+#: ../../../../inc/SP/Api/SyspassApi.class.php:489
 msgid "Id de la cuenta"
 msgstr "Account Id"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:466
-#: ../../../../inc/SP/Api/SyspassApi.class.php:494
+#: ../../../../inc/SP/Api/SyspassApi.class.php:467
+#: ../../../../inc/SP/Api/SyspassApi.class.php:495
 msgid "Clave del token"
 msgstr "Token's Password"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:467
+#: ../../../../inc/SP/Api/SyspassApi.class.php:468
 msgid "Devolver detalles en la respuesta"
 msgstr "Send details in the response"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:473
+#: ../../../../inc/SP/Api/SyspassApi.class.php:474
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:15
 msgid "Texto a buscar"
 msgstr "Text to search"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:474
-#: ../../../../inc/SP/Api/SyspassApi.class.php:512
-#: ../../../../inc/SP/Api/SyspassApi.class.php:532
+#: ../../../../inc/SP/Api/SyspassApi.class.php:475
+#: ../../../../inc/SP/Api/SyspassApi.class.php:513
+#: ../../../../inc/SP/Api/SyspassApi.class.php:533
 msgid "Número de resultados a mostrar"
 msgstr "Number of results to show"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:475
+#: ../../../../inc/SP/Api/SyspassApi.class.php:476
 msgid "Id de categoría a filtrar"
 msgstr "Category Id to filter on"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:476
+#: ../../../../inc/SP/Api/SyspassApi.class.php:477
 msgid "Id de cliente a filtrar"
 msgstr "Customer Id to filter on"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:495
+#: ../../../../inc/SP/Api/SyspassApi.class.php:496
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:18
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:16
 #: ../../../../inc/themes/material-blue/views/account/account.inc:49
@@ -708,17 +708,18 @@ msgstr "Customer Id to filter on"
 msgid "Nombre de cuenta"
 msgstr "Account name"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:496
-#: ../../../../inc/SP/Api/SyspassApi.class.php:525
+#: ../../../../inc/SP/Api/SyspassApi.class.php:497
+#: ../../../../inc/SP/Api/SyspassApi.class.php:526
 msgid "Id de categoría"
 msgstr "Category Id"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:497
-#: ../../../../inc/SP/Api/SyspassApi.class.php:545
+#: ../../../../inc/SP/Api/SyspassApi.class.php:498
+#: ../../../../inc/SP/Api/SyspassApi.class.php:546
 msgid "Id de cliente"
 msgstr "Customer Id"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:498
+#: ../../../../inc/SP/Api/SyspassApi.class.php:499
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:654
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:64
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:56
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:62
@@ -729,8 +730,8 @@ msgstr "Customer Id"
 #: ../../../../inc/themes/material-blue/views/account/account.inc:124
 #: ../../../../inc/themes/material-blue/views/account/account.inc:131
 #: ../../../../inc/themes/material-blue/views/account/viewpass.inc:31
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:266
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:269
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:272
 #: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:61
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:138
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:77
@@ -750,47 +751,47 @@ msgstr "Customer Id"
 msgid "Clave"
 msgstr "Password"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:499
+#: ../../../../inc/SP/Api/SyspassApi.class.php:500
 #: ../../../../inc/themes/material-blue/views/account/account.inc:118
 msgid "Usuario de acceso"
 msgstr "Access user"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:500
+#: ../../../../inc/SP/Api/SyspassApi.class.php:501
 #: ../../../../inc/themes/material-blue/views/account/account.inc:106
 msgid "URL o IP de acceso"
 msgstr "Access URL or IP"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:501
+#: ../../../../inc/SP/Api/SyspassApi.class.php:502
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:72
 #: ../../../../inc/themes/material-blue/views/account/account.inc:174
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:135
 msgid "Notas sobre la cuenta"
 msgstr "Notes about the account"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:511
+#: ../../../../inc/SP/Api/SyspassApi.class.php:512
 msgid "Nombre de categoría a buscar"
 msgstr "Category name to search for"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:518
+#: ../../../../inc/SP/Api/SyspassApi.class.php:519
 #: ../../../../inc/themes/material-blue/views/itemshow/categories.inc:23
 msgid "Nombre de la categoría"
 msgstr "Category name"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:519
+#: ../../../../inc/SP/Api/SyspassApi.class.php:520
 #: ../../../../inc/themes/material-blue/views/itemshow/categories.inc:35
 msgid "Descripción de la categoría"
 msgstr "Category description"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:531
+#: ../../../../inc/SP/Api/SyspassApi.class.php:532
 msgid "Nombre de cliente a buscar"
 msgstr "Customer name to search for"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:538
+#: ../../../../inc/SP/Api/SyspassApi.class.php:539
 #: ../../../../inc/themes/material-blue/views/itemshow/customers.inc:26
 msgid "Nombre del cliente"
 msgstr "Customer name"
 
-#: ../../../../inc/SP/Api/SyspassApi.class.php:539
+#: ../../../../inc/SP/Api/SyspassApi.class.php:540
 #: ../../../../inc/themes/material-blue/views/itemshow/customers.inc:39
 msgid "Descripción del cliente"
 msgstr "Customer description"
@@ -821,27 +822,27 @@ msgstr "In order to complete the process, please go to this URL:"
 msgid "Si no ha solicitado esta acción, ignore este mensaje."
 msgstr "If you have not requested this action, please dismiss this message."
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:124
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:464
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:122
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:452
 #: ../../../../inc/SP/Controller/ChecksController.class.php:92
 msgid "Los parámetros de LDAP no están configurados"
 msgstr "The LDAP parameters are not set"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:138
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:136
 #: ../../../../inc/SP/Controller/ChecksController.class.php:107
 msgid "Conexión a LDAP correcta"
 msgstr "LDAP connection OK"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:139
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:137
 #: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:78
 msgid "Objetos encontrados"
 msgstr "Objects found"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:175
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:173
 msgid "No es posible conectar con el servidor de LDAP"
 msgstr "Unable to connect to the LDAP server"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:176
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:174
 #: ../../../../inc/themes/material-blue/views/config/general-events.inc:49
 #: ../../../../inc/themes/material-blue/views/config/general-proxy.inc:19
 #: ../../../../inc/themes/material-blue/views/config/info.inc:58
@@ -853,37 +854,37 @@ msgstr "Unable to connect to the LDAP server"
 msgid "Servidor"
 msgstr "Server"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:223
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:221
 msgid "Error al conectar (BIND)"
 msgstr "Connection error (BIND)"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:246
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:666
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:244
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:664
 msgid "Error al buscar objetos en DN base"
 msgstr "Error while searching objects in base DN"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:564
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:562
 msgid "Error al localizar el usuario en LDAP"
 msgstr "Error while searching the user on LDAP"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:565
-#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:158
-#: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:111
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:365
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:563
+#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:155
+#: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:109
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:370
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:748
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:835
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:625
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:638
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:735
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:745
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:760
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:617
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:630
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:727
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:737
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:752
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:410
 #: ../../../../inc/SP/Controller/LoginController.class.php:262
 #: ../../../../inc/SP/Controller/LoginController.class.php:371
 #: ../../../../inc/SP/Controller/LoginController.class.php:455
 #: ../../../../inc/SP/Controller/LoginController.class.php:521
 #: ../../../../inc/SP/Controller/LoginController.class.php:548
-#: ../../../../inc/SP/Core/Init.class.php:630
+#: ../../../../inc/SP/Core/Init.class.php:629
 #: ../../../../inc/SP/Mgmt/PublicLinks/PublicLink.class.php:78
 #: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:110
 #: ../../../../inc/SP/Mgmt/Users/UserPreferencesUtil.class.php:64
@@ -914,19 +915,19 @@ msgstr "Error while searching the user on LDAP"
 msgid "Usuario"
 msgstr "User"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:598
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:596
 msgid "Error al buscar RDN de grupo"
 msgstr "Error while searching the group RDN"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:599
-#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:137
-#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:149
-#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:159
-#: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:110
+#: ../../../../inc/SP/Auth/Ldap/LdapBase.class.php:597
+#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:134
+#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:146
+#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:156
+#: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:108
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:476
 #: ../../../../inc/SP/Controller/LoginController.class.php:373
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:248
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:251
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:254
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:174
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:201
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:71
@@ -936,26 +937,26 @@ msgstr "Error while searching the group RDN"
 msgid "Grupo"
 msgstr "Group"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:124
-#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:148
-#: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:95
-#: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:119
+#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:121
+#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:145
+#: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:93
+#: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:117
 msgid "Usuario verificado en grupo"
 msgstr "User in group verified"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:136
-#: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:109
+#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:133
+#: ../../../../inc/SP/Auth/Ldap/LdapStd.class.php:107
 msgid "Error al buscar el grupo de usuarios"
 msgstr "Error while searching users group"
 
-#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:157
+#: ../../../../inc/SP/Auth/Ldap/LdapMsAds.class.php:154
 msgid "Usuario no pertenece al grupo"
 msgstr "The user doesn't belong to the group"
 
 #: ../../../../inc/SP/Config/ConfigDB.class.php:107
 #: ../../../../inc/SP/Config/ConfigDB.class.php:147
 #: ../../../../inc/SP/Controller/MainController.class.php:303
-#: ../../../../inc/SP/Core/Acl.class.php:216
+#: ../../../../inc/SP/Core/Acl.class.php:215
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:75
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:216
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:218
@@ -980,30 +981,30 @@ msgstr "Value"
 #: ../../../../inc/SP/Controller/AccountController.class.php:136
 #: ../../../../inc/SP/Controller/AccountController.class.php:465
 #: ../../../../inc/SP/Controller/AccountController.class.php:497
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:213
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:214
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:215
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:45
 msgid "Detalles de Cuenta"
 msgstr "Account Details"
 
 #: ../../../../inc/SP/Controller/AccountController.class.php:227
 #: ../../../../inc/SP/Controller/MainController.class.php:273
-#: ../../../../inc/SP/Core/Acl.class.php:188
+#: ../../../../inc/SP/Core/Acl.class.php:187
 msgid "Nueva Cuenta"
 msgstr "New Account"
 
 #: ../../../../inc/SP/Controller/AccountController.class.php:363
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:263
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:264
-#: ../../../../inc/SP/Core/Acl.class.php:187
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:266
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:267
+#: ../../../../inc/SP/Core/Acl.class.php:186
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:117
 msgid "Copiar Cuenta"
 msgstr "Copy Account"
 
 #: ../../../../inc/SP/Controller/AccountController.class.php:409
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:252
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:253
-#: ../../../../inc/SP/Core/Acl.class.php:189
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:254
+#: ../../../../inc/SP/Core/Acl.class.php:188
 msgid "Editar Cuenta"
 msgstr "Edit Account"
 
@@ -1012,29 +1013,29 @@ msgstr "Edit Account"
 msgid "Modificar Clave de Cuenta"
 msgstr "Edit Account Password"
 
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:239
 #: ../../../../inc/SP/Controller/AccountSearchController.class.php:240
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:241
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:102
 msgid "Copiar Clave en Portapapeles"
 msgstr "Copy Password to Clipboard"
 
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:284
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:285
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:289
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:290
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:158
 msgid "Solicitar Modificación"
 msgstr "Request Modification"
 
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:294
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:295
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:299
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:300
 msgid "Más Acciones"
 msgstr "More Actions"
 
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:344
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:349
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:281
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:350
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:403
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:849
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1176
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:841
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1168
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:23
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:29
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:21
@@ -1047,15 +1048,15 @@ msgstr "More Actions"
 msgid "Cliente"
 msgstr "Customer"
 
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:345
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:350
 msgid "Ordenar por Cliente"
 msgstr "Sort by Customer"
 
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:352
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:357
 msgid "Ordenar por Nombre"
 msgstr "Sort by Name"
 
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:358
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:363
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:32
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:38
 #: ../../../../inc/themes/material-blue/views/account/account.inc:77
@@ -1064,15 +1065,15 @@ msgstr "Sort by Name"
 msgid "Categoría"
 msgstr "Category"
 
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:359
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:364
 msgid "Ordenar por Categoría"
 msgstr "Sort by Category"
 
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:366
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:371
 msgid "Ordenar por Usuario"
 msgstr "Sort by Username"
 
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:372
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:377
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:34
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:40
 #: ../../../../inc/themes/material-blue/views/account/account-link.inc:43
@@ -1082,7 +1083,7 @@ msgstr "Sort by Username"
 msgid "URL / IP"
 msgstr "URL / IP"
 
-#: ../../../../inc/SP/Controller/AccountSearchController.class.php:373
+#: ../../../../inc/SP/Controller/AccountSearchController.class.php:378
 msgid "Ordenar por URL / IP"
 msgstr "Sort by URL / IP"
 
@@ -1116,7 +1117,7 @@ msgstr "Connection successful"
 
 #: ../../../../inc/SP/Controller/ChecksController.class.php:138
 #: ../../../../inc/SP/Controller/MainActionController.class.php:123
-#: ../../../../inc/SP/Core/Init.class.php:448
+#: ../../../../inc/SP/Core/Init.class.php:476
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:207
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:220
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:430
@@ -1149,11 +1150,19 @@ msgstr "Proxy enabled"
 msgid "Proxy deshabilitado"
 msgstr "Proxy disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:223
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:309
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:375
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:422
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:475
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:234
+msgid "Auth Basic habiltada"
+msgstr "Auth Basic enabled"
+
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:239
+msgid "Auth Basic deshabiltada"
+msgstr "Auth Basic disabled"
+
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:242
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:328
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:394
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:441
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:494
 msgid "Sección"
 msgstr "Section"
 
@@ -1165,13 +1174,13 @@ msgid "General"
 msgstr "General"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:237
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:529
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:613
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:683
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:733
-#: ../../../../inc/SP/Forms/UserForm.class.php:130
-#: ../../../../inc/SP/Forms/UserForm.class.php:142
-#: ../../../../inc/SP/Forms/UserForm.class.php:160
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:533
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:617
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:688
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:738
+#: ../../../../inc/SP/Forms/UserForm.class.php:96
+#: ../../../../inc/SP/Forms/UserForm.class.php:108
+#: ../../../../inc/SP/Forms/UserForm.class.php:122
 msgid "Ey, esto es una DEMO!!"
 msgstr "Ey, this is a DEMO!!"
 
@@ -1203,75 +1212,75 @@ msgstr "The maximum size per file is 16MB"
 msgid "Cuentas"
 msgstr "Accounts"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:329
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:331
 msgid "Faltan parámetros de Wiki"
 msgstr "Missing Wiki parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:339
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:341
 msgid "Wiki habiltada"
 msgstr "Wiki enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:343
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:345
 msgid "Wiki deshabilitada"
 msgstr "Wiki disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:356
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:358
 msgid "Faltan parámetros de DokuWiki"
 msgstr "Missing DokuWiki parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:368
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:370
 msgid "DokuWiki habiltada"
 msgstr "DokuWiki enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:372
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:374
 msgid "DokuWiki deshabilitada"
 msgstr "DokuWiki disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:375
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:377
 #: ../../../../inc/SP/Controller/ConfigController.class.php:237
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldTypes.class.php:63
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:10
 msgid "Wiki"
 msgstr "Wiki"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:400
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:404
 msgid "Faltan parámetros de LDAP"
 msgstr "Missing LDAP parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:415
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:419
 msgid "LDAP habiltado"
 msgstr "LDAP enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:419
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:423
 msgid "LDAP deshabilitado"
 msgstr "LDAP disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:422
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:426
 #: ../../../../inc/SP/Controller/ConfigController.class.php:270
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:7
 msgid "LDAP"
 msgstr "LDAP"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:448
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:452
 msgid "Faltan parámetros de Correo"
 msgstr "Missing Mail parameters"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:466
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:470
 msgid "Correo habiltado"
 msgstr "Mail enabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:472
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:476
 msgid "Correo deshabilitado"
 msgstr "Mail disabled"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:475
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:479
 #: ../../../../inc/SP/Controller/ConfigController.class.php:301
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:7
 msgid "Correo"
 msgstr "Mail"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:497
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:592
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:501
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:596
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:277
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:520
 #: ../../../../inc/SP/Controller/LoginController.class.php:316
@@ -1279,83 +1288,83 @@ msgstr "Mail"
 msgid "Clave maestra actualizada"
 msgstr "Master Password updated"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:498
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:594
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:502
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:598
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:277
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:520
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Please, restart the session for update it"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:504
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:508
 msgid "Clave maestra no indicada"
 msgstr "Master Password needed"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:509
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:513
 msgid "Se ha de confirmar el cambio de clave"
 msgstr "The password update must be confirmed"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:514
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:518
 msgid "Las claves son idénticas"
 msgstr "The passwords are the same"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:519
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:523
 msgid "Las claves maestras no coinciden"
 msgstr "The master passwords do not match"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:524
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:528
 msgid "La clave maestra actual no coincide"
 msgstr "The current master password does not match"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:537
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:541
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:59
-#: ../../../../inc/SP/Import/Import.class.php:91
+#: ../../../../inc/SP/Import/Import.class.php:89
 msgid "No es posible iniciar una transacción"
 msgstr "Unable to start a transaction"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:550
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:554
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Error while updating the accounts' passwords"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:561
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:565
 msgid "Errores al actualizar las claves de las cuentas del histórico"
 msgstr "Error while updating the accounts' passwords in history"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:570
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:574
 msgid "Errores al actualizar datos de campos personalizados"
 msgstr "Error while updating the custom fields data"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:577
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:581
 #: ../../../../inc/SP/Core/Upgrade/Crypt.class.php:71
-#: ../../../../inc/SP/Import/Import.class.php:97
+#: ../../../../inc/SP/Import/Import.class.php:95
 msgid "No es posible finalizar una transacción"
 msgstr "Unable to finish a transaction"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:597
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:601
 msgid "Error al guardar el hash de la clave maestra"
 msgstr "Error while saving the Master Password's hash"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:620
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:624
 msgid "Hash de clave maestra actualizado"
 msgstr "Master password hash updated"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:624
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:628
 msgid "Error al actualizar el hash de la clave maestra"
 msgstr "Error while updating the master password hash"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:646
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:650
 msgid "Generar Clave Temporal"
 msgstr "Generate Temporary Password"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:649
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:653
 msgid "Clave Temporal Generada"
 msgstr "Temporary Password Generated"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:653
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:658
 #, php-format
 msgid "Clave Maestra %s"
 msgstr "Master Password %s"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:654
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:659
 msgid ""
 "Se ha generado una nueva clave para el acceso a sysPass y se solicitará en "
 "el siguiente inicio."
@@ -1363,36 +1372,36 @@ msgstr ""
 "A new sysPass master password has been generated, so the next time you log "
 "into the application it will be requested."
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:656
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:661
 #, php-format
 msgid "La nueva clave es: %s"
 msgstr "The new Master Password is: %s"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:658
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:663
 msgid "No olvide acceder lo antes posible para guardar los cambios."
 msgstr ""
 "Please, don't forget to log in as soon as possible to save the changes."
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:669
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:674
 msgid "Error al generar clave temporal"
 msgstr "Error while generating the temporary password"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:710
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:715
 #: ../../../../inc/SP/Forms/AccountForm.class.php:136
-#: ../../../../inc/SP/Forms/UserForm.class.php:150
+#: ../../../../inc/SP/Forms/UserForm.class.php:112
 msgid "Las claves no coinciden"
 msgstr "The passwords do not match"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:715
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:720
 msgid "Error al realizar la exportación"
 msgstr "Error while exporting"
 
-#: ../../../../inc/SP/Controller/ConfigActionController.class.php:720
+#: ../../../../inc/SP/Controller/ConfigActionController.class.php:725
 msgid "Proceso de exportación finalizado"
 msgstr "Export process finished"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:330
-#: ../../../../inc/SP/Core/Acl.class.php:218
+#: ../../../../inc/SP/Core/Acl.class.php:217
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:233
 msgid "Encriptación"
 msgstr "Encryption"
@@ -1414,13 +1423,13 @@ msgid "No se encontró archivo de exportación"
 msgstr "No export file found"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:388
-#: ../../../../inc/SP/Core/Acl.class.php:219
+#: ../../../../inc/SP/Core/Acl.class.php:218
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:7
 msgid "Copia de Seguridad"
 msgstr "Backup"
 
 #: ../../../../inc/SP/Controller/ConfigController.class.php:410
-#: ../../../../inc/SP/Import/Import.class.php:68
+#: ../../../../inc/SP/Import/Import.class.php:66
 #: ../../../../inc/SP/Import/ImportBase.class.php:86
 msgid "Importar Cuentas"
 msgstr "Import Accounts"
@@ -1444,7 +1453,7 @@ msgstr "Option unavailable"
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:275
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:276
 #: ../../../../inc/SP/Controller/ControllerBase.class.php:278
-#: ../../../../inc/SP/Core/Init.class.php:510
+#: ../../../../inc/SP/Core/Init.class.php:386
 msgid "Consulte con el administrador"
 msgstr "Please contact to the administrator"
 
@@ -1486,7 +1495,7 @@ msgstr "Search for Events"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:131
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:593
 #: ../../../../inc/SP/Controller/Grids/Notices.class.php:57
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1177
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1169
 #: ../../../../inc/themes/material-blue/views/eventlog/eventlog.inc:37
 #: ../../../../inc/themes/material-blue/views/itemshow/categories.inc:28
 #: ../../../../inc/themes/material-blue/views/itemshow/customers.inc:32
@@ -1516,7 +1525,7 @@ msgstr "New Category"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:101
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:102
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:187
-#: ../../../../inc/SP/Core/Acl.class.php:200
+#: ../../../../inc/SP/Core/Acl.class.php:199
 msgid "Editar Categoría"
 msgstr "Edit Category"
 
@@ -1540,7 +1549,7 @@ msgstr "New Customer"
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:175
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:176
 #: ../../../../inc/SP/Controller/ItemShowController.class.php:174
-#: ../../../../inc/SP/Core/Acl.class.php:205
+#: ../../../../inc/SP/Core/Acl.class.php:204
 msgid "Editar Cliente"
 msgstr "Edit Customer"
 
@@ -1576,12 +1585,12 @@ msgstr "Edit Field"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:261
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:262
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:699
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:691
 msgid "Eliminar Campo"
 msgstr "Delete Field"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:302
-#: ../../../../inc/SP/Core/Acl.class.php:194
+#: ../../../../inc/SP/Core/Acl.class.php:193
 #: ../../../../inc/themes/material-blue/views/account/files.inc:5
 #: ../../../../inc/themes/material-blue/views/account/files.inc:15
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:231
@@ -1602,7 +1611,7 @@ msgstr "View File"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:330
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:331
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:845
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:837
 #: ../../../../inc/themes/material-blue/views/account/files-list.inc:26
 msgid "Eliminar Archivo"
 msgstr "Delete File"
@@ -1643,8 +1652,8 @@ msgstr "Accounts (H)"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:444
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:445
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:959
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1011
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:951
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1003
 msgid "Restaurar Cuenta"
 msgstr "Account Restore"
 
@@ -1681,7 +1690,7 @@ msgstr "New User"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:529
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:530
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1081
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1073
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:338
 msgid "Importar usuarios de LDAP"
 msgstr "Import users from LDAP"
@@ -1707,7 +1716,7 @@ msgstr "Change User's Password"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:573
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:574
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:272
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:264
 msgid "Eliminar Usuario"
 msgstr "Delete User"
 
@@ -1736,7 +1745,7 @@ msgstr "Edit Group"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:647
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:648
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:400
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:392
 msgid "Eliminar Grupo"
 msgstr "Delete Group"
 
@@ -1768,7 +1777,7 @@ msgstr "Edit Profile"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:729
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:730
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:460
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:452
 msgid "Eliminar Perfil"
 msgstr "Delete Profile"
 
@@ -1807,7 +1816,7 @@ msgstr "Edit Authorization"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:813
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:814
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:651
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:643
 msgid "Eliminar Autorización"
 msgstr "Delete Authorization"
 
@@ -1857,7 +1866,7 @@ msgstr "Renew Link"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:893
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:894
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:763
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:755
 msgid "Eliminar Enlace"
 msgstr "Delete Link"
 
@@ -1886,7 +1895,7 @@ msgstr "Edit Tag"
 
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:965
 #: ../../../../inc/SP/Controller/Grids/Items.class.php:966
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:812
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:804
 msgid "Eliminar Etiqueta"
 msgstr "Delete Tag"
 
@@ -1971,321 +1980,321 @@ msgstr "Edit Notification"
 msgid "Eliminar Notificación"
 msgstr "Delete Notification"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:232
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:229
 msgid "Crear Usuario"
 msgstr "Add User"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:233
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:230
 msgid "Usuario creado"
 msgstr "User added"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:240
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:237
 msgid "No se pudo realizar la petición de cambio de clave."
 msgstr "Could not perform the password change request."
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:252
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:244
 msgid "Actualizar Usuario"
 msgstr "Update User"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:253
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:245
 #: ../../../../inc/SP/Mgmt/Users/UserMigrate.class.php:104
 msgid "Usuario actualizado"
 msgstr "User updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:261
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:253
 msgid "Usuarios eliminados"
 msgstr "Users deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:267
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:259
 msgid "Usuario eliminado"
 msgstr "User deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:284
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:276
 msgid "Actualizar Clave Usuario"
 msgstr "Update User's Password"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:373
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:365
 msgid "Crear Grupo"
 msgstr "Add Group"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:374
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:366
 msgid "Grupo creado"
 msgstr "Group added"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:381
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:373
 msgid "Actualizar Grupo"
 msgstr "Update Group"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:382
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:374
 msgid "Grupo actualizado"
 msgstr "Group updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:389
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:381
 msgid "Grupos eliminados"
 msgstr "Groups deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:395
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:387
 msgid "Grupo eliminado"
 msgstr "Group deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:433
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:425
 msgid "Crear Perfil"
 msgstr "Add Profile"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:434
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:426
 msgid "Perfil creado"
 msgstr "Profile added"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:441
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:433
 msgid "Actualizar Perfil"
 msgstr "Update Profile"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:442
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:434
 msgid "Perfil actualizado"
 msgstr "Profile updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:449
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:441
 msgid "Perfiles eliminados"
 msgstr "Profiles deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:455
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:447
 msgid "Perfil eliminado"
 msgstr "Profile deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:503
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:495
 msgid "Actualizar Cliente"
 msgstr "Update Customer"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:504
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:496
 msgid "Cliente actualizado"
 msgstr "Customer updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:511
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:503
 msgid "Clientes eliminados"
 msgstr "Customers deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:565
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:557
 msgid "Actualizar Categoría"
 msgstr "Update Category"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:566
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:558
 msgid "Categoría actualizada"
 msgstr "Category updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:574
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:566
 msgid "Categorías eliminadas"
 msgstr "Categories deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:623
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:615
 msgid "Crear Autorización"
 msgstr "Add Authorization"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:624
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:616
 msgid "Autorización creada"
 msgstr "Authorization added"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:636
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:628
 msgid "Actualizar Autorización"
 msgstr "Update Authorization"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:637
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:629
 msgid "Autorización actualizada"
 msgstr "Authorization updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:644
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:636
 msgid "Autorizaciones eliminadas"
 msgstr "Authorizations deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:648
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:640
 msgid "Autorización eliminada"
 msgstr "Authorization deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:677
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:669
 msgid "Crear Campo"
 msgstr "Add Field"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:678
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:670
 msgid "Campo creado"
 msgstr "Field added"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:684
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:676
 msgid "Actualizar Campo"
 msgstr "Update Field"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:685
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:677
 #: ../../../../inc/SP/Mgmt/CustomFields/CustomFieldsUtil.class.php:288
 msgid "Campo actualizado"
 msgstr "Field updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:692
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:684
 msgid "Campos eliminados"
 msgstr "Fields deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:696
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:688
 msgid "Campo eliminado"
 msgstr "Field deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:731
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:723
 msgid "Crear Enlace"
 msgstr "Create Link"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:732
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:724
 msgid "Enlace creado"
 msgstr "Link created"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:741
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:733
 #: ../../../../inc/themes/material-blue/views/account/actions.inc:69
 msgid "Actualizar Enlace"
 msgstr "Update Link"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:742
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:734
 msgid "Enlace actualizado"
 msgstr "Link updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:751
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:743
 msgid "Enlaces eliminados"
 msgstr "Links deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:757
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:749
 msgid "Enlace eliminado"
 msgstr "Link deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:788
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:780
 msgid "Crear Etiqueta"
 msgstr "Add Tag"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:789
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:781
 #: ../../../../inc/SP/Import/ImportBase.class.php:226
 msgid "Etiqueta creada"
 msgstr "Tag added"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:795
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:787
 msgid "Actualizar Etiqueta"
 msgstr "Update Tag"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:796
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:788
 msgid "Etiqueta actualizada"
 msgstr "Tag updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:803
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:795
 msgid "Etiquetas eliminadas"
 msgstr "Tags deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:809
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:801
 msgid "Etiqueta eliminada"
 msgstr "Tag removed"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:836
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:828
 msgid "Archivos eliminados"
 msgstr "Files deleted"
 
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:867
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:875
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:883
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:890
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:882
 msgid "Actualizar Plugin"
 msgstr "Update Plugin"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:876
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:868
 msgid "Plugin habilitado"
 msgstr "Plugin enabled"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:884
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:876
 msgid "Plugin deshabilitado"
 msgstr "Plugin disabled"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:891
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:883
 msgid "Plugin restablecido"
 msgstr "Plugin reset"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:941
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:950
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:933
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:942
 msgid "Actualizar Cuenta"
 msgstr "Update Account"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:942
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:934
 msgid "Cuenta actualizada"
 msgstr "Account updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:960
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1012
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:952
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1004
 msgid "Cuenta restaurada"
 msgstr "Account restored"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:981
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1031
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:973
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1023
 msgid "Cuentas eliminadas"
 msgstr "Accounts removed"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1028
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1020
 msgid "Eliminar Cuenta (H)"
 msgstr "Delete Account (H)"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1062
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1054
 msgid "Favorito añadido"
 msgstr "Favorite added"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1067
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1059
 msgid "Favorito eliminado"
 msgstr "Favorite deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1090
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1082
 msgid "Importación de usuarios de LDAP realizada"
 msgstr "LDAP users import finished"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1091
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1083
 msgid "Usuarios importados"
 msgstr "Imported users"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1096
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1088
 msgid "Error al importar usuarios de LDAP"
 msgstr "Error while importing the LDAP users"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1114
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1106
 msgid "Notificación leída"
 msgstr "Notification read"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1122
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1114
 msgid "Notificación creada"
 msgstr "Notification created"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1130
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1122
 msgid "Notificación actualizada"
 msgstr "Notification updated"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1136
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1128
 msgid "Notificaciones eliminadas"
 msgstr "Notifications deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1140
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1132
 msgid "Notificación eliminada"
 msgstr "Notification deleted"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1158
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1150
 #: ../../../../inc/SP/Forms/NoticeForm.class.php:95
 msgid "Es necesaria una descripción"
 msgstr "A description is needed"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1173
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1165
 msgid "Solicitud de Modificación de Cuenta"
 msgstr "Request for Account Modification"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1174
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1166
 msgid "Solicitante"
 msgstr "Requester"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1192
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1184
 msgid "Solicitud enviada por correo"
 msgstr "Request sent by email"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1194
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1186
 msgid "Solicitud no enviada por correo"
 msgstr "Request not sent by email"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1203
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1195
 msgid "Solicitud"
 msgstr "Request"
 
-#: ../../../../inc/SP/Controller/ItemActionController.class.php:1209
+#: ../../../../inc/SP/Controller/ItemActionController.class.php:1201
 msgid "Solicitud realizada"
 msgstr "Request done"
 
@@ -2412,7 +2421,7 @@ msgstr "Authentication"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:62
 #: ../../../../inc/SP/Controller/MainActionController.class.php:121
-#: ../../../../inc/SP/Core/Init.class.php:446
+#: ../../../../inc/SP/Core/Init.class.php:474
 msgid "Actualización"
 msgstr "Update"
 
@@ -2434,7 +2443,7 @@ msgid "En 5 segundos será redirigido al login"
 msgstr "You will be redirected to log in within 5 seconds"
 
 #: ../../../../inc/SP/Controller/MainActionController.class.php:122
-#: ../../../../inc/SP/Core/Init.class.php:447
+#: ../../../../inc/SP/Core/Init.class.php:475
 msgid "Actualización de versión realizada."
 msgstr "Version updating done."
 
@@ -2519,107 +2528,107 @@ msgstr "Waiting for progress updating ..."
 msgid "Preferencias"
 msgstr "Preferences"
 
-#: ../../../../inc/SP/Core/Acl.class.php:167
+#: ../../../../inc/SP/Core/Acl.class.php:166
 msgid "Acceso denegado"
 msgstr "Access denied"
 
-#: ../../../../inc/SP/Core/Acl.class.php:185
+#: ../../../../inc/SP/Core/Acl.class.php:184
 msgid "Buscar Cuentas"
 msgstr "Search for Accounts"
 
-#: ../../../../inc/SP/Core/Acl.class.php:186
+#: ../../../../inc/SP/Core/Acl.class.php:185
 msgid "Ver Cuenta"
 msgstr "View Account"
 
-#: ../../../../inc/SP/Core/Acl.class.php:190
+#: ../../../../inc/SP/Core/Acl.class.php:189
 msgid "Editar Clave de Cuenta"
 msgstr "Edit Account Password"
 
-#: ../../../../inc/SP/Core/Acl.class.php:191
+#: ../../../../inc/SP/Core/Acl.class.php:190
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:61
 msgid "Ver Historial"
 msgstr "View History"
 
-#: ../../../../inc/SP/Core/Acl.class.php:195
+#: ../../../../inc/SP/Core/Acl.class.php:194
 msgid "Peticiones"
 msgstr "Requests"
 
-#: ../../../../inc/SP/Core/Acl.class.php:196
+#: ../../../../inc/SP/Core/Acl.class.php:195
 msgid "Gestión Aplicación"
 msgstr "Application Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:197
+#: ../../../../inc/SP/Core/Acl.class.php:196
 msgid "Gestión Categorías"
 msgstr "Categories Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:198
+#: ../../../../inc/SP/Core/Acl.class.php:197
 msgid "Buscar Categorías"
 msgstr "Search for Categories"
 
-#: ../../../../inc/SP/Core/Acl.class.php:199
+#: ../../../../inc/SP/Core/Acl.class.php:198
 msgid "Añadir Categoría"
 msgstr "Add Category"
 
-#: ../../../../inc/SP/Core/Acl.class.php:202
+#: ../../../../inc/SP/Core/Acl.class.php:201
 msgid "Gestión Clientes"
 msgstr "Customers Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:203
+#: ../../../../inc/SP/Core/Acl.class.php:202
 msgid "Buscar Clientes"
 msgstr "Search for Customers"
 
-#: ../../../../inc/SP/Core/Acl.class.php:204
+#: ../../../../inc/SP/Core/Acl.class.php:203
 msgid "Añadir Cliente"
 msgstr "Add Customer"
 
-#: ../../../../inc/SP/Core/Acl.class.php:207
+#: ../../../../inc/SP/Core/Acl.class.php:206
 msgid "Gestión Campos Personalizados"
 msgstr "Custom Fields Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:208
+#: ../../../../inc/SP/Core/Acl.class.php:207
 msgid "Gestión Autorizaciones API"
 msgstr "API Authorizations Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:209
+#: ../../../../inc/SP/Core/Acl.class.php:208
 msgid "Gestión de Archivos"
 msgstr "Files Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:210
+#: ../../../../inc/SP/Core/Acl.class.php:209
 msgid "Gestión de Cuentas"
 msgstr "Accounts Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:211
+#: ../../../../inc/SP/Core/Acl.class.php:210
 msgid "Gestión de Etiquetas"
 msgstr "Tags Management"
 
+#: ../../../../inc/SP/Core/Acl.class.php:211
 #: ../../../../inc/SP/Core/Acl.class.php:212
-#: ../../../../inc/SP/Core/Acl.class.php:213
 msgid "Gestión Usuarios"
 msgstr "Users Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:214
+#: ../../../../inc/SP/Core/Acl.class.php:213
 msgid "Gestión Grupos"
 msgstr "Groups Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:215
+#: ../../../../inc/SP/Core/Acl.class.php:214
 msgid "Gestión Perfiles"
 msgstr "Profiles Management"
 
-#: ../../../../inc/SP/Core/Acl.class.php:217
+#: ../../../../inc/SP/Core/Acl.class.php:216
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:226
 msgid "Configuración General"
 msgstr "General Configuration"
 
-#: ../../../../inc/SP/Core/Acl.class.php:220
+#: ../../../../inc/SP/Core/Acl.class.php:219
 msgid "Exportar"
 msgstr "Export"
 
-#: ../../../../inc/SP/Core/Acl.class.php:221
+#: ../../../../inc/SP/Core/Acl.class.php:220
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:247
 msgid "Importar"
 msgstr "Import"
 
-#: ../../../../inc/SP/Core/Acl.class.php:222
+#: ../../../../inc/SP/Core/Acl.class.php:221
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:263
 msgid "Log de Eventos"
 msgstr "Event Log"
@@ -2652,7 +2661,7 @@ msgid "Error al realizar backup en modo compatibilidad"
 msgstr "Error while doing the backup in compatibility mode"
 
 #: ../../../../inc/SP/Core/CryptMasterPass.class.php:95
-#: ../../../../inc/SP/Core/CryptMasterPass.class.php:110
+#: ../../../../inc/SP/Core/CryptMasterPass.class.php:108
 msgid "Clave temporal caducada"
 msgstr "Temporary password expired"
 
@@ -2679,52 +2688,52 @@ msgstr "An object is needed"
 msgid "Error en la verificación de la base de datos"
 msgstr "Error while checking the database"
 
-#: ../../../../inc/SP/Core/Init.class.php:469
-msgid "El directorio \"/config\" no existe"
-msgstr "The \"/config\" directory does not exist."
-
-#: ../../../../inc/SP/Core/Init.class.php:474
-msgid "No es posible escribir en el directorio \"config\""
-msgstr "Unable to write into the \"/config\" directory"
-
-#: ../../../../inc/SP/Core/Init.class.php:481
-msgid "Los permisos del directorio \"/config\" son incorrectos"
-msgstr "The \"/config\" directory permissions are wrong"
-
-#: ../../../../inc/SP/Core/Init.class.php:481
-msgid "Actual:"
-msgstr "Current:"
-
-#: ../../../../inc/SP/Core/Init.class.php:481
-msgid "Necesario: 750"
-msgstr "Needed: 750"
-
-#: ../../../../inc/SP/Core/Init.class.php:506
+#: ../../../../inc/SP/Core/Init.class.php:382
 msgid "Sesión"
 msgstr "Session"
 
-#: ../../../../inc/SP/Core/Init.class.php:506
-#: ../../../../inc/SP/Core/Init.class.php:510
+#: ../../../../inc/SP/Core/Init.class.php:382
+#: ../../../../inc/SP/Core/Init.class.php:386
 msgid "La sesión no puede ser inicializada"
 msgstr "Session cannot be initialized"
 
-#: ../../../../inc/SP/Core/Init.class.php:594
+#: ../../../../inc/SP/Core/Init.class.php:497
+msgid "El directorio \"/config\" no existe"
+msgstr "The \"/config\" directory does not exist."
+
+#: ../../../../inc/SP/Core/Init.class.php:502
+msgid "No es posible escribir en el directorio \"config\""
+msgstr "Unable to write into the \"/config\" directory"
+
+#: ../../../../inc/SP/Core/Init.class.php:509
+msgid "Los permisos del directorio \"/config\" son incorrectos"
+msgstr "The \"/config\" directory permissions are wrong"
+
+#: ../../../../inc/SP/Core/Init.class.php:509
+msgid "Actual:"
+msgstr "Current:"
+
+#: ../../../../inc/SP/Core/Init.class.php:509
+msgid "Necesario: 750"
+msgstr "Needed: 750"
+
+#: ../../../../inc/SP/Core/Init.class.php:593
 msgid "Aplicación en mantenimiento"
 msgstr "Application in maintenance"
 
-#: ../../../../inc/SP/Core/Init.class.php:594
+#: ../../../../inc/SP/Core/Init.class.php:593
 msgid "En breve estará operativa"
 msgstr "It will be running shortly"
 
-#: ../../../../inc/SP/Core/Init.class.php:629
+#: ../../../../inc/SP/Core/Init.class.php:628
 msgid "Finalizar sesión"
 msgstr "Logout session"
 
-#: ../../../../inc/SP/Core/Init.class.php:631
+#: ../../../../inc/SP/Core/Init.class.php:630
 msgid "Tiempo inactivo"
 msgstr "Inactive time"
 
-#: ../../../../inc/SP/Core/Init.class.php:632
+#: ../../../../inc/SP/Core/Init.class.php:631
 msgid "Tiempo total"
 msgstr "Total time"
 
@@ -2909,16 +2918,16 @@ msgstr "Error while creating the encrypted data"
 msgid "Nuevo Plugin"
 msgstr "New Plugin"
 
-#: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:111
-#: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:113
-#: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:166
+#: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:106
+#: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:108
+#: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:161
 #, php-format
 msgid "No es posible cargar el plugin \"%s\""
 msgstr "Unable to load the \"%s\" plugin"
 
 #: ../../../../inc/SP/Core/Template.class.php:125
 #: ../../../../inc/SP/Core/Template.class.php:127
-#: ../../../../inc/SP/Html/DataGrid/DataGridBase.class.php:263
+#: ../../../../inc/SP/Html/DataGrid/DataGridBase.class.php:264
 #, php-format
 msgid "No es posible obtener la plantilla \"%s\" : %s"
 msgstr "Unable to retrieve the \"%s\" template: %s"
@@ -3112,12 +3121,12 @@ msgstr "A category is needed"
 msgid "Usuario no indicado"
 msgstr "User not set"
 
-#: ../../../../inc/SP/Forms/ApiTokenForm.class.php:89
+#: ../../../../inc/SP/Forms/ApiTokenForm.class.php:87
 msgid "Acción no indicada"
 msgstr "Action not set"
 
-#: ../../../../inc/SP/Forms/ApiTokenForm.class.php:98
-#: ../../../../inc/SP/Forms/UserForm.class.php:146
+#: ../../../../inc/SP/Forms/ApiTokenForm.class.php:91
+#: ../../../../inc/SP/Forms/UserForm.class.php:110
 msgid "La clave no puede estar en blanco"
 msgstr "Password cannot be blank"
 
@@ -3161,31 +3170,31 @@ msgstr "A profile name is needed"
 msgid "Es necesario un nombre de etiqueta"
 msgstr "A tag name is needed"
 
-#: ../../../../inc/SP/Forms/UserForm.class.php:110
+#: ../../../../inc/SP/Forms/UserForm.class.php:86
 msgid "Es necesario un nombre de usuario"
 msgstr "An username is needed"
 
-#: ../../../../inc/SP/Forms/UserForm.class.php:114
+#: ../../../../inc/SP/Forms/UserForm.class.php:88
 msgid "Es necesario un login"
 msgstr "A login is needed"
 
-#: ../../../../inc/SP/Forms/UserForm.class.php:118
+#: ../../../../inc/SP/Forms/UserForm.class.php:90
 msgid "Es necesario un perfil"
 msgstr "A profile is needed"
 
-#: ../../../../inc/SP/Forms/UserForm.class.php:122
+#: ../../../../inc/SP/Forms/UserForm.class.php:92
 msgid "Es necesario un grupo"
 msgstr "A group is needed"
 
-#: ../../../../inc/SP/Forms/UserForm.class.php:126
+#: ../../../../inc/SP/Forms/UserForm.class.php:94
 msgid "Es necesario un email"
 msgstr "An email is needed"
 
-#: ../../../../inc/SP/Forms/UserForm.class.php:166
+#: ../../../../inc/SP/Forms/UserForm.class.php:127
 msgid "No es posible eliminar, usuario en uso"
 msgstr "Unable to delete, user in use"
 
-#: ../../../../inc/SP/Http/Request.class.php:55
+#: ../../../../inc/SP/Http/Request.class.php:53
 msgid "No es posible acceder directamente a este archivo"
 msgstr "Unable to access to this file"
 
@@ -3238,30 +3247,30 @@ msgstr "Please, check PHP configuration for upload files"
 msgid "Compruebe los permisos del directorio temporal"
 msgstr "Please, check the temporary directory permissions"
 
-#: ../../../../inc/SP/Import/Import.class.php:85
+#: ../../../../inc/SP/Import/Import.class.php:83
 #, php-format
 msgid "Tipo mime no soportado (\"%s\")"
 msgstr "Mime type not supported (\"%s\")"
 
-#: ../../../../inc/SP/Import/Import.class.php:86
+#: ../../../../inc/SP/Import/Import.class.php:84
 msgid "Compruebe el formato del archivo"
 msgstr "Please, check the file format"
 
-#: ../../../../inc/SP/Import/Import.class.php:100
+#: ../../../../inc/SP/Import/Import.class.php:98
 msgid "Cuentas importadas"
 msgstr "Accounts imported"
 
-#: ../../../../inc/SP/Import/Import.class.php:105
+#: ../../../../inc/SP/Import/Import.class.php:103
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:66
 #: ../../../../js/strings.js.php:79
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:70
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:137
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:302
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:299
 #: ../../../../inc/themes/material-blue/views/config/import.inc:101
 msgid "Ayuda"
 msgstr "Help"
 
-#: ../../../../inc/SP/Import/Import.class.php:116
+#: ../../../../inc/SP/Import/Import.class.php:114
 msgid "Importación finalizada"
 msgstr "Import finished"
 
@@ -3346,11 +3355,11 @@ msgid "Extensión '%s' no cargada"
 msgstr "Extension '%s' not loaded"
 
 #: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:60
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:202
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:198
 msgid "La autorización ya existe"
 msgstr "The authorization already exist"
 
-#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:184
+#: ../../../../inc/SP/Mgmt/ApiTokens/ApiToken.class.php:180
 msgid "Token no encontrado"
 msgstr "Token not found"
 
@@ -3683,7 +3692,7 @@ msgstr "Error while retrieving the tracks"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:54
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:150
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:76
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:79
 msgid "Login/email de usuario duplicados"
 msgstr "Duplicated user login/email"
 
@@ -3696,7 +3705,6 @@ msgid "Usuario no encontrado"
 msgstr "User not found"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:181
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:195
 msgid "Error al actualizar el usuario"
 msgstr "Error while updating the user"
 
@@ -3705,36 +3713,37 @@ msgid "Error al obtener los usuarios"
 msgstr "Error while retrieving the users"
 
 #: ../../../../inc/SP/Mgmt/Users/User.class.php:280
-#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:323
+#: ../../../../inc/SP/Mgmt/Users/UserPass.class.php:322
 msgid "Error al modificar la clave"
 msgstr "Error while updating the password"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:106
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:109
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:54
 msgid "Usuario de LDAP"
 msgstr "LDAP User"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:114
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:117
 msgid "Error al guardar los datos de LDAP"
 msgstr "Error while saving the LDAP user data"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:122
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:125
 msgid "Activación Cuenta"
 msgstr "Account Activation"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:123
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:126
 msgid "Su cuenta está pendiente de activación."
 msgstr "Your account activation is pending."
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:124
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:127
 msgid "En breve recibirá un email de confirmación."
 msgstr "You will receive a confirmation email shortly."
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:131
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:134
 msgid "Nuevo usuario de LDAP"
 msgstr "New LDAP user"
 
-#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:224
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:188
+#: ../../../../inc/SP/Mgmt/Users/UserLdap.class.php:217
 msgid "Error al actualizar la clave del usuario en la BBDD"
 msgstr "Error while updating the user's password in DB"
 
@@ -3782,6 +3791,18 @@ msgstr "Error while updating the preferences"
 msgid "Actualizando preferencias"
 msgstr "Updating preferences"
 
+#: ../../../../inc/SP/Mgmt/Users/UserSSO.class.php:102
+msgid "Usuario de SSO"
+msgstr "SSO User"
+
+#: ../../../../inc/SP/Mgmt/Users/UserSSO.class.php:107
+msgid "Error al guardar los datos de SSO"
+msgstr "Error while saving the SSO user data"
+
+#: ../../../../inc/SP/Mgmt/Users/UserSSO.class.php:115
+msgid "Nuevo usuario de SSO"
+msgstr "New SSO user"
+
 #: ../../../../inc/SP/Storage/DB.class.php:285
 #: ../../../../inc/SP/Storage/DB.class.php:330
 #: ../../../../js/strings.js.php:26
@@ -3817,7 +3838,7 @@ msgstr "Error while sending the data"
 msgid "Error de codificación"
 msgstr "Encoding error"
 
-#: ../../../../inc/SP/Util/Util.class.php:298
+#: ../../../../inc/SP/Util/Util.class.php:323
 msgid "Respuesta"
 msgstr "Response"
 
@@ -4017,7 +4038,7 @@ msgstr "Clear event log?"
 
 #: ../../../../js/strings.js.php:47
 #: ../../../../inc/themes/material-blue/views/account/account-permissions.inc:75
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:258
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:255
 #: ../../../../inc/themes/material-blue/views/config/import.inc:54
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:221
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:77
@@ -4200,6 +4221,10 @@ msgid "Portapapeles no soportado por el navegador."
 msgstr "Clipboard not supported by your browser."
 
 #: ../../../../js/strings.js.php:91
+msgid "Realizando auto-login"
+msgstr "Performing auto-login"
+
+#: ../../../../js/strings.js.php:91
 msgid "Hay una versión más reciente del plugin {0} ({1})"
 msgstr "There is a more recent version of {0} plugin ({1})"
 
@@ -4232,7 +4257,7 @@ msgstr "Select date"
 #: ../../../../inc/themes/material-blue/views/account/request.inc:58
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:320
 #: ../../../../inc/themes/material-blue/views/config/backup.inc:167
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:289
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:286
 #: ../../../../inc/themes/material-blue/views/config/general.inc:29
 #: ../../../../inc/themes/material-blue/views/config/import.inc:89
 #: ../../../../inc/themes/material-blue/views/config/info.inc:145
@@ -4780,8 +4805,8 @@ msgstr "Master Password"
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:18
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:21
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:179
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:182
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:185
 msgid "Último cambio"
 msgstr "Last Change"
 
@@ -4858,40 +4883,40 @@ msgstr "You could get more info on: %s"
 msgid "Actualizar hash de clave maestra"
 msgstr "Update master password hash"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:171
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:168
 msgid "Clave Temporal"
 msgstr "Temporary Password"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:187
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:200
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:184
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:197
 msgid "No generada"
 msgstr "Not generated"
 
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:189
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:192
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:195
 msgid "Válido hasta"
 msgstr "Valid until"
 
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:203
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:206
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:209
 msgid "Intentos"
 msgstr "Attempts"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:216
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:225
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:213
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:222
 msgid "Validez (s)"
 msgstr "Life (s)"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:237
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:234
 msgid ""
 "Envía un correo a todos los usuarios o sólo a los del grupo seleccionado."
 msgstr "Sends an email to all users or only to those whose group is selected."
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:245
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:242
 msgid "Enviar correo"
 msgstr "Send email"
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:303
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:300
 msgid ""
 "La clave temporal es utilizada como clave maestra para los usuarios que "
 "necesitan introducirla al iniciar la sesión, así no es necesario facilitar "
@@ -4901,9 +4926,33 @@ msgstr ""
 "to enter it during login. By this way there is no need to tell them the real "
 "Master Password."
 
-#: ../../../../inc/themes/material-blue/views/config/encryption.inc:309
+#: ../../../../inc/themes/material-blue/views/config/encryption.inc:306
 msgid "Generar"
 msgstr "Generate"
+
+#: ../../../../inc/themes/material-blue/views/config/general-auth.inc:13
+msgid "Usar Auth Basic"
+msgstr "Use Auth Basic"
+
+#: ../../../../inc/themes/material-blue/views/config/general-auth.inc:24
+msgid "Usar auto-login con Auth Basic"
+msgstr "Use auto-login through Auth Basic"
+
+#: ../../../../inc/themes/material-blue/views/config/general-auth.inc:30
+msgid "Dominio"
+msgstr "Domain"
+
+#: ../../../../inc/themes/material-blue/views/config/general-auth.inc:35
+msgid ""
+"El dominio será añadido al nombre de usuario de sysPass para comprobarlo con "
+"el de Auth Basic."
+msgstr ""
+"The domain will be added to the sysPass user name for checking against the "
+"Auth Basic one."
+
+#: ../../../../inc/themes/material-blue/views/config/general-auth.inc:45
+msgid "Nombre de dominio"
+msgstr "Domain name"
 
 #: ../../../../inc/themes/material-blue/views/config/general-events.inc:4
 #: ../../../../inc/themes/material-blue/views/itemshow/plugins.inc:61

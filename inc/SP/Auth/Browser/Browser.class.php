@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,6 +25,7 @@
 namespace SP\Auth\Browser;
 
 use SP\Auth\AuthInterface;
+use SP\Config\Config;
 use SP\DataModel\UserLoginData;
 
 /**
@@ -45,9 +46,38 @@ class Browser implements AuthInterface
     public function authenticate(UserLoginData $UserData)
     {
         $AuthData = new BrowserAuthData();
-        $AuthData->setAuthenticated($this->checkServerAuthUser($UserData->getLogin()));
+        $AuthData->setAuthGranted($this->isAuthGranted());
 
-        return $AuthData;
+        if (!empty($UserData->getLogin()) && !empty($UserData->getLoginPass())) {
+            return $AuthData->setAuthenticated($this->checkServerAuthUser($UserData->getLogin()));
+        }
+
+        if (Config::getConfig()->isAuthBasicAutoLoginEnabled()) {
+            $authUser = Browser::getServerAuthUser();
+            $authPass = $this->getAuthPass();
+
+            if ($authUser !== null && $authPass !== null) {
+                $UserData->setLogin($authUser);
+                $UserData->setLoginPass($authPass);
+
+                $AuthData->setName($authUser);
+                return $AuthData->setAuthenticated(true);
+            }
+
+            return $AuthData->setAuthenticated(false);
+        }
+
+        return $AuthData->setAuthenticated($this->checkServerAuthUser($UserData->getLogin()));
+    }
+
+    /**
+     * Indica si es requerida para acceder a la aplicación
+     *
+     * @return boolean
+     */
+    public function isAuthGranted()
+    {
+        return Config::getConfig()->isAuthBasicAutoLoginEnabled();
     }
 
     /**
@@ -58,7 +88,13 @@ class Browser implements AuthInterface
      */
     public function checkServerAuthUser($login)
     {
-        $authUser = $this->getServerAuthUser();
+        $domain = Config::getConfig()->getAuthBasicDomain();
+
+        if (!empty($domain)) {
+            $login = Browser::getServerAuthUser() . '@' . $domain;
+        }
+
+        $authUser = Browser::getServerAuthUser();
 
         return $authUser === null ?: $authUser === $login;
     }
@@ -68,12 +104,28 @@ class Browser implements AuthInterface
      *
      * @return string
      */
-    public function getServerAuthUser()
+    public static function getServerAuthUser()
     {
         if (isset($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_USER'])) {
             return $_SERVER['PHP_AUTH_USER'];
-        } elseif (isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) {
+        }
+
+        if (isset($_SERVER['REMOTE_USER']) && !empty($_SERVER['REMOTE_USER'])) {
             return $_SERVER['REMOTE_USER'];
+        }
+
+        return null;
+    }
+
+    /**
+     * Devolver la clave del usuario autentificado por el servidor web
+     *
+     * @return string|null
+     */
+    protected function getAuthPass()
+    {
+        if (isset($_SERVER['PHP_AUTH_PW']) && !empty($_SERVER['PHP_AUTH_PW'])) {
+            return $_SERVER['PHP_AUTH_PW'];
         }
 
         return null;

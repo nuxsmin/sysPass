@@ -14,6 +14,7 @@
             <?php include $this->includeTemplate('general-site');; ?>
             <?php include $this->includeTemplate('general-events'); ?>
             <?php include $this->includeTemplate('general-proxy'); ?>
+            <?php include $this->includeTemplate('general-auth'); ?>
 
             <input type="hidden" name="activeTab" value="<?php echo $config_tabIndex; ?>"/>
             <input type="hidden" name="actionId" value="<?php echo $config_actionId; ?>"/>

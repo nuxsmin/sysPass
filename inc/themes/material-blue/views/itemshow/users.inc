@@ -51,6 +51,22 @@ if ($user->getUserLogin() === 'demo') {
                 </td>
             </tr>
 
+            <?php if ($isUseSSO): ?>
+                <tr>
+                    <td class="descField"><?php echo __('Login SSO'); ?></td>
+                    <td class="valField">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="login_sso" name="login_sso" type="text"
+                                   class="mdl-textfield__input mdl-color-text--indigo-400"
+                                   value="<?php echo $user->getUserSsoLogin(); ?>"
+                                   maxlength="100" <?php echo $isReadonly ? 'readonly' : ''; ?>>
+                            <label class="mdl-textfield__label"
+                                   for="login_sso"><?php echo __('Login de inicio de sesión con SSO'); ?></label>
+                        </div>
+                    </td>
+                </tr>
+            <?php endif; ?>
+
             <tr>
                 <td class="descField"><?php echo __('Perfil'); ?></td>
                 <td class="valField">

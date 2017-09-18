@@ -56,7 +56,7 @@ class Upgrade
     /**
      * @var array Versiones actualizables
      */
-    private static $dbUpgrade = ['110', '112.1', '112.2', '112.3', '112.13', '112.19', '112.20', '120.01', '120.02', '130.16011001', '130.16100601', '200.17011302', '200.17011701', '210.17022601', '213.17031402'];
+    private static $dbUpgrade = ['110', '112.1', '112.2', '112.3', '112.13', '112.19', '112.20', '120.01', '120.02', '130.16011001', '130.16100601', '200.17011302', '200.17011701', '210.17022601', '213.17031402', '220.17050101'];
     private static $cfgUpgrade = ['112.4', '130.16020501', '200.17011202'];
     private static $auxUpgrade = ['120.01', '120.02', '200.17010901', '200.17011202'];
     private static $appUpgrade = ['210.17022601'];
@@ -121,7 +121,7 @@ class Upgrade
      * @param $version
      * @return string
      */
-    private static function normalizeVersion($version)
+    public static function normalizeVersion($version)
     {
         if (strpos($version, '.') === false) {
             if (strlen($version) === 10) {
@@ -421,11 +421,14 @@ class Upgrade
             }
         }
 
+        $oldFile = CONFIG_FILE . '.old.' . time();
+
         try {
+
             $Config->setSiteTheme('material-blue');
             $Config->setConfigVersion($version);
             Config::saveConfig($Config, false);
-            rename(CONFIG_FILE, CONFIG_FILE . '.old');
+            rename(CONFIG_FILE, $oldFile);
 
             $LogMessage->addDetails(__('Versión', false), $version);
             $Log->setLogLevel(Log::NOTICE);
@@ -434,7 +437,7 @@ class Upgrade
             return true;
         } catch (\Exception $e) {
             $LogMessage->addDescription(__('Error al actualizar la configuración', false));
-            $LogMessage->addDetails(__('Archivo', false), CONFIG_FILE . '.old');
+            $LogMessage->addDetails(__('Archivo', false), $oldFile);
             $Log->setLogLevel(Log::ERROR);
             $Log->writeLog();
         }

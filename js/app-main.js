@@ -37,7 +37,8 @@ sysPass.Main = function () {
         DEBUG: "",
         COOKIES_ENABLED: false,
         PLUGINS: [],
-        LOGGEDIN: false
+        LOGGEDIN: false,
+        AUTHBASIC_AUTOLOGIN: false
     };
 
     // Atributos del generador de claves
@@ -290,25 +291,26 @@ sysPass.Main = function () {
         }
 
         getEnvironment().then(function () {
-            if (config.PK !== "") {
-                bindPassEncrypt();
-            }
+            if (!checkLogout()) {
+                if (config.PK !== "") {
+                    bindPassEncrypt();
+                }
 
-            if (config.CHECK_UPDATES === true) {
-                appActions.main.getUpdates();
-            }
+                if (config.CHECK_UPDATES === true) {
+                    appActions.main.getUpdates();
+                }
 
-            if (config.COOKIES_ENABLED === false) {
-                msg.sticky(config.LANG[64]);
-            }
+                if (config.COOKIES_ENABLED === false) {
+                    msg.sticky(config.LANG[64]);
+                }
 
-            initializeClipboard();
-            setupCallbacks();
-            checkLogout();
-            initPlugins();
+                initializeClipboard();
+                setupCallbacks();
+                initPlugins();
 
-            if (config.LOGGEDIN === true && config.CHECK_UPDATES === true) {
-                checkPluginUpdates();
+                if (config.LOGGEDIN === true && config.CHECK_UPDATES === true) {
+                    checkPluginUpdates();
+                }
             }
         });
 
@@ -354,6 +356,7 @@ sysPass.Main = function () {
             config.COOKIES_ENABLED = json.cookies_enabled;
             config.PLUGINS = json.plugins;
             config.LOGGEDIN = json.loggedin;
+            config.AUTHBASIC_AUTOLOGIN = json.authbasic_autologin;
 
             Object.freeze(config);
         });
@@ -418,7 +421,11 @@ sysPass.Main = function () {
             msg.sticky(config.LANG[61], function () {
                 redirect("index.php");
             });
+
+            return true;
         }
+
+        return false;
     };
 
     var redirect = function (url) {

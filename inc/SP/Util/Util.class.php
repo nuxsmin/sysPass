@@ -154,7 +154,7 @@ class Util
      */
     public static function getVersionString()
     {
-        return '2.1';
+        return '2.2-dev';
     }
 
     /**
@@ -386,8 +386,8 @@ class Util
      */
     public static function getVersion($retBuild = false, $normalized = false)
     {
-        $build = 17091804;
-        $version = [2, 1, 15];
+        $build = 17050101;
+        $version = [2, 2, 0];
 
         if ($normalized === true) {
             return [implode('', $version), $build];

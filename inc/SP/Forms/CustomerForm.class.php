@@ -72,6 +72,7 @@ class CustomerForm extends FormBase implements FormInterface
         $this->CustomerData->setCustomerId($this->itemId);
         $this->CustomerData->setCustomerName(Request::analyze('name'));
         $this->CustomerData->setCustomerDescription(Request::analyze('description'));
+        $this->CustomerData->setCustomerIsGlobal(Request::analyze('isglobal', 0, false, 1));
     }
 
     /**

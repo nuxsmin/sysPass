@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -39,61 +39,49 @@ class Config
      * @var ConfigData
      */
     private static $Config;
+    /**
+     * @var bool
+     */
+    private static $configLoaded = false;
 
     /**
      * Cargar la configuración desde el archivo
      *
      * @param bool $reload
+     * @return ConfigData
      */
     public static function loadConfig($reload = false)
     {
-        $ConfigData = self::$Config instanceof ConfigData ? self::$Config : Session::getConfig();
+        if ($reload === false && self::$configLoaded) {
+            return self::$Config;
+        }
+
+        $ConfigData = Session::getConfig();
 
         if ($reload === true
             || !is_object($ConfigData)
             || time() >= (Session::getConfigTime() + $ConfigData->getSessionTimeout() / 2)
         ) {
-            Session::setConfig(self::arrayMapper());
-            Session::setConfigTime(time());
-        }
-    }
-
-    /**
-     * Mapear el array de elementos de configuración con las propieades de la
-     * clase ConfigData
-     *
-     * @return ConfigData
-     */
-    private static function arrayMapper()
-    {
-        if (self::$Config instanceof ConfigData) {
-            return self::$Config;
-        }
-
-        self::$Config = new ConfigData();
-
-        if (!file_exists(XML_CONFIG_FILE)) {
-            return self::$Config;
-        }
-
-        try {
-            $items = DiFactory::getConfigStorage()->load('config')->getItems();
-            $Reflection = new ReflectionObject(self::$Config);
-
-            foreach ($Reflection->getProperties() as $property) {
-                $property->setAccessible(true);
-                $property->setValue(self::$Config, @$items[$property->getName()]);
-                $property->setAccessible(false);
-            }
-        } catch (\Exception $e) {
+            self::saveConfigInSession();
         }
 
         return self::$Config;
     }
 
     /**
+     * Guardar la configuración en la sesión
+     */
+    private static function saveConfigInSession()
+    {
+        Session::setConfig(self::$Config);
+        Session::setConfigTime(time());
+    }
+
+    /**
+     * Guardar la configuración
+     *
      * @param ConfigData $Config
-     * @param bool $backup
+     * @param bool       $backup
      */
     public static function saveConfig(ConfigData $Config = null, $backup = true)
     {
@@ -117,21 +105,56 @@ class Config
      */
     public static function getConfig()
     {
-        if (self::$Config instanceof ConfigData) {
+        if (self::$configLoaded) {
             return self::$Config;
         }
 
         $ConfigData = Session::getConfig();
 
-        self::$Config = $ConfigData instanceof ConfigData ? $ConfigData : self::arrayMapper();
+        self::$Config = $ConfigData instanceof ConfigData ? $ConfigData : self::loadConfigFile();
+        self::$configLoaded = true;
+
+        self::saveConfigInSession();
+
+        return self::$Config;
+    }
+
+    /**
+     * Cargar el archivo de configuración
+     *
+     * @return ConfigData
+     */
+    private static function loadConfigFile()
+    {
+        self::$Config = new ConfigData();
+
+        if (!file_exists(XML_CONFIG_FILE)) {
+            return self::$Config;
+        }
+
+        try {
+            // Mapear el array de elementos de configuración con las propieades de la clase ConfigData
+            $items = DiFactory::getConfigStorage()->load('config')->getItems();
+            $Reflection = new ReflectionObject(self::$Config);
+
+            foreach ($Reflection->getProperties() as $property) {
+                $property->setAccessible(true);
+
+                if (isset($items[$property->getName()])) {
+                    $property->setValue(self::$Config, $items[$property->getName()]);
+                }
+
+                $property->setAccessible(false);
+            }
+        } catch (\Exception $e) {
+            debugLog($e->getMessage());
+        }
 
         return self::$Config;
     }
 
     /**
      * Realizar un backup de la configuración en la BD
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     private static function backupToDB()
     {

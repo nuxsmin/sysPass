@@ -41,6 +41,29 @@
                 </td>
             </tr>
 
+            <tr>
+                <td class="descField">
+                    <div id="help-isglobal"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-isglobal">
+                        <p>
+                            <?php echo __('Indica si el cliente es visible para todos los usuarios.'); ?>
+                        </p>
+                        <p>
+                            <?php echo __('Por defecto los clientes asignados a cuentas sólo son visibles para los usuarios con acceso a las cuentas.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="isglobal">
+                        <input type="checkbox" id="isglobal"
+                               class="mdl-switch__input mdl-color-text--indigo-400"
+                               name="isglobal" <?php echo $customer->getCustomerIsGlobal() ? 'checked' : ' '; ?>/>
+                        <span class="mdl-switch__label"><?php echo __('Global'); ?></span>
+                    </label>
+                </td>
+            </tr>
+
             <?php if ($customFields): ?>
                 <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
             <?php endif; ?>

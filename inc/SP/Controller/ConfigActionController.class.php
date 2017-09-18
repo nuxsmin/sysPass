@@ -220,6 +220,29 @@ class ConfigActionController implements ItemControllerInterface
             $this->LogMessage->addDescription(__('Proxy deshabilitado', false));
         }
 
+        // Autentificación
+        $authBasicEnabled = Request::analyze('authbasic_enabled', false, false, true);
+        $authBasicAutologinEnabled = Request::analyze('authbasic_enabled', false, false, true);
+        $authBasicDomain = Request::analyze('authbasic_domain');
+        $authSsoDefaultGroup = Request::analyze('sso_defaultgroup', false, false, true);
+        $authSsoDefaultProfile = Request::analyze('sso_defaultprofile', false, false, true);
+
+        // Valores para Autentificación
+        if ($authBasicEnabled) {
+            $this->ConfigData->setAuthBasicEnabled(true);
+            $this->ConfigData->setAuthBasicAutoLoginEnabled($authBasicAutologinEnabled);
+            $this->ConfigData->setAuthBasicDomain($authBasicDomain);
+            $this->ConfigData->setSsoDefaultGroup($authSsoDefaultGroup);
+            $this->ConfigData->setSsoDefaultProfile($authSsoDefaultProfile);
+
+            $this->LogMessage->addDescription(__('Auth Basic habiltada', false));
+        } elseif ($this->ConfigData->isAuthBasicEnabled()) {
+            $this->ConfigData->setAuthBasicEnabled(false);
+            $this->ConfigData->setAuthBasicAutoLoginEnabled(false);
+
+            $this->LogMessage->addDescription(__('Auth Basic deshabiltada', false));
+        }
+
         $this->LogMessage->addDetails(__('Sección', false), __('General', false));
 
         $this->saveConfig();

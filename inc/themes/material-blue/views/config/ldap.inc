@@ -32,7 +32,7 @@
                                 <input type="checkbox" id="ldap_enabled"
                                        class="mdl-switch__input mdl-color-text--indigo-400"
                                        name="ldap_enabled"
-                                    <?php echo $chkLdap; ?>/>
+                                    <?php echo $Config->isLdapEnabled() ? 'checked' : ''; ?>/>
                                 <span class="mdl-switch__label"><?php echo __('Habilitar LDAP'); ?></span>
                             </label>
                         </td>
@@ -52,7 +52,7 @@
                                 <input type="checkbox" id="ldap_ads"
                                        class="mdl-switch__input mdl-color-text--indigo-400"
                                        name="ldap_ads"
-                                    <?php echo $chkLdapADS; ?>/>
+                                    <?php echo $Config->isLdapAds() ? 'checked' : ''; ?>/>
                                 <span class="mdl-switch__label"><?php echo __('Active Directory'); ?></span>
                             </label>
                         </td>
@@ -82,7 +82,7 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="ldap_server" name="ldap_server" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       maxlength="128" value="<?php echo $ldapServer; ?>"/>
+                                       maxlength="128" value="<?php echo $Config->getLdapServer(); ?>"/>
                                 <label class="mdl-textfield__label"
                                        for="ldap_server"><?php echo __('Servidor'); ?></label>
                             </div>
@@ -112,7 +112,7 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="ldap_binduser" name="ldap_binduser" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       maxlength="128" value="<?php echo $ldapBindUser; ?>"/>
+                                       maxlength="128" value="<?php echo $Config->getLdapBindUser(); ?>"/>
                                 <label class="mdl-textfield__label"
                                        for="ldap_binduser"><?php echo __('Usuario'); ?></label>
                             </div>
@@ -133,7 +133,7 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="ldap_bindpass" name="ldap_bindpass" type="password"
                                        class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
-                                       maxlength="128" value="<?php echo $ldapBindPass; ?>"/>
+                                       maxlength="128" value="<?php echo $Config->getLdapBindPass(); ?>"/>
                                 <label class="mdl-textfield__label"
                                        for="ldap_bindpass"><?php echo __('Clave'); ?></label>
                             </div>
@@ -163,7 +163,7 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="ldap_base" name="ldap_base" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       maxlength="128" value="<?php echo $ldapBase; ?>"/>
+                                       maxlength="128" value="<?php echo $Config->getLdapBase(); ?>"/>
                                 <label class="mdl-textfield__label"
                                        for="ldap_base"><?php echo __('Base de búsqueda'); ?></label>
                             </div>
@@ -197,7 +197,7 @@
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="ldap_group" name="ldap_group" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       maxlength="128" value="<?php echo $ldapGroup; ?>"/>
+                                       maxlength="128" value="<?php echo $Config->getLdapGroup(); ?>"/>
                                 <label class="mdl-textfield__label" for="ldap_group"><?php echo __('Grupo'); ?></label>
                             </div>
                         </td>
@@ -221,7 +221,7 @@
                                 <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
                                 <?php foreach ($groups as $group): ?>
                                     <option
-                                            value="<?php echo $group->id; ?>" <?php echo $group->id === $ldapDefaultGroup ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
+                                            value="<?php echo $group->id; ?>" <?php echo $group->id === $Config->getLdapDefaultGroup() ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>
@@ -245,7 +245,7 @@
                                 <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
                                 <?php foreach ($profiles as $profile): ?>
                                     <option
-                                            value="<?php echo $profile->id; ?>" <?php echo ($profile->id === $ldapDefaultProfile) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
+                                            value="<?php echo $profile->id; ?>" <?php echo ($profile->id === $Config->getLdapDefaultProfile()) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </td>

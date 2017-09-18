@@ -29,6 +29,7 @@ defined('APP_ROOT') || die();
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
+use SP\DataModel\UserLoginData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;
@@ -39,6 +40,7 @@ use SP\Storage\QueryData;
  * Class User
  *
  * @package SP
+ * @property UserData|UserLoginData $itemData
  */
 class User extends UserBase implements ItemInterface, ItemSelectInterface
 {
@@ -58,6 +60,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             'INSERT INTO usrData SET
             user_name = ?,
             user_login = ?,
+            user_ssoLogin = ?,
             user_email = ?,
             user_notes = ?,
             user_groupId = ?,
@@ -76,6 +79,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserName());
         $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserSsoLogin());
         $Data->addParam($this->itemData->getUserEmail());
         $Data->addParam($this->itemData->getUserNotes());
         $Data->addParam($this->itemData->getUserGroupId());
@@ -103,11 +107,12 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $query = /** @lang SQL */
             'SELECT user_login, user_email
             FROM usrData
-            WHERE UPPER(user_login) = UPPER(?) OR UPPER(user_email) = UPPER(?)';
+            WHERE UPPER(user_login) = UPPER(?) OR UPPER(user_ssoLogin) = UPPER(?) OR UPPER(user_email) = UPPER(?)';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserSsoLogin());
         $Data->addParam($this->itemData->getUserEmail());
 
         DB::getQuery($Data);
@@ -154,6 +159,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             'UPDATE usrData SET
             user_name = ?,
             user_login = ?,
+            user_ssoLogin = ?,
             user_email = ?,
             user_notes = ?,
             user_groupId = ?,
@@ -169,6 +175,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserName());
         $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserSsoLogin());
         $Data->addParam($this->itemData->getUserEmail());
         $Data->addParam($this->itemData->getUserNotes());
         $Data->addParam($this->itemData->getUserGroupId());
@@ -198,12 +205,13 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $query = /** @lang SQL */
             'SELECT user_login, user_email
             FROM usrData
-            WHERE (UPPER(user_login) = UPPER(?) OR UPPER(user_email) = UPPER(?))
+            WHERE (UPPER(user_login) = UPPER(?) OR UPPER(user_ssoLogin) = UPPER(?) OR UPPER(user_email) = UPPER(?))
             AND user_id <> ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getUserSsoLogin());
         $Data->addParam($this->itemData->getUserEmail());
         $Data->addParam($this->itemData->getUserId());
 
@@ -223,6 +231,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             user_name,
             user_groupId,
             user_login,
+            user_ssoLogin,
             user_email,
             user_notes,
             user_count,
@@ -297,6 +306,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             user_groupId,
             usergroup_name,
             user_login,
+            user_ssoLogin,
             user_email,
             user_notes,
             user_count,
@@ -354,6 +364,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             user_groupId,
             usergroup_name,
             user_login,
+            user_ssoLogin,
             user_email,
             user_notes,
             user_count,
@@ -377,7 +388,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             BIN(user_isMigrate) AS user_isMigrate
             FROM usrData
             JOIN usrGroups ON usergroup_id = user_groupId
-            WHERE user_login = ? LIMIT 1';
+            WHERE user_login = ? OR user_ssoLogin = ? LIMIT 1';
 
         $Data = new QueryData();
 
@@ -386,8 +397,9 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         } else {
             $Data->setMapClassName($this->getDataModel());
         }
-        
+
         $Data->setQuery($query);
+        $Data->addParam($login);
         $Data->addParam($login);
 
         $queryRes = DB::getResults($Data);
@@ -417,6 +429,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             user_groupId,
             usergroup_name,
             user_login,
+            user_ssoLogin,
             user_email,
             user_notes,
             user_count,

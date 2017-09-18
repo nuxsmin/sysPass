@@ -39,4 +39,11 @@ interface AuthInterface
      * @return mixed|AuthDataBase
      */
     public function authenticate(UserLoginData $UserData);
+
+    /**
+     * Indica si es requerida para acceder a la aplicación
+     *
+     * @return boolean
+     */
+    public function isAuthGranted();
 }

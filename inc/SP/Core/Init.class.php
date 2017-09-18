@@ -28,6 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountAcl;
 use SP\Auth\Browser\Browser;
 use SP\Config\Config;
+use SP\Config\ConfigData;
 use SP\Controller\MainController;
 use SP\Core\Crypt\SecureKeyCookie;
 use SP\Core\Crypt\CryptSessionHandler;
@@ -208,12 +209,10 @@ class Init
             $AuthBrowser = new Browser();
 
             // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-            if ($AuthBrowser->checkServerAuthUser(Session::getUserData()->getUserLogin()) === false) {
-                self::logout();
-                // Denegar la redirección si la URL contiene una @
-                // Esto previene redirecciones como ?redirect_url=:user@domain.com
-            } elseif (Request::analyze('redirect_url', '', true) && strpos('index.php', '@') === false) {
-                header('Location: ' . 'index.php');
+            if ($AuthBrowser->checkServerAuthUser(Session::getUserData()->getUserLogin()) === false
+                && $AuthBrowser->checkServerAuthUser(Session::getUserData()->getUserSsoLogin()) === false
+            ) {
+                self::goLogout();
             }
 
             return;
@@ -359,6 +358,34 @@ class Init
         self::$WEBURI = HttpUtil::getHttpHost() . self::$WEBROOT;
     }
 
+    /**
+     * Iniciar la sesión PHP
+     *
+     * @param bool $encrypt Encriptar la sesión de PHP
+     */
+    private static function startSession($encrypt = false)
+    {
+        // Evita que javascript acceda a las cookies de sesion de PHP
+        ini_set('session.cookie_httponly', '1');
+        ini_set('session.save_handler', 'files');
+
+        if ($encrypt === true) {
+            $Key = SecureKeyCookie::getKey();
+
+            if ($Key !== false && self::$checkPhpVersion) {
+                session_set_save_handler(new CryptSessionHandler($Key), true);
+            }
+        }
+
+        // Si la sesión no puede ser iniciada, devolver un error 500
+        if (session_start() === false) {
+            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
+
+            header('HTTP/1.1 500 Internal Server Error');
+
+            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
+        }
+    }
 
     /**
      * Devuelve un error utilizando la plantilla de error o en formato JSON
@@ -412,7 +439,7 @@ class Init
      */
     private static function checkConfigVersion()
     {
-        $appVersion = (int)implode(Util::getVersion(true));
+        $appVersion = implode('.', Util::getVersion(true, true));
 
         if (file_exists(CONFIG_FILE) && Upgrade::upgradeOldConfigFile($appVersion)) {
             self::logConfigUpgrade($appVersion);
@@ -422,10 +449,10 @@ class Init
             return;
         }
 
-        $configVersion = (int)Config::getConfig()->getConfigVersion();
+        $configVersion = Upgrade::normalizeVersion(Config::getConfig()->getConfigVersion());
 
         if (Config::getConfig()->isInstalled()
-            && $configVersion < $appVersion
+            && Upgrade::checkVersion($configVersion, $appVersion)
             && Upgrade::needConfigUpgrade($configVersion)
             && Upgrade::upgradeConfig($configVersion)
         ) {
@@ -480,35 +507,6 @@ class Init
         if ($configPerms !== '750' && !Checks::checkIsWindows()) {
             clearstatcache();
             self::initError(__('Los permisos del directorio "/config" son incorrectos'), __('Actual:') . ' ' . $configPerms . ' - ' . __('Necesario: 750'));
-        }
-    }
-
-    /**
-     * Iniciar la sesión PHP
-     *
-     * @param bool $encrypt Encriptar la sesión de PHP
-     */
-    private static function startSession($encrypt = false)
-    {
-        // Evita que javascript acceda a las cookies de sesion de PHP
-        ini_set('session.cookie_httponly', '1');
-        ini_set('session.save_handler', 'files');
-
-        if ($encrypt === true) {
-            $Key = SecureKeyCookie::getKey();
-
-            if ($Key !== false && self::$checkPhpVersion) {
-                session_set_save_handler(new CryptSessionHandler($Key), true);
-            }
-        }
-
-        // Si la sesión no puede ser iniciada, devolver un error 500
-        if (session_start() === false) {
-            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
-
-            header('HTTP/1.1 500 Internal Server Error');
-
-            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
         }
     }
 
@@ -592,17 +590,23 @@ class Init
     private static function checkLogout()
     {
         if (Request::analyze('logout', false, true)) {
-            self::logout();
-            self::goLogin();
+            self::goLogout();
         }
     }
 
     /**
      * Deslogar el usuario actual y eliminar la información de sesión.
      */
-    private static function logout()
+    private static function goLogout()
     {
         self::wrLogoutInfo();
+
+        SessionUtil::cleanSession();
+
+        Session::setLoggedOut(true);
+
+        $Controller = new MainController();
+        $Controller->getLogout();
     }
 
     /**
@@ -620,17 +624,6 @@ class Init
         $LogMessage->addDetails(__('Tiempo inactivo', false), $inactiveTime . ' min.');
         $LogMessage->addDetails(__('Tiempo total', false), $totalTime . ' min.');
         $Log->writeLog();
-    }
-
-    /**
-     * Mostrar la página de login
-     */
-    private static function goLogin()
-    {
-        SessionUtil::cleanSession();
-
-        $Controller = new MainController();
-        $Controller->getLogin();
     }
 
     /**
@@ -750,6 +743,15 @@ class Init
         $Controller->doAction('prelogin.' . $action);
 
         return true;
+    }
+
+    /**
+     * Mostrar la página de login
+     */
+    private static function goLogin()
+    {
+        $Controller = new MainController();
+        $Controller->getLogin();
     }
 
     /**

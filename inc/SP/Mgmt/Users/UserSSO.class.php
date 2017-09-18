@@ -27,7 +27,7 @@ namespace SP\Mgmt\Users;
 use SP\Config\Config;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Messages\LogMessage;
+use SP\DataModel\UserData;
 use SP\DataModel\UserLoginData;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -37,12 +37,11 @@ use SP\Storage\QueryData;
 defined('APP_ROOT') || die();
 
 /**
- * Class UserLdap
+ * Class UserSSO
  *
- * @package SP
- * @property UserLoginData $itemData
+ * @package SP\Mgmt\Users
  */
-class UserLdap extends User
+class UserSSO extends User
 {
     /**
      * Comprobar si los datos del usuario de LDAP están en la BBDD.
@@ -52,13 +51,14 @@ class UserLdap extends User
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public static function checkLDAPUserInDB($userLogin)
+    public function checkUserInDB($userLogin)
     {
         $query = /** @lang SQL */
-            'SELECT user_login FROM usrData WHERE LOWER(user_login) = LOWER(?) LIMIT 1';
+            'SELECT user_login FROM usrData WHERE LOWER(user_login) = LOWER(?) OR LOWER(user_ssoLogin) = LOWER(?) LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->addParam($userLogin);
         $Data->addParam($userLogin);
 
         DB::getQuery($Data);
@@ -68,6 +68,7 @@ class UserLdap extends User
 
     /**
      * @return mixed
+     * @throws \SP\Core\Exceptions\SPException
      * @throws SPException
      */
     public function add()
@@ -76,54 +77,45 @@ class UserLdap extends User
             throw new SPException(SPException::SP_INFO, __('Login/email de usuario duplicados', false));
         }
 
-        $groupId = Config::getConfig()->getLdapDefaultGroup();
-        $profileId = Config::getConfig()->getLdapDefaultProfile();
+        $groupId = Config::getConfig()->getSsoDefaultGroup();
+        $profileId = Config::getConfig()->getSsoDefaultProfile();
+
         $this->itemData->setUserIsDisabled(($groupId === 0 || $profileId === 0) ? 1 : 0);
 
         $query = /** @lang SQL */
             'INSERT INTO usrData SET
             user_name = ?,
             user_login = ?,
-            user_email = ?,
+            user_ssoLogin = ?,
             user_notes = ?,
             user_groupId = ?,
             user_profileId = ?,
             user_mPass = \'\',
             user_mKey = \'\',
             user_isDisabled = ?,
-            user_isLdap = 1,
             user_pass = ?,
             user_hashSalt = \'\'';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserName());
-        $Data->addParam($this->itemData->getUserLogin());
-        $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam(__('Usuario de LDAP'));
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam(__('Usuario de SSO'));
         $Data->addParam($groupId);
         $Data->addParam($profileId);
         $Data->addParam((int)$this->itemData->isUserIsDisabled());
-        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
-        $Data->setOnErrorMessage(__('Error al guardar los datos de LDAP', false));
+        $Data->addParam(Hash::hashKey($this->itemData->getLoginPass()));
+        $Data->setOnErrorMessage(__('Error al guardar los datos de SSO', false));
 
         DB::getQuery($Data);
 
         $this->itemData->setUserId(DB::getLastId());
 
-        if (!$groupId || !$profileId) {
-            $LogEmail = new LogMessage();
-            $LogEmail->setAction(__('Activación Cuenta', false));
-            $LogEmail->addDescription(__('Su cuenta está pendiente de activación.', false));
-            $LogEmail->addDescription(__('En breve recibirá un email de confirmación.', false));
-
-            Email::sendEmail($LogEmail, $this->itemData->getUserEmail(), false);
-        }
-
         $Log = new Log();
         $Log->getLogMessage()
-            ->setAction(__('Nuevo usuario de LDAP', false))
-            ->addDescription(sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
+            ->setAction(__('Nuevo usuario de SSO', false))
+            ->addDescription(sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getLogin()));
         $Log->writeLog();
 
         Email::sendEmail($Log->getLogMessage());
@@ -141,15 +133,12 @@ class UserLdap extends User
     public function checkDuplicatedOnAdd()
     {
         $query = /** @lang SQL */
-            'SELECT user_login, user_email
-            FROM usrData
-            WHERE LOWER(user_login) = LOWER(?) OR (? <> \'\' AND LOWER(user_email) = LOWER(?))';
+            'SELECT user_login FROM usrData WHERE LOWER(user_login) = LOWER(?) OR LOWER(user_ssoLogin) = LOWER(?)';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserLogin());
-        $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam($this->itemData->getUserEmail());
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam($this->itemData->getLogin());
 
         DB::getQuery($Data);
 
@@ -157,44 +146,8 @@ class UserLdap extends User
     }
 
     /**
-     * @return $this
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function update()
-    {
-        $query = /** @lang SQL */
-            'UPDATE usrData SET
-            user_name = ?,
-            user_email = ?,
-            user_notes = ?,
-            user_groupId = ?,
-            user_profileId = ?,
-            user_isAdminApp = ?,
-            user_isAdminAcc = ?,
-            user_isDisabled = ?,
-            user_lastUpdate = NOW(),
-            user_isLdap = 1
-            WHERE user_id = ? LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserName());
-        $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam($this->itemData->getUserNotes());
-        $Data->addParam($this->itemData->getUserGroupId());
-        $Data->addParam($this->itemData->getUserProfileId());
-        $Data->addParam($this->itemData->isUserIsAdminApp());
-        $Data->addParam($this->itemData->isUserIsAdminAcc());
-        $Data->addParam($this->itemData->isUserIsDisabled());
-        $Data->addParam($this->itemData->getUserId());
-        $Data->setOnErrorMessage(__('Error al actualizar el usuario', false));
-
-        DB::getQuery($Data);
-
-        return $this;
-    }
-
-    /**
+     * Actualizar al realizar login
+     *
      * @return $this
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -203,19 +156,15 @@ class UserLdap extends User
         $query = 'UPDATE usrData SET 
             user_pass = ?,
             user_hashSalt = \'\',
-            user_name = ?,
-            user_email = ?,
             user_lastUpdate = NOW(),
-            user_lastLogin = NOW(),
-            user_isLdap = 1 
-            WHERE LOWER(user_login) = LOWER(?) LIMIT 1';
+            user_lastLogin = NOW()
+            WHERE LOWER(user_login) = LOWER(?) OR LOWER(user_ssoLogin) = LOWER(?) LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam(Hash::hashKey($this->itemData->getLoginPass()));
-        $Data->addParam($this->itemData->getUserName());
-        $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam($this->itemData->getLogin());
         $Data->setOnErrorMessage(__('Error al actualizar la clave del usuario en la BBDD', false));
 
         DB::getQuery($Data);
