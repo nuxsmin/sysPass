@@ -29,7 +29,7 @@ use SP\Http\Request;
 use SP\Http\Response;
 use SP\Util\Checks;
 
-define('APP_ROOT', '..');
+define('APP_ROOT', dirname(__DIR__));
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 

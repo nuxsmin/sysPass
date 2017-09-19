@@ -50,5 +50,6 @@ config/*
 res/
 tools/
 tmp/
+inc/Plugins/*
 
 !.blank

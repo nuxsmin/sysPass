@@ -26,7 +26,7 @@ use SP\Controller\MainController;
 use SP\Core\Init;
 use SP\Core\Session;
 
-define('APP_ROOT', '.');
+define('APP_ROOT', __DIR__);
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 

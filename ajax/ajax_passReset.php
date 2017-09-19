@@ -34,7 +34,7 @@ use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserPassRecover;
 use SP\Util\Json;
 
-define('APP_ROOT', '..');
+define('APP_ROOT', dirname(__DIR__));
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 

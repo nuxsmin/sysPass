@@ -32,7 +32,7 @@ use SP\Http\Request;
 use SP\Http\Response;
 use SP\Util\Checks;
 
-define('APP_ROOT', '..');
+define('APP_ROOT', dirname(__DIR__));
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 require APP_ROOT . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'strings.js.php';

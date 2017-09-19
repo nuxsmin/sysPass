@@ -1,0 +1,34 @@
+{
+  "name": "nuxsmin/syspass",
+  "description": "PHP web based Password Manager for business and personal use.",
+  "homepage": "https://syspass.org",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0",
+  "authors": [
+    {
+      "name": "Rubén Domínguez",
+      "email": "nuxsmin@syspass.org",
+      "role": "Author/Developer",
+      "homepage": "https://syspass.org/"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/nuxsmin/sysPass/issues",
+    "source": "https://github.com/nuxsmin/sysPass",
+    "docs": "https://doc.syspass.org"
+  },
+  "require": {
+    "defuse/php-encryption": "~2.0",
+    "phpmailer/phpmailer": "~v6.0",
+    "ademarre/binary-to-text-php": "dev-master",
+    "phpseclib/phpseclib": "~2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "SP\\": "inc/"
+    }
+  },
+  "config": {
+    "classmap-authoritative": true
+  }
+}
