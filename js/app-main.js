@@ -306,10 +306,17 @@ sysPass.Main = function () {
 
                 initializeClipboard();
                 setupCallbacks();
-                initPlugins();
 
-                if (config.LOGGEDIN === true && config.CHECK_UPDATES === true) {
-                    checkPluginUpdates();
+                if (config.PLUGINS.length > 0) {
+                    log.info(config.PLUGINS);
+
+                    initPlugins();
+
+                    if (config.LOGGEDIN === true
+                        && config.CHECK_UPDATES === true
+                    ) {
+                        checkPluginUpdates();
+                    }
                 }
             }
         });
@@ -896,7 +903,7 @@ sysPass.Main = function () {
             if (typeof appPlugins[plugin].checkVersion === "function") {
                 appPlugins[plugin].checkVersion().then(function (json) {
                     if (json.status === 0 && json.data.plugin !== undefined) {
-                        msg.info(String.format(config.LANG[66], json.data.plugin, json.data.remoteVersion));
+                        msg.info(String.format(config.LANG[67], json.data.plugin, json.data.remoteVersion));
                     }
                 });
             }
