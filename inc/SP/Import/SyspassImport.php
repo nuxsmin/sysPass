@@ -25,13 +25,11 @@
 namespace SP\Import;
 
 use DOMXPath;
-use SP\Account\AccountTags;
 use SP\Config\ConfigDB;
 use SP\Core\Crypt\Crypt;
-use SP\Core\OldCrypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\AccountData;
+use SP\Core\OldCrypt;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\CustomerData;

@@ -33,6 +33,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Session as CoreSession;
 use SP\Core\TaskFactory;
+use SP\Core\Upgrade\User as UserUpgrade;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -44,7 +45,6 @@ use SP\Mgmt\Users\UserPreferencesUtil;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 use SP\Util\Util;
-use SP\Core\Upgrade\User as UserUpgrade;
 
 defined('APP_ROOT') || die();
 

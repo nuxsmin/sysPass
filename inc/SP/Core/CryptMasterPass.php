@@ -25,9 +25,9 @@
 namespace SP\Core;
 
 use SP\Config\ConfigDB;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Log\Log;
 use SP\Util\Util;
 

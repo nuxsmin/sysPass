@@ -26,7 +26,6 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Mgmt\ItemInterface;

@@ -29,7 +29,6 @@ use Defuse\Crypto\Key;
 use SP\Core\Init;
 use SP\Http\Request;
 use SP\Util\HttpUtil;
-use SP\Util\Util;
 
 /**
  * Class SecureKeyCookie

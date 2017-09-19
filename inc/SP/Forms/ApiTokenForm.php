@@ -28,7 +28,6 @@ use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ApiTokenData;
 use SP\Http\Request;
-use SP\Mgmt\ApiTokens\ApiTokensUtil;
 
 /**
  * Class ApiTokenForm

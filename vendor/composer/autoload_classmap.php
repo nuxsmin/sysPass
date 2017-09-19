@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Base2n' => $vendorDir . '/ademarre/binary-to-text-php/Base2n.php',
     'Defuse\\Crypto\\Core' => $vendorDir . '/defuse/php-encryption/src/Core.php',
     'Defuse\\Crypto\\Crypto' => $vendorDir . '/defuse/php-encryption/src/Crypto.php',
     'Defuse\\Crypto\\DerivedKeys' => $vendorDir . '/defuse/php-encryption/src/DerivedKeys.php',
@@ -318,6 +317,7 @@ return array(
     'SP\\Mgmt\\Users\\UserPreferences' => $baseDir . '/inc/SP/Mgmt/Users/UserPreferences.php',
     'SP\\Mgmt\\Users\\UserPreferencesBase' => $baseDir . '/inc/SP/Mgmt/Users/UserPreferencesBase.php',
     'SP\\Mgmt\\Users\\UserPreferencesUtil' => $baseDir . '/inc/SP/Mgmt/Users/UserPreferencesUtil.php',
+    'SP\\Mgmt\\Users\\UserSSO' => $baseDir . '/inc/SP/Mgmt/Users/UserSSO.php',
     'SP\\Mgmt\\Users\\UserSearch' => $baseDir . '/inc/SP/Mgmt/Users/UserSearch.php',
     'SP\\Mgmt\\Users\\UserUtil' => $baseDir . '/inc/SP/Mgmt/Users/UserUtil.php',
     'SP\\Storage\\DB' => $baseDir . '/inc/SP/Storage/DB.php',

@@ -43,25 +43,7 @@ define('SQL_PATH', BASE_DIR . DIRECTORY_SEPARATOR . 'sql');
 define('DEBUG', true);
 
 require VENDOR_PATH . DIRECTORY_SEPARATOR . 'autoload.php';
-
-// Required random_compat polyfill for random_bytes() and random_int()
-// @see https://github.com/paragonie/random_compat/tree/v2.0.4#random_compat
-//require_once EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'random_compat' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'random.php';
-//
 require __DIR__ . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
-
-//
-//$ClassLoader = new SplClassLoader('SP');
-//$ClassLoader->setFileExtension('.class.php');
-//$ClassLoader->addExcluded('SP\\Profile');
-//$ClassLoader->addExcluded('SP\\Mgmt\\User\\Profile');
-//$ClassLoader->addExcluded('SP\\UserPreferences');
-//$ClassLoader->addExcluded('SP\\Mgmt\\User\\UserPreferences');
-//$ClassLoader->addExcluded('SP\\CustomFieldDef');
-//$ClassLoader->addExcluded('SP\\Mgmt\\CustomFieldDef');
-//$ClassLoader->addExcluded('SP\\PublicLink');
-//$ClassLoader->register();
-
 require __DIR__ . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
 // Empezar a calcular la memoria utilizada

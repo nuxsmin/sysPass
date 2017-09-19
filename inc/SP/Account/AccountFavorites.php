@@ -24,7 +24,6 @@
 
 namespace SP\Account;
 
-use SP\Core\Exceptions\SPException;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
 

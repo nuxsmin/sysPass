@@ -27,7 +27,6 @@ namespace SP\Controller;
 defined('APP_ROOT') || die();
 
 use SP\Core\ActionsInterface;
-use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\NoticeData;
@@ -35,7 +34,6 @@ use SP\Mgmt\Notices\Notice;
 use SP\Mgmt\Users\User;
 use SP\Util\Checks;
 use SP\Util\Json;
-use SP\Util\Util;
 
 /**
  * Class NoticeShowController

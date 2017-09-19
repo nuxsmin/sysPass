@@ -25,12 +25,9 @@
 namespace SP\Account;
 
 use SP\Config\ConfigDB;
-use SP\Core\OldCrypt;
 use SP\Core\Exceptions\SPException;
-use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
-use SP\Util\Checks;
 
 defined('APP_ROOT') || die();
 

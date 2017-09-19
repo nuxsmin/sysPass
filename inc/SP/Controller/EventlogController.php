@@ -27,7 +27,6 @@ namespace SP\Controller;
 defined('APP_ROOT') || die();
 
 use SP\Core\ActionsInterface;
-use SP\Core\Messages\LogMessage;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\Html\DataGrid\DataGridActionSearch;

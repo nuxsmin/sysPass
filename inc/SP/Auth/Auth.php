@@ -33,7 +33,6 @@ use SP\Auth\Ldap\LdapMsAds;
 use SP\Auth\Ldap\LdapStd;
 use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\UserData;
 use SP\DataModel\UserLoginData;
 use SP\Util\Checks;
 

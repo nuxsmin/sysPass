@@ -32,9 +32,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Installer;
 use SP\Core\Session;
-use SP\Core\Upgrade\Upgrade;
 use SP\Html\Html;
-use SP\Http\Request;
 use SP\Log\Log;
 use SP\Log\LogUtil;
 

@@ -60,7 +60,6 @@ class ComposerStaticInit1701764f82c629b16cc164189600cb41
     );
 
     public static $classMap = array (
-        'Base2n' => __DIR__ . '/..' . '/ademarre/binary-to-text-php/Base2n.php',
         'Defuse\\Crypto\\Core' => __DIR__ . '/..' . '/defuse/php-encryption/src/Core.php',
         'Defuse\\Crypto\\Crypto' => __DIR__ . '/..' . '/defuse/php-encryption/src/Crypto.php',
         'Defuse\\Crypto\\DerivedKeys' => __DIR__ . '/..' . '/defuse/php-encryption/src/DerivedKeys.php',
@@ -372,6 +371,7 @@ class ComposerStaticInit1701764f82c629b16cc164189600cb41
         'SP\\Mgmt\\Users\\UserPreferences' => __DIR__ . '/../..' . '/inc/SP/Mgmt/Users/UserPreferences.php',
         'SP\\Mgmt\\Users\\UserPreferencesBase' => __DIR__ . '/../..' . '/inc/SP/Mgmt/Users/UserPreferencesBase.php',
         'SP\\Mgmt\\Users\\UserPreferencesUtil' => __DIR__ . '/../..' . '/inc/SP/Mgmt/Users/UserPreferencesUtil.php',
+        'SP\\Mgmt\\Users\\UserSSO' => __DIR__ . '/../..' . '/inc/SP/Mgmt/Users/UserSSO.php',
         'SP\\Mgmt\\Users\\UserSearch' => __DIR__ . '/../..' . '/inc/SP/Mgmt/Users/UserSearch.php',
         'SP\\Mgmt\\Users\\UserUtil' => __DIR__ . '/../..' . '/inc/SP/Mgmt/Users/UserUtil.php',
         'SP\\Storage\\DB' => __DIR__ . '/../..' . '/inc/SP/Storage/DB.php',

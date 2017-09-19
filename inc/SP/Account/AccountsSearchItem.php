@@ -27,7 +27,6 @@ namespace SP\Account;
 defined('APP_ROOT') || die();
 
 use SP\Config\Config;
-use SP\Core\Session;
 use SP\DataModel\AccountSearchData;
 use SP\Html\Html;
 use SP\Mgmt\Groups\GroupAccountsUtil;

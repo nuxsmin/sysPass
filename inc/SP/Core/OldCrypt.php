@@ -24,11 +24,8 @@
 
 namespace SP\Core;
 
-use SP\Account\AccountHistory;
 use SP\Config\Config;
-use SP\Config\ConfigDB;
 use SP\Core\Exceptions\SPException;
-use SP\Log\Log;
 use SP\Util\Checks;
 
 defined('APP_ROOT') || die();

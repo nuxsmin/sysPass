@@ -26,7 +26,6 @@ namespace SP\Core;
 
 use SP\Config\Config;
 use SP\Http\Request;
-use SP\Mgmt\Users\UserPreferences;
 
 defined('APP_ROOT') || die();
 

@@ -25,13 +25,13 @@
 namespace SP\Core;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Util\HttpUtil;
 use SP\Account\AccountAcl;
 use SP\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Controller\MainController;
-use SP\Core\Crypt\SecureKeyCookie;
 use SP\Core\Crypt\CryptSessionHandler;
+use SP\Core\Crypt\SecureKeyCookie;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Upgrade\Upgrade;
@@ -42,9 +42,9 @@ use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
+use SP\Util\HttpUtil;
 use SP\Util\Json;
 use SP\Util\Util;
-use SP\Core\Crypt\Session as CryptSession;
 
 defined('APP_ROOT') || die();
 

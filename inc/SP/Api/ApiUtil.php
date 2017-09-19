@@ -30,7 +30,6 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\TrackData;
 use SP\Mgmt\Tracks\Track;
 use SP\Util\HttpUtil;
-use SP\Util\Util;
 
 /**
  * Class ApiUtil

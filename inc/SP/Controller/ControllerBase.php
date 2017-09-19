@@ -31,7 +31,6 @@ use SP\Core\DiFactory;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Init;
 use SP\Core\Session;
 use SP\Core\Template;
 use SP\Core\UI\ThemeIconsBase;

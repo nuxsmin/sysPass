@@ -27,7 +27,6 @@ namespace SP\Account;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountHistoryData;
-use SP\Mgmt\Groups\GroupAccountsUtil;
 
 defined('APP_ROOT') || die();
 

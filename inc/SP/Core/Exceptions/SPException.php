@@ -25,7 +25,6 @@
 namespace SP\Core\Exceptions;
 
 use Exception;
-use Throwable;
 
 defined('APP_ROOT') || die();
 

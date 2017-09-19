@@ -27,8 +27,6 @@ namespace SP\Mgmt\Users;
 use SP\Config\Config;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\UserData;
-use SP\DataModel\UserLoginData;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;

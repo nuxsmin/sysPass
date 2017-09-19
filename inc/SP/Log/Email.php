@@ -24,7 +24,6 @@
 
 namespace SP\Log;
 
-use phpmailer\PHPMailer;
 use phpmailer\phpmailerException;
 use SP\Config\Config;
 use SP\Core\Init;

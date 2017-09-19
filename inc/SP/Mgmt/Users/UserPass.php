@@ -32,6 +32,7 @@ use SP\Config\ConfigDB;
 use SP\Controller\LoginController;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -43,7 +44,6 @@ use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DB;
 use SP\Storage\QueryData;
-use SP\Core\Crypt\Session as CryptSession;
 
 /**
  * Class UserPass para la gestión de las claves de un usuario

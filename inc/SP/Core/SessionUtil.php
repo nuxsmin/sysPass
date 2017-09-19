@@ -25,9 +25,9 @@
 namespace SP\Core;
 
 use SP\Config\Config;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\DataModel\UserData;
 use SP\Mgmt\Profiles\Profile;
-use SP\Core\Crypt\Session as CryptSession;
 
 defined('APP_ROOT') || die();
 

@@ -25,10 +25,7 @@
 
 namespace SP\Core;
 
-use SP\DataModel\AccountExtData;
-use SP\DataModel\UserData;
 use SP\Log\Log;
-use SP\Mgmt\Groups\GroupUsers;
 
 defined('APP_ROOT') || die();
 

@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\UserData;
-use SP\DataModel\UserLoginData;
 use SP\Mgmt\ItemBaseInterface;
 use SP\Mgmt\ItemBaseTrait;
 
