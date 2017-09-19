@@ -25,7 +25,7 @@
 use SP\Controller\MainActionController;
 use SP\Http\Request;
 
-define('APP_ROOT', '..');
+define('APP_ROOT', dirname(__DIR__));
 define('IS_UPGRADE', 1);
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';

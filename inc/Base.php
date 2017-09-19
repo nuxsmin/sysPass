@@ -30,34 +30,37 @@ defined('APP_ROOT') || die();
 define('XML_CONFIG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.xml');
 
 define('BASE_DIR', __DIR__);
-define('CONFIG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php');
-define('MODEL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'SP');
-define('CONTROLLER_PATH', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'web');
-define('VIEW_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'themes');
-define('EXTENSIONS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'Exts');
-define('PLUGINS_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'Plugins');
-define('LOCALES_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'locales');
-define('SQL_PATH', __DIR__ . DIRECTORY_SEPARATOR . 'sql');
-define('LOG_FILE', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'syspass.log');
+define('CONFIG_FILE', APP_ROOT . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'config.php');
+define('VENDOR_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'vendor');
+define('LOG_FILE', APP_ROOT . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'syspass.log');
+define('MODEL_PATH', BASE_DIR . DIRECTORY_SEPARATOR . 'SP');
+define('VIEW_PATH', BASE_DIR . DIRECTORY_SEPARATOR . 'themes');
+define('EXTENSIONS_PATH', BASE_DIR . DIRECTORY_SEPARATOR . 'Exts');
+define('PLUGINS_PATH', BASE_DIR . DIRECTORY_SEPARATOR . 'Plugins');
+define('LOCALES_PATH', BASE_DIR . DIRECTORY_SEPARATOR . 'locales');
+define('SQL_PATH', BASE_DIR . DIRECTORY_SEPARATOR . 'sql');
 
 define('DEBUG', true);
 
+require VENDOR_PATH . DIRECTORY_SEPARATOR . 'autoload.php';
+
 // Required random_compat polyfill for random_bytes() and random_int()
 // @see https://github.com/paragonie/random_compat/tree/v2.0.4#random_compat
-require_once EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'random_compat' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'random.php';
-
+//require_once EXTENSIONS_PATH . DIRECTORY_SEPARATOR . 'random_compat' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'random.php';
+//
 require __DIR__ . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
 
-$ClassLoader = new SplClassLoader('SP');
-$ClassLoader->setFileExtension('.class.php');
-$ClassLoader->addExcluded('SP\\Profile');
-$ClassLoader->addExcluded('SP\\Mgmt\\User\\Profile');
-$ClassLoader->addExcluded('SP\\UserPreferences');
-$ClassLoader->addExcluded('SP\\Mgmt\\User\\UserPreferences');
-$ClassLoader->addExcluded('SP\\CustomFieldDef');
-$ClassLoader->addExcluded('SP\\Mgmt\\CustomFieldDef');
-$ClassLoader->addExcluded('SP\\PublicLink');
-$ClassLoader->register();
+//
+//$ClassLoader = new SplClassLoader('SP');
+//$ClassLoader->setFileExtension('.class.php');
+//$ClassLoader->addExcluded('SP\\Profile');
+//$ClassLoader->addExcluded('SP\\Mgmt\\User\\Profile');
+//$ClassLoader->addExcluded('SP\\UserPreferences');
+//$ClassLoader->addExcluded('SP\\Mgmt\\User\\UserPreferences');
+//$ClassLoader->addExcluded('SP\\CustomFieldDef');
+//$ClassLoader->addExcluded('SP\\Mgmt\\CustomFieldDef');
+//$ClassLoader->addExcluded('SP\\PublicLink');
+//$ClassLoader->register();
 
 require __DIR__ . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 

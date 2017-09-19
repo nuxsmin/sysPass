@@ -22,10 +22,10 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define('APP_ROOT', '..');
-
 use SP\Controller\NoticeShowController;
 use SP\Http\Request;
+
+define('APP_ROOT', dirname(__DIR__));
 
 require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
 
