@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "bed8589b95fe90446e446e0920ae8063",
+    "content-hash": "a5cfc4b45a24e6a518c075b48dd49b74",
     "packages": [
         {
             "name": "ademarre/binary-to-text-php",
@@ -328,6 +328,8 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": "5.6.* || 7.0.*"
+    },
     "platform-dev": []
 }
