@@ -1,10 +1,12 @@
 <main class="mdl-layout__content">
     <div id="actions" class="upgrade">
         <div id="page-title">
-            <h1><?php printf(__('Actualización  %s'), $upgradeVersion); ?></h1>
+            <h1><?php use SP\Util\Util;
+
+                printf(__('Actualización  %s'), $upgradeVersion); ?></h1>
         </div>
 
-        <form id="frmUpgrade" method="get" action="index.php" class="form-action" data-onsubmit="main/upgrade">
+        <form id="frmUpgrade" method="get" class="form-action" data-onsubmit="main/upgrade">
             <fieldset>
                 <?php if ($type === 'db'): ?>
                     <legend><?php echo __('Actualización de BBDD'); ?></legend>
@@ -27,7 +29,7 @@
                     <?php echo __('Este código se encuentra en el archivo de configuración de sysPass con la etiqueta "upgradeKey"'); ?>
                 </div>
 
-                <?php if (\SP\Core\Upgrade\Upgrade::checkVersion($version, '130.16011001') && count($constraints) > 0): ?>
+                <?php if (Util::checkVersion($version, '130.16011001') && count($constraints) > 0): ?>
                     <div>
                         <ul class="errors">
                             <li class="msg-warning">
@@ -108,7 +110,7 @@
                     <?php endif; ?>
                 <?php endif; ?>
 
-                <?php if (\SP\Core\Upgrade\Upgrade::checkVersion($version, '210.17022601')): ?>
+                <?php if (Util::checkVersion($version, '210.17022601')): ?>
                     <div>
                         <ul class="errors">
                             <li class="msg-warning">

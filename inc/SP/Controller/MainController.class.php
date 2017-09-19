@@ -139,7 +139,7 @@ class MainController extends ControllerBase implements ActionsInterface
      */
     public function getResourcesLinks()
     {
-        $version = implode('', Util::getVersion(true));
+        $version = Util::getVersionStringNormalized();
         $theme = DiFactory::getTheme();
 
         $jsVersionHash = md5($version);
@@ -466,10 +466,10 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->assign('action', $action);
         $this->view->assign('type', $type);
         $this->view->assign('version', $version);
-        $this->view->assign('upgradeVersion', implode('.', Util::getVersion(true)));
+        $this->view->assign('upgradeVersion', Util::getVersionStringNormalized());
         $this->view->assign('taskId', Task::genTaskId('masterpass'));
 
-        if (Upgrade::checkVersion($version, '130.16011001')) {
+        if (Util::checkVersion($version, '130.16011001')) {
             $this->view->assign('checkConstraints', Check::checkConstraints());
 
             $constraints = [];
@@ -483,7 +483,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->assign('constraints', $constraints);
         }
 
-        if (Upgrade::checkVersion($version, '210.17022601')) {
+        if (Util::checkVersion($version, '210.17022601')) {
             $this->view->assign('numAccounts', AccountUtil::getTotalNumAccounts());
         }
 

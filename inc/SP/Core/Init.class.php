@@ -25,10 +25,10 @@
 namespace SP\Core;
 
 use Defuse\Crypto\Exception\CryptoException;
+use SP\Util\HttpUtil;
 use SP\Account\AccountAcl;
 use SP\Auth\Browser\Browser;
 use SP\Config\Config;
-use SP\Config\ConfigData;
 use SP\Controller\MainController;
 use SP\Core\Crypt\SecureKeyCookie;
 use SP\Core\Crypt\CryptSessionHandler;
@@ -42,7 +42,6 @@ use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
-use SP\Util\HttpUtil;
 use SP\Util\Json;
 use SP\Util\Util;
 use SP\Core\Crypt\Session as CryptSession;
@@ -223,6 +222,171 @@ class Init
     }
 
     /**
+     * Establecer el nivel de logging
+     */
+    public static function setLogging()
+    {
+        // Establecer el modo debug si una sesión de xdebug está activa
+        if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {
+            define('DEBUG', true);
+        }
+
+        if (defined('DEBUG') && DEBUG) {
+            error_reporting(E_ALL);
+            ini_set('display_errors', 'On');
+        } else {
+            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
+            ini_set('display_errors', 'Off');
+        }
+
+        if (!file_exists(LOG_FILE) && touch(LOG_FILE) && chmod(LOG_FILE, 0600)) {
+            debugLog('Setup log file: ' . LOG_FILE);
+        }
+    }
+
+    /**
+     * Devuelve un error utilizando la plantilla de error o en formato JSON
+     *
+     * @param string $message con la descripción del error
+     * @param string $hint    opcional, con una ayuda sobre el error
+     * @param bool   $headers
+     */
+    public static function initError($message, $hint = '', $headers = false)
+    {
+        debugLog(__FUNCTION__);
+        debugLog(__($message));
+        debugLog(__($hint));
+
+        if (Checks::isJson()) {
+            $JsonResponse = new JsonResponse();
+            $JsonResponse->setDescription($message);
+            $JsonResponse->addMessage($hint);
+            Json::returnJson($JsonResponse);
+        } elseif ($headers === true) {
+            header('HTTP/1.1 503 Service Temporarily Unavailable');
+            header('Status: 503 Service Temporarily Unavailable');
+            header('Retry-After: 120');
+        }
+
+        SessionUtil::cleanSession();
+
+        $Tpl = new Template();
+        $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => __($message), 'hint' => __($hint)]);
+
+        $Controller = new MainController($Tpl, 'error', !Checks::isAjax());
+        $Controller->getError();
+    }
+
+    /**
+     * Comprobar si el usuario está logado.
+     *
+     * @returns bool
+     */
+    public static function isLoggedIn()
+    {
+        return (DiFactory::getDBStorage()->getDbStatus() === 0
+            && Session::getUserData()->getUserLogin()
+            && is_object(Session::getUserPreferences()));
+    }
+
+    /**
+     * Comprobar si el modo mantenimiento está activado
+     * Esta función comprueba si el modo mantenimiento está activado.
+     * Devuelve un error 503 y un reintento de 120s al cliente.
+     *
+     * @param bool $check sólo comprobar si está activado el modo
+     * @return bool
+     */
+    public static function checkMaintenanceMode($check = false)
+    {
+        if (Config::getConfig()->isMaintenance()) {
+            self::$LOCK = Util::getAppLock();
+
+            if ($check === true
+                || Checks::isAjax()
+                || Request::analyze('nodbupgrade', 0) === 1
+                || (Request::analyze('a') === 'upgrade' && Request::analyze('type') !== '')
+                || (self::$LOCK > 0 && self::isLoggedIn() && self::$LOCK === Session::getUserData()->getUserId())
+            ) {
+                return true;
+            }
+
+            self::initError(__('Aplicación en mantenimiento'), __('En breve estará operativa'));
+        }
+
+        return false;
+    }
+
+    /**
+     * Cargar los Plugins disponibles
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public static function loadPlugins()
+    {
+        foreach (PluginUtil::getPlugins() as $plugin) {
+            $Plugin = PluginUtil::loadPlugin($plugin);
+
+            if ($Plugin !== false) {
+                DiFactory::getEventDispatcher()->attach($Plugin);
+            }
+        }
+
+        PluginUtil::checkEnabledPlugins();
+
+        Session::setPluginsLoaded(PluginUtil::getLoadedPlugins());
+        Session::setPluginsDisabled(PluginUtil::getDisabledPlugins());
+    }
+
+    /**
+     * Comprobar si hay que ejecutar acciones de URL antes de presentar la pantalla de login.
+     *
+     * @return bool
+     * @throws \phpmailer\phpmailerException
+     */
+    public static function checkPreLoginActions()
+    {
+        $action = Request::analyze('a');
+
+        if ($action === '') {
+            return false;
+        }
+
+        $Controller = new MainController();
+        $Controller->doAction('prelogin.' . $action);
+
+        return true;
+    }
+
+    /**
+     * Establecer las rutas de sysPass en el PATH de PHP
+     */
+    public static function setIncludes()
+    {
+        set_include_path(MODEL_PATH . PATH_SEPARATOR . CONTROLLER_PATH . PATH_SEPARATOR . EXTENSIONS_PATH . PATH_SEPARATOR . PLUGINS_PATH . PATH_SEPARATOR . get_include_path());
+    }
+
+    /**
+     * Comprobar si hay que ejecutar acciones de URL después de realizar login.
+     *
+     * @return bool
+     * @throws \phpmailer\phpmailerException
+     */
+    public static function checkPostLoginActions()
+    {
+        $action = Request::analyze('a');
+
+        if ($action === '') {
+            return false;
+        }
+
+        $Controller = new MainController();
+        $Controller->doAction('postlogin.' . $action);
+
+        return false;
+    }
+
+    /**
      * Comprobar el archivo que realiza el include necesita inicialización.
      *
      * @returns bool
@@ -261,29 +425,6 @@ class Init
             list($name, $password) = explode(':', base64_decode($matches[1]), 2);
             $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
             $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
-        }
-    }
-
-    /**
-     * Establecer el nivel de logging
-     */
-    public static function setLogging()
-    {
-        // Establecer el modo debug si una sesión de xdebug está activa
-        if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {
-            define('DEBUG', true);
-        }
-
-        if (defined('DEBUG') && DEBUG) {
-            error_reporting(E_ALL);
-            ini_set('display_errors', 'On');
-        } else {
-            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
-            ini_set('display_errors', 'Off');
-        }
-
-        if (!file_exists(LOG_FILE) && touch(LOG_FILE) && chmod(LOG_FILE, 0600)) {
-            debugLog('Setup log file: ' . LOG_FILE);
         }
     }
 
@@ -388,39 +529,6 @@ class Init
     }
 
     /**
-     * Devuelve un error utilizando la plantilla de error o en formato JSON
-     *
-     * @param string $message con la descripción del error
-     * @param string $hint    opcional, con una ayuda sobre el error
-     * @param bool   $headers
-     */
-    public static function initError($message, $hint = '', $headers = false)
-    {
-        debugLog(__FUNCTION__);
-        debugLog(__($message));
-        debugLog(__($hint));
-
-        if (Checks::isJson()) {
-            $JsonResponse = new JsonResponse();
-            $JsonResponse->setDescription($message);
-            $JsonResponse->addMessage($hint);
-            Json::returnJson($JsonResponse);
-        } elseif ($headers === true) {
-            header('HTTP/1.1 503 Service Temporarily Unavailable');
-            header('Status: 503 Service Temporarily Unavailable');
-            header('Retry-After: 120');
-        }
-
-        SessionUtil::cleanSession();
-
-        $Tpl = new Template();
-        $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => __($message), 'hint' => __($hint)]);
-
-        $Controller = new MainController($Tpl, 'error', !Checks::isAjax());
-        $Controller->getError();
-    }
-
-    /**
      * Cargar la configuración
      *
      * @throws \SP\Core\Exceptions\SPException
@@ -439,7 +547,7 @@ class Init
      */
     private static function checkConfigVersion()
     {
-        $appVersion = implode('.', Util::getVersion(true, true));
+        $appVersion = Util::getVersionStringNormalized();
 
         if (file_exists(CONFIG_FILE) && Upgrade::upgradeOldConfigFile($appVersion)) {
             self::logConfigUpgrade($appVersion);
@@ -449,10 +557,10 @@ class Init
             return;
         }
 
-        $configVersion = Upgrade::normalizeVersion(Config::getConfig()->getConfigVersion());
+        $configVersion = Upgrade::fixVersionNumber(Config::getConfig()->getConfigVersion());
 
         if (Config::getConfig()->isInstalled()
-            && Upgrade::checkVersion($configVersion, $appVersion)
+            && Util::checkVersion($configVersion, Util::getVersionArrayNormalized())
             && Upgrade::needConfigUpgrade($configVersion)
             && Upgrade::upgradeConfig($configVersion)
         ) {
@@ -511,18 +619,6 @@ class Init
     }
 
     /**
-     * Comprobar si el usuario está logado.
-     *
-     * @returns bool
-     */
-    public static function isLoggedIn()
-    {
-        return (DiFactory::getDBStorage()->getDbStatus() === 0
-            && Session::getUserData()->getUserLogin()
-            && is_object(Session::getUserPreferences()));
-    }
-
-    /**
      * Comprueba que la aplicación esté instalada
      * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
      *
@@ -554,34 +650,6 @@ class Init
             $Controller->view();
             exit();
         }
-    }
-
-    /**
-     * Comprobar si el modo mantenimiento está activado
-     * Esta función comprueba si el modo mantenimiento está activado.
-     * Devuelve un error 503 y un reintento de 120s al cliente.
-     *
-     * @param bool $check sólo comprobar si está activado el modo
-     * @return bool
-     */
-    public static function checkMaintenanceMode($check = false)
-    {
-        if (Config::getConfig()->isMaintenance()) {
-            self::$LOCK = Util::getAppLock();
-
-            if ($check === true
-                || Checks::isAjax()
-                || Request::analyze('nodbupgrade', 0) === 1
-                || (Request::analyze('a') === 'upgrade' && Request::analyze('type') !== '')
-                || (self::$LOCK > 0 && self::isLoggedIn() && self::$LOCK === Session::getUserData()->getUserId())
-            ) {
-                return true;
-            }
-
-            self::initError(__('Aplicación en mantenimiento'), __('En breve estará operativa'));
-        }
-
-        return false;
     }
 
     /**
@@ -707,78 +775,11 @@ class Init
     }
 
     /**
-     * Cargar los Plugins disponibles
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public static function loadPlugins()
-    {
-        foreach (PluginUtil::getPlugins() as $plugin) {
-            $Plugin = PluginUtil::loadPlugin($plugin);
-
-            if ($Plugin !== false) {
-                DiFactory::getEventDispatcher()->attach($Plugin);
-            }
-        }
-
-        Session::setPluginsLoaded(PluginUtil::getLoadedPlugins());
-        Session::setPluginsDisabled(PluginUtil::getDisabledPlugins());
-    }
-
-    /**
-     * Comprobar si hay que ejecutar acciones de URL antes de presentar la pantalla de login.
-     *
-     * @return bool
-     * @throws \phpmailer\phpmailerException
-     */
-    public static function checkPreLoginActions()
-    {
-        $action = Request::analyze('a');
-
-        if ($action === '') {
-            return false;
-        }
-
-        $Controller = new MainController();
-        $Controller->doAction('prelogin.' . $action);
-
-        return true;
-    }
-
-    /**
      * Mostrar la página de login
      */
     private static function goLogin()
     {
         $Controller = new MainController();
         $Controller->getLogin();
-    }
-
-    /**
-     * Establecer las rutas de sysPass en el PATH de PHP
-     */
-    public static function setIncludes()
-    {
-        set_include_path(MODEL_PATH . PATH_SEPARATOR . CONTROLLER_PATH . PATH_SEPARATOR . EXTENSIONS_PATH . PATH_SEPARATOR . PLUGINS_PATH . PATH_SEPARATOR . get_include_path());
-    }
-
-    /**
-     * Comprobar si hay que ejecutar acciones de URL después de realizar login.
-     *
-     * @return bool
-     * @throws \phpmailer\phpmailerException
-     */
-    public static function checkPostLoginActions()
-    {
-        $action = Request::analyze('a');
-
-        if ($action === '') {
-            return false;
-        }
-
-        $Controller = new MainController();
-        $Controller->doAction('postlogin.' . $action);
-
-        return false;
     }
 }

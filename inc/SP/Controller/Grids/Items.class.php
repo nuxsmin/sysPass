@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -990,6 +990,7 @@ class Items extends GridBase
         $GridData->addDataRowSource('plugin_name');
         $GridData->addDataRowSourceWithIcon('plugin_enabled', $this->icons->getIconEnabled());
         $GridData->addDataRowSourceWithIcon('plugin_enabled', $this->icons->getIconDisabled(), 0);
+        $GridData->addDataRowSourceWithIcon('plugin_available', $this->icons->getIconDelete()->setTitle(__('No disponible')), 0);
 
         // Grid
         $Grid = new DataGridTab();
@@ -1020,6 +1021,7 @@ class Items extends GridBase
         $GridActionView->setTitle(__('Ver Plugin'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
+        $GridActionView->setFilterRowSource('plugin_available', 0);
 
         $Grid->setDataActions($GridActionView);
 
@@ -1029,7 +1031,8 @@ class Items extends GridBase
         $GridActionEnable->setTitle(__('Habilitar'));
         $GridActionEnable->setIcon($this->icons->getIconEnabled());
         $GridActionEnable->setOnClickFunction('plugin/toggle');
-        $GridActionEnable->setFilterRowSource('plugin_enabled', 1);
+        $GridActionEnable->setFilterRowSource('plugin_enabled');
+        $GridActionEnable->setFilterRowSource('plugin_available', 0);
 
         $Grid->setDataActions($GridActionEnable);
 
@@ -1040,6 +1043,7 @@ class Items extends GridBase
         $GridActionDisable->setIcon($this->icons->getIconDisabled());
         $GridActionDisable->setOnClickFunction('plugin/toggle');
         $GridActionDisable->setFilterRowSource('plugin_enabled', 0);
+        $GridActionDisable->setFilterRowSource('plugin_available', 0);
 
         $Grid->setDataActions($GridActionDisable);
 
@@ -1049,6 +1053,7 @@ class Items extends GridBase
         $GridActionReset->setTitle(__('Restablecer Datos'));
         $GridActionReset->setIcon($this->icons->getIconRefresh());
         $GridActionReset->setOnClickFunction('plugin/reset');
+        $GridActionReset->setFilterRowSource('plugin_available', 0);
 
         $Grid->setDataActions($GridActionReset);
 

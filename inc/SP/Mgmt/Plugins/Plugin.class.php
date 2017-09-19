@@ -50,13 +50,14 @@ class Plugin extends PluginBase implements ItemInterface
     public function add()
     {
         $query = /** @lang SQL */
-            'INSERT INTO plugins SET plugin_name = ?, plugin_data = ?, plugin_enabled = ?';
+            'INSERT INTO plugins SET plugin_name = ?, plugin_data = ?, plugin_enabled = ?, plugin_available = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getPluginName());
         $Data->addParam($this->itemData->getPluginData());
         $Data->addParam($this->itemData->getPluginEnabled());
+        $Data->addParam($this->itemData->getPluginAvailable());
         $Data->setOnErrorMessage(__('Error al crear el plugin', false));
 
         DB::getQuery($Data);
@@ -104,7 +105,8 @@ class Plugin extends PluginBase implements ItemInterface
             'UPDATE plugins
               SET plugin_name = ?,
               plugin_data = ?,
-              plugin_enabled = ?
+              plugin_enabled = ?,
+              plugin_available = ?
               WHERE plugin_name = ? LIMIT 1';
 
         $Data = new QueryData();
@@ -112,6 +114,7 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->addParam($this->itemData->getPluginName());
         $Data->addParam($this->itemData->getPluginData());
         $Data->addParam($this->itemData->getPluginEnabled());
+        $Data->addParam($this->itemData->getPluginAvailable());
         $Data->addParam($this->itemData->getPluginName());
         $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
 
@@ -129,7 +132,13 @@ class Plugin extends PluginBase implements ItemInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id, plugin_name, plugin_data, BIN(plugin_enabled) AS plugin_enabled FROM plugins WHERE plugin_id = ? LIMIT 1';
+            'SELECT plugin_id,
+            plugin_name,
+            plugin_data,
+            plugin_enabled,
+            plugin_available 
+            FROM plugins 
+            WHERE plugin_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -147,7 +156,12 @@ class Plugin extends PluginBase implements ItemInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id, plugin_name, BIN(plugin_enabled) AS plugin_enabled FROM plugins ORDER BY plugin_name';
+            'SELECT plugin_id,
+            plugin_name,
+            plugin_enabled,
+            plugin_available 
+            FROM plugins 
+            ORDER BY plugin_name';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -190,7 +204,13 @@ class Plugin extends PluginBase implements ItemInterface
     public function getByName($name)
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id, plugin_name, plugin_data, BIN(plugin_enabled) AS plugin_enabled FROM plugins WHERE plugin_name = ? LIMIT 1';
+            'SELECT plugin_id,
+            plugin_name,
+            plugin_data,
+            plugin_enabled,
+            plugin_available 
+            FROM plugins 
+            WHERE plugin_name = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -206,7 +226,7 @@ class Plugin extends PluginBase implements ItemInterface
      * @return $this
      * @throws SPException
      */
-    public function toggle()
+    public function toggleEnabled()
     {
         $query = /** @lang SQL */
             'UPDATE plugins
@@ -217,6 +237,80 @@ class Plugin extends PluginBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getPluginEnabled());
         $Data->addParam($this->itemData->getPluginId());
+        $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
+
+        DB::getQuery($Data);
+
+        return $this;
+    }
+
+    /**
+     * Cambiar el estado del plugin
+     *
+     * @return $this
+     * @throws SPException
+     */
+    public function toggleEnabledByName()
+    {
+        $query = /** @lang SQL */
+            'UPDATE plugins
+              SET plugin_enabled = ?
+              WHERE plugin_name = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getPluginEnabled());
+        $Data->addParam($this->itemData->getPluginName());
+        $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
+
+        DB::getQuery($Data);
+
+        return $this;
+    }
+
+    /**
+     * Cambiar el estado del plugin
+     *
+     * @return $this
+     * @throws SPException
+     */
+    public function toggleAvaliable()
+    {
+        $query = /** @lang SQL */
+            'UPDATE plugins
+              SET plugin_available = ?, plugin_enabled = ?
+              WHERE plugin_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getPluginAvailable());
+        $Data->addParam($this->itemData->getPluginEnabled());
+        $Data->addParam($this->itemData->getPluginId());
+        $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
+
+        DB::getQuery($Data);
+
+        return $this;
+    }
+
+    /**
+     * Cambiar el estado del plugin
+     *
+     * @return $this
+     * @throws SPException
+     */
+    public function toggleAvaliableByName()
+    {
+        $query = /** @lang SQL */
+            'UPDATE plugins
+              SET plugin_available = ?, plugin_enabled = ?
+              WHERE plugin_name = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($this->itemData->getPluginAvailable());
+        $Data->addParam($this->itemData->getPluginEnabled());
+        $Data->addParam($this->itemData->getPluginName());
         $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
 
         DB::getQuery($Data);
@@ -261,7 +355,12 @@ class Plugin extends PluginBase implements ItemInterface
         }
 
         $query = /** @lang SQL */
-            'SELECT plugin_id, plugin_name, BIN(plugin_enabled) AS plugin_enabled FROM plugins WHERE plugin_id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT plugin_id,
+            plugin_name,
+            plugin_enabled,
+            plugin_available 
+            FROM plugins 
+            WHERE plugin_id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -279,7 +378,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function getEnabled()
     {
         $query = /** @lang SQL */
-            'SELECT plugin_name FROM plugins WHERE BIN(plugin_enabled) = 1';
+            'SELECT plugin_name FROM plugins WHERE plugin_enabled = 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);

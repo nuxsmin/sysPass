@@ -1,12 +1,8 @@
 /*
  The MIT License (MIT)
-
  Copyright (c) 2014 Lucas Garron
-
  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 // @author https://github.com/lgarron
@@ -179,32 +175,32 @@
             }
 
             function c(a) {
-                if ("object" != typeof this)throw new TypeError("Promises must be constructed via new");
-                if ("function" != typeof a)throw new TypeError("not a function");
+                if ("object" != typeof this) throw new TypeError("Promises must be constructed via new");
+                if ("function" != typeof a) throw new TypeError("not a function");
                 this._state = null, this._value = null, this._deferreds = [], i(a, b(e, this), b(f, this))
             }
 
             function d(a) {
                 var b = this;
                 return null === this._state ? void this._deferreds.push(a) : void j(function () {
-                        var c = b._state ? a.onFulfilled : a.onRejected;
-                        if (null === c)return void(b._state ? a.resolve : a.reject)(b._value);
-                        var d;
-                        try {
-                            d = c(b._value)
-                        } catch (e) {
-                            return void a.reject(e)
-                        }
-                        a.resolve(d)
-                    })
+                    var c = b._state ? a.onFulfilled : a.onRejected;
+                    if (null === c) return void(b._state ? a.resolve : a.reject)(b._value);
+                    var d;
+                    try {
+                        d = c(b._value)
+                    } catch (e) {
+                        return void a.reject(e)
+                    }
+                    a.resolve(d)
+                })
             }
 
             function e(a) {
                 try {
-                    if (a === this)throw new TypeError("A promise cannot be resolved with itself.");
+                    if (a === this) throw new TypeError("A promise cannot be resolved with itself.");
                     if (a && ("object" == typeof a || "function" == typeof a)) {
                         var c = a.then;
-                        if ("function" == typeof c)return void i(b(c, a), b(e, this), b(f, this))
+                        if ("function" == typeof c) return void i(b(c, a), b(e, this), b(f, this))
                     }
                     this._state = !0, this._value = a, g.call(this)
                 } catch (d) {
@@ -217,7 +213,7 @@
             }
 
             function g() {
-                for (var a = 0, b = this._deferreds.length; b > a; a++)d.call(this, this._deferreds[a]);
+                for (var a = 0, b = this._deferreds.length; b > a; a++) d.call(this, this._deferreds[a]);
                 this._deferreds = null
             }
 
@@ -234,16 +230,16 @@
                         d || (d = !0, c(a))
                     })
                 } catch (e) {
-                    if (d)return;
+                    if (d) return;
                     d = !0, c(e)
                 }
             }
 
             var j = c.immediateFn || "function" == typeof setImmediate && setImmediate || function (a) {
-                    setTimeout(a, 1)
-                }, k = Array.isArray || function (a) {
-                    return "[object Array]" === Object.prototype.toString.call(a)
-                };
+                setTimeout(a, 1)
+            }, k = Array.isArray || function (a) {
+                return "[object Array]" === Object.prototype.toString.call(a)
+            };
             c.prototype["catch"] = function (a) {
                 return this.then(null, a)
             }, c.prototype.then = function (a, b) {
@@ -258,7 +254,7 @@
                         try {
                             if (g && ("object" == typeof g || "function" == typeof g)) {
                                 var h = g.then;
-                                if ("function" == typeof h)return void h.call(g, function (a) {
+                                if ("function" == typeof h) return void h.call(g, function (a) {
                                     d(f, a)
                                 }, c)
                             }
@@ -268,20 +264,20 @@
                         }
                     }
 
-                    if (0 === a.length)return b([]);
-                    for (var e = a.length, f = 0; f < a.length; f++)d(f, a[f])
+                    if (0 === a.length) return b([]);
+                    for (var e = a.length, f = 0; f < a.length; f++) d(f, a[f])
                 })
             }, c.resolve = function (a) {
                 return a && "object" == typeof a && a.constructor === c ? a : new c(function (b) {
-                        b(a)
-                    })
+                    b(a)
+                })
             }, c.reject = function (a) {
                 return new c(function (b, c) {
                     c(a)
                 })
             }, c.race = function (a) {
                 return new c(function (b, c) {
-                    for (var d = 0, e = a.length; e > d; d++)a[d].then(b, c)
+                    for (var d = 0, e = a.length; e > d; d++) a[d].then(b, c)
                 })
             }, "undefined" != typeof module && module.exports ? module.exports = c : a.Promise || (a.Promise = c)
         })(this);

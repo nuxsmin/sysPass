@@ -106,7 +106,7 @@ class MainActionController
         $Config->setMaintenance(false);
         $Config->setUpgradeKey('');
 
-        $appVersion = implode('', Util::getVersion(true));
+        $appVersion = Util::getVersionStringNormalized();
 
         $Config->setConfigVersion($appVersion);
 

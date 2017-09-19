@@ -214,7 +214,7 @@ class Log extends ActionLog
     {
         $description = trim($this->LogMessage->getDescription(true) . PHP_EOL . $this->LogMessage->getDetails(true));
 
-        $msg = 'CEF:0|sysPass|logger|' . implode('.', Util::getVersion(true)) . '|';
+        $msg = 'CEF:0|sysPass|logger|' . Util::getVersionStringNormalized() . '|';
         $msg .= $this->LogMessage->getAction(true) . '|';
         $msg .= $description . '|';
         $msg .= '0|';

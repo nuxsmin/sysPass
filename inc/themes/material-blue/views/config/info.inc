@@ -13,7 +13,7 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Versión sysPass'); ?></div>
 
-                    <?php printf('%s (%s)', \SP\Util\Util::getVersionString(), \SP\Html\Html::strongText(implode('.', \SP\Util\Util::getVersion(true)))); ?>
+                    <?php printf('%s (%s)', \SP\Util\Util::getVersionString(), \SP\Html\Html::strongText(\SP\Util\Util::getVersionStringNormalized())); ?>
                 </td>
             </tr>
             <tr>

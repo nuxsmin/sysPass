@@ -30,7 +30,9 @@ use SP\Config\Config;
 use SP\Config\ConfigDB;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
+use SP\Core\Installer;
 use SP\Core\Session;
+use SP\Core\Upgrade\Upgrade;
 use SP\Html\Html;
 use SP\Http\Request;
 use SP\Log\Log;
@@ -46,7 +48,7 @@ class Util
     /**
      * Generar una clave aleatoria
      *
-     * @param int $length Longitud de la clave
+     * @param int  $length     Longitud de la clave
      * @param bool $useNumbers Usar números
      * @param bool $useSpecial Usar carácteres especiales
      * @param bool $checKStrength
@@ -193,15 +195,15 @@ class Util
             $description = $updateInfo->body;
             $date = $updateInfo->published_at;
 
-            preg_match('/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
+            preg_match('/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $remoteVersion);
 //            preg_match('/v?(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
 
-            if (is_array($realVer) && Init::isLoggedIn()) {
-                $appVersion = implode('', self::getVersion(true));
-                $pubVersion = $realVer[1] . $realVer[2] . $realVer[3] . $realVer[4];
+            if (is_array($remoteVersion) && Init::isLoggedIn()) {
+                $appVersion = self::getVersionStringNormalized();
+                $pubVersion = $remoteVersion[1] . $remoteVersion[2] . $remoteVersion[3] . '.' . $remoteVersion[4];
 //                $pubVersion = $realVer[1] . $realVer[2] . $realVer[3];
 
-                if ((int)$pubVersion > (int)$appVersion) {
+                if (self::checkVersion($appVersion, $pubVersion)) {
                     return [
                         'version' => $version,
                         'url' => $url,
@@ -222,10 +224,10 @@ class Util
     /**
      * Obtener datos desde una URL usando CURL
      *
-     * @param string $url
-     * @param array $data
+     * @param string    $url
+     * @param array     $data
      * @param bool|null $useCookie
-     * @param bool $weak
+     * @param bool      $weak
      * @return bool|string
      * @throws SPException
      */
@@ -377,27 +379,95 @@ class Util
     }
 
     /**
+     * Devolver versión normalizada en cadena
+     *
+     * @return string
+     */
+    public static function getVersionStringNormalized()
+    {
+        return implode('', Installer::VERSION) . '.' . Installer::BUILD;
+    }
+
+    /**
+     * Comprobar si una versión necesita actualización
+     *
+     * @param string       $currentVersion
+     * @param array|string $upgradeableVersion
+     * @return bool True si la versión es menor.
+     */
+    public static function checkVersion($currentVersion, $upgradeableVersion)
+    {
+        if (is_array($upgradeableVersion)) {
+            $upgradeableVersion = $upgradeableVersion[count($upgradeableVersion) - 1];
+        }
+
+        $currentVersion = self::normalizeVersionForCompare($currentVersion);
+        $upgradeableVersion = self::normalizeVersionForCompare($upgradeableVersion);
+
+        if (PHP_INT_SIZE > 4) {
+            return version_compare($currentVersion, $upgradeableVersion) === -1;
+        }
+
+        list($currentVersion, $build) = explode('.', $currentVersion, 2);
+        list($upgradeVersion, $upgradeBuild) = explode('.', $upgradeableVersion, 2);
+
+        $versionRes = (int)$currentVersion <= (int)$upgradeVersion;
+
+        return (($versionRes && (int)$upgradeBuild === 0)
+            || ($versionRes && (int)$build < (int)$upgradeBuild));
+    }
+
+    /**
+     * Devuelve una versión normalizada para poder ser comparada
+     *
+     * @param string $versionIn
+     * @return string
+     */
+    private static function normalizeVersionForCompare($versionIn)
+    {
+        if (is_string($versionIn) && !empty($versionIn)) {
+            list($version, $build) = explode('.', $versionIn);
+
+            $nomalizedVersion = 0;
+
+            foreach (str_split($version) as $key => $value) {
+                $nomalizedVersion += (int)$value * (10 ** (3 - $key));
+            }
+
+            return $nomalizedVersion . '.' . $build;
+        }
+
+        return '';
+    }
+
+    /**
      * Devuelve la versión de sysPass.
      *
      * @param bool $retBuild devolver el número de compilación
-     * @param bool $normalized
      *
      * @return array con el número de versión
      */
-    public static function getVersion($retBuild = false, $normalized = false)
+    public static function getVersionArray($retBuild = false)
     {
-        $build = 17050101;
-        $version = [2, 2, 0];
-
-        if ($normalized === true) {
-            return [implode('', $version), $build];
-        }
+        $version = array_values(Installer::VERSION);
 
         if ($retBuild === true) {
-            $version[] = $build;
+            $version[] = Installer::BUILD;
+
+            return $version;
         }
 
         return $version;
+    }
+
+    /**
+     * Devolver versión normalizada en array
+     *
+     * @return array
+     */
+    public static function getVersionArrayNormalized()
+    {
+        return [implode('', Installer::VERSION), Installer::BUILD];
     }
 
     /**
@@ -471,8 +541,8 @@ class Util
      * such as 'false','N','yes','on','off', etc.
      *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
-     * @param mixed $in The variable to check
-     * @param bool $strict If set to false, consider everything that is not false to
+     * @param mixed $in     The variable to check
+     * @param bool  $strict If set to false, consider everything that is not false to
      *                      be true.
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
      */
@@ -545,9 +615,9 @@ class Util
     /**
      * Cast an object to another class, keeping the properties, but changing the methods
      *
-     * @param string $class Class name
+     * @param string        $class    Class name
      * @param string|object $object
-     * @param string $srcClass Nombre de la clase serializada
+     * @param string        $srcClass Nombre de la clase serializada
      * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
      */

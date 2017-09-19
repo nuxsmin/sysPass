@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,6 +27,7 @@ namespace SP\Core\Plugin;
 use ReflectionClass;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session;
+use SP\DataModel\PluginData;
 use SP\Log\Log;
 use SP\Mgmt\Plugins\Plugin;
 
@@ -62,8 +63,11 @@ class PluginUtil
 
         if ($pluginDirH) {
             while (false !== ($entry = readdir($pluginDirH))) {
+                $pluginDir = PLUGINS_PATH . DIRECTORY_SEPARATOR . $entry;
+
                 if (strpos($entry, '.') === false
-                    && is_dir(PLUGINS_PATH . '/' . $entry)
+                    && is_dir($pluginDir)
+                    && file_exists($pluginDir . DIRECTORY_SEPARATOR . $entry . 'Plugin.class.php')
                 ) {
                     $plugins[] = $entry;
                 }
@@ -172,7 +176,28 @@ class PluginUtil
     }
 
     /**
-     * Devolver los plugins habilidatos
+     * Comprobar disponibilidad de plugins habilitados
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public static function checkEnabledPlugins()
+    {
+        $PluginData = new PluginData();
+        $PluginData->setPluginAvailable(false);
+        $PluginData->setPluginEnabled(false);
+
+        foreach (self::getEnabledPlugins() as $plugin) {
+            if (!in_array($plugin, self::$loadedPlugins)) {
+                $PluginClone = clone $PluginData;
+                $PluginClone->setPluginName($plugin);
+
+                Plugin::getItem($PluginClone)->toggleAvaliableByName();
+            }
+        }
+    }
+
+    /**
+     * Devolver los plugins habilitados
      *
      * @return PluginInterface[]
      */
@@ -181,6 +206,8 @@ class PluginUtil
         if (self::$enabledPlugins !== null) {
             return self::$enabledPlugins;
         }
+
+        self::$enabledPlugins = [];
 
         foreach (Plugin::getItem()->getEnabled() as $plugin) {
             self::$enabledPlugins[] = $plugin->plugin_name;

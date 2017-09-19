@@ -246,7 +246,7 @@ class DB
             debugLog('Exception: ' . $e->getMessage());
             debugLog(ob_get_clean());
 
-            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
+            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode(), 0, $e);
         }
     }
 
@@ -346,8 +346,9 @@ class DB
 
             self::logDBException($queryData->getQuery(), $e, __FUNCTION__);
 
-            if ($e->getCode() === 23000) {
-                throw new ConstraintException(SPException::SP_ERROR, __('Restricción de integridad', false), $e->getMessage(), $e->getCode());
+            switch ($e->getCode()) {
+                case 23000:
+                    throw new ConstraintException(SPException::SP_ERROR, __('Restricción de integridad', false), $e->getMessage(), $e->getCode());
             }
 
             throw new QueryException(SPException::SP_ERROR, $errorMessage, $e->getMessage(), $e->getCode());

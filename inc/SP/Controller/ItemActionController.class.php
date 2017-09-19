@@ -870,7 +870,7 @@ class ItemActionController implements ItemControllerInterface
         switch ($this->actionId) {
             case ActionsInterface::ACTION_MGM_PLUGINS_ENABLE:
                 $PluginData->setPluginEnabled(1);
-                Plugin::getItem($PluginData)->toggle();
+                Plugin::getItem($PluginData)->toggleEnabled();
 
                 $this->LogMessage->setAction(__('Actualizar Plugin', false));
                 $this->LogMessage->addDescription(__('Plugin habilitado', false));
@@ -878,7 +878,7 @@ class ItemActionController implements ItemControllerInterface
                 break;
             case ActionsInterface::ACTION_MGM_PLUGINS_DISABLE:
                 $PluginData->setPluginEnabled(0);
-                Plugin::getItem($PluginData)->toggle();
+                Plugin::getItem($PluginData)->toggleEnabled();
 
                 $this->LogMessage->setAction(__('Actualizar Plugin', false));
                 $this->LogMessage->addDescription(__('Plugin deshabilitado', false));

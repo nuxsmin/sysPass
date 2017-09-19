@@ -52,6 +52,11 @@ defined('APP_ROOT') || die();
 class Installer
 {
     /**
+     * Versión y número de compilación de sysPass
+     */
+    const VERSION = [2, 2, 0];
+    const BUILD = 17050101;
+    /**
      * @var PDO Instancia de conexión a la BD
      */
     private $DB;
@@ -88,7 +93,7 @@ class Installer
 
         // Generate a random salt that is used to salt the local user passwords
         $this->Config->setPasswordSalt(Util::generateRandomBytes(30));
-        $this->Config->setConfigVersion(implode(Util::getVersion(true)));
+        $this->Config->setConfigVersion(Util::getVersionStringNormalized());
 
         if (preg_match('/unix:(.*)/', $this->InstallData->getDbHost(), $match)) {
             $this->InstallData->setDbSocket($match[1]);
@@ -120,7 +125,7 @@ class Installer
         $this->checkConnection();
         $this->createAdminAccount();
 
-        ConfigDB::setValue('version', implode(Util::getVersion(true)));
+        ConfigDB::setValue('version', Util::getVersionStringNormalized());
 
         $this->Config->setInstalled(true);
         Config::saveConfig($this->Config);

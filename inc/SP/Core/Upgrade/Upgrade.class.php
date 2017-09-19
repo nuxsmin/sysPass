@@ -74,10 +74,10 @@ class Upgrade
      */
     public static function doUpgrade($version)
     {
-        self::$currentDbVersion = self::normalizeVersion(ConfigDB::getValue('version'));
+        self::$currentDbVersion = self::fixVersionNumber(ConfigDB::getValue('version'));
 
         foreach (self::$dbUpgrade as $dbVersion) {
-            if (self::checkVersion($version, $dbVersion)) {
+            if (Util::checkVersion($version, $dbVersion)) {
                 if (self::auxPreDbUpgrade($dbVersion) === false) {
                     throw new SPException(SPException::SP_CRITICAL,
                         __('Error al aplicar la actualización auxiliar', false),
@@ -93,7 +93,7 @@ class Upgrade
         }
 
         foreach (self::$appUpgrade as $appVersion) {
-            if (self::checkVersion($version, $appVersion)
+            if (Util::checkVersion($version, $appVersion)
                 && self::appUpgrades($appVersion) === false
             ) {
                 throw new SPException(SPException::SP_CRITICAL,
@@ -103,7 +103,7 @@ class Upgrade
         }
 
         foreach (self::$auxUpgrade as $auxVersion) {
-            if (self::checkVersion($version, $auxVersion)
+            if (Util::checkVersion($version, $auxVersion)
                 && self::auxUpgrades($auxVersion) === false
             ) {
                 throw new SPException(SPException::SP_CRITICAL,
@@ -121,7 +121,7 @@ class Upgrade
      * @param $version
      * @return string
      */
-    public static function normalizeVersion($version)
+    public static function fixVersionNumber($version)
     {
         if (strpos($version, '.') === false) {
             if (strlen($version) === 10) {
@@ -132,37 +132,6 @@ class Upgrade
         }
 
         return $version;
-    }
-
-    /**
-     * Comprobar si una versión necesita actualización
-     *
-     * @param string       $version
-     * @param array|string $upgradeable
-     * @return bool True si la versión es menor.
-     */
-    public static function checkVersion($version, $upgradeable)
-    {
-        if (is_array($upgradeable)) {
-            $upgradeable = $upgradeable[count($upgradeable) - 1];
-        }
-
-        if (PHP_INT_SIZE > 4) {
-            return version_compare($version, $upgradeable) === -1;
-        }
-
-        list($version, $build) = explode('.', $version, 2);
-        list($upgradeVersion, $upgradeBuild) = explode('.', $upgradeable, 2);
-
-        $versionRes = (int)$version <= (int)$upgradeVersion;
-
-        if (($versionRes && (int)$upgradeBuild === 0)
-            || ($versionRes && (int)$build < (int)$upgradeBuild)
-        ) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -208,7 +177,7 @@ class Upgrade
 
         $queries = self::getQueriesFromFile($version);
 
-        if (count($queries) === 0 || self::checkVersion(self::$currentDbVersion, $version) === false) {
+        if (count($queries) === 0 || Util::checkVersion(self::$currentDbVersion, $version) === false) {
             $LogMessage->addDescription(__('No es necesario actualizar la Base de Datos.', false));
 
             debugLog($LogMessage->composeText());
@@ -289,7 +258,7 @@ class Upgrade
             case '210.17022601':
                 $dbResult = true;
 
-                if (self::checkVersion(self::$currentDbVersion, $version)) {
+                if (Util::checkVersion(self::$currentDbVersion, $version)) {
                     $dbResult = self::upgradeDB($version);
                 }
 
@@ -352,7 +321,7 @@ class Upgrade
      */
     public static function needConfigUpgrade($version)
     {
-        return self::checkVersion($version, self::$cfgUpgrade);
+        return Util::checkVersion($version, self::$cfgUpgrade);
     }
 
     /**
@@ -367,7 +336,7 @@ class Upgrade
         $Config = Config::getConfig();
 
         foreach (self::$cfgUpgrade as $upgradeVersion) {
-            if (self::checkVersion($version, $upgradeVersion)) {
+            if (Util::checkVersion($version, $upgradeVersion)) {
                 switch ($upgradeVersion) {
                     case '200.17011202':
                         debugLog(__FUNCTION__ . ': ' . $version);
@@ -516,12 +485,12 @@ class Upgrade
      */
     public static function checkDbVersion()
     {
-        $appVersion = implode('.', Util::getVersion(true, true));
-        $databaseVersion = self::normalizeVersion(ConfigDB::getValue('version'));
+        $appVersion = Util::getVersionStringNormalized();
+        $databaseVersion = self::fixVersionNumber(ConfigDB::getValue('version'));
 
-        if (self::checkVersion($databaseVersion, $appVersion)
+        if (Util::checkVersion($databaseVersion, $appVersion)
             && Request::analyze('nodbupgrade', 0) === 0
-            && self::checkVersion($databaseVersion, self::$dbUpgrade)
+            && Util::checkVersion($databaseVersion, self::$dbUpgrade)
         ) {
             if (!Init::checkMaintenanceMode(true)) {
                 self::setUpgradeKey('db');
@@ -562,9 +531,9 @@ class Upgrade
      */
     public static function checkAppVersion()
     {
-        $appVersion = self::normalizeVersion(Config::getConfig()->getConfigVersion());
+        $appVersion = self::fixVersionNumber(Config::getConfig()->getConfigVersion());
 
-        if (self::checkVersion($appVersion, self::$appUpgrade)) {
+        if (Util::checkVersion($appVersion, self::$appUpgrade)) {
             if (!Init::checkMaintenanceMode(true)) {
                 self::setUpgradeKey('app');
             } else {

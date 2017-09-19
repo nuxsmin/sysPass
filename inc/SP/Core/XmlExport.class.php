@@ -236,7 +236,7 @@ class XmlExport
         try {
             $nodeMeta = $this->xml->createElement('Meta');
             $metaGenerator = $this->xml->createElement('Generator', 'sysPass');
-            $metaVersion = $this->xml->createElement('Version', implode('.', Util::getVersion()));
+            $metaVersion = $this->xml->createElement('Version', Util::getVersionStringNormalized());
             $metaTime = $this->xml->createElement('Time', time());
             $metaUser = $this->xml->createElement('User', Session::getUserData()->getUserLogin());
             $metaUser->setAttribute('id', Session::getUserData()->getUserId());

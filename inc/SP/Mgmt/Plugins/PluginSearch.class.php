@@ -45,7 +45,7 @@ class PluginSearch extends PluginBase implements ItemSearchInterface
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
         $Data = new QueryData();
-        $Data->setSelect('plugin_id, plugin_name, BIN(plugin_enabled) AS plugin_enabled');
+        $Data->setSelect('plugin_id, plugin_name, plugin_enabled, plugin_available');
         $Data->setFrom('plugins');
         $Data->setOrder('plugin_name');
 

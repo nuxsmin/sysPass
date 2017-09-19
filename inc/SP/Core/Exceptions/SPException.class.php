@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,6 +25,7 @@
 namespace SP\Core\Exceptions;
 
 use Exception;
+use Throwable;
 
 defined('APP_ROOT') || die();
 
@@ -63,6 +64,7 @@ class SPException extends Exception
     {
         $this->type = $type;
         $this->hint = $hint;
+
         parent::__construct($message, $code, $previous);
     }
 

@@ -649,6 +649,9 @@ sysPass.Main = function () {
         }
     };
 
+    /**
+     * Inicializar portapapeles
+     */
     var initializeClipboard = function () {
         log.info("initializeClipboard");
 
