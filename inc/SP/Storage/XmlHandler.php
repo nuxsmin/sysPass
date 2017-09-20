@@ -241,13 +241,7 @@ class XmlHandler implements FileStorageInterface
         foreach ($Reflection->getProperties() as $property) {
             $property->setAccessible(true);
             $value = $property->getValue($object);
-
-            if (is_numeric($value) || is_bool($value)) {
-                $items[$property->getName()] = (int)$value;
-            } else {
-                $items[$property->getName()] = $value;
-            }
-
+            $items[$property->getName()] = is_bool($value) ? (int)$value : $value;
             $property->setAccessible(false);
         }
 

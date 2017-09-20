@@ -63,7 +63,9 @@ class MainActionController
 
                 if (Request::analyze('h') !== Config::getConfig()->getUpgradeKey()) {
                     throw new ValidationException(__('Código de seguridad incorrecto', false));
-                } elseif (Request::analyze('chkConfirm', false, false, true) === false) {
+                }
+
+                if (Request::analyze('chkConfirm', false, false, true) === false) {
                     throw new ValidationException(__('Es necesario confirmar la actualización', false));
                 }
 

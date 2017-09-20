@@ -380,7 +380,7 @@ class ConfigData implements JsonSerializable
      */
     public function setDokuwikiEnabled($dokuwikiEnabled)
     {
-        $this->dokuwikiEnabled = (bool)$dokuwikiEnabled;
+        $this->dokuwikiEnabled = (int)$dokuwikiEnabled;
 
         return $this;
     }
@@ -485,7 +485,7 @@ class ConfigData implements JsonSerializable
      */
     public function getLdapDefaultGroup()
     {
-        return (int)$this->ldapDefaultGroup;
+        return $this->ldapDefaultGroup;
     }
 
     /**
@@ -504,7 +504,7 @@ class ConfigData implements JsonSerializable
      */
     public function getLdapDefaultProfile()
     {
-        return (int)$this->ldapDefaultProfile;
+        return $this->ldapDefaultProfile;
     }
 
     /**
@@ -1687,7 +1687,7 @@ class ConfigData implements JsonSerializable
      */
     public function setChecknotices($checknotices)
     {
-        $this->checknotices = $checknotices;
+        $this->checknotices = (bool)$checknotices;
 
         return $this;
     }
@@ -1821,7 +1821,7 @@ class ConfigData implements JsonSerializable
      */
     public function isEncryptSession()
     {
-        return (bool)$this->encryptSession;
+        return $this->encryptSession;
     }
 
     /**
@@ -1840,7 +1840,7 @@ class ConfigData implements JsonSerializable
      */
     public function isAccountFullGroupAccess()
     {
-        return (bool)$this->accountFullGroupAccess;
+        return $this->accountFullGroupAccess;
     }
 
     /**
@@ -1859,7 +1859,7 @@ class ConfigData implements JsonSerializable
      */
     public function isAuthBasicEnabled()
     {
-        return (bool)$this->authBasicEnabled;
+        return $this->authBasicEnabled;
     }
 
     /**
@@ -1891,7 +1891,7 @@ class ConfigData implements JsonSerializable
      */
     public function isAuthBasicAutoLoginEnabled()
     {
-        return (bool)$this->authBasicAutoLoginEnabled;
+        return $this->authBasicAutoLoginEnabled;
     }
 
     /**
@@ -1915,7 +1915,7 @@ class ConfigData implements JsonSerializable
      */
     public function setSsoDefaultGroup($ssoDefaultGroup)
     {
-        $this->ssoDefaultGroup = $ssoDefaultGroup;
+        $this->ssoDefaultGroup = (int)$ssoDefaultGroup;
     }
 
     /**
@@ -1931,6 +1931,6 @@ class ConfigData implements JsonSerializable
      */
     public function setSsoDefaultProfile($ssoDefaultProfile)
     {
-        $this->ssoDefaultProfile = $ssoDefaultProfile;
+        $this->ssoDefaultProfile = (int)$ssoDefaultProfile;
     }
 }

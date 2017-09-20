@@ -427,7 +427,7 @@ class Init
         $configVersion = Upgrade::fixVersionNumber(Config::getConfig()->getConfigVersion());
 
         if (Config::getConfig()->isInstalled()
-            && Util::checkVersion($configVersion, Util::getVersionArrayNormalized())
+            && Util::checkVersion($configVersion, Util::getVersionStringNormalized())
             && Upgrade::needConfigUpgrade($configVersion)
             && Upgrade::upgradeConfig($configVersion)
         ) {
