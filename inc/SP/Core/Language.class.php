@@ -177,7 +177,7 @@ class Language
             'Deutsch' => 'de_DE',
             'Magyar' => 'hu_HU',
             'Français' => 'fr_FR',
-            'Polski' => 'po_PO',
+            'Polski' => 'pl_PL',
             'русский' => 'ru_RU',
             'Nederlands' => 'nl_NL',
             'Português' => 'pt_BR'
