@@ -39,10 +39,12 @@ class HttpUtil
     public static function checkHttps()
     {
         if (Checks::forceHttpsIsEnabled() && !Checks::httpsEnabled()) {
-            $port = ((int)$_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
-            $host = str_replace('http', 'https', self::getHttpHost());
+            $serverPort = (int)$_SERVER['SERVER_PORT'];
 
-            header('Location: ' . $host . $port . $_SERVER['REQUEST_URI']);
+            $httpPort = $serverPort !== 443 && $serverPort !== 80 ? $serverPort : '';
+            $httpHost = str_replace('http', 'https', self::getHttpHost());
+
+            header('Location: ' . $httpHost . ':' . $httpPort . $_SERVER['REQUEST_URI']);
         }
     }
 
