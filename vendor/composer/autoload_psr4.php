@@ -7,7 +7,10 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'phpseclib\\' => array($vendorDir . '/phpseclib/phpseclib/phpseclib'),
-    'SP\\' => array($baseDir . '/inc'),
+    'SP\\Modules\\Web\\' => array($baseDir . '/app/modules/web'),
+    'SP\\' => array($baseDir . '/lib/SP'),
+    'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
+    'Klein\\' => array($vendorDir . '/klein/klein/src/Klein'),
     'Defuse\\Crypto\\' => array($vendorDir . '/defuse/php-encryption/src'),
 );

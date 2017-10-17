@@ -25,17 +25,15 @@
 use SP\Controller\EventlogController;
 use SP\Core\Init;
 use SP\Http\Request;
+use SP\Util\Util;
 
 define('APP_ROOT', dirname(__DIR__));
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 
 Request::checkReferer('GET');
 
-if (!Init::isLoggedIn()) {
-    \SP\Util\Util::logout();
-}
-
 $Controller = new EventlogController();
+$Controller->checkLoggedIn();
 $Controller->doAction();
 $Controller->view();

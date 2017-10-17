@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,16 +22,17 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Controller\MainController;
 use SP\Core\Init;
-use SP\Core\Session;
+use SP\Core\SessionFactory;
+use SP\Modules\Web\Controllers\MainController;
 
 define('APP_ROOT', __DIR__);
+define('APP_MODULE', 'web');
 
-require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 
-if (!Init::checkPostLoginActions() && Session::getAuthCompleted()) {
-    $Controller = new MainController();
-    $Controller->getMain();
-    $Controller->view();
-}
+//if (!Init::checkPostLoginActions() && Session::getAuthCompleted()) {
+//    $Controller = new MainController();
+//    $Controller->getMain();
+//    $Controller->view();
+//}

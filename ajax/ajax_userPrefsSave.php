@@ -26,7 +26,7 @@ use Plugins\Authenticator\Authenticator;
 use SP\Core\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\Language;
-use SP\Core\Session;
+use SP\Core\SessionFactory;
 use SP\Core\Exceptions\SPException;
 use SP\Core\DiFactory;
 use SP\Http\JsonResponse;
@@ -40,13 +40,20 @@ use SP\Util\Util;
 
 define('APP_ROOT', dirname(__DIR__));
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 
 Request::checkReferer('POST');
 
 $Json = new JsonResponse();
 
-if (!Init::isLoggedIn()) {
+/** @var \SP\Storage\Database $db */
+$db = $dic->get(\SP\Storage\Database::class);
+/** @var SessionFactory $session */
+$session = $dic->get(SessionFactory::class);
+/** @var \SP\Core\UI\Theme $theme */
+$theme = $dic->get(\SP\Core\UI\Theme::class);
+
+if (!Util::isLoggedIn($session)) {
     $Json->setStatus(10);
     $Json->setDescription(__('La sesión no se ha iniciado o ha caducado'));
     Json::returnJson($Json);
@@ -80,10 +87,10 @@ if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
         UserPreferences::getItem($UserPreferencesData)->update();
         // Forzar la detección del lenguaje tras actualizar
         Language::setLanguage(true);
-        DiFactory::getTheme()->initTheme(true);
+        $theme->initTheme(true);
 
         // Actualizar las preferencias en la sesión y recargar la página
-        Session::setUserPreferences($UserPreferencesData);
+        SessionFactory::setUserPreferences($UserPreferencesData);
         Util::reload();
 
         $Json->setStatus(0);

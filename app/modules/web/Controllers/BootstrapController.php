@@ -1,0 +1,75 @@
+<?php
+/**
+ * sysPass
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Modules\Web\Controllers;
+
+use Exception;
+use SP\Auth\Browser\Browser;
+use SP\Bootstrap;
+use SP\Core\CryptPKI;
+use SP\Core\Plugin\PluginUtil;
+use SP\Core\SessionFactory;
+use SP\Http\Cookies;
+use SP\Http\Response;
+
+/**
+ * Class BootstrapController
+ *
+ * @package SP\Modules\Web\Controllers
+ */
+class BootstrapController extends SimpleControllerBase
+{
+    /**
+     * Returns environment data
+     */
+    public function getEnvironmentAction()
+    {
+        $configData = $this->config->getConfigData();
+
+        $data = [
+            'lang' => require PUBLIC_PATH . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'strings.js.php',
+            'locale' => $configData->getSiteLang(),
+            'app_root' => Bootstrap::$WEBURI,
+            'pk' => '',
+            'max_file_size' => $configData->getFilesAllowedSize(),
+            'check_updates' => $this->session->getAuthCompleted()
+                && ($configData->isCheckUpdates() || $configData->isChecknotices())
+                && ($this->session->getUserData()->isUserIsAdminApp() || $configData->isDemoEnabled()),
+            'timezone' => date_default_timezone_get(),
+            'debug' => DEBUG || $configData->isDebug(),
+            'cookies_enabled' => Cookies::checkCookies(),
+            'plugins' => PluginUtil::getEnabledPlugins(),
+            'loggedin' => $this->session->isLoggedIn(),
+            'authbasic_autologin' => Browser::getServerAuthUser() && $configData->isAuthBasicAutoLoginEnabled()
+        ];
+
+        try {
+            $CryptPKI = new CryptPKI();
+            $data['pk'] = SessionFactory::getPublicKey() ?: $CryptPKI->getPublicKey();
+        } catch (Exception $e) {
+        }
+
+        Response::printJson($data, 0);
+    }
+}

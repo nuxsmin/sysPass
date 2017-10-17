@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,7 +22,6 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Config\Config;
 use SP\Controller\AccountController;
 use SP\Controller\AccountSearchController;
 use SP\Controller\ConfigController;
@@ -31,9 +30,7 @@ use SP\Controller\ItemListController;
 use SP\Controller\NoticesController;
 use SP\Controller\UserPreferencesController;
 use SP\Core\ActionsInterface;
-use SP\Core\DiFactory;
-use SP\Core\Init;
-use SP\Core\Session;
+use SP\Core\SessionFactory;
 use SP\Core\Template;
 use SP\Http\Request;
 use SP\Http\Response;
@@ -41,11 +38,18 @@ use SP\Util\Util;
 
 define('APP_ROOT', dirname(__DIR__));
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 
 Request::checkReferer('GET');
 
-if (!Init::isLoggedIn()) {
+/** @var \SP\Storage\Database $db */
+$db = $dic->get(\SP\Storage\Database::class);
+/** @var SessionFactory $session */
+$session = $dic->get(SessionFactory::class);
+/** @var \SP\Core\UI\Theme $theme */
+$theme = $dic->get(\SP\Core\UI\Theme::class);
+
+if (!Util::isLoggedIn($session)) {
     Util::logout();
 }
 
@@ -58,7 +62,7 @@ if (!Request::analyze('actionId', 0, true)) {
 $actionId = Request::analyze('actionId', 0);
 $itemId = Request::analyze('itemId', 0);
 
-$UserData = Session::getUserData();
+$UserData = SessionFactory::getUserData();
 
 $Tpl = new Template();
 $Tpl->assign('actionId', $actionId);
@@ -69,7 +73,7 @@ $Tpl->assign('userId', $UserData->getUserId());
 $Tpl->assign('userGroupId', $UserData->getUserGroupId());
 $Tpl->assign('userIsAdminApp', $UserData->isUserIsAdminApp());
 $Tpl->assign('userIsAdminAcc', $UserData->isUserIsAdminAcc());
-$Tpl->assign('themeUri', DiFactory::getTheme()->getThemeUri());
+$Tpl->assign('themeUri', $theme->getThemeUri());
 
 switch ($actionId) {
     case ActionsInterface::ACTION_ACC_SEARCH:
@@ -136,8 +140,11 @@ switch ($actionId) {
         break;
 }
 
+/** @var \SP\Config\ConfigData $ConfigData */
+$ConfigData = $dic->get(\SP\Config\ConfigData::class);
+
 // Se comprueba si se debe de mostrar la vista de depuración
-if ($UserData->isUserIsAdminApp() && Config::getConfig()->isDebug()) {
+if ($UserData->isUserIsAdminApp() && $ConfigData->isDebug()) {
     $Controller->getDebug();
 }
 

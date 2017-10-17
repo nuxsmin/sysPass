@@ -32,7 +32,7 @@ use SP\Util\Json;
 define('APP_ROOT', dirname(__DIR__));
 define('IS_INSTALLER', 1);
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 
 Request::checkReferer('POST');
 

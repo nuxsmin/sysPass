@@ -45,11 +45,12 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
-backup/*
-config/*
+app/cache/*
+app/backup/*
+app/config/*
 res/
 tools/
-tmp/
-inc/Plugins/*
+app/temp/*
+app/modules/web/plugins/*
 
 !.blank

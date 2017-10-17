@@ -23,10 +23,8 @@
  */
 
 use SP\Account\AccountUtil;
-use SP\Config\Config;
 use SP\Core\ActionsInterface;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\DataModel\FileData;
 use SP\Html\Html;
@@ -35,16 +33,15 @@ use SP\Http\Response;
 use SP\Log\Log;
 use SP\Mgmt\Files\File;
 use SP\Mgmt\Files\FileUtil;
-use SP\Util\Checks;
 use SP\Util\Util;
 
 define('APP_ROOT', dirname(__DIR__));
 
-require_once APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 
 Request::checkReferer('POST');
 
-if (!Init::isLoggedIn()) {
+if (!Util::isLoggedIn($dic->get(\SP\Core\SessionFactory::class))) {
     Util::logout();
 }
 
@@ -54,7 +51,10 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
     Response::printJson(__('CONSULTA INVÁLIDA'));
 }
 
-if (!Checks::fileIsEnabled()) {
+/** @var \SP\Config\ConfigData $ConfigData */
+$ConfigData = $dic->get(\SP\Config\ConfigData::class);
+
+if (!$ConfigData->isFilesEnabled()) {
     Response::printJson(__('Gestión de archivos deshabilitada'));
 }
 
@@ -72,8 +72,8 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
 
     $LogMessage->setAction(__('Subir Archivo', false));
 
-    $allowedExts = Config::getConfig()->getFilesAllowedExts();
-    $allowedSize = Config::getConfig()->getFilesAllowedSize();
+    $allowedExts = $ConfigData->getFilesAllowedExts();
+    $allowedSize = $ConfigData->getFilesAllowedSize();
 
     if (count($allowedExts) === 0) {
         $LogMessage->addDescription(__('No hay extensiones permitidas', false));

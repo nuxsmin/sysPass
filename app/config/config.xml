@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+  <accountCount>12</accountCount>
+  <accountFullGroupAccess>0</accountFullGroupAccess>
+  <accountLink>1</accountLink>
+  <accountPassToImage>0</accountPassToImage>
+  <authBasicAutoLoginEnabled>1</authBasicAutoLoginEnabled>
+  <authBasicDomain></authBasicDomain>
+  <authBasicEnabled>1</authBasicEnabled>
+  <backup_hash>36294f0e4218f177180b419cf2a853bf765b2f6d</backup_hash>
+  <checkUpdates>1</checkUpdates>
+  <checknotices>0</checknotices>
+  <configDate>1505767472</configDate>
+  <configHash>c49414b14004c75fcd3b6578814941f9</configHash>
+  <configSaver></configSaver>
+  <configVersion>22017050101</configVersion>
+  <dbHost>syspass-db</dbHost>
+  <dbName>syspass</dbName>
+  <dbPass>G0fq^NjmQ2lr:e3o</dbPass>
+  <dbPort>3306</dbPort>
+  <dbSocket></dbSocket>
+  <dbUser>sp_admin</dbUser>
+  <debug>0</debug>
+  <demoEnabled>0</demoEnabled>
+  <dokuwikiEnabled>0</dokuwikiEnabled>
+  <dokuwikiNamespace></dokuwikiNamespace>
+  <dokuwikiPass></dokuwikiPass>
+  <dokuwikiUrl></dokuwikiUrl>
+  <dokuwikiUrlBase></dokuwikiUrlBase>
+  <dokuwikiUser></dokuwikiUser>
+  <encryptSession>0</encryptSession>
+  <export_hash>300049b78c19e759bc589f9a56dbb6473bf7cc9c</export_hash>
+  <filesAllowedExts>
+    <item type="filesAllowedExts">PDF</item>
+    <item type="filesAllowedExts">JPG</item>
+    <item type="filesAllowedExts">GIF</item>
+    <item type="filesAllowedExts">PNG</item>
+    <item type="filesAllowedExts">ODT</item>
+    <item type="filesAllowedExts">ODS</item>
+    <item type="filesAllowedExts">DOC</item>
+    <item type="filesAllowedExts">DOCX</item>
+    <item type="filesAllowedExts">XLS</item>
+    <item type="filesAllowedExts">XSL</item>
+    <item type="filesAllowedExts">VSD</item>
+    <item type="filesAllowedExts">TXT</item>
+    <item type="filesAllowedExts">CSV</item>
+    <item type="filesAllowedExts">BAK</item>
+    <item type="filesAllowedExts">RDP</item>
+    <item type="filesAllowedExts">KEY</item>
+  </filesAllowedExts>
+  <filesAllowedSize>1024</filesAllowedSize>
+  <filesEnabled>1</filesEnabled>
+  <globalSearch>1</globalSearch>
+  <httpsEnabled>0</httpsEnabled>
+  <installed>1</installed>
+  <ldapAds>0</ldapAds>
+  <ldapBase>dc=demo1,dc=freeipa,dc=org</ldapBase>
+  <ldapBindPass>Secret123</ldapBindPass>
+  <ldapBindUser>uid=admin,cn=users,cn=accounts,dc=demo1,dc=freeipa,dc=org</ldapBindUser>
+  <ldapDefaultGroup>1</ldapDefaultGroup>
+  <ldapDefaultProfile>1</ldapDefaultProfile>
+  <ldapEnabled>0</ldapEnabled>
+  <ldapGroup></ldapGroup>
+  <ldapProxyUser></ldapProxyUser>
+  <ldapServer>ipa.demo1.freeipa.org</ldapServer>
+  <ldapUserattr></ldapUserattr>
+  <logEnabled>1</logEnabled>
+  <mailAuthenabled>1</mailAuthenabled>
+  <mailEnabled>1</mailEnabled>
+  <mailFrom>test@syspass.org</mailFrom>
+  <mailPass>&amp;J$wkt+1QheO</mailPass>
+  <mailPort>25</mailPort>
+  <mailRequestsEnabled>0</mailRequestsEnabled>
+  <mailSecurity></mailSecurity>
+  <mailServer>mail.syspass.org</mailServer>
+  <mailUser>test@syspass.org</mailUser>
+  <maintenance>0</maintenance>
+  <passwordSalt>fcc85b56f961971ed30b2ca0073e9fde4fd2e7c893106da2963a5a2b5dcb</passwordSalt>
+  <proxyEnabled>0</proxyEnabled>
+  <proxyPass></proxyPass>
+  <proxyPort>8080</proxyPort>
+  <proxyServer></proxyServer>
+  <proxyUser></proxyUser>
+  <publinksEnabled>0</publinksEnabled>
+  <publinksImageEnabled>0</publinksImageEnabled>
+  <publinksMaxTime>600</publinksMaxTime>
+  <publinksMaxViews>3</publinksMaxViews>
+  <resultsAsCards>0</resultsAsCards>
+  <sessionTimeout>900</sessionTimeout>
+  <siteLang>en_US</siteLang>
+  <siteTheme>material-blue</siteTheme>
+  <ssoDefaultGroup>0</ssoDefaultGroup>
+  <ssoDefaultProfile>0</ssoDefaultProfile>
+  <syslogEnabled>0</syslogEnabled>
+  <syslogPort>514</syslogPort>
+  <syslogRemoteEnabled>0</syslogRemoteEnabled>
+  <syslogServer></syslogServer>
+  <upgradeKey></upgradeKey>
+  <wikiEnabled>0</wikiEnabled>
+  <wikiFilter></wikiFilter>
+  <wikiPageurl></wikiPageurl>
+  <wikiSearchurl></wikiSearchurl>
+</config>

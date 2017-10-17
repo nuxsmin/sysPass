@@ -27,7 +27,7 @@ use SP\Log\Log;
 
 define('APP_ROOT', '.');
 
-require APP_ROOT . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Base.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 
 header('Content-type: application/json');
 
