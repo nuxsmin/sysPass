@@ -101,7 +101,7 @@ class AccountHelper extends HelperBase
         $this->Account = $Account;
         $this->AccountData = $Account->getData();
 
-        $this->view->assign('accountId', $this->id);
+        $this->view->assign('accountId', $accountId);
         $this->view->assign('accountData', $this->AccountData);
         $this->view->assign('gotData', $this->isGotData());
     }

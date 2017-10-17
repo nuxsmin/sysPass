@@ -61,19 +61,19 @@ class ConfigUtil
      */
     public static function checkConfigDir()
     {
-        if (!is_dir(APP_ROOT . DIRECTORY_SEPARATOR . 'config')) {
+        if (!is_dir(CONFIG_PATH)) {
             clearstatcache();
 
             throw new ConfigException(ConfigException::SP_CRITICAL, __('El directorio "/config" no existe', false));
         }
 
-        if (!is_writable(APP_ROOT . DIRECTORY_SEPARATOR . 'config')) {
+        if (!is_writable(CONFIG_PATH)) {
             clearstatcache();
 
             throw new ConfigException(ConfigException::SP_CRITICAL, __('No es posible escribir en el directorio "config"', false));
         }
 
-        $configPerms = decoct(fileperms(APP_ROOT . DIRECTORY_SEPARATOR . 'config') & 0777);
+        $configPerms = decoct(fileperms(CONFIG_PATH) & 0777);
 
         if ($configPerms !== '750' && !Checks::checkIsWindows()) {
             clearstatcache();

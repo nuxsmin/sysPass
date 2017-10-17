@@ -390,7 +390,7 @@ sysPass.Theme = function (Common) {
             }).on("click", "#search-rows i.icon-favorite", function () {
                 var $this = $(this);
 
-                Common.appActions().account.savefavorite($this, function () {
+                Common.appActions().account.saveFavorite($this, function () {
                     checkFavorite($this);
                 });
             }).on("click", "#search-rows span.tag", function () {

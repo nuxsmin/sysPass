@@ -25,6 +25,8 @@
 use SP\Bootstrap;
 use SP\Core\Dic\Container;
 
+require __DIR__ . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
+
 defined('APP_ROOT') || die();
 defined('APP_MODULE') || define('APP_MODULE', 'web');
 
@@ -56,7 +58,6 @@ $memInit = memory_get_usage();
 
 require VENDOR_PATH . DIRECTORY_SEPARATOR . 'autoload.php';
 require __DIR__ . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
-require __DIR__ . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
 initModule(APP_MODULE);
 

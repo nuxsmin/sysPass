@@ -26,14 +26,14 @@
  * Función para enviar mensajes al log de errores
  *
  * @param mixed $data
- * @param bool  $printLastCaller
+ * @param bool $printLastCaller
  */
 function debugLog($data, $printLastCaller = false)
 {
     $useOwn = true;
     $line = date('Y-m-d H:i:s') . ' - ' . print_r($data, true) . PHP_EOL;
 
-    if (!error_log($line, 3, LOG_FILE)) {
+    if (!defined('LOG_FILE') || !error_log($line, 3, LOG_FILE)) {
         $useOwn = false;
         error_log(print_r($data, true));
     }
@@ -71,7 +71,7 @@ function formatTrace($trace)
  * Alias gettext function
  *
  * @param string $message
- * @param bool   $translate Si es necesario traducir
+ * @param bool $translate Si es necesario traducir
  * @return string
  */
 function __($message, $translate = true)
@@ -84,7 +84,7 @@ function __($message, $translate = true)
  *
  * @param string $domain
  * @param string $message
- * @param bool   $translate
+ * @param bool $translate
  * @return string
  */
 function _t($domain, $message, $translate = true)
@@ -135,12 +135,29 @@ function initModule($module)
 }
 
 /**
+ * @param $dir
+ * @param $levels
+ * @return bool|string
+ */
+function nDirname($dir, $levels)
+{
+    if (version_compare(PHP_VERSION, '7.0') === -1) {
+        debugLog(realpath(dirname($dir) . str_repeat('../', $levels)));
+
+        return realpath(dirname($dir) . str_repeat('../', $levels));
+    }
+
+    return dirname($dir, $levels);
+}
+
+/**
  * @param Exception $exception
  */
-function flattenExceptionBacktrace(\Exception $exception) {
+function flattenExceptionBacktrace(\Exception $exception)
+{
     $traceProperty = (new \ReflectionClass('Exception'))->getProperty('trace');
     $traceProperty->setAccessible(true);
-    $flatten = function(&$value, $key) {
+    $flatten = function (&$value, $key) {
         if ($value instanceof \Closure) {
             $closureReflection = new \ReflectionFunction($value);
             $value = sprintf(
@@ -156,11 +173,11 @@ function flattenExceptionBacktrace(\Exception $exception) {
     };
     do {
         $trace = $traceProperty->getValue($exception);
-        foreach($trace as &$call) {
+        foreach ($trace as &$call) {
             array_walk_recursive($call['args'], $flatten);
         }
         $traceProperty->setValue($exception, $trace);
-    } while($exception = $exception->getPrevious());
+    } while ($exception = $exception->getPrevious());
     $traceProperty->setAccessible(false);
 }
 

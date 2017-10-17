@@ -77,7 +77,7 @@ class Acl implements ActionsInterface
             self::ACTION_ACC_VIEW_HISTORY => ['acc_viewhist', __('Ver Historial'), 'route' => 'account/viewHistory'],
             self::ACTION_ACC_VIEW_PASS => ['acc_viewpass', __('Ver Clave'), 'route' => 'account/viewPass'],
             self::ACTION_ACC_DELETE => ['acc_delete', __('Eliminar Cuenta'), 'route' => 'account/delete'],
-            self::ACTION_ACC_FILES => ['acc_files', __('Archivos'), 'route' => 'account/files'],
+            self::ACTION_ACC_FILES => ['acc_files', __('Archivos'), 'route' => 'account/listFiles'],
             self::ACTION_ACC_REQUEST => ['acc_request', __('Peticiones'), 'route' => 'account/request'],
             self::ACTION_MGM => ['mgm', __('Gestión Aplicación'), 'route' => ''],
             self::ACTION_MGM_CATEGORIES => ['mgm_categories', __('Gestión Categorías'), 'route' => 'category/index'],

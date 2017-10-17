@@ -34,6 +34,7 @@ sysPass.Actions = function (Common) {
 
     // Objeto con las URLs de las acciones
     var ajaxUrl = {
+        entrypoint: "/index.php",
         doAction: "/index.php",
         updateItems: "/index.php",
         user: {
@@ -883,14 +884,14 @@ sysPass.Actions = function (Common) {
             });
         },
         // Ver la clave de una cuenta
-        showpass: function ($obj) {
+        viewPass: function ($obj) {
             log.info("account:showpass");
 
             var parentId = $obj.data("parent-id");
             var id = parentId == 0 ? $obj.data("item-id") : parentId;
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.appMgmt.show;
+            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
                 r: $obj.data("action-id") + "/" + id,
@@ -926,14 +927,14 @@ sysPass.Actions = function (Common) {
                 }
             });
         },
-        copypass: function ($obj) {
+        copyPass: function ($obj) {
             log.info("account:copypass");
 
             var parentId = $obj.data("parent-id");
             var id = parentId == 0 ? $obj.data("item-id") : parentId;
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.appMgmt.show;
+            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.async = false;
             opts.data = {
@@ -951,7 +952,7 @@ sysPass.Actions = function (Common) {
 
             doAction({r: $obj.data("action-id"), itemId: $obj.data("item-id")}, "account");
         },
-        savefavorite: function ($obj, callback) {
+        saveFavorite: function ($obj, callback) {
             log.info("account:saveFavorite");
 
             var isOn = $obj.data("status") === "on";
@@ -1008,7 +1009,7 @@ sysPass.Actions = function (Common) {
 
             account.search();
         },
-        editpass: function ($obj) {
+        editPass: function ($obj) {
             log.info("account:editpass");
 
             var parentId = $obj.data("parent-id");
@@ -1023,7 +1024,7 @@ sysPass.Actions = function (Common) {
 
             account.save($obj);
         },
-        getfiles: function ($obj) {
+        listFiles: function ($obj) {
             log.info("account:getfiles");
 
             var opts = Common.appRequests().getRequestOpts();

@@ -59,15 +59,15 @@ class Auth
     /**
      * @var UserLoginData
      */
-    protected $UserData;
+    protected $userData;
     /**
      * @var Config
      */
-    protected $Config;
+    protected $config;
     /**
      * @var ConfigData
      */
-    protected $ConfigData;
+    protected $configData;
 
     /**
      * Auth constructor.
@@ -79,13 +79,13 @@ class Auth
     {
         $this->injectDependencies();
 
-        $this->UserData = $UserData;
+        $this->userData = $UserData;
 
-        if ($this->ConfigData->isAuthBasicEnabled()) {
+        if ($this->configData->isAuthBasicEnabled()) {
             $this->registerAuth('authBrowser');
         }
 
-        if ($this->ConfigData->isLdapEnabled()) {
+        if ($this->configData->isLdapEnabled()) {
             $this->registerAuth('authLdap');
         }
 
@@ -97,8 +97,8 @@ class Auth
      */
     public function inject(Config $config)
     {
-        $this->Config = $config;
-        $this->ConfigData = $config->getConfigData();
+        $this->config = $config;
+        $this->configData = $config->getConfigData();
     }
 
     /**
@@ -148,14 +148,11 @@ class Auth
      */
     public function authLdap()
     {
-        /** @var ConfigData $ConfigData */
-        $ConfigData = Bootstrap::getDic()['configData'];
+        $ldap = $this->configData->isLdapAds() ? new LdapMsAds() : new LdapStd();
 
-        $Ldap = $ConfigData->isLdapAds() ? new LdapMsAds() : new LdapStd();
+        $LdapAuthData = $ldap->getLdapAuthData();
 
-        $LdapAuthData = $Ldap->getLdapAuthData();
-
-        if (!$Ldap->authenticate($this->UserData)) {
+        if (!$ldap->authenticate($this->userData)) {
             return $LdapAuthData->getAuthenticated() === 1 ? $LdapAuthData : false;
         }
 
@@ -184,7 +181,7 @@ class Auth
     public function authDatabase()
     {
         $AuthDatabase = new Database();
-        return $AuthDatabase->authenticate($this->UserData);
+        return $AuthDatabase->authenticate($this->userData);
     }
 
     /**
@@ -195,6 +192,6 @@ class Auth
     public function authBrowser()
     {
         $AuthBrowser = new Browser();
-        return $AuthBrowser->authenticate($this->UserData);
+        return $AuthBrowser->authenticate($this->userData);
     }
 }

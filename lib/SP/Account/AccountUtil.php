@@ -251,16 +251,17 @@ class AccountUtil
      */
     public static function getAccountFilterUser(QueryData $Data, Session $session, $useGlobalSearch = false)
     {
-        $ConfigData = $session->getConfig();
+        $configData = $session->getConfig();
         $userData = $session->getUserData();
 
         if (!$userData->isUserIsAdminApp()
             && !$userData->isUserIsAdminAcc()
-            && !($useGlobalSearch && $session->getUserProfile()->isAccGlobalSearch() && $ConfigData->isGlobalSearch())
+            && !($useGlobalSearch && $session->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
         ) {
             // Filtro usuario y grupo
             $filterUser[] = 'account_userId = ?';
             $Data->addParam($userData->getUserId());
+
             $filterUser[] = 'account_userGroupId = ?';
             $Data->addParam($userData->getUserGroupId());
 
@@ -275,7 +276,7 @@ class AccountUtil
                 'account_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = account_userGroupId AND usertogroup_userId = ?)';
             $Data->addParam($userData->getUserId());
 
-            if ($ConfigData->isAccountFullGroupAccess()) {
+            if ($configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
                 $filterUser[] = /** @lang SQL */
                     'account_id = (SELECT accgroup_accountId AS accountId FROM accGroups INNER JOIN usrToGroups ON usertogroup_groupId = accgroup_groupId WHERE accgroup_accountId = account_id AND usertogroup_userId = ? LIMIT 1)';

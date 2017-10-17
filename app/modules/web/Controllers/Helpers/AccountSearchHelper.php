@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Account\AccountSearch;
 use SP\Account\AccountsSearchItem;
+use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\Core\SessionUtil;
 use SP\Html\DataGrid\DataGrid;
@@ -148,9 +149,9 @@ class AccountSearchHelper extends HelperBase
         $GridActionView->setTitle(__('Detalles de Cuenta'));
         $GridActionView->setIcon($icons->getIconView());
         $GridActionView->setReflectionFilter(AccountsSearchItem::class, 'isShowView');
-        $GridActionView->addData('action-id', 'account/view');
+        $GridActionView->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW));
         $GridActionView->addData('action-sk', $this->sk);
-        $GridActionView->addData('onclick', 'account/view');
+        $GridActionView->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW));
 
         $GridActionViewPass = new DataGridAction();
         $GridActionViewPass->setId(ActionsInterface::ACTION_ACC_VIEW_PASS);
@@ -159,10 +160,10 @@ class AccountSearchHelper extends HelperBase
         $GridActionViewPass->setTitle(__('Ver Clave'));
         $GridActionViewPass->setIcon($icons->getIconViewPass());
         $GridActionViewPass->setReflectionFilter(AccountsSearchItem::class, 'isShowViewPass');
-        $GridActionViewPass->addData('action-id', 'account/showpass');
+        $GridActionViewPass->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW_PASS));
         $GridActionViewPass->addData('action-full', 1);
         $GridActionViewPass->addData('action-sk', $this->sk);
-        $GridActionViewPass->addData('onclick', 'account/showpass');
+        $GridActionViewPass->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW_PASS));
 
         // Añadir la clase para usar el portapapeles
         $ClipboardIcon = $icons->getIconClipboard()->setClass('clip-pass-button');
@@ -174,7 +175,7 @@ class AccountSearchHelper extends HelperBase
         $GridActionCopyPass->setTitle(__('Copiar Clave en Portapapeles'));
         $GridActionCopyPass->setIcon($ClipboardIcon);
         $GridActionCopyPass->setReflectionFilter(AccountsSearchItem::class, 'isShowCopyPass');
-        $GridActionCopyPass->addData('action-id', 'account/showpass');
+        $GridActionCopyPass->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW_PASS));
         $GridActionCopyPass->addData('action-full', 0);
         $GridActionCopyPass->addData('action-sk', $this->sk);
         $GridActionCopyPass->addData('useclipboard', '1');
@@ -186,9 +187,9 @@ class AccountSearchHelper extends HelperBase
         $GridActionEdit->setTitle(__('Editar Cuenta'));
         $GridActionEdit->setIcon($icons->getIconEdit());
         $GridActionEdit->setReflectionFilter(AccountsSearchItem::class, 'isShowEdit');
-        $GridActionEdit->addData('action-id', ActionsInterface::ACTION_ACC_EDIT);
+        $GridActionEdit->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_EDIT));
         $GridActionEdit->addData('action-sk', $this->sk);
-        $GridActionEdit->addData('onclick', 'account/edit');
+        $GridActionEdit->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_EDIT));
 
         $GridActionCopy = new DataGridAction();
         $GridActionCopy->setId(ActionsInterface::ACTION_ACC_COPY);
@@ -197,9 +198,9 @@ class AccountSearchHelper extends HelperBase
         $GridActionCopy->setTitle(__('Copiar Cuenta'));
         $GridActionCopy->setIcon($icons->getIconCopy());
         $GridActionCopy->setReflectionFilter(AccountsSearchItem::class, 'isShowCopy');
-        $GridActionCopy->addData('action-id', ActionsInterface::ACTION_ACC_COPY);
+        $GridActionCopy->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_COPY));
         $GridActionCopy->addData('action-sk', $this->sk);
-        $GridActionCopy->addData('onclick', 'account/copy');
+        $GridActionCopy->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_COPY));
 
         $GridActionDel = new DataGridAction();
         $GridActionDel->setId(ActionsInterface::ACTION_ACC_DELETE);
@@ -208,9 +209,9 @@ class AccountSearchHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Cuenta'));
         $GridActionDel->setIcon($icons->getIconDelete());
         $GridActionDel->setReflectionFilter(AccountsSearchItem::class, 'isShowDelete');
-        $GridActionDel->addData('action-id', ActionsInterface::ACTION_ACC_DELETE);
+        $GridActionDel->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_DELETE));
         $GridActionDel->addData('action-sk', $this->sk);
-        $GridActionDel->addData('onclick', 'account/delete');
+        $GridActionDel->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_DELETE));
 
         $GridActionRequest = new DataGridAction();
         $GridActionRequest->setId(ActionsInterface::ACTION_ACC_REQUEST);
@@ -218,9 +219,9 @@ class AccountSearchHelper extends HelperBase
         $GridActionRequest->setTitle(__('Solicitar Modificación'));
         $GridActionRequest->setIcon($icons->getIconEmail());
         $GridActionRequest->setReflectionFilter(AccountsSearchItem::class, 'isShowRequest');
-        $GridActionRequest->addData('action-id', ActionsInterface::ACTION_ACC_REQUEST);
+        $GridActionRequest->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_REQUEST));
         $GridActionRequest->addData('action-sk', $this->sk);
-        $GridActionRequest->addData('onclick', 'account/show');
+        $GridActionRequest->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW));
 
         $GridActionOptional = new DataGridAction();
         $GridActionOptional->setId(0);

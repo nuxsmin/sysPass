@@ -25,7 +25,7 @@
 use SP\Html\Minify;
 use SP\Http\Request;
 
-define('APP_ROOT', dirname(__DIR__, 2));
+define('APP_ROOT', realpath(__DIR__ . '/../../'));
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 

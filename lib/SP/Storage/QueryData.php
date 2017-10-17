@@ -282,12 +282,17 @@ class QueryData
     }
 
     /**
-     * @param string $where
+     * @param array|string $where
      */
     public function setWhere($where)
     {
-        if ($where !== '') {
-            $this->where = 'WHERE ' . $where;
+        if (!empty($where)) {
+
+            if (is_array($where)) {
+                $this->where = 'WHERE ' . implode(' AND ', $where);
+            } else {
+                $this->where = 'WHERE ' . $where;
+            }
         }
     }
 

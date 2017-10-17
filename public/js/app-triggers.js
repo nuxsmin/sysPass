@@ -343,7 +343,7 @@ sysPass.Triggers = function (Common) {
             var $listFiles = $("#list-account-files");
 
             if ($listFiles.length > 0) {
-                Common.appActions().account.getfiles($listFiles);
+                Common.appActions().account.listFiles($listFiles);
             }
 
             var $dropFiles = $("#drop-account-files");
@@ -353,7 +353,7 @@ sysPass.Triggers = function (Common) {
 
                 upload.url = Common.appActions().ajaxUrl.file;
                 upload.requestDoneAction = function () {
-                    Common.appActions().account.getfiles($listFiles);
+                    Common.appActions().account.listFiles($listFiles);
                 };
             }
 
