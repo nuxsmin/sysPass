@@ -1,6 +1,6 @@
 <?php
 
-namespace Services;
+namespace SP\Services;
 
 use SP\Config\Config;
 use SP\Core\Events\EventDispatcher;

@@ -888,16 +888,15 @@ sysPass.Actions = function (Common) {
             log.info("account:showpass");
 
             var parentId = $obj.data("parent-id");
-            var id = parentId == 0 ? $obj.data("item-id") : parentId;
+            var id = parentId === 0 ? $obj.data("item-id") : parentId;
+            var linked = parentId > 0 ? 1 : 0;
+            var history = $obj.data("history");
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
-                r: $obj.data("action-id") + "/" + id,
-                isHistory: $obj.data("history"),
-                isLinked: parentId > 0 ? 1 : 0,
-                isFull: 1,
+                r: $obj.data("action-id") + "/" + id + "/" + history + "/" + linked,
                 sk: Common.sk.get(),
                 isAjax: 1
             };

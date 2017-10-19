@@ -173,11 +173,11 @@ class Bootstrap
     }
 
     /**
-     * @param Config  $config
+     * @param Config $config
      * @param Upgrade $upgrade
      * @param Session $session
-     * @param Theme   $theme
-     * @param Klein   $router
+     * @param Theme $theme
+     * @param Klein $router
      */
     public function inject(Config $config, Upgrade $upgrade, Session $session, Theme $theme, Klein $router)
     {
@@ -365,7 +365,7 @@ class Bootstrap
 
         // Manejar URLs con módulo indicado
         $this->router->respond(['GET', 'POST'],
-            '/index.php',
+            '@/(index\.php)?',
             function ($request, $response, $service) use ($self) {
 
                 $self->router->onError(function ($router, $err_msg, $type, $err) {
@@ -379,13 +379,21 @@ class Bootstrap
                     /** @var \Klein\Request $request */
                     $route = filter_var($request->param('r', 'index/index'), FILTER_SANITIZE_STRING);
 
-                    if (!preg_match('/(?P<controller>[a-zA-Z]+)(\/(?P<method>[a-zA-Z]+))?(\/(?P<id>\d+))*/', $route, $components)) {
+                    if (!preg_match_all('#([a-zA-Z]+|\d+)#', $route, $components)) {
                         throw new RuntimeException("Oops, invalid route\n");
                     }
 
-                    $controller = $components['controller'];
-                    $method = isset($components['method']) ? $components['method'] . 'Action' : 'indexAction';
-                    $id = isset($components['id']) ? (int)$components['id'] : 0;
+                    $controller = $components[1][0];
+                    $method = !empty($components[1][1]) ? $components[1][1] . 'Action' : 'indexAction';
+                    $ids = [];
+
+                    $length = count($components[1]);
+
+                    if ($length > 2) {
+                        for ($i = 2; $i < $length; $i++) {
+                            $ids[] = (int)$components[1][$i];
+                        }
+                    }
 
                     $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
 
@@ -396,9 +404,9 @@ class Bootstrap
                             throw new RuntimeException("Oops, it looks like this content doesn't exist...\n");
                         }
 
-                        debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . $id);
+                        debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($ids, true));
 
-                        return $callableMethod($id);
+                        return call_user_func_array($callableMethod, $ids);
                     }
 
                     throw new RuntimeException("Oops, it looks like this content doesn't exist...\n");
@@ -518,8 +526,8 @@ class Bootstrap
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
-     * @param string $hint    opcional, con una ayuda sobre el error
-     * @param bool   $headers
+     * @param string $hint opcional, con una ayuda sobre el error
+     * @param bool $headers
      */
     public static function initError($message, $hint = '', $headers = false)
     {

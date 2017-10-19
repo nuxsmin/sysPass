@@ -1,11 +1,10 @@
 <?php
 
-namespace Services;
+namespace SP\Services;
 
 use SP\Account\AccountUtil;
-use SP\Account\UserAccounts;
 use SP\DataModel\AccountData;
-use SP\Mgmt\Groups\GroupAccountsUtil;
+use SP\Log\Log;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 
@@ -30,29 +29,18 @@ class AccountService extends Service
      */
     public function getAccountPass($id)
     {
-        $query = /** @lang SQL */
-            'SELECT account_name,'
-            . 'account_login,'
-            . 'account_pass,'
-            . 'account_key,'
-            . 'FROM accounts '
-            . 'WHERE account_id = ? LIMIT 1';
-
         $Data = new QueryData();
+        $Data->setMapClassName(AccountData::class);
+        $Data->setLimit(1);
 
         $Data->setSelect('account_id, account_name, account_login, account_pass, account_key');
         $Data->setFrom('accounts');
 
         $queryWhere = AccountUtil::getAccountFilterUser($Data, $this->session);
-
         $queryWhere[] = 'account_id = ?';
         $Data->addParam($id);
 
         $Data->setWhere($queryWhere);
-        $Data->setLimit(1);
-
-        $Data->setQuery($query);
-        $Data->setMapClassName(AccountData::class);
 
         return DbWrapper::getResults($Data);
     }
@@ -83,5 +71,30 @@ class AccountService extends Service
         $Data->addParam($id);
 
         return DbWrapper::getQuery($Data);
+    }
+
+    /**
+     * Logs account action
+     *
+     * @param $id
+     * @param $actionId
+     */
+    public function logAccountAction($id, $actionId)
+    {
+        $query = /** @lang SQL */
+            'SELECT account_id, account_name, customer_name FROM account_data_v WHERE account_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        $account = DbWrapper::getResults($Data);
+
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__($actionId, false));
+        $LogMessage->addDetails(__('ID', false), $id);
+        $LogMessage->addDetails(__('Cuenta', false), $account->customer_name . ' / ' . $account->account_name);
+        $Log->writeLog();
     }
 }

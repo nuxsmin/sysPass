@@ -24,7 +24,10 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use Services\AccountService;
+use SP\DataModel\AccountData;
+use SP\Http\JsonResponse;
+use SP\Modules\Web\Controllers\Helpers\AccountPasswordHelper;
+use SP\Services\AccountService;
 use SP\Controller\ControllerBase;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt\Crypt;
@@ -34,13 +37,13 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\SessionUtil;
 use SP\Http\Request;
 use SP\Http\Response;
-use SP\Log\Log;
 use SP\Mgmt\Files\FileUtil;
 use SP\Mgmt\Users\UserPass;
 use SP\Modules\Web\Controllers\Helpers\AccountHelper;
 use SP\Modules\Web\Controllers\Helpers\AccountSearchHelper;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Util\ImageUtil;
+use SP\Util\Json;
 
 /**
  * Class AccountController
@@ -408,71 +411,39 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Mostrar la clave de una cuenta
      *
      * @param $id
+     * @param $isFull
+     * @param $isLinked
      * @throws ItemException
      */
-    public function getAccountPassAction($id)
+    public function viewPassAction($id, $isFull, $isLinked)
     {
-        $this->setAction(ActionsInterface::ACTION_ACC_VIEW_PASS);
-
 //        $isHistory = Request::analyze('isHistory', false);
-//        $isFull = Request::analyze('isFull', false);
 
         $accountService = new AccountService();
         $account = $accountService->getAccountPass($id);
 
-        if (!$this->acl->checkUserAccess(ActionsInterface::ACTION_ACC_VIEW_PASS)
-            || $account->getAccountId() === 0
-        ) {
-            throw new ItemException(__('No tiene permisos para acceder a esta cuenta', false));
-        }
-
-        if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getUserId())) {
-            throw new ItemException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
-        }
-
-        $key = CryptSession::getSessionKey();
-        $securedKey = Crypt::unlockSecuredKey($account->getAccountKey(), $key);
-        $accountClearPass = Crypt::decrypt($account->getAccountPass(), $securedKey, $key);
-
-        $accountService->incrementDecryptCounter($id);
-
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Ver Clave', false));
-        $LogMessage->addDetails(__('ID', false), $this->itemId);
-        $LogMessage->addDetails(__('Cuenta', false), $account->getCustomerName() . ' / ' . $AccountData->getAccountName());
-        $Log->writeLog();
-
-        $useImage = $this->configData->isAccountPassToImage();
-
-        if (!$useImage) {
-            $pass = $isFull ? htmlentities(trim($accountClearPass)) : trim($accountClearPass);
-        } else {
-            $pass = ImageUtil::convertText($accountClearPass);
-        }
-
-        $this->jsonResponse->setStatus(0);
+        $accountPassHelper = new AccountPasswordHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
 
         if ($isFull) {
-            $this->view->addTemplate('viewpass', 'account');
-
-            $this->view->assign('login', $AccountData->getAccountLogin());
-            $this->view->assign('pass', $pass);
-            $this->view->assign('isImage', $useImage);
-            $this->view->assign('isLinked', Request::analyze('isLinked', 0));
-
-            return;
+            $pass = $accountPassHelper->getPassword($accountService->getAccountPass($id), $this->acl, AccountPasswordHelper::TYPE_FULL);
+        } else {
+            $pass = $accountPassHelper->getPassword($accountService->getAccountPass($id), $this->acl, AccountPasswordHelper::TYPE_NORMAL);
         }
 
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setStatus(0);
+
         $data = [
-            'acclogin' => $AccountData->getAccountLogin(),
+            'acclogin' => $account->getAccountLogin(),
             'accpass' => $pass,
-            'useimage' => $useImage
+            'useimage' => $this->configData->isAccountPassToImage(),
+            'html' => $this->render()
         ];
 
-        $this->jsonResponse->setData($data);
-    }
+        $jsonResponse->setData($data);
 
+        Json::returnJson($jsonResponse);
+    }
 
     /**
      * Initialize class
