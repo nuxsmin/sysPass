@@ -668,7 +668,7 @@ sysPass.Main = function () {
         }
 
         $("body").on("click", ".clip-pass-button", function () {
-            var json = appActions.account.copypass($(this)).done(function (json) {
+            var json = appActions.account.copyPass($(this)).done(function (json) {
                 if (json.status !== 0) {
                     msg.out(json);
 

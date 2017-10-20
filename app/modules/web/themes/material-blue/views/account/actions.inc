@@ -29,6 +29,22 @@ use SP\Util\Checks;
             </li>
         <?php endif; ?>
 
+        <?php /** @var \SP\Html\DataGrid\DataGridActionInterface $action */
+        foreach ($actions as $action): ?>
+            <li>
+                <button id="<?php echo $action->getId(); ?>" type="button"
+                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $action->getIcon()->getClassButton(); ?>"
+                        data-action-id="<?php echo $action->getId(); ?>"
+                        data-item-id="<?php echo $accountId; ?>"
+                        data-sk="<?php echo $sk; ?>"
+                        data-onclick="<?php echo $action->getOnClick(); ?>"
+                        title="<?php echo __('Eliminar Cuenta'); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconDelete()->getIcon(); ?></i>
+                </button>
+            </li>
+
+        <?php endforeach; ?>
+
         <?php if ($AccountAcl->isShowDelete()): ?>
             <li>
                 <button id="btnDelete" type="button"

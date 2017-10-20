@@ -889,14 +889,12 @@ sysPass.Actions = function (Common) {
 
             var parentId = $obj.data("parent-id");
             var id = parentId === 0 ? $obj.data("item-id") : parentId;
-            var linked = parentId > 0 ? 1 : 0;
-            var history = $obj.data("history");
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
-                r: $obj.data("action-id") + "/" + id + "/" + history + "/" + linked,
+                r: $obj.data("action-id") + "/" + id + "/" + $obj.data("history"),
                 sk: Common.sk.get(),
                 isAjax: 1
             };
@@ -930,16 +928,14 @@ sysPass.Actions = function (Common) {
             log.info("account:copypass");
 
             var parentId = $obj.data("parent-id");
-            var id = parentId == 0 ? $obj.data("item-id") : parentId;
+            var id = parentId === 0 ? $obj.data("item-id") : parentId;
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.async = false;
             opts.data = {
-                r: $obj.data("action-id") + "/" + id,
-                isHistory: $obj.data("history"),
-                isFull: 0,
+                r: $obj.data("action-id") + "/" + id + "/" + $obj.data("history"),
                 sk: Common.sk.get(),
                 isAjax: 1
             };

@@ -56,13 +56,17 @@ abstract class HelperBase
      * @var EventDispatcher
      */
     protected $eventDispatcher;
+    /**
+     * @var Config
+     */
+    protected $config;
 
     /**
      * Constructor
      *
-     * @param Template        $template
-     * @param Config          $config
-     * @param Session         $session
+     * @param Template $template
+     * @param Config $config
+     * @param Session $session
      * @param EventDispatcher $eventDispatcher
      */
     final public function __construct(Template $template, Config $config, Session $session, EventDispatcher $eventDispatcher)
@@ -70,6 +74,7 @@ abstract class HelperBase
         $this->injectDependencies();
 
         $this->view = $template;
+        $this->config = $config;
         $this->configData = $config->getConfigData();
         $this->session = $session;
         $this->eventDispatcher = $eventDispatcher;

@@ -2,8 +2,8 @@
 
 namespace SP\Services;
 
+use SP\DataModel\AccountPassData;
 use SP\Account\AccountUtil;
-use SP\DataModel\AccountData;
 use SP\Log\Log;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
@@ -25,15 +25,15 @@ class AccountService extends Service
 
     /**
      * @param $id
-     * @return AccountData
+     * @return AccountPassData
      */
     public function getAccountPass($id)
     {
         $Data = new QueryData();
-        $Data->setMapClassName(AccountData::class);
+        $Data->setMapClassName(AccountPassData::class);
         $Data->setLimit(1);
 
-        $Data->setSelect('account_id, account_name, account_login, account_pass, account_key');
+        $Data->setSelect('account_id, account_name, account_login, account_pass, account_key, account_parentId');
         $Data->setFrom('accounts');
 
         $queryWhere = AccountUtil::getAccountFilterUser($Data, $this->session);
@@ -47,10 +47,24 @@ class AccountService extends Service
 
     /**
      * @param $id
+     * @return AccountPassData
      */
     public function getAccountPassHistory($id)
     {
+        $Data = new QueryData();
+        $Data->setMapClassName(AccountPassData::class);
+        $Data->setLimit(1);
 
+        $Data->setSelect('acchistory_id AS account_id, acchistory_name AS account_name, acchistory_login AS account_login, acchistory_pass AS account_pass, acchistory_key AS account_key, acchistory_parentId  AS account_parentId');
+        $Data->setFrom('accHistory');
+
+        $queryWhere = AccountUtil::getAccountFilterUser($Data, $this->session);
+        $queryWhere[] = 'acchistory_id = ?';
+        $Data->addParam($id);
+
+        $Data->setWhere($queryWhere);
+
+        return DbWrapper::getResults($Data);
     }
 
     /**

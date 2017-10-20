@@ -379,7 +379,7 @@ class Bootstrap
                     /** @var \Klein\Request $request */
                     $route = filter_var($request->param('r', 'index/index'), FILTER_SANITIZE_STRING);
 
-                    if (!preg_match_all('#([a-zA-Z]+|\d+)#', $route, $components)) {
+                    if (!preg_match_all('/([a-zA-Z]+|\d+)/', $route, $components)) {
                         throw new RuntimeException("Oops, invalid route\n");
                     }
 
@@ -391,7 +391,7 @@ class Bootstrap
 
                     if ($length > 2) {
                         for ($i = 2; $i < $length; $i++) {
-                            $ids[] = (int)$components[1][$i];
+                            $ids[] = (int)filter_var($components[1][$i], FILTER_SANITIZE_NUMBER_INT);
                         }
                     }
 

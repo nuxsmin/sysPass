@@ -186,6 +186,7 @@ class AccountHelper extends HelperBase
             $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
         }
 
+
         $this->view->assign('actionId', Acl::getActionRoute($this->actionId));
         $this->view->assign('categories', Category::getItem()->getItemsForSelect());
         $this->view->assign('customers', Customer::getItem()->getItemsForSelectByUser());
@@ -210,6 +211,7 @@ class AccountHelper extends HelperBase
 
         $this->view->assign('showViewCustomPass', $this->AccountAcl->isShowViewPass());
         $this->view->assign('AccountAcl', $this->AccountAcl);
+        $this->view->assign('actions', $this->getActions());
     }
 
     /**
@@ -226,6 +228,64 @@ class AccountHelper extends HelperBase
     public function getAccount()
     {
         return $this->Account ?: new Account(new AccountExtData());
+    }
+
+    /**
+     * Set icons for view
+     */
+    protected function getActions()
+    {
+        $actionsEnabled = [];
+
+        $actions = new AccountActionsHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $account = $this->getAccount();
+
+        if ($this->AccountAcl->isShowDelete()) {
+            $actionsEnabled[] = $actions->getDeleteAction();
+        }
+
+        if ($this->AccountAcl->isShowLink()
+            && $this->AccountAcl->isShowViewPass()
+            && $account->getAccountParentId() === 0
+            && $account->getAccountIsHistory() !== 1
+        ) {
+            if (null == $this->view->publicLinkUrl) {
+                $actionsEnabled[] = $actions->getPublicLinkAction();
+            } else {
+                $actionsEnabled[] = $actions->getPublicLinkRefreshAction();
+            }
+        }
+
+        if ($this->AccountAcl->isShowViewPass()) {
+            $actionsEnabled[] = $actions->getViewPassAction();
+        }
+
+        if ($this->AccountAcl->isShowCopy()) {
+            $actionsEnabled[] = $actions->getCopyAction();
+        }
+
+        if ($this->AccountAcl->isShowEditPass()) {
+            $actionsEnabled[] = $actions->getEditPassAction();
+        }
+
+        if ($this->AccountAcl->isShowEdit()) {
+            $actionsEnabled[] = $actions->getEditAction();
+        }
+
+        if (!$this->AccountAcl->isShowEdit()
+            && $this->actionId === ActionsInterface::ACTION_ACC_VIEW
+            && $this->configData->isMailRequestsEnabled()
+        ) {
+            $actionsEnabled[] = $actions->getRequestAction();
+        }
+
+        if ($this->AccountAcl->isShowRestore()) {
+            $actionsEnabled[] = $actions->getRequestAction();
+        } else {
+            $actionsEnabled[] = $actions->getSaveAction();
+        }
+
+        return $actionsEnabled;
     }
 
     /**
@@ -258,8 +318,6 @@ class AccountHelper extends HelperBase
                 $controller->showError(ControllerBase::ERR_ACCOUNT_NO_PERMISSION);
                 return false;
             }
-
-//            SessionFactory::setAccountAcl($this->AccountAcl->save());
         }
 
         return true;

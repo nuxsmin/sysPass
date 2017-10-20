@@ -6,7 +6,7 @@ use SP\Core\Acl;
 use SP\Core\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\SessionUtil;
-use SP\DataModel\AccountData;
+use SP\DataModel\AccountPassData;
 use SP\Mgmt\Users\UserPass;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Util\ImageUtil;
@@ -25,12 +25,12 @@ class AccountPasswordHelper extends HelperBase
     protected $acl;
 
     /**
-     * @param AccountData $account
+     * @param AccountPassData $account
      * @param Acl $acl
      * @param $type
      * @return string
      */
-    public function getPassword(AccountData $account, Acl $acl, $type)
+    public function getPassword(AccountPassData $account, Acl $acl, $type)
     {
         $this->acl = $acl;
 
@@ -47,11 +47,11 @@ class AccountPasswordHelper extends HelperBase
     /**
      * Returns account's password
      *
-     * @param AccountData $accountData
+     * @param AccountPassData $accountData
      * @return string
      * @throws HelperException
      */
-    protected function getPasswordClear(AccountData $accountData)
+    protected function getPasswordClear(AccountPassData $accountData)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::ACTION_ACC_VIEW_PASS)
             || $accountData->getAccountId() === 0
@@ -70,9 +70,9 @@ class AccountPasswordHelper extends HelperBase
     }
 
     /**
-     * @param AccountData $accountData
+     * @param AccountPassData $accountData
      */
-    protected function setTemplateVars(AccountData $accountData)
+    protected function setTemplateVars(AccountPassData $accountData)
     {
         $this->view->addTemplate('viewpass');
 

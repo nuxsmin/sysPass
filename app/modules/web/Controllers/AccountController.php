@@ -24,25 +24,19 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\DataModel\AccountData;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\AccountPasswordHelper;
 use SP\Services\AccountService;
 use SP\Controller\ControllerBase;
 use SP\Core\ActionsInterface;
-use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Exceptions\ItemException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionUtil;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Mgmt\Files\FileUtil;
-use SP\Mgmt\Users\UserPass;
 use SP\Modules\Web\Controllers\Helpers\AccountHelper;
 use SP\Modules\Web\Controllers\Helpers\AccountSearchHelper;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Util\ImageUtil;
 use SP\Util\Json;
 
 /**
@@ -408,38 +402,53 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     }
 
     /**
-     * Mostrar la clave de una cuenta
+     * Display account's password
      *
      * @param $id
-     * @param $isFull
-     * @param $isLinked
-     * @throws ItemException
+     * @param $isHistory
      */
-    public function viewPassAction($id, $isFull, $isLinked)
+    public function viewPassAction($id, $isHistory)
     {
 //        $isHistory = Request::analyze('isHistory', false);
 
         $accountService = new AccountService();
-        $account = $accountService->getAccountPass($id);
-
         $accountPassHelper = new AccountPasswordHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
 
-        if ($isFull) {
-            $pass = $accountPassHelper->getPassword($accountService->getAccountPass($id), $this->acl, AccountPasswordHelper::TYPE_FULL);
-        } else {
-            $pass = $accountPassHelper->getPassword($accountService->getAccountPass($id), $this->acl, AccountPasswordHelper::TYPE_NORMAL);
-        }
-
-        $jsonResponse = new JsonResponse();
-        $jsonResponse->setStatus(0);
+        $account = $isHistory === 0 ? $accountService->getAccountPass($id) : $accountService->getAccountPassHistory($id);
 
         $data = [
             'acclogin' => $account->getAccountLogin(),
-            'accpass' => $pass,
+            'accpass' => $accountPassHelper->getPassword($account, $this->acl, AccountPasswordHelper::TYPE_FULL),
             'useimage' => $this->configData->isAccountPassToImage(),
             'html' => $this->render()
         ];
 
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setStatus(0);
+        $jsonResponse->setData($data);
+
+        Json::returnJson($jsonResponse);
+    }
+
+    /**
+     * Copy account's password
+     *
+     * @param $id
+     * @param $isHistory
+     */
+    public function copyPassAction($id, $isHistory)
+    {
+        $accountService = new AccountService();
+        $accountPassHelper = new AccountPasswordHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+
+        $account = $isHistory === 0 ? $accountService->getAccountPass($id) : $accountService->getAccountPassHistory($id);
+
+        $data = [
+            'accpass' => $accountPassHelper->getPassword($account, $this->acl, AccountPasswordHelper::TYPE_NORMAL),
+        ];
+
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setStatus(0);
         $jsonResponse->setData($data);
 
         Json::returnJson($jsonResponse);

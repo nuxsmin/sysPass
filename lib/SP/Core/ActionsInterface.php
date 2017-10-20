@@ -42,6 +42,7 @@ interface ActionsInterface
     const ACTION_ACC_EDIT_PASS = 106;
     const ACTION_ACC_EDIT_RESTORE = 107;
     const ACTION_ACC_COPY = 108;
+    const ACTION_ACC_COPY_PASS = 109;
     const ACTION_ACC_FILES = 11;
     const ACTION_ACC_FILES_VIEW = 111;
     const ACTION_ACC_FILES_UPLOAD = 112;
@@ -110,9 +111,9 @@ interface ActionsInterface
     const ACTION_MGM_PLUGINS_NEW = 690;
     const ACTION_MGM_PLUGINS_VIEW = 691;
     const ACTION_MGM_PLUGINS_SEARCH = 695;
-    const ACTION_MGM_PLUGINS_ENABLE= 696;
-    const ACTION_MGM_PLUGINS_DISABLE= 697;
-    const ACTION_MGM_PLUGINS_RESET= 698;
+    const ACTION_MGM_PLUGINS_ENABLE = 696;
+    const ACTION_MGM_PLUGINS_DISABLE = 697;
+    const ACTION_MGM_PLUGINS_RESET = 698;
     const ACTION_USR = 70;
     const ACTION_USR_USERS = 71;
     const ACTION_USR_USERS_VIEW = 710;
