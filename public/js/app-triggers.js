@@ -136,7 +136,7 @@ sysPass.Triggers = function (Common) {
     var bodyHooks = function () {
         log.info("bodyHooks");
 
-        $("body").on("click", ".btn-action[data-onclick],.btn-action-pager[data-onclick]", function () {
+        $("body").on("click", "button.btn-action[data-onclick][type='button'],li.btn-action[data-onclick],i.btn-action[data-onclick],.btn-action-pager[data-onclick]", function () {
             btnAction($(this));
         }).on("click", ".btn-back", function () {
             var appRequests = Common.appRequests();

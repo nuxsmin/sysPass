@@ -59,7 +59,7 @@ sysPass.Actions = function (Common) {
         link: "/ajax/ajax_itemSave.php",
         plugin: "/ajax/ajax_itemSave.php",
         account: {
-            save: "/ajax/ajax_itemSave.php",
+            save: "/index.php",
             saveFavorite: "/ajax/ajax_itemSave.php",
             request: "/ajax/ajax_itemSave.php",
             getFiles: "/index.php",
@@ -1011,7 +1011,7 @@ sysPass.Actions = function (Common) {
 
             doAction({
                 r: $obj.data("action-id"),
-                itemId: parentId == 0 ? $obj.data("item-id") : parentId
+                itemId: parentId === undefined ? $obj.data("item-id") : parentId
             }, "account");
         },
         restore: function ($obj) {
@@ -1063,15 +1063,17 @@ sysPass.Actions = function (Common) {
         save: function ($obj) {
             log.info("account:save");
 
+            log.info($obj);
+
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.account.save;
+            opts.url = ajaxUrl.account.save + "?r=" + $obj.data("action") + "/" + $obj.data("item-id");
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.data.itemId !== undefined && json.data.nextActionId !== undefined) {
-                    doAction({actionId: json.data.nextActionId, itemId: json.data.itemId}, "account");
+                if (json.data.itemId !== undefined && json.data.nextAction !== undefined) {
+                    doAction({r: json.data.nextAction, itemId: json.data.itemId}, "account");
                 }
             });
         }

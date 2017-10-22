@@ -39,7 +39,7 @@ use SP\Http\Request;
 class AccountForm extends FormBase implements FormInterface
 {
     /**
-     * @var AccountData
+     * @var AccountExtData
      */
     protected $AccountData;
 
@@ -130,9 +130,13 @@ class AccountForm extends FormBase implements FormInterface
     {
         if ($this->AccountData->getAccountParentId() > 0) {
             return;
-        } elseif (!$this->AccountData->getAccountPass()) {
+        }
+
+        if (!$this->AccountData->getAccountPass()) {
             throw new ValidationException(__('Es necesaria una clave', false));
-        } elseif (Request::analyzeEncrypted('passR') !== $this->AccountData->getAccountPass()) {
+        }
+
+        if (Request::analyzeEncrypted('passR') !== $this->AccountData->getAccountPass()) {
             throw new ValidationException(__('Las claves no coinciden', false));
         }
     }
@@ -144,17 +148,23 @@ class AccountForm extends FormBase implements FormInterface
     {
         if (!$this->AccountData->getAccountName()) {
             throw new ValidationException(__('Es necesario un nombre de cuenta', false));
-        } elseif (!$this->AccountData->getAccountCustomerId()) {
+        }
+
+        if (!$this->AccountData->getAccountCustomerId()) {
             throw new ValidationException(__('Es necesario un nombre de cliente', false));
-        } elseif (!$this->AccountData->getAccountLogin()) {
+        }
+
+        if (!$this->AccountData->getAccountLogin()) {
             throw new ValidationException(__('Es necesario un usuario', false));
-        } elseif (!$this->AccountData->getAccountCategoryId()) {
+        }
+
+        if (!$this->AccountData->getAccountCategoryId()) {
             throw new ValidationException(__('Es necesario una categoría', false));
         }
     }
 
     /**
-     * @return AccountData
+     * @return AccountExtData
      */
     public function getItemData()
     {

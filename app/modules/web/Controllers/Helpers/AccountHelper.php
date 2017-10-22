@@ -200,7 +200,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('mailRequestEnabled', $this->configData->isMailRequestsEnabled());
         $this->view->assign('passToImageEnabled', $this->configData->isAccountPassToImage());
 
-        $this->view->assign('otherAccounts', AccountUtil::getAccountsForUser($this->id, $this->session));
+        $this->view->assign('otherAccounts', AccountUtil::getAccountsForUser($this->session, $this->id));
         $this->view->assign('linkedAccounts', AccountUtil::getLinkedAccounts($this->id, $this->session));
 
         $this->view->assign('addCustomerEnabled', $this->acl->checkUserAccess(ActionsInterface::ACTION_MGM_CUSTOMERS));
@@ -223,7 +223,7 @@ class AccountHelper extends HelperBase
     }
 
     /**
-     * @return \SP\Account\Account|AccountHistory
+     * @return Account|AccountHistory
      */
     public function getAccount()
     {
@@ -240,8 +240,11 @@ class AccountHelper extends HelperBase
         $actions = new AccountActionsHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
         $account = $this->getAccount();
 
+        /** @var AccountExtData $accountData */
+        $accountData = $account->getAccountData();
+
         if ($this->AccountAcl->isShowDelete()) {
-            $actionsEnabled[] = $actions->getDeleteAction();
+            $actionsEnabled[] = $actions->getDeleteAction()->addData('item-id', $accountData->getAccountId());
         }
 
         if ($this->AccountAcl->isShowLink()
@@ -249,7 +252,7 @@ class AccountHelper extends HelperBase
             && $account->getAccountParentId() === 0
             && $account->getAccountIsHistory() !== 1
         ) {
-            if (null == $this->view->publicLinkUrl) {
+            if (null === $this->view->publicLinkUrl) {
                 $actionsEnabled[] = $actions->getPublicLinkAction();
             } else {
                 $actionsEnabled[] = $actions->getPublicLinkRefreshAction();
@@ -257,32 +260,51 @@ class AccountHelper extends HelperBase
         }
 
         if ($this->AccountAcl->isShowViewPass()) {
-            $actionsEnabled[] = $actions->getViewPassAction();
+            $action = $actions->getViewPassAction();
+            $actionCopy = $actions->getCopyPassAction();
+
+            $action->addData('item-id', $accountData->getAccountId());
+            $actionCopy->addData('item-id', $accountData->getAccountId());
+            $action->addData('parent-id', $accountData->getAccountParentId());
+            $actionCopy->addData('parent-id', $accountData->getAccountParentId());
+
+            if ($account->getAccountIsHistory()) {
+                $action->addData('history', 1);
+                $actionCopy->addData('history', 1);
+            } else {
+                $action->addData('history', 0);
+                $actionCopy->addData('history', 0);
+            }
+
+            $actionsEnabled[] = $action;
+            $actionsEnabled[] = $actionCopy;
         }
 
         if ($this->AccountAcl->isShowCopy()) {
-            $actionsEnabled[] = $actions->getCopyAction();
+            $actionsEnabled[] = $actions->getCopyAction()->addData('item-id', $accountData->getAccountId());
         }
 
         if ($this->AccountAcl->isShowEditPass()) {
-            $actionsEnabled[] = $actions->getEditPassAction();
+            $actionsEnabled[] = $actions->getEditPassAction()->addData('item-id', $accountData->getAccountId());
         }
 
         if ($this->AccountAcl->isShowEdit()) {
-            $actionsEnabled[] = $actions->getEditAction();
+            $actionsEnabled[] = $actions->getEditAction()->addData('item-id', $accountData->getAccountId());
         }
 
-        if (!$this->AccountAcl->isShowEdit()
-            && $this->actionId === ActionsInterface::ACTION_ACC_VIEW
+        if ($this->actionId === ActionsInterface::ACTION_ACC_VIEW
+            && !$this->AccountAcl->isShowEdit()
             && $this->configData->isMailRequestsEnabled()
         ) {
-            $actionsEnabled[] = $actions->getRequestAction();
+            $actionsEnabled[] = $actions->getRequestAction()->addData('item-id', $accountData->getAccountId());
         }
 
         if ($this->AccountAcl->isShowRestore()) {
-            $actionsEnabled[] = $actions->getRequestAction();
-        } else {
-            $actionsEnabled[] = $actions->getSaveAction();
+            $actionsEnabled[] = $actions->getRestoreAction()->addAttribute('form', 'frmAccountRestore');
+        }
+
+        if ($this->AccountAcl->isShowSave()) {
+            $actionsEnabled[] = $actions->getSaveAction()->addAttribute('form', 'frmAccount');
         }
 
         return $actionsEnabled;

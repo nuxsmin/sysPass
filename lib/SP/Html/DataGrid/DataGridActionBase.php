@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -107,6 +107,12 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * @var array
      */
     protected $_data = [];
+    /**
+     * Atributos adicionales
+     *
+     * @var array
+     */
+    protected $_attributes = [];
 
     /**
      * DataGridActionBase constructor.
@@ -275,6 +281,14 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isHelper()
+    {
+        return $this->_isHelper;
+    }
+
+    /**
      * @param bool $helper
      * @return $this
      */
@@ -283,14 +297,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
         $this->_isHelper = $helper;
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isHelper()
-    {
-        return $this->_isHelper;
     }
 
     /**
@@ -304,8 +310,8 @@ abstract class DataGridActionBase implements DataGridActionInterface
     /**
      * Filtro para mostrar la acción
      *
-     * @param $rowSource string
-     * @param mixed $value Valor a filtrar
+     * @param       $rowSource string
+     * @param mixed $value     Valor a filtrar
      * @return $this
      */
     public function setFilterRowSource($rowSource, $value = 1)
@@ -363,6 +369,41 @@ abstract class DataGridActionBase implements DataGridActionInterface
     public function addData($name, $data)
     {
         $this->_data[$name] = $data;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAttributes()
+    {
+        return $this->_attributes;
+    }
+
+    /**
+     * Establecer atributos
+     *
+     * @param array $attributes Los datos de los atributos
+     * @return $this
+     */
+    public function setAttributes(array $attributes)
+    {
+        $this->_attributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * Añadir nuevo atributo
+     *
+     * @param string $name El nombe del atributo
+     * @param mixed  $value
+     * @return $this
+     */
+    public function addAttribute($name, $value)
+    {
+        $this->_attributes[$name] = $value;
 
         return $this;
     }

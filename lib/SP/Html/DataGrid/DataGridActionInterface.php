@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -111,8 +111,8 @@ interface DataGridActionInterface
     public function isHelper();
 
     /**
-     * @param $rowSource string
-     * @param mixed $value Valor a filtrar
+     * @param       $rowSource string
+     * @param mixed $value     Valor a filtrar
      * @return
      */
     public function setFilterRowSource($rowSource, $value = 1);
@@ -152,6 +152,27 @@ interface DataGridActionInterface
      * @param mixed  $data Los datos del atributo
      */
     public function addData($name, $data);
+
+    /**
+     * @return array
+     */
+    public function getAttributes();
+
+    /**
+     * Establecer atributos
+     *
+     * @param array $attributes Los datos de los atributos
+     * @return $this
+     */
+    public function setAttributes(array $attributes);
+
+    /**
+     * Añadir nuevo atributo
+     *
+     * @param string $name El nombe del atributo
+     * @param mixed  $value
+     */
+    public function addAttribute($name, $value);
 
     /**
      * Devolver el método reflexivo que determina si se muestra la acción

@@ -11,6 +11,7 @@ use SP\Html\DataGrid\DataGridActionType;
 
 /**
  * Class AccountIconsHelper
+ *
  * @package SP\Modules\Web\Controllers\Helpers
  */
 class AccountActionsHelper extends HelperBase
@@ -35,6 +36,7 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW));
+        $action->addAttribute('type', 'button');
 
         return $action;
     }
@@ -55,6 +57,7 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-full', 1);
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW_PASS));
+        $action->addAttribute('type', 'button');
 
         return $action;
     }
@@ -74,6 +77,7 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_EDIT_PASS));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_EDIT_PASS));
+        $action->addAttribute('type', 'button');
 
         return $action;
     }
@@ -93,6 +97,7 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_EDIT_RESTORE));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_EDIT_RESTORE));
+        $action->addAttribute('type', 'button');
 
         return $action;
     }
@@ -111,6 +116,7 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-id', 'account/save');
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', 'account/save');
+        $action->addAttribute('type', 'submit');
 
         return $action;
     }
@@ -134,6 +140,7 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-full', 0);
         $action->addData('action-sk', $this->view->sk);
         $action->addData('useclipboard', '1');
+        $action->addAttribute('type', 'button');
 
         return $action;
     }
@@ -153,6 +160,7 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_EDIT));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_EDIT));
+        $action->addAttribute('type', 'button');
 
         return $action;
     }
@@ -170,6 +178,8 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', 'link/save');
+        $action->addData('nextaction-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW));
+        $action->addAttribute('type', 'button');
 
         return $action;
     }
@@ -187,6 +197,8 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_MGM_PUBLICLINKS_REFRESH));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', 'link/refresh');
+        $action->addData('nextaction-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW));
+        $action->addAttribute('type', 'button');
 
         return $action;
     }
@@ -206,6 +218,7 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_COPY));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_COPY));
+        $action->addAttribute('type', 'button');
 
         return $action;
     }
@@ -225,6 +238,7 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_DELETE));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_DELETE));
+        $action->addAttribute('type', 'button');
 
         return $action;
     }
@@ -243,6 +257,7 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_REQUEST));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW));
+        $action->addAttribute('type', 'submit');
 
         return $action;
     }

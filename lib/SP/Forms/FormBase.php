@@ -55,7 +55,7 @@ abstract class FormBase
      *
      * @param $itemId
      */
-    public function __construct($itemId)
+    public function __construct($itemId = null)
     {
         $this->injectDependencies();
 
@@ -76,5 +76,5 @@ abstract class FormBase
      *
      * @return void
      */
-    protected abstract function analyzeRequestData();
+    abstract protected function analyzeRequestData();
 }

@@ -9,6 +9,10 @@ namespace SP\Mvc\Controller;
  */
 interface CrudControllerInterface
 {
+    /**
+     * Search action
+     */
+    public function searchAction();
 
     /**
      * Create action
@@ -23,16 +27,28 @@ interface CrudControllerInterface
     public function editAction($id);
 
     /**
-     * Save or modify action
-     *
-     * @param $id
-     */
-    public function saveAction($id);
-
-    /**
      * Delete action
      *
      * @param $id
      */
     public function deleteAction($id);
+
+    /**
+     * Saves create action
+     */
+    public function saveCreateAction();
+
+    /**
+     * Saves edit action
+     *
+     * @param $id
+     */
+    public function saveEditAction($id);
+
+    /**
+     * Saves delete action
+     *
+     * @param $id
+     */
+    public function saveDeleteAction($id);
 }

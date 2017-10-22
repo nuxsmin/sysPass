@@ -297,17 +297,17 @@ class AccountUtil
     /**
      * Obtiene los datos de las cuentas visibles por el usuario
      *
-     * @param int     $accountId Cuenta actual
      * @param Session $session
+     * @param int     $accountId Cuenta actual
      * @return array
      */
-    public static function getAccountsForUser($accountId, Session $session)
+    public static function getAccountsForUser(Session $session, $accountId = null)
     {
         $Data = new QueryData();
 
         $queryWhere = self::getAccountFilterUser($Data, $session);
 
-        if (!empty($accountId)) {
+        if (null !== $accountId) {
             $queryWhere[] = 'account_id <> ? AND (account_parentId = 0 OR account_parentId IS NULL)';
             $Data->addParam($accountId);
         }

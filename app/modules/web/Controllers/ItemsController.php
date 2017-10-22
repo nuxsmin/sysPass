@@ -48,15 +48,15 @@ class ItemsController
     }
 
     /**
-     * Devolver las cuentas visubles por el usuario
+     * Devolver las cuentas visibles por el usuario
      *
-     * @param $accountId
+     * @param int $accountId
      */
-    public function accountsUserAction($accountId)
+    public function accountsUserAction($accountId = null)
     {
         $outItems = [];
 
-        foreach (AccountUtil::getAccountsForUser($accountId, $this->session) as $account) {
+        foreach (AccountUtil::getAccountsForUser($this->session, $accountId) as $account) {
             $obj = new \stdClass();
             $obj->id = $account->account_id;
             $obj->name = $account->customer_name . ' - ' . $account->account_name;
