@@ -9,10 +9,10 @@
             <li>
                 <button id="btnBack" type="button"
                         class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                        data-action-id="account/view"
                         data-item-id="<?php echo $accountId; ?>"
                         data-sk="<?php echo $sk; ?>"
-                        data-onclick="account/show"
+                        data-onclick="account/view"
                         title="<?php echo __('Ver Actual'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
                 </button>
@@ -37,7 +37,7 @@
                         <?php echo 'data-', $key, '="', $value, '"'; ?>
                     <?php endforeach; ?>
                     <?php foreach ($action->getAttributes() as $key => $value): ?>
-                        <?php echo $key, '="', $value, '""'; ?>
+                        <?php echo $key, '="', $value, '"'; ?>
                     <?php endforeach; ?>
                         title="<?php echo $action->getTitle(); ?>">
                     <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>

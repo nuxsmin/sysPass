@@ -6,7 +6,11 @@
         <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
     </div>
 
-    <form method="post" name="editpass" id="frmEditPass" class="form-action" data-onsubmit="account/save" data-hash="">
+    <form method="post" name="editpass" id="frmEditPass" class="form-action"
+          data-onsubmit="account/save"
+          data-action="<?php echo isset($formAction) ? $formAction : ''; ?>"
+          data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
+          data-hash="">
         <table class="data round">
             <tr>
                 <td class="descField"><?php echo __('Nombre'); ?></td>

@@ -131,7 +131,7 @@ class AccountsSearchItem
     public function isShowRequest()
     {
         return ((!$this->showView || !$this->showEdit || !$this->showDelete)
-            && AccountsSearchItem::$requestEnabled);
+            && self::$requestEnabled);
     }
 
     /**
@@ -171,7 +171,7 @@ class AccountsSearchItem
      */
     public function isShowOptional()
     {
-        return (!AccountsSearchItem::$optionalActions
+        return (!self::$optionalActions
             && ($this->showEdit || $this->showViewPass || $this->showCopy || $this->showDelete));
     }
 

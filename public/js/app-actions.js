@@ -837,17 +837,17 @@ sysPass.Actions = function (Common) {
         view: function ($obj) {
             log.info("account:show");
 
-            doAction({r: $obj.data("action-id"), itemId: $obj.data("item-id")}, "account");
+            doAction({r: $obj.data("action-id") + "/" + $obj.data("item-id")}, "account");
         },
-        showHistory: function ($obj) {
+        viewHistory: function ($obj) {
             log.info("account:showHistory");
 
-            doAction({r: $obj.data("action-id"), itemId: $obj.val()}, "account");
+            doAction({r: $obj.data("action-id") + "/" + $obj.val()}, "account");
         },
         edit: function ($obj) {
             log.info("account:edit");
 
-            doAction({r: $obj.data("action-id"), itemId: $obj.data("item-id")}, "account");
+            doAction({r: $obj.data("action-id") + "/" + $obj.data("item-id")}, "account");
         },
         delete: function ($obj) {
             log.info("account:delete");
@@ -870,7 +870,7 @@ sysPass.Actions = function (Common) {
                         var opts = Common.appRequests().getRequestOpts();
                         opts.url = ajaxUrl.account.save;
                         opts.data = {
-                            r: $obj.data("action-id") + "/" + $obj.data("item-id"),
+                            r: "account/saveDelete/" + $obj.data("item-id"),
                             sk: Common.sk.get()
                         };
 
@@ -1014,10 +1014,20 @@ sysPass.Actions = function (Common) {
                 itemId: parentId === undefined ? $obj.data("item-id") : parentId
             }, "account");
         },
-        restore: function ($obj) {
+        saveEditRestore: function ($obj) {
             log.info("account:restore");
 
-            account.save($obj);
+            var opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.account.save + "?r=" + $obj.data("action-id") + "/" + $obj.data("history-id") + "/" + $obj.data("item-id");
+            opts.data = $obj.serialize();
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+
+                if (json.data.itemId !== undefined && json.data.nextAction !== undefined) {
+                    doAction({r: json.data.nextAction, itemId: json.data.itemId}, "account");
+                }
+            });
         },
         listFiles: function ($obj) {
             log.info("account:getfiles");
@@ -1062,8 +1072,6 @@ sysPass.Actions = function (Common) {
         },
         save: function ($obj) {
             log.info("account:save");
-
-            log.info($obj);
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.account.save + "?r=" + $obj.data("action") + "/" + $obj.data("item-id");

@@ -14,23 +14,11 @@
         <?php endif; ?>
     </div>
 
-
-    <?php if ($gotData && $accountIsHistory): ?>
-        <form method="post" name="frmAccountRestore" id="frmAccountRestore" class="form-action"
-              data-onsubmit="account/restore">
-            <input type="hidden" name="actionId"
-                   value="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_EDIT_RESTORE; ?>">
-            <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>
-            <input type="hidden" name="accountHistoryId" value="<?php echo $accountHistoryId; ?>"/>
-            <input type="hidden" name="sk" value="">
-            <input type="hidden" name="isAjax" value="1">
-        </form>
-    <?php endif; ?>
-
     <form method="post" name="frmaccount" id="frmAccount" class="form-action"
           data-onsubmit="account/save"
           data-action="<?php echo isset($formAction) ? $formAction : ''; ?>"
-          data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>" data-hash="">
+          data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
+          data-hash="">
         <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
         <?php if ($gotData): ?>
             <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>
@@ -216,8 +204,8 @@
                         <div class="lowres-title"><?php echo __('Historial'); ?></div>
 
                         <select id="historyId" name="historyId" class="select-box" tabindex="12"
-                                data-action-id="<?php echo SP\Core\ActionsInterface::ACTION_ACC_VIEW_HISTORY; ?>"
-                                data-onchange="account/showHistory">
+                                data-action-id="account/viewHistory"
+                                data-onchange="account/viewHistory">
                             <option value=""><?php echo __('Seleccionar fecha'); ?></option>
                             <?php foreach ($historyData as $historyId => $historyData): ?>
                                 <option

@@ -263,17 +263,18 @@ class AccountHelper extends HelperBase
             $action = $actions->getViewPassAction();
             $actionCopy = $actions->getCopyPassAction();
 
-            $action->addData('item-id', $accountData->getAccountId());
-            $actionCopy->addData('item-id', $accountData->getAccountId());
             $action->addData('parent-id', $accountData->getAccountParentId());
             $actionCopy->addData('parent-id', $accountData->getAccountParentId());
 
+            $action->addData('history', $account->getAccountIsHistory());
+            $actionCopy->addData('history', $account->getAccountIsHistory());
+
             if ($account->getAccountIsHistory()) {
-                $action->addData('history', 1);
-                $actionCopy->addData('history', 1);
+                $action->addData('item-id', $this->id);
+                $actionCopy->addData('item-id', $this->id);
             } else {
-                $action->addData('history', 0);
-                $actionCopy->addData('history', 0);
+                $action->addData('item-id', $accountData->getAccountId());
+                $actionCopy->addData('item-id', $accountData->getAccountId());
             }
 
             $actionsEnabled[] = $action;
@@ -300,7 +301,11 @@ class AccountHelper extends HelperBase
         }
 
         if ($this->AccountAcl->isShowRestore()) {
-            $actionsEnabled[] = $actions->getRestoreAction()->addAttribute('form', 'frmAccountRestore');
+            $action = $actions->getRestoreAction();
+            $action->addData('item-id', $accountData->getAccountId());
+            $action->addData('history-id', $this->id);
+
+            $actionsEnabled[] = $action;
         }
 
         if ($this->AccountAcl->isShowSave()) {

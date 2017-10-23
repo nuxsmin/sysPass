@@ -295,6 +295,59 @@ class AccountUtil
     }
 
     /**
+     * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
+     *
+     * @param QueryData $Data
+     * @param Session   $session
+     * @param bool      $useGlobalSearch
+     * @return array
+     */
+    public static function getAccountHistoryFilterUser(QueryData $Data, Session $session, $useGlobalSearch = false)
+    {
+        $configData = $session->getConfig();
+        $userData = $session->getUserData();
+
+        if (!$userData->isUserIsAdminApp()
+            && !$userData->isUserIsAdminAcc()
+            && !($useGlobalSearch && $session->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
+        ) {
+            // Filtro usuario y grupo
+            $filterUser[] = 'acchistory_userId = ?';
+            $Data->addParam($userData->getUserId());
+
+            $filterUser[] = 'acchistory_userGroupId = ?';
+            $Data->addParam($userData->getUserGroupId());
+
+            // Filtro de cuenta en usuarios y grupos secundarios
+            $filterUser[] = /** @lang SQL */
+                'acchistory_accountId IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)';
+            $Data->addParam($userData->getUserId());
+            $Data->addParam($userData->getUserGroupId());
+
+            // Filtro de grupo principal de cuenta en grupos que incluyen al usuario
+            $filterUser[] = /** @lang SQL */
+                'acchistory_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = account_userGroupId AND usertogroup_userId = ?)';
+            $Data->addParam($userData->getUserId());
+
+            if ($configData->isAccountFullGroupAccess()) {
+                // Filtro de grupos secundarios en grupos que incluyen al usuario
+                $filterUser[] = /** @lang SQL */
+                    'acchistory_accountId = (SELECT accgroup_accountId AS accountId FROM accGroups INNER JOIN usrToGroups ON usertogroup_groupId = accgroup_groupId WHERE accgroup_accountId = account_id AND usertogroup_userId = ? LIMIT 1)';
+                $Data->addParam($userData->getUserId());
+            }
+
+            $queryWhere[] = '(' . implode(' OR ', $filterUser) . ')';
+        }
+
+        $queryWhere[] = '(acchistory_isPrivate = 0 OR (acchistory_isPrivate = 1 AND acchistory_userId = ?))';
+        $Data->addParam($userData->getUserId());
+        $queryWhere[] = '(acchistory_isPrivateGroup = 0 OR (acchistory_isPrivateGroup = 1 AND acchistory_userGroupId = ?))';
+        $Data->addParam($userData->getUserGroupId());
+
+        return $queryWhere;
+    }
+
+    /**
      * Obtiene los datos de las cuentas visibles por el usuario
      *
      * @param Session $session

@@ -182,7 +182,7 @@ class Template
      */
     public function includePartial($file)
     {
-        $this->includeTemplate($file, '_partials');
+        return $this->includeTemplate($file, '_partials');
     }
 
     /**

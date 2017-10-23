@@ -93,10 +93,9 @@ class AccountActionsHelper extends HelperBase
         $action->setName(__('Restaurar cuenta desde este punto'));
         $action->setTitle(__('Restaurar cuenta desde este punto'));
         $action->setIcon($this->icons->getIconRestore());
-        $action->setReflectionFilter(AccountsSearchItem::class, 'isShowRestore');
-        $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACTION_ACC_EDIT_RESTORE));
+        $action->addData('action-id', 'account/saveEditRestore');
         $action->addData('action-sk', $this->view->sk);
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACTION_ACC_EDIT_RESTORE));
+        $action->addData('onclick', 'account/saveEditRestore');
         $action->addAttribute('type', 'button');
 
         return $action;

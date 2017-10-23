@@ -62,11 +62,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $AccountSearchHelper->getSearch();
 
             $this->eventDispatcher->notifyEvent('show.account.search', $this);
-
-            $this->view();
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
             $this->showError(self::ERR_EXCEPTION);
         }
+
+        $this->view();
     }
 
     /**
@@ -87,6 +89,9 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
             Response::printJson($data, 0);
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
+            // FIXME
             $this->showError(self::ERR_EXCEPTION);
         }
     }
@@ -94,7 +99,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * View action
      *
-     * @param $id
+     * @param int $id Account's ID
      */
     public function viewAction($id)
     {
@@ -122,18 +127,19 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $AccountHelper->setCommonData();
 
             $this->eventDispatcher->notifyEvent('show.account.view', $this);
-
-            $this->view();
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
             $this->showError(self::ERR_EXCEPTION);
         }
+
+        $this->view();
     }
 
     /**
      * Obtener los datos para la vista de archivos de una cuenta
      *
-     * @param int $id
-     * @return bool|void
+     * @param int $id Account's ID
      */
     public function listFilesAction($id)
     {
@@ -156,11 +162,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             }
 
             $this->eventDispatcher->notifyEvent('show.account.listfiles', $this);
-
-            $this->view();
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
             $this->showError(self::ERR_EXCEPTION);
         }
+
+        $this->view();
     }
 
     /**
@@ -187,21 +195,22 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             );
             $this->view->assign('formAction', 'account/saveCreate');
 
-//        SessionFactory::setLastAcountId(0);
             $AccountHelper->setCommonData();
 
             $this->eventDispatcher->notifyEvent('show.account.new', $this);
-
-            $this->view();
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
             $this->showError(self::ERR_EXCEPTION);
         }
+
+        $this->view();
     }
 
     /**
      * Copy action
      *
-     * @param $id
+     * @param int $id Account's ID
      */
     public function copyAction($id)
     {
@@ -227,17 +236,19 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $AccountHelper->setCommonData();
 
             $this->eventDispatcher->notifyEvent('show.account.copy', $this);
-
-            $this->view();
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
             $this->showError(self::ERR_EXCEPTION);
         }
+
+        $this->view();
     }
 
     /**
      * Edit action
      *
-     * @param $id
+     * @param int $id Account's ID
      */
     public function editAction($id)
     {
@@ -264,17 +275,19 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $AccountHelper->setCommonData();
 
             $this->eventDispatcher->notifyEvent('show.account.edit', $this);
-
-            $this->view();
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
             $this->showError(self::ERR_EXCEPTION);
         }
+
+        $this->view();
     }
 
     /**
      * Delete action
      *
-     * @param $id
+     * @param int $id Account's ID
      */
     public function deleteAction($id)
     {
@@ -300,17 +313,19 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $AccountHelper->setCommonData();
 
             $this->eventDispatcher->notifyEvent('show.account.delete', $this);
-
-            $this->view();
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
             $this->showError(self::ERR_EXCEPTION);
         }
+
+        $this->view();
     }
 
     /**
      * Obtener los datos para mostrar el interface para modificar la clave de cuenta
      *
-     * @param $id
+     * @param int $id Account's ID
      */
     public function editPassAction($id)
     {
@@ -336,17 +351,19 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $AccountHelper->getAccount()->getAccountData()->getAccountPassDateChange()));
 
             $this->eventDispatcher->notifyEvent('show.account.editpass', $this);
-
-            $this->view();
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
             $this->showError(self::ERR_EXCEPTION);
         }
+
+        $this->view();
     }
 
     /**
      * Obtener los datos para mostrar el interface para ver cuenta en fecha concreta
      *
-     * @param $id
+     * @param int $id Account's ID
      */
     public function viewHistoryAction($id)
     {
@@ -375,17 +392,19 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $AccountHelper->setCommonData();
 
             $this->eventDispatcher->notifyEvent('show.account.viewhistory', $this);
-
-            $this->view();
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
             $this->showError(self::ERR_EXCEPTION);
         }
+
+        $this->view();
     }
 
     /**
      * Obtener los datos para mostrar el interface de solicitud de cambios en una cuenta
      *
-     * @param $id
+     * @param int $id Account's ID
      */
     public function requestAccessAction($id)
     {
@@ -397,23 +416,23 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->view->assign('formAction', 'account/saveRequest');
 
             $this->eventDispatcher->notifyEvent('show.account.request', $this);
-
-            $this->view();
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
             $this->showError(self::ERR_EXCEPTION);
         }
+
+        $this->view();
     }
 
     /**
      * Display account's password
      *
-     * @param $id
-     * @param $isHistory
+     * @param int $id        Account's ID
+     * @param int $isHistory The account's ID refers to history
      */
     public function viewPassAction($id, $isHistory)
     {
-//        $isHistory = Request::analyze('isHistory', false);
-
         try {
             $accountService = new AccountService();
             $accountPassHelper = new AccountPasswordHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
@@ -431,6 +450,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
             $this->returnJsonResponse(0, '', $data);
         } catch (\Exception $e) {
+            debugLog($e->getMessage(), true);
+
             $this->returnJsonResponse(0, $e->getMessage());
         }
     }
@@ -438,8 +459,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Copy account's password
      *
-     * @param $id
-     * @param $isHistory
+     * @param int $id        Account's ID
+     * @param int $isHistory The account's ID refers to history
      */
     public function copyPassAction($id, $isHistory)
     {
@@ -453,6 +474,14 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         ];
 
         $this->returnJsonResponse(0, '', $data);
+    }
+
+    /**
+     * Saves copy action
+     */
+    public function saveCopyAction()
+    {
+        $this->saveCreateAction();
     }
 
     /**
@@ -479,6 +508,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (ValidationException $e) {
             $this->returnJsonResponse(1, $e->getMessage());
         } catch (SPException $e) {
+            debugLog($e->getMessage(), true);
+
             $this->returnJsonResponse(1, $e->getMessage());
         }
     }
@@ -486,7 +517,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Saves edit action
      *
-     * @param $id
+     * @param $id Account's ID
      */
     public function saveEditAction($id)
     {
@@ -508,6 +539,62 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (ValidationException $e) {
             $this->returnJsonResponse(1, $e->getMessage());
         } catch (SPException $e) {
+            debugLog($e->getMessage(), true);
+
+            $this->returnJsonResponse(1, $e->getMessage());
+        }
+    }
+
+    /**
+     * Saves edit action
+     *
+     * @param $id Account's ID
+     */
+    public function saveEditPassAction($id)
+    {
+        try {
+            $form = new AccountForm($id);
+            $form->validate(ActionsInterface::ACTION_ACC_EDIT_PASS);
+
+            $accountService = new AccountService();
+            $accountService->editAccountPass($form->getItemData());
+
+            $accountService->logAccountAction($id, ActionsInterface::ACTION_ACC_EDIT_PASS);
+
+            $this->eventDispatcher->notifyEvent('edit.account.pass', $this);
+
+            $this->returnJsonResponse(0, __('Clave actualizada', false), ['itemId' => $id, 'nextAction' => Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW)]);
+        } catch (ValidationException $e) {
+            $this->returnJsonResponse(1, $e->getMessage());
+        } catch (SPException $e) {
+            debugLog($e->getMessage(), true);
+
+            $this->returnJsonResponse(1, $e->getMessage());
+        }
+    }
+
+    /**
+     * Saves restore action
+     *
+     * @param int $historyId Account's history ID
+     * @param int $id        Account's ID
+     */
+    public function saveEditRestoreAction($historyId, $id)
+    {
+        try {
+            $accountService = new AccountService();
+            $accountService->editAccountRestore($historyId, $id);
+
+            $accountService->logAccountAction($id, ActionsInterface::ACTION_ACC_EDIT_RESTORE);
+
+            $this->eventDispatcher->notifyEvent('edit.account.restore', $this);
+
+            $this->returnJsonResponse(0, __('Cuenta restaurada', false), ['itemId' => $id, 'nextAction' => Acl::getActionRoute(ActionsInterface::ACTION_ACC_VIEW)]);
+        } catch (ValidationException $e) {
+            $this->returnJsonResponse(1, $e->getMessage());
+        } catch (SPException $e) {
+            debugLog($e->getMessage(), true);
+
             $this->returnJsonResponse(1, $e->getMessage());
         }
     }
@@ -515,7 +602,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Saves delete action
      *
-     * @param $id
+     * @param int $id Account's ID
      */
     public function saveDeleteAction($id)
     {
@@ -526,15 +613,18 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 $customFieldService = new CustomFieldService();
                 $customFieldService->deleteCustomFieldData($id, ActionsInterface::ACTION_ACC);
 
-                $accountService->logAccountAction($id, ActionsInterface::ACTION_ACC_DELETE);
+                // FIXME: obtener cuenta antes de eliminar
+//                $accountService->logAccountAction($id, ActionsInterface::ACTION_ACC_DELETE);
 
                 $this->eventDispatcher->notifyEvent('delete.account', $this);
 
-                $this->returnJsonResponse(0, __('Cuenta eliminada', false), ['itemId' => $id, 'nextAction' => Acl::getActionRoute(ActionsInterface::ACTION_ACC_SEARCH)]);
+                $this->returnJsonResponse(0, __('Cuenta eliminada', false), ['nextAction' => Acl::getActionRoute(ActionsInterface::ACTION_ACC_SEARCH)]);
             }
         } catch (ValidationException $e) {
             $this->returnJsonResponse(1, $e->getMessage());
         } catch (SPException $e) {
+            debugLog($e->getMessage(), true);
+
             $this->returnJsonResponse(1, $e->getMessage());
         }
     }

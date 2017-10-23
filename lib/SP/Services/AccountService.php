@@ -70,7 +70,7 @@ class AccountService extends Service
         $Data->setSelect('acchistory_id AS account_id, acchistory_name AS account_name, acchistory_login AS account_login, acchistory_pass AS account_pass, acchistory_key AS account_key, acchistory_parentId  AS account_parentId');
         $Data->setFrom('accHistory');
 
-        $queryWhere = AccountUtil::getAccountFilterUser($Data, $this->session);
+        $queryWhere = AccountUtil::getAccountHistoryFilterUser($Data, $this->session);
         $queryWhere[] = 'acchistory_id = ?';
         $Data->addParam($id);
 
@@ -132,11 +132,14 @@ class AccountService extends Service
      *
      * @param AccountExtData $accountData
      * @return AccountExtData
+     * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function createAccount(AccountExtData $accountData)
     {
+        $this->getPasswordEncrypted($accountData);
+
         $query = /** @lang SQL */
             'INSERT INTO accounts SET '
             . 'account_customerId = :accountCustomerId,'
@@ -190,6 +193,34 @@ class AccountService extends Service
     }
 
     /**
+     * Devolver los datos de la clave encriptados
+     *
+     * @param AccountExtData $accountData
+     * @param string         $masterPass Clave maestra a utilizar
+     * @return AccountExtData
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function getPasswordEncrypted(AccountExtData $accountData, $masterPass = null)
+    {
+        try {
+            $masterPass = $masterPass ?: CryptSession::getSessionKey();
+            $securedKey = Crypt::makeSecuredKey($masterPass);
+
+            $accountData->setAccountPass(Crypt::encrypt($accountData->getAccountPass(), $securedKey, $masterPass));
+            $accountData->setAccountKey($securedKey);
+
+            if (strlen($securedKey) > 1000 || strlen($accountData->getAccountPass()) > 1000) {
+                throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+            }
+
+            return $accountData;
+        } catch (CryptoException $e) {
+            throw new SPException(SPException::SP_ERROR, __('Error interno', false));
+        }
+    }
+
+    /**
      * Adds external items to the account
      *
      * @param AccountExtData $accountData
@@ -228,6 +259,9 @@ class AccountService extends Service
     public function editAccount(AccountExtData $accountData)
     {
         $accountAcl = $this->session->getAccountAcl($accountData->getAccountId());
+
+        // Guardamos una copia de la cuenta en el histórico
+        AccountHistory::addHistory($accountData->getAccountId());
 
         $this->updateAccountItems($accountData);
 
@@ -293,9 +327,6 @@ class AccountService extends Service
      */
     protected function updateAccountItems(AccountExtData $accountData)
     {
-        // Guardamos una copia de la cuenta en el histórico
-        AccountHistory::addHistory($accountData->getAccountId());
-
         $accountAcl = $this->session->getAccountAcl($accountData->getAccountId());
 
         try {
@@ -318,31 +349,81 @@ class AccountService extends Service
     }
 
     /**
-     * Devolver los datos de la clave encriptados
+     * Actualiza la clave de una cuenta en la BBDD.
      *
      * @param AccountExtData $accountData
-     * @param string         $masterPass Clave maestra a utilizar
-     * @return AccountExtData
-     * @throws QueryException
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function getPasswordEncrypted(AccountExtData $accountData, $masterPass = null)
+    public function editAccountPass(AccountExtData $accountData)
     {
-        try {
-            $masterPass = $masterPass ?: CryptSession::getSessionKey();
-            $securedKey = Crypt::makeSecuredKey($masterPass);
+        AccountHistory::addHistory($accountData->getAccountId());
 
-            $accountData->setAccountPass(Crypt::encrypt($accountData->getAccountPass(), $securedKey, $masterPass));
-            $accountData->setAccountKey($securedKey);
+        $this->getPasswordEncrypted($accountData);
 
-            if (strlen($securedKey) > 1000 || strlen($accountData->getAccountPass()) > 1000) {
-                throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
-            }
+        $query = /** @lang SQL */
+            'UPDATE accounts SET '
+            . 'account_pass = :accountPass,'
+            . 'account_key = :accountKey,'
+            . 'account_userEditId = :accountUserEditId,'
+            . 'account_dateEdit = NOW(), '
+            . 'account_passDate = UNIX_TIMESTAMP(), '
+            . 'account_passDateChange = :accountPassDateChange '
+            . 'WHERE account_id = :accountId';
 
-            return $accountData;
-        } catch (CryptoException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error interno', false));
-        }
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($accountData->getAccountPass(), 'accountPass');
+        $Data->addParam($accountData->getAccountKey(), 'accountKey');
+        $Data->addParam($accountData->getAccountUserEditId(), 'accountUserEditId');
+        $Data->addParam($accountData->getAccountPassDateChange(), 'accountPassDateChange');
+        $Data->addParam($accountData->getAccountId(), 'accountId');
+        $Data->setOnErrorMessage(__('Error al actualizar la clave', false));
+
+        DbWrapper::getQuery($Data);
+    }
+
+    /**
+     * Restaurar una cuenta desde el histórico.
+     *
+     * @param int $accountId
+     * @param int $historyId El Id del registro en el histórico
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function editAccountRestore($historyId, $accountId)
+    {
+        // Guardamos una copia de la cuenta en el histórico
+        AccountHistory::addHistory($accountId);
+
+        $query = /** @lang SQL */
+            'UPDATE accounts dst, '
+            . '(SELECT * FROM accHistory WHERE acchistory_id = :id) src SET '
+            . 'dst.account_customerId = src.acchistory_customerId,'
+            . 'dst.account_categoryId = src.acchistory_categoryId,'
+            . 'dst.account_name = src.acchistory_name,'
+            . 'dst.account_login = src.acchistory_login,'
+            . 'dst.account_url = src.acchistory_url,'
+            . 'dst.account_notes = src.acchistory_notes,'
+            . 'dst.account_userGroupId = src.acchistory_userGroupId,'
+            . 'dst.account_userEditId = :accountUserEditId,'
+            . 'dst.account_dateEdit = NOW(),'
+            . 'dst.account_otherUserEdit = src.acchistory_otherUserEdit + 0,'
+            . 'dst.account_otherGroupEdit = src.acchistory_otherGroupEdit + 0,'
+            . 'dst.account_pass = src.acchistory_pass,'
+            . 'dst.account_key = src.acchistory_key,'
+            . 'dst.account_passDate = src.acchistory_passDate,'
+            . 'dst.account_passDateChange = src.acchistory_passDateChange, '
+            . 'dst.account_parentId = src.acchistory_parentId, '
+            . 'dst.account_isPrivate = src.accHistory_isPrivate, '
+            . 'dst.account_isPrivateGroup = src.accHistory_isPrivateGroup '
+            . 'WHERE dst.account_id = src.acchistory_accountId';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($historyId, 'id');
+        $Data->addParam($this->session->getUserData()->getUserId(), 'accountUserEditId');
+        $Data->setOnErrorMessage(__('Error al restaurar cuenta', false));
+
+        DbWrapper::getQuery($Data);
     }
 
     /**

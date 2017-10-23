@@ -241,7 +241,6 @@ abstract class ControllerBase
      *
      * @param int  $type int con el tipo de error
      * @param bool $reset
-     * @param bool $fancy
      */
     public function showError($type, $reset = true)
     {
