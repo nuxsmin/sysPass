@@ -120,7 +120,7 @@ class HttpUtil
             return $matchesFor[1];
         }
 
-        $matchesFor = preg_split('/(?<=[\w])+,/i',
+        $matchesFor = preg_split('/(?<=\w),/i',
             Request::getRequestHeaders('HTTP_X_FORWARDED_FOR'),
             -1,
             PREG_SPLIT_NO_EMPTY);
