@@ -52,7 +52,7 @@ class LdapMsAds extends LdapBase
 
         $groupDN = ldap_escape($this->searchGroupDN());
 
-        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))(!(UserAccountControl:1.2.840.113556.1.4.803:=2))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . ')(memberof:1.2.840.113556.1.4.1941:=' . $groupDN . '))(!(UserAccountControl:1.2.840.113556.1.4.804:=34))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
     }
 
     /**
@@ -102,7 +102,7 @@ class LdapMsAds extends LdapBase
     {
         $userLogin = ldap_escape($this->userLogin);
 
-        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(!(UserAccountControl:1.2.840.113556.1.4.803:=2))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))(objectCategory=person))';
+        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(!(UserAccountControl:1.2.840.113556.1.4.804:=34))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))(objectCategory=person))';
     }
 
     /**
