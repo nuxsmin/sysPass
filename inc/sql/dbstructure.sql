@@ -30,7 +30,7 @@ CREATE TABLE `categories` (
   `category_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `category_name` varchar(50) NOT NULL,
   `category_hash` varbinary(40) NOT NULL,
-  `category_description` varchar(255) DEFAULT NULL
+  `category_description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
