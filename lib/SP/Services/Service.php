@@ -14,6 +14,7 @@ use SP\Core\Traits\InjectableTrait;
 abstract class Service
 {
     use InjectableTrait;
+
     /** @var  Config */
     protected $config;
     /** @var  Session */

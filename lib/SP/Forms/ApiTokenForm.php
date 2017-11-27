@@ -51,8 +51,8 @@ class ApiTokenForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::ACTION_MGM_APITOKENS_NEW:
-            case ActionsInterface::ACTION_MGM_APITOKENS_EDIT:
+            case ActionsInterface::APITOKEN_CREATE:
+            case ActionsInterface::APITOKEN_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -90,8 +90,8 @@ class ApiTokenForm extends FormBase implements FormInterface
 
         $action = $this->ApiTokenData->getAuthtokenActionId();
 
-        if (($action === ActionsInterface::ACTION_ACC_VIEW_PASS
-                || $action === ActionsInterface::ACTION_ACC_NEW)
+        if (($action === ActionsInterface::ACCOUNT_VIEW_PASS
+                || $action === ActionsInterface::ACCOUNT_CREATE)
             && $this->ApiTokenData->getAuthtokenHash() === ''
         ) {
             throw new ValidationException(__('La clave no puede estar en blanco', false));

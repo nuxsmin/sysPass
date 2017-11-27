@@ -32,8 +32,8 @@ use SP\Account\AccountHistory;
 use SP\Account\AccountUtil;
 use SP\Account\UserAccounts;
 use SP\Config\Config;
-use SP\Core\Acl;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
@@ -125,7 +125,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     public function getAccountFromLink(PublicLinkData $PublicLinkData)
     {
-        $this->setAction(self::ACTION_ACC_VIEW);
+        $this->setAction(self::ACCOUNT_VIEW);
 
         $this->view->addTemplate('account-link');
         $this->view->assign('title',
@@ -167,35 +167,35 @@ class AccountController extends ControllerBase implements ActionsInterface
     {
         try {
             switch ($type) {
-                case ActionsInterface::ACTION_ACC_NEW:
+                case ActionsInterface::ACCOUNT_CREATE:
                     $this->getNewAccount();
                     $this->eventDispatcher->notifyEvent('show.account.new', $this);
                     break;
-                case ActionsInterface::ACTION_ACC_COPY:
+                case ActionsInterface::ACCOUNT_COPY:
                     $this->getCopyAccount();
                     $this->eventDispatcher->notifyEvent('show.account.copy', $this);
                     break;
-                case ActionsInterface::ACTION_ACC_EDIT:
+                case ActionsInterface::ACCOUNT_EDIT:
                     $this->getEditAccount();
                     $this->eventDispatcher->notifyEvent('show.account.edit', $this);
                     break;
-                case ActionsInterface::ACTION_ACC_EDIT_PASS:
+                case ActionsInterface::ACCOUNT_EDIT_PASS:
                     $this->getEditPassAccount();
                     $this->eventDispatcher->notifyEvent('show.account.editpass', $this);
                     break;
-                case ActionsInterface::ACTION_ACC_VIEW:
+                case ActionsInterface::ACCOUNT_VIEW:
                     $this->getViewAccount();
                     $this->eventDispatcher->notifyEvent('show.account.view', $this);
                     break;
-                case ActionsInterface::ACTION_ACC_VIEW_HISTORY:
+                case ActionsInterface::ACCOUNT_VIEW_HISTORY:
                     $this->getViewHistoryAccount();
                     $this->eventDispatcher->notifyEvent('show.account.viewhistory', $this);
                     break;
-                case ActionsInterface::ACTION_ACC_DELETE:
+                case ActionsInterface::ACCOUNT_DELETE:
                     $this->getDeleteAccount();
                     $this->eventDispatcher->notifyEvent('show.account.delete', $this);
                     break;
-                case ActionsInterface::ACTION_ACC_REQUEST:
+                case ActionsInterface::ACCOUNT_REQUEST:
                     $this->getRequestAccountAccess();
                     $this->eventDispatcher->notifyEvent('show.account.request', $this);
                     break;
@@ -212,7 +212,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     public function getNewAccount()
     {
-        $this->setAction(self::ACTION_ACC_NEW);
+        $this->setAction(self::ACCOUNT_CREATE);
 
         if (!$this->checkAccess()) {
             return;
@@ -327,7 +327,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     private function getCustomFieldsForItem()
     {
-        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData(ActionsInterface::ACTION_ACC))->getById($this->getId()));
+        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData(ActionsInterface::ACCOUNT))->getById($this->getId()));
     }
 
     /**
@@ -353,7 +353,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     public function getCopyAccount()
     {
-        $this->setAction(self::ACTION_ACC_COPY);
+        $this->setAction(self::ACCOUNT_COPY);
 
         // Obtener los datos de la cuenta antes y comprobar el acceso
         $isOk = ($this->setAccountData() && $this->checkAccess());
@@ -399,7 +399,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     public function getEditAccount()
     {
-        $this->setAction(self::ACTION_ACC_EDIT);
+        $this->setAction(self::ACCOUNT_EDIT);
 
         // Obtener los datos de la cuenta antes y comprobar el acceso
         $isOk = ($this->setAccountData() && $this->checkAccess());
@@ -427,7 +427,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     public function getEditPassAccount()
     {
-        $this->setAction(self::ACTION_ACC_EDIT_PASS);
+        $this->setAction(self::ACCOUNT_EDIT_PASS);
 
         // Obtener los datos de la cuenta antes y comprobar el acceso
         $isOk = ($this->setAccountData() && $this->checkAccess());
@@ -455,7 +455,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     public function getViewAccount()
     {
-        $this->setAction(self::ACTION_ACC_VIEW);
+        $this->setAction(self::ACCOUNT_VIEW);
 
         // Obtener los datos de la cuenta antes y comprobar el acceso
         $isOk = ($this->setAccountData() && $this->checkAccess());
@@ -487,7 +487,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     public function getViewHistoryAccount()
     {
-        $this->setAction(self::ACTION_ACC_VIEW_HISTORY);
+        $this->setAction(self::ACCOUNT_VIEW_HISTORY);
 
         // Obtener los datos de la cuenta antes y comprobar el acceso
         $isOk = ($this->setAccountDataHistory() && $this->checkAccess());
@@ -539,7 +539,7 @@ class AccountController extends ControllerBase implements ActionsInterface
      */
     public function getDeleteAccount()
     {
-        $this->setAction(self::ACTION_ACC_DELETE);
+        $this->setAction(self::ACCOUNT_DELETE);
 
         // Obtener los datos de la cuenta antes y comprobar el acceso
         $isOk = ($this->setAccountData() && $this->checkAccess());

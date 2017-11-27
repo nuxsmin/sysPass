@@ -15,17 +15,17 @@
         <div id="tabs-<?php echo $index; ?>" class="mdl-tabs__panel">
             <div class="tab-actions">
                 <ul>
-                    <?php foreach ($data->getDataActions() as $action): ?>
-                        <?php if ($action->getType() === \SP\Html\DataGrid\DataGridActionType::NEW_ITEM): ?>
+                    <?php foreach ($data->getDataActions() as $action):
+                        if ($action->getType() === \SP\Html\DataGrid\DataGridActionType::NEW_ITEM):
+                            ?>
                             <li>
                                 <button
-                                    id="btn-add-<?php echo $action->getId(); ?>"
-                                    class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200 mdl-js-ripple-effect"
-                                    data-action-id="<?php echo $action->getId(); ?>"
-                                    data-item-id="0"
-                                    data-activetab="<?php echo $index; ?>"
-                                    data-nextaction-id="<?php echo $data->getOnCloseAction(); ?>"
-                                    data-onclick="<?php echo $action->getOnClick(); ?>">
+                                        id="btn-add-<?php echo $action->getId(); ?>"
+                                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200 mdl-js-ripple-effect"
+                                        data-activetab="<?php echo $index; ?>"
+                                        data-nextaction-id="<?php echo $data->getOnCloseAction(); ?>"
+                                        data-onclick="<?php echo $action->getOnClick(); ?>"
+                                        <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                                     <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
                                 </button>
                                 <span for="btn-add-<?php echo $action->getId(); ?>"
@@ -38,10 +38,12 @@
                                       class="form-action"
                                       data-target="#data-table-<?php echo $data->getId(); ?>"
                                       data-activetab="<?php echo $index; ?>"
-                                      data-onsubmit="<?php echo $action->getOnSubmit(); ?>">
+                                      data-onsubmit="<?php echo $action->getOnSubmit(); ?>"
+                                    <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
 
                                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
-                                        <label class="mdl-button mdl-js-button mdl-button--icon" id="btn-search-<?php echo $index; ?>"
+                                        <label class="mdl-button mdl-js-button mdl-button--icon"
+                                               id="btn-search-<?php echo $index; ?>"
                                                for="search-<?php echo $index; ?>">
                                             <i class="material-icons">search</i>
                                         </label>
@@ -71,8 +73,7 @@
                                     <input type="hidden" name="isAjax" value="1">
                                 </form>
                             </li>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+                        <?php endif; endforeach; ?>
                     <li>
                         <button type="button" id="btn-back-<?php echo $index; ?>"
                                 class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"

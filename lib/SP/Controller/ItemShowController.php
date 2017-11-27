@@ -30,7 +30,7 @@ use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
 use SP\Config\Config;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\ItemException;
@@ -123,114 +123,114 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
     {
         try {
             switch ($this->actionId) {
-                case self::ACTION_USR_USERS_VIEW:
+                case self::USER_VIEW:
                     $this->view->assign('header', __('Ver Usuario'));
                     $this->view->assign('isView', true);
                     $this->getUser();
                     break;
-                case self::ACTION_USR_USERS_EDIT:
+                case self::USER_EDIT:
                     $this->view->assign('header', __('Editar Usuario'));
                     $this->getUser();
                     break;
-                case self::ACTION_USR_USERS_EDITPASS:
+                case self::USER_EDIT_PASS:
                     $this->view->assign('header', __('Cambio de Clave'));
                     $this->getUserPass();
                     break;
-                case self::ACTION_USR_USERS_NEW:
+                case self::USER_CREATE:
                     $this->view->assign('header', __('Nuevo Usuario'));
                     $this->getUser();
                     break;
-                case self::ACTION_USR_GROUPS_VIEW:
+                case self::GROUP_VIEW:
                     $this->view->assign('header', __('Ver Grupo'));
                     $this->view->assign('isView', true);
                     $this->getGroup();
                     break;
-                case self::ACTION_USR_GROUPS_EDIT:
+                case self::GROUP_EDIT:
                     $this->view->assign('header', __('Editar Grupo'));
                     $this->getGroup();
                     break;
-                case self::ACTION_USR_GROUPS_NEW:
+                case self::GROUP_CREATE:
                     $this->view->assign('header', __('Nuevo Grupo'));
                     $this->getGroup();
                     break;
-                case self::ACTION_USR_PROFILES_VIEW:
+                case self::PROFILE_VIEW:
                     $this->view->assign('header', __('Ver Perfil'));
                     $this->view->assign('isView', true);
                     $this->getProfile();
                     break;
-                case self::ACTION_USR_PROFILES_EDIT:
+                case self::PROFILE_EDIT:
                     $this->view->assign('header', __('Editar Perfil'));
                     $this->getProfile();
                     break;
-                case self::ACTION_USR_PROFILES_NEW:
+                case self::PROFILE_CREATE:
                     $this->view->assign('header', __('Nuevo Perfil'));
                     $this->getProfile();
                     break;
-                case self::ACTION_MGM_CUSTOMERS_VIEW:
+                case self::CLIENT_VIEW:
                     $this->view->assign('header', __('Ver Cliente'));
                     $this->view->assign('isView', true);
                     $this->getCustomer();
                     break;
-                case self::ACTION_MGM_CUSTOMERS_EDIT:
+                case self::CLIENT_EDIT:
                     $this->view->assign('header', __('Editar Cliente'));
                     $this->getCustomer();
                     break;
-                case self::ACTION_MGM_CUSTOMERS_NEW:
+                case self::CLIENT_CREATE:
                     $this->view->assign('header', __('Nuevo Cliente'));
                     $this->getCustomer();
                     break;
-                case self::ACTION_MGM_CATEGORIES_VIEW:
+                case self::CATEGORY_VIEW:
                     $this->view->assign('header', __('Ver Categoría'));
                     $this->view->assign('isView', true);
                     $this->getCategory();
                     break;
-                case self::ACTION_MGM_CATEGORIES_EDIT:
+                case self::CATEGORY_EDIT:
                     $this->view->assign('header', __('Editar Categoría'));
                     $this->getCategory();
                     break;
-                case self::ACTION_MGM_CATEGORIES_NEW:
+                case self::CATEGORY_CREATE:
                     $this->view->assign('header', __('Nueva Categoría'));
                     $this->getCategory();
                     break;
-                case self::ACTION_MGM_APITOKENS_VIEW:
+                case self::APITOKEN_VIEW:
                     $this->view->assign('header', __('Ver Autorización'));
                     $this->view->assign('isView', true);
                     $this->getToken();
                     break;
-                case self::ACTION_MGM_APITOKENS_NEW:
+                case self::APITOKEN_CREATE:
                     $this->view->assign('header', __('Nueva Autorización'));
                     $this->getToken();
                     break;
-                case self::ACTION_MGM_APITOKENS_EDIT:
+                case self::APITOKEN_EDIT:
                     $this->view->assign('header', __('Editar Autorización'));
                     $this->getToken();
                     break;
-                case self::ACTION_MGM_CUSTOMFIELDS_NEW:
+                case self::CUSTOMFIELD_CREATE:
                     $this->view->assign('header', __('Nuevo Campo'));
                     $this->getCustomField();
                     break;
-                case self::ACTION_MGM_CUSTOMFIELDS_EDIT:
+                case self::CUSTOMFIELD_EDIT:
                     $this->view->assign('header', __('Editar Campo'));
                     $this->getCustomField();
                     break;
-                case self::ACTION_MGM_PUBLICLINKS_VIEW:
+                case self::PUBLICLINK_VIEW:
                     $this->view->assign('header', __('Ver Enlace Público'));
                     $this->view->assign('isView', true);
                     $this->getPublicLink();
                     break;
-                case self::ACTION_MGM_TAGS_NEW:
+                case self::TAG_CREATE:
                     $this->view->assign('header', __('Nueva Etiqueta'));
                     $this->getTag();
                     break;
-                case self::ACTION_MGM_TAGS_EDIT:
+                case self::TAG_EDIT:
                     $this->view->assign('header', __('Editar Etiqueta'));
                     $this->getTag();
                     break;
-                case self::ACTION_ACC_VIEW_PASS:
+                case self::ACCOUNT_VIEW_PASS:
                     $this->view->assign('header', __('Clave de Cuenta'));
                     $this->getAccountPass();
                     break;
-                case self::ACTION_MGM_PLUGINS_VIEW:
+                case self::PLUGIN_VIEW:
                     $this->view->assign('header', __('Detalles de Plugin'));
                     $this->view->assign('isView', true);
                     $this->getPlugin();
@@ -260,11 +260,11 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getUser()
     {
-        $this->module = self::ACTION_USR_USERS;
+        $this->module = self::USER;
         $this->view->addTemplate('users');
 
         $this->view->assign('user', $this->itemId ? User::getItem()->getById($this->itemId) : new UserData());
-        $this->view->assign('isDisabled', $this->view->actionId === self::ACTION_USR_USERS_VIEW ? 'disabled' : '');
+        $this->view->assign('isDisabled', $this->view->actionId === self::USER_VIEW ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
         $this->view->assign('isUseSSO', $this->configData->isAuthBasicAutoLoginEnabled());
         $this->view->assign('groups', Group::getItem()->getItemsForSelect());
@@ -292,8 +292,8 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getUserPass()
     {
-        $this->module = self::ACTION_USR_USERS;
-        $this->setAction(self::ACTION_USR_USERS_EDITPASS);
+        $this->module = self::USER;
+        $this->setAction(self::USER_EDIT_PASS);
 
         // Comprobar si el usuario a modificar es distinto al de la sesión
         if ($this->itemId !== SessionFactory::getUserData()->getUserId() && !$this->checkAccess()) {
@@ -314,7 +314,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getGroup()
     {
-        $this->module = self::ACTION_USR_GROUPS;
+        $this->module = self::GROUP;
         $this->view->addTemplate('groups');
 
         $this->view->assign('group', $this->itemId ? Group::getItem()->getById($this->itemId) : new GroupData());
@@ -334,13 +334,13 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getProfile()
     {
-        $this->module = self::ACTION_USR_PROFILES;
+        $this->module = self::PROFILE;
         $this->view->addTemplate('profiles');
 
         $Profile = $this->itemId ? Profile::getItem()->getById($this->itemId) : new ProfileData();
 
         $this->view->assign('profile', $Profile);
-        $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_USR_PROFILES_VIEW) ? 'disabled' : '');
+        $this->view->assign('isDisabled', ($this->view->actionId === self::PROFILE_VIEW) ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 
         if ($this->view->isView === true) {
@@ -358,7 +358,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getCustomer()
     {
-        $this->module = self::ACTION_MGM_CUSTOMERS;
+        $this->module = self::CLIENT;
         $this->view->addTemplate('customers');
 
         $this->view->assign('customer', $this->itemId ? Customer::getItem()->getById($this->itemId) : new CustomerData());
@@ -375,7 +375,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getCategory()
     {
-        $this->module = self::ACTION_MGM_CATEGORIES;
+        $this->module = self::CATEGORY;
         $this->view->addTemplate('categories');
 
         $this->view->assign('category', $this->itemId ? Category::getItem()->getById($this->itemId) : new CategoryData());
@@ -394,7 +394,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getToken()
     {
-        $this->module = self::ACTION_MGM_APITOKENS;
+        $this->module = self::APITOKEN;
         $this->view->addTemplate('tokens');
 
         $ApiTokenData = $this->itemId ? ApiToken::getItem()->getById($this->itemId) : new ApiTokenData();
@@ -402,7 +402,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('actions', ApiTokensUtil::getTokenActions());
         $this->view->assign('ApiTokenData', $ApiTokenData);
-        $this->view->assign('isDisabled', ($this->view->actionId === self::ACTION_MGM_APITOKENS_VIEW) ? 'disabled' : '');
+        $this->view->assign('isDisabled', ($this->view->actionId === self::APITOKEN_VIEW) ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 
         if ($this->view->isView === true) {
@@ -427,7 +427,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getCustomField()
     {
-        $this->module = self::ACTION_MGM_CUSTOMFIELDS;
+        $this->module = self::CUSTOMFIELD;
         $this->view->addTemplate('customfields');
 
         $customField = $this->itemId ? CustomFieldDef::getItem()->getById($this->itemId) : new CustomFieldDefData();
@@ -448,7 +448,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getPublicLink()
     {
-        $this->module = self::ACTION_MGM_PUBLICLINKS;
+        $this->module = self::PUBLICLINK;
         $this->view->addTemplate('publiclinks');
 
         $PublicLink = PublicLink::getItem();
@@ -467,7 +467,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getTag()
     {
-        $this->module = self::ACTION_MGM_TAGS;
+        $this->module = self::TAG;
         $this->view->addTemplate('tags');
 
         $this->view->assign('tag', $this->itemId ? Tag::getItem()->getById($this->itemId) : new TagData());
@@ -490,7 +490,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     public function getAccountPass()
     {
-        $this->setAction(self::ACTION_ACC_VIEW_PASS);
+        $this->setAction(self::ACCOUNT_VIEW_PASS);
 
         $isHistory = Request::analyze('isHistory', false);
         $isFull = Request::analyze('isFull', false);
@@ -511,7 +511,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             throw new ItemException(__('La clave maestra no coincide', false));
         }
 
-        $AccountAcl = new AccountAcl($Account, ActionsInterface::ACTION_ACC_VIEW_PASS);
+        $AccountAcl = new AccountAcl($Account, ActionsInterface::ACCOUNT_VIEW_PASS);
         $Acl = $AccountAcl->getAcl();
 
         if (!$Acl->isShowViewPass()) {
@@ -576,7 +576,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getPlugin()
     {
-        $this->module = self::ACTION_MGM_PLUGINS;
+        $this->module = self::PLUGIN;
         $this->view->addTemplate('plugins');
 
         $Plugin = Plugin::getItem()->getById($this->itemId);
@@ -595,7 +595,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getAccountFiles()
     {
-        $this->setAction(self::ACTION_ACC_FILES);
+        $this->setAction(self::ACCOUNT_FILE);
 
         $this->view->assign('accountId', Request::analyze('id', 0));
         $this->view->assign('deleteEnabled', Request::analyze('del', 0));

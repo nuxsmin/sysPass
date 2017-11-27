@@ -70,7 +70,7 @@ use SP\Core\SessionFactory; ?>
 
                     <div id="drop-import-files" class="round active-tooltip dropzone"
                          data-files-ext="csv,xml"
-                         data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_IMPORT; ?>"
+                         data-action-id="<?php echo \SP\Core\ActionsInterface::IMPORT; ?>"
                          title="<?php echo __('Soltar archivo aquí o click para seleccionar'); ?>">
                         <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>
                     </div>

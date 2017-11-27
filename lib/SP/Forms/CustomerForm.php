@@ -51,8 +51,8 @@ class CustomerForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::ACTION_MGM_CUSTOMERS_NEW:
-            case ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT:
+            case ActionsInterface::CLIENT_CREATE:
+            case ActionsInterface::CLIENT_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

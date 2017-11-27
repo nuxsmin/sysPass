@@ -26,7 +26,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\Html\DataGrid\DataGridActionSearch;
@@ -109,7 +109,7 @@ class EventlogController extends ControllerBase implements ActionsInterface
      */
     public function getEventlog()
     {
-        $this->setAction(self::ACTION_EVL);
+        $this->setAction(self::EVENTLOG);
 
         if (!$this->checkAccess()) {
             return;
@@ -118,7 +118,7 @@ class EventlogController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('eventlog');
 
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_EVL);
+        $GridActionSearch->setId(self::EVENTLOG);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchEvent');
         $GridActionSearch->setTitle(__('Buscar Evento'));

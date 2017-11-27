@@ -26,7 +26,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\NoticeData;
@@ -83,16 +83,16 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
     {
         try {
             switch ($this->actionId) {
-                case self::ACTION_NOT_USER_VIEW:
+                case self::NOTICE_USER_VIEW:
                     $this->view->assign('header', __('Ver Notificación'));
                     $this->view->assign('isView', true);
                     $this->getNotice();
                     break;
-                case self::ACTION_NOT_USER_NEW:
+                case self::NOTICE_USER_CREATE:
                     $this->view->assign('header', __('Nueva Notificación'));
                     $this->getNotice();
                     break;
-                case self::ACTION_NOT_USER_EDIT:
+                case self::NOTICE_USER_EDIT:
                     $this->view->assign('header', __('Editar Notificación'));
                     $this->getNotice();
                     break;
@@ -119,11 +119,11 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
      */
     protected function getNotice()
     {
-        $this->module = self::ACTION_USR_USERS;
+        $this->module = self::USER;
         $this->view->addTemplate('notices');
 
         $this->view->assign('notice', $this->itemId ? Notice::getItem()->getById($this->itemId) : new NoticeData());
-        $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::ACTION_NOT_USER_VIEW) ? 'disabled' : '');
+        $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::NOTICE_USER_VIEW) ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 
         if ($this->userData->isUserIsAdminApp()){

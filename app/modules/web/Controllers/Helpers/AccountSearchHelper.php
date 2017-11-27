@@ -26,8 +26,8 @@ namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Account\AccountSearch;
 use SP\Account\AccountsSearchItem;
-use SP\Core\Acl;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
 use SP\Html\DataGrid\DataGrid;
 use SP\Html\DataGrid\DataGridAction;
@@ -161,7 +161,7 @@ class AccountSearchHelper extends HelperBase
         $GridPager->setLimitCount($this->search->getLimitCount());
         $GridPager->setOnClickFunction('account/sort');
         $GridPager->setFilterOn($this->filterOn);
-        $GridPager->setSourceAction(new DataGridActionSearch(ActionsInterface::ACTION_ACC_SEARCH));
+        $GridPager->setSourceAction(new DataGridActionSearch(ActionsInterface::ACCOUNT_SEARCH));
 
         $actions = new AccountActionsHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
         $UserPreferences = $this->session->getUserPreferences();

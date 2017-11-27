@@ -78,7 +78,7 @@ sysPass.Triggers = function (Common) {
      * Ejecutar acción para botones
      * @param $obj
      */
-    var btnAction = function ($obj) {
+    var handleActionButton = function ($obj) {
         var onclick = $obj.data("onclick").split("/");
         var actions;
 
@@ -102,7 +102,7 @@ sysPass.Triggers = function (Common) {
      *
      * @param $obj
      */
-    var formAction = function ($obj) {
+    var handleFormAction = function ($obj) {
         log.info("formAction");
 
         var lastHash = $obj.attr("data-hash");
@@ -137,7 +137,7 @@ sysPass.Triggers = function (Common) {
         log.info("bodyHooks");
 
         $("body").on("click", "button.btn-action[data-onclick][type='button'],li.btn-action[data-onclick],i.btn-action[data-onclick],.btn-action-pager[data-onclick]", function () {
-            btnAction($(this));
+            handleActionButton($(this));
         }).on("click", ".btn-back", function () {
             var appRequests = Common.appRequests();
 
@@ -151,7 +151,7 @@ sysPass.Triggers = function (Common) {
         }).on("submit", ".form-action", function (e) {
             e.preventDefault();
 
-            formAction($(this));
+            handleFormAction($(this));
         }).on("click", ".btn-help", function () {
             var $this = $(this);
             var helpText = $("#" + $this.data("help")).html();
@@ -202,7 +202,7 @@ sysPass.Triggers = function (Common) {
                     Common.appRequests().history.reset();
                 }
 
-                Common.appActions().doAction({r: $this.data("action-id")}, $this.data("view"));
+                Common.appActions().doAction({r: $this.data("route")}, $this.data("view"));
             });
 
             $("#btnLogout").click(function (e) {
@@ -210,7 +210,7 @@ sysPass.Triggers = function (Common) {
             });
 
             $("#btnPrefs").click(function (e) {
-                Common.appActions().doAction({actionId: $(this).data("action-id")});
+                Common.appActions().doAction({actionId: $(this).data("route")});
             });
 
             Common.appActions().doAction({r: "account/index"}, "search");

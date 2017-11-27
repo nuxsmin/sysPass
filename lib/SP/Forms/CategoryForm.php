@@ -24,7 +24,7 @@
 
 namespace SP\Forms;
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CategoryData;
 use SP\Http\Request;
@@ -51,8 +51,8 @@ class CategoryForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::ACTION_MGM_CATEGORIES_NEW:
-            case ActionsInterface::ACTION_MGM_CATEGORIES_EDIT:
+            case ActionsInterface::CATEGORY_CREATE:
+            case ActionsInterface::CATEGORY_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

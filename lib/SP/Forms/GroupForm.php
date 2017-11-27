@@ -24,7 +24,7 @@
 
 namespace SP\Forms;
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\GroupData;
 use SP\Http\Request;
@@ -51,8 +51,8 @@ class GroupForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::ACTION_USR_GROUPS_NEW:
-            case ActionsInterface::ACTION_USR_GROUPS_EDIT:
+            case ActionsInterface::GROUP_CREATE:
+            case ActionsInterface::GROUP_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

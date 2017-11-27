@@ -55,7 +55,7 @@
                     </select>
                     <?php if (!$isView && $addCustomerEnabled): ?>
                         <i class="material-icons btn-action" title="<?php echo __('Nuevo Cliente'); ?>"
-                           data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CUSTOMERS_NEW; ?>"
+                           data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::CLIENT_CREATE; ?>"
                            data-item-id="0"
                            data-item-type="<?php echo \SP\Core\ItemsTypeInterface::ITEM_CUSTOMERS_USER; ?>"
                            data-item-dst="selCustomer"
@@ -78,7 +78,7 @@
                     </select>
                     <?php if (!$isView && $addCategoryEnabled): ?>
                         <i class="material-icons btn-action" title="<?php echo __('Nueva Categoría'); ?>"
-                           data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_MGM_CATEGORIES_NEW; ?>"
+                           data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::CATEGORY_CREATE; ?>"
                            data-item-id="0"
                            data-item-type="<?php echo \SP\Core\ItemsTypeInterface::ITEM_CATEGORIES; ?>"
                            data-item-dst="selCategory"
@@ -216,7 +216,7 @@
                 </tr>
             <?php endif; ?>
 
-            <?php if ($actionId === \SP\Core\ActionsInterface::ACTION_ACC_EDIT && $isModified && $accountData->getUserEditName()): ?>
+            <?php if ($actionId === \SP\Core\Acl\ActionsInterface::ACCOUNT_EDIT && $isModified && $accountData->getUserEditName()): ?>
                 <tr>
                     <td class="descField"><?php echo __('Última Modificación'); ?></td>
                     <td class="valField"><?php printf('%s (%s)', $accountData->getAccountDateEdit(), $accountData->getUserEditName()); ?></td>

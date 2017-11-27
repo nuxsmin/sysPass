@@ -23,7 +23,7 @@
  */
 
 use Plugins\Authenticator\Authenticator;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\Language;
 use SP\Core\SessionFactory;
@@ -70,7 +70,7 @@ if (!$sk || !SessionUtil::checkSessionKey($sk)) {
 $actionId = Request::analyze('actionId', 0);
 $itemId = Request::analyze('itemId', 0);
 
-if ($actionId === ActionsInterface::ACTION_USR_PREFERENCES_GENERAL) {
+if ($actionId === ActionsInterface::PREFERENCE_GENERAL) {
     $UserPreferencesData = UserPreferences::getItem()->getById($itemId);
 
     $UserPreferencesData->setUserId($itemId);

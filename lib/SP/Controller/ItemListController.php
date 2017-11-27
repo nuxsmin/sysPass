@@ -30,7 +30,7 @@ use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Controller\Grids\Items;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Template;
 use SP\Core\Traits\InjectableTrait;
@@ -84,7 +84,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getAccountFiles()
     {
-        $this->setAction(self::ACTION_ACC_FILES);
+        $this->setAction(self::ACCOUNT_FILE);
 
         $this->view->addTemplate('files-list', 'account');
 
@@ -139,7 +139,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getCategories()
     {
-        $this->setAction(self::ACTION_MGM_CATEGORIES);
+        $this->setAction(self::CATEGORY);
 
         if (!$this->checkAccess()) {
             return;
@@ -167,7 +167,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getCustomers()
     {
-        $this->setAction(self::ACTION_MGM_CUSTOMERS);
+        $this->setAction(self::CLIENT);
 
         if (!$this->checkAccess()) {
             return;
@@ -187,7 +187,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getCustomFields()
     {
-        $this->setAction(self::ACTION_MGM_CUSTOMFIELDS);
+        $this->setAction(self::CUSTOMFIELD);
 
         if (!$this->checkAccess()) {
             return;
@@ -211,7 +211,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $this->setAction(self::ACTION_MGM_FILES);
+        $this->setAction(self::FILE);
 
         if (!$this->checkAccess()) {
             return;
@@ -231,7 +231,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getAccounts()
     {
-        $this->setAction(self::ACTION_MGM_ACCOUNTS);
+        $this->setAction(self::ACCOUNTMGR);
 
         if (!$this->checkAccess()) {
             return;
@@ -251,7 +251,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getAccountsHistory()
     {
-        $this->setAction(self::ACTION_MGM_ACCOUNTS_HISTORY);
+        $this->setAction(self::ACCOUNTMGR_HISTORY);
 
         if (!$this->checkAccess()) {
             return;
@@ -271,7 +271,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getTags()
     {
-        $this->setAction(self::ACTION_MGM_TAGS);
+        $this->setAction(self::TAG);
 
         if (!$this->checkAccess()) {
             return;
@@ -291,7 +291,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getPluginsList()
     {
-        $this->setAction(self::ACTION_MGM_PLUGINS);
+        $this->setAction(self::PLUGIN);
 
         if (!$this->checkAccess()) {
             return;
@@ -311,7 +311,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getUsersList()
     {
-        $this->setAction(self::ACTION_USR_USERS);
+        $this->setAction(self::USER);
 
         if (!$this->checkAccess()) {
             return;
@@ -331,7 +331,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getGroupsList()
     {
-        $this->setAction(self::ACTION_USR_GROUPS);
+        $this->setAction(self::GROUP);
 
         if (!$this->checkAccess()) {
             return;
@@ -351,7 +351,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getProfilesList()
     {
-        $this->setAction(self::ACTION_USR_PROFILES);
+        $this->setAction(self::PROFILE);
 
         if (!$this->checkAccess()) {
             return;
@@ -371,7 +371,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getAPITokensList()
     {
-        $this->setAction(self::ACTION_MGM_APITOKENS);
+        $this->setAction(self::APITOKEN);
 
         if (!$this->checkAccess()) {
             return;
@@ -395,7 +395,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
             return;
         }
 
-        $this->setAction(self::ACTION_MGM_PUBLICLINKS);
+        $this->setAction(self::PUBLICLINK);
 
         if (!$this->checkAccess()) {
             return;

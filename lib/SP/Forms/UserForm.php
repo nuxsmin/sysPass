@@ -24,7 +24,7 @@
 
 namespace SP\Forms;
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionFactory;
 use SP\DataModel\UserData;
@@ -58,20 +58,20 @@ class UserForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::ACTION_USR_USERS_NEW:
+            case ActionsInterface::USER_CREATE:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 $this->checkPass();
                 break;
-            case ActionsInterface::ACTION_USR_USERS_EDIT:
+            case ActionsInterface::USER_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
-            case ActionsInterface::ACTION_USR_USERS_EDITPASS:
+            case ActionsInterface::USER_EDIT_PASS:
                 $this->analyzeRequestData();
                 $this->checkPass();
                 break;
-            case ActionsInterface::ACTION_USR_USERS_DELETE:
+            case ActionsInterface::USER_DELETE:
                 $this->checkDelete();
                 break;
         }

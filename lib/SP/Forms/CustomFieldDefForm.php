@@ -24,7 +24,7 @@
 
 namespace SP\Forms;
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CustomFieldDefData;
 use SP\Http\Request;
@@ -51,8 +51,8 @@ class CustomFieldDefForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW:
-            case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT:
+            case ActionsInterface::CUSTOMFIELD_CREATE:
+            case ActionsInterface::CUSTOMFIELD_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

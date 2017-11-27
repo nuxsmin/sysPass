@@ -20,12 +20,12 @@
                          data-delete="<?php echo (int)$AccountAcl->isShowDelete(); ?>"
                          data-sk="<?php echo $sk; ?>">
                     </div>
-                    <?php if ($actionId === \SP\Core\ActionsInterface::ACTION_ACC_EDIT): ?>
+                    <?php if ($actionId === \SP\Core\ActionsInterface::ACCOUNT_EDIT): ?>
                         <div id="drop-account-files" class="round active-tooltip dropzone"
                              data-files-ext="<?php echo $filesAllowedExts; ?>"
                              data-item-id="<?php echo $accountId; ?>"
                              data-sk="<?php echo $sk; ?>"
-                             data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FILES_UPLOAD; ?>"
+                             data-action-id="<?php echo \SP\Core\ActionsInterface::ACCOUNT_FILES_UPLOAD; ?>"
                              data-delete="<?php echo (int)$AccountAcl->isShowDelete(); ?>">
                             <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>
                         </div>

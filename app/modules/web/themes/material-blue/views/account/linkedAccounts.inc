@@ -17,7 +17,7 @@
                             <?php foreach ($linkedAccounts as $account): ?>
                                 <li class="mdl-list__item">
                                 <span class="btn-action mdl-list__item-primary-content"
-                                      data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                                      data-action-id="<?php echo \SP\Core\ActionsInterface::ACCOUNT_VIEW; ?>"
                                       data-item-id="<?php echo $account->account_id; ?>"
                                       data-onclick="account/show"
                                       data-sk="<?php echo $sk; ?>">

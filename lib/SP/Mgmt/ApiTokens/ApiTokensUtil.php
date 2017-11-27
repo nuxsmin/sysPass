@@ -24,8 +24,8 @@
 
 namespace SP\Mgmt\ApiTokens;
 
-use SP\Core\Acl;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 
 defined('APP_ROOT') || die();
 
@@ -44,14 +44,14 @@ class ApiTokensUtil
     public static function getTokenActions()
     {
         $actions = [
-            ActionsInterface::ACTION_ACC_SEARCH => Acl::getActionInfo(ActionsInterface::ACTION_ACC_SEARCH),
-            ActionsInterface::ACTION_ACC_VIEW => Acl::getActionInfo(ActionsInterface::ACTION_ACC_VIEW),
-            ActionsInterface::ACTION_ACC_VIEW_PASS => Acl::getActionInfo(ActionsInterface::ACTION_ACC_VIEW_PASS),
-            ActionsInterface::ACTION_ACC_DELETE => Acl::getActionInfo(ActionsInterface::ACTION_ACC_DELETE),
-            ActionsInterface::ACTION_ACC_NEW => Acl::getActionInfo(ActionsInterface::ACTION_ACC_NEW),
-            ActionsInterface::ACTION_CFG_BACKUP => Acl::getActionInfo(ActionsInterface::ACTION_CFG_BACKUP),
-            ActionsInterface::ACTION_MGM_CATEGORIES => Acl::getActionInfo(ActionsInterface::ACTION_MGM_CATEGORIES),
-            ActionsInterface::ACTION_MGM_CUSTOMERS => Acl::getActionInfo(ActionsInterface::ACTION_MGM_CUSTOMERS)
+            ActionsInterface::ACCOUNT_SEARCH => Acl::getActionInfo(ActionsInterface::ACCOUNT_SEARCH),
+            ActionsInterface::ACCOUNT_VIEW => Acl::getActionInfo(ActionsInterface::ACCOUNT_VIEW),
+            ActionsInterface::ACCOUNT_VIEW_PASS => Acl::getActionInfo(ActionsInterface::ACCOUNT_VIEW_PASS),
+            ActionsInterface::ACCOUNT_DELETE => Acl::getActionInfo(ActionsInterface::ACCOUNT_DELETE),
+            ActionsInterface::ACCOUNT_CREATE => Acl::getActionInfo(ActionsInterface::ACCOUNT_CREATE),
+            ActionsInterface::BACKUP_CONFIG => Acl::getActionInfo(ActionsInterface::BACKUP_CONFIG),
+            ActionsInterface::CATEGORY => Acl::getActionInfo(ActionsInterface::CATEGORY),
+            ActionsInterface::CLIENT => Acl::getActionInfo(ActionsInterface::CLIENT)
         ];
 
         return $actions;

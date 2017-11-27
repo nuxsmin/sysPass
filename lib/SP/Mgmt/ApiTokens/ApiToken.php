@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\ApiTokens;
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\Vault;
@@ -81,8 +81,8 @@ class ApiToken extends ApiTokenBase implements ItemInterface
 
         $action = $this->itemData->getAuthtokenActionId();
 
-        if ($action === ActionsInterface::ACTION_ACC_VIEW_PASS
-            || $action === ActionsInterface::ACTION_ACC_NEW
+        if ($action === ActionsInterface::ACCOUNT_VIEW_PASS
+            || $action === ActionsInterface::ACCOUNT_CREATE
         ) {
             $Data->addParam(serialize($this->getSecureData($token)));
         } else {
@@ -225,8 +225,8 @@ class ApiToken extends ApiTokenBase implements ItemInterface
 
         $action = $this->itemData->getAuthtokenActionId();
 
-        if ($action === ActionsInterface::ACTION_ACC_VIEW_PASS
-            || $action === ActionsInterface::ACTION_ACC_NEW
+        if ($action === ActionsInterface::ACCOUNT_VIEW_PASS
+            || $action === ActionsInterface::ACCOUNT_CREATE
         ) {
             $Data->addParam(serialize($this->getSecureData($token)));
         } else {
@@ -290,7 +290,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $Data->addParam($token);
         $Data->addParam(Hash::hashKey($this->itemData->getAuthtokenHash()));
 
-        if ($this->itemData->getAuthtokenActionId() === ActionsInterface::ACTION_ACC_VIEW_PASS) {
+        if ($this->itemData->getAuthtokenActionId() === ActionsInterface::ACCOUNT_VIEW_PASS) {
             $Data->addParam(serialize($this->getSecureData($token)));
         } else {
             $Data->addParam(null);

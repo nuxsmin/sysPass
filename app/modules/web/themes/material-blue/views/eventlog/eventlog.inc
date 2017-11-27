@@ -143,7 +143,7 @@
                 class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconClear()->getClassButton(); ?>"
                 title="<?php echo __('Vaciar registro de eventos'); ?>"
                 data-onclick="eventlog/clear"
-                data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_EVL; ?>">
+                data-nextaction-id="<?php echo \SP\Core\ActionsInterface::EVENTLOG; ?>">
                 <i class="material-icons"><?php echo $icons->getIconClear()->getIcon(); ?></i>
             </button>
         </li>

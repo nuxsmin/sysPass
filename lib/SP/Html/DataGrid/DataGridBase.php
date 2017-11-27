@@ -26,7 +26,7 @@ namespace SP\Html\DataGrid;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
@@ -121,8 +121,6 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * DataGridBase constructor.
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function __construct()
     {
@@ -146,7 +144,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @param ActionsInterface $action
+     * @param \SP\Core\Acl\ActionsInterface $action
      * @return $this
      */
     public function setOnCloseAction(ActionsInterface $action)
@@ -176,7 +174,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * @return DataGridHeader|DataGridHeaderSort
+     * @return DataGridHeader|DataGridHeaderSort|DataGridHeaderInterface
      */
     public function getHeader()
     {

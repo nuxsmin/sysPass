@@ -25,7 +25,7 @@
 namespace SP\Controller;
 
 use SP\Controller\Grids\Notices;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Mgmt\Notices\Notice;
 
@@ -73,7 +73,7 @@ class NoticesController extends GridTabControllerBase implements ActionsInterfac
      */
     public function getUserNotices()
     {
-        $this->setAction(self::ACTION_NOT_USER);
+        $this->setAction(self::NOTICE_USER);
 
         if (!$this->checkAccess()) {
             return;

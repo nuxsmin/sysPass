@@ -36,7 +36,7 @@ use RuntimeException;
  *
  * @package SMD\Storage
  */
-class XmlHandler implements FileStorageInterface
+class XmlHandler implements XmlFileStorageInterface
 {
     /**
      * @var mixed
@@ -69,7 +69,7 @@ class XmlHandler implements FileStorageInterface
      * Cargar un archivo XML
      *
      * @param string $node
-     * @return FileStorageInterface
+     * @return XmlFileStorageInterface
      * @throws \RuntimeException
      */
     public function load($node = 'root')
@@ -153,7 +153,7 @@ class XmlHandler implements FileStorageInterface
      * Guardar el archivo XML
      *
      * @param string $node
-     * @return FileStorageInterface
+     * @return XmlFileStorageInterface
      * @throws \RuntimeException
      */
     public function save($node = 'root')

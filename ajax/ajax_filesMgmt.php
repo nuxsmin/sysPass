@@ -23,7 +23,7 @@
  */
 
 use SP\Account\AccountUtil;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionUtil;
 use SP\DataModel\FileData;
@@ -65,7 +65,7 @@ $fileId = Request::analyze('fileId', 0);
 $Log = new Log();
 $LogMessage = $Log->getLogMessage();
 
-if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
+if ($actionId === ActionsInterface::ACCOUNT_FILE_UPLOAD) {
     if ($accountId === 0 || !is_array($_FILES['inFile'])) {
         Response::printJson(__('CONSULTA INVÁLIDA'));
     }
@@ -145,9 +145,9 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
     } catch (SPException $e) {
         Response::printJson(__('No se pudo guardar el archivo'));
     }
-} elseif ($actionId === ActionsInterface::ACTION_ACC_FILES_DOWNLOAD
-    || $actionId === ActionsInterface::ACTION_ACC_FILES_VIEW
-    || $actionId === ActionsInterface::ACTION_MGM_FILES_VIEW
+} elseif ($actionId === ActionsInterface::ACCOUNT_FILE_DOWNLOAD
+    || $actionId === ActionsInterface::ACCOUNT_FILE_VIEW
+    || $actionId === ActionsInterface::FILE_VIEW
 ) {
     // Verificamos que el ID sea numérico
     if (!is_numeric($fileId) || $fileId === 0) {
@@ -168,7 +168,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
     $LogMessage->addDetails(__('Tamaño', false), $FileData->getRoundSize() . 'KB');
     $Log->writeLog();
 
-    if ($actionId === ActionsInterface::ACTION_ACC_FILES_DOWNLOAD) {
+    if ($actionId === ActionsInterface::ACCOUNT_FILE_DOWNLOAD) {
         // Enviamos el archivo al navegador
         header('Set-Cookie: fileDownload=true; path=/');
         header('Cache-Control: max-age=60, must-revalidate');
@@ -192,7 +192,7 @@ if ($actionId === ActionsInterface::ACTION_ACC_FILES_UPLOAD) {
             exit();
         }
     }
-} elseif ($actionId === ActionsInterface::ACTION_ACC_FILES_DELETE) {
+} elseif ($actionId === ActionsInterface::ACCOUNT_FILE_DELETE) {
     // Verificamos que el ID sea numérico
     if (!is_numeric($fileId) || $fileId === 0) {
         Response::printJson(__('No es un ID de archivo válido'));

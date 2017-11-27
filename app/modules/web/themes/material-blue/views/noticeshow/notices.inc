@@ -31,7 +31,7 @@
     <form method="post" name="frmNotices" id="frmNotices" class="form-action"
           data-onsubmit="appMgmt/save"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT_USER; ?>"
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::NOTICE_USER; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>

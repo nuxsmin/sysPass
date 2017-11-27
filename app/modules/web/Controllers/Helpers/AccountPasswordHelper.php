@@ -2,8 +2,8 @@
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
-use SP\Core\Acl;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\SessionUtil;
 use SP\DataModel\AccountPassData;
@@ -21,12 +21,12 @@ class AccountPasswordHelper extends HelperBase
     const TYPE_NORMAL = 0;
     const TYPE_FULL = 1;
 
-    /** @var  Acl */
+    /** @var  \SP\Core\Acl\Acl */
     protected $acl;
 
     /**
-     * @param AccountPassData $account
-     * @param Acl $acl
+     * @param AccountPassData  $account
+     * @param \SP\Core\Acl\Acl $acl
      * @param $type
      * @return string
      */
@@ -53,7 +53,7 @@ class AccountPasswordHelper extends HelperBase
      */
     protected function getPasswordClear(AccountPassData $accountData)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::ACTION_ACC_VIEW_PASS)
+        if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW_PASS)
             || $accountData->getAccountId() === 0
         ) {
             throw new HelperException(__('No tiene permisos para acceder a esta cuenta', false));

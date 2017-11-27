@@ -49,11 +49,11 @@
 
         <form method="post" name="frmBackup" id="frmBackup" class="form-action"
               data-onsubmit="config/backup"
-              data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_BACKUP; ?>"
+              data-nextaction-id="<?php echo \SP\Core\ActionsInterface::BACKUP; ?>"
               data-activetab="<?php echo $backup_tabIndex; ?>">
 
             <input type="hidden" name="isAjax" value="1"/>
-            <input type="hidden" name="actionId" value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_BACKUP; ?>"/>
+            <input type="hidden" name="actionId" value="<?php echo \SP\Core\ActionsInterface::BACKUP; ?>"/>
             <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         </form>
 
@@ -90,7 +90,7 @@
 
         <form method="post" name="frmExport" id="frmExport" class="form-action"
               data-onsubmit="config/export"
-              data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_EXPORT; ?>"
+              data-nextaction-id="<?php echo \SP\Core\ActionsInterface::EXPORT; ?>"
               data-activetab="<?php echo $backup_tabIndex; ?>">
             <table class="data round">
                 <tr>
@@ -154,7 +154,7 @@
                 </tr>
             </table>
 
-            <input type="hidden" name="actionId" value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_EXPORT; ?>"/>
+            <input type="hidden" name="actionId" value="<?php echo \SP\Core\ActionsInterface::EXPORT; ?>"/>
             <input type="hidden" name="sk" value="">
             <input type="hidden" name="isAjax" value="1"/>
         </form>

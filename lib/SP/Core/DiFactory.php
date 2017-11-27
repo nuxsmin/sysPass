@@ -31,7 +31,7 @@ use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Mgmt\ItemBaseInterface;
 use SP\Storage\DBStorageInterface;
-use SP\Storage\FileStorageInterface;
+use SP\Storage\XmlFileStorageInterface;
 use SP\Storage\MySQLHandler;
 use SP\Storage\XmlHandler;
 
@@ -43,7 +43,7 @@ use SP\Storage\XmlHandler;
 class DiFactory
 {
     /**
-     * @var FileStorageInterface
+     * @var XmlFileStorageInterface
      */
     private static $ConfigFactory;
     /**
@@ -66,11 +66,11 @@ class DiFactory
     /**
      * Devuelve el almacenamiento para la configuración
      *
-     * @return FileStorageInterface
+     * @return XmlFileStorageInterface
      */
     final public static function getConfigStorage()
     {
-        if (!self::$ConfigFactory instanceof FileStorageInterface) {
+        if (!self::$ConfigFactory instanceof XmlFileStorageInterface) {
             self::$ConfigFactory = new XmlHandler(XML_CONFIG_FILE);
         }
 

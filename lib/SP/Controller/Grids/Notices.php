@@ -78,7 +78,7 @@ class Notices extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_NOT_USER_SEARCH);
+        $GridActionSearch->setId(self::NOTICE_USER_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchNotice');
         $GridActionSearch->setTitle(__('Buscar Notificación'));
@@ -90,7 +90,7 @@ class Notices extends GridBase
         if ($isAdminApp) {
             // Grid item's actions
             $GridActionNew = new DataGridAction();
-            $GridActionNew->setId(self::ACTION_NOT_USER_NEW);
+            $GridActionNew->setId(self::NOTICE_USER_CREATE);
             $GridActionNew->setType(DataGridActionType::NEW_ITEM);
             $GridActionNew->setName(__('Nueva Notificación'));
             $GridActionNew->setTitle(__('Nueva Notificación'));
@@ -102,7 +102,7 @@ class Notices extends GridBase
         }
 
         $GridActionView = new DataGridAction();
-        $GridActionView->setId(self::ACTION_NOT_USER_VIEW);
+        $GridActionView->setId(self::NOTICE_USER_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(__('Ver Notificación'));
         $GridActionView->setTitle(__('Ver Notificación'));
@@ -112,7 +112,7 @@ class Notices extends GridBase
         $Grid->setDataActions($GridActionView);
 
         $GridActionCheck = new DataGridAction();
-        $GridActionCheck->setId(self::ACTION_NOT_USER_CHECK);
+        $GridActionCheck->setId(self::NOTICE_USER_CHECK);
         $GridActionCheck->setName(__('Marcar Notificación'));
         $GridActionCheck->setTitle(__('Marcar Notificación'));
         $GridActionCheck->setIcon($this->icons->getIconEnabled());
@@ -122,7 +122,7 @@ class Notices extends GridBase
         $Grid->setDataActions($GridActionCheck);
 
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(self::ACTION_NOT_USER_EDIT);
+        $GridActionEdit->setId(self::NOTICE_USER_EDIT);
         $GridActionEdit->setName(__('Editar Notificación'));
         $GridActionEdit->setTitle(__('Editar Notificación'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
@@ -131,7 +131,7 @@ class Notices extends GridBase
         $Grid->setDataActions($GridActionEdit);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_NOT_USER_DELETE);
+        $GridActionDel->setId(self::NOTICE_USER_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Notificación'));
         $GridActionDel->setTitle(__('Eliminar Notificación'));

@@ -120,7 +120,7 @@
 
             <input type="hidden" name="activeTab" value="<?php echo $encryption_tabIndex; ?>"/>
             <input type="hidden" name="actionId"
-                   value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION; ?>"/>
+                   value="<?php echo \SP\Core\Acl\ActionsInterface::ENCRYPTION_CONFIG; ?>"/>
             <input type="hidden" name="isAjax" value="1"/>
             <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         </form>
@@ -147,7 +147,7 @@
                         <button type="button"
                                 class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
                                 data-onclick="config/refreshMpass"
-                                data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION_REFRESH; ?>"
+                                data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::ENCRYPTION_REFRESH; ?>"
                                 data-sk="<?php echo $sk; ?>"
                                 title="<?php echo __('Actualizar hash de clave maestra'); ?>">
                             <i class="material-icons"><?php echo $icons->getIconRefresh()->getIcon(); ?></i>
@@ -174,7 +174,7 @@
         <form method="post" name="frmTempMasterPass" id="frmTempMasterPass" class="form-action"
               data-onsubmit="config/save"
               data-type="temppass"
-              data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS; ?>"
+              data-nextaction-id="<?php echo \SP\Core\Acl\ActionsInterface::ENCRYPTION_TEMPPASS; ?>"
               data-activetab="<?php echo $encryption_tabIndex; ?>">
             <table class="data tblConfig round">
                 <tr>
@@ -277,7 +277,7 @@
                 <?php endif; ?>
             </table>
             <input type="hidden" name="actionId"
-                   value="<?php echo \SP\Core\ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS; ?>"/>
+                   value="<?php echo \SP\Core\Acl\ActionsInterface::ENCRYPTION_TEMPPASS; ?>"/>
             <input type="hidden" name="sk" value="">
             <input type="hidden" name="isAjax" value="1"/>
         </form>

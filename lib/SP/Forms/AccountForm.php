@@ -24,7 +24,7 @@
 
 namespace SP\Forms;
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionFactory;
 use SP\DataModel\AccountData;
@@ -53,16 +53,16 @@ class AccountForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::ACTION_ACC_EDIT_PASS:
+            case ActionsInterface::ACCOUNT_EDIT_PASS:
                 $this->analyzeRequestData();
                 $this->checkPass();
                 break;
-            case ActionsInterface::ACTION_ACC_EDIT:
+            case ActionsInterface::ACCOUNT_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
-            case ActionsInterface::ACTION_ACC_NEW:
-            case ActionsInterface::ACTION_ACC_COPY:
+            case ActionsInterface::ACCOUNT_CREATE:
+            case ActionsInterface::ACCOUNT_COPY:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 $this->checkPass();

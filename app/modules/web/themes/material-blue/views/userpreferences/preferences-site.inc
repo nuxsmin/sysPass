@@ -10,7 +10,7 @@
         <form method="post" name="frmPreferences" id="frmPreferences"
               class="form-action"
               data-onsubmit="user/savePreferences"
-              data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES_GENERAL; ?>"
+              data-nextaction-id="<?php echo \SP\Core\Acl\ActionsInterface::PREFERENCE_GENERAL; ?>"
               data-activetab="<?php echo $preferences_tabIndex; ?>"
               data-hash="">
 

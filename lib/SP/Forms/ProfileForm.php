@@ -24,7 +24,7 @@
 
 namespace SP\Forms;
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
 use SP\Http\Request;
@@ -51,8 +51,8 @@ class ProfileForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::ACTION_USR_PROFILES_NEW:
-            case ActionsInterface::ACTION_USR_PROFILES_EDIT:
+            case ActionsInterface::PROFILE_CREATE:
+            case ActionsInterface::PROFILE_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

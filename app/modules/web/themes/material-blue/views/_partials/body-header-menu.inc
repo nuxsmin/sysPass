@@ -4,7 +4,7 @@
         <span class="mdl-layout-icon">
             <img class="logo btn-menu" src="<?php echo $logonobg; ?>"
                  alt="logo"
-                 data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_SEARCH; ?>"
+                 data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_SEARCH; ?>"
                  data-view="search"
                  data-historyReset="1"/>
         </span>
@@ -17,7 +17,6 @@
                 <?php /** @var \SP\Html\DataGrid\DataGridAction $action */
                 foreach ($actions as $action): ?>
                     <a id="btn-<?php echo $action->getId(); ?>" class="btn-menu mdl-navigation__link"
-                       data-action-id="<?php echo $action->getId(); ?>"
                         <?php foreach ($action->getData() as $dataName => $dataValue): ?>
                             <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
                         <?php endforeach; ?>>
@@ -29,7 +28,7 @@
 
                 <?php if ($userNotices > 0): ?>
                     <a id="notices-user" class="btn-menu mdl-navigation__link"
-                         data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>"
+                         data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::NOTICE; ?>"
                          data-historyreset="1"
                          data-view="notices">
                         <i class="material-icons mdl-badge mdl-badge--overlap" data-badge="<?php echo $userNotices; ?>">notifications</i>
@@ -39,7 +38,7 @@
                           class="mdl-tooltip mdl-tooltip--bottom"><?php printf(__('Hay %d notificaciones pendientes'), $userNotices); ?></span>
                 <?php else: ?>
                     <a id="notices-user" class="btn-menu mdl-navigation__link"
-                         data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>"
+                         data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::NOTICE; ?>"
                          data-historyreset="1"
                          data-view="notices">
                         <i class="material-icons mdl-badge mdl-badge--overlap" data-badge="0">notifications</i>
@@ -60,7 +59,7 @@
                     <?php if ($showPassIcon): ?>
                         <li id="btnUserPass" class="btn-action mdl-menu__item"
                             data-onclick="appMgmt/show"
-                            data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>"
+                            data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::USER_EDIT_PASS; ?>"
                             data-item-id="<?php echo $userId; ?>"
                             data-sk="<?php echo $sk; ?>">
                             <i class="material-icons">security</i>
@@ -68,7 +67,7 @@
                         </li>
                     <?php endif; ?>
                     <li id="btnPrefs" class="mdl-menu__item"
-                        data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>">
+                        data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::PREFERENCE; ?>">
                         <i class="material-icons">account_circle</i>
                         <?php echo __('Preferencias de usuario'); ?>
                     </li>
@@ -101,7 +100,7 @@
 
             <?php if ($userNotices > 0): ?>
                 <a id="notices-user" class="btn-menu mdl-navigation__link"
-                     data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>"
+                     data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::NOTICE; ?>"
                      data-historyreset="1"
                      data-view="notices">
                     <i class="material-icons mdl-badge mdl-badge--overlap" data-badge="<?php echo $userNotices; ?>">notifications</i>
@@ -109,7 +108,7 @@
                 </a>
             <?php else: ?>
                 <a id="notices-user" class="btn-menu mdl-navigation__link"
-                     data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_NOT; ?>"
+                     data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::NOTICE; ?>"
                      data-historyreset="1"
                      data-view="notices">
                     <i class="material-icons mdl-badge mdl-badge--overlap" data-badge="0">notifications</i>
@@ -121,7 +120,7 @@
                 <a class="btn-action mdl-navigation__link"
                    title="<?php echo __('Cambiar Clave de Usuario'); ?>"
                    data-onclick="appMgmt/show"
-                   data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS_EDITPASS; ?>"
+                   data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::USER_EDIT_PASS; ?>"
                    data-item-id="<?php echo $userId; ?>"
                    data-sk="<?php echo $sk; ?>">
                     <i class="btn-action material-icons">security</i>
@@ -130,7 +129,7 @@
             <?php endif; ?>
             <a class="btn-menu mdl-navigation__link"
                title="<?php echo __('Preferencias de usuario'); ?>"
-               data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PREFERENCES; ?>">
+               data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::PREFERENCE; ?>">
                 <i class="btn-action material-icons">account_circle</i>
                 <span id="user-name"><?php echo $userName; ?></span>
                 <span for="user-name"

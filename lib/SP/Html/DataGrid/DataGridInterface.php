@@ -26,7 +26,7 @@ namespace SP\Html\DataGrid;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 
 /**
  * Interface DataGridInterface

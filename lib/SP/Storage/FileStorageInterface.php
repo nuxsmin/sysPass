@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,33 +25,23 @@
 namespace SP\Storage;
 
 /**
- * Interface StorageInterface
+ * Interface FileStorageInterface
  *
- * @package SMD\Storage
+ * @package SP\Storage
  */
 interface FileStorageInterface
 {
     /**
-     * @param string $node
+     * @param string $path
      *
-     * @return FileStorageInterface
-     */
-    public function load($node = '');
-
-    /**
-     * @param string $node
-     * @return FileStorageInterface
-     */
-    public function save($node = '');
-
-    /**
      * @return mixed
      */
-    public function getItems();
+    public function load($path);
 
     /**
-     * @param $items
-     * @return mixed
+     * @param string $path
+     * @param mixed  $data
+     * @return FileStorageInterface
      */
-    public function setItems($items);
+    public function save($path, $data);
 }

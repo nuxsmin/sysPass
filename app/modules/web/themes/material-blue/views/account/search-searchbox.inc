@@ -67,7 +67,7 @@
                 <button type="button" id="btn-favorite"
                         class="icon-searchfav mdl-button mdl-js-button mdl-button--icon" tabindex="5">
                     <i class="material-icons <?php echo ($searchFavorites === true) ? 'mdl-color-text--amber-A200' : ''; ?>"
-                       title="<?php echo ($searchFavorites === true) ? __('Mostrar Todos') : __('Mostrar Favoritos'); ?>">star</i>
+                       title="<?php echo __(($searchFavorites === true) ? 'Mostrar Todos' : 'Mostrar Favoritos'); ?>">star</i>
                 </button>
                 <span for="btn-favorite"
                       class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('Filtrar Favoritos'); ?></span>

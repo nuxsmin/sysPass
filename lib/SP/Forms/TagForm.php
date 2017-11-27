@@ -51,8 +51,8 @@ class TagForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::ACTION_MGM_TAGS_NEW:
-            case ActionsInterface::ACTION_MGM_TAGS_EDIT:
+            case ActionsInterface::TAG_CREATE:
+            case ActionsInterface::TAG_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

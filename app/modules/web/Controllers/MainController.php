@@ -29,8 +29,8 @@ defined('APP_ROOT') || die();
 use SP\Account\AccountUtil;
 use SP\Controller\AccountController;
 use SP\Controller\ControllerBase;
-use SP\Core\Acl;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
@@ -260,16 +260,16 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('body-header-menu');
 
         $ActionSearch = new DataGridAction();
-        $ActionSearch->setId(self::ACTION_ACC_SEARCH);
+        $ActionSearch->setId(self::ACCOUNT_SEARCH);
         $ActionSearch->setTitle(__('Buscar'));
         $ActionSearch->setIcon($this->icons->getIconSearch());
         $ActionSearch->setData(['historyReset' => 1, 'view' => 'search']);
 
         $this->view->append('actions', $ActionSearch);
 
-        if (Acl::checkUserAccess(self::ACTION_ACC_NEW)) {
+        if (Acl::checkUserAccess(self::ACCOUNT_CREATE)) {
             $ActionNew = new DataGridAction();
-            $ActionNew->setId(self::ACTION_ACC_NEW);
+            $ActionNew->setId(self::ACCOUNT_CREATE);
             $ActionNew->setTitle(__('Nueva Cuenta'));
             $ActionNew->setIcon($this->icons->getIconAdd());
             $ActionNew->setData(['historyReset' => 0, 'view' => 'account']);
@@ -277,9 +277,9 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->append('actions', $ActionNew);
         }
 
-        if (Acl::checkUserAccess(self::ACTION_USR)) {
+        if (Acl::checkUserAccess(self::ACCESS_MANAGE)) {
             $ActionUsr = new DataGridAction();
-            $ActionUsr->setId(self::ACTION_USR);
+            $ActionUsr->setId(self::ACCESS_MANAGE);
             $ActionUsr->setTitle(__('Usuarios y Accesos'));
             $ActionUsr->setIcon($this->icons->getIconAccount());
             $ActionUsr->setData(['historyReset' => 0, 'view' => 'datatabs']);
@@ -287,9 +287,9 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->append('actions', $ActionUsr);
         }
 
-        if (Acl::checkUserAccess(self::ACTION_MGM)) {
+        if (Acl::checkUserAccess(self::ITEMS_MANAGE)) {
             $ActionMgm = new DataGridAction();
-            $ActionMgm->setId(self::ACTION_MGM);
+            $ActionMgm->setId(self::ITEMS_MANAGE);
             $ActionMgm->setTitle(__('Elementos y Personalización'));
             $ActionMgm->setIcon($this->icons->getIconGroup());
             $ActionMgm->setData(['historyReset' => 0, 'view' => 'datatabs']);
@@ -297,9 +297,9 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->append('actions', $ActionMgm);
         }
 
-        if (Acl::checkUserAccess(self::ACTION_CFG)) {
+        if (Acl::checkUserAccess(self::CONFIG)) {
             $ActionConfig = new DataGridAction();
-            $ActionConfig->setId(self::ACTION_CFG);
+            $ActionConfig->setId(self::CONFIG);
             $ActionConfig->setTitle(__('Configuración'));
             $ActionConfig->setIcon($this->icons->getIconSettings());
             $ActionConfig->setData(['historyReset' => 1, 'view' => 'config']);
@@ -307,9 +307,9 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->append('actions', $ActionConfig);
         }
 
-        if (Acl::checkUserAccess(self::ACTION_EVL) && $this->configData->isLogEnabled()) {
+        if (Acl::checkUserAccess(self::EVENTLOG) && $this->configData->isLogEnabled()) {
             $ActionEventlog = new DataGridAction();
-            $ActionEventlog->setId(self::ACTION_EVL);
+            $ActionEventlog->setId(self::EVENTLOG);
             $ActionEventlog->setTitle(__('Registro de Eventos'));
             $ActionEventlog->setIcon($this->icons->getIconHeadline());
             $ActionEventlog->setData(['historyReset' => 1, 'view' => 'eventlog']);

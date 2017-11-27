@@ -28,7 +28,7 @@ defined('APP_ROOT') || die();
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
-use SP\Core\Acl;
+use SP\Core\Acl\Acl;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
@@ -90,7 +90,7 @@ abstract class ControllerBase
     protected $db;
     /** @var  Theme */
     protected $theme;
-    /** @var  Acl */
+    /** @var  \SP\Core\Acl\Acl */
     protected $acl;
 
     use InjectableTrait;

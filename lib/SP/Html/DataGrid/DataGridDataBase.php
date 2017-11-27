@@ -117,7 +117,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function setData(array $data)
     {
-        $this->_dataCount = (isset($data['count'])) ? $data['count'] : count($data);
+        $this->_dataCount = isset($data['count']) ? $data['count'] : count($data);
         $this->_data = $data;
     }
 

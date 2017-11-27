@@ -30,7 +30,7 @@ use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountSearch;
 use SP\Account\AccountUtil;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Backup;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\SPException;
@@ -61,7 +61,7 @@ class SyspassApi extends ApiBase
      */
     public function getAccountPassword()
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_ACC_VIEW_PASS);
+        $this->checkActionAccess(ActionsInterface::ACCOUNT_VIEW_PASS);
 
         $accountId = $this->getParam('id', true, 0);
 
@@ -69,7 +69,7 @@ class SyspassApi extends ApiBase
         $Account = new Account($AccountData);
         $Account->getData();
 
-        $AccountAcl = new AccountAcl($Account, ActionsInterface::ACTION_ACC_VIEW_PASS);
+        $AccountAcl = new AccountAcl($Account, ActionsInterface::ACCOUNT_VIEW_PASS);
         $Acl = $AccountAcl->getAcl();
 
         if (!$Acl->isShowViewPass()) {
@@ -113,7 +113,7 @@ class SyspassApi extends ApiBase
      */
     public function getAccountSearch()
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_ACC_SEARCH);
+        $this->checkActionAccess(ActionsInterface::ACCOUNT_SEARCH);
 
         $Search = new AccountSearch();
         $Search->setTxtSearch($this->getParam('text'));
@@ -134,14 +134,14 @@ class SyspassApi extends ApiBase
      */
     public function getAccountData()
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_ACC_VIEW);
+        $this->checkActionAccess(ActionsInterface::ACCOUNT_VIEW);
 
         $accountId = $this->getParam('id', true, 0);
 
         $Account = new Account(new AccountExtData($accountId));
         $ret = $Account->getData();
 
-        $AccountAcl = new AccountAcl($Account, ActionsInterface::ACTION_ACC_VIEW);
+        $AccountAcl = new AccountAcl($Account, ActionsInterface::ACCOUNT_VIEW);
         $Acl = $AccountAcl->getAcl();
 
         if (!$Acl->isShowView()) {
@@ -166,7 +166,7 @@ class SyspassApi extends ApiBase
      */
     public function addAccount()
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_ACC_NEW);
+        $this->checkActionAccess(ActionsInterface::ACCOUNT_CREATE);
 
         $AccountData = new AccountExtData();
         $AccountData->setAccountUserId($this->UserData->getUserId());
@@ -209,7 +209,7 @@ class SyspassApi extends ApiBase
      */
     public function deleteAccount()
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_ACC_DELETE);
+        $this->checkActionAccess(ActionsInterface::ACCOUNT_DELETE);
 
         $accountId = $this->getParam('id', true);
 
@@ -247,7 +247,7 @@ class SyspassApi extends ApiBase
      */
     public function getCategories()
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_MGM_CATEGORIES);
+        $this->checkActionAccess(ActionsInterface::CATEGORY);
 
         $SearchData = new ItemSearchData();
         $SearchData->setSeachString($this->getParam('name', false, ''));
@@ -267,7 +267,7 @@ class SyspassApi extends ApiBase
      */
     public function addCategory()
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_MGM_CATEGORIES);
+        $this->checkActionAccess(ActionsInterface::CATEGORY);
 
         $CategoryData = new CategoryData();
         $CategoryData->setCategoryName($this->getParam('name', true));
@@ -299,7 +299,7 @@ class SyspassApi extends ApiBase
      */
     public function deleteCategory()
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_MGM_CATEGORIES);
+        $this->checkActionAccess(ActionsInterface::CATEGORY);
 
         $id = $this->getParam('id', true);
 
@@ -336,7 +336,7 @@ class SyspassApi extends ApiBase
      */
     public function getCustomers()
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_MGM_CUSTOMERS);
+        $this->checkActionAccess(ActionsInterface::CLIENT);
 
         $SearchData = new ItemSearchData();
         $SearchData->setSeachString($this->getParam('name', false, ''));
@@ -356,7 +356,7 @@ class SyspassApi extends ApiBase
      */
     public function addCustomer()
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_MGM_CUSTOMERS);
+        $this->checkActionAccess(ActionsInterface::CLIENT);
 
         $CustomerData = new CustomerData();
         $CustomerData->setCustomerName($this->getParam('name', true));
@@ -388,7 +388,7 @@ class SyspassApi extends ApiBase
      */
     public function deleteCustomer()
     {
-        $this->checkActionAccess(ActionsInterface::ACTION_MGM_CUSTOMERS);
+        $this->checkActionAccess(ActionsInterface::CLIENT);
 
         $id = $this->getParam('id', true);
 
@@ -460,7 +460,7 @@ class SyspassApi extends ApiBase
     {
         return [
             'getAccountPassword' => [
-                'id' => ActionsInterface::ACTION_ACC_VIEW_PASS,
+                'id' => ActionsInterface::ACCOUNT_VIEW_PASS,
                 'help' => [
                     'id' => __('Id de la cuenta'),
                     'tokenPass' => __('Clave del token'),
@@ -468,7 +468,7 @@ class SyspassApi extends ApiBase
                 ]
             ],
             'getAccountSearch' => [
-                'id' => ActionsInterface::ACTION_ACC_SEARCH,
+                'id' => ActionsInterface::ACCOUNT_SEARCH,
                 'help' => [
                     'text' => __('Texto a buscar'),
                     'count' => __('Número de resultados a mostrar'),
@@ -477,19 +477,19 @@ class SyspassApi extends ApiBase
                 ]
             ],
             'getAccountData' => [
-                'id' => ActionsInterface::ACTION_ACC_VIEW,
+                'id' => ActionsInterface::ACCOUNT_VIEW,
                 'help' => [
                     'id' => __('Id de la cuenta')
                 ]
             ],
             'deleteAccount' => [
-                'id' => ActionsInterface::ACTION_ACC_DELETE,
+                'id' => ActionsInterface::ACCOUNT_DELETE,
                 'help' => [
                     'id' => __('Id de la cuenta')
                 ]
             ],
             'addAccount' => [
-                'id' => ActionsInterface::ACTION_ACC_NEW,
+                'id' => ActionsInterface::ACCOUNT_CREATE,
                 'help' => [
                     'tokenPass' => __('Clave del token'),
                     'name' => __('Nombre de cuenta'),
@@ -502,45 +502,45 @@ class SyspassApi extends ApiBase
                 ]
             ],
             'backup' => [
-                'id' => ActionsInterface::ACTION_CFG_BACKUP,
+                'id' => ActionsInterface::BACKUP_CONFIG,
                 'help' => ''
             ],
             'getCategories' => [
-                'id' => ActionsInterface::ACTION_MGM_CATEGORIES,
+                'id' => ActionsInterface::CATEGORY,
                 'help' => [
                     'name' => __('Nombre de categoría a buscar'),
                     'count' => __('Número de resultados a mostrar')
                 ]
             ],
             'addCategory' => [
-                'id' => ActionsInterface::ACTION_MGM_CATEGORIES,
+                'id' => ActionsInterface::CATEGORY,
                 'help' => [
                     'name' => __('Nombre de la categoría'),
                     'description' => __('Descripción de la categoría')
                 ]
             ],
             'deleteCategory' => [
-                'id' => ActionsInterface::ACTION_MGM_CATEGORIES,
+                'id' => ActionsInterface::CATEGORY,
                 'help' => [
                     'id' => __('Id de categoría')
                 ]
             ],
             'getCustomers' => [
-                'id' => ActionsInterface::ACTION_MGM_CUSTOMERS,
+                'id' => ActionsInterface::CLIENT,
                 'help' => [
                     'name' => __('Nombre de cliente a buscar'),
                     'count' => __('Número de resultados a mostrar')
                 ]
             ],
             'addCustomer' => [
-                'id' => ActionsInterface::ACTION_MGM_CUSTOMERS,
+                'id' => ActionsInterface::CLIENT,
                 'help' => [
                     'name' => __('Nombre del cliente'),
                     'description' => __('Descripción del cliente')
                 ]
             ],
             'deleteCustomer' => [
-                'id' => ActionsInterface::ACTION_MGM_CUSTOMERS,
+                'id' => ActionsInterface::CLIENT,
                 'help' => [
                     'id' => __('Id de cliente')
                 ]
@@ -553,7 +553,7 @@ class SyspassApi extends ApiBase
      */
     protected function passIsNeeded()
     {
-        return $this->actionId === ActionsInterface::ACTION_ACC_VIEW_PASS
-            || $this->actionId === ActionsInterface::ACTION_ACC_NEW;
+        return $this->actionId === ActionsInterface::ACCOUNT_VIEW_PASS
+            || $this->actionId === ActionsInterface::ACCOUNT_CREATE;
     }
 }

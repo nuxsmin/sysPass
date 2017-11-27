@@ -12,7 +12,7 @@ use SP\Util\ArrayUtil;
     <form method="post" name="frmGroups" id="frmGroups" class="form-action"
           data-onsubmit="appMgmt/save"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_GROUPS; ?>"
+          data-nextaction-id="<?php echo \SP\Core\Acl\ActionsInterface::GROUP; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>

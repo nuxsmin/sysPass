@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Config\Config;
-use SP\Core\Acl;
+use SP\Core\Acl\Acl;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
@@ -55,7 +55,7 @@ abstract class SimpleControllerBase
     protected $db;
     /** @var  Theme */
     protected $theme;
-    /** @var  Acl */
+    /** @var  \SP\Core\Acl\Acl */
     protected $acl;
 
     /**

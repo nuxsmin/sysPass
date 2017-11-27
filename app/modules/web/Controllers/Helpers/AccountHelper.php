@@ -30,8 +30,8 @@ use SP\Account\AccountHistory;
 use SP\Account\AccountUtil;
 use SP\Account\UserAccounts;
 use SP\Controller\ControllerBase;
-use SP\Core\Acl;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\DataModel\AccountExtData;
@@ -203,8 +203,8 @@ class AccountHelper extends HelperBase
         $this->view->assign('otherAccounts', AccountUtil::getAccountsForUser($this->session, $this->id));
         $this->view->assign('linkedAccounts', AccountUtil::getLinkedAccounts($this->id, $this->session));
 
-        $this->view->assign('addCustomerEnabled', $this->acl->checkUserAccess(ActionsInterface::ACTION_MGM_CUSTOMERS));
-        $this->view->assign('addCategoryEnabled', $this->acl->checkUserAccess(ActionsInterface::ACTION_MGM_CATEGORIES));
+        $this->view->assign('addCustomerEnabled', $this->acl->checkUserAccess(ActionsInterface::CLIENT));
+        $this->view->assign('addCategoryEnabled', $this->acl->checkUserAccess(ActionsInterface::CATEGORY));
 
         $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
         $this->view->assign('readonly', $this->view->isView ? 'readonly' : '');
@@ -219,7 +219,7 @@ class AccountHelper extends HelperBase
      */
     private function getCustomFieldsForItem()
     {
-        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData(ActionsInterface::ACTION_ACC))->getById($this->id));
+        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData(ActionsInterface::ACCOUNT))->getById($this->id));
     }
 
     /**
@@ -293,7 +293,7 @@ class AccountHelper extends HelperBase
             $actionsEnabled[] = $actions->getEditAction()->addData('item-id', $accountData->getAccountId());
         }
 
-        if ($this->actionId === ActionsInterface::ACTION_ACC_VIEW
+        if ($this->actionId === ActionsInterface::ACCOUNT_VIEW
             && !$this->AccountAcl->isShowEdit()
             && $this->configData->isMailRequestsEnabled()
         ) {

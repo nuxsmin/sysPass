@@ -29,7 +29,7 @@ use SP\Core\Exceptions\ConfigException;
 use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\Core\Traits\InjectableTrait;
-use SP\Storage\FileStorageInterface;
+use SP\Storage\XmlFileStorageInterface;
 
 defined('APP_ROOT') || die();
 
@@ -49,7 +49,7 @@ class Config
      */
     private $configData;
     /**
-     * @var FileStorageInterface
+     * @var XmlFileStorageInterface
      */
     private $fileStorage;
     /**
@@ -60,10 +60,10 @@ class Config
     /**
      * Config constructor.
      *
-     * @param FileStorageInterface $fileStorage
+     * @param XmlFileStorageInterface $fileStorage
      * @throws \SP\Core\Exceptions\ConfigException
      */
-    public function __construct(FileStorageInterface $fileStorage)
+    public function __construct(XmlFileStorageInterface $fileStorage)
     {
         $this->injectDependencies();
 

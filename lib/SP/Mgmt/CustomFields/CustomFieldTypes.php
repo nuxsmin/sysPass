@@ -26,7 +26,7 @@ namespace SP\Mgmt\CustomFields;
 
 defined('APP_ROOT') || die();
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 
 /**
  * Class CustomFieldTypes
@@ -54,7 +54,7 @@ class CustomFieldTypes
      *
      * @param int  $typeId El tipo de campo
      * @param bool $nice   Devolver en formato "bonito"
-     * @return array
+     * @return array|string
      */
     public static function getFieldsTypes($typeId = null, $nice = false)
     {
@@ -87,11 +87,11 @@ class CustomFieldTypes
     public static function getFieldsModules($moduleId = null)
     {
         $modules = [
-            ActionsInterface::ACTION_ACC => __('Cuentas'),
-            ActionsInterface::ACTION_MGM_CATEGORIES => __('Categorías'),
-            ActionsInterface::ACTION_MGM_CUSTOMERS => __('Clientes'),
-            ActionsInterface::ACTION_USR_USERS => __('Usuarios'),
-            ActionsInterface::ACTION_USR_GROUPS => __('Grupos')
+            ActionsInterface::ACCOUNT => __('Cuentas'),
+            ActionsInterface::CATEGORY => __('Categorías'),
+            ActionsInterface::CLIENT => __('Clientes'),
+            ActionsInterface::USER => __('Usuarios'),
+            ActionsInterface::GROUP => __('Grupos')
 
         ];
 

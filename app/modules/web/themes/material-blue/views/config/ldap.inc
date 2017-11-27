@@ -334,7 +334,7 @@
                     <button type="button"
                             class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                             data-onclick="appMgmt/ldapSync"
-                            data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_SYNC_LDAP; ?>"
+                            data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::LDAP_SYNC; ?>"
                             title="<?php echo __('Importar usuarios de LDAP'); ?>">
                         <i class="material-icons">get_app</i>
                     </button>

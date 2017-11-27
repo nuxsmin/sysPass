@@ -27,7 +27,7 @@ namespace SP\Controller;
 defined('APP_ROOT') || die();
 
 use SP\Config\Config;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
@@ -71,7 +71,7 @@ class WikiController extends ControllerBase implements ActionsInterface
     {
         try {
             switch ($this->actionId) {
-                case self::ACTION_WIKI_VIEW:
+                case self::WIKI_VIEW:
                     $this->getWikiPage();
                     break;
                 default:

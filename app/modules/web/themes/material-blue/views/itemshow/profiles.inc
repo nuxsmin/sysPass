@@ -9,7 +9,7 @@
     <form method="post" name="frmProfiles" id="frmProfiles" class="form-action"
           data-onsubmit="appMgmt/save"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_PROFILES; ?>"
+          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::PROFILE; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>

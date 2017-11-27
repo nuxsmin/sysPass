@@ -14,7 +14,7 @@ if ($user->getUserLogin() === 'demo') {
     <form method="post" name="frmUsers" id="frmUsers" class="form-action"
           data-onsubmit="appMgmt/save"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::ACTION_USR_USERS; ?>"
+          data-nextaction-id="<?php echo \SP\Core\Acl\ActionsInterface::USER; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -113,7 +113,7 @@ if ($user->getUserLogin() === 'demo') {
 
             </tr>
 
-            <?php if ($actionId === \SP\Core\ActionsInterface::ACTION_USR_USERS_NEW): ?>
+            <?php if ($actionId === \SP\Core\Acl\ActionsInterface::USER_CREATE): ?>
                 <tr>
                     <td class="descField"><?php echo __('Clave'); ?></td>
                     <td class="valField">

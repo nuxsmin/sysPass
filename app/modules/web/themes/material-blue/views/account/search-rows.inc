@@ -9,10 +9,10 @@
  */
 ?>
 <div id="data-search">
-    <?php foreach ($data->getData()->getData() as $index => $AccountSearchItem): ?>
-        <?php if ($index === 'count'): continue; endif; ?>
-
-        <?php $AccountSearchData = $AccountSearchItem->getAccountSearchData(); ?>
+    <?php foreach ($data->getData()->getData() as $index => $AccountSearchItem):
+        if ($index === 'count'): continue; endif;
+        $AccountSearchData = $AccountSearchItem->getAccountSearchData();
+        ?>
 
         <div class="account-label round shadow">
             <div class="label-left">
@@ -43,7 +43,7 @@
                         <div class="field-name"><?php echo __('Nombre'); ?></div>
                         <?php if ($AccountSearchItem->isShow() && $AccountSearchItem->getLink()): ?>
                             <a title="<?php echo __('Detalles de Cuenta'); ?>" class="btn-action"
-                               data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW; ?>"
+                               data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_VIEW; ?>"
                                data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
                                data-onclick="account/show"><?php echo $AccountSearchData->getAccountName(); ?></a>
                         <?php else: ?>
@@ -117,8 +117,8 @@
                         <?php if ($AccountSearchItem->isFavorite()): ?>
                             <i id="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
                                class="material-icons icon-favorite mdl-color-text--amber-A100"
-                               data-action-id-on="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_ADD; ?>"
-                               data-action-id-off="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_DELETE; ?>"
+                               data-action-id-on="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_FAVORITE_ADD; ?>"
+                               data-action-id-off="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_FAVORITE_DELETE; ?>"
                                data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
                                data-status="<?php echo 'on'; ?>">star</i>
                             <span
@@ -127,8 +127,8 @@
                         <?php else: ?>
                             <i id="btn-favorite-<?php echo $AccountSearchData->getAccountId(); ?>"
                                class="material-icons icon-favorite"
-                               data-action-id-on="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_ADD; ?>"
-                               data-action-id-off="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_FAVORITES_DELETE; ?>"
+                               data-action-id-on="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_FAVORITE_ADD; ?>"
+                               data-action-id-off="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_FAVORITE_DELETE; ?>"
                                data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
                                data-status="<?php echo 'off'; ?>">star_border</i>
                             <span
@@ -163,7 +163,7 @@
                                     </a>
                                     <i class="btn-action material-icons fg-green100"
                                        title="<?php echo __('Ver en Wiki'); ?>"
-                                       data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_WIKI_VIEW; ?>"
+                                       data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::WIKI_VIEW; ?>"
                                        data-pagename="<?php echo $AccountSearchData->getAccountName(); ?>"
                                        data-onclick="wiki/show">library_books</i>
                                 <?php else: ?>
@@ -186,16 +186,14 @@
                                class="btn-action material-icons <?php echo $action->getIcon()->getClass(); ?>"
                                data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
                                data-parent-id="<?php echo $AccountSearchData->getAccountParentId(); ?>"
-                                <?php foreach ($action->getData() as $name => $actionData): ?>
-                                    <?php echo 'data-', $name, '=', '"', $actionData, '"'; ?>
-                                <?php endforeach; ?>><?php echo $action->getIcon()->getIcon(); ?></i>
+                                <?php foreach ($action->getData() as $name => $actionData): echo 'data-', $name, '=', '"', $actionData, '"'; endforeach; ?>>
+                                <?php echo $action->getIcon()->getIcon(); ?></i>
                             <span
                                     for="btn-action-<?php echo $AccountSearchData->getAccountId(), '-', $action->getIcon()->getIcon(); ?>"
                                     class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                         <?php endforeach; ?>
 
-                        <?php if (count($data->getDataActionsMenu()) > 0): ?>
-                            <?php $actionsMenu = $data->getDataActionsMenuFiltered($AccountSearchItem); ?>
+                        <?php if (count($data->getDataActionsMenu()) > 0): $actionsMenu = $data->getDataActionsMenuFiltered($AccountSearchItem); ?>
                             <?php if (count($actionsMenu) > 0): ?>
                                 <button id="actions-menu-lower-right-<?php echo $AccountSearchData->getAccountId(); ?>"
                                         class="mdl-button mdl-js-button mdl-button--icon">
@@ -208,9 +206,7 @@
                                         <li class="btn-action mdl-menu__item"
                                             data-item-id="<?php echo $AccountSearchData->getAccountId(); ?>"
                                             data-parent-id="<?php echo $AccountSearchData->getAccountParentId(); ?>"
-                                            <?php foreach ($actionMenu->getData() as $dataName => $dataValue): ?>
-                                                <?php echo 'data-', $dataName, '=', '"', $dataValue, '"'; ?>
-                                            <?php endforeach; ?>>
+                                            <?php foreach ($actionMenu->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                                             <i class="material-icons <?php echo $actionMenu->getIcon()->getClass(); ?>"
                                                title="<?php echo $actionMenu->getTitle(); ?>"><?php echo $actionMenu->getIcon()->getIcon(); ?></i>
                                             <?php echo $actionMenu->getName(); ?>

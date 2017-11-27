@@ -10,6 +10,13 @@ namespace SP\Mvc\Controller;
 interface CrudControllerInterface
 {
     /**
+     * View action
+     *
+     * @param $id
+     */
+    public function viewAction($id);
+
+    /**
      * Search action
      */
     public function searchAction();

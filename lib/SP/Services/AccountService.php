@@ -6,7 +6,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountHistory;
 use SP\Account\AccountTags;
 use SP\Account\UserAccounts;
-use SP\Core\Acl;
+use SP\Core\Acl\Acl;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -39,7 +39,7 @@ class AccountService extends Service
      * @param $id
      * @return AccountPassData
      */
-    public function getAccountPass($id)
+    public function getPasswordForId($id)
     {
         $Data = new QueryData();
         $Data->setMapClassName(AccountPassData::class);
@@ -61,7 +61,7 @@ class AccountService extends Service
      * @param $id
      * @return AccountPassData
      */
-    public function getAccountPassHistory($id)
+    public function getPasswordHistoryForId($id)
     {
         $Data = new QueryData();
         $Data->setMapClassName(AccountPassData::class);
@@ -106,7 +106,7 @@ class AccountService extends Service
      * @param int $actionId
      * @return \SP\Core\Messages\LogMessage
      */
-    public function logAccountAction($id, $actionId)
+    public function logAction($id, $actionId)
     {
         $query = /** @lang SQL */
             'SELECT account_id, account_name, customer_name FROM account_data_v WHERE account_id = ? LIMIT 1';
@@ -136,7 +136,7 @@ class AccountService extends Service
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function createAccount(AccountExtData $accountData)
+    public function create(AccountExtData $accountData)
     {
         $this->getPasswordEncrypted($accountData);
 
@@ -187,7 +187,7 @@ class AccountService extends Service
 
         $accountData->setAccountId(DbWrapper::$lastId);
 
-        $this->addAccountItems($accountData);
+        $this->addItems($accountData);
 
         return $accountData;
     }
@@ -225,7 +225,7 @@ class AccountService extends Service
      *
      * @param AccountExtData $accountData
      */
-    protected function addAccountItems(AccountExtData $accountData)
+    protected function addItems(AccountExtData $accountData)
     {
         try {
             if (is_array($accountData->getAccountUserGroupsId())) {
@@ -256,14 +256,14 @@ class AccountService extends Service
      * @return AccountExtData
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function editAccount(AccountExtData $accountData)
+    public function edit(AccountExtData $accountData)
     {
         $accountAcl = $this->session->getAccountAcl($accountData->getAccountId());
 
         // Guardamos una copia de la cuenta en el histórico
         AccountHistory::addHistory($accountData->getAccountId());
 
-        $this->updateAccountItems($accountData);
+        $this->updateItems($accountData);
 
         $Data = new QueryData();
 
@@ -325,7 +325,7 @@ class AccountService extends Service
      * @param AccountExtData $accountData
      * @throws \SP\Core\Exceptions\SPException
      */
-    protected function updateAccountItems(AccountExtData $accountData)
+    protected function updateItems(AccountExtData $accountData)
     {
         $accountAcl = $this->session->getAccountAcl($accountData->getAccountId());
 
@@ -354,7 +354,7 @@ class AccountService extends Service
      * @param AccountExtData $accountData
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function editAccountPass(AccountExtData $accountData)
+    public function editPassword(AccountExtData $accountData)
     {
         AccountHistory::addHistory($accountData->getAccountId());
 
@@ -389,7 +389,7 @@ class AccountService extends Service
      * @param int $historyId El Id del registro en el histórico
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function editAccountRestore($historyId, $accountId)
+    public function editRestore($historyId, $accountId)
     {
         // Guardamos una copia de la cuenta en el histórico
         AccountHistory::addHistory($accountId);
@@ -433,11 +433,11 @@ class AccountService extends Service
      * @return bool Los ids de las cuentas eliminadas
      * @throws SPException
      */
-    public function deleteAccount($id)
+    public function delete($id)
     {
         if (is_array($id)) {
             foreach ($id as $accountId) {
-                $this->deleteAccount($accountId);
+                $this->delete($accountId);
             }
 
             return true;

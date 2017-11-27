@@ -3,16 +3,18 @@
  * @var $data  SP\Html\DataGrid\DataGridTab
  * @var $this  SP\Core\Template
  */
+
 use SP\Html\Html;
 
 ?>
 
     <!-- Rows -->
-<?php if ($data->getData()->getDataCount() > 0): ?>
-    <?php foreach ($data->getData()->getData() as $dataIndex => $dataItem): ?>
-        <?php if ($dataIndex === 'count'): continue; endif; ?>
+<?php if ($data->getData()->getDataCount() > 0):
+    foreach ($data->getData()->getData() as $dataIndex => $dataItem):
+        if ($dataIndex === 'count'): continue; endif;
 
-        <?php $numFields = count($data->getData()->getDataRowSources()); ?>
+        $numFields = count($data->getData()->getDataRowSources());
+        ?>
 
         <tr data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>"
             data-activetab="<?php echo $index; ?>">
@@ -33,9 +35,9 @@ use SP\Html\Html;
 
             <td class="cell-actions">
                 <div>
-                    <?php if (count($data->getDataActions()) > 0): ?>
-                        <?php foreach ($data->getDataActions() as $action): ?>
-                            <?php if (!$action->isSkip()):
+                    <?php if (count($data->getDataActions()) > 0):
+                        foreach ($data->getDataActions() as $action):
+                            if (!$action->isSkip()):
                                 $filter = $action->getFilterRowSource();
 
                                 if ($filter !== null) {
@@ -49,11 +51,11 @@ use SP\Html\Html;
                                 ?>
                                 <i id="btn-action-<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}, '-', $action->getId(); ?>"
                                    class="btn-action material-icons <?php echo $action->getIcon()->getClass(); ?>"
-                                   data-action-id="<?php echo $action->getId(); ?>"
-                                   data-nextaction-id="<?php echo $actionId; ?>"
                                    data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>"
                                    data-activetab="<?php echo $index; ?>"
-                                   data-onclick="<?php echo $action->getOnClick(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>
+                                   data-onclick="<?php echo $action->getOnClick(); ?>"
+                                    <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>
+                                ><?php echo $action->getIcon()->getIcon(); ?></i>
                                 <span
                                         for="btn-action-<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}, '-', $action->getId(); ?>"
                                         class="mdl-tooltip mdl-tooltip--top"><?php echo $action->getTitle(); ?></span>

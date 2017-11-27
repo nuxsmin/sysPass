@@ -29,7 +29,7 @@ use SP\Controller\EventlogController;
 use SP\Controller\ItemListController;
 use SP\Controller\NoticesController;
 use SP\Controller\UserPreferencesController;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionFactory;
 use SP\Core\Template;
 use SP\Http\Request;
@@ -76,65 +76,65 @@ $Tpl->assign('userIsAdminAcc', $UserData->isUserIsAdminAcc());
 $Tpl->assign('themeUri', $theme->getThemeUri());
 
 switch ($actionId) {
-    case ActionsInterface::ACTION_ACC_SEARCH:
+    case ActionsInterface::ACCOUNT_SEARCH:
         $Controller = new AccountSearchController($Tpl);
         $Controller->doAction();
         break;
-    case ActionsInterface::ACTION_ACC_NEW:
-    case ActionsInterface::ACTION_ACC_COPY:
-    case ActionsInterface::ACTION_ACC_EDIT:
-    case ActionsInterface::ACTION_ACC_EDIT_PASS:
-    case ActionsInterface::ACTION_ACC_VIEW:
-    case ActionsInterface::ACTION_ACC_VIEW_HISTORY:
-    case ActionsInterface::ACTION_ACC_DELETE:
-    case ActionsInterface::ACTION_ACC_REQUEST:
+    case ActionsInterface::ACCOUNT_CREATE:
+    case ActionsInterface::ACCOUNT_COPY:
+    case ActionsInterface::ACCOUNT_EDIT:
+    case ActionsInterface::ACCOUNT_EDIT_PASS:
+    case ActionsInterface::ACCOUNT_VIEW:
+    case ActionsInterface::ACCOUNT_VIEW_HISTORY:
+    case ActionsInterface::ACCOUNT_DELETE:
+    case ActionsInterface::ACCOUNT_REQUEST:
         $Controller = new AccountController($Tpl, $itemId);
         $Controller->doAction($actionId);
         break;
-    case ActionsInterface::ACTION_USR:
-    case ActionsInterface::ACTION_USR_USERS:
-    case ActionsInterface::ACTION_USR_GROUPS:
-    case ActionsInterface::ACTION_USR_PROFILES:
-    case ActionsInterface::ACTION_MGM_APITOKENS:
-    case ActionsInterface::ACTION_MGM_PUBLICLINKS:
+    case ActionsInterface::ACCESS_MANAGE:
+    case ActionsInterface::USER:
+    case ActionsInterface::GROUP:
+    case ActionsInterface::PROFILE:
+    case ActionsInterface::APITOKEN:
+    case ActionsInterface::PUBLICLINK:
         $Controller = new ItemListController($Tpl);
         $Controller->doAction(ItemListController::TYPE_ACCESSES);
         break;
-    case ActionsInterface::ACTION_MGM:
-    case ActionsInterface::ACTION_MGM_CATEGORIES:
-    case ActionsInterface::ACTION_MGM_CUSTOMERS:
-    case ActionsInterface::ACTION_MGM_CUSTOMFIELDS:
-    case ActionsInterface::ACTION_MGM_FILES:
-    case ActionsInterface::ACTION_MGM_ACCOUNTS:
-    case ActionsInterface::ACTION_MGM_TAGS:
+    case ActionsInterface::ITEMS_MANAGE:
+    case ActionsInterface::CATEGORY:
+    case ActionsInterface::CLIENT:
+    case ActionsInterface::CUSTOMFIELD:
+    case ActionsInterface::FILE:
+    case ActionsInterface::ACCOUNTMGR:
+    case ActionsInterface::TAG:
         $Controller = new ItemListController($Tpl);
         $Controller->doAction(ItemListController::TYPE_ACCOUNTS);
         break;
-    case ActionsInterface::ACTION_CFG:
-    case ActionsInterface::ACTION_CFG_GENERAL:
-    case ActionsInterface::ACTION_CFG_WIKI:
-    case ActionsInterface::ACTION_CFG_LDAP:
-    case ActionsInterface::ACTION_CFG_MAIL:
-    case ActionsInterface::ACTION_CFG_ENCRYPTION:
-    case ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS:
-    case ActionsInterface::ACTION_CFG_BACKUP:
-    case ActionsInterface::ACTION_CFG_EXPORT:
-    case ActionsInterface::ACTION_CFG_IMPORT:
+    case ActionsInterface::CONFIG:
+    case ActionsInterface::CONFIG_GENERAL:
+    case ActionsInterface::WIKI_CONFIG:
+    case ActionsInterface::LDAP_CONFIG:
+    case ActionsInterface::MAIL_CONFIG:
+    case ActionsInterface::ENCRYPTION_CONFIG:
+    case ActionsInterface::ENCRYPTION_TEMPPASS:
+    case ActionsInterface::BACKUP_CONFIG:
+    case ActionsInterface::EXPORT_CONFIG:
+    case ActionsInterface::IMPORT_CONFIG:
         $Controller = new ConfigController($Tpl);
         $Controller->doAction();
         break;
-    case ActionsInterface::ACTION_EVL:
+    case ActionsInterface::EVENTLOG:
         $Controller = new EventlogController($Tpl);
         $Controller->doAction();
         break;
-    case ActionsInterface::ACTION_USR_PREFERENCES:
-    case ActionsInterface::ACTION_USR_PREFERENCES_GENERAL:
-    case ActionsInterface::ACTION_USR_PREFERENCES_SECURITY:
+    case ActionsInterface::PREFERENCE:
+    case ActionsInterface::PREFERENCE_GENERAL:
+    case ActionsInterface::PREFERENCE_SECURITY:
         $Controller = new UserPreferencesController($Tpl);
         $Controller->doAction();
         break;
-    case ActionsInterface::ACTION_NOT:
-    case ActionsInterface::ACTION_NOT_USER:
+    case ActionsInterface::NOTICE:
+    case ActionsInterface::NOTICE_USER:
         $Controller = new NoticesController($Tpl);
         $Controller->doAction();
         break;

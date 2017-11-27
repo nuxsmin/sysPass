@@ -30,7 +30,7 @@ use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\CryptMasterPass;
 use SP\Core\DiFactory;
@@ -113,7 +113,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      */
     protected function getGeneralTab()
     {
-        $this->setAction(self::ACTION_CFG_GENERAL);
+        $this->setAction(self::CONFIG_GENERAL);
 
         if (!$this->checkAccess()) {
             return;
@@ -147,7 +147,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      */
     protected function getAccountsTab()
     {
-        $this->setAction(self::ACTION_CFG_ACCOUNTS);
+        $this->setAction(self::ACCOUNT_CONFIG);
 
         if (!$this->checkAccess()) {
             return;
@@ -167,9 +167,9 @@ class ConfigController extends ControllerBase implements ActionsInterface
      */
     protected function getWikiTab()
     {
-        $this->setAction(self::ACTION_CFG_WIKI);
+        $this->setAction(self::WIKI_CONFIG);
 
-        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
+        if (!$this->checkAccess(self::CONFIG_GENERAL)) {
             return;
         }
 
@@ -187,9 +187,9 @@ class ConfigController extends ControllerBase implements ActionsInterface
      */
     protected function getLdapTab()
     {
-        $this->setAction(self::ACTION_CFG_LDAP);
+        $this->setAction(self::LDAP_CONFIG);
 
-        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
+        if (!$this->checkAccess(self::CONFIG_GENERAL)) {
             return;
         }
 
@@ -211,9 +211,9 @@ class ConfigController extends ControllerBase implements ActionsInterface
      */
     protected function getMailTab()
     {
-        $this->setAction(self::ACTION_CFG_MAIL);
+        $this->setAction(self::MAIL_CONFIG);
 
-        if (!$this->checkAccess(self::ACTION_CFG_GENERAL)) {
+        if (!$this->checkAccess(self::CONFIG_GENERAL)) {
             return;
         }
 
@@ -233,7 +233,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      */
     protected function getEncryptionTab()
     {
-        $this->setAction(self::ACTION_CFG_ENCRYPTION);
+        $this->setAction(self::ENCRYPTION_CONFIG);
 
         if (!$this->checkAccess()) {
             return;
@@ -262,7 +262,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      */
     protected function getBackupTab()
     {
-        $this->setAction(self::ACTION_CFG_BACKUP);
+        $this->setAction(self::BACKUP_CONFIG);
 
         if (!$this->checkAccess()) {
             return;
@@ -320,7 +320,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      */
     protected function getImportTab()
     {
-        $this->setAction(self::ACTION_CFG_IMPORT);
+        $this->setAction(self::IMPORT_CONFIG);
 
         if (!$this->checkAccess()) {
             return;
@@ -342,7 +342,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
      */
     protected function getInfoTab()
     {
-        $this->setAction(self::ACTION_CFG_GENERAL);
+        $this->setAction(self::CONFIG_GENERAL);
 
         if (!$this->checkAccess()) {
             return;

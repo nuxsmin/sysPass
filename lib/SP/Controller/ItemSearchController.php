@@ -30,7 +30,7 @@ use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
 use SP\Config\Config;
 use SP\Controller\Grids\Items;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
@@ -103,43 +103,43 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
 
         try {
             switch ($this->actionId) {
-                case ActionsInterface::ACTION_USR_USERS_SEARCH:
+                case ActionsInterface::USER_SEARCH:
                     $this->getUsers();
                     break;
-                case ActionsInterface::ACTION_USR_GROUPS_SEARCH:
+                case ActionsInterface::GROUP_SEARCH:
                     $this->getGroups();
                     break;
-                case ActionsInterface::ACTION_USR_PROFILES_SEARCH:
+                case ActionsInterface::PROFILE_SEARCH:
                     $this->getProfiles();
                     break;
-                case ActionsInterface::ACTION_MGM_APITOKENS_SEARCH:
+                case ActionsInterface::APITOKEN_SEARCH:
                     $this->getTokens();
                     break;
-                case ActionsInterface::ACTION_MGM_PUBLICLINKS_SEARCH:
+                case ActionsInterface::PUBLICLINK_SEARCH:
                     $this->getPublicLinks();
                     break;
-                case ActionsInterface::ACTION_MGM_CATEGORIES_SEARCH:
+                case ActionsInterface::CATEGORY_SEARCH:
                     $this->getCategories();
                     break;
-                case ActionsInterface::ACTION_MGM_CUSTOMERS_SEARCH:
+                case ActionsInterface::CLIENT_SEARCH:
                     $this->getCustomers();
                     break;
-                case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_SEARCH:
+                case ActionsInterface::CUSTOMFIELD_SEARCH:
                     $this->getCustomFields();
                     break;
-                case ActionsInterface::ACTION_MGM_FILES_SEARCH:
+                case ActionsInterface::FILE_SEARCH:
                     $this->getFiles();
                     break;
-                case ActionsInterface::ACTION_MGM_ACCOUNTS_SEARCH:
+                case ActionsInterface::ACCOUNTMGR_SEARCH:
                     $this->getAccounts();
                     break;
-                case ActionsInterface::ACTION_MGM_ACCOUNTS_SEARCH_HISTORY:
+                case ActionsInterface::ACCOUNTMGR_SEARCH_HISTORY:
                     $this->getAccountsHistory();
                     break;
-                case ActionsInterface::ACTION_MGM_TAGS_SEARCH:
+                case ActionsInterface::TAG_SEARCH:
                     $this->getTags();
                     break;
-                case ActionsInterface::ACTION_MGM_PLUGINS_SEARCH:
+                case ActionsInterface::PLUGIN_SEARCH:
                     $this->getPlugins();
                     break;
                 default:
@@ -162,7 +162,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getUsers()
     {
-        $this->setAction(self::ACTION_USR_USERS_SEARCH);
+        $this->setAction(self::USER_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -177,7 +177,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_USR);
+        $this->view->assign('actionId', self::ACCESS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -197,7 +197,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getGroups()
     {
-        $this->setAction(self::ACTION_USR_GROUPS_SEARCH);
+        $this->setAction(self::GROUP_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -212,7 +212,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_USR);
+        $this->view->assign('actionId', self::ACCESS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -224,7 +224,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getProfiles()
     {
-        $this->setAction(self::ACTION_USR_PROFILES_SEARCH);
+        $this->setAction(self::PROFILE_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -239,7 +239,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_USR);
+        $this->view->assign('actionId', self::ACCESS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -252,7 +252,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getTokens()
     {
-        $this->setAction(self::ACTION_MGM_APITOKENS_SEARCH);
+        $this->setAction(self::APITOKEN_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -267,7 +267,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_USR);
+        $this->view->assign('actionId', self::ACCESS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -279,7 +279,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getPublicLinks()
     {
-        $this->setAction(self::ACTION_MGM_PUBLICLINKS_SEARCH);
+        $this->setAction(self::PUBLICLINK_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -294,7 +294,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_USR);
+        $this->view->assign('actionId', self::ACCESS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -306,7 +306,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getCategories()
     {
-        $this->setAction(self::ACTION_MGM_CATEGORIES_SEARCH);
+        $this->setAction(self::CATEGORY_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -321,7 +321,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_MGM);
+        $this->view->assign('actionId', self::ITEMS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -333,7 +333,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getCustomers()
     {
-        $this->setAction(self::ACTION_MGM_CUSTOMERS_SEARCH);
+        $this->setAction(self::CLIENT_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -348,7 +348,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_MGM);
+        $this->view->assign('actionId', self::ITEMS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -360,7 +360,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getCustomFields()
     {
-        $this->setAction(self::ACTION_MGM_CUSTOMFIELDS_SEARCH);
+        $this->setAction(self::CUSTOMFIELD_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -375,7 +375,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_MGM);
+        $this->view->assign('actionId', self::ITEMS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -387,7 +387,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getFiles()
     {
-        $this->setAction(self::ACTION_MGM_FILES_SEARCH);
+        $this->setAction(self::FILE_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -402,7 +402,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_MGM);
+        $this->view->assign('actionId', self::ITEMS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -414,7 +414,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getAccounts()
     {
-        $this->setAction(self::ACTION_MGM_ACCOUNTS_SEARCH);
+        $this->setAction(self::ACCOUNTMGR_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -429,7 +429,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_MGM);
+        $this->view->assign('actionId', self::ITEMS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -441,7 +441,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getAccountsHistory()
     {
-        $this->setAction(self::ACTION_MGM_ACCOUNTS_SEARCH_HISTORY);
+        $this->setAction(self::ACCOUNTMGR_SEARCH_HISTORY);
 
         if (!$this->checkAccess()) {
             return;
@@ -456,7 +456,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_MGM);
+        $this->view->assign('actionId', self::ITEMS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -468,7 +468,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getTags()
     {
-        $this->setAction(self::ACTION_MGM_TAGS_SEARCH);
+        $this->setAction(self::TAG_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -483,7 +483,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_MGM);
+        $this->view->assign('actionId', self::ITEMS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }
@@ -495,7 +495,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getPlugins()
     {
-        $this->setAction(self::ACTION_MGM_PLUGINS_SEARCH);
+        $this->setAction(self::PLUGIN_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -510,7 +510,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_MGM);
+        $this->view->assign('actionId', self::ITEMS_MANAGE);
 
         $this->JsonResponse->setStatus(0);
     }

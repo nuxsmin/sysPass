@@ -27,7 +27,7 @@ namespace SP\Controller;
 defined('APP_ROOT') || die();
 
 use SP\Config\Config;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\DiFactory;
 use SP\Core\Language;
 use SP\Core\SessionUtil;
@@ -71,7 +71,7 @@ class UserPreferencesController extends TabControllerBase implements ActionsInte
      */
     public function getPreferencesTab()
     {
-        $this->setAction(self::ACTION_USR_PREFERENCES_GENERAL);
+        $this->setAction(self::PREFERENCE_GENERAL);
 
         $this->view->addTemplate('preferences-site');
 

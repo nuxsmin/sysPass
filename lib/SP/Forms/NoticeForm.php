@@ -24,7 +24,7 @@
 
 namespace SP\Forms;
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\Messages\NoticeMessage;
 use SP\DataModel\NoticeData;
@@ -52,8 +52,8 @@ class NoticeForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::ACTION_NOT_USER_NEW:
-            case ActionsInterface::ACTION_NOT_USER_EDIT:
+            case ActionsInterface::NOTICE_USER_CREATE:
+            case ActionsInterface::NOTICE_USER_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

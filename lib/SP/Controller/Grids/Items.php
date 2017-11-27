@@ -27,8 +27,8 @@ namespace SP\Controller\Grids;
 defined('APP_ROOT') || die();
 
 use SP\Config\Config;
-use SP\Core\Acl;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Html\Assets\FontIcon;
 use SP\Html\DataGrid\DataGridAction;
@@ -74,7 +74,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_MGM_CATEGORIES_SEARCH);
+        $GridActionSearch->setId(self::CATEGORY_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchCategory');
         $GridActionSearch->setTitle(__('Buscar Categoría'));
@@ -85,7 +85,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionNew = new DataGridAction();
-        $GridActionNew->setId(self::ACTION_MGM_CATEGORIES_NEW);
+        $GridActionNew->setId(self::CATEGORY_CREATE);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(__('Nueva Categoría'));
         $GridActionNew->setTitle(__('Nueva Categoría'));
@@ -96,7 +96,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionNew);
 
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(self::ACTION_MGM_CATEGORIES_EDIT);
+        $GridActionEdit->setId(self::CATEGORY_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(__('Editar Categoría'));
         $GridActionEdit->setTitle(__('Editar Categoría'));
@@ -106,7 +106,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionEdit);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_MGM_CATEGORIES_DELETE);
+        $GridActionDel->setId(self::CATEGORY_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Categoría'));
         $GridActionDel->setTitle(__('Eliminar Categoría'));
@@ -148,7 +148,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_MGM_CUSTOMERS_SEARCH);
+        $GridActionSearch->setId(self::CLIENT_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchCustomer');
         $GridActionSearch->setTitle(__('Buscar Cliente'));
@@ -159,7 +159,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionNew = new DataGridAction();
-        $GridActionNew->setId(self::ACTION_MGM_CUSTOMERS_NEW);
+        $GridActionNew->setId(self::CLIENT_CREATE);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(__('Nuevo Cliente'));
         $GridActionNew->setTitle(__('Nuevo Cliente'));
@@ -170,7 +170,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionNew);
 
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(self::ACTION_MGM_CUSTOMERS_EDIT);
+        $GridActionEdit->setId(self::CLIENT_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(__('Editar Cliente'));
         $GridActionEdit->setTitle(__('Editar Cliente'));
@@ -180,7 +180,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionEdit);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_MGM_CUSTOMERS_DELETE);
+        $GridActionDel->setId(self::CLIENT_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Cliente'));
         $GridActionDel->setTitle(__('Eliminar Cliente'));
@@ -224,7 +224,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_MGM_CUSTOMFIELDS_SEARCH);
+        $GridActionSearch->setId(self::CUSTOMFIELD_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchCustomField');
         $GridActionSearch->setTitle(__('Buscar Campo'));
@@ -235,7 +235,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionNew = new DataGridAction();
-        $GridActionNew->setId(self::ACTION_MGM_CUSTOMFIELDS_NEW);
+        $GridActionNew->setId(self::CUSTOMFIELD_CREATE);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(__('Nuevo Campo'));
         $GridActionNew->setTitle(__('Nuevo Campo'));
@@ -246,7 +246,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionNew);
 
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(self::ACTION_MGM_CUSTOMFIELDS_EDIT);
+        $GridActionEdit->setId(self::CUSTOMFIELD_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(__('Editar Campo'));
         $GridActionEdit->setTitle(__('Editar Campo'));
@@ -256,7 +256,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionEdit);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_MGM_CUSTOMFIELDS_DELETE);
+        $GridActionDel->setId(self::CUSTOMFIELD_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Campo'));
         $GridActionDel->setTitle(__('Eliminar Campo'));
@@ -304,7 +304,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_MGM_FILES_SEARCH);
+        $GridActionSearch->setId(self::FILE_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchFile');
         $GridActionSearch->setTitle(__('Buscar Archivo'));
@@ -315,7 +315,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionView = new DataGridAction();
-        $GridActionView->setId(self::ACTION_MGM_FILES_VIEW);
+        $GridActionView->setId(self::FILE_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(__('Ver Archivo'));
         $GridActionView->setTitle(__('Ver Archivo'));
@@ -325,7 +325,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionView);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_MGM_FILES_DELETE);
+        $GridActionDel->setId(self::FILE_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Archivo'));
         $GridActionDel->setTitle(__('Eliminar Archivo'));
@@ -367,7 +367,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_MGM_ACCOUNTS_SEARCH);
+        $GridActionSearch->setId(self::ACCOUNTMGR_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchAccount');
         $GridActionSearch->setTitle(__('Buscar Cuenta'));
@@ -378,7 +378,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_MGM_ACCOUNTS_DELETE);
+        $GridActionDel->setId(self::ACCOUNTMGR_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Cuenta'));
         $GridActionDel->setTitle(__('Eliminar Cuenta'));
@@ -428,7 +428,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_MGM_ACCOUNTS_SEARCH_HISTORY);
+        $GridActionSearch->setId(self::ACCOUNTMGR_SEARCH_HISTORY);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchAccountHistory');
         $GridActionSearch->setTitle(__('Buscar Cuenta'));
@@ -439,7 +439,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionRestore = new DataGridAction();
-        $GridActionRestore->setId(self::ACTION_MGM_ACCOUNTS_EDIT_RESTORE);
+        $GridActionRestore->setId(self::ACCOUNTMGR_EDIT_RESTORE);
         $GridActionRestore->setType(DataGridActionType::EDIT_ITEM);
         $GridActionRestore->setName(__('Restaurar Cuenta'));
         $GridActionRestore->setTitle(__('Restaurar Cuenta'));
@@ -449,7 +449,7 @@ class Items extends GridBase
 //        $Grid->setDataActions($GridActionRestore);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_MGM_ACCOUNTS_DELETE_HISTORY);
+        $GridActionDel->setId(self::ACCOUNTMGR_DELETE_HISTORY);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Cuenta'));
         $GridActionDel->setTitle(__('Eliminar Cuenta'));
@@ -500,7 +500,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_USR_USERS_SEARCH);
+        $GridActionSearch->setId(self::USER_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchUser');
         $GridActionSearch->setTitle(__('Buscar Usuario'));
@@ -510,7 +510,7 @@ class Items extends GridBase
         $Grid->setPager($this->getPager($GridActionSearch));
 
         $GridActionNew = new DataGridAction();
-        $GridActionNew->setId(self::ACTION_USR_USERS_NEW);
+        $GridActionNew->setId(self::USER_CREATE);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(__('Nuevo Usuario'));
         $GridActionNew->setTitle(__('Nuevo Usuario'));
@@ -520,11 +520,11 @@ class Items extends GridBase
 
         $Grid->setDataActions($GridActionNew);
 
-        if (Acl::checkUserAccess(ActionsInterface::ACTION_CFG_IMPORT)
+        if (Acl::checkUserAccess(ActionsInterface::IMPORT_CONFIG)
             && $this->ConfigData->isLdapEnabled()
         ) {
             $GridActionLdapSync = new DataGridAction();
-            $GridActionLdapSync->setId(self::ACTION_USR_SYNC_LDAP);
+            $GridActionLdapSync->setId(self::LDAP_SYNC);
             $GridActionLdapSync->setType(DataGridActionType::NEW_ITEM);
             $GridActionLdapSync->setName(__('Importar usuarios de LDAP'));
             $GridActionLdapSync->setTitle(__('Importar usuarios de LDAP'));
@@ -537,7 +537,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionView = new DataGridAction();
-        $GridActionView->setId(self::ACTION_USR_USERS_VIEW);
+        $GridActionView->setId(self::USER_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(__('Ver Detalles de Usuario'));
         $GridActionView->setTitle(__('Ver Detalles de Usuario'));
@@ -547,7 +547,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionView);
 
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(self::ACTION_USR_USERS_EDIT);
+        $GridActionEdit->setId(self::USER_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(__('Editar Usuario'));
         $GridActionEdit->setTitle(__('Editar Usuario'));
@@ -557,7 +557,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionEdit);
 
         $GridActionEditPass = new DataGridAction();
-        $GridActionEditPass->setId(self::ACTION_USR_USERS_EDITPASS);
+        $GridActionEditPass->setId(self::USER_EDIT_PASS);
         $GridActionEditPass->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEditPass->setName(__('Cambiar Clave de Usuario'));
         $GridActionEditPass->setTitle(__('Cambiar Clave de Usuario'));
@@ -568,7 +568,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionEditPass);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_USR_USERS_DELETE);
+        $GridActionDel->setId(self::USER_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Usuario'));
         $GridActionDel->setTitle(__('Eliminar Usuario'));
@@ -610,7 +610,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_USR_GROUPS_SEARCH);
+        $GridActionSearch->setId(self::GROUP_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchGroup');
         $GridActionSearch->setTitle(__('Buscar Grupo'));
@@ -621,7 +621,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionNew = new DataGridAction();
-        $GridActionNew->setId(self::ACTION_USR_GROUPS_NEW);
+        $GridActionNew->setId(self::GROUP_CREATE);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(__('Nuevo Grupo'));
         $GridActionNew->setTitle(__('Nuevo Grupo'));
@@ -632,7 +632,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionNew);
 
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(self::ACTION_USR_GROUPS_EDIT);
+        $GridActionEdit->setId(self::GROUP_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(__('Editar Grupo'));
         $GridActionEdit->setTitle(__('Editar Grupo'));
@@ -642,7 +642,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionEdit);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_USR_GROUPS_DELETE);
+        $GridActionDel->setId(self::GROUP_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Grupo'));
         $GridActionDel->setTitle(__('Eliminar Grupo'));
@@ -682,7 +682,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_USR_PROFILES_SEARCH);
+        $GridActionSearch->setId(self::PROFILE_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchProfile');
         $GridActionSearch->setTitle(__('Buscar Perfil'));
@@ -693,7 +693,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionNew = new DataGridAction();
-        $GridActionNew->setId(self::ACTION_USR_PROFILES_NEW);
+        $GridActionNew->setId(self::PROFILE_CREATE);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(__('Nuevo Perfil'));
         $GridActionNew->setTitle(__('Nuevo Perfil'));
@@ -704,7 +704,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionNew);
 
         $GridActionView = new DataGridAction();
-        $GridActionView->setId(self::ACTION_USR_PROFILES_VIEW);
+        $GridActionView->setId(self::PROFILE_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(__('Ver Detalles de Perfil'));
         $GridActionView->setTitle(__('Ver Detalles de Perfil'));
@@ -714,7 +714,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionView);
 
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(self::ACTION_USR_PROFILES_EDIT);
+        $GridActionEdit->setId(self::PROFILE_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(__('Editar Perfil'));
         $GridActionEdit->setTitle(__('Editar Perfil'));
@@ -724,7 +724,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionEdit);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_USR_PROFILES_DELETE);
+        $GridActionDel->setId(self::PROFILE_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Perfil'));
         $GridActionDel->setTitle(__('Eliminar Perfil'));
@@ -766,7 +766,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_MGM_APITOKENS_SEARCH);
+        $GridActionSearch->setId(self::APITOKEN_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchToken');
         $GridActionSearch->setTitle(__('Buscar Token'));
@@ -777,7 +777,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionNew = new DataGridAction();
-        $GridActionNew->setId(self::ACTION_MGM_APITOKENS_NEW);
+        $GridActionNew->setId(self::APITOKEN_CREATE);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(__('Nueva Autorización'));
         $GridActionNew->setTitle(__('Nueva Autorización'));
@@ -788,7 +788,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionNew);
 
         $GridActionView = new DataGridAction();
-        $GridActionView->setId(self::ACTION_MGM_APITOKENS_VIEW);
+        $GridActionView->setId(self::APITOKEN_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(__('Ver token de Autorización'));
         $GridActionView->setTitle(__('Ver token de Autorización'));
@@ -798,7 +798,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionView);
 
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(self::ACTION_MGM_APITOKENS_EDIT);
+        $GridActionEdit->setId(self::APITOKEN_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(__('Editar Autorización'));
         $GridActionEdit->setTitle(__('Editar Autorización'));
@@ -808,7 +808,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionEdit);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_MGM_APITOKENS_DELETE);
+        $GridActionDel->setId(self::APITOKEN_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Autorización'));
         $GridActionDel->setTitle(__('Eliminar Autorización'));
@@ -858,7 +858,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_MGM_PUBLICLINKS_SEARCH);
+        $GridActionSearch->setId(self::PUBLICLINK_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchLink');
         $GridActionSearch->setTitle(__('Buscar Enlace'));
@@ -869,7 +869,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionView = new DataGridAction();
-        $GridActionView->setId(self::ACTION_MGM_PUBLICLINKS_VIEW);
+        $GridActionView->setId(self::PUBLICLINK_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(__('Ver Enlace'));
         $GridActionView->setTitle(__('Ver Enlace'));
@@ -879,7 +879,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionView);
 
         $GridActionRefresh = new DataGridAction();
-        $GridActionRefresh->setId(self::ACTION_MGM_PUBLICLINKS_REFRESH);
+        $GridActionRefresh->setId(self::PUBLICLINK_REFRESH);
         $GridActionRefresh->setName(__('Renovar Enlace'));
         $GridActionRefresh->setTitle(__('Renovar Enlace'));
         $GridActionRefresh->setIcon($this->icons->getIconRefresh());
@@ -888,7 +888,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionRefresh);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_MGM_PUBLICLINKS_DELETE);
+        $GridActionDel->setId(self::PUBLICLINK_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Enlace'));
         $GridActionDel->setTitle(__('Eliminar Enlace'));
@@ -928,7 +928,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_MGM_TAGS_SEARCH);
+        $GridActionSearch->setId(self::TAG_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchTag');
         $GridActionSearch->setTitle(__('Buscar Etiqueta'));
@@ -939,7 +939,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionNew = new DataGridAction();
-        $GridActionNew->setId(self::ACTION_MGM_TAGS_NEW);
+        $GridActionNew->setId(self::TAG_CREATE);
         $GridActionNew->setType(DataGridActionType::NEW_ITEM);
         $GridActionNew->setName(__('Nueva Etiqueta'));
         $GridActionNew->setTitle(__('Nueva Etiqueta'));
@@ -950,7 +950,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionNew);
 
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(self::ACTION_MGM_TAGS_EDIT);
+        $GridActionEdit->setId(self::TAG_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(__('Editar Etiqueta'));
         $GridActionEdit->setTitle(__('Editar Etiqueta'));
@@ -960,7 +960,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionEdit);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(self::ACTION_MGM_TAGS_DELETE);
+        $GridActionDel->setId(self::TAG_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Etiqueta'));
         $GridActionDel->setTitle(__('Eliminar Etiqueta'));
@@ -1004,7 +1004,7 @@ class Items extends GridBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(self::ACTION_MGM_PLUGINS_SEARCH);
+        $GridActionSearch->setId(self::PLUGIN_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchPlugin');
         $GridActionSearch->setTitle(__('Buscar Plugin'));
@@ -1015,7 +1015,7 @@ class Items extends GridBase
 
         // Grid item's actions
         $GridActionView = new DataGridAction();
-        $GridActionView->setId(self::ACTION_MGM_PLUGINS_VIEW);
+        $GridActionView->setId(self::PLUGIN_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(__('Ver Plugin'));
         $GridActionView->setTitle(__('Ver Plugin'));
@@ -1026,7 +1026,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionView);
 
         $GridActionEnable = new DataGridAction();
-        $GridActionEnable->setId(self::ACTION_MGM_PLUGINS_ENABLE);
+        $GridActionEnable->setId(self::PLUGIN_ENABLE);
         $GridActionEnable->setName(__('Habilitar'));
         $GridActionEnable->setTitle(__('Habilitar'));
         $GridActionEnable->setIcon($this->icons->getIconEnabled());
@@ -1037,7 +1037,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionEnable);
 
         $GridActionDisable = new DataGridAction();
-        $GridActionDisable->setId(self::ACTION_MGM_PLUGINS_DISABLE);
+        $GridActionDisable->setId(self::PLUGIN_DISABLE);
         $GridActionDisable->setName(__('Deshabilitar'));
         $GridActionDisable->setTitle(__('Deshabilitar'));
         $GridActionDisable->setIcon($this->icons->getIconDisabled());
@@ -1048,7 +1048,7 @@ class Items extends GridBase
         $Grid->setDataActions($GridActionDisable);
 
         $GridActionReset = new DataGridAction();
-        $GridActionReset->setId(self::ACTION_MGM_PLUGINS_RESET);
+        $GridActionReset->setId(self::PLUGIN_RESET);
         $GridActionReset->setName(__('Restablecer Datos'));
         $GridActionReset->setTitle(__('Restablecer Datos'));
         $GridActionReset->setIcon($this->icons->getIconRefresh());

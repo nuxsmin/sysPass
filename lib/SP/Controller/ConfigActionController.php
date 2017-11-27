@@ -85,37 +85,37 @@ class ConfigActionController implements ItemControllerInterface
 
         try {
             switch ($this->actionId) {
-                case ActionsInterface::ACTION_CFG_GENERAL:
+                case ActionsInterface::CONFIG_GENERAL:
                     $this->generalAction();
                     break;
-                case ActionsInterface::ACTION_CFG_ACCOUNTS:
+                case ActionsInterface::CONFIG_ACCOUNTS:
                     $this->accountsAction();
                     break;
-                case ActionsInterface::ACTION_CFG_WIKI:
+                case ActionsInterface::CONFIG_WIKI:
                     $this->wikiAction();
                     break;
-                case ActionsInterface::ACTION_CFG_LDAP:
+                case ActionsInterface::CONFIG_LDAP:
                     $this->ldapAction();
                     break;
-                case ActionsInterface::ACTION_CFG_MAIL:
+                case ActionsInterface::CONFIG_MAIL:
                     $this->mailAction();
                     break;
-                case ActionsInterface::ACTION_CFG_ENCRYPTION:
+                case ActionsInterface::CONFIG_ENCRYPTION:
                     $this->masterPassAction();
                     break;
-                case ActionsInterface::ACTION_CFG_ENCRYPTION_REFRESH:
+                case ActionsInterface::CONFIG_ENCRYPTION_REFRESH:
                     $this->masterPassRefreshAction();
                     break;
-                case ActionsInterface::ACTION_CFG_ENCRYPTION_TEMPPASS:
+                case ActionsInterface::CONFIG_ENCRYPTION_TEMPPASS:
                     $this->tempMasterPassAction();
                     break;
-                case ActionsInterface::ACTION_CFG_IMPORT:
+                case ActionsInterface::IMPORT:
                     $this->importAction();
                     break;
-                case ActionsInterface::ACTION_CFG_EXPORT:
+                case ActionsInterface::EXPORT:
                     $this->exportAction();
                     break;
-                case ActionsInterface::ACTION_CFG_BACKUP:
+                case ActionsInterface::BACKUP:
                     $this->backupAction();
                     break;
                 default:

@@ -25,7 +25,7 @@
 namespace SP\Account;
 
 use SP\Config\ConfigData;
-use SP\Core\Acl;
+use SP\Core\Acl\Acl;
 use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\Core\Traits\InjectableTrait;
@@ -339,7 +339,7 @@ class AccountSearch
             $AccountSearchItems = new AccountsSearchItem($AccountSearchData);
 
             // Obtener la ACL de la cuenta
-            $AccountAcl = new AccountAcl($Account, Acl::ACTION_ACC_SEARCH);
+            $AccountAcl = new AccountAcl($Account, Acl::ACCOUNT_SEARCH);
 
             if (!$AccountSearchData->getAccountIsPrivate()) {
                 $AccountSearchData->setUsersId($AccountSearchItems->getCacheUsers(true));

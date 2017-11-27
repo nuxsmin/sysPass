@@ -45,6 +45,7 @@ define('LOG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'syspass.log');
 define('MODULES_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'modules');
 define('LOCALES_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'locales');
 define('BACKUP_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'backup');
+define('CACHE_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'cache');
 
 // Setup other paths
 define('VENDOR_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'vendor');
@@ -67,14 +68,6 @@ $dic->share(\Klein\Klein::class);
 
 $dic->share(\SP\Core\Session\Session::class);
 
-$dic->share(\SP\Core\Acl::class, function ($dic) {
-    /** @var \SP\Core\Session\Session $session */
-    /** @var \SP\Core\Dic\DicInterface $dic */
-    $session = $dic->get(\SP\Core\Session\Session::class);
-
-    return new \SP\Core\Acl($session);
-});
-
 $dic->share(\SP\Config\Config::class, function () {
     return new SP\Config\Config(new \SP\Storage\XmlHandler(XML_CONFIG_FILE));
 });
@@ -91,6 +84,14 @@ $dic->share(\SP\Config\ConfigData::class, function ($dic) {
 
 $dic->share(\SP\Storage\Database::class, function () {
     return new \SP\Storage\Database(new \SP\Storage\MySQLHandler());
+});
+
+$dic->share(\SP\Core\Acl\Acl::class, function ($dic) {
+    /** @var \SP\Core\Session\Session $session */
+    /** @var \SP\Core\Dic\DicInterface $dic */
+    $session = $dic->get(\SP\Core\Session\Session::class);
+
+    return new \SP\Core\Acl\Acl($session, new \SP\Core\Acl\Action(new \SP\Storage\FileCache()));
 });
 
 $dic->share(\SP\Core\UI\Theme::class, function () {

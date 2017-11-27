@@ -25,8 +25,8 @@
 namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Bootstrap;
-use SP\Core\Acl;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\Acl;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
@@ -223,59 +223,83 @@ class LayoutHelper extends HelperBase
         $icons = $this->theme->getIcons();
 
         $ActionSearch = new DataGridAction();
-        $ActionSearch->setId('account');
+        $ActionSearch->setId(ActionsInterface::ACCOUNT);
         $ActionSearch->setTitle(__('Buscar'));
         $ActionSearch->setIcon($icons->getIconSearch());
-        $ActionSearch->setData(['historyReset' => 1, 'view' => 'search']);
+        $ActionSearch->setData([
+            'historyReset' => 1,
+            'view' => 'search',
+            'route' => Acl::getActionRoute(ActionsInterface::ACCOUNT)
+        ]);
 
         $this->view->append('actions', $ActionSearch);
 
-        if ($acl->checkUserAccess(ActionsInterface::ACTION_ACC_NEW)) {
+        if ($acl->checkUserAccess(ActionsInterface::ACCOUNT_CREATE)) {
             $ActionNew = new DataGridAction();
-            $ActionNew->setId('account/create');
+            $ActionNew->setId(ActionsInterface::ACCOUNT_CREATE);
             $ActionNew->setTitle(__('Nueva Cuenta'));
             $ActionNew->setIcon($icons->getIconAdd());
-            $ActionNew->setData(['historyReset' => 0, 'view' => 'account']);
+            $ActionNew->setData([
+                'historyReset' => 0,
+                'view' => 'account',
+                'route' => Acl::getActionRoute(ActionsInterface::ACCOUNT_CREATE)
+            ]);
 
             $this->view->append('actions', $ActionNew);
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::ACTION_USR)) {
+        if ($acl->checkUserAccess(ActionsInterface::ACCESS_MANAGE)) {
             $ActionUsr = new DataGridAction();
-            $ActionUsr->setId('users');
+            $ActionUsr->setId(ActionsInterface::ACCESS_MANAGE);
             $ActionUsr->setTitle(__('Usuarios y Accesos'));
             $ActionUsr->setIcon($icons->getIconAccount());
-            $ActionUsr->setData(['historyReset' => 0, 'view' => 'datatabs']);
+            $ActionUsr->setData([
+                'historyReset' => 0,
+                'view' => 'datatabs',
+                'route' => Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE)
+            ]);
 
             $this->view->append('actions', $ActionUsr);
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::ACTION_MGM)) {
+        if ($acl->checkUserAccess(ActionsInterface::ITEMS_MANAGE)) {
             $ActionMgm = new DataGridAction();
-            $ActionMgm->setId('items');
+            $ActionMgm->setId(ActionsInterface::ITEMS_MANAGE);
             $ActionMgm->setTitle(__('Elementos y Personalización'));
             $ActionMgm->setIcon($icons->getIconGroup());
-            $ActionMgm->setData(['historyReset' => 0, 'view' => 'datatabs']);
+            $ActionMgm->setData([
+                'historyReset' => 0,
+                'view' => 'datatabs',
+                'route' => Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE)
+            ]);
 
             $this->view->append('actions', $ActionMgm);
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::ACTION_CFG)) {
+        if ($acl->checkUserAccess(ActionsInterface::CONFIG)) {
             $ActionConfig = new DataGridAction();
             $ActionConfig->setId('config');
             $ActionConfig->setTitle(__('Configuración'));
             $ActionConfig->setIcon($icons->getIconSettings());
-            $ActionConfig->setData(['historyReset' => 1, 'view' => 'config']);
+            $ActionConfig->setData([
+                'historyReset' => 1,
+                'view' => 'config',
+                'route' => Acl::getActionRoute(ActionsInterface::CONFIG)
+            ]);
 
             $this->view->append('actions', $ActionConfig);
         }
 
-        if ($acl->checkUserAccess(ActionsInterface::ACTION_EVL) && $this->configData->isLogEnabled()) {
+        if ($acl->checkUserAccess(ActionsInterface::EVENTLOG) && $this->configData->isLogEnabled()) {
             $ActionEventlog = new DataGridAction();
-            $ActionEventlog->setId('eventlog');
+            $ActionEventlog->setId(ActionsInterface::EVENTLOG);
             $ActionEventlog->setTitle(__('Registro de Eventos'));
             $ActionEventlog->setIcon($icons->getIconHeadline());
-            $ActionEventlog->setData(['historyReset' => 1, 'view' => 'eventlog']);
+            $ActionEventlog->setData([
+                'historyReset' => 1,
+                'view' => 'eventlog',
+                'route' => Acl::getActionRoute(ActionsInterface::EVENTLOG)
+            ]);
 
             $this->view->append('actions', $ActionEventlog);
         }

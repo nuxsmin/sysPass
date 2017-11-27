@@ -28,7 +28,7 @@ defined('APP_ROOT') || die();
 
 use SP\Config\Config;
 use SP\Controller\Grids\Notices;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\DataModel\ItemSearchData;
@@ -92,7 +92,7 @@ class NoticesSearchController extends GridItemsSearchController implements Actio
 
         try {
             switch ($this->actionId) {
-                case ActionsInterface::ACTION_NOT_USER_SEARCH:
+                case ActionsInterface::NOTICE_USER_SEARCH:
                     $this->getNoticesUser();
                     break;
                 default:
@@ -117,7 +117,7 @@ class NoticesSearchController extends GridItemsSearchController implements Actio
      */
     protected function getNoticesUser()
     {
-        $this->setAction(self::ACTION_NOT_USER_SEARCH);
+        $this->setAction(self::NOTICE_USER_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -132,7 +132,7 @@ class NoticesSearchController extends GridItemsSearchController implements Actio
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::ACTION_NOT_USER);
+        $this->view->assign('actionId', self::NOTICE_USER);
 
         $this->JsonResponse->setStatus(0);
     }

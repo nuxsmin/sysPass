@@ -66,9 +66,9 @@ sysPass.Actions = function (Common) {
             search: "/index.php?r=account/search"
         },
         appMgmt: {
-            show: "/ajax/ajax_itemShow.php",
-            save: "/ajax/ajax_itemSave.php",
-            search: "/ajax/ajax_itemSearch.php"
+            show: "/index.php",
+            save: "/index.php",
+            search: "/index.php"
         },
         eventlog: "/ajax/ajax_eventlog.php",
         wiki: {
@@ -1105,8 +1105,7 @@ sysPass.Actions = function (Common) {
             opts.url = ajaxUrl.appMgmt.show;
             opts.method = "get";
             opts.data = {
-                itemId: $obj.data("item-id"),
-                actionId: $obj.data("action-id"),
+                r: $obj.data("route") + "/" + $obj.data("item-id"),
                 activeTab: $obj.data("activetab"),
                 sk: Common.sk.get(),
                 isAjax: 1

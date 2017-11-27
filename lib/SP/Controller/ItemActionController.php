@@ -30,7 +30,7 @@ use SP\Account\AccountHistory;
 use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
 use SP\Auth\AuthUtil;
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Messages\LogMessage;
 use SP\Core\SessionFactory;
 use SP\Core\Traits\InjectableTrait;
@@ -109,87 +109,87 @@ class ItemActionController implements ItemControllerInterface
 
         try {
             switch ($this->actionId) {
-                case ActionsInterface::ACTION_USR_USERS_NEW:
-                case ActionsInterface::ACTION_USR_USERS_EDIT:
-                case ActionsInterface::ACTION_USR_USERS_EDITPASS:
-                case ActionsInterface::ACTION_USR_USERS_DELETE:
+                case ActionsInterface::USER_CREATE:
+                case ActionsInterface::USER_EDIT:
+                case ActionsInterface::USER_EDIT_PASS:
+                case ActionsInterface::USER_DELETE:
                     $this->userAction();
                     break;
-                case ActionsInterface::ACTION_USR_GROUPS_NEW:
-                case ActionsInterface::ACTION_USR_GROUPS_EDIT:
-                case ActionsInterface::ACTION_USR_GROUPS_DELETE:
+                case ActionsInterface::GROUP_CREATE:
+                case ActionsInterface::GROUP_EDIT:
+                case ActionsInterface::GROUP_DELETE:
                     $this->groupAction();
                     break;
-                case ActionsInterface::ACTION_USR_PROFILES_NEW:
-                case ActionsInterface::ACTION_USR_PROFILES_EDIT:
-                case ActionsInterface::ACTION_USR_PROFILES_DELETE:
+                case ActionsInterface::PROFILE_CREATE:
+                case ActionsInterface::PROFILE_EDIT:
+                case ActionsInterface::PROFILE_DELETE:
                     $this->profileAction();
                     break;
-                case ActionsInterface::ACTION_MGM_CUSTOMERS_NEW:
-                case ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT:
-                case ActionsInterface::ACTION_MGM_CUSTOMERS_DELETE:
+                case ActionsInterface::CLIENT_CREATE:
+                case ActionsInterface::CLIENT_EDIT:
+                case ActionsInterface::CLIENT_DELETE:
                     $this->customerAction();
                     break;
-                case ActionsInterface::ACTION_MGM_CATEGORIES_NEW:
-                case ActionsInterface::ACTION_MGM_CATEGORIES_EDIT:
-                case ActionsInterface::ACTION_MGM_CATEGORIES_DELETE:
+                case ActionsInterface::CATEGORY_CREATE:
+                case ActionsInterface::CATEGORY_EDIT:
+                case ActionsInterface::CATEGORY_DELETE:
                     $this->categoryAction();
                     break;
-                case ActionsInterface::ACTION_MGM_APITOKENS_NEW:
-                case ActionsInterface::ACTION_MGM_APITOKENS_EDIT:
-                case ActionsInterface::ACTION_MGM_APITOKENS_DELETE:
+                case ActionsInterface::APITOKEN_CREATE:
+                case ActionsInterface::APITOKEN_EDIT:
+                case ActionsInterface::APITOKEN_DELETE:
                     $this->tokenAction();
                     break;
-                case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW:
-                case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT:
-                case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_DELETE:
+                case ActionsInterface::CUSTOMFIELD_CREATE:
+                case ActionsInterface::CUSTOMFIELD_EDIT:
+                case ActionsInterface::CUSTOMFIELD_DELETE:
                     $this->customFieldAction();
                     break;
-                case ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW:
-                case ActionsInterface::ACTION_MGM_PUBLICLINKS_DELETE:
-                case ActionsInterface::ACTION_MGM_PUBLICLINKS_REFRESH:
+                case ActionsInterface::PUBLICLINK_CREATE:
+                case ActionsInterface::PUBLICLINK_DELETE:
+                case ActionsInterface::PUBLICLINK_REFRESH:
                     $this->publicLinkAction();
                     break;
-                case ActionsInterface::ACTION_MGM_TAGS_NEW:
-                case ActionsInterface::ACTION_MGM_TAGS_EDIT:
-                case ActionsInterface::ACTION_MGM_TAGS_DELETE:
+                case ActionsInterface::TAG_CREATE:
+                case ActionsInterface::TAG_EDIT:
+                case ActionsInterface::TAG_DELETE:
                     $this->tagAction();
                     break;
-                case ActionsInterface::ACTION_MGM_FILES_DELETE:
+                case ActionsInterface::FILE_DELETE:
                     $this->fileAction();
                     break;
-                case ActionsInterface::ACTION_MGM_PLUGINS_ENABLE:
-                case ActionsInterface::ACTION_MGM_PLUGINS_DISABLE:
-                case ActionsInterface::ACTION_MGM_PLUGINS_RESET:
+                case ActionsInterface::PLUGIN_ENABLE:
+                case ActionsInterface::PLUGIN_DISABLE:
+                case ActionsInterface::PLUGIN_RESET:
                     $this->pluginAction();
                     break;
-                case ActionsInterface::ACTION_ACC_NEW:
-                case ActionsInterface::ACTION_ACC_COPY:
-                case ActionsInterface::ACTION_ACC_EDIT:
-                case ActionsInterface::ACTION_ACC_EDIT_PASS:
-                case ActionsInterface::ACTION_ACC_EDIT_RESTORE:
-                case ActionsInterface::ACTION_ACC_DELETE:
-                case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE:
+                case ActionsInterface::ACCOUNT_CREATE:
+                case ActionsInterface::ACCOUNT_COPY:
+                case ActionsInterface::ACCOUNT_EDIT:
+                case ActionsInterface::ACCOUNT_EDIT_PASS:
+                case ActionsInterface::ACCOUNT_EDIT_RESTORE:
+                case ActionsInterface::ACCOUNT_DELETE:
+                case ActionsInterface::ACCOUNTMGR_DELETE:
                     $this->accountAction();
                     break;
-                case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE_HISTORY:
+                case ActionsInterface::ACCOUNTMGR_DELETE_HISTORY:
                     $this->accountHistoryAction();
                     break;
-                case ActionsInterface::ACTION_ACC_FAVORITES_ADD:
-                case ActionsInterface::ACTION_ACC_FAVORITES_DELETE:
+                case ActionsInterface::ACCOUNT_FAVORITE_ADD:
+                case ActionsInterface::ACCOUNT_FAVORITE_DELETE:
                     $this->favoriteAction();
                     break;
-                case ActionsInterface::ACTION_USR_SYNC_LDAP:
+                case ActionsInterface::LDAP_SYNC:
                     $this->ldapImportAction();
                     break;
-                case ActionsInterface::ACTION_NOT_USER_CHECK:
-                case ActionsInterface::ACTION_NOT_USER_VIEW:
-                case ActionsInterface::ACTION_NOT_USER_NEW:
-                case ActionsInterface::ACTION_NOT_USER_EDIT:
-                case ActionsInterface::ACTION_NOT_USER_DELETE:
+                case ActionsInterface::NOTICE_USER_CHECK:
+                case ActionsInterface::NOTICE_USER_VIEW:
+                case ActionsInterface::NOTICE_USER_CREATE:
+                case ActionsInterface::NOTICE_USER_EDIT:
+                case ActionsInterface::NOTICE_USER_DELETE:
                     $this->noticeAction();
                     break;
-                case ActionsInterface::ACTION_ACC_REQUEST:
+                case ActionsInterface::ACCOUNT_REQUEST:
                     $this->requestAccountAction();
                     break;
                 default:
@@ -224,10 +224,10 @@ class ItemActionController implements ItemControllerInterface
         $Form->setIsLdap(Request::analyze('isLdap', 0));
         $Form->validate($this->actionId);
 
-        $this->setCustomFieldData(ActionsInterface::ACTION_USR_USERS);
+        $this->setCustomFieldData(ActionsInterface::USER);
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_USR_USERS_NEW:
+            case ActionsInterface::USER_CREATE:
                 User::getItem($Form->getItemData())->add();
 
                 $this->addCustomFieldData();
@@ -243,7 +243,7 @@ class ItemActionController implements ItemControllerInterface
                     $this->LogMessage->addDescription(__('No se pudo realizar la petición de cambio de clave.', false));
                 }
                 break;
-            case ActionsInterface::ACTION_USR_USERS_EDIT:
+            case ActionsInterface::USER_EDIT:
                 if ($Form->getIsLdap()) {
                     UserLdap::getItem($Form->getItemData())->update();
                 } else {
@@ -257,7 +257,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getUserName());
                 $this->LogMessage->addDetails(__('Login', false), $Form->getItemData()->getUserLogin());
                 break;
-            case ActionsInterface::ACTION_USR_USERS_DELETE:
+            case ActionsInterface::USER_DELETE:
                 if (is_array($this->itemId)) {
                     $UsersData = User::getItem()->deleteBatch($this->itemId);
 
@@ -279,7 +279,7 @@ class ItemActionController implements ItemControllerInterface
                     $this->LogMessage->addDetails(__('Login', false), $UserData->getUserLogin());
                 }
                 break;
-            case ActionsInterface::ACTION_USR_USERS_EDITPASS:
+            case ActionsInterface::USER_EDIT_PASS:
                 $UserData = User::getItem()->getById($this->itemId);
 
                 User::getItem($Form->getItemData())->updatePass();
@@ -366,10 +366,10 @@ class ItemActionController implements ItemControllerInterface
         $Form = new GroupForm($this->itemId);
         $Form->validate($this->actionId);
 
-        $this->setCustomFieldData(ActionsInterface::ACTION_USR_GROUPS);
+        $this->setCustomFieldData(ActionsInterface::GROUP);
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_USR_GROUPS_NEW:
+            case ActionsInterface::GROUP_CREATE:
                 Group::getItem($Form->getItemData())->add();
                 $this->addCustomFieldData();
 
@@ -377,7 +377,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Grupo creado', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getUsergroupName());
                 break;
-            case ActionsInterface::ACTION_USR_GROUPS_EDIT:
+            case ActionsInterface::GROUP_EDIT:
                 Group::getItem($Form->getItemData())->update();
                 $this->updateCustomFieldData();
 
@@ -385,7 +385,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Grupo actualizado', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getUsergroupName());
                 break;
-            case ActionsInterface::ACTION_USR_GROUPS_DELETE:
+            case ActionsInterface::GROUP_DELETE:
                 if (is_array($this->itemId)) {
                     $GroupsData = Group::getItem()->deleteBatch($this->itemId);
 
@@ -426,10 +426,10 @@ class ItemActionController implements ItemControllerInterface
         $Form = new ProfileForm($this->itemId);
         $Form->validate($this->actionId);
 
-        $this->setCustomFieldData(ActionsInterface::ACTION_USR_PROFILES);
+        $this->setCustomFieldData(ActionsInterface::PROFILE);
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_USR_PROFILES_NEW:
+            case ActionsInterface::PROFILE_CREATE:
                 Profile::getItem($Form->getItemData())->add();
                 $this->addCustomFieldData();
 
@@ -437,7 +437,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Perfil creado', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getUserprofileName());
                 break;
-            case ActionsInterface::ACTION_USR_PROFILES_EDIT:
+            case ActionsInterface::PROFILE_EDIT:
                 Profile::getItem($Form->getItemData())->update();
                 $this->updateCustomFieldData();
 
@@ -445,7 +445,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Perfil actualizado', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getUserprofileName());
                 break;
-            case ActionsInterface::ACTION_USR_PROFILES_DELETE:
+            case ActionsInterface::PROFILE_DELETE:
                 if (is_array($this->itemId)) {
                     $ProfilesData = Profile::getItem()->deleteBatch($this->itemId);
 
@@ -488,10 +488,10 @@ class ItemActionController implements ItemControllerInterface
         $Form = new CustomerForm($this->itemId);
         $Form->validate($this->actionId);
 
-        $this->setCustomFieldData(ActionsInterface::ACTION_MGM_CUSTOMERS);
+        $this->setCustomFieldData(ActionsInterface::CLIENT);
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_MGM_CUSTOMERS_NEW:
+            case ActionsInterface::CLIENT_CREATE:
                 Customer::getItem($Form->getItemData())->add();
                 $this->addCustomFieldData();
 
@@ -499,7 +499,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Cliente creado', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getCustomerName());
                 break;
-            case ActionsInterface::ACTION_MGM_CUSTOMERS_EDIT:
+            case ActionsInterface::CLIENT_EDIT:
                 Customer::getItem($Form->getItemData())->update();
                 $this->updateCustomFieldData();
 
@@ -507,7 +507,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Cliente actualizado', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getCustomerName());
                 break;
-            case ActionsInterface::ACTION_MGM_CUSTOMERS_DELETE:
+            case ActionsInterface::CLIENT_DELETE:
                 if (is_array($this->itemId)) {
                     $CustomersData = Customer::getItem()->deleteBatch($this->itemId);
 
@@ -550,10 +550,10 @@ class ItemActionController implements ItemControllerInterface
         $Form = new CategoryForm($this->itemId);
         $Form->validate($this->actionId);
 
-        $this->setCustomFieldData(ActionsInterface::ACTION_MGM_CATEGORIES);
+        $this->setCustomFieldData(ActionsInterface::CATEGORY);
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_MGM_CATEGORIES_NEW:
+            case ActionsInterface::CATEGORY_CREATE:
                 Category::getItem($Form->getItemData())->add();
                 $this->addCustomFieldData();
 
@@ -561,7 +561,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Categoría creada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getCategoryName());
                 break;
-            case ActionsInterface::ACTION_MGM_CATEGORIES_EDIT:
+            case ActionsInterface::CATEGORY_EDIT:
                 Category::getItem($Form->getItemData())->update();
                 $this->updateCustomFieldData();
 
@@ -569,7 +569,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Categoría actualizada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getCategoryName());
                 break;
-            case ActionsInterface::ACTION_MGM_CATEGORIES_DELETE:
+            case ActionsInterface::CATEGORY_DELETE:
 
                 if (is_array($this->itemId)) {
                     $CategoriesData = Category::getItem()->deleteBatch($this->itemId);
@@ -614,7 +614,7 @@ class ItemActionController implements ItemControllerInterface
         $refresh = Request::analyze('refreshtoken', false, false, true);
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_MGM_APITOKENS_NEW:
+            case ActionsInterface::APITOKEN_CREATE:
                 $Form->validate($this->actionId);
 
                 if ($refresh === true) {
@@ -627,7 +627,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Autorización creada', false));
                 $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getAuthtokenUserId()));
                 break;
-            case ActionsInterface::ACTION_MGM_APITOKENS_EDIT:
+            case ActionsInterface::APITOKEN_EDIT:
                 $Form->validate($this->actionId);
 
                 if ($refresh === true) {
@@ -640,7 +640,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Autorización actualizada', false));
                 $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getAuthtokenUserId()));
                 break;
-            case ActionsInterface::ACTION_MGM_APITOKENS_DELETE:
+            case ActionsInterface::APITOKEN_DELETE:
                 if (is_array($this->itemId)) {
                     ApiToken::getItem()->deleteBatch($this->itemId);
 
@@ -674,21 +674,21 @@ class ItemActionController implements ItemControllerInterface
         $Form->validate($this->actionId);
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_NEW:
+            case ActionsInterface::CUSTOMFIELD_CREATE:
                 CustomFieldDef::getItem($Form->getItemData())->add();
 
                 $this->LogMessage->setAction(__('Crear Campo', false));
                 $this->LogMessage->addDescription(__('Campo creado', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getName());
                 break;
-            case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_EDIT:
+            case ActionsInterface::CUSTOMFIELD_EDIT:
                 CustomFieldDef::getItem($Form->getItemData())->update();
 
                 $this->LogMessage->setAction(__('Actualizar Campo', false));
                 $this->LogMessage->addDescription(__('Campo actualizado', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getName());
                 break;
-            case ActionsInterface::ACTION_MGM_CUSTOMFIELDS_DELETE:
+            case ActionsInterface::CUSTOMFIELD_DELETE:
                 if (is_array($this->itemId)) {
                     CustomFieldDef::getItem()->deleteBatch($this->itemId);
 
@@ -727,7 +727,7 @@ class ItemActionController implements ItemControllerInterface
         $PublicLinkData->setNotify(Request::analyze('notify', false, false, true));
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_MGM_PUBLICLINKS_NEW:
+            case ActionsInterface::PUBLICLINK_CREATE:
                 $PublicLinkData->setItemId($this->itemId);
                 PublicLink::getItem($PublicLinkData)->add();
 
@@ -737,7 +737,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
                 $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getUserId()));
                 break;
-            case ActionsInterface::ACTION_MGM_PUBLICLINKS_REFRESH:
+            case ActionsInterface::PUBLICLINK_REFRESH:
                 $PublicLinkData = PublicLink::getItem()->getById($this->itemId);
                 PublicLink::getItem($PublicLinkData)->refresh();
 
@@ -747,7 +747,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
                 $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getUserId()));
                 break;
-            case ActionsInterface::ACTION_MGM_PUBLICLINKS_DELETE:
+            case ActionsInterface::PUBLICLINK_DELETE:
                 if (is_array($this->itemId)) {
                     PublicLink::getItem()->deleteBatch($this->itemId);
 
@@ -785,21 +785,21 @@ class ItemActionController implements ItemControllerInterface
         $Form->validate($this->actionId);
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_MGM_TAGS_NEW:
+            case ActionsInterface::TAG_CREATE:
                 Tag::getItem($Form->getItemData())->add();
 
                 $this->LogMessage->setAction(__('Crear Etiqueta', false));
                 $this->LogMessage->addDescription(__('Etiqueta creada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getTagName());
                 break;
-            case ActionsInterface::ACTION_MGM_TAGS_EDIT:
+            case ActionsInterface::TAG_EDIT:
                 Tag::getItem($Form->getItemData())->update();
 
                 $this->LogMessage->setAction(__('Actualizar Etiqueta', false));
                 $this->LogMessage->addDescription(__('Etiqueta actualizada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getTagName());
                 break;
-            case ActionsInterface::ACTION_MGM_TAGS_DELETE:
+            case ActionsInterface::TAG_DELETE:
                 if (is_array($this->itemId)) {
                     $TagsData = Tag::getItem()->deleteBatch($this->itemId);
 
@@ -871,7 +871,7 @@ class ItemActionController implements ItemControllerInterface
         $PluginData->setPluginId($this->itemId);
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_MGM_PLUGINS_ENABLE:
+            case ActionsInterface::PLUGIN_ENABLE:
                 $PluginData->setPluginEnabled(1);
                 Plugin::getItem($PluginData)->toggleEnabled();
 
@@ -879,7 +879,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Plugin habilitado', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $PluginData->getPluginName());
                 break;
-            case ActionsInterface::ACTION_MGM_PLUGINS_DISABLE:
+            case ActionsInterface::PLUGIN_DISABLE:
                 $PluginData->setPluginEnabled(0);
                 Plugin::getItem($PluginData)->toggleEnabled();
 
@@ -887,7 +887,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Plugin deshabilitado', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $PluginData->getPluginName());
                 break;
-            case ActionsInterface::ACTION_MGM_PLUGINS_RESET:
+            case ActionsInterface::PLUGIN_RESET:
                 Plugin::getItem()->reset($this->itemId);
 
                 $this->LogMessage->setAction(__('Actualizar Plugin', false));
@@ -916,13 +916,13 @@ class ItemActionController implements ItemControllerInterface
         $Form = new AccountForm($this->itemId);
         $Form->validate($this->actionId);
 
-        $this->setCustomFieldData(ActionsInterface::ACTION_ACC);
+        $this->setCustomFieldData(ActionsInterface::ACCOUNT);
 
         $Account = new Account($Form->getItemData());
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_ACC_NEW:
-            case ActionsInterface::ACTION_ACC_COPY:
+            case ActionsInterface::ACCOUNT_CREATE:
+            case ActionsInterface::ACCOUNT_COPY:
                 $Form->getItemData()->setAccountUserId(SessionFactory::getUserData()->getUserId());
 
                 $Account->createAccount();
@@ -935,9 +935,9 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Cuenta creada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getAccountName());
 
-                $this->JsonResponse->setData(['itemId' => $Account->getAccountData()->getId(), 'nextActionId' => ActionsInterface::ACTION_ACC_EDIT]);
+                $this->JsonResponse->setData(['itemId' => $Account->getAccountData()->getId(), 'nextActionId' => ActionsInterface::ACCOUNT_EDIT]);
                 break;
-            case ActionsInterface::ACTION_ACC_EDIT:
+            case ActionsInterface::ACCOUNT_EDIT:
                 $Account->updateAccount();
                 $this->updateCustomFieldData();
 
@@ -945,28 +945,28 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Cuenta actualizada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getAccountName());
 
-                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
+                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACCOUNT_VIEW]);
                 break;
-            case ActionsInterface::ACTION_ACC_EDIT_PASS:
+            case ActionsInterface::ACCOUNT_EDIT_PASS:
                 $Account->updateAccountPass();
 
                 $this->LogMessage->setAction(__('Actualizar Cuenta', false));
                 $this->LogMessage->addDescription(__('Clave actualizada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), AccountUtil::getAccountNameById($this->itemId));
 
-                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
+                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACCOUNT_VIEW]);
                 break;
-            case ActionsInterface::ACTION_ACC_EDIT_RESTORE:
+            case ActionsInterface::ACCOUNT_EDIT_RESTORE:
                 $Account->restoreFromHistory(Request::analyze('accountHistoryId', 0));
 
                 $this->LogMessage->setAction(__('Restaurar Cuenta', false));
                 $this->LogMessage->addDescription(__('Cuenta restaurada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), AccountUtil::getAccountNameById($this->itemId));
 
-                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
+                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACCOUNT_VIEW]);
                 break;
-            case ActionsInterface::ACTION_ACC_DELETE:
-            case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE:
+            case ActionsInterface::ACCOUNT_DELETE:
+            case ActionsInterface::ACCOUNTMGR_DELETE:
                 if (is_array($this->itemId)) {
                     $accounts = AccountUtil::getAccountNameByIdBatch($this->itemId);
                     $numAccounts = count($accounts);
@@ -1008,16 +1008,16 @@ class ItemActionController implements ItemControllerInterface
         $Account = new AccountHistory();
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_MGM_ACCOUNTS_EDIT_RESTORE:
+            case ActionsInterface::ACCOUNTMGR_RESTORE:
                 AccountHistoryUtil::restoreFromHistory($this->itemId, Request::analyze('accountId', 0));
 
                 $this->LogMessage->setAction(__('Restaurar Cuenta', false));
                 $this->LogMessage->addDescription(__('Cuenta restaurada', false));
                 $this->LogMessage->addDetails(__('Nombre', false), AccountUtil::getAccountNameById($this->itemId));
 
-                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACTION_ACC_VIEW]);
+                $this->JsonResponse->setData(['itemId' => $this->itemId, 'nextActionId' => ActionsInterface::ACCOUNT_VIEW]);
                 break;
-            case ActionsInterface::ACTION_MGM_ACCOUNTS_DELETE_HISTORY:
+            case ActionsInterface::ACCOUNTMGR_DELETE_HISTORY:
                 if (is_array($this->itemId)) {
                     $accounts = AccountHistoryUtil::getAccountNameByIdBatch($this->itemId);
                     $numAccounts = count($accounts);
@@ -1059,12 +1059,12 @@ class ItemActionController implements ItemControllerInterface
         $userId = SessionFactory::getUserData()->getUserId();
 
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_ACC_FAVORITES_ADD:
+            case ActionsInterface::ACCOUNT_FAVORITE_ADD:
                 AccountFavorites::addFavorite($this->itemId, $userId);
 
                 $this->JsonResponse->setDescription(__('Favorito añadido'));
                 break;
-            case ActionsInterface::ACTION_ACC_FAVORITES_DELETE:
+            case ActionsInterface::ACCOUNT_FAVORITE_DELETE:
                 AccountFavorites::deleteFavorite($this->itemId, $userId);
 
                 $this->JsonResponse->setDescription(__('Favorito eliminado'));
@@ -1111,12 +1111,12 @@ class ItemActionController implements ItemControllerInterface
     protected function noticeAction()
     {
         switch ($this->actionId) {
-            case ActionsInterface::ACTION_NOT_USER_CHECK:
+            case ActionsInterface::NOTICE_USER_CHECK:
                 Notice::getItem()->setChecked($this->itemId);
 
                 $this->JsonResponse->setDescription(__('Notificación leída'));
                 break;
-            case ActionsInterface::ACTION_NOT_USER_NEW:
+            case ActionsInterface::NOTICE_USER_CREATE:
                 $Form = new NoticeForm($this->itemId);
                 $Form->validate($this->actionId);
 
@@ -1124,7 +1124,7 @@ class ItemActionController implements ItemControllerInterface
 
                 $this->JsonResponse->setDescription(__('Notificación creada'));
                 break;
-            case ActionsInterface::ACTION_NOT_USER_EDIT:
+            case ActionsInterface::NOTICE_USER_EDIT:
                 $Form = new NoticeForm($this->itemId);
                 $Form->validate($this->actionId);
 
@@ -1132,7 +1132,7 @@ class ItemActionController implements ItemControllerInterface
 
                 $this->JsonResponse->setDescription(__('Notificación actualizada'));
                 break;
-            case ActionsInterface::ACTION_NOT_USER_DELETE:
+            case ActionsInterface::NOTICE_USER_DELETE:
                 if (is_array($this->itemId)) {
                     Notice::getItem()->deleteBatch($this->itemId);
 

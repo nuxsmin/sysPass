@@ -97,7 +97,7 @@
                         <button id="btnClipPass"
                                 class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
                                 data-clipboard-target="#account-pass"
-                                data-action-id="<?php echo \SP\Core\ActionsInterface::ACTION_ACC_VIEW_PASS; ?>"
+                                data-action-id="<?php echo \SP\Core\ActionsInterface::ACCOUNT_VIEW_PASS; ?>"
                                 data-item-id="<?php echo $accountId; ?>"
                                 data-sk="<?php echo $sk; ?>"
                                 data-history="0"

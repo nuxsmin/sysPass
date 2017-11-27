@@ -24,7 +24,7 @@
 
 namespace SP\Mgmt\ApiTokens;
 
-use SP\Core\Acl;
+use SP\Core\Acl\Acl;
 use SP\DataModel\ItemSearchData;
 use SP\Mgmt\ItemSearchInterface;
 use SP\Storage\DbWrapper;
