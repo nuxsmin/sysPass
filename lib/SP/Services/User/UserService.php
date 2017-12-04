@@ -25,9 +25,12 @@
 namespace SP\Services\User;
 
 
+use SP\Core\Acl\Acl;
+use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
+use SP\Log\Log;
 use SP\Services\Service;
 use SP\Services\ServiceItemInterface;
 use SP\Storage\DbWrapper;
@@ -42,34 +45,144 @@ class UserService extends Service implements ServiceItemInterface
 {
 
     /**
-     * Creates an item
+     * Updates an item
      *
+     * @param UserData $itemData
      * @return mixed
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function create()
+    public function update($itemData)
     {
-        // TODO: Implement create() method.
+        if ($this->checkDuplicatedOnUpdate($itemData)) {
+            throw new SPException(SPException::SP_INFO, __u('Login/email de usuario duplicados'));
+        }
+
+        $query = /** @lang SQL */
+            'UPDATE usrData SET
+            user_name = ?,
+            user_login = ?,
+            user_ssoLogin = ?,
+            user_email = ?,
+            user_notes = ?,
+            user_groupId = ?,
+            user_profileId = ?,
+            user_isAdminApp = ?,
+            user_isAdminAcc = ?,
+            user_isDisabled = ?,
+            user_isChangePass = ?,
+            user_lastUpdate = NOW()
+            WHERE user_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getUserName());
+        $Data->addParam($itemData->getUserLogin());
+        $Data->addParam($itemData->getUserSsoLogin());
+        $Data->addParam($itemData->getUserEmail());
+        $Data->addParam($itemData->getUserNotes());
+        $Data->addParam($itemData->getUserGroupId());
+        $Data->addParam($itemData->getUserProfileId());
+        $Data->addParam($itemData->isUserIsAdminApp());
+        $Data->addParam($itemData->isUserIsAdminAcc());
+        $Data->addParam($itemData->isUserIsDisabled());
+        $Data->addParam($itemData->isUserIsChangePass());
+        $Data->addParam($itemData->getUserId());
+        $Data->setOnErrorMessage(__u('Error al actualizar el usuario'));
+
+        DbWrapper::getQuery($Data);
+
+        if ($Data->getQueryNumRows() > 0) {
+            $itemData->setUserId(DbWrapper::getLastId());
+        }
+
+        return $this;
     }
 
     /**
-     * Updates an item
+     * Checks whether the item is duplicated on updating
      *
-     * @param $id
-     * @return mixed
+     * @param UserData $itemData
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update($id)
+    public function checkDuplicatedOnUpdate($itemData)
     {
-        // TODO: Implement update() method.
+        $query = /** @lang SQL */
+            'SELECT user_login, user_email
+            FROM usrData
+            WHERE (UPPER(user_login) = UPPER(?) 
+            OR UPPER(user_ssoLogin) = UPPER(?) 
+            OR UPPER(user_email) = UPPER(?))
+            AND user_id <> ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getUserLogin());
+        $Data->addParam($itemData->getUserSsoLogin());
+        $Data->addParam($itemData->getUserEmail());
+        $Data->addParam($itemData->getUserId());
+
+        DbWrapper::getQuery($Data);
+
+        return $Data->getQueryNumRows() > 0;
+    }
+
+    /**
+     * Updates an user's pass
+     *
+     * @param UserData $itemData
+     * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function updatePass($itemData)
+    {
+        $query = /** @lang SQL */
+            'UPDATE usrData SET
+            user_pass = ?,
+            user_hashSalt = \'\',
+            user_isChangePass = 0,
+            user_isChangedPass = 1,
+            user_lastUpdate = NOW()
+            WHERE user_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(Hash::hashKey($itemData->getUserPass()));
+        $Data->addParam($itemData->getUserId());
+        $Data->setOnErrorMessage(__u('Error al modificar la clave'));
+
+        DbWrapper::getQuery($Data);
+
+        return $this;
     }
 
     /**
      * Deletes an item
      *
      * @param $id
+     * @return int
+     * @throws SPException
      */
     public function delete($id)
     {
-        // TODO: Implement delete() method.
+        $query = 'DELETE FROM usrData WHERE user_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+        $Data->setOnErrorMessage(__u('Error al eliminar el usuario'));
+
+        DbWrapper::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __u('Usuario no encontrado'));
+        }
+
+        return DbWrapper::$lastId;
     }
 
     /**
@@ -120,7 +233,7 @@ class UserService extends Service implements ServiceItemInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener los datos del usuario', false));
+            throw new SPException(SPException::SP_ERROR, __u('Error al obtener los datos del usuario'));
         }
 
         return $queryRes;
@@ -170,26 +283,6 @@ class UserService extends Service implements ServiceItemInterface
     }
 
     /**
-     * Checks whether the item is duplicated on updating
-     *
-     * @return bool
-     */
-    public function checkDuplicatedOnUpdate()
-    {
-        // TODO: Implement checkDuplicatedOnUpdate() method.
-    }
-
-    /**
-     * Checks whether the item is duplicated on adding
-     *
-     * @return bool
-     */
-    public function checkDuplicatedOnAdd()
-    {
-        // TODO: Implement checkDuplicatedOnAdd() method.
-    }
-
-    /**
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
@@ -236,5 +329,114 @@ class UserService extends Service implements ServiceItemInterface
         $queryRes['count'] = $Data->getQueryNumRows();
 
         return $queryRes;
+    }
+
+    /**
+     * Logs user action
+     *
+     * @param int $id
+     * @param int $actionId
+     * @return \SP\Core\Messages\LogMessage
+     */
+    public function logAction($id, $actionId)
+    {
+        $query = /** @lang SQL */
+            'SELECT user_id, user_login, user_name FROM usrData WHERE user_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        $user = DbWrapper::getResults($Data);
+
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(Acl::getActionInfo($actionId));
+        $LogMessage->addDetails(__u('Usuario'), sprintf('%s (%s)', $user->user_name, $user->user_login));
+        $LogMessage->addDetails(__u('ID'), $id);
+        $Log->writeLog();
+
+        return $LogMessage;
+    }
+
+    /**
+     * Creates an item
+     *
+     * @param UserData $itemData
+     * @return mixed
+     * @throws SPException
+     */
+    public function create($itemData)
+    {
+        if ($this->checkDuplicatedOnAdd($itemData)) {
+            throw new SPException(SPException::SP_INFO, __u('Login/email de usuario duplicados'));
+        }
+
+        $query = /** @lang SQL */
+            'INSERT INTO usrData SET
+            user_name = ?,
+            user_login = ?,
+            user_ssoLogin = ?,
+            user_email = ?,
+            user_notes = ?,
+            user_groupId = ?,
+            user_profileId = ?,
+            user_mPass = \'\',
+            user_mKey = \'\',
+            user_isAdminApp = ?,
+            user_isAdminAcc = ?,
+            user_isDisabled = ?,
+            user_isChangePass = ?,
+            user_isLdap = 0,
+            user_pass = ?,
+            user_hashSalt = \'\'';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getUserName());
+        $Data->addParam($itemData->getUserLogin());
+        $Data->addParam($itemData->getUserSsoLogin());
+        $Data->addParam($itemData->getUserEmail());
+        $Data->addParam($itemData->getUserNotes());
+        $Data->addParam($itemData->getUserGroupId());
+        $Data->addParam($itemData->getUserProfileId());
+        $Data->addParam($itemData->isUserIsAdminApp());
+        $Data->addParam($itemData->isUserIsAdminAcc());
+        $Data->addParam($itemData->isUserIsDisabled());
+        $Data->addParam($itemData->isUserIsChangePass());
+        $Data->addParam(Hash::hashKey($itemData->getUserPass()));
+        $Data->setOnErrorMessage(__u('Error al crear el usuario'));
+
+        DbWrapper::getQuery($Data);
+
+        return DbWrapper::getLastId();
+    }
+
+    /**
+     * Checks whether the item is duplicated on adding
+     *
+     * @param UserData $itemData
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function checkDuplicatedOnAdd($itemData)
+    {
+        $query = /** @lang SQL */
+            'SELECT user_login, user_email
+            FROM usrData
+            WHERE UPPER(user_login) = UPPER(?) 
+            OR UPPER(user_ssoLogin) = UPPER(?) 
+            OR UPPER(user_email) = UPPER(?)';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getUserLogin());
+        $Data->addParam($itemData->getUserSsoLogin());
+        $Data->addParam($itemData->getUserEmail());
+
+        DbWrapper::getQuery($Data);
+
+        return $Data->getQueryNumRows() > 0;
     }
 }

@@ -42,27 +42,6 @@ class UserProfileService extends Service implements ServiceItemInterface
     use ServiceItemTrait;
 
     /**
-     * Creates an item
-     *
-     * @return mixed
-     */
-    public function create()
-    {
-        // TODO: Implement create() method.
-    }
-
-    /**
-     * Updates an item
-     *
-     * @param $id
-     * @return mixed
-     */
-    public function update($id)
-    {
-        // TODO: Implement update() method.
-    }
-
-    /**
      * Deletes an item
      *
      * @param $id
@@ -137,26 +116,6 @@ class UserProfileService extends Service implements ServiceItemInterface
     }
 
     /**
-     * Checks whether the item is duplicated on updating
-     *
-     * @return bool
-     */
-    public function checkDuplicatedOnUpdate()
-    {
-        // TODO: Implement checkDuplicatedOnUpdate() method.
-    }
-
-    /**
-     * Checks whether the item is duplicated on adding
-     *
-     * @return bool
-     */
-    public function checkDuplicatedOnAdd()
-    {
-        // TODO: Implement checkDuplicatedOnAdd() method.
-    }
-
-    /**
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
@@ -187,5 +146,49 @@ class UserProfileService extends Service implements ServiceItemInterface
         $queryRes['count'] = $Data->getQueryNumRows();
 
         return $queryRes;
+    }
+
+    /**
+     * Creates an item
+     *
+     * @param mixed $itemData
+     * @return mixed
+     */
+    public function create($itemData)
+    {
+        // TODO: Implement create() method.
+    }
+
+    /**
+     * Updates an item
+     *
+     * @param mixed $itemData
+     * @return mixed
+     */
+    public function update($itemData)
+    {
+        // TODO: Implement update() method.
+    }
+
+    /**
+     * Checks whether the item is duplicated on updating
+     *
+     * @param mixed $itemData
+     * @return bool
+     */
+    public function checkDuplicatedOnUpdate($itemData)
+    {
+        // TODO: Implement checkDuplicatedOnUpdate() method.
+    }
+
+    /**
+     * Checks whether the item is duplicated on adding
+     *
+     * @param mixed $itemData
+     * @return bool
+     */
+    public function checkDuplicatedOnAdd($itemData)
+    {
+        // TODO: Implement checkDuplicatedOnAdd() method.
     }
 }

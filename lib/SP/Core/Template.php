@@ -26,8 +26,8 @@ namespace SP\Core;
 
 defined('APP_ROOT') || die();
 
-use InvalidArgumentException;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
@@ -104,8 +104,8 @@ class Template
      *
      * @param string $template Con el nombre del archivo
      * @return string La ruta al archivo de la plantilla
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      * @param string $base     Directorio base para la plantilla
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     private function checkTemplate($template, $base = null)
     {
@@ -196,7 +196,7 @@ class Template
     {
         try {
             return $this->checkTemplate($file, $base);
-        } catch (InvalidArgumentException $e) {
+        } catch (FileNotFoundException $e) {
             return false;
         }
     }
@@ -206,14 +206,14 @@ class Template
      *
      * @param string $name Nombre del atributo
      * @return null
-     * @throws InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function __get($name)
     {
         if (!array_key_exists($name, $this->vars)) {
             debugLog(sprintf(__('No es posible obtener la variable "%s"'), $name));
 
-            throw new InvalidArgumentException(sprintf(__('No es posible obtener la variable "%s"'), $name));
+            throw new InvalidArgumentException(SPException::SP_ERROR, sprintf(__('No es posible obtener la variable "%s"'), $name));
         }
 
         return $this->vars[$name];
@@ -251,14 +251,14 @@ class Template
      *
      * @param string $name Nombre del atributo
      * @return $this
-     * @throws InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function __unset($name)
     {
         if (!array_key_exists($name, $this->vars)) {
             debugLog(sprintf(__('No es posible destruir la variable "%s"'), $name));
 
-            throw new InvalidArgumentException(sprintf(__('No es posible destruir la variable "%s"'), $name));
+            throw new InvalidArgumentException(SPException::SP_ERROR, sprintf(__('No es posible destruir la variable "%s"'), $name));
         }
 
         unset($this->vars[$name]);

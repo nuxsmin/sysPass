@@ -69,7 +69,7 @@ sysPass.Triggers = function (Common) {
 
         $container.find("#wikifilter").selectize({
             create: true,
-            createFilter: new RegExp("^[a-z0-9:\._-]+$", "i"),
+            createFilter: new RegExp("^[a-z0-9:._-]+$", "i"),
             plugins: ["remove_button"]
         });
     };
@@ -79,6 +79,8 @@ sysPass.Triggers = function (Common) {
      * @param $obj
      */
     var handleActionButton = function ($obj) {
+        log.info("handleActionButton: " + $obj.attr("id"));
+
         var onclick = $obj.data("onclick").split("/");
         var actions;
 

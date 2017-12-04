@@ -12,7 +12,10 @@
     <div id="tabsHeader" class="mdl-tabs__tab-bar"></div>
 
     <?php foreach ($tabs as $index => $data): ?>
-        <div id="tabs-<?php echo $index; ?>" class="mdl-tabs__panel">
+        <div id="tabs-<?php echo $index; ?>"
+             class="mdl-tabs__panel"
+             data-tab_route="<?php echo $tabsRoute; ?>"
+             data-tab_index="<?php echo $index; ?>">
             <div class="tab-actions">
                 <ul>
                     <?php foreach ($data->getDataActions() as $action):
@@ -21,11 +24,11 @@
                             <li>
                                 <button
                                         id="btn-add-<?php echo $action->getId(); ?>"
+                                        type="button"
                                         class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200 mdl-js-ripple-effect"
-                                        data-activetab="<?php echo $index; ?>"
                                         data-nextaction-id="<?php echo $data->getOnCloseAction(); ?>"
                                         data-onclick="<?php echo $action->getOnClick(); ?>"
-                                        <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
+                                    <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                                     <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
                                 </button>
                                 <span for="btn-add-<?php echo $action->getId(); ?>"
@@ -37,7 +40,6 @@
                                       name="<?php echo $action->getName(); ?>"
                                       class="form-action"
                                       data-target="#data-table-<?php echo $data->getId(); ?>"
-                                      data-activetab="<?php echo $index; ?>"
                                       data-onsubmit="<?php echo $action->getOnSubmit(); ?>"
                                     <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
 
@@ -96,8 +98,6 @@
                                     <li class="btn-action mdl-menu__item"
                                         data-onclick="<?php echo $action->getOnClick(); ?>"
                                         data-action-id="<?php echo $action->getId(); ?>"
-                                        data-nextaction-id="<?php echo $actionId; ?>"
-                                        data-activetab="<?php echo $index; ?>"
                                         data-selection="#data-table-<?php echo $data->getId(); ?>">
                                         <i class="material-icons <?php echo $action->getIcon()->getClass(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>
                                         <?php echo __('Eliminar Seleccionados'); ?>
@@ -115,7 +115,7 @@
         </div>
 
         <script type="text/javascript">
-            sysPassApp.theme().html.tabs.add("#tabsHeader", <?php echo $index; ?>, "<?php echo $data->getTitle(); ?>", <?php echo $index === $activeTabId ? 1 : 0; ?>);
+            sysPassApp.theme().html.tabs.add("#tabsHeader", <?php echo $index; ?>, "<?php echo $data->getTitle(); ?>", <?php echo $index === $activeTab ? 1 : 0; ?>);
         </script>
     <?php endforeach; ?>
 </div> <!-- End Tabs-->

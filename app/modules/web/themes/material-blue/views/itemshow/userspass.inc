@@ -6,10 +6,13 @@
 <div id="box-popup">
     <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>
 
-    <form method="post" name="updUsrPass" id="frmUpdUsrPass" class="form-action" data-onsubmit="appMgmt/save" data-hash="">
+    <form method="post" name="updUsrPass" id="frmUpdUsrPass" class="form-action"
+          data-onsubmit="appMgmt/save"
+          data-route="<?php echo $route; ?>"
+          data-hash="">
         <table class="popup-data">
             <tr>
-                <td class="descField"><?php echo __('Nombre') ?></td>
+                <td class="descField"><?php echo __('Nombre'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield">
                         <input id="name" name="name" type="text"
@@ -56,8 +59,6 @@
                 </td>
             </tr>
         </table>
-        <input type="hidden" name="itemId" value="<?php echo $user->getId(); ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
         <input type="hidden" name="sk" value="<?php echo $sk; ?>">
     </form>
 

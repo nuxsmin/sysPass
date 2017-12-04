@@ -44,14 +44,18 @@ class TabsGridHelper extends HelperBase
 
     /**
      * Inicializar las plantillas para las pestañas
+     *
+     * @param string $route
+     * @param int    $activeTab
      */
-    public function renderTabs()
+    public function renderTabs($route, $activeTab = 0)
     {
         $this->view->addTemplate('datatabs-grid', 'grid');
 
         $this->view->assign('tabs', $this->tabs);
-        $this->view->assign('activeTab', 0);
+        $this->view->assign('activeTab', $activeTab);
         $this->view->assign('maxNumActions', self::MAX_NUM_ACTIONS);
+        $this->view->assign('tabsRoute', $route);
     }
 
     /**

@@ -145,7 +145,6 @@ abstract class ControllerBase
 
         $this->view->assign('actionId', Request::analyze('actionId', 0));
         $this->view->assign('id', Request::analyze('itemId', 0));
-        $this->view->assign('activeTabId', Request::analyze('itemId', 0));
         $this->view->assign('queryTimeStart', microtime());
         $this->view->assign('userId', $this->userData->getUserId());
         $this->view->assign('userGroupId', $this->userData->getUserGroupId());

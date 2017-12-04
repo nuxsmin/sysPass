@@ -52,7 +52,6 @@ use SP\Html\Html;
                                 <i id="btn-action-<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}, '-', $action->getId(); ?>"
                                    class="btn-action material-icons <?php echo $action->getIcon()->getClass(); ?>"
                                    data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>"
-                                   data-activetab="<?php echo $index; ?>"
                                    data-onclick="<?php echo $action->getOnClick(); ?>"
                                     <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>
                                 ><?php echo $action->getIcon()->getIcon(); ?></i>

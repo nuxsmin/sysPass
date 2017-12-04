@@ -120,8 +120,8 @@ class AccountService extends Service
         $Log = new Log();
         $LogMessage = $Log->getLogMessage();
         $LogMessage->setAction(Acl::getActionInfo($actionId));
-        $LogMessage->addDetails(__('ID', false), $id);
-        $LogMessage->addDetails(__('Cuenta', false), $account->customer_name . ' / ' . $account->account_name);
+        $LogMessage->addDetails(__u('ID'), $id);
+        $LogMessage->addDetails(__u('Cuenta'), $account->customer_name . ' / ' . $account->account_name);
         $Log->writeLog();
 
         return $LogMessage;
@@ -181,7 +181,7 @@ class AccountService extends Service
         $Data->addParam($accountData->getAccountIsPrivateGroup(), 'accountIsPrivateGroup');
         $Data->addParam($accountData->getAccountPassDateChange(), 'accountPassDateChange');
         $Data->addParam($accountData->getAccountParentId(), 'accountParentId');
-        $Data->setOnErrorMessage(__('Error al crear la cuenta', false));
+        $Data->setOnErrorMessage(__u('Error al crear la cuenta'));
 
         DbWrapper::getQuery($Data);
 
@@ -211,12 +211,12 @@ class AccountService extends Service
             $accountData->setAccountKey($securedKey);
 
             if (strlen($securedKey) > 1000 || strlen($accountData->getAccountPass()) > 1000) {
-                throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                throw new QueryException(SPException::SP_ERROR, __u('Error interno'));
             }
 
             return $accountData;
         } catch (CryptoException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error interno', false));
+            throw new SPException(SPException::SP_ERROR, __u('Error interno'));
         }
     }
 
@@ -312,7 +312,7 @@ class AccountService extends Service
         $Data->addParam($accountData->getAccountIsPrivateGroup(), 'accountIsPrivateGroup');
         $Data->addParam($accountData->getAccountParentId(), 'accountParentId');
         $Data->addParam($accountData->getAccountId(), 'accountId');
-        $Data->setOnErrorMessage(__('Error al modificar la cuenta', false));
+        $Data->setOnErrorMessage(__u('Error al modificar la cuenta'));
 
         DbWrapper::getQuery($Data);
 
@@ -377,7 +377,7 @@ class AccountService extends Service
         $Data->addParam($accountData->getAccountUserEditId(), 'accountUserEditId');
         $Data->addParam($accountData->getAccountPassDateChange(), 'accountPassDateChange');
         $Data->addParam($accountData->getAccountId(), 'accountId');
-        $Data->setOnErrorMessage(__('Error al actualizar la clave', false));
+        $Data->setOnErrorMessage(__u('Error al actualizar la clave'));
 
         DbWrapper::getQuery($Data);
     }
@@ -421,7 +421,7 @@ class AccountService extends Service
         $Data->setQuery($query);
         $Data->addParam($historyId, 'id');
         $Data->addParam($this->session->getUserData()->getUserId(), 'accountUserEditId');
-        $Data->setOnErrorMessage(__('Error al restaurar cuenta', false));
+        $Data->setOnErrorMessage(__u('Error al restaurar cuenta'));
 
         DbWrapper::getQuery($Data);
     }
@@ -453,7 +453,7 @@ class AccountService extends Service
 
         $Data->setQuery($query);
         $Data->addParam($id);
-        $Data->setOnErrorMessage(__('Error al eliminar la cuenta', false));
+        $Data->setOnErrorMessage(__u('Error al eliminar la cuenta'));
 
         DbWrapper::getQuery($Data);
 

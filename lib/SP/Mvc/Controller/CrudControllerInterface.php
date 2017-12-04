@@ -51,11 +51,4 @@ interface CrudControllerInterface
      * @param $id
      */
     public function saveEditAction($id);
-
-    /**
-     * Saves delete action
-     *
-     * @param $id
-     */
-    public function saveDeleteAction($id);
 }

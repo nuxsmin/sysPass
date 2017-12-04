@@ -118,6 +118,39 @@ sysPass.Actions = function (Common) {
         });
     };
 
+    // Función para cargar el contenido de la acción del menú seleccionada
+    var getContent = function (data, view) {
+        log.info("getContent");
+
+        data.isAjax = 1;
+
+        var opts = Common.appRequests().getRequestOpts();
+        opts.url = ajaxUrl.doAction;
+        opts.method = "get";
+        opts.type = "html";
+        opts.addHistory = true;
+        opts.data = data;
+
+        Common.appRequests().getActionCall(opts, function (response) {
+            var $content = $("#content");
+
+            $content.empty().html(response);
+
+            var views = Common.triggers().views;
+            views.common($content);
+
+            if (view !== undefined && typeof views[view] === "function") {
+                views[view]();
+            }
+
+            var $mdlContent = $(".mdl-layout__content");
+
+            if ($mdlContent.scrollTop() > 0) {
+                $mdlContent.animate({scrollTop: 0}, 1000);
+            }
+        });
+    };
+
     /**
      * Mostrar el contenido en una caja flotante
      *
@@ -1089,24 +1122,35 @@ sysPass.Actions = function (Common) {
 
     /**
      * Objeto con acciones sobre elementos de la aplicación
-     *
-     * @type {{show: appMgmt.show, delete: appMgmt.delete, save: appMgmt.save, search: appMgmt.search, nav: appMgmt.nav}}
      */
     var appMgmt = {
         refreshTab: true,
+        state: {
+            tab: {
+                index: 0,
+                refresh: true,
+                route: ""
+            },
+            itemId: 0,
+            update: function ($obj) {
+                var $currentTab = $("#content").find("[id^='tabs-'].is-active");
+
+                appMgmt.state.tab.refresh = !$obj.data("item-dst");
+                appMgmt.state.tab.index = $currentTab.data("tab_index");
+                appMgmt.state.tab.route = $currentTab.data("tab_route");
+                appMgmt.state.itemId = $obj.data("item-id");
+            }
+        },
         show: function ($obj) {
             log.info("appMgmt:show");
 
-            if ($obj.data("item-dst") || $obj.data("activetab") === undefined) {
-                appMgmt.refreshTab = false;
-            }
+            appMgmt.state.update($obj);
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.show;
             opts.method = "get";
             opts.data = {
                 r: $obj.data("route") + "/" + $obj.data("item-id"),
-                activeTab: $obj.data("activetab"),
                 sk: Common.sk.get(),
                 isAjax: 1
             };
@@ -1122,12 +1166,15 @@ sysPass.Actions = function (Common) {
         delete: function ($obj) {
             log.info("appMgmt:delete");
 
+            appMgmt.state.update($obj);
+
             var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[12] + "</p></div>";
             var selection = $obj.data("selection");
             var items = [];
 
+            // FIXME
             if (selection) {
-                $(selection).find(".is-selected").each(function (index, value) {
+                $(selection).find(".is-selected").each(function () {
                     var $this = $(this);
 
                     items.push($this.data("item-id"));
@@ -1155,9 +1202,9 @@ sysPass.Actions = function (Common) {
 
                         var opts = Common.appRequests().getRequestOpts();
                         opts.url = ajaxUrl.appMgmt.save;
+                        opts.method = "get";
                         opts.data = {
-                            itemId: selection ? items : $obj.data("item-id"),
-                            actionId: $obj.data("action-id"),
+                            r: $obj.data("route") + "/" + $obj.data("item-id"),
                             sk: Common.sk.get(),
                             isAjax: 1
                         };
@@ -1165,9 +1212,10 @@ sysPass.Actions = function (Common) {
                         Common.appRequests().getActionCall(opts, function (json) {
                             Common.msg.out(json);
 
-                            if ($obj.data("nextaction-id")) {
-                                doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
-                            }
+                            getContent({
+                                r: appMgmt.state.tab.route,
+                                tabIndex: appMgmt.state.tab.index
+                            });
                         });
                     }
                 }
@@ -1177,17 +1225,18 @@ sysPass.Actions = function (Common) {
             log.info("appMgmt:save");
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.appMgmt.save;
+            opts.url = ajaxUrl.appMgmt.save + "?r=" + $obj.data("route");
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
                 if (json.status === 0) {
-                    var activeTab = $obj.data("activetab");
-
-                    if (appMgmt.refreshTab === true && activeTab !== undefined) {
-                        doAction({actionId: $obj.data("nextaction-id"), itemId: activeTab});
+                    if (appMgmt.state.tab.refresh === true) {
+                        getContent({
+                            r: appMgmt.state.tab.route,
+                            tabIndex: appMgmt.state.tab.index
+                        });
                     }
 
                     $.magnificPopup.close();

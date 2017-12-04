@@ -25,8 +25,10 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Controller\ControllerBase;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\DataModel\ItemSearchData;
+use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
 use SP\Services\ApiToken\ApiTokenService;
@@ -55,6 +57,9 @@ class AccessManagerController extends ControllerBase
      */
     protected $tabsGridHelper;
 
+    /**
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     */
     public function indexAction()
     {
         $this->getGridTabs();
@@ -96,7 +101,7 @@ class AccessManagerController extends ControllerBase
 
         $this->eventDispatcher->notifyEvent('show.itemlist.accesses', $this);
 
-        $this->tabsGridHelper->renderTabs();
+        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE), Request::analyze('tabIndex', 0));
 
         $this->view();
     }

@@ -36,16 +36,18 @@ interface ServiceItemInterface
     /**
      * Creates an item
      *
+     * @param mixed $itemData
      * @return mixed
      */
-    public function create();
+    public function create($itemData);
 
     /**
      * Updates an item
      *
+     * @param mixed $itemData
      * @return mixed
      */
-    public function update($id);
+    public function update($itemData);
 
     /**
      * Deletes an item
@@ -96,16 +98,18 @@ interface ServiceItemInterface
     /**
      * Checks whether the item is duplicated on updating
      *
+     * @param mixed $itemData
      * @return bool
      */
-    public function checkDuplicatedOnUpdate();
+    public function checkDuplicatedOnUpdate($itemData);
 
     /**
      * Checks whether the item is duplicated on adding
      *
+     * @param mixed $itemData
      * @return bool
      */
-    public function checkDuplicatedOnAdd();
+    public function checkDuplicatedOnAdd($itemData);
 
     /**
      * Searches for items by a given filter

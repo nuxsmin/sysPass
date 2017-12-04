@@ -1,11 +1,6 @@
 <?php
 /** @var $icons \SP\Core\UI\ThemeIconsBase */
 /** @var $user \SP\DataModel\UserData */
-
-if ($user->getUserLogin() === 'demo') {
-    $isReadonly = 'readonly';
-    $isDisabled = 'disabled';
-}
 ?>
 
 <div id="box-popup">
@@ -13,8 +8,9 @@ if ($user->getUserLogin() === 'demo') {
 
     <form method="post" name="frmUsers" id="frmUsers" class="form-action"
           data-onsubmit="appMgmt/save"
+          data-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\Acl\ActionsInterface::USER; ?>"
+          data-nextaction="<?php echo $nextAction; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -26,7 +22,7 @@ if ($user->getUserLogin() === 'demo') {
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $user->getUserName(); ?>"
-                               maxlength="80" <?php echo $isReadonly; ?>>
+                               maxlength="80" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Nombre de usuario completo'); ?></label>
                     </div>
@@ -40,7 +36,7 @@ if ($user->getUserLogin() === 'demo') {
                         <input id="login" name="login" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $user->getUserLogin(); ?>"
-                               maxlength="80" <?php echo $user->isUserIsLdap() || $isReadonly ? 'readonly' : ''; ?>>
+                               maxlength="80" <?php echo $user->isUserIsLdap() ? 'readonly' : $readonly; ?>>
                         <label class="mdl-textfield__label"
                                for="login"><?php echo __('Login de inicio de sesión'); ?></label>
                     </div>
@@ -59,7 +55,7 @@ if ($user->getUserLogin() === 'demo') {
                             <input id="login_sso" name="login_sso" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php echo $user->getUserSsoLogin(); ?>"
-                                   maxlength="100" <?php echo $isReadonly ? 'readonly' : ''; ?>>
+                                   maxlength="100" <?php echo $readonly; ?>>
                             <label class="mdl-textfield__label"
                                    for="login_sso"><?php echo __('Login de inicio de sesión con SSO'); ?></label>
                         </div>
@@ -73,11 +69,11 @@ if ($user->getUserLogin() === 'demo') {
                     <div class="lowres-title"><?php echo __('Perfil'); ?></div>
 
                     <select id="selProfile" name="profileid"
-                            class="select-box" required <?php echo $isDisabled; ?>>
+                            class="select-box" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Perfil'); ?></option>
                         <?php foreach ($profiles as $profile): ?>
                             <option
-                                    value="<?php echo $profile->id; ?>" <?php echo ($profile->id == $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
+                                    value="<?php echo $profile->id; ?>" <?php echo ($profile->id === $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -89,7 +85,7 @@ if ($user->getUserLogin() === 'demo') {
                     <div class="lowres-title"><?php echo __('Grupo'); ?></div>
 
                     <select id="selGroup" name="groupid"
-                            class="select-box" required <?php echo $isDisabled; ?>>
+                            class="select-box" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
                         <?php foreach ($groups as $group): ?>
                             <option
@@ -105,7 +101,7 @@ if ($user->getUserLogin() === 'demo') {
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="email" name="email" type="email" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $user->getUserEmail(); ?>" maxlength="50" <?php echo $isReadonly; ?>>
+                               value="<?php echo $user->getUserEmail(); ?>" maxlength="50" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label"
                                for="email"><?php echo __('Dirección de correo'); ?></label>
                     </div
@@ -113,7 +109,7 @@ if ($user->getUserLogin() === 'demo') {
 
             </tr>
 
-            <?php if ($actionId === \SP\Core\Acl\ActionsInterface::USER_CREATE): ?>
+            <?php if (isset($createAction)): ?>
                 <tr>
                     <td class="descField"><?php echo __('Clave'); ?></td>
                     <td class="valField">
@@ -146,7 +142,7 @@ if ($user->getUserLogin() === 'demo') {
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input" rows="3" id="notes" name="notes"
-                                  maxlength="1000" <?php echo $isReadonly; ?>><?php echo $user->getUserNotes(); ?></textarea>
+                                  maxlength="1000" <?php echo $readonly; ?>><?php echo $user->getUserNotes(); ?></textarea>
                         <label class="mdl-textfield__label"
                                for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
                     </div>
@@ -156,18 +152,18 @@ if ($user->getUserLogin() === 'demo') {
             <tr>
                 <td class="descField"><?php echo __('Opciones'); ?></td>
                 <td class="valField checkbox">
-                    <?php if ($SessionUserData->isUserIsAdminApp() || $isDemo): ?>
+                    <?php if ($userIsAdminApp || $isDemo): ?>
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminapp"
                                title="<?php echo __('Administrador de la aplicación'); ?>">
                             <input type="checkbox" id="adminapp" class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="adminapp" <?php echo $user->isUserIsAdminApp() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
+                                   name="adminapp" <?php echo $user->isUserIsAdminApp() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Admin Aplicación'); ?></span>
                         </label>
 
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminacc"
                                title="<?php echo __('Administrador de cuentas'); ?>">
                             <input type="checkbox" id="adminacc" class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="adminacc" <?php echo $user->isUserIsAdminAcc() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
+                                   name="adminacc" <?php echo $user->isUserIsAdminAcc() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Admin Cuentas'); ?></span>
                         </label>
                     <?php endif; ?>
@@ -175,14 +171,14 @@ if ($user->getUserLogin() === 'demo') {
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="disabled"
                            title="<?php echo __('Deshabilitado'); ?>">
                         <input type="checkbox" id="disabled" class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="disabled" <?php echo $user->isUserIsDisabled() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
+                               name="disabled" <?php echo $user->isUserIsDisabled() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Deshabilitado'); ?></span>
                     </label>
 
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="changepass"
                            title="<?php echo __('Forzar cambio de clave'); ?>">
                         <input type="checkbox" id="changepass" class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="changepass" <?php echo $user->isUserIsChangePass() ? 'checked' : ' '; ?> <?php echo $isDisabled; ?>/>
+                               name="changepass" <?php echo $user->isUserIsChangePass() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Cambio de Clave'); ?></span>
                     </label>
                 </td>
@@ -232,9 +228,7 @@ if ($user->getUserLogin() === 'demo') {
             </tbody>
         </table>
         <?php if (!$isView): ?>
-            <input type="hidden" name="isLdap" value="<?php echo $user->isUserIsLdap() ? 1 : 0; ?>"/>
-            <input type="hidden" name="itemId" value="<?php echo $user->getUserId(); ?>"/>
-            <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
+            <input type="hidden" name="isLdap" value="<?php echo $user->isUserIsLdap(); ?>"/>
             <input type="hidden" name="sk" value="<?php echo $sk; ?>">
             <input type="hidden" name="isAjax" value="1">
         <?php endif; ?>

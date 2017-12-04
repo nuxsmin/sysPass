@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers\Traits;
 
+use SP\Core\Exceptions\SPException;
+use SP\Http\Request;
 use SP\Services\CustomField\CustomFieldService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
@@ -47,6 +49,45 @@ trait ItemTrait
     {
         $customFieldService = new CustomFieldService();
         return $customFieldService->getForModuleById($moduleId, $itemId);
+    }
+
+    /**
+     * Añadir los campos personalizados del elemento
+     *
+     * @param int       $moduleId
+     * @param int|int[] $itemId
+     * @throws SPException
+     */
+    protected function addCustomFieldsForItem($moduleId, $itemId)
+    {
+        $customFieldService = new CustomFieldService();
+        $customFieldService->addCustomFieldData(Request::analyze('customfield'), $itemId, $moduleId);
+    }
+
+    /**
+     * Eliminar los campos personalizados del elemento
+     *
+     * @param int       $moduleId
+     * @param int|int[] $itemId
+     * @throws SPException
+     */
+    protected function deleteCustomFieldsForItem($moduleId, $itemId)
+    {
+        $customFieldService = new CustomFieldService();
+        $customFieldService->deleteCustomFieldData($itemId, $moduleId);
+    }
+
+    /**
+     * Actualizar los campos personalizados del elemento
+     *
+     * @param int       $moduleId
+     * @param int|int[] $itemId
+     * @throws SPException
+     */
+    protected function updateCustomFieldsForItem($moduleId, $itemId)
+    {
+        $customFieldService = new CustomFieldService();
+        $customFieldService->updateCustomFieldData(Request::analyze('customfield'), $itemId, $moduleId);
     }
 
     /**

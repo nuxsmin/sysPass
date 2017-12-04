@@ -39,7 +39,7 @@ class Json
      * Devuelve una respuesta en formato JSON con el estado y el mensaje.
      *
      * @param JsonResponse $JsonResponse
-     * @return bool
+     * @return void
      */
     public static function returnJson(JsonResponse $JsonResponse)
     {
@@ -68,7 +68,7 @@ class Json
         $json = json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR);
 
         if ($json === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('Error de codificación', false), json_last_error_msg());
+            throw new SPException(SPException::SP_CRITICAL, __u('Error de codificación'), json_last_error_msg());
         }
 
         return $json;
@@ -93,11 +93,13 @@ class Json
                         }
 
                         return $value;
-                    } elseif (is_string($value) && $value !== '') {
-                        return self::safeJsonString($value);
-                    } else {
-                        return $value;
                     }
+
+                    if (is_string($value) && $value !== '') {
+                        return self::safeJsonString($value);
+                    }
+
+                    return $value;
                 }
             );
         } elseif (is_string($data) && $data !== '') {

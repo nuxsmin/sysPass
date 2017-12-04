@@ -53,7 +53,7 @@ class UserForm extends FormBase implements FormInterface
      *
      * @param $action
      * @return bool
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function validate($action)
     {
@@ -108,27 +108,27 @@ class UserForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->isLdap && !$this->UserData->getUserName()) {
-            throw new ValidationException(__('Es necesario un nombre de usuario', false));
+            throw new ValidationException(__u('Es necesario un nombre de usuario'));
         }
 
         if (!$this->isLdap && !$this->UserData->getUserLogin()) {
-            throw new ValidationException(__('Es necesario un login', false));
+            throw new ValidationException(__u('Es necesario un login'));
         }
 
         if (!$this->UserData->getUserProfileId()) {
-            throw new ValidationException(__('Es necesario un perfil', false));
+            throw new ValidationException(__u('Es necesario un perfil'));
         }
 
         if (!$this->UserData->getUserGroupId()) {
-            throw new ValidationException(__('Es necesario un grupo', false));
+            throw new ValidationException(__u('Es necesario un grupo'));
         }
 
         if (!$this->isLdap && !$this->UserData->getUserEmail()) {
-            throw new ValidationException(__('Es necesario un email', false));
+            throw new ValidationException(__u('Es necesario un email'));
         }
 
         if ($this->ConfigData->isDemoEnabled() && !SessionFactory::getUserData()->isUserIsAdminApp() && $this->UserData->getUserLogin() === 'demo') {
-            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
+            throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
     }
 
@@ -140,15 +140,15 @@ class UserForm extends FormBase implements FormInterface
         $userPassR = Request::analyzeEncrypted('passR');
 
         if ($this->ConfigData->isDemoEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
-            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
+            throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
 
         if (!$userPassR || !$this->UserData->getUserPass()) {
-            throw new ValidationException(__('La clave no puede estar en blanco', false));
+            throw new ValidationException(__u('La clave no puede estar en blanco'));
         }
 
         if ($this->UserData->getUserPass() !== $userPassR) {
-            throw new ValidationException(__('Las claves no coinciden', false));
+            throw new ValidationException(__u('Las claves no coinciden'));
         }
     }
 
@@ -158,13 +158,13 @@ class UserForm extends FormBase implements FormInterface
     protected function checkDelete()
     {
         if ($this->ConfigData->isDemoEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
-            throw new ValidationException(__('Ey, esto es una DEMO!!', false));
+            throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
 
         if ((!is_array($this->itemId) === SessionFactory::getUserData()->getUserId())
             || (is_array($this->itemId) && in_array(SessionFactory::getUserData()->getUserId(), $this->itemId))
         ) {
-            throw new ValidationException(__('No es posible eliminar, usuario en uso', false));
+            throw new ValidationException(__u('No es posible eliminar, usuario en uso'));
         }
     }
 

@@ -80,6 +80,17 @@ function __($message, $translate = true)
 }
 
 /**
+ * Alias gettext function
+ *
+ * @param string $message
+ * @return string
+ */
+function __u($message)
+{
+    return $message;
+}
+
+/**
  * Alias para obtener las locales de un dominio
  *
  * @param string $domain

@@ -26,11 +26,11 @@ namespace SP\Services\CustomField;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefData;
 use SP\DataModel\ItemSearchData;
-use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\CustomFields\CustomFieldTypes;
 use SP\Services\Service;
 use SP\Services\ServiceItemInterface;
@@ -50,121 +50,174 @@ class CustomFieldService extends Service implements ServiceItemInterface
      * Guardar los datos de los campos personalizados del módulo
      *
      * @param array $customFields
-     * @param int   $id
+     * @param int   $itemId
      * @param int   $moduleId
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function addCustomFieldData($customFields, $id, $moduleId)
+    public function addCustomFieldData($customFields, $itemId, $moduleId)
     {
         if (is_array($customFields)) {
             $customFieldData = new CustomFieldData();
-            $customFieldData->setId($id);
+            $customFieldData->setId($itemId);
             $customFieldData->setModule($moduleId);
 
-            $this->addItemCustomFields($customFields, $customFieldData);
-        }
-    }
+            try {
+                foreach ($customFields as $id => $value) {
+                    $customFieldData->setDefinitionId($id);
+                    $customFieldData->setValue($value);
 
-    /**
-     * Crear los campos personalizados de un elemento
-     *
-     * @param array           $customFields
-     * @param CustomFieldData $CustomFieldData
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function addItemCustomFields(array &$customFields, CustomFieldData $CustomFieldData)
-    {
-        try {
-            foreach ($customFields as $id => $value) {
-                $CustomFieldData->setDefinitionId($id);
-                $CustomFieldData->setValue($value);
-
-                CustomField::getItem($CustomFieldData)->add();
+                    $this->create($customFieldData);
+                }
+            } catch (CryptoException $e) {
+                throw new SPException(SPException::SP_ERROR, __u('Error interno'));
             }
-        } catch (CryptoException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error interno', false));
-        }
-    }
-
-    /**
-     * Actualizar los datos de los campos personalizados del módulo
-     *
-     * @param array $customFields
-     * @param int   $id
-     * @param int   $moduleId
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function updateCustomFieldData($customFields, $id, $moduleId)
-    {
-        if (is_array($customFields)) {
-            $customFieldData = new CustomFieldData();
-            $customFieldData->setId($id);
-            $customFieldData->setModule($moduleId);
-
-            $this->updateItemCustomFields($customFields, $customFieldData);
-        }
-    }
-
-    /**
-     * Actualizar los campos personalizados de un elemento
-     *
-     * @param array           $customFields
-     * @param CustomFieldData $CustomFieldData
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function updateItemCustomFields(array &$customFields, CustomFieldData $CustomFieldData)
-    {
-        try {
-            foreach ($customFields as $id => $value) {
-                $CustomFieldData->setDefinitionId($id);
-                $CustomFieldData->setValue($value);
-
-                CustomField::getItem($CustomFieldData)->update();
-            }
-        } catch (CryptoException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error interno', false));
-        }
-    }
-
-    /**
-     * Eliminar los datos de los campos personalizados del módulo
-     *
-     * @param int|array $id
-     * @param int       $moduleId
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function deleteCustomFieldData($id, $moduleId)
-    {
-        $customFieldData = new CustomFieldData();
-        $customFieldData->setId($id);
-        $customFieldData->setModule($moduleId);
-
-        if (is_array($id)) {
-            CustomField::getItem($customFieldData)->deleteBatch($id);
-        } else {
-            CustomField::getItem($customFieldData)->delete($id);
         }
     }
 
     /**
      * Creates an item
      *
-     * @return mixed
+     * @param mixed $itemData
+     * @return bool
+     * @throws CryptoException
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function create()
+    public function create($itemData)
     {
-        // TODO: Implement create() method.
+        if ($itemData->getValue() === '') {
+            return true;
+        }
+
+        $sessionKey = CryptSession::getSessionKey();
+        $securedKey = Crypt::makeSecuredKey($sessionKey);
+
+        if (strlen($securedKey) > 1000) {
+            throw new QueryException(SPException::SP_ERROR, __u('Error interno'));
+        }
+
+        $query = /** @lang SQL */
+            'INSERT INTO customFieldsData SET
+            customfielddata_itemId = ?,
+            customfielddata_moduleId = ?,
+            customfielddata_defId = ?,
+            customfielddata_data = ?,
+            customfielddata_key = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getId());
+        $Data->addParam($itemData->getModule());
+        $Data->addParam($itemData->getDefinitionId());
+        $Data->addParam(Crypt::encrypt($itemData->getValue(), $securedKey, $sessionKey));
+        $Data->addParam($securedKey);
+
+        return DbWrapper::getQuery($Data);
+    }
+
+    /**
+     * Actualizar los datos de los campos personalizados del módulo
+     *
+     * @param array $customFields
+     * @param int   $itemId
+     * @param int   $moduleId
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function updateCustomFieldData($customFields, $itemId, $moduleId)
+    {
+        if (is_array($customFields)) {
+            $customFieldData = new CustomFieldData();
+            $customFieldData->setId($itemId);
+            $customFieldData->setModule($moduleId);
+
+            try {
+                foreach ($customFields as $id => $value) {
+                    $customFieldData->setDefinitionId($id);
+                    $customFieldData->setValue($value);
+
+                    $this->update($customFieldData);
+                }
+            } catch (CryptoException $e) {
+                throw new SPException(SPException::SP_ERROR, __u('Error interno'));
+            }
+        }
     }
 
     /**
      * Updates an item
      *
-     * @param $id
+     * @param mixed $itemData
      * @return mixed
+     * @throws CryptoException
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function update($id)
+    public function update($itemData)
     {
-        // TODO: Implement update() method.
+        $exists = $this->checkExists($itemData);
+
+        // Deletes item's custom field data if value is left blank
+        if ($exists && $itemData->getValue() === '') {
+            return $this->delete($itemData->getId());
+        }
+
+        // Create item's custom field data if value is set
+        if (!$exists && $itemData->getValue() !== '') {
+            return $this->create($itemData);
+        }
+
+        $sessionKey = CryptSession::getSessionKey();
+        $securedKey = Crypt::makeSecuredKey($sessionKey);
+
+        if (strlen($securedKey) > 1000) {
+            throw new QueryException(SPException::SP_ERROR, __u('Error interno'));
+        }
+
+        $query = /** @lang SQL */
+            'UPDATE customFieldsData SET
+            customfielddata_data = ?,
+            customfielddata_key = ?
+            WHERE customfielddata_moduleId = ?
+            AND customfielddata_itemId = ?
+            AND customfielddata_defId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam(Crypt::encrypt($itemData->getValue(), $securedKey, $sessionKey));
+        $Data->addParam($securedKey);
+        $Data->addParam($itemData->getModule());
+        $Data->addParam($itemData->getId());
+        $Data->addParam($itemData->getDefinitionId());
+
+        return DbWrapper::getQuery($Data);
+    }
+
+    /**
+     * Comprueba si el elemento tiene campos personalizados con datos
+     *
+     * @param CustomFieldData $itemData
+     * @return bool
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    protected function checkExists($itemData)
+    {
+        $query = /** @lang SQL */
+            'SELECT customfielddata_id
+            FROM customFieldsData
+            WHERE customfielddata_moduleId = ?
+            AND customfielddata_itemId = ?
+            AND customfielddata_defId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getModule());
+        $Data->addParam($itemData->getId());
+        $Data->addParam($itemData->getDefinitionId());
+
+        DbWrapper::getQuery($Data);
+
+        return ($Data->getQueryNumRows() >= 1);
     }
 
     /**
@@ -176,6 +229,29 @@ class CustomFieldService extends Service implements ServiceItemInterface
     public function delete($id)
     {
         // TODO: Implement delete() method.
+    }
+
+    /**
+     * Eliminar los datos de los campos personalizados del módulo
+     *
+     * @param int $id
+     * @param int $moduleId
+     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function deleteCustomFieldData($id, $moduleId)
+    {
+        $query = /** @lang SQL */
+            'DELETE FROM customFieldsData
+            WHERE customfielddata_itemId = ?
+            AND customfielddata_moduleId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+        $Data->addParam($moduleId);
+
+        return DbWrapper::getQuery($Data);
     }
 
     /**
@@ -230,26 +306,6 @@ class CustomFieldService extends Service implements ServiceItemInterface
     public function checkInUse($id)
     {
         // TODO: Implement checkInUse() method.
-    }
-
-    /**
-     * Checks whether the item is duplicated on updating
-     *
-     * @return bool
-     */
-    public function checkDuplicatedOnUpdate()
-    {
-        // TODO: Implement checkDuplicatedOnUpdate() method.
-    }
-
-    /**
-     * Checks whether the item is duplicated on adding
-     *
-     * @return bool
-     */
-    public function checkDuplicatedOnAdd()
-    {
-        // TODO: Implement checkDuplicatedOnAdd() method.
     }
 
     /**
@@ -342,5 +398,27 @@ class CustomFieldService extends Service implements ServiceItemInterface
         }
 
         return $value;
+    }
+
+    /**
+     * Checks whether the item is duplicated on updating
+     *
+     * @param mixed $itemData
+     * @return bool
+     */
+    public function checkDuplicatedOnUpdate($itemData)
+    {
+        // TODO: Implement checkDuplicatedOnUpdate() method.
+    }
+
+    /**
+     * Checks whether the item is duplicated on adding
+     *
+     * @param mixed $itemData
+     * @return bool
+     */
+    public function checkDuplicatedOnAdd($itemData)
+    {
+        // TODO: Implement checkDuplicatedOnAdd() method.
     }
 }

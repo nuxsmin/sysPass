@@ -28,6 +28,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Exceptions\ValidationException;
 use SP\Forms\AccountForm;
 use SP\Modules\Web\Controllers\Helpers\AccountPasswordHelper;
+use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\AccountService;
 use SP\Controller\ControllerBase;
@@ -50,9 +51,12 @@ use SP\Services\CustomField\CustomFieldService;
 class AccountController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait;
+    use ItemTrait;
 
     /**
      * Index action
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function indexAction()
     {
@@ -73,6 +77,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
     /**
      * Search action
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function searchAction()
     {
@@ -140,6 +146,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Obtener los datos para la vista de archivos de una cuenta
      *
      * @param int $id Account's ID
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function listFilesAction($id)
     {
@@ -497,8 +504,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $accountService = new AccountService();
             $account = $accountService->create($form->getItemData());
 
-            $customFieldService = new CustomFieldService();
-            $customFieldService->addCustomFieldData(Request::analyze('customfield'), $account->getId(), ActionsInterface::ACCOUNT);
+            $this->addCustomFieldsForItem(ActionsInterface::ACCOUNT, $account->getId());
 
             $accountService->logAction($account->getId(), ActionsInterface::ACCOUNT_CREATE);
 
@@ -528,8 +534,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $accountService = new AccountService();
             $accountService->edit($form->getItemData());
 
-            $customFieldService = new CustomFieldService();
-            $customFieldService->updateCustomFieldData(Request::analyze('customfield'), $id, ActionsInterface::ACCOUNT);
+            $this->updateCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
 
             $accountService->logAction($id, ActionsInterface::ACCOUNT_EDIT);
 
@@ -590,8 +595,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->eventDispatcher->notifyEvent('edit.account.restore', $this);
 
             $this->returnJsonResponse(0, __('Cuenta restaurada', false), ['itemId' => $id, 'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW)]);
-        } catch (ValidationException $e) {
-            $this->returnJsonResponse(1, $e->getMessage());
         } catch (SPException $e) {
             debugLog($e->getMessage(), true);
 
@@ -610,8 +613,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $accountService = new AccountService();
 
             if ($accountService->delete($id)) {
-                $customFieldService = new CustomFieldService();
-                $customFieldService->deleteCustomFieldData($id, ActionsInterface::ACCOUNT);
+                $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
 
                 // FIXME: obtener cuenta antes de eliminar
 //                $accountService->logAccountAction($id, ActionsInterface::ACCOUNT_DELETE);
@@ -620,8 +622,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
                 $this->returnJsonResponse(0, __('Cuenta eliminada', false), ['nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_SEARCH)]);
             }
-        } catch (ValidationException $e) {
-            $this->returnJsonResponse(1, $e->getMessage());
         } catch (SPException $e) {
             debugLog($e->getMessage(), true);
 
