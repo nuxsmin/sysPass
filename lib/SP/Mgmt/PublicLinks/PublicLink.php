@@ -25,7 +25,6 @@
 namespace SP\Mgmt\PublicLinks;
 
 use SP\Account\AccountUtil;
-use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory;
 use SP\DataModel\PublicLinkBaseData;
@@ -250,7 +249,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         }
 
         /** @var $PublicLink PublicLinkData */
-        $PublicLink = Util::castToClass($this->getDataModel(), $queryRes->getPublicLinkLinkData());
+        $PublicLink = Util::unserialize($this->getDataModel(), $queryRes->getPublicLinkLinkData());
         $PublicLink->setPublicLinkId($id);
 
         return $PublicLink;
@@ -275,7 +274,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
         foreach ($queryRes as $PublicLinkListData) {
             /** @var PublicLinkData $PublicLinkData */
-            $PublicLinkData = Util::castToClass($this->getDataModel(), $PublicLinkListData->getPublicLinkLinkData());
+            $PublicLinkData = Util::unserialize($this->getDataModel(), $PublicLinkListData->getPublicLinkLinkData());
             $PublicLinkData->setPublicLinkId($PublicLinkListData->getPublicLinkId());
 
             $publicLinks[] = $this->getItemForList($PublicLinkData);
@@ -353,7 +352,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         /**
          * @var $PublicLink PublicLinkData
          */
-        $PublicLink = Util::castToClass($this->getDataModel(), $queryRes->getPublicLinkLinkData());
+        $PublicLink = Util::unserialize($this->getDataModel(), $queryRes->getPublicLinkLinkData());
         $PublicLink->setPublicLinkId($queryRes->getPublicLinkId());
 
         return $PublicLink;
@@ -379,7 +378,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener enlace', false));
+            throw new SPException(SPException::SP_ERROR, __u('Error al obtener enlace'));
         }
 
         return $queryRes;

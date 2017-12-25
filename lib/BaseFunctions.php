@@ -80,7 +80,7 @@ function __($message, $translate = true)
 }
 
 /**
- * Alias gettext function
+ * Returns an untranslated string (gettext placeholder)
  *
  * @param string $message
  * @return string

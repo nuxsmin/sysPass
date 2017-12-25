@@ -14,8 +14,8 @@
     <?php foreach ($tabs as $index => $data): ?>
         <div id="tabs-<?php echo $index; ?>"
              class="mdl-tabs__panel"
-             data-tab_route="<?php echo $tabsRoute; ?>"
-             data-tab_index="<?php echo $index; ?>">
+             data-tab-route="<?php echo $tabsRoute; ?>"
+             data-tab-index="<?php echo $index; ?>">
             <div class="tab-actions">
                 <ul>
                     <?php foreach ($data->getDataActions() as $action):
@@ -68,10 +68,10 @@
                                           class="mdl-tooltip mdl-tooltip--bottom"><?php echo $icons->getIconClear()->getTitle(); ?></span>
 
                                     <input type="hidden" name="sk" value="">
+                                    <input type="hidden" name="activetab" value="<?php echo $index; ?>">
                                     <input type="hidden" name="start" value="0">
                                     <input type="hidden" name="count"
                                            value="<?php echo $data->getPager()->getLimitCount(); ?>">
-                                    <input type="hidden" name="actionId" value="<?php echo $action->getId(); ?>">
                                     <input type="hidden" name="isAjax" value="1">
                                 </form>
                             </li>

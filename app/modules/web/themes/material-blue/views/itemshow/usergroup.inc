@@ -1,4 +1,5 @@
 <?php
+
 use SP\Util\ArrayUtil;
 
 /** @var $icons \Theme\Icons */
@@ -11,8 +12,9 @@ use SP\Util\ArrayUtil;
 
     <form method="post" name="frmGroups" id="frmGroups" class="form-action"
           data-onsubmit="appMgmt/save"
+          data-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\Acl\ActionsInterface::GROUP; ?>"
+          data-nextaction="<?php echo $nextAction; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -48,13 +50,13 @@ use SP\Util\ArrayUtil;
                     <div class="lowres-title"><?php echo __('Usuarios'); ?></div>
 
                     <select id="selUsers" name="users[]" multiple="multiple" class="select-box"
-                            title="<?php echo __('Usuarios'); ?>">
+                            title="<?php echo __('Usuarios'); ?>" <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
                         <?php /** @var array $users */
                         foreach ($users as $user): ?>
                             <?php $selected = ArrayUtil::checkInObjectArrayMethod($groupUsers, 'getUsertogroupUserId', $user->id) ? 'selected' : ''; ?>
                             <option
-                                value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
+                                    value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -67,18 +69,18 @@ use SP\Util\ArrayUtil;
             </tbody>
         </table>
 
-        <input type="hidden" name="itemId" value="<?php echo $group->getUsergroupId(); ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
-    <div class="action-in-box">
-        <button
-            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-            form="frmGroups" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
-            <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
-        </button>
-    </div>
+    <?php if (!$isView): ?>
+        <div class="action-in-box">
+            <button
+                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                    form="frmGroups" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+                <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
+            </button>
+        </div>
+    <?php endif; ?>
 </div>
 <script type="text/javascript">
     sysPassApp.sk.set("<?php echo $sk; ?>");

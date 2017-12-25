@@ -33,24 +33,28 @@ use SP\Core\Exceptions\SPException;
  *
  * @package SP\Storage
  */
-class Database
+class Database implements DatabaseInterface
 {
     /**
      * @var int Número de registros obtenidos
      */
-    public $numRows = 0;
+    protected $numRows = 0;
     /**
      * @var int Número de campos de la consulta
      */
-    public $numFields = 0;
+    protected $numFields = 0;
     /**
      * @var array Resultados de la consulta
      */
-    public $lastResult;
+    protected $lastResult;
     /**
      * @var DBStorageInterface
      */
     protected $dbHandler;
+    /**
+     * @var int Último Id de elemento insertado/actualizado
+     */
+    private $lastId;
 
     /**
      * DB constructor.
@@ -60,6 +64,38 @@ class Database
     public function __construct(DBStorageInterface $dbHandler)
     {
         $this->dbHandler = $dbHandler;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumRows()
+    {
+        return $this->numRows;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumFields()
+    {
+        return $this->numFields;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLastResult()
+    {
+        return $this->lastResult;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastId()
+    {
+        return $this->lastId;
     }
 
     /**
@@ -77,24 +113,24 @@ class Database
         // Limpiar valores de caché
         $this->lastResult = [];
 
-        /** @var PDOStatement $queryRes */
-        $queryRes = $this->prepareQueryData($queryData);
+        /** @var PDOStatement $stmt */
+        $stmt = $this->prepareQueryData($queryData);
 
         if ($isSelect) {
             if ($getRawData) {
-                return $queryRes;
+                return $stmt;
             }
 
-            $this->numFields = $queryRes->columnCount();
-            $this->lastResult = $queryRes->fetchAll();
+            $this->numFields = $stmt->columnCount();
+            $this->lastResult = $stmt->fetchAll();
             $this->numRows = count($this->lastResult);
 
             $queryData->setQueryNumRows($this->numRows);
         } else {
-            $queryData->setQueryNumRows($queryRes->rowCount());
+            $queryData->setQueryNumRows($stmt->rowCount());
         }
 
-        return $queryRes;
+        return $stmt;
     }
 
     /**
@@ -115,10 +151,10 @@ class Database
         }
 
         try {
-            $db = $this->dbHandler->getConnection();
+            $connection = $this->dbHandler->getConnection();
 
             if (is_array($queryData->getParams())) {
-                $stmt = $db->prepare($query);
+                $stmt = $connection->prepare($query);
                 $paramIndex = 0;
 
                 foreach ($queryData->getParams() as $param => $value) {
@@ -148,7 +184,7 @@ class Database
 
                 $stmt->execute();
             } else {
-                $stmt = $db->query($query);
+                $stmt = $connection->query($query);
             }
 
             if ($queryData->isUseKeyPair() === true) {
@@ -161,17 +197,9 @@ class Database
                 $stmt->setFetchMode(PDO::FETCH_OBJ);
             }
 
-            // FIXME
-            DbWrapper::$lastId = $db->lastInsertId();
+            $this->lastId = $connection->lastInsertId();
 
             return $stmt;
-        } catch (SPException $e) {
-            ob_start();
-            debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            debugLog(sprintf('Exception: %s - %s', $e->getMessage(), $e->getHint()));
-            debugLog(ob_get_clean());
-
-            throw $e;
         } catch (\Exception $e) {
             ob_start();
             debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);

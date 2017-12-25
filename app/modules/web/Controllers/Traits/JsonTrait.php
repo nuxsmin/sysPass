@@ -37,16 +37,40 @@ trait JsonTrait
     /**
      * Returns JSON response
      *
-     * @param            $status
-     * @param            $description
-     * @param array|null $data
+     * @param int        $status      Status code
+     * @param string     $description Untranslated description string
+     * @param array|null $messages    Untranslated massages array of strings
      */
-    protected function returnJsonResponse($status, $description, array $data = null)
+    protected function returnJsonResponse($status, $description, array $messages = null)
     {
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);
         $jsonResponse->setDescription($description);
+
+        if (null !== $messages) {
+            $jsonResponse->setMessages($messages);
+        }
+
+        Json::returnJson($jsonResponse);
+    }
+
+    /**
+     * Returns JSON response
+     *
+     * @param mixed $data
+     * @param int   $status      Status code
+     * @param null  $description Untranslated description string
+     */
+    protected function returnJsonResponseData($data, $status = 0, $description = null)
+    {
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setStatus($status);
         $jsonResponse->setData($data);
+
+        if (null !== $description) {
+            $jsonResponse->setDescription($description);
+        }
+
 
         Json::returnJson($jsonResponse);
     }

@@ -44,12 +44,14 @@ class LoginController extends ControllerBase
     /**
      * Login action
      *
-     * @throws \InvalidArgumentException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function loginAction()
     {
         $LoginService = new LoginService($this->config, $this->session, $this->theme, $this->eventDispatcher);
-        return Json::returnJson($LoginService->doLogin());
+        Json::returnJson($LoginService->doLogin());
     }
 
     /**
@@ -63,10 +65,10 @@ class LoginController extends ControllerBase
 
             $Log = new Log();
             $LogMessage = $Log->getLogMessage();
-            $LogMessage->setAction(__('Finalizar sesión', false));
-            $LogMessage->addDetails(__('Usuario', false), SessionFactory::getUserData()->getUserLogin());
-            $LogMessage->addDetails(__('Tiempo inactivo', false), $inactiveTime . ' min.');
-            $LogMessage->addDetails(__('Tiempo total', false), $totalTime . ' min.');
+            $LogMessage->setAction(__u('Finalizar sesión'));
+            $LogMessage->addDetails(__u('Usuario'), SessionFactory::getUserData()->getUserLogin());
+            $LogMessage->addDetails(__u('Tiempo inactivo'), $inactiveTime . ' min.');
+            $LogMessage->addDetails(__u('Tiempo total'), $totalTime . ' min.');
             $Log->writeLog();
 
             SessionUtil::cleanSession();

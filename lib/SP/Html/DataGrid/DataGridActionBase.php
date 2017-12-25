@@ -113,6 +113,10 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * @var array
      */
     protected $_attributes = [];
+    /**
+     * @var array
+     */
+    protected $_classes = [];
 
     /**
      * DataGridActionBase constructor.
@@ -140,7 +144,6 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * @param string $class
      * @param string $method
      * @return $this
-     * @throws \ReflectionException
      */
     public function setReflectionFilter($class, $method)
     {
@@ -404,6 +407,49 @@ abstract class DataGridActionBase implements DataGridActionInterface
     public function addAttribute($name, $value)
     {
         $this->_attributes[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Returns classes as a string
+     *
+     * @return array
+     */
+    public function getClassesAsString()
+    {
+        return implode(' ', $this->_classes);
+    }
+
+    /**
+     * Returns classes
+     *
+     * @return array
+     */
+    public function getClasses()
+    {
+        return $this->_classes;
+    }
+
+    /**
+     * Set classes
+     *
+     * @param array $classes
+     */
+    public function setClasses(array $classes)
+    {
+        $this->_classes = $classes;
+    }
+
+    /**
+     * Adds a new class
+     *
+     * @param mixed $value
+     * @return $this
+     */
+    public function addClass($value)
+    {
+        $this->_classes[] = $value;
 
         return $this;
     }

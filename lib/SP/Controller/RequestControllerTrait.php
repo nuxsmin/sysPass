@@ -125,9 +125,6 @@ trait RequestControllerTrait
     protected function analyzeRequest()
     {
         $this->sk = Request::analyze('sk');
-//        $this->actionId = Request::analyze('actionId', 0);
-//        $this->itemId = Request::analyze('itemId', 0);
-//        $this->activeTab = Request::analyze('activeTab', 0);
     }
 
     /**

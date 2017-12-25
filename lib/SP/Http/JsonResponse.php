@@ -31,6 +31,14 @@ namespace SP\Http;
  */
 class JsonResponse implements \JsonSerializable
 {
+    const JSON_SUCCESS = 0;
+    const JSON_SUCCESS_STICKY = 100;
+    const JSON_ERROR = 1;
+    const JSON_ERROR_STICKY = 101;
+    const JSON_WARNING = 2;
+    const JSON_WARNING_STICKY = 102;
+    const JSON_LOGOUT = 10;
+
     /**
      * @var int
      */

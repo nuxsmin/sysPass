@@ -86,6 +86,8 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
     /**
      * @param $id int
      * @return UserPreferencesData
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function getById($id)
     {
@@ -107,7 +109,7 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
             return $this->getItemData();
         }
 
-        return Util::castToClass($this->getDataModel(), $queryRes->getUserPreferences(), 'SP\UserPreferences');
+        return Util::unserialize($this->getDataModel(), $queryRes->getUserPreferences(), 'SP\UserPreferences');
     }
 
     /**

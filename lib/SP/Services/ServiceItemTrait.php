@@ -121,4 +121,15 @@ trait ServiceItemTrait
     {
         return implode(',', array_fill(0, count($items), $string));
     }
+
+    /**
+     * Returns service items for a select
+     * 
+     * @return mixed
+     */
+    public static function getServiceItems()
+    {
+        $service = new static();
+        return $service->getItemsForSelect();
+    }
 }

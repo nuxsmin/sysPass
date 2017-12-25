@@ -59,6 +59,7 @@ class AccessManagerController extends ControllerBase
 
     /**
      * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function indexAction()
     {
@@ -69,6 +70,7 @@ class AccessManagerController extends ControllerBase
      * Returns a tabbed grid with items
      *
      * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getGridTabs()
     {
@@ -108,87 +110,54 @@ class AccessManagerController extends ControllerBase
 
     /**
      * Returns users' data tab
-     *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function getUsersList()
     {
         $service = new UserService();
-        $service->search($this->itemSearchData);
 
-        $grid = $this->itemsGridHelper->getUsersGrid();
-        $grid->getData()->setData($service->search($this->itemSearchData));
-        $grid->updatePager();
-
-        return $grid;
+        return $this->itemsGridHelper->getUsersGrid($service->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns users group data tab
-     *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function getUsersGroupList()
     {
         $service = new UserGroupService();
-        $service->search($this->itemSearchData);
 
-        $grid = $this->itemsGridHelper->getGroupsGrid();
-        $grid->getData()->setData($service->search($this->itemSearchData));
-        $grid->updatePager();
-
-        return $grid;
+        return $this->itemsGridHelper->getUserGroupsGrid($service->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns users profile data tab
-     *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function getUsersProfileList()
     {
         $service = new UserProfileService();
-        $service->search($this->itemSearchData);
 
-        $grid = $this->itemsGridHelper->getProfilesGrid();
-        $grid->getData()->setData($service->search($this->itemSearchData));
-        $grid->updatePager();
-
-        return $grid;
+        return $this->itemsGridHelper->getUserProfilesGrid($service->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns API tokens data tab
-     *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function getApiTokensList()
     {
         $service = new ApiTokenService();
-        $service->search($this->itemSearchData);
 
-        $grid = $this->itemsGridHelper->getApiTokensGrid();
-        $grid->getData()->setData($service->search($this->itemSearchData));
-        $grid->updatePager();
-
-        return $grid;
+        return $this->itemsGridHelper->getApiTokensGrid($service->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns public links data tab
      *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getPublicLinksList()
     {
         $service = new PublicLinkService();
-        $service->search($this->itemSearchData);
 
-        $grid = $this->itemsGridHelper->getPublicLinksGrid();
-        $grid->getData()->setData($service->search($this->itemSearchData));
-        $grid->updatePager();
-
-        return $grid;
+        return $this->itemsGridHelper->getPublicLinksGrid($service->search($this->itemSearchData))->updatePager();
     }
 
     /**

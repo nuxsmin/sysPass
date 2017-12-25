@@ -31,9 +31,10 @@ class AccountActionsHelper extends HelperBase
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Detalles de Cuenta'));
         $action->setTitle(__('Detalles de Cuenta'));
+        $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconView());
         $action->setReflectionFilter(AccountsSearchItem::class, 'isShowView');
-        $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
@@ -51,9 +52,10 @@ class AccountActionsHelper extends HelperBase
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Ver Clave'));
         $action->setTitle(__('Ver Clave'));
+        $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconViewPass());
         $action->setReflectionFilter(AccountsSearchItem::class, 'isShowViewPass');
-        $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS));
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS));
         $action->addData('action-full', 1);
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS));
@@ -72,9 +74,10 @@ class AccountActionsHelper extends HelperBase
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Modificar Clave de Cuenta'));
         $action->setTitle(__('Modificar Clave de Cuenta'));
+        $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconEditPass());
         $action->setReflectionFilter(AccountsSearchItem::class, 'isShowViewPass');
-        $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT_PASS));
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT_PASS));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT_PASS));
         $action->addAttribute('type', 'button');
@@ -92,8 +95,9 @@ class AccountActionsHelper extends HelperBase
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Restaurar cuenta desde este punto'));
         $action->setTitle(__('Restaurar cuenta desde este punto'));
+        $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconRestore());
-        $action->addData('action-id', 'account/saveEditRestore');
+        $action->addData('action-route', 'account/saveEditRestore');
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', 'account/saveEditRestore');
         $action->addAttribute('type', 'button');
@@ -111,8 +115,9 @@ class AccountActionsHelper extends HelperBase
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Guardar'));
         $action->setTitle(__('Guardar'));
+        $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconSave());
-        $action->addData('action-id', 'account/save');
+        $action->addData('action-route', 'account/save');
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', 'account/save');
         $action->addAttribute('type', 'submit');
@@ -133,9 +138,10 @@ class AccountActionsHelper extends HelperBase
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Copiar Clave en Portapapeles'));
         $action->setTitle(__('Copiar Clave en Portapapeles'));
+        $action->addClass('btn-action');
         $action->setIcon($ClipboardIcon);
         $action->setReflectionFilter(AccountsSearchItem::class, 'isShowCopyPass');
-        $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY_PASS));
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY_PASS));
         $action->addData('action-full', 0);
         $action->addData('action-sk', $this->view->sk);
         $action->addData('useclipboard', '1');
@@ -154,9 +160,10 @@ class AccountActionsHelper extends HelperBase
         $action->setType(DataGridActionType::EDIT_ITEM);
         $action->setName(__('Editar Cuenta'));
         $action->setTitle(__('Editar Cuenta'));
+        $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconEdit());
         $action->setReflectionFilter(AccountsSearchItem::class, 'isShowEdit');
-        $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT));
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT));
         $action->addAttribute('type', 'button');
@@ -173,11 +180,12 @@ class AccountActionsHelper extends HelperBase
         $action->setId(ActionsInterface::PUBLICLINK_CREATE);
         $action->setName(__('Crear Enlace Público'));
         $action->setTitle(__('Crear Enlace Público'));
+        $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconPublicLink());
-        $action->addData('action-id', Acl::getActionRoute(ActionsInterface::PUBLICLINK_CREATE));
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_CREATE));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', 'link/save');
-        $action->addData('nextaction-id', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-next', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -193,10 +201,10 @@ class AccountActionsHelper extends HelperBase
         $action->setName(__('Actualizar Enlace Público'));
         $action->setTitle(__('Actualizar Enlace Público'));
         $action->setIcon($this->icons->getIconPublicLink());
-        $action->addData('action-id', Acl::getActionRoute(ActionsInterface::PUBLICLINK_REFRESH));
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_REFRESH));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', 'link/refresh');
-        $action->addData('nextaction-id', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-next', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'button');
 
         return $action;
@@ -212,9 +220,10 @@ class AccountActionsHelper extends HelperBase
         $action->setType(DataGridActionType::NEW_ITEM);
         $action->setName(__('Copiar Cuenta'));
         $action->setTitle(__('Copiar Cuenta'));
+        $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconCopy());
         $action->setReflectionFilter(AccountsSearchItem::class, 'isShowCopy');
-        $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY));
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY));
         $action->addAttribute('type', 'button');
@@ -232,9 +241,10 @@ class AccountActionsHelper extends HelperBase
         $action->setType(DataGridActionType::DELETE_ITEM);
         $action->setName(__('Eliminar Cuenta'));
         $action->setTitle(__('Eliminar Cuenta'));
+        $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconDelete());
         $action->setReflectionFilter(AccountsSearchItem::class, 'isShowDelete');
-        $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACCOUNT_DELETE));
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_DELETE));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_DELETE));
         $action->addAttribute('type', 'button');
@@ -251,12 +261,32 @@ class AccountActionsHelper extends HelperBase
         $action->setId(ActionsInterface::ACCOUNT_REQUEST);
         $action->setName(__('Solicitar Modificación'));
         $action->setTitle(__('Solicitar Modificación'));
+        $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconEmail());
         $action->setReflectionFilter(AccountsSearchItem::class, 'isShowRequest');
-        $action->addData('action-id', Acl::getActionRoute(ActionsInterface::ACCOUNT_REQUEST));
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_REQUEST));
         $action->addData('action-sk', $this->view->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
         $action->addAttribute('type', 'submit');
+
+        return $action;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    public function getBackAction()
+    {
+        $action = new DataGridAction();
+        $action->setId('btnBack');
+        $action->setName(__('Atrás'));
+        $action->setTitle(__('Atrás'));
+        $action->addClass('btn-action');
+        $action->setIcon($this->icons->getIconBack());
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-sk', $this->view->sk);
+        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addAttribute('type', 'button');
 
         return $action;
     }

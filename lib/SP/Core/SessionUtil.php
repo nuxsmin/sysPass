@@ -24,6 +24,8 @@
 
 namespace SP\Core;
 
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Session as CryptSession;
@@ -80,19 +82,27 @@ class SessionUtil
      * Devuelve un hash para verificación de formularios.
      * Esta función genera un hash que permite verificar la autenticidad de un formulario
      *
-     * @param bool $new si es necesrio regenerar el hash
+     * @param bool            $new si es necesrio regenerar el hash
+     * @param ConfigData|null $configData
      * @return string con el hash de verificación
-     * @throws \Psr\Container\ContainerExceptionInterface
      */
-    public static function getSessionKey($new = false)
+    public static function getSessionKey($new = false, ConfigData $configData = null)
     {
         // FIXME
-        /** @var ConfigData $ConfigData */
-        $ConfigData = Bootstrap::getDic()->get(ConfigData::class);
+        if (null === $configData) {
+            /** @var ConfigData $ConfigData */
+            try {
+                $configData = Bootstrap::getDic()->get(ConfigData::class);
+            } catch (NotFoundExceptionInterface $e) {
+                return SessionFactory::getSecurityKey();
+            } catch (ContainerExceptionInterface $e) {
+                return SessionFactory::getSecurityKey();
+            }
+        }
 
         // Generamos un nuevo hash si es necesario y lo guardamos en la sesión
         if ($new === true || null === SessionFactory::getSecurityKey()) {
-            $hash = sha1(time() . $ConfigData->getPasswordSalt());
+            $hash = sha1(time() . $configData->getPasswordSalt());
 
             SessionFactory::setSecurityKey($hash);
 

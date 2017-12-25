@@ -6,7 +6,8 @@
 <fieldset class="data round">
     <legend>
         <?php echo __('Detalles'); ?>
-        <i id="btn-filters" class="material-icons show-extra-info" data-state="0"
+        <i id="btn-filters" class="material-icons show-extra-info"
+           data-state="0"
            data-target="#data-details"
            data-icon-down="<?php echo $icons->getIconDown()->getIcon(); ?>"
            data-icon-up="<?php echo $icons->getIconUp()->getIcon(); ?>"><?php echo $icons->getIconDown()->getIcon(); ?></i>

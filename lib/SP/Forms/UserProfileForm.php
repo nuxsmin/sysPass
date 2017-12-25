@@ -30,11 +30,11 @@ use SP\DataModel\ProfileData;
 use SP\Http\Request;
 
 /**
- * Class ProfileForm
+ * Class UserProfileForm
  *
  * @package SP\Forms
  */
-class ProfileForm extends FormBase implements FormInterface
+class UserProfileForm extends FormBase implements FormInterface
 {
     /**
      * @var ProfileData
@@ -70,7 +70,7 @@ class ProfileForm extends FormBase implements FormInterface
     {
         $this->ProfileData = new ProfileData();
         $this->ProfileData->setUserprofileName(Request::analyze('profile_name'));
-        $this->ProfileData->setUserprofileId(Request::analyze('itemId', 0));
+        $this->ProfileData->setUserprofileId($this->itemId);
         $this->ProfileData->setAccAdd(Request::analyze('profile_accadd', 0, false, 1));
         $this->ProfileData->setAccView(Request::analyze('profile_accview', 0, false, 1));
         $this->ProfileData->setAccViewPass(Request::analyze('profile_accviewpass', 0, false, 1));
@@ -108,7 +108,7 @@ class ProfileForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->ProfileData->getUserprofileName()) {
-            throw new ValidationException(__('Es necesario un nombre de perfil', false));
+            throw new ValidationException(__u('Es necesario un nombre de perfil'));
         }
     }
 

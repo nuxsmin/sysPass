@@ -30,11 +30,11 @@ use SP\DataModel\GroupData;
 use SP\Http\Request;
 
 /**
- * Class GroupForm
+ * Class UserGroupForm
  *
  * @package SP\Forms
  */
-class GroupForm extends FormBase implements FormInterface
+class UserGroupForm extends FormBase implements FormInterface
 {
     /**
      * @var GroupData
@@ -81,7 +81,7 @@ class GroupForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if (!$this->GroupData->getUsergroupName()) {
-            throw new ValidationException(__('Es necesario un nombre de grupo', false));
+            throw new ValidationException(__u('Es necesario un nombre de grupo'));
         }
     }
 

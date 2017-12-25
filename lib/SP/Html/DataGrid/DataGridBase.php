@@ -409,6 +409,8 @@ abstract class DataGridBase implements DataGridInterface
         if ($this->_pager instanceof DataGridPagerInterface) {
             $this->_pager->setTotalRows($this->_data->getDataCount());
         }
+
+        return $this;
     }
 
     /**

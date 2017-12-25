@@ -33,6 +33,7 @@ use SP\DataModel\UserData;
 use SP\Log\Log;
 use SP\Services\Service;
 use SP\Services\ServiceItemInterface;
+use SP\Services\ServiceItemTrait;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 
@@ -43,6 +44,7 @@ use SP\Storage\QueryData;
  */
 class UserService extends Service implements ServiceItemInterface
 {
+    use ServiceItemTrait;
 
     /**
      * Updates an item
@@ -91,7 +93,7 @@ class UserService extends Service implements ServiceItemInterface
         $Data->addParam($itemData->getUserId());
         $Data->setOnErrorMessage(__u('Error al actualizar el usuario'));
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
         if ($Data->getQueryNumRows() > 0) {
             $itemData->setUserId(DbWrapper::getLastId());
@@ -125,7 +127,7 @@ class UserService extends Service implements ServiceItemInterface
         $Data->addParam($itemData->getUserEmail());
         $Data->addParam($itemData->getUserId());
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
         return $Data->getQueryNumRows() > 0;
     }
@@ -155,7 +157,7 @@ class UserService extends Service implements ServiceItemInterface
         $Data->addParam($itemData->getUserId());
         $Data->setOnErrorMessage(__u('Error al modificar la clave'));
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
         return $this;
     }
@@ -164,8 +166,10 @@ class UserService extends Service implements ServiceItemInterface
      * Deletes an item
      *
      * @param $id
-     * @return int
+     * @return UserService
      * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
@@ -176,13 +180,13 @@ class UserService extends Service implements ServiceItemInterface
         $Data->addParam($id);
         $Data->setOnErrorMessage(__u('Error al eliminar el usuario'));
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
         if ($Data->getQueryNumRows() === 0) {
             throw new SPException(SPException::SP_INFO, __u('Usuario no encontrado'));
         }
 
-        return DbWrapper::$lastId;
+        return $this;
     }
 
     /**
@@ -190,7 +194,7 @@ class UserService extends Service implements ServiceItemInterface
      *
      * @param int $id
      * @return mixed
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getById($id)
     {
@@ -230,7 +234,7 @@ class UserService extends Service implements ServiceItemInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        $queryRes = DbWrapper::getResults($Data);
+        $queryRes = DbWrapper::getResults($Data, $this->db);
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_ERROR, __u('Error al obtener los datos del usuario'));
@@ -246,7 +250,29 @@ class UserService extends Service implements ServiceItemInterface
      */
     public function getAll()
     {
-        // TODO: Implement getAll() method.
+        $query = /** @lang SQL */
+            'SELECT user_id,
+            user_name,
+            user_groupId,
+            user_login,
+            user_ssoLogin,
+            user_email,
+            user_notes,
+            user_count,
+            user_profileId,
+            user_preferences,
+            BIN(user_isAdminApp) AS user_isAdminApp,
+            BIN(user_isAdminAcc) AS user_isAdminAcc,
+            BIN(user_isLdap) AS user_isLdap,
+            BIN(user_isDisabled) AS user_isDisabled,
+            BIN(user_isChangePass) AS user_isChangePass
+            FROM usrData';
+
+        $Data = new QueryData();
+        $Data->setMapClassName(UserData::class);
+        $Data->setQuery($query);
+
+        return DbWrapper::getResultsArray($Data, $this->db);
     }
 
     /**
@@ -257,7 +283,43 @@ class UserService extends Service implements ServiceItemInterface
      */
     public function getByIdBatch(array $ids)
     {
-        // TODO: Implement getByIdBatch() method.
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT user_id,
+            user_name,
+            user_groupId,
+            usergroup_name,
+            user_login,
+            user_ssoLogin,
+            user_email,
+            user_notes,
+            user_count,
+            user_profileId,
+            user_count,
+            user_lastLogin,
+            user_lastUpdate,
+            user_lastUpdateMPass,
+            user_preferences,
+            BIN(user_isAdminApp) AS user_isAdminApp,
+            BIN(user_isAdminAcc) AS user_isAdminAcc,
+            BIN(user_isLdap) AS user_isLdap,
+            BIN(user_isDisabled) AS user_isDisabled,
+            BIN(user_isChangePass) AS user_isChangePass,
+            BIN(user_isChangedPass) AS user_isChangedPass,
+            BIN(user_isMigrate) AS user_isMigrate
+            FROM usrData
+            JOIN usrGroups ON usergroup_id = user_groupId
+            WHERE user_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName(UserData::class);
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DbWrapper::getResultsArray($Data, $this->db);
     }
 
     /**
@@ -324,7 +386,7 @@ class UserService extends Service implements ServiceItemInterface
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data);
+        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
 
         $queryRes['count'] = $Data->getQueryNumRows();
 
@@ -347,7 +409,7 @@ class UserService extends Service implements ServiceItemInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        $user = DbWrapper::getResults($Data);
+        $user = DbWrapper::getResults($Data, $this->db);
 
         $Log = new Log();
         $LogMessage = $Log->getLogMessage();
@@ -407,9 +469,9 @@ class UserService extends Service implements ServiceItemInterface
         $Data->addParam(Hash::hashKey($itemData->getUserPass()));
         $Data->setOnErrorMessage(__u('Error al crear el usuario'));
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
-        return DbWrapper::getLastId();
+        return $this->db->getLastId();
     }
 
     /**
@@ -435,8 +497,62 @@ class UserService extends Service implements ServiceItemInterface
         $Data->addParam($itemData->getUserSsoLogin());
         $Data->addParam($itemData->getUserEmail());
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
         return $Data->getQueryNumRows() > 0;
+    }
+
+    /**
+     * @param $login string
+     * @return UserData
+     * @throws SPException
+     */
+    public function getByLogin($login)
+    {
+        $query = /** @lang SQL */
+            'SELECT user_id,
+            user_name,
+            user_groupId,
+            usergroup_name,
+            user_login,
+            user_ssoLogin,
+            user_email,
+            user_notes,
+            user_count,
+            user_profileId,
+            user_count,
+            user_lastLogin,
+            user_lastUpdate,
+            user_lastUpdateMPass,
+            user_preferences,
+            user_pass,
+            user_hashSalt,
+            user_mPass,
+            user_mKey,
+            BIN(user_isAdminApp) AS user_isAdminApp,
+            BIN(user_isAdminAcc) AS user_isAdminAcc,
+            BIN(user_isLdap) AS user_isLdap,
+            BIN(user_isDisabled) AS user_isDisabled,
+            BIN(user_isChangePass) AS user_isChangePass,
+            BIN(user_isChangedPass) AS user_isChangedPass,
+            BIN(user_isDisabled) AS user_isDisabled,
+            BIN(user_isMigrate) AS user_isMigrate
+            FROM usrData
+            JOIN usrGroups ON usergroup_id = user_groupId
+            WHERE user_login = ? OR user_ssoLogin = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setMapClassName(UserData::class);
+        $Data->setQuery($query);
+        $Data->addParam($login);
+        $Data->addParam($login);
+
+        $queryRes = DbWrapper::getResults($Data);
+
+        if ($queryRes === false) {
+            throw new SPException(SPException::SP_ERROR, __u('Error al obtener los datos del usuario'));
+        }
+
+        return $queryRes;
     }
 }

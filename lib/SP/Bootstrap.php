@@ -33,14 +33,15 @@ use SP\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigUtil;
-use SP\Core\Session\Session;
-use SP\Modules\Web\Controllers\MainController;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\SecureKeyCookie;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Dic\DicInterface;
+use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
+use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
@@ -52,13 +53,12 @@ use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;
-use SP\Core\Exceptions\ConfigException;
+use SP\Modules\Web\Controllers\MainController;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
 use SP\Util\Json;
 use SP\Util\Util;
-use SP\Core\Crypt\Session as CryptSession;
 
 defined('APP_ROOT') || die();
 
@@ -173,11 +173,11 @@ class Bootstrap
     }
 
     /**
-     * @param Config $config
+     * @param Config  $config
      * @param Upgrade $upgrade
      * @param Session $session
-     * @param Theme $theme
-     * @param Klein $router
+     * @param Theme   $theme
+     * @param Klein   $router
      */
     public function inject(Config $config, Upgrade $upgrade, Session $session, Theme $theme, Klein $router)
     {
@@ -379,34 +379,36 @@ class Bootstrap
                     /** @var \Klein\Request $request */
                     $route = filter_var($request->param('r', 'index/index'), FILTER_SANITIZE_STRING);
 
-                    if (!preg_match_all('/([a-zA-Z]+|\d+)/', $route, $components)) {
+                    if (!preg_match_all('#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d]+)+)?#', $route, $components)) {
                         throw new RuntimeException("Oops, invalid route\n");
                     }
 
-                    $controller = $components[1][0];
-                    $method = !empty($components[1][1]) ? $components[1][1] . 'Action' : 'indexAction';
-                    $ids = [];
+                    $controller = $components['controller'][0];
+                    $method = !empty($components['action'][0]) ? $components['action'][0] . 'Action' : 'indexAction';
+                    $params = [];
 
-                    $length = count($components[1]);
-
-                    if ($length > 2) {
-                        for ($i = 2; $i < $length; $i++) {
-                            $ids[] = (int)filter_var($components[1][$i], FILTER_SANITIZE_NUMBER_INT);
+                    if (!empty($components['params'][0])) {
+                        foreach (explode('/', $components['params'][0]) as $value) {
+                            if (is_numeric($value)) {
+                                $params[] = (int)filter_var($value, FILTER_SANITIZE_NUMBER_INT);
+                            } elseif (!empty($value)) {
+                                $params[] = filter_var($value, FILTER_SANITIZE_STRING);
+                            }
                         }
                     }
 
                     $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
 
                     if (class_exists($controllerClass)) {
-                        $callableMethod = [new $controllerClass, $method];
+                        $callableMethod = [new $controllerClass($method), $method];
 
                         if (!is_callable($callableMethod)) {
                             throw new RuntimeException("Oops, it looks like this content doesn't exist...\n");
                         }
 
-                        debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($ids, true));
+                        debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
 
-                        return call_user_func_array($callableMethod, $ids);
+                        return call_user_func_array($callableMethod, $params);
                     }
 
                     throw new RuntimeException("Oops, it looks like this content doesn't exist...\n");
@@ -526,8 +528,8 @@ class Bootstrap
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
-     * @param string $hint opcional, con una ayuda sobre el error
-     * @param bool $headers
+     * @param string $hint    opcional, con una ayuda sobre el error
+     * @param bool   $headers
      */
     public static function initError($message, $hint = '', $headers = false)
     {
@@ -817,16 +819,5 @@ class Bootstrap
         if (Request::analyze('logout', false, true)) {
             $this->goLogout();
         }
-    }
-
-    /**
-     * Mostrar la página de login
-     */
-    private function goLogin()
-    {
-        SessionUtil::cleanSession();
-
-        $Controller = new MainController();
-        $Controller->getLogin();
     }
 }

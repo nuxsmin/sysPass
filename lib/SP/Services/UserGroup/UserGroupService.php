@@ -24,8 +24,11 @@
 
 namespace SP\Services\UserGroup;
 
+use SP\Core\Acl\Acl;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\GroupData;
 use SP\DataModel\ItemSearchData;
+use SP\Log\Log;
 use SP\Services\Service;
 use SP\Services\ServiceItemInterface;
 use SP\Services\ServiceItemTrait;
@@ -46,10 +49,64 @@ class UserGroupService extends Service implements ServiceItemInterface
      *
      * @param $id
      * @return mixed
+     * @throws SPException
      */
     public function delete($id)
     {
-        // TODO: Implement delete() method.
+        if ($this->checkInUse($id)) {
+            throw new SPException(SPException::SP_WARNING, __u('Grupo en uso'));
+        }
+
+        $query = /** @lang SQL */
+            'DELETE FROM usrGroups WHERE usergroup_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+        $Data->setOnErrorMessage(__u('Error al eliminar el grupo'));
+
+        DbWrapper::getQuery($Data);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __u('Grupo no encontrado'));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Checks whether the item is in use or not
+     *
+     * @param $id int
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function checkInUse($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT user_groupId AS groupId
+            FROM usrData WHERE user_groupId = ?
+            UNION ALL
+            SELECT usertogroup_groupId AS groupId
+            FROM usrToGroups WHERE usertogroup_groupId = ?
+            UNION ALL
+            SELECT accgroup_groupId AS groupId
+            FROM accGroups WHERE accgroup_groupId = ?
+            UNION ALL
+            SELECT account_userGroupId AS groupId
+            FROM accounts WHERE account_userGroupId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+        $Data->addParam($id);
+        $Data->addParam($id);
+        $Data->addParam($id);
+
+        DbWrapper::getQuery($Data);
+
+        return ($Data->getQueryNumRows() > 1);
     }
 
     /**
@@ -60,7 +117,15 @@ class UserGroupService extends Service implements ServiceItemInterface
      */
     public function getById($id)
     {
-        // TODO: Implement getById() method.
+        $query = /** @lang SQL */
+            'SELECT usergroup_id, usergroup_name, usergroup_description FROM usrGroups WHERE usergroup_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setMapClassName(GroupData::class);
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        return DbWrapper::getResults($Data);
     }
 
     /**
@@ -81,7 +146,7 @@ class UserGroupService extends Service implements ServiceItemInterface
         $Data->setMapClassName(GroupData::class);
         $Data->setQuery($query);
 
-        return DbWrapper::getResultsArray($Data);
+        return DbWrapper::getResultsArray($Data, $this->db);
     }
 
     /**
@@ -92,29 +157,42 @@ class UserGroupService extends Service implements ServiceItemInterface
      */
     public function getByIdBatch(array $ids)
     {
-        // TODO: Implement getByIdBatch() method.
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT usergroup_id, usergroup_name, usergroup_description FROM usrGroups WHERE usergroup_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName(GroupData::class);
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DbWrapper::getResultsArray($Data);
     }
 
     /**
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return $this
+     * @return UserGroupService
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
-        // TODO: Implement deleteByIdBatch() method.
-    }
+        $query = /** @lang SQL */
+            'DELETE FROM usrGroups WHERE usergroup_id IN (' . $this->getParamsFromArray($ids) . ')';
 
-    /**
-     * Checks whether the item is in use or not
-     *
-     * @param $id int
-     * @return bool
-     */
-    public function checkInUse($id)
-    {
-        // TODO: Implement checkInUse() method.
+        $Data = new QueryData();
+        $Data->setMapClassName(GroupData::class);
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        DbWrapper::getQuery($Data);
+
+        return $this;
     }
 
     /**
@@ -145,7 +223,7 @@ class UserGroupService extends Service implements ServiceItemInterface
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data);
+        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
 
         $queryRes['count'] = $Data->getQueryNumRows();
 
@@ -156,33 +234,29 @@ class UserGroupService extends Service implements ServiceItemInterface
      * Creates an item
      *
      * @param mixed $itemData
-     * @return mixed
+     * @return int
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function create($itemData)
     {
-        // TODO: Implement create() method.
-    }
+        if ($this->checkDuplicatedOnAdd($itemData)) {
+            throw new SPException(SPException::SP_INFO, __u('Nombre de grupo duplicado'));
+        }
 
-    /**
-     * Updates an item
-     *
-     * @param mixed $itemData
-     * @return mixed
-     */
-    public function update($itemData)
-    {
-        // TODO: Implement update() method.
-    }
+        $query = /** @lang SQL */
+            'INSERT INTO usrGroups SET usergroup_name = ?, usergroup_description = ?';
 
-    /**
-     * Checks whether the item is duplicated on updating
-     *
-     * @param mixed $itemData
-     * @return bool
-     */
-    public function checkDuplicatedOnUpdate($itemData)
-    {
-        // TODO: Implement checkDuplicatedOnUpdate() method.
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getUsergroupName());
+        $Data->addParam($itemData->getUsergroupDescription());
+        $Data->setOnErrorMessage(__u('Error al crear el grupo'));
+
+        DbWrapper::getQuery($Data, $this->db);
+
+        return $this->db->getLastId();
     }
 
     /**
@@ -190,9 +264,99 @@ class UserGroupService extends Service implements ServiceItemInterface
      *
      * @param mixed $itemData
      * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        // TODO: Implement checkDuplicatedOnAdd() method.
+        $query = /** @lang SQL */
+            'SELECT usergroup_name FROM usrGroups WHERE UPPER(usergroup_name) = ?';
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getUsergroupName());
+
+        DbWrapper::getQuery($Data);
+
+        return $Data->getQueryNumRows() > 0;
+    }
+
+    /**
+     * Updates an item
+     *
+     * @param mixed $itemData
+     * @return mixed
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function update($itemData)
+    {
+        if ($this->checkDuplicatedOnUpdate($itemData)) {
+            throw new SPException(SPException::SP_INFO, __u('Nombre de grupo duplicado'));
+        }
+
+        $query = /** @lang SQL */
+            'UPDATE usrGroups SET usergroup_name = ?, usergroup_description = ? WHERE usergroup_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getUsergroupName());
+        $Data->addParam($itemData->getUsergroupDescription());
+        $Data->addParam($itemData->getUsergroupId());
+        $Data->setOnErrorMessage(__u('Error al actualizar el grupo'));
+
+        DbWrapper::getQuery($Data);
+
+        return $this;
+    }
+
+    /**
+     * Checks whether the item is duplicated on updating
+     *
+     * @param mixed $itemData
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function checkDuplicatedOnUpdate($itemData)
+    {
+        $query = /** @lang SQL */
+            'SELECT usergroup_name FROM usrGroups WHERE UPPER(usergroup_name) = ? AND usergroup_id <> ?';
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getUsergroupName());
+        $Data->addParam($itemData->getUsergroupId());
+
+        DbWrapper::getQuery($Data);
+
+        return $Data->getQueryNumRows() > 0;
+    }
+
+    /**
+     * Logs group action
+     *
+     * @param int $id
+     * @param int $actionId
+     * @return \SP\Core\Messages\LogMessage
+     */
+    public function logAction($id, $actionId)
+    {
+        $query = /** @lang SQL */
+            'SELECT usergroup_name FROM usrGroups WHERE usergroup_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        $usergroup = DbWrapper::getResults($Data, $this->db);
+
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(Acl::getActionInfo($actionId));
+        $LogMessage->addDetails(__u('Grupo'), $usergroup->usergroup_name);
+        $LogMessage->addDetails(__u('ID'), $id);
+        $Log->writeLog();
+
+        return $LogMessage;
     }
 }

@@ -24,10 +24,8 @@
 
 namespace SP\Storage;
 
-use PDO;
 use PDOStatement;
 use SP\Bootstrap;
-use SP\Core\DiFactory;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -62,12 +60,19 @@ class DbWrapper
     /**
      * Devolver los resultados en array
      *
-     * @param QueryData $queryData
+     * @param QueryData         $queryData
+     * @param DatabaseInterface $db
      * @return array
      */
-    public static function getResultsArray(QueryData $queryData)
+    public static function getResultsArray(QueryData $queryData, DatabaseInterface $db = null)
     {
-        $results = self::getResults($queryData);
+        // FIXME: remove
+        if ($db === null) {
+            /** @var Database $db */
+            $db = Bootstrap::getDic()->get(Database::class);
+        }
+
+        $results = self::getResults($queryData, $db);
 
         if ($results === false) {
             return [];
@@ -79,10 +84,11 @@ class DbWrapper
     /**
      * Obtener los resultados de una consulta.
      *
-     * @param  $queryData  QueryData Los datos de la consulta
+     * @param QueryData         $queryData QueryData Los datos de la consulta
+     * @param DatabaseInterface $db
      * @return mixed devuelve bool si hay un error. Devuelve array con el array de registros devueltos
      */
-    public static function getResults(QueryData $queryData)
+    public static function getResults(QueryData $queryData, DatabaseInterface $db = null)
     {
         if ($queryData->getQuery() === '') {
             self::resetVars();
@@ -90,8 +96,12 @@ class DbWrapper
         }
 
         try {
-            /** @var Database $db */
-            $db = Bootstrap::getDic()->get(Database::class);
+            // FIXME: remove
+            if ($db === null) {
+                /** @var Database $db */
+                $db = Bootstrap::getDic()->get(Database::class);
+            }
+
             $db->doQuery($queryData);
 
             if (self::$fullRowCount === true) {
@@ -106,11 +116,11 @@ class DbWrapper
 
         self::resetVars();
 
-        if ($db->numRows === 1 && !$queryData->isUseKeyPair()) {
-            return $db->lastResult[0];
+        if ($db->getNumRows() === 1 && !$queryData->isUseKeyPair()) {
+            return $db->getLastResult()[0];
         }
 
-        return $db->lastResult;
+        return $db->getLastResult();
     }
 
     /**
@@ -134,7 +144,7 @@ class DbWrapper
 
         $LogMessage = new LogMessage();
         $LogMessage->setAction($caller);
-        $LogMessage->addDescription(__('Error en la consulta', false));
+        $LogMessage->addDescription(__u('Error en la consulta'));
         $LogMessage->addDescription(sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
         $LogMessage->addDetails('SQL', DBUtil::escape($query));
 
@@ -152,15 +162,19 @@ class DbWrapper
     /**
      * Devolver los resultados como objeto PDOStatement
      *
-     * @param QueryData $queryData
+     * @param QueryData         $queryData
+     * @param DatabaseInterface $db
      * @return PDOStatement|false
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
-    public static function getResultsRaw(QueryData $queryData)
+    public static function getResultsRaw(QueryData $queryData, DatabaseInterface $db = null)
     {
         try {
-            /** @var Database $db */
-            $db = Bootstrap::getDic()->get(Database::class);
+            // FIXME: remove
+            if ($db === null) {
+                /** @var Database $db */
+                $db = Bootstrap::getDic()->get(Database::class);
+            }
 
             return $db->doQuery($queryData, true);
         } catch (SPException $e) {
@@ -173,26 +187,30 @@ class DbWrapper
     /**
      * Realizar una consulta y devolver el resultado sin datos
      *
-     * @param QueryData $queryData Los datos para realizar la consulta
+     * @param QueryData         $queryData Los datos para realizar la consulta
+     * @param DatabaseInterface $db
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
      */
-    public static function getQuery(QueryData $queryData)
+    public static function getQuery(QueryData $queryData, DatabaseInterface $db = null)
     {
         if (null === $queryData->getOnErrorMessage()) {
-            $errorMessage = __('Error en la consulta', false);
+            $errorMessage = __u('Error en la consulta');
         } else {
             $errorMessage = $queryData->getOnErrorMessage();
         }
 
         if ($queryData->getQuery() === '') {
-            throw new QueryException(SPException::SP_ERROR, $errorMessage, __('Consulta en blanco', false));
+            throw new QueryException(SPException::SP_ERROR, $errorMessage, __u('Consulta en blanco'));
         }
 
         try {
-            /** @var Database $db */
-            $db = Bootstrap::getDic()->get(Database::class);
+            // FIXME: remove
+            if ($db === null) {
+                /** @var Database $db */
+                $db = Bootstrap::getDic()->get(Database::class);
+            }
 
             $db->doQuery($queryData);
 
@@ -204,7 +222,7 @@ class DbWrapper
 
             switch ($e->getCode()) {
                 case 23000:
-                    throw new ConstraintException(SPException::SP_ERROR, __('Restricción de integridad', false), $e->getMessage(), $e->getCode());
+                    throw new ConstraintException(SPException::SP_ERROR, __u('Restricción de integridad'), $e->getMessage(), $e->getCode());
             }
 
             throw new QueryException(SPException::SP_ERROR, $errorMessage, $e->getMessage(), $e->getCode());
@@ -222,12 +240,11 @@ class DbWrapper
     /**
      * Iniciar una transacción
      *
+     * @param DatabaseInterface $db
      * @return bool
      */
-    public static function beginTransaction()
+    public static function beginTransaction(DatabaseInterface $db)
     {
-        /** @var Database $db */
-        $db = Bootstrap::getDic()->get(Database::class);
         $conn = $db->getDbHandler()->getConnection();
 
         return !$conn->inTransaction() && $conn->beginTransaction();
@@ -235,11 +252,12 @@ class DbWrapper
 
     /**
      * Finalizar una transacción
+     *
+     * @param DatabaseInterface $db
+     * @return bool
      */
-    public static function endTransaction()
+    public static function endTransaction(DatabaseInterface $db)
     {
-        /** @var Database $db */
-        $db = Bootstrap::getDic()->get(Database::class);
         $conn = $db->getDbHandler()->getConnection();
 
         return $conn->inTransaction() && $conn->commit();
@@ -247,10 +265,13 @@ class DbWrapper
 
     /**
      * Rollback de una transacción
+     *
+     * @param DatabaseInterface $db
+     * @return bool
      */
-    public static function rollbackTransaction()
+    public static function rollbackTransaction(DatabaseInterface $db)
     {
-        $conn = DiFactory::getDBStorage()->getConnection();
+        $conn = $db->getDbHandler()->getConnection();
 
         return $conn->inTransaction() && $conn->rollBack();
     }

@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\UI\ThemeIconsBase;
 use SP\Html\Assets\FontIcon;
 use SP\Html\DataGrid\DataGridAction;
@@ -65,10 +64,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getCategoriesGrid()
+    public function getCategoriesGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -80,6 +79,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setDataRowSourceId('category_id');
         $GridData->addDataRowSource('category_name');
         $GridData->addDataRowSource('category_description');
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -98,7 +98,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchCategory');
         $GridActionSearch->setTitle(__('Buscar Categoría'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::CATEGORY_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -112,7 +112,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
-        $GridActionNew->addData('route', Acl::getActionRoute(ActionsInterface::CATEGORY_VIEW));
+        $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE));
 
         $Grid->setDataActions($GridActionNew);
 
@@ -123,7 +123,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setTitle(__('Editar Categoría'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
-        $GridActionEdit->addData('route', Acl::getActionRoute(ActionsInterface::CATEGORY_VIEW));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_VIEW));
 
 
         $Grid->setDataActions($GridActionEdit);
@@ -135,7 +135,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Categoría'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::CATEGORY_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -165,10 +165,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getClientsGrid()
+    public function getClientsGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -180,6 +180,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setDataRowSourceId('customer_id');
         $GridData->addDataRowSource('customer_name');
         $GridData->addDataRowSource('customer_description');
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -198,7 +199,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchCustomer');
         $GridActionSearch->setTitle(__('Buscar Cliente'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::CLIENT_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -212,7 +213,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
-        $GridActionNew->addData('route', Acl::getActionRoute(ActionsInterface::CLIENT_VIEW));
+        $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_CREATE));
 
         $Grid->setDataActions($GridActionNew);
 
@@ -223,7 +224,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setTitle(__('Editar Cliente'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
-        $GridActionEdit->addData('route', Acl::getActionRoute(ActionsInterface::CLIENT_VIEW));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_VIEW));
 
         $Grid->setDataActions($GridActionEdit);
 
@@ -234,7 +235,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Cliente'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::CLIENT_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -243,10 +244,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getCustomFieldsGrid()
+    public function getCustomFieldsGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -260,6 +261,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSource('moduleName');
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('typeName');
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -278,7 +280,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchCustomField');
         $GridActionSearch->setTitle(__('Buscar Campo'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -292,7 +294,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
-        $GridActionNew->addData('route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_VIEW));
+        $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_CREATE));
 
         $Grid->setDataActions($GridActionNew);
 
@@ -303,7 +305,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setTitle(__('Editar Campo'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
-        $GridActionEdit->addData('route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_VIEW));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_VIEW));
 
         $Grid->setDataActions($GridActionEdit);
 
@@ -314,7 +316,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Campo'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -323,10 +325,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getFilesGrid()
+    public function getFilesGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -344,6 +346,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSource('accfile_name');
         $GridData->addDataRowSource('accfile_type');
         $GridData->addDataRowSource('accfile_size');
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -362,7 +365,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchFile');
         $GridActionSearch->setTitle(__('Buscar Archivo'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::FILE_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::FILE_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -375,7 +378,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionView->setTitle(__('Ver Archivo'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('file/view');
-        $GridActionView->addData('route', Acl::getActionRoute(ActionsInterface::FILE_VIEW));
+        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::FILE_VIEW));
 
         $Grid->setDataActions($GridActionView);
 
@@ -386,7 +389,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Archivo'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::FILE_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::FILE_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -395,10 +398,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getAccountsGrid()
+    public function getAccountsGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -410,6 +413,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setDataRowSourceId('account_id');
         $GridData->addDataRowSource('account_name');
         $GridData->addDataRowSource('customer_name');
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -428,7 +432,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchAccount');
         $GridActionSearch->setTitle(__('Buscar Cuenta'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -441,7 +445,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Cuenta'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -450,10 +454,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getAccountsHistoryGrid()
+    public function getAccountsHistoryGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -473,6 +477,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSource('acchistory_date');
         $GridData->addDataRowSourceWithIcon('acchistory_isModify', $iconEdit->setTitle(__('Modificada'))->setClass('opacity50'));
         $GridData->addDataRowSourceWithIcon('acchistory_isDeleted', $iconDelete->setTitle(__('Eliminada'))->setClass('opacity50'));
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -491,7 +496,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchAccountHistory');
         $GridActionSearch->setTitle(__('Buscar Cuenta'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_SEARCH_HISTORY));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_SEARCH_HISTORY));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -503,7 +508,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionRestore->setName(__('Restaurar Cuenta'));
         $GridActionRestore->setTitle(__('Restaurar Cuenta'));
         $GridActionRestore->setIcon($this->icons->getIconRestore());
-        $GridActionRestore->addData('route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_RESTORE));
+        $GridActionRestore->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_RESTORE));
 
 //        $Grid->setDataActions($GridActionRestore);
 
@@ -514,7 +519,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Cuenta'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_DELETE_HISTORY));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNTMGR_DELETE_HISTORY));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -523,10 +528,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getUsersGrid()
+    public function getUsersGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -547,6 +552,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSourceWithIcon('user_isAdminAcc', $this->icons->getIconAccAdmin());
         $GridData->addDataRowSourceWithIcon('user_isLdap', $this->icons->getIconLdapUser());
         $GridData->addDataRowSourceWithIcon('user_isDisabled', $this->icons->getIconDisabled());
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -565,7 +571,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchUser');
         $GridActionSearch->setTitle(__('Buscar Usuario'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::USER_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -578,7 +584,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
-        $GridActionNew->addData('route', Acl::getActionRoute(ActionsInterface::USER_CREATE));
+        $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_CREATE));
 
         $Grid->setDataActions($GridActionNew);
 
@@ -593,7 +599,7 @@ class ItemsGridHelper extends HelperBase
             $GridActionLdapSync->setIcon(new FontIcon('get_app'));
             $GridActionLdapSync->setSkip(true);
             $GridActionLdapSync->setOnClickFunction('appMgmt/ldapSync');
-            $GridActionLdapSync->addData('route', Acl::getActionRoute(ActionsInterface::LDAP_SYNC));
+            $GridActionLdapSync->addData('action-route', Acl::getActionRoute(ActionsInterface::LDAP_SYNC));
 
             $Grid->setDataActions($GridActionLdapSync);
         }
@@ -606,7 +612,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionView->setTitle(__('Ver Detalles de Usuario'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
-        $GridActionView->addData('route', Acl::getActionRoute(ActionsInterface::USER_VIEW));
+        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_VIEW));
 
         $Grid->setDataActions($GridActionView);
 
@@ -617,7 +623,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setTitle(__('Editar Usuario'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
-        $GridActionEdit->addData('route', Acl::getActionRoute(ActionsInterface::USER_EDIT));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_EDIT));
 
         $Grid->setDataActions($GridActionEdit);
 
@@ -629,7 +635,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEditPass->setIcon($this->icons->getIconEditPass());
         $GridActionEditPass->setOnClickFunction('appMgmt/show');
         $GridActionEditPass->setFilterRowSource('user_isLdap');
-        $GridActionEditPass->addData('route', Acl::getActionRoute(ActionsInterface::USER_EDIT_PASS));
+        $GridActionEditPass->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_EDIT_PASS));
 
         $Grid->setDataActions($GridActionEditPass);
 
@@ -640,7 +646,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Usuario'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::USER_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -649,10 +655,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getGroupsGrid()
+    public function getUserGroupsGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -664,6 +670,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setDataRowSourceId('usergroup_id');
         $GridData->addDataRowSource('usergroup_name');
         $GridData->addDataRowSource('usergroup_description');
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -682,7 +689,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchGroup');
         $GridActionSearch->setTitle(__('Buscar Grupo'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::GROUP_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -696,9 +703,20 @@ class ItemsGridHelper extends HelperBase
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
-        $GridActionNew->addData('route', Acl::getActionRoute(ActionsInterface::GROUP_VIEW));
+        $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_CREATE));
 
         $Grid->setDataActions($GridActionNew);
+
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(ActionsInterface::GROUP_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionView->setName(__('Ver Grupo'));
+        $GridActionView->setTitle(__('Ver Grupo'));
+        $GridActionView->setIcon($this->icons->getIconView());
+        $GridActionView->setOnClickFunction('appMgmt/show');
+        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_VIEW));
+
+        $Grid->setDataActions($GridActionView);
 
         $GridActionEdit = new DataGridAction();
         $GridActionEdit->setId(ActionsInterface::GROUP_EDIT);
@@ -707,7 +725,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setTitle(__('Editar Grupo'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
-        $GridActionEdit->addData('route', Acl::getActionRoute(ActionsInterface::GROUP_VIEW));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_EDIT));
 
         $Grid->setDataActions($GridActionEdit);
 
@@ -718,7 +736,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Grupo'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::GROUP_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::GROUP_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -727,10 +745,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getProfilesGrid()
+    public function getUserProfilesGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -740,6 +758,7 @@ class ItemsGridHelper extends HelperBase
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('userprofile_id');
         $GridData->addDataRowSource('userprofile_name');
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -758,7 +777,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchProfile');
         $GridActionSearch->setTitle(__('Buscar Perfil'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::PROFILE_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::PROFILE_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -772,7 +791,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
-        $GridActionNew->addData('route', Acl::getActionRoute(ActionsInterface::PROFILE_VIEW));
+        $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::PROFILE_CREATE));
 
         $Grid->setDataActions($GridActionNew);
 
@@ -783,7 +802,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionView->setTitle(__('Ver Detalles de Perfil'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
-        $GridActionView->addData('route', Acl::getActionRoute(ActionsInterface::PROFILE_VIEW));
+        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::PROFILE_VIEW));
 
         $Grid->setDataActions($GridActionView);
 
@@ -794,7 +813,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setTitle(__('Editar Perfil'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
-        $GridActionEdit->addData('route', Acl::getActionRoute(ActionsInterface::PROFILE_VIEW));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::PROFILE_EDIT));
 
         $Grid->setDataActions($GridActionEdit);
 
@@ -805,7 +824,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Perfil'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::PROFILE_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::PROFILE_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -814,10 +833,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getApiTokensGrid()
+    public function getApiTokensGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -829,6 +848,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setDataRowSourceId('authtoken_id');
         $GridData->addDataRowSource('user_login');
         $GridData->addDataRowSource('authtoken_actionId');
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -847,7 +867,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchToken');
         $GridActionSearch->setTitle(__('Buscar Token'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::APITOKEN_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::APITOKEN_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -861,7 +881,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
-        $GridActionNew->addData('route', Acl::getActionRoute(ActionsInterface::APITOKEN_VIEW));
+        $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::APITOKEN_CREATE));
 
         $Grid->setDataActions($GridActionNew);
 
@@ -872,7 +892,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionView->setTitle(__('Ver token de Autorización'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
-        $GridActionView->addData('route', Acl::getActionRoute(ActionsInterface::APITOKEN_VIEW));
+        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::APITOKEN_VIEW));
 
         $Grid->setDataActions($GridActionView);
 
@@ -883,7 +903,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setTitle(__('Editar Autorización'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
-        $GridActionEdit->addData('route', Acl::getActionRoute(ActionsInterface::APITOKEN_VIEW));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::APITOKEN_EDIT));
 
         $Grid->setDataActions($GridActionEdit);
 
@@ -894,7 +914,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Autorización'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::APITOKEN_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::APITOKEN_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -903,10 +923,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getPublicLinksGrid()
+    public function getPublicLinksGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -926,6 +946,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSource('userLogin');
         $GridData->addDataRowSource('notify');
         $GridData->addDataRowSource('countViews');
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -944,12 +965,24 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchLink');
         $GridActionSearch->setTitle(__('Buscar Enlace'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
 
         // Grid item's actions
+        $GridActionNew = new DataGridAction();
+        $GridActionNew->setId(ActionsInterface::PUBLICLINK_CREATE);
+        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setName(__('Nuevo Enlace'));
+        $GridActionNew->setTitle(__('Nuevo Enlace'));
+        $GridActionNew->setIcon($this->icons->getIconAdd());
+        $GridActionNew->setSkip(true);
+        $GridActionNew->setOnClickFunction('appMgmt/show');
+        $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_CREATE));
+
+        $Grid->setDataActions($GridActionNew);
+
         $GridActionView = new DataGridAction();
         $GridActionView->setId(ActionsInterface::PUBLICLINK_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
@@ -957,7 +990,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionView->setTitle(__('Ver Enlace'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
-        $GridActionView->addData('route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_VIEW));
+        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_VIEW));
 
         $Grid->setDataActions($GridActionView);
 
@@ -967,7 +1000,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionRefresh->setTitle(__('Renovar Enlace'));
         $GridActionRefresh->setIcon($this->icons->getIconRefresh());
         $GridActionRefresh->setOnClickFunction('link/refresh');
-        $GridActionRefresh->addData('route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_REFRESH));
+        $GridActionRefresh->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_REFRESH));
 
         $Grid->setDataActions($GridActionRefresh);
 
@@ -978,7 +1011,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Enlace'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -987,10 +1020,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getTagsGrid()
+    public function getTagsGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -1000,6 +1033,7 @@ class ItemsGridHelper extends HelperBase
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('tag_id');
         $GridData->addDataRowSource('tag_name');
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -1018,7 +1052,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchTag');
         $GridActionSearch->setTitle(__('Buscar Etiqueta'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::TAG_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::TAG_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -1032,7 +1066,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
-        $GridActionNew->addData('route', Acl::getActionRoute(ActionsInterface::TAG_VIEW));
+        $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::TAG_CREATE));
 
         $Grid->setDataActions($GridActionNew);
 
@@ -1042,7 +1076,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setName(__('Editar Etiqueta'));
         $GridActionEdit->setTitle(__('Editar Etiqueta'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
-        $GridActionEdit->addData('route', Acl::getActionRoute(ActionsInterface::TAG_VIEW));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::TAG_VIEW));
 
         $Grid->setDataActions($GridActionEdit);
 
@@ -1053,7 +1087,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDel->setTitle(__('Eliminar Etiqueta'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('route', Acl::getActionRoute(ActionsInterface::TAG_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::TAG_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -1062,10 +1096,10 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
+     * @param array $data
      * @return DataGridTab
-     * @throws InvalidArgumentException
      */
-    public function getPluginsGrid()
+    public function getPluginsGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -1079,6 +1113,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSourceWithIcon('plugin_enabled', $this->icons->getIconEnabled());
         $GridData->addDataRowSourceWithIcon('plugin_enabled', $this->icons->getIconDisabled(), 0);
         $GridData->addDataRowSourceWithIcon('plugin_available', $this->icons->getIconDelete()->setTitle(__('No disponible')), 0);
+        $GridData->setData($data);
 
         // Grid
         $Grid = new DataGridTab();
@@ -1097,7 +1132,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->setName('frmSearchPlugin');
         $GridActionSearch->setTitle(__('Buscar Plugin'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('route', Acl::getActionRoute(ActionsInterface::PLUGIN_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
@@ -1111,7 +1146,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
         $GridActionView->setFilterRowSource('plugin_available', 0);
-        $GridActionView->addData('route', Acl::getActionRoute(ActionsInterface::PLUGIN_VIEW));
+        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_VIEW));
 
         $Grid->setDataActions($GridActionView);
 
@@ -1123,7 +1158,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEnable->setOnClickFunction('plugin/toggle');
         $GridActionEnable->setFilterRowSource('plugin_enabled');
         $GridActionEnable->setFilterRowSource('plugin_available', 0);
-        $GridActionEnable->addData('route', Acl::getActionRoute(ActionsInterface::PLUGIN_ENABLE));
+        $GridActionEnable->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_ENABLE));
 
         $Grid->setDataActions($GridActionEnable);
 
@@ -1135,7 +1170,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDisable->setOnClickFunction('plugin/toggle');
         $GridActionDisable->setFilterRowSource('plugin_enabled', 0);
         $GridActionDisable->setFilterRowSource('plugin_available', 0);
-        $GridActionDisable->addData('route', Acl::getActionRoute(ActionsInterface::PLUGIN_DISABLE));
+        $GridActionDisable->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_DISABLE));
 
         $Grid->setDataActions($GridActionDisable);
 
@@ -1146,7 +1181,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionReset->setIcon($this->icons->getIconRefresh());
         $GridActionReset->setOnClickFunction('plugin/reset');
         $GridActionReset->setFilterRowSource('plugin_available', 0);
-        $GridActionReset->addData('route', Acl::getActionRoute(ActionsInterface::PLUGIN_RESET));
+        $GridActionReset->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_RESET));
 
         $Grid->setDataActions($GridActionReset);
 

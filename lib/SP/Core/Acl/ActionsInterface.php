@@ -86,6 +86,7 @@ interface ActionsInterface
     const PUBLICLINK = 65;
     const PUBLICLINK_CREATE = 650;
     const PUBLICLINK_VIEW = 651;
+    const PUBLICLINK_EDIT = 652;
     const PUBLICLINK_DELETE = 653;
     const PUBLICLINK_REFRESH = 654;
     const PUBLICLINK_SEARCH = 655;

@@ -34,9 +34,9 @@ use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 
 /**
- * Clase Template para la manipulación de plantillas
+ * Class Template
  *
- * Motor de plantillas muy básico...
+ * A very basic template engine...
  *
  * Idea original de http://www.sitepoint.com/author/agervasio/
  * publicada en http://www.sitepoint.com/flexible-view-manipulation-1/
@@ -46,6 +46,10 @@ class Template
 {
     use InjectableTrait;
 
+    const TEMPLATE_EXTENSION = '.inc';
+    const PARTIALS_DIR = '_partials';
+    const LAYOUTS_DIR = '_layouts';
+
     /**
      * @var ThemeInterface
      */
@@ -53,7 +57,7 @@ class Template
     /**
      * @var array Variable con los archivos de plantilla a cargar
      */
-    private $file = [];
+    private $files = [];
     /**
      * @var array Variable con las variables a incluir en la plantilla
      */
@@ -83,20 +87,20 @@ class Template
     /**
      * Añadir una nueva plantilla al array de plantillas de la clase
      *
-     * @param string $file Con el nombre del archivo de plantilla
+     * @param string $name Con el nombre del archivo de plantilla
      * @param string $base Directorio base para la plantilla
      * @return bool
      */
-    public function addTemplate($file, $base = null)
+    public function addTemplate($name, $base = null)
     {
         try {
-            $template = $this->checkTemplate($file, $base);
-            $this->setTemplate($template);
+            $template = $this->checkTemplate($name, $base);
+            $this->setTemplate($template, $name);
         } catch (FileNotFoundException $e) {
-            return false;
+            return '';
         }
 
-        return true;
+        return $template;
     }
 
     /**
@@ -109,39 +113,46 @@ class Template
      */
     private function checkTemplate($template, $base = null)
     {
-        $useBase = false;
-
-        if (null !== $base) {
-            $template = $base . DIRECTORY_SEPARATOR . $template . '.inc';
-
-            $useBase = is_readable($template);
-        } elseif (null !== $this->base) {
-            $template = $this->base . DIRECTORY_SEPARATOR . $template . '.inc';
-
-            $useBase = is_readable($template);
+        if (null === $base && null === $this->base) {
+            $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
         } else {
-            $template .= '.inc';
+            $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . (null === $base ? $this->base : $base) . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
         }
 
-        $file = ($useBase === false) ? $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template : $template;
+//        $base = null !== $base ? $base : $this->base;
+//
+//        if (null !== $base) {
+//            $template = $base . DIRECTORY_SEPARATOR . $template . '.inc';
+//
+//            $useBase = is_readable($template);
+//        } elseif (null !== $this->base) {
+//            $template = $this->base . DIRECTORY_SEPARATOR . $template . '.inc';
+//
+//            $useBase = is_readable($template);
+//        } else {
+//            $template .= '.inc';
+//        }
 
-        if (!is_readable($file)) {
-            debugLog(sprintf(__('No es posible obtener la plantilla "%s" : %s'), $file, $template));
-//            Log::writeNewLog(__FUNCTION__, sprintf(__('No es posible obtener la plantilla "%s" : %s'), $file, $template), Log::ERROR);
-            throw new FileNotFoundException(SPException::SP_ERROR, sprintf(__('No es posible obtener la plantilla "%s" : %s'), $file, $template));
+        if (!is_readable($templateFile)) {
+            $msg = sprintf(__('No es posible obtener la plantilla "%s" : %s'), $templateFile, $template);
+
+            debugLog($msg);
+
+            throw new FileNotFoundException(SPException::SP_ERROR, $msg);
         }
 
-        return $file;
+        return $templateFile;
     }
 
     /**
      * Añadir un nuevo archivo de plantilla al array de plantillas de la clase.
      *
      * @param string $file Con el nombre del archivo
+     * @param string $name Nombre de la plantilla
      */
-    private function setTemplate($file)
+    private function setTemplate($file, $name)
     {
-        $this->file[] = $file;
+        $this->files[$name] = $file;
     }
 
     /**
@@ -154,6 +165,36 @@ class Template
         foreach ($vars as $name => $value) {
             $this->$name = $value;
         }
+    }
+
+    /**
+     * Removes a template from the stack
+     *
+     * @param $name
+     */
+    public function removeTemplate($name)
+    {
+        unset($this->files[$name]);
+    }
+
+    /**
+     * Removes a template from the stack
+     *
+     * @param string $src Source template
+     * @param string $dst Destination template
+     * @return mixed|string
+     */
+    public function replaceTemplate($src, $dst, $base)
+    {
+        try {
+            if (isset($this->files[$dst])) {
+                $this->files[$dst] = $this->checkTemplate($src, $base);
+            }
+        } catch (FileNotFoundException $e) {
+            return '';
+        }
+
+        return $this->files[$dst];
     }
 
     /**
@@ -171,7 +212,7 @@ class Template
      */
     public function addPartial($partial)
     {
-        $this->addTemplate($partial, '_partials');
+        $this->addTemplate($partial, self::PARTIALS_DIR);
     }
 
     /**
@@ -182,7 +223,7 @@ class Template
      */
     public function includePartial($file)
     {
-        return $this->includeTemplate($file, '_partials');
+        return $this->includeTemplate($file, self::PARTIALS_DIR);
     }
 
     /**
@@ -274,7 +315,7 @@ class Template
      */
     public function render()
     {
-        if (count($this->file) === 0) {
+        if (count($this->files) === 0) {
             throw new FileNotFoundException(SPException::SP_ERROR, __('La plantilla no contiene archivos'));
         }
 
@@ -283,7 +324,7 @@ class Template
         ob_start();
 
         // Añadimos las plantillas
-        foreach ($this->file as $template) {
+        foreach ($this->files as $template) {
             include_once $template;
         }
 
@@ -332,7 +373,7 @@ class Template
      */
     public function resetTemplates()
     {
-        $this->file = [];
+        $this->files = [];
     }
 
     /**
@@ -365,5 +406,13 @@ class Template
     public function getTheme()
     {
         return $this->theme;
+    }
+
+    /**
+     * Dumps current stored vars
+     */
+    public function dumpVars()
+    {
+        debugLog($this->vars);
     }
 }

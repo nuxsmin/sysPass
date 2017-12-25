@@ -27,10 +27,8 @@ namespace SP\Mgmt\Users;
 use Plugins\Authenticator\AuthenticatorData;
 use Plugins\Authenticator\AuthenticatorPlugin;
 use SP\Bootstrap;
-use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Init;
 use SP\Core\Plugin\PluginUtil;
 use SP\DataModel\PluginData;
 use SP\DataModel\UserData;
@@ -74,7 +72,7 @@ class UserPreferencesUtil
                     $LogMessage->addDetails(__('Usuario', false), $User->getUserLogin());
 
                     /** @var UserPreferencesData $Preferences */
-                    $Preferences = Util::castToClass(UserPreferencesData::class, $Preferences, 'SP\UserPreferences');
+                    $Preferences = Util::unserialize(UserPreferencesData::class, $Preferences, 'SP\UserPreferences');
                     $User->setUserPreferences($Preferences);
 
                     // FIXME

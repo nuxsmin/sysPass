@@ -29,7 +29,7 @@ namespace SP\DataModel;
  *
  * @package SP\DataModel
  */
-class AccountHistoryData extends AccountData
+class AccountHistoryData extends AccountExtData
 {
     /**
      * @var bool

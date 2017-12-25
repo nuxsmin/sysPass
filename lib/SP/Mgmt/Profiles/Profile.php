@@ -28,7 +28,6 @@ namespace SP\Mgmt\Profiles;
 defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
-use SP\Core\SessionFactory;
 use SP\DataModel\ProfileBaseData;
 use SP\DataModel\ProfileData;
 use SP\Mgmt\ItemInterface;
@@ -166,7 +165,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
          */
         $queryRes = DbWrapper::getResults($Data);
 
-        $Profile = Util::castToClass($this->getDataModel(), $queryRes->getUserprofileProfile());
+        $Profile = Util::unserialize($this->getDataModel(), $queryRes->getUserprofileProfile());
         $Profile->setUserprofileId($queryRes->getUserprofileId());
         $Profile->setUserprofileName($queryRes->getUserprofileName());
 

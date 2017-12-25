@@ -226,7 +226,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
 
         foreach ($queryRes as $CustomFieldData) {
             /** @var CustomFieldDefData $fieldDef */
-            $fieldDef = Util::castToClass(CustomFieldDefData::class, $CustomFieldData->getCustomfielddefField());
+            $fieldDef = Util::unserialize(CustomFieldDefData::class, $CustomFieldData->getCustomfielddefField());
 
             $CustomFieldData->setDefinition($fieldDef);
             $CustomFieldData->setDefinitionId($CustomFieldData->getCustomfielddefId());
@@ -297,7 +297,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
 
         foreach ($queryRes as $CustomFieldDef) {
             /** @var CustomFieldDefData $fieldDef */
-            $fieldDef = Util::castToClass(CustomFieldDefData::class, $CustomFieldDef->getCustomfielddefField());
+            $fieldDef = Util::unserialize(CustomFieldDefData::class, $CustomFieldDef->getCustomfielddefField());
 
             $CustomFieldData = new CustomFieldData();
             $CustomFieldData->setDefinition($fieldDef);

@@ -3,10 +3,11 @@
 <div class="data-container">
     <div id="title" class="midroundup titleNormal"><?php echo __('Solicitar Modificación de Cuenta'); ?></div>
 
-    <form method="post" name="requestmodify" id="frmRequestModify"
-          class="form-action"
-          data-hash=""
-          data-onsubmit="account/request">
+    <form method="post" name="requestmodify" id="frmRequestModify" class="form-action"
+          data-onsubmit="account/request"
+          data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
+          data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
+          data-hash="">
         <table class="data round">
             <tr>
                 <td class="descField"><?php echo __('Nombre'); ?></td>
@@ -44,8 +45,6 @@
                 </td>
             </tr>
         </table>
-        <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>

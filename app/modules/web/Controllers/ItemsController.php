@@ -51,6 +51,7 @@ class ItemsController
      * Devolver las cuentas visibles por el usuario
      *
      * @param int $accountId
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function accountsUserAction($accountId = null)
     {

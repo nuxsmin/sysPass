@@ -8,7 +8,7 @@
 
     <form method="post" name="editpass" id="frmEditPass" class="form-action"
           data-onsubmit="account/save"
-          data-action="<?php echo isset($formAction) ? $formAction : ''; ?>"
+          data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
           data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
           data-hash="">
         <table class="data round">

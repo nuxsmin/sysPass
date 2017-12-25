@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -76,6 +76,10 @@ class PublicLinkData extends PublicLinkBaseData
     /**
      * @var int
      */
+    protected $totalCountViews = 0;
+    /**
+     * @var int
+     */
     protected $maxCountViews = 0;
     /**
      * @var array
@@ -100,6 +104,7 @@ class PublicLinkData extends PublicLinkBaseData
     public function setItemId($itemId)
     {
         $this->itemId = $itemId;
+        $this->publicLink_itemId = $itemId;
     }
 
     /**
@@ -243,7 +248,7 @@ class PublicLinkData extends PublicLinkBaseData
      */
     public function setCountViews($countViews)
     {
-        $this->countViews = $countViews;
+        $this->countViews = (int)$countViews;
     }
 
     /**
@@ -267,7 +272,7 @@ class PublicLinkData extends PublicLinkBaseData
      */
     public function setMaxCountViews($maxCountViews)
     {
-        $this->maxCountViews = $maxCountViews;
+        $this->maxCountViews = (int)$maxCountViews;
     }
 
     /**
@@ -308,5 +313,21 @@ class PublicLinkData extends PublicLinkBaseData
     public function setData($data)
     {
         $this->data = $data;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalCountViews()
+    {
+        return $this->totalCountViews;
+    }
+
+    /**
+     * @return int
+     */
+    public function addTotalCountViews()
+    {
+        return $this->totalCountViews++;
     }
 }

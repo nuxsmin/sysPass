@@ -31,8 +31,6 @@ use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
 use SP\Account\AccountUtil;
 use SP\Account\UserAccounts;
-use SP\Config\Config;
-use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\SPException;
@@ -52,7 +50,6 @@ use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
-use SP\Util\Checks;
 use SP\Util\ImageUtil;
 use SP\Util\Json;
 
@@ -241,7 +238,7 @@ class AccountController extends ControllerBase implements ActionsInterface
     {
         $this->view->assign('showLogo', false);
 
-        $Acl = new AccountAcl($this->Account, $this->getAction());
+        $Acl = new AccountAcl($this->getAction(), $this->Account);
         $this->AccountAcl = $Acl;
 
         if (!$this->acl->checkUserAccess($this->getAction())) {

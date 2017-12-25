@@ -6,7 +6,7 @@
 </div> <!-- Close container -->
 <footer>
     <div id="footer-left" class="footer-parts">
-        <?php if ($loadApp === true): ?>
+        <?php if ($loadApp === true && isset($userName)): ?>
             <div id="session">
                 <span id="user-info">
                     <?php if ($userType !== null): ?>

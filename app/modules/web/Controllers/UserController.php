@@ -33,11 +33,15 @@ use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionUtil;
 use SP\DataModel\UserData;
 use SP\Forms\UserForm;
+use SP\Http\JsonResponse;
 use SP\Http\Request;
+use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Services\User\UserService;
+use SP\Services\UserGroup\UserGroupService;
+use SP\Services\UserProfile\UserProfileService;
 
 /**
  * Class UserController
@@ -59,7 +63,18 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function searchAction()
     {
+        if (!$this->acl->checkUserAccess(ActionsInterface::USER_SEARCH)) {
+            return;
+        }
 
+        $itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $grid = $itemsGridHelper->getUsersGrid($this->userService->search($this->getSearchData($this->configData)))->updatePager();
+
+        $this->view->addTemplate('datagrid-table', 'grid');
+        $this->view->assign('index', Request::analyze('activetab', 0));
+        $this->view->assign('data', $grid);
+
+        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -69,6 +84,10 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function createAction()
     {
+        if (!$this->acl->checkUserAccess(ActionsInterface::USER_CREATE)) {
+            return;
+        }
+
         $this->view->assign(__FUNCTION__, 1);
         $this->view->assign('header', __('Nuevo Usuario'));
         $this->view->assign('isView', false);
@@ -76,11 +95,13 @@ class UserController extends ControllerBase implements CrudControllerInterface
 
         try {
             $this->setViewData();
+
+            $this->eventDispatcher->notifyEvent('show.user.create', $this);
         } catch (\Exception $e) {
             $this->returnJsonResponse(1, $e->getMessage());
         }
 
-        $this->returnJsonResponse(0, '', ['html' => $this->render()]);
+        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -93,13 +114,13 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     protected function setViewData($userId = null)
     {
-        $this->view->addTemplate('users', 'itemshow');
+        $this->view->addTemplate('user', 'itemshow');
 
         $user = $userId ? $this->userService->getById($userId) : new UserData();
 
         $this->view->assign('user', $user);
-        $this->view->assign('groups', $this->getUserGroups());
-        $this->view->assign('profiles', $this->getUserProfiles());
+        $this->view->assign('groups', UserGroupService::getServiceItems());
+        $this->view->assign('profiles', UserProfileService::getServiceItems());
         $this->view->assign('isUseSSO', $this->configData->isAuthBasicAutoLoginEnabled());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
@@ -123,17 +144,24 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function editAction($id)
     {
+        if (!$this->acl->checkUserAccess(ActionsInterface::USER_EDIT)) {
+            return;
+        }
+
+        $this->view->assign(__FUNCTION__, 1);
         $this->view->assign('header', __('Editar Usuario'));
         $this->view->assign('isView', false);
         $this->view->assign('route', 'user/saveEdit/' . $id);
 
         try {
             $this->setViewData($id);
+
+            $this->eventDispatcher->notifyEvent('show.user.edit', $this);
         } catch (\Exception $e) {
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 
-        $this->returnJsonResponse(0, '', ['html' => $this->render()]);
+        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -145,12 +173,13 @@ class UserController extends ControllerBase implements CrudControllerInterface
     public function editPassAction($id)
     {
         // Comprobar si el usuario a modificar es distinto al de la sesión
-        if ($id !== $this->userData->getUserId() && !$this->checkAccess()) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::USER_EDIT_PASS, $this->userData->getUserId())) {
             return;
         }
 
-        $this->view->addTemplate('userspass', 'itemshow');
+        $this->view->addTemplate('userpass', 'itemshow');
 
+        $this->view->assign(__FUNCTION__, 1);
         $this->view->assign('header', __('Cambio de Clave'));
         $this->view->assign('isView', false);
         $this->view->assign('route', 'user/saveEditPass/' . $id);
@@ -160,11 +189,13 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $user = $id ? $this->userService->getById($id) : new UserData();
 
             $this->view->assign('user', $user);
+
+            $this->eventDispatcher->notifyEvent('show.user.editPass', $this);
         } catch (\Exception $e) {
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 
-        $this->returnJsonResponse(0, '', ['html' => $this->render()]);
+        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -174,20 +205,25 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function deleteAction($id)
     {
+        if (!$this->acl->checkUserAccess(ActionsInterface::USER_DELETE)) {
+            return;
+        }
+
+        $this->view->assign(__FUNCTION__, 1);
+
         try {
-            $userService = new UserService();
-            $userService->logAction($id, ActionsInterface::USER_DELETE);
-            $userService->delete($id);
+            $this->userService->logAction($id, ActionsInterface::USER_DELETE);
+            $this->userService->delete($id);
 
             $this->deleteCustomFieldsForItem(ActionsInterface::USER, $id);
 
             $this->eventDispatcher->notifyEvent('delete.user', $this);
 
-            $this->returnJsonResponse(0, __('Usuario eliminado'));
+            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario eliminado'));
         } catch (SPException $e) {
             debugLog($e->getMessage(), true);
 
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
     }
 
@@ -196,32 +232,38 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function saveCreateAction()
     {
+        if (!$this->acl->checkUserAccess(ActionsInterface::USER_CREATE)) {
+            return;
+        }
+
         try {
             $form = new UserForm();
             $form->validate(ActionsInterface::USER_CREATE);
 
-            $userService = new UserService();
-
-            $id = $userService->create($form->getItemData());
-            $userService->logAction($id, ActionsInterface::USER_CREATE);
+            $id = $this->userService->create($form->getItemData());
+            $this->userService->logAction($id, ActionsInterface::USER_CREATE);
 
             $this->addCustomFieldsForItem(ActionsInterface::USER, $id);
 
-            $this->eventDispatcher->notifyEvent('edit.user', $this);
+            $this->eventDispatcher->notifyEvent('create.user', $this);
 
             if ($form->getItemData()->isUserIsChangePass()
                 && !AuthUtil::mailPassRecover($form->getItemData())
             ) {
-                $this->returnJsonResponse(2, __('Usuario creado'), __('No se pudo realizar la petición de cambio de clave.'));
+                $this->returnJsonResponse(
+                    JsonResponse::JSON_WARNING,
+                    __u('Usuario creado'),
+                    [__('No se pudo realizar la petición de cambio de clave.')]
+                );
             }
 
-            $this->returnJsonResponse(0, __('Usuario creado'));
+            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario creado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (SPException $e) {
             debugLog($e->getMessage(), true);
 
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
     }
 
@@ -232,34 +274,39 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function saveEditAction($id)
     {
-        try {
-            $isLdap = Request::analyze('isLdap', 0);
+        if (!$this->acl->checkUserAccess(ActionsInterface::USER_EDIT)) {
+            return;
+        }
 
+        try {
             $form = new UserForm($id);
-            $form->setIsLdap($isLdap);
+            $form->setIsLdap(Request::analyze('isLdap', 0));
             $form->validate(ActionsInterface::USER_EDIT);
 
-            if ($isLdap) {
-                // FIXME: LDAP Service
-                $userService = new UserService();
-            } else {
-                $userService = new UserService();
-            }
-
-            $userService->update($form->getItemData());
-            $userService->logAction($id, ActionsInterface::USER_EDIT);
+            $this->userService->update($form->getItemData());
+            $this->userService->logAction($id, ActionsInterface::USER_EDIT);
 
             $this->updateCustomFieldsForItem(ActionsInterface::USER, $id);
 
             $this->eventDispatcher->notifyEvent('edit.user', $this);
 
-            $this->returnJsonResponse(0, __('Usuario actualizado'));
+            if ($form->getItemData()->isUserIsChangePass()
+                && !AuthUtil::mailPassRecover($form->getItemData())
+            ) {
+                $this->returnJsonResponse(
+                    JsonResponse::JSON_WARNING,
+                    __u('Usuario actualizado'),
+                    [__('No se pudo realizar la petición de cambio de clave.')]
+                );
+            }
+
+            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario actualizado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (SPException $e) {
             debugLog($e->getMessage(), true);
 
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
     }
 
@@ -270,6 +317,10 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function saveEditPassAction($id)
     {
+        if (!$this->acl->checkUserAccess(ActionsInterface::USER_EDIT_PASS)) {
+            return;
+        }
+
         try {
             $form = new UserForm($id);
             $form->validate(ActionsInterface::USER_EDIT_PASS);
@@ -278,15 +329,15 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $userService->updatePass($form->getItemData());
             $userService->logAction($id, ActionsInterface::USER_EDIT_PASS);
 
-            $this->eventDispatcher->notifyEvent('editPass.user', $this);
+            $this->eventDispatcher->notifyEvent('edit.user.pass', $this);
 
-            $this->returnJsonResponse(0, __('Clave actualizada'));
+            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave actualizada'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (SPException $e) {
             debugLog($e->getMessage(), true);
 
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
     }
 
@@ -298,16 +349,23 @@ class UserController extends ControllerBase implements CrudControllerInterface
      */
     public function viewAction($id)
     {
+        if (!$this->acl->checkUserAccess(ActionsInterface::USER_VIEW)) {
+            return;
+        }
+
+        $this->view->assign(__FUNCTION__, 1);
         $this->view->assign('header', __('Ver Usuario'));
         $this->view->assign('isView', true);
 
         try {
             $this->setViewData($id);
+
+            $this->eventDispatcher->notifyEvent('show.user', $this);
         } catch (\Exception $e) {
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 
-        $this->returnJsonResponse(0, '', ['html' => $this->render()]);
+        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,7 +29,6 @@ defined('APP_ROOT') || die();
 use SP\Account\AccountUtil;
 use SP\Controller\AccountController;
 use SP\Controller\ControllerBase;
-use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\SPException;
@@ -63,9 +62,10 @@ class MainController extends ControllerBase implements ActionsInterface
     /**
      * Constructor
      *
-     * @param        $template   Template con instancia de plantilla
-     * @param string $page       El nombre de página para la clase del body
-     * @param bool   $initialize Si es una inicialización completa
+     * @param Template $template   Template con instancia de plantilla
+     * @param string   $page       El nombre de página para la clase del body
+     * @param bool     $initialize Si es una inicialización completa
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function __construct(Template $template = null, $page = '', $initialize = true)
     {
@@ -90,6 +90,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Inicializar las variables para la vista principal de la aplicación
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
     protected function initialize()
     {
@@ -114,7 +116,7 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->setLoggedIn(Util::isLoggedIn($this->session));
 
         $this->view->assign('lang', $this->loggedIn ? Language::$userLang : Language::$globalLang);
-        $this->view->assign('loadApp', SessionFactory::getAuthCompleted());
+        $this->view->assign('loadApp', $this->session->getAuthCompleted());
 
 
         try {
@@ -148,8 +150,10 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->append('jsLinks', Init::$WEBROOT . '/public/js/js.php?f=' . $themeJsFiles . '&b=' . $themeJsBase . '&v=' . $jsVersionHash);
         }
 
-        if ($this->loggedIn && SessionFactory::getUserPreferences()->getUserId() > 0) {
-            $resultsAsCards = SessionFactory::getUserPreferences()->isResultsAsCards();
+        $userPreferences = $this->session->getUserPreferences();
+
+        if ($this->loggedIn && $userPreferences->getUserId() > 0) {
+            $resultsAsCards = $userPreferences->isResultsAsCards();
         } else {
             $resultsAsCards = $this->configData->isResultsAsCards();
         }
@@ -204,6 +208,16 @@ class MainController extends ControllerBase implements ActionsInterface
     }
 
     /**
+     * @throws SPException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     */
+    public function indexAction()
+    {
+        $this->initialize();
+        $this->getMain();
+    }
+
+    /**
      * Obtener los datos para el interface principal de sysPass
      *
      * @throws \SP\Core\Exceptions\SPException
@@ -218,12 +232,6 @@ class MainController extends ControllerBase implements ActionsInterface
         $this->view->addTemplate('body-content');
         $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
-    }
-
-    public function indexAction()
-    {
-        $this->initialize();
-        $this->getMain();
     }
 
     /**
@@ -267,7 +275,7 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $this->view->append('actions', $ActionSearch);
 
-        if (Acl::checkUserAccess(self::ACCOUNT_CREATE)) {
+        if ($this->acl->checkUserAccess(self::ACCOUNT_CREATE)) {
             $ActionNew = new DataGridAction();
             $ActionNew->setId(self::ACCOUNT_CREATE);
             $ActionNew->setTitle(__('Nueva Cuenta'));
@@ -277,7 +285,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->append('actions', $ActionNew);
         }
 
-        if (Acl::checkUserAccess(self::ACCESS_MANAGE)) {
+        if ($this->acl->checkUserAccess(self::ACCESS_MANAGE)) {
             $ActionUsr = new DataGridAction();
             $ActionUsr->setId(self::ACCESS_MANAGE);
             $ActionUsr->setTitle(__('Usuarios y Accesos'));
@@ -287,7 +295,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->append('actions', $ActionUsr);
         }
 
-        if (Acl::checkUserAccess(self::ITEMS_MANAGE)) {
+        if ($this->acl->checkUserAccess(self::ITEMS_MANAGE)) {
             $ActionMgm = new DataGridAction();
             $ActionMgm->setId(self::ITEMS_MANAGE);
             $ActionMgm->setTitle(__('Elementos y Personalización'));
@@ -297,7 +305,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->append('actions', $ActionMgm);
         }
 
-        if (Acl::checkUserAccess(self::CONFIG)) {
+        if ($this->acl->checkUserAccess(self::CONFIG)) {
             $ActionConfig = new DataGridAction();
             $ActionConfig->setId(self::CONFIG);
             $ActionConfig->setTitle(__('Configuración'));
@@ -307,7 +315,7 @@ class MainController extends ControllerBase implements ActionsInterface
             $this->view->append('actions', $ActionConfig);
         }
 
-        if (Acl::checkUserAccess(self::EVENTLOG) && $this->configData->isLogEnabled()) {
+        if ($this->acl->checkUserAccess(self::EVENTLOG) && $this->configData->isLogEnabled()) {
             $ActionEventlog = new DataGridAction();
             $ActionEventlog->setId(self::EVENTLOG);
             $ActionEventlog->setTitle(__('Registro de Eventos'));
@@ -492,6 +500,8 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de comprobación de actualizaciones
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function getCheckUpdates()
     {
@@ -538,6 +548,7 @@ class MainController extends ControllerBase implements ActionsInterface
      * Realizar las acciones del controlador
      *
      * @param mixed $type Tipo de acción
+     * @throws \phpmailer\phpmailerException
      */
     public function doAction($type = null)
     {
@@ -561,8 +572,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
     /**
      * Obtener los datos para el interface de restablecimiento de clave de usuario
-     *
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function getPassReset()
     {
@@ -595,12 +604,9 @@ class MainController extends ControllerBase implements ActionsInterface
     /**
      * Obtener la vista para mostrar un enlace publicado
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\FileNotFoundException
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \SP\Core\Exceptions\SPException
+     * @return void
+     * @throws SPException
+     * @throws \phpmailer\phpmailerException
      */
     public function getPublicLink()
     {

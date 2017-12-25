@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var \SP\DataModel\AccountExtData $accountData
+ */
+?>
+
 <div id="actions" class="public-link" align="center">
     <div id="content" class="public-link">
         <div id="title" class="midroundup titleNormal">
@@ -78,12 +84,12 @@
                     <?php if ($useImage): ?>
                         <div class="lowres-title"><?php echo __('Clave'); ?></div>
 
-                        <img class="account-pass-image" src="data:image/png;base64,<?php echo $accountPass; ?>"/>
+                        <img class="account-pass-image" src="data:image/png;base64,<?php echo $accountPassImage; ?>"/>
                     <?php else: ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="pass" name="pass" type="text"
+                            <input id="account-pass" name="account-pass" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $accountPass; ?>" readonly>
+                                   value="<?php echo $accountData->getAccountPass(); ?>" readonly>
                             <label class="mdl-textfield__label" for="name"><?php echo __('Clave'); ?></label>
                         </div>
                     <?php endif; ?>
@@ -95,10 +101,9 @@
                 <?php if (!$useImage): ?>
                     <li>
                         <button id="btnClipPass"
-                                class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
+                                class="clip-pass-icon mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
                                 data-clipboard-target="#account-pass"
-                                data-action-id="<?php echo \SP\Core\ActionsInterface::ACCOUNT_VIEW_PASS; ?>"
-                                data-item-id="<?php echo $accountId; ?>"
+                                data-item-id="<?php echo $accountData->getAccountId(); ?>"
                                 data-sk="<?php echo $sk; ?>"
                                 data-history="0"
                                 data-onclick="account/copypass">

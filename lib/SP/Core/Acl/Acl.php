@@ -160,8 +160,11 @@ class Acl implements ActionsInterface
                 return ($curUserProfile->isMgmUsers() || $curUserProfile->isMgmGroups() || $curUserProfile->isMgmProfiles());
             case self::USER:
             case self::USER_SEARCH:
+            case self::USER_CREATE:
+            case self::USER_EDIT:
                 return $curUserProfile->isMgmUsers();
             case self::USER_EDIT_PASS:
+                // Comprobar si el usuario es distinto al de la sesión
                 return ($userId === $curUserId || $curUserProfile->isMgmUsers());
             case self::GROUP:
             case self::GROUP_SEARCH:

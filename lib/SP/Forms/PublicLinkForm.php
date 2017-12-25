@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,14 +24,18 @@
 
 namespace SP\Forms;
 
+use SP\Core\Acl\ActionsInterface;
+use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
+use SP\Http\Request;
+use SP\Mgmt\PublicLinks\PublicLink;
 
 /**
  * Class PublicLinkForm
  *
  * @package SP\Forms
  */
-class PublicLinkForm implements FormInterface
+class PublicLinkForm extends FormBase implements FormInterface
 {
     /**
      * @var PublicLinkData
@@ -39,25 +43,47 @@ class PublicLinkForm implements FormInterface
     protected $PublicLinkData;
 
     /**
-     * CustomerForm constructor.
-     *
-     * @param PublicLinkData $PublicLinkData
-     */
-    public function __construct(PublicLinkData $PublicLinkData)
-    {
-        $this->PublicLinkData = $PublicLinkData;
-    }
-
-    /**
      * Validar el formulario
      *
      * @param $action
      * @return bool
-     * @throws \SP\Core\Exceptions\ValidationException
+     * @throws ValidationException
      */
     public function validate($action)
     {
+        switch ($action) {
+            case ActionsInterface::PUBLICLINK_CREATE:
+            case ActionsInterface::PUBLICLINK_EDIT:
+                $this->analyzeRequestData();
+                $this->checkCommon();
+                break;
+        }
+
         return true;
+    }
+
+    /**
+     * Analizar los datos de la petición HTTP
+     *
+     * @return void
+     */
+    protected function analyzeRequestData()
+    {
+        $this->PublicLinkData = new PublicLinkData();
+        $this->PublicLinkData->setPublicLinkId($this->itemId);
+        $this->PublicLinkData->setTypeId(PublicLink::TYPE_ACCOUNT);
+        $this->PublicLinkData->setItemId(Request::analyze('accountId', 0));
+        $this->PublicLinkData->setNotify(Request::analyze('notify', false, false, true));
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    protected function checkCommon()
+    {
+        if (!$this->PublicLinkData->getPublicLinkItemId()) {
+            throw new ValidationException(__u('Es necesario una cuenta'));
+        }
     }
 
     /**
@@ -65,6 +91,6 @@ class PublicLinkForm implements FormInterface
      */
     public function getItemData()
     {
-        // TODO: Implement getItemData() method.
+        return $this->PublicLinkData;
     }
 }

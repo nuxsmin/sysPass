@@ -189,4 +189,33 @@ interface DataGridActionInterface
      * @return $this
      */
     public function setReflectionFilter($class, $method);
+
+    /**
+     * Returns classes as a string
+     *
+     * @return array
+     */
+    public function getClassesAsString();
+
+    /**
+     * Returns classes
+     *
+     * @return array
+     */
+    public function getClasses();
+
+    /**
+     * Set classes
+     *
+     * @param array $classes
+     */
+    public function setClasses(array $classes);
+
+    /**
+     * Adds a new class
+     *
+     * @param mixed $value
+     * @return $this
+     */
+    public function addClass($value);
 }

@@ -24,7 +24,7 @@
 
 namespace SP\Forms;
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ApiTokenData;
 use SP\Http\Request;
@@ -81,11 +81,11 @@ class ApiTokenForm extends FormBase implements FormInterface
     protected function checkCommon()
     {
         if ($this->ApiTokenData->getAuthtokenUserId() === 0) {
-            throw new ValidationException(__('Usuario no indicado', false));
+            throw new ValidationException(__u('Usuario no indicado'));
         }
 
         if ($this->ApiTokenData->getAuthtokenActionId() === 0) {
-            throw new ValidationException(__('Acción no indicada', false));
+            throw new ValidationException(__u('Acción no indicada'));
         }
 
         $action = $this->ApiTokenData->getAuthtokenActionId();
@@ -94,7 +94,7 @@ class ApiTokenForm extends FormBase implements FormInterface
                 || $action === ActionsInterface::ACCOUNT_CREATE)
             && $this->ApiTokenData->getAuthtokenHash() === ''
         ) {
-            throw new ValidationException(__('La clave no puede estar en blanco', false));
+            throw new ValidationException(__u('La clave no puede estar en blanco'));
         }
     }
 

@@ -1,5 +1,5 @@
 <?php
-/** @var  \SP\DataModel\ApiTokenData $ApiTokenData */
+/** @var  \SP\DataModel\ApiTokenData $apiToken */
 /** @var  \SP\Core\UI\ThemeIconsBase $icons */
 ?>
 <div id="box-popup">
@@ -7,8 +7,9 @@
 
     <form method="post" name="frmTokens" id="frmTokens" class="form-action"
           data-onsubmit="appMgmt/save"
+          data-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::APITOKEN; ?>"
+          data-nextaction="<?php echo $nextAction; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -17,10 +18,10 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Usuario'); ?></div>
 
-                    <select id="selUsers" name="users" class="select-box" required <?php echo $isDisabled; ?>>
+                    <select id="selUsers" name="users" class="select-box" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
                         <?php foreach ($users as $user): ?>
-                            <?php $selected = ($user->id === $ApiTokenData->getAuthtokenUserId()) ? 'selected' : ''; ?>
+                            <?php $selected = ($user->id === $apiToken->getAuthtokenUserId()) ? 'selected' : ''; ?>
                             <option value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -32,10 +33,10 @@
                     <div class="lowres-title"><?php echo __('Acción'); ?></div>
 
                     <select id="selActions" name="actions"
-                            class="select-box" required <?php echo $isDisabled; ?>>
+                            class="select-box" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Acción'); ?></option>
                         <?php foreach ($actions as $id => $name): ?>
-                            <?php $selected = ($id === $ApiTokenData->getAuthtokenActionId()) ? 'selected' : ''; ?>
+                            <?php $selected = ($id === $apiToken->getAuthtokenActionId()) ? 'selected' : ''; ?>
                             <option value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $name; ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -72,15 +73,13 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Token'); ?></div>
 
-                        <?php echo $ApiTokenData->getAuthtokenToken(); ?>
+                        <?php echo $apiToken->getAuthtokenToken(); ?>
                     </td>
                 </tr>
             <?php endif; ?>
             </tbody>
         </table>
 
-        <input type="hidden" name="itemId" value="<?php echo $ApiTokenData->getAuthtokenId(); ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>

@@ -223,10 +223,26 @@ sysPass.Requests = function (Common) {
         return source;
     };
 
+    /**
+     * Returns an object for a given route and query
+     *
+     * @param route
+     * @param query
+     * @returns {{r: string}}
+     */
+    var getRouteForQuery = function (route, query) {
+        if (typeof query === "object") {
+            return {r: route + "/" + query.join("/")};
+        }
+
+        return {r: route + "/" + query};
+    };
+
     return {
         getRequestOpts: getRequestOpts,
         getActionCall: getActionCall,
         getActionEvent: getActionEvent,
+        getRouteForQuery: getRouteForQuery,
         history: history
     };
 };

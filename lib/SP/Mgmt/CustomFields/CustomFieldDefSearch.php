@@ -66,7 +66,7 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
         foreach ($queryRes as $CustomField) {
 
             /** @var CustomFieldDefData $fieldDef */
-            $fieldDef = Util::castToClass($this->getDataModel(), $CustomField->getCustomfielddefField());
+            $fieldDef = Util::unserialize($this->getDataModel(), $CustomField->getCustomfielddefField());
 
             if ($SearchData->getSeachString() === ''
                 || stripos($fieldDef->getName(), $SearchData->getSeachString()) !== false

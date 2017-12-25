@@ -58,7 +58,7 @@ class Hash
      */
     private static function getKey(&$key, $isCheck = true)
     {
-        if (mb_strlen($key) > Hash::MAX_KEY_LENGTH) {
+        if (mb_strlen($key) > self::MAX_KEY_LENGTH) {
             $key = hash('sha256', $key);
 
             if ($isCheck === false) {

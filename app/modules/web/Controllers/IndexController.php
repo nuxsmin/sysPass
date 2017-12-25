@@ -38,8 +38,6 @@ class IndexController extends ControllerBase
 {
     /**
      * Index action
-     *
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function indexAction()
     {
@@ -47,14 +45,7 @@ class IndexController extends ControllerBase
             Response::redirect('index.php?r=login');
         } else {
             $LayoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $LayoutHelper->setPage('main');
-            $LayoutHelper->initBody();
-            $LayoutHelper->getSessionBar();
-            $LayoutHelper->getMenu($this->acl);
-
-            $this->view->addPartial('body-content');
-            $this->view->addPartial('body-footer');
-            $this->view->addPartial('body-end');
+            $LayoutHelper->getFullLayout($this->acl, 'main');
 
             $this->view();
         }
@@ -62,6 +53,8 @@ class IndexController extends ControllerBase
 
     /**
      * Updates checking action
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function checkUpdatesAction()
     {

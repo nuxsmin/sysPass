@@ -43,11 +43,11 @@ use SP\Forms\ApiTokenForm;
 use SP\Forms\CategoryForm;
 use SP\Forms\CustomerForm;
 use SP\Forms\CustomFieldDefForm;
-use SP\Forms\GroupForm;
 use SP\Forms\NoticeForm;
-use SP\Forms\ProfileForm;
 use SP\Forms\TagForm;
 use SP\Forms\UserForm;
+use SP\Forms\UserGroupForm;
+use SP\Forms\UserProfileForm;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -68,7 +68,6 @@ use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserLdap;
 use SP\Mgmt\Users\UserLdapSync;
 use SP\Mgmt\Users\UserUtil;
-use SP\Util\Checks;
 use SP\Util\Json;
 use SP\Util\Util;
 
@@ -215,7 +214,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \phpmailer\phpmailerException
+     * @throws phpmailerException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
     protected function userAction()
@@ -357,13 +356,13 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \phpmailer\phpmailerException
+     * @throws phpmailerException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     protected function groupAction()
     {
-        $Form = new GroupForm($this->itemId);
+        $Form = new UserGroupForm($this->itemId);
         $Form->validate($this->actionId);
 
         $this->setCustomFieldData(ActionsInterface::GROUP);
@@ -419,11 +418,11 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \phpmailer\phpmailerException
+     * @throws phpmailerException
      */
     protected function profileAction()
     {
-        $Form = new ProfileForm($this->itemId);
+        $Form = new UserProfileForm($this->itemId);
         $Form->validate($this->actionId);
 
         $this->setCustomFieldData(ActionsInterface::PROFILE);
@@ -479,7 +478,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \phpmailer\phpmailerException
+     * @throws phpmailerException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -541,7 +540,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \phpmailer\phpmailerException
+     * @throws phpmailerException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -603,7 +602,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \phpmailer\phpmailerException
+     * @throws phpmailerException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -666,7 +665,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \phpmailer\phpmailerException
+     * @throws phpmailerException
      */
     protected function customFieldAction()
     {
@@ -711,13 +710,13 @@ class ItemActionController implements ItemControllerInterface
     /**
      * Acciones sobre enlaces públicos
      *
-     * @throws \SP\Core\Exceptions\ValidationException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \phpmailer\phpmailerException
      * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     protected function publicLinkAction()
     {
@@ -829,7 +828,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \phpmailer\phpmailerException
+     * @throws phpmailerException
      */
     protected function fileAction()
     {
@@ -863,7 +862,7 @@ class ItemActionController implements ItemControllerInterface
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \phpmailer\phpmailerException
+     * @throws phpmailerException
      */
     protected function pluginAction()
     {
@@ -907,7 +906,7 @@ class ItemActionController implements ItemControllerInterface
      * @throws \SP\Core\Exceptions\ValidationException
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \phpmailer\phpmailerException
+     * @throws phpmailerException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -1077,7 +1076,7 @@ class ItemActionController implements ItemControllerInterface
     /**
      * Importar usuarios de LDAP
      *
-     * @throws \phpmailer\phpmailerException
+     * @throws phpmailerException
      */
     protected function ldapImportAction()
     {

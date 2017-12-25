@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Controller\ControllerBase;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
+use SP\Util\ErrorUtil;
 
 /**
  * Class PassresetController
@@ -41,14 +42,9 @@ class PassresetController extends ControllerBase
     public function indexAction()
     {
         $LayoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-        $LayoutHelper->initBody();
-        $LayoutHelper->setPage('passreset');
-
-        $this->view->addPartial('body-header');
+        $LayoutHelper->getPublicLayout('passreset', 'passreset');
 
         if ($this->configData->isMailEnabled() || Request::analyze('f', 0) === 1) {
-            $this->view->addTemplate('passreset');
-
             $this->view->assign('login', Request::analyze('login'));
             $this->view->assign('email', Request::analyze('email'));
 
@@ -58,11 +54,8 @@ class PassresetController extends ControllerBase
 
             $this->view->assign('passReset', $this->view->action === 'passreset' && !empty($this->view->hash) && !empty($this->view->time));
         } else {
-            $this->showError(self::ERR_UNAVAILABLE, false);
+            ErrorUtil::showErrorFull($this->view, self::ERR_UNAVAILABLE, 'passreset');
         }
-
-        $this->view->addPartial('body-footer');
-        $this->view->addPartial('body-end');
 
         $this->view();
     }

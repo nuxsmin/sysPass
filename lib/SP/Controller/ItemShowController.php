@@ -29,7 +29,6 @@ defined('APP_ROOT') || die();
 use SP\Account\Account;
 use SP\Account\AccountAcl;
 use SP\Account\AccountHistory;
-use SP\Config\Config;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
@@ -69,7 +68,6 @@ use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
-use SP\Util\Checks;
 use SP\Util\ImageUtil;
 use SP\Util\Json;
 
@@ -511,7 +509,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             throw new ItemException(__('La clave maestra no coincide', false));
         }
 
-        $AccountAcl = new AccountAcl($Account, ActionsInterface::ACCOUNT_VIEW_PASS);
+        $AccountAcl = new AccountAcl(ActionsInterface::ACCOUNT_VIEW_PASS, $Account);
         $Acl = $AccountAcl->getAcl();
 
         if (!$Acl->isShowViewPass()) {

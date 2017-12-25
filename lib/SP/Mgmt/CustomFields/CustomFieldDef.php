@@ -163,7 +163,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         }
 
         /** @var CustomFieldDefData $fieldDef */
-        $fieldDef = Util::castToClass($this->getDataModel(), $CustomFieldDef->getCustomfielddefField());
+        $fieldDef = Util::unserialize($this->getDataModel(), $CustomFieldDef->getCustomfielddefField());
         $fieldDef->setCustomfielddefId($CustomFieldDef->getCustomfielddefId());
         $fieldDef->setId($CustomFieldDef->getCustomfielddefId());
 
@@ -220,7 +220,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         foreach ($queryRes as $CustomFieldDef) {
 
             /** @var CustomFieldDefData $fieldDef */
-            $fieldDef = Util::castToClass($this->getDataModel(), $CustomFieldDef->getCustomfielddefField());
+            $fieldDef = Util::unserialize($this->getDataModel(), $CustomFieldDef->getCustomfielddefField());
             $fieldDef->setId($CustomFieldDef->getCustomfielddefId());
 
             $fields[] = $fieldDef;

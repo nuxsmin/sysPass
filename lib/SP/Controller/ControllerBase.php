@@ -31,7 +31,6 @@ use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
 use SP\Core\Template;
 use SP\Core\Traits\InjectableTrait;
@@ -64,8 +63,10 @@ abstract class ControllerBase
 
     /** @var Template Instancia del motor de plantillas a utilizar */
     protected $view;
-    /** @var  int Módulo a usar */
+    /** @var  int ID de la acción */
     protected $action;
+    /** @var string Nombre de la acción */
+    protected $actionName;
     /** @var ThemeIconsBase Instancia de los iconos del tema visual */
     protected $icons;
     /** @var string Nombre del controlador */
@@ -98,16 +99,17 @@ abstract class ControllerBase
     /**
      * Constructor
      *
-     * @param $template Template con instancia de plantilla
+     * @param $actionName
      */
-    public function __construct(Template $template = null)
+    public function __construct($actionName)
     {
         $this->injectDependencies();
 
         $class = static::class;
         $this->controllerName = substr($class, strrpos($class, '\\') + 1, -strlen('Controller'));
+        $this->actionName = $actionName;
 
-        $this->view = null === $template ? $this->getTemplate() : $template;
+        $this->view = new Template();
         $this->view->setBase(strtolower($this->controllerName));
 
         $this->icons = $this->theme->getIcons();
@@ -117,18 +119,6 @@ abstract class ControllerBase
         if (method_exists($this, 'initialize')) {
             $this->initialize();
         }
-    }
-
-    /**
-     * Obtener una nueva instancia del motor de plantillas.
-     *
-     * @param null $template string con el nombre de la plantilla
-     * @return Template
-     * @throws \Psr\Container\ContainerExceptionInterface
-     */
-    protected function getTemplate($template = null)
-    {
-        return new Template($template);
     }
 
     /**
@@ -240,30 +230,12 @@ abstract class ControllerBase
      *
      * @param int  $type int con el tipo de error
      * @param bool $reset
+     * @param null $replace
+     * @deprecated Use ErrorUtil class
      */
-    public function showError($type, $reset = true)
+    public function showError($type, $reset = true, $replace = null)
     {
-        $errorsTypes = [
-            self::ERR_UNAVAILABLE => ['txt' => __('Opción no disponible'), 'hint' => __('Consulte con el administrador')],
-            self::ERR_ACCOUNT_NO_PERMISSION => ['txt' => __('No tiene permisos para acceder a esta cuenta'), 'hint' => __('Consulte con el administrador')],
-            self::ERR_PAGE_NO_PERMISSION => ['txt' => __('No tiene permisos para acceder a esta página'), 'hint' => __('Consulte con el administrador')],
-            self::ERR_OPERATION_NO_PERMISSION => ['txt' => __('No tiene permisos para realizar esta operación'), 'hint' => __('Consulte con el administrador')],
-            self::ERR_UPDATE_MPASS => ['txt' => __('Clave maestra actualizada'), 'hint' => __('Reinicie la sesión para cambiarla')],
-            self::ERR_EXCEPTION => ['txt' => __('Se ha producido una excepción'), 'hint' => __('Consulte con el administrador')]
-        ];
 
-        if ($reset) {
-            $this->view->resetTemplates();
-        }
-
-        $this->view->addPartial('error');
-
-        $this->view->append('errors',
-            [
-                'type' => SPException::SP_WARNING,
-                'description' => $errorsTypes[$type]['txt'],
-                'hint' => $errorsTypes[$type]['hint']
-            ]);
     }
 
     /**

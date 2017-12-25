@@ -16,7 +16,7 @@
 
     <form method="post" name="frmaccount" id="frmAccount" class="form-action"
           data-onsubmit="account/save"
-          data-action="<?php echo isset($formAction) ? $formAction : ''; ?>"
+          data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
           data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
           data-hash="">
         <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
@@ -189,7 +189,7 @@
                         <select id="selParentAccount" name="parentAccountId" tabindex="11"
                                 class="select-box select-box-deselect" <?php echo $disabled; ?>
                                 data-sk="<?php echo $sk; ?>"
-                                data-item-type="accountsUser"
+                                data-action-route="items/accountsUser"
                                 data-item-id="<?php echo $gotData ? $accountId : ''; ?>"
                                 data-selected-id="<?php echo $gotData ? $accountData->getAccountParentId() : ''; ?>">
                             <option value=""><?php echo __('Seleccionar Cuenta'); ?></option>
@@ -204,7 +204,7 @@
                         <div class="lowres-title"><?php echo __('Historial'); ?></div>
 
                         <select id="historyId" name="historyId" class="select-box" tabindex="12"
-                                data-action-id="account/viewHistory"
+                                data-action-route="account/viewHistory"
                                 data-onchange="account/viewHistory">
                             <option value=""><?php echo __('Seleccionar fecha'); ?></option>
                             <?php foreach ($historyData as $historyId => $historyData): ?>
@@ -223,7 +223,7 @@
                 </tr>
             <?php endif; ?>
 
-            <?php if ($gotData && $AccountAcl->isShowLink() && $accountData->getPublicLinkHash()): ?>
+            <?php if ($gotData && $publicLinkShow && $publicLinkUrl !== null): ?>
                 <tr>
                     <td class="descField"><?php echo __('Enlace Público'); ?></td>
                     <td class="valField">

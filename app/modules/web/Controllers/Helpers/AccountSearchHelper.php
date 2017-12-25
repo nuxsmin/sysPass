@@ -26,13 +26,11 @@ namespace SP\Modules\Web\Controllers\Helpers;
 
 use SP\Account\AccountSearch;
 use SP\Account\AccountsSearchItem;
-use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
 use SP\Html\DataGrid\DataGrid;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
-use SP\Html\DataGrid\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeaderSort;
 use SP\Html\DataGrid\DataGridPager;
@@ -84,8 +82,8 @@ class AccountSearchHelper extends HelperBase
      * Obtener los resultados de una búsqueda
      *
      * @throws \InvalidArgumentException
-     * @throws \ReflectionException
      * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getSearch()
     {
@@ -136,7 +134,6 @@ class AccountSearchHelper extends HelperBase
      *
      * @return DataGrid
      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \ReflectionException
      */
     private function getGrid()
     {

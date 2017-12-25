@@ -69,7 +69,7 @@ class SyspassApi extends ApiBase
         $Account = new Account($AccountData);
         $Account->getData();
 
-        $AccountAcl = new AccountAcl($Account, ActionsInterface::ACCOUNT_VIEW_PASS);
+        $AccountAcl = new AccountAcl(ActionsInterface::ACCOUNT_VIEW_PASS, $Account);
         $Acl = $AccountAcl->getAcl();
 
         if (!$Acl->isShowViewPass()) {
@@ -141,7 +141,7 @@ class SyspassApi extends ApiBase
         $Account = new Account(new AccountExtData($accountId));
         $ret = $Account->getData();
 
-        $AccountAcl = new AccountAcl($Account, ActionsInterface::ACCOUNT_VIEW);
+        $AccountAcl = new AccountAcl(ActionsInterface::ACCOUNT_VIEW, $Account);
         $Acl = $AccountAcl->getAcl();
 
         if (!$Acl->isShowView()) {

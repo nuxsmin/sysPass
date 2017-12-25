@@ -65,7 +65,7 @@ class PublicLinkSearch extends PublicLinkBase implements ItemSearchInterface
         $publicLinks['count'] = $Data->getQueryNumRows();
 
         foreach ($queryRes as $PublicLinkListData) {
-            $PublicLinkData = Util::castToClass($this->getDataModel(), $PublicLinkListData->getPublicLinkLinkData());
+            $PublicLinkData = Util::unserialize($this->getDataModel(), $PublicLinkListData->getPublicLinkLinkData());
 
             $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
             $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getUserId()));

@@ -140,14 +140,16 @@ class LoginService
         $this->jsonResponse = new JsonResponse();
         $this->LogMessage = new LogMessage();
         $this->UserData = new UserLoginData();
-        $this->LogMessage->setAction(__('Inicio sesión', false));
+        $this->LogMessage->setAction(__u('Inicio sesión'));
     }
 
     /**
      * Ejecutar las acciones de login
      *
-     * @throws \InvalidArgumentException
+     * @return JsonResponse
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function doLogin()
     {
@@ -174,7 +176,7 @@ class LoginService
             } else {
                 $this->addTracking();
 
-                throw new AuthException(SPException::SP_INFO, __('Login incorrecto', false), '', self::STATUS_INVALID_LOGIN);
+                throw new AuthException(SPException::SP_INFO, __u('Login incorrecto'), '', self::STATUS_INVALID_LOGIN);
             }
 
             $this->getUserData();
@@ -203,7 +205,7 @@ class LoginService
 
 //        $data = ['url' => 'index.php' . Request::importUrlParamsToGet()];
         $data = ['url' => 'index.php?r=index'];
-        $this->jsonResponse->setStatus(0);
+        $this->jsonResponse->setStatus(JsonResponse::JSON_SUCCESS);
         $this->jsonResponse->setData($data);
 
         return $this->jsonResponse;
@@ -226,7 +228,7 @@ class LoginService
             $this->LogMessage->addDescription($e->getMessage());
             $this->LogMessage->addDescription($e->getHint());
 
-            throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
+            throw new AuthException(SPException::SP_ERROR, __u('Error interno'), '', self::STATUS_INTERNAL_ERROR);
         }
 
         if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
@@ -236,7 +238,7 @@ class LoginService
 
             $this->LogMessage->addDescription(sprintf(__('Intentos excedidos (%d/%d)'), $attempts, self::TIME_TRACKING_MAX_ATTEMPTS));
 
-            throw new AuthException(SPException::SP_INFO, __('Intentos excedidos', false), '', self::STATUS_MAX_ATTEMPTS_EXCEEDED);
+            throw new AuthException(SPException::SP_INFO, __u('Intentos excedidos'), '', self::STATUS_MAX_ATTEMPTS_EXCEEDED);
         }
     }
 
@@ -254,26 +256,25 @@ class LoginService
 
             Track::getItem($TrackData)->add();
         } catch (SPException $e) {
-            throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
+            throw new AuthException(SPException::SP_ERROR, __u('Error interno'), '', self::STATUS_INTERNAL_ERROR);
         }
     }
 
     /**
      * Obtener los datos del usuario
      *
-     * @throws SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \SP\Core\Exceptions\AuthException
-     * @throws \InvalidArgumentException
+     * @throws AuthException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function getUserData()
     {
         try {
             $this->UserData->setUserPreferences(UserPreferences::getItem()->getById($this->UserData->getUserId()));
         } catch (SPException $e) {
-            $this->LogMessage->addDescription(__('Error al obtener los datos del usuario de la BBDD', false));
+            $this->LogMessage->addDescription(__u('Error al obtener los datos del usuario de la BBDD'));
 
-            throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
+            throw new AuthException(SPException::SP_ERROR, __u('Error interno'), '', self::STATUS_INTERNAL_ERROR);
         }
     }
 
@@ -288,12 +289,12 @@ class LoginService
     {
         // Comprobar si el usuario está deshabilitado
         if ($this->UserData->isUserIsDisabled()) {
-            $this->LogMessage->addDescription(__('Usuario deshabilitado', false));
-            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
+            $this->LogMessage->addDescription(__u('Usuario deshabilitado'));
+            $this->LogMessage->addDetails(__u('Usuario'), $this->UserData->getLogin());
 
             $this->addTracking();
 
-            throw new AuthException(SPException::SP_INFO, __('Usuario deshabilitado', false), '', self::STATUS_USER_DISABLED);
+            throw new AuthException(SPException::SP_INFO, __u('Usuario deshabilitado'), '', self::STATUS_USER_DISABLED);
         }
 
         if ($this->UserData->isUserIsChangePass()) {
@@ -330,50 +331,50 @@ class LoginService
         try {
             if ($masterPass) {
                 if (CryptMasterPass::checkTempMasterPass($masterPass)) {
-                    $this->LogMessage->addDescription(__('Usando clave temporal', false));
+                    $this->LogMessage->addDescription(__u('Usando clave temporal'));
 
                     $masterPass = CryptMasterPass::getTempMasterPass($masterPass);
                 }
 
                 if (!UserPass::updateUserMPass($masterPass, $this->UserData)) {
-                    $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
+                    $this->LogMessage->addDescription(__u('Clave maestra incorrecta'));
 
                     $this->addTracking();
 
-                    throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
+                    throw new AuthException(SPException::SP_INFO, __u('Clave maestra incorrecta'), '', self::STATUS_INVALID_MASTER_PASS);
                 }
 
-                $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
+                $this->LogMessage->addDescription(__u('Clave maestra actualizada'));
             } else if ($oldPass) {
                 if (!UserPass::updateMasterPassFromOldPass($oldPass, $this->UserData)) {
-                    $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
+                    $this->LogMessage->addDescription(__u('Clave maestra incorrecta'));
 
                     $this->addTracking();
 
-                    throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
+                    throw new AuthException(SPException::SP_INFO, __u('Clave maestra incorrecta'), '', self::STATUS_INVALID_MASTER_PASS);
                 }
 
-                $this->LogMessage->addDescription(__('Clave maestra actualizada', false));
+                $this->LogMessage->addDescription(__u('Clave maestra actualizada'));
             } else {
                 switch (UserPass::loadUserMPass($this->UserData)) {
                     case UserPass::MPASS_CHECKOLD:
-                        throw new AuthException(SPException::SP_INFO, __('Es necesaria su clave anterior', false), '', self::STATUS_NEED_OLD_PASS);
+                        throw new AuthException(SPException::SP_INFO, __u('Es necesaria su clave anterior'), '', self::STATUS_NEED_OLD_PASS);
                         break;
                     case UserPass::MPASS_NOTSET:
                     case UserPass::MPASS_CHANGED:
                     case UserPass::MPASS_WRONG:
                         $this->addTracking();
 
-                        throw new AuthException(SPException::SP_INFO, __('La clave maestra no ha sido guardada o es incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
+                        throw new AuthException(SPException::SP_INFO, __u('La clave maestra no ha sido guardada o es incorrecta'), '', self::STATUS_INVALID_MASTER_PASS);
                         break;
                 }
             }
         } catch (BadFormatException $e) {
-            $this->LogMessage->addDescription(__('Clave maestra incorrecta', false));
+            $this->LogMessage->addDescription(__u('Clave maestra incorrecta'));
 
-            throw new AuthException(SPException::SP_INFO, __('Clave maestra incorrecta', false), '', self::STATUS_INVALID_MASTER_PASS);
+            throw new AuthException(SPException::SP_INFO, __u('Clave maestra incorrecta'), '', self::STATUS_INVALID_MASTER_PASS);
         } catch (CryptoException $e) {
-            $this->LogMessage->addDescription(__('Error interno', false));
+            $this->LogMessage->addDescription(__u('Error interno'));
 
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), $e->getMessage(), self::STATUS_INTERNAL_ERROR);
         }
@@ -398,13 +399,13 @@ class LoginService
             // Cargar las variables de sesión del usuario
             SessionUtil::loadUserSession($this->UserData, $this->session);
 
-            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
-            $this->LogMessage->addDetails(__('Perfil', false), Profile::getItem()->getById($this->UserData->getUserProfileId())->getUserprofileName());
-            $this->LogMessage->addDetails(__('Grupo', false), Group::getItem()->getById($this->UserData->getUserGroupId())->getUsergroupName());
+            $this->LogMessage->addDetails(__u('Usuario'), $this->UserData->getLogin());
+            $this->LogMessage->addDetails(__u('Perfil'), Profile::getItem()->getById($this->UserData->getUserProfileId())->getUserprofileName());
+            $this->LogMessage->addDetails(__u('Grupo'), Group::getItem()->getById($this->UserData->getUserGroupId())->getUsergroupName());
         } else {
-            $this->LogMessage->addDescription(__('Error al obtener la clave maestra del usuario', false));
+            $this->LogMessage->addDescription(__u('Error al obtener la clave maestra del usuario'));
 
-            throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
+            throw new AuthException(SPException::SP_ERROR, __u('Error interno'), '', self::STATUS_INTERNAL_ERROR);
         }
     }
 
@@ -412,7 +413,6 @@ class LoginService
      * Cargar las preferencias del usuario y comprobar si usa 2FA
      *
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function loadUserPreferences()
@@ -447,7 +447,6 @@ class LoginService
      * Comprobar si se ha forzado un cambio de clave
      *
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     protected function checkPasswordChange()
@@ -482,11 +481,11 @@ class LoginService
     protected function authLdap(LdapAuthData $AuthData)
     {
         if ($AuthData->getStatusCode() > 0) {
-            $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
-            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
+            $this->LogMessage->addDetails(__u('Tipo'), __FUNCTION__);
+            $this->LogMessage->addDetails(__u('Usuario'), $this->UserData->getLogin());
 
             if ($AuthData->getStatusCode() === 49) {
-                $this->LogMessage->addDescription(__('Login incorrecto', false));
+                $this->LogMessage->addDescription(__u('Login incorrecto'));
 
                 $this->addTracking();
 
@@ -494,13 +493,13 @@ class LoginService
             }
 
             if ($AuthData->getStatusCode() === 701) {
-                $this->LogMessage->addDescription(__('Cuenta expirada', false));
+                $this->LogMessage->addDescription(__u('Cuenta expirada'));
 
                 throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_USER_DISABLED);
             }
 
             if ($AuthData->getStatusCode() === 702) {
-                $this->LogMessage->addDescription(__('El usuario no tiene grupos asociados', false));
+                $this->LogMessage->addDescription(__u('El usuario no tiene grupos asociados'));
 
                 throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_USER_DISABLED);
             }
@@ -509,7 +508,7 @@ class LoginService
                 return false;
             }
 
-            $this->LogMessage->addDescription(__('Error interno', false));
+            $this->LogMessage->addDescription(__u('Error interno'));
 
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INTERNAL_ERROR);
         }
@@ -517,8 +516,8 @@ class LoginService
         $this->UserData->setUserName($AuthData->getName());
         $this->UserData->setUserEmail($AuthData->getEmail());
 
-        $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
-        $this->LogMessage->addDetails(__('Servidor LDAP', false), $AuthData->getServer());
+        $this->LogMessage->addDetails(__u('Tipo'), __FUNCTION__);
+        $this->LogMessage->addDetails(__u('Servidor LDAP'), $AuthData->getServer());
 
         try {
             $this->UserData->setUserLogin($this->UserData->getLogin());
@@ -534,7 +533,7 @@ class LoginService
         } catch (SPException $e) {
             $this->LogMessage->addDescription($e->getMessage());
 
-            throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
+            throw new AuthException(SPException::SP_ERROR, __u('Error interno'), '', self::STATUS_INTERNAL_ERROR);
         }
 
         return true;
@@ -556,8 +555,8 @@ class LoginService
                 return false;
             }
 
-            $this->LogMessage->addDescription(__('Login incorrecto', false));
-            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
+            $this->LogMessage->addDescription(__u('Login incorrecto'));
+            $this->LogMessage->addDetails(__u('Usuario'), $this->UserData->getLogin());
 
             $this->addTracking();
 
@@ -565,7 +564,7 @@ class LoginService
         }
 
         if ($AuthData->getAuthenticated() === 1) {
-            $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
+            $this->LogMessage->addDetails(__u('Tipo'), __FUNCTION__);
         }
 
         return true;
@@ -576,7 +575,6 @@ class LoginService
      *
      * @param BrowserAuthData $AuthData
      * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
      * @throws AuthException
      */
     protected function authBrowser(BrowserAuthData $AuthData)
@@ -587,17 +585,17 @@ class LoginService
                 return false;
             }
 
-            $this->LogMessage->addDescription(__('Login incorrecto', false));
-            $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
-            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
-            $this->LogMessage->addDetails(__('Autentificación', false), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
+            $this->LogMessage->addDescription(__u('Login incorrecto'));
+            $this->LogMessage->addDetails(__u('Tipo'), __FUNCTION__);
+            $this->LogMessage->addDetails(__u('Usuario'), $this->UserData->getLogin());
+            $this->LogMessage->addDetails(__u('Autentificación'), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
 
             $this->addTracking();
 
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INVALID_LOGIN);
         }
 
-        $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
+        $this->LogMessage->addDetails(__u('Tipo'), __FUNCTION__);
 
         if ($this->configData->isAuthBasicAutoLoginEnabled()) {
             try {
@@ -607,11 +605,11 @@ class LoginService
                     UserSSO::getItem()->updateOnLogin();
                 }
             } catch (SPException $e) {
-                throw new AuthException(SPException::SP_ERROR, __('Error interno', false), '', self::STATUS_INTERNAL_ERROR);
+                throw new AuthException(SPException::SP_ERROR, __u('Error interno'), '', self::STATUS_INTERNAL_ERROR);
             }
 
-            $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
-            $this->LogMessage->addDetails(__('Autentificación', false), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
+            $this->LogMessage->addDetails(__u('Usuario'), $this->UserData->getLogin());
+            $this->LogMessage->addDetails(__u('Autentificación'), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
 
             return true;
         }

@@ -24,15 +24,12 @@
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
-use SP\Account\Account;
 use SP\Account\AccountAcl;
-use SP\Account\AccountHistory;
 use SP\Account\AccountUtil;
 use SP\Account\UserAccounts;
 use SP\Controller\ControllerBase;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Init;
 use SP\Core\SessionUtil;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CustomFieldData;
@@ -41,10 +38,13 @@ use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\CustomFields\CustomField;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Groups\GroupAccountsUtil;
-use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
+use SP\Services\Account\AccountHistoryService;
+use SP\Services\Account\AccountService;
+use SP\Services\PublicLink\PublicLinkService;
+use SP\Util\ErrorUtil;
 use SP\Util\Json;
 
 /**
@@ -63,19 +63,27 @@ class AccountHelper extends HelperBase
     /**
      * @var AccountAcl
      */
-    private $AccountAcl;
+    private $accountAcl;
     /**
-     * @var Account|AccountHistory instancia para el manejo de datos de una cuenta
+     * @var AccountService
      */
-    private $Account;
+    private $accountService;
     /**
-     * @var int con el id de la cuenta
+     * @var int con el Id de la cuenta
      */
-    private $id;
+    private $accountId;
+    /**
+     * @var int el Id de la cuenta en el histórico
+     */
+    private $accountHistoryId;
     /**
      * @var AccountExtData
      */
-    private $AccountData;
+    private $accountData;
+    /**
+     * @var bool
+     */
+    private $isHistory;
 
     /**
      * @param Acl $acl
@@ -86,24 +94,25 @@ class AccountHelper extends HelperBase
     }
 
     /**
-     * Establecer las variables que contienen la información de la cuenta.
+     * Establecer las variables que contienen la información de la cuenta en una fecha concreta.
      *
-     * @param $accountId
+     * @param $accountHistoryId
      * @param $actionId
-     * @throws \SP\Core\Exceptions\SPException
      */
-    public function setAccountData($accountId, $actionId)
+    public function setAccountDataHistory($accountHistoryId, $actionId)
     {
-        $this->id = $accountId;
+        $this->accountHistoryId = $accountHistoryId;
         $this->actionId = $actionId;
+        $this->isHistory = true;
 
-        $Account = new Account(new AccountExtData($accountId));
-        $this->Account = $Account;
-        $this->AccountData = $Account->getData();
+        $this->accountService = new AccountHistoryService();
+        $this->accountData = $this->accountService->getById($accountHistoryId);
+        $this->accountId = $this->accountData->getAccountId();
 
-        $this->view->assign('accountId', $accountId);
-        $this->view->assign('accountData', $this->AccountData);
+        $this->view->assign('accountId', $this->accountId);
+        $this->view->assign('accountData', $this->accountData);
         $this->view->assign('gotData', $this->isGotData());
+        $this->view->assign('accountHistoryId', $accountHistoryId);
     }
 
     /**
@@ -111,30 +120,7 @@ class AccountHelper extends HelperBase
      */
     private function isGotData()
     {
-        return $this->AccountData !== null;
-    }
-
-    /**
-     * Establecer las variables que contienen la información de la cuenta en una fecha concreta.
-     *
-     * @param $accountId
-     * @param $actionId
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function setAccountDataHistory($accountId, $actionId)
-    {
-        $this->id = $accountId;
-        $this->actionId = $actionId;
-
-        $Account = new AccountHistory(new AccountExtData());
-        $Account->setId($accountId);
-        $this->Account = $Account;
-        $this->AccountData = $Account->getData();
-
-        $this->view->assign('accountId', $this->AccountData->getAccountId());
-        $this->view->assign('accountData', $this->AccountData);
-        $this->view->assign('gotData', $this->isGotData());
-        $this->view->assign('accountHistoryId', $accountId);
+        return $this->accountData !== null;
     }
 
     /**
@@ -142,15 +128,15 @@ class AccountHelper extends HelperBase
      */
     public function getAccountAcl()
     {
-        return $this->AccountAcl;
+        return $this->accountAcl;
     }
 
     /**
      * @return int
      */
-    public function getId()
+    public function getAccountId()
     {
-        return $this->id;
+        return $this->accountId;
     }
 
     /**
@@ -165,23 +151,31 @@ class AccountHelper extends HelperBase
         $this->getCustomFieldsForItem();
 
         if ($this->isGotData()) {
-            $this->view->assign('accountIsHistory', $this->getAccount()->getAccountIsHistory());
-            $this->view->assign('accountOtherUsers', UserAccounts::getUsersInfoForAccount($this->id));
-            $this->view->assign('accountOtherGroups', GroupAccountsUtil::getGroupsInfoForAccount($this->id));
-            $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->getAccount()->getAccountData()->getTags())));
-            $this->view->assign('historyData', AccountHistory::getAccountList($this->AccountData->getAccountId()));
-            $this->view->assign('isModified', strtotime($this->AccountData->getAccountDateEdit()) !== false);
+            $accountHistoryService = new AccountHistoryService();
+
+            $this->view->assign('accountIsHistory', $this->isHistory);
+            $this->view->assign('accountOtherUsers', UserAccounts::getUsersInfoForAccount($this->accountId));
+            $this->view->assign('accountOtherGroups', GroupAccountsUtil::getGroupsInfoForAccount($this->accountId));
+            $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->accountData->getTags())));
+            $this->view->assign('historyData', $accountHistoryService->getHistoryForAccount($this->accountId));
+            $this->view->assign('isModified', strtotime($this->accountData->getAccountDateEdit()) !== false);
             $this->view->assign('maxFileSize', round($this->configData->getFilesAllowedSize() / 1024, 1));
             $this->view->assign('filesAllowedExts', implode(',', $this->configData->getFilesAllowedExts()));
 
-            $PublicLinkData = PublicLink::getItem()->getHashForItem($this->id);
+            if ($this->configData->isPublinksEnabled() && $this->accountAcl->isShowLink()) {
+                $publicLinkService = new PublicLinkService();
+                $publicLinkData = $publicLinkService->getHashForItem($this->accountId);
 
-            $publicLinkUrl = ($this->configData->isPublinksEnabled() && $PublicLinkData ? Init::$WEBURI . '/index.php?h=' . $PublicLinkData->getPublicLinkHash() . '&a=link' : null);
-            $this->view->assign('publicLinkUrl', $publicLinkUrl);
-            $this->view->assign('publicLinkId', $PublicLinkData ? $PublicLinkData->getPublicLinkId() : 0);
+                $publicLinkUrl = $publicLinkData ? PublicLinkService::getLinkForHash($publicLinkData->getPublicLinkHash()) : null;
+                $this->view->assign('publicLinkUrl', $publicLinkUrl);
+                $this->view->assign('publicLinkId', $publicLinkData ? $publicLinkData->getPublicLinkId() : 0);
+                $this->view->assign('publicLinkShow', true);
+            } else {
+                $this->view->assign('publicLinkShow', false);
+            }
 
-            $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
-            $this->view->assign('accountPassDateChange', date('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: 0));
+            $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $this->accountData->getAccountPassDate()));
+            $this->view->assign('accountPassDateChange', date('Y-m-d', $this->accountData->getAccountPassDateChange() ?: 0));
         } else {
             $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
         }
@@ -200,8 +194,8 @@ class AccountHelper extends HelperBase
         $this->view->assign('mailRequestEnabled', $this->configData->isMailRequestsEnabled());
         $this->view->assign('passToImageEnabled', $this->configData->isAccountPassToImage());
 
-        $this->view->assign('otherAccounts', AccountUtil::getAccountsForUser($this->session, $this->id));
-        $this->view->assign('linkedAccounts', AccountUtil::getLinkedAccounts($this->id, $this->session));
+        $this->view->assign('otherAccounts', AccountUtil::getAccountsForUser($this->session, $this->accountId));
+        $this->view->assign('linkedAccounts', AccountUtil::getLinkedAccounts($this->accountId, $this->session));
 
         $this->view->assign('addCustomerEnabled', $this->acl->checkUserAccess(ActionsInterface::CLIENT));
         $this->view->assign('addCategoryEnabled', $this->acl->checkUserAccess(ActionsInterface::CATEGORY));
@@ -209,8 +203,8 @@ class AccountHelper extends HelperBase
         $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
         $this->view->assign('readonly', $this->view->isView ? 'readonly' : '');
 
-        $this->view->assign('showViewCustomPass', $this->AccountAcl->isShowViewPass());
-        $this->view->assign('AccountAcl', $this->AccountAcl);
+        $this->view->assign('showViewCustomPass', $this->accountAcl->isShowViewPass());
+        $this->view->assign('AccountAcl', $this->accountAcl);
         $this->view->assign('actions', $this->getActions());
     }
 
@@ -219,15 +213,7 @@ class AccountHelper extends HelperBase
      */
     private function getCustomFieldsForItem()
     {
-        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData(ActionsInterface::ACCOUNT))->getById($this->id));
-    }
-
-    /**
-     * @return Account|AccountHistory
-     */
-    public function getAccount()
-    {
-        return $this->Account ?: new Account(new AccountExtData());
+        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData(ActionsInterface::ACCOUNT))->getById($this->accountId));
     }
 
     /**
@@ -238,19 +224,28 @@ class AccountHelper extends HelperBase
         $actionsEnabled = [];
 
         $actions = new AccountActionsHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-        $account = $this->getAccount();
 
-        /** @var AccountExtData $accountData */
-        $accountData = $account->getAccountData();
+        $actionBack = $actions->getBackAction();
 
-        if ($this->AccountAcl->isShowDelete()) {
-            $actionsEnabled[] = $actions->getDeleteAction()->addData('item-id', $accountData->getAccountId());
+        if ($this->isHistory) {
+            $actionBack->addData('item-id', $this->accountId);
+            $actionBack->setName(__('Ver Actual'));
+            $actionBack->setTitle(__('Ver Actual'));
+        } else {
+            $actionBack->setData([]);
+            $actionBack->setClasses(['btn-back']);
         }
 
-        if ($this->AccountAcl->isShowLink()
-            && $this->AccountAcl->isShowViewPass()
-            && $account->getAccountParentId() === 0
-            && $account->getAccountIsHistory() !== 1
+        $actionsEnabled[] = $actionBack;
+
+        if ($this->accountAcl->isShowDelete()) {
+            $actionsEnabled[] = $actions->getDeleteAction()->addData('item-id', $this->accountId);
+        }
+
+        if ($this->isHistory === false
+            && $this->accountAcl->isShowLink()
+            && $this->accountAcl->isShowViewPass()
+            && $this->accountData->getAccountParentId() === 0
         ) {
             if (null === $this->view->publicLinkUrl) {
                 $actionsEnabled[] = $actions->getPublicLinkAction();
@@ -259,56 +254,56 @@ class AccountHelper extends HelperBase
             }
         }
 
-        if ($this->AccountAcl->isShowViewPass()) {
-            $action = $actions->getViewPassAction();
+        if ($this->accountAcl->isShowViewPass()) {
+            $actionViewPass = $actions->getViewPassAction();
             $actionCopy = $actions->getCopyPassAction();
 
-            $action->addData('parent-id', $accountData->getAccountParentId());
-            $actionCopy->addData('parent-id', $accountData->getAccountParentId());
+            $actionViewPass->addData('parent-id', $this->accountData->getAccountParentId());
+            $actionCopy->addData('parent-id', $this->accountData->getAccountParentId());
 
-            $action->addData('history', $account->getAccountIsHistory());
-            $actionCopy->addData('history', $account->getAccountIsHistory());
+            $actionViewPass->addData('history', (int)$this->isHistory);
+            $actionCopy->addData('history', (int)$this->isHistory);
 
-            if ($account->getAccountIsHistory()) {
-                $action->addData('item-id', $this->id);
-                $actionCopy->addData('item-id', $this->id);
+            if ($this->isHistory) {
+                $actionViewPass->addData('item-id', $this->accountHistoryId);
+                $actionCopy->addData('item-id', $this->accountHistoryId);
             } else {
-                $action->addData('item-id', $accountData->getAccountId());
-                $actionCopy->addData('item-id', $accountData->getAccountId());
+                $actionViewPass->addData('item-id', $this->accountId);
+                $actionCopy->addData('item-id', $this->accountId);
             }
 
-            $actionsEnabled[] = $action;
+            $actionsEnabled[] = $actionViewPass;
             $actionsEnabled[] = $actionCopy;
         }
 
-        if ($this->AccountAcl->isShowCopy()) {
-            $actionsEnabled[] = $actions->getCopyAction()->addData('item-id', $accountData->getAccountId());
+        if ($this->accountAcl->isShowCopy()) {
+            $actionsEnabled[] = $actions->getCopyAction()->addData('item-id', $this->accountId);
         }
 
-        if ($this->AccountAcl->isShowEditPass()) {
-            $actionsEnabled[] = $actions->getEditPassAction()->addData('item-id', $accountData->getAccountId());
+        if ($this->accountAcl->isShowEditPass()) {
+            $actionsEnabled[] = $actions->getEditPassAction()->addData('item-id', $this->accountId);
         }
 
-        if ($this->AccountAcl->isShowEdit()) {
-            $actionsEnabled[] = $actions->getEditAction()->addData('item-id', $accountData->getAccountId());
+        if ($this->accountAcl->isShowEdit()) {
+            $actionsEnabled[] = $actions->getEditAction()->addData('item-id', $this->accountId);
         }
 
         if ($this->actionId === ActionsInterface::ACCOUNT_VIEW
-            && !$this->AccountAcl->isShowEdit()
+            && !$this->accountAcl->isShowEdit()
             && $this->configData->isMailRequestsEnabled()
         ) {
-            $actionsEnabled[] = $actions->getRequestAction()->addData('item-id', $accountData->getAccountId());
+            $actionsEnabled[] = $actions->getRequestAction()->addData('item-id', $this->accountId);
         }
 
-        if ($this->AccountAcl->isShowRestore()) {
-            $action = $actions->getRestoreAction();
-            $action->addData('item-id', $accountData->getAccountId());
-            $action->addData('history-id', $this->id);
+        if ($this->accountAcl->isShowRestore()) {
+            $actionRestore = $actions->getRestoreAction();
+            $actionRestore->addData('item-id', $this->accountId);
+            $actionRestore->addData('history-id', $this->accountHistoryId);
 
-            $actionsEnabled[] = $action;
+            $actionsEnabled[] = $actionRestore;
         }
 
-        if ($this->AccountAcl->isShowSave()) {
+        if ($this->accountAcl->isShowSave()) {
             $actionsEnabled[] = $actions->getSaveAction()->addAttribute('form', 'frmAccount');
         }
 
@@ -325,24 +320,27 @@ class AccountHelper extends HelperBase
     {
         $this->view->assign('showLogo', false);
 
-        $Acl = new AccountAcl($this->Account, $this->actionId);
-        $this->AccountAcl = $Acl;
+        $acl = new AccountAcl($this->actionId, $this->accountData, $this->isHistory);
+        $this->accountAcl = $acl;
 
         if (!$this->acl->checkUserAccess($this->actionId)) {
-            $controller->showError(ControllerBase::ERR_PAGE_NO_PERMISSION);
+            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION);
+
             return false;
         }
 
         if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getUserId())) {
-            $controller->showError(ControllerBase::ERR_UPDATE_MPASS);
+            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_UPDATE_MPASS);
+
             return false;
         }
 
-        if ($this->id > 0) {
-            $this->AccountAcl = $Acl->getAcl();
+        if ($this->accountId > 0) {
+            $this->accountAcl = $acl->getAcl();
 
-            if (!$this->AccountAcl->checkAccountAccess()) {
-                $controller->showError(ControllerBase::ERR_ACCOUNT_NO_PERMISSION);
+            if (!$this->accountAcl->checkAccountAccess()) {
+                ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_ACCOUNT_NO_PERMISSION);
+
                 return false;
             }
         }
@@ -359,7 +357,54 @@ class AccountHelper extends HelperBase
     }
 
     /**
+     * @return AccountService
+     */
+    public function getAccountService()
+    {
+        return $this->accountService;
+    }
+
+    /**
+     * @return AccountExtData
+     */
+    public function getAccountData()
+    {
+        return $this->accountData;
+    }
+
+    /**
+     * Establecer las variables que contienen la información de la cuenta.
+     *
+     * @param $accountId
+     * @param $actionId
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function setAccountData($accountId, $actionId)
+    {
+        $this->accountId = $accountId;
+        $this->actionId = $actionId;
+        $this->isHistory = false;
+
+        $this->accountService = new AccountService();
+        $this->accountData = $this->accountService->getById($accountId);
+
+        $this->view->assign('accountId', $accountId);
+        $this->view->assign('accountData', $this->accountData);
+        $this->view->assign('gotData', $this->isGotData());
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountHistoryId()
+    {
+        return $this->accountHistoryId;
+    }
+
+    /**
      * Initialize
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
     protected function initialize()
     {

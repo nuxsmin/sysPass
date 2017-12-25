@@ -24,13 +24,18 @@
 
 namespace SP\Services\UserProfile;
 
+use SP\Core\Acl\Acl;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileBaseData;
+use SP\DataModel\ProfileData;
+use SP\Log\Log;
 use SP\Services\Service;
 use SP\Services\ServiceItemInterface;
 use SP\Services\ServiceItemTrait;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
+use SP\Util\Util;
 
 /**
  * Class UserProfileService
@@ -42,14 +47,75 @@ class UserProfileService extends Service implements ServiceItemInterface
     use ServiceItemTrait;
 
     /**
+     * Obtener el nombre de los usuarios que usan un perfil.
+     *
+     * @param $id int El id del perfil
+     * @return array
+     */
+    public function getUsersForProfile($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT user_login FROM usrData WHERE user_profileId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        return DbWrapper::getResultsArray($Data, $this->db);
+    }
+
+    /**
      * Deletes an item
      *
      * @param $id
      * @return mixed
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
-        // TODO: Implement delete() method.
+        if ($this->checkInUse($id)) {
+            throw new SPException(SPException::SP_INFO, __u('Perfil en uso'));
+        }
+
+        $query = /** @lang SQL */
+            'DELETE FROM usrProfiles WHERE userprofile_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+        $Data->setOnErrorMessage(__('Error al eliminar perfil', false));
+
+        DbWrapper::getQuery($Data, $this->db);
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_INFO, __u('Perfil no encontrado'));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Checks whether the item is in use or not
+     *
+     * @param $id int
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function checkInUse($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT user_profileId FROM usrData WHERE user_profileId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        DbWrapper::getQuery($Data, $this->db);
+
+        return ($Data->getQueryNumRows() > 0);
     }
 
     /**
@@ -60,7 +126,29 @@ class UserProfileService extends Service implements ServiceItemInterface
      */
     public function getById($id)
     {
-        // TODO: Implement getById() method.
+        $query = /** @lang SQL */
+            'SELECT userprofile_id,
+            userprofile_name,
+            userprofile_profile
+            FROM usrProfiles
+            WHERE userprofile_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setMapClassName(ProfileData::class);
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        /**
+         * @var ProfileBaseData $queryRes
+         * @var ProfileData     $Profile
+         */
+        $queryRes = DbWrapper::getResults($Data, $this->db);
+
+        $Profile = Util::unserialize(ProfileData::class, $queryRes->getUserprofileProfile());
+        $Profile->setUserprofileId($queryRes->getUserprofileId());
+        $Profile->setUserprofileName($queryRes->getUserprofileName());
+
+        return $Profile;
     }
 
     /**
@@ -79,7 +167,7 @@ class UserProfileService extends Service implements ServiceItemInterface
         $Data->setMapClassName(ProfileBaseData::class);
         $Data->setQuery($query);
 
-        return DbWrapper::getResultsArray($Data);
+        return DbWrapper::getResultsArray($Data, $this->db);
     }
 
     /**
@@ -90,7 +178,22 @@ class UserProfileService extends Service implements ServiceItemInterface
      */
     public function getByIdBatch(array $ids)
     {
-        // TODO: Implement getByIdBatch() method.
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        $query = /** @lang SQL */
+            'SELECT userprofile_id,
+            userprofile_name
+            FROM usrProfiles
+            WHERE userprofile_id IN (' . $this->getParamsFromArray($ids) . ')';
+
+        $Data = new QueryData();
+        $Data->setMapClassName(ProfileData::class);
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+
+        return DbWrapper::getResultsArray($Data, $this->db);
     }
 
     /**
@@ -102,17 +205,6 @@ class UserProfileService extends Service implements ServiceItemInterface
     public function deleteByIdBatch(array $ids)
     {
         // TODO: Implement deleteByIdBatch() method.
-    }
-
-    /**
-     * Checks whether the item is in use or not
-     *
-     * @param $id int
-     * @return bool
-     */
-    public function checkInUse($id)
-    {
-        // TODO: Implement checkInUse() method.
     }
 
     /**
@@ -141,7 +233,7 @@ class UserProfileService extends Service implements ServiceItemInterface
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data);
+        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
 
         $queryRes['count'] = $Data->getQueryNumRows();
 
@@ -151,44 +243,146 @@ class UserProfileService extends Service implements ServiceItemInterface
     /**
      * Creates an item
      *
-     * @param mixed $itemData
-     * @return mixed
+     * @param ProfileData $itemData
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws SPException
      */
     public function create($itemData)
     {
-        // TODO: Implement create() method.
-    }
+        if ($this->checkDuplicatedOnAdd($itemData)) {
+            throw new SPException(SPException::SP_INFO, __u('Nombre de perfil duplicado'));
+        }
 
-    /**
-     * Updates an item
-     *
-     * @param mixed $itemData
-     * @return mixed
-     */
-    public function update($itemData)
-    {
-        // TODO: Implement update() method.
-    }
+        $query = /** @lang SQL */
+            'INSERT INTO usrProfiles SET
+            userprofile_name = ?,
+            userprofile_profile = ?';
 
-    /**
-     * Checks whether the item is duplicated on updating
-     *
-     * @param mixed $itemData
-     * @return bool
-     */
-    public function checkDuplicatedOnUpdate($itemData)
-    {
-        // TODO: Implement checkDuplicatedOnUpdate() method.
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getUserprofileName());
+        $Data->addParam(serialize($itemData));
+        $Data->setOnErrorMessage(__('Error al crear perfil', false));
+
+        DbWrapper::getQuery($Data, $this->db);
+
+        return $this->db->getLastId();
     }
 
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param mixed $itemData
+     * @param ProfileData $itemData
      * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        // TODO: Implement checkDuplicatedOnAdd() method.
+        $query = /** @lang SQL */
+            'SELECT userprofile_name
+            FROM usrProfiles
+            WHERE UPPER(userprofile_name) = ?';
+
+        $Data = new QueryData();
+        $Data->addParam($itemData->getUserprofileName());
+        $Data->setQuery($query);
+
+        DbWrapper::getQuery($Data, $this->db);
+
+        return ($Data->getQueryNumRows() > 0);
+    }
+
+    /**
+     * Updates an item
+     *
+     * @param ProfileData $itemData
+     * @return bool
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function update($itemData)
+    {
+        if ($this->checkDuplicatedOnUpdate($itemData)) {
+            throw new SPException(SPException::SP_INFO, __u('Nombre de perfil duplicado'));
+        }
+
+        $query = /** @lang SQL */
+            'UPDATE usrProfiles SET
+          userprofile_name = ?,
+          userprofile_profile = ?
+          WHERE userprofile_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getUserprofileName());
+        $Data->addParam(serialize($itemData));
+        $Data->addParam($itemData->getUserprofileId());
+        $Data->setOnErrorMessage(__u('Error al modificar perfil'));
+
+        DbWrapper::getQuery($Data, $this->db);
+
+//        if ($Data->getQueryNumRows() > 0) {
+//            $this->updateSessionProfile();
+//        }
+
+        return $Data->getQueryNumRows() > 0;
+    }
+
+    /**
+     * Checks whether the item is duplicated on updating
+     *
+     * @param ProfileData $itemData
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function checkDuplicatedOnUpdate($itemData)
+    {
+        $query = /** @lang SQL */
+            'SELECT userprofile_name
+            FROM usrProfiles
+            WHERE UPPER(userprofile_name) = ?
+            AND userprofile_id <> ?';
+
+        $Data = new QueryData();
+        $Data->addParam($itemData->getUserprofileName());
+        $Data->addParam($itemData->getUserprofileId());
+        $Data->setQuery($query);
+
+        DbWrapper::getQuery($Data, $this->db);
+
+        return ($Data->getQueryNumRows() > 0);
+    }
+
+    /**
+     * Logs profile action
+     *
+     * @param int $id
+     * @param int $actionId
+     * @return \SP\Core\Messages\LogMessage
+     */
+    public function logAction($id, $actionId)
+    {
+        $query = /** @lang SQL */
+            'SELECT userprofile_name FROM usrProfiles WHERE userprofile_id = ? LIMIT 1';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        $userprofile = DbWrapper::getResults($Data, $this->db);
+
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(Acl::getActionInfo($actionId));
+        $LogMessage->addDetails(__u('Perfil'), $userprofile->userprofile_name);
+        $LogMessage->addDetails(__u('ID'), $id);
+        $Log->writeLog();
+
+        return $LogMessage;
     }
 }

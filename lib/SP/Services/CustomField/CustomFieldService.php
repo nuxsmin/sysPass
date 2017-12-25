@@ -26,6 +26,7 @@ namespace SP\Services\CustomField;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
@@ -37,7 +38,6 @@ use SP\Services\ServiceItemInterface;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 use SP\Util\Util;
-use SP\Core\Crypt\Session as CryptSession;
 
 /**
  * Class CustomFieldService
@@ -112,7 +112,7 @@ class CustomFieldService extends Service implements ServiceItemInterface
         $Data->addParam(Crypt::encrypt($itemData->getValue(), $securedKey, $sessionKey));
         $Data->addParam($securedKey);
 
-        return DbWrapper::getQuery($Data);
+        return DbWrapper::getQuery($Data, $this->db);
     }
 
     /**
@@ -189,7 +189,7 @@ class CustomFieldService extends Service implements ServiceItemInterface
         $Data->addParam($itemData->getId());
         $Data->addParam($itemData->getDefinitionId());
 
-        return DbWrapper::getQuery($Data);
+        return DbWrapper::getQuery($Data, $this->db);
     }
 
     /**
@@ -215,7 +215,7 @@ class CustomFieldService extends Service implements ServiceItemInterface
         $Data->addParam($itemData->getId());
         $Data->addParam($itemData->getDefinitionId());
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
         return ($Data->getQueryNumRows() >= 1);
     }
@@ -251,7 +251,7 @@ class CustomFieldService extends Service implements ServiceItemInterface
         $Data->addParam($id);
         $Data->addParam($moduleId);
 
-        return DbWrapper::getQuery($Data);
+        return DbWrapper::getQuery($Data, $this->db);
     }
 
     /**
@@ -348,13 +348,13 @@ class CustomFieldService extends Service implements ServiceItemInterface
         $Data->addParam($itemId);
 
         /** @var CustomFieldData[] $queryRes */
-        $queryRes = DbWrapper::getResultsArray($Data);
+        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
 
         $customFields = [];
 
         foreach ($queryRes as $CustomFieldData) {
             /** @var CustomFieldDefData $fieldDef */
-            $fieldDef = Util::castToClass(CustomFieldDefData::class, $CustomFieldData->getCustomfielddefField());
+            $fieldDef = Util::unserialize(CustomFieldDefData::class, $CustomFieldData->getCustomfielddefField());
 
             $CustomFieldData->setDefinition($fieldDef);
             $CustomFieldData->setDefinitionId($CustomFieldData->getCustomfielddefId());

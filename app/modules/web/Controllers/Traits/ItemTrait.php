@@ -24,11 +24,11 @@
 
 namespace SP\Modules\Web\Controllers\Traits;
 
+use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Services\CustomField\CustomFieldService;
-use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserProfile\UserProfileService;
 
 /**
  * Trait ItemTrait
@@ -91,24 +91,19 @@ trait ItemTrait
     }
 
     /**
-     * Return user groups list
+     * Returns search data object for the current request
      *
-     * @return array
+     * @param ConfigData $configData
+     * @return ItemSearchData
      */
-    protected function getUserGroups()
+    protected function getSearchData(ConfigData $configData)
     {
-        $userGroupService = new UserGroupService();
-        return $userGroupService->getItemsForSelect();
-    }
+        $itemSearchData = new ItemSearchData();
+        $itemSearchData->setLimitCount($configData->getAccountCount());
+        $itemSearchData->setSeachString(Request::analyze('search'));
+        $itemSearchData->setLimitStart(Request::analyze('start', 0));
+        $itemSearchData->setLimitCount(Request::analyze('count', $configData->getAccountCount()));
 
-    /**
-     * Return user profiles list
-     *
-     * @return array
-     */
-    protected function getUserProfiles()
-    {
-        $userProfile = new UserProfileService();
-        return $userProfile->getItemsForSelect();
+        return $itemSearchData;
     }
 }

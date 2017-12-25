@@ -82,6 +82,8 @@ class Action
      */
     protected function mapFromDb()
     {
+        debugLog('ACTION CACHE MISS');
+
         $this->actions = [];
 
         foreach ($this->loadDb() as $action) {

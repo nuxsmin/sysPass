@@ -59,6 +59,37 @@ class LayoutHelper extends HelperBase
     }
 
     /**
+     * Sets a full layout page
+     *
+     * @param Acl    $acl
+     * @param string $page Page/view name
+     * @return LayoutHelper
+     */
+    public function getFullLayout(Acl $acl, $page = '')
+    {
+        $this->setPage($page);
+        $this->initBody();
+        $this->getSessionBar();
+        $this->getMenu($acl);
+
+        $this->view->addPartial('body-content');
+        $this->view->addPartial('body-footer');
+        $this->view->addPartial('body-end');
+
+        return $this;
+    }
+
+    /**
+     * Establecer la variable de página de la vista
+     *
+     * @param $page
+     */
+    public function setPage($page)
+    {
+        $this->view->assign('page', $page);
+    }
+
+    /**
      * Inicializar las variables para la vista principal de la aplicación
      */
     public function initBody()
@@ -70,7 +101,7 @@ class LayoutHelper extends HelperBase
 
         $this->view->assign('useLayout', true);
         $this->view->assign('isInstalled', $this->configData->isInstalled());
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('sk', SessionUtil::getSessionKey(true, $this->configData));
         $this->view->assign('appInfo', Util::getAppInfo());
         $this->view->assign('appVersion', Util::getVersionString());
         $this->view->assign('isDemoMode', $this->configData->isDemoEnabled());
@@ -119,8 +150,10 @@ class LayoutHelper extends HelperBase
             $this->view->append('jsLinks', Bootstrap::$WEBROOT . '/public/js/js.php?f=' . $themeJsFiles . '&b=' . $themeJsBase . '&v=' . $jsVersionHash);
         }
 
-        if ($this->loggedIn && $this->session->getUserPreferences()->getUserId() > 0) {
-            $resultsAsCards = $this->session->getUserPreferences()->isResultsAsCards();
+        $userPreferences = $this->session->getUserPreferences();
+
+        if ($this->loggedIn && $userPreferences->getUserId() > 0) {
+            $resultsAsCards = $userPreferences->isResultsAsCards();
         } else {
             $resultsAsCards = $this->configData->isResultsAsCards();
         }
@@ -175,16 +208,6 @@ class LayoutHelper extends HelperBase
     }
 
     /**
-     * Establecer la variable de página de la vista
-     *
-     * @param $page
-     */
-    public function setPage($page)
-    {
-        $this->view->assign('page', $page);
-    }
-
-    /**
      * Obtener los datos para la mostrar la barra de sesión
      */
     public function getSessionBar()
@@ -222,87 +245,107 @@ class LayoutHelper extends HelperBase
 
         $icons = $this->theme->getIcons();
 
-        $ActionSearch = new DataGridAction();
-        $ActionSearch->setId(ActionsInterface::ACCOUNT);
-        $ActionSearch->setTitle(__('Buscar'));
-        $ActionSearch->setIcon($icons->getIconSearch());
-        $ActionSearch->setData([
+        $actionSearch = new DataGridAction();
+        $actionSearch->setId(ActionsInterface::ACCOUNT);
+        $actionSearch->setTitle(__('Buscar'));
+        $actionSearch->setIcon($icons->getIconSearch());
+        $actionSearch->setData([
             'historyReset' => 1,
             'view' => 'search',
             'route' => Acl::getActionRoute(ActionsInterface::ACCOUNT)
         ]);
 
-        $this->view->append('actions', $ActionSearch);
+        $this->view->append('actions', $actionSearch);
 
         if ($acl->checkUserAccess(ActionsInterface::ACCOUNT_CREATE)) {
-            $ActionNew = new DataGridAction();
-            $ActionNew->setId(ActionsInterface::ACCOUNT_CREATE);
-            $ActionNew->setTitle(__('Nueva Cuenta'));
-            $ActionNew->setIcon($icons->getIconAdd());
-            $ActionNew->setData([
+            $actionNewAccount = new DataGridAction();
+            $actionNewAccount->setId(ActionsInterface::ACCOUNT_CREATE);
+            $actionNewAccount->setTitle(__('Nueva Cuenta'));
+            $actionNewAccount->setIcon($icons->getIconAdd());
+            $actionNewAccount->setData([
                 'historyReset' => 0,
                 'view' => 'account',
                 'route' => Acl::getActionRoute(ActionsInterface::ACCOUNT_CREATE)
             ]);
 
-            $this->view->append('actions', $ActionNew);
+            $this->view->append('actions', $actionNewAccount);
         }
 
         if ($acl->checkUserAccess(ActionsInterface::ACCESS_MANAGE)) {
-            $ActionUsr = new DataGridAction();
-            $ActionUsr->setId(ActionsInterface::ACCESS_MANAGE);
-            $ActionUsr->setTitle(__('Usuarios y Accesos'));
-            $ActionUsr->setIcon($icons->getIconAccount());
-            $ActionUsr->setData([
+            $actionAccessManager = new DataGridAction();
+            $actionAccessManager->setId(ActionsInterface::ACCESS_MANAGE);
+            $actionAccessManager->setTitle(__('Usuarios y Accesos'));
+            $actionAccessManager->setIcon($icons->getIconAccount());
+            $actionAccessManager->setData([
                 'historyReset' => 0,
                 'view' => 'datatabs',
                 'route' => Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE)
             ]);
 
-            $this->view->append('actions', $ActionUsr);
+            $this->view->append('actions', $actionAccessManager);
         }
 
         if ($acl->checkUserAccess(ActionsInterface::ITEMS_MANAGE)) {
-            $ActionMgm = new DataGridAction();
-            $ActionMgm->setId(ActionsInterface::ITEMS_MANAGE);
-            $ActionMgm->setTitle(__('Elementos y Personalización'));
-            $ActionMgm->setIcon($icons->getIconGroup());
-            $ActionMgm->setData([
+            $actionItemManager = new DataGridAction();
+            $actionItemManager->setId(ActionsInterface::ITEMS_MANAGE);
+            $actionItemManager->setTitle(__('Elementos y Personalización'));
+            $actionItemManager->setIcon($icons->getIconGroup());
+            $actionItemManager->setData([
                 'historyReset' => 0,
                 'view' => 'datatabs',
                 'route' => Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE)
             ]);
 
-            $this->view->append('actions', $ActionMgm);
+            $this->view->append('actions', $actionItemManager);
         }
 
         if ($acl->checkUserAccess(ActionsInterface::CONFIG)) {
-            $ActionConfig = new DataGridAction();
-            $ActionConfig->setId('config');
-            $ActionConfig->setTitle(__('Configuración'));
-            $ActionConfig->setIcon($icons->getIconSettings());
-            $ActionConfig->setData([
+            $actionConfigManager = new DataGridAction();
+            $actionConfigManager->setId('config');
+            $actionConfigManager->setTitle(__('Configuración'));
+            $actionConfigManager->setIcon($icons->getIconSettings());
+            $actionConfigManager->setData([
                 'historyReset' => 1,
                 'view' => 'config',
                 'route' => Acl::getActionRoute(ActionsInterface::CONFIG)
             ]);
 
-            $this->view->append('actions', $ActionConfig);
+            $this->view->append('actions', $actionConfigManager);
         }
 
         if ($acl->checkUserAccess(ActionsInterface::EVENTLOG) && $this->configData->isLogEnabled()) {
-            $ActionEventlog = new DataGridAction();
-            $ActionEventlog->setId(ActionsInterface::EVENTLOG);
-            $ActionEventlog->setTitle(__('Registro de Eventos'));
-            $ActionEventlog->setIcon($icons->getIconHeadline());
-            $ActionEventlog->setData([
+            $actionEventlog = new DataGridAction();
+            $actionEventlog->setId(ActionsInterface::EVENTLOG);
+            $actionEventlog->setTitle(__('Registro de Eventos'));
+            $actionEventlog->setIcon($icons->getIconHeadline());
+            $actionEventlog->setData([
                 'historyReset' => 1,
                 'view' => 'eventlog',
                 'route' => Acl::getActionRoute(ActionsInterface::EVENTLOG)
             ]);
 
-            $this->view->append('actions', $ActionEventlog);
+            $this->view->append('actions', $actionEventlog);
         }
+    }
+
+    /**
+     * Sets a full layout page
+     *
+     * @param string $template
+     * @param string $page Page/view name
+     * @return LayoutHelper
+     */
+    public function getPublicLayout($template, $page = '')
+    {
+        $this->setPage($page);
+        $this->initBody();
+
+        $this->view->addPartial('body-header');
+        $this->view->addTemplate($template);
+        $this->view->addPartial('body-footer');
+        $this->view->addPartial('body-end');
+
+        return $this;
     }
 
     /**

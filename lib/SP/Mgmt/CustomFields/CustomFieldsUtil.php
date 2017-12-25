@@ -271,7 +271,7 @@ class CustomFieldsUtil
                         WHERE customfielddef_id = ? LIMIT 1';
 
                 foreach ($oldDefs as $cf) {
-                    $CustomFieldDef = Util::castToClass(CustomFieldDefData::class, $cf->customfielddef_field);
+                    $CustomFieldDef = Util::unserialize(CustomFieldDefData::class, $cf->customfielddef_field);
                     $CustomFieldDef->setId($cf->customfielddef_id);
                     $CustomFieldDef->setModule(10);
                     $CustomFieldDef->setCustomfielddefModule(10);

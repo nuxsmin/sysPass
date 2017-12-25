@@ -183,11 +183,11 @@ sysPass.Main = function () {
                         msg.ok(description);
                         break;
                     case 1:
-                    case 2:
-                    case 4:
+                        // case 2:
+                        // case 4:
                         msg.error(description);
                         break;
-                    case 3:
+                    case 2:
                         msg.warn(description);
                         break;
                     case 10:
@@ -199,6 +199,10 @@ sysPass.Main = function () {
                         break;
                     case 101:
                         msg.error(description);
+                        msg.sticky(description);
+                        break;
+                    case 102:
+                        msg.warn(description);
                         msg.sticky(description);
                         break;
                     default:
@@ -219,7 +223,7 @@ sysPass.Main = function () {
         String.format = function (format) {
             var args = Array.prototype.slice.call(arguments, 1);
             return format.replace(/{(\d+)}/g, function (match, number) {
-                return typeof args[number] != 'undefined' ? args[number] : match;
+                return typeof args[number] !== "undefined" ? args[number] : match;
             });
         };
     }

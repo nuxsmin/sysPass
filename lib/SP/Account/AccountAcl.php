@@ -29,9 +29,9 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
+use SP\DataModel\AccountExtData;
 use SP\DataModel\UserData;
-use SP\Mgmt\Groups\GroupUsers;
-use SP\Storage\CacheableInterface;
+use SP\Services\UserGroup\UserToGroupService;
 use SP\Util\ArrayUtil;
 
 /**
@@ -42,9 +42,9 @@ use SP\Util\ArrayUtil;
 class AccountAcl
 {
     /**
-     * @var AccountBase
+     * @var AccountExtData
      */
-    protected $Account;
+    protected $accountData;
     /**
      * @var int
      */
@@ -136,7 +136,7 @@ class AccountAcl
     /**
      * @var UserData
      */
-    protected $UserData;
+    protected $userData;
     /**
      * @var bool
      */
@@ -153,25 +153,31 @@ class AccountAcl
      * @var \SP\Core\Acl\Acl
      */
     protected $acl;
+    /**
+     * @var bool
+     */
+    protected $isHistory;
 
     use InjectableTrait;
 
     /**
      * AccountAcl constructor.
      *
-     * @param AccountBase $Account
-     * @param int         $action
+     * @param int            $action
+     * @param AccountExtData $accountData
+     * @param bool           $isHistory
      */
-    public function __construct(AccountBase $Account = null, $action)
+    public function __construct($action, AccountExtData $accountData = null, $isHistory = false)
     {
         $this->injectDependencies();
 
         $this->action = $action;
-        $this->UserData = $this->session->getUserData();
+        $this->isHistory = $isHistory;
+        $this->userData = $this->session->getUserData();
 
-        if (null !== $Account) {
-            $this->Account = $Account;
-            $this->accountId = $Account->getAccountData()->getAccountId();
+        if (null !== $accountData) {
+            $this->accountData = $accountData;
+            $this->accountId = $accountData->getAccountId();
         }
     }
 
@@ -316,7 +322,7 @@ class AccountAcl
         $sessionAcl = $this->getStoredAcl();
 
         if (null !== $sessionAcl
-            && !($this->modified = (int)strtotime($this->Account->getAccountData()->getAccountDateEdit()) > $sessionAcl->getTime())
+            && !($this->modified = (int)strtotime($this->accountData->getAccountDateEdit()) > $sessionAcl->getTime())
         ) {
             return $sessionAcl;
         }
@@ -396,12 +402,12 @@ class AccountAcl
         // Mostrar acción de editar
         $this->showEdit = $this->checkAccountAccess(Acl::ACCOUNT_EDIT)
             && $this->acl->checkUserAccess(Acl::ACCOUNT_EDIT)
-            && !$this->Account->getAccountIsHistory();
+            && !$this->isHistory;
 
         // Mostrar acción de editar clave
         $this->showEditPass = $this->checkAccountAccess(Acl::ACCOUNT_EDIT_PASS)
             && $this->acl->checkUserAccess(Acl::ACCOUNT_EDIT_PASS)
-            && !$this->Account->getAccountIsHistory();
+            && !$this->isHistory;
 
         // Mostrar acción de eliminar
         $this->showDelete = $this->checkAccountAccess(Acl::ACCOUNT_DELETE)
@@ -428,8 +434,8 @@ class AccountAcl
      */
     protected function compileAccountAccess()
     {
-        if ($this->UserData->isUserIsAdminApp()
-            || $this->UserData->isUserIsAdminAcc()
+        if ($this->userData->isUserIsAdminApp()
+            || $this->userData->isUserIsAdminAcc()
         ) {
             $this->resultView = true;
             $this->resultEdit = true;
@@ -437,20 +443,18 @@ class AccountAcl
             return;
         }
 
-        $AccountData = $this->Account->getAccountData();
-
         $this->userInGroups = $this->getIsUserInGroups();
-        $this->userInUsers = in_array($this->UserData->getUserId(), $AccountData->getAccountUsersId());
+        $this->userInUsers = in_array($this->userData->getUserId(), $this->accountData->getAccountUsersId());
 
-        $this->resultView = ($this->UserData->getUserId() === $AccountData->getAccountUserId()
-            || $this->UserData->getUserGroupId() === $AccountData->getAccountUserGroupId()
+        $this->resultView = ($this->userData->getUserId() === $this->accountData->getAccountUserId()
+            || $this->userData->getUserGroupId() === $this->accountData->getAccountUserGroupId()
             || $this->userInUsers
             || $this->userInGroups);
 
-        $this->resultEdit = ($this->UserData->getUserId() === $AccountData->getAccountUserId()
-            || $this->UserData->getUserGroupId() === $AccountData->getAccountUserGroupId()
-            || ($this->userInUsers && $AccountData->getAccountOtherUserEdit())
-            || ($this->userInGroups && $AccountData->getAccountOtherGroupEdit()));
+        $this->resultEdit = ($this->userData->getUserId() === $this->accountData->getAccountUserId()
+            || $this->userData->getUserGroupId() === $this->accountData->getAccountUserGroupId()
+            || ($this->userInUsers && $this->accountData->getAccountOtherUserEdit())
+            || ($this->userInGroups && $this->accountData->getAccountOtherGroupEdit()));
     }
 
     /**
@@ -461,20 +465,18 @@ class AccountAcl
      */
     protected function getIsUserInGroups()
     {
-        $AccountData = $this->Account->getAccountData();
-
         // Comprobar si el usuario está vinculado desde el grupo principal de la cuenta
-        if (GroupUsers::getItem()->checkUserInGroup($AccountData->getAccountUserGroupId(), $this->UserData->getUserId())) {
+        if (UserToGroupService::checkUserInGroup($this->accountData->getAccountUserGroupId(), $this->userData->getUserId())) {
             return true;
         }
 
         // Grupos en los que se encuentra el usuario
-        $groupsId = GroupUsers::getItem()->getGroupsForUser($this->UserData->getUserId());
+        $groupsId = UserToGroupService::getGroupsForUser($this->userData->getUserId());
 
         // Comprobar si el grupo del usuario está vinculado desde los grupos secundarios de la cuenta
-        foreach ($AccountData->getUserGroupsId() as $groupId) {
+        foreach ($this->accountData->getUserGroupsId() as $groupId) {
             // Consultar el grupo principal del usuario
-            if ($groupId === $this->UserData->getUserGroupId()
+            if ($groupId === $this->userData->getUserGroupId()
                 // o... permitir los grupos que no sean el principal del usuario?
                 || ($this->configData->isAccountFullGroupAccess()
                     // Comprobar si el usuario está vinculado desde los grupos secundarios de la cuenta
@@ -607,14 +609,14 @@ class AccountAcl
     {
         $this->time = time();
 
-        unset($this->Account, $this->UserData, $this->session, $this->dic, $this->acl, $this->configData);
+        unset($this->accountData, $this->userData, $this->session, $this->dic, $this->acl, $this->configData);
 
         $props = [];
 
         foreach ((array)$this as $prop => $value) {
             if ($prop !== "\0*\0configData"
                 && $prop !== "\0*\0dic"
-                && $prop !== "\0*\0Account"
+                && $prop !== "\0*\0accountData"
                 && $prop !== "\0*\0UserData"
                 && $prop !== "\0*\0acl"
                 && $prop !== "\0*\0session") {

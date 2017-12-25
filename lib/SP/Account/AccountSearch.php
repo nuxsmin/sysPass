@@ -316,6 +316,7 @@ class AccountSearch
      * a mostrar.
      *
      * @return array
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function processSearchResults()
     {
@@ -331,39 +332,37 @@ class AccountSearch
         $accountLinkEnabled = $this->session->getUserPreferences()->isAccountLink() || $this->configData->isAccountLink();
         $favorites = AccountFavorites::getFavorites($this->session->getUserData()->getUserId());
 
-        foreach ($results as $AccountSearchData) {
-            // Establecer los datos de la cuenta
-            $Account = new Account($AccountSearchData);
-
+        /** @var AccountSearchData $accountSearchData */
+        foreach ($results as $accountSearchData) {
             // Propiedades de búsqueda de cada cuenta
-            $AccountSearchItems = new AccountsSearchItem($AccountSearchData);
+            $accountsSearchItem = new AccountsSearchItem($accountSearchData);
 
             // Obtener la ACL de la cuenta
-            $AccountAcl = new AccountAcl($Account, Acl::ACCOUNT_SEARCH);
+            $accountAcl = new AccountAcl(Acl::ACCOUNT_SEARCH, $accountSearchData);
 
-            if (!$AccountSearchData->getAccountIsPrivate()) {
-                $AccountSearchData->setUsersId($AccountSearchItems->getCacheUsers(true));
-                $AccountSearchData->setUserGroupsId($AccountSearchItems->getCacheGroups(true));
+            if (!$accountSearchData->getAccountIsPrivate()) {
+                $accountSearchData->setUsersId($accountsSearchItem->getCacheUsers(true));
+                $accountSearchData->setUserGroupsId($accountsSearchItem->getCacheGroups(true));
             }
 
-            $AccountSearchData->setTags(AccountTags::getTags($Account->getAccountData()));
+            $accountSearchData->setTags(AccountTags::getTags($accountSearchData));
 
             // Obtener la ACL
-            $Acl = $AccountAcl->getAcl();
+            $acl = $accountAcl->getAcl();
 
-            $this->session->setAccountAcl($Acl);
+            $this->session->setAccountAcl($acl);
 
-            $AccountSearchItems->setTextMaxLength($maxTextLength);
-            $AccountSearchItems->setColor($this->pickAccountColor($AccountSearchData->getAccountCustomerId()));
-            $AccountSearchItems->setShowView($Acl->isShowView());
-            $AccountSearchItems->setShowViewPass($Acl->isShowViewPass());
-            $AccountSearchItems->setShowEdit($Acl->isShowEdit());
-            $AccountSearchItems->setShowCopy($Acl->isShowCopy());
-            $AccountSearchItems->setShowDelete($Acl->isShowDelete());
-            $AccountSearchItems->setLink($accountLinkEnabled);
-            $AccountSearchItems->setFavorite(in_array($AccountSearchData->getAccountId(), $favorites, true));
+            $accountsSearchItem->setTextMaxLength($maxTextLength);
+            $accountsSearchItem->setColor($this->pickAccountColor($accountSearchData->getAccountCustomerId()));
+            $accountsSearchItem->setShowView($acl->isShowView());
+            $accountsSearchItem->setShowViewPass($acl->isShowViewPass());
+            $accountsSearchItem->setShowEdit($acl->isShowEdit());
+            $accountsSearchItem->setShowCopy($acl->isShowCopy());
+            $accountsSearchItem->setShowDelete($acl->isShowDelete());
+            $accountsSearchItem->setLink($accountLinkEnabled);
+            $accountsSearchItem->setFavorite(in_array($accountSearchData->getAccountId(), $favorites, true));
 
-            $accountsData[] = $AccountSearchItems;
+            $accountsData[] = $accountsSearchItem;
         }
 
         return $accountsData;
@@ -373,6 +372,7 @@ class AccountSearch
      * Obtener las cuentas de una búsqueda.
      *
      * @return AccountSearchData[] Resultado de la consulta
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getAccounts()
     {
@@ -382,8 +382,8 @@ class AccountSearch
         $arrQueryWhere = [];
         $queryLimit = '';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(AccountSearchData::class);
+        $data = new QueryData();
+        $data->setMapClassName(AccountSearchData::class);
 
         if ($this->txtSearch !== null && $this->txtSearch !== '') {
             // Analizar la cadena de búsqueda por etiquetas especiales
@@ -394,34 +394,34 @@ class AccountSearch
                     $arrFilterCommon[] = $filter['query'];
 
                     foreach ($filter['values'] as $value) {
-                        $Data->addParam($value);
+                        $data->addParam($value);
                     }
                 }
             } else {
                 $txtSearch = '%' . $this->txtSearch . '%';
 
                 $arrFilterCommon[] = 'account_name LIKE ?';
-                $Data->addParam($txtSearch);
+                $data->addParam($txtSearch);
 
                 $arrFilterCommon[] = 'account_login LIKE ?';
-                $Data->addParam($txtSearch);
+                $data->addParam($txtSearch);
 
                 $arrFilterCommon[] = 'account_url LIKE ?';
-                $Data->addParam($txtSearch);
+                $data->addParam($txtSearch);
 
                 $arrFilterCommon[] = 'account_notes LIKE ?';
-                $Data->addParam($txtSearch);
+                $data->addParam($txtSearch);
             }
         }
 
         if ($this->categoryId !== 0) {
             $arrFilterSelect[] = 'account_categoryId = ?';
-            $Data->addParam($this->categoryId);
+            $data->addParam($this->categoryId);
         }
 
         if ($this->customerId !== 0) {
             $arrFilterSelect[] = 'account_customerId = ?';
-            $Data->addParam($this->customerId);
+            $data->addParam($this->customerId);
         }
 
         $numTags = count($this->tagsId);
@@ -432,13 +432,13 @@ class AccountSearch
             $arrFilterSelect[] = 'account_id IN (SELECT acctag_accountId FROM accTags WHERE acctag_tagId IN (' . $tags . '))';
 
             for ($i = 0; $i <= $numTags - 1; $i++) {
-                $Data->addParam($this->tagsId[$i]);
+                $data->addParam($this->tagsId[$i]);
             }
         }
 
         if ($this->searchFavorites === true) {
             $arrayQueryJoin[] = 'INNER JOIN accFavorites ON (accfavorite_accountId = account_id AND accfavorite_userId = ?)';
-            $Data->addParam($this->session->getUserData()->getUserId());
+            $data->addParam($this->session->getUserData()->getUserId());
         }
 
         if (count($arrFilterCommon) > 0) {
@@ -449,13 +449,13 @@ class AccountSearch
             $arrQueryWhere[] = '(' . implode(' AND ', $arrFilterSelect) . ')';
         }
 
-        $arrQueryWhere = array_merge($arrQueryWhere, AccountUtil::getAccountFilterUser($Data, $this->session, $this->globalSearch));
+        $arrQueryWhere = array_merge($arrQueryWhere, AccountUtil::getAccountFilterUser($data, $this->session, $this->globalSearch));
 
         if ($this->limitCount > 0) {
             $queryLimit = '?, ?';
 
-            $Data->addParam($this->limitStart);
-            $Data->addParam($this->limitCount);
+            $data->addParam($this->limitStart);
+            $data->addParam($this->limitCount);
         }
 
         $queryWhere = '';
@@ -468,11 +468,11 @@ class AccountSearch
 
         $queryJoin = implode('', $arrayQueryJoin);
 
-        $Data->setSelect('*');
-        $Data->setFrom('account_search_v ' . $queryJoin);
-        $Data->setWhere($queryWhere);
-        $Data->setOrder($this->getOrderString());
-        $Data->setLimit($queryLimit);
+        $data->setSelect('*');
+        $data->setFrom('account_search_v ' . $queryJoin);
+        $data->setWhere($queryWhere);
+        $data->setOrder($this->getOrderString());
+        $data->setLimit($queryLimit);
 
         // Obtener el número total de cuentas visibles por el usuario
         DbWrapper::setFullRowCount();
@@ -481,10 +481,10 @@ class AccountSearch
 //        Log::writeNewLog(__FUNCTION__, print_r($Data->getParams(), true), Log::DEBUG);
 
         // Consulta de la búsqueda de cuentas
-        $queryRes = DbWrapper::getResultsArray($Data);
+        $queryRes = DbWrapper::getResultsArray($data);
 
         // Obtenemos el número de registros totales de la consulta sin contar el LIMIT
-        self::$queryNumRows = $Data->getQueryNumRows();
+        self::$queryNumRows = $data->getQueryNumRows();
 
         return $queryRes;
     }

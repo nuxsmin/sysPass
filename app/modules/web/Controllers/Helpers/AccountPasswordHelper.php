@@ -5,10 +5,10 @@ namespace SP\Modules\Web\Controllers\Helpers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\SessionUtil;
 use SP\DataModel\AccountPassData;
 use SP\Mgmt\Users\UserPass;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Util\ImageUtil;
 
 /**
@@ -27,8 +27,14 @@ class AccountPasswordHelper extends HelperBase
     /**
      * @param AccountPassData  $account
      * @param \SP\Core\Acl\Acl $acl
-     * @param $type
+     * @param                  $type
      * @return string
+     * @throws HelperException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getPassword(AccountPassData $account, Acl $acl, $type)
     {
@@ -50,13 +56,16 @@ class AccountPasswordHelper extends HelperBase
      * @param AccountPassData $accountData
      * @return string
      * @throws HelperException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     protected function getPasswordClear(AccountPassData $accountData)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW_PASS)
             || $accountData->getAccountId() === 0
         ) {
-            throw new HelperException(__('No tiene permisos para acceder a esta cuenta', false));
+            throw new HelperException(__u('No tiene permisos para acceder a esta cuenta'));
         }
 
         if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getUserId())) {
@@ -71,6 +80,12 @@ class AccountPasswordHelper extends HelperBase
 
     /**
      * @param AccountPassData $accountData
+     * @throws HelperException
+     * @throws \Defuse\Crypto\Exception\BadFormatException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function setTemplateVars(AccountPassData $accountData)
     {

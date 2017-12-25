@@ -38,7 +38,6 @@ use SP\Core\SessionFactory;
 use SP\Html\Html;
 use SP\Log\Log;
 use SP\Log\LogUtil;
-use SP\Storage\Database;
 
 defined('APP_ROOT') || die();
 
@@ -623,43 +622,64 @@ class Util
      * Cast an object to another class, keeping the properties, but changing the methods
      *
      * @param string        $class    Class name
-     * @param string|object $object
+     * @param string|object $serialized
      * @param string        $srcClass Nombre de la clase serializada
      * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
      */
-    public static function castToClass($class, $object, $srcClass = null)
+    public static function unserialize($class, $serialized, $srcClass = null)
     {
-        if (!is_object($object)) {
-            $object = unserialize($object);
-        }
+        if (!is_object($serialized)) {
+            preg_match('/^O:\d+:"(?P<class>[^"]++)"/', $serialized, $matches);
 
-        if (get_class($object) === '__PHP_Incomplete_Class') {
-            //  Elimina el nombre de la clase en los métodos privados
+            if (class_exists($matches['class'])) {
+                return unserialize($serialized);
+            }
+
+            // Si se indica la clase origen, se elimina el nombre
+            // de la clase en los métodos privados
             if ($srcClass !== null) {
-                $replaceSrc = preg_replace_callback(
+                $serializedOut = preg_replace_callback(
                     '/:\d+:"\x00' . preg_quote($srcClass, '/') . '\x00(\w+)"/',
                     function ($matches) {
                         return ':' . strlen($matches[1]) . ':"' . $matches[1] . '"';
                     },
-                    serialize($object)
-                );
-            } else {
-                $replaceSrc = serialize($object);
+                    $serialized);
+
+                return self::castToClass($serializedOut, $class);
             }
 
-            $replace = preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', $replaceSrc);
-
-            return unserialize($replace);
+            if ($matches['class'] !== $class) {
+                return self::castToClass($serialized, $class);
+            }
         }
 
-        return $object;
+        return $serialized;
+    }
+
+    /**
+     * Cast an object to another class
+     *
+     * @param $object
+     * @param $class
+     * @return mixed
+     */
+    public static function castToClass($object, $class)
+    {
+        // should avoid '__PHP_Incomplete_Class'?
+
+        if (is_object($object)) {
+            return unserialize(preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', serialize($object)));
+        }
+
+        return unserialize(preg_replace('/^O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', $object));
     }
 
     /**
      * Devuelve la última función llamada tras un error
      *
      * @param string $function La función utilizada como base
+     * @return string
      */
     public static function traceLastCall($function = null)
     {
@@ -674,6 +694,8 @@ class Util
                 return $backtrace[$index + 1]['function'];
             }
         }
+
+        return '';
     }
 
     /**
