@@ -39,7 +39,7 @@ use SP\Core\Plugin\PluginUtil;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Core\Task;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\Core\Upgrade\Check;
 use SP\DataModel\NoticeData;
 use SP\Html\DataGrid\DataGridAction;
@@ -620,14 +620,14 @@ class MainController extends ControllerBase implements ActionsInterface
             $PublicLink = PublicLink::getItem()->getByHash($hash);
 
             if (!$PublicLink
-                || time() > $PublicLink->getDateExpire()
-                || $PublicLink->getCountViews() >= $PublicLink->getMaxCountViews()
+                || time() > $PublicLink->getPublicLinkDateExpire()
+                || $PublicLink->getPublicLinkCountViews() >= $PublicLink->getPublicLinkMaxCountViews()
             ) {
                 $this->showError(self::ERR_PAGE_NO_PERMISSION, false);
             } else {
                 PublicLink::getItem($PublicLink)->addLinkView();
 
-                if ($PublicLink->isNotify()) {
+                if ($PublicLink->isPublicLinkNotify()) {
                     $Message = new NoticeMessage();
                     $Message->setTitle(__('Enlace visualizado'));
                     $Message->addDescription(sprintf('%s : %s', __('Cuenta'), $PublicLink->getItemId()));
@@ -640,7 +640,7 @@ class MainController extends ControllerBase implements ActionsInterface
                     $NoticeData->setNoticeComponent(__('Cuentas'));
                     $NoticeData->setNoticeDescription($Message);
                     $NoticeData->setNoticeType(__('Información'));
-                    $NoticeData->setNoticeUserId($PublicLink->getUserId());
+                    $NoticeData->setNoticeUserId($PublicLink->getPublicLinkUserId());
 
                     Notice::getItem($NoticeData)->add();
                 }

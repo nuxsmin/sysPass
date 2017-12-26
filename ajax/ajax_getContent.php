@@ -31,7 +31,7 @@ use SP\Controller\NoticesController;
 use SP\Controller\UserPreferencesController;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionFactory;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Util\Util;

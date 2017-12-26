@@ -32,7 +32,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\Html\DataGrid\DataGrid;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
@@ -79,7 +79,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
     /**
      * Constructor
      *
-     * @param $template Template con instancia de plantilla
+     * @param $template \SP\Mvc\View\Template con instancia de plantilla
      */
     public function __construct(Template $template = null)
     {

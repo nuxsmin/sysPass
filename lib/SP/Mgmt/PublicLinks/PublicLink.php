@@ -93,7 +93,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     {
         $query = /** @lang SQL */
             'UPDATE publicLinks
-            SET publicLink_linkData = ?,
+            SET publicLink_data = ?,
             publicLink_hash = ?
             WHERE publicLink_id = ? LIMIT 1';
 
@@ -135,7 +135,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
             'INSERT INTO publicLinks
             SET publicLink_hash = ?,
             publicLink_itemId = ?,
-            publicLink_linkData = ?';
+            publicLink_data = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -207,7 +207,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
         $query = /** @lang SQL */
             'UPDATE publicLinks
-            SET publicLink_linkData = ?,
+            SET publicLink_data = ?,
             publicLink_hash = ?
             WHERE publicLink_id = ? LIMIT 1';
 
@@ -233,7 +233,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $query = /** @lang SQL */
             'SELECT publicLink_id,
             publicLink_hash,
-            publicLink_linkData
+            publicLink_data
             FROM publicLinks WHERE publicLink_id = ? LIMIT 1';
 
         $Data = new QueryData();
@@ -261,7 +261,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT publicLink_id, publicLink_hash, publicLink_linkData FROM publicLinks';
+            'SELECT publicLink_id, publicLink_hash, publicLink_data FROM publicLinks';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -293,14 +293,14 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     {
         $PublicLinkListData = new PublicLinkListData();
         $PublicLinkListData->setPublicLinkId($PublicLinkData->getPublicLinkId());
-        $PublicLinkListData->setPublicLinkHash($PublicLinkData->getLinkHash());
+        $PublicLinkListData->setPublicLinkHash($PublicLinkData->getPublicLinkLinkHash());
         $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
-        $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getUserId()));
-        $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? __('ON') : __('OFF'));
-        $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getDateAdd()));
-        $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getDateExpire()));
-        $PublicLinkListData->setCountViews($PublicLinkData->getCountViews() . '/' . $PublicLinkData->getMaxCountViews());
-        $PublicLinkListData->setUseInfo($PublicLinkData->getUseInfo());
+        $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getPublicLinkUserId()));
+        $PublicLinkListData->setNotify($PublicLinkData->isPublicLinkNotify() ? __('ON') : __('OFF'));
+        $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getPublicLinkDateAdd()));
+        $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getPublicLinkDateExpire()));
+        $PublicLinkListData->setCountViews($PublicLinkData->getPublicLinkCountViews() . '/' . $PublicLinkData->getPublicLinkMaxCountViews());
+        $PublicLinkListData->setUseInfo($PublicLinkData->getPublicLinkUseInfo());
 
         return $PublicLinkListData;
     }
@@ -332,7 +332,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $query = /** @lang SQL */
             'SELECT publicLink_id,
             publicLink_hash,
-            publicLink_linkData
+            publicLink_data
             FROM publicLinks WHERE publicLink_hash = ? LIMIT 1';
 
         $Data = new QueryData();

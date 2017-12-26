@@ -30,7 +30,7 @@ use SP\Config\Config;
 use SP\Controller\Grids\Notices;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Mgmt\Notices\NoticeSearch;
@@ -54,7 +54,7 @@ class NoticesSearchController extends GridItemsSearchController implements Actio
     /**
      * Constructor
      *
-     * @param $template Template con instancia de plantilla
+     * @param $template \SP\Mvc\View\Template con instancia de plantilla
      */
     public function __construct(Template $template = null)
     {

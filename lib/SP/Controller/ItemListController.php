@@ -32,7 +32,7 @@ use SP\Config\Config;
 use SP\Controller\Grids\Items;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
@@ -68,7 +68,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
     /**
      * Constructor
      *
-     * @param $template Template con instancia de plantilla
+     * @param $template \SP\Mvc\View\Template con instancia de plantilla
      */
     public function __construct(Template $template = null)
     {

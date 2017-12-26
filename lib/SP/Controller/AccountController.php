@@ -37,7 +37,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\PublicLinkData;
@@ -80,8 +80,8 @@ class AccountController extends ControllerBase implements ActionsInterface
     /**
      * Constructor
      *
-     * @param Template $template  instancia del motor de plantillas
-     * @param int      $accountId int con el id de la cuenta
+     * @param \SP\Mvc\View\Template $template  instancia del motor de plantillas
+     * @param int                   $accountId int con el id de la cuenta
      * @internal param int $lastAction int con la última acción realizada
      */
     public function __construct(Template $template = null, $accountId = null)
@@ -138,7 +138,7 @@ class AccountController extends ControllerBase implements ActionsInterface
             $Account->incrementViewCounter($PublicLinkData->getItemId());
             $Account->incrementDecryptCounter($PublicLinkData->getItemId());
 
-            $key = $this->configData->getPasswordSalt() . $PublicLinkData->getLinkHash();
+            $key = $this->configData->getPasswordSalt() . $PublicLinkData->getPublicLinkLinkHash();
             $securedKey = Crypt::unlockSecuredKey($PublicLinkData->getPassIV(), $key);
 
             /** @var AccountExtData $AccountData */

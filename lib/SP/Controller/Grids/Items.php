@@ -840,11 +840,11 @@ class Items extends GridBase
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('publicLink_id');
         $GridData->addDataRowSource('accountName');
-        $GridData->addDataRowSource('dateAdd');
-        $GridData->addDataRowSource('dateExpire');
+        $GridData->addDataRowSource('publicLink_dateAdd');
+        $GridData->addDataRowSource('publicLink_dateExpire');
         $GridData->addDataRowSource('userLogin');
         $GridData->addDataRowSource('notify');
-        $GridData->addDataRowSource('countViews');
+        $GridData->addDataRowSource('publicLink_countViews');
 
         // Grid
         $Grid = new DataGridTab();

@@ -940,12 +940,12 @@ class ItemsGridHelper extends HelperBase
         // Grid Data
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('publicLink_id');
-        $GridData->addDataRowSource('accountName');
-        $GridData->addDataRowSource('dateAdd');
-        $GridData->addDataRowSource('dateExpire');
-        $GridData->addDataRowSource('userLogin');
-        $GridData->addDataRowSource('notify');
-        $GridData->addDataRowSource('countViews');
+        $GridData->addDataRowSource('account_name');
+        $GridData->addDataRowSource('getDateAddFormat', true);
+        $GridData->addDataRowSource('getDateExpireFormat', true);
+        $GridData->addDataRowSource('user_login');
+        $GridData->addDataRowSource('getNotifyString', true);
+        $GridData->addDataRowSource('getCountViewsString', true);
         $GridData->setData($data);
 
         // Grid

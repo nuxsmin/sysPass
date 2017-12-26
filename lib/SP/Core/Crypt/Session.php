@@ -38,8 +38,6 @@ class Session
      *
      * @return string
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
      */
     public static function getSessionKey()
     {
@@ -50,8 +48,6 @@ class Session
      * Guardar la clave maestra en la sesión
      *
      * @param $data
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
     public static function saveSessionKey($data)
@@ -63,9 +59,7 @@ class Session
     /**
      * Regenerar la clave de sesión
      *
-     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public static function reKey()
     {

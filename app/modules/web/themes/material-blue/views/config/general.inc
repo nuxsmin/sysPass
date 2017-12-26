@@ -1,7 +1,7 @@
 <!-- Start Tab - Config -->
 <?php
 /** @var $icons \Theme\Icons */
-/** @var $this \SP\Core\Template */
+/** @var $this \SP\Mvc\View\Template */
 ?>
 <div id="tabs-<?php echo $config_tabIndex; ?>" class="mdl-tabs__panel">
     <div class="tab-data">

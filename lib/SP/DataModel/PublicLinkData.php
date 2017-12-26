@@ -31,224 +31,235 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class PublicLinkData extends PublicLinkBaseData
+class PublicLinkData extends DataModelBase implements DataModelInterface
 {
     /**
      * @var int
      */
-    protected $itemId = 0;
+    public $publicLink_id = 0;
     /**
      * @var int
      */
-    protected $userId = 0;
+    public $publicLink_itemId = 0;
     /**
      * @var string
      */
-    protected $linkHash = '';
+    public $publicLink_hash = '';
     /**
      * @var int
      */
-    protected $typeId = 0;
+    public $publicLink_userId = 0;
+    /**
+     * @var int
+     */
+    public $publicLink_typeId = 0;
     /**
      * @var bool
      */
-    protected $notify = false;
+    public $publicLink_notify = false;
     /**
      * @var int
      */
-    protected $dateAdd = 0;
+    public $publicLink_dateAdd = 0;
     /**
      * @var int
      */
-    protected $dateExpire = 0;
+    public $publicLink_dateExpire = 0;
+    /**
+     * @var int
+     */
+    public $publicLink_countViews = 0;
+    /**
+     * @var int
+     */
+    public $publicLink_totalCountViews = 0;
+    /**
+     * @var int
+     */
+    public $publicLink_maxCountViews = 0;
+    /**
+     * @var array|string
+     */
+    public $publicLink_useInfo;
     /**
      * @var string
      */
-    protected $pass = '';
-    /**
-     * @var string
-     */
-    protected $passIV = '';
-    /**
-     * @var int
-     */
-    protected $countViews = 0;
-    /**
-     * @var int
-     */
-    protected $totalCountViews = 0;
-    /**
-     * @var int
-     */
-    protected $maxCountViews = 0;
-    /**
-     * @var array
-     */
-    protected $useInfo = [];
-    /**
-     * @var string
-     */
-    protected $data;
+    public $publicLink_data;
 
     /**
-     * @return int
+     * @return string
      */
-    public function getItemId()
+    public function getPublicLinkData()
     {
-        return $this->itemId;
+        return $this->publicLink_data;
     }
 
     /**
-     * @param int $itemId
+     * @param string $publicLink_data
      */
-    public function setItemId($itemId)
+    public function setPublicLinkData($publicLink_data)
     {
-        $this->itemId = $itemId;
-        $this->publicLink_itemId = $itemId;
+        $this->publicLink_data = $publicLink_data;
     }
 
     /**
      * @return int
      */
-    public function getUserId()
+    public function getPublicLinkId()
     {
-        return $this->userId;
+        return (int)$this->publicLink_id;
     }
 
     /**
-     * @param int $userId
+     * @param int $publicLink_id
      */
-    public function setUserId($userId)
+    public function setPublicLinkId($publicLink_id)
     {
-        $this->userId = $userId;
+        $this->publicLink_id = (int)$publicLink_id;
     }
 
     /**
      * @return string
      */
-    public function getLinkHash()
+    public function getPublicLinkHash()
     {
-        return $this->linkHash;
+        return $this->publicLink_hash;
     }
 
     /**
-     * @param string $linkHash
+     * @param string $publicLink_hash
      */
-    public function setLinkHash($linkHash)
+    public function setPublicLinkHash($publicLink_hash)
     {
-        $this->linkHash = $linkHash;
+        $this->publicLink_hash = $publicLink_hash;
     }
 
     /**
      * @return int
      */
-    public function getTypeId()
+    public function getPublicLinkItemId()
     {
-        return $this->typeId;
+        return (int)$this->publicLink_itemId;
     }
 
     /**
-     * @param int $typeId
+     * @param int $publicLink_itemId
      */
-    public function setTypeId($typeId)
+    public function setPublicLinkItemId($publicLink_itemId)
     {
-        $this->typeId = $typeId;
+        $this->publicLink_itemId = (int)$publicLink_itemId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return (int)$this->publicLink_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return '';
+    }
+
+    /**
+     * @return int
+     */
+    public function getPublicLinkUserId()
+    {
+        return (int)$this->publicLink_userId;
+    }
+
+    /**
+     * @param int $publicLink_userId
+     */
+    public function setPublicLinkUserId($publicLink_userId)
+    {
+        $this->publicLink_userId = (int)$publicLink_userId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPublicLinkTypeId()
+    {
+        return (int)$this->publicLink_typeId;
+    }
+
+    /**
+     * @param int $publicLink_typeId
+     */
+    public function setPublicLinkTypeId($publicLink_typeId)
+    {
+        $this->publicLink_typeId = (int)$publicLink_typeId;
     }
 
     /**
      * @return boolean
      */
-    public function isNotify()
+    public function isPublicLinkNotify()
     {
-        return (bool)$this->notify;
+        return (bool)$this->publicLink_notify;
     }
 
     /**
-     * @param boolean $notify
+     * @param boolean $publicLink_notify
      */
-    public function setNotify($notify)
+    public function setPublicLinkNotify($publicLink_notify)
     {
-        $this->notify = $notify;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDateAdd()
-    {
-        return $this->dateAdd;
-    }
-
-    /**
-     * @param int $dateAdd
-     */
-    public function setDateAdd($dateAdd)
-    {
-        $this->dateAdd = $dateAdd;
+        $this->publicLink_notify = (bool)$publicLink_notify;
     }
 
     /**
      * @return int
      */
-    public function getDateExpire()
+    public function getPublicLinkDateAdd()
     {
-        return $this->dateExpire;
+        return (int)$this->publicLink_dateAdd;
     }
 
     /**
-     * @param int $dateExpire
+     * @param int $publicLink_dateAdd
      */
-    public function setDateExpire($dateExpire)
+    public function setPublicLinkDateAdd($publicLink_dateAdd)
     {
-        $this->dateExpire = $dateExpire;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPass()
-    {
-        return $this->pass;
-    }
-
-    /**
-     * @param string $pass
-     */
-    public function setPass($pass)
-    {
-        $this->pass = $pass;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassIV()
-    {
-        return $this->passIV;
-    }
-
-    /**
-     * @param string $passIV
-     */
-    public function setPassIV($passIV)
-    {
-        $this->passIV = $passIV;
+        $this->publicLink_dateAdd = (int)$publicLink_dateAdd;
     }
 
     /**
      * @return int
      */
-    public function getCountViews()
+    public function getPublicLinkDateExpire()
     {
-        return $this->countViews;
+        return (int)$this->publicLink_dateExpire;
     }
 
     /**
-     * @param int $countViews
+     * @param int $publicLink_dateExpire
      */
-    public function setCountViews($countViews)
+    public function setPublicLinkDateExpire($publicLink_dateExpire)
     {
-        $this->countViews = (int)$countViews;
+        $this->publicLink_dateExpire = (int)$publicLink_dateExpire;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPublicLinkCountViews()
+    {
+        return (int)$this->publicLink_countViews;
+    }
+
+    /**
+     * @param int $publicLink_countViews
+     */
+    public function setPublicLinkCountViews($publicLink_countViews)
+    {
+        $this->publicLink_countViews = (int)$publicLink_countViews;
     }
 
     /**
@@ -256,71 +267,51 @@ class PublicLinkData extends PublicLinkBaseData
      */
     public function addCountViews()
     {
-        return $this->countViews++;
+        return $this->publicLink_countViews++;
     }
 
     /**
      * @return int
      */
-    public function getMaxCountViews()
+    public function getPublicLinkMaxCountViews()
     {
-        return $this->maxCountViews;
+        return (int)$this->publicLink_maxCountViews;
     }
 
     /**
-     * @param int $maxCountViews
+     * @param int $publicLink_maxCountViews
      */
-    public function setMaxCountViews($maxCountViews)
+    public function setPublicLinkMaxCountViews($publicLink_maxCountViews)
     {
-        $this->maxCountViews = (int)$maxCountViews;
+        $this->publicLink_maxCountViews = (int)$publicLink_maxCountViews;
     }
 
     /**
      * @return array
      */
-    public function getUseInfo()
+    public function getPublicLinkUseInfo()
     {
-        return $this->useInfo;
+        if (is_string($this->publicLink_useInfo)) {
+            return unserialize($this->publicLink_useInfo);
+        }
+
+        return (array)$this->publicLink_useInfo;
     }
 
     /**
-     * @param array $useInfo
+     * @param array $publicLink_useInfo
      */
-    public function setUseInfo(array $useInfo)
+    public function setPublicLinkUseInfo(array $publicLink_useInfo)
     {
-        $this->useInfo = $useInfo;
-    }
-
-    /**
-     * @param array $useInfo
-     */
-    public function addUseInfo($useInfo)
-    {
-        $this->useInfo[] = $useInfo;
-    }
-
-    /**
-     * @return string
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @param string $data
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
+        $this->publicLink_useInfo = $publicLink_useInfo;
     }
 
     /**
      * @return int
      */
-    public function getTotalCountViews()
+    public function getPublicLinkTotalCountViews()
     {
-        return $this->totalCountViews;
+        return (int)$this->publicLink_totalCountViews;
     }
 
     /**
@@ -328,6 +319,6 @@ class PublicLinkData extends PublicLinkBaseData
      */
     public function addTotalCountViews()
     {
-        return $this->totalCountViews++;
+        return $this->publicLink_totalCountViews++;
     }
 }

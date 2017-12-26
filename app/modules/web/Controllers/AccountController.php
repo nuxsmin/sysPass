@@ -28,6 +28,7 @@ use SP\Controller\ControllerBase;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionUtil;
@@ -162,8 +163,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $publicLinkService = new PublicLinkService();
             $publicLinkData = $publicLinkService->getByHash($hash);
 
-            if (time() < $publicLinkData->getDateExpire()
-                && $publicLinkData->getCountViews() < $publicLinkData->getMaxCountViews()
+            if (time() < $publicLinkData->getPublicLinkDateExpire()
+                && $publicLinkData->getPublicLinkCountViews() < $publicLinkData->getPublicLinkMaxCountViews()
             ) {
                 $publicLinkService->addLinkView($publicLinkData);
 
@@ -180,20 +181,20 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 //                    $NoticeData->setNoticeComponent(__('Cuentas'));
 //                    $NoticeData->setNoticeDescription($Message);
 //                    $NoticeData->setNoticeType(__('Información'));
-//                    $NoticeData->setNoticeUserId($PublicLink->getUserId());
+//                    $NoticeData->setNoticeUserId($PublicLink->getPublicLinkUserId());
 //
 //                    Notice::getItem($NoticeData)->add();
 //                }
 
                 $accountService = new AccountService();
-                $accountService->incrementViewCounter($publicLinkData->getItemId());
-                $accountService->incrementDecryptCounter($publicLinkData->getItemId());
+                $accountService->incrementViewCounter($publicLinkData->getPublicLinkItemId());
+                $accountService->incrementDecryptCounter($publicLinkData->getPublicLinkItemId());
 
-                $key = $this->configData->getPasswordSalt() . $publicLinkData->getLinkHash();
-                $securedKey = Crypt::unlockSecuredKey($publicLinkData->getPassIV(), $key);
+                /** @var Vault $vault */
+                $vault = unserialize($publicLinkData->getPublicLinkData());
 
                 /** @var AccountExtData $accountData */
-                $accountData = Util::unserialize(AccountExtData::class, Crypt::decrypt($publicLinkData->getData(), $securedKey, $key));
+                $accountData = Util::unserialize(AccountExtData::class, $vault->getData(PublicLinkService::getKeyForHash($this->config, $publicLinkData)));
 
                 $this->view->assign('title',
                     [
@@ -221,7 +222,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (\Exception $e) {
             debugLog($e->getMessage(), true);
 
-            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
+            ErrorUtil::showErrorFull($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION, 'account-link');
         }
 
         $this->view();

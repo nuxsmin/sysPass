@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -73,11 +73,12 @@ abstract class DataGridDataBase implements DataGridDataInterface
     }
 
     /**
-     * @param $source string
+     * @param      $source string
+     * @param bool $isMethod
      */
-    public function addDataRowSource($source)
+    public function addDataRowSource($source, $isMethod = false)
     {
-        $this->_sources[] = $source;
+        $this->_sources[] = ['name' => $source, 'isMethod' => $isMethod];
     }
 
     /**
@@ -122,9 +123,9 @@ abstract class DataGridDataBase implements DataGridDataInterface
     }
 
     /**
-     * @param string $source
+     * @param string        $source
      * @param IconInterface $icon
-     * @param mixed $value Valor para mostrar el icono
+     * @param mixed         $value Valor para mostrar el icono
      */
     public function addDataRowSourceWithIcon($source, IconInterface $icon, $value = 1)
     {

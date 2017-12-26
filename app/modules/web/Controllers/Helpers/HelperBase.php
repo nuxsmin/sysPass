@@ -28,8 +28,8 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
-use SP\Core\Template;
 use SP\Core\Traits\InjectableTrait;
+use SP\Mvc\View\Template;
 
 /**
  * Class HelperBase
@@ -41,7 +41,7 @@ abstract class HelperBase
     use InjectableTrait;
 
     /**
-     * @var Template
+     * @var \SP\Mvc\View\Template
      */
     protected $view;
     /**
@@ -64,10 +64,10 @@ abstract class HelperBase
     /**
      * Constructor
      *
-     * @param Template $template
-     * @param Config $config
-     * @param Session $session
-     * @param EventDispatcher $eventDispatcher
+     * @param \SP\Mvc\View\Template $template
+     * @param Config                $config
+     * @param Session               $session
+     * @param EventDispatcher       $eventDispatcher
      */
     final public function __construct(Template $template, Config $config, Session $session, EventDispatcher $eventDispatcher)
     {

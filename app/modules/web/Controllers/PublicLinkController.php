@@ -36,6 +36,7 @@ use SP\DataModel\PublicLinkListData;
 use SP\Forms\PublicLinkForm;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
+use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -59,8 +60,6 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
 
     /**
      * Search action
-     *
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function searchAction()
     {
@@ -116,16 +115,16 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
     {
         $this->view->addTemplate('publiclink', 'itemshow');
 
-        $publicLink = $publicLinkId ? PublicLinkService::mapItemsForList([$this->publicLinkService->getById($publicLinkId)]) : new PublicLinkListData();
+        $publicLink = $publicLinkId ? $this->publicLinkService->getById($publicLinkId) : new PublicLinkListData();
 
-        $this->view->assign('publicLink', is_array($publicLink) ? $publicLink[0] : $publicLink);
+        $this->view->assign('publicLink', $publicLink);
         $this->view->assign('accounts', AccountUtil::getAccountsForUser($this->session));
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
-            $this->view->assign('publicLinkURL', PublicLinkService::getLinkForHash($publicLink[0]->getPublicLinkHash()));
+            $this->view->assign('publicLinkURL', PublicLinkService::getLinkForHash($publicLink->getPublicLinkHash()));
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

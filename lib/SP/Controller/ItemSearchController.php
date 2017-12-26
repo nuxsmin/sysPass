@@ -32,7 +32,7 @@ use SP\Config\Config;
 use SP\Controller\Grids\Items;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Mgmt\ApiTokens\ApiTokenSearch;

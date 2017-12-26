@@ -55,10 +55,8 @@ class Vault
      * Regenerar la clave de sesión
      *
      * @param  string $key
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @return Vault
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     public function reKey($key = null)
     {
@@ -78,8 +76,6 @@ class Vault
      * @param  string $key
      * @return string
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
      */
     public function getData($key = null)
     {
@@ -102,11 +98,9 @@ class Vault
     /**
      * Guardar la clave maestra en la sesión
      *
-     * @param $data
+     * @param  mixed  $data
      * @param  string $key
      * @return $this
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
     public function saveData($data, $key = null)

@@ -40,7 +40,7 @@ use SP\Core\Plugin\PluginUtil;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Core\Task;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\Mgmt\Groups\Group;
 use SP\Mgmt\Profiles\Profile;
 use SP\Mgmt\Users\User;
@@ -67,7 +67,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
     /**
      * Constructor
      *
-     * @param $template Template con instancia de plantilla
+     * @param $template \SP\Mvc\View\Template con instancia de plantilla
      */
     public function __construct(Template $template = null)
     {

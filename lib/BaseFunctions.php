@@ -54,14 +54,15 @@ function debugLog($data, $printLastCaller = false)
 function formatTrace($trace)
 {
     $btLine = [];
-    $n = count($trace);
+    $i = 0;
 
-    for ($i = 1; $i <= $n - 1; $i++) {
-        $class = isset($trace[$i]['class']) ? $trace[$i]['class'] : '';
-        $file = isset($trace[$i]['file']) ? $trace[$i]['file'] : '';
-        $line = isset($trace[$i]['line']) ? $trace[$i]['line'] : 0;
+    foreach ($trace as $caller) {
+        $class = isset($caller['class']) ? $caller['class'] : '';
+        $file = isset($caller['file']) ? $caller['file'] : '';
+        $line = isset($caller['line']) ? $caller['line'] : 0;
 
-        $btLine[] = sprintf('Caller %d: %s\%s (%s:%d)', $i, $class, $trace[$i]['function'], $file, $line);
+        $btLine[] = sprintf('Caller %d: %s\%s (%s:%d)', $i, $class, $caller['function'], $file, $line);
+        $i++;
     }
 
     return implode(PHP_EOL, $btLine);

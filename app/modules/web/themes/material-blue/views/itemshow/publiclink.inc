@@ -34,7 +34,7 @@
                            title="<?php echo __('Notificar'); ?>">
                         <input type="checkbox" id="notify"
                                class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="notify" <?php echo $isView && $publicLink->getPublicLinkLinkData()->isNotify() ? 'CHECKED' : ''; ?> <?php echo $disabled; ?>/>
+                               name="notify" <?php echo $isView && $publicLink->isPublicLinkNotify() ? 'CHECKED' : ''; ?> <?php echo $disabled; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Notificar'); ?></span>
                     </label>
                 </td>
@@ -45,7 +45,7 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Fecha Creación'); ?></div>
 
-                        <?php echo $publicLink->getDateAdd(); ?>
+                        <?php echo $publicLink->getDateAddFormat(); ?>
                     </td>
                 </tr>
                 <tr>
@@ -53,7 +53,7 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Fecha Caducidad'); ?></div>
 
-                        <?php echo $publicLink->getDateExpire(); ?>
+                        <?php echo $publicLink->getDateExpireFormat(); ?>
                     </td>
                 </tr>
                 <tr>
@@ -69,7 +69,7 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Visitas'); ?></div>
 
-                        <?php echo $publicLink->getCountViews(); ?>
+                        <?php echo $publicLink->getCountViewsString(); ?>
                     </td>
                 </tr>
                 <tr>
@@ -95,7 +95,7 @@
 
                         <div class="list-wrap">
                             <ul class="mdl-list">
-                                <?php foreach ($publicLink->getUseInfo() as $useInfo): ?>
+                                <?php foreach ($publicLink->getPublicLinkUseInfo() as $useInfo): ?>
                                     <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 <i class="material-icons mdl-list__item-icon">access_time</i>

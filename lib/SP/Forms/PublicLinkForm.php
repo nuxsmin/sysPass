@@ -29,6 +29,7 @@ use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkData;
 use SP\Http\Request;
 use SP\Mgmt\PublicLinks\PublicLink;
+use SP\Util\Util;
 
 /**
  * Class PublicLinkForm
@@ -48,6 +49,7 @@ class PublicLinkForm extends FormBase implements FormInterface
      * @param $action
      * @return bool
      * @throws ValidationException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function validate($action)
     {
@@ -66,14 +68,16 @@ class PublicLinkForm extends FormBase implements FormInterface
      * Analizar los datos de la petición HTTP
      *
      * @return void
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     protected function analyzeRequestData()
     {
         $this->PublicLinkData = new PublicLinkData();
         $this->PublicLinkData->setPublicLinkId($this->itemId);
-        $this->PublicLinkData->setTypeId(PublicLink::TYPE_ACCOUNT);
-        $this->PublicLinkData->setItemId(Request::analyze('accountId', 0));
-        $this->PublicLinkData->setNotify(Request::analyze('notify', false, false, true));
+        $this->PublicLinkData->setPublicLinkTypeId(PublicLink::TYPE_ACCOUNT);
+        $this->PublicLinkData->setPublicLinkItemId(Request::analyze('accountId', 0));
+        $this->PublicLinkData->setPublicLinkNotify(Request::analyze('notify', false, false, true));
+        $this->PublicLinkData->setPublicLinkHash(Util::generateRandomBytes());
     }
 
     /**

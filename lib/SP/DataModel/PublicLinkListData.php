@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,8 @@
 
 namespace SP\DataModel;
 
+use SP\Util\DateUtil;
+
 defined('APP_ROOT') || die();
 
 /**
@@ -31,51 +33,27 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class PublicLinkListData extends PublicLinkBaseData
+class PublicLinkListData extends PublicLinkData
 {
     /**
      * @var string
      */
-    public $accountName = '';
+    public $user_name;
     /**
      * @var string
      */
-    public $userLogin = '';
+    public $user_login;
     /**
      * @var string
      */
-    public $notify = '';
-    /**
-     * @var string
-     */
-    public $dateAdd = '';
-    /**
-     * @var string
-     */
-    public $dateExpire = '';
-    /**
-     * @var int
-     */
-    public $countViews = 0;
-    /**
-     * @var array
-     */
-    public $useInfo = [];
+    public $account_name;
 
     /**
      * @return string
      */
-    public function getAccountName()
+    public function getUserName()
     {
-        return $this->accountName;
-    }
-
-    /**
-     * @param string $accountName
-     */
-    public function setAccountName($accountName)
-    {
-        $this->accountName = $accountName;
+        return $this->user_name;
     }
 
     /**
@@ -83,94 +61,46 @@ class PublicLinkListData extends PublicLinkBaseData
      */
     public function getUserLogin()
     {
-        return $this->userLogin;
-    }
-
-    /**
-     * @param string $userLogin
-     */
-    public function setUserLogin($userLogin)
-    {
-        $this->userLogin = $userLogin;
+        return $this->user_login;
     }
 
     /**
      * @return string
      */
-    public function getNotify()
+    public function getAccountName()
     {
-        return $this->notify;
-    }
-
-    /**
-     * @param string $notify
-     */
-    public function setNotify($notify)
-    {
-        $this->notify = $notify;
+        return $this->account_name;
     }
 
     /**
      * @return string
      */
-    public function getDateAdd()
+    public function getNotifyString()
     {
-        return $this->dateAdd;
+        return $this->isPublicLinkNotify() ? __u('ON') : __u('OFF');
     }
 
     /**
-     * @param string $dateAdd
+     * @return false|string
      */
-    public function setDateAdd($dateAdd)
+    public function getDateAddFormat()
     {
-        $this->dateAdd = $dateAdd;
+        return DateUtil::getDateFromUnix($this->publicLink_dateAdd);
+    }
+
+    /**
+     * @return false|string
+     */
+    public function getDateExpireFormat()
+    {
+        return DateUtil::getDateFromUnix($this->publicLink_dateExpire);
     }
 
     /**
      * @return string
      */
-    public function getDateExpire()
+    public function getCountViewsString()
     {
-        return $this->dateExpire;
-    }
-
-    /**
-     * @param string $dateExpire
-     */
-    public function setDateExpire($dateExpire)
-    {
-        $this->dateExpire = $dateExpire;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCountViews()
-    {
-        return $this->countViews;
-    }
-
-    /**
-     * @param int $countViews
-     */
-    public function setCountViews($countViews)
-    {
-        $this->countViews = $countViews;
-    }
-
-    /**
-     * @return array
-     */
-    public function getUseInfo()
-    {
-        return $this->useInfo;
-    }
-
-    /**
-     * @param array $useInfo
-     */
-    public function setUseInfo($useInfo)
-    {
-        $this->useInfo = $useInfo;
+        return sprintf('%d/%d/%d', $this->getPublicLinkCountViews(), $this->getPublicLinkMaxCountViews(), $this->getPublicLinkTotalCountViews());
     }
 }

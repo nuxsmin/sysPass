@@ -28,7 +28,7 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\DataModel\NoticeData;
 use SP\Mgmt\Notices\Notice;
 use SP\Mgmt\Users\User;

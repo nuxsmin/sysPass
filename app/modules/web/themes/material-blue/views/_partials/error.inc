@@ -24,7 +24,7 @@
 
 /**
  * @var $icons \SP\Core\UI\ThemeIconsBase
- * @var \SP\Core\Template $this
+ * @var \SP\Mvc\View\Template $this
  */
 ?>
 <div id="actions" align="center">

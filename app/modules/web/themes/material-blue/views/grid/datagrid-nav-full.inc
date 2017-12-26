@@ -1,7 +1,7 @@
 <?php
 /**
  * @var $data  SP\Html\DataGrid\DataGridInterface
- * @var $this  SP\Core\Template
+ * @var $this  \SP\Mvc\View\Template
  */
 ?>
 <div class="pager round5 shadow">

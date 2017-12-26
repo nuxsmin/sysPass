@@ -44,7 +44,7 @@ use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
 use SP\Core\Upgrade\Upgrade;

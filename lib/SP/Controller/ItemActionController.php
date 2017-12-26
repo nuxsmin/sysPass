@@ -722,8 +722,8 @@ class ItemActionController implements ItemControllerInterface
     {
         $PublicLinkData = new PublicLinkData();
         $PublicLinkData->setPublicLinkItemId($this->itemId);
-        $PublicLinkData->setTypeId(PublicLink::TYPE_ACCOUNT);
-        $PublicLinkData->setNotify(Request::analyze('notify', false, false, true));
+        $PublicLinkData->setPublicLinkTypeId(PublicLink::TYPE_ACCOUNT);
+        $PublicLinkData->setPublicLinkNotify(Request::analyze('notify', false, false, true));
 
         switch ($this->actionId) {
             case ActionsInterface::PUBLICLINK_CREATE:
@@ -732,9 +732,9 @@ class ItemActionController implements ItemControllerInterface
 
                 $this->LogMessage->setAction(__('Crear Enlace', false));
                 $this->LogMessage->addDescription(__('Enlace creado', false));
-                $this->LogMessage->addDetails(__('Tipo', false), $PublicLinkData->getTypeId());
+                $this->LogMessage->addDetails(__('Tipo', false), $PublicLinkData->getPublicLinkTypeId());
                 $this->LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
-                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getUserId()));
+                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getPublicLinkUserId()));
                 break;
             case ActionsInterface::PUBLICLINK_REFRESH:
                 $PublicLinkData = PublicLink::getItem()->getById($this->itemId);
@@ -742,9 +742,9 @@ class ItemActionController implements ItemControllerInterface
 
                 $this->LogMessage->setAction(__('Actualizar Enlace', false));
                 $this->LogMessage->addDescription(__('Enlace actualizado', false));
-                $this->LogMessage->addDetails(__('Tipo', false), $PublicLinkData->getTypeId());
+                $this->LogMessage->addDetails(__('Tipo', false), $PublicLinkData->getPublicLinkTypeId());
                 $this->LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
-                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getUserId()));
+                $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getPublicLinkUserId()));
                 break;
             case ActionsInterface::PUBLICLINK_DELETE:
                 if (is_array($this->itemId)) {
@@ -757,9 +757,9 @@ class ItemActionController implements ItemControllerInterface
                     PublicLink::getItem()->delete($this->itemId);
 
                     $this->LogMessage->addDescription(__('Enlace eliminado', false));
-                    $this->LogMessage->addDetails(__('Tipo', false), $PublicLinkData->getTypeId());
+                    $this->LogMessage->addDetails(__('Tipo', false), $PublicLinkData->getPublicLinkTypeId());
                     $this->LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
-                    $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getUserId()));
+                    $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($PublicLinkData->getPublicLinkUserId()));
                 }
 
                 $this->LogMessage->setAction(__('Eliminar Enlace', false));

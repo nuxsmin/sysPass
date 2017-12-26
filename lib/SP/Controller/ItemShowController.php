@@ -36,7 +36,7 @@ use SP\Core\Exceptions\ItemException;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\ApiTokenData;
 use SP\DataModel\CategoryData;

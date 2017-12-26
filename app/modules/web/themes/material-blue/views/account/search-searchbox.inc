@@ -2,7 +2,7 @@
 /**
  * @var $data    SP\Html\DataGrid\DataGridTab
  * @var $account SP\Account\AccountsSearchItem
- * @var $this    SP\Core\Template
+ * @var $this    \SP\Mvc\View\Template
  * @var $icons   \SP\Core\UI\ThemeIconsBase
  */
 ?>

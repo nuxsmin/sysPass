@@ -31,7 +31,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\DiFactory;
 use SP\Core\Language;
 use SP\Core\SessionUtil;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\DataModel\UserPreferencesData;
 use SP\Mgmt\Users\UserPreferences;
 

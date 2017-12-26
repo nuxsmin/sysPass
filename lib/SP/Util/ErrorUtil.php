@@ -25,7 +25,7 @@
 namespace SP\Util;
 
 use SP\Core\Exceptions\SPException;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 
 /**
  * Class ErrorUtil
@@ -47,8 +47,8 @@ class ErrorUtil
     /**
      * Establecer la plantilla de error con el código indicado.
      *
-     * @param Template $view
-     * @param int      $type int con el tipo de error
+     * @param \SP\Mvc\View\Template $view
+     * @param int                   $type int con el tipo de error
      */
     public static function showErrorInViewAndReset(Template $view, $type)
     {
@@ -60,8 +60,8 @@ class ErrorUtil
     /**
      * Establecer la plantilla de error con el código indicado.
      *
-     * @param Template $view
-     * @param int      $type int con el tipo de error
+     * @param \SP\Mvc\View\Template $view
+     * @param int                   $type int con el tipo de error
      */
     public static function showErrorInView(Template $view, $type)
     {
@@ -118,9 +118,9 @@ class ErrorUtil
     /**
      * Establecer la plantilla de error con el código indicado.
      *
-     * @param Template $view
-     * @param int      $type    int con el tipo de error
-     * @param  string  $replace Template replacement
+     * @param \SP\Mvc\View\Template $view
+     * @param int                   $type    int con el tipo de error
+     * @param  string               $replace Template replacement
      */
     public static function showErrorFull(Template $view, $type, $replace)
     {

@@ -28,7 +28,7 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
-use SP\Core\Template;
+use SP\Mvc\View\Template;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
 use SP\Html\DataGrid\DataGridPager;
@@ -56,7 +56,7 @@ class EventlogController extends ControllerBase implements ActionsInterface
     /**
      * Constructor
      *
-     * @param $template Template con instancia de plantilla
+     * @param $template \SP\Mvc\View\Template con instancia de plantilla
      */
     public function __construct(Template $template = null)
     {

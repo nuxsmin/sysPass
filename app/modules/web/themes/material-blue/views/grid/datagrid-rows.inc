@@ -1,7 +1,7 @@
 <?php
 /**
  * @var $data  SP\Html\DataGrid\DataGridTab
- * @var $this  SP\Core\Template
+ * @var $this  \SP\Mvc\View\Template
  */
 
 use SP\Html\Html;
@@ -19,7 +19,8 @@ use SP\Html\Html;
         <tr data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>"
             data-activetab="<?php echo $index; ?>">
             <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
-                <td class="cell-data"><?php echo ($dataItem->{$rowSrc} !== '') ? Html::truncate($dataItem->{$rowSrc}, 100 / $numFields) : '&nbsp;'; // Fix height ?></td>
+                <?php $value = $rowSrc['isMethod'] === true && method_exists($dataItem, $rowSrc['name']) ? $dataItem->{$rowSrc['name']}() : $dataItem->{$rowSrc['name']}; ?>
+                <td class="cell-data"><?php echo $value !== '' ? Html::truncate($value, 100 / $numFields) : '&nbsp;'; // Fix height ?></td>
             <?php endforeach; ?>
 
             <?php if (count($data->getData()->getDataRowSourcesWithIcon()) > 0): ?>
