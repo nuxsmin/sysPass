@@ -24,7 +24,7 @@
 
 namespace SP\Forms;
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\TagData;
 use SP\Http\Request;
@@ -39,7 +39,7 @@ class TagForm extends FormBase implements FormInterface
     /**
      * @var TagData
      */
-    protected $TagData;
+    protected $tagData;
 
     /**
      * Validar el formulario
@@ -68,9 +68,9 @@ class TagForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->TagData = new TagData();
-        $this->TagData->setTagId($this->itemId);
-        $this->TagData->setTagName(Request::analyze('name'));
+        $this->tagData = new TagData();
+        $this->tagData->setTagId($this->itemId);
+        $this->tagData->setTagName(Request::analyze('name'));
     }
 
     /**
@@ -78,8 +78,8 @@ class TagForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->TagData->getTagName()) {
-            throw new ValidationException(__('Es necesario un nombre de etiqueta', false));
+        if (!$this->tagData->getTagName()) {
+            throw new ValidationException(__u('Es necesario un nombre de etiqueta'));
         }
     }
 
@@ -88,6 +88,6 @@ class TagForm extends FormBase implements FormInterface
      */
     public function getItemData()
     {
-        return $this->TagData;
+        return $this->tagData;
     }
 }

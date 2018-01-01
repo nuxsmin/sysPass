@@ -39,7 +39,7 @@ class UserGroupForm extends FormBase implements FormInterface
     /**
      * @var GroupData
      */
-    protected $GroupData;
+    protected $groupData;
 
     /**
      * Validar el formulario
@@ -68,11 +68,11 @@ class UserGroupForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->GroupData = new GroupData();
-        $this->GroupData->setUsergroupId($this->itemId);
-        $this->GroupData->setUsergroupName(Request::analyze('name'));
-        $this->GroupData->setUsergroupDescription(Request::analyze('description'));
-        $this->GroupData->setUsers(Request::analyze('users', 0));
+        $this->groupData = new GroupData();
+        $this->groupData->setUsergroupId($this->itemId);
+        $this->groupData->setUsergroupName(Request::analyze('name'));
+        $this->groupData->setUsergroupDescription(Request::analyze('description'));
+        $this->groupData->setUsers(Request::analyze('users', 0));
     }
 
     /**
@@ -80,7 +80,7 @@ class UserGroupForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->GroupData->getUsergroupName()) {
+        if (!$this->groupData->getUsergroupName()) {
             throw new ValidationException(__u('Es necesario un nombre de grupo'));
         }
     }
@@ -90,6 +90,6 @@ class UserGroupForm extends FormBase implements FormInterface
      */
     public function getItemData()
     {
-        return $this->GroupData;
+        return $this->groupData;
     }
 }

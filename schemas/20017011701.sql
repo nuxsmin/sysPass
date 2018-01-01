@@ -72,7 +72,7 @@ CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFI
             FROM
                 `accFiles`
             WHERE
-                (`accFiles`.`accfile_accountId` = `accounts`.`account_id`)) AS `num_files`
+                (`accFiles`.accountId = `accounts`.`account_id`)) AS `num_files`
     FROM
         (((`accounts`
         LEFT JOIN `categories` ON ((`accounts`.`account_categoryId` = `categories`.`category_id`)))

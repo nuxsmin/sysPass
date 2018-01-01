@@ -7,8 +7,9 @@
 
     <form method="post" name="frmTags" id="frmTags" class="form-action"
           data-onsubmit="appMgmt/save"
+          data-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\ActionsInterface::TAG; ?>"
+          data-nextaction="<?php echo $nextAction; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -27,8 +28,6 @@
             </tbody>
         </table>
 
-        <input type="hidden" name="itemId" value="<?php echo $tag->getTagId(); ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>

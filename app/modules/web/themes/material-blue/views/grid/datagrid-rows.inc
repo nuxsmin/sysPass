@@ -20,6 +20,7 @@ use SP\Html\Html;
             data-activetab="<?php echo $index; ?>">
             <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
                 <?php $value = $rowSrc['isMethod'] === true && method_exists($dataItem, $rowSrc['name']) ? $dataItem->{$rowSrc['name']}() : $dataItem->{$rowSrc['name']}; ?>
+                <?php $value = $rowSrc['filter'] !== null && is_callable($rowSrc['filter']) ? $rowSrc['filter']($value) : $value; ?>
                 <td class="cell-data"><?php echo $value !== '' ? Html::truncate($value, 100 / $numFields) : '&nbsp;'; // Fix height ?></td>
             <?php endforeach; ?>
 

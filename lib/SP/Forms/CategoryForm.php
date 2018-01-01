@@ -39,7 +39,7 @@ class CategoryForm extends FormBase implements FormInterface
     /**
      * @var CategoryData
      */
-    protected $CategoryData;
+    protected $categoryData;
 
     /**
      * Validar el formulario
@@ -68,10 +68,10 @@ class CategoryForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->CategoryData = new CategoryData();
-        $this->CategoryData->setCategoryId($this->itemId);
-        $this->CategoryData->setCategoryName(Request::analyze('name'));
-        $this->CategoryData->setCategoryDescription(Request::analyze('description'));
+        $this->categoryData = new CategoryData();
+        $this->categoryData->setCategoryId($this->itemId);
+        $this->categoryData->setCategoryName(Request::analyze('name'));
+        $this->categoryData->setCategoryDescription(Request::analyze('description'));
     }
 
     /**
@@ -79,7 +79,7 @@ class CategoryForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->CategoryData->getCategoryName()) {
+        if (!$this->categoryData->getCategoryName()) {
             throw new ValidationException(__u('Es necesario un nombre de categoría'));
         }
     }
@@ -89,6 +89,6 @@ class CategoryForm extends FormBase implements FormInterface
      */
     public function getItemData()
     {
-        return $this->CategoryData;
+        return $this->categoryData;
     }
 }

@@ -39,7 +39,7 @@ class ApiTokenForm extends FormBase implements FormInterface
     /**
      * @var ApiTokenData
      */
-    protected $ApiTokenData;
+    protected $apiTokenData;
 
     /**
      * Validar el formulario
@@ -68,11 +68,11 @@ class ApiTokenForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->ApiTokenData = new ApiTokenData();
-        $this->ApiTokenData->setAuthtokenId($this->itemId);
-        $this->ApiTokenData->setAuthtokenUserId(Request::analyze('users', 0));
-        $this->ApiTokenData->setAuthtokenActionId(Request::analyze('actions', 0));
-        $this->ApiTokenData->setAuthtokenHash(Request::analyzeEncrypted('pass'));
+        $this->apiTokenData = new ApiTokenData();
+        $this->apiTokenData->setAuthtokenId($this->itemId);
+        $this->apiTokenData->setAuthtokenUserId(Request::analyze('users', 0));
+        $this->apiTokenData->setAuthtokenActionId(Request::analyze('actions', 0));
+        $this->apiTokenData->setAuthtokenHash(Request::analyzeEncrypted('pass'));
     }
 
     /**
@@ -80,19 +80,19 @@ class ApiTokenForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if ($this->ApiTokenData->getAuthtokenUserId() === 0) {
+        if ($this->apiTokenData->getAuthtokenUserId() === 0) {
             throw new ValidationException(__u('Usuario no indicado'));
         }
 
-        if ($this->ApiTokenData->getAuthtokenActionId() === 0) {
+        if ($this->apiTokenData->getAuthtokenActionId() === 0) {
             throw new ValidationException(__u('Acción no indicada'));
         }
 
-        $action = $this->ApiTokenData->getAuthtokenActionId();
+        $action = $this->apiTokenData->getAuthtokenActionId();
 
         if (($action === ActionsInterface::ACCOUNT_VIEW_PASS
                 || $action === ActionsInterface::ACCOUNT_CREATE)
-            && $this->ApiTokenData->getAuthtokenHash() === ''
+            && $this->apiTokenData->getAuthtokenHash() === ''
         ) {
             throw new ValidationException(__u('La clave no puede estar en blanco'));
         }
@@ -103,6 +103,6 @@ class ApiTokenForm extends FormBase implements FormInterface
      */
     public function getItemData()
     {
-        return $this->ApiTokenData;
+        return $this->apiTokenData;
     }
 }

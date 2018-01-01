@@ -40,7 +40,7 @@ class NoticeForm extends FormBase implements FormInterface
     /**
      * @var NoticeData
      */
-    protected $NoticeData;
+    protected $noticeData;
 
     /**
      * Validar el formulario
@@ -72,32 +72,40 @@ class NoticeForm extends FormBase implements FormInterface
         $Description = new NoticeMessage();
         $Description->addDescription(Request::analyze('notice_description'));
 
-        $this->NoticeData = new NoticeData();
-        $this->NoticeData->setNoticeId($this->itemId);
-        $this->NoticeData->setNoticeType(Request::analyze('notice_type'));
-        $this->NoticeData->setNoticeComponent(Request::analyze('notice_component'));
-        $this->NoticeData->setNoticeDescription($Description);
-        $this->NoticeData->setNoticeUserId(Request::analyze('notice_user', 0));
+        $this->noticeData = new NoticeData();
+        $this->noticeData->setNoticeId($this->itemId);
+        $this->noticeData->setNoticeType(Request::analyze('notice_type'));
+        $this->noticeData->setNoticeComponent(Request::analyze('notice_component'));
+        $this->noticeData->setNoticeDescription($Description);
+        $this->noticeData->setNoticeUserId(Request::analyze('notice_user', 0));
 
-        if ($this->NoticeData->getNoticeUserId() === 0) {
-            $this->NoticeData->setNoticeOnlyAdmin(Request::analyze('notice_onlyadmin', 0, false, 1));
-            $this->NoticeData->setNoticeSticky(Request::analyze('notice_sticky', 0, false, 1));
+        if ($this->noticeData->getNoticeUserId() === 0) {
+            $this->noticeData->setNoticeOnlyAdmin(Request::analyze('notice_onlyadmin', 0, false, 1));
+            $this->noticeData->setNoticeSticky(Request::analyze('notice_sticky', 0, false, 1));
         }
     }
 
+    /**
+     * @throws ValidationException
+     */
     private function checkCommon()
     {
-        if (!$this->NoticeData->getNoticeComponent()) {
-            throw new ValidationException(__('Es necesario un componente', false));
-        } elseif (!$this->NoticeData->getNoticeType()) {
-            throw new ValidationException(__('Es necesario un tipo', false));
-        } elseif (!$this->NoticeData->getNoticeDescription()) {
-            throw new ValidationException(__('Es necesaria una descripción', false));
-        } elseif (!$this->NoticeData->getNoticeUserId()
-            && !$this->NoticeData->isNoticeOnlyAdmin()
-            && !$this->NoticeData->isNoticeSticky()
-        ) {
-            throw new ValidationException(__('Es necesario un destinatario', false));
+        if (!$this->noticeData->getNoticeComponent()) {
+            throw new ValidationException(__u('Es necesario un componente'));
+        }
+
+        if (!$this->noticeData->getNoticeType()) {
+            throw new ValidationException(__u('Es necesario un tipo'));
+        }
+
+        if (!$this->noticeData->getNoticeDescription()) {
+            throw new ValidationException(__u('Es necesaria una descripción'));
+        }
+
+        if (!$this->noticeData->getNoticeUserId()
+            && !$this->noticeData->isNoticeOnlyAdmin()
+            && !$this->noticeData->isNoticeSticky()) {
+            throw new ValidationException(__u('Es necesario un destinatario'));
         }
     }
 
@@ -106,6 +114,6 @@ class NoticeForm extends FormBase implements FormInterface
      */
     public function getItemData()
     {
-        return $this->NoticeData;
+        return $this->noticeData;
     }
 }

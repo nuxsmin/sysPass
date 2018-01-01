@@ -73,12 +73,13 @@ abstract class DataGridDataBase implements DataGridDataInterface
     }
 
     /**
-     * @param      $source string
-     * @param bool $isMethod
+     * @param string $source
+     * @param bool   $isMethod
+     * @param null   $filter
      */
-    public function addDataRowSource($source, $isMethod = false)
+    public function addDataRowSource($source, $isMethod = false, $filter = null)
     {
-        $this->_sources[] = ['name' => $source, 'isMethod' => $isMethod];
+        $this->_sources[] = ['name' => $source, 'isMethod' => $isMethod, 'filter' => $filter];
     }
 
     /**

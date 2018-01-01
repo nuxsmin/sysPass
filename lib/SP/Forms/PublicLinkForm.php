@@ -41,7 +41,7 @@ class PublicLinkForm extends FormBase implements FormInterface
     /**
      * @var PublicLinkData
      */
-    protected $PublicLinkData;
+    protected $publicLinkData;
 
     /**
      * Validar el formulario
@@ -72,12 +72,12 @@ class PublicLinkForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->PublicLinkData = new PublicLinkData();
-        $this->PublicLinkData->setPublicLinkId($this->itemId);
-        $this->PublicLinkData->setPublicLinkTypeId(PublicLink::TYPE_ACCOUNT);
-        $this->PublicLinkData->setPublicLinkItemId(Request::analyze('accountId', 0));
-        $this->PublicLinkData->setPublicLinkNotify(Request::analyze('notify', false, false, true));
-        $this->PublicLinkData->setPublicLinkHash(Util::generateRandomBytes());
+        $this->publicLinkData = new PublicLinkData();
+        $this->publicLinkData->setPublicLinkId($this->itemId);
+        $this->publicLinkData->setPublicLinkTypeId(PublicLink::TYPE_ACCOUNT);
+        $this->publicLinkData->setPublicLinkItemId(Request::analyze('accountId', 0));
+        $this->publicLinkData->setPublicLinkNotify(Request::analyze('notify', false, false, true));
+        $this->publicLinkData->setPublicLinkHash(Util::generateRandomBytes());
     }
 
     /**
@@ -85,7 +85,7 @@ class PublicLinkForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->PublicLinkData->getPublicLinkItemId()) {
+        if (!$this->publicLinkData->getPublicLinkItemId()) {
             throw new ValidationException(__u('Es necesario una cuenta'));
         }
     }
@@ -95,6 +95,6 @@ class PublicLinkForm extends FormBase implements FormInterface
      */
     public function getItemData()
     {
-        return $this->PublicLinkData;
+        return $this->publicLinkData;
     }
 }

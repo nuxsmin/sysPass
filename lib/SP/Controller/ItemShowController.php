@@ -40,7 +40,7 @@ use SP\Mvc\View\Template;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\ApiTokenData;
 use SP\DataModel\CategoryData;
-use SP\DataModel\CustomerData;
+use SP\DataModel\ClientData;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefData;
 use SP\DataModel\GroupData;
@@ -359,7 +359,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->module = self::CLIENT;
         $this->view->addTemplate('customers');
 
-        $this->view->assign('customer', $this->itemId ? Customer::getItem()->getById($this->itemId) : new CustomerData());
+        $this->view->assign('customer', $this->itemId ? Customer::getItem()->getById($this->itemId) : new ClientData());
         $this->getCustomFieldsForItem();
 
         $this->JsonResponse->setStatus(0);
@@ -399,7 +399,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('actions', ApiTokensUtil::getTokenActions());
-        $this->view->assign('ApiTokenData', $ApiTokenData);
+        $this->view->assign('apiTokenData', $ApiTokenData);
         $this->view->assign('isDisabled', ($this->view->actionId === self::APITOKEN_VIEW) ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 

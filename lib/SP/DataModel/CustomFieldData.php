@@ -26,138 +26,84 @@ namespace SP\DataModel;
 
 defined('APP_ROOT') || die();
 
-use SP\Html\Html;
-
 /**
  * Class CustomFieldData
  *
  * @package SP\DataModel
  */
-class CustomFieldData extends CustomFieldBaseData
+class CustomFieldData
 {
     /**
      * @var int
      */
-    public $customfielddata_itemId = 0;
+    public $id;
     /**
      * @var int
      */
-    public $customfielddata_moduleId = 0;
+    public $moduleId;
     /**
      * @var int
      */
-    public $customfielddata_defId = 0;
+    public $itemId;
+    /**
+     * @var int
+     */
+    public $definitionId;
+    /**
+     * @var string Encrypted data
+     */
+    public $data;
     /**
      * @var string
      */
-    public $typeName = '';
-    /**
-     * @var string
-     */
-    public $value = '';
-    /**
-     * @var int
-     */
-    public $definitionId = 0;
-    /**
-     * @var CustomFieldDefData
-     */
-    protected $definition;
+    public $key;
 
     /**
      * @return int
      */
-    public function getCustomfielddataItemId()
+    public function getId()
     {
-        return $this->customfielddata_itemId;
+        return $this->id;
     }
 
     /**
-     * @param int $customfielddata_itemId
+     * @param int $id
      */
-    public function setCustomfielddataItemId($customfielddata_itemId)
+    public function setId($id)
     {
-        $this->customfielddata_itemId = $customfielddata_itemId;
+        $this->id = $id;
     }
 
     /**
      * @return int
      */
-    public function getCustomfielddataModuleId()
+    public function getModuleId()
     {
-        return $this->customfielddata_moduleId;
+        return (int)$this->moduleId;
     }
 
     /**
-     * @param int $customfielddata_moduleId
+     * @param int $moduleId
      */
-    public function setCustomfielddataModuleId($customfielddata_moduleId)
+    public function setModuleId($moduleId)
     {
-        $this->customfielddata_moduleId = $customfielddata_moduleId;
+        $this->moduleId = (int)$moduleId;
     }
 
     /**
      * @return int
      */
-    public function getCustomfielddataDefId()
+    public function getItemId()
     {
-        return $this->customfielddata_defId;
+        return (int)$this->itemId;
     }
 
     /**
-     * @param int $customfielddata_defId
+     * @param int $itemId
      */
-    public function setCustomfielddataDefId($customfielddata_defId)
+    public function setItemId($itemId)
     {
-        $this->customfielddata_defId = $customfielddata_defId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTypeName()
-    {
-        return $this->typeName;
-    }
-
-    /**
-     * @param string $typeName
-     */
-    public function setTypeName($typeName)
-    {
-        $this->typeName = $typeName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-
-    /**
-     * @param string $value
-     */
-    public function setValue($value)
-    {
-        $this->value = $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCleanValue()
-    {
-        return Html::sanitize($this->value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getSafeHtmlValue()
-    {
-        return htmlspecialchars($this->value, ENT_QUOTES);
+        $this->itemId = (int)$itemId;
     }
 
     /**
@@ -165,7 +111,7 @@ class CustomFieldData extends CustomFieldBaseData
      */
     public function getDefinitionId()
     {
-        return $this->definitionId;
+        return (int)$this->definitionId;
     }
 
     /**
@@ -173,23 +119,38 @@ class CustomFieldData extends CustomFieldBaseData
      */
     public function setDefinitionId($definitionId)
     {
-        $this->definitionId = $definitionId;
+        $this->definitionId = (int)$definitionId;
     }
 
     /**
-     * @return CustomFieldDefData
+     * @return string
      */
-    public function getDefinition()
+    public function getData()
     {
-        return $this->definition;
+        return $this->data;
     }
 
     /**
-     * @param CustomFieldDefData $definition
+     * @param string $data
      */
-    public function setDefinition(CustomFieldDefData $definition)
+    public function setData($data)
     {
-        $this->definition = $definition;
+        $this->data = $data;
     }
 
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param string $key
+     */
+    public function setKey($key)
+    {
+        $this->key = $key;
+    }
 }

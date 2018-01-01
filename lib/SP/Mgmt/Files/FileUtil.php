@@ -49,13 +49,13 @@ class FileUtil
      */
     public static function getAccountFiles($accountId)
     {
-        $query = 'SELECT accfile_id,
-            accfile_name,
-            accfile_size,
-            accfile_thumb,
-            accfile_type
+        $query = 'SELECT id,
+            name,
+            size,
+            thumb,
+            type
             FROM accFiles
-            WHERE accfile_accountId = ?';
+            WHERE accountId = ?';
 
         $Data = new QueryData();
         $Data->setMapClassName(FileData::class);
@@ -75,7 +75,7 @@ class FileUtil
      */
     public static function countAccountFiles($accountId)
     {
-        $query = 'SELECT accfile_id FROM accFiles WHERE accfile_accountId = ?';
+        $query = 'SELECT id FROM accFiles WHERE accountId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -94,7 +94,7 @@ class FileUtil
      */
     public static function deleteAccountFiles($accountId)
     {
-        $query = 'DELETE FROM accFiles WHERE accfile_accountId = ?';
+        $query = 'DELETE FROM accFiles WHERE accountId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -110,6 +110,6 @@ class FileUtil
      */
     public static function isImage(FileData $FileData)
     {
-        return in_array(mb_strtoupper($FileData->getAccfileExtension()), FileUtil::$imageExtensions);
+        return in_array(mb_strtoupper($FileData->getExtension()), FileUtil::$imageExtensions);
     }
 }

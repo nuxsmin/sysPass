@@ -59,7 +59,6 @@ class AccessManagerController extends ControllerBase
 
     /**
      * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     public function indexAction()
     {
@@ -70,7 +69,6 @@ class AccessManagerController extends ControllerBase
      * Returns a tabbed grid with items
      *
      * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getGridTabs()
     {
@@ -150,8 +148,6 @@ class AccessManagerController extends ControllerBase
 
     /**
      * Returns public links data tab
-     *
-     * @throws \SP\Core\Exceptions\InvalidClassException
      */
     protected function getPublicLinksList()
     {

@@ -24,8 +24,10 @@
 
 namespace SP\Modules\Web\Controllers\Traits;
 
+use Defuse\Crypto\Exception\CryptoException;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Services\CustomField\CustomFieldService;
@@ -43,12 +45,35 @@ trait ItemTrait
      * @param $moduleId
      * @param $itemId
      * @return array
-     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected function getCustomFieldsForItem($moduleId, $itemId)
     {
         $customFieldService = new CustomFieldService();
-        return $customFieldService->getForModuleById($moduleId, $itemId);
+        $customFields = [];
+
+        $customFieldBase = new \stdClass();
+
+        foreach ($customFieldService->getForModuleById($moduleId, $itemId) as $item) {
+            try {
+                $customField = clone $customFieldBase;
+                $customField->required = (bool)$item->required;
+                $customField->showInList = (bool)$item->showInList;
+                $customField->help = $item->help;
+                $customField->definitionId = (int)$item->definitionId;
+                $customField->definitionName = $item->definitionName;
+                $customField->typeId = (int)$item->typeId;
+                $customField->typeName = $item->typeName;
+                $customField->moduleId = (int)$item->moduleId;
+                $customField->formId = CustomFieldService::getFormIdForName($item->definitionName);
+                $customField->value = $item->data !== null ? CustomFieldService::unencryptData($item->data) : '';
+
+                $customFields[] = $customField;
+            } catch (CryptoException $e) {
+                debugLog($e->getMessage());
+            }
+        }
+
+        return $customFields;
     }
 
     /**
@@ -60,8 +85,25 @@ trait ItemTrait
      */
     protected function addCustomFieldsForItem($moduleId, $itemId)
     {
-        $customFieldService = new CustomFieldService();
-        $customFieldService->addCustomFieldData(Request::analyze('customfield'), $itemId, $moduleId);
+        $customFields = Request::analyze('customfield');
+
+        if (is_array($customFields)) {
+            $customFieldData = new CustomFieldData();
+            $customFieldData->setId($itemId);
+            $customFieldData->setModuleId($moduleId);
+
+            $customFieldService = new CustomFieldService();
+            try {
+                foreach ($customFields as $id => $value) {
+                    $customFieldData->setDefinitionId($id);
+                    $customFieldData->setData($value);
+
+                    $customFieldService->create($customFieldData);
+                }
+            } catch (CryptoException $e) {
+                throw new SPException(SPException::SP_ERROR, __u('Error interno'));
+            }
+        }
     }
 
     /**
@@ -86,8 +128,25 @@ trait ItemTrait
      */
     protected function updateCustomFieldsForItem($moduleId, $itemId)
     {
-        $customFieldService = new CustomFieldService();
-        $customFieldService->updateCustomFieldData(Request::analyze('customfield'), $itemId, $moduleId);
+        $customFields = Request::analyze('customfield');
+
+        if (is_array($customFields)) {
+            $customFieldService = new CustomFieldService();
+            $customFieldData = new CustomFieldData();
+            $customFieldData->setId($itemId);
+            $customFieldData->setModuleId($moduleId);
+
+            try {
+                foreach ($customFields as $id => $value) {
+                    $customFieldData->setDefinitionId($id);
+                    $customFieldData->setData($value);
+
+                    $customFieldService->update($customFieldData);
+                }
+            } catch (CryptoException $e) {
+                throw new SPException(SPException::SP_ERROR, __u('Error interno'));
+            }
+        }
     }
 
     /**

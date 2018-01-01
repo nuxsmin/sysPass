@@ -1,6 +1,6 @@
 -- To 1.1.0;
 ALTER TABLE `accFiles`
-  CHANGE COLUMN `accfile_name` `accfile_name` VARCHAR(100) NOT NULL;
+  CHANGE COLUMN name `accfile_name` VARCHAR(100) NOT NULL;
 ALTER TABLE `accounts`
   ADD COLUMN `account_otherGroupEdit` BIT(1) NULL DEFAULT 0
   AFTER `account_dateEdit`,
@@ -20,4 +20,4 @@ ALTER TABLE `accHistory`
   ADD COLUMN `accHistory_otherGroupEdit` VARCHAR(45) NULL
   AFTER `accHistory_otherUserEdit`;
 ALTER TABLE `accFiles`
-  CHANGE COLUMN `accfile_type` `accfile_type` VARCHAR(100) NOT NULL;
+  CHANGE COLUMN type `accfile_type` VARCHAR(100) NOT NULL;

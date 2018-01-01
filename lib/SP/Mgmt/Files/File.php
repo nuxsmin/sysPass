@@ -60,13 +60,13 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
     {
         $query = /** @lang SQL */
             'INSERT INTO accFiles
-            SET accfile_accountId = ?,
-            accfile_name = ?,
-            accfile_type = ?,
-            accfile_size = ?,
-            accfile_content = ?,
-            accfile_extension = ?,
-            accfile_thumb = ?';
+            SET accountId = ?,
+            name = ?,
+            type = ?,
+            size = ?,
+            content = ?,
+            extension = ?,
+            thumb = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -117,7 +117,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
     {
         // Eliminamos el archivo de la BBDD
         $query = /** @lang SQL */
-            'DELETE FROM accFiles WHERE accfile_id = ? LIMIT 1';
+            'DELETE FROM accFiles WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -140,17 +140,17 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
     public function getInfoById($id)
     {
         $query = /** @lang SQL */
-            'SELECT accfile_name,
-            accfile_size,
-            accfile_type,
-            accfile_accountId,
-            accfile_extension,
+            'SELECT name,
+            size,
+            type,
+            accountId,
+            extension,
             account_name,
             customer_name
             FROM accFiles
-            LEFT JOIN accounts ON account_id = accfile_accountId
+            LEFT JOIN accounts ON account_id = accountId
             LEFT JOIN customers ON customer_id = account_customerId
-            WHERE accfile_id = ? LIMIT 1';
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName(FileExtData::class);
@@ -175,19 +175,19 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT accfile_name,
-            accfile_size,
-            accfile_type,
-            accfile_accountId,
-            accfile_content,
-            accfile_thumb,
-            accfile_extension,
+            'SELECT name,
+            size,
+            type,
+            accountId,
+            content,
+            thumb,
+            extension,
             account_name,
             customer_name
             FROM accFiles
-            LEFT JOIN accounts ON account_id = accfile_accountId
+            LEFT JOIN accounts ON account_id = accountId
             LEFT JOIN customers ON customer_id = account_customerId
-            WHERE accfile_id = ? LIMIT 1';
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName(FileExtData::class);
@@ -243,19 +243,19 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
         }
 
         $query = /** @lang SQL */
-            'SELECT accfile_name,
-            accfile_size,
-            accfile_type,
-            accfile_accountId,
-            accfile_content,
-            accfile_thumb,
-            accfile_extension,
+            'SELECT name,
+            size,
+            type,
+            accountId,
+            content,
+            thumb,
+            extension,
             account_name,
             customer_name
             FROM accFiles
-            LEFT JOIN accounts ON account_id = accfile_accountId
+            LEFT JOIN accounts ON account_id = accountId
             LEFT JOIN customers ON customer_id = account_customerId
-            WHERE accfile_id IN (' . $this->getParamsFromArray($ids) . ')';
+            WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
         $Data->setMapClassName(FileExtData::class);

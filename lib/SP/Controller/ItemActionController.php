@@ -41,7 +41,7 @@ use SP\DataModel\PublicLinkData;
 use SP\Forms\AccountForm;
 use SP\Forms\ApiTokenForm;
 use SP\Forms\CategoryForm;
-use SP\Forms\CustomerForm;
+use SP\Forms\ClientForm;
 use SP\Forms\CustomFieldDefForm;
 use SP\Forms\NoticeForm;
 use SP\Forms\TagForm;
@@ -484,7 +484,7 @@ class ItemActionController implements ItemControllerInterface
      */
     protected function customerAction()
     {
-        $Form = new CustomerForm($this->itemId);
+        $Form = new ClientForm($this->itemId);
         $Form->validate($this->actionId);
 
         $this->setCustomFieldData(ActionsInterface::CLIENT);

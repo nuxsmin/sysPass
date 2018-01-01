@@ -29,7 +29,7 @@ defined('APP_ROOT') || die();
 
 use SP\Account\AccountUtil;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\CustomerData;
+use SP\DataModel\ClientData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;
@@ -39,7 +39,7 @@ use SP\Storage\QueryData;
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los clientes de sysPass
  *
- * @property CustomerData $itemData
+ * @property ClientData $itemData
  */
 class Customer extends CustomerBase implements ItemInterface, ItemSelectInterface
 {
@@ -156,7 +156,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
 
     /**
      * @param $id int
-     * @return CustomerData
+     * @return ClientData
      */
     public function getById($id)
     {
@@ -224,7 +224,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     }
 
     /**
-     * @return CustomerData[]
+     * @return ClientData[]
      */
     public function getAll()
     {
@@ -269,7 +269,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
      * Devolver los elementos con los ids especificados
      *
      * @param array $ids
-     * @return CustomerData[]
+     * @return ClientData[]
      */
     public function getByIdBatch(array $ids)
     {

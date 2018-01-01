@@ -10,8 +10,9 @@
 
     <form method="post" name="frmCustomFields" id="frmCustomFields" class="form-action"
           data-onsubmit="appMgmt/save"
+          data-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\Acl\ActionsInterface::CUSTOMFIELD; ?>"
+          data-nextaction="<?php echo $nextAction; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -33,9 +34,10 @@
                     <div class="lowres-title"><?php echo __('Tipo'); ?></div>
 
                     <select name="type" id="sel-type" size="1" class="select-box">
-                        <?php foreach ($types as $id => $type): ?>
+                        <?php /** @var \SP\DataModel\CustomFieldTypeData[] $types */
+                        foreach ($types as $type): ?>
                             <option
-                                value='<?php echo $id; ?>' <?php echo ($id === $field->getType()) ? 'selected' : ''; ?>><?php echo $type[1]; ?></option>
+                                value='<?php echo $type->getId(); ?>' <?php echo ($type->getId() === $field->getTypeId()) ? 'selected' : ''; ?>><?php echo $type->getText(); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -48,7 +50,7 @@
                     <select name="module" id="sel-module" size="1" class="select-box">
                         <?php foreach ($modules as $id => $module): ?>
                             <option
-                                value='<?php echo $id; ?>' <?php echo ($id === $field->getModule()) ? 'selected' : ''; ?>><?php echo $module; ?></option>
+                                value='<?php echo $id; ?>' <?php echo ($id === $field->getModuleId()) ? 'selected' : ''; ?>><?php echo $module; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -70,7 +72,7 @@
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="required">
                         <input type="checkbox" id="required" class="mdl-switch__input mdl-color-text--indigo-400"
                                name="required"
-                            <?php echo $field->isRequired() ? 'checked' : ''; ?>/>
+                            <?php echo $field->getRequired() ? 'checked' : ''; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Obligatorio'); ?></span>
                     </label>
                 </td>
@@ -78,8 +80,6 @@
             </tbody>
         </table>
 
-        <input type="hidden" name="itemId" value="<?php echo $field->getId(); ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>

@@ -24,7 +24,6 @@
 
 namespace SP\Services\PublicLink;
 
-use SP\Account\AccountUtil;
 use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Crypt\Crypt;
@@ -35,9 +34,6 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Http\Request;
-use SP\Log\Email;
-use SP\Log\Log;
-use SP\Mgmt\Users\UserUtil;
 use SP\Services\Account\AccountService;
 use SP\Services\Service;
 use SP\Services\ServiceItemInterface;
@@ -45,7 +41,6 @@ use SP\Services\ServiceItemTrait;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
-use SP\Util\DateUtil;
 use SP\Util\HttpUtil;
 use SP\Util\Util;
 
@@ -204,11 +199,11 @@ class PublicLinkService extends Service implements ServiceItemInterface
      * Checks whether the item is in use or not
      *
      * @param $id int
-     * @return bool
+     * @return void
      */
     public function checkInUse($id)
     {
-        // TODO: Implement checkInUse() method.
+        throw new \RuntimeException('Unimplemented');
     }
 
     /**
@@ -381,11 +376,11 @@ class PublicLinkService extends Service implements ServiceItemInterface
      * Checks whether the item is duplicated on updating
      *
      * @param mixed $itemData
-     * @return bool
+     * @return void
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        // TODO: Implement checkDuplicatedOnUpdate() method.
+        throw new \RuntimeException('Unimplemented');
     }
 
     /**
@@ -393,7 +388,6 @@ class PublicLinkService extends Service implements ServiceItemInterface
      *
      * @param PublicLinkData $publicLinkData
      * @return void
-     * @throws \PHPMailer\PHPMailer\Exception
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -419,18 +413,18 @@ class PublicLinkService extends Service implements ServiceItemInterface
         DbWrapper::getQuery($Data, $this->db);
 
         // FIXME
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__u('Ver Enlace Público'));
-        $LogMessage->addDescription(__u('Enlace visualizado'));
-        $LogMessage->addDetails(__u('Tipo'), $publicLinkData->getPublicLinkTypeId());
-        $LogMessage->addDetails(__u('Cuenta'), AccountUtil::getAccountNameById($publicLinkData->getPublicLinkItemId()));
-        $LogMessage->addDetails(__u('Usuario'), UserUtil::getUserLoginById($publicLinkData->getPublicLinkUserId()));
-        $Log->writeLog();
-
-        if ($publicLinkData->isPublicLinkNotify()) {
-            Email::sendEmail($LogMessage);
-        }
+//        $Log = new Log();
+//        $LogMessage = $Log->getLogMessage();
+//        $LogMessage->setAction(__u('Ver Enlace Público'));
+//        $LogMessage->addDescription(__u('Enlace visualizado'));
+//        $LogMessage->addDetails(__u('Tipo'), $publicLinkData->getPublicLinkTypeId());
+//        $LogMessage->addDetails(__u('Cuenta'), AccountUtil::getAccountNameById($publicLinkData->getPublicLinkItemId()));
+//        $LogMessage->addDetails(__u('Usuario'), UserUtil::getUserLoginById($publicLinkData->getPublicLinkUserId()));
+//        $Log->writeLog();
+//
+//        if ($publicLinkData->isPublicLinkNotify()) {
+//            Email::sendEmail($LogMessage);
+//        }
     }
 
     /**

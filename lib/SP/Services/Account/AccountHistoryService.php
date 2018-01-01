@@ -236,7 +236,7 @@ class AccountHistoryService extends Service implements ServiceItemInterface
      */
     public function update($itemData)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -344,7 +344,7 @@ class AccountHistoryService extends Service implements ServiceItemInterface
      */
     public function getByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -355,7 +355,7 @@ class AccountHistoryService extends Service implements ServiceItemInterface
      */
     public function deleteByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -366,7 +366,7 @@ class AccountHistoryService extends Service implements ServiceItemInterface
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -377,7 +377,7 @@ class AccountHistoryService extends Service implements ServiceItemInterface
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -388,7 +388,7 @@ class AccountHistoryService extends Service implements ServiceItemInterface
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -399,6 +399,29 @@ class AccountHistoryService extends Service implements ServiceItemInterface
      */
     public function search(ItemSearchData $SearchData)
     {
-        throw new \RuntimeException('Unimplemented');
+        $Data = new QueryData();
+        $Data->setSelect('acchistory_id, acchistory_name, customer_name, IFNULL(acchistory_dateEdit,acchistory_dateAdd) as acchistory_date, BIN(acchistory_isModify) as acchistory_isModify, BIN(acchistory_isDeleted) as acchistory_isDeleted');
+        $Data->setFrom('accHistory LEFT JOIN customers ON acchistory_customerId = customer_id');
+        $Data->setOrder('acchistory_name, customer_name, acchistory_id DESC');
+
+        if ($SearchData->getSeachString() !== '') {
+            $Data->setWhere('acchistory_name LIKE ? OR customer_name LIKE ?');
+
+            $search = '%' . $SearchData->getSeachString() . '%';
+            $Data->addParam($search);
+            $Data->addParam($search);
+        }
+
+        $Data->setLimit('?,?');
+        $Data->addParam($SearchData->getLimitStart());
+        $Data->addParam($SearchData->getLimitCount());
+
+        DbWrapper::setFullRowCount();
+
+        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+
+        $queryRes['count'] = $Data->getQueryNumRows();
+
+        return $queryRes;
     }
 }

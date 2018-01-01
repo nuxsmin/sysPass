@@ -28,7 +28,7 @@ use DOMElement;
 use DOMXPath;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
-use SP\DataModel\CustomerData;
+use SP\DataModel\ClientData;
 
 defined('APP_ROOT') || die();
 
@@ -52,7 +52,7 @@ class KeepassImport extends ImportBase
      */
     public function doImport()
     {
-        $customerData = new CustomerData(null, 'KeePass');
+        $customerData = new ClientData(null, 'KeePass');
         $this->addCustomer($customerData);
 
         $this->customerId = $customerData->getCustomerId();

@@ -30,14 +30,11 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
-use SP\DataModel\CustomFieldDefData;
 use SP\DataModel\ItemSearchData;
-use SP\Mgmt\CustomFields\CustomFieldTypes;
 use SP\Services\Service;
 use SP\Services\ServiceItemInterface;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
-use SP\Util\Util;
 
 /**
  * Class CustomFieldService
@@ -47,107 +44,54 @@ use SP\Util\Util;
 class CustomFieldService extends Service implements ServiceItemInterface
 {
     /**
-     * Guardar los datos de los campos personalizados del módulo
+     * Returns the form Id for a given name
      *
-     * @param array $customFields
-     * @param int   $itemId
-     * @param int   $moduleId
-     * @throws \SP\Core\Exceptions\SPException
+     * @param $name
+     * @return string
      */
-    public function addCustomFieldData($customFields, $itemId, $moduleId)
+    public static function getFormIdForName($name)
     {
-        if (is_array($customFields)) {
-            $customFieldData = new CustomFieldData();
-            $customFieldData->setId($itemId);
-            $customFieldData->setModule($moduleId);
-
-            try {
-                foreach ($customFields as $id => $value) {
-                    $customFieldData->setDefinitionId($id);
-                    $customFieldData->setValue($value);
-
-                    $this->create($customFieldData);
-                }
-            } catch (CryptoException $e) {
-                throw new SPException(SPException::SP_ERROR, __u('Error interno'));
-            }
-        }
+        return 'cf_' . strtolower(preg_replace('/\W*/', '', $name));
     }
 
     /**
-     * Creates an item
+     * Desencriptar y formatear los datos del campo
      *
-     * @param mixed $itemData
-     * @return bool
-     * @throws CryptoException
-     * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @param CustomFieldData $CustomFieldData
+     * @return string
+     * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public function create($itemData)
+    public static function unencryptData(CustomFieldData $CustomFieldData)
     {
-        if ($itemData->getValue() === '') {
-            return true;
+        if ($CustomFieldData->getData() !== '') {
+            $securedKey = Crypt::unlockSecuredKey($CustomFieldData->getKey(), CryptSession::getSessionKey());
+
+            return self::formatValue(Crypt::decrypt($CustomFieldData->getData(), $securedKey));
         }
 
-        $sessionKey = CryptSession::getSessionKey();
-        $securedKey = Crypt::makeSecuredKey($sessionKey);
-
-        if (strlen($securedKey) > 1000) {
-            throw new QueryException(SPException::SP_ERROR, __u('Error interno'));
-        }
-
-        $query = /** @lang SQL */
-            'INSERT INTO customFieldsData SET
-            customfielddata_itemId = ?,
-            customfielddata_moduleId = ?,
-            customfielddata_defId = ?,
-            customfielddata_data = ?,
-            customfielddata_key = ?';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getId());
-        $Data->addParam($itemData->getModule());
-        $Data->addParam($itemData->getDefinitionId());
-        $Data->addParam(Crypt::encrypt($itemData->getValue(), $securedKey, $sessionKey));
-        $Data->addParam($securedKey);
-
-        return DbWrapper::getQuery($Data, $this->db);
+        return '';
     }
 
     /**
-     * Actualizar los datos de los campos personalizados del módulo
+     * Formatear el valor del campo
      *
-     * @param array $customFields
-     * @param int   $itemId
-     * @param int   $moduleId
-     * @throws \SP\Core\Exceptions\SPException
+     * @param $value string El valor del campo
+     * @return string
      */
-    public function updateCustomFieldData($customFields, $itemId, $moduleId)
+    public static function formatValue($value)
     {
-        if (is_array($customFields)) {
-            $customFieldData = new CustomFieldData();
-            $customFieldData->setId($itemId);
-            $customFieldData->setModule($moduleId);
-
-            try {
-                foreach ($customFields as $id => $value) {
-                    $customFieldData->setDefinitionId($id);
-                    $customFieldData->setValue($value);
-
-                    $this->update($customFieldData);
-                }
-            } catch (CryptoException $e) {
-                throw new SPException(SPException::SP_ERROR, __u('Error interno'));
-            }
+        if (preg_match('#https?://#', $value)) {
+            return '<a href="' . $value . '" target="_blank">' . $value . '</a>';
         }
+
+        return $value;
     }
 
     /**
      * Updates an item
      *
-     * @param mixed $itemData
-     * @return mixed
+     * @param CustomFieldData $itemData
+     * @return bool
      * @throws CryptoException
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -157,12 +101,12 @@ class CustomFieldService extends Service implements ServiceItemInterface
         $exists = $this->checkExists($itemData);
 
         // Deletes item's custom field data if value is left blank
-        if ($exists && $itemData->getValue() === '') {
+        if ($exists && $itemData->getData() === '') {
             return $this->delete($itemData->getId());
         }
 
         // Create item's custom field data if value is set
-        if (!$exists && $itemData->getValue() !== '') {
+        if (!$exists && $itemData->getData() !== '') {
             return $this->create($itemData);
         }
 
@@ -175,17 +119,17 @@ class CustomFieldService extends Service implements ServiceItemInterface
 
         $query = /** @lang SQL */
             'UPDATE customFieldsData SET
-            customfielddata_data = ?,
-            customfielddata_key = ?
-            WHERE customfielddata_moduleId = ?
-            AND customfielddata_itemId = ?
-            AND customfielddata_defId = ?';
+            `data` = ?,
+            `key` = ?
+            WHERE moduleId = ?
+            AND itemId = ?
+            AND definitionId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(Crypt::encrypt($itemData->getValue(), $securedKey, $sessionKey));
+        $Data->addParam(Crypt::encrypt($itemData->getData(), $securedKey, $sessionKey));
         $Data->addParam($securedKey);
-        $Data->addParam($itemData->getModule());
+        $Data->addParam($itemData->getModuleId());
         $Data->addParam($itemData->getId());
         $Data->addParam($itemData->getDefinitionId());
 
@@ -203,21 +147,21 @@ class CustomFieldService extends Service implements ServiceItemInterface
     protected function checkExists($itemData)
     {
         $query = /** @lang SQL */
-            'SELECT customfielddata_id
+            'SELECT id
             FROM customFieldsData
-            WHERE customfielddata_moduleId = ?
-            AND customfielddata_itemId = ?
-            AND customfielddata_defId = ?';
+            WHERE moduleId = ?
+            AND itemId = ?
+            AND definitionId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($itemData->getModule());
+        $Data->addParam($itemData->getModuleId());
         $Data->addParam($itemData->getId());
         $Data->addParam($itemData->getDefinitionId());
 
         DbWrapper::getQuery($Data, $this->db);
 
-        return ($Data->getQueryNumRows() >= 1);
+        return $Data->getQueryNumRows() >= 1;
     }
 
     /**
@@ -228,7 +172,43 @@ class CustomFieldService extends Service implements ServiceItemInterface
      */
     public function delete($id)
     {
-        // TODO: Implement delete() method.
+        throw new \RuntimeException('Unimplemented');
+    }
+
+    /**
+     * Creates an item
+     *
+     * @param CustomFieldData $itemData
+     * @return bool
+     * @throws CryptoException
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function create($itemData)
+    {
+        if ($itemData->getData() === '') {
+            return true;
+        }
+
+        $sessionKey = CryptSession::getSessionKey();
+        $securedKey = Crypt::makeSecuredKey($sessionKey);
+
+        if (strlen($securedKey) > 1000) {
+            throw new QueryException(SPException::SP_ERROR, __u('Error interno'));
+        }
+
+        $query = /** @lang SQL */
+            'INSERT INTO customFieldsData SET itemId = ?, moduleId = ?, definitionId = ?, `data` = ?, `key` = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($itemData->getId());
+        $Data->addParam($itemData->getModuleId());
+        $Data->addParam($itemData->getDefinitionId());
+        $Data->addParam(Crypt::encrypt($itemData->getData(), $securedKey, $sessionKey));
+        $Data->addParam($securedKey);
+
+        return DbWrapper::getQuery($Data, $this->db);
     }
 
     /**
@@ -243,8 +223,8 @@ class CustomFieldService extends Service implements ServiceItemInterface
     {
         $query = /** @lang SQL */
             'DELETE FROM customFieldsData
-            WHERE customfielddata_itemId = ?
-            AND customfielddata_moduleId = ?';
+            WHERE itemId = ?
+            AND moduleId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -258,11 +238,11 @@ class CustomFieldService extends Service implements ServiceItemInterface
      * Returns the item for given id
      *
      * @param int $id
-     * @return mixed
+     * @return void
      */
     public function getById($id)
     {
-        // TODO: Implement getById() method.
+        throw new \RuntimeException('Unimplemented');
     }
 
     /**
@@ -272,40 +252,40 @@ class CustomFieldService extends Service implements ServiceItemInterface
      */
     public function getAll()
     {
-        // TODO: Implement getAll() method.
+        throw new \RuntimeException('Unimplemented');
     }
 
     /**
      * Returns all the items for given ids
      *
      * @param array $ids
-     * @return array
+     * @return void
      */
     public function getByIdBatch(array $ids)
     {
-        // TODO: Implement getByIdBatch() method.
+        throw new \RuntimeException('Unimplemented');
     }
 
     /**
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return $this
+     * @return void
      */
     public function deleteByIdBatch(array $ids)
     {
-        // TODO: Implement deleteByIdBatch() method.
+        throw new \RuntimeException('Unimplemented');
     }
 
     /**
      * Checks whether the item is in use or not
      *
      * @param $id int
-     * @return bool
+     * @return void
      */
     public function checkInUse($id)
     {
-        // TODO: Implement checkInUse() method.
+        throw new \RuntimeException('Unimplemented');
     }
 
     /**
@@ -316,7 +296,7 @@ class CustomFieldService extends Service implements ServiceItemInterface
      */
     public function search(ItemSearchData $SearchData)
     {
-        // TODO: Implement search() method.
+        throw new \RuntimeException('Unimplemented');
     }
 
     /**
@@ -325,100 +305,55 @@ class CustomFieldService extends Service implements ServiceItemInterface
      * @param $moduleId
      * @param $itemId
      * @return array
-     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     public function getForModuleById($moduleId, $itemId)
     {
         $query = /** @lang SQL */
-            'SELECT customfielddata_id,
-            customfielddef_id,
-            customfielddata_data,
-            customfielddata_key,
-            customfielddef_field
-            FROM customFieldsDef a
-            LEFT JOIN customFieldsData b ON b.customfielddata_defId = a.customfielddef_id
-            WHERE customfielddef_module = ?
-            AND (customfielddata_itemId = ? OR customfielddata_defId IS NULL) 
-            ORDER BY customfielddef_id';
+            'SELECT cf_definition.name AS definitionName,
+            cf_definition.id AS definitionId,
+            cf_definition.moduleId,
+            cf_definition.required,
+            cf_definition.showInList,
+            cf_definition.help,
+            cf_data.data,
+            cf_data.key,
+            cf_type.id AS typeId,
+            cf_type.name AS typeName,
+            cf_type.text AS typeText
+            FROM customFieldsDef cf_definition
+            LEFT JOIN customFieldsData cf_data ON cf_data.definitionId = cf_definition.id
+            INNER JOIN customFieldsType cf_type ON cf_type.id = cf_definition.typeId
+            WHERE cf_definition.moduleId = ?
+            AND (cf_data.itemId = ? OR cf_data.definitionId IS NULL) 
+            ORDER BY cf_definition.id';
 
         $Data = new QueryData();
-        $Data->setMapClassName(CustomFieldData::class);
         $Data->setQuery($query);
         $Data->addParam($moduleId);
         $Data->addParam($itemId);
 
-        /** @var CustomFieldData[] $queryRes */
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
-
-        $customFields = [];
-
-        foreach ($queryRes as $CustomFieldData) {
-            /** @var CustomFieldDefData $fieldDef */
-            $fieldDef = Util::unserialize(CustomFieldDefData::class, $CustomFieldData->getCustomfielddefField());
-
-            $CustomFieldData->setDefinition($fieldDef);
-            $CustomFieldData->setDefinitionId($CustomFieldData->getCustomfielddefId());
-            $CustomFieldData->setTypeName(CustomFieldTypes::getFieldsTypes($fieldDef->getType()));
-            $CustomFieldData->setValue($this->unencryptData($CustomFieldData));
-
-            $customFields[] = $CustomFieldData;
-        }
-
-        return $customFields;
-    }
-
-    /**
-     * Desencriptar y formatear los datos del campo
-     *
-     * @param CustomFieldData $CustomFieldData
-     * @return string
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     */
-    protected function unencryptData(CustomFieldData $CustomFieldData)
-    {
-        if ($CustomFieldData->getCustomfielddataData() !== '') {
-            $securedKey = Crypt::unlockSecuredKey($CustomFieldData->getCustomfielddataKey(), CryptSession::getSessionKey());
-
-            return $this->formatValue(Crypt::decrypt($CustomFieldData->getCustomfielddataData(), $securedKey));
-        }
-
-        return '';
-    }
-
-    /**
-     * Formatear el valor del campo
-     *
-     * @param $value string El valor del campo
-     * @return string
-     */
-    protected function formatValue($value)
-    {
-        if (preg_match('#https?://#', $value)) {
-            return '<a href="' . $value . '" target="_blank">' . $value . '</a>';
-        }
-
-        return $value;
+        return DbWrapper::getResultsArray($Data, $this->db);
     }
 
     /**
      * Checks whether the item is duplicated on updating
      *
      * @param mixed $itemData
-     * @return bool
+     * @return void
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        // TODO: Implement checkDuplicatedOnUpdate() method.
+        throw new \RuntimeException('Unimplemented');
     }
 
     /**
      * Checks whether the item is duplicated on adding
      *
      * @param mixed $itemData
-     * @return bool
+     * @return void
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        // TODO: Implement checkDuplicatedOnAdd() method.
+        throw new \RuntimeException('Unimplemented');
     }
 }

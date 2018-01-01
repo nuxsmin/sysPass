@@ -50,7 +50,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function add()
     {
         $query = /** @lang SQL */
-            'INSERT INTO plugins SET plugin_name = ?, plugin_data = ?, plugin_enabled = ?, plugin_available = ?';
+            'INSERT INTO plugins SET name = ?, data = ?, enabled = ?, available = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -77,7 +77,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function delete($name)
     {
         $query = /** @lang SQL */
-            'DELETE FROM plugins WHERE plugin_name = ? LIMIT 1';
+            'DELETE FROM plugins WHERE name = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -103,11 +103,11 @@ class Plugin extends PluginBase implements ItemInterface
     {
         $query = /** @lang SQL */
             'UPDATE plugins
-              SET plugin_name = ?,
-              plugin_data = ?,
-              plugin_enabled = ?,
-              plugin_available = ?
-              WHERE plugin_name = ? LIMIT 1';
+              SET name = ?,
+              data = ?,
+              enabled = ?,
+              available = ?
+              WHERE name = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -132,13 +132,13 @@ class Plugin extends PluginBase implements ItemInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id,
-            plugin_name,
-            plugin_data,
-            plugin_enabled,
-            plugin_available 
+            'SELECT id,
+            name,
+            data,
+            enabled,
+            available 
             FROM plugins 
-            WHERE plugin_id = ? LIMIT 1';
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -156,12 +156,12 @@ class Plugin extends PluginBase implements ItemInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id,
-            plugin_name,
-            plugin_enabled,
-            plugin_available 
+            'SELECT id,
+            name,
+            enabled,
+            available 
             FROM plugins 
-            ORDER BY plugin_name';
+            ORDER BY name';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -204,13 +204,13 @@ class Plugin extends PluginBase implements ItemInterface
     public function getByName($name)
     {
         $query = /** @lang SQL */
-            'SELECT plugin_id,
-            plugin_name,
-            plugin_data,
-            plugin_enabled,
-            plugin_available 
+            'SELECT id,
+            name,
+            data,
+            enabled,
+            available 
             FROM plugins 
-            WHERE plugin_name = ? LIMIT 1';
+            WHERE name = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -230,8 +230,8 @@ class Plugin extends PluginBase implements ItemInterface
     {
         $query = /** @lang SQL */
             'UPDATE plugins
-              SET plugin_enabled = ?
-              WHERE plugin_id = ? LIMIT 1';
+              SET enabled = ?
+              WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -254,8 +254,8 @@ class Plugin extends PluginBase implements ItemInterface
     {
         $query = /** @lang SQL */
             'UPDATE plugins
-              SET plugin_enabled = ?
-              WHERE plugin_name = ? LIMIT 1';
+              SET enabled = ?
+              WHERE name = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -278,8 +278,8 @@ class Plugin extends PluginBase implements ItemInterface
     {
         $query = /** @lang SQL */
             'UPDATE plugins
-              SET plugin_available = ?, plugin_enabled = ?
-              WHERE plugin_id = ? LIMIT 1';
+              SET available = ?, enabled = ?
+              WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -303,8 +303,8 @@ class Plugin extends PluginBase implements ItemInterface
     {
         $query = /** @lang SQL */
             'UPDATE plugins
-              SET plugin_available = ?, plugin_enabled = ?
-              WHERE plugin_name = ? LIMIT 1';
+              SET available = ?, enabled = ?
+              WHERE name = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -329,8 +329,8 @@ class Plugin extends PluginBase implements ItemInterface
     {
         $query = /** @lang SQL */
             'UPDATE plugins
-              SET plugin_data = NULL 
-              WHERE plugin_id = ? LIMIT 1';
+              SET data = NULL 
+              WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -355,12 +355,12 @@ class Plugin extends PluginBase implements ItemInterface
         }
 
         $query = /** @lang SQL */
-            'SELECT plugin_id,
-            plugin_name,
-            plugin_enabled,
-            plugin_available 
+            'SELECT id,
+            name,
+            enabled,
+            available 
             FROM plugins 
-            WHERE plugin_id IN (' . $this->getParamsFromArray($ids) . ')';
+            WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -378,7 +378,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function getEnabled()
     {
         $query = /** @lang SQL */
-            'SELECT plugin_name FROM plugins WHERE plugin_enabled = 1';
+            'SELECT name FROM plugins WHERE enabled = 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);

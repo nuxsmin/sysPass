@@ -32,7 +32,7 @@ use SP\Core\Messages\LogMessage;
 use SP\Core\OldCrypt;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
-use SP\DataModel\CustomerData;
+use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
 use SP\Log\Log;
 use SP\Mgmt\Categories\Category;
@@ -196,10 +196,10 @@ abstract class ImportBase implements ImportInterface
     /**
      * Añadir un cliente y devolver el Id
      *
-     * @param CustomerData $CustomerData
+     * @param ClientData $CustomerData
      * @return Customer|null
      */
-    protected function addCustomer(CustomerData $CustomerData)
+    protected function addCustomer(ClientData $CustomerData)
     {
         try {
             $Customer = Customer::getItem($CustomerData)->add();

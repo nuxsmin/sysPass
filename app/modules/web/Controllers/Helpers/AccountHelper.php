@@ -41,8 +41,10 @@ use SP\Mgmt\Groups\GroupAccountsUtil;
 use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
+use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
+use SP\Services\CustomField\CustomFieldService;
 use SP\Services\PublicLink\PublicLinkService;
 use SP\Util\ErrorUtil;
 use SP\Util\Json;
@@ -54,6 +56,8 @@ use SP\Util\Json;
  */
 class AccountHelper extends HelperBase
 {
+    use ItemTrait;
+
     /** @var  Acl */
     protected $acl;
     /**
@@ -148,8 +152,6 @@ class AccountHelper extends HelperBase
     {
         $userProfileData = $this->session->getUserProfile();
 
-        $this->getCustomFieldsForItem();
-
         if ($this->isGotData()) {
             $accountHistoryService = new AccountHistoryService();
 
@@ -181,6 +183,7 @@ class AccountHelper extends HelperBase
         }
 
 
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $this->accountId));
         $this->view->assign('actionId', Acl::getActionRoute($this->actionId));
         $this->view->assign('categories', Category::getItem()->getItemsForSelect());
         $this->view->assign('customers', Customer::getItem()->getItemsForSelectByUser());
@@ -206,14 +209,6 @@ class AccountHelper extends HelperBase
         $this->view->assign('showViewCustomPass', $this->accountAcl->isShowViewPass());
         $this->view->assign('AccountAcl', $this->accountAcl);
         $this->view->assign('actions', $this->getActions());
-    }
-
-    /**
-     * Obtener la lista de campos personalizados y sus valores
-     */
-    private function getCustomFieldsForItem()
-    {
-        $this->view->assign('customFields', CustomField::getItem(new CustomFieldData(ActionsInterface::ACCOUNT))->getById($this->accountId));
     }
 
     /**

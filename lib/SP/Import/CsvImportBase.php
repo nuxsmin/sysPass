@@ -27,7 +27,7 @@ namespace SP\Import;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
-use SP\DataModel\CustomerData;
+use SP\DataModel\ClientData;
 
 defined('APP_ROOT') || die();
 
@@ -90,7 +90,7 @@ abstract class CsvImportBase extends ImportBase
             list($accountName, $customerName, $categoryName, $url, $login, $password, $notes) = $fields;
 
             // Obtener los ids de cliente y categoría
-            $CustomerData = new CustomerData(null, $customerName);
+            $CustomerData = new ClientData(null, $customerName);
             $this->addCustomer($CustomerData);
             $CategoryData = new CategoryData(null, $categoryName);
             $this->addCategory($CategoryData);

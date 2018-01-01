@@ -24,126 +24,124 @@
 
 namespace SP\DataModel;
 
-use SP\Mgmt\CustomFields\CustomFieldTypes;
-
 /**
  * Class CustomFieldDefData
  *
  * @package SP\DataModel
  */
-class CustomFieldDefData extends CustomFieldBaseData implements DataModelInterface
+class CustomFieldDefData
 {
     /**
      * @var int
      */
-    public $customfielddef_module = 0;
+    public $id;
     /**
      * @var string
      */
-    public $typeName = '';
+    public $name;
+    /**
+     * @var int
+     */
+    public $moduleId;
     /**
      * @var string
      */
-    public $moduleName = '';
+    public $field;
     /**
-     * @var bool
+     * @var int
      */
-    public $required = false;
+    public $required;
     /**
      * @var string
      */
-    public $help = '';
+    public $help;
     /**
-     * @var bool
+     * @var int
      */
-    public $showInItemsList = false;
+    public $showInList;
+    /**
+     * @var int
+     */
+    public $typeId;
 
     /**
      * @return int
      */
-    public function getCustomfielddefModule()
+    public function getId()
     {
-        return $this->customfielddef_module;
+        return (int)$this->id;
     }
 
     /**
-     * @param int $customfielddef_module
+     * @param int $id
      */
-    public function setCustomfielddefModule($customfielddef_module)
+    public function setId($id)
     {
-        $this->customfielddef_module = $customfielddef_module;
+        $this->id = (int)$id;
     }
 
     /**
      * @return string
      */
-    public function getTypeName()
+    public function getName()
     {
-        return $this->typeName;
+        return $this->name;
     }
 
     /**
-     * @param string $typeName
+     * @param string $name
      */
-    public function setTypeName($typeName)
+    public function setName($name)
     {
-        $this->typeName = $typeName;
+        $this->name = $name;
+    }
+
+    /**
+     * @return int
+     */
+    public function getModuleId()
+    {
+        return (int)$this->moduleId;
+    }
+
+    /**
+     * @param int $moduleId
+     */
+    public function setModuleId($moduleId)
+    {
+        $this->moduleId = (int)$moduleId;
     }
 
     /**
      * @return string
      */
-    public function getModuleName()
+    public function getField()
     {
-        return $this->moduleName;
+        return $this->field;
     }
 
     /**
-     * @param string $moduleName
+     * @param string $field
      */
-    public function setModuleName($moduleName)
+    public function setField($field)
     {
-        $this->moduleName = $moduleName;
+        $this->field = $field;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getFormId()
+    public function getRequired()
     {
-        return 'cf_' . strtolower(preg_replace('/\W*/', '', $this->name));
+        return (int)$this->required;
     }
 
     /**
-     * @return boolean
-     */
-    public function isShowInItemsList()
-    {
-        return $this->showInItemsList;
-    }
-
-    /**
-     * @param boolean $showInItemsList
-     */
-    public function setShowInItemsList($showInItemsList)
-    {
-        $this->showInItemsList = $showInItemsList;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isRequired()
-    {
-        return $this->required;
-    }
-
-    /**
-     * @param boolean $required
+     * @param int $required
      */
     public function setRequired($required)
     {
-        $this->required = $required;
+        $this->required = (int)$required;
     }
 
     /**
@@ -163,27 +161,34 @@ class CustomFieldDefData extends CustomFieldBaseData implements DataModelInterfa
     }
 
     /**
-     * unserialize() checks for the presence of a function with the magic name __wakeup.
-     * If present, this function can reconstruct any resources that the object may have.
-     * The intended use of __wakeup is to reestablish any database connections that may have been lost during
-     * serialization and perform other reinitialization tasks.
-     *
-     * @return void
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.sleep
+     * @return int
      */
-    public function __wakeup()
+    public function getShowInList()
     {
-        parent::__wakeup();
+        return (int)$this->showInList;
+    }
 
-        $this->moduleName = CustomFieldTypes::getFieldsModules($this->getModule());
-        $this->typeName = CustomFieldTypes::getFieldsTypes($this->getType(), true);
+    /**
+     * @param int $showInList
+     */
+    public function setShowInList($showInList)
+    {
+        $this->showInList = (int)$showInList;
     }
 
     /**
      * @return int
      */
-    public function getId()
+    public function getTypeId()
     {
-        return $this->customfielddef_id;
+        return (int)$this->typeId;
+    }
+
+    /**
+     * @param int $typeId
+     */
+    public function setTypeId($typeId)
+    {
+        $this->typeId = (int)$typeId;
     }
 }

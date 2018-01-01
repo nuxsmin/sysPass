@@ -39,7 +39,7 @@ class CustomFieldDefForm extends FormBase implements FormInterface
     /**
      * @var CustomFieldDefData
      */
-    protected $CustomFieldDefData;
+    protected $customFieldDefData;
 
     /**
      * Validar el formulario
@@ -68,14 +68,13 @@ class CustomFieldDefForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->CustomFieldDefData = new CustomFieldDefData();
-        $this->CustomFieldDefData->setCustomfielddefId($this->itemId);
-        $this->CustomFieldDefData->setId($this->itemId);
-        $this->CustomFieldDefData->setName(Request::analyze('name'));
-        $this->CustomFieldDefData->setType(Request::analyze('type', 0));
-        $this->CustomFieldDefData->setModule(Request::analyze('module', 0));
-        $this->CustomFieldDefData->setHelp(Request::analyze('help'));
-        $this->CustomFieldDefData->setRequired(Request::analyze('required', false, false, true));
+        $this->customFieldDefData = new CustomFieldDefData();
+        $this->customFieldDefData->setId($this->itemId);
+        $this->customFieldDefData->setName(Request::analyze('name'));
+        $this->customFieldDefData->setTypeId(Request::analyze('type', 0));
+        $this->customFieldDefData->setModuleId(Request::analyze('module', 0));
+        $this->customFieldDefData->setHelp(Request::analyze('help'));
+        $this->customFieldDefData->setRequired(Request::analyze('required', false, false, true));
     }
 
     /**
@@ -83,12 +82,16 @@ class CustomFieldDefForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->CustomFieldDefData->getName()) {
-            throw new ValidationException(__('Nombre del campo no indicado', false));
-        } elseif ($this->CustomFieldDefData->getType() === 0) {
-            throw new ValidationException(__('Tipo del campo no indicado', false));
-        } elseif ($this->CustomFieldDefData->getModule() === 0) {
-            throw new ValidationException(__('Módulo del campo no indicado', false));
+        if (!$this->customFieldDefData->getName()) {
+            throw new ValidationException(__u('Nombre del campo no indicado'));
+        }
+
+        if ($this->customFieldDefData->getTypeId() === 0) {
+            throw new ValidationException(__u('Tipo del campo no indicado'));
+        }
+
+        if ($this->customFieldDefData->getModuleId() === 0) {
+            throw new ValidationException(__u('Módulo del campo no indicado'));
         }
     }
 
@@ -97,6 +100,6 @@ class CustomFieldDefForm extends FormBase implements FormInterface
      */
     public function getItemData()
     {
-        return $this->CustomFieldDefData;
+        return $this->customFieldDefData;
     }
 }

@@ -78,7 +78,7 @@ REFERENCES `usrData` (`user_id`)
 
 ALTER TABLE `accFiles`
   ADD CONSTRAINT `fk_accFiles_accounts_id`
-FOREIGN KEY (`accfile_accountId`)
+FOREIGN KEY (accountId)
 REFERENCES `accounts` (`account_id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
@@ -339,7 +339,7 @@ CREATE OR REPLACE ALGORITHM = UNDEFINED DEFINER = CURRENT_USER SQL SECURITY DEFI
      FROM
        `accFiles`
      WHERE
-       (`accFiles`.`accfile_accountId` = `accounts`.`account_id`)) AS `num_files`
+       (`accFiles`.accountId = `accounts`.`account_id`)) AS `num_files`
   FROM
     (((`accounts`
       LEFT JOIN `categories` ON ((`accounts`.`account_categoryId` = `categories`.`category_id`)))

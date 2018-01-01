@@ -39,7 +39,7 @@ class UserProfileForm extends FormBase implements FormInterface
     /**
      * @var ProfileData
      */
-    protected $ProfileData;
+    protected $profileData;
 
     /**
      * Validar el formulario
@@ -68,38 +68,38 @@ class UserProfileForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->ProfileData = new ProfileData();
-        $this->ProfileData->setUserprofileName(Request::analyze('profile_name'));
-        $this->ProfileData->setUserprofileId($this->itemId);
-        $this->ProfileData->setAccAdd(Request::analyze('profile_accadd', 0, false, 1));
-        $this->ProfileData->setAccView(Request::analyze('profile_accview', 0, false, 1));
-        $this->ProfileData->setAccViewPass(Request::analyze('profile_accviewpass', 0, false, 1));
-        $this->ProfileData->setAccViewHistory(Request::analyze('profile_accviewhistory', 0, false, 1));
-        $this->ProfileData->setAccEdit(Request::analyze('profile_accedit', 0, false, 1));
-        $this->ProfileData->setAccEditPass(Request::analyze('profile_acceditpass', 0, false, 1));
-        $this->ProfileData->setAccDelete(Request::analyze('profile_accdel', 0, false, 1));
-        $this->ProfileData->setAccFiles(Request::analyze('profile_accfiles', 0, false, 1));
-        $this->ProfileData->setAccPublicLinks(Request::analyze('profile_accpublinks', 0, false, 1));
-        $this->ProfileData->setAccPrivate(Request::analyze('profile_accprivate', 0, false, 1));
-        $this->ProfileData->setAccPrivateGroup(Request::analyze('profile_accprivategroup', 0, false, 1));
-        $this->ProfileData->setAccPermission(Request::analyze('profile_accpermissions', 0, false, 1));
-        $this->ProfileData->setAccGlobalSearch(Request::analyze('profile_accglobalsearch', 0, false, 1));
-        $this->ProfileData->setConfigGeneral(Request::analyze('profile_config', 0, false, 1));
-        $this->ProfileData->setConfigEncryption(Request::analyze('profile_configmpw', 0, false, 1));
-        $this->ProfileData->setConfigBackup(Request::analyze('profile_configback', 0, false, 1));
-        $this->ProfileData->setConfigImport(Request::analyze('profile_configimport', 0, false, 1));
-        $this->ProfileData->setMgmCategories(Request::analyze('profile_categories', 0, false, 1));
-        $this->ProfileData->setMgmCustomers(Request::analyze('profile_customers', 0, false, 1));
-        $this->ProfileData->setMgmCustomFields(Request::analyze('profile_customfields', 0, false, 1));
-        $this->ProfileData->setMgmUsers(Request::analyze('profile_users', 0, false, 1));
-        $this->ProfileData->setMgmGroups(Request::analyze('profile_groups', 0, false, 1));
-        $this->ProfileData->setMgmProfiles(Request::analyze('profile_profiles', 0, false, 1));
-        $this->ProfileData->setMgmApiTokens(Request::analyze('profile_apitokens', 0, false, 1));
-        $this->ProfileData->setMgmPublicLinks(Request::analyze('profile_publinks', 0, false, 1));
-        $this->ProfileData->setMgmAccounts(Request::analyze('profile_accounts', 0, false, 1));
-        $this->ProfileData->setMgmFiles(Request::analyze('profile_files', 0, false, 1));
-        $this->ProfileData->setMgmTags(Request::analyze('profile_tags', 0, false, 1));
-        $this->ProfileData->setEvl(Request::analyze('profile_eventlog', 0, false, 1));
+        $this->profileData = new ProfileData();
+        $this->profileData->setUserprofileName(Request::analyze('profile_name'));
+        $this->profileData->setUserprofileId($this->itemId);
+        $this->profileData->setAccAdd(Request::analyze('profile_accadd', 0, false, 1));
+        $this->profileData->setAccView(Request::analyze('profile_accview', 0, false, 1));
+        $this->profileData->setAccViewPass(Request::analyze('profile_accviewpass', 0, false, 1));
+        $this->profileData->setAccViewHistory(Request::analyze('profile_accviewhistory', 0, false, 1));
+        $this->profileData->setAccEdit(Request::analyze('profile_accedit', 0, false, 1));
+        $this->profileData->setAccEditPass(Request::analyze('profile_acceditpass', 0, false, 1));
+        $this->profileData->setAccDelete(Request::analyze('profile_accdel', 0, false, 1));
+        $this->profileData->setAccFiles(Request::analyze('profile_accfiles', 0, false, 1));
+        $this->profileData->setAccPublicLinks(Request::analyze('profile_accpublinks', 0, false, 1));
+        $this->profileData->setAccPrivate(Request::analyze('profile_accprivate', 0, false, 1));
+        $this->profileData->setAccPrivateGroup(Request::analyze('profile_accprivategroup', 0, false, 1));
+        $this->profileData->setAccPermission(Request::analyze('profile_accpermissions', 0, false, 1));
+        $this->profileData->setAccGlobalSearch(Request::analyze('profile_accglobalsearch', 0, false, 1));
+        $this->profileData->setConfigGeneral(Request::analyze('profile_config', 0, false, 1));
+        $this->profileData->setConfigEncryption(Request::analyze('profile_configmpw', 0, false, 1));
+        $this->profileData->setConfigBackup(Request::analyze('profile_configback', 0, false, 1));
+        $this->profileData->setConfigImport(Request::analyze('profile_configimport', 0, false, 1));
+        $this->profileData->setMgmCategories(Request::analyze('profile_categories', 0, false, 1));
+        $this->profileData->setMgmCustomers(Request::analyze('profile_customers', 0, false, 1));
+        $this->profileData->setMgmCustomFields(Request::analyze('profile_customfields', 0, false, 1));
+        $this->profileData->setMgmUsers(Request::analyze('profile_users', 0, false, 1));
+        $this->profileData->setMgmGroups(Request::analyze('profile_groups', 0, false, 1));
+        $this->profileData->setMgmProfiles(Request::analyze('profile_profiles', 0, false, 1));
+        $this->profileData->setMgmApiTokens(Request::analyze('profile_apitokens', 0, false, 1));
+        $this->profileData->setMgmPublicLinks(Request::analyze('profile_publinks', 0, false, 1));
+        $this->profileData->setMgmAccounts(Request::analyze('profile_accounts', 0, false, 1));
+        $this->profileData->setMgmFiles(Request::analyze('profile_files', 0, false, 1));
+        $this->profileData->setMgmTags(Request::analyze('profile_tags', 0, false, 1));
+        $this->profileData->setEvl(Request::analyze('profile_eventlog', 0, false, 1));
     }
 
     /**
@@ -107,7 +107,7 @@ class UserProfileForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->ProfileData->getUserprofileName()) {
+        if (!$this->profileData->getUserprofileName()) {
             throw new ValidationException(__u('Es necesario un nombre de perfil'));
         }
     }
@@ -117,6 +117,6 @@ class UserProfileForm extends FormBase implements FormInterface
      */
     public function getItemData()
     {
-        return $this->ProfileData;
+        return $this->profileData;
     }
 }

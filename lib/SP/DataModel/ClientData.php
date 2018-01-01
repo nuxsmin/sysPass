@@ -27,11 +27,11 @@ namespace SP\DataModel;
 defined('APP_ROOT') || die();
 
 /**
- * Class CustomerData
+ * Class ClientData
  *
  * @package SP\DataModel
  */
-class CustomerData extends DataModelBase implements DataModelInterface
+class ClientData extends DataModelBase implements DataModelInterface
 {
     /**
      * @var int

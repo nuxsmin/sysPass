@@ -32,7 +32,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\OldCrypt;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
-use SP\DataModel\CustomerData;
+use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
 
 defined('APP_ROOT') || die();
@@ -206,7 +206,7 @@ class SyspassImport extends ImportBase
             return;
         }
 
-        $CustomerData = new CustomerData();
+        $CustomerData = new ClientData();
 
         foreach ($Customer->childNodes as $customerNode) {
             if (isset($customerNode->tagName)) {

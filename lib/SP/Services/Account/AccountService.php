@@ -271,18 +271,6 @@ class AccountService extends Service implements ServiceItemInterface
     }
 
     /**
-     * Actualiza los datos de una cuenta en la BBDD.
-     *
-     * @param AccountExtData $accountData
-     * @return AccountExtData
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public function edit(AccountExtData $accountData)
-    {
-
-    }
-
-    /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
      * @param AccountExtData $accountData
@@ -532,66 +520,60 @@ class AccountService extends Service implements ServiceItemInterface
     /**
      * Returns all the items
      *
-     * @return array
      */
     public function getAll()
     {
-        // TODO: Implement getAll() method.
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
      * Returns all the items for given ids
      *
      * @param array $ids
-     * @return array
      */
     public function getByIdBatch(array $ids)
     {
-        // TODO: Implement getByIdBatch() method.
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return $this
      */
     public function deleteByIdBatch(array $ids)
     {
-        // TODO: Implement deleteByIdBatch() method.
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
      * Checks whether the item is in use or not
      *
      * @param $id int
-     * @return bool
      */
     public function checkInUse($id)
     {
-        // TODO: Implement checkInUse() method.
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
      * Checks whether the item is duplicated on updating
      *
      * @param mixed $itemData
-     * @return bool
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        // TODO: Implement checkDuplicatedOnUpdate() method.
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
      * Checks whether the item is duplicated on adding
      *
      * @param mixed $itemData
-     * @return bool
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        // TODO: Implement checkDuplicatedOnAdd() method.
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -602,7 +584,30 @@ class AccountService extends Service implements ServiceItemInterface
      */
     public function search(ItemSearchData $SearchData)
     {
-        // TODO: Implement search() method.
+        $Data = new QueryData();
+        $Data->setSelect('account_id, account_name, customer_name');
+        $Data->setFrom('accounts LEFT JOIN customers ON account_customerId = customer_id');
+        $Data->setOrder('account_name');
+
+        if ($SearchData->getSeachString() !== '') {
+            $Data->setWhere('account_name LIKE ? OR customer_name LIKE ?');
+
+            $search = '%' . $SearchData->getSeachString() . '%';
+            $Data->addParam($search);
+            $Data->addParam($search);
+        }
+
+        $Data->setLimit('?,?');
+        $Data->addParam($SearchData->getLimitStart());
+        $Data->addParam($SearchData->getLimitCount());
+
+        DbWrapper::setFullRowCount();
+
+        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+
+        $queryRes['count'] = $Data->getQueryNumRows();
+
+        return $queryRes;
     }
 
     /**

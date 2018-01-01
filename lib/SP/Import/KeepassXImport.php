@@ -27,7 +27,7 @@ namespace SP\Import;
 use SimpleXMLElement;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
-use SP\DataModel\CustomerData;
+use SP\DataModel\ClientData;
 
 defined('APP_ROOT') || die();
 
@@ -52,7 +52,7 @@ class KeepassXImport extends ImportBase
      */
     public function doImport()
     {
-        $customerData = new CustomerData(null, 'KeePassX');
+        $customerData = new ClientData(null, 'KeePassX');
         $this->addCustomer($customerData);
 
         $this->customerId = $customerData->getCustomerId();

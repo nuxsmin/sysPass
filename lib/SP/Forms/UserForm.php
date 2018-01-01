@@ -42,7 +42,7 @@ class UserForm extends FormBase implements FormInterface
     /**
      * @var UserData
      */
-    protected $UserData;
+    protected $userData;
     /**
      * @var int
      */
@@ -86,20 +86,20 @@ class UserForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->UserData = new UserData();
-        $this->UserData->setUserId($this->itemId);
-        $this->UserData->setUserName(Request::analyze('name'));
-        $this->UserData->setUserLogin(Request::analyze('login'));
-        $this->UserData->setUserSsoLogin(Request::analyze('login_sso'));
-        $this->UserData->setUserEmail(Request::analyze('email'));
-        $this->UserData->setUserNotes(Request::analyze('notes'));
-        $this->UserData->setUserGroupId(Request::analyze('groupid', 0));
-        $this->UserData->setUserProfileId(Request::analyze('profileid', 0));
-        $this->UserData->setUserIsAdminApp(Request::analyze('adminapp', 0, false, 1));
-        $this->UserData->setUserIsAdminAcc(Request::analyze('adminacc', 0, false, 1));
-        $this->UserData->setUserIsDisabled(Request::analyze('disabled', 0, false, 1));
-        $this->UserData->setUserIsChangePass(Request::analyze('changepass', 0, false, 1));
-        $this->UserData->setUserPass(Request::analyzeEncrypted('pass'));
+        $this->userData = new UserData();
+        $this->userData->setUserId($this->itemId);
+        $this->userData->setUserName(Request::analyze('name'));
+        $this->userData->setUserLogin(Request::analyze('login'));
+        $this->userData->setUserSsoLogin(Request::analyze('login_sso'));
+        $this->userData->setUserEmail(Request::analyze('email'));
+        $this->userData->setUserNotes(Request::analyze('notes'));
+        $this->userData->setUserGroupId(Request::analyze('groupid', 0));
+        $this->userData->setUserProfileId(Request::analyze('profileid', 0));
+        $this->userData->setUserIsAdminApp(Request::analyze('adminapp', 0, false, 1));
+        $this->userData->setUserIsAdminAcc(Request::analyze('adminacc', 0, false, 1));
+        $this->userData->setUserIsDisabled(Request::analyze('disabled', 0, false, 1));
+        $this->userData->setUserIsChangePass(Request::analyze('changepass', 0, false, 1));
+        $this->userData->setUserPass(Request::analyzeEncrypted('pass'));
     }
 
     /**
@@ -107,27 +107,29 @@ class UserForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->isLdap && !$this->UserData->getUserName()) {
+        if (!$this->isLdap && !$this->userData->getUserName()) {
             throw new ValidationException(__u('Es necesario un nombre de usuario'));
         }
 
-        if (!$this->isLdap && !$this->UserData->getUserLogin()) {
+        if (!$this->isLdap && !$this->userData->getUserLogin()) {
             throw new ValidationException(__u('Es necesario un login'));
         }
 
-        if (!$this->UserData->getUserProfileId()) {
+        if (!$this->userData->getUserProfileId()) {
             throw new ValidationException(__u('Es necesario un perfil'));
         }
 
-        if (!$this->UserData->getUserGroupId()) {
+        if (!$this->userData->getUserGroupId()) {
             throw new ValidationException(__u('Es necesario un grupo'));
         }
 
-        if (!$this->isLdap && !$this->UserData->getUserEmail()) {
+        if (!$this->isLdap && !$this->userData->getUserEmail()) {
             throw new ValidationException(__u('Es necesario un email'));
         }
 
-        if ($this->ConfigData->isDemoEnabled() && !SessionFactory::getUserData()->isUserIsAdminApp() && $this->UserData->getUserLogin() === 'demo') {
+        if ($this->ConfigData->isDemoEnabled()
+            && $this->userData->getUserLogin() === 'demo'
+            && !SessionFactory::getUserData()->isUserIsAdminApp()) {
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
     }
@@ -143,11 +145,11 @@ class UserForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
 
-        if (!$userPassR || !$this->UserData->getUserPass()) {
+        if (!$userPassR || !$this->userData->getUserPass()) {
             throw new ValidationException(__u('La clave no puede estar en blanco'));
         }
 
-        if ($this->UserData->getUserPass() !== $userPassR) {
+        if ($this->userData->getUserPass() !== $userPassR) {
             throw new ValidationException(__u('Las claves no coinciden'));
         }
     }
@@ -173,7 +175,7 @@ class UserForm extends FormBase implements FormInterface
      */
     public function getItemData()
     {
-        return $this->UserData;
+        return $this->userData;
     }
 
     /**

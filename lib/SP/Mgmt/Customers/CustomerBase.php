@@ -27,7 +27,7 @@ namespace SP\Mgmt\Customers;
 defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\InvalidClassException;
-use SP\DataModel\CustomerData;
+use SP\DataModel\ClientData;
 use SP\Mgmt\ItemBaseInterface;
 use SP\Mgmt\ItemBaseTrait;
 
@@ -48,6 +48,6 @@ abstract class CustomerBase implements ItemBaseInterface
      */
     protected function init()
     {
-        $this->setDataModel(CustomerData::class);
+        $this->setDataModel(ClientData::class);
     }
 }

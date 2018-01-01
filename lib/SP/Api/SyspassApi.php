@@ -36,7 +36,7 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CategoryData;
-use SP\DataModel\CustomerData;
+use SP\DataModel\ClientData;
 use SP\DataModel\ItemSearchData;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Categories\CategorySearch;
@@ -358,7 +358,7 @@ class SyspassApi extends ApiBase
     {
         $this->checkActionAccess(ActionsInterface::CLIENT);
 
-        $CustomerData = new CustomerData();
+        $CustomerData = new ClientData();
         $CustomerData->setCustomerName($this->getParam('name', true));
         $CustomerData->setCustomerDescription($this->getParam('description'));
 

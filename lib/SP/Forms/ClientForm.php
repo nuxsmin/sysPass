@@ -24,22 +24,22 @@
 
 namespace SP\Forms;
 
-use SP\Core\ActionsInterface;
+use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\CustomerData;
+use SP\DataModel\ClientData;
 use SP\Http\Request;
 
 /**
- * Class CustomerForm
+ * Class ClientForm
  *
  * @package SP\Forms
  */
-class CustomerForm extends FormBase implements FormInterface
+class ClientForm extends FormBase implements FormInterface
 {
     /**
-     * @var CustomerData
+     * @var ClientData
      */
-    protected $CustomerData;
+    protected $clientData;
 
     /**
      * Validar el formulario
@@ -68,11 +68,11 @@ class CustomerForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->CustomerData = new CustomerData();
-        $this->CustomerData->setCustomerId($this->itemId);
-        $this->CustomerData->setCustomerName(Request::analyze('name'));
-        $this->CustomerData->setCustomerDescription(Request::analyze('description'));
-        $this->CustomerData->setCustomerIsGlobal(Request::analyze('isglobal', 0, false, 1));
+        $this->clientData = new ClientData();
+        $this->clientData->setCustomerId($this->itemId);
+        $this->clientData->setCustomerName(Request::analyze('name'));
+        $this->clientData->setCustomerDescription(Request::analyze('description'));
+        $this->clientData->setCustomerIsGlobal(Request::analyze('isglobal', 0, false, 1));
     }
 
     /**
@@ -80,16 +80,16 @@ class CustomerForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->CustomerData->getCustomerName()) {
-            throw new ValidationException(__('Es necesario un nombre de cliente', false));
+        if (!$this->clientData->getCustomerName()) {
+            throw new ValidationException(__u('Es necesario un nombre de cliente'));
         }
     }
 
     /**
-     * @return CustomerData
+     * @return ClientData
      */
     public function getItemData()
     {
-        return $this->CustomerData;
+        return $this->clientData;
     }
 }

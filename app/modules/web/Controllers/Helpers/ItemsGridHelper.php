@@ -37,6 +37,7 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridTab;
+use SP\Services\CustomField\CustomFieldDefService;
 
 /**
  * Class Grids con las plantillas de tablas de datos
@@ -174,12 +175,16 @@ class ItemsGridHelper extends HelperBase
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(__('Nombre'));
         $GridHeaders->addHeader(__('Descripción'));
+        $GridHeaders->addHeader(__('Global'));
 
         // Grid Data
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('customer_id');
         $GridData->addDataRowSource('customer_name');
         $GridData->addDataRowSource('customer_description');
+        $GridData->addDataRowSource('customer_isGlobal', false, function ($value) {
+            return $value ? __u('SI') : __u('NO');
+        });
         $GridData->setData($data);
 
         // Grid
@@ -224,7 +229,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setTitle(__('Editar Cliente'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
-        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_VIEW));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::CLIENT_EDIT));
 
         $Grid->setDataActions($GridActionEdit);
 
@@ -251,15 +256,17 @@ class ItemsGridHelper extends HelperBase
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
-        $GridHeaders->addHeader(__('Módulo'));
         $GridHeaders->addHeader(__('Nombre'));
+        $GridHeaders->addHeader(__('Módulo'));
         $GridHeaders->addHeader(__('Tipo'));
 
         // Grid Data
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('id');
-        $GridData->addDataRowSource('moduleName');
         $GridData->addDataRowSource('name');
+        $GridData->addDataRowSource('moduleId', false, function ($value) {
+            return CustomFieldDefService::getFieldModuleById($value);
+        });
         $GridData->addDataRowSource('typeName');
         $GridData->setData($data);
 
@@ -340,12 +347,12 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('accfile_id');
+        $GridData->setDataRowSourceId('id');
         $GridData->addDataRowSource('account_name');
         $GridData->addDataRowSource('customer_name');
-        $GridData->addDataRowSource('accfile_name');
-        $GridData->addDataRowSource('accfile_type');
-        $GridData->addDataRowSource('accfile_size');
+        $GridData->addDataRowSource('name');
+        $GridData->addDataRowSource('type');
+        $GridData->addDataRowSource('size');
         $GridData->setData($data);
 
         // Grid
@@ -1076,7 +1083,8 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setName(__('Editar Etiqueta'));
         $GridActionEdit->setTitle(__('Editar Etiqueta'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
-        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::TAG_VIEW));
+        $GridActionEdit->setOnClickFunction('appMgmt/show');
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::TAG_EDIT));
 
         $Grid->setDataActions($GridActionEdit);
 
@@ -1108,11 +1116,11 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('plugin_id');
-        $GridData->addDataRowSource('plugin_name');
-        $GridData->addDataRowSourceWithIcon('plugin_enabled', $this->icons->getIconEnabled());
-        $GridData->addDataRowSourceWithIcon('plugin_enabled', $this->icons->getIconDisabled(), 0);
-        $GridData->addDataRowSourceWithIcon('plugin_available', $this->icons->getIconDelete()->setTitle(__('No disponible')), 0);
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('name');
+        $GridData->addDataRowSourceWithIcon('enabled', $this->icons->getIconEnabled());
+        $GridData->addDataRowSourceWithIcon('enabled', $this->icons->getIconDisabled(), 0);
+        $GridData->addDataRowSourceWithIcon('available', $this->icons->getIconDelete()->setTitle(__('No disponible')), 0);
         $GridData->setData($data);
 
         // Grid
@@ -1145,7 +1153,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionView->setTitle(__('Ver Plugin'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
-        $GridActionView->setFilterRowSource('plugin_available', 0);
+        $GridActionView->setFilterRowSource('available', 0);
         $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_VIEW));
 
         $Grid->setDataActions($GridActionView);
@@ -1156,8 +1164,8 @@ class ItemsGridHelper extends HelperBase
         $GridActionEnable->setTitle(__('Habilitar'));
         $GridActionEnable->setIcon($this->icons->getIconEnabled());
         $GridActionEnable->setOnClickFunction('plugin/toggle');
-        $GridActionEnable->setFilterRowSource('plugin_enabled');
-        $GridActionEnable->setFilterRowSource('plugin_available', 0);
+        $GridActionEnable->setFilterRowSource('enabled');
+        $GridActionEnable->setFilterRowSource('available', 0);
         $GridActionEnable->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_ENABLE));
 
         $Grid->setDataActions($GridActionEnable);
@@ -1168,8 +1176,8 @@ class ItemsGridHelper extends HelperBase
         $GridActionDisable->setTitle(__('Deshabilitar'));
         $GridActionDisable->setIcon($this->icons->getIconDisabled());
         $GridActionDisable->setOnClickFunction('plugin/toggle');
-        $GridActionDisable->setFilterRowSource('plugin_enabled', 0);
-        $GridActionDisable->setFilterRowSource('plugin_available', 0);
+        $GridActionDisable->setFilterRowSource('enabled', 0);
+        $GridActionDisable->setFilterRowSource('available', 0);
         $GridActionDisable->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_DISABLE));
 
         $Grid->setDataActions($GridActionDisable);
@@ -1180,7 +1188,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionReset->setTitle(__('Restablecer Datos'));
         $GridActionReset->setIcon($this->icons->getIconRefresh());
         $GridActionReset->setOnClickFunction('plugin/reset');
-        $GridActionReset->setFilterRowSource('plugin_available', 0);
+        $GridActionReset->setFilterRowSource('available', 0);
         $GridActionReset->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_RESET));
 
         $Grid->setDataActions($GridActionReset);

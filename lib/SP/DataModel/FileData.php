@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -36,178 +36,66 @@ class FileData extends DataModelBase implements DataModelInterface
     /**
      * @var int
      */
-    public $accfile_id = 0;
+    public $id;
     /**
      * @var int
      */
-    public $accfile_accountId = 0;
+    public $accountId;
     /**
      * @var string
      */
-    public $accfile_name = '';
+    public $name;
     /**
      * @var int
      */
-    public $accfile_type = 0;
+    public $type;
     /**
      * @var string
      */
-    public $accfile_content = '';
+    public $content;
     /**
      * @var string
      */
-    public $accfile_extension = '';
+    public $extension;
     /**
      * @var string
      */
-    public $accfile_thumb = '';
+    public $thumb;
     /**
      * @var int
      */
-    public $accfile_size = 0;
-
-    /**
-     * @return int
-     */
-    public function getAccfileAccountId()
-    {
-        return $this->accfile_accountId;
-    }
-
-    /**
-     * @param int $accfile_accountId
-     */
-    public function setAccfileAccountId($accfile_accountId)
-    {
-        $this->accfile_accountId = $accfile_accountId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccfileName()
-    {
-        return $this->accfile_name;
-    }
-
-    /**
-     * @param string $accfile_name
-     */
-    public function setAccfileName($accfile_name)
-    {
-        $this->accfile_name = $accfile_name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccfileType()
-    {
-        return $this->accfile_type;
-    }
-
-    /**
-     * @param int $accfile_type
-     */
-    public function setAccfileType($accfile_type)
-    {
-        $this->accfile_type = $accfile_type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccfileContent()
-    {
-        return $this->accfile_content;
-    }
-
-    /**
-     * @param string $accfile_content
-     */
-    public function setAccfileContent($accfile_content)
-    {
-        $this->accfile_content = $accfile_content;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccfileExtension()
-    {
-        return $this->accfile_extension;
-    }
-
-    /**
-     * @param string $accfile_extension
-     */
-    public function setAccfileExtension($accfile_extension)
-    {
-        $this->accfile_extension = $accfile_extension;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccfileThumb()
-    {
-        return $this->accfile_thumb;
-    }
-
-    /**
-     * @param string $accfile_thumb
-     */
-    public function setAccfileThumb($accfile_thumb)
-    {
-        $this->accfile_thumb = $accfile_thumb;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccfileSize()
-    {
-        return $this->accfile_size;
-    }
-
-    /**
-     * @param int $accfile_size
-     */
-    public function setAccfileSize($accfile_size)
-    {
-        $this->accfile_size = $accfile_size;
-    }
-
-    /**
-     * @return float
-     */
-    public function getRoundSize()
-    {
-        return round(($this->accfile_size / 1000), 2);
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccfileId()
-    {
-        return $this->accfile_id;
-    }
-
-    /**
-     * @param int $accfile_id
-     */
-    public function setAccfileId($accfile_id)
-    {
-        $this->accfile_id = $accfile_id;
-    }
+    public $size;
 
     /**
      * @return int
      */
     public function getId()
     {
-        return $this->accfile_id;
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountId()
+    {
+        return $this->accountId;
+    }
+
+    /**
+     * @param int $accountId
+     */
+    public function setAccountId($accountId)
+    {
+        $this->accountId = $accountId;
     }
 
     /**
@@ -215,6 +103,102 @@ class FileData extends DataModelBase implements DataModelInterface
      */
     public function getName()
     {
-        return $this->accfile_name;
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @param string $extension
+     */
+    public function setExtension($extension)
+    {
+        $this->extension = $extension;
+    }
+
+    /**
+     * @return string
+     */
+    public function getThumb()
+    {
+        return $this->thumb;
+    }
+
+    /**
+     * @param string $thumb
+     */
+    public function setThumb($thumb)
+    {
+        $this->thumb = $thumb;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param int $size
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+    }
+
+    /**
+     * @return float
+     */
+    public function getRoundSize()
+    {
+        return round($this->size / 1000, 2);
     }
 }

@@ -7,8 +7,9 @@
 
     <form method="post" name="frmCategories" id="frmCategories" class="form-action"
           data-onsubmit="appMgmt/save"
+          data-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\Acl\ActionsInterface::CATEGORY; ?>"
+          data-nextaction="<?php echo $nextAction; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -42,8 +43,6 @@
             </tbody>
         </table>
 
-        <input type="hidden" name="itemId" value="<?php echo $category->getCategoryId(); ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>

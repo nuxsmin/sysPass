@@ -1,7 +1,7 @@
 <?php
 
 /** @var $icons \Theme\Icons */
-/** @var $customer \SP\DataModel\CustomerData */
+/** @var $customer \SP\DataModel\ClientData */
 
 ?>
 
@@ -10,8 +10,9 @@
 
     <form method="post" name="frmCustomers" id="frmCustomers" class="form-action"
           data-onsubmit="appMgmt/save"
+          data-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
-          data-nextaction-id="<?php echo \SP\Core\Acl\ActionsInterface::CLIENT; ?>"
+          data-nextaction="<?php echo $nextAction; ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -21,7 +22,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" value="<?php echo $customer->getCustomerName(); ?>">
+                               maxlength="50" value="<?php echo $client->getCustomerName(); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Nombre del cliente'); ?></label>
                     </div>
@@ -34,7 +35,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="description" name="description" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" value="<?php echo $customer->getCustomerDescription(); ?>">
+                               maxlength="50" value="<?php echo $client->getCustomerDescription(); ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php echo __('Descripción del cliente'); ?></label>
                     </div>
@@ -58,7 +59,7 @@
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="isglobal">
                         <input type="checkbox" id="isglobal"
                                class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="isglobal" <?php echo $customer->getCustomerIsGlobal() ? 'checked' : ' '; ?>/>
+                               name="isglobal" <?php echo $client->getCustomerIsGlobal() ? 'checked' : ' '; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Global'); ?></span>
                     </label>
                 </td>
@@ -70,8 +71,6 @@
             </tbody>
         </table>
 
-        <input type="hidden" name="itemId" value="<?php echo $customer->getCustomerId(); ?>"/>
-        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
     </form>
