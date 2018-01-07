@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-03 13:27+0100\n"
-"PO-Revision-Date: 2018-01-05 16:35+0100\n"
+"PO-Revision-Date: 2018-01-07 01:43+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: <language@syspass.org>\n"
 "Language: de_DE\n"
@@ -308,7 +308,7 @@ msgstr "Fehler beim Löschen des Benutzers"
 
 #: ../../../../inc/SP/Forms/GroupForm.class.php:84
 msgid "Es necesario un nombre de grupo"
-msgstr "Eine Gruppenname wird benötigt"
+msgstr "Ein Gruppenname wird benötigt"
 
 #: ../../../../inc/SP/Mgmt/Groups/Group.class.php:58
 #: ../../../../inc/SP/Mgmt/Groups/Group.class.php:194
@@ -659,7 +659,7 @@ msgstr "Fehler beim Aktualisieren der Passwörter"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:561
 msgid "Errores al actualizar las claves de las cuentas del histórico"
-msgstr "Fehler beim Aktualisieren des Kontopasswörter in dem Verlauf"
+msgstr "Fehler beim Aktualisieren der Kontopasswörter in dem Verlauf"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:570
 msgid "Errores al actualizar datos de campos personalizados"
@@ -724,7 +724,7 @@ msgstr "Fehler beim Erstellen eines temporären Passwortes"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:124
 msgid "Usuario/Clave no introducidos"
-msgstr "Keine Benutzername/Passwort eingegeben"
+msgstr "Kein Benutzername/Passwort eingegeben"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:108
 msgid "Inicio sesión"
@@ -848,7 +848,7 @@ msgstr "Benutzer gesperrt"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:246
 msgid "Error al obtener los datos del usuario de la BBDD"
-msgstr "Fehler beim Abrufen der Daten des Benutzers des BBDD"
+msgstr "Fehler beim Abrufen der Daten des Benutzers der Datenbank"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:337
 msgid "La clave maestra no ha sido guardada o es incorrecta"
@@ -1043,7 +1043,7 @@ msgstr "Anmeldung"
 
 #: ../../../../ajax/ajax_passReset.php:107
 msgid "La clave es incorrecta o no coincide"
-msgstr "Falsches oder nicht übereinsimmendes Passwort"
+msgstr "Falsches oder nicht übereinstimmendes Passwort"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1158
 #: ../../../../inc/SP/Forms/NoticeForm.class.php:95
@@ -1200,7 +1200,7 @@ msgstr "Konto löschen"
 
 #: ../../../../inc/SP/Mgmt/Groups/GroupAccounts.class.php:70
 msgid "Error al eliminar grupos asociados a la cuenta"
-msgstr "Fehler beim Löschen der Guppen eines Kontos"
+msgstr "Fehler beim Löschen der Gruppen eines Kontos"
 
 #: ../../../../inc/SP/Account/UserAccounts.class.php:89
 msgid "Error al eliminar usuarios asociados a la cuenta"
@@ -1337,7 +1337,7 @@ msgstr "Verwaltung benutzerdefinierter Felder"
 
 #: ../../../../inc/SP/Core/Acl.class.php:208
 msgid "Gestión Autorizaciones API"
-msgstr "Verwaltung der API Authorisation"
+msgstr "Verwaltung der API-Genehmigung"
 
 #: ../../../../inc/SP/Core/Acl.class.php:212
 #: ../../../../inc/SP/Core/Acl.class.php:213
@@ -1428,11 +1428,11 @@ msgstr "Passwortänderung"
 
 #: ../../../../inc/SP/Auth/AuthUtil.class.php:62
 msgid "Se ha solicitado el cambio de su clave de usuario."
-msgstr "Ein Anfrage zum Ändern ihres Benutzerpassworts wurde verschickt."
+msgstr "Eine Anfrage zum Ändern ihres Benutzerpassworts wurde verschickt."
 
 #: ../../../../inc/SP/Auth/AuthUtil.class.php:64
 msgid "Para completar el proceso es necesario que acceda a la siguiente URL:"
-msgstr "Zum Abschluss dieses Vorgang, folgen Sie bitte diesem URL-Link:"
+msgstr "Zum Abschluss des Vorgangs folgen Sie bitte diesem URL-Link:"
 
 #: ../../../../inc/SP/Auth/AuthUtil.class.php:68
 msgid "Si no ha solicitado esta acción, ignore este mensaje."
@@ -1442,7 +1442,7 @@ msgstr ""
 
 #: ../../../../inc/SP/Core/Backup.class.php:249
 msgid "Esta operación sólo es posible en entornos Linux"
-msgstr "Diese Funktion is nur in einer Linux-Umgebung verfügbar"
+msgstr "Diese Funktion ist nur in einer Linux-Umgebung verfügbar"
 
 #: ../../../../inc/SP/Core/Backup.class.php:253
 msgid "Error al realizar backup en modo compatibilidad"
@@ -1769,7 +1769,7 @@ msgstr "Gruppe löschen"
 
 #: ../../../../inc/SP/Mgmt/Groups/GroupUsers.class.php:72
 msgid "Error al eliminar los usuarios del grupo"
-msgstr "Fehler beim löschen von Gruppennutzern"
+msgstr "Fehler beim Löschen von Gruppennutzern"
 
 #: ../../../../inc/SP/Import/Import.class.php:86
 msgid "Compruebe el formato del archivo"
@@ -1834,7 +1834,7 @@ msgstr "Die Anwendung muss aktualisiert werden"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:552
 msgid "Si es un administrador pulse en el enlace: %s"
-msgstr "Wenn SIe ein Administrator sind, klicken sie auf den Link: %s"
+msgstr "Wenn Sie ein Administrator sind, klicken sie auf den Link: %s"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:552
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:57
@@ -1898,7 +1898,7 @@ msgstr "Master-Password muss mindestens 11 Zeichen lang sein"
 
 #: ../../../../inc/SP/Core/Installer.class.php:159
 msgid "Indicar el usuario de la BBDD"
-msgstr "Geben Sie den Benutzer der BBDD an"
+msgstr "Geben Sie den Benutzer der Datenbank an"
 
 #: ../../../../inc/SP/Core/Installer.class.php:160
 msgid "Usuario con permisos de administrador de la Base de Datos"
@@ -1922,7 +1922,7 @@ msgstr "Bitte entferne die Punkte aus dem Datenbanknamen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:179
 msgid "Indicar el servidor de la BBDD"
-msgstr "Geben Sie den Server des BBDD an"
+msgstr "Geben Sie den Server der Datenbank an"
 
 #: ../../../../inc/SP/Core/Installer.class.php:180
 msgid "Servidor donde se instalará la Base de Datos"
@@ -1948,7 +1948,7 @@ msgstr "Neuen Datenbanknamen eingeben oder bestehende Datenbank löschen"
 #: ../../../../inc/SP/Core/Installer.class.php:316
 #: ../../../../inc/SP/Core/Installer.class.php:419
 msgid "Error al crear la BBDD"
-msgstr "Fehler beim Erstellen der BBDD"
+msgstr "Fehler beim Erstellen der Datenbank"
 
 #: ../../../../inc/SP/Core/Installer.class.php:317
 #: ../../../../inc/SP/Core/Installer.class.php:337
@@ -1966,7 +1966,7 @@ msgstr ""
 
 #: ../../../../inc/SP/Core/Installer.class.php:401
 msgid "Error al seleccionar la BBDD"
-msgstr "Fehler bei der Auswahl der BBDD"
+msgstr "Fehler bei der Auswahl der Datenbank"
 
 #: ../../../../inc/SP/Core/Installer.class.php:402
 msgid ""
@@ -2104,7 +2104,7 @@ msgstr "Ein Fehler ist beim Update aufgetreten"
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:206
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:219
 msgid "Actualizar BBDD"
-msgstr "DB aktualisieren"
+msgstr "Datenbank aktualisieren"
 
 #: ../../../../inc/SP/Core/Upgrade/Upgrade.class.php:212
 msgid "No es necesario actualizar la Base de Datos."
@@ -2551,7 +2551,7 @@ msgstr "Ereignisprotokoll"
 
 #: ../../../../inc/SP/Controller/MainController.class.php:387
 msgid "La version de PHP es vulnerable al ataque NULL Byte (CVE-2006-7243)"
-msgstr "Die PHP-Version is verwundbar für 'NULL Byte attack (CVE-2006-7243)'"
+msgstr "Die PHP-Version ist verwundbar für 'NULL Byte attack (CVE-2006-7243)'"
 
 #: ../../../../inc/SP/Controller/MainController.class.php:388
 msgid "Actualice la versión de PHP para usar sysPass de forma segura"
@@ -2917,7 +2917,7 @@ msgstr ""
 
 #: ../../../../inc/themes/material-blue/views/main/body-start.inc:4
 msgid "Javascript es necesario para el correcto funcionamiento"
-msgstr "Javascript muss eingeschaltet sein."
+msgstr "JavaScript muss eingeschaltet sein."
 
 #: ../../../../inc/SP/Api/SyspassApi.class.php:518
 #: ../../../../inc/themes/material-blue/views/itemshow/categories.inc:23
@@ -3075,7 +3075,7 @@ msgid ""
 "Escribir extensión y pulsar intro para añadir. Es necesario guardar la "
 "configuración."
 msgstr ""
-"Erweiterung schreiben und Enter zum hinzufügen drücken. Speichern nicht "
+"Erweiterung schreiben und Enter zum Hinzufügen drücken. Speichern nicht "
 "vergessen."
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:288
@@ -3099,7 +3099,7 @@ msgstr "Anzahl der Suchresultate pro Seite."
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:116
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:155
 msgid "Resultados en Tarjetas"
-msgstr "Results as Cards"
+msgstr "Suchergebnisse als Karten"
 
 #: ../../../../inc/themes/material-blue/views/config/accounts.inc:106
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:146
@@ -3193,7 +3193,7 @@ msgstr "Alle Passwörter der Konten werden neu verschlüsselt."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:100
 msgid "Los usuarios deberán de introducir la nueva clave maestra."
-msgstr "All Benutzer müssen das neue Master-Passwort eingeben."
+msgstr "Alle Benutzer müssen das neue Master-Passwort eingeben."
 
 #: ../../../../inc/themes/material-blue/views/config/encryption.inc:138
 msgid ""
@@ -3447,7 +3447,9 @@ msgstr "Hosting-Modus"
 
 #: ../../../../inc/themes/material-blue/views/main/install.inc:152
 msgid "No crea ni verifica los permisos del usuario sobre la BBDD"
-msgstr "Zugangsberechtigungen zur DB werden weder angelegt nocht überprüft"
+msgstr ""
+"Berechtigungen des Benutzers für die Datenbank werden weder erstellt, noch "
+"überprüft"
 
 #: ../../../../inc/themes/material-blue/views/main/install.inc:166
 #: ../../../../inc/themes/material-blue/views/main/install.inc:168
@@ -3581,7 +3583,7 @@ msgstr "Weitere Aktionen"
 
 #: ../../../../inc/themes/material-blue/views/main/passreset.inc:7
 msgid "Solicitud de Cambio de Clave"
-msgstr "Passwortänderung initiiert."
+msgstr "Passwortänderung initiiert"
 
 #: ../../../../inc/themes/material-blue/views/main/passreset.inc:25
 msgid "Email del Usuario"
@@ -3883,7 +3885,7 @@ msgstr "Aktualisierung starten"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:31
 msgid "Nombre de usuario completo"
-msgstr "Volständiger Benutzername"
+msgstr "Vollständiger Benutzername"
 
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:45
 msgid "Login de inicio de sesión"
@@ -3922,7 +3924,7 @@ msgstr "Datum des Master-Passworts"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:30
 msgid "Habilitar enlaces Wiki"
-msgstr "Wike-Links einschalten"
+msgstr "Wiki-Links aktivieren"
 
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:20
 msgid ""
@@ -3974,7 +3976,7 @@ msgstr "Präfix eines Kontonamens"
 #: ../../../../inc/themes/material-blue/views/config/wiki.inc:107
 msgid ""
 "Prefijo para determinar qué cuentas tienen un enlace a una página de la Wiki."
-msgstr "Prefix zur Auswahl der Konten die einen Link zum Wiki besitzen."
+msgstr "Präfix zur Auswahl der Konten die einen Link zum Wiki besitzen."
 
 #: ../../../../inc/themes/material-blue/views/account/account.inc:11
 msgid "Histórico"
@@ -4069,15 +4071,15 @@ msgstr "Name des Servers zur Installation der sysPass Datenbank"
 
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:128
 msgid "Clave del usuario de conexión a LDAP."
-msgstr "LDAP Verbindungunspasswort"
+msgstr "LDAP Verbindungspasswort"
 
 #: ../../../../inc/themes/material-blue/views/config/mail.inc:124
 msgid ""
 "Habilita que los usuarios puedan solicitar modificaciones o acceso a las "
 "cuentas sin permisos."
 msgstr ""
-"Erlaubt, dass Nutzer Änderungen an oder Zugriff auf Konten, zu denen sie "
-"keinen Zugriff haben, anfragen können."
+"Ermöglicht Benutzern, Änderungen oder Zugriff auf Konten ohne Berechtigungen "
+"anzufordern."
 
 #: ../../../../inc/themes/material-blue/views/itemshow/profiles.inc:40
 msgid "Crear nueva cuenta"
@@ -4618,7 +4620,7 @@ msgstr "Sie müssen es erstellen und die nötigen Rechte zuweisen"
 
 #: ../../../../inc/SP/Core/Installer.class.php:336
 msgid "Error al establecer permisos de la BBDD ('%s')"
-msgstr "Fehler beim Konfigurieren der BBDD ('%s')"
+msgstr "Fehler beim Konfigurieren der Datenbank ('%s')"
 
 #: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:111
 #: ../../../../inc/SP/Core/Plugin/PluginUtil.class.php:113
@@ -4644,7 +4646,7 @@ msgstr "Aktion nicht gesetzt"
 
 #: ../../../../inc/SP/Forms/TagForm.class.php:82
 msgid "Es necesario un nombre de etiqueta"
-msgstr "Es wird ein Tagname benötigt"
+msgstr "Es wird ein Tag-Name benötigt"
 
 #: ../../../../inc/SP/Http/XMLRPCResponseParse.class.php:68
 msgid "Respuesta XML-RPC inválida"
@@ -4673,7 +4675,7 @@ msgstr "Erkanntes Format: %s"
 
 #: ../../../../inc/SP/Import/XmlImportTrait.class.php:69
 msgid "El nodo \"%s\" no existe"
-msgstr "Der Node %s existiert nicht"
+msgstr "Knoten \"% s\" existiert nicht"
 
 #: ../../../../inc/SP/Log/LogUtil.class.php:44
 msgid "Extensión '%s' no cargada"
@@ -4725,7 +4727,7 @@ msgstr "Datei hochgeladen"
 
 #: ../../../../inc/SP/Mgmt/Groups/Group.class.php:111
 msgid "Grupo en uso"
-msgstr "Grupper wird verwendet"
+msgstr "Gruppe wird verwendet"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:381
 msgid "Actualizar Grupo"
@@ -4883,7 +4885,7 @@ msgstr "LDAP-Synchronisation"
 
 #: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:122
 msgid "No se encontraron objetos para sincronizar"
-msgstr "Es gibt keine zu synchronisierende Objekte"
+msgstr "Es gibt keine zu synchronisierenden Objekte"
 
 #: ../../../../inc/SP/Mgmt/Users/UserLdapSync.class.php:128
 msgid "Sincronización finalizada"
@@ -5007,7 +5009,7 @@ msgstr ""
 #: ../../../../js/strings.js.php:83
 msgid "Esta acción restablecerá todos los datos del plugin. Desea continuar?"
 msgstr ""
-"Diese Aktion wird all Plugindaten zurücksetzen. Möchten Sie fortfahren?"
+"Diese Aktion wird all Plugin-Daten zurücksetzen. Möchten Sie fortfahren?"
 
 #: ../../../../inc/themes/material-blue/views/account/account-editpass.inc:78
 #: ../../../../inc/themes/material-blue/views/account/account.inc:150
@@ -5778,7 +5780,7 @@ msgstr "Benachrichtigung bearbeiten"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:261
 msgid "Usuarios eliminados"
-msgstr "Bentzer gelöscht"
+msgstr "Benutzer gelöscht"
 
 #: ../../../../inc/SP/Controller/ItemActionController.class.php:1130
 msgid "Notificación actualizada"
@@ -5917,7 +5919,7 @@ msgstr "Versuche überschritten"
 #: ../../../../inc/SP/Api/SyspassApi.class.php:466
 #: ../../../../inc/SP/Api/SyspassApi.class.php:494
 msgid "Clave del token"
-msgstr "Passwort des Token"
+msgstr "Token-Passwort"
 
 #: ../../../../inc/SP/Controller/LoginController.class.php:209
 msgid "Intentos excedidos (%d/%d)"
@@ -6087,4 +6089,4 @@ msgstr ""
 
 #: ../../../../js/strings.js.php:91
 msgid "Hay una versión más reciente del plugin {0} ({1})"
-msgstr "There is a more recent version of {0} plugin ({1})"
+msgstr "Es gibt eine neuere Version des Plugins {0} ({1})"
