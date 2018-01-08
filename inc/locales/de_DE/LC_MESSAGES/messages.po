@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-04-03 13:27+0100\n"
-"PO-Revision-Date: 2018-01-07 01:43+0100\n"
+"PO-Revision-Date: 2018-01-08 10:56+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: <language@syspass.org>\n"
 "Language: de_DE\n"
@@ -2384,7 +2384,7 @@ msgstr "Nein"
 
 #: ../../../../js/strings.js.php:68
 msgid "Aceptar"
-msgstr "Annehmen"
+msgstr "OK"
 
 #: ../../../../js/strings.js.php:69
 msgid "Cancelar"
@@ -2932,7 +2932,7 @@ msgstr "Beschreibung der Kategorie"
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:4
 #: ../../../../inc/themes/material-blue/views/userpreferences/preferences-site.inc:7
 msgid "Sitio"
-msgstr "Site"
+msgstr "Seite"
 
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:10
 #: ../../../../inc/themes/material-blue/views/config/general-site.inc:24
@@ -3331,7 +3331,7 @@ msgstr "Definiert den Standardbenutzer für den Kontoimport."
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:207
 #: ../../../../inc/themes/material-blue/views/config/ldap.inc:217
 msgid "Grupo por Defecto"
-msgstr "Standard-Gruppe"
+msgstr "Standardgruppe"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:45
 msgid "Define el grupo por defecto para las cuentas importadas."
@@ -3340,7 +3340,7 @@ msgstr "Definiert die Standardgruppe für den Kontoimport."
 #: ../../../../inc/themes/material-blue/views/config/import.inc:127
 #: ../../../../inc/themes/material-blue/views/config/import.inc:142
 msgid "Clave de Importación"
-msgstr "Passwort importieren"
+msgstr "Import-Passwort"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:176
 #: ../../../../inc/themes/material-blue/views/config/import.inc:191
@@ -5673,7 +5673,7 @@ msgid ""
 "la actual."
 msgstr ""
 "Es wird nur für sysPass XML-Dateien benötigt, die mit einem anderen Master-"
-"Passwort vom aktuellen verschlüsselt wurden."
+"Passwort als dem aktuellen verschlüsselt wurden."
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:181
 msgid "Sólo es necesario para archivos CSV."
