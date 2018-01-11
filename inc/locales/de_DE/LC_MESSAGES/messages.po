@@ -642,7 +642,6 @@ msgid "La clave maestra actual no coincide"
 msgstr "Aktuelles Master-Passwort stimmt nicht"
 
 #: ../../../../inc/SP/Controller/ConfigActionController.class.php:550
-#, fuzzy
 msgid "Errores al actualizar las claves de las cuentas"
 msgstr "Fehler beim Aktualisieren der Passwörter"
 
@@ -1150,7 +1149,6 @@ msgid "Actualizar Cuenta"
 msgstr "Konto ändern"
 
 #: ../../../../inc/SP/Mgmt/Groups/GroupAccounts.class.php:100
-#, fuzzy
 msgid "Error al actualizar los grupos secundarios"
 msgstr "Fehler beim Ändern der Gruppe"
 
@@ -1198,7 +1196,6 @@ msgid "Error al eliminar grupos asociados a la cuenta"
 msgstr "Fehler beim Löschen der Gruppen eines Kontos"
 
 #: ../../../../inc/SP/Account/UserAccounts.class.php:89
-#, fuzzy
 msgid "Error al eliminar usuarios asociados a la cuenta"
 msgstr "Fehler beim Löschen der Benutzer eines Kontos"
 
@@ -1222,7 +1219,6 @@ msgstr "Fehler im Verschlüsselungsmodul"
 
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:84
 #: ../../../../inc/SP/Account/AccountCrypt.class.php:207
-#, fuzzy
 msgid "Error al obtener las claves de las cuentas"
 msgstr "Fehler beim Laden der Konto-Passwörter"
 
@@ -1274,7 +1270,6 @@ msgid "Registros actualizados"
 msgstr "Datensätze aktualisiert"
 
 #: ../../../../inc/SP/Core/Acl.class.php:185
-#, fuzzy
 msgid "Buscar Cuentas"
 msgstr "Konten suchen"
 
@@ -2623,7 +2618,6 @@ msgstr "Eigenschaften"
 
 #: ../../../../inc/themes/material-blue/inc/Icons.class.php:53
 #: ../../../../inc/themes/material-blue/views/itemshow/users.inc:155
-#, fuzzy
 msgid "Admin Cuentas"
 msgstr "Konto-Administrator"
 
@@ -3263,7 +3257,6 @@ msgid "Usuario por Defecto"
 msgstr "Standardnutzer"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:19
-#, fuzzy
 msgid "Define el usuario por defecto para las cuentas importadas."
 msgstr "Definiert den Standardbenutzer für den Kontoimport."
 
@@ -3275,7 +3268,6 @@ msgid "Grupo por Defecto"
 msgstr "Standardgruppe"
 
 #: ../../../../inc/themes/material-blue/views/config/import.inc:45
-#, fuzzy
 msgid "Define el grupo por defecto para las cuentas importadas."
 msgstr "Definiert die Standardgruppe für den Kontoimport."
 
@@ -3737,12 +3729,10 @@ msgid "Parámetros especiales:"
 msgstr "Spezialparameter"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:25
-#, fuzzy
 msgid "Buscar cuentas a las que 'login' tenga acceso"
 msgstr "Suche nach Konten, für die 'login' Rechte besitzt"
 
 #: ../../../../inc/themes/material-blue/views/accountsearch/searchbox.inc:27
-#, fuzzy
 msgid "Buscar cuentas a las que 'group_name' tenga acceso"
 msgstr "Suche nach Konten, für die 'group_name' Rechte besitzt"
 
