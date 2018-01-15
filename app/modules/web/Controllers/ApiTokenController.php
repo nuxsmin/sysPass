@@ -41,8 +41,8 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Services\ApiToken\ApiTokenService;
-use SP\Services\User\UserService;
+use SP\Repositories\ApiToken\ApiTokenRepository;
+use SP\Repositories\User\UserRepository;
 
 /**
  * Class ApiTokenController
@@ -55,7 +55,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
     use ItemTrait;
 
     /**
-     * @var ApiTokenService
+     * @var ApiTokenRepository
      */
     protected $apiTokenService;
 
@@ -120,7 +120,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
 
         $this->view->assign('apiToken', $apiToken);
 
-        $this->view->assign('users', UserService::getServiceItems());
+        $this->view->assign('users', UserRepository::getServiceItems());
         $this->view->assign('actions', ApiTokensUtil::getTokenActions());
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
@@ -302,6 +302,6 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
     {
         $this->checkLoggedIn();
 
-        $this->apiTokenService = new ApiTokenService();
+        $this->apiTokenService = new ApiTokenRepository();
     }
 }

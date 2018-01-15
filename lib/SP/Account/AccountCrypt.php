@@ -94,13 +94,14 @@ class AccountCrypt
      *
      * @param string $currentMasterPass
      * @return bool
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     public function updateOldPass(&$currentMasterPass)
     {
         set_time_limit(0);
 
         $accountsOk = [];
-        $userId = $this->session->getUserData()->getUserId();
+        $userId = $this->session->getUserData()->getId();
         $errorCount = 0;
 
         $LogMessage = $this->log->getLogMessage();
@@ -157,8 +158,8 @@ class AccountCrypt
 
             $AccountData = clone $AccountDataBase;
 
-            $AccountData->setAccountId($account->account_id);
-            $AccountData->setAccountUserEditId($userId);
+            $AccountData->setId($account->account_id);
+            $AccountData->setUserEditId($userId);
 
 //            } elseif (strlen($account->account_key) < 32) {
 //                $LogMessage->addDetails(__('IV de encriptación incorrecto', false), sprintf('%s (%d)', $account->account_name, $account->account_id));
@@ -169,10 +170,10 @@ class AccountCrypt
 
                 $securedKey = Crypt::makeSecuredKey($currentMasterPass);
 
-                $AccountData->setAccountPass(Crypt::encrypt($decryptedPass, $securedKey, $currentMasterPass));
-                $AccountData->setAccountKey($securedKey);
+                $AccountData->setPass(Crypt::encrypt($decryptedPass, $securedKey, $currentMasterPass));
+                $AccountData->setKey($securedKey);
 
-                if (strlen($securedKey) > 1000 || strlen($AccountData->getAccountPass()) > 1000) {
+                if (strlen($securedKey) > 1000 || strlen($AccountData->getPass()) > 1000) {
                     throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
                 }
 
@@ -208,7 +209,7 @@ class AccountCrypt
     {
         $query = /** @lang SQL */
             'SELECT account_id, account_name, account_pass, account_key 
-            FROM accounts WHERE BIT_LENGTH(account_pass) > 0';
+            FROM Account WHERE BIT_LENGTH(account_pass) > 0';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -228,7 +229,7 @@ class AccountCrypt
         set_time_limit(0);
 
         $accountsOk = [];
-        $userId = $this->session->getUserData()->getUserId();
+        $userId = $this->session->getUserData()->getId();
         $errorCount = 0;
 
         $LogMessage = $this->log->getLogMessage();
@@ -278,18 +279,18 @@ class AccountCrypt
 
             $AccountData = clone $AccountDataBase;
 
-            $AccountData->setAccountId($account->account_id);
-            $AccountData->setAccountUserEditId($userId);
+            $AccountData->setId($account->account_id);
+            $AccountData->setUserEditId($userId);
 
             try {
                 $currentSecuredKey = Crypt::unlockSecuredKey($account->account_key, $currentMasterPass);
                 $decryptedPass = Crypt::decrypt($account->account_pass, $currentSecuredKey);
 
                 $newSecuredKey = Crypt::makeSecuredKey($newMasterPass);
-                $AccountData->setAccountPass(Crypt::encrypt($decryptedPass, $newSecuredKey, $newMasterPass));
-                $AccountData->setAccountKey($newSecuredKey);
+                $AccountData->setPass(Crypt::encrypt($decryptedPass, $newSecuredKey, $newMasterPass));
+                $AccountData->setKey($newSecuredKey);
 
-                if (strlen($newSecuredKey) > 1000 || strlen($AccountData->getAccountPass()) > 1000) {
+                if (strlen($newSecuredKey) > 1000 || strlen($AccountData->getPass()) > 1000) {
                     throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
                 }
 

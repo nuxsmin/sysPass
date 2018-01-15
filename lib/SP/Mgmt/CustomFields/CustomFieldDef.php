@@ -27,7 +27,7 @@ namespace SP\Mgmt\CustomFields;
 defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\CustomFieldDefData;
+use SP\DataModel\CustomFieldDefinitionData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemTrait;
 use SP\Storage\DbWrapper;
@@ -38,7 +38,7 @@ use SP\Util\Util;
  * Class CustomFieldDef para la gestión de definiciones de campos personalizados
  *
  * @package SP
- * @property CustomFieldDefData $itemData
+ * @property CustomFieldDefinitionData $itemData
  */
 class CustomFieldDef extends CustomFieldBase implements ItemInterface
 {
@@ -51,7 +51,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
     public function add()
     {
         $query = /** @lang SQL */
-            'INSERT INTO customFieldsDef SET customfielddef_module = ?, customfielddef_field = ?';
+            'INSERT INTO CustomFieldDefinition SET customfielddef_module = ?, customfielddef_field = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -76,7 +76,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         }
 
         $query = /** @lang SQL */
-            'DELETE FROM customFieldsDef WHERE customfielddef_id = ? LIMIT 1';
+            'DELETE FROM CustomFieldDefinition WHERE customfielddef_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -98,7 +98,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
     protected function deleteItemsDataForDefinition($id)
     {
         $query = /** @lang SQL */
-            'DELETE FROM customFieldsData WHERE customfielddata_defId = ?';
+            'DELETE FROM CustomFieldData WHERE customfielddata_defId = ?';
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
@@ -115,7 +115,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $curField = $this->getById($this->itemData->getId());
 
         $query = /** @lang SQL */
-            'UPDATE customFieldsDef SET
+            'UPDATE CustomFieldDefinition SET
             customfielddef_module = ?,
             customfielddef_field = ?
             WHERE customfielddef_id= ? LIMIT 1';
@@ -138,7 +138,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
 
     /**
      * @param $id int
-     * @return CustomFieldDefData
+     * @return CustomFieldDefinitionData
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getById($id)
@@ -147,7 +147,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
             'SELECT customfielddef_id,
               customfielddef_module,
               customfielddef_field
-              FROM customFieldsDef
+              FROM CustomFieldDefinition
               WHERE customfielddef_id = ? LIMIT 1';
 
         $Data = new QueryData();
@@ -155,14 +155,14 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        /** @var CustomFieldDefData $CustomFieldDef */
+        /** @var CustomFieldDefinitionData $CustomFieldDef */
         $CustomFieldDef = DbWrapper::getResults($Data);
 
         if ($CustomFieldDef === false) {
             throw new SPException(SPException::SP_INFO, __('Campo personalizado no encontrado', false));
         }
 
-        /** @var CustomFieldDefData $fieldDef */
+        /** @var CustomFieldDefinitionData $fieldDef */
         $fieldDef = Util::unserialize($this->getDataModel(), $CustomFieldDef->getCustomfielddefField());
         $fieldDef->setCustomfielddefId($CustomFieldDef->getCustomfielddefId());
         $fieldDef->setId($CustomFieldDef->getCustomfielddefId());
@@ -179,7 +179,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
     protected function updateItemsModulesForDefinition()
     {
         $query = /** @lang SQL */
-            'UPDATE customFieldsData SET
+            'UPDATE CustomFieldData SET
             customfielddata_moduleId = ?
             WHERE customfielddata_defId = ?';
 
@@ -192,7 +192,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
     }
 
     /**
-     * @return CustomFieldDefData[]|array
+     * @return CustomFieldDefinitionData[]|array
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getAll()
@@ -201,14 +201,14 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
             'SELECT customfielddef_id,
               customfielddef_module,
               customfielddef_field
-              FROM customFieldsDef
+              FROM CustomFieldDefinition
               ORDER BY customfielddef_module';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
 
-        /** @var CustomFieldDefData[] $queryRes */
+        /** @var CustomFieldDefinitionData[] $queryRes */
         $queryRes = DbWrapper::getResultsArray($Data);
 
         if (count($queryRes) === 0) {
@@ -219,7 +219,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
 
         foreach ($queryRes as $CustomFieldDef) {
 
-            /** @var CustomFieldDefData $fieldDef */
+            /** @var CustomFieldDefinitionData $fieldDef */
             $fieldDef = Util::unserialize($this->getDataModel(), $CustomFieldDef->getCustomfielddefField());
             $fieldDef->setId($CustomFieldDef->getCustomfielddefId());
 
@@ -265,7 +265,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $query = /** @lang SQL */
             'SELECT customfielddef_id,
               customfielddef_module
-              FROM customFieldsDef
+              FROM CustomFieldDefinition
               WHERE customfielddef_id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
@@ -284,6 +284,6 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
      */
     protected function init()
     {
-        $this->setDataModel(CustomFieldDefData::class);
+        $this->setDataModel(CustomFieldDefinitionData::class);
     }
 }

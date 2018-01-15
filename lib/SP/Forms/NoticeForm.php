@@ -73,15 +73,15 @@ class NoticeForm extends FormBase implements FormInterface
         $Description->addDescription(Request::analyze('notice_description'));
 
         $this->noticeData = new NoticeData();
-        $this->noticeData->setNoticeId($this->itemId);
-        $this->noticeData->setNoticeType(Request::analyze('notice_type'));
-        $this->noticeData->setNoticeComponent(Request::analyze('notice_component'));
-        $this->noticeData->setNoticeDescription($Description);
-        $this->noticeData->setNoticeUserId(Request::analyze('notice_user', 0));
+        $this->noticeData->setId($this->itemId);
+        $this->noticeData->setType(Request::analyze('notice_type'));
+        $this->noticeData->setComponent(Request::analyze('notice_component'));
+        $this->noticeData->setDescription($Description);
+        $this->noticeData->setUserId(Request::analyze('notice_user', 0));
 
-        if ($this->noticeData->getNoticeUserId() === 0) {
-            $this->noticeData->setNoticeOnlyAdmin(Request::analyze('notice_onlyadmin', 0, false, 1));
-            $this->noticeData->setNoticeSticky(Request::analyze('notice_sticky', 0, false, 1));
+        if ($this->noticeData->getUserId() === 0) {
+            $this->noticeData->setOnlyAdmin(Request::analyze('notice_onlyadmin', 0, false, 1));
+            $this->noticeData->setSticky(Request::analyze('notice_sticky', 0, false, 1));
         }
     }
 
@@ -90,21 +90,21 @@ class NoticeForm extends FormBase implements FormInterface
      */
     private function checkCommon()
     {
-        if (!$this->noticeData->getNoticeComponent()) {
+        if (!$this->noticeData->getComponent()) {
             throw new ValidationException(__u('Es necesario un componente'));
         }
 
-        if (!$this->noticeData->getNoticeType()) {
+        if (!$this->noticeData->getType()) {
             throw new ValidationException(__u('Es necesario un tipo'));
         }
 
-        if (!$this->noticeData->getNoticeDescription()) {
+        if (!$this->noticeData->getDescription()) {
             throw new ValidationException(__u('Es necesaria una descripción'));
         }
 
-        if (!$this->noticeData->getNoticeUserId()
-            && !$this->noticeData->isNoticeOnlyAdmin()
-            && !$this->noticeData->isNoticeSticky()) {
+        if (!$this->noticeData->getUserId()
+            && !$this->noticeData->isOnlyAdmin()
+            && !$this->noticeData->isSticky()) {
             throw new ValidationException(__u('Es necesario un destinatario'));
         }
     }

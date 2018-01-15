@@ -55,17 +55,16 @@ use SP\Storage\QueryData;
  */
 class UserPass extends UserBase
 {
-    const MPASS_WRONG = 0;
-
     // La clave maestra incorrecta
-    const MPASS_OK = 1;
+    const MPASS_WRONG = 0;
     // La clave maestra correcta
-    const MPASS_NOTSET = 2;
+    const MPASS_OK = 1;
     // La clave maestra no está guardada
-    const MPASS_CHANGED = 3;
+    const MPASS_NOTSET = 2;
     // La clave maestra ha cambiado
+    const MPASS_CHANGED = 3;
+    // Comprobar la clave maestra con la clave del usuario anterior
     const MPASS_CHECKOLD = 4;
-    // Comprobar la clave maestra con la calve del usuario anterior
     /**
      * @var bool
      */
@@ -114,7 +113,7 @@ class UserPass extends UserBase
         }
 
         $query = /** @lang SQL */
-            'SELECT user_lastUpdateMPass FROM usrData WHERE user_id = ? LIMIT 1';
+            'SELECT lastUpdateMPass FROM User WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName(UserPassData::class);
@@ -124,21 +123,22 @@ class UserPass extends UserBase
         /** @var UserPassData $queryRes */
         $queryRes = DbWrapper::getResults($Data);
 
-        return ($queryRes !== false && $queryRes->getUserLastUpdateMPass() >= $configMPassTime);
+        return ($queryRes !== false && $queryRes->getLastUpdateMPass() >= $configMPassTime);
     }
 
     /**
      * Actualizar la clave maestra con la clave anterior del usuario
      *
      * @param string        $oldUserPass
-     * @param UserLoginData $UserData
+     * @param UserLoginData $UserData $UserData
      * @return bool
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public static function updateMasterPassFromOldPass($oldUserPass, UserLoginData $UserData)
     {
@@ -152,40 +152,42 @@ class UserPass extends UserBase
     /**
      * Comprueba la clave maestra del usuario.
      *
-     * @param UserLoginData $UserData
+     * @param UserLoginData $userLoginData
      * @param string        $key Clave de cifrado
      * @return bool
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public static function loadUserMPass(UserLoginData $UserData, $key = null)
+    public static function loadUserMPass(UserLoginData $userLoginData, $key = null)
     {
+        $userData = $userLoginData->getUserLoginResponse();
+
         $configHashMPass = ConfigDB::getValue('masterPwd');
 
         if (empty($configHashMPass)
-            || empty($UserData->getUserMPass())
-            || empty($UserData->getUserMKey())
+            || empty($userData->getMPass())
+            || empty($userData->getMKey())
         ) {
             return self::MPASS_NOTSET;
         }
 
-        if ($UserData->getUserLastUpdateMPass() < ConfigDB::getValue('lastupdatempass')) {
+        if ($userData->getLastUpdateMPass() < ConfigDB::getValue('lastupdatempass')) {
             return self::MPASS_CHANGED;
         }
 
-        if ($UserData->isUserIsMigrate() === 1) {
-            return UpgradeUser::upgradeMasterKey($UserData) ? self::MPASS_OK : self::MPASS_WRONG;
+        if ($userData->isIsMigrate() === 1) {
+            return UpgradeUser::upgradeMasterKey($userLoginData) ? self::MPASS_OK : self::MPASS_WRONG;
         }
 
-        if ($key === null && $UserData->isUserIsChangedPass() === 1) {
+        if ($key === null && $userData->isIsChangedPass() === 1) {
             return self::MPASS_CHECKOLD;
         }
 
         try {
-            $securedKey = Crypt::unlockSecuredKey($UserData->getUserMKey(), self::getKey($UserData, $key));
-            $userMPass = Crypt::decrypt($UserData->getUserMPass(), $securedKey, self::getKey($UserData, $key));
+            $securedKey = Crypt::unlockSecuredKey($userData->getMKey(), self::getKey($userLoginData, $key));
+            $userMPass = Crypt::decrypt($userData->getMPass(), $securedKey, self::getKey($userLoginData, $key));
 
             // Comprobamos el hash de la clave del usuario con la guardada
             if (Hash::checkHashKey($userMPass, $configHashMPass)) {
@@ -206,33 +208,39 @@ class UserPass extends UserBase
     /**
      * Obtener una clave de cifrado basada en la clave del usuario y un salt.
      *
-     * @param UserLoginData $UserData
+     * @param UserLoginData $userLoginData
      * @param string        $key Clave de cifrado
      * @return string con la clave de cifrado
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    private static function getKey(UserLoginData $UserData, $key = null)
+    private static function getKey(UserLoginData $userLoginData, $key = null)
     {
-        $pass = $key === null ? $UserData->getLoginPass() : $key;
+        $pass = $key === null ? $userLoginData->getLoginPass() : $key;
 
         /** @var ConfigData $ConfigData */
-        $ConfigData = Bootstrap::getDic()->get(ConfigData::class);
+        $ConfigData = Bootstrap::getContainer()->get(ConfigData::class);
 
-        return $pass . $UserData->getLogin() . $ConfigData->getPasswordSalt();
+        return $pass . $userLoginData->getLoginUser() . $ConfigData->getPasswordSalt();
     }
 
     /**
      * Actualizar la clave maestra del usuario en la BBDD.
      *
-     * @param string                 $userMPass con la clave maestra
-     * @param UserData|UserLoginData $UserData  $UserData
+     * @param string        $userMPass     con la clave maestra
+     * @param UserLoginData $userLoginData $userLoginData
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Exceptions\SPException
      * @throws QueryException
+     * @throws SPException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public static function updateUserMPass($userMPass, UserLoginData $UserData)
+    public static function updateUserMPass($userMPass, UserLoginData $userLoginData)
     {
+        $userData = $userLoginData->getUserLoginResponse();
         $configHashMPass = ConfigDB::getValue('masterPwd');
 
         if ($configHashMPass === false) {
@@ -247,36 +255,36 @@ class UserPass extends UserBase
         if (Hash::checkHashKey($userMPass, $configHashMPass)
             || \SP\Core\Upgrade\Crypt::migrateHash($userMPass)
         ) {
-            $securedKey = Crypt::makeSecuredKey(self::getKey($UserData));
-            $cryptMPass = Crypt::encrypt($userMPass, $securedKey, self::getKey($UserData));
+            $securedKey = Crypt::makeSecuredKey(self::getKey($userLoginData));
+            $cryptMPass = Crypt::encrypt($userMPass, $securedKey, self::getKey($userLoginData));
 
             if (!empty($cryptMPass)) {
                 if (strlen($securedKey) > 1000 || strlen($cryptMPass) > 1000) {
-                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false), '', LoginController::STATUS_INTERNAL_ERROR);
+                    throw new QueryException(SPException::SP_ERROR, __u('Error interno'), '', LoginController::STATUS_INTERNAL_ERROR);
                 }
 
                 $query = /** @lang SQL */
-                    'UPDATE usrData SET 
-                    user_mPass = ?,
-                    user_mKey = ?,
-                    user_lastUpdateMPass = UNIX_TIMESTAMP(),
-                    user_isMigrate = 0,
-                    user_isChangedPass = 0 
-                    WHERE user_id = ? LIMIT 1';
+                    'UPDATE User SET 
+                    mPass = ?,
+                    mKey = ?,
+                    lastUpdateMPass = UNIX_TIMESTAMP(),
+                    isMigrate = 0,
+                    isChangedPass = 0 
+                    WHERE id = ? LIMIT 1';
 
                 $Data = new QueryData();
                 $Data->setQuery($query);
                 $Data->addParam($cryptMPass);
                 $Data->addParam($securedKey);
-                $Data->addParam($UserData->getUserId());
+                $Data->addParam($userData->getId());
 
                 self::$clearUserMPass = $userMPass;
                 self::$gotMPass = true;
 
                 CryptSession::saveSessionKey($userMPass);
 
-                $UserData->setUserMPass($cryptMPass);
-                $UserData->setUserMKey($securedKey);
+                $userData->setMPass($cryptMPass);
+                $userData->setMKey($securedKey);
 
                 DbWrapper::getQuery($Data);
 
@@ -301,38 +309,38 @@ class UserPass extends UserBase
      * @param $userId
      * @param $userPass
      * @return $this
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws InvalidClassException
+     * @throws QueryException
+     * @throws SPException
+     * @throws \PHPMailer\PHPMailer\Exception
      * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\InvalidClassException
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function updateUserPass($userId, $userPass)
     {
         $this->setItemData(User::getItem()->getById($userId));
 
         $query = /** @lang SQL */
-            'UPDATE usrData SET
-            user_pass = ?,
-            user_hashSalt = \'\',
-            user_isChangePass = 0,
-            user_mPass = \'\',
-            user_mKey = \'\',
-            user_lastUpdate = NOW() 
-            WHERE user_id = ? LIMIT 1';
+            'UPDATE User SET
+            pass = ?,
+            hashSalt = \'\',
+            isChangePass = 0,
+            mPass = \'\',
+            mKey = \'\',
+            lastUpdate = NOW() 
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam(Hash::hashKey($userPass));
         $Data->addParam($userId);
-        $Data->setOnErrorMessage(__('Error al modificar la clave', false));
+        $Data->setOnErrorMessage(__u('Error al modificar la clave'));
 
         DbWrapper::getQuery($Data);
 
         $Log = new Log();
         $Log->getLogMessage()
-            ->setAction(__('Modificar Clave Usuario', false))
-            ->addDetails(__('Login', false), $this->itemData->getUserLogin());
+            ->setAction(__u('Modificar Clave Usuario'))
+            ->addDetails(__u('Login'), $this->itemData->getLogin());
         $Log->writeLog();
 
         Email::sendEmail($Log->getLogMessage());

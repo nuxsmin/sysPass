@@ -50,29 +50,29 @@ class Notice extends NoticeBase implements ItemInterface
     public function add()
     {
         $query = /** @lang SQL */
-            'INSERT INTO notices 
-            SET notice_type = ?,
-            notice_component = ?,
-            notice_description = ?,
-            notice_date = UNIX_TIMESTAMP(),
-            notice_checked = 0,
-            notice_userId = ?,
-            notice_sticky = ?,
-            notice_onlyAdmin = ?';
+            'INSERT INTO Notice 
+            SET type = ?,
+            component = ?,
+            description = ?,
+            date = UNIX_TIMESTAMP(),
+            checked = 0,
+            userId = ?,
+            sticky = ?,
+            onlyAdmin = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getNoticeType());
-        $Data->addParam($this->itemData->getNoticeComponent());
-        $Data->addParam($this->itemData->getNoticeDescription());
-        $Data->addParam($this->itemData->getNoticeUserId());
-        $Data->addParam($this->itemData->isNoticeSticky());
-        $Data->addParam($this->itemData->isNoticeOnlyAdmin());
+        $Data->addParam($this->itemData->getType());
+        $Data->addParam($this->itemData->getComponent());
+        $Data->addParam($this->itemData->getDescription());
+        $Data->addParam($this->itemData->getUserId());
+        $Data->addParam($this->itemData->isSticky());
+        $Data->addParam($this->itemData->isOnlyAdmin());
         $Data->setOnErrorMessage(__('Error al crear la notificación', false));
 
         DbWrapper::getQuery($Data);
 
-        $this->itemData->setNoticeId(DbWrapper::$lastId);
+        $this->itemData->setId(DbWrapper::$lastId);
 
         return $this;
     }
@@ -84,10 +84,10 @@ class Notice extends NoticeBase implements ItemInterface
      */
     public function delete($id)
     {
-        $query = 'DELETE FROM notices WHERE notice_id = ? AND BIN(notice_sticky) = 0 LIMIT 1';
+        $query = 'DELETE FROM Notice WHERE id = ? AND BIN(sticky) = 0 LIMIT 1';
 
-        if (SessionFactory::getUserData()->isUserIsAdminApp()) {
-            $query = 'DELETE FROM notices WHERE notice_id = ? LIMIT 1';
+        if (SessionFactory::getUserData()->isIsAdminApp()) {
+            $query = 'DELETE FROM Notice WHERE id = ? LIMIT 1';
         }
 
         $Data = new QueryData();
@@ -111,26 +111,26 @@ class Notice extends NoticeBase implements ItemInterface
     public function update()
     {
         $query = /** @lang SQL */
-            'UPDATE notices 
-            SET notice_type = ?,
-            notice_component = ?,
-            notice_description = ?,
-            notice_date = UNIX_TIMESTAMP(),
-            notice_checked = 0,
-            notice_userId = ?,
-            notice_sticky = ?,
-            notice_onlyAdmin = ? 
-            WHERE notice_id = ? LIMIT 1';
+            'UPDATE Notice 
+            SET type = ?,
+            component = ?,
+            description = ?,
+            date = UNIX_TIMESTAMP(),
+            checked = 0,
+            userId = ?,
+            sticky = ?,
+            onlyAdmin = ? 
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getNoticeType());
-        $Data->addParam($this->itemData->getNoticeComponent());
-        $Data->addParam($this->itemData->getNoticeDescription());
-        $Data->addParam($this->itemData->getNoticeUserId());
-        $Data->addParam($this->itemData->isNoticeSticky());
-        $Data->addParam($this->itemData->isNoticeOnlyAdmin());
-        $Data->addParam($this->itemData->getNoticeId());
+        $Data->addParam($this->itemData->getType());
+        $Data->addParam($this->itemData->getComponent());
+        $Data->addParam($this->itemData->getDescription());
+        $Data->addParam($this->itemData->getUserId());
+        $Data->addParam($this->itemData->isSticky());
+        $Data->addParam($this->itemData->isOnlyAdmin());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al modificar la notificación', false));
 
         DbWrapper::getQuery($Data);
@@ -146,17 +146,17 @@ class Notice extends NoticeBase implements ItemInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT notice_id, 
-            notice_type,
-            notice_component,
-            notice_description,
-            FROM_UNIXTIME(notice_date) AS notice_date,
-            notice_userId,
-            BIN(notice_checked) AS notice_checked,
-            BIN(notice_sticky) as notice_sticky,
-            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
-            FROM notices 
-            WHERE notice_id = ? LIMIT 1';
+            'SELECT id, 
+            type,
+            component,
+            description,
+            FROM_UNIXTIME(date) AS notice_date,
+            userId,
+            BIN(checked) AS notice_checked,
+            BIN(sticky) as notice_sticky,
+            BIN(onlyAdmin) AS notice_onlyAdmin 
+            FROM Notice 
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -179,16 +179,16 @@ class Notice extends NoticeBase implements ItemInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT notice_id 
+            'SELECT id 
             notice_type,
-            notice_component,
-            notice_description,
-            FROM_UNIXTIME(notice_date) AS notice_date,
-            notice_userId,
-            BIN(notice_checked) AS notice_checked,
-            BIN(notice_sticky) as notice_sticky,
-            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
-            FROM notices';
+            component,
+            description,
+            FROM_UNIXTIME(date) AS notice_date,
+            userId,
+            BIN(checked) AS notice_checked,
+            BIN(sticky) as notice_sticky,
+            BIN(onlyAdmin) AS notice_onlyAdmin 
+            FROM Notice';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -238,7 +238,7 @@ class Notice extends NoticeBase implements ItemInterface
     public function setChecked($id)
     {
         $query = /** @lang SQL */
-            'UPDATE notices SET notice_checked = 1 WHERE notice_id = ? LIMIT 1';
+            'UPDATE Notice SET checked = 1 WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -247,7 +247,7 @@ class Notice extends NoticeBase implements ItemInterface
 
         DbWrapper::getQuery($Data);
 
-        $this->itemData->setNoticeId(DbWrapper::$lastId);
+        $this->itemData->setId(DbWrapper::$lastId);
 
         return $this;
     }
@@ -261,24 +261,24 @@ class Notice extends NoticeBase implements ItemInterface
     public function getByUserCurrentDate()
     {
         $query = /** @lang SQL */
-            'SELECT notice_type,
-            notice_component,
-            notice_description,
-            notice_date,
-            notice_userId,
-            BIN(notice_checked) AS notice_checked,
-            BIN(notice_sticky) as notice_sticky,
-            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
-            FROM notices 
-            WHERE notice_component = ? AND 
-            (UNIX_TIMESTAMP() - notice_date) <= 86400 AND
-            notice_userId = ?';
+            'SELECT type,
+            component,
+            description,
+            date,
+            userId,
+            BIN(checked) AS notice_checked,
+            BIN(sticky) as notice_sticky,
+            BIN(onlyAdmin) AS notice_onlyAdmin 
+            FROM Notice 
+            WHERE component = ? AND 
+            (UNIX_TIMESTAMP() - date) <= 86400 AND
+            userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClassName($this->getDataModel());
-        $Data->addParam($this->itemData->getNoticeComponent());
-        $Data->addParam($this->itemData->getNoticeUserId());
+        $Data->addParam($this->itemData->getComponent());
+        $Data->addParam($this->itemData->getUserId());
 
         try {
             $queryRes = DbWrapper::getResultsArray($Data);
@@ -296,23 +296,23 @@ class Notice extends NoticeBase implements ItemInterface
     public function getAllForUser()
     {
         $query = /** @lang SQL */
-            'SELECT notice_id,
-            notice_type,
-            notice_component,
-            notice_description,
-            FROM_UNIXTIME(notice_date) AS notice_date,
-            notice_userId,
-            BIN(notice_checked) AS notice_checked,
-            BIN(notice_sticky) as notice_sticky,
-            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
-            FROM notices 
-            WHERE notice_userId = ? OR (notice_userId = NULL AND BIN(notice_onlyAdmin) = 0) OR BIN(notice_sticky) = 1
-            ORDER BY notice_date DESC ';
+            'SELECT id,
+            type,
+            component,
+            description,
+            FROM_UNIXTIME(date) AS notice_date,
+            userId,
+            BIN(checked) AS notice_checked,
+            BIN(sticky) as notice_sticky,
+            BIN(onlyAdmin) AS notice_onlyAdmin 
+            FROM Notice 
+            WHERE userId = ? OR (userId = NULL AND BIN(onlyAdmin) = 0) OR BIN(sticky) = 1
+            ORDER BY date DESC ';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClassName($this->getDataModel());
-        $Data->addParam(SessionFactory::getUserData()->getUserId());
+        $Data->addParam(SessionFactory::getUserData()->getId());
 
         try {
             $queryRes = DbWrapper::getResultsArray($Data);
@@ -325,30 +325,30 @@ class Notice extends NoticeBase implements ItemInterface
 
     /**
      * @return NoticeData[]
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
     public function getAllActiveForUser()
     {
         $query = /** @lang SQL */
-            'SELECT notice_id,
-            notice_type,
-            notice_component,
-            notice_description,
-            FROM_UNIXTIME(notice_date) AS notice_date,
-            notice_userId,
-            BIN(notice_checked) AS notice_checked,
-            BIN(notice_sticky) as notice_sticky,
-            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
-            FROM notices 
-            WHERE (notice_userId = ? OR BIN(notice_sticky) = 1) 
-            AND BIN(notice_onlyAdmin) = 0 
-            AND BIN(notice_checked) = 0
-            ORDER BY notice_date DESC ';
+            'SELECT id,
+            type,
+            component,
+            description,
+            FROM_UNIXTIME(date) AS notice_date,
+            userId,
+            BIN(checked) AS notice_checked,
+            BIN(sticky) as notice_sticky,
+            BIN(onlyAdmin) AS notice_onlyAdmin 
+            FROM Notice 
+            WHERE (userId = ? OR BIN(sticky) = 1) 
+            AND BIN(onlyAdmin) = 0 
+            AND BIN(checked) = 0
+            ORDER BY date DESC ';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClassName($this->getDataModel());
-        $Data->addParam(SessionFactory::getUserData()->getUserId());
+        $Data->addParam(SessionFactory::getUserData()->getId());
 
         try {
             $queryRes = DbWrapper::getResultsArray($Data);
@@ -368,17 +368,17 @@ class Notice extends NoticeBase implements ItemInterface
     public function getByIdBatch(array $ids)
     {
         $query = /** @lang SQL */
-            'SELECT notice_id, 
-            notice_type,
-            notice_component,
-            notice_description,
-            FROM_UNIXTIME(notice_date) AS notice_date,
-            notice_userId,
-            BIN(notice_checked) AS notice_checked,
-            BIN(notice_sticky) as notice_sticky,
-            BIN(notice_onlyAdmin) AS notice_onlyAdmin 
-            FROM notices 
-            WHERE notice_id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT id, 
+            type,
+            component,
+            description,
+            FROM_UNIXTIME(date) AS notice_date,
+            userId,
+            BIN(checked) AS notice_checked,
+            BIN(sticky) as notice_sticky,
+            BIN(onlyAdmin) AS notice_onlyAdmin 
+            FROM Notice 
+            WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
         $Data->setQuery($query);

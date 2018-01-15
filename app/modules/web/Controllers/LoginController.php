@@ -31,7 +31,7 @@ use SP\Html\Html;
 use SP\Http\Response;
 use SP\Log\Log;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
-use SP\Services\LoginService;
+use SP\Services\Auth\LoginService;
 use SP\Util\Json;
 
 /**
@@ -66,7 +66,7 @@ class LoginController extends ControllerBase
             $Log = new Log();
             $LogMessage = $Log->getLogMessage();
             $LogMessage->setAction(__u('Finalizar sesión'));
-            $LogMessage->addDetails(__u('Usuario'), SessionFactory::getUserData()->getUserLogin());
+            $LogMessage->addDetails(__u('Usuario'), SessionFactory::getUserData()->getLogin());
             $LogMessage->addDetails(__u('Tiempo inactivo'), $inactiveTime . ' min.');
             $LogMessage->addDetails(__u('Tiempo total'), $totalTime . ' min.');
             $Log->writeLog();

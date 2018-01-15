@@ -178,10 +178,10 @@ class SyspassImport extends ImportBase
             if (isset($categoryNode->tagName)) {
                 switch ($categoryNode->tagName) {
                     case 'name':
-                        $CategoryData->setCategoryName($categoryNode->nodeValue);
+                        $CategoryData->setName($categoryNode->nodeValue);
                         break;
                     case 'description':
-                        $CategoryData->setCategoryDescription($categoryNode->nodeValue);
+                        $CategoryData->setDescription($categoryNode->nodeValue);
                         break;
                 }
             }
@@ -189,7 +189,7 @@ class SyspassImport extends ImportBase
 
         $this->addCategory($CategoryData);
 
-        $this->categories[$Category->getAttribute('id')] = $CategoryData->getCategoryId();
+        $this->categories[$Category->getAttribute('id')] = $CategoryData->getId();
     }
 
     /**
@@ -212,10 +212,10 @@ class SyspassImport extends ImportBase
             if (isset($customerNode->tagName)) {
                 switch ($customerNode->tagName) {
                     case 'name':
-                        $CustomerData->setCustomerName($customerNode->nodeValue);
+                        $CustomerData->setName($customerNode->nodeValue);
                         break;
                     case 'description':
-                        $CustomerData->setCustomerDescription($customerNode->nodeValue);
+                        $CustomerData->setDescription($customerNode->nodeValue);
                         break;
                 }
             }
@@ -223,7 +223,7 @@ class SyspassImport extends ImportBase
 
         $this->addCustomer($CustomerData);
 
-        $this->customers[$Customer->getAttribute('id')] = $CustomerData->getCustomerId();
+        $this->customers[$Customer->getAttribute('id')] = $CustomerData->getId();
     }
 
     /**
@@ -246,7 +246,7 @@ class SyspassImport extends ImportBase
             if (isset($tagNode->tagName)) {
                 switch ($tagNode->tagName) {
                     case 'name':
-                        $TagData->setTagName($tagNode->nodeValue);
+                        $TagData->setName($tagNode->nodeValue);
                         break;
                 }
             }
@@ -254,7 +254,7 @@ class SyspassImport extends ImportBase
 
         $this->addTag($TagData);
 
-        $this->tags[$Tag->getAttribute('id')] = $TagData->getTagId();
+        $this->tags[$Tag->getAttribute('id')] = $TagData->getId();
     }
 
     /**
@@ -277,28 +277,28 @@ class SyspassImport extends ImportBase
             if (isset($accountNode->tagName)) {
                 switch ($accountNode->tagName) {
                     case 'name';
-                        $AccountData->setAccountName($accountNode->nodeValue);
+                        $AccountData->setName($accountNode->nodeValue);
                         break;
                     case 'login';
-                        $AccountData->setAccountLogin($accountNode->nodeValue);
+                        $AccountData->setLogin($accountNode->nodeValue);
                         break;
                     case 'categoryId';
-                        $AccountData->setAccountCategoryId($this->categories[(int)$accountNode->nodeValue]);
+                        $AccountData->setCategoryId($this->categories[(int)$accountNode->nodeValue]);
                         break;
                     case 'customerId';
-                        $AccountData->setAccountCustomerId($this->customers[(int)$accountNode->nodeValue]);
+                        $AccountData->setClientId($this->customers[(int)$accountNode->nodeValue]);
                         break;
                     case 'url';
-                        $AccountData->setAccountUrl($accountNode->nodeValue);
+                        $AccountData->setUrl($accountNode->nodeValue);
                         break;
                     case 'pass';
-                        $AccountData->setAccountPass($accountNode->nodeValue);
+                        $AccountData->setPass($accountNode->nodeValue);
                         break;
                     case 'key';
-                        $AccountData->setAccountKey($accountNode->nodeValue);
+                        $AccountData->setKey($accountNode->nodeValue);
                         break;
                     case 'notes';
-                        $AccountData->setAccountNotes($accountNode->nodeValue);
+                        $AccountData->setNotes($accountNode->nodeValue);
                         break;
                     case 'tags':
                         $tags = $this->processAccountTags($accountNode->childNodes);

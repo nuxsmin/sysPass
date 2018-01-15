@@ -46,7 +46,7 @@ class ApiTokenSearch extends ApiTokenBase implements ItemSearchInterface
         $query = /** @lang SQL */
             'SELECT authtoken_id,
             authtoken_userId,
-            authtoken_actionId, 
+            actionId, 
             authtoken_token,
             CONCAT(user_name, \' (\', user_login, \')\') AS user_login 
             FROM authTokens 

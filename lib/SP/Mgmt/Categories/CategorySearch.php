@@ -47,12 +47,12 @@ class CategorySearch extends CategoryBase implements ItemSearchInterface
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
         $Data = new QueryData();
-        $Data->setSelect('category_id, category_name, category_description');
+        $Data->setSelect('id, name, description');
         $Data->setFrom('categories');
-        $Data->setOrder('category_name');
+        $Data->setOrder('name');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('category_name LIKE ? OR category_description LIKE ?');
+            $Data->setWhere('name LIKE ? OR description LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);

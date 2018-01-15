@@ -25,7 +25,7 @@
 namespace SP\Mgmt\Groups;
 
 use SP\Core\Exceptions\InvalidClassException;
-use SP\DataModel\GroupUsersData;
+use SP\DataModel\UserToUserGroupData;
 use SP\Mgmt\ItemBaseInterface;
 use SP\Mgmt\ItemBaseTrait;
 
@@ -46,6 +46,6 @@ abstract class GroupUsersBase implements ItemBaseInterface
      */
     protected function init()
     {
-        $this->setDataModel(GroupUsersData::class);
+        $this->setDataModel(UserToUserGroupData::class);
     }
 }

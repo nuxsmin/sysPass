@@ -48,16 +48,16 @@ class AccountTags
     public static function getTags(AccountData $accountData)
     {
         $query = /** @lang SQL */
-            'SELECT tag_id, tag_name
-                FROM accTags
-                JOIN tags ON tag_id = acctag_tagId
-                WHERE acctag_accountId = ?
-                ORDER BY tag_name';
+            'SELECT T.id, T.name
+                FROM AccountToTag AT
+                INNER JOIN Tag T ON AT.tagId = T.id
+                WHERE AT.accountId = ?
+                ORDER BY T.name';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setUseKeyPair(true);
-        $Data->addParam($accountData->getAccountId());
+        $Data->addParam($accountData->getId());
 
         return DbWrapper::getResultsArray($Data);
     }
@@ -71,11 +71,11 @@ class AccountTags
     public static function getTagsForId($id)
     {
         $query = /** @lang SQL */
-            'SELECT tag_id, tag_name
-                FROM accTags
-                JOIN tags ON tag_id = acctag_tagId
-                WHERE acctag_accountId = ?
-                ORDER BY tag_name';
+            'SELECT T.id, T.name
+                FROM AccountToTag AT
+                INNER JOIN Tag T ON AccountToTag.tagId = T.id
+                WHERE AT.accountId = ?
+                ORDER BY T.name';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -106,14 +106,14 @@ class AccountTags
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO accTags (acctag_accountId, acctag_tagId) VALUES ' . implode(',', array_fill(0, $numTags, '(?,?)'));
+            'INSERT INTO AccountToTag (accountId, tagId) VALUES ' . implode(',', array_fill(0, $numTags, '(?,?)'));
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setOnErrorMessage(__('Error al añadir las etiquetas de la cuenta', false));
 
         foreach ($accountData->getTags() as $tag) {
-            $Data->addParam($accountData->getAccountId());
+            $Data->addParam($accountData->getId());
             $Data->addParam($tag);
         }
 
@@ -138,14 +138,14 @@ class AccountTags
             $params = implode(',', array_fill(0, $numTags, '?'));
 
             $query = /** @lang SQL */
-                'DELETE FROM accTags WHERE acctag_accountId = ? AND acctag_tagId NOT IN (' . $params . ')';
+                'DELETE FROM AccountToTag WHERE accountId = ? AND tagId NOT IN (' . $params . ')';
 
-            $Data->setParams(array_merge((array)$accountData->getAccountId(), $accountData->getTags()));
+            $Data->setParams(array_merge((array)$accountData->getId(), $accountData->getTags()));
         } else {
             $query = /** @lang SQL */
-                'DELETE FROM accTags WHERE acctag_accountId = ?';
+                'DELETE FROM AccountToTag WHERE accountId = ?';
 
-            $Data->addParam($accountData->getAccountId());
+            $Data->addParam($accountData->getId());
         }
 
         $Data->setQuery($query);

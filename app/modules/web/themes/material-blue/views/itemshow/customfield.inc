@@ -1,7 +1,7 @@
 <?php
 
 /** @var $icons \Theme\Icons */
-/** @var \SP\DataModel\CustomFieldDefData $field */
+/** @var \SP\DataModel\CustomFieldDefinitionData $field */
 
 ?>
 

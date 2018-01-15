@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,7 +26,7 @@ namespace SP\Mgmt\Groups;
 
 defined('APP_ROOT') || die();
 
-use SP\DataModel\GroupData;
+use SP\DataModel\UserGroupData;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 
@@ -41,20 +41,19 @@ class GroupAccountsUtil
      * Obtiene el listado con el nombre de los grupos de una cuenta.
      *
      * @param int $accountId con el Id de la cuenta
-     * @return GroupData[]
+     * @return UserGroupData[]
      */
     public static function getGroupsInfoForAccount($accountId)
     {
         $query = /** @lang SQL */
-            'SELECT usergroup_id,
-            usergroup_name
-            FROM accGroups
-            JOIN usrGroups ON accgroup_groupId = usergroup_id
-            WHERE accgroup_accountId = ?
-            ORDER BY usergroup_name';
+            'SELECT G.id, G.name
+            FROM AccountToUserGroup AUG
+            INNER JOIN UserGroup G ON AUG.userGroupId = G.id
+            WHERE AUG.accountId = ?
+            ORDER BY G.name';
 
         $Data = new QueryData();
-        $Data->setMapClassName(GroupData::class);
+        $Data->setMapClassName(UserGroupData::class);
         $Data->setQuery($query);
         $Data->addParam($accountId);
 
@@ -74,7 +73,7 @@ class GroupAccountsUtil
         $groups = [];
 
         foreach ($GroupAccountsData as $Group) {
-            $groups[] = (int)$Group->getAccgroupGroupId();
+            $groups[] = (int)$Group->getUserGroupId();
         }
 
         return $groups;

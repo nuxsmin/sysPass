@@ -1095,9 +1095,9 @@ sysPass.Actions = function (Common) {
                     Common.msg.out(json);
                 }
 
-                Common.sk.set(json.sk);
+                Common.sk.set(json.data.sk);
 
-                $("#res-content").empty().html(json.html);
+                $("#res-content").empty().html(json.data.html);
             });
         },
         save: function ($obj) {

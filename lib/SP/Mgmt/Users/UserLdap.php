@@ -78,7 +78,7 @@ class UserLdap extends User
 
         $groupId = $this->ConfigData->getLdapDefaultGroup();
         $profileId = $this->ConfigData->getLdapDefaultProfile();
-        $this->itemData->setUserIsDisabled(($groupId === 0 || $profileId === 0) ? 1 : 0);
+        $this->itemData->setIsDisabled(($groupId === 0 || $profileId === 0) ? 1 : 0);
 
         $query = /** @lang SQL */
             'INSERT INTO usrData SET
@@ -97,19 +97,19 @@ class UserLdap extends User
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserName());
-        $Data->addParam($this->itemData->getUserLogin());
-        $Data->addParam($this->itemData->getUserEmail());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam($this->itemData->getEmail());
         $Data->addParam(__('Usuario de LDAP'));
         $Data->addParam($groupId);
         $Data->addParam($profileId);
-        $Data->addParam((int)$this->itemData->isUserIsDisabled());
-        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
+        $Data->addParam((int)$this->itemData->isIsDisabled());
+        $Data->addParam(Hash::hashKey($this->itemData->getPass()));
         $Data->setOnErrorMessage(__('Error al guardar los datos de LDAP', false));
 
         DbWrapper::getQuery($Data);
 
-        $this->itemData->setUserId(DbWrapper::getLastId());
+        $this->itemData->setId(DbWrapper::getLastId());
 
         if (!$groupId || !$profileId) {
             $LogEmail = new LogMessage();
@@ -117,13 +117,13 @@ class UserLdap extends User
             $LogEmail->addDescription(__('Su cuenta está pendiente de activación.', false));
             $LogEmail->addDescription(__('En breve recibirá un email de confirmación.', false));
 
-            Email::sendEmail($LogEmail, $this->itemData->getUserEmail(), false);
+            Email::sendEmail($LogEmail, $this->itemData->getEmail(), false);
         }
 
         $Log = new Log();
         $Log->getLogMessage()
             ->setAction(__('Nuevo usuario de LDAP', false))
-            ->addDescription(sprintf('%s (%s)', $this->itemData->getUserName(), $this->itemData->getUserLogin()));
+            ->addDescription(sprintf('%s (%s)', $this->itemData->getName(), $this->itemData->getLogin()));
         $Log->writeLog();
 
         Email::sendEmail($Log->getLogMessage());
@@ -147,9 +147,9 @@ class UserLdap extends User
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserLogin());
-        $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam($this->itemData->getUserEmail());
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam($this->itemData->getEmail());
+        $Data->addParam($this->itemData->getEmail());
 
         DbWrapper::getQuery($Data);
 
@@ -178,15 +178,15 @@ class UserLdap extends User
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserName());
-        $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam($this->itemData->getUserNotes());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getEmail());
+        $Data->addParam($this->itemData->getNotes());
         $Data->addParam($this->itemData->getUserGroupId());
         $Data->addParam($this->itemData->getUserProfileId());
-        $Data->addParam($this->itemData->isUserIsAdminApp());
-        $Data->addParam($this->itemData->isUserIsAdminAcc());
-        $Data->addParam($this->itemData->isUserIsDisabled());
-        $Data->addParam($this->itemData->getUserId());
+        $Data->addParam($this->itemData->isIsAdminApp());
+        $Data->addParam($this->itemData->isIsAdminAcc());
+        $Data->addParam($this->itemData->isIsDisabled());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al actualizar el usuario', false));
 
         DbWrapper::getQuery($Data);
@@ -213,9 +213,9 @@ class UserLdap extends User
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam(Hash::hashKey($this->itemData->getLoginPass()));
-        $Data->addParam($this->itemData->getUserName());
-        $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam($this->itemData->getUserLogin());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getEmail());
+        $Data->addParam($this->itemData->getLogin());
         $Data->setOnErrorMessage(__('Error al actualizar la clave del usuario en la BBDD', false));
 
         DbWrapper::getQuery($Data);

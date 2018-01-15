@@ -44,9 +44,9 @@ class PluginDataStore
     public static function save(PluginInterface $Plugin)
     {
         $PluginData = new PluginData();
-        $PluginData->setPluginName($Plugin->getName());
-        $PluginData->setPluginEnabled(1);
-        $PluginData->setPluginData(serialize($Plugin->getData()));
+        $PluginData->setName($Plugin->getName());
+        $PluginData->setEnabled(1);
+        $PluginData->setData(serialize($Plugin->getData()));
 
         Plugin::getItem($PluginData)->update();
     }
@@ -66,8 +66,8 @@ class PluginDataStore
 
         if (!is_object($PluginData)) {
             $PluginData = new PluginData();
-            $PluginData->setPluginName($Plugin->getName());
-            $PluginData->setPluginEnabled(0);
+            $PluginData->setName($Plugin->getName());
+            $PluginData->setEnabled(0);
 
             Plugin::getItem($PluginData)->add();
 
@@ -80,12 +80,12 @@ class PluginDataStore
             return false;
         }
 
-        $data = $PluginData->getPluginData();
+        $data = $PluginData->getData();
 
         if ($data !== '') {
-            $Plugin->setData(unserialize($PluginData->getPluginData()));
+            $Plugin->setData(unserialize($PluginData->getData()));
         }
 
-        return (bool)$PluginData->getPluginEnabled();
+        return (bool)$PluginData->getEnabled();
     }
 }

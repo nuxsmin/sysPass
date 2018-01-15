@@ -251,9 +251,9 @@ class XmlExport
             $metaGenerator = $this->xml->createElement('Generator', 'sysPass');
             $metaVersion = $this->xml->createElement('Version', Util::getVersionStringNormalized());
             $metaTime = $this->xml->createElement('Time', time());
-            $metaUser = $this->xml->createElement('User', SessionFactory::getUserData()->getUserLogin());
-            $metaUser->setAttribute('id', SessionFactory::getUserData()->getUserId());
-            $metaGroup = $this->xml->createElement('Group', SessionFactory::getUserData()->getUsergroupName());
+            $metaUser = $this->xml->createElement('User', SessionFactory::getUserData()->getLogin());
+            $metaUser->setAttribute('id', SessionFactory::getUserData()->getId());
+            $metaGroup = $this->xml->createElement('Group', SessionFactory::getUserData()->getUserGroupName());
             $metaGroup->setAttribute('id', SessionFactory::getUserData()->getUserGroupId());
 
             $nodeMeta->appendChild($metaGenerator);
@@ -288,12 +288,12 @@ class XmlExport
 
             foreach ($categories as $CategoryData) {
                 /** @var $CategoryData CategoryData */
-                $categoryName = $this->xml->createElement('name', $this->escapeChars($CategoryData->getCategoryName()));
-                $categoryDescription = $this->xml->createElement('description', $this->escapeChars($CategoryData->getCategoryDescription()));
+                $categoryName = $this->xml->createElement('name', $this->escapeChars($CategoryData->getName()));
+                $categoryDescription = $this->xml->createElement('description', $this->escapeChars($CategoryData->getDescription()));
 
                 // Crear el nodo de categoría
                 $nodeCategory = $this->xml->createElement('Category');
-                $nodeCategory->setAttribute('id', $CategoryData->getCategoryId());
+                $nodeCategory->setAttribute('id', $CategoryData->getId());
                 $nodeCategory->appendChild($categoryName);
                 $nodeCategory->appendChild($categoryDescription);
 
@@ -388,12 +388,12 @@ class XmlExport
             $nodeCustomers = $this->xml->createElement('Customers');
 
             foreach ($customers as $CustomerData) {
-                $customerName = $this->xml->createElement('name', $this->escapeChars($CustomerData->getCustomerName()));
-                $customerDescription = $this->xml->createElement('description', $this->escapeChars($CustomerData->getCustomerDescription()));
+                $customerName = $this->xml->createElement('name', $this->escapeChars($CustomerData->getName()));
+                $customerDescription = $this->xml->createElement('description', $this->escapeChars($CustomerData->getDescription()));
 
                 // Crear el nodo de clientes
                 $nodeCustomer = $this->xml->createElement('Customer');
-                $nodeCustomer->setAttribute('id', $CustomerData->getCustomerId());
+                $nodeCustomer->setAttribute('id', $CustomerData->getId());
                 $nodeCustomer->appendChild($customerName);
                 $nodeCustomer->appendChild($customerDescription);
 
@@ -425,11 +425,11 @@ class XmlExport
             $nodeTags = $this->xml->createElement('Tags');
 
             foreach ($Tags as $TagData) {
-                $tagName = $this->xml->createElement('name', $this->escapeChars($TagData->getTagName()));
+                $tagName = $this->xml->createElement('name', $this->escapeChars($TagData->getName()));
 
                 // Crear el nodo de etiquetas
                 $nodeTag = $this->xml->createElement('Tag');
-                $nodeTag->setAttribute('id', $TagData->getTagId());
+                $nodeTag->setAttribute('id', $TagData->getId());
                 $nodeTag->appendChild($tagName);
 
                 // Añadir etiqueta al nodo de etiquetas

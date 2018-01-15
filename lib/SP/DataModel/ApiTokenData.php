@@ -36,140 +36,132 @@ class ApiTokenData extends DataModelBase implements DataModelInterface
     /**
      * @var int
      */
-    public $authtoken_id;
+    public $id;
     /**
      * @var Vault
      */
-    public $authtoken_vault;
+    public $vault;
     /**
      * @var int
      */
-    public $authtoken_userId;
+    public $userId;
     /**
      * @var string
      */
-    public $authtoken_token = '';
+    public $token = '';
     /**
      * @var int
      */
-    public $authtoken_createdBy;
+    public $createdBy;
     /**
      * @var int
      */
-    public $authtoken_startDate;
+    public $startDate;
     /**
      * @var int
      */
-    public $authtoken_actionId;
+    public $actionId;
     /**
      * @var string
      */
-    public $authtoken_hash;
-
-    /**
-     * @return int
-     */
-    public function getAuthtokenId()
-    {
-        return (int)$this->authtoken_id;
-    }
-
-    /**
-     * @param int $authtoken_id
-     */
-    public function setAuthtokenId($authtoken_id)
-    {
-        $this->authtoken_id = (int)$authtoken_id;
-    }
-
-    /**
-     * @return Vault
-     */
-    public function getAuthtokenVault()
-    {
-        return $this->authtoken_vault;
-    }
-
-    /**
-     * @param Vault $authtoken_vault
-     */
-    public function setAuthtokenVault(Vault $authtoken_vault)
-    {
-        $this->authtoken_vault = $authtoken_vault;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAuthtokenUserId()
-    {
-        return (int)$this->authtoken_userId;
-    }
-
-    /**
-     * @param int $authtoken_userId
-     */
-    public function setAuthtokenUserId($authtoken_userId)
-    {
-        $this->authtoken_userId = (int)$authtoken_userId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAuthtokenToken()
-    {
-        return $this->authtoken_token;
-    }
-
-    /**
-     * @param string $authtoken_token
-     */
-    public function setAuthtokenToken($authtoken_token)
-    {
-        $this->authtoken_token = $authtoken_token;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAuthtokenCreatedBy()
-    {
-        return (int)$this->authtoken_createdBy;
-    }
-
-    /**
-     * @param int $authtoken_createdBy
-     */
-    public function setAuthtokenCreatedBy($authtoken_createdBy)
-    {
-        $this->authtoken_createdBy = (int)$authtoken_createdBy;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAuthtokenStartDate()
-    {
-        return (int)$this->authtoken_startDate;
-    }
-
-    /**
-     * @param int $authtoken_startDate
-     */
-    public function setAuthtokenStartDate($authtoken_startDate)
-    {
-        $this->authtoken_startDate = (int)$authtoken_startDate;
-    }
+    public $hash;
 
     /**
      * @return int
      */
     public function getId()
     {
-        return (int)$this->authtoken_id;
+        return (int)$this->id;
     }
 
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = (int)$id;
+    }
+
+    /**
+     * @return Vault
+     */
+    public function getVault()
+    {
+        return $this->vault;
+    }
+
+    /**
+     * @param Vault $vault
+     */
+    public function setVault(Vault $vault)
+    {
+        $this->vault = $vault;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserId()
+    {
+        return (int)$this->userId;
+    }
+
+    /**
+     * @param int $userId
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = (int)$userId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param string $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCreatedBy()
+    {
+        return (int)$this->createdBy;
+    }
+
+    /**
+     * @param int $createdBy
+     */
+    public function setCreatedBy($createdBy)
+    {
+        $this->createdBy = (int)$createdBy;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStartDate()
+    {
+        return (int)$this->startDate;
+    }
+
+    /**
+     * @param int $startDate
+     */
+    public function setStartDate($startDate)
+    {
+        $this->startDate = (int)$startDate;
+    }
+    
     /**
      * @return string
      */
@@ -181,32 +173,32 @@ class ApiTokenData extends DataModelBase implements DataModelInterface
     /**
      * @return int
      */
-    public function getAuthtokenActionId()
+    public function getActionId()
     {
-        return (int)$this->authtoken_actionId;
+        return (int)$this->actionId;
     }
 
     /**
-     * @param int $authtoken_actionId
+     * @param int $actionId
      */
-    public function setAuthtokenActionId($authtoken_actionId)
+    public function setActionId($actionId)
     {
-        $this->authtoken_actionId = (int)$authtoken_actionId;
+        $this->actionId = (int)$actionId;
     }
 
     /**
      * @return string
      */
-    public function getAuthtokenHash()
+    public function getHash()
     {
-        return $this->authtoken_hash;
+        return $this->hash;
     }
 
     /**
-     * @param string $authtoken_hash
+     * @param string $hash
      */
-    public function setAuthtokenHash($authtoken_hash)
+    public function setHash($hash)
     {
-        $this->authtoken_hash = $authtoken_hash;
+        $this->hash = $hash;
     }
 }

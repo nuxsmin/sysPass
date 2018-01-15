@@ -127,45 +127,45 @@ abstract class ImportBase implements ImportInterface
      */
     protected function addAccount(AccountExtData $AccountData)
     {
-        if ($AccountData->getAccountCategoryId() === 0) {
+        if ($AccountData->getCategoryId() === 0) {
             Log::writeNewLog(__FUNCTION__, __('Id de categoría no definido. No es posible importar cuenta.', false), Log::INFO);
             return false;
         }
 
-        if ($AccountData->getAccountCustomerId() === 0) {
+        if ($AccountData->getClientId() === 0) {
             Log::writeNewLog(__FUNCTION__, __('Id de cliente no definido. No es posible importar cuenta.', false), Log::INFO);
             return false;
         }
 
         try {
-            $AccountData->setAccountUserId($this->ImportParams->getDefaultUser());
-            $AccountData->setAccountUserGroupId($this->ImportParams->getDefaultGroup());
+            $AccountData->setUserId($this->ImportParams->getDefaultUser());
+            $AccountData->setUserGroupId($this->ImportParams->getDefaultGroup());
 
             if ($this->mPassValidHash === false && $this->ImportParams->getImportMasterPwd() !== '') {
                 if ($this->version >= 210) {
-                    $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
-                    $pass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $this->ImportParams->getImportMasterPwd());
+                    $securedKey = Crypt::unlockSecuredKey($AccountData->getKey(), $this->ImportParams->getImportMasterPwd());
+                    $pass = Crypt::decrypt($AccountData->getPass(), $securedKey, $this->ImportParams->getImportMasterPwd());
                 } else {
-                    $pass = OldCrypt::getDecrypt($AccountData->getAccountPass(), $AccountData->getAccountKey(), $this->ImportParams->getImportMasterPwd());
+                    $pass = OldCrypt::getDecrypt($AccountData->getPass(), $AccountData->getKey(), $this->ImportParams->getImportMasterPwd());
                 }
 
-                $AccountData->setAccountPass($pass);
-                $AccountData->setAccountKey('');
+                $AccountData->setPass($pass);
+                $AccountData->setKey('');
             }
 
-            $encrypt = $AccountData->getAccountKey() === '';
+            $encrypt = $AccountData->getKey() === '';
 
             $Account = new Account($AccountData);
             $Account->createAccount($encrypt);
 
-            $this->LogMessage->addDetails(__('Cuenta creada', false), $AccountData->getAccountName());
+            $this->LogMessage->addDetails(__('Cuenta creada', false), $AccountData->getName());
             $this->counter++;
         } catch (SPException $e) {
-            $this->LogMessage->addDetails($e->getMessage(), $AccountData->getAccountName());
+            $this->LogMessage->addDetails($e->getMessage(), $AccountData->getName());
             $this->LogMessage->addDetails(__('Error', false), $e->getHint());
         } catch (\Exception $e) {
             $this->LogMessage->addDetails(__('Error', false), $e->getMessage());
-            $this->LogMessage->addDetails(__('Cuenta', false), $AccountData->getAccountName());
+            $this->LogMessage->addDetails(__('Cuenta', false), $AccountData->getName());
         }
 
         return true;
@@ -182,11 +182,11 @@ abstract class ImportBase implements ImportInterface
         try {
             $Category = Category::getItem($CategoryData)->add();
 
-            $this->LogMessage->addDetails(__('Categoría creada', false), $CategoryData->getCategoryName());
+            $this->LogMessage->addDetails(__('Categoría creada', false), $CategoryData->getName());
 
             return $Category;
         } catch (SPException $e) {
-            $this->LogMessage->addDetails($e->getMessage(), $CategoryData->category_name);
+            $this->LogMessage->addDetails($e->getMessage(), $CategoryData->name);
             $this->LogMessage->addDetails(__('Error', false), $e->getHint());
         }
 
@@ -204,11 +204,11 @@ abstract class ImportBase implements ImportInterface
         try {
             $Customer = Customer::getItem($CustomerData)->add();
 
-            $this->LogMessage->addDetails(__('Cliente creado', false), $CustomerData->getCustomerName());
+            $this->LogMessage->addDetails(__('Cliente creado', false), $CustomerData->getName());
 
             return $Customer;
         } catch (SPException $e) {
-            $this->LogMessage->addDetails($e->getMessage(), $CustomerData->getCustomerName());
+            $this->LogMessage->addDetails($e->getMessage(), $CustomerData->getName());
             $this->LogMessage->addDetails(__('Error', false), $e->getHint());
         }
 
@@ -226,11 +226,11 @@ abstract class ImportBase implements ImportInterface
         try {
             $Tag = Tag::getItem($TagData)->add();
 
-            $this->LogMessage->addDetails(__('Etiqueta creada', false), $TagData->getTagName());
+            $this->LogMessage->addDetails(__('Etiqueta creada', false), $TagData->getName());
 
             return $Tag;
         } catch (SPException $e) {
-            $this->LogMessage->addDetails($e->getMessage(), $TagData->getTagName());
+            $this->LogMessage->addDetails($e->getMessage(), $TagData->getName());
             $this->LogMessage->addDetails(__('Error', false), $e->getHint());
         }
 
@@ -251,7 +251,7 @@ abstract class ImportBase implements ImportInterface
             $AccountTags = new AccountTags();
             $AccountTags->addTags($accountExtData);
         } catch (SPException $e) {
-            $this->LogMessage->addDetails($e->getMessage(), $accountExtData->getAccountName());
+            $this->LogMessage->addDetails($e->getMessage(), $accountExtData->getName());
             $this->LogMessage->addDetails(__('Error', false), $e->getHint());
         }
     }

@@ -26,8 +26,8 @@
 namespace SP\Mgmt\Groups;
 
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\GroupData;
-use SP\DataModel\GroupUsersData;
+use SP\DataModel\UserGroupData;
+use SP\DataModel\UserToUserGroupData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;
@@ -39,7 +39,7 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de realizar las operaciones sobre los grupos de usuarios.
  *
- * @property GroupData $itemData
+ * @property UserGroupData $itemData
  */
 class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 {
@@ -63,16 +63,16 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUsergroupName());
-        $Data->addParam($this->itemData->getUsergroupDescription());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getDescription());
         $Data->setOnErrorMessage(__('Error al crear el grupo', false));
 
         DbWrapper::getQuery($Data);
 
-        $this->itemData->setUsergroupId(DbWrapper::$lastId);
+        $this->itemData->setId(DbWrapper::$lastId);
 
-        $GroupUsers = new GroupUsersData();
-        $GroupUsers->setUsertogroupGroupId($this->itemData->getUsergroupId());
+        $GroupUsers = new UserToUserGroupData();
+        $GroupUsers->setUserGroupId($this->itemData->getId());
         $GroupUsers->setUsers($this->itemData->getUsers());
 
         GroupUsers::getItem($GroupUsers)->add();
@@ -90,7 +90,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
             'SELECT usergroup_name FROM usrGroups WHERE UPPER(usergroup_name) = ?';
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUsergroupName());
+        $Data->addParam($this->itemData->getName());
 
         DbWrapper::getQuery($Data);
 
@@ -142,14 +142,14 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
             'SELECT user_groupId as groupId
             FROM usrData WHERE user_groupId = ?
             UNION ALL
-            SELECT usertogroup_groupId as groupId
-            FROM usrToGroups WHERE usertogroup_groupId = ?
+            SELECT userGroupId as groupId
+            FROM UserToGroup WHERE userGroupId = ?
             UNION ALL
-            SELECT accgroup_groupId as groupId
-            FROM accGroups WHERE accgroup_groupId = ?
+            SELECT userGroupId as groupId
+            FROM AccountToGroup WHERE userGroupId = ?
             UNION ALL
             SELECT account_userGroupId as groupId
-            FROM accounts WHERE account_userGroupId = ?';
+            FROM Account WHERE account_userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -165,7 +165,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 
     /**
      * @param $id int
-     * @return GroupData
+     * @return UserGroupData
      */
     public function getById($id)
     {
@@ -199,15 +199,15 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUsergroupName());
-        $Data->addParam($this->itemData->getUsergroupDescription());
-        $Data->addParam($this->itemData->getUsergroupId());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getDescription());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al actualizar el grupo', false));
 
         DbWrapper::getQuery($Data);
 
-        $GroupUsers = new GroupUsersData();
-        $GroupUsers->setUsertogroupGroupId($this->itemData->getUsergroupId());
+        $GroupUsers = new UserToUserGroupData();
+        $GroupUsers->setUserGroupId($this->itemData->getId());
         $GroupUsers->setUsers($this->itemData->getUsers());
 
         GroupUsers::getItem($GroupUsers)->update();
@@ -226,8 +226,8 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
             'SELECT usergroup_name FROM usrGroups WHERE UPPER(usergroup_name) = ? AND usergroup_id <> ?';
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUsergroupName());
-        $Data->addParam($this->itemData->getUsergroupId());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getId());
 
         DbWrapper::getQuery($Data);
 
@@ -235,7 +235,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
     }
 
     /**
-     * @return GroupData[]
+     * @return UserGroupData[]
      */
     public function getAll()
     {
@@ -257,7 +257,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
      * Devolver los elementos con los ids especificados
      *
      * @param array $ids
-     * @return GroupData[]
+     * @return UserGroupData[]
      */
     public function getByIdBatch(array $ids)
     {

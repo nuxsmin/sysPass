@@ -43,7 +43,7 @@ class HttpUtil
     public static function checkHttps()
     {
         /** @var ConfigData $ConfigData */
-        $ConfigData = Bootstrap::getDic()->get(ConfigData::class);
+        $ConfigData = Bootstrap::getContainer()->get(ConfigData::class);
 
         if ($ConfigData->isHttpsEnabled() && !Checks::httpsEnabled()) {
             $port = ((int)$_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';

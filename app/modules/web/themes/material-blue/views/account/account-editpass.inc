@@ -1,4 +1,9 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php
+/**
+ * @var $icons \Theme\Icons
+ * @var $accountData \SP\DataModel\AccountVData
+ */
+?>
 
 <div class="data-container">
     <div id="title" class="midroundup titleNormal">
@@ -18,7 +23,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $accountData->getAccountName(); ?>" readonly>
+                               value="<?php echo $accountData->getName(); ?>" readonly>
                         <label class="mdl-textfield__label" for="name"><?php echo __('Nombre de cuenta'); ?></label>
                     </div>
                 </td>
@@ -29,7 +34,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="customer" name="customer" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $accountData->getCustomerName(); ?>" readonly>
+                               value="<?php echo $accountData->getClientName(); ?>" readonly>
                         <label class="mdl-textfield__label" for="customer"><?php echo __('Cliente'); ?></label>
                     </div>
                 </td>
@@ -40,7 +45,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="url" name="url" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $accountData->getAccountUrl(); ?>" readonly>
+                               value="<?php echo $accountData->getUrl(); ?>" readonly>
                         <label class="mdl-textfield__label" for="url"><?php echo __('URL / IP'); ?></label>
                     </div>
                 </td>
@@ -51,7 +56,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="user" name="user" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $accountData->getAccountLogin(); ?>" readonly>
+                               value="<?php echo $accountData->getLogin(); ?>" readonly>
                         <label class="mdl-textfield__label" for="user"><?php echo __('Usuario'); ?></label>
                     </div>
                 </td>
@@ -93,8 +98,6 @@
                 </td>
             </tr>
         </table>
-        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>"/>
-        <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
 

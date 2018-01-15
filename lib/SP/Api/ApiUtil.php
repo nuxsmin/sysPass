@@ -47,7 +47,7 @@ class ApiUtil
     {
         try {
             $TrackData = new TrackData();
-            $TrackData->setTrackSource('API');
+            $TrackData->setSource('API');
             $TrackData->setTrackIp(HttpUtil::getClientAddress());
 
             Track::getItem($TrackData)->add();

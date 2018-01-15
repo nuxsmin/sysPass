@@ -36,63 +36,63 @@ class TagData extends DataModelBase implements DataModelInterface
     /**
      * @var int
      */
-    public $tag_id = 0;
+    public $id = 0;
     /**
      * @var string
      */
-    public $tag_name = '';
+    public $name = '';
     /**
      * @var string
      */
-    public $tag_hash = '';
+    public $hash = '';
 
     /**
      * @return int
      */
-    public function getTagId()
+    public function getId()
     {
-        return $this->tag_id;
+        return (int)$this->id;
     }
 
     /**
-     * @param int $tag_id
+     * @param int $id
      */
-    public function setTagId($tag_id)
+    public function setId($id)
     {
-        $this->tag_id = $tag_id;
+        $this->id = (int)$id;
     }
 
     /**
      * @return string
      */
-    public function getTagName()
+    public function getName()
     {
-        return $this->tag_name;
+        return $this->name;
     }
 
     /**
-     * @param string $tag_name
+     * @param string $name
      */
-    public function setTagName($tag_name)
+    public function setName($name)
     {
-        $this->tag_name = $tag_name;
+        $this->name = $name;
         $this->createTagHash();
     }
 
     /**
      * @return string
      */
-    public function getTagHash()
+    public function getHash()
     {
-        return $this->tag_hash;
+        return $this->hash;
     }
 
     /**
-     * @param string $tag_hash
+     * @param string $hash
      */
-    public function setTagHash($tag_hash)
+    public function setHash($hash)
     {
-        $this->tag_hash = $tag_hash;
+        $this->hash = $hash;
     }
 
     /**
@@ -102,22 +102,6 @@ class TagData extends DataModelBase implements DataModelInterface
      */
     protected function createTagHash()
     {
-        $this->tag_hash = sha1(strtolower(preg_replace('#[\.\s_,\-;\'":()|/"]+#', '', $this->tag_name)));
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->tag_id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->tag_name;
+        $this->hash = sha1(strtolower(preg_replace('#[\.\s_,\-;\'":()|/"]+#', '', $this->name)));
     }
 }

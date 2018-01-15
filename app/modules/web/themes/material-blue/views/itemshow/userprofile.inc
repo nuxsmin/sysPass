@@ -20,7 +20,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="profile_name" name="profile_name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $profile->getUserprofileName(); ?>"
+                               value="<?php echo $profile->getName(); ?>"
                                maxlength="50" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label"
                                for="profile_name"><?php echo __('Nombre del perfil'); ?></label>

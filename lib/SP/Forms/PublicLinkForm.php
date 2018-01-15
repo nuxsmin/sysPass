@@ -73,11 +73,11 @@ class PublicLinkForm extends FormBase implements FormInterface
     protected function analyzeRequestData()
     {
         $this->publicLinkData = new PublicLinkData();
-        $this->publicLinkData->setPublicLinkId($this->itemId);
-        $this->publicLinkData->setPublicLinkTypeId(PublicLink::TYPE_ACCOUNT);
-        $this->publicLinkData->setPublicLinkItemId(Request::analyze('accountId', 0));
-        $this->publicLinkData->setPublicLinkNotify(Request::analyze('notify', false, false, true));
-        $this->publicLinkData->setPublicLinkHash(Util::generateRandomBytes());
+        $this->publicLinkData->setId($this->itemId);
+        $this->publicLinkData->setTypeId(PublicLink::TYPE_ACCOUNT);
+        $this->publicLinkData->setItemId(Request::analyze('accountId', 0));
+        $this->publicLinkData->setNotify(Request::analyze('notify', false, false, true));
+        $this->publicLinkData->setHash(Util::generateRandomBytes());
     }
 
     /**
@@ -85,7 +85,7 @@ class PublicLinkForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->publicLinkData->getPublicLinkItemId()) {
+        if (!$this->publicLinkData->getItemId()) {
             throw new ValidationException(__u('Es necesario una cuenta'));
         }
     }

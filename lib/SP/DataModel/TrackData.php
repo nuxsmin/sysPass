@@ -37,106 +37,106 @@ class TrackData extends DataModelBase
     /**
      * @var int
      */
-    public $track_id;
+    public $id;
     /**
      * @var int
      */
-    public $track_userId = 0;
+    public $userId = 0;
     /**
      * @var string
      */
-    public $track_source = '';
+    public $source = '';
     /**
      * @var int
      */
-    public $track_time = 0;
+    public $time = 0;
     /**
      * @var string
      */
-    public $track_ipv4 = '';
+    public $ipv4 = '';
     /**
      * @var string
      */
-    public $track_ipv6 = '';
+    public $ipv6 = '';
 
     /**
      * @return int
      */
-    public function getTrackId()
+    public function getId()
     {
-        return (int)$this->track_id;
+        return (int)$this->id;
     }
 
     /**
-     * @param int $track_id
+     * @param int $id
      */
-    public function setTrackId($track_id)
+    public function setId($id)
     {
-        $this->track_id = (int)$track_id;
+        $this->id = (int)$id;
     }
 
     /**
      * @return int
      */
-    public function getTrackUserId()
+    public function getUserId()
     {
-        return (int)$this->track_userId;
+        return (int)$this->userId;
     }
 
     /**
-     * @param int $track_userId
+     * @param int $userId
      */
-    public function setTrackUserId($track_userId)
+    public function setUserId($userId)
     {
-        $this->track_userId = (int)$track_userId;
+        $this->userId = (int)$userId;
     }
 
     /**
      * @return string
      */
-    public function getTrackSource()
+    public function getSource()
     {
-        return $this->track_source;
+        return $this->source;
     }
 
     /**
-     * @param string $track_source
+     * @param string $source
      */
-    public function setTrackSource($track_source)
+    public function setSource($source)
     {
-        $this->track_source = $track_source;
+        $this->source = $source;
     }
 
     /**
      * @return int
      */
-    public function getTrackTime()
+    public function getTime()
     {
-        return (int)$this->track_time;
+        return (int)$this->time;
     }
 
     /**
-     * @param int $track_time
+     * @param int $time
      */
-    public function setTrackTime($track_time)
+    public function setTime($time)
     {
-        $this->track_time = (int)$track_time;
+        $this->time = (int)$time;
     }
 
     /**
      * @return string
      */
-    public function getTrackIpv4()
+    public function getIpv4()
     {
-        return @inet_ntop($this->track_ipv4);
+        return @inet_ntop($this->ipv4);
     }
 
     /**
-     * @param string $track_ipv4
+     * @param string $ipv4
      */
-    public function setTrackIpv4($track_ipv4)
+    public function setIpv4($ipv4)
     {
-        $this->track_ipv4 = @inet_pton($track_ipv4);
+        $this->ipv4 = @inet_pton($ipv4);
     }
 
     /**
@@ -148,9 +148,9 @@ class TrackData extends DataModelBase
         $ip = @inet_pton($track_ip);
 
         if (strlen($ip) === 4) {
-            $this->track_ipv4 = $ip;
+            $this->ipv4 = $ip;
         } elseif (strlen($ip) > 4) {
-            $this->track_ipv6 = $ip;
+            $this->ipv6 = $ip;
         } elseif ($ip === false) {
             debugLog(sprintf('%s : %s', __('IP inválida', true), $track_ip));
 
@@ -163,23 +163,23 @@ class TrackData extends DataModelBase
      */
     public function getTrackIpv4Bin()
     {
-        return $this->track_ipv4;
+        return $this->ipv4;
     }
 
     /**
      * @return string
      */
-    public function getTrackIpv6()
+    public function getIpv6()
     {
-        return @inet_ntop($this->track_ipv6);
+        return @inet_ntop($this->ipv6);
     }
 
     /**
-     * @param string $track_ipv6
+     * @param string $ipv6
      */
-    public function setTrackIpv6($track_ipv6)
+    public function setIpv6($ipv6)
     {
-        $this->track_ipv6 = @inet_pton($track_ipv6);
+        $this->ipv6 = @inet_pton($ipv6);
     }
 
     /**
@@ -187,6 +187,6 @@ class TrackData extends DataModelBase
      */
     public function getTrackIpv6Bin()
     {
-        return $this->track_ipv6;
+        return $this->ipv6;
     }
 }

@@ -92,10 +92,10 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function update()
     {
         $query = /** @lang SQL */
-            'UPDATE publicLinks
-            SET publicLink_data = ?,
-            publicLink_hash = ?
-            WHERE publicLink_id = ? LIMIT 1';
+            'UPDATE PublicLink
+            SET data = ?,
+            hash = ?
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -125,17 +125,17 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         }
 
         $this->itemData->setDateAdd(time());
-        $this->itemData->setUserId(SessionFactory::getUserData()->getUserId());
+        $this->itemData->setUserId(SessionFactory::getUserData()->getId());
         $this->itemData->setMaxCountViews($this->ConfigData->getPublinksMaxViews());
         $this->calcDateExpire();
         $this->createLinkHash();
         $this->setLinkData();
 
         $query = /** @lang SQL */
-            'INSERT INTO publicLinks
-            SET publicLink_hash = ?,
-            publicLink_itemId = ?,
-            publicLink_data = ?';
+            'INSERT INTO PublicLink
+            SET hash = ?,
+            itemId = ?,
+            data = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -155,7 +155,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function checkDuplicatedOnAdd()
     {
         $query = /** @lang SQL */
-            'SELECT publicLink_id FROM publicLinks WHERE publicLink_itemId = ? LIMIT 1';
+            'SELECT id FROM PublicLink WHERE itemId = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -174,7 +174,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function delete($id)
     {
         $query = /** @lang SQL */
-            'DELETE FROM publicLinks WHERE publicLink_id = ? LIMIT 1';
+            'DELETE FROM PublicLink WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -206,10 +206,10 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $this->setLinkData();
 
         $query = /** @lang SQL */
-            'UPDATE publicLinks
-            SET publicLink_data = ?,
-            publicLink_hash = ?
-            WHERE publicLink_id = ? LIMIT 1';
+            'UPDATE PublicLink
+            SET data = ?,
+            hash = ?
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -231,10 +231,10 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT publicLink_id,
-            publicLink_hash,
-            publicLink_data
-            FROM publicLinks WHERE publicLink_id = ? LIMIT 1';
+            'SELECT id,
+            hash,
+            data
+            FROM PublicLink WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -250,7 +250,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
 
         /** @var $PublicLink PublicLinkData */
         $PublicLink = Util::unserialize($this->getDataModel(), $queryRes->getPublicLinkLinkData());
-        $PublicLink->setPublicLinkId($id);
+        $PublicLink->setId($id);
 
         return $PublicLink;
     }
@@ -261,7 +261,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT publicLink_id, publicLink_hash, publicLink_data FROM publicLinks';
+            'SELECT id, hash, data FROM PublicLink';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -275,7 +275,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         foreach ($queryRes as $PublicLinkListData) {
             /** @var PublicLinkData $PublicLinkData */
             $PublicLinkData = Util::unserialize($this->getDataModel(), $PublicLinkListData->getPublicLinkLinkData());
-            $PublicLinkData->setPublicLinkId($PublicLinkListData->getPublicLinkId());
+            $PublicLinkData->setId($PublicLinkListData->getId());
 
             $publicLinks[] = $this->getItemForList($PublicLinkData);
         }
@@ -292,15 +292,15 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function getItemForList(PublicLinkData $PublicLinkData)
     {
         $PublicLinkListData = new PublicLinkListData();
-        $PublicLinkListData->setPublicLinkId($PublicLinkData->getPublicLinkId());
-        $PublicLinkListData->setPublicLinkHash($PublicLinkData->getPublicLinkLinkHash());
+        $PublicLinkListData->setId($PublicLinkData->getId());
+        $PublicLinkListData->setHash($PublicLinkData->getPublicLinkLinkHash());
         $PublicLinkListData->setAccountName(AccountUtil::getAccountNameById($PublicLinkData->getItemId()));
-        $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getPublicLinkUserId()));
-        $PublicLinkListData->setNotify($PublicLinkData->isPublicLinkNotify() ? __('ON') : __('OFF'));
-        $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getPublicLinkDateAdd()));
-        $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getPublicLinkDateExpire()));
-        $PublicLinkListData->setCountViews($PublicLinkData->getPublicLinkCountViews() . '/' . $PublicLinkData->getPublicLinkMaxCountViews());
-        $PublicLinkListData->setUseInfo($PublicLinkData->getPublicLinkUseInfo());
+        $PublicLinkListData->setUserLogin(UserUtil::getUserLoginById($PublicLinkData->getUserId()));
+        $PublicLinkListData->setNotify($PublicLinkData->isNotify() ? __('ON') : __('OFF'));
+        $PublicLinkListData->setDateAdd(date('Y-m-d H:i', $PublicLinkData->getDateAdd()));
+        $PublicLinkListData->setDateExpire(date('Y-m-d H:i', $PublicLinkData->getDateExpire()));
+        $PublicLinkListData->setCountViews($PublicLinkData->getCountViews() . '/' . $PublicLinkData->getMaxCountViews());
+        $PublicLinkListData->setUseInfo($PublicLinkData->getUseInfo());
 
         return $PublicLinkListData;
     }
@@ -330,10 +330,10 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function getByHash($hash)
     {
         $query = /** @lang SQL */
-            'SELECT publicLink_id,
-            publicLink_hash,
-            publicLink_data
-            FROM publicLinks WHERE publicLink_hash = ? LIMIT 1';
+            'SELECT id,
+            hash,
+            data
+            FROM PublicLink WHERE hash = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -353,7 +353,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
          * @var $PublicLink PublicLinkData
          */
         $PublicLink = Util::unserialize($this->getDataModel(), $queryRes->getPublicLinkLinkData());
-        $PublicLink->setPublicLinkId($queryRes->getPublicLinkId());
+        $PublicLink->setId($queryRes->getPublicLinkId());
 
         return $PublicLink;
     }
@@ -368,7 +368,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function getHashForItem($itemId)
     {
         $query = /** @lang SQL */
-            'SELECT publicLink_id, publicLink_hash FROM publicLinks WHERE publicLink_itemId = ? LIMIT 1';
+            'SELECT id, hash FROM PublicLink WHERE itemId = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -394,9 +394,9 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function getByIdBatch(array $ids)
     {
         $query = /** @lang SQL */
-            'SELECT publicLink_id,
-            publicLink_hash
-            FROM publicLinks WHERE publicLink_id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT id,
+            hash
+            FROM PublicLink WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());

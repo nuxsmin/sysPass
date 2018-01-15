@@ -86,12 +86,12 @@ class AccountHistoryUtil
     public static function getAccountsMgmtSearch(ItemSearchData $SearchData)
     {
         $Data = new QueryData();
-        $Data->setSelect('acchistory_id, acchistory_name, customer_name, IFNULL(acchistory_dateEdit,acchistory_dateAdd) as acchistory_date, BIN(acchistory_isModify) as acchistory_isModify, BIN(acchistory_isDeleted) as acchistory_isDeleted');
-        $Data->setFrom('accHistory LEFT JOIN customers ON acchistory_customerId = customer_id');
-        $Data->setOrder('acchistory_name, customer_name, acchistory_id DESC');
+        $Data->setSelect('acchistory_id, acchistory_name, name, IFNULL(acchistory_dateEdit,acchistory_dateAdd) as acchistory_date, BIN(acchistory_isModify) as acchistory_isModify, BIN(acchistory_isDeleted) as acchistory_isDeleted');
+        $Data->setFrom('accHistory LEFT JOIN customers ON acchistory_customerId = id');
+        $Data->setOrder('acchistory_name, name, acchistory_id DESC');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('acchistory_name LIKE ? OR customer_name LIKE ?');
+            $Data->setWhere('acchistory_name LIKE ? OR name LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);
@@ -126,7 +126,7 @@ class AccountHistoryUtil
         AccountHistory::addHistory($accountId, false);
 
         $query = /** @lang SQL */
-            'UPDATE accounts dst, '
+            'UPDATE Account dst, '
             . '(SELECT * FROM accHistory WHERE acchistory_id = :id LIMIT 1) src SET '
             . 'dst.account_customerId = src.acchistory_customerId,'
             . 'dst.account_categoryId = src.acchistory_categoryId,'
@@ -151,7 +151,7 @@ class AccountHistoryUtil
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id, 'id');
-        $Data->addParam($session->getUserData()->getUserId(), 'accountUserEditId');
+        $Data->addParam($session->getUserData()->getId(), 'accountUserEditId');
         $Data->setOnErrorMessage(__('Error al restaurar cuenta', false));
 
         DbWrapper::getQuery($Data);

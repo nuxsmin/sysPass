@@ -39,7 +39,7 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Services\Client\ClientService;
+use SP\Repositories\Client\ClientRepository;
 
 /**
  * Class ClientController
@@ -52,7 +52,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
     use ItemTrait;
 
     /**
-     * @var ClientService
+     * @var ClientRepository
      */
     protected $clientService;
 
@@ -272,7 +272,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
     {
         $this->checkLoggedIn();
 
-        $this->clientService = new ClientService();
+        $this->clientService = new ClientRepository();
     }
 
 }

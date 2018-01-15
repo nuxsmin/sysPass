@@ -59,13 +59,13 @@ class Customer
             $Data->addParam($customerId);
 
             $query = /** @lang SQL */
-                'UPDATE accHistory SET acchistory_customerId = ? WHERE acchistory_customerId NOT IN (SELECT customer_id FROM customers ORDER BY customer_id) OR acchistory_customerId IS NULL';
+                'UPDATE accHistory SET acchistory_customerId = ? WHERE acchistory_customerId NOT IN (SELECT id FROM customers ORDER BY id) OR acchistory_customerId IS NULL';
             $Data->setQuery($query);
 
             DbWrapper::getQuery($Data);
 
             $query = /** @lang SQL */
-                'UPDATE accounts SET account_customerId = ? WHERE account_customerId NOT IN (SELECT customer_id FROM customers ORDER BY customer_id) OR account_customerId IS NULL';
+                'UPDATE Account SET account_customerId = ? WHERE account_customerId NOT IN (SELECT id FROM customers ORDER BY id) OR account_customerId IS NULL';
             $Data->setQuery($query);
 
             DbWrapper::getQuery($Data);
@@ -88,10 +88,7 @@ class Customer
     public static function createOrphanCustomer()
     {
         $query = /** @lang SQL */
-            'INSERT INTO customers SET
-            customer_name = \'Orphan customer\',
-            customer_hash = MD5(\'Orphan customer\'),
-            customer_description = \'Created by the upgrade process\'';
+            '\'';
 
         $Data = new QueryData();
         $Data->setQuery($query);

@@ -233,7 +233,7 @@ class Util
     public static function getDataFromUrl($url, array $data = null, $useCookie = false, $weak = false)
     {
         /** @var ConfigData $ConfigData */
-        $ConfigData = Bootstrap::getDic()->get(ConfigData::class);
+        $ConfigData = Bootstrap::getContainer()->get(ConfigData::class);
 
         if (!Checks::curlIsAvailable()) {
             $Log = LogUtil::extensionNotLoaded('CURL', __FUNCTION__);
@@ -318,7 +318,7 @@ class Util
     {
         $tempDir = self::getTempDir();
 
-        return $tempDir ? $tempDir . DIRECTORY_SEPARATOR . md5('syspass-' . SessionFactory::getUserData()->getUserLogin()) : false;
+        return $tempDir ? $tempDir . DIRECTORY_SEPARATOR . md5('syspass-' . SessionFactory::getUserData()->getLogin()) : false;
     }
 
     /**
@@ -482,7 +482,7 @@ class Util
     public static function checkNotices()
     {
         /** @var ConfigData $ConfigData */
-        $ConfigData = Bootstrap::getDic()->get(ConfigData::class);
+        $ConfigData = Bootstrap::getContainer()->get(ConfigData::class);
 
         if (!$ConfigData->isChecknotices()) {
             return false;
@@ -705,10 +705,10 @@ class Util
      */
     public static function lockApp($setMaintenance = true)
     {
-        ConfigDB::setValue('lock', SessionFactory::getUserData()->getUserId(), false);
+        ConfigDB::setValue('lock', SessionFactory::getUserData()->getId(), false);
 
         /** @var Config $Config */
-        $Config = Bootstrap::getDic()['config'];
+        $Config = Bootstrap::getContainer()['config'];
 
         if ($setMaintenance) {
             $Config->getConfigData()->setMaintenance(true);
@@ -726,7 +726,7 @@ class Util
         ConfigDB::setValue('lock', 0, false);
 
         /** @var Config $Config */
-        $Config = Bootstrap::getDic()['config'];
+        $Config = Bootstrap::getContainer()['config'];
 
         if ($unsetMaintenance) {
             $Config->getConfigData()->setMaintenance(false);
@@ -774,7 +774,9 @@ class Util
      */
     public static function isLoggedIn(Session $session)
     {
-        return ($session->getUserData()->getUserLogin()
-            && is_object($session->getUserPreferences()));
+        $userData = $session->getUserData();
+
+        return ($userData->getLogin()
+            && is_object($userData->getPreferences()));
     }
 }

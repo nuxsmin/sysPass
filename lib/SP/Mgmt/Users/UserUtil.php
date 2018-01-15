@@ -57,8 +57,8 @@ class UserUtil
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($UserData->getUserLogin());
-        $Data->addParam($UserData->getUserEmail());
+        $Data->addParam($UserData->getLogin());
+        $Data->addParam($UserData->getEmail());
 
         DbWrapper::getQuery($Data);
 
@@ -100,7 +100,7 @@ class UserUtil
     public static function setUserLastLogin($userId)
     {
         $query = /** @lang SQL */
-            'UPDATE usrData SET user_lastLogin = NOW(), user_count = user_count + 1 WHERE user_id = ? LIMIT 1';
+            'UPDATE User SET lastLogin = NOW(), loginCount = loginCount + 1 WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -161,7 +161,7 @@ class UserUtil
         $query = /** @lang SQL */
             'SELECT user_id, user_login, user_name, user_email 
             FROM usrData 
-            LEFT JOIN usrToGroups ON usertogroup_userId = user_id
+            LEFT JOIN UserToGroup ON usertogroup_userId = user_id
             WHERE user_email IS NOT NULL 
             AND user_groupId = ? OR usertogroup_groupId = ?
             AND user_isDisabled = 0

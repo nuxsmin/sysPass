@@ -25,7 +25,7 @@
 namespace SP\Mgmt\Groups;
 
 
-use SP\DataModel\GroupData;
+use SP\DataModel\UserGroupData;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 
@@ -40,7 +40,7 @@ class GroupUtil
      * Obtener el id de un grupo por a partir del nombre.
      *
      * @param int $name con el nombre del grupo
-     * @return GroupData|false
+     * @return UserGroupData|false
      */
     public static function getGroupIdByName($name)
     {
@@ -48,7 +48,7 @@ class GroupUtil
             'SELECT usergroup_id, usergroup_name FROM usrGroups WHERE usergroup_name = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName(GroupData::class);
+        $Data->setMapClassName(UserGroupData::class);
         $Data->setQuery($query);
         $Data->addParam($name);
 

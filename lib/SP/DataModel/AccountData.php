@@ -39,95 +39,95 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     /**
      * @var int Id de la cuenta.
      */
-    public $account_id = 0;
+    public $id = 0;
     /**
      * @var int Id del usuario principal de la cuenta.
      */
-    public $account_userId = 0;
+    public $userId = 0;
     /**
      * @var int Id del grupo principal de la cuenta.
      */
-    public $account_userGroupId = 0;
+    public $userGroupId = 0;
     /**
      * @var int Id del usuario que editó la cuenta.
      */
-    public $account_userEditId = 0;
+    public $userEditId = 0;
     /**
      * @var string El nombre de la cuenta.
      */
-    public $account_name = '';
+    public $name = '';
     /**
      * @var int Id del cliente de la cuenta.
      */
-    public $account_customerId = 0;
+    public $clientId = 0;
     /**
      * @var int Id de la categoría de la cuenta.
      */
-    public $account_categoryId = 0;
+    public $categoryId = 0;
     /**
      * @var string El nombre de usuario de la cuenta.
      */
-    public $account_login = '';
+    public $login = '';
     /**
      * @var string La URL de la cuenta.
      */
-    public $account_url = '';
+    public $url = '';
     /**
      * @var string La clave de la cuenta.
      */
-    public $account_pass = '';
+    public $pass = '';
     /**
      * @var string La clave de encriptación de la cuenta
      */
-    public $account_key = '';
+    public $key = '';
     /**
      * @var string Las nosta de la cuenta.
      */
-    public $account_notes = '';
+    public $notes = '';
     /**
      * @var bool Si se permite la edición por los usuarios secundarios.
      */
-    public $account_otherUserEdit = false;
+    public $otherUserEdit = false;
     /**
      * @var bool Si se permita la edición por los grupos secundarios.
      */
-    public $account_otherGroupEdit = false;
+    public $otherUserGroupEdit = false;
     /**
      * @var int
      */
-    public $account_dateAdd = 0;
+    public $dateAdd = 0;
     /**
      * @var int
      */
-    public $account_dateEdit = 0;
+    public $dateEdit = 0;
     /**
      * @var int
      */
-    public $account_countView = 0;
+    public $countView = 0;
     /**
      * @var int
      */
-    public $account_countDecrypt = 0;
+    public $countDecrypt = 0;
     /**
      * @var int
      */
-    public $account_isPrivate = 0;
+    public $isPrivate = 0;
     /**
      * @var int
      */
-    public $account_isPrivateGroup = 0;
+    public $isPrivateGroup = 0;
     /**
      * @var int
      */
-    public $account_passDate = 0;
+    public $passDate = 0;
     /**
      * @var int
      */
-    public $account_passDateChange = 0;
+    public $passDateChange = 0;
     /**
      * @var int
      */
-    public $account_parentId = 0;
+    public $parentId = 0;
 
 
     /**
@@ -137,263 +137,263 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
      */
     public function __construct($accountId = 0)
     {
-        $this->account_id = (int)$accountId;
+        $this->id = (int)$accountId;
     }
 
     /**
      * @return int
      */
-    public function getAccountDateAdd()
+    public function getDateAdd()
     {
-        return $this->account_dateAdd;
+        return $this->dateAdd;
     }
 
     /**
-     * @param int $account_dateAdd
+     * @param int $dateAdd
      */
-    public function setAccountDateAdd($account_dateAdd)
+    public function setDateAdd($dateAdd)
     {
-        $this->account_dateAdd = $account_dateAdd;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountDateEdit()
-    {
-        return $this->account_dateEdit;
-    }
-
-    /**
-     * @param int $account_dateEdit
-     */
-    public function setAccountDateEdit($account_dateEdit)
-    {
-        $this->account_dateEdit = $account_dateEdit;
+        $this->dateAdd = $dateAdd;
     }
 
     /**
      * @return int
      */
-    public function getAccountUserEditId()
+    public function getDateEdit()
     {
-        return (int)$this->account_userEditId;
+        return $this->dateEdit;
     }
 
     /**
-     * @param int $account_userEditId
+     * @param int $dateEdit
      */
-    public function setAccountUserEditId($account_userEditId)
+    public function setDateEdit($dateEdit)
     {
-        $this->account_userEditId = (int)$account_userEditId;
+        $this->dateEdit = $dateEdit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserEditId()
+    {
+        return (int)$this->userEditId;
+    }
+
+    /**
+     * @param int $userEditId
+     */
+    public function setUserEditId($userEditId)
+    {
+        $this->userEditId = (int)$userEditId;
     }
 
     /**
      * @return string
      */
-    public function getAccountPass()
+    public function getPass()
     {
-        return $this->account_pass;
+        return $this->pass;
     }
 
     /**
-     * @param string $account_pass
+     * @param string $pass
      */
-    public function setAccountPass($account_pass)
+    public function setPass($pass)
     {
-        $this->account_pass = $account_pass;
+        $this->pass = $pass;
     }
 
     /**
      * @return string
      */
-    public function getAccountKey()
+    public function getKey()
     {
-        return $this->account_key;
+        return $this->key;
     }
 
     /**
-     * @param string $account_key
+     * @param string $key
      */
-    public function setAccountKey($account_key)
+    public function setKey($key)
     {
-        $this->account_key = $account_key;
+        $this->key = $key;
     }
 
     /**
      * @return int|null
      */
-    public function getAccountId()
+    public function getId()
     {
-        return (int)$this->account_id;
+        return (int)$this->id;
     }
 
     /**
-     * @param int $account_id
+     * @param int $id
      */
-    public function setAccountId($account_id)
+    public function setId($id)
     {
-        $this->account_id = (int)$account_id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountUserId()
-    {
-        return (int)$this->account_userId;
-    }
-
-    /**
-     * @param int $account_userId
-     */
-    public function setAccountUserId($account_userId)
-    {
-        $this->account_userId = (int)$account_userId;
+        $this->id = (int)$id;
     }
 
     /**
      * @return int
      */
-    public function getAccountUserGroupId()
+    public function getUserId()
     {
-        return (int)$this->account_userGroupId;
+        return (int)$this->userId;
     }
 
     /**
-     * @param int $account_userGroupId
+     * @param int $userId
      */
-    public function setAccountUserGroupId($account_userGroupId)
+    public function setUserId($userId)
     {
-        $this->account_userGroupId = (int)$account_userGroupId;
+        $this->userId = (int)$userId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserGroupId()
+    {
+        return (int)$this->userGroupId;
+    }
+
+    /**
+     * @param int $userGroupId
+     */
+    public function setUserGroupId($userGroupId)
+    {
+        $this->userGroupId = (int)$userGroupId;
     }
 
     /**
      * @return bool
      */
-    public function getAccountOtherUserEdit()
+    public function getOtherUserEdit()
     {
-        return (int)$this->account_otherUserEdit;
+        return (int)$this->otherUserEdit;
     }
 
     /**
-     * @param bool $account_otherUserEdit
+     * @param bool $otherUserEdit
      */
-    public function setAccountOtherUserEdit($account_otherUserEdit)
+    public function setOtherUserEdit($otherUserEdit)
     {
-        $this->account_otherUserEdit = (int)$account_otherUserEdit;
+        $this->otherUserEdit = (int)$otherUserEdit;
     }
 
     /**
      * @return bool
      */
-    public function getAccountOtherGroupEdit()
+    public function getOtherUserGroupEdit()
     {
-        return (int)$this->account_otherGroupEdit;
+        return (int)$this->otherUserGroupEdit;
     }
 
     /**
-     * @param bool $account_otherGroupEdit
+     * @param bool $otherUserGroupEdit
      */
-    public function setAccountOtherGroupEdit($account_otherGroupEdit)
+    public function setOtherUserGroupEdit($otherUserGroupEdit)
     {
-        $this->account_otherGroupEdit = (int)$account_otherGroupEdit;
+        $this->otherUserGroupEdit = (int)$otherUserGroupEdit;
     }
 
     /**
      * @return string
      */
-    public function getAccountName()
+    public function getName()
     {
-        return $this->account_name;
+        return $this->name;
     }
 
     /**
-     * @param string $account_name
+     * @param string $name
      */
-    public function setAccountName($account_name)
+    public function setName($name)
     {
-        $this->account_name = $account_name;
+        $this->name = $name;
     }
 
     /**
      * @return int
      */
-    public function getAccountCategoryId()
+    public function getCategoryId()
     {
-        return (int)$this->account_categoryId;
+        return (int)$this->categoryId;
     }
 
     /**
-     * @param int $account_categoryId
+     * @param int $categoryId
      */
-    public function setAccountCategoryId($account_categoryId)
+    public function setCategoryId($categoryId)
     {
-        $this->account_categoryId = (int)$account_categoryId;
+        $this->categoryId = (int)$categoryId;
     }
 
     /**
      * @return int
      */
-    public function getAccountCustomerId()
+    public function getClientId()
     {
-        return (int)$this->account_customerId;
+        return (int)$this->clientId;
     }
 
     /**
-     * @param int $account_customerId
+     * @param int $clientId
      */
-    public function setAccountCustomerId($account_customerId)
+    public function setClientId($clientId)
     {
-        $this->account_customerId = (int)$account_customerId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountLogin()
-    {
-        return $this->account_login;
-    }
-
-    /**
-     * @param string $account_login
-     */
-    public function setAccountLogin($account_login)
-    {
-        $this->account_login = $account_login;
+        $this->clientId = (int)$clientId;
     }
 
     /**
      * @return string
      */
-    public function getAccountUrl()
+    public function getLogin()
     {
-        return $this->account_url;
+        return $this->login;
     }
 
     /**
-     * @param string $account_url
+     * @param string $login
      */
-    public function setAccountUrl($account_url)
+    public function setLogin($login)
     {
-        $this->account_url = $account_url;
+        $this->login = $login;
     }
 
     /**
      * @return string
      */
-    public function getAccountNotes()
+    public function getUrl()
     {
-        return $this->account_notes;
+        return $this->url;
     }
 
     /**
-     * @param string $account_notes
+     * @param string $url
      */
-    public function setAccountNotes($account_notes)
+    public function setUrl($url)
     {
-        $this->account_notes = $account_notes;
+        $this->url = $url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNotes()
+    {
+        return $this->notes;
+    }
+
+    /**
+     * @param string $notes
+     */
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
     }
 
     /**
@@ -416,128 +416,112 @@ class AccountData extends DataModelBase implements JsonSerializable, DataModelIn
     /**
      * @return int
      */
-    public function getId()
+    public function getCountView()
     {
-        return (int)$this->account_id;
+        return (int)$this->countView;
     }
 
     /**
-     * @return string
+     * @param int $countView
      */
-    public function getName()
+    public function setCountView($countView)
     {
-        return $this->account_name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountCountView()
-    {
-        return (int)$this->account_countView;
-    }
-
-    /**
-     * @param int $account_countView
-     */
-    public function setAccountCountView($account_countView)
-    {
-        $this->account_countView = (int)$account_countView;
+        $this->countView = (int)$countView;
     }
 
     /**
      * @return int
      */
-    public function getAccountCountDecrypt()
+    public function getCountDecrypt()
     {
-        return (int)$this->account_countDecrypt;
+        return (int)$this->countDecrypt;
     }
 
     /**
-     * @param int $account_countDecrypt
+     * @param int $countDecrypt
      */
-    public function setAccountCountDecrypt($account_countDecrypt)
+    public function setCountDecrypt($countDecrypt)
     {
-        $this->account_countDecrypt = (int)$account_countDecrypt;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountIsPrivate()
-    {
-        return (int)$this->account_isPrivate;
-    }
-
-    /**
-     * @param int $account_isPrivate
-     */
-    public function setAccountIsPrivate($account_isPrivate)
-    {
-        $this->account_isPrivate = (int)$account_isPrivate;
+        $this->countDecrypt = (int)$countDecrypt;
     }
 
     /**
      * @return int
      */
-    public function getAccountPassDate()
+    public function getIsPrivate()
     {
-        return (int)$this->account_passDate;
+        return (int)$this->isPrivate;
     }
 
     /**
-     * @param int $account_passDate
+     * @param int $isPrivate
      */
-    public function setAccountPassDate($account_passDate)
+    public function setIsPrivate($isPrivate)
     {
-        $this->account_passDate = (int)$account_passDate;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountPassDateChange()
-    {
-        return (int)$this->account_passDateChange;
-    }
-
-    /**
-     * @param int $account_passDateChange
-     */
-    public function setAccountPassDateChange($account_passDateChange)
-    {
-        $this->account_passDateChange = (int)$account_passDateChange;
+        $this->isPrivate = (int)$isPrivate;
     }
 
     /**
      * @return int
      */
-    public function getAccountParentId()
+    public function getPassDate()
     {
-        return (int)$this->account_parentId;
+        return (int)$this->passDate;
     }
 
     /**
-     * @param int $account_parentId
+     * @param int $passDate
      */
-    public function setAccountParentId($account_parentId)
+    public function setPassDate($passDate)
     {
-        $this->account_parentId = (int)$account_parentId;
+        $this->passDate = (int)$passDate;
     }
 
     /**
      * @return int
      */
-    public function getAccountIsPrivateGroup()
+    public function getPassDateChange()
     {
-        return (int)$this->account_isPrivateGroup;
+        return (int)$this->passDateChange;
     }
 
     /**
-     * @param int $account_isPrivateGroup
+     * @param int $passDateChange
      */
-    public function setAccountIsPrivateGroup($account_isPrivateGroup)
+    public function setPassDateChange($passDateChange)
     {
-        $this->account_isPrivateGroup = (int)$account_isPrivateGroup;
+        $this->passDateChange = (int)$passDateChange;
+    }
+
+    /**
+     * @return int
+     */
+    public function getParentId()
+    {
+        return (int)$this->parentId;
+    }
+
+    /**
+     * @param int $parentId
+     */
+    public function setParentId($parentId)
+    {
+        $this->parentId = (int)$parentId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIsPrivateGroup()
+    {
+        return (int)$this->isPrivateGroup;
+    }
+
+    /**
+     * @param int $isPrivateGroup
+     */
+    public function setIsPrivateGroup($isPrivateGroup)
+    {
+        $this->isPrivateGroup = (int)$isPrivateGroup;
     }
 }

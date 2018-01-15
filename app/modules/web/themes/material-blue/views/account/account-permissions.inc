@@ -28,15 +28,15 @@
                                         <?php foreach ($accountOtherUsers as $otherUser): ?>
                                             <?php /** @var $otherUser \SP\DataModel\UserData */ ?>
                                             <option
-                                                    value="<?php echo $otherUser->getUserId(); ?>"
-                                                    selected><?php echo $otherUser->getUserLogin(); ?></option>
+                                                    value="<?php echo $otherUser->getId(); ?>"
+                                                    selected><?php echo $otherUser->getLogin(); ?></option>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </select>
                                 <br>
                                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="userEditEnabled">
                                     <input name="userEditEnabled" type="checkbox" id="userEditEnabled"
-                                           class="mdl-switch__input" <?php echo ($gotData && $accountData->getAccountOtherUserEdit()) ? 'checked' : ''; ?>/>
+                                           class="mdl-switch__input" <?php echo ($gotData && $accountData->getOtherUserEdit()) ? 'checked' : ''; ?>/>
                                     <span class="mdl-switch__label"><?php echo __('Hablitar edición'); ?></span>
                                 </label>
                             </fieldset>
@@ -48,17 +48,17 @@
                                     <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
                                     <?php if ($gotData === true): ?>
                                         <?php foreach ($accountOtherGroups as $otherGroup): ?>
-                                            <?php /** @var $otherGroup \SP\DataModel\GroupData */ ?>
+                                            <?php /** @var $otherGroup \SP\DataModel\UserGroupData */ ?>
                                             <option
-                                                    value="<?php echo $otherGroup->getUsergroupId(); ?>"
-                                                    selected><?php echo $otherGroup->getUsergroupName(); ?></option>
+                                                    value="<?php echo $otherGroup->getId(); ?>"
+                                                    selected><?php echo $otherGroup->getName(); ?></option>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </select>
                                 <br>
                                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="groupEditEnabled">
                                     <input name="groupEditEnabled" type="checkbox" id="groupEditEnabled"
-                                           class="mdl-switch__input" <?php echo ($gotData && $accountData->getAccountOtherGroupEdit()) ? 'checked' : ''; ?>/>
+                                           class="mdl-switch__input" <?php echo ($gotData && $accountData->getOtherUserGroupEdit()) ? 'checked' : ''; ?>/>
                                     <span class="mdl-switch__label"><?php echo __('Hablitar edición'); ?></span>
                                 </label
 
@@ -75,7 +75,7 @@
                             <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
                             <?php foreach ($otherGroups as $group): ?>
                                 <option
-                                        value="<?php echo $group->id; ?>" <?php echo ($gotData && $group->id == $accountData->getAccountUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
+                                        value="<?php echo $group->id; ?>" <?php echo ($gotData && $group->id == $accountData->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -88,7 +88,7 @@
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="privateEnabled">
                             <input name="privateEnabled" type="checkbox" id="privateEnabled"
-                                   class="mdl-switch__input" <?php echo ($gotData && $accountData->getAccountIsPrivate()) ? 'checked' : ''; ?>/>
+                                   class="mdl-switch__input" <?php echo ($gotData && $accountData->getIsPrivate()) ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Privada'); ?></span>
                         </label>
                     </td>
@@ -101,7 +101,7 @@
                     <td class="valField">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="privateGroupEnabled">
                             <input name="privateGroupEnabled" type="checkbox" id="privateGroupEnabled"
-                                   class="mdl-switch__input" <?php echo ($gotData && $accountData->getAccountIsPrivateGroup()) ? 'checked' : ''; ?>/>
+                                   class="mdl-switch__input" <?php echo ($gotData && $accountData->getIsPrivateGroup()) ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Privada Grupo'); ?></span>
                         </label>
                     </td>
@@ -122,13 +122,13 @@
 
             $('#otherUsers').selectize({
                 persist: false,
-                valueField: 'user_id',
-                labelField: 'user_login',
-                searchField: ['user_login'],
+                valueField: 'id',
+                labelField: 'login',
+                searchField: ['login'],
                 plugins: ['remove_button'],
                 options: <?php echo $otherUsersJson; ?>,
                 onInitialize: function () {
-                    var userId = <?php echo $gotData ? $accountData->getAccountUserId() : 0; ?>;
+                    var userId = <?php echo $gotData ? $accountData->getUserId() : 0; ?>;
 
                     if (userId > 0) {
                         this.removeOption(userId);

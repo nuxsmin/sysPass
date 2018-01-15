@@ -126,7 +126,7 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
         $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::NOTICE_USER_VIEW) ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 
-        if ($this->userData->isUserIsAdminApp()){
+        if ($this->userData->isIsAdminApp()){
             $this->view->assign('users', User::getItem()->getItemsForSelect());
         }
 

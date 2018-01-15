@@ -26,7 +26,7 @@ namespace SP\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\GroupData;
+use SP\DataModel\UserGroupData;
 use SP\Http\Request;
 
 /**
@@ -37,7 +37,7 @@ use SP\Http\Request;
 class UserGroupForm extends FormBase implements FormInterface
 {
     /**
-     * @var GroupData
+     * @var UserGroupData
      */
     protected $groupData;
 
@@ -68,10 +68,10 @@ class UserGroupForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->groupData = new GroupData();
-        $this->groupData->setUsergroupId($this->itemId);
-        $this->groupData->setUsergroupName(Request::analyze('name'));
-        $this->groupData->setUsergroupDescription(Request::analyze('description'));
+        $this->groupData = new UserGroupData();
+        $this->groupData->setId($this->itemId);
+        $this->groupData->setName(Request::analyze('name'));
+        $this->groupData->setDescription(Request::analyze('description'));
         $this->groupData->setUsers(Request::analyze('users', 0));
     }
 
@@ -80,13 +80,13 @@ class UserGroupForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->groupData->getUsergroupName()) {
+        if (!$this->groupData->getName()) {
             throw new ValidationException(__u('Es necesario un nombre de grupo'));
         }
     }
 
     /**
-     * @return GroupData
+     * @return UserGroupData
      */
     public function getItemData()
     {

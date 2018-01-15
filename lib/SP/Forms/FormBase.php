@@ -26,6 +26,7 @@ namespace SP\Forms;
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 
 /**
@@ -44,11 +45,15 @@ abstract class FormBase
     /**
      * @var Config
      */
-    protected $Config;
+    protected $config;
     /**
      * @var ConfigData
      */
-    protected $ConfigData;
+    protected $configData;
+    /**
+     * @var Session
+     */
+    protected $session;
 
     /**
      * FormBase constructor.
@@ -63,12 +68,14 @@ abstract class FormBase
     }
 
     /**
-     * @param Config $config
+     * @param Config  $config
+     * @param Session $session
      */
-    public function inject(Config $config)
+    public function inject(Config $config, Session $session)
     {
-        $this->Config = $config;
-        $this->ConfigData = $config->getConfigData();
+        $this->config = $config;
+        $this->configData = $config->getConfigData();
+        $this->session = $session;
     }
 
     /**

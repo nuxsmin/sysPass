@@ -126,7 +126,7 @@ class AccountHistory extends AccountBase implements AccountInterface
                 . 'account_isPrivate,'
                 . 'account_isPrivateGroup,'
                 . '?,?,? '
-                . 'FROM accounts WHERE account_id IN (' . implode(',', array_fill(0, count($id), '?')) . ')';
+                . 'FROM Account WHERE account_id IN (' . implode(',', array_fill(0, count($id), '?')) . ')';
 
             foreach ($id as $param) {
                 $Data->addParam($param);
@@ -154,7 +154,7 @@ class AccountHistory extends AccountBase implements AccountInterface
                 . 'account_isPrivate,'
                 . 'account_isPrivateGroup,'
                 . '?,?,? '
-                . 'FROM accounts WHERE account_id = ?';
+                . 'FROM Account WHERE account_id = ?';
 
             $Data->addParam($id);
         }
@@ -255,7 +255,7 @@ class AccountHistory extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(null === $id ? $this->accountData->getAccountId() : $id);
+        $Data->addParam(null === $id ? $this->accountData->getId() : $id);
         $Data->addParam(ConfigDB::getValue('masterPwd'));
 
         return (DbWrapper::getResults($Data) !== false);
@@ -303,9 +303,9 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'acchistory_login AS account_login,'
             . 'acchistory_pass AS account_pass,'
             . 'acchistory_key AS account_key,'
-            . 'customer_name '
+            . 'name '
             . 'FROM accHistory '
-            . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
+            . 'LEFT JOIN customers ON acchistory_customerId = id '
             . 'WHERE acchistory_id = ? LIMIT 1';
 
         $Data = new QueryData();
@@ -370,13 +370,13 @@ class AccountHistory extends AccountBase implements AccountInterface
             . 'usergroup_name,'
             . 'u2.user_name as user_editName,'
             . 'u2.user_login as user_editLogin,'
-            . 'category_name, customer_name '
+            . 'name, name '
             . 'FROM accHistory '
-            . 'LEFT JOIN categories ON acchistory_categoryId = category_id '
+            . 'LEFT JOIN Category ON acchistory_categoryId = id '
             . 'LEFT JOIN usrGroups ON acchistory_userGroupId = usergroup_id '
             . 'LEFT JOIN usrData u1 ON acchistory_userId = u1.user_id '
             . 'LEFT JOIN usrData u2 ON acchistory_userEditId = u2.user_id '
-            . 'LEFT JOIN customers ON acchistory_customerId = customer_id '
+            . 'LEFT JOIN customers ON acchistory_customerId = id '
             . 'WHERE acchistory_id = ? LIMIT 1';
 
         $Data = new QueryData();
@@ -432,21 +432,21 @@ class AccountHistory extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountId(), 'account_id');
-        $Data->addParam($this->accountData->getAccountCustomerId(), 'accountCustomerId');
-        $Data->addParam($this->accountData->getAccountCategoryId(), 'accountCategoryId');
-        $Data->addParam($this->accountData->getAccountName(), 'accountName');
-        $Data->addParam($this->accountData->getAccountLogin(), 'accountLogin');
-        $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
-        $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
-        $Data->addParam($this->accountData->getAccountKey(), 'accountKey');
-        $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
-        $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
-        $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
-        $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
-        $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
-        $Data->addParam($this->accountData->getAccountIsPrivate(), 'isPrivate');
-        $Data->addParam($this->accountData->getAccountIsPrivateGroup(), 'isPrivateGroup');
+        $Data->addParam($this->accountData->getId(), 'account_id');
+        $Data->addParam($this->accountData->getClientId(), 'accountCustomerId');
+        $Data->addParam($this->accountData->getCategoryId(), 'accountCategoryId');
+        $Data->addParam($this->accountData->getName(), 'accountName');
+        $Data->addParam($this->accountData->getLogin(), 'accountLogin');
+        $Data->addParam($this->accountData->getUrl(), 'accountUrl');
+        $Data->addParam($this->accountData->getPass(), 'accountPass');
+        $Data->addParam($this->accountData->getKey(), 'accountKey');
+        $Data->addParam($this->accountData->getNotes(), 'accountNotes');
+        $Data->addParam($this->accountData->getUserId(), 'accountUserId');
+        $Data->addParam($this->accountData->getUserGroupId(), 'accountUserGroupId');
+        $Data->addParam($this->accountData->getOtherUserEdit(), 'accountOtherUserEdit');
+        $Data->addParam($this->accountData->getOtherUserGroupEdit(), 'accountOtherGroupEdit');
+        $Data->addParam($this->accountData->getIsPrivate(), 'isPrivate');
+        $Data->addParam($this->accountData->getIsPrivateGroup(), 'isPrivateGroup');
         $Data->addParam($this->isIsModify(), 'isModify');
         $Data->addParam($this->isIsDelete(), 'isDelete');
         $Data->addParam(ConfigDB::getValue('masterPwd'), 'masterPwd');

@@ -36,23 +36,23 @@ class ClientData extends DataModelBase implements DataModelInterface
     /**
      * @var int
      */
-    public $customer_id = 0;
+    public $id = 0;
     /**
      * @var string
      */
-    public $customer_name = '';
+    public $name = '';
     /**
      * @var string
      */
-    public $customer_description = '';
+    public $description = '';
     /**
      * @var string
      */
-    public $customer_hash = '';
+    public $hash = '';
     /**
      * @var int
      */
-    public $customer_isGlobal = 0;
+    public $isGlobal = 0;
 
     /**
      * CustomerData constructor.
@@ -63,65 +63,9 @@ class ClientData extends DataModelBase implements DataModelInterface
      */
     public function __construct($customer_id = null, $customer_name = null, $customer_description = null)
     {
-        $this->customer_id = $customer_id;
-        $this->customer_name = $customer_name;
-        $this->customer_description = $customer_description;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCustomerId()
-    {
-        return $this->customer_id;
-    }
-
-    /**
-     * @param int $customer_id
-     */
-    public function setCustomerId($customer_id)
-    {
-        $this->customer_id = $customer_id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomerName()
-    {
-        return $this->customer_name;
-    }
-
-    /**
-     * @param string $customer_name
-     */
-    public function setCustomerName($customer_name)
-    {
-        $this->customer_name = $customer_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomerDescription()
-    {
-        return $this->customer_description;
-    }
-
-    /**
-     * @param string $customer_description
-     */
-    public function setCustomerDescription($customer_description)
-    {
-        $this->customer_description = $customer_description;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCustomerHash()
-    {
-        return $this->customer_hash;
+        $this->id = $customer_id;
+        $this->name = $customer_name;
+        $this->description = $customer_description;
     }
 
     /**
@@ -129,7 +73,15 @@ class ClientData extends DataModelBase implements DataModelInterface
      */
     public function getId()
     {
-        return $this->customer_id;
+        return (int)$this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = (int)$id;
     }
 
     /**
@@ -137,22 +89,54 @@ class ClientData extends DataModelBase implements DataModelInterface
      */
     public function getName()
     {
-        return $this->customer_name;
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash()
+    {
+        return $this->hash;
     }
 
     /**
      * @return int
      */
-    public function getCustomerIsGlobal()
+    public function getIsGlobal()
     {
-        return (int)$this->customer_isGlobal;
+        return (int)$this->isGlobal;
     }
 
     /**
-     * @param int $customer_isGlobal
+     * @param int $isGlobal
      */
-    public function setCustomerIsGlobal($customer_isGlobal)
+    public function setIsGlobal($isGlobal)
     {
-        $this->customer_isGlobal = (bool)$customer_isGlobal;
+        $this->isGlobal = (bool)$isGlobal;
     }
 }

@@ -24,38 +24,44 @@
 
 namespace SP\DataModel;
 
+use SP\Services\User\UserLoginResponse;
+
 /**
  * Class UserLoginData
  *
  * @package SP\DataModel
  */
-class UserLoginData extends UserData
+class UserLoginData
 {
     /**
      * @var string
      */
-    protected $login;
+    protected $loginUser;
     /**
      * @var string
      */
     protected $loginPass;
+    /**
+     * @var UserLoginResponse
+     */
+    protected $userLoginResponse;
 
     /**
      * Login del usuario introducido en el formulario
      *
      * @return string
      */
-    public function getLogin()
+    public function getLoginUser()
     {
-        return $this->login;
+        return $this->loginUser;
     }
 
     /**
      * @param string $login
      */
-    public function setLogin($login)
+    public function setLoginUser($login)
     {
-        $this->login = $login;
+        $this->loginUser = $login;
     }
 
     /**
@@ -74,5 +80,21 @@ class UserLoginData extends UserData
     public function setLoginPass($loginPass)
     {
         $this->loginPass = $loginPass;
+    }
+
+    /**
+     * @return UserLoginResponse
+     */
+    public function getUserLoginResponse()
+    {
+        return $this->userLoginResponse;
+    }
+
+    /**
+     * @param UserLoginResponse $userLoginResponse
+     */
+    public function setUserLoginResponse(UserLoginResponse $userLoginResponse = null)
+    {
+        $this->userLoginResponse = $userLoginResponse;
     }
 }

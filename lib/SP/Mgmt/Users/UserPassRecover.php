@@ -61,15 +61,15 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
     public static function checkPassRecoverLimit(UserData $UserData)
     {
         $query = /** @lang SQL */
-            'SELECT userpassr_userId 
-            FROM usrPassRecover
-            WHERE userpassr_userId = ?
-            AND userpassr_used = 0
-            AND userpassr_date >= ?';
+            'SELECT userId 
+            FROM UserPassRecover
+            WHERE userId = ?
+            AND used = 0
+            AND date >= ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($UserData->getUserId());
+        $Data->addParam($UserData->getId());
         $Data->addParam(time() - self::MAX_PASS_RECOVER_TIME);
 
         try {
@@ -91,12 +91,12 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
     public function getHashUserId($hash)
     {
         $query = /** @lang SQL */
-            'SELECT userpassr_userId
-            FROM usrPassRecover
-            WHERE userpassr_hash = ?
-            AND userpassr_used = 0
-            AND userpassr_date >= ?
-            ORDER BY userpassr_date DESC LIMIT 1';
+            'SELECT userId
+            FROM UserPassRecover
+            WHERE hash = ?
+            AND used = 0
+            AND date >= ?
+            ORDER BY date DESC LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -127,11 +127,11 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
     public function update()
     {
         $query = /** @lang SQL */
-            'UPDATE usrPassRecover SET userpassr_used = 1 WHERE userpassr_hash = ? LIMIT 1';
+            'UPDATE UserPassRecover SET used = 1 WHERE hash = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserpassrHash());
+        $Data->addParam($this->itemData->getHash());
         $Data->setOnErrorMessage(__('Error interno', false));
 
         DbWrapper::getQuery($Data);
@@ -146,16 +146,16 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
     public function add()
     {
         $query = /** @lang SQL */
-            'INSERT INTO usrPassRecover SET 
-            userpassr_userId = ?,
-            userpassr_hash = ?,
-            userpassr_date = UNIX_TIMESTAMP(),
-            userpassr_used = 0';
+            'INSERT INTO UserPassRecover SET 
+            userId = ?,
+            hash = ?,
+            date = UNIX_TIMESTAMP(),
+            used = 0';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserpassrUserId());
-        $Data->addParam($this->itemData->getUserpassrHash());
+        $Data->addParam($this->itemData->getUserId());
+        $Data->addParam($this->itemData->getHash());
         $Data->setOnErrorMessage(__('Error al generar el hash de recuperación', false));
 
         DbWrapper::getQuery($Data);

@@ -34,7 +34,7 @@
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $gotData ? $accountData->getAccountName() : ''; ?>" <?php echo $readonly; ?>
+                               value="<?php echo $gotData ? $accountData->getName() : ''; ?>" <?php echo $readonly; ?>
                                tabindex="1">
                         <label class="mdl-textfield__label" for="name"><?php echo __('Nombre de cuenta'); ?></label>
                     </div>
@@ -48,9 +48,9 @@
                     <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer"
                             tabindex="2" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
-                        <?php foreach ($customers as $customer): ?>
+                        <?php foreach ($customers as $client): ?>
                             <option
-                                    value="<?php echo $customer->id; ?>" <?php echo ($gotData && $customer->id == $accountData->getAccountCustomerId()) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
+                                    value="<?php echo $client->id; ?>" <?php echo ($gotData && $client->id == $accountData->getClientId()) ? 'selected' : ''; ?>><?php echo $client->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php if (!$isView && $addCustomerEnabled): ?>
@@ -73,7 +73,7 @@
                         <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
                         <?php foreach ($categories as $category): ?>
                             <option
-                                    value="<?php echo $category->id; ?>" <?php echo ($gotData && $category->id == $accountData->getAccountCategoryId()) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
+                                    value="<?php echo $category->id; ?>" <?php echo ($gotData && $category->id == $accountData->getCategoryId()) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php if (!$isView && $addCategoryEnabled): ?>
@@ -92,7 +92,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="url" name="url" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" tabindex="4"
-                               value="<?php echo $gotData ? $accountData->getAccountUrl() : ''; ?>" <?php echo $readonly; ?>>
+                               value="<?php echo $gotData ? $accountData->getUrl() : ''; ?>" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label" for="name"><?php echo __('URL o IP de acceso'); ?></label>
                     </div>
                 </td>
@@ -104,7 +104,7 @@
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50" tabindex="5"
-                               value="<?php echo $gotData ? $accountData->getAccountLogin() : ''; ?>" <?php echo $readonly; ?>>
+                               value="<?php echo $gotData ? $accountData->getLogin() : ''; ?>" <?php echo $readonly; ?>>
                         <label class="mdl-textfield__label" for="name"><?php echo __('Usuario de acceso'); ?></label>
                     </div>
                 </td>
@@ -159,7 +159,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
                                   name="notes" tabindex="9"
-                                  maxlength="5000" <?php echo $readonly; ?>><?php echo $gotData ? $accountData->getAccountNotes() : ''; ?></textarea>
+                                  maxlength="5000" <?php echo $readonly; ?>><?php echo $gotData ? $accountData->getNotes() : ''; ?></textarea>
                         <label class="mdl-textfield__label"
                                for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
                     </div>
@@ -174,8 +174,8 @@
                             <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
                         </select>
                     <?php else: ?>
-                        <?php foreach ($accountData->getTags() as $tag): ?>
-                            <span class="tag"><?php echo $tag; ?></span>
+                        <?php foreach ($accountTags as $tag): ?>
+                            <span class="tag"><?php echo $tag->name; ?></span>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </td>
@@ -191,7 +191,7 @@
                                 data-sk="<?php echo $sk; ?>"
                                 data-action-route="items/accountsUser"
                                 data-item-id="<?php echo $gotData ? $accountId : ''; ?>"
-                                data-selected-id="<?php echo $gotData ? $accountData->getAccountParentId() : ''; ?>">
+                                data-selected-id="<?php echo $gotData ? $accountData->getParentId() : ''; ?>">
                             <option value=""><?php echo __('Seleccionar Cuenta'); ?></option>
                         </select>
                     </td>
@@ -219,7 +219,7 @@
             <?php if ($actionId === \SP\Core\Acl\ActionsInterface::ACCOUNT_EDIT && $isModified && $accountData->getUserEditName()): ?>
                 <tr>
                     <td class="descField"><?php echo __('Última Modificación'); ?></td>
-                    <td class="valField"><?php printf('%s (%s)', $accountData->getAccountDateEdit(), $accountData->getUserEditName()); ?></td>
+                    <td class="valField"><?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName()); ?></td>
                 </tr>
             <?php endif; ?>
 

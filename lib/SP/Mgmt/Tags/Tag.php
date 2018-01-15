@@ -55,12 +55,12 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO tags SET tag_name = ?, tag_hash = ?';
+            'INSERT INTO Tag SET tag_name = ?, tag_hash = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getTagName());
-        $Data->addParam($this->itemData->getTagHash());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getHash());
         $Data->setOnErrorMessage(__('Error al crear etiqueta', false));
 
         DbWrapper::getQuery($Data);
@@ -75,10 +75,10 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function checkDuplicatedOnAdd()
     {
         $query = /** @lang SQL */
-            'SELECT tag_id FROM tags WHERE tag_hash = ?';
+            'SELECT id FROM tags WHERE hash = ?';
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getTagHash());
+        $Data->addParam($this->itemData->getHash());
 
         $queryRes = DbWrapper::getResults($Data);
 
@@ -86,7 +86,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
             if ($Data->getQueryNumRows() === 0) {
                 return false;
             } elseif ($Data->getQueryNumRows() === 1) {
-                $this->itemData->setTagId($queryRes->tag_id);
+                $this->itemData->setId($queryRes->tag_id);
             }
         }
 
@@ -101,7 +101,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function delete($id)
     {
         $query = /** @lang SQL */
-            'DELETE FROM tags WHERE tag_id = ? LIMIT 1';
+            'DELETE FROM Tag WHERE tag_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -128,13 +128,13 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         }
 
         $query = /** @lang SQL */
-            'UPDATE tags SET tag_name = ?, tag_hash = ? WHERE tag_id = ? LIMIT 1';
+            'UPDATE Tag SET tag_name = ?, tag_hash = ? WHERE tag_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getTagName());
-        $Data->addParam($this->itemData->getTagHash());
-        $Data->addParam($this->itemData->getTagId());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getHash());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al actualizar etiqueta', false));
 
         DbWrapper::getQuery($Data);
@@ -149,11 +149,11 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function checkDuplicatedOnUpdate()
     {
         $query = /** @lang SQL */
-            'SELECT tag_hash FROM tags WHERE tag_hash = ? AND tag_id <> ?';
+            'SELECT hash FROM tags WHERE hash = ? AND tag_id <> ?';
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getTagHash());
-        $Data->addParam($this->itemData->getTagId());
+        $Data->addParam($this->itemData->getHash());
+        $Data->addParam($this->itemData->getId());
 
         DbWrapper::getQuery($Data);
 
@@ -168,7 +168,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT tag_id, tag_name FROM tags WHERE tag_id = ? LIMIT 1';
+            'SELECT id, tag_name FROM tags WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -190,7 +190,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT tag_id, tag_name, tag_hash FROM tags ORDER BY tag_name';
+            'SELECT id, tag_name, tag_hash FROM tags ORDER BY name';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -221,7 +221,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         }
 
         $query = /** @lang SQL */
-            'SELECT tag_id, tag_name FROM tags WHERE tag_id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT id, tag_name FROM tags WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());

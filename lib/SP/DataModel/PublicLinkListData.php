@@ -38,22 +38,22 @@ class PublicLinkListData extends PublicLinkData
     /**
      * @var string
      */
-    public $user_name;
+    public $userName;
     /**
      * @var string
      */
-    public $user_login;
+    public $userLogin;
     /**
      * @var string
      */
-    public $account_name;
+    public $accountName;
 
     /**
      * @return string
      */
     public function getUserName()
     {
-        return $this->user_name;
+        return $this->userName;
     }
 
     /**
@@ -61,7 +61,7 @@ class PublicLinkListData extends PublicLinkData
      */
     public function getUserLogin()
     {
-        return $this->user_login;
+        return $this->userLogin;
     }
 
     /**
@@ -69,7 +69,7 @@ class PublicLinkListData extends PublicLinkData
      */
     public function getAccountName()
     {
-        return $this->account_name;
+        return $this->accountName;
     }
 
     /**
@@ -77,7 +77,7 @@ class PublicLinkListData extends PublicLinkData
      */
     public function getNotifyString()
     {
-        return $this->isPublicLinkNotify() ? __u('ON') : __u('OFF');
+        return $this->isNotify() ? __u('ON') : __u('OFF');
     }
 
     /**
@@ -85,7 +85,7 @@ class PublicLinkListData extends PublicLinkData
      */
     public function getDateAddFormat()
     {
-        return DateUtil::getDateFromUnix($this->publicLink_dateAdd);
+        return DateUtil::getDateFromUnix($this->dateAdd);
     }
 
     /**
@@ -93,7 +93,7 @@ class PublicLinkListData extends PublicLinkData
      */
     public function getDateExpireFormat()
     {
-        return DateUtil::getDateFromUnix($this->publicLink_dateExpire);
+        return DateUtil::getDateFromUnix($this->dateExpire);
     }
 
     /**
@@ -101,6 +101,6 @@ class PublicLinkListData extends PublicLinkData
      */
     public function getCountViewsString()
     {
-        return sprintf('%d/%d/%d', $this->getPublicLinkCountViews(), $this->getPublicLinkMaxCountViews(), $this->getPublicLinkTotalCountViews());
+        return sprintf('%d/%d/%d', $this->getCountViews(), $this->getMaxCountViews(), $this->getTotalCountViews());
     }
 }

@@ -55,7 +55,7 @@ class ConfigDB implements ConfigInterface
      */
     public static function readConfig()
     {
-        $query = 'SELECT config_parameter, config_value FROM config';
+        $query = 'SELECT parameter, value FROM Config';
 
         $Data = new QueryData();
         $Data->setUseKeyPair(true);
@@ -77,6 +77,7 @@ class ConfigDB implements ConfigInterface
      *
      * @param bool $isInsert realizar un 'insert'?
      * @return bool
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     public static function writeConfig($isInsert = false)
     {
@@ -84,11 +85,11 @@ class ConfigDB implements ConfigInterface
             $Data = new QueryData();
 
             if ($isInsert) {
-                $query = 'INSERT INTO config VALUES (:param,:value) ON DUPLICATE KEY UPDATE config_value = :valuedup';
+                $query = 'INSERT INTO Config VALUES (:param,:value) ON DUPLICATE KEY UPDATE value = :valuedup';
 
                 $Data->addParam($value, 'valuedup');
             } else {
-                $query = 'UPDATE config SET config_value = :value WHERE config_parameter = :param';
+                $query = 'UPDATE Config SET value = :value WHERE parameter = :param';
             }
 
             $Data->setQuery($query);
@@ -121,14 +122,15 @@ class ConfigDB implements ConfigInterface
      * @param bool   $email     enviar email?
      * @param bool   $hideValue Ocultar el valor del registro en el log
      * @return bool
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     public static function setValue($param, $value, $email = true, $hideValue = false)
     {
         $query = /** @lang SQL */
-            'INSERT INTO config '
-            . 'SET config_parameter = :param,'
-            . 'config_value = :value '
-            . 'ON DUPLICATE KEY UPDATE config_value = :valuedup';
+            'INSERT INTO Config '
+            . 'SET parameter = :param,'
+            . 'value = :value '
+            . 'ON DUPLICATE KEY UPDATE value = :valuedup';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -196,7 +198,7 @@ class ConfigDB implements ConfigInterface
      */
     public static function getValue($param, $default = null)
     {
-        $query = 'SELECT config_value FROM config WHERE config_parameter = :param LIMIT 1';
+        $query = 'SELECT value FROM Config WHERE parameter = :param LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -208,7 +210,7 @@ class ConfigDB implements ConfigInterface
             return false;
         }
 
-        return is_object($queryRes) ? $queryRes->config_value : $default;
+        return is_object($queryRes) ? $queryRes->value : $default;
     }
 
     /**
@@ -221,7 +223,7 @@ class ConfigDB implements ConfigInterface
      */
     public static function deleteParam($param)
     {
-        $query = 'DELETE FROM config WHERE config_parameter = :param LIMIT 1';
+        $query = 'DELETE FROM Config WHERE parameter = :param LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);

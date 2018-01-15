@@ -3,8 +3,8 @@
 use SP\Util\ArrayUtil;
 
 /** @var $icons \Theme\Icons */
-/** @var $group \SP\DataModel\GroupData */
-/** @var $groupUsers \SP\DataModel\GroupUsersData */
+/** @var $group \SP\DataModel\UserGroupData */
+/** @var $groupUsers \SP\DataModel\UserToUserGroupData */
 ?>
 
 <div id="box-popup">
@@ -24,7 +24,7 @@ use SP\Util\ArrayUtil;
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" value="<?php echo $group->getUsergroupName(); ?>">
+                               maxlength="50" value="<?php echo $group->getName(); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Nombre del grupo'); ?></label>
                     </div>
@@ -37,7 +37,7 @@ use SP\Util\ArrayUtil;
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="description" name="description" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" value="<?php echo $group->getUsergroupDescription(); ?>">
+                               maxlength="50" value="<?php echo $group->getDescription(); ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php echo __('Descripción del grupo'); ?></label>
                     </div>
@@ -54,7 +54,7 @@ use SP\Util\ArrayUtil;
                         <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
                         <?php /** @var array $users */
                         foreach ($users as $user): ?>
-                            <?php $selected = ArrayUtil::checkInObjectArrayMethod($groupUsers, 'getUsertogroupUserId', $user->id) ? 'selected' : ''; ?>
+                            <?php $selected = ArrayUtil::checkInObjectArrayMethod($groupUsers, 'getUserId', $user->id) ? 'selected' : ''; ?>
                             <option
                                     value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
                         <?php endforeach; ?>

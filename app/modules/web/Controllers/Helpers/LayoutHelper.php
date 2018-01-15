@@ -150,7 +150,7 @@ class LayoutHelper extends HelperBase
             $this->view->append('jsLinks', Bootstrap::$WEBROOT . '/public/js/js.php?f=' . $themeJsFiles . '&b=' . $themeJsBase . '&v=' . $jsVersionHash);
         }
 
-        $userPreferences = $this->session->getUserPreferences();
+        $userPreferences = $this->session->getUserData()->getPreferences();
 
         if ($this->loggedIn && $userPreferences->getUserId() > 0) {
             $resultsAsCards = $userPreferences->isResultsAsCards();
@@ -219,18 +219,18 @@ class LayoutHelper extends HelperBase
         $userData = $this->session->getUserData();
         $icons = $this->theme->getIcons();
 
-        if ($userData->isUserIsAdminApp()) {
+        if ($userData->getIsAdminApp()) {
             $userType = $icons->getIconAppAdmin();
-        } elseif ($userData->isUserIsAdminAcc()) {
+        } elseif ($userData->getIsAdminAcc()) {
             $userType = $icons->getIconAccAdmin();
         }
 
         $this->view->assign('userType', $userType);
-        $this->view->assign('userId', $userData->getUserId());
-        $this->view->assign('userLogin', mb_strtoupper($userData->getUserLogin()));
-        $this->view->assign('userName', $userData->getUserName() ?: mb_strtoupper($this->view->userLogin));
-        $this->view->assign('userGroup', $userData->getUsergroupName());
-        $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userData->isUserIsLdap()));
+        $this->view->assign('userId', $userData->getId());
+        $this->view->assign('userLogin', mb_strtoupper($userData->getLogin()));
+        $this->view->assign('userName', $userData->getName() ?: mb_strtoupper($this->view->userLogin));
+        $this->view->assign('userGroup', $userData->getUserGroupId());
+        $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userData->getIsLdap()));
         $this->view->assign('userNotices', count(Notice::getItem()->getAllActiveForUser()));
     }
 

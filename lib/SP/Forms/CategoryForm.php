@@ -69,9 +69,9 @@ class CategoryForm extends FormBase implements FormInterface
     protected function analyzeRequestData()
     {
         $this->categoryData = new CategoryData();
-        $this->categoryData->setCategoryId($this->itemId);
-        $this->categoryData->setCategoryName(Request::analyze('name'));
-        $this->categoryData->setCategoryDescription(Request::analyze('description'));
+        $this->categoryData->setId($this->itemId);
+        $this->categoryData->setName(Request::analyze('name'));
+        $this->categoryData->setDescription(Request::analyze('description'));
     }
 
     /**
@@ -79,7 +79,7 @@ class CategoryForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->categoryData->getCategoryName()) {
+        if (!$this->categoryData->getName()) {
             throw new ValidationException(__u('Es necesario un nombre de categoría'));
         }
     }

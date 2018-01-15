@@ -34,26 +34,26 @@ class FileExtData extends FileData
     /**
      * @var string
      */
-    public $customer_name = '';
+    public $customerName = '';
     /**
      * @var string
      */
-    public $account_name = '';
+    public $accountName = '';
 
     /**
      * @return string
      */
     public function getCustomerName()
     {
-        return $this->customer_name;
+        return $this->customerName;
     }
 
     /**
-     * @param string $customer_name
+     * @param string $customerName
      */
-    public function setCustomerName($customer_name)
+    public function setCustomerName($customerName)
     {
-        $this->customer_name = $customer_name;
+        $this->customerName = $customerName;
     }
 
     /**
@@ -61,14 +61,14 @@ class FileExtData extends FileData
      */
     public function getAccountName()
     {
-        return $this->account_name;
+        return $this->accountName;
     }
 
     /**
-     * @param string $account_name
+     * @param string $accountName
      */
-    public function setAccountName($account_name)
+    public function setAccountName($accountName)
     {
-        $this->account_name = $account_name;
+        $this->accountName = $accountName;
     }
 }

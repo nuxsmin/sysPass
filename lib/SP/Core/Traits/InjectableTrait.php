@@ -25,7 +25,7 @@
 namespace SP\Core\Traits;
 
 use SP\Bootstrap;
-use SP\Core\Dic\Container;
+use SP\Core\Dic\Injector;
 
 /**
  * Trait InjectTrait
@@ -35,16 +35,14 @@ use SP\Core\Dic\Container;
 trait InjectableTrait
 {
     /**
-     * @var Container
+     * Injects dependencies through the DI container
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
-    protected $dic;
-
-    protected function injectDependencies()
+    final protected function injectDependencies()
     {
-        $this->dic = Bootstrap::getDic();
-
         if (method_exists($this, 'inject')) {
-            $this->dic->inject($this);
+            Injector::inject(Bootstrap::getContainer(), $this);
         }
     }
 }

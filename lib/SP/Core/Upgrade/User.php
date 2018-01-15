@@ -30,6 +30,7 @@ use SP\Core\OldCrypt;
 use SP\Core\TaskFactory;
 use SP\DataModel\UserLoginData;
 use SP\Mgmt\Users\UserPass;
+use SP\Services\User\UserPassService;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 
@@ -75,13 +76,13 @@ class User
             }
 
             $query = /** @lang SQL */
-                'UPDATE accounts SET account_userId = ? WHERE account_userId NOT IN (' . $paramsIn . ') OR account_userId IS NULL ';
+                'UPDATE Account SET account_userId = ? WHERE account_userId NOT IN (' . $paramsIn . ') OR account_userId IS NULL ';
             $Data->setQuery($query);
 
             DbWrapper::getQuery($Data);
 
             $query = /** @lang SQL */
-                'UPDATE accounts SET account_userEditId = ? WHERE account_userEditId NOT IN (' . $paramsIn . ') OR account_userEditId IS NULL';
+                'UPDATE Account SET account_userEditId = ? WHERE account_userEditId NOT IN (' . $paramsIn . ') OR account_userEditId IS NULL';
             $Data->setQuery($query);
 
             DbWrapper::getQuery($Data);
@@ -99,13 +100,13 @@ class User
             DbWrapper::getQuery($Data);
 
             $query = /** @lang SQL */
-                'DELETE FROM usrPassRecover WHERE userpassr_userId <> ? AND userpassr_userId NOT IN (' . $paramsIn . ')';
+                'DELETE FROM UserPassRecover WHERE userId <> ? AND userId NOT IN (' . $paramsIn . ')';
             $Data->setQuery($query);
 
             DbWrapper::getQuery($Data);
 
             $query = /** @lang SQL */
-                'DELETE FROM usrToGroups WHERE usertogroup_userId <> ? AND usertogroup_userId NOT IN (' . $paramsIn . ') OR usertogroup_userId IS NULL';
+                'DELETE FROM UserToGroup WHERE usertogroup_userId <> ? AND usertogroup_userId NOT IN (' . $paramsIn . ') OR usertogroup_userId IS NULL';
             $Data->setQuery($query);
 
             DbWrapper::getQuery($Data);
@@ -163,16 +164,19 @@ class User
     /**
      * Actualizar la clave maestra
      *
-     * @param UserLoginData $UserData
+     * @param UserLoginData   $userLoginData
+     * @param UserPassService $userPassService
      * @return bool
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public static function upgradeMasterKey(UserLoginData $UserData)
+    public static function upgradeMasterKey(UserLoginData $userLoginData, UserPassService $userPassService)
     {
-        $key = OldCrypt::generateAesKey($UserData->getLoginPass() . $UserData->getLogin());
-        $mKey = OldCrypt::getDecrypt($UserData->getUserMPass(), $UserData->getUserMKey(), $key);
+        $key = OldCrypt::generateAesKey($userLoginData->getLoginPass() . $userLoginData->getLoginUser());
+        $mKey = OldCrypt::getDecrypt($userLoginData->getUserLoginResponse()->getMPass(), $userLoginData->getUserLoginResponse()->getMKey(), $key);
 
         try {
-            return $mKey && UserPass::updateUserMPass($mKey, $UserData);
+            return $mKey && $userPassService->updateMasterPass($mKey, $userLoginData);
         } catch (SPException $e) {
         } catch (CryptoException $e) {
         }

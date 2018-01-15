@@ -77,23 +77,23 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserName());
-        $Data->addParam($this->itemData->getUserLogin());
-        $Data->addParam($this->itemData->getUserSsoLogin());
-        $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam($this->itemData->getUserNotes());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam($this->itemData->getSsoLogin());
+        $Data->addParam($this->itemData->getEmail());
+        $Data->addParam($this->itemData->getNotes());
         $Data->addParam($this->itemData->getUserGroupId());
         $Data->addParam($this->itemData->getUserProfileId());
-        $Data->addParam($this->itemData->isUserIsAdminApp());
-        $Data->addParam($this->itemData->isUserIsAdminAcc());
-        $Data->addParam($this->itemData->isUserIsDisabled());
-        $Data->addParam($this->itemData->isUserIsChangePass());
-        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
+        $Data->addParam($this->itemData->isIsAdminApp());
+        $Data->addParam($this->itemData->isIsAdminAcc());
+        $Data->addParam($this->itemData->isIsDisabled());
+        $Data->addParam($this->itemData->isIsChangePass());
+        $Data->addParam(Hash::hashKey($this->itemData->getPass()));
         $Data->setOnErrorMessage(__('Error al crear el usuario', false));
 
         DbWrapper::getQuery($Data);
 
-        $this->itemData->setUserId(DbWrapper::getLastId());
+        $this->itemData->setId(DbWrapper::getLastId());
 
         return $this;
     }
@@ -111,9 +111,9 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserLogin());
-        $Data->addParam($this->itemData->getUserSsoLogin());
-        $Data->addParam($this->itemData->getUserEmail());
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam($this->itemData->getSsoLogin());
+        $Data->addParam($this->itemData->getEmail());
 
         DbWrapper::getQuery($Data);
 
@@ -140,7 +140,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
             throw new SPException(SPException::SP_INFO, __('Usuario no encontrado', false));
         }
 
-        $this->itemData->setUserId(DbWrapper::$lastId);
+        $this->itemData->setId(DbWrapper::$lastId);
 
         return $this;
     }
@@ -173,24 +173,24 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserName());
-        $Data->addParam($this->itemData->getUserLogin());
-        $Data->addParam($this->itemData->getUserSsoLogin());
-        $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam($this->itemData->getUserNotes());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam($this->itemData->getSsoLogin());
+        $Data->addParam($this->itemData->getEmail());
+        $Data->addParam($this->itemData->getNotes());
         $Data->addParam($this->itemData->getUserGroupId());
         $Data->addParam($this->itemData->getUserProfileId());
-        $Data->addParam($this->itemData->isUserIsAdminApp());
-        $Data->addParam($this->itemData->isUserIsAdminAcc());
-        $Data->addParam($this->itemData->isUserIsDisabled());
-        $Data->addParam($this->itemData->isUserIsChangePass());
-        $Data->addParam($this->itemData->getUserId());
+        $Data->addParam($this->itemData->isIsAdminApp());
+        $Data->addParam($this->itemData->isIsAdminAcc());
+        $Data->addParam($this->itemData->isIsDisabled());
+        $Data->addParam($this->itemData->isIsChangePass());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al actualizar el usuario', false));
 
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() > 0) {
-            $this->itemData->setUserId(DbWrapper::getLastId());
+            $this->itemData->setId(DbWrapper::getLastId());
         }
 
         return $this;
@@ -210,10 +210,10 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserLogin());
-        $Data->addParam($this->itemData->getUserSsoLogin());
-        $Data->addParam($this->itemData->getUserEmail());
-        $Data->addParam($this->itemData->getUserId());
+        $Data->addParam($this->itemData->getLogin());
+        $Data->addParam($this->itemData->getSsoLogin());
+        $Data->addParam($this->itemData->getEmail());
+        $Data->addParam($this->itemData->getId());
 
         DbWrapper::getQuery($Data);
 
@@ -284,8 +284,8 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(Hash::hashKey($this->itemData->getUserPass()));
-        $Data->addParam($this->itemData->getUserId());
+        $Data->addParam(Hash::hashKey($this->itemData->getPass()));
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al modificar la clave', false));
 
         DbWrapper::getQuery($Data);

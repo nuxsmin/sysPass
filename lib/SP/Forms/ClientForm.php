@@ -69,10 +69,10 @@ class ClientForm extends FormBase implements FormInterface
     protected function analyzeRequestData()
     {
         $this->clientData = new ClientData();
-        $this->clientData->setCustomerId($this->itemId);
-        $this->clientData->setCustomerName(Request::analyze('name'));
-        $this->clientData->setCustomerDescription(Request::analyze('description'));
-        $this->clientData->setCustomerIsGlobal(Request::analyze('isglobal', 0, false, 1));
+        $this->clientData->setId($this->itemId);
+        $this->clientData->setName(Request::analyze('name'));
+        $this->clientData->setDescription(Request::analyze('description'));
+        $this->clientData->setIsGlobal(Request::analyze('isglobal', 0, false, 1));
     }
 
     /**
@@ -80,7 +80,7 @@ class ClientForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->clientData->getCustomerName()) {
+        if (!$this->clientData->getName()) {
             throw new ValidationException(__u('Es necesario un nombre de cliente'));
         }
     }

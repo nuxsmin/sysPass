@@ -61,7 +61,7 @@ class Profile
             }
 
             $query = /** @lang SQL */
-                'UPDATE usrData SET user_profileId = ? WHERE user_profileId NOT IN (SELECT userprofile_id FROM usrProfiles ORDER BY userprofile_id) OR user_profileId IS NULL';
+                'UPDATE usrData SET user_profileId = ? WHERE user_profileId NOT IN (SELECT id FROM usrProfiles ORDER BY id) OR user_profileId IS NULL';
             $Data->setQuery($query);
             $Data->addParam($profileId);
 
@@ -87,9 +87,8 @@ class Profile
     public static function createOrphanProfile()
     {
         $query = /** @lang SQL */
-            'INSERT INTO usrProfiles SET
-            userprofile_name = \'Orphan profile\',
-            userProfile_profile = ?';
+            ',
+            userProfile_profile = ?\'';
 
         $Data = new QueryData();
         $Data->setQuery($query);

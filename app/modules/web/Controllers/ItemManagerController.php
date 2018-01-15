@@ -31,14 +31,14 @@ use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Services\Account\AccountFileService;
-use SP\Services\Account\AccountHistoryService;
-use SP\Services\Account\AccountService;
-use SP\Services\Category\CategoryService;
-use SP\Services\Client\ClientService;
-use SP\Services\CustomField\CustomFieldDefService;
-use SP\Services\Plugin\PluginService;
-use SP\Services\Tag\TagService;
+use SP\Repositories\Account\AccountFileRepository;
+use SP\Repositories\Account\AccountHistoryRepository;
+use SP\Repositories\Account\AccountRepository;
+use SP\Repositories\Category\CategoryRepository;
+use SP\Repositories\Client\ClientRepository;
+use SP\Repositories\CustomField\CustomFieldDefRepository;
+use SP\Repositories\Plugin\PluginRepository;
+use SP\Repositories\Tag\TagRepository;
 
 /**
  * Class ItemManagerController
@@ -126,7 +126,7 @@ class ItemManagerController extends ControllerBase
      */
     protected function getCategoriesList()
     {
-        $service = new CategoryService();
+        $service = new CategoryRepository();
 
         return $this->itemsGridHelper->getCategoriesGrid($service->search($this->itemSearchData))->updatePager();
     }
@@ -136,7 +136,7 @@ class ItemManagerController extends ControllerBase
      */
     protected function getTagsList()
     {
-        $service = new TagService();
+        $service = new TagRepository();
 
         return $this->itemsGridHelper->getTagsGrid($service->search($this->itemSearchData))->updatePager();
     }
@@ -146,7 +146,7 @@ class ItemManagerController extends ControllerBase
      */
     protected function getClientsList()
     {
-        $service = new ClientService();
+        $service = new ClientRepository();
 
         return $this->itemsGridHelper->getClientsGrid($service->search($this->itemSearchData))->updatePager();
     }
@@ -156,7 +156,7 @@ class ItemManagerController extends ControllerBase
      */
     protected function getCustomFieldsList()
     {
-        $service = new CustomFieldDefService();
+        $service = new CustomFieldDefRepository();
 
         return $this->itemsGridHelper->getCustomFieldsGrid($service->search($this->itemSearchData))->updatePager();
     }
@@ -166,7 +166,7 @@ class ItemManagerController extends ControllerBase
      */
     protected function getAccountFilesList()
     {
-        $service = new AccountFileService();
+        $service = new AccountFileRepository();
 
         return $this->itemsGridHelper->getFilesGrid($service->search($this->itemSearchData))->updatePager();
     }
@@ -176,7 +176,7 @@ class ItemManagerController extends ControllerBase
      */
     protected function getAccountsList()
     {
-        $service = new AccountService();
+        $service = new AccountRepository();
 
         return $this->itemsGridHelper->getAccountsGrid($service->search($this->itemSearchData))->updatePager();
     }
@@ -186,7 +186,7 @@ class ItemManagerController extends ControllerBase
      */
     protected function getAccountsHistoryList()
     {
-        $service = new AccountHistoryService();
+        $service = new AccountHistoryRepository();
 
         return $this->itemsGridHelper->getAccountsHistoryGrid($service->search($this->itemSearchData))->updatePager();
     }
@@ -196,7 +196,7 @@ class ItemManagerController extends ControllerBase
      */
     protected function getPluginsList()
     {
-        $service = new PluginService();
+        $service = new PluginRepository();
 
         return $this->itemsGridHelper->getPluginsGrid($service->search($this->itemSearchData))->updatePager();
     }

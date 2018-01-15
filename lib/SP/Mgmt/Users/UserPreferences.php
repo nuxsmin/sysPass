@@ -92,7 +92,7 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT user_id, user_preferences FROM usrData WHERE user_id = ? LIMIT 1';
+            'SELECT id, preferences FROM User WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName(UserData::class);
@@ -103,13 +103,13 @@ class UserPreferences extends UserPreferencesBase implements ItemInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false
-            || $queryRes->getUserPreferences() === null
-            || $queryRes->getUserPreferences() === ''
+            || $queryRes->getPreferences() === null
+            || $queryRes->getPreferences() === ''
         ) {
             return $this->getItemData();
         }
 
-        return Util::unserialize($this->getDataModel(), $queryRes->getUserPreferences(), 'SP\UserPreferences');
+        return Util::unserialize($this->getDataModel(), $queryRes->getPreferences(), 'SP\UserPreferences');
     }
 
     /**

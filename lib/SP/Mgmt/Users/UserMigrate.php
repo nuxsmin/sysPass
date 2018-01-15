@@ -28,7 +28,8 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\GroupUsersData;
+use SP\DataModel\UserData;
+use SP\DataModel\UserToUserGroupData;
 use SP\DataModel\UserLoginData;
 use SP\Log\Email;
 use SP\Log\Log;
@@ -66,46 +67,46 @@ class UserMigrate
     /**
      * Actualizar la clave de un usuario desde phpPMS.
      *
-     * @param UserLoginData $UserData
+     * @param UserLoginData $userLoginData
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
-     *
-     * Esta función actualiza la clave de un usuario que ha sido migrado desde phpPMS
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public static function migrateUserPass(UserLoginData $UserData)
+    public static function migrateUserPass(UserLoginData $userLoginData)
     {
-        $passOk = ($UserData->getUserPass() === sha1($UserData->getUserHashSalt() . $UserData->getLoginPass())
-            || $UserData->getUserPass() === md5($UserData->getLoginPass())
-            || hash_equals($UserData->getUserPass(), crypt($UserData->getLoginPass(), $UserData->getUserHashSalt()))
-            || Hash::checkHashKey($UserData->getLoginPass(), $UserData->getUserPass()));
+        $userLoginResponse = $userLoginData->getUserLoginResponse();
+
+        $passOk = ($userLoginResponse->getPass() === sha1($userLoginResponse->getHashSalt() . $userLoginData->getLoginPass())
+            || $userLoginResponse->getPass() === md5($userLoginData->getLoginPass())
+            || hash_equals($userLoginResponse->getPass(), crypt($userLoginData->getLoginPass(), $userLoginResponse->getHashSalt()))
+            || Hash::checkHashKey($userLoginData->getLoginPass(), $userLoginResponse->getPass()));
 
         if ($passOk) {
             $query = /** @lang SQL */
-                'UPDATE usrData SET
-            user_pass = ?,
-            user_hashSalt = \'\',
-            user_lastUpdate = NOW(),
-            user_isMigrate = 0
-            WHERE user_login = ? LIMIT 1';
+                'UPDATE User SET
+            pass = ?,
+            hashSalt = \'\',
+            lastUpdate = NOW(),
+            isMigrate = 0
+            WHERE login = ? LIMIT 1';
 
             $Data = new QueryData();
             $Data->setQuery($query);
-            $Data->addParam(Hash::hashKey($UserData->getLoginPass()));
-            $Data->addParam($UserData->getLogin());
-            $Data->setOnErrorMessage(__('Error al migrar cuenta de usuario', false));
+            $Data->addParam(Hash::hashKey($userLoginData->getLoginPass()));
+            $Data->addParam($userLoginResponse->getLogin());
+            $Data->setOnErrorMessage(__u('Error al migrar cuenta de usuario'));
 
             DbWrapper::getQuery($Data);
 
-            $Log = new Log();
-            $Log->getLogMessage()
-                ->setAction(__FUNCTION__)
-                ->addDescription(__('Usuario actualizado', false))
-                ->addDetails(__('Login', false), $UserData->getLogin());
-            $Log->writeLog();
+//            $Log = new Log();
+//            $Log->getLogMessage()
+//                ->setAction(__FUNCTION__)
+//                ->addDescription(__u('Usuario actualizado'))
+//                ->addDetails(__u('Login'), $userLoginData->getLogin());
+//            $Log->writeLog();
 
-            Email::sendEmail($Log->getLogMessage());
+//            Email::sendEmail($Log->getLogMessage());
 
             return true;
         }
@@ -142,8 +143,8 @@ class UserMigrate
         }
 
         foreach ($queryRes as $user) {
-            $GroupUsers = new GroupUsersData();
-            $GroupUsers->setUsertogroupGroupId($user->user_groupId);
+            $GroupUsers = new UserToUserGroupData();
+            $GroupUsers->setUserGroupId($user->user_groupId);
             $GroupUsers->addUser($user->user_id);
 
             try {

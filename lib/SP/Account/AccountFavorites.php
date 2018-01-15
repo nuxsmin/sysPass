@@ -43,7 +43,7 @@ class AccountFavorites
     public static function getFavorites($userId)
     {
         $query = /** @lang SQL */
-            'SELECT accfavorite_accountId FROM accFavorites WHERE accfavorite_userId = ?';
+            'SELECT accountId FROM AccountToFavorite WHERE userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -70,7 +70,7 @@ class AccountFavorites
     public static function addFavorite($accountId, $userId)
     {
         $query = /** @lang SQL */
-            'INSERT INTO accFavorites SET accfavorite_accountId = ?, accfavorite_userId = ?';
+            'INSERT INTO AccountToFavorite SET accountId = ?, userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -86,13 +86,14 @@ class AccountFavorites
      *
      * @param $accountId int El Id de la cuenta
      * @param $userId    int El Id del usuario
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @return void
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public static function deleteFavorite($accountId, $userId)
     {
         $query = /** @lang SQL */
-            'DELETE FROM accFavorites WHERE accfavorite_accountId = ? AND accfavorite_userId = ?';
+            'DELETE FROM AccountToFavorite WHERE accountId = ? AND userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);

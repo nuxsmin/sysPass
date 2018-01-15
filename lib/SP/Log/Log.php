@@ -166,19 +166,19 @@ class Log extends ActionLog
 
         $description = trim($this->LogMessage->getDescription(true) . PHP_EOL . $this->LogMessage->getDetails(true));
 
-        $query = 'INSERT INTO log SET 
-            log_date = UNIX_TIMESTAMP(),
-            log_login = ?,
-            log_userId = ?,
-            log_ipAddress = ?,
-            log_action = ?,
-            log_level = ?,
-            log_description = ?';
+        $query = 'INSERT INTO EventLog SET 
+            date = UNIX_TIMESTAMP(),
+            login = ?,
+            userId = ?,
+            ipAddress = ?,
+            action = ?,
+            level = ?,
+            description = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->session->getUserData()->getUserLogin());
-        $Data->addParam($this->session->getUserData()->getUserId());
+        $Data->addParam($this->session->getUserData()->getLogin());
+        $Data->addParam($this->session->getUserData()->getId());
         $Data->addParam(HttpUtil::getClientAddress(true));
         $Data->addParam(utf8_encode($this->LogMessage->getAction(true)));
         $Data->addParam($this->getLogLevel());
@@ -218,7 +218,7 @@ class Log extends ActionLog
         $msg .= $this->LogMessage->getAction(true) . '|';
         $msg .= $description . '|';
         $msg .= '0|';
-        $msg .= sprintf('ip_addr="%s" user_name="%s"', HttpUtil::getClientAddress(), $this->session->getUserData()->getUserLogin());
+        $msg .= sprintf('ip_addr="%s" user_name="%s"', HttpUtil::getClientAddress(), $this->session->getUserData()->getLogin());
 
         $Syslog = new Syslog();
         $Syslog->setIsRemote($this->configData->isSyslogRemoteEnabled());

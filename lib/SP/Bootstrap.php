@@ -25,11 +25,14 @@
 namespace SP;
 
 use Defuse\Crypto\Exception\CryptoException;
+use DI\ContainerBuilder;
+use Doctrine\Common\Cache\ArrayCache;
+use Interop\Container\ContainerInterface;
 use Klein\Klein;
 use PHPMailer\PHPMailer\Exception;
 use RuntimeException;
 use SP\Account\AccountAcl;
-use SP\Auth\Browser\Browser;
+use SP\Providers\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigUtil;
@@ -75,17 +78,14 @@ class Bootstrap
      * @var string The installation path on the server (e.g. /srv/www/syspass)
      */
     public static $SERVERROOT = '';
-
     /**
      * @var string The current request path relative to the sysPass root (e.g. files/index.php)
      */
     public static $WEBROOT = '';
-
     /**
      * @var string The full URL to reach sysPass (e.g. https://sub.example.com/syspass/)
      */
     public static $WEBURI = '';
-
     /**
      * @var bool True if sysPass has been updated. Only for notices.
      */
@@ -94,6 +94,10 @@ class Bootstrap
      * @var int
      */
     public static $LOCK = 0;
+    /**
+     * @var ContainerInterface
+     */
+    protected static $container;
     /**
      * @var string
      */
@@ -137,20 +141,22 @@ class Bootstrap
 
     /**
      * Bootstrap constructor.
+     *
+     * @throws Core\Dic\ContainerException
      */
     public function __construct()
     {
+        $this->setupContainer();
+
         $this->injectDependencies();
     }
 
     /**
-     * @return DicInterface
+     * @return ContainerInterface
      */
-    public static function getDic()
+    public static function getContainer()
     {
-        global $dic;
-
-        return $dic;
+        return self::$container;
     }
 
     /**
@@ -226,6 +232,8 @@ class Bootstrap
     /**
      * Inicializar la aplicación
      *
+     * @throws SPException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function initialize()
@@ -326,8 +334,8 @@ class Bootstrap
             $AuthBrowser = new Browser();
 
             // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-            if ($AuthBrowser->checkServerAuthUser($this->session->getUserData()->getUserLogin()) === false
-                && $AuthBrowser->checkServerAuthUser($this->session->getUserData()->getUserSsoLogin()) === false
+            if ($AuthBrowser->checkServerAuthUser($this->session->getUserData()->getLogin()) === false
+                && $AuthBrowser->checkServerAuthUser($this->session->getUserData()->getSsoLogin()) === false
             ) {
                 $this->goLogout();
             }
@@ -666,7 +674,7 @@ class Bootstrap
                 || Checks::isAjax()
                 || Request::analyze('nodbupgrade', 0) === 1
                 || (Request::analyze('a') === 'upgrade' && Request::analyze('type') !== '')
-                || (self::$LOCK > 0 && $this->session->isLoggedIn() && self::$LOCK === $this->session->getUserData()->getUserId())
+                || (self::$LOCK > 0 && $this->session->isLoggedIn() && self::$LOCK === $this->session->getUserData()->getId())
             ) {
                 return true;
             }
@@ -723,7 +731,7 @@ class Bootstrap
             SessionFactory::setStartActivity(time());
         } else if (!$inMaintenance
             && time() - $sidStartTime > 120
-            && $this->session->getUserData()->getUserId() > 0
+            && $this->session->getUserData()->getId() > 0
         ) {
             try {
                 CryptSession::reKey();
@@ -771,7 +779,7 @@ class Bootstrap
         $Log = new Log();
         $LogMessage = $Log->getLogMessage();
         $LogMessage->setAction(__('Finalizar sesión', false));
-        $LogMessage->addDetails(__('Usuario', false), $this->session->getUserData()->getUserLogin());
+        $LogMessage->addDetails(__('Usuario', false), $this->session->getUserData()->getLogin());
         $LogMessage->addDetails(__('Tiempo inactivo', false), $inactiveTime . ' min.');
         $LogMessage->addDetails(__('Tiempo total', false), $totalTime . ' min.');
         $Log->writeLog();
@@ -819,5 +827,18 @@ class Bootstrap
         if (Request::analyze('logout', false, true)) {
             $this->goLogout();
         }
+    }
+
+    /**
+     * Setups DI container
+     */
+    private function setupContainer()
+    {
+        $builder = new ContainerBuilder();
+        $builder->setDefinitionCache(new ArrayCache());
+        $builder->writeProxiesToFile(true, CACHE_PATH . DIRECTORY_SEPARATOR . 'proxies');
+        $builder->addDefinitions(BASE_PATH . DIRECTORY_SEPARATOR . 'Definitions.php');
+
+        self::$container = $builder->build();
     }
 }

@@ -34,58 +34,26 @@ class ActionData implements DataModelInterface
     /**
      * @var int
      */
-    public $action_id;
+    public $id;
     /**
      * @var string
      */
-    public $action_name;
+    public $name;
     /**
      * @var string
      */
-    public $action_text;
+    public $text;
     /**
      * @var string
      */
-    public $action_route;
-
-    /**
-     * @return int
-     */
-    public function getActionId()
-    {
-        return $this->action_id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getActionName()
-    {
-        return $this->action_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getActionText()
-    {
-        return $this->action_text;
-    }
-
-    /**
-     * @return string
-     */
-    public function getActionRoute()
-    {
-        return $this->action_route;
-    }
+    public $route;
 
     /**
      * @return int
      */
     public function getId()
     {
-        return $this->action_id;
+        return $this->id;
     }
 
     /**
@@ -93,6 +61,22 @@ class ActionData implements DataModelInterface
      */
     public function getName()
     {
-        return $this->action_name;
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoute()
+    {
+        return $this->route;
     }
 }

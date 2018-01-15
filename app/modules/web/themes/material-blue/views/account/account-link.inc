@@ -18,7 +18,7 @@
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $accountData->getAccountName(); ?>" readonly>
+                               value="<?php echo $accountData->getName(); ?>" readonly>
                         <label class="mdl-textfield__label" for="name"><?php echo __('Nombre de cuenta'); ?></label>
                     </div>
                 </td>
@@ -29,7 +29,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="customer" name="customer" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $accountData->getCustomerName(); ?>" readonly>
+                               value="<?php echo $accountData->getClientName(); ?>" readonly>
                         <label class="mdl-textfield__label" for="name"><?php echo __('Cliente'); ?></label>
                     </div>
                 </td>
@@ -51,7 +51,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="url" name="url" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $accountData->getAccountUrl(); ?>" readonly>
+                               value="<?php echo $accountData->getUrl(); ?>" readonly>
                         <label class="mdl-textfield__label" for="name"><?php echo __('URL / IP'); ?></label>
                     </div>
                 </td>
@@ -62,7 +62,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="user" name="user" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $accountData->getAccountLogin(); ?>" readonly>
+                               value="<?php echo $accountData->getLogin(); ?>" readonly>
                         <label class="mdl-textfield__label" for="name"><?php echo __('Usuario'); ?></label>
                     </div>
                 </td>
@@ -73,7 +73,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
                                   name="notes"
-                                  maxlength="1000" readonly><?php echo $accountData->getAccountNotes(); ?></textarea>
+                                  maxlength="1000" readonly><?php echo $accountData->getNotes(); ?></textarea>
                         <label class="mdl-textfield__label"
                                for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
                     </div>
@@ -89,7 +89,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="account-pass" name="account-pass" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $accountData->getAccountPass(); ?>" readonly>
+                                   value="<?php echo $accountData->getPass(); ?>" readonly>
                             <label class="mdl-textfield__label" for="name"><?php echo __('Clave'); ?></label>
                         </div>
                     <?php endif; ?>
@@ -103,7 +103,7 @@
                         <button id="btnClipPass"
                                 class="clip-pass-icon mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
                                 data-clipboard-target="#account-pass"
-                                data-item-id="<?php echo $accountData->getAccountId(); ?>"
+                                data-item-id="<?php echo $accountData->getId(); ?>"
                                 data-sk="<?php echo $sk; ?>"
                                 data-history="0"
                                 data-onclick="account/copypass">

@@ -47,7 +47,7 @@ class Notices extends GridBase
      */
     public function getNoticesGrid()
     {
-        $isAdminApp = SessionFactory::getUserData()->isUserIsAdminApp();
+        $isAdminApp = SessionFactory::getUserData()->isIsAdminApp();
 
         // Grid Header
         $GridHeaders = new DataGridHeader();

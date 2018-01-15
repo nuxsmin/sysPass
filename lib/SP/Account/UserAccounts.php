@@ -75,13 +75,13 @@ class UserAccounts
             $params = implode(',', array_fill(0, $numUsers, '?'));
 
             $query = /** @lang SQL */
-                'DELETE FROM accUsers WHERE accuser_accountId = ? AND accuser_userId NOT IN (' . $params . ')';
+                'DELETE FROM AccountToUser WHERE accountId = ? AND userId NOT IN (' . $params . ')';
 
             $Data->setParams(array_merge((array)$accountId, $usersId));
         } else {
             $query = /** @lang SQL */
-                'DELETE FROM accUsers WHERE accuser_accountId = ?';
-                
+                'DELETE FROM AccountToUser WHERE accountId = ?';
+
             $Data->addParam($accountId);
         }
 
@@ -123,7 +123,7 @@ class UserAccounts
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO accUsers (accuser_accountId, accuser_userId) VALUES ' . implode(',', $params);
+            'INSERT INTO AccountToUser (accountId, userId) VALUES ' . implode(',', $params);
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -146,7 +146,7 @@ class UserAccounts
     public static function getUsersForAccount($accountId)
     {
         $query = /** @lang SQL */
-            'SELECT accuser_userId FROM accUsers WHERE accuser_accountId = ?';
+            'SELECT userId FROM AccountToUser WHERE accountId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -170,13 +170,13 @@ class UserAccounts
     public static function getUsersInfoForAccount($accountId)
     {
         $query = /** @lang SQL */
-            'SELECT user_id,
-            user_login,
-            user_name
-            FROM accUsers
-            JOIN usrData ON user_Id = accuser_userId
-            WHERE accuser_accountId = ?
-            ORDER BY user_login';
+            'SELECT U.id,
+            U.login,
+            U.name
+            FROM AccountToUser AU
+            INNER JOIN User U ON AU.userId = U.id
+            WHERE AU.accountId = ?
+            ORDER BY U.login';
 
         $Data = new QueryData();
         $Data->setMapClassName(UserData::class);

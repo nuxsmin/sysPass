@@ -71,7 +71,7 @@ class FileData extends DataModelBase implements DataModelInterface
      */
     public function getId()
     {
-        return $this->id;
+        return (int)$this->id;
     }
 
     /**
@@ -79,7 +79,7 @@ class FileData extends DataModelBase implements DataModelInterface
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->id = (int)$id;
     }
 
     /**

@@ -50,19 +50,19 @@ class Plugin extends PluginBase implements ItemInterface
     public function add()
     {
         $query = /** @lang SQL */
-            'INSERT INTO plugins SET name = ?, data = ?, enabled = ?, available = ?';
+            'INSERT INTO Plugin SET name = ?, data = ?, enabled = ?, available = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getPluginName());
-        $Data->addParam($this->itemData->getPluginData());
-        $Data->addParam($this->itemData->getPluginEnabled());
-        $Data->addParam($this->itemData->getPluginAvailable());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getData());
+        $Data->addParam($this->itemData->getEnabled());
+        $Data->addParam($this->itemData->getAvailable());
         $Data->setOnErrorMessage(__('Error al crear el plugin', false));
 
         DbWrapper::getQuery($Data);
 
-        $this->itemData->setPluginId(DbWrapper::$lastId);
+        $this->itemData->setId(DbWrapper::$lastId);
 
         return $this;
     }
@@ -77,7 +77,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function delete($name)
     {
         $query = /** @lang SQL */
-            'DELETE FROM plugins WHERE name = ? LIMIT 1';
+            'DELETE FROM Plugin WHERE name = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -102,7 +102,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function update()
     {
         $query = /** @lang SQL */
-            'UPDATE plugins
+            'UPDATE Plugin
               SET name = ?,
               data = ?,
               enabled = ?,
@@ -111,11 +111,11 @@ class Plugin extends PluginBase implements ItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getPluginName());
-        $Data->addParam($this->itemData->getPluginData());
-        $Data->addParam($this->itemData->getPluginEnabled());
-        $Data->addParam($this->itemData->getPluginAvailable());
-        $Data->addParam($this->itemData->getPluginName());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getData());
+        $Data->addParam($this->itemData->getEnabled());
+        $Data->addParam($this->itemData->getAvailable());
+        $Data->addParam($this->itemData->getName());
         $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
 
         DbWrapper::getQuery($Data);
@@ -137,7 +137,7 @@ class Plugin extends PluginBase implements ItemInterface
             data,
             enabled,
             available 
-            FROM plugins 
+            FROM Plugin 
             WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
@@ -160,7 +160,7 @@ class Plugin extends PluginBase implements ItemInterface
             name,
             enabled,
             available 
-            FROM plugins 
+            FROM Plugin 
             ORDER BY name';
 
         $Data = new QueryData();
@@ -209,7 +209,7 @@ class Plugin extends PluginBase implements ItemInterface
             data,
             enabled,
             available 
-            FROM plugins 
+            FROM Plugin 
             WHERE name = ? LIMIT 1';
 
         $Data = new QueryData();
@@ -229,14 +229,14 @@ class Plugin extends PluginBase implements ItemInterface
     public function toggleEnabled()
     {
         $query = /** @lang SQL */
-            'UPDATE plugins
+            'UPDATE Plugin
               SET enabled = ?
               WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getPluginEnabled());
-        $Data->addParam($this->itemData->getPluginId());
+        $Data->addParam($this->itemData->getEnabled());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
 
         DbWrapper::getQuery($Data);
@@ -253,14 +253,14 @@ class Plugin extends PluginBase implements ItemInterface
     public function toggleEnabledByName()
     {
         $query = /** @lang SQL */
-            'UPDATE plugins
+            'UPDATE Plugin
               SET enabled = ?
               WHERE name = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getPluginEnabled());
-        $Data->addParam($this->itemData->getPluginName());
+        $Data->addParam($this->itemData->getEnabled());
+        $Data->addParam($this->itemData->getName());
         $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
 
         DbWrapper::getQuery($Data);
@@ -277,15 +277,15 @@ class Plugin extends PluginBase implements ItemInterface
     public function toggleAvaliable()
     {
         $query = /** @lang SQL */
-            'UPDATE plugins
+            'UPDATE Plugin
               SET available = ?, enabled = ?
               WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getPluginAvailable());
-        $Data->addParam($this->itemData->getPluginEnabled());
-        $Data->addParam($this->itemData->getPluginId());
+        $Data->addParam($this->itemData->getAvailable());
+        $Data->addParam($this->itemData->getEnabled());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
 
         DbWrapper::getQuery($Data);
@@ -302,15 +302,15 @@ class Plugin extends PluginBase implements ItemInterface
     public function toggleAvaliableByName()
     {
         $query = /** @lang SQL */
-            'UPDATE plugins
+            'UPDATE Plugin
               SET available = ?, enabled = ?
               WHERE name = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getPluginAvailable());
-        $Data->addParam($this->itemData->getPluginEnabled());
-        $Data->addParam($this->itemData->getPluginName());
+        $Data->addParam($this->itemData->getAvailable());
+        $Data->addParam($this->itemData->getEnabled());
+        $Data->addParam($this->itemData->getName());
         $Data->setOnErrorMessage(__('Error al actualizar el plugin', false));
 
         DbWrapper::getQuery($Data);
@@ -328,7 +328,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function reset($id)
     {
         $query = /** @lang SQL */
-            'UPDATE plugins
+            'UPDATE Plugin
               SET data = NULL 
               WHERE id = ? LIMIT 1';
 
@@ -359,7 +359,7 @@ class Plugin extends PluginBase implements ItemInterface
             name,
             enabled,
             available 
-            FROM plugins 
+            FROM Plugin 
             WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
@@ -378,7 +378,7 @@ class Plugin extends PluginBase implements ItemInterface
     public function getEnabled()
     {
         $query = /** @lang SQL */
-            'SELECT name FROM plugins WHERE enabled = 1';
+            'SELECT name FROM Plugin WHERE enabled = 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);

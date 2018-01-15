@@ -146,10 +146,10 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
             accountId,
             extension,
             account_name,
-            customer_name
+            name
             FROM accFiles
-            LEFT JOIN accounts ON account_id = accountId
-            LEFT JOIN customers ON customer_id = account_customerId
+            LEFT JOIN Account ON account_id = accountId
+            LEFT JOIN customers ON id = account_customerId
             WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
@@ -183,10 +183,10 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
             thumb,
             extension,
             account_name,
-            customer_name
+            name
             FROM accFiles
-            LEFT JOIN accounts ON account_id = accountId
-            LEFT JOIN customers ON customer_id = account_customerId
+            LEFT JOIN Account ON account_id = accountId
+            LEFT JOIN customers ON id = account_customerId
             WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
@@ -251,10 +251,10 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
             thumb,
             extension,
             account_name,
-            customer_name
+            name
             FROM accFiles
-            LEFT JOIN accounts ON account_id = accountId
-            LEFT JOIN customers ON customer_id = account_customerId
+            LEFT JOIN Account ON account_id = accountId
+            LEFT JOIN customers ON id = account_customerId
             WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();

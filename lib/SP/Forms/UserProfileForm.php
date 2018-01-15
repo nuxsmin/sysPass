@@ -69,8 +69,8 @@ class UserProfileForm extends FormBase implements FormInterface
     protected function analyzeRequestData()
     {
         $this->profileData = new ProfileData();
-        $this->profileData->setUserprofileName(Request::analyze('profile_name'));
-        $this->profileData->setUserprofileId($this->itemId);
+        $this->profileData->setName(Request::analyze('profile_name'));
+        $this->profileData->setId($this->itemId);
         $this->profileData->setAccAdd(Request::analyze('profile_accadd', 0, false, 1));
         $this->profileData->setAccView(Request::analyze('profile_accview', 0, false, 1));
         $this->profileData->setAccViewPass(Request::analyze('profile_accviewpass', 0, false, 1));
@@ -107,7 +107,7 @@ class UserProfileForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->profileData->getUserprofileName()) {
+        if (!$this->profileData->getName()) {
             throw new ValidationException(__u('Es necesario un nombre de perfil'));
         }
     }

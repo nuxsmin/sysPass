@@ -4,6 +4,7 @@ namespace SP\DataModel;
 
 /**
  * Class AccountPassData
+ *
  * @package DataModel
  */
 class AccountPassData extends DataModelBase implements DataModelInterface
@@ -11,34 +12,42 @@ class AccountPassData extends DataModelBase implements DataModelInterface
     /**
      * @var int Id de la cuenta.
      */
-    public $account_id = 0;
+    public $id = 0;
     /**
      * @var string El nombre de la cuenta.
      */
-    public $account_name = '';
+    public $name = '';
     /**
      * @var string El nombre de usuario de la cuenta.
      */
-    public $account_login = '';
+    public $login = '';
     /**
      * @var string La clave de la cuenta.
      */
-    public $account_pass = '';
+    public $pass = '';
     /**
      * @var string La clave de encriptación de la cuenta
      */
-    public $account_key = '';
+    public $key = '';
     /**
      * @var int
      */
-    public $account_parentId = 0;
+    public $parentId = 0;
 
     /**
      * @return int
      */
     public function getId()
     {
-        return $this->account_id;
+        return (int)$this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = (int)$id;
     }
 
     /**
@@ -46,102 +55,78 @@ class AccountPassData extends DataModelBase implements DataModelInterface
      */
     public function getName()
     {
-        return $this->account_name;
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogin()
+    {
+        return $this->login;
+    }
+
+    /**
+     * @param string $login
+     */
+    public function setLogin($login)
+    {
+        $this->login = $login;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPass()
+    {
+        return $this->pass;
+    }
+
+    /**
+     * @param string $pass
+     */
+    public function setPass($pass)
+    {
+        $this->pass = $pass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param string $key
+     */
+    public function setKey($key)
+    {
+        $this->key = $key;
     }
 
     /**
      * @return int
      */
-    public function getAccountId()
+    public function getParentId()
     {
-        return $this->account_id;
+        return $this->parentId;
     }
 
     /**
-     * @param int $account_id
+     * @param int $parentId
      */
-    public function setAccountId($account_id)
+    public function setParentId($parentId)
     {
-        $this->account_id = $account_id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountName()
-    {
-        return $this->account_name;
-    }
-
-    /**
-     * @param string $account_name
-     */
-    public function setAccountName($account_name)
-    {
-        $this->account_name = $account_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountLogin()
-    {
-        return $this->account_login;
-    }
-
-    /**
-     * @param string $account_login
-     */
-    public function setAccountLogin($account_login)
-    {
-        $this->account_login = $account_login;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountPass()
-    {
-        return $this->account_pass;
-    }
-
-    /**
-     * @param string $account_pass
-     */
-    public function setAccountPass($account_pass)
-    {
-        $this->account_pass = $account_pass;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAccountKey()
-    {
-        return $this->account_key;
-    }
-
-    /**
-     * @param string $account_key
-     */
-    public function setAccountKey($account_key)
-    {
-        $this->account_key = $account_key;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountParentId()
-    {
-        return $this->account_parentId;
-    }
-
-    /**
-     * @param int $account_parentId
-     */
-    public function setAccountParentId($account_parentId)
-    {
-        $this->account_parentId = $account_parentId;
+        $this->parentId = $parentId;
     }
 }

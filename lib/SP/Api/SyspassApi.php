@@ -28,7 +28,7 @@ defined('APP_ROOT') || die();
 
 use SP\Account\Account;
 use SP\Account\AccountAcl;
-use SP\Account\AccountSearch;
+use SP\Services\Account\AccountSearchService;
 use SP\Account\AccountUtil;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Backup;
@@ -69,7 +69,7 @@ class SyspassApi extends ApiBase
         $Account = new Account($AccountData);
         $Account->getData();
 
-        $AccountAcl = new AccountAcl(ActionsInterface::ACCOUNT_VIEW_PASS, $Account);
+        $AccountAcl = new AccountAcl(ActionsInterface::ACCOUNT_VIEW_PASS);
         $Acl = $AccountAcl->getAcl();
 
         if (!$Acl->isShowViewPass()) {
@@ -82,22 +82,22 @@ class SyspassApi extends ApiBase
         $LogMessage = $this->Log->getLogMessage();
         $LogMessage->setAction(__('Ver Clave', false));
         $LogMessage->addDetails(__('ID', false), $accountId);
-        $LogMessage->addDetails(__('Cuenta', false), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
+        $LogMessage->addDetails(__('Cuenta', false), $AccountData->getClientName() . ' / ' . $AccountData->getName());
         $LogMessage->addDetails(__('Origen', false), 'API');
         $this->Log->writeLog();
 
         $mPass = $this->getMPass();
-        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $mPass);
+        $securedKey = Crypt::unlockSecuredKey($AccountData->getKey(), $mPass);
 
         $ret = [
             'itemId' => $accountId,
-            'pass' => Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $mPass)
+            'pass' => Crypt::decrypt($AccountData->getPass(), $securedKey, $mPass)
         ];
 
         if ($this->getParam('details', false, 0)) {
             // Para evitar los caracteres especiales
-            $AccountData->setAccountPass('');
-            $AccountData->setAccountKey('');
+            $AccountData->setPass('');
+            $AccountData->setKey('');
 
             $ret['details'] = $AccountData;
         }
@@ -115,11 +115,11 @@ class SyspassApi extends ApiBase
     {
         $this->checkActionAccess(ActionsInterface::ACCOUNT_SEARCH);
 
-        $Search = new AccountSearch();
+        $Search = new AccountSearchService();
         $Search->setTxtSearch($this->getParam('text'));
         $Search->setLimitCount($this->getParam('count', false, 100));
         $Search->setCategoryId($this->getParam('categoryId', false, 0));
-        $Search->setCustomerId($this->getParam('customerId', false, 0));
+        $Search->setClientId($this->getParam('customerId', false, 0));
 
         $ret = $Search->getAccounts();
 
@@ -141,7 +141,7 @@ class SyspassApi extends ApiBase
         $Account = new Account(new AccountExtData($accountId));
         $ret = $Account->getData();
 
-        $AccountAcl = new AccountAcl(ActionsInterface::ACCOUNT_VIEW, $Account);
+        $AccountAcl = new AccountAcl(ActionsInterface::ACCOUNT_VIEW);
         $Acl = $AccountAcl->getAcl();
 
         if (!$Acl->isShowView()) {
@@ -169,15 +169,15 @@ class SyspassApi extends ApiBase
         $this->checkActionAccess(ActionsInterface::ACCOUNT_CREATE);
 
         $AccountData = new AccountExtData();
-        $AccountData->setAccountUserId($this->UserData->getUserId());
-        $AccountData->setAccountUserGroupId($this->UserData->getUserGroupId());
-        $AccountData->setAccountName($this->getParam('name', true));
-        $AccountData->setAccountPass($this->getParam('pass', true));
-        $AccountData->setAccountCustomerId($this->getParam('customerId', true));
-        $AccountData->setAccountCategoryId($this->getParam('categoryId', true));
-        $AccountData->setAccountLogin($this->getParam('login', true));
-        $AccountData->setAccountUrl($this->getParam('url'));
-        $AccountData->setAccountNotes($this->getParam('notes'));
+        $AccountData->setUserId($this->UserData->getId());
+        $AccountData->setUserGroupId($this->UserData->getUserGroupId());
+        $AccountData->setName($this->getParam('name', true));
+        $AccountData->setPass($this->getParam('pass', true));
+        $AccountData->setClientId($this->getParam('customerId', true));
+        $AccountData->setCategoryId($this->getParam('categoryId', true));
+        $AccountData->setLogin($this->getParam('login', true));
+        $AccountData->setUrl($this->getParam('url'));
+        $AccountData->setNotes($this->getParam('notes'));
 
         $Account = new Account($AccountData);
 
@@ -187,12 +187,12 @@ class SyspassApi extends ApiBase
         $LogMessage = $this->Log->getLogMessage();
         $LogMessage->setAction(__('Crear Cuenta', false));
         $LogMessage->addDescription(__('Cuenta creada', false));
-        $LogMessage->addDetails(__('Nombre', false), $AccountData->getAccountName());
+        $LogMessage->addDetails(__('Nombre', false), $AccountData->getName());
         $LogMessage->addDetails(__('Origen', false), 'API');
         $this->Log->writeLog();
 
         $ret = [
-            'itemId' => $AccountData->getAccountId(),
+            'itemId' => $AccountData->getId(),
             'result' => $LogMessage->getDescription(true),
             'resultCode' => 0
         ];
@@ -270,20 +270,20 @@ class SyspassApi extends ApiBase
         $this->checkActionAccess(ActionsInterface::CATEGORY);
 
         $CategoryData = new CategoryData();
-        $CategoryData->setCategoryName($this->getParam('name', true));
-        $CategoryData->setCategoryDescription($this->getParam('description'));
+        $CategoryData->setName($this->getParam('name', true));
+        $CategoryData->setDescription($this->getParam('description'));
 
         Category::getItem($CategoryData)->add();
 
         $LogMessage = $this->Log->getLogMessage();
         $LogMessage->setAction(__('Crear Categoría', false));
         $LogMessage->addDescription(__('Categoría creada', false));
-        $LogMessage->addDetails(__('Nombre', false), $CategoryData->getCategoryName());
+        $LogMessage->addDetails(__('Nombre', false), $CategoryData->getName());
         $LogMessage->addDetails(__('Origen', false), 'API');
         $this->Log->writeLog();
 
         $ret = [
-            'itemId' => $CategoryData->getCategoryId(),
+            'itemId' => $CategoryData->getId(),
             'result' => $LogMessage->getDescription(true),
             'resultCode' => 0
         ];
@@ -314,7 +314,7 @@ class SyspassApi extends ApiBase
         $LogMessage = $this->Log->getLogMessage();
         $LogMessage->setAction(__('Eliminar Categoría', false));
         $LogMessage->addDescription(__('Categoría eliminada', false));
-        $LogMessage->addDetails(__('Nombre', false), $CategoryData->getCategoryName());
+        $LogMessage->addDetails(__('Nombre', false), $CategoryData->getName());
         $LogMessage->addDetails(__('Origen', false), 'API');
         $this->Log->writeLog();
 
@@ -359,20 +359,20 @@ class SyspassApi extends ApiBase
         $this->checkActionAccess(ActionsInterface::CLIENT);
 
         $CustomerData = new ClientData();
-        $CustomerData->setCustomerName($this->getParam('name', true));
-        $CustomerData->setCustomerDescription($this->getParam('description'));
+        $CustomerData->setName($this->getParam('name', true));
+        $CustomerData->setDescription($this->getParam('description'));
 
         Customer::getItem($CustomerData)->add();
 
         $LogMessage = $this->Log->getLogMessage();
         $LogMessage->setAction(__('Crear Cliente', false));
         $LogMessage->addDescription(__('Cliente creado', false));
-        $LogMessage->addDetails(__('Nombre', false), $CustomerData->getCustomerName());
+        $LogMessage->addDetails(__('Nombre', false), $CustomerData->getName());
         $LogMessage->addDetails(__('Origen', false), 'API');
         $this->Log->writeLog();
 
         $ret = [
-            'itemId' => $CustomerData->getCustomerId(),
+            'itemId' => $CustomerData->getId(),
             'result' => $LogMessage->getDescription(true),
             'resultCode' => 0
         ];
@@ -403,7 +403,7 @@ class SyspassApi extends ApiBase
         $LogMessage = $this->Log->getLogMessage();
         $LogMessage->setAction(__('Eliminar Cliente', false));
         $LogMessage->addDescription(__('Cliente eliminado', false));
-        $LogMessage->addDetails(__('Nombre', false), $CustomerData->getCustomerName());
+        $LogMessage->addDetails(__('Nombre', false), $CustomerData->getName());
         $LogMessage->addDetails(__('Origen', false), 'API');
         $this->Log->writeLog();
 

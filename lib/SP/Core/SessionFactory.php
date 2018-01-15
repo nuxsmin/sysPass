@@ -25,7 +25,7 @@
 namespace SP\Core;
 
 use SP\Account\AccountAcl;
-use SP\Account\AccountSearch;
+use SP\Services\Account\AccountSearchService;
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Vault;
 use SP\DataModel\ProfileData;

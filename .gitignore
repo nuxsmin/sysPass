@@ -52,5 +52,6 @@ res/
 tools/
 app/temp/*
 app/modules/web/plugins/*
+vendor/
 
 !.blank

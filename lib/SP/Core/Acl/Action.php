@@ -78,7 +78,7 @@ class Action
     }
 
     /**
-     * Sets an array of actions using action_id as key
+     * Sets an array of actions using id as key
      */
     protected function mapFromDb()
     {
@@ -87,7 +87,7 @@ class Action
         $this->actions = [];
 
         foreach ($this->loadDb() as $action) {
-            $this->actions[$action->getActionId()] = $action;
+            $this->actions[$action->getId()] = $action;
         }
     }
 
@@ -99,7 +99,7 @@ class Action
     protected function loadDb()
     {
         $query = /** @lang SQL */
-            'SELECT action_id, action_name, action_text, action_route FROM actions ORDER BY action_id';
+            'SELECT id, name, text, route FROM Action ORDER BY id';
 
         $data = new QueryData();
         $data->setMapClassName(ActionData::class);

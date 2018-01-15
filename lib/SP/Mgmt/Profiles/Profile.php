@@ -28,7 +28,7 @@ namespace SP\Mgmt\Profiles;
 defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\ProfileBaseData;
+use SP\DataModel\UserProfileData;
 use SP\DataModel\ProfileData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
@@ -57,19 +57,19 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO usrProfiles SET
-            userprofile_name = ?,
-            userprofile_profile = ?';
+            'INSERT INTO UserProfile SET
+            name = ?,
+            profile = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserprofileName());
+        $Data->addParam($this->itemData->getName());
         $Data->addParam(serialize($this->itemData));
         $Data->setOnErrorMessage(__('Error al crear perfil', false));
 
         DbWrapper::getQuery($Data);
 
-        $this->itemData->setUserprofileId(DbWrapper::getLastId());
+        $this->itemData->setId(DbWrapper::getLastId());
 
         return $this;
     }
@@ -81,12 +81,12 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     public function checkDuplicatedOnAdd()
     {
         $query = /** @lang SQL */
-            'SELECT userprofile_name
-            FROM usrProfiles
-            WHERE UPPER(userprofile_name) = ?';
+            'SELECT name
+            FROM UserProfile
+            WHERE UPPER(name) = ?';
 
         $Data = new QueryData();
-        $Data->addParam($this->itemData->getUserprofileName());
+        $Data->addParam($this->itemData->getName());
         $Data->setQuery($query);
 
         DbWrapper::getQuery($Data);
@@ -106,7 +106,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         }
 
         $query = /** @lang SQL */
-            'DELETE FROM usrProfiles WHERE userprofile_id = ? LIMIT 1';
+            'DELETE FROM UserProfile WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -148,11 +148,11 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT userprofile_id,
-            userprofile_name,
-            userprofile_profile
-            FROM usrProfiles
-            WHERE userprofile_id = ? LIMIT 1';
+            'SELECT id,
+            name,
+            profile
+            FROM UserProfile
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -160,14 +160,14 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($id);
 
         /**
-         * @var ProfileBaseData $queryRes
+         * @var UserProfileData $queryRes
          * @var ProfileData     $Profile
          */
         $queryRes = DbWrapper::getResults($Data);
 
-        $Profile = Util::unserialize($this->getDataModel(), $queryRes->getUserprofileProfile());
-        $Profile->setUserprofileId($queryRes->getUserprofileId());
-        $Profile->setUserprofileName($queryRes->getUserprofileName());
+        $Profile = Util::unserialize($this->getDataModel(), $queryRes->getProfile());
+        $Profile->setId($queryRes->getId());
+        $Profile->setName($queryRes->getName());
 
         return $Profile;
     }
@@ -183,16 +183,16 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         }
 
         $query = /** @lang SQL */
-            'UPDATE usrProfiles SET
-          userprofile_name = ?,
-          userprofile_profile = ?
-          WHERE userprofile_id = ? LIMIT 1';
+            'UPDATE UserProfile SET
+          name = ?,
+          profile = ?
+          WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getUserprofileName());
+        $Data->addParam($this->itemData->getName());
         $Data->addParam(serialize($this->itemData));
-        $Data->addParam($this->itemData->getUserprofileId());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al modificar perfil', false));
 
         DbWrapper::getQuery($Data);
@@ -212,14 +212,14 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     public function checkDuplicatedOnUpdate()
     {
         $query = /** @lang SQL */
-            'SELECT userprofile_name
-            FROM usrProfiles
-            WHERE UPPER(userprofile_name) = ?
-            AND userprofile_id <> ?';
+            'SELECT name
+            FROM UserProfile
+            WHERE UPPER(name) = ?
+            AND id <> ?';
 
         $Data = new QueryData();
-        $Data->addParam($this->itemData->getUserprofileName());
-        $Data->addParam($this->itemData->getUserprofileId());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getId());
         $Data->setQuery($query);
 
         DbWrapper::getQuery($Data);
@@ -232,7 +232,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
      */
     protected function updateSessionProfile()
     {
-        if ($this->session->getUserProfile()->getUserprofileId() === $this->itemData->getUserprofileId()) {
+        if ($this->session->getUserProfile()->getId() === $this->itemData->getId()) {
             $this->session->setUserProfile($this->itemData);
         }
     }
@@ -243,9 +243,9 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT userprofile_id, userprofile_name
-                FROM usrProfiles
-                ORDER BY userprofile_name';
+            'SELECT id, name
+                FROM UserProfile
+                ORDER BY name';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -258,7 +258,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
      * Devolver los elementos con los ids especificados
      *
      * @param array $ids
-     * @return ProfileBaseData[]
+     * @return UserProfileData[]
      */
     public function getByIdBatch(array $ids)
     {
@@ -267,10 +267,10 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         }
 
         $query = /** @lang SQL */
-            'SELECT userprofile_id,
-            userprofile_name
-            FROM usrProfiles
-            WHERE userprofile_id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT id,
+            name
+            FROM UserProfile
+            WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());

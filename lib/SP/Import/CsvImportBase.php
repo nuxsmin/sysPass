@@ -97,13 +97,13 @@ abstract class CsvImportBase extends ImportBase
 
             // Crear la nueva cuenta
             $AccountData = new AccountExtData();
-            $AccountData->setAccountName($accountName);
-            $AccountData->setAccountLogin($login);
-            $AccountData->setAccountCustomerId($CustomerData->getCustomerId());
-            $AccountData->setAccountCategoryId($CategoryData->getCategoryId());
-            $AccountData->setAccountNotes($notes);
-            $AccountData->setAccountUrl($url);
-            $AccountData->setAccountPass($password);
+            $AccountData->setName($accountName);
+            $AccountData->setLogin($login);
+            $AccountData->setClientId($CustomerData->getId());
+            $AccountData->setCategoryId($CategoryData->getId());
+            $AccountData->setNotes($notes);
+            $AccountData->setUrl($url);
+            $AccountData->setPass($password);
 
             try {
                 $this->addAccount($AccountData);

@@ -40,6 +40,7 @@ use SP\DataModel\UserData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Mvc\View\Template;
+use SP\Services\User\UserLoginResponse;
 use SP\Storage\Database;
 use SP\Util\Checks;
 use SP\Util\Json;
@@ -73,7 +74,7 @@ abstract class ControllerBase
     protected $controllerName;
     /** @var  JsonResponse */
     protected $jsonResponse;
-    /** @var  UserData */
+    /** @var  UserLoginResponse */
     protected $userData;
     /** @var  ProfileData */
     protected $userProfileData;
@@ -133,13 +134,13 @@ abstract class ControllerBase
         $this->view->assign('icons', $this->icons);
         $this->view->assign('SessionUserData', $this->userData);
 
-        $this->view->assign('actionId', Request::analyze('actionId', 0));
-        $this->view->assign('id', Request::analyze('itemId', 0));
+//        $this->view->assign('actionId', Request::analyze('actionId', 0));
+//        $this->view->assign('id', Request::analyze('itemId', 0));
         $this->view->assign('queryTimeStart', microtime());
-        $this->view->assign('userId', $this->userData->getUserId());
+        $this->view->assign('userId', $this->userData->getId());
         $this->view->assign('userGroupId', $this->userData->getUserGroupId());
-        $this->view->assign('userIsAdminApp', $this->userData->isUserIsAdminApp());
-        $this->view->assign('userIsAdminAcc', $this->userData->isUserIsAdminAcc());
+        $this->view->assign('userIsAdminApp', $this->userData->getIsAdminApp());
+        $this->view->assign('userIsAdminAcc', $this->userData->getIsAdminAcc());
         $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
     }
@@ -299,6 +300,6 @@ abstract class ControllerBase
             $checkAction = $action;
         }
 
-        return $this->session->getUserData()->isUserIsAdminApp() || $this->acl->checkUserAccess($checkAction);
+        return $this->session->getUserData()->getIsAdminApp() || $this->acl->checkUserAccess($checkAction);
     }
 }

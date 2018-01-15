@@ -30,10 +30,7 @@ class AccountPasswordHelper extends HelperBase
      * @param                  $type
      * @return string
      * @throws HelperException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getPassword(AccountPassData $account, Acl $acl, $type)
@@ -56,35 +53,30 @@ class AccountPasswordHelper extends HelperBase
      * @param AccountPassData $accountData
      * @return string
      * @throws HelperException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     protected function getPasswordClear(AccountPassData $accountData)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::ACCOUNT_VIEW_PASS)
-            || $accountData->getAccountId() === 0
+            || $accountData->getId() === 0
         ) {
             throw new HelperException(__u('No tiene permisos para acceder a esta cuenta'));
         }
 
-        if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getUserId())) {
+        if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getId())) {
             throw new HelperException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
         }
 
         $key = CryptSession::getSessionKey();
-        $securedKey = Crypt::unlockSecuredKey($accountData->getAccountKey(), $key);
+        $securedKey = Crypt::unlockSecuredKey($accountData->getKey(), $key);
 
-        return trim(Crypt::decrypt($accountData->getAccountPass(), $securedKey, $key));
+        return trim(Crypt::decrypt($accountData->getPass(), $securedKey, $key));
     }
 
     /**
      * @param AccountPassData $accountData
      * @throws HelperException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \SP\Core\Exceptions\SPException
      */
     protected function setTemplateVars(AccountPassData $accountData)
@@ -92,7 +84,7 @@ class AccountPasswordHelper extends HelperBase
         $this->view->addTemplate('viewpass');
 
         $this->view->assign('header', __('Clave de Cuenta'));
-        $this->view->assign('login', $accountData->getAccountLogin());
+        $this->view->assign('login', $accountData->getLogin());
 
         $pass = $this->getPasswordClear($accountData);
 
@@ -104,7 +96,7 @@ class AccountPasswordHelper extends HelperBase
             $this->view->assign('isImage', 0);
         }
 
-        $this->view->assign('isLinked', $accountData->account_parentId > 0);
+        $this->view->assign('isLinked', $accountData->getParentId() > 0);
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
     }
 }

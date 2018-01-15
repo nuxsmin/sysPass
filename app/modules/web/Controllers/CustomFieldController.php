@@ -31,7 +31,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionUtil;
-use SP\DataModel\CustomFieldDefData;
+use SP\DataModel\CustomFieldDefinitionData;
 use SP\Forms\CustomFieldDefForm;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -39,8 +39,8 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Services\CustomField\CustomFieldDefService;
-use SP\Services\CustomField\CustomFieldTypeService;
+use SP\Repositories\CustomField\CustomFieldDefRepository;
+use SP\Repositories\CustomField\CustomFieldTypeRepository;
 
 /**
  * Class CustomFieldController
@@ -53,7 +53,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
     use ItemTrait;
 
     /**
-     * @var CustomFieldDefService
+     * @var CustomFieldDefRepository
      */
     protected $customFieldService;
 
@@ -106,20 +106,20 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
     /**
      * Sets view data for displaying user's data
      *
-     * @param $clientId
+     * @param $customFieldId
      * @throws \Psr\Container\ContainerExceptionInterface
      */
-    protected function setViewData($clientId = null)
+    protected function setViewData($customFieldId = null)
     {
         $this->view->addTemplate('customfield', 'itemshow');
 
-        $customField = $clientId ? $this->customFieldService->getById($clientId) : new CustomFieldDefData();
+        $customField = $customFieldId ? $this->customFieldService->getById($customFieldId) : new CustomFieldDefinitionData();
 
-        $customFieldTypeService = new CustomFieldTypeService();
+        $customFieldTypeService = new CustomFieldTypeRepository();
 
         $this->view->assign('field', $customField);
         $this->view->assign('types', $customFieldTypeService->getAll());
-        $this->view->assign('modules', CustomFieldDefService::getFieldModules());
+        $this->view->assign('modules', CustomFieldDefRepository::getFieldModules());
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));
@@ -275,7 +275,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
     {
         $this->checkLoggedIn();
 
-        $this->customFieldService = new CustomFieldDefService();
+        $this->customFieldService = new CustomFieldDefRepository();
     }
 
 }

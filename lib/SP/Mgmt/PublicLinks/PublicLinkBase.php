@@ -116,9 +116,9 @@ abstract class PublicLinkBase implements ItemBaseInterface
         $AccountData = $Account->getDataForLink();
 
         $key = CryptSession::getSessionKey();
-        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $key);
-        $AccountData->setAccountPass(Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $key));
-        $AccountData->setAccountKey(null);
+        $securedKey = Crypt::unlockSecuredKey($AccountData->getKey(), $key);
+        $AccountData->setPass(Crypt::decrypt($AccountData->getPass(), $securedKey, $key));
+        $AccountData->setKey(null);
 
         // Encriptar los datos de la cuenta
         $linkKey = $this->ConfigData->getPasswordSalt() . $this->createLinkHash();

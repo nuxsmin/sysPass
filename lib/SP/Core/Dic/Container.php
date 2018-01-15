@@ -43,6 +43,10 @@ final class Container implements DicInterface
      * @var array Factory objects
      */
     private $factory = [];
+    /**
+     * @var array Trasient objects (dinamically created and reusable)
+     */
+    private $trasient = [];
 
     /**
      * Store shared object
@@ -135,6 +139,10 @@ final class Container implements DicInterface
      */
     public function get($id)
     {
+        if (array_key_exists($id, $this->trasient)) {
+            return $this->trasient[$id];
+        }
+
         if (array_key_exists($id, $this->factory)) {
             return $this->getFactoryObject($id);
         }
@@ -158,7 +166,11 @@ final class Container implements DicInterface
         }
 
         if (class_exists($id)) {
-            return new $id();
+            $trasient = new $id();
+
+            $this->trasient[$id] = $trasient;
+
+            return $trasient;
         }
 
         throw new ContainerException(sprintf('Invalid class (%s)', $id));

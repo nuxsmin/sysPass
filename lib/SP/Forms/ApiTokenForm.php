@@ -69,10 +69,10 @@ class ApiTokenForm extends FormBase implements FormInterface
     protected function analyzeRequestData()
     {
         $this->apiTokenData = new ApiTokenData();
-        $this->apiTokenData->setAuthtokenId($this->itemId);
-        $this->apiTokenData->setAuthtokenUserId(Request::analyze('users', 0));
-        $this->apiTokenData->setAuthtokenActionId(Request::analyze('actions', 0));
-        $this->apiTokenData->setAuthtokenHash(Request::analyzeEncrypted('pass'));
+        $this->apiTokenData->setId($this->itemId);
+        $this->apiTokenData->setUserId(Request::analyze('users', 0));
+        $this->apiTokenData->setActionId(Request::analyze('actions', 0));
+        $this->apiTokenData->setHash(Request::analyzeEncrypted('pass'));
     }
 
     /**
@@ -80,19 +80,19 @@ class ApiTokenForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if ($this->apiTokenData->getAuthtokenUserId() === 0) {
+        if ($this->apiTokenData->getUserId() === 0) {
             throw new ValidationException(__u('Usuario no indicado'));
         }
 
-        if ($this->apiTokenData->getAuthtokenActionId() === 0) {
+        if ($this->apiTokenData->getActionId() === 0) {
             throw new ValidationException(__u('Acción no indicada'));
         }
 
-        $action = $this->apiTokenData->getAuthtokenActionId();
+        $action = $this->apiTokenData->getActionId();
 
         if (($action === ActionsInterface::ACCOUNT_VIEW_PASS
                 || $action === ActionsInterface::ACCOUNT_CREATE)
-            && $this->apiTokenData->getAuthtokenHash() === ''
+            && $this->apiTokenData->getHash() === ''
         ) {
             throw new ValidationException(__u('La clave no puede estar en blanco'));
         }

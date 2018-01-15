@@ -36,190 +36,182 @@ class NoticeData implements DataModelInterface
     /**
      * @var int
      */
-    public $notice_id = 0;
+    public $id = 0;
     /**
      * @var string
      */
-    public $notice_type;
+    public $type;
     /**
      * @var string
      */
-    public $notice_component;
+    public $component;
     /**
      * @var string
      */
-    public $notice_description;
+    public $description;
     /**
      * @var int
      */
-    public $notice_date = 0;
+    public $date = 0;
     /**
      * @var bool
      */
-    public $notice_checked = 0;
+    public $checked = 0;
     /**
      * @var int
      */
-    public $notice_userId = 0;
+    public $userId = 0;
     /**
      * @var bool
      */
-    public $notice_sticky = 0;
+    public $sticky = 0;
     /**
      * @var bool
      */
-    public $notice_onlyAdmin = 0;
-
-    /**
-     * @return int
-     */
-    public function getNoticeId()
-    {
-        return (int)$this->notice_id;
-    }
-
-    /**
-     * @param int $notice_id
-     */
-    public function setNoticeId($notice_id)
-    {
-        $this->notice_id = (int)$notice_id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNoticeType()
-    {
-        return $this->notice_type;
-    }
-
-    /**
-     * @param string $notice_type
-     */
-    public function setNoticeType($notice_type)
-    {
-        $this->notice_type = $notice_type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNoticeComponent()
-    {
-        return $this->notice_component;
-    }
-
-    /**
-     * @param string $notice_component
-     */
-    public function setNoticeComponent($notice_component)
-    {
-        $this->notice_component = $notice_component;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNoticeDescription()
-    {
-        return $this->notice_description;
-    }
-
-    /**
-     * @param MessageInterface $message
-     */
-    public function setNoticeDescription(MessageInterface $message)
-    {
-        $this->notice_description = $message->composeText();
-    }
-
-    /**
-     * @return int
-     */
-    public function getNoticeDate()
-    {
-        return $this->notice_date;
-    }
-
-    /**
-     * @param int $notice_date
-     */
-    public function setNoticeDate($notice_date)
-    {
-        $this->notice_date = (int)$notice_date;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNoticeChecked()
-    {
-        return (int)$this->notice_checked;
-    }
-
-    /**
-     * @param bool $notice_checked
-     */
-    public function setNoticeChecked($notice_checked)
-    {
-        $this->notice_checked = (int)$notice_checked;
-    }
-
-    /**
-     * @return int
-     */
-    public function getNoticeUserId()
-    {
-        return (int)$this->notice_userId;
-    }
-
-    /**
-     * @param int $notice_userId
-     */
-    public function setNoticeUserId($notice_userId)
-    {
-        $this->notice_userId = (int)$notice_userId;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNoticeSticky()
-    {
-        return (int)$this->notice_sticky;
-    }
-
-    /**
-     * @param bool $notice_sticky
-     */
-    public function setNoticeSticky($notice_sticky)
-    {
-        $this->notice_sticky = (int)$notice_sticky;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isNoticeOnlyAdmin()
-    {
-        return (int)$this->notice_onlyAdmin;
-    }
-
-    /**
-     * @param bool $notice_onlyAdmin
-     */
-    public function setNoticeOnlyAdmin($notice_onlyAdmin)
-    {
-        $this->notice_onlyAdmin = (int)$notice_onlyAdmin;
-    }
+    public $onlyAdmin = 0;
 
     /**
      * @return int
      */
     public function getId()
     {
-        return (int)$this->notice_id;
+        return (int)$this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = (int)$id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComponent()
+    {
+        return $this->component;
+    }
+
+    /**
+     * @param string $component
+     */
+    public function setComponent($component)
+    {
+        $this->component = $component;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param MessageInterface $message
+     */
+    public function setDescription(MessageInterface $message)
+    {
+        $this->description = $message->composeText();
+    }
+
+    /**
+     * @return int
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param int $date
+     */
+    public function setDate($date)
+    {
+        $this->date = (int)$date;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isChecked()
+    {
+        return (int)$this->checked;
+    }
+
+    /**
+     * @param bool $checked
+     */
+    public function setChecked($checked)
+    {
+        $this->checked = (int)$checked;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserId()
+    {
+        return (int)$this->userId;
+    }
+
+    /**
+     * @param int $userId
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = (int)$userId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSticky()
+    {
+        return (int)$this->sticky;
+    }
+
+    /**
+     * @param bool $sticky
+     */
+    public function setSticky($sticky)
+    {
+        $this->sticky = (int)$sticky;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOnlyAdmin()
+    {
+        return (int)$this->onlyAdmin;
+    }
+
+    /**
+     * @param bool $onlyAdmin
+     */
+    public function setOnlyAdmin($onlyAdmin)
+    {
+        $this->onlyAdmin = (int)$onlyAdmin;
     }
 
     /**
@@ -227,6 +219,6 @@ class NoticeData implements DataModelInterface
      */
     public function getName()
     {
-        return $this->notice_component;
+        return $this->component;
     }
 }

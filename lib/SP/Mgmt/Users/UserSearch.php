@@ -58,7 +58,7 @@ class UserSearch extends UserBase implements ItemSearchInterface
         $Data->setOrder('user_name');
 
         if ($SearchData->getSeachString() !== '') {
-            if (SessionFactory::getUserData()->isUserIsAdminApp()) {
+            if (SessionFactory::getUserData()->isIsAdminApp()) {
                 $Data->setWhere('user_name LIKE ? OR user_login LIKE ?');
             } else {
                 $Data->setWhere('user_name LIKE ? OR user_login LIKE ? AND user_isAdminApp = 0');
@@ -67,7 +67,7 @@ class UserSearch extends UserBase implements ItemSearchInterface
             $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);
             $Data->addParam($search);
-        } elseif (!SessionFactory::getUserData()->isUserIsAdminApp()) {
+        } elseif (!SessionFactory::getUserData()->isIsAdminApp()) {
             $Data->setWhere('user_isAdminApp = 0');
         }
 

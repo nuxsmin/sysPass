@@ -64,7 +64,7 @@ class Email
         $Mail = self::getMailer($mailTo, $LogMessage->getAction(true));
 
         if ($isEvent === true) {
-            $performer = SessionFactory::getUserData()->getUserLogin() ?: __('N/D');
+            $performer = SessionFactory::getUserData()->getLogin() ?: __('N/D');
             $body[] = sprintf('%s: %s', Html::strongText(__('Acción')), $LogMessage->getAction(true));
             $body[] = sprintf('%s: %s (%s)', Html::strongText(__('Realizado por')), $performer, HttpUtil::getClientAddress(true));
 

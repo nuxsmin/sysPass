@@ -55,7 +55,7 @@ class KeepassXImport extends ImportBase
         $customerData = new ClientData(null, 'KeePassX');
         $this->addCustomer($customerData);
 
-        $this->customerId = $customerData->getCustomerId();
+        $this->customerId = $customerData->getId();
 
         $this->processCategories($this->xml);
     }
@@ -79,7 +79,7 @@ class KeepassXImport extends ImportBase
                         $this->addCategory($CategoryData);
 
                         // Crear cuentas
-                        $this->processAccounts($group->entry, $CategoryData->getCategoryId());
+                        $this->processAccounts($group->entry, $CategoryData->getId());
                     }
 
                     if ($group->group) {
@@ -94,7 +94,7 @@ class KeepassXImport extends ImportBase
                 $this->addCategory($CategoryData);
 
                 // Crear cuentas
-                $this->processAccounts($node->entry, $CategoryData->getCategoryId());
+                $this->processAccounts($node->entry, $CategoryData->getId());
             }
         }
     }
@@ -116,13 +116,13 @@ class KeepassXImport extends ImportBase
             $username = isset($entry->username) ? (string)$entry->username : '';
 
             $AccountData = new AccountExtData();
-            $AccountData->setAccountPass($password);
-            $AccountData->setAccountNotes($notes);
-            $AccountData->setAccountName($name);
-            $AccountData->setAccountUrl($url);
-            $AccountData->setAccountLogin($username);
-            $AccountData->setAccountCustomerId($this->customerId);
-            $AccountData->setAccountCategoryId($categoryId);
+            $AccountData->setPass($password);
+            $AccountData->setNotes($notes);
+            $AccountData->setName($name);
+            $AccountData->setUrl($url);
+            $AccountData->setLogin($username);
+            $AccountData->setClientId($this->customerId);
+            $AccountData->setCategoryId($categoryId);
 
             $this->addAccount($AccountData);
         }

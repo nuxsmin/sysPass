@@ -17,7 +17,7 @@
                     <div class="mdl-textfield mdl-js-textfield">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $user->getUserName(); ?>" readonly disabled/>
+                               value="<?php echo $user->getName(); ?>" readonly disabled/>
                     </div>
                 </td>
             </tr>
@@ -28,7 +28,7 @@
                     <div class="mdl-textfield mdl-js-textfield">
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $user->getUserLogin(); ?>"
+                               value="<?php echo $user->getLogin(); ?>"
                                readonly disabled/>
                     </div>
                 </td>

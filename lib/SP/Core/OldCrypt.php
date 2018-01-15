@@ -64,7 +64,7 @@ class OldCrypt
     public static function makeHashSalt($salt = null, $random = true)
     {
         /** @var ConfigData $ConfigData */
-        $ConfigData = Bootstrap::getDic()['configData'];
+        $ConfigData = Bootstrap::getContainer()['configData'];
 
         if ($random === true) {
             $salt = bin2hex(self::getIV());

@@ -146,7 +146,7 @@ class AccountController extends ControllerBase implements ActionsInterface
 
             $this->view->assign('useImage', $this->configData->isPublinksImageEnabled() || $this->configData->isAccountPassToImage());
 
-            $accountPass = $this->view->useImage ? ImageUtil::convertText($AccountData->getAccountPass()) : $AccountData->getAccountPass();
+            $accountPass = $this->view->useImage ? ImageUtil::convertText($AccountData->getPass()) : $AccountData->getPass();
 
             $this->view->assign('accountPass', $accountPass);
             $this->view->assign('accountData', $AccountData);
@@ -238,7 +238,7 @@ class AccountController extends ControllerBase implements ActionsInterface
     {
         $this->view->assign('showLogo', false);
 
-        $Acl = new AccountAcl($this->getAction(), $this->Account);
+        $Acl = new AccountAcl($this->getAction());
         $this->AccountAcl = $Acl;
 
         if (!$this->acl->checkUserAccess($this->getAction())) {
@@ -246,7 +246,7 @@ class AccountController extends ControllerBase implements ActionsInterface
             return false;
         }
 
-        if (!UserPass::checkUserUpdateMPass($this->userData->getUserId())) {
+        if (!UserPass::checkUserUpdateMPass($this->userData->getId())) {
             $this->showError(self::ERR_UPDATE_MPASS);
             return false;
         }
@@ -279,19 +279,19 @@ class AccountController extends ControllerBase implements ActionsInterface
             $this->view->assign('accountOtherUsers', UserAccounts::getUsersInfoForAccount($this->getId()));
             $this->view->assign('accountOtherGroups', GroupAccountsUtil::getGroupsInfoForAccount($this->getId()));
             $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->getAccount()->getAccountData()->getTags())));
-            $this->view->assign('historyData', AccountHistory::getAccountList($this->AccountData->getAccountId()));
-            $this->view->assign('isModified', strtotime($this->AccountData->getAccountDateEdit()) !== false);
+            $this->view->assign('historyData', AccountHistory::getAccountList($this->AccountData->getId()));
+            $this->view->assign('isModified', strtotime($this->AccountData->getDateEdit()) !== false);
             $this->view->assign('maxFileSize', round($this->configData->getFilesAllowedSize() / 1024, 1));
             $this->view->assign('filesAllowedExts', implode(',', $this->configData->getFilesAllowedExts()));
 
             $PublicLinkData = PublicLink::getItem()->getHashForItem($this->getId());
 
-            $publicLinkUrl = ($this->configData->isPublinksEnabled() && $PublicLinkData ? Init::$WEBURI . '/index.php?h=' . $PublicLinkData->getPublicLinkHash() . '&a=link' : null);
+            $publicLinkUrl = ($this->configData->isPublinksEnabled() && $PublicLinkData ? Init::$WEBURI . '/index.php?h=' . $PublicLinkData->getHash() . '&a=link' : null);
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
-            $this->view->assign('publicLinkId', $PublicLinkData ? $PublicLinkData->getPublicLinkId() : 0);
+            $this->view->assign('publicLinkId', $PublicLinkData ? $PublicLinkData->getId() : 0);
 
-            $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $this->AccountData->getAccountPassDate()));
-            $this->view->assign('accountPassDateChange', date('Y-m-d', $this->AccountData->getAccountPassDateChange() ?: 0));
+            $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $this->AccountData->getPassDate()));
+            $this->view->assign('accountPassDateChange', date('Y-m-d', $this->AccountData->getPassDateChange() ?: 0));
         } else {
             $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
         }
@@ -442,7 +442,7 @@ class AccountController extends ControllerBase implements ActionsInterface
             ]
         );
 
-        $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getAccountPassDateChange()));
+        $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $this->AccountData->getPassDateChange()));
     }
 
     /**
@@ -520,7 +520,7 @@ class AccountController extends ControllerBase implements ActionsInterface
         $this->Account = $Account;
         $this->AccountData = $Account->getData();
 
-        $this->view->assign('accountId', $this->AccountData->getAccountId());
+        $this->view->assign('accountId', $this->AccountData->getId());
         $this->view->assign('accountData', $this->AccountData);
         $this->view->assign('gotData', $this->isGotData());
 

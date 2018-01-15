@@ -26,7 +26,7 @@ namespace SP\Mgmt\Groups;
 
 defined('APP_ROOT') || die();
 
-use SP\DataModel\GroupAccountsData;
+use SP\DataModel\AccountToUserGroupData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemTrait;
 use SP\Storage\DbWrapper;
@@ -36,7 +36,7 @@ use SP\Storage\QueryData;
  * Class GroupAccounts
  *
  * @package SP\Mgmt\Groups
- * @property GroupAccountsData $itemData
+ * @property AccountToUserGroupData $itemData
  */
 class GroupAccounts extends GroupAccountsBase implements ItemInterface
 {
@@ -48,7 +48,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
      */
     public function update()
     {
-        $this->delete($this->itemData->getAccgroupAccountId());
+        $this->delete($this->itemData->getAccountId());
         $this->add();
 
         return $this;
@@ -62,7 +62,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
     public function delete($id)
     {
         $query = /** @lang SQL */
-            'DELETE FROM accGroups WHERE accgroup_accountId = ?';
+            'DELETE FROM AccountToGroup WHERE accountId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -87,13 +87,13 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO accGroups (accgroup_accountId, accgroup_groupId) VALUES ' . $this->getParamsFromArray($this->itemData->getGroups(), '(?,?)');
+            'INSERT INTO AccountToGroup (accountId, userGroupId) VALUES ' . $this->getParamsFromArray($this->itemData->getGroups(), '(?,?)');
 
         $Data = new QueryData();
         $Data->setQuery($query);
 
         foreach ($this->itemData->getGroups() as $group) {
-            $Data->addParam($this->itemData->getAccgroupAccountId());
+            $Data->addParam($this->itemData->getAccountId());
             $Data->addParam($group);
         }
 
@@ -111,7 +111,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT accgroup_groupId, accgroup_accountId FROM accGroups WHERE accgroup_groupId = ?';
+            'SELECT userGroupId, accountId FROM AccountToGroup WHERE userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -136,7 +136,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
     public function checkInUse($id)
     {
         $query = /** @lang SQL */
-            'SELECT accgroup_groupId FROM accGroups WHERE accgroup_groupId = ?';
+            'SELECT userGroupId FROM AccountToGroup WHERE userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -165,12 +165,12 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
 
     /**
      * @param $id int
-     * @return GroupAccountsData[]
+     * @return AccountToUserGroupData[]
      */
     public function getByAccountId($id)
     {
         $query = /** @lang SQL */
-            'SELECT accgroup_groupId, accgroup_accountId FROM accGroups WHERE accgroup_accountId = ?';
+            'SELECT userGroupId, accountId FROM AccountToGroup WHERE accountId = ?';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());

@@ -52,7 +52,7 @@ class ProfileUtil
         $LogMessage->setAction(__('Migrar Perfiles', false));
 
         $query = /** @lang SQL */
-            'SELECT userprofile_id AS id,
+            'SELECT id AS id,
             userprofile_name AS name,
             BIN(userProfile_pView) AS pView,
             BIN(userProfile_pViewPass) AS pViewPass,
@@ -87,8 +87,8 @@ class ProfileUtil
 
         foreach ($queryRes as $oldProfile) {
             $ProfileData = new ProfileData();
-            $ProfileData->setUserprofileId($oldProfile->id);
-            $ProfileData->setUserprofileName($oldProfile->name);
+            $ProfileData->setId($oldProfile->id);
+            $ProfileData->setName($oldProfile->name);
             $ProfileData->setAccAdd($oldProfile->pAdd);
             $ProfileData->setAccView($oldProfile->pView);
             $ProfileData->setAccViewPass($oldProfile->pViewPass);
@@ -114,7 +114,7 @@ class ProfileUtil
         }
 
         $query = /** @lang SQL */
-            'ALTER TABLE usrProfiles
+            'ALTER TABLE UserProfile
             DROP COLUMN userProfile_pAppMgmtCustomers,
             DROP COLUMN userProfile_pAppMgmtCategories,
             DROP COLUMN userProfile_pAppMgmtMenu,

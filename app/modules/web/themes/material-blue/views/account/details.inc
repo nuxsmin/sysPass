@@ -20,7 +20,7 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Visitas'); ?></div>
 
-                    <?php echo $accountData->getAccountCountView() . '(' . $accountData->getAccountCountDecrypt() . ')'; ?>
+                    <?php echo $accountData->getCountView() . '(' . $accountData->getCountDecrypt() . ')'; ?>
                 </td>
             </tr>
             <tr>
@@ -28,7 +28,7 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Fecha Alta'); ?></div>
 
-                    <?php echo $accountData->getAccountDateAdd() ?>
+                    <?php echo $accountData->getDateAdd() ?>
                 </td>
             </tr>
             <?php if ($isModified && $accountData->getUserEditName()): ?>
@@ -37,7 +37,7 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Última Modificación'); ?></div>
 
-                        <?php printf('%s (%s)', $accountData->getAccountDateEdit(), $accountData->getUserEditName()); ?>
+                        <?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName()); ?>
                     </td>
                 </tr>
             <?php endif; ?>
@@ -54,7 +54,7 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Grupo Principal'); ?></div>
 
-                    <?php echo $accountData->getUsergroupName(); ?>
+                    <?php echo $accountData->getUserGroupName(); ?>
                 </td>
             </tr>
             <?php if (is_array($accountOtherUsers) && count($accountOtherUsers) > 0): ?>
@@ -67,13 +67,12 @@
                         $users = [];
 
                         foreach ($accountOtherUsers as $otherUser) {
-                            /** @var $otherUser \SP\DataModel\UserData */
-                            if ($otherUser->getUserId() !== $accountData->getAccountUserId()) {
-                                $users[] = $otherUser->getUserName();
+                            if ($otherUser->id !== $accountData->getUserId()) {
+                                $users[] = $otherUser->name;
                             }
                         }
 
-                        $usersEdit = $accountData->getAccountOtherUserEdit() ? '(+)' : '';
+                        $usersEdit = $accountData->getOtherUserEdit() ? '(+)' : '';
                         echo $usersEdit . ' ' . implode(' | ', $users);
                         ?>
                     </td>
@@ -89,13 +88,13 @@
                         $groups = [];
 
                         foreach ($accountOtherGroups as $otherGroup) {
-                            /** @var $otherGroup \SP\DataModel\GroupData */
-                            if ($otherGroup->getUsergroupId() !== $accountData->getAccountUserGroupId()) {
-                                $groups[] = $otherGroup->getUsergroupName();
+                            /** @var $otherGroup \SP\DataModel\UserGroupData */
+                            if ($otherGroup->id !== $accountData->getUserGroupId()) {
+                                $groups[] = $otherGroup->name;
                             }
                         }
 
-                        $groupsEdit = $accountData->getAccountOtherGroupEdit() ? '(+)' : '';
+                        $groupsEdit = $accountData->getOtherUserGroupEdit() ? '(+)' : '';
 
                         echo $groupsEdit . ' ' . implode(' | ', $groups);
                         ?>
@@ -108,7 +107,7 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Fecha Edición'); ?></div>
 
-                        <?php echo $accountData->getAccountDateEdit(); ?>
+                        <?php echo $accountData->getDateEdit(); ?>
                     </td>
                 </tr>
                 <tr>

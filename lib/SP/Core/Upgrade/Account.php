@@ -52,13 +52,13 @@ class Account
 
             $Data = new QueryData();
             $query = /** @lang SQL */
-                'DELETE FROM accUsers WHERE accuser_accountId NOT IN (SELECT account_id FROM accounts) OR accuser_accountId IS NULL';
+                'DELETE FROM accUsers WHERE accuser_accountId NOT IN (SELECT account_id FROM Account) OR accuser_accountId IS NULL';
             $Data->setQuery($query);
 
             DbWrapper::getQuery($Data);
 
             $query = /** @lang SQL */
-                'DELETE FROM accGroups WHERE accgroup_accountId NOT IN (SELECT account_id FROM accounts) OR accgroup_accountId IS NULL';
+                'DELETE FROM AccountToGroup WHERE accountId NOT IN (SELECT account_id FROM Account) OR accountId IS NULL';
             $Data->setQuery($query);
 
             DbWrapper::getQuery($Data);

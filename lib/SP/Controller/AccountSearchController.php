@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -26,8 +26,9 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
-use SP\Account\AccountSearch;
-use SP\Account\AccountsSearchItem;
+use SP\Account\AccountSearchFilter;
+use SP\Services\Account\AccountSearchService;
+use SP\Account\AccountSearchItem;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory;
@@ -96,7 +97,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
      */
     private function setVars()
     {
-        $this->view->assign('isAdmin', $this->userData->isUserIsAdminApp() || $this->userData->isUserIsAdminAcc());
+        $this->view->assign('isAdmin', $this->userData->isIsAdminApp() || $this->userData->isIsAdminAcc());
         $this->view->assign('showGlobalSearch', $this->configData->isGlobalSearch() && $this->userProfileData->isAccGlobalSearch());
 
         // Obtener el filtro de búsqueda desde la sesión
@@ -152,7 +153,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
 
         $this->view->assign('isAjax', $this->isAjax);
 
-        $Search = new AccountSearch();
+        $Search = new AccountSearchService();
         $Search->setGlobalSearch($this->searchGlobal)
             ->setSortKey($this->sortKey)
             ->setSortOrder($this->sortOrder)
@@ -160,7 +161,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
             ->setLimitCount($this->limitCount)
             ->setTxtSearch($this->view->searchTxt)
             ->setCategoryId($this->view->searchCategory)
-            ->setCustomerId($this->view->searchCustomer)
+            ->setClientId($this->view->searchCustomer)
             ->setTagsId($this->view->searchTags)
             ->setSearchFavorites($this->view->searchFavorites);
 
@@ -174,14 +175,14 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
 
         $UserPreferences = SessionFactory::getUserPreferences();
 
-        AccountsSearchItem::$accountLink = $UserPreferences->isAccountLink();
-        AccountsSearchItem::$topNavbar = $UserPreferences->isTopNavbar();
-        AccountsSearchItem::$optionalActions = $UserPreferences->isOptionalActions();
-        AccountsSearchItem::$wikiEnabled = $this->configData->isWikiEnabled();
-        AccountsSearchItem::$dokuWikiEnabled = $this->configData->isDokuwikiEnabled();
-        AccountsSearchItem::$isDemoMode = $this->configData->isDemoEnabled();
+        AccountSearchItem::$accountLink = $UserPreferences->isAccountLink();
+        AccountSearchItem::$topNavbar = $UserPreferences->isTopNavbar();
+        AccountSearchItem::$optionalActions = $UserPreferences->isOptionalActions();
+        AccountSearchItem::$wikiEnabled = $this->configData->isWikiEnabled();
+        AccountSearchItem::$dokuWikiEnabled = $this->configData->isDokuwikiEnabled();
+        AccountSearchItem::$isDemoMode = $this->configData->isDemoEnabled();
 
-        if (AccountsSearchItem::$wikiEnabled) {
+        if (AccountSearchItem::$wikiEnabled) {
             $wikiFilter = array_map(function ($value) {
                 return preg_quote($value, '/');
             }, $this->configData->getWikiFilter());
@@ -216,7 +217,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionView->setName(__('Detalles de Cuenta'));
         $GridActionView->setTitle(__('Detalles de Cuenta'));
         $GridActionView->setIcon($this->icons->getIconView());
-        $GridActionView->setReflectionFilter(AccountsSearchItem::class, 'isShowView');
+        $GridActionView->setReflectionFilter(AccountSearchItem::class, 'isShowView');
         $GridActionView->addData('action-id', self::ACCOUNT_VIEW);
         $GridActionView->addData('action-sk', $this->sk);
         $GridActionView->addData('onclick', 'account/show');
@@ -227,7 +228,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionViewPass->setName(__('Ver Clave'));
         $GridActionViewPass->setTitle(__('Ver Clave'));
         $GridActionViewPass->setIcon($this->icons->getIconViewPass());
-        $GridActionViewPass->setReflectionFilter(AccountsSearchItem::class, 'isShowViewPass');
+        $GridActionViewPass->setReflectionFilter(AccountSearchItem::class, 'isShowViewPass');
         $GridActionViewPass->addData('action-id', self::ACCOUNT_VIEW_PASS);
         $GridActionViewPass->addData('action-full', 1);
         $GridActionViewPass->addData('action-sk', $this->sk);
@@ -242,7 +243,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionCopyPass->setName(__('Copiar Clave en Portapapeles'));
         $GridActionCopyPass->setTitle(__('Copiar Clave en Portapapeles'));
         $GridActionCopyPass->setIcon($ClipboardIcon);
-        $GridActionCopyPass->setReflectionFilter(AccountsSearchItem::class, 'isShowCopyPass');
+        $GridActionCopyPass->setReflectionFilter(AccountSearchItem::class, 'isShowCopyPass');
         $GridActionCopyPass->addData('action-id', self::ACCOUNT_VIEW_PASS);
         $GridActionCopyPass->addData('action-full', 0);
         $GridActionCopyPass->addData('action-sk', $this->sk);
@@ -254,7 +255,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionEdit->setName(__('Editar Cuenta'));
         $GridActionEdit->setTitle(__('Editar Cuenta'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
-        $GridActionEdit->setReflectionFilter(AccountsSearchItem::class, 'isShowEdit');
+        $GridActionEdit->setReflectionFilter(AccountSearchItem::class, 'isShowEdit');
         $GridActionEdit->addData('action-id', self::ACCOUNT_EDIT);
         $GridActionEdit->addData('action-sk', $this->sk);
         $GridActionEdit->addData('onclick', 'account/edit');
@@ -265,7 +266,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionCopy->setName(__('Copiar Cuenta'));
         $GridActionCopy->setTitle(__('Copiar Cuenta'));
         $GridActionCopy->setIcon($this->icons->getIconCopy());
-        $GridActionCopy->setReflectionFilter(AccountsSearchItem::class, 'isShowCopy');
+        $GridActionCopy->setReflectionFilter(AccountSearchItem::class, 'isShowCopy');
         $GridActionCopy->addData('action-id', self::ACCOUNT_COPY);
         $GridActionCopy->addData('action-sk', $this->sk);
         $GridActionCopy->addData('onclick', 'account/copy');
@@ -276,7 +277,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionDel->setName(__('Eliminar Cuenta'));
         $GridActionDel->setTitle(__('Eliminar Cuenta'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
-        $GridActionDel->setReflectionFilter(AccountsSearchItem::class, 'isShowDelete');
+        $GridActionDel->setReflectionFilter(AccountSearchItem::class, 'isShowDelete');
         $GridActionDel->addData('action-id', self::ACCOUNT_DELETE);
         $GridActionDel->addData('action-sk', $this->sk);
         $GridActionDel->addData('onclick', 'account/delete');
@@ -286,7 +287,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionRequest->setName(__('Solicitar Modificación'));
         $GridActionRequest->setTitle(__('Solicitar Modificación'));
         $GridActionRequest->setIcon($this->icons->getIconEmail());
-        $GridActionRequest->setReflectionFilter(AccountsSearchItem::class, 'isShowRequest');
+        $GridActionRequest->setReflectionFilter(AccountSearchItem::class, 'isShowRequest');
         $GridActionRequest->addData('action-id', self::ACCOUNT_REQUEST);
         $GridActionRequest->addData('action-sk', $this->sk);
         $GridActionRequest->addData('onclick', 'account/show');
@@ -296,7 +297,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridActionOptional->setName(__('Más Acciones'));
         $GridActionOptional->setTitle(__('Más Acciones'));
         $GridActionOptional->setIcon($this->icons->getIconOptional());
-        $GridActionOptional->setReflectionFilter(AccountsSearchItem::class, 'isShowOptional');
+        $GridActionOptional->setReflectionFilter(AccountSearchItem::class, 'isShowOptional');
         $GridActionOptional->addData('onclick', 'account/menu');
 
         $GridPager = new DataGridPager();
@@ -345,35 +346,35 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
         $GridSortCustomer = new DataGridSort();
         $GridSortCustomer->setName(__('Cliente'))
             ->setTitle(__('Ordenar por Cliente'))
-            ->setSortKey(AccountSearch::SORT_CUSTOMER)
+            ->setSortKey(AccountSearchFilter::SORT_CLIENT)
             ->setIconUp($this->icons->getIconUp())
             ->setIconDown($this->icons->getIconDown());
 
         $GridSortName = new DataGridSort();
         $GridSortName->setName(__('Nombre'))
             ->setTitle(__('Ordenar por Nombre'))
-            ->setSortKey(AccountSearch::SORT_NAME)
+            ->setSortKey(AccountSearchFilter::SORT_NAME)
             ->setIconUp($this->icons->getIconUp())
             ->setIconDown($this->icons->getIconDown());
 
         $GridSortCategory = new DataGridSort();
         $GridSortCategory->setName(__('Categoría'))
             ->setTitle(__('Ordenar por Categoría'))
-            ->setSortKey(AccountSearch::SORT_CATEGORY)
+            ->setSortKey(AccountSearchFilter::SORT_CATEGORY)
             ->setIconUp($this->icons->getIconUp())
             ->setIconDown($this->icons->getIconDown());
 
         $GridSortLogin = new DataGridSort();
         $GridSortLogin->setName(__('Usuario'))
             ->setTitle(__('Ordenar por Usuario'))
-            ->setSortKey(AccountSearch::SORT_LOGIN)
+            ->setSortKey(AccountSearchFilter::SORT_LOGIN)
             ->setIconUp($this->icons->getIconUp())
             ->setIconDown($this->icons->getIconDown());
 
         $GridSortUrl = new DataGridSort();
         $GridSortUrl->setName(__('URL / IP'))
             ->setTitle(__('Ordenar por URL / IP'))
-            ->setSortKey(AccountSearch::SORT_URL)
+            ->setSortKey(AccountSearchFilter::SORT_URL)
             ->setIconUp($this->icons->getIconUp())
             ->setIconDown($this->icons->getIconDown());
 

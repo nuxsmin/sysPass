@@ -65,21 +65,21 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $query = /** @lang SQL */
             'INSERT INTO authTokens 
             SET authtoken_userId = ?,
-            authtoken_actionId = ?,
-            authtoken_createdBy = ?,
+            actionId = ?,
+            createdBy = ?,
             authtoken_token = ?,
             authtoken_vault = ?,
-            authtoken_hash = ?,
-            authtoken_startDate = UNIX_TIMESTAMP()';
+            hash = ?,
+            startDate = UNIX_TIMESTAMP()';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getAuthtokenUserId());
-        $Data->addParam($this->itemData->getAuthtokenActionId());
-        $Data->addParam(SessionFactory::getUserData()->getUserId());
+        $Data->addParam($this->itemData->getActionId());
+        $Data->addParam(SessionFactory::getUserData()->getId());
         $Data->addParam($token);
 
-        $action = $this->itemData->getAuthtokenActionId();
+        $action = $this->itemData->getActionId();
 
         if ($action === ActionsInterface::ACCOUNT_VIEW_PASS
             || $action === ActionsInterface::ACCOUNT_CREATE
@@ -89,7 +89,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
             $Data->addParam(null);
         }
 
-        $Data->addParam(Hash::hashKey($this->itemData->getAuthtokenHash()));
+        $Data->addParam(Hash::hashKey($this->itemData->getHash()));
         $Data->setOnErrorMessage(__('Error interno', false));
 
         DbWrapper::getQuery($Data);
@@ -106,12 +106,12 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $query = /** @lang SQL */
             'SELECT authtoken_id FROM authTokens 
             WHERE authtoken_userId = ? 
-            AND authtoken_actionId = ? LIMIT 1';
+            AND actionId = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getAuthtokenUserId());
-        $Data->addParam($this->itemData->getAuthtokenActionId());
+        $Data->addParam($this->itemData->getActionId());
 
         DbWrapper::getResults($Data);
 
@@ -158,7 +158,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
     private function getSecureData($token)
     {
         $Vault = new Vault();
-        $Vault->saveData(CryptSession::getSessionKey(), $this->itemData->getAuthtokenHash() . $token);
+        $Vault->saveData(CryptSession::getSessionKey(), $this->itemData->getHash() . $token);
 
         return $Vault;
     }
@@ -208,22 +208,22 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $query = /** @lang SQL */
             'UPDATE authTokens 
             SET authtoken_userId = ?,
-            authtoken_actionId = ?,
-            authtoken_createdBy = ?,
+            actionId = ?,
+            createdBy = ?,
             authtoken_token = ?,
             authtoken_vault = ?,
-            authtoken_hash = ?,
-            authtoken_startDate = UNIX_TIMESTAMP() 
+            hash = ?,
+            startDate = UNIX_TIMESTAMP() 
             WHERE authtoken_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getAuthtokenUserId());
-        $Data->addParam($this->itemData->getAuthtokenActionId());
-        $Data->addParam(SessionFactory::getUserData()->getUserId());
+        $Data->addParam($this->itemData->getActionId());
+        $Data->addParam(SessionFactory::getUserData()->getId());
         $Data->addParam($token);
 
-        $action = $this->itemData->getAuthtokenActionId();
+        $action = $this->itemData->getActionId();
 
         if ($action === ActionsInterface::ACCOUNT_VIEW_PASS
             || $action === ActionsInterface::ACCOUNT_CREATE
@@ -233,8 +233,8 @@ class ApiToken extends ApiTokenBase implements ItemInterface
             $Data->addParam(null);
         }
 
-        $Data->addParam(Hash::hashKey($this->itemData->getAuthtokenHash()));
-        $Data->addParam($this->itemData->getAuthtokenId());
+        $Data->addParam(Hash::hashKey($this->itemData->getHash()));
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error interno', false));
 
         DbWrapper::getQuery($Data);
@@ -251,14 +251,14 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $query = /** @lang SQL */
             'SELECT authtoken_id FROM authTokens 
             WHERE authtoken_userId = ? 
-            AND authtoken_actionId = ? 
+            AND actionId = ? 
             AND authtoken_id <> ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getAuthtokenUserId());
-        $Data->addParam($this->itemData->getAuthtokenActionId());
-        $Data->addParam($this->itemData->getAuthtokenId());
+        $Data->addParam($this->itemData->getActionId());
+        $Data->addParam($this->itemData->getId());
 
         DbWrapper::getResults($Data);
 
@@ -280,17 +280,17 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $query = /** @lang SQL */
             'UPDATE authTokens 
             SET authtoken_token = ?,
-            authtoken_hash = ?,
+            hash = ?,
             authtoken_vault = ?,
-            authtoken_startDate = UNIX_TIMESTAMP() 
+            startDate = UNIX_TIMESTAMP() 
             WHERE authtoken_userId = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($token);
-        $Data->addParam(Hash::hashKey($this->itemData->getAuthtokenHash()));
+        $Data->addParam(Hash::hashKey($this->itemData->getHash()));
 
-        if ($this->itemData->getAuthtokenActionId() === ActionsInterface::ACCOUNT_VIEW_PASS) {
+        if ($this->itemData->getActionId() === ActionsInterface::ACCOUNT_VIEW_PASS) {
             $Data->addParam(serialize($this->getSecureData($token)));
         } else {
             $Data->addParam(null);
@@ -313,9 +313,9 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $query = /** @lang SQL */
             'SELECT authtoken_id,
             authtoken_userId,
-            authtoken_actionId,
-            authtoken_createdBy,
-            authtoken_startDate,
+            actionId,
+            createdBy,
+            startDate,
             authtoken_token 
             FROM authTokens 
             WHERE authtoken_id = ? LIMIT 1';
@@ -413,9 +413,9 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         $query = /** @lang SQL */
             'SELECT authtoken_userId,
             authtoken_vault,
-            authtoken_hash 
+            hash 
             FROM authTokens
-            WHERE authtoken_actionId = ? 
+            WHERE actionId = ? 
             AND authtoken_token = ? LIMIT 1';
 
         $Data = new QueryData();

@@ -15,7 +15,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php echo $plugin->getPluginName(); ?>" <?php echo $isReadonly; ?>>
+                               value="<?php echo $plugin->getName(); ?>" <?php echo $isReadonly; ?>>
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Nombre del plugin'); ?></label>
                     </div>

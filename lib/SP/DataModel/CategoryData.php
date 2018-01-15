@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -36,19 +36,19 @@ class CategoryData extends DataModelBase implements DataModelInterface
     /**
      * @var int
      */
-    public $category_id = 0;
+    public $id = 0;
     /**
      * @var string
      */
-    public $category_name = '';
+    public $name = '';
     /**
      * @var string
      */
-    public $category_description = '';
+    public $description = '';
     /**
      * @var string
      */
-    public $category_hash = '';
+    public $hash = '';
 
     /**
      * categoryData constructor.
@@ -59,59 +59,9 @@ class CategoryData extends DataModelBase implements DataModelInterface
      */
     public function __construct($category_id = null, $category_name = null, $category_description = null)
     {
-        $this->category_id = $category_id;
-        $this->category_name = $category_name;
-        $this->category_description = $category_description;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCategoryId()
-    {
-        return $this->category_id;
-    }
-
-    /**
-     * @param int $category_id
-     * @return $this
-     */
-    public function setCategoryId($category_id)
-    {
-        $this->category_id = $category_id;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryName()
-    {
-        return $this->category_name;
-    }
-
-    /**
-     * @param string $category_name
-     */
-    public function setCategoryName($category_name)
-    {
-        $this->category_name = $category_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCategoryDescription()
-    {
-        return $this->category_description;
-    }
-
-    /**
-     * @param string $category_description
-     */
-    public function setCategoryDescription($category_description)
-    {
-        $this->category_description = $category_description;
+        $this->id = $category_id;
+        $this->name = $category_name;
+        $this->description = $category_description;
     }
 
     /**
@@ -119,7 +69,17 @@ class CategoryData extends DataModelBase implements DataModelInterface
      */
     public function getId()
     {
-        return $this->category_id;
+        return (int)$this->id;
+    }
+
+    /**
+     * @param int $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = (int)$id;
+        return $this;
     }
 
     /**
@@ -127,14 +87,38 @@ class CategoryData extends DataModelBase implements DataModelInterface
      */
     public function getName()
     {
-        return $this->category_name;
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 
     /**
      * @return string
      */
-    public function getCategoryHash()
+    public function getDescription()
     {
-        return $this->category_hash;
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash()
+    {
+        return $this->hash;
     }
 }

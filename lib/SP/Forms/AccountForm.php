@@ -24,11 +24,10 @@
 
 namespace SP\Forms;
 
+use SP\Account\AccountRequest;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionFactory;
-use SP\DataModel\AccountData;
-use SP\DataModel\AccountExtData;
 use SP\Http\Request;
 
 /**
@@ -39,9 +38,9 @@ use SP\Http\Request;
 class AccountForm extends FormBase implements FormInterface
 {
     /**
-     * @var AccountExtData
+     * @var AccountRequest
      */
-    protected $AccountData;
+    protected $accountRequest;
 
     /**
      * Validar el formulario
@@ -79,22 +78,22 @@ class AccountForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->AccountData = new AccountExtData();
-        $this->AccountData->setAccountId($this->itemId);
-        $this->AccountData->setAccountName(Request::analyze('name'));
-        $this->AccountData->setAccountCustomerId(Request::analyze('customerId', 0));
-        $this->AccountData->setAccountCategoryId(Request::analyze('categoryId', 0));
-        $this->AccountData->setAccountLogin(Request::analyze('login'));
-        $this->AccountData->setAccountUrl(Request::analyze('url'));
-        $this->AccountData->setAccountNotes(Request::analyze('notes'));
-        $this->AccountData->setAccountUserEditId(SessionFactory::getUserData()->getUserId());
-        $this->AccountData->setAccountOtherUserEdit(Request::analyze('userEditEnabled', 0, false, 1));
-        $this->AccountData->setAccountOtherGroupEdit(Request::analyze('groupEditEnabled', 0, false, 1));
-        $this->AccountData->setAccountPass(Request::analyzeEncrypted('pass'));
-        $this->AccountData->setAccountIsPrivate(Request::analyze('privateEnabled', 0, false, 1));
-        $this->AccountData->setAccountIsPrivateGroup(Request::analyze('privateGroupEnabled', 0, false, 1));
-        $this->AccountData->setAccountPassDateChange(Request::analyze('passworddatechange_unix', 0));
-        $this->AccountData->setAccountParentId(Request::analyze('parentAccountId', 0));
+        $this->accountRequest = new AccountRequest();
+        $this->accountRequest->id = $this->itemId;
+        $this->accountRequest->name = Request::analyze('name');
+        $this->accountRequest->clientId = Request::analyze('customerId', 0);
+        $this->accountRequest->categoryId = Request::analyze('categoryId', 0);
+        $this->accountRequest->login = Request::analyze('login');
+        $this->accountRequest->url = Request::analyze('url');
+        $this->accountRequest->notes = Request::analyze('notes');
+        $this->accountRequest->userEditId = SessionFactory::getUserData()->getId();
+        $this->accountRequest->otherUserEdit = Request::analyze('userEditEnabled', 0, false, 1);
+        $this->accountRequest->otherUserGroupEdit = Request::analyze('groupEditEnabled', 0, false, 1);
+        $this->accountRequest->pass = Request::analyzeEncrypted('pass');
+        $this->accountRequest->isPrivate = Request::analyze('privateEnabled', 0, false, 1);
+        $this->accountRequest->isPrivateGroup = Request::analyze('privateGroupEnabled', 0, false, 1);
+        $this->accountRequest->passDateChange = Request::analyze('passworddatechange_unix', 0);
+        $this->accountRequest->parentId = Request::analyze('parentAccountId', 0);
 
         // Arrays
         $accountOtherGroups = Request::analyze('otherGroups', 0);
@@ -102,24 +101,24 @@ class AccountForm extends FormBase implements FormInterface
         $accountTags = Request::analyze('tags', 0);
 
         if (is_array($accountOtherUsers)) {
-            $this->AccountData->setUsersId($accountOtherUsers);
+            $this->accountRequest->users = $accountOtherUsers;
         }
 
         if (is_array($accountOtherGroups)) {
-            $this->AccountData->setUserGroupsId($accountOtherGroups);
+            $this->accountRequest->userGroups = $accountOtherGroups;
         }
 
         if (is_array($accountTags)) {
-            $this->AccountData->setTags($accountTags);
+            $this->accountRequest->tags = $accountTags;
         }
 
         $accountMainGroupId = Request::analyze('mainGroupId', 0);
 
         // Cambiar el grupo principal si el usuario es Admin
         if ($accountMainGroupId !== 0
-            && (SessionFactory::getUserData()->isUserIsAdminApp() || SessionFactory::getUserData()->isUserIsAdminAcc())
+            && (SessionFactory::getUserData()->isIsAdminApp() || SessionFactory::getUserData()->isIsAdminAcc())
         ) {
-            $this->AccountData->setAccountUserGroupId($accountMainGroupId);
+            $this->accountRequest->userGroupId = $accountMainGroupId;
         }
     }
 
@@ -128,16 +127,16 @@ class AccountForm extends FormBase implements FormInterface
      */
     protected function checkPass()
     {
-        if ($this->AccountData->getAccountParentId() > 0) {
+        if ($this->accountRequest->parentId > 0) {
             return;
         }
 
-        if (!$this->AccountData->getAccountPass()) {
-            throw new ValidationException(__('Es necesaria una clave', false));
+        if (!$this->accountRequest->pass) {
+            throw new ValidationException(__u('Es necesaria una clave'));
         }
 
-        if (Request::analyzeEncrypted('passR') !== $this->AccountData->getAccountPass()) {
-            throw new ValidationException(__('Las claves no coinciden', false));
+        if (Request::analyzeEncrypted('passR') !== $this->accountRequest->pass) {
+            throw new ValidationException(__u('Las claves no coinciden'));
         }
     }
 
@@ -146,28 +145,28 @@ class AccountForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->AccountData->getAccountName()) {
-            throw new ValidationException(__('Es necesario un nombre de cuenta', false));
+        if (!$this->accountRequest->name) {
+            throw new ValidationException(__u('Es necesario un nombre de cuenta'));
         }
 
-        if (!$this->AccountData->getAccountCustomerId()) {
-            throw new ValidationException(__('Es necesario un nombre de cliente', false));
+        if (!$this->accountRequest->clientId) {
+            throw new ValidationException(__u('Es necesario un nombre de cliente'));
         }
 
-        if (!$this->AccountData->getAccountLogin()) {
-            throw new ValidationException(__('Es necesario un usuario', false));
+        if (!$this->accountRequest->login) {
+            throw new ValidationException(__u('Es necesario un usuario'));
         }
 
-        if (!$this->AccountData->getAccountCategoryId()) {
-            throw new ValidationException(__('Es necesario una categoría', false));
+        if (!$this->accountRequest->categoryId) {
+            throw new ValidationException(__u('Es necesario una categoría'));
         }
     }
 
     /**
-     * @return AccountExtData
+     * @return AccountRequest
      */
     public function getItemData()
     {
-        return $this->AccountData;
+        return $this->accountRequest;
     }
 }

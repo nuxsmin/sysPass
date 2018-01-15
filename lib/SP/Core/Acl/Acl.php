@@ -65,7 +65,7 @@ class Acl implements ActionsInterface
      */
     public static function getActionRoute($actionId)
     {
-        return self::$action->getActionById($actionId)->getActionRoute();
+        return self::$action->getActionById($actionId)->getRoute();
     }
 
     /**
@@ -90,33 +90,29 @@ class Acl implements ActionsInterface
 
         $userData = $this->session->getUserData();
 
-        $curUserId = $userData->getUserId();
-        $curUserIsAdminApp = $userData->isUserIsAdminApp();
-        $curUserIsAdminAcc = $userData->isUserIsAdminAcc();
-
-        if ($curUserIsAdminApp) {
+        if ($userData->getIsAdminApp()) {
             return true;
         }
 
         switch ($action) {
             case self::ACCOUNT_VIEW:
-                return ($curUserIsAdminAcc || $curUserProfile->isAccView() || $curUserProfile->isAccEdit());
+                return ($userData->getIsAdminAcc() || $curUserProfile->isAccView() || $curUserProfile->isAccEdit());
             case self::ACCOUNT_VIEW_PASS:
-                return ($curUserIsAdminAcc || $curUserProfile->isAccViewPass());
+                return ($userData->getIsAdminAcc() || $curUserProfile->isAccViewPass());
             case self::ACCOUNT_VIEW_HISTORY:
-                return ($curUserIsAdminAcc || $curUserProfile->isAccViewHistory());
+                return ($userData->getIsAdminAcc() || $curUserProfile->isAccViewHistory());
             case self::ACCOUNT_EDIT:
-                return ($curUserIsAdminAcc || $curUserProfile->isAccEdit());
+                return ($userData->getIsAdminAcc() || $curUserProfile->isAccEdit());
             case self::ACCOUNT_EDIT_PASS:
-                return ($curUserIsAdminAcc || $curUserProfile->isAccEditPass());
+                return ($userData->getIsAdminAcc() || $curUserProfile->isAccEditPass());
             case self::ACCOUNT_CREATE:
-                return ($curUserIsAdminAcc || $curUserProfile->isAccAdd());
+                return ($userData->getIsAdminAcc() || $curUserProfile->isAccAdd());
             case self::ACCOUNT_COPY:
-                return ($curUserIsAdminAcc || ($curUserProfile->isAccAdd() && $curUserProfile->isAccView()));
+                return ($userData->getIsAdminAcc() || ($curUserProfile->isAccAdd() && $curUserProfile->isAccView()));
             case self::ACCOUNT_DELETE:
-                return ($curUserIsAdminAcc || $curUserProfile->isAccDelete());
+                return ($userData->getIsAdminAcc() || $curUserProfile->isAccDelete());
             case self::ACCOUNT_FILE:
-                return ($curUserIsAdminAcc || $curUserProfile->isAccFiles());
+                return ($userData->getIsAdminAcc() || $curUserProfile->isAccFiles());
             case self::ITEMS_MANAGE:
                 return ($curUserProfile->isMgmCategories() || $curUserProfile->isMgmCustomers());
             case self::CONFIG:
@@ -165,7 +161,7 @@ class Acl implements ActionsInterface
                 return $curUserProfile->isMgmUsers();
             case self::USER_EDIT_PASS:
                 // Comprobar si el usuario es distinto al de la sesión
-                return ($userId === $curUserId || $curUserProfile->isMgmUsers());
+                return ($userId === $userData->getId() || $curUserProfile->isMgmUsers());
             case self::GROUP:
             case self::GROUP_SEARCH:
                 return $curUserProfile->isMgmGroups();
@@ -203,7 +199,7 @@ class Acl implements ActionsInterface
      */
     public static function getActionInfo($actionId, $translate = true)
     {
-        $text = self::$action->getActionById($actionId)->getActionText();
+        $text = self::$action->getActionById($actionId)->getText();
 
         return $translate ? __($text) : $text;
     }

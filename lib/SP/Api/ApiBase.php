@@ -101,7 +101,7 @@ abstract class ApiBase implements ApiInterface
 
         $this->data = $data;
 
-        $this->userId = $this->ApiTokenData->getAuthtokenUserId();
+        $this->userId = $this->ApiTokenData->getUserId();
 
         $this->loadUserData();
 
@@ -134,7 +134,7 @@ abstract class ApiBase implements ApiInterface
      */
     protected function loadUserData()
     {
-        $this->UserData = User::getItem()->getById($this->ApiTokenData->getAuthtokenUserId());
+        $this->UserData = User::getItem()->getById($this->ApiTokenData->getUserId());
 
         SessionUtil::loadUserSession($this->UserData);
     }
@@ -151,8 +151,8 @@ abstract class ApiBase implements ApiInterface
      */
     protected function doAuth()
     {
-        if ($this->UserData->isUserIsDisabled()
-            || !Hash::checkHashKey($this->getParam('tokenPass', true), $this->ApiTokenData->getAuthtokenHash())
+        if ($this->UserData->isIsDisabled()
+            || !Hash::checkHashKey($this->getParam('tokenPass', true), $this->ApiTokenData->getHash())
         ) {
             ApiUtil::addTracking();
 
@@ -192,7 +192,7 @@ abstract class ApiBase implements ApiInterface
     {
         try {
             /** @var Vault $Vault */
-            $Vault = unserialize($this->ApiTokenData->getAuthtokenVault());
+            $Vault = unserialize($this->ApiTokenData->getVault());
 
             if ($Vault && $pass = $Vault->getData($this->getParam('tokenPass') . $this->getParam('authToken'))) {
                 return $pass;

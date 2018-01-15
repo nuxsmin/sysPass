@@ -29,9 +29,10 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
-use SP\DataModel\AccountExtData;
+use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\UserData;
-use SP\Services\UserGroup\UserToGroupService;
+use SP\Repositories\UserGroup\UserToUserGroupRepository;
+use SP\Services\User\UserLoginResponse;
 use SP\Util\ArrayUtil;
 
 /**
@@ -42,9 +43,9 @@ use SP\Util\ArrayUtil;
 class AccountAcl
 {
     /**
-     * @var AccountExtData
+     * @var AccountAclDto
      */
-    protected $accountData;
+    protected $accountAclDto;
     /**
      * @var int
      */
@@ -134,7 +135,7 @@ class AccountAcl
      */
     protected $showPermission = false;
     /**
-     * @var UserData
+     * @var UserLoginResponse
      */
     protected $userData;
     /**
@@ -163,22 +164,17 @@ class AccountAcl
     /**
      * AccountAcl constructor.
      *
-     * @param int            $action
-     * @param AccountExtData $accountData
-     * @param bool           $isHistory
+     * @param int  $action
+     * @param bool $isHistory
+     * @throws \SP\Core\Dic\ContainerException
      */
-    public function __construct($action, AccountExtData $accountData = null, $isHistory = false)
+    public function __construct($action, $isHistory = false)
     {
         $this->injectDependencies();
 
         $this->action = $action;
         $this->isHistory = $isHistory;
         $this->userData = $this->session->getUserData();
-
-        if (null !== $accountData) {
-            $this->accountData = $accountData;
-            $this->accountId = $accountData->getAccountId();
-        }
     }
 
     /**
@@ -313,16 +309,27 @@ class AccountAcl
     }
 
     /**
+     * @return boolean
+     */
+    public function isShow()
+    {
+        return ($this->showView || $this->showEdit || $this->showViewPass || $this->showCopy || $this->showDelete);
+    }
+
+    /**
      * Obtener la ACL de una cuenta
      *
+     * @param AccountAclDto $accountAclDto
      * @return $this
      */
-    public function getAcl()
+    public function getAcl(AccountAclDto $accountAclDto)
     {
+        $this->accountAclDto = $accountAclDto;
+        $this->accountId = $accountAclDto->getAccountId();
         $sessionAcl = $this->getStoredAcl();
 
         if (null !== $sessionAcl
-            && !($this->modified = (int)strtotime($this->accountData->getAccountDateEdit()) > $sessionAcl->getTime())
+            && !($this->modified = (int)strtotime($this->accountAclDto->getDateEdit()) > $sessionAcl->getTime())
         ) {
             return $sessionAcl;
         }
@@ -377,9 +384,19 @@ class AccountAcl
      */
     public function updateAcl()
     {
-        $this->makeAcl();
+        if ($this->checkComponents()) {
+            $this->makeAcl();
+        }
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function checkComponents()
+    {
+        return null !== $this->accountId && null !== $this->accountAclDto;
     }
 
     /**
@@ -434,8 +451,8 @@ class AccountAcl
      */
     protected function compileAccountAccess()
     {
-        if ($this->userData->isUserIsAdminApp()
-            || $this->userData->isUserIsAdminAcc()
+        if ($this->userData->getIsAdminApp()
+            || $this->userData->getIsAdminAcc()
         ) {
             $this->resultView = true;
             $this->resultEdit = true;
@@ -444,17 +461,17 @@ class AccountAcl
         }
 
         $this->userInGroups = $this->getIsUserInGroups();
-        $this->userInUsers = in_array($this->userData->getUserId(), $this->accountData->getAccountUsersId());
+        $this->userInUsers = in_array($this->userData->getId(), $this->accountAclDto->getUsersId());
 
-        $this->resultView = ($this->userData->getUserId() === $this->accountData->getAccountUserId()
-            || $this->userData->getUserGroupId() === $this->accountData->getAccountUserGroupId()
+        $this->resultView = ($this->userData->getId() === $this->accountAclDto->getUserId()
+            || $this->userData->getUserGroupId() === $this->accountAclDto->getUserGroupId()
             || $this->userInUsers
             || $this->userInGroups);
 
-        $this->resultEdit = ($this->userData->getUserId() === $this->accountData->getAccountUserId()
-            || $this->userData->getUserGroupId() === $this->accountData->getAccountUserGroupId()
-            || ($this->userInUsers && $this->accountData->getAccountOtherUserEdit())
-            || ($this->userInGroups && $this->accountData->getAccountOtherGroupEdit()));
+        $this->resultEdit = ($this->userData->getId() === $this->accountAclDto->getUserId()
+            || $this->userData->getUserGroupId() === $this->accountAclDto->getUserGroupId()
+            || ($this->userInUsers && $this->accountAclDto->getOtherUserEdit())
+            || ($this->userInGroups && $this->accountAclDto->getOtherUserGroupEdit()));
     }
 
     /**
@@ -466,15 +483,15 @@ class AccountAcl
     protected function getIsUserInGroups()
     {
         // Comprobar si el usuario está vinculado desde el grupo principal de la cuenta
-        if (UserToGroupService::checkUserInGroup($this->accountData->getAccountUserGroupId(), $this->userData->getUserId())) {
+        if (UserToUserGroupRepository::checkUserInGroup($this->accountAclDto->getUserGroupId(), $this->userData->getId())) {
             return true;
         }
 
         // Grupos en los que se encuentra el usuario
-        $groupsId = UserToGroupService::getGroupsForUser($this->userData->getUserId());
+        $groupsId = UserToUserGroupRepository::getGroupsForUser($this->userData->getId());
 
         // Comprobar si el grupo del usuario está vinculado desde los grupos secundarios de la cuenta
-        foreach ($this->accountData->getUserGroupsId() as $groupId) {
+        foreach ($this->accountAclDto->getUserGroupsId() as $groupId) {
             // Consultar el grupo principal del usuario
             if ($groupId === $this->userData->getUserGroupId()
                 // o... permitir los grupos que no sean el principal del usuario?
@@ -501,6 +518,7 @@ class AccountAcl
 
         switch ($action) {
             case ActionsInterface::ACCOUNT_VIEW:
+            case ActionsInterface::ACCOUNT_SEARCH:
             case ActionsInterface::ACCOUNT_VIEW_PASS:
             case ActionsInterface::ACCOUNT_VIEW_HISTORY:
             case ActionsInterface::ACCOUNT_COPY:
@@ -557,8 +575,8 @@ class AccountAcl
         $userProfile = $this->session->getUserProfile();
         $userData = $this->session->getUserData();
 
-        return $userData->isUserIsAdminAcc()
-            || $userData->isUserIsAdminApp()
+        return $userData->getIsAdminApp()
+            || $userData->getIsAdminAcc()
             || $userProfile->isAccPermission()
             || $userProfile->isAccPrivateGroup()
             || $userProfile->isAccPrivate();
@@ -588,6 +606,7 @@ class AccountAcl
      *
      * @return void
      * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.sleep
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __wakeup()
     {
@@ -609,15 +628,14 @@ class AccountAcl
     {
         $this->time = time();
 
-        unset($this->accountData, $this->userData, $this->session, $this->dic, $this->acl, $this->configData);
+        unset($this->accountAclDto, $this->userData, $this->session, $this->acl, $this->configData);
 
         $props = [];
 
         foreach ((array)$this as $prop => $value) {
             if ($prop !== "\0*\0configData"
-                && $prop !== "\0*\0dic"
-                && $prop !== "\0*\0accountData"
-                && $prop !== "\0*\0UserData"
+                && $prop !== "\0*\0accountAclDto"
+                && $prop !== "\0*\0userData"
                 && $prop !== "\0*\0acl"
                 && $prop !== "\0*\0session") {
                 $props[] = $prop;

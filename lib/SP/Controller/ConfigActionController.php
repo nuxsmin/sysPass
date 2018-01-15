@@ -512,7 +512,7 @@ class ConfigActionController implements ItemControllerInterface
         $confirmPassChange = Request::analyze('confirmPassChange', 0, false, 1);
         $noAccountPassChange = Request::analyze('chkNoAccountChange', 0, false, 1);
 
-        if (!UserPass::checkUserUpdateMPass(SessionFactory::getUserData()->getUserId())) {
+        if (!UserPass::checkUserUpdateMPass(SessionFactory::getUserData()->getId())) {
             $this->JsonResponse->setDescription(__('Clave maestra actualizada', false));
             $this->JsonResponse->addMessage(__('Reinicie la sesión para cambiarla', false));
             $this->JsonResponse->setStatus(100);
@@ -704,7 +704,7 @@ class ConfigActionController implements ItemControllerInterface
         }
 
         $ImportParams = new ImportParams();
-        $ImportParams->setDefaultUser(Request::analyze('import_defaultuser', SessionFactory::getUserData()->getUserId()));
+        $ImportParams->setDefaultUser(Request::analyze('import_defaultuser', SessionFactory::getUserData()->getId()));
         $ImportParams->setDefaultGroup(Request::analyze('import_defaultgroup', SessionFactory::getUserData()->getUserGroupId()));
         $ImportParams->setImportPwd(Request::analyzeEncrypted('importPwd'));
         $ImportParams->setImportMasterPwd(Request::analyzeEncrypted('importMasterPwd'));

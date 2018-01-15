@@ -42,8 +42,8 @@ use SP\DataModel\ApiTokenData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\CustomFieldData;
-use SP\DataModel\CustomFieldDefData;
-use SP\DataModel\GroupData;
+use SP\DataModel\CustomFieldDefinitionData;
+use SP\DataModel\UserGroupData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\TagData;
 use SP\DataModel\UserData;
@@ -294,7 +294,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->setAction(self::USER_EDIT_PASS);
 
         // Comprobar si el usuario a modificar es distinto al de la sesión
-        if ($this->itemId !== SessionFactory::getUserData()->getUserId() && !$this->checkAccess()) {
+        if ($this->itemId !== SessionFactory::getUserData()->getId() && !$this->checkAccess()) {
             return;
         }
 
@@ -315,7 +315,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->module = self::GROUP;
         $this->view->addTemplate('groups');
 
-        $this->view->assign('group', $this->itemId ? Group::getItem()->getById($this->itemId) : new GroupData());
+        $this->view->assign('group', $this->itemId ? Group::getItem()->getById($this->itemId) : new UserGroupData());
         $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('groupUsers', GroupUsers::getItem()->getById($this->itemId));
 
@@ -428,7 +428,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->module = self::CUSTOMFIELD;
         $this->view->addTemplate('customfields');
 
-        $customField = $this->itemId ? CustomFieldDef::getItem()->getById($this->itemId) : new CustomFieldDefData();
+        $customField = $this->itemId ? CustomFieldDef::getItem()->getById($this->itemId) : new CustomFieldDefinitionData();
 
         $this->view->assign('field', $customField);
         $this->view->assign('types', CustomFieldTypes::getFieldsTypes());
@@ -496,7 +496,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $AccountData = new AccountExtData();
 
         if (!$isHistory) {
-            $AccountData->setAccountId($this->itemId);
+            $AccountData->setId($this->itemId);
             $Account = new Account($AccountData);
         } else {
             $Account = new AccountHistory($AccountData);
@@ -509,20 +509,20 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             throw new ItemException(__('La clave maestra no coincide', false));
         }
 
-        $AccountAcl = new AccountAcl(ActionsInterface::ACCOUNT_VIEW_PASS, $Account);
+        $AccountAcl = new AccountAcl(ActionsInterface::ACCOUNT_VIEW_PASS);
         $Acl = $AccountAcl->getAcl();
 
         if (!$Acl->isShowViewPass()) {
             throw new ItemException(__('No tiene permisos para acceder a esta cuenta', false));
         }
 
-        if (!UserPass::checkUserUpdateMPass(SessionFactory::getUserData()->getUserId())) {
+        if (!UserPass::checkUserUpdateMPass(SessionFactory::getUserData()->getId())) {
             throw new ItemException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
         }
 
         $key = CryptSession::getSessionKey();
-        $securedKey = Crypt::unlockSecuredKey($AccountData->getAccountKey(), $key);
-        $accountClearPass = Crypt::decrypt($AccountData->getAccountPass(), $securedKey, $key);
+        $securedKey = Crypt::unlockSecuredKey($AccountData->getKey(), $key);
+        $accountClearPass = Crypt::decrypt($AccountData->getPass(), $securedKey, $key);
 
         if (!$isHistory) {
             $Account->incrementDecryptCounter();
@@ -531,7 +531,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
             $LogMessage = $Log->getLogMessage();
             $LogMessage->setAction(__('Ver Clave', false));
             $LogMessage->addDetails(__('ID', false), $this->itemId);
-            $LogMessage->addDetails(__('Cuenta', false), $AccountData->getCustomerName() . ' / ' . $AccountData->getAccountName());
+            $LogMessage->addDetails(__('Cuenta', false), $AccountData->getClientName() . ' / ' . $AccountData->getName());
             $Log->writeLog();
         }
 
@@ -548,7 +548,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         if ($isFull) {
             $this->view->addTemplate('viewpass', 'account');
 
-            $this->view->assign('login', $AccountData->getAccountLogin());
+            $this->view->assign('login', $AccountData->getLogin());
             $this->view->assign('pass', $pass);
             $this->view->assign('isImage', $useImage);
             $this->view->assign('isLinked', Request::analyze('isLinked', 0));
@@ -557,7 +557,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         }
 
         $data = [
-            'acclogin' => $AccountData->getAccountLogin(),
+            'acclogin' => $AccountData->getLogin(),
             'accpass' => $pass,
             'useimage' => $useImage
         ];
@@ -581,7 +581,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
 
         $this->view->assign('isReadonly', $this->view->isView ? 'readonly' : '');
         $this->view->assign('plugin', $Plugin);
-        $this->view->assign('pluginInfo', PluginUtil::getPluginInfo($Plugin->getPluginName()));
+        $this->view->assign('pluginInfo', PluginUtil::getPluginInfo($Plugin->getName()));
 
         $this->JsonResponse->setStatus(0);
     }

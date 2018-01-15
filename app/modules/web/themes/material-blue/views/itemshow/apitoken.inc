@@ -21,7 +21,7 @@
                     <select id="selUsers" name="users" class="select-box" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
                         <?php foreach ($users as $user): ?>
-                            <?php $selected = ($user->id === $apiToken->getAuthtokenUserId()) ? 'selected' : ''; ?>
+                            <?php $selected = ($user->id === $apiToken->getUserId()) ? 'selected' : ''; ?>
                             <option value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -36,7 +36,7 @@
                             class="select-box" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Acción'); ?></option>
                         <?php foreach ($actions as $id => $name): ?>
-                            <?php $selected = ($id === $apiToken->getAuthtokenActionId()) ? 'selected' : ''; ?>
+                            <?php $selected = ($id === $apiToken->getActionId()) ? 'selected' : ''; ?>
                             <option value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $name; ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -73,7 +73,7 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Token'); ?></div>
 
-                        <?php echo $apiToken->getAuthtokenToken(); ?>
+                        <?php echo $apiToken->getToken(); ?>
                     </td>
                 </tr>
             <?php endif; ?>

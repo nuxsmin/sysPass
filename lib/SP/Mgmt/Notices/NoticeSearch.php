@@ -97,10 +97,10 @@ class NoticeSearch extends NoticeBase implements ItemSearchInterface
             $Data->addParam($search);
             $Data->addParam($search);
             $Data->addParam($search);
-            $Data->addParam(SessionFactory::getUserData()->getUserId());
+            $Data->addParam(SessionFactory::getUserData()->getId());
         } else {
             $Data->setWhere($filterUser);
-            $Data->addParam(SessionFactory::getUserData()->getUserId());
+            $Data->addParam(SessionFactory::getUserData()->getId());
         }
 
         $Data->setLimit('?,?');

@@ -31,7 +31,7 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
-use SP\DataModel\CustomFieldDefData;
+use SP\DataModel\CustomFieldDefinitionData;
 use SP\Mgmt\ItemInterface;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
@@ -72,7 +72,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
         }
 
         $query = /** @lang SQL */
-            'UPDATE customFieldsData SET
+            'UPDATE CustomFieldData SET
             customfielddata_data = ?,
             customfielddata_key = ?
             WHERE customfielddata_moduleId = ?
@@ -100,7 +100,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
     {
         $query = /** @lang SQL */
             'SELECT customfielddata_id
-            FROM customFieldsData
+            FROM CustomFieldData
             WHERE customfielddata_moduleId = ?
             AND customfielddata_itemId = ?
             AND customfielddata_defId = ?';
@@ -139,7 +139,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO customFieldsData SET
+            'INSERT INTO CustomFieldData SET
             customfielddata_itemId = ?,
             customfielddata_moduleId = ?,
             customfielddata_defId = ?,
@@ -165,7 +165,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
     public function delete($id)
     {
         $query = /** @lang SQL */
-            'DELETE FROM customFieldsData
+            'DELETE FROM CustomFieldData
             WHERE customfielddata_itemId = ?
             AND customfielddata_moduleId = ? LIMIT 1';
 
@@ -189,8 +189,8 @@ class CustomField extends CustomFieldBase implements ItemInterface
             customfielddata_data,
             customfielddata_key,
             customfielddef_field
-            FROM customFieldsData
-            JOIN customFieldsDef ON customfielddata_defId = customfielddef_id
+            FROM CustomFieldData
+            JOIN CustomFieldDefinition ON customfielddata_defId = customfielddef_id
             WHERE customfielddef_module = ?
             AND customfielddata_itemId = ?
             UNION
@@ -200,12 +200,12 @@ class CustomField extends CustomFieldBase implements ItemInterface
             "" as customfielddata_data,
             "" as customfielddata_key,
             customfielddef_field
-            FROM customFieldsDef
+            FROM CustomFieldDefinition
             WHERE customfielddef_module = ?
             AND customfielddef_id NOT IN
             (SELECT customfielddef_id
-            FROM customFieldsData
-            JOIN customFieldsDef ON customfielddata_defId = customfielddef_id
+            FROM CustomFieldData
+            JOIN CustomFieldDefinition ON customfielddata_defId = customfielddef_id
             WHERE customfielddef_module = ?
             AND customfielddata_itemId = ?)
             ORDER BY customfielddef_id';
@@ -225,8 +225,8 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $customFields = [];
 
         foreach ($queryRes as $CustomFieldData) {
-            /** @var CustomFieldDefData $fieldDef */
-            $fieldDef = Util::unserialize(CustomFieldDefData::class, $CustomFieldData->getCustomfielddefField());
+            /** @var CustomFieldDefinitionData $fieldDef */
+            $fieldDef = Util::unserialize(CustomFieldDefinitionData::class, $CustomFieldData->getCustomfielddefField());
 
             $CustomFieldData->setDefinition($fieldDef);
             $CustomFieldData->setDefinitionId($CustomFieldData->getCustomfielddefId());
@@ -273,22 +273,22 @@ class CustomField extends CustomFieldBase implements ItemInterface
     }
 
     /**
-     * @return CustomFieldDefData[]|array
+     * @return CustomFieldDefinitionData[]|array
      */
     public function getAll()
     {
         $query = /** @lang SQL */
             'SELECT customfielddef_id,
             customfielddef_field
-            FROM customFieldsDef
+            FROM CustomFieldDefinition
             WHERE customfielddef_module = ?';
 
         $Data = new QueryData();
-        $Data->setMapClassName(CustomFieldDefData::class);
+        $Data->setMapClassName(CustomFieldDefinitionData::class);
         $Data->setQuery($query);
         $Data->addParam($this->itemData->getModule());
 
-        /** @var CustomFieldDefData[] $queryRes */
+        /** @var CustomFieldDefinitionData[] $queryRes */
         $queryRes = DbWrapper::getResultsArray($Data);
 
         if (count($queryRes) === 0) {
@@ -296,8 +296,8 @@ class CustomField extends CustomFieldBase implements ItemInterface
         }
 
         foreach ($queryRes as $CustomFieldDef) {
-            /** @var CustomFieldDefData $fieldDef */
-            $fieldDef = Util::unserialize(CustomFieldDefData::class, $CustomFieldDef->getCustomfielddefField());
+            /** @var CustomFieldDefinitionData $fieldDef */
+            $fieldDef = Util::unserialize(CustomFieldDefinitionData::class, $CustomFieldDef->getCustomfielddefField());
 
             $CustomFieldData = new CustomFieldData();
             $CustomFieldData->setDefinition($fieldDef);

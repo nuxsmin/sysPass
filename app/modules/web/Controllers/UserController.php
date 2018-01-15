@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Auth\AuthUtil;
+use SP\Providers\Auth\AuthUtil;
 use SP\Controller\ControllerBase;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
@@ -39,9 +39,10 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
+use SP\Repositories\User\UserRepository;
+use SP\Repositories\UserGroup\UserGroupRepository;
+use SP\Repositories\UserProfile\UserProfileRepository;
 use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserProfile\UserProfileService;
 
 /**
  * Class UserController
@@ -110,7 +111,6 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * @param $userId
      * @throws \SP\Core\Exceptions\SPException
      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected function setViewData($userId = null)
     {
@@ -119,13 +119,13 @@ class UserController extends ControllerBase implements CrudControllerInterface
         $user = $userId ? $this->userService->getById($userId) : new UserData();
 
         $this->view->assign('user', $user);
-        $this->view->assign('groups', UserGroupService::getServiceItems());
-        $this->view->assign('profiles', UserProfileService::getServiceItems());
+        $this->view->assign('groups', UserGroupRepository::getServiceItems());
+        $this->view->assign('profiles', UserProfileRepository::getServiceItems());
         $this->view->assign('isUseSSO', $this->configData->isAuthBasicAutoLoginEnabled());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
 
-        if ($this->view->isView === true || $user->getUserLogin() === 'demo') {
+        if ($this->view->isView === true || $user->getLogin() === 'demo') {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
@@ -173,7 +173,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
     public function editPassAction($id)
     {
         // Comprobar si el usuario a modificar es distinto al de la sesión
-        if (!$this->acl->checkUserAccess(ActionsInterface::USER_EDIT_PASS, $this->userData->getUserId())) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::USER_EDIT_PASS, $this->userData->getId())) {
             return;
         }
 
@@ -212,7 +212,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
         $this->view->assign(__FUNCTION__, 1);
 
         try {
-            $this->userService->logAction($id, ActionsInterface::USER_DELETE);
+//            $this->userService->logAction($id, ActionsInterface::USER_DELETE);
             $this->userService->delete($id);
 
             $this->deleteCustomFieldsForItem(ActionsInterface::USER, $id);
@@ -241,13 +241,13 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $form->validate(ActionsInterface::USER_CREATE);
 
             $id = $this->userService->create($form->getItemData());
-            $this->userService->logAction($id, ActionsInterface::USER_CREATE);
+//            $this->userService->logAction($id, ActionsInterface::USER_CREATE);
 
             $this->addCustomFieldsForItem(ActionsInterface::USER, $id);
 
             $this->eventDispatcher->notifyEvent('create.user', $this);
 
-            if ($form->getItemData()->isUserIsChangePass()
+            if ($form->getItemData()->isIsChangePass()
                 && !AuthUtil::mailPassRecover($form->getItemData())
             ) {
                 $this->returnJsonResponse(
@@ -284,13 +284,13 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $form->validate(ActionsInterface::USER_EDIT);
 
             $this->userService->update($form->getItemData());
-            $this->userService->logAction($id, ActionsInterface::USER_EDIT);
+//            $this->userService->logAction($id, ActionsInterface::USER_EDIT);
 
             $this->updateCustomFieldsForItem(ActionsInterface::USER, $id);
 
             $this->eventDispatcher->notifyEvent('edit.user', $this);
 
-            if ($form->getItemData()->isUserIsChangePass()
+            if ($form->getItemData()->isIsChangePass()
                 && !AuthUtil::mailPassRecover($form->getItemData())
             ) {
                 $this->returnJsonResponse(
@@ -325,9 +325,8 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $form = new UserForm($id);
             $form->validate(ActionsInterface::USER_EDIT_PASS);
 
-            $userService = new UserService();
-            $userService->updatePass($form->getItemData());
-            $userService->logAction($id, ActionsInterface::USER_EDIT_PASS);
+            $this->userService->updatePass($form->getItemData());
+//            $this->userService->logAction($id, ActionsInterface::USER_EDIT_PASS);
 
             $this->eventDispatcher->notifyEvent('edit.user.pass', $this);
 
@@ -375,6 +374,6 @@ class UserController extends ControllerBase implements CrudControllerInterface
     {
         $this->checkLoggedIn();
 
-        $this->userService = new UserService();
+        $this->userService = new UserRepository();
     }
 }

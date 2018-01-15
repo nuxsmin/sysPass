@@ -45,12 +45,12 @@ class CustomerSearch extends CustomerBase implements ItemSearchInterface
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
         $Data = new QueryData();
-        $Data->setSelect('customer_id, customer_name, customer_description');
+        $Data->setSelect('id, name, description');
         $Data->setFrom('customers');
-        $Data->setOrder('customer_name');
+        $Data->setOrder('name');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('customer_name LIKE ? OR customer_description LIKE ?');
+            $Data->setWhere('name LIKE ? OR description LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);

@@ -56,23 +56,23 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO customers
-            SET customer_name = ?,
-            customer_description = ?,
-            customer_isGlobal = ?,
-            customer_hash = ?';
+            'INSERT INTO Client
+            SET name = ?,
+            description = ?,
+            isGlobal = ?,
+            hash = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getCustomerName());
-        $Data->addParam($this->itemData->getCustomerDescription());
-        $Data->addParam($this->itemData->getCustomerIsGlobal());
-        $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getDescription());
+        $Data->addParam($this->itemData->getIsGlobal());
+        $Data->addParam($this->makeItemHash($this->itemData->getName()));
         $Data->setOnErrorMessage(__('Error al crear el cliente', false));
 
         DbWrapper::getQuery($Data);
 
-        $this->itemData->setCustomerId(DbWrapper::$lastId);
+        $this->itemData->setId(DbWrapper::$lastId);
 
         return $this;
     }
@@ -84,11 +84,11 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function checkDuplicatedOnAdd()
     {
         $query = /** @lang SQL */
-            'SELECT customer_id FROM customers WHERE customer_hash = ? LIMIT 1';
+            'SELECT id FROM Client WHERE hash = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
+        $Data->addParam($this->makeItemHash($this->itemData->getName()));
 
         $queryRes = DbWrapper::getResults($Data);
 
@@ -96,7 +96,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
             if ($Data->getQueryNumRows() === 0) {
                 return false;
             } elseif ($Data->getQueryNumRows() === 1) {
-                $this->itemData->setCustomerId($queryRes->customer_id);
+                $this->itemData->setId($queryRes->customer_id);
             }
         }
 
@@ -118,7 +118,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         }
 
         $query = /** @lang SQL */
-            'DELETE FROM customers WHERE customer_id = ? LIMIT 1';
+            'DELETE FROM Client WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -143,7 +143,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function checkInUse($id)
     {
         $query = /** @lang SQL */
-            'SELECT account_id FROM accounts WHERE account_customerId = ?';
+            'SELECT account_id FROM Account WHERE account_customerId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -161,7 +161,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT customer_id, customer_name, customer_description, customer_isGlobal FROM customers WHERE customer_id = ? LIMIT 1';
+            'SELECT id, name, description, isGlobal FROM Client WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -182,20 +182,20 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         }
 
         $query = /** @lang SQL */
-            'UPDATE customers
-            SET customer_name = ?,
-            customer_description = ?,
-            customer_isGlobal = ?,
-            customer_hash = ?
-            WHERE customer_id = ? LIMIT 1';
+            'UPDATE Client
+            SET name = ?,
+            description = ?,
+            isGlobal = ?,
+            hash = ?
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getCustomerName());
-        $Data->addParam($this->itemData->getCustomerDescription());
-        $Data->addParam($this->itemData->getCustomerIsGlobal());
-        $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
-        $Data->addParam($this->itemData->getCustomerId());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getDescription());
+        $Data->addParam($this->itemData->getIsGlobal());
+        $Data->addParam($this->makeItemHash($this->itemData->getName()));
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al actualizar el cliente', false));
 
         DbWrapper::getQuery($Data);
@@ -211,12 +211,12 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function checkDuplicatedOnUpdate()
     {
         $query = /** @lang SQL */
-            'SELECT customer_id FROM customers WHERE customer_hash = ? AND customer_id <> ? LIMIT 1';
+            'SELECT id FROM Client WHERE hash = ? AND id <> ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($this->itemData->getCustomerName()));
-        $Data->addParam($this->itemData->getCustomerId());
+        $Data->addParam($this->makeItemHash($this->itemData->getName()));
+        $Data->addParam($this->itemData->getId());
 
         DbWrapper::getQuery($Data);
 
@@ -229,7 +229,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT customer_id, customer_name, customer_description, customer_isGlobal FROM customers ORDER BY customer_name';
+            'SELECT id, name, description, isGlobal FROM Client ORDER BY name';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -251,14 +251,14 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         $queryWhere = AccountUtil::getAccountFilterUser($Data, $this->session);
 
         $query = /** @lang SQL */
-            'SELECT customer_id as id, customer_name as name 
-            FROM accounts 
-            RIGHT JOIN customers ON customer_id = account_customerId
-            WHERE account_customerId IS NULL
-            OR customer_isGlobal = 1
+            'SELECT C.id as id, C.name as name 
+            FROM Account A
+            RIGHT JOIN Client C ON C.id = A.clientId
+            WHERE A.clientId IS NULL
+            OR isGlobal = 1
             OR (' . implode(' AND ', $queryWhere) . ')
-            GROUP BY customer_id
-            ORDER BY customer_name';
+            GROUP BY id
+            ORDER BY name';
 
         $Data->setQuery($query);
 
@@ -278,7 +278,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         }
 
         $query = /** @lang SQL */
-            'SELECT customer_id, customer_name, customer_description, customer_isGlobal FROM customers WHERE customer_id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT id, name, description, isGlobal FROM Client WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());

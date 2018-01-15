@@ -69,8 +69,8 @@ class TagForm extends FormBase implements FormInterface
     protected function analyzeRequestData()
     {
         $this->tagData = new TagData();
-        $this->tagData->setTagId($this->itemId);
-        $this->tagData->setTagName(Request::analyze('name'));
+        $this->tagData->setId($this->itemId);
+        $this->tagData->setName(Request::analyze('name'));
     }
 
     /**
@@ -78,7 +78,7 @@ class TagForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->tagData->getTagName()) {
+        if (!$this->tagData->getName()) {
             throw new ValidationException(__u('Es necesario un nombre de etiqueta'));
         }
     }

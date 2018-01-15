@@ -1,0 +1,122 @@
+<?php
+/**
+ * sysPass
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Repositories\Account;
+
+use SP\Account\AccountRequest;
+use SP\Repositories\Repository;
+use SP\Repositories\RepositoryItemTrait;
+use SP\Storage\DbWrapper;
+use SP\Storage\QueryData;
+
+/**
+ * Class AccountToTagRepository
+ *
+ * @package SP\Repositories\Account
+ */
+class AccountToTagRepository extends Repository
+{
+    use RepositoryItemTrait;
+
+    /**
+     * Devolver las etiquetas de una cuenta
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getTagsByAccountId($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT T.id, T.name
+                FROM AccountToTag AT
+                INNER JOIN Tag T ON AT.tagId = T.id
+                WHERE AT.accountId = ?
+                ORDER BY T.name';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($id);
+
+        return DbWrapper::getResultsArray($Data);
+    }
+
+    /**
+     * Actualizar las etiquetas de una cuenta
+     *
+     * @param AccountRequest $accountRequest
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function add(AccountRequest $accountRequest)
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO AccountToTag (accountId, tagId) VALUES ' . $this->getParamsFromArray($accountRequest->tags);
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setOnErrorMessage(__u('Error al añadir las etiquetas de la cuenta'));
+
+        foreach ($accountRequest->tags as $tag) {
+            $Data->addParam($accountRequest->id);
+            $Data->addParam($tag);
+        }
+
+        return DbWrapper::getQuery($Data);
+    }
+
+    /**
+     * Eliminar las etiquetas de una cuenta
+     *
+     * @param int $accountId
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function delete($accountId)
+    {
+        $Data = new QueryData();
+        $query = /** @lang SQL */
+            'DELETE FROM AccountToTag WHERE accountId = ?';
+
+        $Data->addParam($accountId);
+
+        $Data->setQuery($query);
+        $Data->setOnErrorMessage(__u('Error al eliminar las etiquetas de la cuenta'));
+
+        return DbWrapper::getQuery($Data);
+    }
+
+    /**
+     * @param AccountRequest $accountRequest
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function update(AccountRequest $accountRequest)
+    {
+        $this->delete($accountRequest->id);
+        $this->add($accountRequest);
+    }
+
+}

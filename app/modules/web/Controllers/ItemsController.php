@@ -28,6 +28,7 @@ use SP\Account\AccountUtil;
 use SP\Controller\RequestControllerTrait;
 use SP\Core\SessionUtil;
 use SP\DataModel\DataModelInterface;
+use SP\Services\Account\AccountService;
 use SP\Util\Json;
 
 /**
@@ -57,10 +58,12 @@ class ItemsController
     {
         $outItems = [];
 
-        foreach (AccountUtil::getAccountsForUser($this->session, $accountId) as $account) {
+        $accountService = new AccountService();
+
+        foreach ($accountService->getForUser($accountId) as $account) {
             $obj = new \stdClass();
-            $obj->id = $account->account_id;
-            $obj->name = $account->customer_name . ' - ' . $account->account_name;
+            $obj->id = $account->id;
+            $obj->name = $account->clientName . ' - ' . $account->name;
 
             $outItems[] = $obj;
         }

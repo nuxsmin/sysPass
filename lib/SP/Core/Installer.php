@@ -34,7 +34,7 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
-use SP\DataModel\GroupData;
+use SP\DataModel\UserGroupData;
 use SP\DataModel\InstallData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserLoginData;
@@ -478,27 +478,27 @@ class Installer
     private function createAdminAccount()
     {
         try {
-            $GroupData = new GroupData();
-            $GroupData->setUsergroupName('Admins');
-            $GroupData->setUsergroupDescription('sysPass Admins');
+            $GroupData = new UserGroupData();
+            $GroupData->setName('Admins');
+            $GroupData->setDescription('sysPass Admins');
 
             Group::getItem($GroupData)->add();
 
             $ProfileData = new ProfileData();
-            $ProfileData->setUserprofileName('Admin');
+            $ProfileData->setName('Admin');
 
             Profile::getItem($ProfileData)->add();
 
             // Datos del usuario
             $UserData = new UserLoginData();
-            $UserData->setUserGroupId($GroupData->getUsergroupId());
-            $UserData->setUserProfileId($ProfileData->getUserprofileId());
-            $UserData->setUserLogin($this->InstallData->getAdminLogin());
+            $UserData->setUserGroupId($GroupData->getId());
+            $UserData->setUserProfileId($ProfileData->getId());
             $UserData->setLogin($this->InstallData->getAdminLogin());
-            $UserData->setUserPass($this->InstallData->getAdminPass());
+            $UserData->setLogin($this->InstallData->getAdminLogin());
+            $UserData->setPass($this->InstallData->getAdminPass());
             $UserData->setLoginPass($this->InstallData->getAdminPass());
-            $UserData->setUserName('Admin');
-            $UserData->setUserIsAdminApp(1);
+            $UserData->setName('Admin');
+            $UserData->setIsAdminApp(1);
 
             User::getItem($UserData)->add();
 

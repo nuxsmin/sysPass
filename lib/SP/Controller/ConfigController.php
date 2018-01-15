@@ -77,8 +77,8 @@ class ConfigController extends ControllerBase implements ActionsInterface
 
         $this->view->assign('tabs', []);
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->view->assign('isDemoMode', $this->configData->isDemoEnabled() && !$this->userData->isUserIsAdminApp());
-        $this->view->assign('isDisabled', ($this->configData->isDemoEnabled() && !$this->userData->isUserIsAdminApp()) ? 'disabled' : '');
+        $this->view->assign('isDemoMode', $this->configData->isDemoEnabled() && !$this->userData->isIsAdminApp());
+        $this->view->assign('isDisabled', ($this->configData->isDemoEnabled() && !$this->userData->isIsAdminApp()) ? 'disabled' : '');
         $this->view->assign('ConfigData', $this->configData);
     }
 
@@ -273,7 +273,7 @@ class ConfigController extends ControllerBase implements ActionsInterface
         $this->view->assign('siteName', Util::getAppInfo('appname'));
         $this->view->assign('backupDir', Init::$SERVERROOT . '/backup');
         $this->view->assign('backupPath', Init::$WEBROOT . '/backup');
-        $this->view->assign('isAdminApp', $this->userData->isUserIsAdminApp());
+        $this->view->assign('isAdminApp', $this->userData->isIsAdminApp());
 
         $backupHash = $this->configData->getBackupHash();
         $exportHash = $this->configData->getExportHash();

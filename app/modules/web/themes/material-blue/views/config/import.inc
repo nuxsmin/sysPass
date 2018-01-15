@@ -28,7 +28,7 @@ use SP\Core\SessionFactory; ?>
                         <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
                         <?php foreach ($users as $user): ?>
                             <option
-                                    value="<?php echo $user->id; ?>" <?php echo ($user->id === SessionFactory::getUserData()->getUserId()) ? 'selected' : ''; ?>>
+                                    value="<?php echo $user->id; ?>" <?php echo ($user->id === SessionFactory::getUserData()->getId()) ? 'selected' : ''; ?>>
                                 <?php echo $user->name; ?>
                             </option>
                         <?php endforeach; ?>

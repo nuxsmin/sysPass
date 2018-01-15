@@ -63,7 +63,7 @@ if ($userLogin && $userEmail) {
 
     $UserData = User::getItem()->getByLogin($userLogin);
 
-    if ($UserData->getUserEmail() === $userEmail
+    if ($UserData->getEmail() === $userEmail
         && AuthUtil::mailPassRecover($UserData)
     ) {
         $LogMessage->addDescription(__('Solicitud enviada', false));

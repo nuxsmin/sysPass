@@ -45,12 +45,12 @@ class FileSearch extends FileBase implements ItemSearchInterface
     {
         $Data = new QueryData();
         $Data->setMapClassName(FileExtData::class);
-        $Data->setSelect('accfile_id, accfile_name, CONCAT(ROUND(accfile_size/1000, 2), "KB") AS accfile_size, accfile_thumb, accfile_type, account_name, customer_name');
-        $Data->setFrom('accFiles JOIN accounts ON account_id = accfile_accountId JOIN customers ON customer_id = account_customerId');
+        $Data->setSelect('accfile_id, accfile_name, CONCAT(ROUND(accfile_size/1000, 2), "KB") AS accfile_size, accfile_thumb, accfile_type, account_name, name');
+        $Data->setFrom('accFiles JOIN accounts ON account_id = accfile_accountId JOIN customers ON id = account_customerId');
         $Data->setOrder('accfile_name');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('accfile_name LIKE ? OR accfile_type LIKE ? OR account_name LIKE ? OR customer_name LIKE ?');
+            $Data->setWhere('accfile_name LIKE ? OR accfile_type LIKE ? OR account_name LIKE ? OR name LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);

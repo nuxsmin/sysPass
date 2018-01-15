@@ -55,7 +55,7 @@ class KeepassImport extends ImportBase
         $customerData = new ClientData(null, 'KeePass');
         $this->addCustomer($customerData);
 
-        $this->customerId = $customerData->getCustomerId();
+        $this->customerId = $customerData->getId();
 
         $this->process();
     }
@@ -72,13 +72,13 @@ class KeepassImport extends ImportBase
             if (count($entry) > 0) {
                 foreach ($entry as $account) {
                     $AccountData = new AccountExtData();
-                    $AccountData->setAccountNotes($account['Notes']);
-                    $AccountData->setAccountPass($account['Password']);
-                    $AccountData->setAccountName($account['Title']);
-                    $AccountData->setAccountUrl($account['URL']);
-                    $AccountData->setAccountLogin($account['UserName']);
-                    $AccountData->setAccountCategoryId($CategoryData->getCategoryId());
-                    $AccountData->setAccountCustomerId($this->customerId);
+                    $AccountData->setNotes($account['Notes']);
+                    $AccountData->setPass($account['Password']);
+                    $AccountData->setName($account['Title']);
+                    $AccountData->setUrl($account['URL']);
+                    $AccountData->setLogin($account['UserName']);
+                    $AccountData->setCategoryId($CategoryData->getId());
+                    $AccountData->setClientId($this->customerId);
 
                     $this->addAccount($AccountData);
                 }

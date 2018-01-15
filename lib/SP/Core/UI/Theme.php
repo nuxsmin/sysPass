@@ -85,6 +85,7 @@ class Theme implements ThemeInterface
      * Theme constructor.
      *
      * @param $module
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct($module)
     {
@@ -124,7 +125,9 @@ class Theme implements ThemeInterface
      */
     protected function getUserTheme()
     {
-        return ($this->session->getUserData()->getUserId() > 0) ? $this->session->getUserPreferences()->getTheme() : '';
+        $userData = $this->session->getUserData();
+
+        return ($userData->getId() > 0) ? $userData->getPreferences()->getTheme() : '';
     }
 
     /**

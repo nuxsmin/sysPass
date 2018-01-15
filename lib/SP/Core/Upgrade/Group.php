@@ -62,7 +62,7 @@ class Group
             $Data->addParam($groupId);
 
             $query = /** @lang SQL */
-                'UPDATE accounts SET account_userGroupId = ? WHERE account_userGroupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR account_userGroupId IS NULL';
+                'UPDATE Account SET account_userGroupId = ? WHERE account_userGroupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR account_userGroupId IS NULL';
             $Data->setQuery($query);
 
             DbWrapper::getQuery($Data);
@@ -80,7 +80,7 @@ class Group
             DbWrapper::getQuery($Data);
 
             $query = /** @lang SQL */
-                'DELETE FROM usrToGroups WHERE usertogroup_groupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR usertogroup_groupId IS NULL';
+                'DELETE FROM UserToGroup WHERE usertogroup_groupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR usertogroup_groupId IS NULL';
             $Data->setQuery($query);
             $Data->setParams([]);
 

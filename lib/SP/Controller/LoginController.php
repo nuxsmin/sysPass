@@ -215,7 +215,7 @@ class LoginController
     {
         try {
             $TrackData = new TrackData();
-            $TrackData->setTrackSource('Login');
+            $TrackData->setSource('Login');
             $TrackData->setTrackIp(HttpUtil::getClientAddress());
 
             $attempts = count(Track::getItem($TrackData)->getTracksForClientFromTime(time() - self::TIME_TRACKING));
@@ -246,7 +246,7 @@ class LoginController
     {
         try {
             $TrackData = new TrackData();
-            $TrackData->setTrackSource('Login');
+            $TrackData->setSource('Login');
             $TrackData->setTrackIp(HttpUtil::getClientAddress());
 
             Track::getItem($TrackData)->add();
@@ -266,7 +266,7 @@ class LoginController
     protected function getUserData()
     {
         try {
-            $this->UserData->setUserPreferences(UserPreferences::getItem()->getById($this->UserData->getUserId()));
+            $this->UserData->setPreferences(UserPreferences::getItem()->getById($this->UserData->getId()));
         } catch (SPException $e) {
             $this->LogMessage->addDescription(__('Error al obtener los datos del usuario de la BBDD', false));
 
@@ -282,7 +282,7 @@ class LoginController
     protected function checkUser()
     {
         // Comprobar si el usuario está deshabilitado
-        if ($this->UserData->isUserIsDisabled()) {
+        if ($this->UserData->isIsDisabled()) {
             $this->LogMessage->addDescription(__('Usuario deshabilitado', false));
             $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
 
@@ -291,12 +291,12 @@ class LoginController
             throw new AuthException(SPException::SP_INFO, __('Usuario deshabilitado', false), '', self::STATUS_USER_DISABLED);
         }
 
-        if ($this->UserData->isUserIsChangePass()) {
+        if ($this->UserData->isIsChangePass()) {
             $hash = Util::generateRandomBytes(16);
 
             $UserPassRecoverData = new UserPassRecoverData();
-            $UserPassRecoverData->setUserpassrUserId($this->UserData->getUserId());
-            $UserPassRecoverData->setUserpassrHash($hash);
+            $UserPassRecoverData->setUserId($this->UserData->getId());
+            $UserPassRecoverData->setHash($hash);
 
             UserPassRecover::getItem($UserPassRecoverData)->add();
 
@@ -388,14 +388,14 @@ class LoginController
         // Obtenemos la clave maestra del usuario
         if (UserPass::$gotMPass === true) {
             // Actualizar el último login del usuario
-            UserUtil::setUserLastLogin($this->UserData->getUserId());
+            UserUtil::setUserLastLogin($this->UserData->getId());
 
             // Cargar las variables de sesión del usuario
             SessionUtil::loadUserSession($this->UserData);
 
             $this->LogMessage->addDetails(__('Usuario', false), $this->UserData->getLogin());
-            $this->LogMessage->addDetails(__('Perfil', false), Profile::getItem()->getById($this->UserData->getUserProfileId())->getUserprofileName());
-            $this->LogMessage->addDetails(__('Grupo', false), Group::getItem()->getById($this->UserData->getUserGroupId())->getUsergroupName());
+            $this->LogMessage->addDetails(__('Perfil', false), Profile::getItem()->getById($this->UserData->getUserProfileId())->getName());
+            $this->LogMessage->addDetails(__('Grupo', false), Group::getItem()->getById($this->UserData->getUserGroupId())->getName());
         } else {
             $this->LogMessage->addDescription(__('Error al obtener la clave maestra del usuario', false));
 
@@ -414,7 +414,7 @@ class LoginController
         if ($this->ConfigData->isDemoEnabled()) {
             SessionFactory::setUserPreferences(new UserPreferencesData());
         } else {
-            SessionFactory::setUserPreferences($this->UserData->getUserPreferences());
+            SessionFactory::setUserPreferences($this->UserData->getPreferences());
         }
 
         Language::setLanguage(true);
@@ -433,8 +433,8 @@ class LoginController
     {
         $this->UserData->setLogin(null);
         $this->UserData->setLoginPass(null);
-        $this->UserData->setUserMPass(null);
-        $this->UserData->setUserMKey(null);
+        $this->UserData->setMPass(null);
+        $this->UserData->setMKey(null);
     }
 
     /**
@@ -446,12 +446,12 @@ class LoginController
     protected function checkPasswordChange()
     {
         // Comprobar si se ha forzado un cambio de clave
-        if ($this->UserData->isUserIsChangePass()) {
+        if ($this->UserData->isIsChangePass()) {
             $hash = Util::generateRandomBytes();
 
             $UserPassRecoverData = new UserPassRecoverData();
-            $UserPassRecoverData->setUserpassrUserId($this->UserData->getUserId());
-            $UserPassRecoverData->setUserpassrHash($hash);
+            $UserPassRecoverData->setUserId($this->UserData->getId());
+            $UserPassRecoverData->setHash($hash);
 
             UserPassRecover::getItem($UserPassRecoverData)->add();
 
@@ -508,14 +508,14 @@ class LoginController
             throw new AuthException(SPException::SP_INFO, $this->LogMessage->getDescription(), '', self::STATUS_INTERNAL_ERROR);
         }
 
-        $this->UserData->setUserName($AuthData->getName());
-        $this->UserData->setUserEmail($AuthData->getEmail());
+        $this->UserData->setName($AuthData->getName());
+        $this->UserData->setEmail($AuthData->getEmail());
 
         $this->LogMessage->addDetails(__('Tipo', false), __FUNCTION__);
         $this->LogMessage->addDetails(__('Servidor LDAP', false), $AuthData->getServer());
 
         try {
-            $this->UserData->setUserLogin($this->UserData->getLogin());
+            $this->UserData->setLogin($this->UserData->getLogin());
 
             // Verificamos si el usuario existe en la BBDD
             if (UserLdap::checkLDAPUserInDB($this->UserData->getLogin())) {

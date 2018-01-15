@@ -30,7 +30,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
-use SP\Services\CustomField\CustomFieldService;
+use SP\Repositories\CustomField\CustomFieldRepository;
 
 /**
  * Trait ItemTrait
@@ -48,7 +48,7 @@ trait ItemTrait
      */
     protected function getCustomFieldsForItem($moduleId, $itemId)
     {
-        $customFieldService = new CustomFieldService();
+        $customFieldService = new CustomFieldRepository();
         $customFields = [];
 
         $customFieldBase = new \stdClass();
@@ -64,8 +64,8 @@ trait ItemTrait
                 $customField->typeId = (int)$item->typeId;
                 $customField->typeName = $item->typeName;
                 $customField->moduleId = (int)$item->moduleId;
-                $customField->formId = CustomFieldService::getFormIdForName($item->definitionName);
-                $customField->value = $item->data !== null ? CustomFieldService::unencryptData($item->data) : '';
+                $customField->formId = CustomFieldRepository::getFormIdForName($item->definitionName);
+                $customField->value = $item->data !== null ? CustomFieldRepository::unencryptData($item->data) : '';
 
                 $customFields[] = $customField;
             } catch (CryptoException $e) {
@@ -92,7 +92,7 @@ trait ItemTrait
             $customFieldData->setId($itemId);
             $customFieldData->setModuleId($moduleId);
 
-            $customFieldService = new CustomFieldService();
+            $customFieldService = new CustomFieldRepository();
             try {
                 foreach ($customFields as $id => $value) {
                     $customFieldData->setDefinitionId($id);
@@ -115,7 +115,7 @@ trait ItemTrait
      */
     protected function deleteCustomFieldsForItem($moduleId, $itemId)
     {
-        $customFieldService = new CustomFieldService();
+        $customFieldService = new CustomFieldRepository();
         $customFieldService->deleteCustomFieldData($itemId, $moduleId);
     }
 
@@ -131,7 +131,7 @@ trait ItemTrait
         $customFields = Request::analyze('customfield');
 
         if (is_array($customFields)) {
-            $customFieldService = new CustomFieldService();
+            $customFieldService = new CustomFieldRepository();
             $customFieldData = new CustomFieldData();
             $customFieldData->setId($itemId);
             $customFieldData->setModuleId($moduleId);

@@ -245,18 +245,18 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $userType = null;
 
-        if ($this->userData->isUserIsAdminApp()) {
+        if ($this->userData->isIsAdminApp()) {
             $userType = $this->icons->getIconAppAdmin();
-        } elseif ($this->userData->isUserIsAdminAcc()) {
+        } elseif ($this->userData->isIsAdminAcc()) {
             $userType = $this->icons->getIconAccAdmin();
         }
 
         $this->view->assign('userType', $userType);
-        $this->view->assign('userId', $this->userData->getUserId());
-        $this->view->assign('userLogin', mb_strtoupper($this->userData->getUserLogin()));
-        $this->view->assign('userName', $this->userData->getUserName() ?: mb_strtoupper($this->view->userLogin));
-        $this->view->assign('userGroup', $this->userData->getUsergroupName());
-        $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $this->userData->isUserIsLdap()));
+        $this->view->assign('userId', $this->userData->getId());
+        $this->view->assign('userLogin', mb_strtoupper($this->userData->getLogin()));
+        $this->view->assign('userName', $this->userData->getName() ?: mb_strtoupper($this->view->userLogin));
+        $this->view->assign('userGroup', $this->userData->getUserGroupName());
+        $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $this->userData->isIsLdap()));
         $this->view->assign('userNotices', count(Notice::getItem()->getAllActiveForUser()));
     }
 
@@ -548,7 +548,6 @@ class MainController extends ControllerBase implements ActionsInterface
      * Realizar las acciones del controlador
      *
      * @param mixed $type Tipo de acción
-     * @throws \phpmailer\phpmailerException
      */
     public function doAction($type = null)
     {
@@ -558,9 +557,6 @@ class MainController extends ControllerBase implements ActionsInterface
             switch ($type) {
                 case 'prelogin.passreset':
                     $this->getPassReset();
-                    break;
-                case 'prelogin.link':
-                    $this->getPublicLink();
                     break;
             }
 
@@ -596,66 +592,6 @@ class MainController extends ControllerBase implements ActionsInterface
 
         $this->view->addTemplate('body-footer');
         $this->view->addTemplate('body-end');
-
-        $this->view();
-        exit();
-    }
-
-    /**
-     * Obtener la vista para mostrar un enlace publicado
-     *
-     * @return void
-     * @throws SPException
-     * @throws \phpmailer\phpmailerException
-     */
-    public function getPublicLink()
-    {
-        $this->setPage('publiclink');
-
-        $this->view->addTemplate('body-header', 'main');
-
-        $hash = Request::analyze('h');
-
-        if ($hash) {
-            $PublicLink = PublicLink::getItem()->getByHash($hash);
-
-            if (!$PublicLink
-                || time() > $PublicLink->getPublicLinkDateExpire()
-                || $PublicLink->getPublicLinkCountViews() >= $PublicLink->getPublicLinkMaxCountViews()
-            ) {
-                $this->showError(self::ERR_PAGE_NO_PERMISSION, false);
-            } else {
-                PublicLink::getItem($PublicLink)->addLinkView();
-
-                if ($PublicLink->isPublicLinkNotify()) {
-                    $Message = new NoticeMessage();
-                    $Message->setTitle(__('Enlace visualizado'));
-                    $Message->addDescription(sprintf('%s : %s', __('Cuenta'), $PublicLink->getItemId()));
-                    $Message->addDescription(sprintf('%s : %s', __('Origen'), $this->configData->isDemoEnabled() ? '*.*.*.*' : HttpUtil::getClientAddress(true)));
-                    $Message->addDescription(sprintf('%s : %s', __('Agente'), Request::getRequestHeaders('HTTP_USER_AGENT')));
-                    $Message->addDescription(sprintf('HTTPS : %s', Checks::httpsEnabled() ? 'ON' : 'OFF'));
-
-
-                    $NoticeData = new NoticeData();
-                    $NoticeData->setNoticeComponent(__('Cuentas'));
-                    $NoticeData->setNoticeDescription($Message);
-                    $NoticeData->setNoticeType(__('Información'));
-                    $NoticeData->setNoticeUserId($PublicLink->getPublicLinkUserId());
-
-                    Notice::getItem($NoticeData)->add();
-                }
-
-                $controller = new AccountController($this->view, $PublicLink->getItemId());
-                $controller->getAccountFromLink($PublicLink);
-            }
-
-            $this->getSessionBar();
-        } else {
-            $this->showError(self::ERR_PAGE_NO_PERMISSION, false);
-        }
-
-        $this->view->addTemplate('body-footer', 'main');
-        $this->view->addTemplate('body-end', 'main');
 
         $this->view();
         exit();

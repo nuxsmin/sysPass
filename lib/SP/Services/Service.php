@@ -1,4 +1,26 @@
 <?php
+/**
+ * sysPass
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 namespace SP\Services;
 
@@ -12,19 +34,29 @@ use SP\Storage\DatabaseInterface;
 /**
  * Class Service
  *
- * @package Services
+ * @package SP\Services
  */
 abstract class Service
 {
     use InjectableTrait;
+    
+    const STATUS_INTERNAL_ERROR = 1000;
 
-    /** @var Config */
+    /**
+     * @var Config
+     */
     protected $config;
-    /** @var Session */
+    /**
+     * @var Session
+     */
     protected $session;
-    /** @var EventDispatcher */
+    /**
+     * @var EventDispatcher
+     */
     protected $eventDispatcher;
-    /** @var DatabaseInterface */
+    /**
+     * @var DatabaseInterface
+     */
     protected $db;
 
     /**

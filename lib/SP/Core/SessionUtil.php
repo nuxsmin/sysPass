@@ -92,7 +92,7 @@ class SessionUtil
         if (null === $configData) {
             /** @var ConfigData $ConfigData */
             try {
-                $configData = Bootstrap::getDic()->get(ConfigData::class);
+                $configData = Bootstrap::getContainer()->get(ConfigData::class);
             } catch (NotFoundExceptionInterface $e) {
                 return SessionFactory::getSecurityKey();
             } catch (ContainerExceptionInterface $e) {

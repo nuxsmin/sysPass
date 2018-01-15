@@ -26,7 +26,7 @@ namespace SP\Mgmt\CustomFields;
 
 defined('APP_ROOT') || die();
 
-use SP\DataModel\CustomFieldDefData;
+use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
 use SP\Mgmt\ItemSearchInterface;
 use SP\Storage\DbWrapper;
@@ -42,7 +42,7 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
 {
     /**
      * @param ItemSearchData $SearchData
-     * @return array|\SP\DataModel\CustomFieldDefData[]
+     * @return array|\SP\DataModel\CustomFieldDefinitionData[]
      */
     public function getMgmtSearch(ItemSearchData $SearchData)
     {
@@ -58,14 +58,14 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
 
         DbWrapper::setFullRowCount();
 
-        /** @var CustomFieldDefData[] $queryRes */
+        /** @var CustomFieldDefinitionData[] $queryRes */
         $queryRes = DbWrapper::getResultsArray($Data);
 
         $customFields = [];
 
         foreach ($queryRes as $CustomField) {
 
-            /** @var CustomFieldDefData $fieldDef */
+            /** @var CustomFieldDefinitionData $fieldDef */
             $fieldDef = Util::unserialize($this->getDataModel(), $CustomField->getCustomfielddefField());
 
             if ($SearchData->getSeachString() === ''
@@ -92,6 +92,6 @@ class CustomFieldDefSearch extends CustomFieldBase implements ItemSearchInterfac
      */
     protected function init()
     {
-        $this->setDataModel(CustomFieldDefData::class);
+        $this->setDataModel(CustomFieldDefinitionData::class);
     }
 }
