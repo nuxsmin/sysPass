@@ -38,7 +38,7 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Services\UserProfile\UserProfileService;
+use SP\Repositories\UserProfile\UserProfileRepository;
 
 /**
  * Class UserProfileController
@@ -51,7 +51,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
     use ItemTrait;
 
     /**
-     * @var UserProfileService
+     * @var UserProfileRepository
      */
     protected $userProfileService;
 
@@ -285,6 +285,6 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
     {
         $this->checkLoggedIn();
 
-        $this->userProfileService = new UserProfileService();
+        $this->userProfileService = new UserProfileRepository();
     }
 }

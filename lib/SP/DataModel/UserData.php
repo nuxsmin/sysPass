@@ -36,190 +36,190 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @var string
      */
-    public $user_login = '';
+    public $login = '';
     /**
      * @var string
      */
-    public $user_ssoLogin = '';
+    public $ssoLogin = '';
     /**
      * @var string
      */
-    public $user_name = '';
+    public $name = '';
     /**
      * @var string
      */
-    public $user_email = '';
+    public $email = '';
     /**
      * @var string
      */
-    public $user_notes = '';
+    public $notes = '';
     /**
      * @var int
      */
-    public $user_groupId = 0;
+    public $userGroupId = 0;
     /**
      * @var int
      */
-    public $user_profileId = 0;
+    public $userProfileId = 0;
     /**
      * @var bool
      */
-    public $user_isAdminApp = 0;
+    public $isAdminApp = 0;
     /**
      * @var bool
      */
-    public $user_isAdminAcc = 0;
+    public $isAdminAcc = 0;
     /**
      * @var bool
      */
-    public $user_isDisabled = 0;
+    public $isDisabled = 0;
     /**
      * @var bool
      */
-    public $user_isChangePass = 0;
+    public $isChangePass = 0;
     /**
      * @var bool
      */
-    public $user_isChangedPass = 0;
+    public $isChangedPass = 0;
     /**
      * @var bool
      */
-    public $user_isLdap = 0;
+    public $isLdap = 0;
     /**
      * @var int
      */
-    public $user_count = 0;
+    public $loginCount = 0;
     /**
      * @var string
      */
-    public $user_lastLogin = '';
+    public $lastLogin = '';
     /**
      * @var string
      */
-    public $user_lastUpdate = '';
+    public $lastUpdate = '';
     /**
      * @var bool
      */
-    public $user_isMigrate = 0;
+    public $isMigrate = 0;
     /**
      * @var
      */
-    public $user_preferences;
+    public $preferences;
     /**
      * @var string
      */
-    public $usergroup_name = '';
+    public $userGroupName = '';
 
     /**
      * @return int
      */
-    public function getUserCount()
+    public function getLoginCount()
     {
-        return (int)$this->user_count;
+        return (int)$this->loginCount;
     }
 
     /**
-     * @param int $user_count
+     * @param int $loginCount
      */
-    public function setUserCount($user_count)
+    public function setLoginCount($loginCount)
     {
-        $this->user_count = (int)$user_count;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserLastLogin()
-    {
-        return $this->user_lastLogin;
-    }
-
-    /**
-     * @param string $user_lastLogin
-     */
-    public function setUserLastLogin($user_lastLogin)
-    {
-        $this->user_lastLogin = $user_lastLogin;
+        $this->loginCount = (int)$loginCount;
     }
 
     /**
      * @return string
      */
-    public function getUserLastUpdate()
+    public function getLastLogin()
     {
-        return $this->user_lastUpdate;
+        return $this->lastLogin;
     }
 
     /**
-     * @param string $user_lastUpdate
+     * @param string $lastLogin
      */
-    public function setUserLastUpdate($user_lastUpdate)
+    public function setLastLogin($lastLogin)
     {
-        $this->user_lastUpdate = $user_lastUpdate;
+        $this->lastLogin = $lastLogin;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastUpdate()
+    {
+        return $this->lastUpdate;
+    }
+
+    /**
+     * @param string $lastUpdate
+     */
+    public function setLastUpdate($lastUpdate)
+    {
+        $this->lastUpdate = $lastUpdate;
     }
 
     /**
      * @return boolean
      */
-    public function isUserIsMigrate()
+    public function isIsMigrate()
     {
-        return (int)$this->user_isMigrate;
+        return (int)$this->isMigrate;
     }
 
     /**
-     * @param boolean $user_isMigrate
+     * @param boolean $isMigrate
      */
-    public function setUserIsMigrate($user_isMigrate)
+    public function setIsMigrate($isMigrate)
     {
-        $this->user_isMigrate = (int)$user_isMigrate;
+        $this->isMigrate = (int)$isMigrate;
     }
 
     /**
      * @return mixed
      */
-    public function getUserPreferences()
+    public function getPreferences()
     {
-        return $this->user_preferences;
+        return $this->preferences;
     }
 
     /**
-     * @param mixed $user_preferences
+     * @param mixed $preferences
      */
-    public function setUserPreferences($user_preferences)
+    public function setPreferences($preferences)
     {
-        $this->user_preferences = $user_preferences;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserEmail()
-    {
-        return $this->user_email;
-    }
-
-    /**
-     * @param string $user_email
-     */
-    public function setUserEmail($user_email)
-    {
-        $this->user_email = $user_email;
+        $this->preferences = $preferences;
     }
 
     /**
      * @return string
      */
-    public function getUserNotes()
+    public function getEmail()
     {
-        return $this->user_notes;
+        return $this->email;
     }
 
     /**
-     * @param string $user_notes
+     * @param string $email
      */
-    public function setUserNotes($user_notes)
+    public function setEmail($email)
     {
-        $this->user_notes = $user_notes;
+        $this->email = $email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNotes()
+    {
+        return $this->notes;
+    }
+
+    /**
+     * @param string $notes
+     */
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
     }
 
     /**
@@ -227,15 +227,15 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function getUserGroupId()
     {
-        return (int)$this->user_groupId;
+        return (int)$this->userGroupId;
     }
 
     /**
-     * @param int $user_groupId
+     * @param int $userGroupId
      */
-    public function setUserGroupId($user_groupId)
+    public function setUserGroupId($userGroupId)
     {
-        $this->user_groupId = (int)$user_groupId;
+        $this->userGroupId = (int)$userGroupId;
     }
 
     /**
@@ -243,151 +243,111 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function getUserProfileId()
     {
-        return (int)$this->user_profileId;
+        return (int)$this->userProfileId;
     }
 
     /**
-     * @param int $user_profileId
+     * @param int $userProfileId
      */
-    public function setUserProfileId($user_profileId)
+    public function setUserProfileId($userProfileId)
     {
-        $this->user_profileId = (int)$user_profileId;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isUserIsAdminApp()
-    {
-        return (int)$this->user_isAdminApp;
-    }
-
-    /**
-     * @param boolean $user_isAdminApp
-     */
-    public function setUserIsAdminApp($user_isAdminApp)
-    {
-        $this->user_isAdminApp = (int)$user_isAdminApp;
+        $this->userProfileId = (int)$userProfileId;
     }
 
     /**
      * @return boolean
      */
-    public function isUserIsAdminAcc()
+    public function isIsAdminApp()
     {
-        return (int)$this->user_isAdminAcc;
+        return (int)$this->isAdminApp;
     }
 
     /**
-     * @param boolean $user_isAdminAcc
+     * @param boolean $isAdminApp
      */
-    public function setUserIsAdminAcc($user_isAdminAcc)
+    public function setIsAdminApp($isAdminApp)
     {
-        $this->user_isAdminAcc = (int)$user_isAdminAcc;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isUserIsDisabled()
-    {
-        return (int)$this->user_isDisabled;
-    }
-
-    /**
-     * @param boolean $user_isDisabled
-     */
-    public function setUserIsDisabled($user_isDisabled)
-    {
-        $this->user_isDisabled = (int)$user_isDisabled;
+        $this->isAdminApp = (int)$isAdminApp;
     }
 
     /**
      * @return boolean
      */
-    public function isUserIsChangePass()
+    public function isIsAdminAcc()
     {
-        return (int)$this->user_isChangePass;
+        return (int)$this->isAdminAcc;
     }
 
     /**
-     * @param boolean $user_isChangePass
+     * @param boolean $isAdminAcc
      */
-    public function setUserIsChangePass($user_isChangePass)
+    public function setIsAdminAcc($isAdminAcc)
     {
-        $this->user_isChangePass = (int)$user_isChangePass;
+        $this->isAdminAcc = (int)$isAdminAcc;
     }
 
     /**
      * @return boolean
      */
-    public function isUserIsLdap()
+    public function isIsDisabled()
     {
-        return (int)$this->user_isLdap;
+        return (int)$this->isDisabled;
     }
 
     /**
-     * @param boolean $user_isLdap
+     * @param boolean $isDisabled
      */
-    public function setUserIsLdap($user_isLdap)
+    public function setIsDisabled($isDisabled)
     {
-        $this->user_isLdap = (int)$user_isLdap;
+        $this->isDisabled = (int)$isDisabled;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIsChangePass()
+    {
+        return (int)$this->isChangePass;
+    }
+
+    /**
+     * @param boolean $isChangePass
+     */
+    public function setIsChangePass($isChangePass)
+    {
+        $this->isChangePass = (int)$isChangePass;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIsLdap()
+    {
+        return (int)$this->isLdap;
+    }
+
+    /**
+     * @param boolean $isLdap
+     */
+    public function setIsLdap($isLdap)
+    {
+        $this->isLdap = (int)$isLdap;
     }
 
     /**
      * @return string
      */
-    public function getUserLogin()
+    public function getLogin()
     {
-        return $this->user_login;
+        return $this->login;
     }
 
     /**
-     * @param string $user_login
+     * @param string $login
      */
-    public function setUserLogin($user_login)
+    public function setLogin($login)
     {
-        $this->user_login = $user_login;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserName()
-    {
-        return $this->user_name;
-    }
-
-    /**
-     * @param string $user_name
-     */
-    public function setUserName($user_name)
-    {
-        $this->user_name = $user_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsergroupName()
-    {
-        return $this->usergroup_name;
-    }
-
-    /**
-     * @param string $usergroup_name
-     */
-    public function setUsergroupName($usergroup_name)
-    {
-        $this->usergroup_name = $usergroup_name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return (int)$this->user_id;
+        $this->login = $login;
     }
 
     /**
@@ -395,38 +355,62 @@ class UserData extends UserPassData implements DataModelInterface
      */
     public function getName()
     {
-        return $this->user_name;
+        return $this->name;
     }
 
     /**
-     * @return bool
+     * @param string $name
      */
-    public function isUserIsChangedPass()
+    public function setName($name)
     {
-        return (int)$this->user_isChangedPass;
-    }
-
-    /**
-     * @param bool $user_isChangedPass
-     */
-    public function setUserIsChangedPass($user_isChangedPass)
-    {
-        $this->user_isChangedPass = (int)$user_isChangedPass;
+        $this->name = $name;
     }
 
     /**
      * @return string
      */
-    public function getUserSsoLogin()
+    public function getUserGroupName()
     {
-        return $this->user_ssoLogin;
+        return $this->userGroupName;
     }
 
     /**
-     * @param string $user_ssoLogin
+     * @param string $userGroupName
      */
-    public function setUserSsoLogin($user_ssoLogin)
+    public function setUserGroupName($userGroupName)
     {
-        $this->user_ssoLogin = $user_ssoLogin;
+        $this->userGroupName = $userGroupName;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function isIsChangedPass()
+    {
+        return (int)$this->isChangedPass;
+    }
+
+    /**
+     * @param int $isChangedPass
+     */
+    public function setIsChangedPass($isChangedPass)
+    {
+        $this->isChangedPass = (int)$isChangedPass;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSsoLogin()
+    {
+        return $this->ssoLogin;
+    }
+
+    /**
+     * @param string $ssoLogin
+     */
+    public function setSsoLogin($ssoLogin)
+    {
+        $this->ssoLogin = $ssoLogin;
     }
 }

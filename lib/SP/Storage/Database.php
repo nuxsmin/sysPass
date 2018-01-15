@@ -227,6 +227,8 @@ class Database implements DatabaseInterface
         $num = (int)$queryRes->fetchColumn();
         $queryRes->closeCursor();
         $queryData->setQueryNumRows($num);
+
+        return $num;
     }
 
     /**

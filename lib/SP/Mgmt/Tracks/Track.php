@@ -45,24 +45,24 @@ class Track extends TrackBase implements ItemInterface
     public function add()
     {
         $query = /** @lang SQL */
-            'INSERT INTO track SET 
-            track_userId = ?, 
-            track_source = ?, 
-            track_time = UNIX_TIMESTAMP(),
-            track_ipv4 = ?,
-            track_ipv6 = ?';
+            'INSERT INTO Track SET 
+            userId = ?, 
+            source = ?, 
+            time = UNIX_TIMESTAMP(),
+            ipv4 = ?,
+            ipv6 = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getTrackUserId());
-        $Data->addParam($this->itemData->getTrackSource());
+        $Data->addParam($this->itemData->getUserId());
+        $Data->addParam($this->itemData->getSource());
         $Data->addParam($this->itemData->getTrackIpv4Bin());
         $Data->addParam($this->itemData->getTrackIpv6Bin());
         $Data->setOnErrorMessage(__('Error al crear track', false));
 
         DbWrapper::getQuery($Data);
 
-        $this->itemData->setTrackId(DbWrapper::$lastId);
+        $this->itemData->setId(DbWrapper::$lastId);
 
         return $this;
     }
@@ -76,11 +76,11 @@ class Track extends TrackBase implements ItemInterface
     public function delete($id)
     {
         $query = /** @lang SQL */
-            'DELETE FROM track WHERE track_id = ? LIMIT 1';
+            'DELETE FROM Track WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getTrackId());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al eliminar track', false));
 
         return DbWrapper::getQuery($Data);
@@ -94,21 +94,21 @@ class Track extends TrackBase implements ItemInterface
     public function update()
     {
         $query = /** @lang SQL */
-            'UPDATE track SET 
+            'UPDATE Track SET 
             track_userId = ?, 
-            track_source = ?, 
-            track_time = UNIX_TIMESTAMP(),
-            track_ipv4 = ?,
-            track_ipv6 = ? 
-            WHERE track_id = ? LIMIT 1';
+            source = ?, 
+            time = UNIX_TIMESTAMP(),
+            ipv4 = ?,
+            ipv6 = ? 
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getTrackUserId());
-        $Data->addParam($this->itemData->getTrackSource());
+        $Data->addParam($this->itemData->getUserId());
+        $Data->addParam($this->itemData->getSource());
         $Data->addParam($this->itemData->getTrackIpv4Bin());
         $Data->addParam($this->itemData->getTrackIpv6Bin());
-        $Data->addParam($this->itemData->getTrackId());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al actualizar track', false));
 
         return DbWrapper::getQuery($Data);
@@ -123,19 +123,19 @@ class Track extends TrackBase implements ItemInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT track_id, 
-            track_userId, 
-            track_source, 
-            track_time,
-            track_ipv4,
-            track_ipv6 
-            FROM track 
-            WHERE track_id = ? LIMIT 1';
+            'SELECT id, 
+            userId, 
+            source, 
+            time,
+            ipv4,
+            ipv6 
+            FROM Track 
+            WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getTrackId());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al obtener track', false));
 
         return DbWrapper::getResults($Data);
@@ -149,17 +149,17 @@ class Track extends TrackBase implements ItemInterface
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT track_id, 
-            track_userId, 
-            track_source, 
-            track_time,
-            track_ipv4,
-            track_ipv6 FROM track';
+            'SELECT id, 
+            userId, 
+            source, 
+            time,
+            ipv4,
+            ipv6 FROM Track';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getTrackId());
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al obtener tracks', false));
 
         return DbWrapper::getResultsArray($Data);
@@ -222,11 +222,11 @@ class Track extends TrackBase implements ItemInterface
     public function getTracksForClientFromTime($time)
     {
         $query = /** @lang SQL */
-            'SELECT track_id, track_userId 
-            FROM track 
-            WHERE track_time >= ? 
-            AND (track_ipv4 = ? OR track_ipv6 = ?) 
-            AND track_source = ?';
+            'SELECT id, userId 
+            FROM Track 
+            WHERE time >= ? 
+            AND (ipv4 = ? OR ipv6 = ?) 
+            AND source = ?';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -234,7 +234,7 @@ class Track extends TrackBase implements ItemInterface
         $Data->addParam($time);
         $Data->addParam($this->itemData->getTrackIpv4Bin());
         $Data->addParam($this->itemData->getTrackIpv6Bin());
-        $Data->addParam($this->itemData->getTrackSource());
+        $Data->addParam($this->itemData->getSource());
         $Data->setOnErrorMessage(__('Error al obtener tracks', false));
 
         return DbWrapper::getResultsArray($Data);

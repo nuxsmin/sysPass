@@ -33,6 +33,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionUtil;
 use SP\DataModel\AccountExtData;
+use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\Forms\AccountForm;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -44,8 +45,10 @@ use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
+use SP\Repositories\Account\AccountRepository;
+use SP\Repositories\PublicLink\PublicLinkRepository;
+use SP\Services\Account\AccountFileService;
 use SP\Services\Account\AccountService;
-use SP\Services\PublicLink\PublicLinkService;
 use SP\Util\ErrorUtil;
 use SP\Util\ImageUtil;
 use SP\Util\Util;
@@ -59,6 +62,10 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 {
     use JsonTrait;
     use ItemTrait;
+    /**
+     * @var AccountService
+     */
+    protected $accountService;
 
     /**
      * Index action
@@ -70,7 +77,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         try {
             $AccountSearchHelper = new AccountSearchHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
             $AccountSearchHelper->getSearchBox();
-            $AccountSearchHelper->getSearch();
+            $AccountSearchHelper->getAccountSearch();
 
             $this->eventDispatcher->notifyEvent('show.account.search', $this);
         } catch (\Exception $e) {
@@ -91,7 +98,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     {
         try {
             $AccountSearchHelper = new AccountSearchHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountSearchHelper->getSearch();
+            $AccountSearchHelper->getAccountSearch();
 
             $this->eventDispatcher->notifyEvent('show.account.search', $this);
 
@@ -117,11 +124,21 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function viewAction($id)
     {
         try {
+            $accountDetailsResponse = $this->accountService->getById($id);
+            $this->accountService
+                ->withUsersById($accountDetailsResponse)
+                ->withUserGroupsById($accountDetailsResponse)
+                ->withTagsById($accountDetailsResponse);
+
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccountData($id, ActionsInterface::ACCOUNT_VIEW);
+            $AccountHelper->setAccount(
+                $accountDetailsResponse,
+                $this->accountService,
+                ActionsInterface::ACCOUNT_VIEW
+            );
 
             // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess($this)) {
+            if (!$AccountHelper->checkAccess()) {
                 return;
             }
 
@@ -136,7 +153,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
             $this->view->assign('isView', true);
 
-            $AccountHelper->getAccountService()->incrementViewCounter();
+            $this->accountService->incrementViewCounter($id);
+
             $AccountHelper->setCommonData();
 
             $this->eventDispatcher->notifyEvent('show.account', $this);
@@ -160,11 +178,11 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         $LayoutHelper->getPublicLayout('account-link', 'account');
 
         try {
-            $publicLinkService = new PublicLinkService();
+            $publicLinkService = new PublicLinkRepository();
             $publicLinkData = $publicLinkService->getByHash($hash);
 
-            if (time() < $publicLinkData->getPublicLinkDateExpire()
-                && $publicLinkData->getPublicLinkCountViews() < $publicLinkData->getPublicLinkMaxCountViews()
+            if (time() < $publicLinkData->getDateExpire()
+                && $publicLinkData->getCountViews() < $publicLinkData->getMaxCountViews()
             ) {
                 $publicLinkService->addLinkView($publicLinkData);
 
@@ -186,15 +204,14 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 //                    Notice::getItem($NoticeData)->add();
 //                }
 
-                $accountService = new AccountService();
-                $accountService->incrementViewCounter($publicLinkData->getPublicLinkItemId());
-                $accountService->incrementDecryptCounter($publicLinkData->getPublicLinkItemId());
+                $this->accountService->incrementViewCounter($publicLinkData->getItemId());
+                $this->accountService->incrementDecryptCounter($publicLinkData->getItemId());
 
                 /** @var Vault $vault */
-                $vault = unserialize($publicLinkData->getPublicLinkData());
+                $vault = unserialize($publicLinkData->getData());
 
                 /** @var AccountExtData $accountData */
-                $accountData = Util::unserialize(AccountExtData::class, $vault->getData(PublicLinkService::getKeyForHash($this->config, $publicLinkData)));
+                $accountData = Util::unserialize(AccountExtData::class, $vault->getData(PublicLinkRepository::getKeyForHash($this->config, $publicLinkData)));
 
                 $this->view->assign('title',
                     [
@@ -208,7 +225,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 $this->view->assign('useImage', $this->configData->isPublinksImageEnabled() || $this->configData->isAccountPassToImage());
 
                 if ($this->view->useImage) {
-                    $this->view->assign('accountPassImage', ImageUtil::convertText($accountData->getAccountPass()));
+                    $this->view->assign('accountPassImage', ImageUtil::convertText($accountData->getPass()));
                 } else {
                     $this->view->assign('copyPassRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS));
                 }
@@ -245,9 +262,9 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
             $this->view->addTemplate('files-list', 'account');
 
-            $this->view->assign('accountId', $id);
             $this->view->assign('deleteEnabled', Request::analyze('del', 0));
-            $this->view->assign('files', FileUtil::getAccountFiles($id));
+
+            $this->view->assign('files', (new AccountFileService())->getByAccountId($id));
             $this->view->assign('sk', SessionUtil::getSessionKey());
             $this->view->assign('fileViewRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
             $this->view->assign('fileDownloadRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD));
@@ -278,7 +295,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $AccountHelper->setActionId(ActionsInterface::ACCOUNT_CREATE);
 
             // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess($this)) {
+            if (!$AccountHelper->checkAccess()) {
                 return;
             }
 
@@ -312,11 +329,21 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function copyAction($id)
     {
         try {
+            $accountDetailsResponse = $this->accountService->getById($id);
+            $this->accountService
+                ->withUsersById($accountDetailsResponse)
+                ->withUserGroupsById($accountDetailsResponse)
+                ->withTagsById($accountDetailsResponse);
+
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccountData($id, ActionsInterface::ACCOUNT_COPY);
+            $AccountHelper->setAccount(
+                $accountDetailsResponse,
+                $this->accountService,
+                ActionsInterface::ACCOUNT_COPY
+            );
 
             // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess($this)) {
+            if (!$AccountHelper->checkAccess()) {
                 return;
             }
 
@@ -350,11 +377,21 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function editAction($id)
     {
         try {
+            $accountDetailsResponse = $this->accountService->getById($id);
+            $this->accountService
+                ->withUsersById($accountDetailsResponse)
+                ->withUserGroupsById($accountDetailsResponse)
+                ->withTagsById($accountDetailsResponse);
+
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccountData($id, ActionsInterface::ACCOUNT_EDIT);
+            $AccountHelper->setAccount(
+                $accountDetailsResponse,
+                $this->accountService,
+                ActionsInterface::ACCOUNT_EDIT
+            );
 
             // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess($this)) {
+            if (!$AccountHelper->checkAccess()) {
                 return;
             }
 
@@ -368,7 +405,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             );
             $this->view->assign('formRoute', 'account/saveEdit');
 
-            $AccountHelper->getAccountService()->incrementViewCounter();
+            $this->accountService->incrementViewCounter($id);
+
             $AccountHelper->setCommonData();
 
             $this->eventDispatcher->notifyEvent('show.account.edit', $this);
@@ -389,11 +427,20 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function deleteAction($id)
     {
         try {
+            $accountDetailsResponse = $this->accountService->getById($id);
+            $this->accountService
+                ->withUsersById($accountDetailsResponse)
+                ->withUserGroupsById($accountDetailsResponse);
+
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccountData($id, ActionsInterface::ACCOUNT_DELETE);
+            $AccountHelper->setAccount(
+                $accountDetailsResponse,
+                $this->accountService,
+                ActionsInterface::ACCOUNT_DELETE
+            );
 
             // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess($this)) {
+            if (!$AccountHelper->checkAccess()) {
                 return;
             }
 
@@ -427,11 +474,20 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function editPassAction($id)
     {
         try {
+            $accountDetailsResponse = $this->accountService->getById($id);
+            $this->accountService
+                ->withUsersById($accountDetailsResponse)
+                ->withUserGroupsById($accountDetailsResponse);
+
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccountData($id, ActionsInterface::ACCOUNT_EDIT_PASS);
+            $AccountHelper->setAccount(
+                $accountDetailsResponse,
+                $this->accountService,
+                ActionsInterface::ACCOUNT_EDIT_PASS
+            );
 
             // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess($this)) {
+            if (!$AccountHelper->checkAccess()) {
                 return;
             }
 
@@ -445,7 +501,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             );
             $this->view->assign('formRoute', 'account/saveEditPass');
 
-            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $AccountHelper->getAccountData()->getAccountPassDateChange()));
+            $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $AccountHelper->getAccountDetailsResponse()->getAccountVData()->getPassDateChange()));
 
             $this->eventDispatcher->notifyEvent('show.account.editpass', $this);
         } catch (\Exception $e) {
@@ -466,10 +522,12 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     {
         try {
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccountDataHistory($id, ActionsInterface::ACCOUNT_VIEW_HISTORY);
+
+            // FIXME: Crear servicio AccountHistoryService
+            $AccountHelper->setAccountDataHistory($this->accountService->getById($id), ActionsInterface::ACCOUNT_VIEW_HISTORY);
 
             // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess($this)) {
+            if (!$AccountHelper->checkAccess()) {
                 return;
             }
 
@@ -482,7 +540,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ]
             );
             $this->view->assign('formRoute', 'account/saveRestore');
-
             $this->view->assign('isView', true);
 
             $AccountHelper->setCommonData();
@@ -506,7 +563,11 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     {
         try {
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccountDataHistory($id, ActionsInterface::ACCOUNT_REQUEST);
+            $AccountHelper->setAccount(
+                $this->accountService->getById($id),
+                $this->accountService,
+                ActionsInterface::ACCOUNT_REQUEST
+            );
 
             $this->view->addTemplate('account-request');
             $this->view->assign('formRoute', 'account/saveRequest');
@@ -531,13 +592,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function viewPassAction($id, $isHistory)
     {
         try {
-            $accountService = new AccountService();
             $accountPassHelper = new AccountPasswordHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
 
-            $account = $isHistory === 0 ? $accountService->getPasswordForId($id) : $accountService->getPasswordHistoryForId($id);
+            // FIXME: JS no envía isHistory
+            $account = $isHistory === 0 ? $this->accountService->getPasswordForId($id) : $this->accountService->getPasswordHistoryForId($id);
 
             $data = [
-                'acclogin' => $account->getAccountLogin(),
+                'acclogin' => $account->getLogin(),
                 'accpass' => $accountPassHelper->getPassword($account, $this->acl, AccountPasswordHelper::TYPE_FULL),
                 'useimage' => $this->configData->isAccountPassToImage(),
                 'html' => $this->render()
@@ -560,17 +621,14 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * @param int $isHistory The account's ID refers to history
      * @throws Helpers\HelperException
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function copyPassAction($id, $isHistory)
     {
-        $accountService = new AccountService();
         $accountPassHelper = new AccountPasswordHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
 
-        $account = $isHistory === 0 ? $accountService->getPasswordForId($id) : $accountService->getPasswordHistoryForId($id);
+        $account = $isHistory === 0 ? $this->accountService->getPasswordForId($id) : $this->accountService->getPasswordHistoryForId($id);
 
         $data = [
             'accpass' => $accountPassHelper->getPassword($account, $this->acl, AccountPasswordHelper::TYPE_NORMAL),
@@ -597,20 +655,17 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         try {
             $form = new AccountForm();
             $form->validate(ActionsInterface::ACCOUNT_CREATE);
-            $form->getItemData()->setAccountUserId($this->userData->getUserId());
+            $form->getItemData()->userId = $this->userData->getId();
 
-            $accountService = new AccountService();
-            $account = $accountService->create($form->getItemData());
+            $accountId = $this->accountService->create($form->getItemData());
 
-            $this->addCustomFieldsForItem(ActionsInterface::ACCOUNT, $account->getId());
-
-            $accountService->logAction($account->getId(), ActionsInterface::ACCOUNT_CREATE);
+            $this->addCustomFieldsForItem(ActionsInterface::ACCOUNT, $accountId);
 
             $this->eventDispatcher->notifyEvent('create.account', $this);
 
             $this->returnJsonResponseData(
                 [
-                    'itemId' => $account->getId(),
+                    'itemId' => $accountId,
                     'nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT)
                 ],
                 JsonResponse::JSON_SUCCESS,
@@ -636,12 +691,9 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $form = new AccountForm($id);
             $form->validate(ActionsInterface::ACCOUNT_EDIT);
 
-            $accountService = new AccountService();
-            $accountService->update($form->getItemData());
+            $this->accountService->update($form->getItemData());
 
             $this->updateCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
-
-            $accountService->logAction($id, ActionsInterface::ACCOUNT_EDIT);
 
             $this->eventDispatcher->notifyEvent('edit.account', $this);
 
@@ -673,10 +725,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $form = new AccountForm($id);
             $form->validate(ActionsInterface::ACCOUNT_EDIT_PASS);
 
-            $accountService = new AccountService();
-            $accountService->editPassword($form->getItemData());
-
-            $accountService->logAction($id, ActionsInterface::ACCOUNT_EDIT_PASS);
+            $this->accountService->editPassword($form->getItemData());
 
             $this->eventDispatcher->notifyEvent('edit.account.pass', $this);
 
@@ -706,10 +755,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function saveEditRestoreAction($historyId, $id)
     {
         try {
-            $accountService = new AccountService();
-            $accountService->editRestore($historyId, $id);
-
-            $accountService->logAction($id, ActionsInterface::ACCOUNT_EDIT_RESTORE);
+            $this->accountService->editRestore($historyId, $id);
 
             $this->eventDispatcher->notifyEvent('edit.account.restore', $this);
 
@@ -736,13 +782,11 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function saveDeleteAction($id)
     {
         try {
-            $accountService = new AccountService();
-
-            if ($accountService->delete($id)) {
+            if ($this->accountService->delete($id)) {
                 $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
 
                 // FIXME: obtener cuenta antes de eliminar
-//                $accountService->logAccountAction($id, ActionsInterface::ACCOUNT_DELETE);
+//                $accountRepository->logAccountAction($id, ActionsInterface::ACCOUNT_DELETE);
 
                 $this->eventDispatcher->notifyEvent('delete.account', $this);
 
@@ -767,5 +811,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         if ($this->actionName !== 'viewLinkAction') {
             $this->checkLoggedIn();
         }
+
+        $this->accountService = new AccountService();
     }
 }

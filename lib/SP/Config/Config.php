@@ -164,7 +164,7 @@ class Config
     {
         $ConfigData = null === $Config ? $this->configData : $Config;
         $ConfigData->setConfigDate(time());
-        $ConfigData->setConfigSaver($this->session->getUserData()->getUserLogin());
+        $ConfigData->setConfigSaver($this->session->getUserData()->getLogin());
         $ConfigData->setConfigHash();
 
         $this->fileStorage->setItems($ConfigData);

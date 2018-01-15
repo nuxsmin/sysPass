@@ -37,7 +37,7 @@ use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridTab;
-use SP\Services\CustomField\CustomFieldDefService;
+use SP\Repositories\CustomField\CustomFieldDefRepository;
 
 /**
  * Class Grids con las plantillas de tablas de datos
@@ -77,9 +77,9 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('category_id');
-        $GridData->addDataRowSource('category_name');
-        $GridData->addDataRowSource('category_description');
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('name');
+        $GridData->addDataRowSource('description');
         $GridData->setData($data);
 
         // Grid
@@ -179,10 +179,10 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('customer_id');
-        $GridData->addDataRowSource('customer_name');
-        $GridData->addDataRowSource('customer_description');
-        $GridData->addDataRowSource('customer_isGlobal', false, function ($value) {
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('name');
+        $GridData->addDataRowSource('description');
+        $GridData->addDataRowSource('isGlobal', false, function ($value) {
             return $value ? __u('SI') : __u('NO');
         });
         $GridData->setData($data);
@@ -265,7 +265,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setDataRowSourceId('id');
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('moduleId', false, function ($value) {
-            return CustomFieldDefService::getFieldModuleById($value);
+            return CustomFieldDefRepository::getFieldModuleById($value);
         });
         $GridData->addDataRowSource('typeName');
         $GridData->setData($data);
@@ -348,8 +348,8 @@ class ItemsGridHelper extends HelperBase
         // Grid Data
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('id');
-        $GridData->addDataRowSource('account_name');
-        $GridData->addDataRowSource('customer_name');
+        $GridData->addDataRowSource('accountName');
+        $GridData->addDataRowSource('clientName');
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('type');
         $GridData->addDataRowSource('size');
@@ -417,9 +417,9 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('account_id');
-        $GridData->addDataRowSource('account_name');
-        $GridData->addDataRowSource('customer_name');
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('name');
+        $GridData->addDataRowSource('clientName');
         $GridData->setData($data);
 
         // Grid
@@ -478,12 +478,12 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('acchistory_id');
-        $GridData->addDataRowSource('acchistory_name');
-        $GridData->addDataRowSource('customer_name');
-        $GridData->addDataRowSource('acchistory_date');
-        $GridData->addDataRowSourceWithIcon('acchistory_isModify', $iconEdit->setTitle(__('Modificada'))->setClass('opacity50'));
-        $GridData->addDataRowSourceWithIcon('acchistory_isDeleted', $iconDelete->setTitle(__('Eliminada'))->setClass('opacity50'));
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('name');
+        $GridData->addDataRowSource('clientName');
+        $GridData->addDataRowSource('date');
+        $GridData->addDataRowSourceWithIcon('isModify', $iconEdit->setTitle(__('Modificada'))->setClass('opacity50'));
+        $GridData->addDataRowSourceWithIcon('isDeleted', $iconDelete->setTitle(__('Eliminada'))->setClass('opacity50'));
         $GridData->setData($data);
 
         // Grid
@@ -550,15 +550,15 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('user_id');
-        $GridData->addDataRowSource('user_name');
-        $GridData->addDataRowSource('user_login');
-        $GridData->addDataRowSource('userprofile_name');
-        $GridData->addDataRowSource('usergroup_name');
-        $GridData->addDataRowSourceWithIcon('user_isAdminApp', $this->icons->getIconAppAdmin());
-        $GridData->addDataRowSourceWithIcon('user_isAdminAcc', $this->icons->getIconAccAdmin());
-        $GridData->addDataRowSourceWithIcon('user_isLdap', $this->icons->getIconLdapUser());
-        $GridData->addDataRowSourceWithIcon('user_isDisabled', $this->icons->getIconDisabled());
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('name');
+        $GridData->addDataRowSource('login');
+        $GridData->addDataRowSource('userProfileName');
+        $GridData->addDataRowSource('userGroupName');
+        $GridData->addDataRowSourceWithIcon('isAdminApp', $this->icons->getIconAppAdmin());
+        $GridData->addDataRowSourceWithIcon('isAdminAcc', $this->icons->getIconAccAdmin());
+        $GridData->addDataRowSourceWithIcon('isLdap', $this->icons->getIconLdapUser());
+        $GridData->addDataRowSourceWithIcon('isDisabled', $this->icons->getIconDisabled());
         $GridData->setData($data);
 
         // Grid
@@ -641,7 +641,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEditPass->setTitle(__('Cambiar Clave de Usuario'));
         $GridActionEditPass->setIcon($this->icons->getIconEditPass());
         $GridActionEditPass->setOnClickFunction('appMgmt/show');
-        $GridActionEditPass->setFilterRowSource('user_isLdap');
+        $GridActionEditPass->setFilterRowSource('isLdap');
         $GridActionEditPass->addData('action-route', Acl::getActionRoute(ActionsInterface::USER_EDIT_PASS));
 
         $Grid->setDataActions($GridActionEditPass);
@@ -674,9 +674,9 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('usergroup_id');
-        $GridData->addDataRowSource('usergroup_name');
-        $GridData->addDataRowSource('usergroup_description');
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('name');
+        $GridData->addDataRowSource('description');
         $GridData->setData($data);
 
         // Grid
@@ -763,8 +763,8 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('userprofile_id');
-        $GridData->addDataRowSource('userprofile_name');
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('name');
         $GridData->setData($data);
 
         // Grid
@@ -852,9 +852,9 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('authtoken_id');
-        $GridData->addDataRowSource('user_login');
-        $GridData->addDataRowSource('authtoken_actionId');
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('userLogin');
+        $GridData->addDataRowSource('actionId');
         $GridData->setData($data);
 
         // Grid
@@ -946,11 +946,11 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('publicLink_id');
-        $GridData->addDataRowSource('account_name');
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('accountName');
         $GridData->addDataRowSource('getDateAddFormat', true);
         $GridData->addDataRowSource('getDateExpireFormat', true);
-        $GridData->addDataRowSource('user_login');
+        $GridData->addDataRowSource('userLogin');
         $GridData->addDataRowSource('getNotifyString', true);
         $GridData->addDataRowSource('getCountViewsString', true);
         $GridData->setData($data);
@@ -1038,8 +1038,8 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('tag_id');
-        $GridData->addDataRowSource('tag_name');
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('name');
         $GridData->setData($data);
 
         // Grid

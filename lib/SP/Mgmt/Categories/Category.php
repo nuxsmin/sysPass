@@ -55,18 +55,18 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO categories SET category_name = ?, category_description = ?, category_hash = ?';
+            'INSERT INTO Category SET name = ?, description = ?, hash = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getCategoryName());
-        $Data->addParam($this->itemData->getCategoryDescription());
-        $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getDescription());
+        $Data->addParam($this->makeItemHash($this->itemData->getName()));
         $Data->setOnErrorMessage(__('Error al crear la categoría', false));
 
         DbWrapper::getQuery($Data);
 
-        $this->itemData->setCategoryId(DbWrapper::$lastId);
+        $this->itemData->setId(DbWrapper::$lastId);
 
         return $this;
     }
@@ -80,12 +80,12 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function checkDuplicatedOnAdd()
     {
         $query = /** @lang SQL */
-            'SELECT category_id FROM categories WHERE category_hash = ? OR category_name = ?';
+            'SELECT id FROM Category WHERE hash = ? OR name = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
-        $Data->addParam($this->itemData->getCategoryName());
+        $Data->addParam($this->makeItemHash($this->itemData->getName()));
+        $Data->addParam($this->itemData->getName());
 
         $queryRes = DbWrapper::getResults($Data);
 
@@ -93,7 +93,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
             if ($Data->getQueryNumRows() === 0) {
                 return false;
             } elseif ($Data->getQueryNumRows() === 1) {
-                $this->itemData->setCategoryId($queryRes->category_id);
+                $this->itemData->setId($queryRes->category_id);
             }
         }
 
@@ -111,7 +111,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function delete($id)
     {
         $query = /** @lang SQL */
-            'DELETE FROM categories WHERE category_id = ? LIMIT 1';
+            'DELETE FROM Category WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -136,7 +136,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function checkInUse($id)
     {
         $query = /** @lang SQL */
-            'SELECT account_id FROM accounts WHERE account_categoryId = ?';
+            'SELECT account_id FROM Account WHERE account_categoryId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -154,7 +154,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT category_id, category_name, category_description FROM categories WHERE category_id = ? LIMIT 1';
+            'SELECT id, name, description FROM Category WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -175,18 +175,18 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         }
 
         $query = /** @lang SQL */
-            'UPDATE categories
-              SET category_name = ?,
-              category_description = ?,
-              category_hash = ?
-              WHERE category_id = ? LIMIT 1';
+            'UPDATE Category
+              SET name = ?,
+              description = ?,
+              hash = ?
+              WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->itemData->getCategoryName());
-        $Data->addParam($this->itemData->getCategoryDescription());
-        $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
-        $Data->addParam($this->itemData->getCategoryId());
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getDescription());
+        $Data->addParam($this->makeItemHash($this->itemData->getName()));
+        $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al actualizar la categoría', false));
 
         DbWrapper::getQuery($Data);
@@ -202,13 +202,13 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function checkDuplicatedOnUpdate()
     {
         $query = /** @lang SQL */
-            'SELECT category_id FROM categories WHERE (category_hash = ? OR category_name = ?) AND category_id <> ?';
+            'SELECT id FROM Category WHERE (hash = ? OR name = ?) AND id <> ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($this->itemData->getCategoryName()));
-        $Data->addParam($this->itemData->getCategoryName());
-        $Data->addParam($this->itemData->getCategoryId());
+        $Data->addParam($this->makeItemHash($this->itemData->getName()));
+        $Data->addParam($this->itemData->getName());
+        $Data->addParam($this->itemData->getId());
 
         DbWrapper::getQuery($Data);
 
@@ -221,7 +221,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT category_id, category_name, category_description, category_hash FROM categories ORDER BY category_name';
+            'SELECT id, name, description, hash FROM Category ORDER BY name';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -243,7 +243,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         }
 
         $query = /** @lang SQL */
-            'SELECT category_id, category_name, category_description FROM categories WHERE category_id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT id, name, description FROM Category WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
         $Data->setQuery($query);

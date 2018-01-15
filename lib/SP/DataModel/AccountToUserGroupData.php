@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -24,92 +24,81 @@
 
 namespace SP\DataModel;
 
+defined('APP_ROOT') || die();
+
 /**
- * Class UserPassRecoverData
+ * Class GroupAccountsData
  *
  * @package SP\DataModel
  */
-class UserPassRecoverData extends DataModelBase
+class AccountToUserGroupData extends DataModelBase
 {
     /**
      * @var int
      */
-    public $userId = 0;
-    /**
-     * @var string
-     */
-    public $hash = '';
+    public $userGroupId = 0;
     /**
      * @var int
      */
-    public $date = 0;
+    public $accountId = 0;
     /**
-     * @var bool
+     * @var array
      */
-    public $used = 0;
+    protected $groups = [];
 
     /**
      * @return int
      */
-    public function getUserId()
+    public function getUserGroupId()
     {
-        return (int)$this->userId;
+        return $this->userGroupId;
     }
 
     /**
-     * @param int $userId
+     * @param int $userGroupId
      */
-    public function setUserId($userId)
+    public function setUserGroupId($userGroupId)
     {
-        $this->userId = (int)$userId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHash()
-    {
-        return $this->hash;
-    }
-
-    /**
-     * @param string $hash
-     */
-    public function setHash($hash)
-    {
-        $this->hash = $hash;
+        $this->userGroupId = $userGroupId;
     }
 
     /**
      * @return int
      */
-    public function getDate()
+    public function getAccountId()
     {
-        return $this->date;
+        return $this->accountId;
     }
 
     /**
-     * @param int $date
+     * @param int $accountId
      */
-    public function setDate($date)
+    public function setAccountId($accountId)
     {
-        $this->date = $date;
+        $this->accountId = $accountId;
     }
 
     /**
-     * @return boolean
+     * @return array
      */
-    public function isUsed()
+    public function getGroups()
     {
-        return (int)$this->used;
+        return $this->groups;
     }
 
     /**
-     * @param boolean $used
+     * @param array $groups
      */
-    public function setUsed($used)
+    public function setGroups(array $groups)
     {
-        $this->used = (int)$used;
+        $this->groups = $groups;
     }
-    
+
+    /**
+     * @param int $group
+     */
+    public function addGroup($group)
+    {
+        $this->groups[] = (int)$group;
+    }
 }

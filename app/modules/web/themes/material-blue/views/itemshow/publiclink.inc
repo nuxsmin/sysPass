@@ -22,7 +22,7 @@
                         <option value=""><?php echo __('Seleccionar Cuenta'); ?></option>
                         <?php foreach ($accounts as $account): ?>
                             <option
-                                    value="<?php echo $account->account_id; ?>" <?php echo (int)$account->account_id === $publicLink->getPublicLinkItemId() ? 'selected' : ''; ?>><?php printf('%s (%s)', $account->account_name, $account->customer_name); ?></option>
+                                    value="<?php echo $account->id; ?>" <?php echo (int)$account->id === $publicLink->getItemId() ? 'selected' : ''; ?>><?php printf('%s (%s)', $account->name, $account->clientName); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -34,7 +34,7 @@
                            title="<?php echo __('Notificar'); ?>">
                         <input type="checkbox" id="notify"
                                class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="notify" <?php echo $isView && $publicLink->isPublicLinkNotify() ? 'CHECKED' : ''; ?> <?php echo $disabled; ?>/>
+                               name="notify" <?php echo $isView && $publicLink->isNotify() ? 'CHECKED' : ''; ?> <?php echo $disabled; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Notificar'); ?></span>
                     </label>
                 </td>
@@ -77,7 +77,7 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Hash'); ?></div>
 
-                        <?php echo $publicLink->getPublicLinkHash(); ?>
+                        <?php echo $publicLink->getHash(); ?>
                     </td>
                 </tr>
                 <tr>
@@ -95,7 +95,7 @@
 
                         <div class="list-wrap">
                             <ul class="mdl-list">
-                                <?php foreach ($publicLink->getPublicLinkUseInfo() as $useInfo): ?>
+                                <?php foreach ($publicLink->getUseInfo() as $useInfo): ?>
                                     <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 <i class="material-icons mdl-list__item-icon">access_time</i>

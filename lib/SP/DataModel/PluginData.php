@@ -34,30 +34,30 @@ class PluginData extends DataModelBase implements DataModelInterface
     /**
      * @var int
      */
-    public $plugin_id;
+    public $id;
     /**
      * @var string
      */
-    public $plugin_name;
+    public $name;
     /**
      * @var string
      */
-    public $plugin_data;
+    public $data;
     /**
      * @var int
      */
-    public $plugin_enabled = 0;
+    public $enabled = 0;
     /**
      * @var int
      */
-    public $plugin_available = 1;
+    public $available = 1;
 
     /**
      * @return int
      */
     public function getId()
     {
-        return (int)$this->plugin_id;
+        return (int)$this->id;
     }
 
     /**
@@ -65,86 +65,70 @@ class PluginData extends DataModelBase implements DataModelInterface
      */
     public function getName()
     {
-        return $this->plugin_name;
+        return $this->name;
     }
 
     /**
-     * @return int
+     * @param int $id
      */
-    public function getPluginId()
+    public function setId($id)
     {
-        return (int)$this->plugin_id;
+        $this->id = (int)$id;
     }
 
     /**
-     * @param int $plugin_id
+     * @param string $name
      */
-    public function setPluginId($plugin_id)
+    public function setName($name)
     {
-        $this->plugin_id = (int)$plugin_id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPluginName()
-    {
-        return $this->plugin_name;
-    }
-
-    /**
-     * @param string $plugin_name
-     */
-    public function setPluginName($plugin_name)
-    {
-        $this->plugin_name = $plugin_name;
+        $this->name = $name;
     }
 
     /**
      * @return string
      */
-    public function getPluginData()
+    public function getData()
     {
-        return $this->plugin_data;
+        return $this->data;
     }
 
     /**
-     * @param string $plugin_data
+     * @param string $data
      */
-    public function setPluginData($plugin_data)
+    public function setData($data)
     {
-        $this->plugin_data = $plugin_data;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPluginEnabled()
-    {
-        return (int)$this->plugin_enabled;
-    }
-
-    /**
-     * @param int $plugin_enabled
-     */
-    public function setPluginEnabled($plugin_enabled)
-    {
-        $this->plugin_enabled = (int)$plugin_enabled;
+        $this->data = $data;
     }
 
     /**
      * @return int
      */
-    public function getPluginAvailable()
+    public function getEnabled()
     {
-        return (int)$this->plugin_available;
+        return (int)$this->enabled;
     }
 
     /**
-     * @param int $plugin_available
+     * @param int $enabled
      */
-    public function setPluginAvailable($plugin_available)
+    public function setEnabled($enabled)
     {
-        $this->plugin_available = (int)$plugin_available;
+        $this->enabled = (int)$enabled;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAvailable()
+    {
+        return (int)$this->available;
+    }
+
+    /**
+     * @param int $available
+     */
+    public function setAvailable($available)
+    {
+        $this->available = (int)$available;
     }
 }

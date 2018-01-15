@@ -30,7 +30,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionUtil;
-use SP\DataModel\GroupData;
+use SP\DataModel\UserGroupData;
 use SP\Forms\UserGroupForm;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -38,9 +38,10 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserGroup\UserToGroupService;
+use SP\Repositories\User\UserRepository;
+use SP\Repositories\UserGroup\UserGroupRepository;
+use SP\Repositories\UserGroup\UserToGroupService;
+use SP\Repositories\UserGroup\UserToUserGroupRepository;
 
 /**
  * Class GroupController
@@ -53,13 +54,13 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
     use ItemTrait;
 
     /**
-     * @var UserGroupService
+     * @var UserGroupRepository
      */
     protected $userGroupService;
     /**
-     * @var UserToGroupService
+     * @var UserToUserGroupRepository
      */
-    protected $userToGroupService;
+    protected $userToUserGroupService;
 
     /**
      * Search action
@@ -110,19 +111,17 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
     /**
      * Sets view data for displaying user's data
      *
-     * @param $groupId
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @param $userGroupId
      */
-    protected function setViewData($groupId = null)
+    protected function setViewData($userGroupId = null)
     {
         $this->view->addTemplate('usergroup', 'itemshow');
 
-        $group = $groupId ? $this->userGroupService->getById($groupId) : new GroupData();
+        $group = $userGroupId ? $this->userGroupService->getById($userGroupId) : new UserGroupData();
 
         $this->view->assign('group', $group);
-        $this->view->assign('users', UserService::getServiceItems());
-        $this->view->assign('groupUsers', $this->userToGroupService->getById($groupId));
+        $this->view->assign('users', UserRepository::getServiceItems());
+        $this->view->assign('groupUsers', $this->userToUserGroupService->getById($userGroupId));
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
@@ -135,7 +134,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             $this->view->assign('readonly');
         }
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::GROUP, $groupId));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::GROUP, $userGroupId));
     }
 
     /**
@@ -209,7 +208,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
 
             $id = $this->userGroupService->create($groupData);
             $this->userGroupService->logAction($id, ActionsInterface::GROUP_CREATE);
-            $this->userToGroupService->add($id, $groupData->getUsers());
+            $this->userToUserGroupService->add($id, $groupData->getUsers());
 
             $this->addCustomFieldsForItem(ActionsInterface::GROUP, $id);
 
@@ -244,7 +243,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
 
             $this->userGroupService->update($groupData);
             $this->userGroupService->logAction($id, ActionsInterface::GROUP_EDIT);
-            $this->userToGroupService->update($groupData->getUsergroupId(), $groupData->getUsers());
+            $this->userToUserGroupService->update($groupData->getId(), $groupData->getUsers());
 
             $this->updateCustomFieldsForItem(ActionsInterface::GROUP, $id);
 
@@ -293,7 +292,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
     {
         $this->checkLoggedIn();
 
-        $this->userGroupService = new UserGroupService();
-        $this->userToGroupService = new UserToGroupService();
+        $this->userGroupService = new UserGroupRepository();
+        $this->userToUserGroupService = new UserToUserGroupRepository();
     }
 }

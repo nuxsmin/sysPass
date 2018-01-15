@@ -69,7 +69,7 @@ class DbWrapper
         // FIXME: remove
         if ($db === null) {
             /** @var Database $db */
-            $db = Bootstrap::getDic()->get(Database::class);
+            $db = Bootstrap::getContainer()->get(Database::class);
         }
 
         $results = self::getResults($queryData, $db);
@@ -99,7 +99,7 @@ class DbWrapper
             // FIXME: remove
             if ($db === null) {
                 /** @var Database $db */
-                $db = Bootstrap::getDic()->get(Database::class);
+                $db = Bootstrap::getContainer()->get(Database::class);
             }
 
             $db->doQuery($queryData);
@@ -173,7 +173,7 @@ class DbWrapper
             // FIXME: remove
             if ($db === null) {
                 /** @var Database $db */
-                $db = Bootstrap::getDic()->get(Database::class);
+                $db = Bootstrap::getContainer()->get(Database::class);
             }
 
             return $db->doQuery($queryData, true);
@@ -209,7 +209,7 @@ class DbWrapper
             // FIXME: remove
             if ($db === null) {
                 /** @var Database $db */
-                $db = Bootstrap::getDic()->get(Database::class);
+                $db = Bootstrap::getContainer()->get(Database::class);
             }
 
             $db->doQuery($queryData);

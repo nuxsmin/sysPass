@@ -58,8 +58,8 @@ class WikiController extends ControllerBase implements ActionsInterface
         $this->init();
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->view->assign('isDemoMode', $this->configData->isDemoEnabled() && !SessionFactory::getUserData()->isUserIsAdminApp());
-        $this->view->assign('isDisabled', ($this->configData->isDemoEnabled() && !SessionFactory::getUserData()->isUserIsAdminApp()) ? 'DISABLED' : '');
+        $this->view->assign('isDemoMode', $this->configData->isDemoEnabled() && !SessionFactory::getUserData()->isIsAdminApp());
+        $this->view->assign('isDisabled', ($this->configData->isDemoEnabled() && !SessionFactory::getUserData()->isIsAdminApp()) ? 'DISABLED' : '');
     }
 
     /**

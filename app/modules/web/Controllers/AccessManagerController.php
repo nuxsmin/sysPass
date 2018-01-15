@@ -31,11 +31,11 @@ use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Services\ApiToken\ApiTokenService;
-use SP\Services\PublicLink\PublicLinkService;
-use SP\Services\User\UserService;
-use SP\Services\UserGroup\UserGroupService;
-use SP\Services\UserProfile\UserProfileService;
+use SP\Repositories\ApiToken\ApiTokenRepository;
+use SP\Repositories\PublicLink\PublicLinkRepository;
+use SP\Repositories\User\UserRepository;
+use SP\Repositories\UserGroup\UserGroupRepository;
+use SP\Repositories\UserProfile\UserProfileRepository;
 
 /**
  * Class AccessMgmtController
@@ -111,7 +111,7 @@ class AccessManagerController extends ControllerBase
      */
     protected function getUsersList()
     {
-        $service = new UserService();
+        $service = new UserRepository();
 
         return $this->itemsGridHelper->getUsersGrid($service->search($this->itemSearchData))->updatePager();
     }
@@ -121,7 +121,7 @@ class AccessManagerController extends ControllerBase
      */
     protected function getUsersGroupList()
     {
-        $service = new UserGroupService();
+        $service = new UserGroupRepository();
 
         return $this->itemsGridHelper->getUserGroupsGrid($service->search($this->itemSearchData))->updatePager();
     }
@@ -131,7 +131,7 @@ class AccessManagerController extends ControllerBase
      */
     protected function getUsersProfileList()
     {
-        $service = new UserProfileService();
+        $service = new UserProfileRepository();
 
         return $this->itemsGridHelper->getUserProfilesGrid($service->search($this->itemSearchData))->updatePager();
     }
@@ -141,7 +141,7 @@ class AccessManagerController extends ControllerBase
      */
     protected function getApiTokensList()
     {
-        $service = new ApiTokenService();
+        $service = new ApiTokenRepository();
 
         return $this->itemsGridHelper->getApiTokensGrid($service->search($this->itemSearchData))->updatePager();
     }
@@ -151,7 +151,7 @@ class AccessManagerController extends ControllerBase
      */
     protected function getPublicLinksList()
     {
-        $service = new PublicLinkService();
+        $service = new PublicLinkRepository();
 
         return $this->itemsGridHelper->getPublicLinksGrid($service->search($this->itemSearchData))->updatePager();
     }

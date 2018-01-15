@@ -38,7 +38,6 @@ interface DicInterface extends ContainerInterface
      *
      * @param string   $name
      * @param callable $callable
-     * @return
      */
     public function share($name, $callable = null);
 

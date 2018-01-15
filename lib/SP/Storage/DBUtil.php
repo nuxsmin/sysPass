@@ -41,29 +41,31 @@ class DBUtil
      * @var array Tablas de la BBDD
      */
     public static $tables = [
-        'customers',
-        'categories',
-        'tags',
-        'usrGroups',
-        'usrProfiles',
-        'usrData',
-        'accounts',
-        'accFavorites',
-        'accFiles',
-        'accGroups',
-        'accHistory',
-        'accTags',
-        'accUsers',
-        'authTokens',
-        'config',
-        'customFieldsDef',
-        'customFieldsData',
-        'log',
-        'publicLinks',
-        'usrPassRecover',
-        'usrToGroups',
-        'plugins',
-        'notices',
+        'Customer',
+        'Category',
+        'Tag',
+        'UserGroup',
+        'UserProfile',
+        'User',
+        'Account',
+        'AccountToFavorite',
+        'AccountFile',
+        'AccountToUserGroup',
+        'AccountHistory',
+        'AccountToTag',
+        'AccountTouser',
+        'AuthToken',
+        'Config',
+        'Action',
+        'CustomFieldType',
+        'CustomFieldDefinition',
+        'customFieldData',
+        'EventLog',
+        'PublicLink',
+        'UserPassRecover',
+        'UserToUserGroup',
+        'Plugin',
+        'Notice',
         'account_data_v',
         'account_search_v'
     ];
@@ -122,7 +124,7 @@ class DBUtil
      */
     public static function checkDatabaseExist()
     {
-        $dic = Bootstrap::getDic();
+        $dic = Bootstrap::getContainer();
         /** @var Database $Db */
         $Db = $dic->get(Database::class);
         /** @var ConfigData $ConfigData */
@@ -133,7 +135,7 @@ class DBUtil
                 'SELECT COUNT(*) 
                 FROM information_schema.tables
                 WHERE table_schema = \'' . $ConfigData->getDbName() . '\'
-                AND table_name IN (\'customers\', \'categories\', \'accounts\', \'usrData\', \'config\', \'log\' )';
+                AND table_name IN (\'Client\', \'Category\', \'Account\', \'User\', \'Config\', \'EventLog\')';
 
             return (int)$Db->getDbHandler()->getConnection()->query($query)->fetchColumn() === 6;
         } catch (\Exception $e) {

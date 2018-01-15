@@ -36,118 +36,70 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
     /**
      * @var int
      */
-    public $publicLink_id = 0;
+    public $id = 0;
     /**
      * @var int
      */
-    public $publicLink_itemId = 0;
+    public $itemId = 0;
     /**
      * @var string
      */
-    public $publicLink_hash = '';
+    public $hash = '';
     /**
      * @var int
      */
-    public $publicLink_userId = 0;
+    public $userId = 0;
     /**
      * @var int
      */
-    public $publicLink_typeId = 0;
+    public $typeId = 0;
     /**
      * @var bool
      */
-    public $publicLink_notify = false;
+    public $notify = false;
     /**
      * @var int
      */
-    public $publicLink_dateAdd = 0;
+    public $dateAdd = 0;
     /**
      * @var int
      */
-    public $publicLink_dateExpire = 0;
+    public $dateExpire = 0;
     /**
      * @var int
      */
-    public $publicLink_countViews = 0;
+    public $countViews = 0;
     /**
      * @var int
      */
-    public $publicLink_totalCountViews = 0;
+    public $totalCountViews = 0;
     /**
      * @var int
      */
-    public $publicLink_maxCountViews = 0;
+    public $maxCountViews = 0;
     /**
      * @var array|string
      */
-    public $publicLink_useInfo;
+    public $useInfo;
     /**
      * @var string
      */
-    public $publicLink_data;
+    public $data;
 
     /**
      * @return string
      */
-    public function getPublicLinkData()
+    public function getData()
     {
-        return $this->publicLink_data;
+        return $this->data;
     }
 
     /**
-     * @param string $publicLink_data
+     * @param string $data
      */
-    public function setPublicLinkData($publicLink_data)
+    public function setData($data)
     {
-        $this->publicLink_data = $publicLink_data;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPublicLinkId()
-    {
-        return (int)$this->publicLink_id;
-    }
-
-    /**
-     * @param int $publicLink_id
-     */
-    public function setPublicLinkId($publicLink_id)
-    {
-        $this->publicLink_id = (int)$publicLink_id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPublicLinkHash()
-    {
-        return $this->publicLink_hash;
-    }
-
-    /**
-     * @param string $publicLink_hash
-     */
-    public function setPublicLinkHash($publicLink_hash)
-    {
-        $this->publicLink_hash = $publicLink_hash;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPublicLinkItemId()
-    {
-        return (int)$this->publicLink_itemId;
-    }
-
-    /**
-     * @param int $publicLink_itemId
-     */
-    public function setPublicLinkItemId($publicLink_itemId)
-    {
-        $this->publicLink_itemId = (int)$publicLink_itemId;
+        $this->data = $data;
     }
 
     /**
@@ -155,111 +107,143 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
      */
     public function getId()
     {
-        return (int)$this->publicLink_id;
+        return (int)$this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = (int)$id;
     }
 
     /**
      * @return string
      */
-    public function getName()
+    public function getHash()
     {
-        return '';
+        return $this->hash;
+    }
+
+    /**
+     * @param string $hash
+     */
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
     }
 
     /**
      * @return int
      */
-    public function getPublicLinkUserId()
+    public function getItemId()
     {
-        return (int)$this->publicLink_userId;
+        return (int)$this->itemId;
     }
 
     /**
-     * @param int $publicLink_userId
+     * @param int $itemId
      */
-    public function setPublicLinkUserId($publicLink_userId)
+    public function setItemId($itemId)
     {
-        $this->publicLink_userId = (int)$publicLink_userId;
+        $this->itemId = (int)$itemId;
     }
 
     /**
      * @return int
      */
-    public function getPublicLinkTypeId()
+    public function getUserId()
     {
-        return (int)$this->publicLink_typeId;
+        return (int)$this->userId;
     }
 
     /**
-     * @param int $publicLink_typeId
+     * @param int $userId
      */
-    public function setPublicLinkTypeId($publicLink_typeId)
+    public function setUserId($userId)
     {
-        $this->publicLink_typeId = (int)$publicLink_typeId;
+        $this->userId = (int)$userId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTypeId()
+    {
+        return (int)$this->typeId;
+    }
+
+    /**
+     * @param int $typeId
+     */
+    public function setTypeId($typeId)
+    {
+        $this->typeId = (int)$typeId;
     }
 
     /**
      * @return boolean
      */
-    public function isPublicLinkNotify()
+    public function isNotify()
     {
-        return (bool)$this->publicLink_notify;
+        return (bool)$this->notify;
     }
 
     /**
-     * @param boolean $publicLink_notify
+     * @param boolean $notify
      */
-    public function setPublicLinkNotify($publicLink_notify)
+    public function setNotify($notify)
     {
-        $this->publicLink_notify = (bool)$publicLink_notify;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPublicLinkDateAdd()
-    {
-        return (int)$this->publicLink_dateAdd;
-    }
-
-    /**
-     * @param int $publicLink_dateAdd
-     */
-    public function setPublicLinkDateAdd($publicLink_dateAdd)
-    {
-        $this->publicLink_dateAdd = (int)$publicLink_dateAdd;
+        $this->notify = (bool)$notify;
     }
 
     /**
      * @return int
      */
-    public function getPublicLinkDateExpire()
+    public function getDateAdd()
     {
-        return (int)$this->publicLink_dateExpire;
+        return (int)$this->dateAdd;
     }
 
     /**
-     * @param int $publicLink_dateExpire
+     * @param int $dateAdd
      */
-    public function setPublicLinkDateExpire($publicLink_dateExpire)
+    public function setDateAdd($dateAdd)
     {
-        $this->publicLink_dateExpire = (int)$publicLink_dateExpire;
+        $this->dateAdd = (int)$dateAdd;
     }
 
     /**
      * @return int
      */
-    public function getPublicLinkCountViews()
+    public function getDateExpire()
     {
-        return (int)$this->publicLink_countViews;
+        return (int)$this->dateExpire;
     }
 
     /**
-     * @param int $publicLink_countViews
+     * @param int $dateExpire
      */
-    public function setPublicLinkCountViews($publicLink_countViews)
+    public function setDateExpire($dateExpire)
     {
-        $this->publicLink_countViews = (int)$publicLink_countViews;
+        $this->dateExpire = (int)$dateExpire;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCountViews()
+    {
+        return (int)$this->countViews;
+    }
+
+    /**
+     * @param int $countViews
+     */
+    public function setCountViews($countViews)
+    {
+        $this->countViews = (int)$countViews;
     }
 
     /**
@@ -267,51 +251,51 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
      */
     public function addCountViews()
     {
-        return $this->publicLink_countViews++;
+        return $this->countViews++;
     }
 
     /**
      * @return int
      */
-    public function getPublicLinkMaxCountViews()
+    public function getMaxCountViews()
     {
-        return (int)$this->publicLink_maxCountViews;
+        return (int)$this->maxCountViews;
     }
 
     /**
-     * @param int $publicLink_maxCountViews
+     * @param int $maxCountViews
      */
-    public function setPublicLinkMaxCountViews($publicLink_maxCountViews)
+    public function setMaxCountViews($maxCountViews)
     {
-        $this->publicLink_maxCountViews = (int)$publicLink_maxCountViews;
+        $this->maxCountViews = (int)$maxCountViews;
     }
 
     /**
      * @return array
      */
-    public function getPublicLinkUseInfo()
+    public function getUseInfo()
     {
-        if (is_string($this->publicLink_useInfo)) {
-            return unserialize($this->publicLink_useInfo);
+        if (is_string($this->useInfo)) {
+            return unserialize($this->useInfo);
         }
 
-        return (array)$this->publicLink_useInfo;
+        return (array)$this->useInfo;
     }
 
     /**
-     * @param array $publicLink_useInfo
+     * @param array $useInfo
      */
-    public function setPublicLinkUseInfo(array $publicLink_useInfo)
+    public function setUseInfo(array $useInfo)
     {
-        $this->publicLink_useInfo = $publicLink_useInfo;
+        $this->useInfo = $useInfo;
     }
 
     /**
      * @return int
      */
-    public function getPublicLinkTotalCountViews()
+    public function getTotalCountViews()
     {
-        return (int)$this->publicLink_totalCountViews;
+        return (int)$this->totalCountViews;
     }
 
     /**
@@ -319,6 +303,14 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
      */
     public function addTotalCountViews()
     {
-        return $this->publicLink_totalCountViews++;
+        return $this->totalCountViews++;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        // TODO: Implement getName() method.
     }
 }

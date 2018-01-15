@@ -41,7 +41,7 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Services\PublicLink\PublicLinkService;
+use SP\Repositories\PublicLink\PublicLinkRepository;
 
 /**
  * Class PublicLinkController
@@ -54,7 +54,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
     use ItemTrait;
 
     /**
-     * @var PublicLinkService
+     * @var PublicLinkRepository
      */
     protected $publicLinkService;
 
@@ -124,7 +124,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
-            $this->view->assign('publicLinkURL', PublicLinkService::getLinkForHash($publicLink->getPublicLinkHash()));
+            $this->view->assign('publicLinkURL', PublicLinkRepository::getLinkForHash($publicLink->getHash()));
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
@@ -290,6 +290,6 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
     {
         $this->checkLoggedIn();
 
-        $this->publicLinkService = new PublicLinkService();
+        $this->publicLinkService = new PublicLinkRepository();
     }
 }

@@ -121,7 +121,9 @@ class Language
      */
     private function getUserLang()
     {
-        return ($this->session->getUserData()->getUserId() > 0) ? $this->session->getUserPreferences()->getLang() : '';
+        $userData = $this->session->getUserData();
+
+        return ($userData->getId() > 0) ? $userData->getPreferences()->getLang() : '';
     }
 
     /**

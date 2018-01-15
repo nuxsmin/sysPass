@@ -31,16 +31,16 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class GroupUsersData extends DataModelBase
+class UserToUserGroupData extends DataModelBase
 {
     /**
      * @var int
      */
-    public $usertogroup_groupId = 0;
+    public $userGroupId = 0;
     /**
      * @var int
      */
-    public $usertogroup_userId = 0;
+    public $userId = 0;
     /**
      * @var array
      */
@@ -49,33 +49,33 @@ class GroupUsersData extends DataModelBase
     /**
      * @return int
      */
-    public function getUsertogroupGroupId()
+    public function getUserGroupId()
     {
-        return (int)$this->usertogroup_groupId;
+        return (int)$this->userGroupId;
     }
 
     /**
-     * @param int $usertogroup_groupId
+     * @param int $userGroupId
      */
-    public function setUsertogroupGroupId($usertogroup_groupId)
+    public function setUserGroupId($userGroupId)
     {
-        $this->usertogroup_groupId = $usertogroup_groupId;
+        $this->userGroupId = $userGroupId;
     }
 
     /**
      * @return int
      */
-    public function getUsertogroupUserId()
+    public function getUserId()
     {
-        return (int)$this->usertogroup_userId;
+        return (int)$this->userId;
     }
 
     /**
-     * @param int $usertogroup_userId
+     * @param int $userId
      */
-    public function setUsertogroupUserId($usertogroup_userId)
+    public function setUserId($userId)
     {
-        $this->usertogroup_userId = $usertogroup_userId;
+        $this->userId = $userId;
     }
 
     /**

@@ -39,7 +39,7 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Services\Category\CategoryService;
+use SP\Repositories\Category\CategoryRepository;
 
 /**
  * Class CategoryController
@@ -52,7 +52,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
     use ItemTrait;
 
     /**
-     * @var CategoryService
+     * @var CategoryRepository
      */
     protected $categoryService;
 
@@ -276,7 +276,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
     {
         $this->checkLoggedIn();
 
-        $this->categoryService = new CategoryService();
+        $this->categoryService = new CategoryRepository();
     }
 
 }

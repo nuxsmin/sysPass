@@ -26,7 +26,7 @@ namespace SP\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\CustomFieldDefData;
+use SP\DataModel\CustomFieldDefinitionData;
 use SP\Http\Request;
 
 /**
@@ -37,7 +37,7 @@ use SP\Http\Request;
 class CustomFieldDefForm extends FormBase implements FormInterface
 {
     /**
-     * @var CustomFieldDefData
+     * @var CustomFieldDefinitionData
      */
     protected $customFieldDefData;
 
@@ -68,7 +68,7 @@ class CustomFieldDefForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->customFieldDefData = new CustomFieldDefData();
+        $this->customFieldDefData = new CustomFieldDefinitionData();
         $this->customFieldDefData->setId($this->itemId);
         $this->customFieldDefData->setName(Request::analyze('name'));
         $this->customFieldDefData->setTypeId(Request::analyze('type', 0));
@@ -96,7 +96,7 @@ class CustomFieldDefForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return CustomFieldDefData
+     * @return CustomFieldDefinitionData
      */
     public function getItemData()
     {

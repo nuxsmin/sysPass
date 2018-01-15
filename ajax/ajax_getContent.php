@@ -69,10 +69,10 @@ $Tpl->assign('actionId', $actionId);
 $Tpl->assign('id', $itemId);
 $Tpl->assign('activeTabId', $itemId);
 $Tpl->assign('queryTimeStart', microtime());
-$Tpl->assign('userId', $UserData->getUserId());
+$Tpl->assign('userId', $UserData->getId());
 $Tpl->assign('userGroupId', $UserData->getUserGroupId());
-$Tpl->assign('userIsAdminApp', $UserData->isUserIsAdminApp());
-$Tpl->assign('userIsAdminAcc', $UserData->isUserIsAdminAcc());
+$Tpl->assign('userIsAdminApp', $UserData->isIsAdminApp());
+$Tpl->assign('userIsAdminAcc', $UserData->isIsAdminAcc());
 $Tpl->assign('themeUri', $theme->getThemeUri());
 
 switch ($actionId) {
@@ -144,7 +144,7 @@ switch ($actionId) {
 $ConfigData = $dic->get(\SP\Config\ConfigData::class);
 
 // Se comprueba si se debe de mostrar la vista de depuración
-if ($UserData->isUserIsAdminApp() && $ConfigData->isDebug()) {
+if ($UserData->isIsAdminApp() && $ConfigData->isDebug()) {
     $Controller->getDebug();
 }
 

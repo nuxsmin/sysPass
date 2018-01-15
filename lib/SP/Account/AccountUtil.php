@@ -53,13 +53,13 @@ class AccountUtil
     public static function getAccountRequestData($id)
     {
         $query = /** @lang SQL */
-            'SELECT account_userId,
-            account_userEditId,
-            account_name,
-            customer_name 
-            FROM accounts 
-            LEFT JOIN customers ON account_customerId = customer_id 
-            WHERE account_id = ? LIMIT 1';
+            'SELECT A.userId,
+            A.userEditId,
+            A.name,
+            C.name AS clientName 
+            FROM Account A 
+            LEFT JOIN Client C ON A.clientId = C.id 
+            WHERE A.id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -83,10 +83,10 @@ class AccountUtil
     public static function getAccountUsersName($accountId)
     {
         $query = /** @lang SQL */
-            'SELECT user_name 
-            FROM accUsers 
-            JOIN usrData ON accuser_userId = user_id 
-            WHERE accuser_accountId = ?';
+            'SELECT U.name
+            FROM AccountToUser AU
+            INNER JOIN User U ON AU.userId = U.id
+            WHERE AU.accountId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -125,7 +125,7 @@ class AccountUtil
             account_pass,
             account_key,
             account_notes 
-            FROM accounts';
+            FROM Account';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -146,7 +146,7 @@ class AccountUtil
     public static function getAccountNameById($accountId)
     {
         $query = /** @lang SQL */
-            'SELECT account_name FROM accounts WHERE account_id = ? LIMIT 1';
+            'SELECT account_name FROM Account WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -167,7 +167,7 @@ class AccountUtil
     public static function getAccountNameByIdBatch(array $ids)
     {
         $query = /** @lang SQL */
-            'SELECT account_name FROM accounts WHERE account_id IN (' . implode(',', array_fill(0, count($ids), '?')) . ')';
+            'SELECT account_name FROM Account WHERE account_id IN (' . implode(',', array_fill(0, count($ids), '?')) . ')';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -185,12 +185,12 @@ class AccountUtil
     public static function getAccountsMgmtSearch(ItemSearchData $SearchData)
     {
         $Data = new QueryData();
-        $Data->setSelect('account_id, account_name, customer_name');
-        $Data->setFrom('accounts LEFT JOIN customers ON account_customerId = customer_id');
+        $Data->setSelect('account_id, account_name, name');
+        $Data->setFrom('accounts LEFT JOIN customers ON account_customerId = id');
         $Data->setOrder('account_name');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('account_name LIKE ? OR customer_name LIKE ?');
+            $Data->setWhere('account_name LIKE ? OR name LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);
@@ -227,14 +227,14 @@ class AccountUtil
 
         $queryWhere = self::getAccountFilterUser($Data, $session);
 
-        $queryWhere[] = 'account_parentId = ?';
+        $queryWhere[] = 'A.parentId = ?';
         $Data->addParam($accountId);
 
         $query = /** @lang SQL */
-            'SELECT account_id, account_name, customer_name 
-            FROM accounts 
-            LEFT JOIN customers ON customer_id = account_customerId 
-            WHERE ' . implode(' AND ', $queryWhere) . ' ORDER  BY customer_name';
+            'SELECT A.id, A.name, C.name AS clientName 
+            FROM Account A
+            INNER JOIN Client C ON Account.clientId = C.id 
+            WHERE ' . implode(' AND ', $queryWhere) . ' ORDER  BY name';
 
         $Data->setQuery($query);
 
@@ -254,41 +254,41 @@ class AccountUtil
         $configData = $session->getConfig();
         $userData = $session->getUserData();
 
-        if (!$userData->isUserIsAdminApp()
-            && !$userData->isUserIsAdminAcc()
+        if (!$userData->getIsAdminApp()
+            && !$userData->getIsAdminAcc()
             && !($useGlobalSearch && $session->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
         ) {
             // Filtro usuario y grupo
-            $filterUser[] = 'account_userId = ?';
-            $Data->addParam($userData->getUserId());
+            $filterUser[] = 'userId = ?';
+            $Data->addParam($userData->getId());
 
-            $filterUser[] = 'account_userGroupId = ?';
+            $filterUser[] = 'userGroupId = ?';
             $Data->addParam($userData->getUserGroupId());
 
             // Filtro de cuenta en usuarios y grupos secundarios
             $filterUser[] = /** @lang SQL */
-                'account_id IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)';
-            $Data->addParam($userData->getUserId());
+                'A.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = A.id AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = A.id AND userGroupId = ?)';
+            $Data->addParam($userData->getId());
             $Data->addParam($userData->getUserGroupId());
 
             // Filtro de grupo principal de cuenta en grupos que incluyen al usuario
             $filterUser[] = /** @lang SQL */
-                'account_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = account_userGroupId AND usertogroup_userId = ?)';
-            $Data->addParam($userData->getUserId());
+                'A.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = ?)';
+            $Data->addParam($userData->getId());
 
             if ($configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
                 $filterUser[] = /** @lang SQL */
-                    'account_id = (SELECT accgroup_accountId AS accountId FROM accGroups INNER JOIN usrToGroups ON usertogroup_groupId = accgroup_groupId WHERE accgroup_accountId = account_id AND usertogroup_userId = ? LIMIT 1)';
-                $Data->addParam($userData->getUserId());
+                    'A.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = A.id AND uug.userId = ? LIMIT 1)';
+                $Data->addParam($userData->getId());
             }
 
             $queryWhere[] = '(' . implode(' OR ', $filterUser) . ')';
         }
 
-        $queryWhere[] = '(account_isPrivate = 0 OR (account_isPrivate = 1 AND account_userId = ?))';
-        $Data->addParam($userData->getUserId());
-        $queryWhere[] = '(account_isPrivateGroup = 0 OR (account_isPrivateGroup = 1 AND account_userGroupId = ?))';
+        $queryWhere[] = '(isPrivate = 0 OR (isPrivate = 1 AND userId = ?))';
+        $Data->addParam($userData->getId());
+        $queryWhere[] = '(isPrivateGroup = 0 OR (isPrivateGroup = 1 AND userGroupId = ?))';
         $Data->addParam($userData->getUserGroupId());
 
         return $queryWhere;
@@ -307,41 +307,41 @@ class AccountUtil
         $configData = $session->getConfig();
         $userData = $session->getUserData();
 
-        if (!$userData->isUserIsAdminApp()
-            && !$userData->isUserIsAdminAcc()
+        if (!$userData->getIsAdminApp()
+            && !$userData->getIsAdminAcc()
             && !($useGlobalSearch && $session->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
         ) {
             // Filtro usuario y grupo
-            $filterUser[] = 'acchistory_userId = ?';
-            $Data->addParam($userData->getUserId());
+            $filterUser[] = 'AH.userId = ?';
+            $Data->addParam($userData->getId());
 
-            $filterUser[] = 'acchistory_userGroupId = ?';
+            $filterUser[] = 'AH.userGroupId = ?';
             $Data->addParam($userData->getUserGroupId());
 
             // Filtro de cuenta en usuarios y grupos secundarios
             $filterUser[] = /** @lang SQL */
-                'acchistory_accountId IN (SELECT accuser_accountId AS accountId FROM accUsers WHERE accuser_accountId = account_id AND accuser_userId = ? UNION ALL SELECT accgroup_accountId AS accountId FROM accGroups WHERE accgroup_accountId = account_id AND accgroup_groupId = ?)';
-            $Data->addParam($userData->getUserId());
+                'AH.accountId IN (SELECT accountId FROM AccountToUser WHERE accountId = AH.accountId AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = account_id AND AH.accountId = ?)';
+            $Data->addParam($userData->getId());
             $Data->addParam($userData->getUserGroupId());
 
             // Filtro de grupo principal de cuenta en grupos que incluyen al usuario
             $filterUser[] = /** @lang SQL */
-                'acchistory_userGroupId IN (SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = account_userGroupId AND usertogroup_userId = ?)';
-            $Data->addParam($userData->getUserId());
+                'AH.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AH.userGroupId AND userId = ?)';
+            $Data->addParam($userData->getId());
 
             if ($configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
                 $filterUser[] = /** @lang SQL */
-                    'acchistory_accountId = (SELECT accgroup_accountId AS accountId FROM accGroups INNER JOIN usrToGroups ON usertogroup_groupId = accgroup_groupId WHERE accgroup_accountId = account_id AND usertogroup_userId = ? LIMIT 1)';
-                $Data->addParam($userData->getUserId());
+                    'AH.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AH.accountId AND uug.userId = ? LIMIT 1)';
+                $Data->addParam($userData->getId());
             }
 
             $queryWhere[] = '(' . implode(' OR ', $filterUser) . ')';
         }
 
-        $queryWhere[] = '(acchistory_isPrivate = 0 OR (acchistory_isPrivate = 1 AND acchistory_userId = ?))';
-        $Data->addParam($userData->getUserId());
-        $queryWhere[] = '(acchistory_isPrivateGroup = 0 OR (acchistory_isPrivateGroup = 1 AND acchistory_userGroupId = ?))';
+        $queryWhere[] = '(AH.isPrivate = 0 OR (AH.isPrivate = 1 AND AH.userId = ?))';
+        $Data->addParam($userData->getId());
+        $queryWhere[] = '(AH.isPrivateGroup = 0 OR (AH.isPrivateGroup = 1 AND AH.userGroupId = ?))';
         $Data->addParam($userData->getUserGroupId());
 
         return $queryWhere;
@@ -361,15 +361,15 @@ class AccountUtil
         $queryWhere = self::getAccountFilterUser($Data, $session);
 
         if (null !== $accountId) {
-            $queryWhere[] = 'account_id <> ? AND (account_parentId = 0 OR account_parentId IS NULL)';
+            $queryWhere[] = 'A.id <> ? AND (A.parentId = 0 OR A.parentId IS NULL)';
             $Data->addParam($accountId);
         }
 
         $query = /** @lang SQL */
-            'SELECT account_id, account_name, customer_name 
-            FROM accounts 
-            LEFT JOIN customers ON customer_id = account_customerId 
-            WHERE ' . implode(' AND ', $queryWhere) . ' ORDER BY customer_name';
+            'SELECT A.id, A.name, C.name AS clientName 
+            FROM Account A
+            LEFT JOIN Client C ON A.clientId = C.id 
+            WHERE ' . implode(' AND ', $queryWhere) . ' ORDER BY name';
 
         $Data->setQuery($query);
 
@@ -384,7 +384,7 @@ class AccountUtil
     public static function getTotalNumAccounts()
     {
         $query = /** @lang SQL */
-            'SELECT SUM(n) AS num FROM (SELECT COUNT(*) AS n FROM accounts UNION SELECT COUNT(*) AS n FROM accHistory) a';
+            'SELECT SUM(n) AS num FROM (SELECT COUNT(*) AS n FROM Account UNION SELECT COUNT(*) AS n FROM AccountHistory) a';
 
         $Data = new QueryData();
         $Data->setQuery($query);

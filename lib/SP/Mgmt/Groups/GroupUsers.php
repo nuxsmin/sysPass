@@ -27,7 +27,7 @@ namespace SP\Mgmt\Groups;
 defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\GroupUsersData;
+use SP\DataModel\UserToUserGroupData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;
@@ -38,7 +38,7 @@ use SP\Storage\QueryData;
  * Class GroupUser
  *
  * @package SP\Mgmt\Groups
- * @property GroupUsersData $itemData
+ * @property UserToUserGroupData $itemData
  */
 class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInterface
 {
@@ -50,7 +50,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
      */
     public function update()
     {
-        $this->delete($this->itemData->getUsertogroupGroupId());
+        $this->delete($this->itemData->getUserGroupId());
         $this->add();
 
         return $this;
@@ -64,7 +64,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     public function delete($id)
     {
         $query = /** @lang SQL */
-            'DELETE FROM usrToGroups WHERE usertogroup_groupId = ?';
+            'DELETE FROM UserToGroup WHERE userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -89,14 +89,14 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO usrToGroups (usertogroup_userId, usertogroup_groupId) VALUES ' . $this->getParamsFromArray($this->itemData->getUsers(), '(?,?)');
+            'INSERT INTO UserToGroup (userId, userGroupId) VALUES ' . $this->getParamsFromArray($this->itemData->getUsers(), '(?,?)');
 
         $Data = new QueryData();
         $Data->setQuery($query);
 
         foreach ($this->itemData->getUsers() as $user) {
             $Data->addParam($user);
-            $Data->addParam($this->itemData->getUsertogroupGroupId());
+            $Data->addParam($this->itemData->getUserGroupId());
         }
 
         $Data->setOnErrorMessage(__('Error al asignar los usuarios al grupo', false));
@@ -108,12 +108,12 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
 
     /**
      * @param $id int
-     * @return GroupUsersData[]
+     * @return UserToUserGroupData[]
      */
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT usertogroup_groupId, usertogroup_userId FROM usrToGroups WHERE usertogroup_groupId = ?';
+            'SELECT userGroupId, userId FROM UserToGroup WHERE userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -140,7 +140,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     public function checkInUse($id)
     {
         $query = /** @lang SQL */
-            'SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = ?';
+            'SELECT userGroupId FROM UserToGroup WHERE userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -188,7 +188,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     public function checkUserInGroup($groupId, $userId)
     {
         $query = /** @lang SQL */
-            'SELECT usertogroup_groupId FROM usrToGroups WHERE usertogroup_groupId = ? AND usertogroup_userId = ?';
+            'SELECT userGroupId FROM UserToGroup WHERE userGroupId = ? AND userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -209,7 +209,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     public function getGroupsForUser($userId)
     {
         $query = /** @lang SQL */
-            'SELECT usertogroup_groupId AS groupId FROM usrToGroups WHERE usertogroup_userId = ?';
+            'SELECT userGroupId AS groupId FROM UserToGroup WHERE userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);

@@ -18,11 +18,11 @@
                                 <li class="mdl-list__item">
                                 <span class="btn-action mdl-list__item-primary-content"
                                       data-action-route="account/view"
-                                      data-item-id="<?php echo $account->account_id; ?>"
+                                      data-item-id="<?php echo $account->id; ?>"
                                       data-onclick="account/view"
                                       data-action-sk="<?php echo $sk; ?>">
                                 <i class="material-icons mdl-list__item-icon">layers</i>
-                                    <?php printf('%s (%s)', $account->account_name, $account->customer_name); ?>
+                                    <?php printf('%s (%s)', $account->name, $account->clientName); ?>
                                 </span>
                                 </li>
                             <?php endforeach; ?>

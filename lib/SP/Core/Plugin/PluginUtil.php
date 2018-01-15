@@ -186,13 +186,13 @@ class PluginUtil
     public static function checkEnabledPlugins()
     {
         $PluginData = new PluginData();
-        $PluginData->setPluginAvailable(false);
-        $PluginData->setPluginEnabled(false);
+        $PluginData->setAvailable(false);
+        $PluginData->setEnabled(false);
 
         foreach (self::getEnabledPlugins() as $plugin) {
             if (!in_array($plugin, self::$loadedPlugins)) {
                 $PluginClone = clone $PluginData;
-                $PluginClone->setPluginName($plugin);
+                $PluginClone->setName($plugin);
 
                 Plugin::getItem($PluginClone)->toggleAvaliableByName();
             }

@@ -46,42 +46,42 @@ class AccountExtData extends AccountData
     /**
      * @var string
      */
-    public $category_name = '';
+    public $categoryName = '';
     /**
      * @var string
      */
-    public $customer_name = '';
+    public $clientName = '';
     /**
      * @var string
      */
-    public $usergroup_name = '';
+    public $userGroupName = '';
     /**
      * @var string
      */
-    public $user_name = '';
+    public $userName = '';
     /**
      * @var string
      */
-    public $user_login = '';
+    public $userLogin = '';
     /**
      * @var string
      */
-    public $user_editName = '';
+    public $userEditName = '';
     /**
      * @var string
      */
-    public $user_editLogin = '';
+    public $userEditLogin = '';
     /**
      * @var string
      */
-    public $publicLink_hash = '';
+    public $publicLinkHash = '';
 
     /**
      * @return string
      */
     public function getUserEditName()
     {
-        return $this->user_editName;
+        return $this->userEditName;
     }
 
     /**
@@ -89,7 +89,7 @@ class AccountExtData extends AccountData
      */
     public function getUserEditLogin()
     {
-        return $this->user_editLogin;
+        return $this->userEditLogin;
     }
 
     /**
@@ -97,7 +97,7 @@ class AccountExtData extends AccountData
      */
     public function getPublicLinkHash()
     {
-        return $this->publicLink_hash;
+        return $this->publicLinkHash;
     }
 
     /**
@@ -137,23 +137,23 @@ class AccountExtData extends AccountData
      */
     public function getCategoryName()
     {
-        return $this->category_name;
+        return $this->categoryName;
     }
 
     /**
      * @return string
      */
-    public function getCustomerName()
+    public function getClientName()
     {
-        return $this->customer_name;
+        return $this->clientName;
     }
 
     /**
      * @return string
      */
-    public function getUsergroupName()
+    public function getUserGroupName()
     {
-        return $this->usergroup_name;
+        return $this->userGroupName;
     }
 
     /**
@@ -161,7 +161,7 @@ class AccountExtData extends AccountData
      */
     public function getUserName()
     {
-        return $this->user_name;
+        return $this->userName;
     }
 
     /**
@@ -169,7 +169,7 @@ class AccountExtData extends AccountData
      */
     public function getUserLogin()
     {
-        return $this->user_login;
+        return $this->userLogin;
     }
 
     /**

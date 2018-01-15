@@ -19,7 +19,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" value="<?php echo $tag->getTagName(); ?>">
+                               maxlength="50" value="<?php echo $tag->getName(); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Nombre de la etiqueta'); ?></label>
                     </div>

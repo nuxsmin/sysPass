@@ -54,7 +54,7 @@ class UserPreferencesUtil
      */
     public static function migrate()
     {
-        $Container = Bootstrap::getDic();
+        $Container = Bootstrap::getContainer();
         /** @var ConfigData $ConfigData */
         $ConfigData = $Container->get(ConfigData::class);
         /** @var Log $Log */
@@ -66,14 +66,14 @@ class UserPreferencesUtil
 
         foreach (User::getItem()->getAll() as $User) {
             try {
-                $Preferences = $User->getUserPreferences();
+                $Preferences = $User->getPreferences();
 
                 if (!empty($Preferences)) {
-                    $LogMessage->addDetails(__('Usuario', false), $User->getUserLogin());
+                    $LogMessage->addDetails(__('Usuario', false), $User->getLogin());
 
                     /** @var UserPreferencesData $Preferences */
                     $Preferences = Util::unserialize(UserPreferencesData::class, $Preferences, 'SP\UserPreferences');
-                    $User->setUserPreferences($Preferences);
+                    $User->setPreferences($Preferences);
 
                     // FIXME
                     $Preferences->setTheme($ConfigData->getSiteTheme());
@@ -84,7 +84,7 @@ class UserPreferencesUtil
                         $Preferences->setUse2Fa(0);
                     }
 
-                    $Preferences->setUserId($User->getUserId());
+                    $Preferences->setUserId($User->getId());
 
                     UserPreferences::getItem($Preferences)->update();
                 }
@@ -113,17 +113,17 @@ class UserPreferencesUtil
 
         /** @var AuthenticatorData $AuthenticatorData */
         $AuthenticatorData = new AuthenticatorData();
-        $AuthenticatorData->setUserId($UserData->getUserId());
+        $AuthenticatorData->setUserId($UserData->getId());
         $AuthenticatorData->setIV(UserPass::getUserIVById($UserData->getId()));
         $AuthenticatorData->setTwofaEnabled(1);
         $AuthenticatorData->setDate(time());
 
-        $data[$UserData->getUserId()] = $AuthenticatorData;
+        $data[$UserData->getId()] = $AuthenticatorData;
 
         $PluginData = new PluginData();
-        $PluginData->setPluginName(AuthenticatorPlugin::PLUGIN_NAME);
-        $PluginData->setPluginEnabled(1);
-        $PluginData->setPluginData(serialize($data));
+        $PluginData->setName(AuthenticatorPlugin::PLUGIN_NAME);
+        $PluginData->setEnabled(1);
+        $PluginData->setData(serialize($data));
 
         Plugin::getItem($PluginData)->update();
     }

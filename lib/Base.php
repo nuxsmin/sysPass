@@ -62,47 +62,58 @@ require __DIR__ . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
 
 initModule(APP_MODULE);
 
-$dic = new Container();
+//$dic = new Container();
+//
+//$dic->share(\Klein\Klein::class);
+//
+//$dic->share(\SP\Core\Session\Session::class);
+//
+//$dic->share(\SP\Config\Config::class, function () {
+//    return new SP\Config\Config(new \SP\Storage\XmlHandler(XML_CONFIG_FILE));
+//});
+//
+//$dic->share(\SP\Core\Language::class);
+//
+//$dic->share(\SP\Config\ConfigData::class, function ($dic) {
+//    /** @var \SP\Config\Config $config */
+//    /** @var \SP\Core\Dic\DicInterface $dic */
+//    $config = $dic->get(\SP\Config\Config::class);
+//
+//    return $config->getConfigData();
+//});
+//
+//$dic->share(\SP\Storage\Database::class, function () {
+//    return new \SP\Storage\Database(new \SP\Storage\MySQLHandler());
+//});
+//
+//$dic->share(\SP\Core\Acl\Acl::class, function ($dic) {
+//    /** @var \SP\Core\Session\Session $session */
+//    /** @var \SP\Core\Dic\DicInterface $dic */
+//    $session = $dic->get(\SP\Core\Session\Session::class);
+//
+//    return new \SP\Core\Acl\Acl($session, new \SP\Core\Acl\Action(new \SP\Storage\FileCache()));
+//});
+//
+//$dic->share(\SP\Core\UI\Theme::class, function () {
+//    return new \SP\Core\UI\Theme(APP_MODULE);
+//});
+//
+//$dic->share(\SP\Core\Events\EventDispatcher::class);
+//
+//$dic->add(\SP\Log\Log::class, function () {
+//    return new SP\Log\Log(new \SP\Core\Messages\LogMessage());
+//});
 
-$dic->share(\Klein\Klein::class);
+try {
+    (new Bootstrap())->initialize();
+} catch (\Exception $e) {
+    debugLog($e->getMessage());
+    debugLog($e->getTraceAsString());
 
-$dic->share(\SP\Core\Session\Session::class);
+    die($e->getMessage());
+} catch (\Psr\Container\ContainerExceptionInterface $e) {
+    debugLog($e->getMessage());
+    debugLog($e->getTraceAsString());
 
-$dic->share(\SP\Config\Config::class, function () {
-    return new SP\Config\Config(new \SP\Storage\XmlHandler(XML_CONFIG_FILE));
-});
-
-$dic->share(\SP\Core\Language::class);
-
-$dic->share(\SP\Config\ConfigData::class, function ($dic) {
-    /** @var \SP\Config\Config $config */
-    /** @var \SP\Core\Dic\DicInterface $dic */
-    $config = $dic->get(\SP\Config\Config::class);
-
-    return $config->getConfigData();
-});
-
-$dic->share(\SP\Storage\Database::class, function () {
-    return new \SP\Storage\Database(new \SP\Storage\MySQLHandler());
-});
-
-$dic->share(\SP\Core\Acl\Acl::class, function ($dic) {
-    /** @var \SP\Core\Session\Session $session */
-    /** @var \SP\Core\Dic\DicInterface $dic */
-    $session = $dic->get(\SP\Core\Session\Session::class);
-
-    return new \SP\Core\Acl\Acl($session, new \SP\Core\Acl\Action(new \SP\Storage\FileCache()));
-});
-
-$dic->share(\SP\Core\UI\Theme::class, function () {
-    return new \SP\Core\UI\Theme(APP_MODULE);
-});
-
-$dic->share(\SP\Core\Events\EventDispatcher::class);
-
-$dic->add(\SP\Log\Log::class, function () {
-    return new SP\Log\Log(new \SP\Core\Messages\LogMessage());
-});
-
-$Bootstrap = new Bootstrap();
-$Bootstrap->initialize();
+    die($e->getMessage());
+}

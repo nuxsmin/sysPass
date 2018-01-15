@@ -25,12 +25,10 @@
 namespace SP\Core\Session;
 
 use SP\Account\AccountAcl;
-use SP\Account\AccountSearch;
+use SP\Account\AccountSearchFilter;
 use SP\Config\ConfigData;
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserData;
-use SP\DataModel\UserPreferencesData;
-use SP\Mgmt\Users\UserPreferences;
+use SP\Services\User\UserLoginResponse;
 
 /**
  * Class Session
@@ -129,11 +127,11 @@ class Session
     /**
      * Establece los datos del usuario en la sesión.
      *
-     * @param UserData $UserData
+     * @param UserLoginResponse $userLoginResponse
      */
-    public function setUserData(UserData $UserData = null)
+    public function setUserData(UserLoginResponse $userLoginResponse = null)
     {
-        $this->setSessionKey('userData', $UserData);
+        $this->setSessionKey('userData', $userLoginResponse);
     }
 
     /**
@@ -143,7 +141,7 @@ class Session
      */
     public function getUserProfile()
     {
-        return $this->getSessionKey('usrprofile');
+        return $this->getSessionKey('userProfile');
     }
 
     /**
@@ -153,33 +151,23 @@ class Session
      */
     public function setUserProfile(ProfileData $ProfileData)
     {
-        $this->setSessionKey('usrprofile', $ProfileData);
+        $this->setSessionKey('userProfile', $ProfileData);
     }
 
     /**
-     * @return AccountSearch
+     * @return AccountSearchFilter
      */
     public function getSearchFilters()
     {
-        return $this->getSessionKey('searchFilters', new AccountSearch());
+        return $this->getSessionKey('searchFilters', null);
     }
 
     /**
-     * @param AccountSearch $searchFilters
+     * @param AccountSearchFilter $searchFilters
      */
-    public function setSearchFilters(AccountSearch $searchFilters)
+    public function setSearchFilters(AccountSearchFilter $searchFilters)
     {
         $this->setSessionKey('searchFilters', $searchFilters);
-    }
-
-    /**
-     * Establece el objeto de preferencias de usuario en la sesión.
-     *
-     * @param UserPreferencesData|UserPreferences $preferences
-     */
-    public function setUserPreferences(UserPreferencesData $preferences)
-    {
-        $this->setSessionKey('userpreferences', $preferences);
     }
 
     /**
@@ -215,28 +203,20 @@ class Session
      */
     public function isLoggedIn()
     {
-        return $this->getUserData()->getUserLogin()
-            && is_object($this->getUserPreferences());
+        $userData = $this->getUserData();
+
+        return $userData->getLogin()
+            && is_object($userData->getPreferences());
     }
 
     /**
      * Devuelve los datos del usuario en la sesión.
      *
-     * @return UserData
+     * @return UserLoginResponse
      */
     public function getUserData()
     {
-        return $this->getSessionKey('userData', new UserData());
-    }
-
-    /**
-     * Obtiene el objeto de preferencias de usuario de la sesión.
-     *
-     * @return UserPreferencesData
-     */
-    public function getUserPreferences()
-    {
-        return $this->getSessionKey('userpreferences');
+        return $this->getSessionKey('userData', new UserLoginResponse());
     }
 
     /**
@@ -255,5 +235,25 @@ class Session
     public function getAuthCompleted()
     {
         return $this->getSessionKey('authCompleted', false);
+    }
+
+    /**
+     * Devolver la clave maestra temporal
+     *
+     * @return string
+     */
+    public function getTemporaryMasterPass()
+    {
+        return $this->getSessionKey('tempmasterpass');
+    }
+
+    /**
+     * Establece la clave maestra temporal
+     *
+     * @param string $password
+     */
+    public function setTemporaryMasterPass($password)
+    {
+        $this->setSessionKey('tempmasterpass', $password);
     }
 }

@@ -32,7 +32,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
-use SP\DataModel\GroupAccountsData;
+use SP\DataModel\AccountToUserGroupData;
 use SP\Log\Log;
 use SP\Mgmt\Groups\GroupAccounts;
 use SP\Mgmt\Groups\GroupAccountsUtil;
@@ -54,19 +54,19 @@ class Account extends AccountBase implements AccountInterface
      */
     public function updateAccount()
     {
-        $Acl = $this->session->getAccountAcl($this->accountData->getAccountId());
+        $Acl = $this->session->getAccountAcl($this->accountData->getId());
 
         // Guardamos una copia de la cuenta en el histórico
-        AccountHistory::addHistory($this->accountData->getAccountId(), false);
+        AccountHistory::addHistory($this->accountData->getId(), false);
 
         try {
             if ($Acl->getStoredAcl()->isShowPermission()) {
-                $GroupAccountsData = new GroupAccountsData();
-                $GroupAccountsData->setAccgroupAccountId($this->accountData->getAccountId());
+                $GroupAccountsData = new AccountToUserGroupData();
+                $GroupAccountsData->setAccountId($this->accountData->getId());
                 $GroupAccountsData->setGroups($this->accountData->getUserGroupsId());
 
                 GroupAccounts::getItem($GroupAccountsData)->update();
-                UserAccounts::updateUsersForAccount($this->accountData->getAccountId(), $this->accountData->getUsersId());
+                UserAccounts::updateUsersForAccount($this->accountData->getId(), $this->accountData->getUsersId());
             }
         } catch (SPException $e) {
             Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
@@ -94,36 +94,36 @@ class Account extends AccountBase implements AccountInterface
             'account_parentId = :accountParentId'
         ];
 
-        if ($this->accountData->getAccountUserGroupId()) {
+        if ($this->accountData->getUserGroupId()) {
             $fields[] = 'account_userGroupId = :accountUserGroupId';
 
-            $Data->addParam($this->accountData->getAccountUserGroupId(), 'accountUserGroupId');
+            $Data->addParam($this->accountData->getUserGroupId(), 'accountUserGroupId');
         }
 
         if ($Acl->getStoredAcl()->isShowPermission()) {
             $fields[] = 'account_otherUserEdit = :accountOtherUserEdit';
             $fields[] = 'account_otherGroupEdit = :accountOtherGroupEdit';
 
-            $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
-            $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
+            $Data->addParam($this->accountData->getOtherUserEdit(), 'accountOtherUserEdit');
+            $Data->addParam($this->accountData->getOtherUserGroupEdit(), 'accountOtherGroupEdit');
         }
 
         $query = /** @lang SQL */
-            'UPDATE accounts SET ' . implode(',', $fields) . ' WHERE account_id = :accountId';
+            'UPDATE Account SET ' . implode(',', $fields) . ' WHERE account_id = :accountId';
 
         $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountCustomerId(), 'accountCustomerId');
-        $Data->addParam($this->accountData->getAccountCategoryId(), 'accountCategoryId');
-        $Data->addParam($this->accountData->getAccountName(), 'accountName');
-        $Data->addParam($this->accountData->getAccountLogin(), 'accountLogin');
-        $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
-        $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
-        $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
-        $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
-        $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
-        $Data->addParam($this->accountData->getAccountIsPrivateGroup(), 'accountIsPrivateGroup');
-        $Data->addParam($this->accountData->getAccountParentId(), 'accountParentId');
-        $Data->addParam($this->accountData->getAccountId(), 'accountId');
+        $Data->addParam($this->accountData->getClientId(), 'accountCustomerId');
+        $Data->addParam($this->accountData->getCategoryId(), 'accountCategoryId');
+        $Data->addParam($this->accountData->getName(), 'accountName');
+        $Data->addParam($this->accountData->getLogin(), 'accountLogin');
+        $Data->addParam($this->accountData->getUrl(), 'accountUrl');
+        $Data->addParam($this->accountData->getNotes(), 'accountNotes');
+        $Data->addParam($this->accountData->getUserEditId(), 'accountUserEditId');
+        $Data->addParam($this->accountData->getPassDateChange(), 'accountPassDateChange');
+        $Data->addParam($this->accountData->getIsPrivate(), 'accountIsPrivate');
+        $Data->addParam($this->accountData->getIsPrivateGroup(), 'accountIsPrivateGroup');
+        $Data->addParam($this->accountData->getParentId(), 'accountParentId');
+        $Data->addParam($this->accountData->getId(), 'accountId');
         $Data->setOnErrorMessage(__('Error al modificar la cuenta', false));
 
         DbWrapper::getQuery($Data);
@@ -141,10 +141,10 @@ class Account extends AccountBase implements AccountInterface
     public function restoreFromHistory($id)
     {
         // Guardamos una copia de la cuenta en el histórico
-        AccountHistory::addHistory($this->accountData->getAccountId(), false);
+        AccountHistory::addHistory($this->accountData->getId(), false);
 
         $query = /** @lang SQL */
-            'UPDATE accounts dst, '
+            'UPDATE Account dst, '
             . '(SELECT * FROM accHistory WHERE acchistory_id = :id) src SET '
             . 'dst.account_customerId = src.acchistory_customerId,'
             . 'dst.account_categoryId = src.acchistory_categoryId,'
@@ -169,7 +169,7 @@ class Account extends AccountBase implements AccountInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id, 'id');
-        $Data->addParam($this->session->getUserData()->getUserId(), 'accountUserEditId');
+        $Data->addParam($this->session->getUserData()->getId(), 'accountUserEditId');
         $Data->setOnErrorMessage(__('Error al restaurar cuenta', false));
 
         DbWrapper::getQuery($Data);
@@ -192,7 +192,7 @@ class Account extends AccountBase implements AccountInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClass($this->accountData);
-        $Data->addParam($this->accountData->getAccountId());
+        $Data->addParam($this->accountData->getId());
 
         /** @var AccountExtData|array $queryRes */
         $queryRes = DbWrapper::getResults($Data);
@@ -204,8 +204,8 @@ class Account extends AccountBase implements AccountInterface
         }
 
         // Obtener los usuarios y grupos secundarios  y las etiquetas
-        $this->accountData->setUsersId(UserAccounts::getUsersForAccount($this->accountData->getAccountId()));
-        $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($this->accountData->getAccountId()));
+        $this->accountData->setUsersId(UserAccounts::getUsersForAccount($this->accountData->getId()));
+        $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($this->accountData->getId()));
         $this->accountData->setTags(AccountTags::getTags($queryRes));
 
         return $this->accountData;
@@ -230,7 +230,7 @@ class Account extends AccountBase implements AccountInterface
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO accounts SET '
+            'INSERT INTO Account SET '
             . 'account_customerId = :accountCustomerId,'
             . 'account_categoryId = :accountCategoryId,'
             . 'account_name = :accountName,'
@@ -253,40 +253,40 @@ class Account extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountCustomerId(), 'accountCustomerId');
-        $Data->addParam($this->accountData->getAccountCategoryId(), 'accountCategoryId');
-        $Data->addParam($this->accountData->getAccountName(), 'accountName');
-        $Data->addParam($this->accountData->getAccountLogin(), 'accountLogin');
-        $Data->addParam($this->accountData->getAccountUrl(), 'accountUrl');
-        $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
-        $Data->addParam($this->accountData->getAccountKey(), 'accountKey');
-        $Data->addParam($this->accountData->getAccountNotes(), 'accountNotes');
-        $Data->addParam($this->accountData->getAccountUserId(), 'accountUserId');
-        $Data->addParam($this->accountData->getAccountUserGroupId() ?: $this->session->getUserData()->getUserGroupId(), 'accountUserGroupId');
-        $Data->addParam($this->accountData->getAccountUserId(), 'accountUserEditId');
-        $Data->addParam($this->accountData->getAccountOtherUserEdit(), 'accountOtherUserEdit');
-        $Data->addParam($this->accountData->getAccountOtherGroupEdit(), 'accountOtherGroupEdit');
-        $Data->addParam($this->accountData->getAccountIsPrivate(), 'accountIsPrivate');
-        $Data->addParam($this->accountData->getAccountIsPrivateGroup(), 'accountIsPrivateGroup');
-        $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
-        $Data->addParam($this->accountData->getAccountParentId(), 'accountParentId');
+        $Data->addParam($this->accountData->getClientId(), 'accountCustomerId');
+        $Data->addParam($this->accountData->getCategoryId(), 'accountCategoryId');
+        $Data->addParam($this->accountData->getName(), 'accountName');
+        $Data->addParam($this->accountData->getLogin(), 'accountLogin');
+        $Data->addParam($this->accountData->getUrl(), 'accountUrl');
+        $Data->addParam($this->accountData->getPass(), 'accountPass');
+        $Data->addParam($this->accountData->getKey(), 'accountKey');
+        $Data->addParam($this->accountData->getNotes(), 'accountNotes');
+        $Data->addParam($this->accountData->getUserId(), 'accountUserId');
+        $Data->addParam($this->accountData->getUserGroupId() ?: $this->session->getUserData()->getUserGroupId(), 'accountUserGroupId');
+        $Data->addParam($this->accountData->getUserId(), 'accountUserEditId');
+        $Data->addParam($this->accountData->getOtherUserEdit(), 'accountOtherUserEdit');
+        $Data->addParam($this->accountData->getOtherUserGroupEdit(), 'accountOtherGroupEdit');
+        $Data->addParam($this->accountData->getIsPrivate(), 'accountIsPrivate');
+        $Data->addParam($this->accountData->getIsPrivateGroup(), 'accountIsPrivateGroup');
+        $Data->addParam($this->accountData->getPassDateChange(), 'accountPassDateChange');
+        $Data->addParam($this->accountData->getParentId(), 'accountParentId');
         $Data->setOnErrorMessage(__('Error al crear la cuenta', false));
 
         DbWrapper::getQuery($Data);
 
-        $this->accountData->setAccountId(DbWrapper::$lastId);
+        $this->accountData->setId(DbWrapper::$lastId);
 
         try {
             if (is_array($this->accountData->getAccountUserGroupsId())) {
-                $GroupAccounsData = new GroupAccountsData();
-                $GroupAccounsData->setAccgroupAccountId($this->accountData->getAccountId());
+                $GroupAccounsData = new AccountToUserGroupData();
+                $GroupAccounsData->setAccountId($this->accountData->getId());
                 $GroupAccounsData->setGroups($this->accountData->getAccountUserGroupsId());
 
                 GroupAccounts::getItem($GroupAccounsData)->add();
             }
 
             if (is_array($this->accountData->getAccountUsersId())) {
-                UserAccounts::addUsersForAccount($this->accountData->getAccountId(), $this->accountData->getAccountUsersId());
+                UserAccounts::addUsersForAccount($this->accountData->getId(), $this->accountData->getAccountUsersId());
             }
 
             if (is_array($this->accountData->getTags())) {
@@ -314,10 +314,10 @@ class Account extends AccountBase implements AccountInterface
             $masterPass = $masterPass ?: CryptSession::getSessionKey();
             $securedKey = Crypt::makeSecuredKey($masterPass);
 
-            $this->accountData->setAccountPass(Crypt::encrypt($this->accountData->getAccountPass(), $securedKey, $masterPass));
-            $this->accountData->setAccountKey($securedKey);
+            $this->accountData->setPass(Crypt::encrypt($this->accountData->getPass(), $securedKey, $masterPass));
+            $this->accountData->setKey($securedKey);
 
-            if (strlen($securedKey) > 1000 || strlen($this->accountData->getAccountPass()) > 1000) {
+            if (strlen($securedKey) > 1000 || strlen($this->accountData->getPass()) > 1000) {
                 throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
             }
         } catch (CryptoException $e) {
@@ -348,7 +348,7 @@ class Account extends AccountBase implements AccountInterface
         $Data = new QueryData();
 
         $query = /** @lang SQL */
-            'DELETE FROM accounts WHERE account_id = ? LIMIT 1';
+            'DELETE FROM Account WHERE account_id = ? LIMIT 1';
 
         $Data->setQuery($query);
         $Data->addParam($id);
@@ -370,11 +370,11 @@ class Account extends AccountBase implements AccountInterface
     public function incrementViewCounter($id = null)
     {
         $query = /** @lang SQL */
-            'UPDATE accounts SET account_countView = (account_countView + 1) WHERE account_id = ? LIMIT 1';
+            'UPDATE Account SET account_countView = (account_countView + 1) WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id ?: $this->accountData->getAccountId());
+        $Data->addParam($id ?: $this->accountData->getId());
 
         return DbWrapper::getQuery($Data);
     }
@@ -390,11 +390,11 @@ class Account extends AccountBase implements AccountInterface
     public function incrementDecryptCounter($id = null)
     {
         $query = /** @lang SQL */
-            'UPDATE accounts SET account_countDecrypt = (account_countDecrypt + 1) WHERE account_id = ? LIMIT 1';
+            'UPDATE Account SET account_countDecrypt = (account_countDecrypt + 1) WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id ?: $this->accountData->getAccountId());
+        $Data->addParam($id ?: $this->accountData->getId());
 
         return DbWrapper::getQuery($Data);
     }
@@ -412,13 +412,13 @@ class Account extends AccountBase implements AccountInterface
     {
         // No actualizar el histórico si es por cambio de clave maestra o restauración
         if (!$isMassive) {
-            AccountHistory::addHistory($this->accountData->getAccountId(), false);
+            AccountHistory::addHistory($this->accountData->getId(), false);
 
             $this->setPasswordEncrypted();
         }
 
         $query = /** @lang SQL */
-            'UPDATE accounts SET '
+            'UPDATE Account SET '
             . 'account_pass = :accountPass,'
             . 'account_key = :accountKey,'
             . 'account_userEditId = :accountUserEditId,'
@@ -429,11 +429,11 @@ class Account extends AccountBase implements AccountInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->accountData->getAccountPass(), 'accountPass');
-        $Data->addParam($this->accountData->getAccountKey(), 'accountKey');
-        $Data->addParam($this->accountData->getAccountUserEditId(), 'accountUserEditId');
-        $Data->addParam($this->accountData->getAccountPassDateChange(), 'accountPassDateChange');
-        $Data->addParam($this->accountData->getAccountId(), 'accountId');
+        $Data->addParam($this->accountData->getPass(), 'accountPass');
+        $Data->addParam($this->accountData->getKey(), 'accountKey');
+        $Data->addParam($this->accountData->getUserEditId(), 'accountUserEditId');
+        $Data->addParam($this->accountData->getPassDateChange(), 'accountPassDateChange');
+        $Data->addParam($this->accountData->getId(), 'accountId');
         $Data->setOnErrorMessage(__('Error al actualizar la clave', false));
 
         DbWrapper::getQuery($Data);
@@ -456,19 +456,19 @@ class Account extends AccountBase implements AccountInterface
             . 'account_login,'
             . 'account_pass,'
             . 'account_key,'
-            . 'customer_name '
-            . 'FROM accounts '
-            . 'LEFT JOIN customers ON account_customerId = customer_id '
+            . 'name '
+            . 'FROM Account '
+            . 'LEFT JOIN Client ON account_customerId = id '
             . 'WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClass($this->accountData);
-        $Data->addParam($this->accountData->getAccountId());
+        $Data->addParam($this->accountData->getId());
 
         // Obtener los usuarios y grupos secundarios
-        $this->accountData->setUsersId(UserAccounts::getUsersForAccount($this->accountData->getAccountId()));
-        $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($this->accountData->getAccountId()));
+        $this->accountData->setUsersId(UserAccounts::getUsersForAccount($this->accountData->getId()));
+        $this->accountData->setUserGroupsId(GroupAccountsUtil::getGroupsForAccount($this->accountData->getId()));
 
         return DbWrapper::getResults($Data);
     }
@@ -489,17 +489,17 @@ class Account extends AccountBase implements AccountInterface
             . 'account_key,'
             . 'account_url,'
             . 'account_notes,'
-            . 'category_name,'
-            . 'customer_name '
-            . 'FROM accounts '
-            . 'LEFT JOIN customers ON account_customerId = customer_id '
-            . 'LEFT JOIN categories ON account_categoryId = category_id '
+            . 'name,'
+            . 'name '
+            . 'FROM Account '
+            . 'LEFT JOIN Client ON account_customerId = id '
+            . 'LEFT JOIN categories ON account_categoryId = id '
             . 'WHERE account_id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->setMapClass($this->accountData);
-        $Data->addParam($this->accountData->getAccountId());
+        $Data->addParam($this->accountData->getId());
 
         /** @var AccountExtData|array $queryRes */
         $queryRes = DbWrapper::getResults($Data);

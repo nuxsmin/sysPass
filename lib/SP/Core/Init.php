@@ -26,7 +26,7 @@ namespace SP\Core;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountAcl;
-use SP\Auth\Browser\Browser;
+use SP\Providers\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Modules\Web\Controllers\MainController;
 use SP\Core\Crypt\CryptSessionHandler;
@@ -213,8 +213,8 @@ class Init
             $AuthBrowser = new Browser();
 
             // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-            if ($AuthBrowser->checkServerAuthUser(SessionFactory::getUserData()->getUserLogin()) === false
-                && $AuthBrowser->checkServerAuthUser(SessionFactory::getUserData()->getUserSsoLogin()) === false
+            if ($AuthBrowser->checkServerAuthUser(SessionFactory::getUserData()->getLogin()) === false
+                && $AuthBrowser->checkServerAuthUser(SessionFactory::getUserData()->getSsoLogin()) === false
             ) {
                 self::goLogout();
             }
@@ -566,7 +566,7 @@ class Init
                 || Checks::isAjax()
                 || Request::analyze('nodbupgrade', 0) === 1
                 || (Request::analyze('a') === 'upgrade' && Request::analyze('type') !== '')
-                || (self::$LOCK > 0 && Util::isLoggedIn() && self::$LOCK === SessionFactory::getUserData()->getUserId())
+                || (self::$LOCK > 0 && Util::isLoggedIn() && self::$LOCK === SessionFactory::getUserData()->getId())
             ) {
                 return true;
             }
@@ -613,7 +613,7 @@ class Init
         $Log = new Log();
         $LogMessage = $Log->getLogMessage();
         $LogMessage->setAction(__('Finalizar sesión', false));
-        $LogMessage->addDetails(__('Usuario', false), SessionFactory::getUserData()->getUserLogin());
+        $LogMessage->addDetails(__('Usuario', false), SessionFactory::getUserData()->getLogin());
         $LogMessage->addDetails(__('Tiempo inactivo', false), $inactiveTime . ' min.');
         $LogMessage->addDetails(__('Tiempo total', false), $totalTime . ' min.');
         $Log->writeLog();
@@ -673,7 +673,7 @@ class Init
             SessionFactory::setStartActivity(time());
         } else if (!$inMaintenance
             && time() - $sidStartTime > 120
-            && SessionFactory::getUserData()->getUserId() > 0
+            && SessionFactory::getUserData()->getId() > 0
         ) {
             try {
                 CryptSession::reKey();

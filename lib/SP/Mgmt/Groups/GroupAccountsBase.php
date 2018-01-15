@@ -25,7 +25,7 @@
 namespace SP\Mgmt\Groups;
 
 use SP\Core\Exceptions\InvalidClassException;
-use SP\DataModel\GroupAccountsData;
+use SP\DataModel\AccountToUserGroupData;
 use SP\Mgmt\ItemBaseInterface;
 use SP\Mgmt\ItemBaseTrait;
 
@@ -48,6 +48,6 @@ abstract class GroupAccountsBase implements ItemBaseInterface
      */
     protected function init()
     {
-        $this->setDataModel(GroupAccountsData::class);
+        $this->setDataModel(AccountToUserGroupData::class);
     }
 }

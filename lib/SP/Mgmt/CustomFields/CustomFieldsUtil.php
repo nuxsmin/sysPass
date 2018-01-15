@@ -32,7 +32,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\OldCrypt;
 use SP\DataModel\CustomFieldData;
-use SP\DataModel\CustomFieldDefData;
+use SP\DataModel\CustomFieldDefinitionData;
 use SP\Log\Log;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
@@ -59,7 +59,7 @@ class CustomFieldsUtil
         $LogMessage->setAction(__('Campos Personalizados', false));
 
         $query = /** @lang SQL */
-            'SELECT customfielddata_id, customfielddata_data, customfielddata_key FROM customFieldsData';
+            'SELECT customfielddata_id, customfielddata_data, customfielddata_key FROM CustomFieldData';
 
         $Data = new QueryData();
         $Data->setMapClassName(CustomFieldData::class);
@@ -89,7 +89,7 @@ class CustomFieldsUtil
                 }
 
                 $query = /** @lang SQL */
-                    'UPDATE customFieldsData SET
+                    'UPDATE CustomFieldData SET
                 customfielddata_data = ?,
                 customfielddata_key = ? 
                 WHERE customfielddata_id = ?';
@@ -130,7 +130,7 @@ class CustomFieldsUtil
         $LogMessage->setAction(__('Campos Personalizados', false));
 
         $query = /** @lang SQL */
-            'SELECT customfielddata_id, customfielddata_data, customfielddata_key FROM customFieldsData';
+            'SELECT customfielddata_id, customfielddata_data, customfielddata_key FROM CustomFieldData';
 
         $Data = new QueryData();
         $Data->setMapClassName(CustomFieldData::class);
@@ -160,7 +160,7 @@ class CustomFieldsUtil
                 }
 
                 $query = /** @lang SQL */
-                    'UPDATE customFieldsData SET
+                    'UPDATE CustomFieldData SET
                 customfielddata_data = ?,
                 customfielddata_key = ? 
                 WHERE customfielddata_id = ?';
@@ -243,20 +243,20 @@ class CustomFieldsUtil
 
         $query = /** @lang SQL */
             'SELECT DISTINCT customfielddef_id, customfielddef_field
-            FROM customFieldsData 
-            LEFT JOIN customFieldsDef ON customfielddef_id = customfielddata_defId
+            FROM CustomFieldData 
+            LEFT JOIN CustomFieldDefinition ON customfielddef_id = customfielddata_defId
             WHERE customfielddata_moduleId = 20';
 
         $Data = new QueryData();
         $Data->setQuery($query);
 
-        /** @var CustomFieldDefData[] $oldDefs */
+        /** @var CustomFieldDefinitionData[] $oldDefs */
         $oldDefs = DbWrapper::getResultsArray($Data);
 
         try {
             if (count($oldDefs) > 0) {
                 $query = /** @lang SQL */
-                    'UPDATE customFieldsData SET customfielddata_moduleId = 10 WHERE customfielddata_moduleId = 20';
+                    'UPDATE CustomFieldData SET customfielddata_moduleId = 10 WHERE customfielddata_moduleId = 20';
 
                 $Data = new QueryData();
                 $Data->setQuery($query);
@@ -265,13 +265,13 @@ class CustomFieldsUtil
                 DbWrapper::getQuery($Data);
 
                 $query = /** @lang SQL */
-                    'UPDATE customFieldsDef SET
+                    'UPDATE CustomFieldDefinition SET
                         customfielddef_module = ?,
                         customfielddef_field = ?
                         WHERE customfielddef_id = ? LIMIT 1';
 
                 foreach ($oldDefs as $cf) {
-                    $CustomFieldDef = Util::unserialize(CustomFieldDefData::class, $cf->customfielddef_field);
+                    $CustomFieldDef = Util::unserialize(CustomFieldDefinitionData::class, $cf->customfielddef_field);
                     $CustomFieldDef->setId($cf->customfielddef_id);
                     $CustomFieldDef->setModule(10);
                     $CustomFieldDef->setCustomfielddefModule(10);

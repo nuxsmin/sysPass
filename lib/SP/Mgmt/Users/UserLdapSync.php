@@ -61,7 +61,7 @@ class UserLdapSync
      */
     public static function run(array &$options)
     {
-        $ConfigData = Bootstrap::getDic()['configData'];
+        $ConfigData = Bootstrap::getContainer()['configData'];
 
         $Log = new Log();
         $LogMessage = $Log->getLogMessage();
@@ -92,24 +92,24 @@ class UserLdapSync
 
                         switch (strtolower($attribute)) {
                             case $options['nameAttribute']:
-                                $User->setUserName($value);
+                                $User->setName($value);
                                 break;
                             case $options['loginAttribute']:
-                                $User->setUserLogin($value);
+                                $User->setLogin($value);
                                 break;
                             case 'mail':
-                                $User->setUserEmail($value);
+                                $User->setEmail($value);
                                 break;
                         }
                     }
 
-                    if (!empty($User->getUserName())
-                        && !empty($User->getUserLogin())
+                    if (!empty($User->getName())
+                        && !empty($User->getLogin())
                     ) {
-                        $User->setUserPass(Util::generateRandomBytes());
+                        $User->setPass(Util::generateRandomBytes());
 
                         try {
-                            $LogMessage->addDetails(__('Usuario', false), sprintf('%s (%s)', $User->getUserName(), $User->getUserLogin()));
+                            $LogMessage->addDetails(__('Usuario', false), sprintf('%s (%s)', $User->getName(), $User->getLogin()));
                             UserLdap::getItem($User)->add();
 
                             self::$syncedObjects++;

@@ -25,13 +25,13 @@
 namespace SP\Modules\Web\Controllers;
 
 use Exception;
-use SP\Auth\Browser\Browser;
 use SP\Bootstrap;
 use SP\Core\CryptPKI;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\SessionFactory;
 use SP\Http\Cookies;
 use SP\Http\Response;
+use SP\Providers\Auth\Browser\Browser;
 
 /**
  * Class BootstrapController
@@ -55,7 +55,7 @@ class BootstrapController extends SimpleControllerBase
             'max_file_size' => $configData->getFilesAllowedSize(),
             'check_updates' => $this->session->getAuthCompleted()
                 && ($configData->isCheckUpdates() || $configData->isChecknotices())
-                && ($this->session->getUserData()->isUserIsAdminApp() || $configData->isDemoEnabled()),
+                && ($this->session->getUserData()->getIsAdminApp() || $configData->isDemoEnabled()),
             'timezone' => date_default_timezone_get(),
             'debug' => DEBUG || $configData->isDebug(),
             'cookies_enabled' => Cookies::checkCookies(),

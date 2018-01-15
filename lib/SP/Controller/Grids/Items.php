@@ -58,9 +58,9 @@ class Items extends GridBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('category_id');
-        $GridData->addDataRowSource('category_name');
-        $GridData->addDataRowSource('category_description');
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('name');
+        $GridData->addDataRowSource('description');
 
         // Grid
         $Grid = new DataGridTab();
@@ -132,9 +132,9 @@ class Items extends GridBase
 
         // Grid Data
         $GridData = new DataGridData();
-        $GridData->setDataRowSourceId('customer_id');
-        $GridData->addDataRowSource('customer_name');
-        $GridData->addDataRowSource('customer_description');
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('name');
+        $GridData->addDataRowSource('description');
 
         // Grid
         $Grid = new DataGridTab();
@@ -287,7 +287,7 @@ class Items extends GridBase
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('accfile_id');
         $GridData->addDataRowSource('account_name');
-        $GridData->addDataRowSource('customer_name');
+        $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('accfile_name');
         $GridData->addDataRowSource('accfile_type');
         $GridData->addDataRowSource('accfile_size');
@@ -353,7 +353,7 @@ class Items extends GridBase
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('account_id');
         $GridData->addDataRowSource('account_name');
-        $GridData->addDataRowSource('customer_name');
+        $GridData->addDataRowSource('name');
 
         // Grid
         $Grid = new DataGridTab();
@@ -411,7 +411,7 @@ class Items extends GridBase
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('acchistory_id');
         $GridData->addDataRowSource('acchistory_name');
-        $GridData->addDataRowSource('customer_name');
+        $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('acchistory_date');
         $GridData->addDataRowSourceWithIcon('acchistory_isModify', $iconEdit->setTitle(__('Modificada'))->setClass('opacity50'));
         $GridData->addDataRowSourceWithIcon('acchistory_isDeleted', $iconDelete->setTitle(__('Eliminada'))->setClass('opacity50'));
@@ -752,7 +752,7 @@ class Items extends GridBase
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('authtoken_id');
         $GridData->addDataRowSource('user_login');
-        $GridData->addDataRowSource('authtoken_actionId');
+        $GridData->addDataRowSource('actionId');
 
         // Grid
         $Grid = new DataGridTab();
