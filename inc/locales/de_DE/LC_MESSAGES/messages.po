@@ -4907,7 +4907,7 @@ msgstr "Kritisch"
 
 #: ../../../../js/strings.js.php:73
 msgid "Recibir notificaciones?"
-msgstr "Benachrichtigungen gesendet?"
+msgstr "Benachrichtigungen erhalten?"
 
 #: ../../../../js/strings.js.php:74
 #: ../../../../inc/themes/material-blue/views/accountsearch/rows.inc:136
