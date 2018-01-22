@@ -27,7 +27,10 @@ namespace SP\Modules\Web\Controllers;
 use SP\Controller\RequestControllerTrait;
 use SP\Core\SessionUtil;
 use SP\DataModel\DataModelInterface;
+use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\Account\AccountService;
+use SP\Services\Category\CategoryService;
+use SP\Services\Client\ClientService;
 use SP\Util\Json;
 
 /**
@@ -72,6 +75,24 @@ class ItemsController
         $this->JsonResponse->setCsrf(SessionUtil::getSessionKey());
 
         Json::returnJson($this->JsonResponse);
+    }
+
+    /**
+     * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function clientsAction()
+    {
+        Json::returnRawJson((new SelectItemAdapter((new ClientService())->getAllForUser()))->getJsonItemsFromModel());
+    }
+
+    /**
+     * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function categoriesAction()
+    {
+        Json::returnRawJson((new SelectItemAdapter((new CategoryService())->getAllBasic()))->getJsonItemsFromModel());
     }
 
     /**

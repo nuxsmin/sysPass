@@ -45,7 +45,7 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Cliente'); ?></div>
 
-                    <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer"
+                    <select id="selClient" name="clientId" class="select-box sel-chosen-client"
                             tabindex="2" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
                         <?php /** @var \SP\Mvc\View\Components\SelectItem[] $clients */
@@ -54,12 +54,12 @@
                                     value="<?php echo $client->getId(); ?>" <?php echo ($gotData && $client->getId() === $accountData->getClientId()) ? 'selected' : ''; ?>><?php echo $client->getName(); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <?php if (!$isView && $addClientEnabled): ?>
+                    <?php if ($addClientEnabled): ?>
                         <i class="material-icons btn-action" title="<?php echo __('Nuevo Cliente'); ?>"
-                           data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::CLIENT_CREATE; ?>"
+                           data-action-route="<?php echo $addClientRoute; ?>"
+                           data-item-route="items/clients"
+                           data-item-dst="selClient"
                            data-item-id="0"
-                           data-item-type="<?php echo \SP\Core\ItemsTypeInterface::ITEM_CUSTOMERS_USER; ?>"
-                           data-item-dst="selCustomer"
                            data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
                     <?php endif; ?>
                 </td>
@@ -78,12 +78,12 @@
                                     value="<?php echo $category->getId(); ?>" <?php echo ($gotData && $category->getId() === $accountData->getCategoryId()) ? 'selected' : ''; ?>><?php echo $category->getName(); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <?php if (!$isView && $addCategoryEnabled): ?>
+                    <?php if ($addCategoryEnabled): ?>
                         <i class="material-icons btn-action" title="<?php echo __('Nueva Categoría'); ?>"
-                           data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::CATEGORY_CREATE; ?>"
-                           data-item-id="0"
-                           data-item-type="<?php echo \SP\Core\ItemsTypeInterface::ITEM_CATEGORIES; ?>"
+                           data-action-route="<?php echo $addCategoryRoute; ?>"
+                           data-item-route="items/categories"
                            data-item-dst="selCategory"
+                           data-item-id="0"
                            data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
                     <?php endif; ?>
                 </td>

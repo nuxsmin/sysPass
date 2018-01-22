@@ -89,7 +89,6 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $Data->setQuery($query);
         $Data->addParam($this->makeItemHash($itemData->getName()));
         $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getId());
 
         DbWrapper::getQuery($Data, $this->db);
 

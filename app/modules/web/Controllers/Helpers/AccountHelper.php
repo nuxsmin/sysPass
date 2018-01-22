@@ -217,9 +217,11 @@ class AccountHelper extends HelperBase
         $this->view->assign('otherAccounts', $this->accountService->getForUser($this->accountId));
         $this->view->assign('linkedAccounts', $this->accountService->getLinked($this->accountId));
 
-        // FIXME: fix inline client/category creation
-        $this->view->assign('addClientEnabled', $this->acl->checkUserAccess(ActionsInterface::CLIENT));
-        $this->view->assign('addCategoryEnabled', $this->acl->checkUserAccess(ActionsInterface::CATEGORY));
+        $this->view->assign('addClientEnabled', !$this->view->isView && $this->acl->checkUserAccess(ActionsInterface::CLIENT));
+        $this->view->assign('addClientRoute', Acl::getActionRoute(ActionsInterface::CLIENT_CREATE));
+
+        $this->view->assign('addCategoryEnabled', !$this->view->isView && $this->acl->checkUserAccess(ActionsInterface::CATEGORY));
+        $this->view->assign('addCategoryRoute', Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE));
 
         $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
         $this->view->assign('readonly', $this->view->isView ? 'readonly' : '');

@@ -238,10 +238,6 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      */
     public function delete($id)
     {
-        if ($this->checkInUse($id)) {
-            throw new SPException(SPException::SP_WARNING, __u('No es posible eliminar'));
-        }
-
         $query = /** @lang SQL */
             'DELETE FROM Client WHERE id = ? LIMIT 1';
 

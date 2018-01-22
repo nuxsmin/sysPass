@@ -154,10 +154,14 @@ sysPass.Actions = function (Common) {
     /**
      * Mostrar el contenido en una caja flotante
      *
-     * @param $obj
      * @param response
+     * @param {Object} callback
+     * @param {function} callback.open
+     * @param {function} callback.close
      */
-    var showFloatingBox = function ($obj, response) {
+    var showFloatingBox = function (response, callback) {
+        response = response || "";
+
         $.magnificPopup.open({
             items: {
                 src: response,
@@ -170,10 +174,14 @@ sysPass.Actions = function (Common) {
                     Common.appTriggers().views.common($boxPopup);
 
                     $boxPopup.find(":input:text:visible:first").focus();
+
+                    if (typeof callback.open === "function") {
+                        callback.open();
+                    }
                 },
                 close: function () {
-                    if ($obj.data("item-dst")) {
-                        items.update($obj);
+                    if (typeof callback.close === "function") {
+                        callback.close();
                     }
                 }
             },
@@ -192,7 +200,7 @@ sysPass.Actions = function (Common) {
         var $image = $content.find("img");
 
         if ($image.length === 0) {
-            return showFloatingBox($obj, response);
+            return showFloatingBox(response);
         }
 
         $image.hide();
@@ -272,10 +280,13 @@ sysPass.Actions = function (Common) {
                 var opts = Common.appRequests().getRequestOpts();
                 opts.url = ajaxUrl.updateItems;
                 opts.method = "get";
-                opts.data = {sk: Common.sk.get(), itemType: $obj.data("item-type")};
+                opts.data = {
+                    r: $obj.data("item-route"),
+                    sk: Common.sk.get()
+                };
 
                 Common.appRequests().getActionCall(opts, function (json) {
-                    callback(json.data);
+                    callback(json);
                 });
             });
         }
@@ -333,7 +344,7 @@ sysPass.Actions = function (Common) {
                 if (response.length === 0) {
                     main.logout();
                 } else {
-                    showFloatingBox($obj, response);
+                    showFloatingBox(response);
                 }
             });
         },
@@ -937,7 +948,7 @@ sysPass.Actions = function (Common) {
                 } else {
                     var $container = $(json.data.html);
 
-                    showFloatingBox($obj, $container);
+                    showFloatingBox($container);
 
                     timeout = setTimeout(function () {
                         closeFloatingBox();
@@ -1132,10 +1143,12 @@ sysPass.Actions = function (Common) {
             update: function ($obj) {
                 var $currentTab = $("#content").find("[id^='tabs-'].is-active");
 
-                appMgmt.state.tab.refresh = !$obj.data("item-dst");
-                appMgmt.state.tab.index = $currentTab.data("tab-index");
-                appMgmt.state.tab.route = $currentTab.data("tab-route");
-                appMgmt.state.itemId = $obj.data("item-id");
+                if ($currentTab.length > 0) {
+                    appMgmt.state.tab.refresh = !$obj.data("item-dst");
+                    appMgmt.state.tab.index = $currentTab.data("tab-index");
+                    appMgmt.state.tab.route = $currentTab.data("tab-route");
+                    appMgmt.state.itemId = $obj.data("item-id");
+                }
             }
         },
         show: function ($obj) {
@@ -1156,7 +1169,20 @@ sysPass.Actions = function (Common) {
                 if (json.status !== 0) {
                     Common.msg.out(json);
                 } else {
-                    showFloatingBox($obj, json.data.html);
+                    var $itemDst = $obj.data("item-dst");
+
+                    showFloatingBox(json.data.html, {
+                        open: function () {
+                            if ($itemDst) {
+                                appMgmt.state.tab.refresh = false;
+                            }
+                        },
+                        close: function () {
+                            if ($itemDst) {
+                                items.update($obj);
+                            }
+                        }
+                    });
                 }
             });
         },
@@ -1396,7 +1422,7 @@ sysPass.Actions = function (Common) {
                 if (json.status !== 0) {
                     Common.msg.out(json);
                 } else {
-                    showFloatingBox($obj, json.data.html);
+                    showFloatingBox(json.data.html);
                 }
             });
         }
@@ -1535,7 +1561,7 @@ sysPass.Actions = function (Common) {
                 if (json.status !== 0) {
                     Common.msg.out(json);
                 } else {
-                    showFloatingBox($obj, json.data.html);
+                    showFloatingBox(json.data.html);
                 }
             });
         }

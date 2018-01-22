@@ -57,6 +57,18 @@ class Json
     }
 
     /**
+     * Devuelve una respuesta en formato JSON
+     *
+     * @param string $data JSON string
+     */
+    public static function returnRawJson($data)
+    {
+        header('Content-type: application/json; charset=utf-8');
+
+        exit($data);
+    }
+
+    /**
      * Devuelve una cadena en formato JSON
      *
      * @param $data

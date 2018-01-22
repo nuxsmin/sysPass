@@ -81,7 +81,7 @@ class AccountForm extends FormBase implements FormInterface
         $this->accountRequest = new AccountRequest();
         $this->accountRequest->id = $this->itemId;
         $this->accountRequest->name = Request::analyze('name');
-        $this->accountRequest->clientId = Request::analyze('customerId', 0);
+        $this->accountRequest->clientId = Request::analyze('clientId', 0);
         $this->accountRequest->categoryId = Request::analyze('categoryId', 0);
         $this->accountRequest->login = Request::analyze('login');
         $this->accountRequest->url = Request::analyze('url');
