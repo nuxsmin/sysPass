@@ -36,10 +36,14 @@ use SP\Html\DataGrid\DataGridHeaderSort;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridSort;
 use SP\Http\Request;
+use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Repositories\Category\CategoryRepository;
 use SP\Repositories\Client\ClientRepository;
 use SP\Repositories\Tag\TagRepository;
 use SP\Services\Account\AccountSearchService;
+use SP\Services\Category\CategoryService;
+use SP\Services\Client\ClientService;
+use SP\Services\Tag\TagService;
 
 /**
  * Class AccountSearch
@@ -69,16 +73,16 @@ class AccountSearchHelper extends HelperBase
 
     /**
      * Obtener los datos para la caja de búsqueda
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getSearchBox()
     {
         $this->view->addTemplate('search-searchbox');
 
-        $clientService = new ClientRepository();
-
-        $this->view->assign('customers', $clientService->getItemsForSelectByUser());
-        $this->view->assign('categories', CategoryRepository::getServiceItems());
-        $this->view->assign('tags', TagRepository::getServiceItems());
+        $this->view->assign('clients', (new SelectItemAdapter((new ClientService())->getAllForUser()))->getItemsFromModelSelected([$this->accountSearchFilter->getClientId()]));
+        $this->view->assign('categories', (new SelectItemAdapter(CategoryService::getItemsBasic()))->getItemsFromModelSelected([$this->accountSearchFilter->getCategoryId()]));
+        $this->view->assign('tags', (new SelectItemAdapter(TagService::getItemsBasic()))->getItemsFromModelSelected($this->accountSearchFilter->getTagsId()));
     }
 
     /**

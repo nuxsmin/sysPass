@@ -22,32 +22,31 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Services\Tag;
+namespace SP\Services\ApiToken;
 
 use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\Tag\TagRepository;
+use SP\Repositories\ApiToken\ApiTokenRepository;
 use SP\Services\ServiceItemTrait;
 
 /**
- * Class TagService
+ * Class ApiTokenService
  *
- * @package SP\Services\Tag
+ * @package SP\Services\ApiToken
  */
-class TagService
+class ApiTokenService
 {
     use InjectableTrait;
     use ServiceItemTrait;
 
     /**
-     * @var TagRepository
+     * @var ApiTokenRepository
      */
-    protected $tagRepository;
-
+    protected $apiTokenRepository;
 
     /**
-     * TagService constructor.
+     * CategoryService constructor.
      *
      * @throws \SP\Core\Dic\ContainerException
      */
@@ -57,20 +56,20 @@ class TagService
     }
 
     /**
-     * @param TagRepository $tagRepository
+     * @param ApiTokenRepository $apiTokenRepository
      */
-    public function inject(TagRepository $tagRepository)
+    public function inject(ApiTokenRepository $apiTokenRepository)
     {
-        $this->tagRepository = $tagRepository;
+        $this->apiTokenRepository = $apiTokenRepository;
     }
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return \SP\DataModel\ClientData[]
+     * @return mixed
      */
     public function search(ItemSearchData $itemSearchData)
     {
-        return $this->tagRepository->search($itemSearchData);
+        return $this->apiTokenRepository->search($itemSearchData);
     }
 
     /**
@@ -79,18 +78,20 @@ class TagService
      */
     public function getById($id)
     {
-        return $this->tagRepository->getById($id);
+        return $this->apiTokenRepository->getById($id);
     }
 
     /**
      * @param $id
-     * @return $this
+     * @return ApiTokenService
      * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
-        if ($this->tagRepository->delete($id) === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Etiqueta no encontrada'));
+        if ($this->apiTokenRepository->delete($id) === 0) {
+            throw new SPException(SPException::SP_INFO, __u('Token no encontrado'));
         }
 
         return $this;
@@ -100,31 +101,35 @@ class TagService
      * @param $itemData
      * @return mixed
      * @throws SPException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function create($itemData)
     {
-        return $this->tagRepository->create($itemData);
+        return $this->apiTokenRepository->create($itemData);
     }
 
     /**
      * @param $itemData
      * @return mixed
      * @throws SPException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function update($itemData)
     {
-        return $this->tagRepository->update($itemData);
+        return $this->apiTokenRepository->update($itemData);
     }
 
+
     /**
-     * Get all items from the service's repository
-     *
      * @return array
      */
     public function getAllBasic()
     {
-        return $this->tagRepository->getAll();
+        return $this->apiTokenRepository->getAll();
     }
 }

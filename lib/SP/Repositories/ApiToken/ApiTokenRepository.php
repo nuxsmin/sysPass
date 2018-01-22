@@ -52,8 +52,7 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
      * Deletes an item
      *
      * @param $id
-     * @return $this
-     * @throws SPException
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -69,11 +68,7 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
 
         DbWrapper::getQuery($Data, $this->db);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Token no encontrado'));
-        }
-
-        return $this;
+        return $Data->getQueryNumRows();
     }
 
     /**

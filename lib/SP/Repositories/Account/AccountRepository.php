@@ -34,7 +34,9 @@ use SP\DataModel\AccountPassData;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\AccountVData;
 use SP\DataModel\Dto\AccountSearchResponse;
+use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
+use SP\Mvc\Model\QueryFilter;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -56,20 +58,18 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function getPasswordForId($id)
     {
-        $Data = new QueryData();
-        $Data->setMapClassName(AccountPassData::class);
-        $Data->setLimit(1);
+        $queryFilter = AccountUtil::getAccountFilterUser($this->session)
+            ->addFilter('A.id = ?', [$id]);
 
-        $Data->setSelect('A.id, A.name, A.login, A.pass, A.key, A.parentId');
-        $Data->setFrom('Account A');
+        $queryData = new QueryData();
+        $queryData->setMapClassName(AccountPassData::class);
+        $queryData->setLimit(1);
+        $queryData->setSelect('A.id, A.name, A.login, A.pass, A.key, A.parentId');
+        $queryData->setFrom('Account A');
+        $queryData->setWhere($queryFilter->getFilters());
+        $queryData->setParams($queryFilter->getParams());
 
-        $queryWhere = AccountUtil::getAccountFilterUser($Data, $this->session);
-        $queryWhere[] = 'A.id = ?';
-        $Data->addParam($id);
-
-        $Data->setWhere($queryWhere);
-
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -526,160 +526,126 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function getByFilter(AccountSearchFilter $accountSearchFilter)
     {
-        $arrFilterCommon = [];
-        $arrFilterSelect = [];
-        $arrayQueryJoin = [];
-        $arrQueryWhere = [];
+        $queryJoin = [];
         $queryLimit = '';
 
-        $data = new QueryData();
+        $queryFilterCommon = new QueryFilter();
+        $queryFilterSelect = new QueryFilter();
 
-        $txtSearch = $accountSearchFilter->getTxtSearch();
+        $searchText = $accountSearchFilter->getTxtSearch();
 
-        if ($txtSearch !== null && $txtSearch !== '') {
+        if ($searchText !== null && $searchText !== '') {
             // Analizar la cadena de búsqueda por etiquetas especiales
             $stringFilter = $accountSearchFilter->getStringFilters();
 
             if (!empty($stringFilter)) {
-                $arrFilterCommon[] = $stringFilter['query'];
 
                 foreach ($stringFilter['values'] as $value) {
-                    $data->addParam($value);
+                    $queryFilterCommon->addFilter($stringFilter['query'], [$value]);
                 }
             } else {
-                $txtSearch = '%' . $txtSearch . '%';
+                $searchText = '%' . $searchText . '%';
 
-                $arrFilterCommon[] = 'name LIKE ?';
-                $data->addParam($txtSearch);
-
-                $arrFilterCommon[] = 'login LIKE ?';
-                $data->addParam($txtSearch);
-
-                $arrFilterCommon[] = 'url LIKE ?';
-                $data->addParam($txtSearch);
-
-                $arrFilterCommon[] = 'notes LIKE ?';
-                $data->addParam($txtSearch);
+                $queryFilterCommon->addFilter('A.name LIKE ? OR A.login LIKE ? OR A.url LIKE ? OR A.notes LIKE ?', [$searchText, $searchText, $searchText, $searchText]);
             }
         }
 
         if ($accountSearchFilter->getCategoryId() !== 0) {
-            $arrFilterSelect[] = 'categoryId = ?';
-            $data->addParam($accountSearchFilter->getCategoryId());
+            $queryFilterSelect->addFilter('A.categoryId = ?', [$accountSearchFilter->getCategoryId()]);
         }
 
         if ($accountSearchFilter->getClientId() !== 0) {
-            $arrFilterSelect[] = 'clientId = ?';
-            $data->addParam($accountSearchFilter->getClientId());
+            $queryFilterSelect->addFilter('A.clientId = ?', [$accountSearchFilter->getClientId()]);
         }
 
         $tagsId = $accountSearchFilter->getTagsId();
         $numTags = count($tagsId);
 
         if ($numTags > 0) {
-            $tags = str_repeat('?,', $numTags - 1) . '?';
-
-            $arrFilterSelect[] = 'id IN (SELECT accountId FROM AccountToTag WHERE tagId IN (' . $tags . '))';
-
-            foreach ($tagsId as $tag) {
-                $data->addParam($tag);
-            }
+            $queryFilterSelect->addFilter('A.id IN (SELECT accountId FROM AccountToTag WHERE tagId IN (' . str_repeat('?,', $numTags - 1) . '?' . '))', $tagsId);
         }
 
-        if ($accountSearchFilter->isSearchFavorites() === true) {
-            $arrayQueryJoin[] = 'INNER JOIN AccountToFavorite AF ON (AF.accountId = id AND AF.userId = ?)';
-            $data->addParam($this->session->getUserData()->getId());
+        $where = [];
+
+        if ($queryFilterCommon->hasFilters()) {
+            $where[] = $queryFilterCommon->getFilters(QueryFilter::FILTER_OR);
         }
 
-        if (count($arrFilterCommon) > 0) {
-            $arrQueryWhere[] = '(' . implode(' OR ', $arrFilterCommon) . ')';
+        if ($queryFilterSelect->hasFilters()) {
+            $where[] = $queryFilterSelect->getFilters();
         }
 
-        if (count($arrFilterSelect) > 0) {
-            $arrQueryWhere[] = '(' . implode(' AND ', $arrFilterSelect) . ')';
+        $queryFilterUser = AccountUtil::getAccountFilterUser($this->session, $accountSearchFilter->getGlobalSearch());
+
+        if ($queryFilterUser->hasFilters()) {
+            $where[] = $queryFilterUser->getFilters();
         }
 
-        $arrQueryWhere = array_merge($arrQueryWhere, AccountUtil::getAccountFilterUser($data, $this->session, $accountSearchFilter->getGlobalSearch()));
+        $queryData = new QueryData();
+        $queryData->setWhere($where);
+        $queryData->setParams(array_merge($queryFilterCommon->getParams(), $queryFilterSelect->getParams(), $queryFilterUser->getParams()));
 
         if ($accountSearchFilter->getLimitCount() > 0) {
             $queryLimit = '?, ?';
 
-            $data->addParam($accountSearchFilter->getLimitStart());
-            $data->addParam($accountSearchFilter->getLimitCount());
+            $queryData->addParam($accountSearchFilter->getLimitStart());
+            $queryData->addParam($accountSearchFilter->getLimitCount());
         }
 
-        $queryWhere = '';
-
-        if (count($arrQueryWhere) === 1) {
-            $queryWhere = implode($arrQueryWhere);
-        } elseif (count($arrQueryWhere) > 1) {
-            $queryWhere = implode(' AND ', $arrQueryWhere);
+        if ($accountSearchFilter->isSearchFavorites() === true) {
+            $queryJoin[] = 'INNER JOIN AccountToFavorite AF ON (AF.accountId = id AND AF.userId = ?)';
+            $queryData->addParam($this->session->getUserData()->getId());
         }
 
-        $queryJoin = implode('', $arrayQueryJoin);
+        $queryJoin = implode('', $queryJoin);
 
-        $data->setSelect('*');
-        $data->setFrom('account_search_v ' . $queryJoin);
-        $data->setWhere($queryWhere);
-        $data->setOrder($accountSearchFilter->getOrderString());
-        $data->setLimit($queryLimit);
+        $queryData->setSelect('*');
+        $queryData->setFrom('account_search_v A' . $queryJoin);
+        $queryData->setOrder($accountSearchFilter->getOrderString());
+        $queryData->setLimit($queryLimit);
 
-//        Log::writeNewLog(__FUNCTION__, $Data->getQuery(), Log::DEBUG);
-//        Log::writeNewLog(__FUNCTION__, print_r($Data->getParams(), true), Log::DEBUG);
+        $queryData->setMapClassName(AccountSearchVData::class);
 
-        $data->setMapClassName(AccountSearchVData::class);
-
-        return new AccountSearchResponse($this->db->getFullRowCount($data), DbWrapper::getResultsArray($data, $this->db));
+        return new AccountSearchResponse($this->db->getFullRowCount($queryData), DbWrapper::getResultsArray($queryData, $this->db));
     }
 
     /**
-     * @param $accountId
+     * @param QueryFilter $queryFilter
      * @return array
      */
-    public function getForUser($accountId)
+    public function getForUser(QueryFilter $queryFilter)
     {
-        $Data = new QueryData();
-
-        $queryWhere = AccountUtil::getAccountFilterUser($Data, $this->session);
-
-        if (null !== $accountId) {
-            $queryWhere[] = 'A.id <> ? AND (A.parentId = 0 OR A.parentId IS NULL)';
-            $Data->addParam($accountId);
-        }
-
         $query = /** @lang SQL */
             'SELECT A.id, A.name, C.name AS clientName 
             FROM Account A
             LEFT JOIN Client C ON A.clientId = C.id 
-            WHERE ' . implode(' AND ', $queryWhere) . ' ORDER BY name';
+            WHERE ' . $queryFilter->getFilters() . ' ORDER BY name';
 
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(ItemData::class);
+        $queryData->setQuery($query);
+        $queryData->setParams($queryFilter->getParams());
 
-        return DbWrapper::getResultsArray($Data);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
 
     /**
-     * @param $accountId
+     * @param QueryFilter $queryFilter
      * @return array
      */
-    public function getLinked($accountId)
+    public function getLinked(QueryFilter $queryFilter)
     {
-        $Data = new QueryData();
-
-        $queryWhere = AccountUtil::getAccountFilterUser($Data, $this->session);
-
-        $queryWhere[] = 'A.parentId = ?';
-        $Data->addParam($accountId);
-
         $query = /** @lang SQL */
             'SELECT A.id, A.name, C.name AS clientName 
             FROM Account A
             INNER JOIN Client C ON A.clientId = C.id 
-            WHERE ' . implode(' AND ', $queryWhere) . ' ORDER  BY name';
+            WHERE ' . $queryFilter->getFilters() . ' ORDER  BY name';
 
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams($queryFilter->getParams());
 
-        return DbWrapper::getResultsArray($Data);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 }

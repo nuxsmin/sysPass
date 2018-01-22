@@ -78,7 +78,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Deletes an item
      *
      * @param $id
-     * @return mixed
+     * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -95,11 +95,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 
         DbWrapper::getQuery($Data, $this->db);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Enlace no encontrado'));
-        }
-
-        return $this;
+        return $Data->getQueryNumRows();
     }
 
     /**
@@ -487,9 +483,10 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Refreshes a public link
      *
      * @param $id
-     * @return $this
+     * @return bool
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -516,9 +513,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
         $Data->addParam($id);
         $Data->setOnErrorMessage(__u('Error al renovar enlace'));
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $this;
+        return DbWrapper::getQuery($Data, $this->db);
     }
 
     /**

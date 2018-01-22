@@ -22,32 +22,30 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Services\Tag;
+namespace SP\Services\CustomField;
 
-use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\Tag\TagRepository;
+use SP\Repositories\CustomField\CustomFieldDefRepository;
 use SP\Services\ServiceItemTrait;
 
 /**
- * Class TagService
+ * Class CustomFieldDefService
  *
- * @package SP\Services\Tag
+ * @package SP\Services\CustomField
  */
-class TagService
+class CustomFieldDefService
 {
     use InjectableTrait;
     use ServiceItemTrait;
 
     /**
-     * @var TagRepository
+     * @var CustomFieldDefRepository
      */
-    protected $tagRepository;
-
+    protected $customFieldDefRepository;
 
     /**
-     * TagService constructor.
+     * ClientService constructor.
      *
      * @throws \SP\Core\Dic\ContainerException
      */
@@ -57,65 +55,63 @@ class TagService
     }
 
     /**
-     * @param TagRepository $tagRepository
+     * @param CustomFieldDefRepository $customFieldDefRepository
      */
-    public function inject(TagRepository $tagRepository)
+    public function inject(CustomFieldDefRepository $customFieldDefRepository)
     {
-        $this->tagRepository = $tagRepository;
+        $this->customFieldDefRepository = $customFieldDefRepository;
     }
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return \SP\DataModel\ClientData[]
+     * @return \SP\DataModel\CustomFieldDefinitionData[]
      */
     public function search(ItemSearchData $itemSearchData)
     {
-        return $this->tagRepository->search($itemSearchData);
+        return $this->customFieldDefRepository->search($itemSearchData);
     }
 
     /**
      * @param $id
-     * @return mixed
+     * @return \SP\DataModel\CustomFieldDefinitionData
      */
     public function getById($id)
     {
-        return $this->tagRepository->getById($id);
+        return $this->customFieldDefRepository->getById($id);
     }
 
     /**
      * @param $id
-     * @return $this
-     * @throws SPException
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if ($this->tagRepository->delete($id) === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Etiqueta no encontrada'));
-        }
-
-        return $this;
+        return $this->customFieldDefRepository->delete($id);
     }
 
     /**
      * @param $itemData
      * @return mixed
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function create($itemData)
     {
-        return $this->tagRepository->create($itemData);
+        return $this->customFieldDefRepository->create($itemData);
     }
 
     /**
      * @param $itemData
      * @return mixed
-     * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function update($itemData)
     {
-        return $this->tagRepository->update($itemData);
+        return $this->customFieldDefRepository->update($itemData);
     }
 
     /**
@@ -125,6 +121,6 @@ class TagService
      */
     public function getAllBasic()
     {
-        return $this->tagRepository->getAll();
+        return $this->customFieldDefRepository->getAll();
     }
 }

@@ -36,52 +36,6 @@ use SP\Storage\DBUtil;
 trait RepositoryItemTrait
 {
     /**
-     * Cache de elementos para select
-     *
-     * @var array
-     */
-    private static $itemsSelectCache;
-
-    /**
-     * Returns service items for a select
-     *
-     * @return mixed
-     */
-    public static function getServiceItems()
-    {
-        $service = new static();
-        return $service->getItemsForSelect();
-    }
-
-    /**
-     * Devolver los elementos para un campo select
-     *
-     * @param bool $useCache Usar la cache de elementos si está creada
-     * @return array
-     */
-    public function getItemsForSelect($useCache = true)
-    {
-        // Usar cache si está creada
-        if ($useCache === true && is_array(self::$itemsSelectCache)) {
-            return self::$itemsSelectCache;
-        }
-
-        self::$itemsSelectCache = [];
-
-        /** @var DataModelInterface $item */
-        /** @var RepositoryItemInterface $this */
-        foreach ($this->getAll() as $item) {
-            $obj = new \stdClass();
-            $obj->id = (int)$item->getId();
-            $obj->name = $item->getName();
-
-            self::$itemsSelectCache[] = $obj;
-        }
-
-        return self::$itemsSelectCache;
-    }
-
-    /**
      * Eliminar elementos en lotes
      *
      * @param $ids

@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Account\AccountUtil;
 use SP\Controller\RequestControllerTrait;
 use SP\Core\SessionUtil;
 use SP\DataModel\DataModelInterface;

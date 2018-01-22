@@ -216,8 +216,9 @@ class TagRepository extends Repository implements RepositoryItemInterface
      * Deletes an item
      *
      * @param $id
-     * @return TagRepository
-     * @throws SPException
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
@@ -231,11 +232,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
 
         DbWrapper::getQuery($Data, $this->db);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Etiqueta no encontrada'));
-        }
-
-        return $this;
+        return $Data->getQueryNumRows();
     }
 
     /**

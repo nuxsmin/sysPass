@@ -66,14 +66,6 @@ class UserService
     }
 
     /**
-     * Returns all the items mapping fields for a select type element (id and name fields)
-     */
-    public function getAllItemsForSelect()
-    {
-        return $this->getItemsForSelect($this->userRepository);
-    }
-
-    /**
      * Actualiza el último inicio de sesión del usuario en la BBDD.
      *
      * @param $id int El id del usuario
@@ -263,5 +255,15 @@ class UserService
         $userData->setPass(Hash::hashKey($userLoginRequest->getPassword()));
 
         return $this->userRepository->updateOnLogin($userData);
+    }
+
+    /**
+     * Get all items from the service's repository
+     *
+     * @return array
+     */
+    public function getAllBasic()
+    {
+        return $this->userRepository->getBasicInfo();
     }
 }

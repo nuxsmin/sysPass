@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Providers\Auth\AuthUtil;
 use SP\Controller\ControllerBase;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
@@ -39,10 +38,11 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Repositories\User\UserRepository;
-use SP\Repositories\UserGroup\UserGroupRepository;
-use SP\Repositories\UserProfile\UserProfileRepository;
+use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Providers\Auth\AuthUtil;
 use SP\Services\User\UserService;
+use SP\Services\UserGroup\UserGroupService;
+use SP\Services\UserProfile\UserProfileService;
 
 /**
  * Class UserController
@@ -61,6 +61,8 @@ class UserController extends ControllerBase implements CrudControllerInterface
 
     /**
      * Search action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -119,8 +121,8 @@ class UserController extends ControllerBase implements CrudControllerInterface
         $user = $userId ? $this->userService->getById($userId) : new UserData();
 
         $this->view->assign('user', $user);
-        $this->view->assign('groups', UserGroupRepository::getServiceItems());
-        $this->view->assign('profiles', UserProfileRepository::getServiceItems());
+        $this->view->assign('groups', (new SelectItemAdapter(UserGroupService::getItemsBasic()))->getItemsFromModel());
+        $this->view->assign('profiles', (new SelectItemAdapter(UserProfileService::getItemsBasic()))->getItemsFromModel());
         $this->view->assign('isUseSSO', $this->configData->isAuthBasicAutoLoginEnabled());
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
@@ -374,6 +376,6 @@ class UserController extends ControllerBase implements CrudControllerInterface
     {
         $this->checkLoggedIn();
 
-        $this->userService = new UserRepository();
+        $this->userService = new UserService();
     }
 }

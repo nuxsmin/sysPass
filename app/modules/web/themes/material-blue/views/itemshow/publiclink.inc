@@ -20,9 +20,10 @@
 
                     <select id="accountId" name="accountId" class="select-box" <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Cuenta'); ?></option>
-                        <?php foreach ($accounts as $account): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $accounts */
+                        foreach ($accounts as $account): ?>
                             <option
-                                    value="<?php echo $account->id; ?>" <?php echo (int)$account->id === $publicLink->getItemId() ? 'selected' : ''; ?>><?php printf('%s (%s)', $account->name, $account->clientName); ?></option>
+                                    value="<?php echo $account->getId(); ?>" <?php echo $account->isSelected() ? 'selected' : ''; ?>><?php printf('%s (%s)', $account->getName(), $account->getItemProperty('clientName')); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>

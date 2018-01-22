@@ -39,7 +39,7 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Repositories\Tag\TagRepository;
+use SP\Services\Tag\TagService;
 
 /**
  * Class TagController
@@ -52,12 +52,14 @@ class TagController extends ControllerBase implements CrudControllerInterface
     use ItemTrait;
 
     /**
-     * @var TagRepository
+     * @var TagService
      */
     protected $tagService;
 
     /**
      * Search action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -265,12 +267,14 @@ class TagController extends ControllerBase implements CrudControllerInterface
 
     /**
      * Initialize class
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->tagService = new TagRepository();
+        $this->tagService = new TagService();
     }
 
 }

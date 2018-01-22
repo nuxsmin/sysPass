@@ -24,29 +24,15 @@
 
 namespace SP\Services;
 
-use SP\DataModel\DataModelInterface;
-
 /**
- * Trait ServiceItemTrait
+ * Interface ServiceItemInterface
  *
  * @package SP\Services
  */
-trait ServiceItemTrait
+interface ServiceItemInterface
 {
     /**
-     * Returns service items for a select
-     *
-     * @return DataModelInterface[]
+     * @return array
      */
-    public static function getItemsBasic()
-    {
-        return (new static())->getAllBasic();
-    }
-
-    /**
-     * Get all items from the service's repository
-     *
-     * @return mixed
-     */
-    abstract public function getAllBasic();
+    public function getAll();
 }

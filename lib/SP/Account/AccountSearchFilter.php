@@ -296,27 +296,27 @@ class AccountSearchFilter
     {
         switch ($this->sortKey) {
             case self::SORT_NAME:
-                $orderKey[] = 'name';
+                $orderKey[] = 'A.name';
                 break;
             case self::SORT_CATEGORY:
-                $orderKey[] = 'categoryName';
+                $orderKey[] = 'A.categoryName';
                 break;
             case self::SORT_LOGIN:
-                $orderKey[] = 'login';
+                $orderKey[] = 'A.login';
                 break;
             case self::SORT_URL:
-                $orderKey[] = 'url';
+                $orderKey[] = 'A.url';
                 break;
             case self::SORT_CLIENT:
-                $orderKey[] = 'clientName';
+                $orderKey[] = 'A.clientName';
                 break;
             default :
-                $orderKey[] = 'name';
+                $orderKey[] = 'A.name';
                 break;
         }
 
         if ($this->isSortViews() && !$this->getSortKey()) {
-            array_unshift($orderKey, 'countView DESC');
+            array_unshift($orderKey, 'A.countView DESC');
             $this->setSortOrder(self::SORT_DIR_DESC);
         }
 

@@ -32,6 +32,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\DataModel\ItemSearchData;
+use SP\Mvc\Model\QueryFilter;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 
@@ -223,34 +224,33 @@ class AccountUtil
             return [];
         }
 
-        $Data = new QueryData();
-
-        $queryWhere = self::getAccountFilterUser($Data, $session);
-
-        $queryWhere[] = 'A.parentId = ?';
-        $Data->addParam($accountId);
+        $queryFilter = self::getAccountFilterUser($session)
+            ->addFilter('A.parentId = ?', [$accountId]);
 
         $query = /** @lang SQL */
             'SELECT A.id, A.name, C.name AS clientName 
             FROM Account A
             INNER JOIN Client C ON Account.clientId = C.id 
-            WHERE ' . implode(' AND ', $queryWhere) . ' ORDER  BY name';
+            WHERE ' . $queryFilter->getFilters() . ' ORDER  BY name';
 
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setParams($queryFilter->getParams());
+        $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($Data);
+        return DbWrapper::getResultsArray($queryData);
     }
 
     /**
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      *
-     * @param QueryData $Data
-     * @param Session   $session
-     * @param bool      $useGlobalSearch
-     * @return array
+     * @param Session $session
+     * @param bool    $useGlobalSearch
+     * @return QueryFilter
      */
-    public static function getAccountFilterUser(QueryData $Data, Session $session, $useGlobalSearch = false)
+    public static function getAccountFilterUser(Session $session, $useGlobalSearch = false)
     {
+        $queryFilter = new QueryFilter();
+
         $configData = $session->getConfig();
         $userData = $session->getUserData();
 
@@ -259,39 +259,29 @@ class AccountUtil
             && !($useGlobalSearch && $session->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
         ) {
             // Filtro usuario y grupo
-            $filterUser[] = 'userId = ?';
-            $Data->addParam($userData->getId());
+            $filter =
+                /** @lang SQL */
+                'A.userId = ? 
+            OR A.userGroupId = ? 
+            OR A.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = A.id AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = A.id AND userGroupId = ?)
+            OR A.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = ?)';
 
-            $filterUser[] = 'userGroupId = ?';
-            $Data->addParam($userData->getUserGroupId());
-
-            // Filtro de cuenta en usuarios y grupos secundarios
-            $filterUser[] = /** @lang SQL */
-                'A.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = A.id AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = A.id AND userGroupId = ?)';
-            $Data->addParam($userData->getId());
-            $Data->addParam($userData->getUserGroupId());
-
-            // Filtro de grupo principal de cuenta en grupos que incluyen al usuario
-            $filterUser[] = /** @lang SQL */
-                'A.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = ?)';
-            $Data->addParam($userData->getId());
+            $params = [$userData->getId(), $userData->getUserGroupId(), $userData->getId(), $userData->getUserGroupId(), $userData->getId()];
 
             if ($configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
-                $filterUser[] = /** @lang SQL */
-                    'A.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = A.id AND uug.userId = ? LIMIT 1)';
-                $Data->addParam($userData->getId());
+                $filter .= /** @lang SQL */
+                    PHP_EOL . 'OR A.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = A.id AND uug.userId = ? LIMIT 1)';
+                $params[] = $userData->getId();
             }
 
-            $queryWhere[] = '(' . implode(' OR ', $filterUser) . ')';
+            $queryFilter->addFilter($filter, $params);
         }
 
-        $queryWhere[] = '(isPrivate = 0 OR (isPrivate = 1 AND userId = ?))';
-        $Data->addParam($userData->getId());
-        $queryWhere[] = '(isPrivateGroup = 0 OR (isPrivateGroup = 1 AND userGroupId = ?))';
-        $Data->addParam($userData->getUserGroupId());
+        $queryFilter->addFilter(/** @lang SQL */
+            '(A.isPrivate = 0 OR (A.isPrivate = 1 AND A.userId = ?)) AND (A.isPrivateGroup = 0 OR (A.isPrivateGroup = 1 AND A.userGroupId = ?))', [$userData->getId(), $userData->getUserGroupId()]);
 
-        return $queryWhere;
+        return $queryFilter;
     }
 
     /**
@@ -356,24 +346,24 @@ class AccountUtil
      */
     public static function getAccountsForUser(Session $session, $accountId = null)
     {
-        $Data = new QueryData();
-
-        $queryWhere = self::getAccountFilterUser($Data, $session);
+        $queryFilter = self::getAccountFilterUser($session);
 
         if (null !== $accountId) {
-            $queryWhere[] = 'A.id <> ? AND (A.parentId = 0 OR A.parentId IS NULL)';
-            $Data->addParam($accountId);
+            $queryFilter->addFilter('A.id <> ? AND (A.parentId = 0 OR A.parentId IS NULL)', [$accountId]);
         }
 
         $query = /** @lang SQL */
             'SELECT A.id, A.name, C.name AS clientName 
             FROM Account A
             LEFT JOIN Client C ON A.clientId = C.id 
-            WHERE ' . implode(' AND ', $queryWhere) . ' ORDER BY name';
+            WHERE ' . $queryFilter->getFilters() . ' ORDER BY name';
 
-        $Data->setQuery($query);
 
-        return DbWrapper::getResultsArray($Data);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams($queryFilter->getParams());
+
+        return DbWrapper::getResultsArray($queryData);
     }
 
     /**

@@ -27,11 +27,13 @@ namespace SP\Services\Account;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountAcl;
 use SP\Account\AccountRequest;
+use SP\Account\AccountUtil;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\Log\Log;
@@ -69,6 +71,10 @@ class AccountService implements AccountServiceInterface
      * @var AccountToTagRepository
      */
     protected $accountToTagRepository;
+    /**
+     * @var Session
+     */
+    protected $session;
 
     /**
      * AccountService constructor.
@@ -85,16 +91,19 @@ class AccountService implements AccountServiceInterface
      * @param AccountToUserGroupRepository $accountToUserGroupRepository
      * @param AccountToUserRepository      $accountToUserRepository
      * @param AccountToTagRepository       $accountToTagRepository
+     * @param Session                      $session
      */
     public function inject(AccountRepository $accountRepository,
                            AccountToUserGroupRepository $accountToUserGroupRepository,
                            AccountToUserRepository $accountToUserRepository,
-                           AccountToTagRepository $accountToTagRepository)
+                           AccountToTagRepository $accountToTagRepository,
+                           Session $session)
     {
         $this->accountRepository = $accountRepository;
         $this->accountToUserGroupRepository = $accountToUserGroupRepository;
         $this->accountToUserRepository = $accountToUserRepository;
         $this->accountToTagRepository = $accountToTagRepository;
+        $this->session = $session;
     }
 
     /**
@@ -366,9 +375,15 @@ class AccountService implements AccountServiceInterface
      * @param $accountId
      * @return array
      */
-    public function getForUser($accountId)
+    public function getForUser($accountId = null)
     {
-        return $this->accountRepository->getForUser($accountId);
+        $queryFilter = AccountUtil::getAccountFilterUser($this->session);
+
+        if (null !== $accountId) {
+            $queryFilter->addFilter('A.id <> ? AND (A.parentId = 0 OR A.parentId IS NULL)', [$accountId]);
+        }
+
+        return $this->accountRepository->getForUser($queryFilter);
     }
 
     /**
@@ -377,15 +392,10 @@ class AccountService implements AccountServiceInterface
      */
     public function getLinked($accountId)
     {
-        return $this->accountRepository->getLinked($accountId);
-    }
+        $queryFilter = AccountUtil::getAccountFilterUser($this->session)
+            ->addFilter('A.parentId = ?', [$accountId]);
 
-    /**
-     * Returns all the items mapping fields for a select type element (id and name fields)
-     */
-    public function getAllItemsForSelect()
-    {
-        return $this->getItemsForSelect($this->accountRepository);
+        return $this->accountRepository->getLinked($queryFilter);
     }
 
     /**
@@ -395,5 +405,13 @@ class AccountService implements AccountServiceInterface
     public function getPasswordHistoryForId($id)
     {
         return $this->accountRepository->getPasswordHistoryForId($id);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllBasic()
+    {
+        return $this->accountRepository->getAll();
     }
 }

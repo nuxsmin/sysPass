@@ -48,12 +48,13 @@
                     <select id="selCustomer" name="customerId" class="select-box sel-chosen-customer"
                             tabindex="2" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
-                        <?php foreach ($customers as $client): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $clients */
+                        foreach ($clients as $client): ?>
                             <option
-                                    value="<?php echo $client->id; ?>" <?php echo ($gotData && $client->id == $accountData->getClientId()) ? 'selected' : ''; ?>><?php echo $client->name; ?></option>
+                                    value="<?php echo $client->getId(); ?>" <?php echo ($gotData && $client->getId() === $accountData->getClientId()) ? 'selected' : ''; ?>><?php echo $client->getName(); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <?php if (!$isView && $addCustomerEnabled): ?>
+                    <?php if (!$isView && $addClientEnabled): ?>
                         <i class="material-icons btn-action" title="<?php echo __('Nuevo Cliente'); ?>"
                            data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::CLIENT_CREATE; ?>"
                            data-item-id="0"
@@ -71,9 +72,10 @@
                     <select id="selCategory" name="categoryId" class="select-box sel-chosen-category"
                             tabindex="3" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
-                        <?php foreach ($categories as $category): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $categories */
+                        foreach ($categories as $category): ?>
                             <option
-                                    value="<?php echo $category->id; ?>" <?php echo ($gotData && $category->id == $accountData->getCategoryId()) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
+                                    value="<?php echo $category->getId(); ?>" <?php echo ($gotData && $category->getId() === $accountData->getCategoryId()) ? 'selected' : ''; ?>><?php echo $category->getName(); ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php if (!$isView && $addCategoryEnabled): ?>

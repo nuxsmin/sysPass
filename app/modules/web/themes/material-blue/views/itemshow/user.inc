@@ -71,9 +71,10 @@
                     <select id="selProfile" name="profileid"
                             class="select-box" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Perfil'); ?></option>
-                        <?php foreach ($profiles as $profile): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $profiles */
+                        foreach ($profiles as $profile): ?>
                             <option
-                                    value="<?php echo $profile->id; ?>" <?php echo ($profile->id === $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
+                                    value="<?php echo $profile->getId(); ?>" <?php echo ($profile->getId() === $user->getUserProfileId()) ? 'selected' : ''; ?>><?php echo $profile->getName(); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -87,9 +88,10 @@
                     <select id="selGroup" name="groupid"
                             class="select-box" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
-                        <?php foreach ($groups as $group): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $groups */
+                        foreach ($groups as $group): ?>
                             <option
-                                    value="<?php echo $group->id; ?>" <?php echo ($group->id == $user->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
+                                    value="<?php echo $group->getId(); ?>" <?php echo ($group->getId() === $user->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->getName(); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>

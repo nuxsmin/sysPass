@@ -68,6 +68,7 @@ abstract class HelperBase
      * @param Config                $config
      * @param Session               $session
      * @param EventDispatcher       $eventDispatcher
+     * @throws \SP\Core\Dic\ContainerException
      */
     final public function __construct(Template $template, Config $config, Session $session, EventDispatcher $eventDispatcher)
     {

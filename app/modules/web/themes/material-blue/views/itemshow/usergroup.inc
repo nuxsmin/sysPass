@@ -52,11 +52,10 @@ use SP\Util\ArrayUtil;
                     <select id="selUsers" name="users[]" multiple="multiple" class="select-box"
                             title="<?php echo __('Usuarios'); ?>" <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                        <?php /** @var array $users */
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $users */
                         foreach ($users as $user): ?>
-                            <?php $selected = ArrayUtil::checkInObjectArrayMethod($groupUsers, 'getUserId', $user->id) ? 'selected' : ''; ?>
                             <option
-                                    value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
+                                    value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php echo $user->getName(); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>

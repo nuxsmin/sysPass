@@ -38,6 +38,8 @@ class PassresetController extends ControllerBase
 {
     /**
      * Password reset action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {

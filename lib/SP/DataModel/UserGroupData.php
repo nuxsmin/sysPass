@@ -87,7 +87,7 @@ class UserGroupData extends DataModelBase implements DataModelInterface
      */
     public function getUsers()
     {
-        return (is_array($this->users)) ? $this->users : [];
+        return is_array($this->users) ? $this->users : [];
     }
 
     /**

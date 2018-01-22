@@ -22,31 +22,37 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Services;
-
-use SP\DataModel\DataModelInterface;
+namespace SP\DataModel;
 
 /**
- * Trait ServiceItemTrait
+ * Class ItemData
  *
- * @package SP\Services
+ * @package SP\DataModel
  */
-trait ServiceItemTrait
+class ItemData implements DataModelInterface
 {
     /**
-     * Returns service items for a select
-     *
-     * @return DataModelInterface[]
+     * @var int
      */
-    public static function getItemsBasic()
+    public $id;
+    /**
+     * @var string
+     */
+    public $name;
+
+    /**
+     * @return int
+     */
+    public function getId()
     {
-        return (new static())->getAllBasic();
+        return (int)$this->id;
     }
 
     /**
-     * Get all items from the service's repository
-     *
-     * @return mixed
+     * @return string
      */
-    abstract public function getAllBasic();
+    public function getName()
+    {
+        return $this->name;
+    }
 }

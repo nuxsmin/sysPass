@@ -228,8 +228,9 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * Deletes an item
      *
      * @param $id
-     * @return CategoryRepository
-     * @throws SPException
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
@@ -243,11 +244,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
 
         DbWrapper::getQuery($Data, $this->db);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Categoría no encontrada'));
-        }
-
-        return $this;
+        return $Data->getQueryNumRows();
     }
 
     /**

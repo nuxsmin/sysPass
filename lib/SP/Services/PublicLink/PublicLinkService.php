@@ -22,32 +22,31 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Services\Tag;
+namespace SP\Services\PublicLink;
 
 use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
-use SP\Repositories\Tag\TagRepository;
+use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Services\ServiceItemTrait;
 
 /**
- * Class TagService
+ * Class PublicLinkService
  *
- * @package SP\Services\Tag
+ * @package SP\Services\PublicLink
  */
-class TagService
+class PublicLinkService
 {
     use InjectableTrait;
     use ServiceItemTrait;
 
     /**
-     * @var TagRepository
+     * @var PublicLinkRepository
      */
-    protected $tagRepository;
-
+    protected $publicLinkRepository;
 
     /**
-     * TagService constructor.
+     * CategoryService constructor.
      *
      * @throws \SP\Core\Dic\ContainerException
      */
@@ -57,40 +56,57 @@ class TagService
     }
 
     /**
-     * @param TagRepository $tagRepository
+     * @param PublicLinkRepository $publicLinkRepository
      */
-    public function inject(TagRepository $tagRepository)
+    public function inject(PublicLinkRepository $publicLinkRepository)
     {
-        $this->tagRepository = $tagRepository;
+        $this->publicLinkRepository = $publicLinkRepository;
     }
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return \SP\DataModel\ClientData[]
+     * @return mixed
      */
     public function search(ItemSearchData $itemSearchData)
     {
-        return $this->tagRepository->search($itemSearchData);
+        return $this->publicLinkRepository->search($itemSearchData);
     }
 
     /**
      * @param $id
-     * @return mixed
+     * @return \SP\DataModel\PublicLinkData
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getById($id)
     {
-        return $this->tagRepository->getById($id);
+        return $this->publicLinkRepository->getById($id);
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function refresh($id)
+    {
+        return $this->publicLinkRepository->refresh($id);
     }
 
     /**
      * @param $id
      * @return $this
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        if ($this->tagRepository->delete($id) === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Etiqueta no encontrada'));
+        if ($this->publicLinkRepository->delete($id) === 0) {
+            throw new SPException(SPException::SP_INFO, __u('Enlace no encontrado'));
         }
 
         return $this;
@@ -98,24 +114,15 @@ class TagService
 
     /**
      * @param $itemData
-     * @return mixed
+     * @return int
      * @throws SPException
-     */
-    public function create($itemData)
-    {
-        return $this->tagRepository->create($itemData);
-    }
-
-    /**
-     * @param $itemData
-     * @return mixed
-     * @throws SPException
+     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update($itemData)
+    public function create($itemData)
     {
-        return $this->tagRepository->update($itemData);
+        return $this->publicLinkRepository->create($itemData);
     }
 
     /**
@@ -125,6 +132,6 @@ class TagService
      */
     public function getAllBasic()
     {
-        return $this->tagRepository->getAll();
+        return $this->publicLinkRepository->getAll();
     }
 }

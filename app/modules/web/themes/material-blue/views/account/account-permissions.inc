@@ -25,11 +25,11 @@
                                 <select id="otherUsers" name="otherUsers[]" multiple="multiple">
                                     <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
                                     <?php if ($gotData === true): ?>
-                                        <?php foreach ($accountOtherUsers as $otherUser): ?>
-                                            <?php /** @var $otherUser \SP\DataModel\UserData */ ?>
+                                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $accountOtherUsers */
+                                        foreach ($accountOtherUsers as $otherUser): ?>
                                             <option
                                                     value="<?php echo $otherUser->getId(); ?>"
-                                                    selected><?php echo $otherUser->getLogin(); ?></option>
+                                                    selected><?php echo $otherUser->getName(); ?></option>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </select>
@@ -47,8 +47,8 @@
                                 <select id="otherGroups" name="otherGroups[]" multiple="multiple">
                                     <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
                                     <?php if ($gotData === true): ?>
-                                        <?php foreach ($accountOtherGroups as $otherGroup): ?>
-                                            <?php /** @var $otherGroup \SP\DataModel\UserGroupData */ ?>
+                                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $accountOtherGroups */
+                                        foreach ($accountOtherGroups as $otherGroup): ?>
                                             <option
                                                     value="<?php echo $otherGroup->getId(); ?>"
                                                     selected><?php echo $otherGroup->getName(); ?></option>
@@ -73,9 +73,10 @@
                     <td class="valField">
                         <select id="selMainGroupId" name="mainGroupId" class="select-box sel-chosen-usergroup">
                             <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
-                            <?php foreach ($otherGroups as $group): ?>
+                            <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherGroups */
+                            foreach ($otherGroups as $group): ?>
                                 <option
-                                        value="<?php echo $group->id; ?>" <?php echo ($gotData && $group->id == $accountData->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
+                                        value="<?php echo $group->getId(); ?>" <?php echo ($gotData && $group->getId() === $accountData->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->getName(); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -123,8 +124,8 @@
             $('#otherUsers').selectize({
                 persist: false,
                 valueField: 'id',
-                labelField: 'login',
-                searchField: ['login'],
+                labelField: 'name',
+                searchField: ['name'],
                 plugins: ['remove_button'],
                 options: <?php echo $otherUsersJson; ?>,
                 onInitialize: function () {

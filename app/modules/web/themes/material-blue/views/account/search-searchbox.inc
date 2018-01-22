@@ -47,17 +47,19 @@
 
             <select id="customer" name="customer" class="select-box select-box-deselect" tabindex="3">
                 <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
-                <?php foreach ($customers as $customer): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $clients */
+                foreach ($clients as $client): ?>
                     <option
-                            value="<?php echo $customer->id; ?>" <?php echo ((int)$customer->id === $searchCustomer) ? 'selected' : ''; ?>><?php echo $customer->name; ?></option>
+                            value="<?php echo $client->getId(); ?>" <?php echo $client->isSelected() ? 'selected' : ''; ?>><?php echo $client->getName(); ?></option>
                 <?php endforeach; ?>
             </select>
 
             <select id="category" name="category" class="select-box select-box-deselect" tabindex="4">
                 <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
-                <?php foreach ($categories as $category): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $categories */
+                foreach ($categories as $category): ?>
                     <option
-                            value="<?php echo $category->id; ?>" <?php echo ((int)$category->id === $searchCategory) ? 'selected' : ''; ?>><?php echo $category->name; ?></option>
+                            value="<?php echo $category->getId(); ?>" <?php echo $category->isSelected() ? 'selected' : ''; ?>><?php echo $category->getName(); ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -96,9 +98,10 @@
         <div class="search-filters-tags">
             <select id="tags" name="tags[]" class="select-box" multiple tabindex="8">
                 <option value=""><?php echo __('Seleccionar Etiqueta'); ?></option>
-                <?php foreach ($tags as $tag): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $tags */
+                foreach ($tags as $tag): ?>
                     <option
-                            value="<?php echo $tag->id; ?>" <?php echo in_array($tag->id, $searchTags) ? 'selected' : ''; ?>><?php echo $tag->name; ?></option>
+                            value="<?php echo $tag->getId(); ?>" <?php echo $tag->isSelected() ? 'selected' : ''; ?>><?php echo $tag->getName(); ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

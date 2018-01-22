@@ -24,7 +24,9 @@
 
 namespace SP\Services\Category;
 
+use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
+use SP\DataModel\ItemSearchData;
 use SP\Repositories\Category\CategoryRepository;
 use SP\Services\ServiceItemTrait;
 
@@ -45,6 +47,8 @@ class CategoryService
 
     /**
      * CategoryService constructor.
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct()
     {
@@ -54,10 +58,70 @@ class CategoryService
     }
 
     /**
-     * Returns all the items mapping fields for a select type element (id and name fields)
+     * @param ItemSearchData $itemSearchData
+     * @return mixed
      */
-    public function getAllItemsForSelect()
+    public function search(ItemSearchData $itemSearchData)
     {
-        return $this->getItemsForSelect($this->categoryRepository);
+        return $this->categoryRepository->search($itemSearchData);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getById($id)
+    {
+        return $this->categoryRepository->getById($id);
+    }
+
+    /**
+     * @param $id
+     * @return $this
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function delete($id)
+    {
+        if ($this->categoryRepository->delete($id) === 0) {
+            throw new SPException(SPException::SP_INFO, __u('Categoría no encontrada'));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $itemData
+     * @return mixed
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function create($itemData)
+    {
+        return $this->categoryRepository->create($itemData);
+    }
+
+    /**
+     * @param $itemData
+     * @return mixed
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function update($itemData)
+    {
+        return $this->categoryRepository->update($itemData);
+    }
+
+    /**
+     * Get all items from the service's repository
+     *
+     * @return array
+     */
+    public function getAllBasic()
+    {
+        return $this->categoryRepository->getAll();
     }
 }

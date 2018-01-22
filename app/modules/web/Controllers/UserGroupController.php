@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -38,10 +38,10 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Repositories\User\UserRepository;
-use SP\Repositories\UserGroup\UserGroupRepository;
-use SP\Repositories\UserGroup\UserToGroupService;
-use SP\Repositories\UserGroup\UserToUserGroupRepository;
+use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Services\User\UserService;
+use SP\Services\UserGroup\UserGroupService;
+use SP\Services\UserGroup\UserToUserGroupService;
 
 /**
  * Class GroupController
@@ -54,16 +54,18 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
     use ItemTrait;
 
     /**
-     * @var UserGroupRepository
+     * @var UserGroupService
      */
     protected $userGroupService;
     /**
-     * @var UserToUserGroupRepository
+     * @var UserToUserGroupService
      */
     protected $userToUserGroupService;
 
     /**
      * Search action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -120,8 +122,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
         $group = $userGroupId ? $this->userGroupService->getById($userGroupId) : new UserGroupData();
 
         $this->view->assign('group', $group);
-        $this->view->assign('users', UserRepository::getServiceItems());
-        $this->view->assign('groupUsers', $this->userToUserGroupService->getById($userGroupId));
+        $this->view->assign('users', (new SelectItemAdapter(UserService::getItemsBasic()))->getItemsFromModelSelected($this->userToUserGroupService->getUsersByGroupId($userGroupId)));
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
@@ -176,7 +177,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
         }
 
         try {
-            $this->userGroupService->logAction($id, ActionsInterface::GROUP_DELETE);
+//            $this->userGroupService->logAction($id, ActionsInterface::GROUP_DELETE);
             $this->userGroupService->delete($id);
 
             $this->deleteCustomFieldsForItem(ActionsInterface::GROUP, $id);
@@ -207,7 +208,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             $groupData = $form->getItemData();
 
             $id = $this->userGroupService->create($groupData);
-            $this->userGroupService->logAction($id, ActionsInterface::GROUP_CREATE);
+//            $this->userGroupService->logAction($id, ActionsInterface::GROUP_CREATE);
             $this->userToUserGroupService->add($id, $groupData->getUsers());
 
             $this->addCustomFieldsForItem(ActionsInterface::GROUP, $id);
@@ -242,7 +243,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             $groupData = $form->getItemData();
 
             $this->userGroupService->update($groupData);
-            $this->userGroupService->logAction($id, ActionsInterface::GROUP_EDIT);
+//            $this->userGroupService->logAction($id, ActionsInterface::GROUP_EDIT);
             $this->userToUserGroupService->update($groupData->getId(), $groupData->getUsers());
 
             $this->updateCustomFieldsForItem(ActionsInterface::GROUP, $id);
@@ -287,12 +288,14 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
 
     /**
      * Initialize class
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->userGroupService = new UserGroupRepository();
-        $this->userToUserGroupService = new UserToUserGroupRepository();
+        $this->userGroupService = new UserGroupService();
+        $this->userToUserGroupService = new UserToUserGroupService();
     }
 }

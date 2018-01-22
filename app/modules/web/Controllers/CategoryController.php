@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-
 use SP\Controller\ControllerBase;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
@@ -39,7 +38,7 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Repositories\Category\CategoryRepository;
+use SP\Services\Category\CategoryService;
 
 /**
  * Class CategoryController
@@ -52,12 +51,14 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
     use ItemTrait;
 
     /**
-     * @var CategoryRepository
+     * @var CategoryService
      */
     protected $categoryService;
 
     /**
      * Search action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -271,12 +272,14 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
 
     /**
      * Initialize class
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->categoryService = new CategoryRepository();
+        $this->categoryService = new CategoryService();
     }
 
 }

@@ -24,7 +24,11 @@
 
 namespace SP\Services\Client;
 
+use SP\Account\AccountUtil;
+use SP\Core\Exceptions\SPException;
+use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
+use SP\DataModel\ItemSearchData;
 use SP\Repositories\Client\ClientRepository;
 use SP\Services\ServiceItemTrait;
 
@@ -42,22 +46,102 @@ class ClientService
      * @var ClientRepository
      */
     protected $clientRepository;
+    /**
+     * @var Session
+     */
+    protected $session;
 
     /**
      * ClientService constructor.
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct()
     {
         $this->injectDependencies();
-
-        $this->clientRepository = new ClientRepository();
     }
 
     /**
-     * Returns all the items mapping fields for a select type element (id and name fields)
+     * @param ClientRepository $clientRepository
+     * @param Session          $session
      */
-    public function getAllItemsForSelect()
+    public function inject(ClientRepository $clientRepository, Session $session)
     {
-        return $this->getItemsForSelect($this->clientRepository);
+        $this->clientRepository = $clientRepository;
+        $this->session = $session;
+    }
+
+    /**
+     * @param ItemSearchData $itemSearchData
+     * @return \SP\DataModel\ClientData[]
+     */
+    public function search(ItemSearchData $itemSearchData)
+    {
+        return $this->clientRepository->search($itemSearchData);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getById($id)
+    {
+        return $this->clientRepository->getById($id);
+    }
+
+    /**
+     * @param $id
+     * @return $this
+     * @throws SPException
+     */
+    public function delete($id)
+    {
+        if ($this->clientRepository->delete($id) === 0) {
+            throw new SPException(SPException::SP_INFO, __u('Cliente no encontrado'));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $itemData
+     * @return mixed
+     * @throws SPException
+     */
+    public function create($itemData)
+    {
+        return $this->clientRepository->create($itemData);
+    }
+
+    /**
+     * @param $itemData
+     * @return mixed
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function update($itemData)
+    {
+        return $this->clientRepository->update($itemData);
+    }
+
+    /**
+     * Get all items from the service's repository
+     *
+     * @return array
+     */
+    public function getAllBasic()
+    {
+        return $this->clientRepository->getAll();
+    }
+
+    /**
+     * Returns all clients visible for a given user
+     *
+     * @return array
+     */
+    public function getAllForUser()
+    {
+        return $this->clientRepository->getAllForFilter(AccountUtil::getAccountFilterUser($this->session));
     }
 }

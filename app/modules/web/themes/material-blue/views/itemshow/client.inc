@@ -1,7 +1,7 @@
 <?php
 
 /** @var $icons \Theme\Icons */
-/** @var $customer \SP\DataModel\ClientData */
+/** @var $client \SP\DataModel\ClientData */
 
 ?>
 
@@ -22,7 +22,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" value="<?php echo $client->getCustomerName(); ?>">
+                               maxlength="50" value="<?php echo $client->getName(); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php echo __('Nombre del cliente'); ?></label>
                     </div>
@@ -35,7 +35,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="description" name="description" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" value="<?php echo $client->getCustomerDescription(); ?>">
+                               maxlength="50" value="<?php echo $client->getDescription(); ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php echo __('Descripción del cliente'); ?></label>
                     </div>
@@ -59,7 +59,7 @@
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="isglobal">
                         <input type="checkbox" id="isglobal"
                                class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="isglobal" <?php echo $client->getCustomerIsGlobal() ? 'checked' : ' '; ?>/>
+                               name="isglobal" <?php echo $client->getIsGlobal() ? 'checked' : ' '; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Global'); ?></span>
                     </label>
                 </td>

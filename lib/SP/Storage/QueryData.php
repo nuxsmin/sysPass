@@ -106,6 +106,16 @@ class QueryData
     }
 
     /**
+     * Añadir un parámetro a la consulta
+     *
+     * @param array $params
+     */
+    public function addParams(array $params)
+    {
+        $this->data = array_merge($this->data, $params);
+    }
+
+    /**
      * @return array
      */
     public function getParams()

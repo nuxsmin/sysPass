@@ -38,7 +38,7 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Repositories\UserProfile\UserProfileRepository;
+use SP\Services\UserProfile\UserProfileService;
 
 /**
  * Class UserProfileController
@@ -51,12 +51,14 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
     use ItemTrait;
 
     /**
-     * @var UserProfileRepository
+     * @var UserProfileService
      */
     protected $userProfileService;
 
     /**
      * Search action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -106,7 +108,6 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      *
      * @param $profileId
      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected function setViewData($profileId = null)
     {
@@ -171,7 +172,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
         }
 
         try {
-            $this->userProfileService->logAction($id, ActionsInterface::PROFILE_DELETE);
+//            $this->userProfileService->logAction($id, ActionsInterface::PROFILE_DELETE);
             $this->userProfileService->delete($id);
 
             $this->deleteCustomFieldsForItem(ActionsInterface::PROFILE, $id);
@@ -202,7 +203,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             $profileData = $form->getItemData();
 
             $id = $this->userProfileService->create($profileData);
-            $this->userProfileService->logAction($id, ActionsInterface::PROFILE_CREATE);
+//            $this->userProfileService->logAction($id, ActionsInterface::PROFILE_CREATE);
 
             $this->addCustomFieldsForItem(ActionsInterface::PROFILE, $id);
 
@@ -236,7 +237,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             $profileData = $form->getItemData();
 
             $this->userProfileService->update($profileData);
-            $this->userProfileService->logAction($id, ActionsInterface::PROFILE_EDIT);
+//            $this->userProfileService->logAction($id, ActionsInterface::PROFILE_EDIT);
 
             $this->updateCustomFieldsForItem(ActionsInterface::PROFILE, $id);
 
@@ -280,11 +281,13 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
 
     /**
      * Initialize class
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->userProfileService = new UserProfileRepository();
+        $this->userProfileService = new UserProfileService();
     }
 }

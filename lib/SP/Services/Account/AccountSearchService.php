@@ -132,6 +132,7 @@ class AccountSearchService
      * @param AccountSearchFilter $accountSearchFilter
      * @return array
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function processSearchResults(AccountSearchFilter $accountSearchFilter)
     {
@@ -210,7 +211,7 @@ class AccountSearchService
 
                 return [
                     'type' => 'user',
-                    'query' => 'userId = ? OR id IN (SELECT AU.accountId FROM AccountToUser AU WHERE AU.accountId = id AND AU.userId = ? UNION ALL SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = id AND AUG.userGroupId = ?)',
+                    'query' => 'A.userId = ? OR A.id IN (SELECT AU.accountId FROM AccountToUser AU WHERE AU.accountId = A.id AND AU.userId = ? UNION ALL SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = A.id AND AUG.userGroupId = ?)',
                     'values' => [$userData->getId(), $userData->getId(), $userData->getUserGroupId()]
                 ];
                 break;
@@ -223,7 +224,7 @@ class AccountSearchService
 
                 return [
                     'type' => 'user',
-                    'query' => 'userId = ?',
+                    'query' => 'A.userId = ?',
                     'values' => [$userData->getId()]
                 ];
                 break;
@@ -236,7 +237,7 @@ class AccountSearchService
 
                 return [
                     'type' => 'group',
-                    'query' => 'userGroupId = ? OR id IN (SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = id AND AUG.userGroupId = ?)',
+                    'query' => 'A.userGroupId = ? OR A.id IN (SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = id AND AUG.userGroupId = ?)',
                     'values' => [$userGroupData->getId(), $userGroupData->getId()]
                 ];
                 break;
@@ -249,28 +250,28 @@ class AccountSearchService
 
                 return [
                     'type' => 'group',
-                    'query' => 'userGroupId = ?',
+                    'query' => 'A.userGroupId = ?',
                     'values' => [$userGroupData->getId()]
                 ];
                 break;
             case 'file':
                 return [
                     'type' => 'file',
-                    'query' => 'id IN (SELECT AF.accountId FROM AccountFile AF WHERE AF.name LIKE ?)',
+                    'query' => 'A.id IN (SELECT AF.accountId FROM AccountFile AF WHERE AF.name LIKE ?)',
                     'values' => ['%' . $filters[2] . '%']
                 ];
                 break;
             case 'expired':
                 return [
                     'type' => 'expired',
-                    'query' => 'passDateChange > 0 AND UNIX_TIMESTAMP() > passDateChange',
+                    'query' => 'A.passDateChange > 0 AND UNIX_TIMESTAMP() > A.passDateChange',
                     'values' => []
                 ];
                 break;
             case 'private':
                 return [
                     'type' => 'private',
-                    'query' => '(isPrivate = 1 AND userId = ?) OR (isPrivateGroup = 1 AND userGroupId = ?)',
+                    'query' => '(A.isPrivate = 1 AND A.userId = ?) OR (A.isPrivateGroup = 1 AND A.userGroupId = ?)',
                     'values' => [$this->session->getUserData()->getId(), $this->session->getUserData()->getUserGroupId()]
                 ];
                 break;

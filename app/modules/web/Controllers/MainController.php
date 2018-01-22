@@ -27,28 +27,23 @@ namespace SP\Modules\Web\Controllers;
 defined('APP_ROOT') || die();
 
 use SP\Account\AccountUtil;
-use SP\Controller\AccountController;
 use SP\Controller\ControllerBase;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Language;
-use SP\Core\Messages\NoticeMessage;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Core\Task;
-use SP\Mvc\View\Template;
 use SP\Core\Upgrade\Check;
-use SP\DataModel\NoticeData;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\Html;
 use SP\Http\Request;
 use SP\Mgmt\Notices\Notice;
-use SP\Mgmt\PublicLinks\PublicLink;
+use SP\Mvc\View\Template;
 use SP\Util\Checks;
-use SP\Util\HttpUtil;
 use SP\Util\Util;
 
 /**

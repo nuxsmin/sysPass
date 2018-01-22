@@ -39,7 +39,7 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Repositories\Client\ClientRepository;
+use SP\Services\Client\ClientService;
 
 /**
  * Class ClientController
@@ -52,12 +52,14 @@ class ClientController extends ControllerBase implements CrudControllerInterface
     use ItemTrait;
 
     /**
-     * @var ClientRepository
+     * @var ClientService
      */
     protected $clientService;
 
     /**
      * Search action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -267,12 +269,14 @@ class ClientController extends ControllerBase implements CrudControllerInterface
 
     /**
      * Initialize class
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->clientService = new ClientRepository();
+        $this->clientService = new ClientService();
     }
 
 }

@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Account\AccountUtil;
 use SP\Controller\ControllerBase;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
@@ -36,12 +35,14 @@ use SP\DataModel\PublicLinkListData;
 use SP\Forms\PublicLinkForm;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
+use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Repositories\PublicLink\PublicLinkRepository;
+use SP\Services\Account\AccountService;
+use SP\Services\PublicLink\PublicLinkService;
 
 /**
  * Class PublicLinkController
@@ -54,12 +55,14 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
     use ItemTrait;
 
     /**
-     * @var PublicLinkRepository
+     * @var PublicLinkService
      */
     protected $publicLinkService;
 
     /**
      * Search action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -108,8 +111,8 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      * Sets view data for displaying user's data
      *
      * @param $publicLinkId
-     * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws SPException
      */
     protected function setViewData($publicLinkId = null)
     {
@@ -118,7 +121,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
         $publicLink = $publicLinkId ? $this->publicLinkService->getById($publicLinkId) : new PublicLinkListData();
 
         $this->view->assign('publicLink', $publicLink);
-        $this->view->assign('accounts', AccountUtil::getAccountsForUser($this->session));
+        $this->view->assign('accounts', (new SelectItemAdapter((new AccountService())->getForUser()))->getItemsFromModelSelected([$publicLink->getItemId()]));
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
@@ -285,11 +288,13 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
 
     /**
      * Initialize class
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->publicLinkService = new PublicLinkRepository();
+        $this->publicLinkService = new PublicLinkService();
     }
 }

@@ -41,6 +41,7 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Repositories\CustomField\CustomFieldDefRepository;
 use SP\Repositories\CustomField\CustomFieldTypeRepository;
+use SP\Services\CustomField\CustomFieldDefService;
 
 /**
  * Class CustomFieldController
@@ -53,12 +54,14 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
     use ItemTrait;
 
     /**
-     * @var CustomFieldDefRepository
+     * @var CustomFieldDefService
      */
     protected $customFieldService;
 
     /**
      * Search action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -270,12 +273,14 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
 
     /**
      * Initialize class
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->customFieldService = new CustomFieldDefRepository();
+        $this->customFieldService = new CustomFieldDefService();
     }
 
 }

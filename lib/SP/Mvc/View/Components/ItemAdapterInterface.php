@@ -22,31 +22,40 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Services;
-
-use SP\DataModel\DataModelInterface;
+namespace SP\Mvc\View\Components;
 
 /**
- * Trait ServiceItemTrait
+ * Interface ItemAdapterInterface
  *
- * @package SP\Services
+ * @package SP\Mvc\View\Components
  */
-trait ServiceItemTrait
+interface ItemAdapterInterface
 {
     /**
-     * Returns service items for a select
+     * Returns a collection of items for a select component
      *
-     * @return DataModelInterface[]
+     * @return array
      */
-    public static function getItemsBasic()
-    {
-        return (new static())->getAllBasic();
-    }
+    public function getItemsFromModel();
 
     /**
-     * Get all items from the service's repository
+     * Returns a JSON like collection of items for a select component
      *
-     * @return mixed
+     * @return string
      */
-    abstract public function getAllBasic();
+    public function getJsonItemsFromModel();
+
+    /**
+     * Returns a collection of items for a select component
+     *
+     * @return array
+     */
+    public function getItemsFromArray();
+
+    /**
+     * Returns a collection of items for a select component
+     *
+     * @return string
+     */
+    public function getJsonItemsFromArray();
 }

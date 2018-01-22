@@ -27,17 +27,14 @@ namespace SP\Modules\Web\Controllers;
 use SP\Controller\ControllerBase;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionUtil;
 use SP\DataModel\AccountExtData;
-use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\Forms\AccountForm;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Mgmt\Files\FileUtil;
 use SP\Modules\Web\Controllers\Helpers\AccountHelper;
 use SP\Modules\Web\Controllers\Helpers\AccountPasswordHelper;
 use SP\Modules\Web\Controllers\Helpers\AccountSearchHelper;
@@ -45,7 +42,6 @@ use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Services\Account\AccountFileService;
 use SP\Services\Account\AccountService;
@@ -171,6 +167,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * View public link action
      *
      * @param string $hash Link's hash
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function viewLinkAction($hash)
     {

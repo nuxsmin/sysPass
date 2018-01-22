@@ -68,7 +68,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Deletes an item
      *
      * @param $id
-     * @return mixed
+     * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -89,11 +89,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
 
         DbWrapper::getQuery($Data, $this->db);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Perfil no encontrado'));
-        }
-
-        return $this;
+        return $Data->getQueryNumRows();
     }
 
     /**

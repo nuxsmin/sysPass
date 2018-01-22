@@ -25,7 +25,9 @@
 namespace SP\Services\UserGroup;
 
 
+use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
+use SP\DataModel\ItemSearchData;
 use SP\Repositories\UserGroup\UserGroupRepository;
 use SP\Services\ServiceItemTrait;
 
@@ -47,17 +49,83 @@ class UserGroupService
 
     /**
      * UserGroup constructor.
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct()
     {
-        $this->userGroupRepository = new UserGroupRepository();
+        $this->injectDependencies();
     }
 
     /**
-     * Returns all the items mapping fields for a select type element (id and name fields)
+     * @param UserGroupRepository $userGroupRepository
      */
-    public function getAllItemsForSelect()
+    public function inject(UserGroupRepository $userGroupRepository)
     {
-        return $this->getItemsForSelect($this->userGroupRepository);
+        $this->userGroupRepository = $userGroupRepository;
+    }
+
+    /**
+     * @param ItemSearchData $itemSearchData
+     * @return \SP\DataModel\ClientData[]
+     */
+    public function search(ItemSearchData $itemSearchData)
+    {
+        return $this->userGroupRepository->search($itemSearchData);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getById($id)
+    {
+        return $this->userGroupRepository->getById($id);
+    }
+
+    /**
+     * @param $id
+     * @return $this
+     * @throws SPException
+     */
+    public function delete($id)
+    {
+        if ($this->userGroupRepository->delete($id) === 0) {
+            throw new SPException(SPException::SP_INFO, __u('Grupo no encontrado'));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $itemData
+     * @return mixed
+     * @throws SPException
+     */
+    public function create($itemData)
+    {
+        return $this->userGroupRepository->create($itemData);
+    }
+
+    /**
+     * @param $itemData
+     * @return mixed
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function update($itemData)
+    {
+        return $this->userGroupRepository->update($itemData);
+    }
+
+    /**
+     * Get all items from the service's repository
+     *
+     * @return array
+     */
+    public function getAllBasic()
+    {
+        return $this->userGroupRepository->getAll();
     }
 }

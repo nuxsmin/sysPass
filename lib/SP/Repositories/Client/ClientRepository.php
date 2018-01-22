@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,7 +27,9 @@ namespace SP\Repositories\Client;
 use SP\Account\AccountUtil;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
+use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
+use SP\Mvc\Model\QueryFilter;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -231,7 +233,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Deletes an item
      *
      * @param $id
-     * @return ClientRepository
+     * @return int
      * @throws SPException
      */
     public function delete($id)
@@ -250,11 +252,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
 
         DbWrapper::getQuery($Data, $this->db);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Cliente no encontrado'));
-        }
-
-        return $this;
+        return $Data->getQueryNumRows();
     }
 
     /**
@@ -306,24 +304,26 @@ class ClientRepository extends Repository implements RepositoryItemInterface
     /**
      * Devolver los clientes visibles por el usuario
      *
+     * @param QueryFilter $queryFilter
      * @return array
      */
-    public function getItemsForSelectByUser()
+    public function getAllForFilter(QueryFilter $queryFilter)
     {
-        $Data = new QueryData();
-
         $query = /** @lang SQL */
             'SELECT C.id, C.name 
             FROM Account A
             RIGHT JOIN Client C ON clientId = C.id
             WHERE A.clientId IS NULL
             OR isGlobal = 1
-            OR (' . implode(' AND ', AccountUtil::getAccountFilterUser($Data, $this->session)) . ')
+            OR (' . $queryFilter->getFilters() . ')
             GROUP BY id
             ORDER BY name';
 
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(ItemData::class);
+        $queryData->setQuery($query);
+        $queryData->setParams($queryFilter->getParams());
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 }

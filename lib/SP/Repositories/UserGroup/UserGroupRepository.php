@@ -48,7 +48,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      * Deletes an item
      *
      * @param $id
-     * @return mixed
+     * @return int
      * @throws SPException
      */
     public function delete($id)
@@ -67,11 +67,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
 
         DbWrapper::getQuery($Data);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Grupo no encontrado'));
-        }
-
-        return $this;
+        return $Data->getQueryNumRows();
     }
 
     /**

@@ -24,7 +24,9 @@
 
 namespace SP\Services\UserProfile;
 
+use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
+use SP\DataModel\ItemSearchData;
 use SP\Repositories\UserProfile\UserProfileRepository;
 use SP\Services\ServiceItemTrait;
 
@@ -45,10 +47,22 @@ class UserProfileService
 
     /**
      * UserProfileService constructor.
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct()
     {
+        $this->injectDependencies();
+
         $this->userProfileRepository = new UserProfileRepository();
+    }
+
+    /**
+     * @param UserProfileRepository $userProfileRepository
+     */
+    public function inject(UserProfileRepository $userProfileRepository)
+    {
+        $this->userProfileRepository = $userProfileRepository;
     }
 
     /**
@@ -61,10 +75,66 @@ class UserProfileService
     }
 
     /**
-     * Returns all the items mapping fields for a select type element (id and name fields)
+     * @param ItemSearchData $itemSearchData
+     * @return \SP\DataModel\ClientData[]
      */
-    public function getAllItemsForSelect()
+    public function search(ItemSearchData $itemSearchData)
     {
-        return $this->getItemsForSelect($this->userProfileRepository);
+        return $this->userProfileRepository->search($itemSearchData);
+    }
+
+    /**
+     * @param $id
+     * @return $this
+     * @throws SPException
+     */
+    public function delete($id)
+    {
+        if ($this->userProfileRepository->delete($id) === 0) {
+            throw new SPException(SPException::SP_INFO, __u('Perfil no encontrado'));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $itemData
+     * @return mixed
+     * @throws SPException
+     */
+    public function create($itemData)
+    {
+        return $this->userProfileRepository->create($itemData);
+    }
+
+    /**
+     * @param $itemData
+     * @return mixed
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function update($itemData)
+    {
+        return $this->userProfileRepository->update($itemData);
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function getUsersForProfile($id)
+    {
+        return $this->userProfileRepository->getUsersForProfile($id);
+    }
+
+    /**
+     * Get all items from the service's repository
+     *
+     * @return array
+     */
+    public function getAllBasic()
+    {
+        return $this->userProfileRepository->getAll();
     }
 }

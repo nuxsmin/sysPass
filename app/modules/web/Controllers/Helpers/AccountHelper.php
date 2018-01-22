@@ -32,6 +32,7 @@ use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\Mgmt\Users\UserPass;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
+use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Repositories\Account\AccountHistoryRepository;
 use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Services\Account\AccountService;
@@ -143,6 +144,7 @@ class AccountHelper extends HelperBase
      * Establecer variables comunes del formulario para todos los interfaces
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function setCommonData()
     {
@@ -190,17 +192,23 @@ class AccountHelper extends HelperBase
         $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $this->accountId));
         $this->view->assign('actionId', Acl::getActionRoute($this->actionId));
 
-        $this->view->assign('categories', (new CategoryService())->getAllItemsForSelect());
+        $this->view->assign('categories', (new SelectItemAdapter(CategoryService::getItemsBasic()))->getItemsFromModel());
 
-        $this->view->assign('customers', (new ClientService())->getAllItemsForSelect());
+        $this->view->assign('clients', (new SelectItemAdapter(ClientService::getItemsBasic()))->getItemsFromModel());
 
-        $this->view->assign('otherUsers', (new UserService())->getAllItemsForSelect());
-        $this->view->assign('otherUsersJson', Json::getJson($this->view->otherUsers));
+        $userItemAdapter = new SelectItemAdapter(UserService::getItemsBasic());
 
-        $this->view->assign('otherGroups', (new UserGroupService())->getAllItemsForSelect());
-        $this->view->assign('otherGroupsJson', Json::getJson($this->view->otherGroups));
+        $this->view->assign('otherUsers', $userItemAdapter->getItemsFromModel());
+        $this->view->assign('otherUsersJson', $userItemAdapter->getJsonItemsFromModel());
 
-        $this->view->assign('tagsJson', Json::getJson((new TagService())->getAllItemsForSelect()));
+        $userGroupItemAdapter = new SelectItemAdapter(UserGroupService::getItemsBasic());
+
+        $this->view->assign('otherGroups', $userGroupItemAdapter->getItemsFromModel());
+        $this->view->assign('otherGroupsJson', $userGroupItemAdapter->getJsonItemsFromModel());
+
+        $tagItemAdapter = new SelectItemAdapter(TagService::getItemsBasic());
+
+        $this->view->assign('tagsJson', $tagItemAdapter->getJsonItemsFromModel());
         $this->view->assign('allowPrivate', $userProfileData->isAccPrivate());
         $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup());
         $this->view->assign('mailRequestEnabled', $this->configData->isMailRequestsEnabled());
@@ -209,7 +217,8 @@ class AccountHelper extends HelperBase
         $this->view->assign('otherAccounts', $this->accountService->getForUser($this->accountId));
         $this->view->assign('linkedAccounts', $this->accountService->getLinked($this->accountId));
 
-        $this->view->assign('addCustomerEnabled', $this->acl->checkUserAccess(ActionsInterface::CLIENT));
+        // FIXME: fix inline client/category creation
+        $this->view->assign('addClientEnabled', $this->acl->checkUserAccess(ActionsInterface::CLIENT));
         $this->view->assign('addCategoryEnabled', $this->acl->checkUserAccess(ActionsInterface::CATEGORY));
 
         $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
@@ -222,6 +231,8 @@ class AccountHelper extends HelperBase
 
     /**
      * Set icons for view
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getActions()
     {
@@ -318,6 +329,7 @@ class AccountHelper extends HelperBase
      * Comprobar si el usuario dispone de acceso al módulo
      *
      * @return bool
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function checkAccess()
     {

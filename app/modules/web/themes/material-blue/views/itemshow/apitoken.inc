@@ -20,9 +20,9 @@
 
                     <select id="selUsers" name="users" class="select-box" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
-                        <?php foreach ($users as $user): ?>
-                            <?php $selected = ($user->id === $apiToken->getUserId()) ? 'selected' : ''; ?>
-                            <option value="<?php echo $user->id; ?>" <?php echo $selected; ?>><?php echo $user->name; ?></option>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $users */
+                        foreach ($users as $user): ?>
+                            <option value="<?php echo $user->getId(); ?>" <?php echo $user->isSelected() ? 'selected' : ''; ?>><?php printf('%s (%s)', $user->getName(), $user->getItemProperty('login')); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -35,9 +35,9 @@
                     <select id="selActions" name="actions"
                             class="select-box" required <?php echo $disabled; ?>>
                         <option value=""><?php echo __('Seleccionar Acción'); ?></option>
-                        <?php foreach ($actions as $id => $name): ?>
-                            <?php $selected = ($id === $apiToken->getActionId()) ? 'selected' : ''; ?>
-                            <option value="<?php echo $id; ?>" <?php echo $selected; ?>><?php echo $name; ?></option>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $actions */
+                        foreach ($actions as $action): ?>
+                            <option value="<?php echo $action->getId(); ?>" <?php echo $action->isSelected() ? 'selected' : ''; ?>><?php echo $action->getName(); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>

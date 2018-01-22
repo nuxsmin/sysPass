@@ -41,8 +41,9 @@ use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Repositories\ApiToken\ApiTokenRepository;
-use SP\Repositories\User\UserRepository;
+use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Services\ApiToken\ApiTokenService;
+use SP\Services\User\UserService;
 
 /**
  * Class ApiTokenController
@@ -55,12 +56,14 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
     use ItemTrait;
 
     /**
-     * @var ApiTokenRepository
+     * @var ApiTokenService
      */
     protected $apiTokenService;
 
     /**
      * Search action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -110,7 +113,6 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      *
      * @param $apiTokenId
      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Defuse\Crypto\Exception\CryptoException
      */
     protected function setViewData($apiTokenId = null)
     {
@@ -120,8 +122,8 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
 
         $this->view->assign('apiToken', $apiToken);
 
-        $this->view->assign('users', UserRepository::getServiceItems());
-        $this->view->assign('actions', ApiTokensUtil::getTokenActions());
+        $this->view->assign('users', (new SelectItemAdapter(UserService::getItemsBasic()))->getItemsFromModelSelected([$apiToken->getUserId()]));
+        $this->view->assign('actions', (new SelectItemAdapter(ApiTokensUtil::getTokenActions()))->getItemsFromArraySelected([$apiToken->getActionId()]));
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
@@ -297,11 +299,13 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
 
     /**
      * Initialize class
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->apiTokenService = new ApiTokenRepository();
+        $this->apiTokenService = new ApiTokenService();
     }
 }
