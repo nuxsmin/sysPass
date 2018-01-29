@@ -27,18 +27,18 @@ namespace SP\DataModel;
 use SP\Core\Crypt\Vault;
 
 /**
- * Class ApiTokenData
+ * Class AuthTokenData
  *
  * @package SP\DataModel
  */
-class ApiTokenData extends DataModelBase implements DataModelInterface
+class AuthTokenData extends DataModelBase implements DataModelInterface
 {
     /**
      * @var int
      */
     public $id;
     /**
-     * @var Vault
+     * @var string
      */
     public $vault;
     /**
@@ -83,7 +83,7 @@ class ApiTokenData extends DataModelBase implements DataModelInterface
     }
 
     /**
-     * @return Vault
+     * @return string
      */
     public function getVault()
     {
@@ -95,7 +95,7 @@ class ApiTokenData extends DataModelBase implements DataModelInterface
      */
     public function setVault(Vault $vault)
     {
-        $this->vault = $vault;
+        $this->vault = serialize($vault);
     }
 
     /**

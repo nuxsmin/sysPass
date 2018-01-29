@@ -33,7 +33,7 @@ use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
-use SP\DataModel\ApiTokenData;
+use SP\DataModel\AuthTokenData;
 use SP\DataModel\UserLoginData;
 use SP\Log\Log;
 use SP\Mgmt\ApiTokens\ApiToken;
@@ -80,7 +80,7 @@ abstract class ApiBase implements ApiInterface
      */
     protected $Log;
     /**
-     * @var ApiTokenData
+     * @var AuthTokenData
      */
     protected $ApiTokenData;
 

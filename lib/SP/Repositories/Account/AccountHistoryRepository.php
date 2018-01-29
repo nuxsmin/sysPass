@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -123,7 +123,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
     /**
      * Crea una nueva cuenta en la BBDD
      *
-     * @param array $itemData ['id' => <int>, 'isDelete' => <bool>]
+     * @param array $itemData ['id' => <int>, 'isModify' => <bool>,'isDelete' => <bool>, 'masterPassHash' => <string>]
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -176,12 +176,12 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             otherUserGroupEdit,
             isPrivate,
             isPrivateGroup,
-            ?,?,?  FROM Account WHERE id = ?';
+            ?,?,? FROM Account WHERE id = ?';
 
-        $Data->setQuery($query . ' ' . $query);
-        $Data->addParam(($itemData['isDelete'] === false) ? 1 : 0);
-        $Data->addParam(($itemData['isDelete'] === true) ? 1 : 0);
-        $Data->addParam(ConfigDB::getValue('masterPwd'));
+        $Data->setQuery($query);
+        $Data->addParam($itemData['isModify']);
+        $Data->addParam($itemData['isDelete']);
+        $Data->addParam($itemData['masterPassHash']);
         $Data->addParam($itemData['id']);
         $Data->setOnErrorMessage(__u('Error al actualizar el historial'));
 
@@ -208,11 +208,10 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      */
     public function delete($id)
     {
-        $Data = new QueryData();
-
         $query = /** @lang SQL */
             'DELETE FROM AccountHistory WHERE id = ? LIMIT 1';
 
+        $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($id);
         $Data->setOnErrorMessage(__u('Error al eliminar la cuenta'));
@@ -265,17 +264,17 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             AH.otherUserGroupEdit,
             AH.isPrivate,
             AH.isPrivateGroup,
-            u1.name AS userName,
-            u1.login AS userLogin,
+            U1.name AS userName,
+            U1.login AS userLogin,
             UG.name AS userGroupName,
-            u2.name AS useEditName,
-            u2.login AS userEditLogin
+            U2.name AS useEditName,
+            U2.login AS userEditLogin
             FROM AccountHistory AH
             INNER JOIN Category C ON AH.categoryId = C.id
             INNER JOIN Client C2 ON AH.clientId = C2.id
             INNER JOIN UserGroup UG ON AH.userGroupId = UG.id
             INNER JOIN User U1 ON AH.userId = U1.id
-            LEFT JOIN User u2 ON AH.userEditId = U2.id
+            LEFT JOIN User U2 ON AH.userEditId = U2.id
             WHERE AH.id = ? LIMIT 1';
 
         $Data = new QueryData();

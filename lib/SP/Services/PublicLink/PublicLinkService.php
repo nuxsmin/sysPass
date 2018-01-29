@@ -24,11 +24,23 @@
 
 namespace SP\Services\PublicLink;
 
+use SP\Bootstrap;
+use SP\Config\Config;
+use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
+use SP\DataModel\PublicLinkData;
+use SP\Http\Request;
+use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Services\ServiceItemTrait;
+use SP\Core\Crypt\Session as CryptSession;
+use SP\Util\Checks;
+use SP\Util\HttpUtil;
+use SP\Util\Util;
 
 /**
  * Class PublicLinkService
@@ -44,6 +56,14 @@ class PublicLinkService
      * @var PublicLinkRepository
      */
     protected $publicLinkRepository;
+    /**
+     * @var Config
+     */
+    protected $config;
+    /**
+     * @var Session
+     */
+    protected $session;
 
     /**
      * CategoryService constructor.
@@ -56,11 +76,36 @@ class PublicLinkService
     }
 
     /**
-     * @param PublicLinkRepository $publicLinkRepository
+     * Returns an HTTP URL for given hash
+     *
+     * @param $hash
+     * @return string
      */
-    public function inject(PublicLinkRepository $publicLinkRepository)
+    public static function getLinkForHash($hash)
+    {
+        return Bootstrap::$WEBURI . '/index.php?r=account/viewLink/' . $hash;
+    }
+
+    /**
+     * Generar el hash para el enlace
+     *
+     * @return string
+     */
+    public static function createLinkHash()
+    {
+        return hash('sha256', uniqid('sysPassPublicLink', true));
+    }
+
+    /**
+     * @param PublicLinkRepository $publicLinkRepository
+     * @param Config               $config
+     * @param Session              $session
+     */
+    public function inject(PublicLinkRepository $publicLinkRepository, Config $config, Session $session)
     {
         $this->publicLinkRepository = $publicLinkRepository;
+        $this->config = $config;
+        $this->session = $session;
     }
 
     /**
@@ -93,7 +138,73 @@ class PublicLinkService
      */
     public function refresh($id)
     {
-        return $this->publicLinkRepository->refresh($id);
+        $salt = $this->config->getConfigData()->getPasswordSalt();
+        $key = self::getNewKey($salt);
+
+        $publicLinkData = $this->publicLinkRepository->getById($id);
+        $publicLinkData->setHash(self::getHashForKey($key, $salt));
+        $publicLinkData->setData($this->getSecuredLinkData($publicLinkData->getItemId(), $key));
+        $publicLinkData->setDateExpire(self::calcDateExpire($this->config));
+        $publicLinkData->setCountViews($this->config->getConfigData()->getPublinksMaxViews());
+
+        return $this->publicLinkRepository->refresh($publicLinkData);
+    }
+
+    /**
+     * @param string $salt
+     * @return string
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public static function getNewKey($salt)
+    {
+        return $salt . Util::generateRandomBytes();
+    }
+
+    /**
+     * Returns the hash from a composed key
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public static function getHashForKey($key, $salt)
+    {
+        return str_replace($salt, '', $key);
+    }
+
+    /**
+     * Obtener los datos de una cuenta y encriptarlos para el enlace
+     *
+     * @param int    $itemId
+     * @param string $linkKey
+     * @return Vault
+     * @throws SPException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     */
+    protected function getSecuredLinkData($itemId, $linkKey)
+    {
+        // Obtener los datos de la cuenta
+        $accountService = new AccountRepository();
+        $accountData = $accountService->getDataForLink($itemId);
+
+        // Desencriptar la clave de la cuenta
+        $key = CryptSession::getSessionKey();
+        $securedKey = Crypt::unlockSecuredKey($accountData->getKey(), $key);
+        $accountData->setPass(Crypt::decrypt($accountData->getPass(), $securedKey, $key));
+        $accountData->setKey(null);
+
+        $vault = new Vault();
+        return serialize($vault->saveData(serialize($accountData), $linkKey));
+    }
+
+    /**
+     * Devolver el tiempo de caducidad del enlace
+     *
+     * @param Config $config
+     * @return int
+     */
+    public static function calcDateExpire(Config $config)
+    {
+        return time() + $config->getConfigData()->getPublinksMaxTime();
     }
 
     /**
@@ -113,16 +224,31 @@ class PublicLinkService
     }
 
     /**
-     * @param $itemData
+     * @param PublicLinkData $itemData
      * @return int
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function create($itemData)
+    public function create(PublicLinkData $itemData)
     {
+        $itemData->setData($this->getSecuredLinkData($itemData->getItemId(), self::getKeyForHash($this->config->getConfigData()->getPasswordSalt(), $itemData)));
+        $itemData->setDateExpire(self::calcDateExpire($this->config));
+        $itemData->setMaxCountViews($this->config->getConfigData()->getPublinksMaxViews());
+        $itemData->setUserId($this->session->getUserData()->getId());
+
         return $this->publicLinkRepository->create($itemData);
+    }
+
+    /**
+     * @param string         $salt
+     * @param PublicLinkData $publicLinkData
+     * @return string
+     */
+    public static function getKeyForHash($salt, PublicLinkData $publicLinkData)
+    {
+        return $salt . $publicLinkData->getHash();
     }
 
     /**
@@ -133,5 +259,64 @@ class PublicLinkService
     public function getAllBasic()
     {
         return $this->publicLinkRepository->getAll();
+    }
+
+    /**
+     * Incrementar el contador de visitas de un enlace
+     *
+     * @param PublicLinkData $publicLinkData
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function addLinkView(PublicLinkData $publicLinkData)
+    {
+        /** @var array $useInfo */
+        $useInfo = serialize($publicLinkData->getUseInfo());
+        $useInfo[] = self::getUseInfo($publicLinkData->getHash());
+        $publicLinkData->setUseInfo($useInfo);
+
+        // FIXME
+//        $Log = new Log();
+//        $LogMessage = $Log->getLogMessage();
+//        $LogMessage->setAction(__u('Ver Enlace Público'));
+//        $LogMessage->addDescription(__u('Enlace visualizado'));
+//        $LogMessage->addDetails(__u('Tipo'), $publicLinkData->getPublicLinkTypeId());
+//        $LogMessage->addDetails(__u('Cuenta'), AccountUtil::getAccountNameById($publicLinkData->getPublicLinkItemId()));
+//        $LogMessage->addDetails(__u('Usuario'), UserUtil::getUserLoginById($publicLinkData->getPublicLinkUserId()));
+//        $Log->writeLog();
+//
+//        if ($publicLinkData->isPublicLinkNotify()) {
+//            Email::sendEmail($LogMessage);
+//        }
+
+        return $this->publicLinkRepository->addLinkView($publicLinkData);
+    }
+
+    /**
+     * Actualizar la información de uso
+     *
+     * @param $hash
+     * @return array
+     */
+    public static function getUseInfo($hash)
+    {
+        return [
+            'who' => HttpUtil::getClientAddress(true),
+            'time' => time(),
+            'hash' => $hash,
+            'agent' => Request::getRequestHeaders('HTTP_USER_AGENT'),
+            'https' => Checks::httpsEnabled()
+        ];
+    }
+
+    /**
+     * @param $hash string
+     * @return bool|PublicLinkData
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function getByHash($hash)
+    {
+        return $this->publicLinkRepository->getByHash($hash);
     }
 }

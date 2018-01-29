@@ -89,25 +89,28 @@
                         <a href="<?php echo $publicLinkURL; ?>" target="_blank"><?php echo $publicLinkURL; ?></a>
                     </td>
                 </tr>
-                <tr>
-                    <td class="descField"><?php echo __('Uso'); ?></td>
-                    <td class="valField">
-                        <div class="lowres-title"><?php echo __('Uso'); ?></div>
+                <?php if (is_array($usageInfo)): ?>
+                    <tr>
+                        <td class="descField"><?php echo __('Uso'); ?></td>
+                        <td class="valField">
+                            <div class="lowres-title"><?php echo __('Uso'); ?></div>
 
-                        <div class="list-wrap">
-                            <ul class="mdl-list">
-                                <?php foreach ($publicLink->getUseInfo() as $useInfo): ?>
-                                    <li class="mdl-list__item">
+                            <div class="list-wrap">
+                                <ul class="mdl-list">
+                                    <?php /** @var array $usageInfo */
+                                    foreach ($usageInfo as $useInfo): ?>
+                                        <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 <i class="material-icons mdl-list__item-icon">access_time</i>
                                     <?php printf('%s - %s', $isDemo ? '*.*.*.*' : $useInfo['who'], date('Y-m-d H:i', $useInfo['time'])); ?>
                                 </span>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    </td>
-                </tr>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endif; ?>
             <?php endif; ?>
             </tbody>
         </table>

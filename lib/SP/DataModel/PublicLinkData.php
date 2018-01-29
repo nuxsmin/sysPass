@@ -78,7 +78,7 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
      */
     public $maxCountViews = 0;
     /**
-     * @var array|string
+     * @var string
      */
     public $useInfo;
     /**
@@ -271,15 +271,11 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getUseInfo()
     {
-        if (is_string($this->useInfo)) {
-            return unserialize($this->useInfo);
-        }
-
-        return (array)$this->useInfo;
+        return $this->useInfo;
     }
 
     /**
@@ -287,7 +283,7 @@ class PublicLinkData extends DataModelBase implements DataModelInterface
      */
     public function setUseInfo(array $useInfo)
     {
-        $this->useInfo = $useInfo;
+        $this->useInfo = serialize($useInfo);
     }
 
     /**

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,25 +24,15 @@
 
 namespace SP\Repositories\PublicLink;
 
-use SP\Bootstrap;
-use SP\Config\Config;
-use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
-use SP\Http\Request;
-use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
-use SP\Util\Checks;
-use SP\Util\HttpUtil;
-use SP\Util\Util;
 
 /**
  * Class PublicLinkRepository
@@ -53,26 +43,6 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 
-    /**
-     * Returns an HTTP URL for given hash
-     *
-     * @param $hash
-     * @return string
-     */
-    public static function getLinkForHash($hash)
-    {
-        return Bootstrap::$WEBURI . '/index.php?r=account/viewLink/' . $hash;
-    }
-
-    /**
-     * Generar el hash para el enlace
-     *
-     * @return string
-     */
-    protected static function createLinkHash()
-    {
-        return hash('sha256', uniqid('sysPassPublicLink', true));
-    }
 
     /**
      * Deletes an item
@@ -263,7 +233,6 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * @param PublicLinkData $itemData
      * @return int
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -289,12 +258,12 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
         $Data->setQuery($query);
         $Data->addParam($itemData->getItemId());
         $Data->addParam($itemData->getHash());
-        $Data->addParam($this->getSecuredLinkData($itemData->getItemId(), self::getKeyForHash($this->config, $itemData)));
-        $Data->addParam($this->session->getUserData()->getId());
+        $Data->addParam($itemData->getData());
+        $Data->addParam($itemData->getUserId());
         $Data->addParam($itemData->getTypeId());
         $Data->addParam((int)$itemData->isNotify());
-        $Data->addParam(self::calcDateExpire($this->config));
-        $Data->addParam($this->config->getConfigData()->getPublinksMaxViews());
+        $Data->addParam($itemData->getDateExpire());
+        $Data->addParam($itemData->getMaxCountViews());
         $Data->setOnErrorMessage(__u('Error al crear enlace'));
 
         DbWrapper::getQuery($Data, $this->db);
@@ -305,7 +274,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param mixed $itemData
+     * @param PublicLinkData $itemData
      * @return bool
      */
     public function checkDuplicatedOnAdd($itemData)
@@ -315,62 +284,11 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($itemData->getPublicLinkItemId());
+        $Data->addParam($itemData->getItemId());
 
         DbWrapper::getResults($Data, $this->db);
 
         return ($Data->getQueryNumRows() === 1);
-    }
-
-    /**
-     * Obtener los datos de una cuenta y encriptarlos para el enlace
-     *
-     * @param int    $itemId
-     * @param string $linkKey
-     * @return Vault
-     * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     */
-    protected function getSecuredLinkData($itemId, $linkKey)
-    {
-        // Obtener los datos de la cuenta
-        $accountService = new AccountRepository();
-        $accountData = $accountService->getDataForLink($itemId);
-
-        // Desencriptar la clave de la cuenta
-        $key = CryptSession::getSessionKey();
-        $securedKey = Crypt::unlockSecuredKey($accountData->getKey(), $key);
-        $accountData->setPass(Crypt::decrypt($accountData->getPass(), $securedKey, $key));
-        $accountData->setKey(null);
-
-        $vault = new Vault();
-        return serialize($vault->saveData(serialize($accountData), $linkKey));
-    }
-
-    /**
-     * @param Config         $config
-     * @param PublicLinkData $publicLinkData
-     * @return string
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     */
-    public static function getKeyForHash(Config $config, PublicLinkData $publicLinkData = null)
-    {
-        if (null !== $publicLinkData) {
-            return $config->getConfigData()->getPasswordSalt() . $publicLinkData->getHash();
-        }
-
-        return $config->getConfigData()->getPasswordSalt() . Util::generateRandomBytes();
-    }
-
-    /**
-     * Devolver el tiempo de caducidad del enlace
-     *
-     * @param Config $config
-     * @return int
-     */
-    protected static function calcDateExpire(Config $config)
-    {
-        return time() + $config->getConfigData()->getPublinksMaxTime();
     }
 
     /**
@@ -388,16 +306,12 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Incrementar el contador de visitas de un enlace
      *
      * @param PublicLinkData $publicLinkData
-     * @return void
+     * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function addLinkView(PublicLinkData $publicLinkData)
     {
-        $useInfo = $publicLinkData->getUseInfo();
-        $useInfo[] = self::getUseInfo($publicLinkData->getHash());
-        $publicLinkData->setUseInfo($useInfo);
-
         $query = /** @lang SQL */
             'UPDATE PublicLink
             SET countViews = countViews + 1,
@@ -407,42 +321,11 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(serialize($publicLinkData->getUseInfo()));
+        $Data->addParam($publicLinkData->getUseInfo());
         $Data->addParam($publicLinkData->getHash());
         $Data->setOnErrorMessage(__u('Error al actualizar enlace'));
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        // FIXME
-//        $Log = new Log();
-//        $LogMessage = $Log->getLogMessage();
-//        $LogMessage->setAction(__u('Ver Enlace Público'));
-//        $LogMessage->addDescription(__u('Enlace visualizado'));
-//        $LogMessage->addDetails(__u('Tipo'), $publicLinkData->getPublicLinkTypeId());
-//        $LogMessage->addDetails(__u('Cuenta'), AccountUtil::getAccountNameById($publicLinkData->getPublicLinkItemId()));
-//        $LogMessage->addDetails(__u('Usuario'), UserUtil::getUserLoginById($publicLinkData->getPublicLinkUserId()));
-//        $Log->writeLog();
-//
-//        if ($publicLinkData->isPublicLinkNotify()) {
-//            Email::sendEmail($LogMessage);
-//        }
-    }
-
-    /**
-     * Actualizar la información de uso
-     *
-     * @param $hash
-     * @return array
-     */
-    protected static function getUseInfo($hash)
-    {
-        return [
-            'who' => HttpUtil::getClientAddress(true),
-            'time' => time(),
-            'hash' => $hash,
-            'agent' => Request::getRequestHeaders('HTTP_USER_AGENT'),
-            'https' => Checks::httpsEnabled()
-        ];
+        return DbWrapper::getQuery($Data, $this->db);
     }
 
     /**
@@ -451,7 +334,6 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * @param PublicLinkData $itemData
      * @return mixed
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -469,10 +351,10 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($itemData->getHash());
-        $Data->addParam($this->getSecuredLinkData($itemData->getItemId(), self::getKeyForHash($this->config, $itemData)));
+        $Data->addParam($itemData->getData());
         $Data->addParam((int)$itemData->isNotify());
-        $Data->addParam(self::calcDateExpire($this->config));
-        $Data->addParam($this->config->getConfigData()->getPublinksMaxViews());
+        $Data->addParam($itemData->getDateExpire());
+        $Data->addParam($itemData->getMaxCountViews());
         $Data->addParam($itemData->getId());
         $Data->setOnErrorMessage(__u('Error al actualizar enlace'));
 
@@ -482,19 +364,14 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
     /**
      * Refreshes a public link
      *
-     * @param $id
+     * @param PublicLinkData $publicLinkData
      * @return bool
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function refresh($id)
+    public function refresh(PublicLinkData $publicLinkData)
     {
-        $publicLinkData = $this->getById($id);
-        $key = self::getKeyForHash($this->config);
-
         $query = /** @lang SQL */
             'UPDATE PublicLink
             SET `hash` = ?,
@@ -506,11 +383,11 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(self::getHashForKey($key, $this->config));
-        $Data->addParam($this->getSecuredLinkData($publicLinkData->getItemId(), $key));
-        $Data->addParam(self::calcDateExpire($this->config));
-        $Data->addParam($this->config->getConfigData()->getPublinksMaxViews());
-        $Data->addParam($id);
+        $Data->addParam($publicLinkData->getHash());
+        $Data->addParam($publicLinkData->getData());
+        $Data->addParam($publicLinkData->getDateExpire());
+        $Data->addParam($publicLinkData->getMaxCountViews());
+        $Data->addParam($publicLinkData->getId());
         $Data->setOnErrorMessage(__u('Error al renovar enlace'));
 
         return DbWrapper::getQuery($Data, $this->db);
@@ -562,18 +439,6 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
     }
 
     /**
-     * Returns the hash from a composed key
-     *
-     * @param string $key
-     * @param Config $config
-     * @return mixed
-     */
-    public static function getHashForKey($key, Config $config)
-    {
-        return str_replace($config->getConfigData()->getPasswordSalt(), '', $key);
-    }
-
-    /**
      * @param $hash string
      * @return bool|PublicLinkData
      * @throws \SP\Core\Exceptions\SPException
@@ -609,7 +474,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
         $Data->addParam($hash);
 
         /** @var PublicLinkData $queryRes */
-        $queryRes = DbWrapper::getResults($Data);
+        $queryRes = DbWrapper::getResults($Data, $this->db);
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_ERROR, __u('Error al obtener enlace'));
@@ -643,5 +508,4 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 
         return $queryRes;
     }
-
 }

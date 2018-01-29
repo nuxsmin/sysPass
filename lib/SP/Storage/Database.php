@@ -176,7 +176,7 @@ class Database implements DatabaseInterface
                         $stmt->bindValue($param, $value, PDO::PARAM_INT);
                     } else {
 //                        error_log("STR: " . $param . " -> " . print_r($value, true));
-                        $stmt->bindValue($param, $value, PDO::PARAM_STR);
+                        $stmt->bindValue($param, $value);
                     }
 
                     $paramIndex++;

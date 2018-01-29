@@ -118,17 +118,16 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $query = /** @lang SQL */
             'SELECT login, email
             FROM User
-            WHERE (UPPER(login) = UPPER(?) 
-            OR UPPER(ssoLogin) = UPPER(?) 
-            OR UPPER(email) = UPPER(?))
-            AND id <> ?';
+            WHERE id <> ? AND (UPPER(login) = UPPER(?) 
+            OR (ssoLogin <> "" AND UPPER(ssoLogin) = UPPER(?)) 
+            OR UPPER(email) = UPPER(?))';
 
         $Data = new QueryData();
         $Data->setQuery($query);
+        $Data->addParam($itemData->getId());
         $Data->addParam($itemData->getLogin());
         $Data->addParam($itemData->getSsoLogin());
         $Data->addParam($itemData->getEmail());
-        $Data->addParam($itemData->getId());
 
         DbWrapper::getQuery($Data, $this->db);
 

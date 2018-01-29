@@ -40,7 +40,6 @@ use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Services\Account\AccountService;
 use SP\Services\PublicLink\PublicLinkService;
 
@@ -121,13 +120,14 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
         $publicLink = $publicLinkId ? $this->publicLinkService->getById($publicLinkId) : new PublicLinkListData();
 
         $this->view->assign('publicLink', $publicLink);
+        $this->view->assign('usageInfo', unserialize($publicLink->getUseInfo()));
         $this->view->assign('accounts', (new SelectItemAdapter((new AccountService())->getForUser()))->getItemsFromModelSelected([$publicLink->getItemId()]));
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
-            $this->view->assign('publicLinkURL', PublicLinkRepository::getLinkForHash($publicLink->getHash()));
+            $this->view->assign('publicLinkURL', PublicLinkService::getLinkForHash($publicLink->getHash()));
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {
@@ -220,6 +220,8 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
 
     /**
      * Saves create action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveCreateAction()
     {

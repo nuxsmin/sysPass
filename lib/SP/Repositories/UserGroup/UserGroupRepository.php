@@ -65,7 +65,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $Data->addParam($id);
         $Data->setOnErrorMessage(__u('Error al eliminar el grupo'));
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
         return $Data->getQueryNumRows();
     }
@@ -85,24 +85,43 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
             FROM User WHERE userGroupId = ?
             UNION ALL
             SELECT userGroupId
-            FROM UserToUserGroup WHERE userGroupId = ?
-            UNION ALL
-            SELECT userGroupId
-            FROM AccountToUserGroup WHERE userGroupId = ?
-            UNION ALL
-            SELECT userGroupId
             FROM Account WHERE userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->addParam($id);
-        $Data->addParam($id);
-        $Data->addParam($id);
+        $Data->addParams(array_fill(0, 2, (int)$id));
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
-        return ($Data->getQueryNumRows() > 1);
+        return $Data->getQueryNumRows() > 0;
+    }
+
+    /**
+     * Checks whether the item is in use or not
+     *
+     * @param $id int
+     * @return array
+     */
+    public function getUsage($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT userGroupId, "User" as ref
+            FROM User WHERE userGroupId = ?
+            UNION ALL
+            SELECT userGroupId, "UserGroup" as ref
+            FROM UserToUserGroup WHERE userGroupId = ?
+            UNION ALL
+            SELECT userGroupId, "AccountToUserGroup" as ref
+            FROM AccountToUserGroup WHERE userGroupId = ?
+            UNION ALL
+            SELECT userGroupId, "Account" as ref
+            FROM Account WHERE userGroupId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParams(array_fill(0, 4, (int)$id));
+
+        return DbWrapper::getResultsArray($Data, $this->db);
     }
 
     /**
@@ -121,7 +140,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        return DbWrapper::getResults($Data);
+        return DbWrapper::getResults($Data, $this->db);
     }
 
     /**
@@ -140,7 +159,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $Data->setQuery($query);
         $Data->addParam($name);
 
-        return DbWrapper::getResults($Data);
+        return DbWrapper::getResults($Data, $this->db);
     }
 
     /**
@@ -180,14 +199,14 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $Data->setQuery($query);
         $Data->setParams($ids);
 
-        return DbWrapper::getResultsArray($Data);
+        return DbWrapper::getResultsArray($Data, $this->db);
     }
 
     /**
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return UserGroupRepository
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -201,9 +220,9 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $Data->setQuery($query);
         $Data->setParams($ids);
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
-        return $this;
+        return $Data->getQueryNumRows();
     }
 
     /**
@@ -244,7 +263,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     /**
      * Creates an item
      *
-     * @param mixed $itemData
+     * @param UserGroupData $itemData
      * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -261,8 +280,8 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($itemData->getUsergroupName());
-        $Data->addParam($itemData->getUsergroupDescription());
+        $Data->addParam($itemData->getName());
+        $Data->addParam($itemData->getDescription());
         $Data->setOnErrorMessage(__u('Error al crear el grupo'));
 
         DbWrapper::getQuery($Data, $this->db);
@@ -273,7 +292,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param mixed $itemData
+     * @param UserGroupData $itemData
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -281,12 +300,12 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     public function checkDuplicatedOnAdd($itemData)
     {
         $query = /** @lang SQL */
-            'SELECT name FROM UserGroup WHERE UPPER(name) = ?';
+            'SELECT name FROM UserGroup WHERE UPPER(name) = UPPER(?)';
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($itemData->getUsergroupName());
+        $Data->addParam($itemData->getName());
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
         return $Data->getQueryNumRows() > 0;
     }
@@ -294,7 +313,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     /**
      * Updates an item
      *
-     * @param mixed $itemData
+     * @param UserGroupData $itemData
      * @return mixed
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -311,12 +330,12 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($itemData->getUsergroupName());
-        $Data->addParam($itemData->getUsergroupDescription());
-        $Data->addParam($itemData->getUsergroupId());
+        $Data->addParam($itemData->getName());
+        $Data->addParam($itemData->getDescription());
+        $Data->addParam($itemData->getId());
         $Data->setOnErrorMessage(__u('Error al actualizar el grupo'));
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
         return $this;
     }
@@ -324,7 +343,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param mixed $itemData
+     * @param UserGroupData $itemData
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -332,13 +351,13 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     public function checkDuplicatedOnUpdate($itemData)
     {
         $query = /** @lang SQL */
-            'SELECT name FROM UserGroup WHERE UPPER(name) = ? AND id <> ?';
+            'SELECT name FROM UserGroup WHERE UPPER(name) = UPPER(?) AND id <> ?';
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($itemData->getUsergroupName());
-        $Data->addParam($itemData->getUsergroupId());
+        $Data->addParam($itemData->getName());
+        $Data->addParam($itemData->getId());
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($Data, $this->db);
 
         return $Data->getQueryNumRows() > 0;
     }

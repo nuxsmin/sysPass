@@ -124,7 +124,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setTitle(__('Editar Categoría'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
-        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_VIEW));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::CATEGORY_EDIT));
 
 
         $Grid->setDataActions($GridActionEdit);

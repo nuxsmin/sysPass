@@ -38,7 +38,7 @@ use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Mvc\View\Template;
 use SP\DataModel\AccountExtData;
-use SP\DataModel\ApiTokenData;
+use SP\DataModel\AuthTokenData;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\CustomFieldData;
@@ -395,11 +395,11 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->module = self::APITOKEN;
         $this->view->addTemplate('tokens');
 
-        $ApiTokenData = $this->itemId ? ApiToken::getItem()->getById($this->itemId) : new ApiTokenData();
+        $ApiTokenData = $this->itemId ? ApiToken::getItem()->getById($this->itemId) : new AuthTokenData();
 
         $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('actions', ApiTokensUtil::getTokenActions());
-        $this->view->assign('apiTokenData', $ApiTokenData);
+        $this->view->assign('authTokenData', $ApiTokenData);
         $this->view->assign('isDisabled', ($this->view->actionId === self::APITOKEN_VIEW) ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 

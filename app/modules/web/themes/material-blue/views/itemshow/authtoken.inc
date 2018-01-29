@@ -1,5 +1,5 @@
 <?php
-/** @var  \SP\DataModel\ApiTokenData $apiToken */
+/** @var  \SP\DataModel\AuthTokenData $authToken */
 /** @var  \SP\Core\UI\ThemeIconsBase $icons */
 ?>
 <div id="box-popup">
@@ -73,7 +73,7 @@
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Token'); ?></div>
 
-                        <?php echo $apiToken->getToken(); ?>
+                        <?php echo $authToken->getToken(); ?>
                     </td>
                 </tr>
             <?php endif; ?>

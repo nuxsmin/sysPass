@@ -150,7 +150,7 @@ class UserForm extends FormBase implements FormInterface
             throw new ValidationException(__u('La clave no puede estar en blanco'));
         }
 
-        if ($this->userData->getPass() !== $userPassR) {
+        if (!Hash::checkHashKey($userPassR, $this->userData->getPass())) {
             throw new ValidationException(__u('Las claves no coinciden'));
         }
     }

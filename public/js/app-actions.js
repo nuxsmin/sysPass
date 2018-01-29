@@ -175,12 +175,12 @@ sysPass.Actions = function (Common) {
 
                     $boxPopup.find(":input:text:visible:first").focus();
 
-                    if (typeof callback.open === "function") {
+                    if (callback !== undefined && typeof callback.open === "function") {
                         callback.open();
                     }
                 },
                 close: function () {
-                    if (typeof callback.close === "function") {
+                    if (callback !== undefined && typeof callback.close === "function") {
                         callback.close();
                     }
                 }
@@ -932,12 +932,13 @@ sysPass.Actions = function (Common) {
 
             var parentId = $obj.data("parent-id");
             var id = parentId === 0 ? $obj.data("item-id") : parentId;
+            var history = $obj.data("history") || 0;
 
             var opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
-                r: $obj.data("action-route") + "/" + id + "/" + $obj.data("history"),
+                r: $obj.data("action-route") + "/" + id + "/" + history,
                 sk: Common.sk.get(),
                 isAjax: 1
             };

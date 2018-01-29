@@ -42,7 +42,6 @@ class Hash
      * @param string $key  con la clave a comprobar
      * @param string $hash con el hash a comprobar
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
      */
     public static function checkHashKey($key, $hash)
     {

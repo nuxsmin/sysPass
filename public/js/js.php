@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,7 +25,7 @@
 use SP\Html\Minify;
 use SP\Http\Request;
 
-define('APP_ROOT', realpath(__DIR__ . '/../../'));
+define('APP_ROOT', dirname(dirname(__DIR__)));
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 
@@ -54,11 +54,12 @@ if (!$file) {
             ->addFile('jquery.magnific-popup.min.js')
             ->addFile('eventsource.min.js');
     } elseif ($group === 1) {
-        $Minify->addFile('app.min.js')
-            ->addFile('app-triggers.min.js')
-            ->addFile('app-actions.min.js')
-            ->addFile('app-requests.min.js')
-            ->addFile('app-main.min.js');
+        // FIXME: use MIN version
+        $Minify->addFile('app.js', false)
+            ->addFile('app-triggers.js', false)
+            ->addFile('app-actions.js', false)
+            ->addFile('app-requests.js', false)
+            ->addFile('app-main.js', false);
     }
 
     $Minify->getMinified();

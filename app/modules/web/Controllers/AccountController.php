@@ -44,7 +44,9 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Services\Account\AccountFileService;
+use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
+use SP\Services\PublicLink\PublicLinkService;
 use SP\Util\ErrorUtil;
 use SP\Util\ImageUtil;
 use SP\Util\Util;
@@ -175,7 +177,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         $LayoutHelper->getPublicLayout('account-link', 'account');
 
         try {
-            $publicLinkService = new PublicLinkRepository();
+            $publicLinkService = new PublicLinkService();
             $publicLinkData = $publicLinkService->getByHash($hash);
 
             if (time() < $publicLinkData->getDateExpire()
@@ -208,7 +210,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 $vault = unserialize($publicLinkData->getData());
 
                 /** @var AccountExtData $accountData */
-                $accountData = Util::unserialize(AccountExtData::class, $vault->getData(PublicLinkRepository::getKeyForHash($this->config, $publicLinkData)));
+                $accountData = Util::unserialize(AccountExtData::class, $vault->getData(PublicLinkService::getKeyForHash($this->config->getConfigData()->getPasswordSalt(), $publicLinkData)));
 
                 $this->view->assign('title',
                     [
@@ -520,8 +522,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         try {
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
 
-            // FIXME: Crear servicio AccountHistoryService
-            $AccountHelper->setAccountDataHistory($this->accountService->getById($id), ActionsInterface::ACCOUNT_VIEW_HISTORY);
+            $AccountHelper->setAccountDataHistory($id, ActionsInterface::ACCOUNT_VIEW_HISTORY);
 
             // Obtener los datos de la cuenta antes y comprobar el acceso
             if (!$AccountHelper->checkAccess()) {
@@ -591,7 +592,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         try {
             $accountPassHelper = new AccountPasswordHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
 
-            // FIXME: JS no envía isHistory
             $account = $isHistory === 0 ? $this->accountService->getPasswordForId($id) : $this->accountService->getPasswordHistoryForId($id);
 
             $data = [
@@ -619,6 +619,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * @throws Helpers\HelperException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Dic\ContainerException
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function copyPassAction($id, $isHistory)

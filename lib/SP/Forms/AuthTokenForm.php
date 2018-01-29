@@ -26,7 +26,7 @@ namespace SP\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\ApiTokenData;
+use SP\DataModel\AuthTokenData;
 use SP\Http\Request;
 
 /**
@@ -34,18 +34,22 @@ use SP\Http\Request;
  *
  * @package SP\Forms
  */
-class ApiTokenForm extends FormBase implements FormInterface
+class AuthTokenForm extends FormBase implements FormInterface
 {
     /**
-     * @var ApiTokenData
+     * @var AuthTokenData
      */
-    protected $apiTokenData;
+    protected $authTokenData;
+    /**
+     * @var bool
+     */
+    protected $refresh = false;
 
     /**
      * Validar el formulario
      *
      * @param $action
-     * @return ApiTokenForm
+     * @return AuthTokenForm
      * @throws \SP\Core\Exceptions\ValidationException
      */
     public function validate($action)
@@ -68,11 +72,13 @@ class ApiTokenForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->apiTokenData = new ApiTokenData();
-        $this->apiTokenData->setId($this->itemId);
-        $this->apiTokenData->setUserId(Request::analyze('users', 0));
-        $this->apiTokenData->setActionId(Request::analyze('actions', 0));
-        $this->apiTokenData->setHash(Request::analyzeEncrypted('pass'));
+        $this->refresh = (bool)Request::analyze('refreshtoken', 0, false, 1);
+
+        $this->authTokenData = new AuthTokenData();
+        $this->authTokenData->setId($this->itemId);
+        $this->authTokenData->setUserId(Request::analyze('users', 0));
+        $this->authTokenData->setActionId(Request::analyze('actions', 0));
+        $this->authTokenData->setHash(Request::analyzeEncrypted('pass'));
     }
 
     /**
@@ -80,29 +86,38 @@ class ApiTokenForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if ($this->apiTokenData->getUserId() === 0) {
+        if ($this->authTokenData->getUserId() === 0) {
             throw new ValidationException(__u('Usuario no indicado'));
         }
 
-        if ($this->apiTokenData->getActionId() === 0) {
+        if ($this->authTokenData->getActionId() === 0) {
             throw new ValidationException(__u('Acción no indicada'));
         }
 
-        $action = $this->apiTokenData->getActionId();
+        $action = $this->authTokenData->getActionId();
 
         if (($action === ActionsInterface::ACCOUNT_VIEW_PASS
-                || $action === ActionsInterface::ACCOUNT_CREATE)
-            && $this->apiTokenData->getHash() === ''
+                || $action === ActionsInterface::ACCOUNT_CREATE
+                || $this->isRefresh())
+            && $this->authTokenData->getHash() === ''
         ) {
             throw new ValidationException(__u('La clave no puede estar en blanco'));
         }
     }
 
     /**
-     * @return ApiTokenData
+     * @return bool
+     */
+    public function isRefresh()
+    {
+        return $this->refresh;
+    }
+
+    /**
+     * @return AuthTokenData
      */
     public function getItemData()
     {
-        return $this->apiTokenData;
+        return $this->authTokenData;
     }
 }

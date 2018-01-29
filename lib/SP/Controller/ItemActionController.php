@@ -39,7 +39,7 @@ use SP\DataModel\NoticeData;
 use SP\DataModel\PluginData;
 use SP\DataModel\PublicLinkData;
 use SP\Forms\AccountForm;
-use SP\Forms\ApiTokenForm;
+use SP\Forms\AuthTokenForm;
 use SP\Forms\CategoryForm;
 use SP\Forms\ClientForm;
 use SP\Forms\CustomFieldDefForm;
@@ -608,7 +608,7 @@ class ItemActionController implements ItemControllerInterface
      */
     protected function tokenAction()
     {
-        $Form = new ApiTokenForm($this->itemId);
+        $Form = new AuthTokenForm($this->itemId);
 
         $refresh = Request::analyze('refreshtoken', false, false, true);
 

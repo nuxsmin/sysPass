@@ -32,8 +32,8 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionUtil;
-use SP\DataModel\ApiTokenData;
-use SP\Forms\ApiTokenForm;
+use SP\DataModel\AuthTokenData;
+use SP\Forms\AuthTokenForm;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Mgmt\ApiTokens\ApiTokensUtil;
@@ -42,7 +42,7 @@ use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Services\ApiToken\ApiTokenService;
+use SP\Services\AuthToken\AuthTokenService;
 use SP\Services\User\UserService;
 
 /**
@@ -56,9 +56,9 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
     use ItemTrait;
 
     /**
-     * @var ApiTokenService
+     * @var AuthTokenService
      */
-    protected $apiTokenService;
+    protected $authTokenService;
 
     /**
      * Search action
@@ -72,7 +72,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         }
 
         $itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-        $grid = $itemsGridHelper->getApiTokensGrid($this->apiTokenService->search($this->getSearchData($this->configData)))->updatePager();
+        $grid = $itemsGridHelper->getApiTokensGrid($this->authTokenService->search($this->getSearchData($this->configData)))->updatePager();
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('index', Request::analyze('activetab', 0));
@@ -100,7 +100,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         try {
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.apiToken.create', $this);
+            $this->eventDispatcher->notifyEvent('show.authToken.create', $this);
         } catch (\Exception $e) {
             $this->returnJsonResponse(1, $e->getMessage());
         }
@@ -111,19 +111,19 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
     /**
      * Sets view data for displaying user's data
      *
-     * @param $apiTokenId
+     * @param $authTokenId
      * @throws \Psr\Container\ContainerExceptionInterface
      */
-    protected function setViewData($apiTokenId = null)
+    protected function setViewData($authTokenId = null)
     {
-        $this->view->addTemplate('apitoken', 'itemshow');
+        $this->view->addTemplate('authtoken', 'itemshow');
 
-        $apiToken = $apiTokenId ? $this->apiTokenService->getById($apiTokenId) : new ApiTokenData();
+        $authToken = $authTokenId ? $this->authTokenService->getById($authTokenId) : new AuthTokenData();
 
-        $this->view->assign('apiToken', $apiToken);
+        $this->view->assign('authToken', $authToken);
 
-        $this->view->assign('users', (new SelectItemAdapter(UserService::getItemsBasic()))->getItemsFromModelSelected([$apiToken->getUserId()]));
-        $this->view->assign('actions', (new SelectItemAdapter(ApiTokensUtil::getTokenActions()))->getItemsFromArraySelected([$apiToken->getActionId()]));
+        $this->view->assign('users', (new SelectItemAdapter(UserService::getItemsBasic()))->getItemsFromModelSelected([$authToken->getUserId()]));
+        $this->view->assign('actions', (new SelectItemAdapter(ApiTokensUtil::getTokenActions()))->getItemsFromArraySelected([$authToken->getActionId()]));
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
@@ -136,7 +136,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
             $this->view->assign('readonly');
         }
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::APITOKEN, $apiTokenId));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::APITOKEN, $authTokenId));
     }
 
     /**
@@ -158,7 +158,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.apiToken.edit', $this);
+            $this->eventDispatcher->notifyEvent('show.authToken.edit', $this);
         } catch (\Exception $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -178,12 +178,11 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         }
 
         try {
-//            $this->apiTokenService->logAction($id, ActionsInterface::APITOKEN_DELETE);
-            $this->apiTokenService->delete($id);
+            $this->authTokenService->delete($id);
 
             $this->deleteCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.apiToken', $this);
+            $this->eventDispatcher->notifyEvent('delete.authToken', $this);
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización eliminada'));
         } catch (SPException $e) {
@@ -203,17 +202,16 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         }
 
         try {
-            $form = new ApiTokenForm();
+            $form = new AuthTokenForm();
             $form->validate(ActionsInterface::APITOKEN_CREATE);
 
             $apiTokenData = $form->getItemData();
 
-            $id = $this->apiTokenService->create($apiTokenData);
-//            $this->apiTokenService->logAction($id, ActionsInterface::APITOKEN_CREATE);
+            $id = $this->authTokenService->create($apiTokenData);
 
             $this->addCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
 
-            $this->eventDispatcher->notifyEvent('create.apiToken', $this);
+            $this->eventDispatcher->notifyEvent('create.authToken', $this);
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización creada'));
         } catch (ValidationException $e) {
@@ -237,6 +235,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      * Saves edit action
      *
      * @param $id
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditAction($id)
     {
@@ -245,17 +244,20 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         }
 
         try {
-            $form = new ApiTokenForm($id);
+            $form = new AuthTokenForm($id);
             $form->validate(ActionsInterface::APITOKEN_EDIT);
 
-            $apiTokenData = $form->getItemData();
+            if ($form->isRefresh()){
+                $this->authTokenService->refreshAndUpdate($form->getItemData());
 
-            $this->apiTokenService->update($apiTokenData);
-//            $this->apiTokenService->logAction($id, ActionsInterface::APITOKEN_EDIT);
+                $this->eventDispatcher->notifyEvent('refresh.authToken', $this);
+            } else {
+                $this->authTokenService->update($form->getItemData());
+
+                $this->eventDispatcher->notifyEvent('edit.authToken', $this);
+            }
 
             $this->updateCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
-
-            $this->eventDispatcher->notifyEvent('edit.apiToken', $this);
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización actualizada'));
         } catch (ValidationException $e) {
@@ -289,7 +291,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.apiToken', $this);
+            $this->eventDispatcher->notifyEvent('show.authToken', $this);
         } catch (\Exception $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -306,6 +308,6 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
     {
         $this->checkLoggedIn();
 
-        $this->apiTokenService = new ApiTokenService();
+        $this->authTokenService = new AuthTokenService();
     }
 }

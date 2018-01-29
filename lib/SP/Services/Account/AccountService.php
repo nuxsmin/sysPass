@@ -43,6 +43,7 @@ use SP\Repositories\Account\AccountToTagRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Repositories\Account\AccountToUserRepository;
 use SP\Core\Crypt\Session as CryptSession;
+use SP\Services\Config\ConfigService;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -185,6 +186,7 @@ class AccountService implements AccountServiceInterface
      * @return int
      * @throws QueryException
      * @throws SPException
+     * @throws \SP\Core\Dic\ContainerException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function create(AccountRequest $accountRequest)
@@ -262,6 +264,7 @@ class AccountService implements AccountServiceInterface
      *
      * @param AccountRequest $accountRequest
      * @throws SPException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function update(AccountRequest $accountRequest)
     {
@@ -277,15 +280,19 @@ class AccountService implements AccountServiceInterface
     /**
      * @param int  $accountId
      * @param bool $isDelete
+     * @return bool
      * @throws QueryException
+     * @throws \SP\Core\Dic\ContainerException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     protected function addHistory($accountId, $isDelete = false)
     {
-        $accountHistoryRepository = new AccountHistoryRepository();
-        $accountHistoryRepository->create([
+        return (new AccountHistoryRepository())->create([
             'id' => $accountId,
-            'isDelete' => $isDelete
+            'isDelete' => (int)$isDelete,
+            'isModify' => (int)!$isDelete,
+            'masterPassHash' => (new ConfigService())->getByParam('masterPwd')
         ]);
     }
 
@@ -312,7 +319,9 @@ class AccountService implements AccountServiceInterface
      * @param AccountRequest $accountRequest
      * @throws QueryException
      * @throws SPException
+     * @throws \SP\Core\Dic\ContainerException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function editPassword(AccountRequest $accountRequest)
     {
@@ -330,7 +339,9 @@ class AccountService implements AccountServiceInterface
      * @param $historyId
      * @param $accountId
      * @throws QueryException
+     * @throws \SP\Core\Dic\ContainerException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function editRestore($historyId, $accountId)
     {

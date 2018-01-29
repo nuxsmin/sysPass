@@ -30,7 +30,7 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory;
-use SP\DataModel\ApiTokenData;
+use SP\DataModel\AuthTokenData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemTrait;
 use SP\Storage\DbWrapper;
@@ -41,7 +41,7 @@ use SP\Util\Util;
  * Class ApiToken
  *
  * @package SP\Mgmt\ApiTokens
- * @property ApiTokenData $itemData
+ * @property AuthTokenData $itemData
  */
 class ApiToken extends ApiTokenBase implements ItemInterface
 {
@@ -306,7 +306,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
 
     /**
      * @param $id int
-     * @return ApiTokenData
+     * @return AuthTokenData
      */
     public function getById($id)
     {
@@ -405,7 +405,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
      *
      * @param $actionId int El id de la accion
      * @param $token    string El token de seguridad
-     * @return false|ApiTokenData
+     * @return false|AuthTokenData
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getTokenByToken($actionId, $token)

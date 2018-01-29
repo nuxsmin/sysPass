@@ -62,6 +62,7 @@ class ItemManagerController extends ControllerBase
 
     /**
      * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {
@@ -72,6 +73,7 @@ class ItemManagerController extends ControllerBase
      * Returns a tabbed grid with items
      *
      * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getGridTabs()
     {

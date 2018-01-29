@@ -27,6 +27,7 @@ namespace SP\Services\Config;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Repositories\Config\ConfigRepository;
@@ -39,6 +40,8 @@ use SP\Services\ServiceException;
  */
 class ConfigService
 {
+    use InjectableTrait;
+
     /**
      * @var ConfigRepository
      */
@@ -47,9 +50,17 @@ class ConfigService
     /**
      * ConfigService constructor.
      *
+     * @throws \SP\Core\Dic\ContainerException
+     */
+    public function __construct()
+    {
+        $this->injectDependencies();
+    }
+
+    /**
      * @param ConfigRepository $configRepository
      */
-    public function __construct(ConfigRepository $configRepository)
+    public function inject(ConfigRepository $configRepository)
     {
         $this->configRepository = $configRepository;
     }

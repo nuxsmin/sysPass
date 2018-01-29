@@ -4,7 +4,7 @@
  *
  * @author    nuxsmin
  * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,67 +22,56 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Services\Account;
 
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Core\Session\Session;
+use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
+use SP\DataModel\AccountHistoryData;
+use SP\Repositories\Account\AccountHistoryRepository;
 
 /**
- * Class FormBase
+ * Class AccountHistoryService
  *
- * @package SP\Forms
+ * @package SP\Services\Account
  */
-abstract class FormBase
+class AccountHistoryService
 {
     use InjectableTrait;
 
     /**
-     * @var int
+     * @var AccountHistoryRepository
      */
-    protected $itemId;
-    /**
-     * @var Config
-     */
-    protected $config;
-    /**
-     * @var ConfigData
-     */
-    protected $configData;
-    /**
-     * @var Session
-     */
-    protected $session;
+    protected $accountHistoryRepository;
 
     /**
-     * FormBase constructor.
+     * AccountHistoryService constructor.
      *
-     * @param $itemId
      * @throws \SP\Core\Dic\ContainerException
      */
-    public function __construct($itemId = null)
+    public function __construct()
     {
         $this->injectDependencies();
-
-        $this->itemId = $itemId;
     }
 
     /**
-     * @param Config  $config
-     * @param Session $session
+     * @param AccountHistoryRepository $accountHistoryRepository
      */
-    public function inject(Config $config, Session $session)
+    public function inject(AccountHistoryRepository $accountHistoryRepository)
     {
-        $this->config = $config;
-        $this->configData = $config->getConfigData();
-        $this->session = $session;
+        $this->accountHistoryRepository = $accountHistoryRepository;
     }
 
     /**
-     * Analizar los datos de la petición HTTP
+     * Returns the item for given id
      *
-     * @return void
+     * @param int $id
+     * @return AccountHistoryData
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\SPException
      */
-    abstract protected function analyzeRequestData();
+    public function getById($id)
+    {
+        return $this->accountHistoryRepository->getById($id);
+    }
+
 }

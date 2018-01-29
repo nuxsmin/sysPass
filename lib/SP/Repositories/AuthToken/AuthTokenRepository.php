@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,29 +22,24 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Repositories\ApiToken;
+namespace SP\Repositories\AuthToken;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
-use SP\Core\Crypt\Hash;
-use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\ApiTokenData;
+use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
-use SP\Util\Util;
 
 /**
- * Class ApiTokenRepository
+ * Class AuthTokenRepository
  *
  * @package SP\Repositories\ApiToken
  */
-class ApiTokenRepository extends Repository implements RepositoryItemInterface
+class AuthTokenRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
 
@@ -90,7 +85,7 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
             WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName(ApiTokenData::class);
+        $Data->setMapClassName(AuthTokenData::class);
         $Data->setQuery($query);
         $Data->addParam($id);
 
@@ -200,11 +195,9 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
     /**
      * Creates an item
      *
-     * @param ApiTokenData $itemData
+     * @param AuthTokenData $itemData
      * @return mixed
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -228,22 +221,10 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
         $Data->setQuery($query);
         $Data->addParam($itemData->getUserId());
         $Data->addParam($itemData->getActionId());
-        $Data->addParam($this->session->getUserData()->getId());
-
-        $token = $this->getTokenByUserId($itemData->getUserId());
-        $Data->addParam($token);
-
-        $action = $itemData->getActionId();
-
-        if ($action === ActionsInterface::ACCOUNT_VIEW_PASS
-            || $action === ActionsInterface::ACCOUNT_CREATE
-        ) {
-            $Data->addParam(serialize($this->getSecureData($token, $itemData)));
-        } else {
-            $Data->addParam(null);
-        }
-
-        $Data->addParam(Hash::hashKey($itemData->getHash()));
+        $Data->addParam($itemData->getCreatedBy());
+        $Data->addParam($itemData->getToken());
+        $Data->addParam($itemData->getVault());
+        $Data->addParam($itemData->getHash());
         $Data->setOnErrorMessage(__u('Error interno'));
 
         DbWrapper::getQuery($Data, $this->db);
@@ -254,7 +235,7 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param mixed $itemData
+     * @param AuthTokenData $itemData
      * @return bool
      */
     public function checkDuplicatedOnAdd($itemData)
@@ -266,8 +247,8 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($itemData->getAuthtokenUserId());
-        $Data->addParam($itemData->getAuthtokenActionId());
+        $Data->addParam($itemData->getUserId());
+        $Data->addParam($itemData->getActionId());
 
         DbWrapper::getResults($Data, $this->db);
 
@@ -279,12 +260,11 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
      *
      * @param $id
      * @return string
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
-    private function getTokenByUserId($id)
+    public function getTokenByUserId($id)
     {
         $query = /** @lang SQL */
-            'SELECT token FROM AuthToken WHERE userId = ? LIMIT 1';
+            'SELECT token FROM AuthToken WHERE userId = ? AND token <> \'\' LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -292,43 +272,15 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
 
         $queryRes = DbWrapper::getResults($Data, $this->db);
 
-        return $Data->getQueryNumRows() === 1 ? $queryRes->token : $this->generateToken();
-    }
-
-    /**
-     * Generar un token de acceso
-     *
-     * @return string
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     */
-    private function generateToken()
-    {
-        return Util::generateRandomBytes(32);
-    }
-
-    /**
-     * Generar la llave segura del token
-     *
-     * @param string       $token
-     * @param ApiTokenData $itemData
-     * @return Vault
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     */
-    private function getSecureData($token, ApiTokenData $itemData)
-    {
-        $Vault = new Vault();
-        $Vault->saveData(CryptSession::getSessionKey(), $itemData->getHash() . $token);
-
-        return $Vault;
+        return $Data->getQueryNumRows() === 1 ? $queryRes->token : null;
     }
 
     /**
      * Updates an item
      *
-     * @param ApiTokenData $itemData
+     * @param AuthTokenData $itemData
      * @return mixed
      * @throws SPException
-     * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -337,8 +289,6 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
         if ($this->checkDuplicatedOnUpdate($itemData)) {
             throw new SPException(SPException::SP_WARNING, __u('La autorización ya existe'));
         }
-
-        $token = $this->getTokenByUserId($itemData->getUserId());
 
         $query = /** @lang SQL */
             'UPDATE AuthToken 
@@ -355,20 +305,10 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
         $Data->setQuery($query);
         $Data->addParam($itemData->getUserId());
         $Data->addParam($itemData->getActionId());
-        $Data->addParam($this->session->getUserData()->getId());
-        $Data->addParam($token);
-
-        $action = $itemData->getActionId();
-
-        if ($action === ActionsInterface::ACCOUNT_VIEW_PASS
-            || $action === ActionsInterface::ACCOUNT_CREATE
-        ) {
-            $Data->addParam(serialize($this->getSecureData($token, $itemData)));
-        } else {
-            $Data->addParam(null);
-        }
-
-        $Data->addParam(Hash::hashKey($itemData->getHash()));
+        $Data->addParam($itemData->getCreatedBy());
+        $Data->addParam($itemData->getToken());
+        $Data->addParam($itemData->getVault());
+        $Data->addParam($itemData->getHash());
         $Data->addParam($itemData->getId());
         $Data->setOnErrorMessage(__u('Error interno'));
 
@@ -378,7 +318,7 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param ApiTokenData $itemData
+     * @param AuthTokenData $itemData
      * @return bool
      */
     public function checkDuplicatedOnUpdate($itemData)
@@ -403,41 +343,53 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
     /**
      * Regenerar el hash de los tokens de un usuario
      *
-     * @param ApiTokenData $itemData
+     * @param int    $id
+     * @param string $token
      * @return bool
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function refreshToken(ApiTokenData $itemData)
+    public function refreshTokenByUserId($id, $token)
     {
         $query = /** @lang SQL */
             'UPDATE AuthToken 
             SET token = ?,
-            `hash` = ?,
-            vault = ?,
             startDate = UNIX_TIMESTAMP() 
-            WHERE userId = ? LIMIT 1';
+            WHERE userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
-
-        $token = $this->generateToken();
         $Data->addParam($token);
-        $Data->addParam(Hash::hashKey($itemData->getHash()));
+        $Data->addParam($id);
+        $Data->setOnErrorMessage(__u('Error interno'));
 
-        $action = $itemData->getActionId();
+        return DbWrapper::getQuery($Data, $this->db);
+    }
 
-        if ($action === ActionsInterface::ACCOUNT_VIEW_PASS
-            || $action === ActionsInterface::ACCOUNT_CREATE
-        ) {
-            $Data->addParam(serialize($this->getSecureData($token, $itemData)));
-        } else {
-            $Data->addParam(null);
-        }
+    /**
+     * Regenerar el hash de los tokens de un usuario
+     *
+     * @param int $id
+     * @param     $vault
+     * @param     $hash
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function refreshVaultByUserId($id, $vault, $hash)
+    {
+        $query = /** @lang SQL */
+            'UPDATE AuthToken 
+            SET vault = ?,
+            `hash` = ?,
+            startDate = UNIX_TIMESTAMP() 
+            WHERE userId = ? AND vault IS NOT NULL';
 
-        $Data->addParam($itemData->getUserId());
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($vault);
+        $Data->addParam($hash);
+        $Data->addParam($id);
         $Data->setOnErrorMessage(__u('Error interno'));
 
         return DbWrapper::getQuery($Data, $this->db);
@@ -468,7 +420,7 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
      *
      * @param $actionId int El id de la accion
      * @param $token    string El token de seguridad
-     * @return false|ApiTokenData
+     * @return false|AuthTokenData
      */
     public function getTokenByToken($actionId, $token)
     {
@@ -479,7 +431,7 @@ class ApiTokenRepository extends Repository implements RepositoryItemInterface
             AND token = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName(ApiTokenData::class);
+        $Data->setMapClassName(AuthTokenData::class);
         $Data->setQuery($query);
         $Data->addParam($actionId);
         $Data->addParam($token);

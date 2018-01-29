@@ -35,9 +35,11 @@ use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Repositories\Account\AccountHistoryRepository;
 use SP\Repositories\PublicLink\PublicLinkRepository;
+use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
+use SP\Services\PublicLink\PublicLinkService;
 use SP\Services\Tag\TagService;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
@@ -99,6 +101,7 @@ class AccountHelper extends HelperBase
      *
      * @param $accountHistoryId
      * @param $actionId
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function setAccountDataHistory($accountHistoryId, $actionId)
     {
@@ -106,7 +109,8 @@ class AccountHelper extends HelperBase
         $this->actionId = $actionId;
         $this->isHistory = true;
 
-        $this->accountService = new AccountHistoryRepository();
+        // FIXME
+        $this->accountService = new AccountHistoryService();
         $this->accountDetailsResponse = $this->accountService->getById($accountHistoryId);
         $this->accountId = $this->accountDetailsResponse->getId();
 
@@ -174,7 +178,7 @@ class AccountHelper extends HelperBase
                 $publicLinkService = new PublicLinkRepository();
                 $publicLinkData = $publicLinkService->getHashForItem($this->accountId);
 
-                $publicLinkUrl = $publicLinkData ? PublicLinkRepository::getLinkForHash($publicLinkData->getHash()) : null;
+                $publicLinkUrl = $publicLinkData ? PublicLinkService::getLinkForHash($publicLinkData->getHash()) : null;
                 $this->view->assign('publicLinkUrl', $publicLinkUrl);
                 $this->view->assign('publicLinkId', $publicLinkData ? $publicLinkData->getId() : 0);
                 $this->view->assign('publicLinkShow', true);

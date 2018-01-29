@@ -31,7 +31,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Repositories\ApiToken\ApiTokenRepository;
+use SP\Repositories\AuthToken\AuthTokenRepository;
 use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Repositories\User\UserRepository;
 use SP\Repositories\UserGroup\UserGroupRepository;
@@ -143,7 +143,7 @@ class AccessManagerController extends ControllerBase
      */
     protected function getApiTokensList()
     {
-        $service = new ApiTokenRepository();
+        $service = new AuthTokenRepository();
 
         return $this->itemsGridHelper->getApiTokensGrid($service->search($this->itemSearchData))->updatePager();
     }

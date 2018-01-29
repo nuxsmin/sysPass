@@ -27,7 +27,7 @@ namespace SP\Mgmt\ApiTokens;
 defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\InvalidClassException;
-use SP\DataModel\ApiTokenData;
+use SP\DataModel\AuthTokenData;
 use SP\Mgmt\ItemBaseInterface;
 use SP\Mgmt\ItemBaseTrait;
 
@@ -48,6 +48,6 @@ abstract class ApiTokenBase implements ItemBaseInterface
      */
     protected function init()
     {
-        $this->setDataModel(ApiTokenData::class);
+        $this->setDataModel(AuthTokenData::class);
     }
 }
