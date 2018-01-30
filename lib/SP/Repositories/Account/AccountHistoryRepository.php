@@ -243,6 +243,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
     {
         $query = /** @lang SQL */
             'SELECT AH.id,
+            AH.accountId,
             AH.clientId,
             AH.categoryId,
             AH.name,
@@ -267,7 +268,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             U1.name AS userName,
             U1.login AS userLogin,
             UG.name AS userGroupName,
-            U2.name AS useEditName,
+            U2.name AS userEditName,
             U2.login AS userEditLogin
             FROM AccountHistory AH
             INNER JOIN Category C ON AH.categoryId = C.id

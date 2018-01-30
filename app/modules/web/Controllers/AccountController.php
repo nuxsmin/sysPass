@@ -109,7 +109,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (\Exception $e) {
             debugLog($e->getMessage(), true);
 
-            // FIXME
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }
     }
@@ -129,14 +128,12 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withTagsById($accountDetailsResponse);
 
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccount(
+
+            if (!$AccountHelper->setAccount(
                 $accountDetailsResponse,
                 $this->accountService,
                 ActionsInterface::ACCOUNT_VIEW
-            );
-
-            // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess()) {
+            )) {
                 return;
             }
 
@@ -335,14 +332,12 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withTagsById($accountDetailsResponse);
 
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccount(
+
+            if (!$AccountHelper->setAccount(
                 $accountDetailsResponse,
                 $this->accountService,
                 ActionsInterface::ACCOUNT_COPY
-            );
-
-            // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess()) {
+            )) {
                 return;
             }
 
@@ -383,14 +378,12 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withTagsById($accountDetailsResponse);
 
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccount(
+
+            if (!$AccountHelper->setAccount(
                 $accountDetailsResponse,
                 $this->accountService,
                 ActionsInterface::ACCOUNT_EDIT
-            );
-
-            // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess()) {
+            )) {
                 return;
             }
 
@@ -432,14 +425,12 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withUserGroupsById($accountDetailsResponse);
 
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccount(
+
+            if (!$AccountHelper->setAccount(
                 $accountDetailsResponse,
                 $this->accountService,
                 ActionsInterface::ACCOUNT_DELETE
-            );
-
-            // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess()) {
+            )) {
                 return;
             }
 
@@ -479,14 +470,12 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withUserGroupsById($accountDetailsResponse);
 
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $AccountHelper->setAccount(
+
+            if (!$AccountHelper->setAccount(
                 $accountDetailsResponse,
                 $this->accountService,
                 ActionsInterface::ACCOUNT_EDIT_PASS
-            );
-
-            // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess()) {
+            )) {
                 return;
             }
 
@@ -520,16 +509,21 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function viewHistoryAction($id)
     {
         try {
+            $accountHistoryService = new AccountHistoryService();
+            $accountHistoryData = $accountHistoryService->getById($id);
+
             $AccountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
 
-            $AccountHelper->setAccountDataHistory($id, ActionsInterface::ACCOUNT_VIEW_HISTORY);
-
-            // Obtener los datos de la cuenta antes y comprobar el acceso
-            if (!$AccountHelper->checkAccess()) {
+            if (!$AccountHelper->setAccountHistory(
+                $accountHistoryService,
+                $accountHistoryData,
+                ActionsInterface::ACCOUNT_VIEW_HISTORY)
+            ) {
                 return;
             }
 
-            $this->view->addTemplate('account');
+            $this->view->addTemplate('account-history');
+
             $this->view->assign('title',
                 [
                     'class' => 'titleNormal',
@@ -537,10 +531,9 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                     'icon' => 'access_time'
                 ]
             );
+
             $this->view->assign('formRoute', 'account/saveRestore');
             $this->view->assign('isView', true);
-
-            $AccountHelper->setCommonData();
 
             $this->eventDispatcher->notifyEvent('show.account.history', $this);
         } catch (\Exception $e) {
@@ -639,6 +632,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
     /**
      * Saves copy action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveCopyAction()
     {
@@ -647,6 +642,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
     /**
      * Saves create action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveCreateAction()
     {
@@ -682,6 +679,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Saves edit action
      *
      * @param $id Account's ID
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditAction($id)
     {
@@ -716,6 +714,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Saves edit action
      *
      * @param $id Account's ID
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditPassAction($id)
     {
@@ -749,6 +748,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      *
      * @param int $historyId Account's history ID
      * @param int $id        Account's ID
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditRestoreAction($historyId, $id)
     {
@@ -783,9 +783,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             if ($this->accountService->delete($id)) {
                 $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
 
-                // FIXME: obtener cuenta antes de eliminar
-//                $accountRepository->logAccountAction($id, ActionsInterface::ACCOUNT_DELETE);
-
                 $this->eventDispatcher->notifyEvent('delete.account', $this);
 
                 $this->returnJsonResponseData(
@@ -803,6 +800,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
     /**
      * Initialize class
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function initialize()
     {

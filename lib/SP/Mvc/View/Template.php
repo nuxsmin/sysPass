@@ -70,6 +70,7 @@ class Template
     /**
      * @param null  $file Archivo de plantilla a añadir
      * @param array $vars Variables a inicializar
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct($file = null, array $vars = [])
     {
@@ -163,7 +164,7 @@ class Template
     private function setVars(&$vars)
     {
         foreach ($vars as $name => $value) {
-            $this->$name = $value;
+            $this->{$name} = $value;
         }
     }
 

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -39,6 +39,10 @@ class AccountHistoryData extends AccountExtData
      * @var bool
      */
     public $isDeleted = 0;
+    /**
+     * @var int
+     */
+    public $accountId;
 
     /**
      * @return boolean
@@ -70,5 +74,21 @@ class AccountHistoryData extends AccountExtData
     public function setIsDeleted($isDeleted)
     {
         $this->isDeleted = (int)$isDeleted;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountId()
+    {
+        return $this->accountId;
+    }
+
+    /**
+     * @param int $accountId
+     */
+    public function setAccountId($accountId)
+    {
+        $this->accountId = $accountId;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-/** @var \SP\Account\AccountAcl $AccountAcl */
+/** @var \SP\Account\AccountAcl $accountAcl */
 /** @var \SP\DataModel\AccountExtData $accountData */
 ?>
 
@@ -19,10 +19,6 @@
           data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
           data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
           data-hash="">
-        <input type="hidden" name="actionId" value="<?php echo $actionId; ?>">
-        <?php if ($gotData): ?>
-            <input type="hidden" name="itemId" value="<?php echo $accountId; ?>"/>
-        <?php endif; ?>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">
 
@@ -111,7 +107,7 @@
                     </div>
                 </td>
             </tr>
-            <?php if ($AccountAcl->isShowPass()): ?>
+            <?php if ($accountAcl->isShowPass()): ?>
                 <tr>
                     <td class="descField"><?php echo __('Clave'); ?></td>
                     <td class="valField">
@@ -199,7 +195,7 @@
                     </td>
                 </tr>
             <?php endif; ?>
-            <?php if ($AccountAcl->isShowHistory() && count($historyData) > 0): ?>
+            <?php if ($accountAcl->isShowHistory() && count($historyData) > 0): ?>
                 <tr>
                     <td class="descField"><?php echo __('Historial'); ?></td>
                     <td class="valField">
@@ -240,7 +236,7 @@
             <?php endif; ?>
         </table>
 
-        <?php if (!$isView && $AccountAcl->isShowPermission()): ?>
+        <?php if (!$isView && $accountAcl->isShowPermission()): ?>
             <?php include $this->includeTemplate('account-permissions'); ?>
         <?php endif; ?>
 
@@ -265,7 +261,7 @@
     </form>
 
     <!--Files box -->
-    <?php if ($gotData && $AccountAcl->isShowFiles()): ?>
+    <?php if ($gotData && $accountAcl->isShowFiles()): ?>
         <?php include $this->includeTemplate('files'); ?>
     <?php endif; ?>
 
@@ -274,7 +270,7 @@
     <?php endif; ?>
 
     <!--More info about account details -->
-    <?php if ($gotData && $AccountAcl->isShowDetails()): ?>
+    <?php if ($gotData && $accountAcl->isShowDetails()): ?>
         <?php include $this->includeTemplate('details'); ?>
     <?php endif; ?>
 

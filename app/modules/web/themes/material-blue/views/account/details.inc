@@ -57,7 +57,7 @@
                     <?php echo $accountData->getUserGroupName(); ?>
                 </td>
             </tr>
-            <?php if (is_array($accountOtherUsers) && count($accountOtherUsers) > 0): ?>
+            <?php if (isset($accountOtherUsers) && is_array($accountOtherUsers) && count($accountOtherUsers) > 0): ?>
                 <tr>
                     <td class="descField"><?php echo __('Usuarios Secundarios'); ?></td>
                     <td class="valField">
@@ -78,7 +78,7 @@
                     </td>
                 </tr>
             <?php endif; ?>
-            <?php if (is_array($accountOtherGroups) && count($accountOtherGroups) > 0): ?>
+            <?php if (isset($accountOtherGroups) && is_array($accountOtherGroups) && count($accountOtherGroups) > 0): ?>
                 <tr>
                     <td class="descField"><?php echo __('Grupos Secundarios'); ?></td>
                     <td class="valField">
@@ -101,7 +101,7 @@
                     </td>
                 </tr>
             <?php endif; ?>
-            <?php if ($AccountAcl->isModified()): ?>
+            <?php if ($accountAcl->isModified()): ?>
                 <tr>
                     <td class="descField"><?php echo __('Fecha Edición'); ?></td>
                     <td class="valField">

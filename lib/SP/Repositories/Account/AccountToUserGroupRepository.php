@@ -44,7 +44,7 @@ class AccountToUserGroupRepository extends Repository
      * Obtiene el listado con el nombre de los grupos de una cuenta.
      *
      * @param int $id con el Id de la cuenta
-     * @return UserGroupData[]
+     * @return array
      */
     public function getUserGroupsByAccountId($id)
     {

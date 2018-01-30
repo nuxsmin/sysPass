@@ -28,13 +28,13 @@ use SP\Account\AccountAcl;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
+use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\Html\DataGrid\DataGridAction;
 use SP\Mgmt\Users\UserPass;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Repositories\Account\AccountHistoryRepository;
-use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
@@ -63,6 +63,10 @@ class AccountHelper extends HelperBase
      * @var AccountService
      */
     protected $accountService;
+    /**
+     * @var AccountHistoryService
+     */
+    protected $accountHistoryService;
     /**
      * @var string
      */
@@ -99,148 +103,94 @@ class AccountHelper extends HelperBase
     /**
      * Establecer las variables que contienen la información de la cuenta en una fecha concreta.
      *
-     * @param $accountHistoryId
-     * @param $actionId
+     * @param AccountHistoryService $accountHistoryService
+     * @param AccountHistoryData    $accountHistoryData
+     * @param int                   $actionId
+     * @return bool
      * @throws \SP\Core\Dic\ContainerException
      */
-    public function setAccountDataHistory($accountHistoryId, $actionId)
+    public function setAccountHistory(AccountHistoryService $accountHistoryService, AccountHistoryData $accountHistoryData, $actionId)
     {
-        $this->accountHistoryId = $accountHistoryId;
+
         $this->actionId = $actionId;
         $this->isHistory = true;
+        $this->accountHistoryId = $accountHistoryData->getId();
+        $this->accountId = $accountHistoryData->getAccountId();
+        $this->accountHistoryService = $accountHistoryService;
 
-        // FIXME
-        $this->accountService = new AccountHistoryService();
-        $this->accountDetailsResponse = $this->accountService->getById($accountHistoryId);
-        $this->accountId = $this->accountDetailsResponse->getId();
+        if (!$this->checkAccessHistory($accountHistoryData)) {
+            return false;
+        }
 
+        $this->view->assign('accountData', $accountHistoryData);
+        $this->view->assign('accountAcl', $this->accountAcl);
+        $this->view->assign('actionId', $this->actionId);
         $this->view->assign('accountId', $this->accountId);
-        $this->view->assign('accountData', $this->accountDetailsResponse);
-        $this->view->assign('gotData', $this->isGotData());
-        $this->view->assign('accountHistoryId', $accountHistoryId);
+        $this->view->assign('accountHistoryId', $this->accountHistoryId);
+        $this->view->assign('historyData', $this->accountHistoryService->getHistoryForAccount($this->accountId));
+        $this->view->assign('accountIsHistory', true);
+        $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryData->getPassDate()));
+        $this->view->assign('accountPassDateChange', date('Y-m-d', $accountHistoryData->getPassDateChange() ?: 0));
+        $this->view->assign('categories', (new SelectItemAdapter(CategoryService::getItemsBasic()))->getItemsFromModelSelected([$accountHistoryData->getCategoryId()]));
+        $this->view->assign('clients', (new SelectItemAdapter(ClientService::getItemsBasic()))->getItemsFromModelSelected([$accountHistoryData->getClientId()]));
+        $this->view->assign('isModified', strtotime($accountHistoryData->getDateEdit()) !== false);
+        $this->view->assign('actions', $this->getActions($accountHistoryData->getParentId()));
+
+        return true;
     }
 
     /**
-     * @return boolean
-     */
-    private function isGotData()
-    {
-        return $this->accountDetailsResponse !== null;
-    }
-
-    /**
-     * @return AccountAcl
-     */
-    public function getAccountAcl()
-    {
-        return $this->accountAcl;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountId()
-    {
-        return $this->accountId;
-    }
-
-    /**
-     * Establecer variables comunes del formulario para todos los interfaces
+     * Comprobar si el usuario dispone de acceso al módulo
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @param AccountHistoryData $accountHistoryData
+     * @return bool
      * @throws \SP\Core\Dic\ContainerException
      */
-    public function setCommonData()
+    public function checkAccessHistory(AccountHistoryData $accountHistoryData)
     {
-        if ($this->accountService === null) {
-            $this->accountService = new AccountService();
+        $this->view->assign('showLogo', false);
+
+        if (!$this->acl->checkUserAccess($this->actionId)) {
+            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION);
+
+            return false;
         }
 
-        $userProfileData = $this->session->getUserProfile();
+        if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getId())) {
+            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_UPDATE_MPASS);
 
-        if ($this->isGotData()) {
-            $accountData = $this->accountDetailsResponse->getAccountVData();
+            return false;
+        }
 
-            $this->view->assign('accountIsHistory', $this->isHistory);
-            $this->view->assign('accountOtherUsers', $this->accountDetailsResponse->getUsers());
-            $this->view->assign('accountOtherGroups', $this->accountDetailsResponse->getUserGroups());
-            $this->view->assign('accountTags', $this->accountDetailsResponse->getTags());
-            $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->accountDetailsResponse->getTags())));
+        if ($this->accountId > 0) {
+            $acccountAclDto = new AccountAclDto();
+            $acccountAclDto->setAccountId($accountHistoryData->getAccountId());
+            $acccountAclDto->setDateEdit(strtotime($accountHistoryData->getDateEdit()));
+            $acccountAclDto->setUserId($accountHistoryData->getUserId());
+            $acccountAclDto->setUserGroupId($accountHistoryData->getUserGroupId());
+            $acccountAclDto->setUsersId($this->accountHistoryService->getUsersByAccountId($this->accountId));
+            $acccountAclDto->setUserGroupsId($this->accountHistoryService->getUserGroupsByAccountId($this->accountId));
 
-            $accountHistoryService = new AccountHistoryRepository();
-            $this->view->assign('historyData', $accountHistoryService->getHistoryForAccount($this->accountId));
+            $this->accountAcl = (new AccountAcl($this->actionId, true))->getAcl($acccountAclDto);
 
-            $this->view->assign('isModified', strtotime($accountData->getDateEdit()) !== false);
-            $this->view->assign('maxFileSize', round($this->configData->getFilesAllowedSize() / 1024, 1));
-            $this->view->assign('filesAllowedExts', implode(',', $this->configData->getFilesAllowedExts()));
+            if (!$this->accountAcl->checkAccountAccess()) {
+                ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_ACCOUNT_NO_PERMISSION);
 
-            if ($this->configData->isPublinksEnabled() && $this->accountAcl->isShowLink()) {
-                $publicLinkService = new PublicLinkRepository();
-                $publicLinkData = $publicLinkService->getHashForItem($this->accountId);
-
-                $publicLinkUrl = $publicLinkData ? PublicLinkService::getLinkForHash($publicLinkData->getHash()) : null;
-                $this->view->assign('publicLinkUrl', $publicLinkUrl);
-                $this->view->assign('publicLinkId', $publicLinkData ? $publicLinkData->getId() : 0);
-                $this->view->assign('publicLinkShow', true);
-            } else {
-                $this->view->assign('publicLinkShow', false);
+                return false;
             }
-
-            $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountData->getPassDate()));
-            $this->view->assign('accountPassDateChange', date('Y-m-d', $accountData->getPassDateChange() ?: 0));
-        } else {
-            $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
         }
 
-
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $this->accountId));
-        $this->view->assign('actionId', Acl::getActionRoute($this->actionId));
-
-        $this->view->assign('categories', (new SelectItemAdapter(CategoryService::getItemsBasic()))->getItemsFromModel());
-
-        $this->view->assign('clients', (new SelectItemAdapter(ClientService::getItemsBasic()))->getItemsFromModel());
-
-        $userItemAdapter = new SelectItemAdapter(UserService::getItemsBasic());
-
-        $this->view->assign('otherUsers', $userItemAdapter->getItemsFromModel());
-        $this->view->assign('otherUsersJson', $userItemAdapter->getJsonItemsFromModel());
-
-        $userGroupItemAdapter = new SelectItemAdapter(UserGroupService::getItemsBasic());
-
-        $this->view->assign('otherGroups', $userGroupItemAdapter->getItemsFromModel());
-        $this->view->assign('otherGroupsJson', $userGroupItemAdapter->getJsonItemsFromModel());
-
-        $tagItemAdapter = new SelectItemAdapter(TagService::getItemsBasic());
-
-        $this->view->assign('tagsJson', $tagItemAdapter->getJsonItemsFromModel());
-        $this->view->assign('allowPrivate', $userProfileData->isAccPrivate());
-        $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup());
-        $this->view->assign('mailRequestEnabled', $this->configData->isMailRequestsEnabled());
-        $this->view->assign('passToImageEnabled', $this->configData->isAccountPassToImage());
-
-        $this->view->assign('otherAccounts', $this->accountService->getForUser($this->accountId));
-        $this->view->assign('linkedAccounts', $this->accountService->getLinked($this->accountId));
-
-        $this->view->assign('addClientEnabled', !$this->view->isView && $this->acl->checkUserAccess(ActionsInterface::CLIENT));
-        $this->view->assign('addClientRoute', Acl::getActionRoute(ActionsInterface::CLIENT_CREATE));
-
-        $this->view->assign('addCategoryEnabled', !$this->view->isView && $this->acl->checkUserAccess(ActionsInterface::CATEGORY));
-        $this->view->assign('addCategoryRoute', Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE));
-
-        $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
-        $this->view->assign('readonly', $this->view->isView ? 'readonly' : '');
-
-        $this->view->assign('showViewCustomPass', $this->accountAcl->isShowViewPass());
-        $this->view->assign('AccountAcl', $this->accountAcl);
-        $this->view->assign('actions', $this->getActions());
+        return true;
     }
 
     /**
      * Set icons for view
      *
+     * @param int $parentId
+     * @return DataGridAction[]
      * @throws \SP\Core\Dic\ContainerException
      */
-    protected function getActions()
+    protected function getActions($parentId = 0)
     {
         $actionsEnabled = [];
 
@@ -264,9 +214,9 @@ class AccountHelper extends HelperBase
         }
 
         if ($this->isHistory === false
+            && $parentId === 0
             && $this->accountAcl->isShowLink()
             && $this->accountAcl->isShowViewPass()
-            && $this->accountDetailsResponse->getAccountVData()->getParentId() === 0
         ) {
             if (null === $this->view->publicLinkUrl) {
                 $actionsEnabled[] = $actions->getPublicLinkAction();
@@ -279,8 +229,8 @@ class AccountHelper extends HelperBase
             $actionViewPass = $actions->getViewPassAction();
             $actionCopy = $actions->getCopyPassAction();
 
-            $actionViewPass->addData('parent-id', $this->accountDetailsResponse->getAccountVData()->getParentId());
-            $actionCopy->addData('parent-id', $this->accountDetailsResponse->getAccountVData()->getParentId());
+            $actionViewPass->addData('parent-id', $parentId);
+            $actionCopy->addData('parent-id', $parentId);
 
             $actionViewPass->addData('history', (int)$this->isHistory);
             $actionCopy->addData('history', (int)$this->isHistory);
@@ -332,51 +282,111 @@ class AccountHelper extends HelperBase
     }
 
     /**
-     * Comprobar si el usuario dispone de acceso al módulo
+     * @return AccountAcl
+     */
+    public function getAccountAcl()
+    {
+        return $this->accountAcl;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountId()
+    {
+        return $this->accountId;
+    }
+
+    /**
+     * Establecer variables comunes del formulario para todos los interfaces
      *
-     * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Core\Dic\ContainerException
      */
-    public function checkAccess()
+    public function setCommonData()
     {
-        $this->view->assign('showLogo', false);
+        $userProfileData = $this->session->getUserProfile();
 
-        $acl = new AccountAcl($this->actionId, $this->isHistory);
-        $this->accountAcl = $acl;
-
-        if (!$this->acl->checkUserAccess($this->actionId)) {
-            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION);
-
-            return false;
-        }
-
-        if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getId())) {
-            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_UPDATE_MPASS);
-
-            return false;
-        }
-
-        if ($this->accountId > 0) {
+        if ($this->isGotData()) {
             $accountData = $this->accountDetailsResponse->getAccountVData();
 
-            $acccountAclDto = new AccountAclDto();
-            $acccountAclDto->setAccountId($accountData->getId());
-            $acccountAclDto->setDateEdit($accountData->getDateEdit());
-            $acccountAclDto->setUserId($accountData->getUserId());
-            $acccountAclDto->setUserGroupId($accountData->getUserGroupId());
-            $acccountAclDto->setUsersId($this->accountDetailsResponse->getUsers());
-            $acccountAclDto->setUserGroupsId($this->accountDetailsResponse->getUserGroups());
+            $this->view->assign('accountIsHistory', $this->isHistory);
+            $this->view->assign('accountOtherUsers', $this->accountDetailsResponse->getUsers());
+            $this->view->assign('accountOtherGroups', $this->accountDetailsResponse->getUserGroups());
+            $this->view->assign('accountTags', $this->accountDetailsResponse->getTags());
+            $this->view->assign('accountTagsJson', Json::getJson(array_keys($this->accountDetailsResponse->getTags())));
 
-            $this->accountAcl = $acl->getAcl($acccountAclDto);
+            $accountHistoryService = new AccountHistoryService();
+            $this->view->assign('historyData', $accountHistoryService->getHistoryForAccount($this->accountId));
 
-            if (!$this->accountAcl->checkAccountAccess()) {
-                ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_ACCOUNT_NO_PERMISSION);
+            $this->view->assign('isModified', strtotime($accountData->getDateEdit()) !== false);
+            $this->view->assign('maxFileSize', round($this->configData->getFilesAllowedSize() / 1024, 1));
+            $this->view->assign('filesAllowedExts', implode(',', $this->configData->getFilesAllowedExts()));
 
-                return false;
+            if ($this->configData->isPublinksEnabled() && $this->accountAcl->isShowLink()) {
+                $publicLinkService = new PublicLinkService();
+                $publicLinkData = $publicLinkService->getHashForItem($this->accountId);
+
+                $publicLinkUrl = $publicLinkData ? PublicLinkService::getLinkForHash($publicLinkData->getHash()) : null;
+                $this->view->assign('publicLinkUrl', $publicLinkUrl);
+                $this->view->assign('publicLinkId', $publicLinkData ? $publicLinkData->getId() : 0);
+                $this->view->assign('publicLinkShow', true);
+            } else {
+                $this->view->assign('publicLinkShow', false);
             }
+
+            $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountData->getPassDate()));
+            $this->view->assign('accountPassDateChange', date('Y-m-d', $accountData->getPassDateChange() ?: 0));
+        } else {
+            $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
         }
 
-        return true;
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $this->accountId));
+        $this->view->assign('categories', (new SelectItemAdapter(CategoryService::getItemsBasic()))->getItemsFromModel());
+        $this->view->assign('clients', (new SelectItemAdapter(ClientService::getItemsBasic()))->getItemsFromModel());
+
+        $userItemAdapter = new SelectItemAdapter(UserService::getItemsBasic());
+
+        $this->view->assign('otherUsers', $userItemAdapter->getItemsFromModel());
+        $this->view->assign('otherUsersJson', $userItemAdapter->getJsonItemsFromModel());
+
+        $userGroupItemAdapter = new SelectItemAdapter(UserGroupService::getItemsBasic());
+
+        $this->view->assign('otherGroups', $userGroupItemAdapter->getItemsFromModel());
+        $this->view->assign('otherGroupsJson', $userGroupItemAdapter->getJsonItemsFromModel());
+
+        $tagItemAdapter = new SelectItemAdapter(TagService::getItemsBasic());
+
+        $this->view->assign('tagsJson', $tagItemAdapter->getJsonItemsFromModel());
+        $this->view->assign('allowPrivate', $userProfileData->isAccPrivate());
+        $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup());
+        $this->view->assign('mailRequestEnabled', $this->configData->isMailRequestsEnabled());
+        $this->view->assign('passToImageEnabled', $this->configData->isAccountPassToImage());
+
+        $this->view->assign('otherAccounts', $this->accountService->getForUser($this->accountId));
+        $this->view->assign('linkedAccounts', $this->accountService->getLinked($this->accountId));
+
+        $this->view->assign('addClientEnabled', !$this->view->isView && $this->acl->checkUserAccess(ActionsInterface::CLIENT));
+        $this->view->assign('addClientRoute', Acl::getActionRoute(ActionsInterface::CLIENT_CREATE));
+
+        $this->view->assign('addCategoryEnabled', !$this->view->isView && $this->acl->checkUserAccess(ActionsInterface::CATEGORY));
+        $this->view->assign('addCategoryRoute', Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE));
+
+        $this->view->assign('disabled', $this->view->isView ? 'disabled' : '');
+        $this->view->assign('readonly', $this->view->isView ? 'readonly' : '');
+
+        $this->view->assign('showViewCustomPass', $this->accountAcl->isShowViewPass());
+        $this->view->assign('accountAcl', $this->accountAcl);
+
+        $this->view->assign('actions', $this->getActions($this->isGotData() ? $this->accountDetailsResponse->getAccountVData()->getParentId() : 0));
+    }
+
+    /**
+     * @return boolean
+     */
+    private function isGotData()
+    {
+        return $this->accountDetailsResponse !== null;
     }
 
     /**
@@ -401,10 +411,11 @@ class AccountHelper extends HelperBase
      * @param AccountDetailsResponse $accountDetailsResponse
      * @param AccountService         $accountService
      * @param int                    $actionId
+     * @return bool
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function setAccount(AccountDetailsResponse $accountDetailsResponse, AccountService $accountService, $actionId)
     {
-
         $this->accountDetailsResponse = $accountDetailsResponse;
         $this->accountService = $accountService;
 
@@ -412,9 +423,62 @@ class AccountHelper extends HelperBase
         $this->actionId = $actionId;
         $this->isHistory = false;
 
+        if (!$this->checkAccess($accountDetailsResponse)) {
+            return false;
+        }
+
+        $this->view->assign('actionId', $actionId);
         $this->view->assign('accountId', $this->accountId);
         $this->view->assign('accountData', $accountDetailsResponse->getAccountVData());
         $this->view->assign('gotData', $this->isGotData());
+
+        return true;
+    }
+
+    /**
+     * Comprobar si el usuario dispone de acceso al módulo
+     *
+     * @param AccountDetailsResponse $accountDetailsResponse
+     * @return bool
+     * @throws \SP\Core\Dic\ContainerException
+     */
+    public function checkAccess(AccountDetailsResponse $accountDetailsResponse = null)
+    {
+        $this->view->assign('showLogo', false);
+
+        if (!$this->acl->checkUserAccess($this->actionId)) {
+            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION);
+
+            return false;
+        }
+
+        if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getId())) {
+            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_UPDATE_MPASS);
+
+            return false;
+        }
+
+        if ($this->accountId > 0 && $accountDetailsResponse !== null) {
+            $accountData = $accountDetailsResponse->getAccountVData();
+
+            $acccountAclDto = new AccountAclDto();
+            $acccountAclDto->setAccountId($accountData->getId());
+            $acccountAclDto->setDateEdit(strtotime($accountData->getDateEdit()));
+            $acccountAclDto->setUserId($accountData->getUserId());
+            $acccountAclDto->setUserGroupId($accountData->getUserGroupId());
+            $acccountAclDto->setUsersId($accountDetailsResponse->getUsers());
+            $acccountAclDto->setUserGroupsId($accountDetailsResponse->getUserGroups());
+
+            $this->accountAcl = (new AccountAcl($this->actionId, $this->isHistory))->getAcl($acccountAclDto);
+
+            if (!$this->accountAcl->checkAccountAccess()) {
+                ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_ACCOUNT_NO_PERMISSION);
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -435,7 +499,6 @@ class AccountHelper extends HelperBase
         $this->view->assign('changesHash');
         $this->view->assign('chkUserEdit');
         $this->view->assign('chkGroupEdit');
-        $this->view->assign('gotData', $this->isGotData());
         $this->view->assign('isView', false);
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \SP\Account\AccountAcl $AccountAcl
+ * @var \SP\Account\AccountAcl     $accountAcl
  * @var \SP\Core\UI\ThemeIconsBase $icons
  */
 ?>
@@ -22,7 +22,7 @@
                     <div id="list-account-files"
                          data-item-id="<?php echo $accountId; ?>"
                          data-history="<?php $accountIsHistory; ?>"
-                         data-delete="<?php echo (int)$AccountAcl->isShowDelete(); ?>"
+                         data-delete="<?php echo (int)$accountAcl->isShowDelete(); ?>"
                          data-sk="<?php echo $sk; ?>">
                     </div>
                     <?php if (isset($editAction)): ?>
@@ -31,7 +31,7 @@
                              data-item-id="<?php echo $accountId; ?>"
                              data-sk="<?php echo $sk; ?>"
                              data-action-route="<?php echo $fileUploadRoute; ?>"
-                             data-delete="<?php echo (int)$AccountAcl->isShowDelete(); ?>">
+                             data-delete="<?php echo (int)$accountAcl->isShowDelete(); ?>">
                             <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>
                         </div>
                         <form method="post" enctype="multipart/form-data" name="upload_form" class="file-upload"

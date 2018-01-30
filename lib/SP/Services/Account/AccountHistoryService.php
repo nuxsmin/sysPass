@@ -28,6 +28,8 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\AccountHistoryData;
 use SP\Repositories\Account\AccountHistoryRepository;
+use SP\Repositories\Account\AccountToUserGroupRepository;
+use SP\Repositories\Account\AccountToUserRepository;
 
 /**
  * Class AccountHistoryService
@@ -42,6 +44,14 @@ class AccountHistoryService
      * @var AccountHistoryRepository
      */
     protected $accountHistoryRepository;
+    /**
+     * @var AccountToUserGroupRepository
+     */
+    protected $accountToUserGroupRepository;
+    /**
+     * @var AccountToUserRepository
+     */
+    protected $accountToUserRepository;
 
     /**
      * AccountHistoryService constructor.
@@ -54,11 +64,17 @@ class AccountHistoryService
     }
 
     /**
-     * @param AccountHistoryRepository $accountHistoryRepository
+     * @param AccountHistoryRepository     $accountHistoryRepository
+     * @param AccountToUserGroupRepository $accountToUserGroupRepository
+     * @param AccountToUserRepository      $accountToUserRepository
      */
-    public function inject(AccountHistoryRepository $accountHistoryRepository)
+    public function inject(AccountHistoryRepository $accountHistoryRepository,
+                           AccountToUserGroupRepository $accountToUserGroupRepository,
+                           AccountToUserRepository $accountToUserRepository)
     {
         $this->accountHistoryRepository = $accountHistoryRepository;
+        $this->accountToUserGroupRepository = $accountToUserGroupRepository;
+        $this->accountToUserRepository = $accountToUserRepository;
     }
 
     /**
@@ -74,4 +90,32 @@ class AccountHistoryService
         return $this->accountHistoryRepository->getById($id);
     }
 
+    /**
+     * Obtiene el listado del histórico de una cuenta.
+     *
+     * @param $id
+     * @return array|false Con los registros con id como clave y fecha - usuario como valor
+     */
+    public function getHistoryForAccount($id)
+    {
+        return $this->accountHistoryRepository->getHistoryForAccount($id);
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function getUsersByAccountId($id)
+    {
+        return $this->accountToUserRepository->getUsersByAccountId($id);
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function getUserGroupsByAccountId($id)
+    {
+        return $this->accountToUserGroupRepository->getUserGroupsByAccountId($id);
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-/** @var \SP\Account\AccountAcl $AccountAcl */
+/** @var \SP\Account\AccountAcl $accountAcl */
 /** @var \SP\DataModel\AccountExtData $accountData */
 /** @var $icons \SP\Core\UI\ThemeIconsBase */
 ?>
@@ -15,7 +15,7 @@
 
     <div id="data-accesses">
         <table>
-            <?php if ($AccountAcl->isShowPermission()): ?>
+            <?php if ($accountAcl->isShowPermission()): ?>
                 <tr>
                     <td class="descField"><?php echo __('Permisos'); ?></td>
                     <td class="valField">

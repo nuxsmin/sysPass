@@ -1,7 +1,6 @@
 <?php
 /** @var $icons \Theme\Icons */
 /** @var $files \SP\DataModel\FileData[] */
-/** @var $AccountAcl \SP\Account\AccountAcl */
 ?>
 
 <div id="files-wrap" class="list-wrap round">

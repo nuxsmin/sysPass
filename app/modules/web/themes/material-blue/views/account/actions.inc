@@ -1,7 +1,5 @@
 <?php
-
 /** @var $icons \Theme\Icons */
-/** @var \SP\Account\AccountAcl $AccountAcl */
 ?>
 <div class="item-actions">
     <ul>

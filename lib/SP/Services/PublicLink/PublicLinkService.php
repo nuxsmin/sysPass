@@ -319,4 +319,16 @@ class PublicLinkService
     {
         return $this->publicLinkRepository->getByHash($hash);
     }
+
+    /**
+     * Devolver el hash asociado a un elemento
+     *
+     * @param int $itemId
+     * @return PublicLinkData
+     * @throws SPException
+     */
+    public function getHashForItem($itemId)
+    {
+        return $this->publicLinkRepository->getHashForItem($itemId);
+    }
 }
