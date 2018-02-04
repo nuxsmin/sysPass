@@ -71,7 +71,7 @@ class DiFactory
     final public static function getConfigStorage()
     {
         if (!self::$ConfigFactory instanceof XmlFileStorageInterface) {
-            self::$ConfigFactory = new XmlHandler(XML_CONFIG_FILE);
+            self::$ConfigFactory = new XmlHandler(CONFIG_FILE);
         }
 
         return self::$ConfigFactory;

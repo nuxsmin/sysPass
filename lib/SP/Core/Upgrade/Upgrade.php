@@ -387,7 +387,7 @@ class Upgrade
         $LogMessage->setAction(__('Actualizar Configuración', false));
 
         // Include the file, save the data from $CONFIG
-        include CONFIG_FILE;
+        include OLD_CONFIG_FILE;
 
         if (isset($CONFIG) && is_array($CONFIG)) {
 
@@ -414,7 +414,7 @@ class Upgrade
             }
         }
 
-        $oldFile = CONFIG_FILE . '.old.' . time();
+        $oldFile = OLD_CONFIG_FILE . '.old.' . time();
 
         try {
 
@@ -422,7 +422,7 @@ class Upgrade
             $this->ConfigData->setConfigVersion($version);
             $this->Config->saveConfig(null, false);
 
-            rename(CONFIG_FILE, $oldFile);
+            rename(OLD_CONFIG_FILE, $oldFile);
 
             $LogMessage->addDetails(__('Versión', false), $version);
             $this->Log->setLogLevel(Log::NOTICE);

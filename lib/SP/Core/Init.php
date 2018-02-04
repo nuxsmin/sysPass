@@ -417,7 +417,7 @@ class Init
     {
         $appVersion = Util::getVersionStringNormalized();
 
-        if (file_exists(CONFIG_FILE) && Upgrade::upgradeOldConfigFile($appVersion)) {
+        if (file_exists(OLD_CONFIG_FILE) && Upgrade::upgradeOldConfigFile($appVersion)) {
             self::logConfigUpgrade($appVersion);
 
             self::$UPDATED = true;

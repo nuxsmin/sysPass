@@ -25,33 +25,47 @@
 namespace SP\Core\Acl;
 
 use SP\DataModel\ActionData;
-use SP\Storage\DbWrapper;
 use SP\Storage\FileStorageInterface;
-use SP\Storage\QueryData;
+use SP\Storage\XmlFileStorageInterface;
 
 /**
- * Class Action
+ * Class Actions
  *
  * @package SP\Core\Acl
  */
-class Action
+class Actions
 {
-    /** Cache file name */
+    /**
+     * Cache file name
+     */
     const CACHE_NAME = 'actions';
-    /** Cache expire time */
+    /**
+     * Cache expire time
+     */
     const CACHE_EXPIRE = 86400;
-    /** @var  int */
+    /**
+     * @var  int
+     */
     protected $lastLoadTime;
-    /** @var  ActionData[] */
+    /**
+     * @var  ActionData[]
+     */
     protected $actions;
+    /**
+     * @var XmlFileStorageInterface
+     */
+    protected $xmlFileStorage;
 
     /**
      * Action constructor.
      *
-     * @param FileStorageInterface $fileStorage
+     * @param FileStorageInterface    $fileStorage
+     * @param XmlFileStorageInterface $xmlFileStorage
      */
-    public function __construct(FileStorageInterface $fileStorage)
+    public function __construct(FileStorageInterface $fileStorage, XmlFileStorageInterface $xmlFileStorage)
     {
+        $this->xmlFileStorage = $xmlFileStorage;
+
         $this->loadCache($fileStorage);
     }
 
@@ -65,13 +79,13 @@ class Action
         $fileName = CACHE_PATH . DIRECTORY_SEPARATOR . self::CACHE_NAME;
 
         if (!file_exists($fileName) || filemtime($fileName) + self::CACHE_EXPIRE < time()) {
-            $this->mapFromDb();
+            $this->map();
             $this->saveCache($fileStorage);
         } else {
             $this->actions = $fileStorage->load($fileName);
 
             if ($this->actions === false) {
-                $this->mapFromDb();
+                $this->map();
                 $this->saveCache($fileStorage);
             }
         }
@@ -80,14 +94,26 @@ class Action
     /**
      * Sets an array of actions using id as key
      */
-    protected function mapFromDb()
+    protected function map()
     {
         debugLog('ACTION CACHE MISS');
 
         $this->actions = [];
 
-        foreach ($this->loadDb() as $action) {
-            $this->actions[$action->getId()] = $action;
+        $actionBase = new ActionData();
+
+        foreach ($this->load() as $a) {
+            if (isset($this->actions[$a['id']])) {
+                throw new \RuntimeException('Duplicated action id');
+            }
+
+            $action = clone $actionBase;
+            $action->id = $a['id'];
+            $action->name = $a['name'];
+            $action->text = $a['text'];
+            $action->route = $a['route'];
+
+            $this->actions[$action->id] = $action;
         }
     }
 
@@ -96,16 +122,9 @@ class Action
      *
      * @return ActionData[]
      */
-    protected function loadDb()
+    protected function load()
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, text, route FROM Action ORDER BY id';
-
-        $data = new QueryData();
-        $data->setMapClassName(ActionData::class);
-        $data->setQuery($query);
-
-        return DbWrapper::getResultsArray($data);
+        return $this->xmlFileStorage->load('actions')->getItems();
     }
 
     /**

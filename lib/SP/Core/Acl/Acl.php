@@ -36,7 +36,7 @@ defined('APP_ROOT') || die();
 class Acl implements ActionsInterface
 {
     /**
-     * @var Action
+     * @var Actions
      */
     protected static $action;
     /**
@@ -47,10 +47,10 @@ class Acl implements ActionsInterface
     /**
      * Acl constructor.
      *
-     * @param Session     $session
-     * @param Action|null $action
+     * @param Session      $session
+     * @param Actions|null $action
      */
-    public function __construct(Session $session, Action $action = null)
+    public function __construct(Session $session, Actions $action = null)
     {
         $this->session = $session;
 

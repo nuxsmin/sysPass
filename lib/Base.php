@@ -23,7 +23,6 @@
  */
 
 use SP\Bootstrap;
-use SP\Core\Dic\Container;
 
 require __DIR__ . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
@@ -37,8 +36,9 @@ define('APP_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'app');
 define('CONFIG_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'config');
 
 // Setup config files
-define('XML_CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
-define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.php');
+define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
+define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
+define('OLD_CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.php');
 define('LOG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'syspass.log');
 
 // Setup application paths
@@ -61,48 +61,6 @@ require VENDOR_PATH . DIRECTORY_SEPARATOR . 'autoload.php';
 require __DIR__ . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
 
 initModule(APP_MODULE);
-
-//$dic = new Container();
-//
-//$dic->share(\Klein\Klein::class);
-//
-//$dic->share(\SP\Core\Session\Session::class);
-//
-//$dic->share(\SP\Config\Config::class, function () {
-//    return new SP\Config\Config(new \SP\Storage\XmlHandler(XML_CONFIG_FILE));
-//});
-//
-//$dic->share(\SP\Core\Language::class);
-//
-//$dic->share(\SP\Config\ConfigData::class, function ($dic) {
-//    /** @var \SP\Config\Config $config */
-//    /** @var \SP\Core\Dic\DicInterface $dic */
-//    $config = $dic->get(\SP\Config\Config::class);
-//
-//    return $config->getConfigData();
-//});
-//
-//$dic->share(\SP\Storage\Database::class, function () {
-//    return new \SP\Storage\Database(new \SP\Storage\MySQLHandler());
-//});
-//
-//$dic->share(\SP\Core\Acl\Acl::class, function ($dic) {
-//    /** @var \SP\Core\Session\Session $session */
-//    /** @var \SP\Core\Dic\DicInterface $dic */
-//    $session = $dic->get(\SP\Core\Session\Session::class);
-//
-//    return new \SP\Core\Acl\Acl($session, new \SP\Core\Acl\Action(new \SP\Storage\FileCache()));
-//});
-//
-//$dic->share(\SP\Core\UI\Theme::class, function () {
-//    return new \SP\Core\UI\Theme(APP_MODULE);
-//});
-//
-//$dic->share(\SP\Core\Events\EventDispatcher::class);
-//
-//$dic->add(\SP\Log\Log::class, function () {
-//    return new SP\Log\Log(new \SP\Core\Messages\LogMessage());
-//});
 
 try {
     (new Bootstrap())->initialize();

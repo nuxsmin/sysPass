@@ -109,28 +109,30 @@ class XmlHandler implements XmlFileStorageInterface
     /**
      * Leer de forma recursiva los nodos hijos y devolver un array multidimensional
      *
-     * @param DOMNodeList $NodeList
+     * @param DOMNodeList $nodeList
      * @return array
      */
-    protected function readChildNodes(DOMNodeList $NodeList)
+    protected function readChildNodes(DOMNodeList $nodeList)
     {
         $nodes = [];
 
-        foreach ($NodeList as $node) {
-            /** @var $node DOMNode */
-            if (is_object($node->childNodes) && $node->childNodes->length > 1) {
-                if ($node->nodeName === 'item') {
-                    $nodes[] = $this->readChildNodes($node->childNodes);
+        /** @var DOMElement $node */
+        foreach ($nodeList as $node) {
+            if ($node->nodeType === XML_ELEMENT_NODE) {
+                if (is_object($node->childNodes) && $node->childNodes->length > 1) {
+                    if ($node->hasAttribute('multiple') && (int)$node->getAttribute('multiple') === 1) {
+                        $nodes[] = $this->readChildNodes($node->childNodes);
+                    } else {
+                        $nodes[$node->nodeName] = $this->readChildNodes($node->childNodes);
+                    }
                 } else {
-                    $nodes[$node->nodeName] = $this->readChildNodes($node->childNodes);
-                }
-            } elseif ($node->nodeType === XML_ELEMENT_NODE) {
-                $val = is_numeric($node->nodeValue) ? (int)$node->nodeValue : $node->nodeValue;
+                    $val = is_numeric($node->nodeValue) ? (int)$node->nodeValue : $node->nodeValue;
 
-                if ($node->nodeName === 'item') {
-                    $nodes[] = $val;
-                } else {
-                    $nodes[$node->nodeName] = $val;
+                    if ($node->nodeName === 'item') {
+                        $nodes[] = $val;
+                    } else {
+                        $nodes[$node->nodeName] = $val;
+                    }
                 }
             }
         }

@@ -31,7 +31,7 @@ return [
     \SP\Core\Session\Session::class => object(\SP\Core\Session\Session::class),
     \SP\Config\Config::class => object(\SP\Config\Config::class)
         ->constructor(object(\SP\Storage\XmlHandler::class)
-            ->constructor(XML_CONFIG_FILE)),
+            ->constructor(CONFIG_FILE)),
     \SP\Core\Language::class => object(\SP\Core\Language::class),
     \SP\Config\ConfigData::class => function (ContainerInterface $c) {
         $config = $c->get(\SP\Config\Config::class);
@@ -40,10 +40,11 @@ return [
     },
     \SP\Storage\Database::class => object(\SP\Storage\Database::class)
         ->constructor(object(\SP\Storage\MySQLHandler::class)),
+    \SP\Core\Acl\Actions::class => object(\SP\Core\Acl\Actions::class)
+        ->constructor(object(\SP\Storage\FileCache::class), object(\SP\Storage\XmlHandler::class)
+            ->constructor(ACTIONS_FILE)),
     \SP\Core\Acl\Acl::class => object(\SP\Core\Acl\Acl::class)
-        ->constructor(get(\SP\Core\Session\Session::class), object(\SP\Core\Acl\Action::class)
-            ->constructor(object(\SP\Storage\FileCache::class))),
-    \SP\Core\Acl\Action::class => object(\SP\Core\UI\Theme::class),
+        ->constructor(get(\SP\Core\Session\Session::class), get(\SP\Core\Acl\Actions::class)),
     \SP\Core\UI\Theme::class => object(\SP\Core\UI\Theme::class)
         ->constructor(APP_MODULE),
     \SP\Core\Events\EventDispatcher::class => object(\SP\Core\Events\EventDispatcher::class),

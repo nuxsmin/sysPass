@@ -48,6 +48,7 @@ fabric.properties
 app/cache/*
 app/backup/*
 app/config/*
+!app/config/actions.xml
 res/
 tools/
 app/temp/*
