@@ -54,7 +54,7 @@ class Session
      * @param mixed  $default
      * @return mixed
      */
-    protected function getSessionKey($key, $default = '')
+    protected function getSessionKey($key, $default = null)
     {
         if (isset($_SESSION[$key])) {
             return is_numeric($default) ? (int)$_SESSION[$key] : $_SESSION[$key];
@@ -78,20 +78,13 @@ class Session
      *
      * @param string $key   El nombre de la variable
      * @param mixed  $value El valor de la variable
+     * @return mixed
      */
     protected function setSessionKey($key, $value)
     {
         $_SESSION[$key] = $value;
-    }
 
-    /**
-     * Devolver la configuración
-     *
-     * @return ConfigData
-     */
-    public function getConfig()
-    {
-        return $this->getSessionKey('config');
+        return $value;
     }
 
     /**
@@ -255,5 +248,40 @@ class Session
     public function setTemporaryMasterPass($password)
     {
         $this->setSessionKey('tempmasterpass', $password);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSecurityKey()
+    {
+        return $this->getSessionKey('sk');
+    }
+
+    /**
+     * @return string
+     */
+    public function generateSecurityKey()
+    {
+        return $this->setSecurityKey(sha1(time() . $this->getConfig()->getPasswordSalt()));
+    }
+
+    /**
+     * @param $sk
+     * @return mixed
+     */
+    public function setSecurityKey($sk)
+    {
+        return $this->setSessionKey('sk', $sk);
+    }
+
+    /**
+     * Devolver la configuración
+     *
+     * @return ConfigData
+     */
+    public function getConfig()
+    {
+        return $this->getSessionKey('config');
     }
 }

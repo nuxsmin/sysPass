@@ -101,6 +101,7 @@ abstract class ControllerBase
      * Constructor
      *
      * @param $actionName
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct($actionName)
     {

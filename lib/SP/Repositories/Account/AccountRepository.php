@@ -36,7 +36,8 @@ use SP\DataModel\AccountVData;
 use SP\DataModel\Dto\AccountSearchResponse;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\Mvc\Model\QueryFilter;
+use SP\Mvc\Model\QueryAssignment;
+use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -73,25 +74,22 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     }
 
     /**
-     * @param $id
-     * @return AccountPassData
+     * @param QueryCondition $queryCondition
+     * @return ItemData
      */
-    public function getPasswordHistoryForId($id)
+    public function getPasswordHistoryForId(QueryCondition $queryCondition)
     {
-        $Data = new QueryData();
-        $Data->setMapClassName(AccountPassData::class);
-        $Data->setLimit(1);
+        $query = /** @lang SQL */
+            'SELECT AH.id, AH.name, AH.login, AH.pass, AH.key, AH.parentId 
+            FROM AccountHistory AH 
+            WHERE ' . $queryCondition->getFilters();
 
-        $Data->setSelect('AH.id, AH.name, AH.login, AH.pass, AH.key, AH.parentId');
-        $Data->setFrom('AccountHistory AH');
+        $queryData = new QueryData();
+        $queryData->setMapClassName(AccountPassData::class);
+        $queryData->setQuery($query);
+        $queryData->setParams($queryCondition->getParams());
 
-        $queryWhere = AccountUtil::getAccountHistoryFilterUser($Data, $this->session);
-        $queryWhere[] = 'AH.id = ?';
-        $Data->addParam($id);
-
-        $Data->setWhere($queryWhere);
-
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -127,48 +125,50 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     {
         $query = /** @lang SQL */
             'INSERT INTO Account SET 
-            clientId = :clientId,
-            categoryId = :categoryId,
-            name = :name,
-            login = :login,
-            url = :url,
-            pass = :pass,
-            `key` = :key,
-            notes = :notes,
+            clientId = ?,
+            categoryId = ?,
+            name = ?,
+            login = ?,
+            url = ?,
+            pass = ?,
+            `key` = ?,
+            notes = ?,
             dateAdd = NOW(),
-            userId = :userId,
-            userGroupId = :userGroupId,
-            userEditId = :userEditId,
-            otherUserEdit = :otherUserEdit,
-            otherUserGroupEdit = :otherGroupEdit,
-            isPrivate = :isPrivate,
-            isPrivateGroup = :isPrivateGroup,
+            userId = ?,
+            userGroupId = ?,
+            userEditId = ?,
+            otherUserEdit = ?,
+            otherUserGroupEdit = ?,
+            isPrivate = ?,
+            isPrivateGroup = ?,
             passDate = UNIX_TIMESTAMP(),
-            passDateChange = :passDateChange,
-            parentId = :parentId';
+            passDateChange = ?,
+            parentId = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->clientId, 'clientId');
-        $Data->addParam($itemData->categoryId, 'aategoryId');
-        $Data->addParam($itemData->name, 'name');
-        $Data->addParam($itemData->login, 'login');
-        $Data->addParam($itemData->url, 'url');
-        $Data->addParam($itemData->pass, 'pass');
-        $Data->addParam($itemData->key, 'key');
-        $Data->addParam($itemData->notes, 'notes');
-        $Data->addParam($itemData->userId, 'userId');
-        $Data->addParam($itemData->userGroupId ?: $this->session->getUserData()->getUserGroupId(), 'userGroupId');
-        $Data->addParam($itemData->userId, 'userEditId');
-        $Data->addParam($itemData->otherUserEdit, 'otherUserEdit');
-        $Data->addParam($itemData->otherUserGroupEdit, 'otherGroupEdit');
-        $Data->addParam($itemData->isPrivate, 'isPrivate');
-        $Data->addParam($itemData->isPrivateGroup, 'isPrivateGroup');
-        $Data->addParam($itemData->passDateChange, 'passDateChange');
-        $Data->addParam($itemData->parentId, 'parentId');
-        $Data->setOnErrorMessage(__u('Error al crear la cuenta'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams([
+            $itemData->clientId,
+            $itemData->categoryId,
+            $itemData->name,
+            $itemData->login,
+            $itemData->url,
+            $itemData->pass,
+            $itemData->key,
+            $itemData->notes,
+            $itemData->userId,
+            $itemData->userGroupId,
+            $itemData->userId,
+            $itemData->otherUserEdit,
+            $itemData->otherUserGroupEdit,
+            $itemData->isPrivate,
+            $itemData->isPrivateGroup,
+            $itemData->passDateChange,
+            $itemData->parentId
+        ]);
+        $queryData->setOnErrorMessage(__u('Error al crear la cuenta'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -280,56 +280,56 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function update($itemData)
     {
-        $Data = new QueryData();
+        $queryAssignment = new QueryAssignment();
 
-        $fields = [
-            'clientId = :clientId',
-            'categoryId = :categoryId',
-            'name = :name',
-            'login = :login',
-            'url = :url',
-            'notes = :notes',
-            'userEditId = :userEditId',
+        $queryAssignment->setFields([
+            'clientId',
+            'categoryId',
+            'name',
+            'login',
+            'url',
+            'notes',
+            'userEditId',
             'dateEdit = NOW()',
-            'passDateChange = :passDateChange',
-            'isPrivate = :isPrivate',
-            'isPrivateGroup = :isPrivateGroup',
-            'parentId = :parentId'
-        ];
+            'passDateChange',
+            'isPrivate',
+            'isPrivateGroup',
+            'parentId'
+        ], [
+            $itemData->clientId,
+            $itemData->categoryId,
+            $itemData->name,
+            $itemData->login,
+            $itemData->url,
+            $itemData->notes,
+            $itemData->userEditId,
+            $itemData->passDateChange,
+            $itemData->isPrivate,
+            $itemData->isPrivateGroup,
+            $itemData->parentId
+        ]);
+
+
+        $queryData = new QueryData();
 
         if ($itemData->changeUserGroup) {
-            $fields[] = 'userGroupId = :userGroupId';
-
-            $Data->addParam($itemData->userGroupId, 'userGroupId');
+            $queryAssignment->addField('userGroupId', $itemData->userGroupId);
         }
 
         if ($itemData->changePermissions) {
-            $fields[] = 'otherUserEdit = :otherUserEdit';
-            $fields[] = 'otherUserGroupEdit = :otherUserGroupEdit';
-
-            $Data->addParam($itemData->otherUserEdit, 'otherUserEdit');
-            $Data->addParam($itemData->otherUserGroupEdit, 'otherUserGroupEdit');
+            $queryAssignment->addField('otherUserEdit', $itemData->otherUserEdit);
+            $queryAssignment->addField('otherUserGroupEdit', $itemData->otherUserGroupEdit);
         }
 
         $query = /** @lang SQL */
-            'UPDATE Account SET ' . implode(',', $fields) . ' WHERE id = :accountId';
+            'UPDATE Account SET ' . $queryAssignment->getAssignments() . ' WHERE id = ?';
 
-        $Data->setQuery($query);
-        $Data->addParam($itemData->clientId, 'clientId');
-        $Data->addParam($itemData->categoryId, 'categoryId');
-        $Data->addParam($itemData->name, 'name');
-        $Data->addParam($itemData->login, 'login');
-        $Data->addParam($itemData->url, 'url');
-        $Data->addParam($itemData->notes, 'notes');
-        $Data->addParam($itemData->userEditId, 'userEditId');
-        $Data->addParam($itemData->passDateChange, 'passDateChange');
-        $Data->addParam($itemData->isPrivate, 'isPrivate');
-        $Data->addParam($itemData->isPrivateGroup, 'isPrivateGroup');
-        $Data->addParam($itemData->parentId, 'parentId');
-        $Data->addParam($itemData->id, 'id');
-        $Data->setOnErrorMessage(__u('Error al modificar la cuenta'));
+        $queryData->setQuery($query);
+        $queryData->setParams($queryAssignment->getValues());
+        $queryData->addParam($itemData->id);
+        $queryData->setOnErrorMessage(__u('Error al modificar la cuenta'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -529,8 +529,8 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryJoin = [];
         $queryLimit = '';
 
-        $queryFilterCommon = new QueryFilter();
-        $queryFilterSelect = new QueryFilter();
+        $queryFilterCommon = new QueryCondition();
+        $queryFilterSelect = new QueryCondition();
 
         $searchText = $accountSearchFilter->getTxtSearch();
 
@@ -568,7 +568,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $where = [];
 
         if ($queryFilterCommon->hasFilters()) {
-            $where[] = $queryFilterCommon->getFilters(QueryFilter::FILTER_OR);
+            $where[] = $queryFilterCommon->getFilters(QueryCondition::CONDITION_OR);
         }
 
         if ($queryFilterSelect->hasFilters()) {
@@ -610,10 +610,10 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     }
 
     /**
-     * @param QueryFilter $queryFilter
+     * @param QueryCondition $queryFilter
      * @return array
      */
-    public function getForUser(QueryFilter $queryFilter)
+    public function getForUser(QueryCondition $queryFilter)
     {
         $query = /** @lang SQL */
             'SELECT A.id, A.name, C.name AS clientName 
@@ -631,10 +631,10 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
 
     /**
-     * @param QueryFilter $queryFilter
+     * @param QueryCondition $queryFilter
      * @return array
      */
-    public function getLinked(QueryFilter $queryFilter)
+    public function getLinked(QueryCondition $queryFilter)
     {
         $query = /** @lang SQL */
             'SELECT A.id, A.name, C.name AS clientName 

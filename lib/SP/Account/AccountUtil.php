@@ -32,7 +32,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\DataModel\ItemSearchData;
-use SP\Mvc\Model\QueryFilter;
+use SP\Mvc\Model\QueryCondition;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 
@@ -245,11 +245,11 @@ class AccountUtil
      *
      * @param Session $session
      * @param bool    $useGlobalSearch
-     * @return QueryFilter
+     * @return QueryCondition
      */
     public static function getAccountFilterUser(Session $session, $useGlobalSearch = false)
     {
-        $queryFilter = new QueryFilter();
+        $queryFilter = new QueryCondition();
 
         $configData = $session->getConfig();
         $userData = $session->getUserData();
@@ -287,13 +287,14 @@ class AccountUtil
     /**
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      *
-     * @param QueryData $Data
-     * @param Session   $session
-     * @param bool      $useGlobalSearch
-     * @return array
+     * @param Session $session
+     * @param bool    $useGlobalSearch
+     * @return QueryCondition
      */
-    public static function getAccountHistoryFilterUser(QueryData $Data, Session $session, $useGlobalSearch = false)
+    public static function getAccountHistoryFilterUser(Session $session, $useGlobalSearch = false)
     {
+        $queryFilter = new QueryCondition();
+
         $configData = $session->getConfig();
         $userData = $session->getUserData();
 
@@ -302,39 +303,29 @@ class AccountUtil
             && !($useGlobalSearch && $session->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
         ) {
             // Filtro usuario y grupo
-            $filterUser[] = 'AH.userId = ?';
-            $Data->addParam($userData->getId());
+            $filter =
+                /** @lang SQL */
+                'AH.userId = ? 
+            OR AH.userGroupId = ? 
+            OR AH.accountId IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = AH.accountId AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AH.accountId AND userGroupId = ?)
+            OR AH.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = ?)';
 
-            $filterUser[] = 'AH.userGroupId = ?';
-            $Data->addParam($userData->getUserGroupId());
-
-            // Filtro de cuenta en usuarios y grupos secundarios
-            $filterUser[] = /** @lang SQL */
-                'AH.accountId IN (SELECT accountId FROM AccountToUser WHERE accountId = AH.accountId AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = account_id AND AH.accountId = ?)';
-            $Data->addParam($userData->getId());
-            $Data->addParam($userData->getUserGroupId());
-
-            // Filtro de grupo principal de cuenta en grupos que incluyen al usuario
-            $filterUser[] = /** @lang SQL */
-                'AH.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AH.userGroupId AND userId = ?)';
-            $Data->addParam($userData->getId());
+            $params = [$userData->getId(), $userData->getUserGroupId(), $userData->getId(), $userData->getUserGroupId(), $userData->getId()];
 
             if ($configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
-                $filterUser[] = /** @lang SQL */
-                    'AH.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AH.accountId AND uug.userId = ? LIMIT 1)';
-                $Data->addParam($userData->getId());
+                $filter .= /** @lang SQL */
+                    PHP_EOL . 'OR AH.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AH.accountId AND uug.userId = ? LIMIT 1)';
+                $params[] = $userData->getId();
             }
 
-            $queryWhere[] = '(' . implode(' OR ', $filterUser) . ')';
+            $queryFilter->addFilter($filter, $params);
         }
 
-        $queryWhere[] = '(AH.isPrivate = 0 OR (AH.isPrivate = 1 AND AH.userId = ?))';
-        $Data->addParam($userData->getId());
-        $queryWhere[] = '(AH.isPrivateGroup = 0 OR (AH.isPrivateGroup = 1 AND AH.userGroupId = ?))';
-        $Data->addParam($userData->getUserGroupId());
+        $queryFilter->addFilter(/** @lang SQL */
+            '(AH.isPrivate = 0 OR (AH.isPrivate = 1 AND AH.userId = ?)) AND (AH.isPrivateGroup = 0 OR (AH.isPrivateGroup = 1 AND AH.userGroupId = ?))', [$userData->getId(), $userData->getUserGroupId()]);
 
-        return $queryWhere;
+        return $queryFilter;
     }
 
     /**

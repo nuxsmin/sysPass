@@ -49,7 +49,7 @@ class AccountToUserRepository extends Repository
      */
     public function update(AccountRequest $accountRequest)
     {
-        $this->delete($accountRequest->id);
+        $this->deleteByAccountId($accountRequest->id);
         $this->add($accountRequest);
 
         return false;
@@ -58,19 +58,19 @@ class AccountToUserRepository extends Repository
     /**
      * Eliminar la asociación de grupos con cuentas.
      *
-     * @param int $accountId con el Id de la cuenta
+     * @param int $id con el Id de la cuenta
      * @return bool
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function delete($accountId)
+    public function deleteByAccountId($id)
     {
         $Data = new QueryData();
 
         $query = /** @lang SQL */
             'DELETE FROM AccountToUser WHERE accountId = ?';
 
-        $Data->addParam($accountId);
+        $Data->addParam($id);
 
         $Data->setQuery($query);
         $Data->setOnErrorMessage(__u('Error al eliminar usuarios asociados a la cuenta'));
@@ -89,7 +89,7 @@ class AccountToUserRepository extends Repository
     public function add(AccountRequest $accountRequest)
     {
         $query = /** @lang SQL */
-            'INSERT INTO AccountToUser (accountId, userId) VALUES ' . $this->getParamsFromArray($accountRequest->users);
+            'INSERT INTO AccountToUser (accountId, userId) VALUES ' . $this->getParamsFromArray($accountRequest->users, '(?,?)');
 
         $Data = new QueryData();
         $Data->setQuery($query);

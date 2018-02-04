@@ -44,15 +44,15 @@ class AccountDetailsResponse
     /**
      * @var array Los Ids de los usuarios secundarios de la cuenta.
      */
-    private $users;
+    private $users = [];
     /**
      * @var array Los Ids de los grupos secundarios de la cuenta.
      */
-    private $userGroups;
+    private $userGroups = [];
     /**
      * @var array
      */
-    private $tags;
+    private $tags = [];
 
     /**
      * AccountDetailsResponse constructor.

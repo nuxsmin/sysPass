@@ -37,7 +37,7 @@ use SP\Providers\Auth\Ldap\LdapAuthData;
 use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Exceptions\AuthException;
+use SP\Services\Auth\AuthException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
@@ -130,6 +130,7 @@ class LoginService
      * @param Session         $session
      * @param Theme           $theme
      * @param EventDispatcher $eventDispatcher
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct(Config $config, Session $session, Theme $theme, EventDispatcher $eventDispatcher)
     {
@@ -218,7 +219,7 @@ class LoginService
     /**
      * Comprobar los intentos de login
      *
-     * @throws \SP\Core\Exceptions\AuthException
+     * @throws \SP\Services\Auth\AuthException
      */
     private function checkTracking()
     {
@@ -249,7 +250,7 @@ class LoginService
     /**
      * Añadir un seguimiento
      *
-     * @throws \SP\Core\Exceptions\AuthException
+     * @throws \SP\Services\Auth\AuthException
      */
     private function addTracking()
     {
@@ -269,7 +270,7 @@ class LoginService
      *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \SP\Core\Exceptions\AuthException
+     * @throws \SP\Services\Auth\AuthException
      */
     protected function checkUser()
     {

@@ -87,16 +87,17 @@ class AccountForm extends FormBase implements FormInterface
         $this->accountRequest->url = Request::analyze('url');
         $this->accountRequest->notes = Request::analyze('notes');
         $this->accountRequest->userEditId = SessionFactory::getUserData()->getId();
-        $this->accountRequest->otherUserEdit = Request::analyze('userEditEnabled', 0, false, 1);
-        $this->accountRequest->otherUserGroupEdit = Request::analyze('groupEditEnabled', 0, false, 1);
+        $this->accountRequest->otherUserEdit = Request::analyze('otherUserEditEnabled', 0, false, 1);
+        $this->accountRequest->otherUserGroupEdit = Request::analyze('otherUserGroupEditEnabled', 0, false, 1);
         $this->accountRequest->pass = Request::analyzeEncrypted('pass');
         $this->accountRequest->isPrivate = Request::analyze('privateEnabled', 0, false, 1);
         $this->accountRequest->isPrivateGroup = Request::analyze('privateGroupEnabled', 0, false, 1);
         $this->accountRequest->passDateChange = Request::analyze('passworddatechange_unix', 0);
         $this->accountRequest->parentId = Request::analyze('parentAccountId', 0);
+        $this->accountRequest->userGroupId = Request::analyze('mainUserGroupId', 0);
 
         // Arrays
-        $accountOtherGroups = Request::analyze('otherGroups', 0);
+        $accountOtherGroups = Request::analyze('otherUserGroups', 0);
         $accountOtherUsers = Request::analyze('otherUsers', 0);
         $accountTags = Request::analyze('tags', 0);
 
@@ -110,15 +111,6 @@ class AccountForm extends FormBase implements FormInterface
 
         if (is_array($accountTags)) {
             $this->accountRequest->tags = $accountTags;
-        }
-
-        $accountMainGroupId = Request::analyze('mainGroupId', 0);
-
-        // Cambiar el grupo principal si el usuario es Admin
-        if ($accountMainGroupId !== 0
-            && (SessionFactory::getUserData()->isIsAdminApp() || SessionFactory::getUserData()->isIsAdminAcc())
-        ) {
-            $this->accountRequest->userGroupId = $accountMainGroupId;
         }
     }
 

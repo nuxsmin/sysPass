@@ -51,6 +51,34 @@ class SelectItemAdapter implements ItemAdapterInterface
     }
 
     /**
+     * @param array $items
+     * @return static
+     */
+    public static function factory(array $items)
+    {
+        return new static($items);
+    }
+
+    /**
+     * Returns an array of ids from the given array of objects
+     *
+     * @param array $items
+     * @return array
+     */
+    public static function getIdFromArrayOfObjects(array $items)
+    {
+        $ids = [];
+
+        foreach ($items as $item) {
+            if (is_object($item) && null !== $item->id) {
+                $ids[] = $item->id;
+            }
+        }
+
+        return $ids;
+    }
+
+    /**
      * Returns a JSON like collection of items for a select component
      *
      * @return string
@@ -74,22 +102,6 @@ class SelectItemAdapter implements ItemAdapterInterface
     /**
      * Returns a collection of items for a select component
      *
-     * @return array
-     */
-    public function getItemsFromArray()
-    {
-        $out = [];
-
-        foreach ($this->items as $key => $value) {
-            $out[] = new SelectItem($key, $value);
-        }
-
-        return $out;
-    }
-
-    /**
-     * Returns a collection of items for a select component
-     *
      * @return string
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -108,14 +120,19 @@ class SelectItemAdapter implements ItemAdapterInterface
      * Returns a collection of items for a select component and set selected ones from an array
      *
      * @param array $selected
+     * @param null  $skip
      * @return SelectItem[]
      */
-    public function getItemsFromModelSelected(array $selected)
+    public function getItemsFromModelSelected(array $selected, $skip = null)
     {
         $items = $this->getItemsFromModel();
 
         foreach ($items as $item) {
-            if ($selected !== null && in_array($item->getId(), $selected, false)) {
+            if ($skip !== null && $item->getId() === $skip) {
+                $item->setSkip(true);
+            }
+
+            if (in_array($item->getId(), $selected, false)) {
                 $item->setSelected(true);
             }
         }
@@ -160,5 +177,21 @@ class SelectItemAdapter implements ItemAdapterInterface
         }
 
         return $items;
+    }
+
+    /**
+     * Returns a collection of items for a select component
+     *
+     * @return array
+     */
+    public function getItemsFromArray()
+    {
+        $out = [];
+
+        foreach ($this->items as $key => $value) {
+            $out[] = new SelectItem($key, $value);
+        }
+
+        return $out;
     }
 }

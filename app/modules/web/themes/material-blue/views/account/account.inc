@@ -6,12 +6,7 @@
 <div class="data-container">
     <div id="title" class="midroundup titleNormal">
         <?php echo $title['name']; ?>
-        <?php if ($gotData && $accountIsHistory): ?>
-            <i id="history-icon" class="material-icons"
-               title="<?php echo __('Histórico'); ?>"><?php echo $title['icon']; ?></i>
-        <?php else: ?>
-            <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
-        <?php endif; ?>
+        <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
     </div>
 
     <form method="post" name="frmaccount" id="frmAccount" class="form-action"
@@ -19,7 +14,7 @@
           data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
           data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
           data-hash="">
-        <input type="hidden" name="sk" value="">
+        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
         <input type="hidden" name="isAjax" value="1">
 
         <table class="data round">
@@ -170,15 +165,22 @@
                     <?php if (!$isView): ?>
                         <select id="selTags" name="tags[]" multiple="multiple" tabindex="10">
                             <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
+                            <?php /** @var \SP\Mvc\View\Components\SelectItem[] $tags */
+                            foreach ($tags as $tag): ?>
+                                <option value="<?php echo $tag->getId(); ?>" <?php echo $tag->isSelected() ? 'selected' : ''; ?>><?php echo $tag->getName(); ?></option>
+                            <?php endforeach; ?>
                         </select>
                     <?php else: ?>
-                        <?php foreach ($accountTags as $tag): ?>
-                            <span class="tag"><?php echo $tag->name; ?></span>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $tags */
+                        foreach ($tags as $tag): ?>
+                            <?php if ($tag->isSelected()): ?>
+                                <span class="tag"><?php echo $tag->getName(); ?></span>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </td>
             </tr>
-            <?php if (count($linkedAccounts) === 0): ?>
+            <?php if (isset($linkedAccounts) && count($linkedAccounts) === 0): ?>
                 <tr>
                     <td class="descField"><?php echo __('Cuenta Vinculada'); ?></td>
                     <td class="valField">
@@ -260,40 +262,23 @@
 
     </form>
 
-    <!--Files box -->
-    <?php if ($gotData && $accountAcl->isShowFiles()): ?>
-        <?php include $this->includeTemplate('files'); ?>
-    <?php endif; ?>
+    <?php
+    // Filex box
+    if ($gotData && $accountAcl->isShowFiles()) {
+        include $this->includeTemplate('files');
+    }
 
-    <?php if (count($linkedAccounts) > 0): ?>
-        <?php include $this->includeTemplate('linkedAccounts'); ?>
-    <?php endif; ?>
+    // Linked accounts box
+    if ($gotData && count($linkedAccounts) > 0) {
+        include $this->includeTemplate('linkedAccounts');
+    }
 
-    <!--More info about account details -->
-    <?php if ($gotData && $accountAcl->isShowDetails()): ?>
-        <?php include $this->includeTemplate('details'); ?>
-    <?php endif; ?>
+    // Details box
+    if ($gotData && $accountAcl->isShowDetails()) {
+        include $this->includeTemplate('details');
+    }
 
-    <?php include $this->includeTemplate('actions'); ?>
+    // Actions box
+    include $this->includeTemplate('actions');
+    ?>
 </div>
-<script>
-    (function () {
-        <?php if (!$isView): ?>
-        $('input:text:visible:first').focus();
-
-        $('#selTags').selectize({
-                persist: false,
-                maxItems: null,
-                valueField: 'id',
-                labelField: 'name',
-                searchField: ['name'],
-                plugins: ['remove_button'],
-                options: <?php echo $tagsJson; ?>,
-                items: <?php echo $gotData ? $accountTagsJson : '{}'; ?>
-            }
-        );
-        <?php endif; ?>
-
-        sysPassApp.sk.set("<?php echo $sk; ?>");
-    })();
-</script>

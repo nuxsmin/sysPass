@@ -47,6 +47,10 @@ class SelectItem
      * @var bool
      */
     protected $selected = false;
+    /**
+     * @var bool
+     */
+    protected $skip = false;
 
     /**
      * SelectItem constructor.
@@ -101,5 +105,21 @@ class SelectItem
     public function getItemProperty($property)
     {
         return null !== $this->item && isset($this->item->{$property}) ? $this->item->{$property} : null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSkip()
+    {
+        return $this->skip;
+    }
+
+    /**
+     * @param bool $skip
+     */
+    public function setSkip($skip)
+    {
+        $this->skip = (bool)$skip;
     }
 }

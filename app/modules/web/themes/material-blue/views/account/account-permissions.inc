@@ -24,18 +24,17 @@
                                 <legend><?php echo __('Usuarios'); ?></legend>
                                 <select id="otherUsers" name="otherUsers[]" multiple="multiple">
                                     <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
-                                    <?php if ($gotData === true): ?>
-                                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $accountOtherUsers */
-                                        foreach ($accountOtherUsers as $otherUser): ?>
-                                            <option
-                                                    value="<?php echo $otherUser->getId(); ?>"
-                                                    selected><?php echo $otherUser->getName(); ?></option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsers */
+                                    foreach ($otherUsers as $otherUser): ?>
+                                        <?php if ($otherUser->isSkip()): continue; endif; ?>
+                                        <option
+                                                value="<?php echo $otherUser->getId(); ?>"
+                                            <?php echo $otherUser->isSelected() ? 'selected' : '' ?>><?php echo $otherUser->getName(); ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                                 <br>
-                                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="userEditEnabled">
-                                    <input name="userEditEnabled" type="checkbox" id="userEditEnabled"
+                                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="otherUserEditEnabled">
+                                    <input name="otherUserEditEnabled" type="checkbox" id="otherUserEditEnabled"
                                            class="mdl-switch__input" <?php echo ($gotData && $accountData->getOtherUserEdit()) ? 'checked' : ''; ?>/>
                                     <span class="mdl-switch__label"><?php echo __('Hablitar edición'); ?></span>
                                 </label>
@@ -44,20 +43,21 @@
                         <div class="account-permissions">
                             <fieldset class="round5">
                                 <legend><?php echo __('Grupos'); ?></legend>
-                                <select id="otherGroups" name="otherGroups[]" multiple="multiple">
+                                <select id="otherUserGroups" name="otherUserGroups[]" multiple="multiple">
                                     <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
-                                    <?php if ($gotData === true): ?>
-                                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $accountOtherGroups */
-                                        foreach ($accountOtherGroups as $otherGroup): ?>
-                                            <option
-                                                    value="<?php echo $otherGroup->getId(); ?>"
-                                                    selected><?php echo $otherGroup->getName(); ?></option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroups */
+                                    foreach ($otherUserGroups as $otherUserGroup): ?>
+                                        <?php if ($otherUserGroup->isSkip()): continue; endif; ?>
+                                        <option
+                                                value="<?php echo $otherUserGroup->getId(); ?>"
+                                            <?php echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php echo $otherUserGroup->getName(); ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                                 <br>
-                                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="groupEditEnabled">
-                                    <input name="groupEditEnabled" type="checkbox" id="groupEditEnabled"
+                                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                       for="otherUserGroupEditEnabled">
+                                    <input name="otherUserGroupEditEnabled" type="checkbox"
+                                           id="otherUserGroupEditEnabled"
                                            class="mdl-switch__input" <?php echo ($gotData && $accountData->getOtherUserGroupEdit()) ? 'checked' : ''; ?>/>
                                     <span class="mdl-switch__label"><?php echo __('Hablitar edición'); ?></span>
                                 </label
@@ -71,12 +71,13 @@
                 <tr>
                     <td class="descField"><?php echo __('Grupo Principal'); ?></td>
                     <td class="valField">
-                        <select id="selMainGroupId" name="mainGroupId" class="select-box sel-chosen-usergroup">
+                        <select id="mainUserGroupId" name="mainUserGroupId" class="select-box">
                             <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
-                            <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherGroups */
-                            foreach ($otherGroups as $group): ?>
+                            <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroups */
+                            foreach ($userGroups as $userGroup): ?>
                                 <option
-                                        value="<?php echo $group->getId(); ?>" <?php echo ($gotData && $group->getId() === $accountData->getUserGroupId()) ? 'selected' : ''; ?>><?php echo $group->getName(); ?></option>
+                                        value="<?php echo $userGroup->getId(); ?>"
+                                    <?php echo $userGroup->isSelected() ? 'selected' : ''; ?>><?php echo $userGroup->getName(); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>
@@ -111,41 +112,4 @@
         </table>
     </div>
 </fieldset>
-
-<?php if (!$isView): ?>
-    <script>
-        $(function () {
-            var $accesses = $("#data-accesses");
-
-            if ($accesses[0].childNodes.length === 1) {
-                $accesses.parent(".data").hide();
-            }
-
-            $('#otherUsers').selectize({
-                persist: false,
-                valueField: 'id',
-                labelField: 'name',
-                searchField: ['name'],
-                plugins: ['remove_button'],
-                options: <?php echo $otherUsersJson; ?>,
-                onInitialize: function () {
-                    var userId = <?php echo $gotData ? $accountData->getUserId() : 0; ?>;
-
-                    if (userId > 0) {
-                        this.removeOption(userId);
-                    }
-                }
-            });
-
-            $('#otherGroups').selectize({
-                persist: false,
-                valueField: 'id',
-                labelField: 'name',
-                searchField: ['name'],
-                plugins: ['remove_button'],
-                options: <?php echo $otherGroupsJson; ?>
-            });
-        });
-    </script>
-<?php endif; ?>
 

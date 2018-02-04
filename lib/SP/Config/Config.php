@@ -27,7 +27,6 @@ namespace SP\Config;
 use ReflectionObject;
 use SP\Core\Exceptions\ConfigException;
 use SP\Core\Session\Session;
-use SP\Core\SessionFactory;
 use SP\Core\Traits\InjectableTrait;
 use SP\Storage\XmlFileStorageInterface;
 
@@ -62,6 +61,7 @@ class Config
      *
      * @param XmlFileStorageInterface $fileStorage
      * @throws \SP\Core\Exceptions\ConfigException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct(XmlFileStorageInterface $fileStorage)
     {
@@ -114,7 +114,7 @@ class Config
     /**
      * Obtener la configuración o devolver una nueva
      *
-     * @return ConfigData
+     * @return void
      * @deprecated
      */
     public static function getConfig()
@@ -129,15 +129,11 @@ class Config
      */
     public function loadConfig($reload = false)
     {
-        if ($reload === false && self::$configLoaded) {
-            return $this->configData;
-        }
-
-        $ConfigData = $this->session->getConfig();
+        $configData = $this->session->getConfig();
 
         if ($reload === true
-            || !is_object($ConfigData)
-            || time() >= ($this->session->getConfigTime() + $ConfigData->getSessionTimeout() / 2)
+            || null === $configData
+            || time() >= ($this->session->getConfigTime() + $configData->getSessionTimeout() / 2)
         ) {
             $this->saveConfigInSession();
         }

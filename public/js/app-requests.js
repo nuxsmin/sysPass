@@ -24,7 +24,7 @@
 sysPass.Requests = function (Common) {
     "use strict";
 
-    var log = Common.log;
+    const log = Common.log;
 
     /**
      * Historial de consultas AJAX
@@ -32,9 +32,9 @@ sysPass.Requests = function (Common) {
      * @type {Array}
      * @private
      */
-    var _history = [];
+    let _history = [];
 
-    var requestOpts = {
+    const requestOpts = {
         type: "json",
         url: "",
         method: "post",
@@ -58,12 +58,12 @@ sysPass.Requests = function (Common) {
      *
      * @type {{get: history.get, add: history.add, del: history.del, reset: history.reset, length: history.length}}
      */
-    var history = {
+    const history = {
         get: function () {
             return _history;
         },
         add: function (opts) {
-            var hash = (opts.hash === "") ? SparkMD5.hash(JSON.stringify(opts), false) : opts.hash;
+            const hash = (opts.hash === "") ? SparkMD5.hash(JSON.stringify(opts), false) : opts.hash;
 
             if (_history.length > 0 && _history[_history.length - 1].hash === hash) {
                 return _history;
@@ -102,7 +102,7 @@ sysPass.Requests = function (Common) {
      *
      * @returns {requestOpts}
      */
-    var getRequestOpts = function () {
+    const getRequestOpts = function () {
         return Object.create(requestOpts);
     };
 
@@ -112,7 +112,7 @@ sysPass.Requests = function (Common) {
      * @param url
      * @returns {*}
      */
-    var getUrl = function (url) {
+    const getUrl = function (url) {
         return (url.indexOf("http") === -1 && url.indexOf("https") === -1) ? Common.config().APP_ROOT + url : url;
     };
 
@@ -123,7 +123,7 @@ sysPass.Requests = function (Common) {
      * @param callbackOk
      * @param callbackError
      */
-    var getActionCall = function (opts, callbackOk, callbackError) {
+    const getActionCall = function (opts, callbackOk, callbackError) {
         log.info("getActionCall");
 
         return $.ajax({
@@ -156,7 +156,7 @@ sysPass.Requests = function (Common) {
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 if (typeof callbackError !== "function") {
-                    var txt = Common.config().LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
+                    const txt = Common.config().LANG[1] + "<p>" + errorThrown + textStatus + "</p>";
 
                     log.error(txt);
 
@@ -189,15 +189,15 @@ sysPass.Requests = function (Common) {
      * @param callbackProgress
      * @param callbackEnd
      */
-    var getActionEvent = function (opts, callbackProgress, callbackEnd) {
-        var url = getUrl(opts.url);
+    const getActionEvent = function (opts, callbackProgress, callbackEnd) {
+        let url = getUrl(opts.url);
         url += "?" + $.param(opts.data);
 
-        var source = new EventSource(url);
+        const source = new EventSource(url);
 
         //a message is received
         source.addEventListener("message", function (e) {
-            var result = JSON.parse(e.data);
+            const result = JSON.parse(e.data);
 
             log.debug(result);
 
@@ -230,7 +230,7 @@ sysPass.Requests = function (Common) {
      * @param query
      * @returns {{r: string}}
      */
-    var getRouteForQuery = function (route, query) {
+    const getRouteForQuery = function (route, query) {
         if (typeof query === "object") {
             return {r: route + "/" + query.join("/")};
         }

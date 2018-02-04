@@ -192,17 +192,17 @@ class AccountService implements AccountServiceInterface
     public function create(AccountRequest $accountRequest)
     {
         $accountRequest->changePermissions = (new AccountAcl(ActionsInterface::ACCOUNT_EDIT))->isShowPermission();
+        $accountRequest->userGroupId ?: $this->session->getUserData()->getUserGroupId();
 
         $pass = $this->getPasswordEncrypted($accountRequest->pass);
 
         $accountRequest->pass = $pass['pass'];
         $accountRequest->key = $pass['key'];
+        $accountRequest->id = $this->accountRepository->create($accountRequest);
 
-        $id = $this->accountRepository->create($accountRequest);
+        $this->addItems($accountRequest);
 
-        $this->addItems($accountRequest, $id);
-
-        return $id;
+        return $accountRequest->id;
     }
 
     /**
@@ -236,9 +236,8 @@ class AccountService implements AccountServiceInterface
      * Adds external items to the account
      *
      * @param AccountRequest $accountRequest
-     * @param int            $accountId
      */
-    protected function addItems(AccountRequest $accountRequest, $accountId)
+    protected function addItems(AccountRequest $accountRequest)
     {
         try {
             if ($accountRequest->changePermissions) {
@@ -269,6 +268,10 @@ class AccountService implements AccountServiceInterface
     public function update(AccountRequest $accountRequest)
     {
         $accountRequest->changePermissions = (new AccountAcl(ActionsInterface::ACCOUNT_EDIT))->isShowPermission();
+
+        // Cambiar el grupo principal si el usuario es Admin
+        $accountRequest->changeUserGroup = ($accountRequest->userGroupId !== 0
+            && ($this->session->getUserData()->getIsAdminApp() || $this->session->getUserData()->getIsAdminAcc()));
 
         $this->addHistory($accountRequest->id);
 
@@ -304,12 +307,26 @@ class AccountService implements AccountServiceInterface
     protected function updateItems(AccountRequest $accountRequest)
     {
         try {
+
             if ($accountRequest->changePermissions) {
-                $this->accountToUserGroupRepository->update($accountRequest);
-                $this->accountToUserRepository->update($accountRequest);
+                if (!empty($accountRequest->userGroups)) {
+                    $this->accountToUserGroupRepository->update($accountRequest);
+                } else {
+                    $this->accountToUserGroupRepository->deleteByAccountId($accountRequest->id);
+                }
+
+                if (!empty($accountRequest->users)) {
+                    $this->accountToUserRepository->update($accountRequest);
+                } else {
+                    $this->accountToUserRepository->deleteByAccountId($accountRequest->id);
+                }
             }
 
-            $this->accountToTagRepository->update($accountRequest);
+            if (!empty($accountRequest->tags)) {
+                $this->accountToTagRepository->update($accountRequest);
+            } else {
+                $this->accountToTagRepository->deleteByAccountId($accountRequest->id);
+            }
         } catch (SPException $e) {
             Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
         }
@@ -411,11 +428,14 @@ class AccountService implements AccountServiceInterface
 
     /**
      * @param $id
-     * @return \SP\DataModel\AccountPassData
+     * @return \SP\DataModel\ItemData
      */
     public function getPasswordHistoryForId($id)
     {
-        return $this->accountRepository->getPasswordHistoryForId($id);
+        $queryFilter = AccountUtil::getAccountHistoryFilterUser($this->session)
+            ->addFilter('AH.id = ?', [$id]);
+
+        return $this->accountRepository->getPasswordHistoryForId($queryFilter);
     }
 
     /**

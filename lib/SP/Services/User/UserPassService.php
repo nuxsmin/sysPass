@@ -74,6 +74,8 @@ class UserPassService
 
     /**
      * UserPassService constructor.
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct()
     {

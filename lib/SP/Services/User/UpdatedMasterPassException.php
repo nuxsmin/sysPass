@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,15 +22,27 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Exceptions;
+namespace SP\Services\User;
 
+use SP\Core\Exceptions\SPException;
 
 /**
- * Class AuthException
+ * Class UpdatedMasterPassException
  *
- * @package SP\Core\Exceptions
+ * @package SP\Services\User
  */
-class AuthException extends SPException
+class UpdatedMasterPassException extends SPException
 {
+    /**
+     * SPException constructor.
+     *
+     * @param string     $type
+     * @param int        $code
+     * @param \Exception $previous
+     */
+    public function __construct($type, $code = 0, \Exception $previous = null)
+    {
+        parent::__construct($type, __u('Clave maestra actualizada'), __u('Reinicie la sesión para cambiarla'), $code, $previous);
+    }
 
 }

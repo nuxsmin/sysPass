@@ -29,7 +29,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
-use SP\Mvc\Model\QueryFilter;
+use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -300,10 +300,10 @@ class ClientRepository extends Repository implements RepositoryItemInterface
     /**
      * Devolver los clientes visibles por el usuario
      *
-     * @param QueryFilter $queryFilter
+     * @param QueryCondition $queryFilter
      * @return array
      */
-    public function getAllForFilter(QueryFilter $queryFilter)
+    public function getAllForFilter(QueryCondition $queryFilter)
     {
         $query = /** @lang SQL */
             'SELECT C.id, C.name 

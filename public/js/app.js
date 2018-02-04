@@ -24,13 +24,15 @@
 //
 // From http://www.kenneth-truyers.net/2013/04/27/javascript-namespaces-and-modules/
 //
-var sysPass = sysPass || {};
+const sysPass = {};
 
 // create a general purpose namespace method
 // this will allow us to create namespace a bit easier
 sysPass.createNS = function (namespace) {
-    var nsparts = namespace.split(".");
-    var parent = sysPass;
+    "use strict";
+
+    let nsparts = namespace.split(".");
+    let parent = sysPass;
 
     // we want to be able to include or exclude the root namespace
     // So we strip it if it's in the namespace
@@ -40,8 +42,8 @@ sysPass.createNS = function (namespace) {
 
     // loop through the parts and create
     // a nested namespace if necessary
-    for (var i = 0; i < nsparts.length; i++) {
-        var partname = nsparts[i];
+    for (let i = 0; i < nsparts.length; i++) {
+        const partname = nsparts[i];
         // check if the current parent already has
         // the namespace declared, if not create it
         if (typeof parent[partname] === "undefined") {
@@ -62,9 +64,10 @@ sysPass.createNS("Actions");
 sysPass.createNS("Requests");
 sysPass.createNS("Theme");
 sysPass.createNS("Plugin");
+sysPass.createNS("Util");
 
 // Objeto con las funciones públicas de sysPass
-var sysPassApp = {};
+let sysPassApp = {};
 
 $(document).on("DOMContentLoaded", function (e) {
     "use strict";

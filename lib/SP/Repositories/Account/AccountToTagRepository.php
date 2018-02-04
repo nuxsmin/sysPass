@@ -72,7 +72,7 @@ class AccountToTagRepository extends Repository
     public function add(AccountRequest $accountRequest)
     {
         $query = /** @lang SQL */
-            'INSERT INTO AccountToTag (accountId, tagId) VALUES ' . $this->getParamsFromArray($accountRequest->tags);
+            'INSERT INTO AccountToTag (accountId, tagId) VALUES ' . $this->getParamsFromArray($accountRequest->tags, '(?,?)');
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -89,18 +89,18 @@ class AccountToTagRepository extends Repository
     /**
      * Eliminar las etiquetas de una cuenta
      *
-     * @param int $accountId
+     * @param int $id
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function delete($accountId)
+    public function deleteByAccountId($id)
     {
         $Data = new QueryData();
         $query = /** @lang SQL */
             'DELETE FROM AccountToTag WHERE accountId = ?';
 
-        $Data->addParam($accountId);
+        $Data->addParam($id);
 
         $Data->setQuery($query);
         $Data->setOnErrorMessage(__u('Error al eliminar las etiquetas de la cuenta'));
@@ -115,7 +115,7 @@ class AccountToTagRepository extends Repository
      */
     public function update(AccountRequest $accountRequest)
     {
-        $this->delete($accountRequest->id);
+        $this->deleteByAccountId($accountRequest->id);
         $this->add($accountRequest);
     }
 

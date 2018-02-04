@@ -25,71 +25,73 @@
 namespace SP\Mvc\Model;
 
 /**
- * Class QueryFilter
+ * Class QueryAssignment
  *
  * @package SP\Mvc\Model
  */
-class QueryFilter
+class QueryAssignment
 {
-    const FILTER_AND = ' AND ';
-    const FILTER_OR = ' OR ';
-
     /**
      * @var array
      */
-    protected $query = [];
+    protected $fields = [];
     /**
      * @var array
      */
-    protected $param = [];
+    protected $values = [];
 
     /**
-     * @param $query
-     * @param $params
-     * @return QueryFilter
+     * @param $field
+     * @param $value
+     * @return QueryAssignment
      */
-    public function addFilter($query, array $params)
+    public function addField($field, $value)
     {
-        $this->query[] = $query;
-        $this->param = array_merge($this->param, $params);
+        if (strpos($field, '=') === false) {
+            $this->fields[] = $field . ' = ?';
+            $this->values[] = $value;
+        }
 
         return $this;
     }
 
     /**
-     * @param string $type
+     * @param array $fields
+     * @param array $values
+     * @return QueryAssignment
+     */
+    public function setFields(array $fields, array $values)
+    {
+        $this->fields = array_map(function ($value) {
+            return strpos($value, '=') === false ? $value . ' = ?' : $value;
+        }, $fields);
+
+        $this->values = array_merge($this->values, $values);
+
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
-    public function getFilters($type = self::FILTER_AND)
+    public function getAssignments()
     {
-        if ($type !== self::FILTER_AND && $type !== self::FILTER_OR) {
-            throw new \RuntimeException(__u('Tipo de filtro inválido'));
-        }
-
-        return $this->hasFilters() ? implode($type, $this->query) : null;
+        return $this->hasFields() ? implode(',', $this->fields) : null;
     }
 
     /**
      * @return bool
      */
-    public function hasFilters()
+    public function hasFields()
     {
-        return !empty($this->query);
+        return count($this->fields) > 0;
     }
 
     /**
      * @return array
      */
-    public function getParams()
+    public function getValues()
     {
-        return $this->param;
-    }
-
-    /**
-     * @return int
-     */
-    public function getFiltersCount()
-    {
-        return count($this->query);
+        return $this->values;
     }
 }

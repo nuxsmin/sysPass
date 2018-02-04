@@ -51,6 +51,8 @@ class UserService
 
     /**
      * UserService constructor.
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct()
     {

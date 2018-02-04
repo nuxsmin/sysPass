@@ -1,4 +1,9 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php
+/**
+ * @var $icons \Theme\Icons
+ * @var $accountData \SP\DataModel\AccountVData
+ */
+?>
 
 <div class="data-container">
     <div id="title" class="midroundup titleNormal"><?php echo __('Solicitar Modificación de Cuenta'); ?></div>
@@ -16,7 +21,7 @@
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $accountData->getAccountName(); ?>" readonly>
+                               value="<?php echo $accountData->getName(); ?>" readonly>
                         <label class="mdl-textfield__label" for="name"><?php echo __('Nombre de cuenta'); ?></label>
                     </div>
                 </td>
@@ -28,7 +33,7 @@
                         <input id="customer" name="customer" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
-                               value="<?php echo $accountData->customer_name; ?>" readonly>
+                               value="<?php echo $accountData->getClientName(); ?>" readonly>
                         <label class="mdl-textfield__label" for="name"><?php echo __('Cliente'); ?></label>
                     </div>
                 </td>

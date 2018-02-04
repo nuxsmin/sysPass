@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link http://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Modules\Web\Controllers\Helpers;
+namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Account\AccountSearchFilter;
 use SP\Account\AccountSearchItem;
@@ -36,6 +36,8 @@ use SP\Html\DataGrid\DataGridHeaderSort;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridSort;
 use SP\Http\Request;
+use SP\Modules\Web\Controllers\Helpers\Account\AccountActionsHelper;
+use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Repositories\Category\CategoryRepository;
 use SP\Repositories\Client\ClientRepository;

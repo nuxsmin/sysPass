@@ -24,23 +24,23 @@
 sysPass.Triggers = function (Common) {
     "use strict";
 
-    var log = Common.log;
+    const log = Common.log;
 
     // Detectar los campos select y añadir funciones
-    var selectDetect = function ($container) {
-        var options = {
+    const selectDetect = function ($container) {
+        const options = {
             valueField: "id",
             labelField: "name",
             searchField: ["name"]
         };
 
         $container.find(".select-box").each(function (e) {
-            var $this = $(this);
+            const $this = $(this);
 
             options.plugins = $this.hasClass("select-box-deselect") ? {"clear_selection": {title: Common.config().LANG[51]}} : {};
 
             if ($this.data("onchange")) {
-                var onchange = $this.data("onchange").split("/");
+                const onchange = $this.data("onchange").split("/");
 
                 options.onChange = function (value) {
                     if (value > 0) {
@@ -78,13 +78,13 @@ sysPass.Triggers = function (Common) {
      * Ejecutar acción para botones
      * @param $obj
      */
-    var handleActionButton = function ($obj) {
+    const handleActionButton = function ($obj) {
         log.info("handleActionButton: " + $obj.attr("id"));
 
-        var onclick = $obj.data("onclick").split("/");
-        var actions;
+        const onclick = $obj.data("onclick").split("/");
+        let actions;
 
-        var plugin = $obj.data("plugin");
+        const plugin = $obj.data("plugin");
 
         if (plugin !== undefined && Common.appPlugins()[plugin] !== undefined) {
             actions = Common.appPlugins()[plugin];
@@ -104,19 +104,19 @@ sysPass.Triggers = function (Common) {
      *
      * @param $obj
      */
-    var handleFormAction = function ($obj) {
+    const handleFormAction = function ($obj) {
         log.info("formAction");
 
-        var lastHash = $obj.attr("data-hash");
-        var currentHash = SparkMD5.hash($obj.serialize(), false);
+        const lastHash = $obj.attr("data-hash");
+        const currentHash = SparkMD5.hash($obj.serialize(), false);
 
         if (lastHash === currentHash) {
             Common.msg.ok(Common.config().LANG[55]);
             return false;
         }
 
-        var plugin = $obj.data("plugin");
-        var actions;
+        const plugin = $obj.data("plugin");
+        let actions;
 
         if (plugin !== undefined && Common.appPlugins()[plugin] !== undefined) {
             actions = Common.appPlugins()[plugin];
@@ -124,7 +124,7 @@ sysPass.Triggers = function (Common) {
             actions = Common.appActions();
         }
 
-        var onsubmit = $obj.data("onsubmit").split("/");
+        const onsubmit = $obj.data("onsubmit").split("/");
 
         $obj.find("input[name='sk']").val(Common.sk.get());
 
@@ -135,18 +135,18 @@ sysPass.Triggers = function (Common) {
         }
     };
 
-    var bodyHooks = function () {
+    const bodyHooks = function () {
         log.info("bodyHooks");
 
         $("body").on("click", "button.btn-action[data-onclick][type='button'],li.btn-action[data-onclick],span.btn-action[data-onclick],i.btn-action[data-onclick],.btn-action-pager[data-onclick]", function () {
             handleActionButton($(this));
         }).on("click", ".btn-back", function () {
-            var appRequests = Common.appRequests();
+            const appRequests = Common.appRequests();
 
             if (appRequests.history.length() > 0) {
                 log.info("back");
 
-                var lastHistory = appRequests.history.del();
+                const lastHistory = appRequests.history.del();
 
                 appRequests.getActionCall(lastHistory, lastHistory.callback);
             }
@@ -155,8 +155,8 @@ sysPass.Triggers = function (Common) {
 
             handleFormAction($(this));
         }).on("click", ".btn-help", function () {
-            var $this = $(this);
-            var helpText = $("#" + $this.data("help")).html();
+            const $this = $(this);
+            const helpText = $("#" + $this.data("help")).html();
 
             mdlDialog().show({
                 title: Common.config().LANG[54],
@@ -170,7 +170,7 @@ sysPass.Triggers = function (Common) {
 
             log.info("reset");
 
-            var $this = $(this);
+            const $this = $(this);
 
             $this.find("input:text, input:password, input:file, textarea").val("").parent("div").removeClass("is-dirty");
             $this.find("input:radio, input:checkbox").prop("checked", false).prop("selected", false);
@@ -189,7 +189,7 @@ sysPass.Triggers = function (Common) {
     /**
      * Triggers que se ejecutan en determinadas vistas
      */
-    var views = {
+    const views = {
         main: function () {
             log.info("views:main");
 
@@ -198,7 +198,7 @@ sysPass.Triggers = function (Common) {
             }
 
             $(".btn-menu").click(function () {
-                var $this = $(this);
+                const $this = $(this);
 
                 if ($this.attr("data-history-reset") === "1") {
                     Common.appRequests().history.reset();
@@ -224,7 +224,7 @@ sysPass.Triggers = function (Common) {
         search: function () {
             log.info("views:search");
 
-            var $frmSearch = $("#frmSearch");
+            const $frmSearch = $("#frmSearch");
 
             if ($frmSearch.length === 0) {
                 return;
@@ -253,7 +253,7 @@ sysPass.Triggers = function (Common) {
             $frmSearch.find("input:text:visible:first").focus();
 
             $("#globalSearch").click(function () {
-                    var val = $(this).prop("checked") == true ? 1 : 0;
+                    const val = $(this).prop("checked") == true ? 1 : 0;
 
                     $frmSearch.find("input[name='gsearch']").val(val);
                     $frmSearch.submit();
@@ -267,7 +267,7 @@ sysPass.Triggers = function (Common) {
         login: function () {
             log.info("views:login");
 
-            var $frmLogin = $("#frmLogin");
+            const $frmLogin = $("#frmLogin");
 
             if (Common.config().AUTHBASIC_AUTOLOGIN && $frmLogin.find("input[name='loggedOut']").val() === "0") {
                 log.info("views:login:autologin");
@@ -280,7 +280,7 @@ sysPass.Triggers = function (Common) {
         passreset: function () {
             log.info("views:passreset");
 
-            var $form = $("#frmPassReset");
+            const $form = $("#frmPassReset");
 
             Common.appTheme().passwordDetect($form);
         },
@@ -292,6 +292,12 @@ sysPass.Triggers = function (Common) {
             log.info("views:common");
 
             selectDetect($container);
+
+            const $sk = $container.find(":input [name='sk']");
+
+            if ($sk.length > 0) {
+                Common.sk.set($sk.val());
+            }
 
             // $container.find(".help-box").dialog({
             //     autoOpen: false,
@@ -305,11 +311,11 @@ sysPass.Triggers = function (Common) {
 
             Common.appTriggers().updateFormHash($container);
         },
-        datatabs: function (active) {
+        datatabs: function () {
             log.info("views:datatabs");
 
             $(".datagrid-action-search>form").each(function () {
-                var $this = $(this);
+                const $this = $(this);
 
                 $this.find("button.btn-clear").on("click", function (e) {
                     e.preventDefault();
@@ -321,10 +327,10 @@ sysPass.Triggers = function (Common) {
         config: function () {
             log.info("views:config");
 
-            var $dropFiles = $("#drop-import-files");
+            const $dropFiles = $("#drop-import-files");
 
             if ($dropFiles.length > 0) {
-                var upload = Common.fileUpload($dropFiles);
+                const upload = Common.fileUpload($dropFiles);
 
                 upload.url = Common.appActions().ajaxUrl.config.import;
                 upload.beforeSendAction = function () {
@@ -342,16 +348,16 @@ sysPass.Triggers = function (Common) {
         account: function () {
             log.info("views:account");
 
-            var $listFiles = $("#list-account-files");
+            const $listFiles = $("#list-account-files");
 
             if ($listFiles.length > 0) {
                 Common.appActions().account.listFiles($listFiles);
             }
 
-            var $dropFiles = $("#drop-account-files");
+            const $dropFiles = $("#drop-account-files");
 
             if ($dropFiles.length > 0) {
-                var upload = Common.fileUpload($dropFiles);
+                const upload = Common.fileUpload($dropFiles);
 
                 upload.url = Common.appActions().ajaxUrl.file;
                 upload.requestDoneAction = function () {
@@ -359,12 +365,12 @@ sysPass.Triggers = function (Common) {
                 };
             }
 
-            var $extraInfo = $(".show-extra-info");
+            const $extraInfo = $(".show-extra-info");
 
             if ($extraInfo.length > 0) {
                 $extraInfo.on("click", function () {
-                    var $this = $(this);
-                    var $target = $($this.data("target"));
+                    const $this = $(this);
+                    const $target = $($this.data("target"));
 
                     if ($target.is(":hidden")) {
                         $target.slideDown("slow");
@@ -376,12 +382,12 @@ sysPass.Triggers = function (Common) {
                 });
             }
 
-            var $selParentAccount = $("#selParentAccount");
+            const $selParentAccount = $("#selParentAccount");
 
             if ($selParentAccount.length > 0) {
                 $selParentAccount.on("change", function () {
-                    var $this = $(this);
-                    var $pass = $("#accountpass,#accountpassR");
+                    const $this = $(this);
+                    const $pass = $("#accountpass,#accountpassR");
 
                     if ($this[0].value > 0) {
                         $pass.each(function () {
@@ -398,11 +404,70 @@ sysPass.Triggers = function (Common) {
 
                 Common.appActions().items.get($selParentAccount);
             }
+
+            const $selTags = $("#selTags");
+
+            if ($selTags.length > 0) {
+                $selTags.selectize({
+                    persist: false,
+                    maxItems: null,
+                    valueField: "id",
+                    labelField: "name",
+                    searchField: ["name"],
+                    plugins: ["remove_button"]
+                });
+            }
+
+            const $otherUsers = $('#otherUsers');
+
+            if ($otherUsers.length > 0) {
+                $otherUsers.selectize({
+                    persist: false,
+                    valueField: 'id',
+                    labelField: 'name',
+                    searchField: ['name'],
+                    plugins: ['remove_button'],
+                    onInitialize: function () {
+                        const userId = $otherUsers.data('userId');
+
+                        if (userId > 0) {
+                            this.removeOption(userId);
+                        }
+                    }
+                });
+            }
+
+            const $otherUserGroups = $('#otherUserGroups');
+
+            if ($otherUserGroups.length > 0) {
+                $otherUserGroups.selectize({
+                    persist: false,
+                    valueField: 'id',
+                    labelField: 'name',
+                    searchField: ['name'],
+                    plugins: ['remove_button'],
+                    onInitialize: function () {
+                        const userGroupId = $otherUserGroups.data('userGroupId');
+
+                        if (userGroupId > 0) {
+                            this.removeOption(userGroupId);
+                        }
+                    }
+                });
+            }
+
+            const $accesses = $("#data-accesses");
+
+            if ($accesses.length > 0 && $accesses[0].childNodes.length === 1) {
+                $accesses.parent(".data").hide();
+            }
+
+            $('input:text:visible:first').focus();
         },
         install: function () {
             log.info("views:install");
 
-            var $form = $("#frmInstall");
+            const $form = $("#frmInstall");
 
             Common.appTheme().passwordDetect($form);
             selectDetect($form);
@@ -413,7 +478,7 @@ sysPass.Triggers = function (Common) {
      * Actualizar el token de seguridad en los atributos de los botones y formularios
      *
      */
-    var updateSk = function () {
+    const updateSk = function () {
         $("#content").find("[data-sk]").each(function () {
             log.info("updateSk");
 
@@ -424,10 +489,10 @@ sysPass.Triggers = function (Common) {
     /**
      * Actualizar el hash de los formularios de acción
      */
-    var updateFormHash = function ($container) {
+    const updateFormHash = function ($container) {
         log.info("updateFormHash");
 
-        var $form;
+        let $form;
 
         if ($container !== undefined) {
             $form = $container.find(".form-action[data-hash]");
@@ -437,7 +502,7 @@ sysPass.Triggers = function (Common) {
 
         if ($form.length > 0) {
             $form.each(function () {
-                var $this = $(this);
+                const $this = $(this);
 
                 $this.attr("data-hash", SparkMD5.hash($this.serialize(), false));
             });

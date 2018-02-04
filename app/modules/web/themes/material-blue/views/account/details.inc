@@ -57,7 +57,7 @@
                     <?php echo $accountData->getUserGroupName(); ?>
                 </td>
             </tr>
-            <?php if (isset($accountOtherUsers) && is_array($accountOtherUsers) && count($accountOtherUsers) > 0): ?>
+            <?php if (isset($otherUsers) && is_array($otherUsers) && count($otherUsers) > 0): ?>
                 <tr>
                     <td class="descField"><?php echo __('Usuarios Secundarios'); ?></td>
                     <td class="valField">
@@ -66,9 +66,10 @@
                         <?php
                         $users = [];
 
-                        foreach ($accountOtherUsers as $otherUser) {
-                            if ($otherUser->id !== $accountData->getUserId()) {
-                                $users[] = $otherUser->name;
+                        /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsers */
+                        foreach ($otherUsers as $otherUser) {
+                            if (!$otherUser->isSkip() && $otherUser->isSelected()) {
+                                $users[] = $otherUser->getName();
                             }
                         }
 
@@ -78,25 +79,24 @@
                     </td>
                 </tr>
             <?php endif; ?>
-            <?php if (isset($accountOtherGroups) && is_array($accountOtherGroups) && count($accountOtherGroups) > 0): ?>
+            <?php if (isset($otherUserGroups) && is_array($otherUserGroups) && count($otherUserGroups) > 0): ?>
                 <tr>
                     <td class="descField"><?php echo __('Grupos Secundarios'); ?></td>
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Grupos Secundarios'); ?></div>
 
                         <?php
-                        $groups = [];
+                        $userGroups = [];
 
-                        foreach ($accountOtherGroups as $otherGroup) {
-                            /** @var $otherGroup \SP\DataModel\UserGroupData */
-                            if ($otherGroup->id !== $accountData->getUserGroupId()) {
-                                $groups[] = $otherGroup->name;
+                        /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroups */
+                        foreach ($otherUserGroups as $otherUserGroup) {
+                            if (!$otherUserGroup->isSkip() && $otherUserGroup->isSelected()) {
+                                $userGroups[] = $otherUserGroup->getName();
                             }
                         }
 
-                        $groupsEdit = $accountData->getOtherUserGroupEdit() ? '(+)' : '';
-
-                        echo $groupsEdit . ' ' . implode(' | ', $groups);
+                        $userGroupsEdit = $accountData->getOtherUserGroupEdit() ? '(+)' : '';
+                        echo $userGroupsEdit . ' ' . implode(' | ', $userGroups);
                         ?>
                     </td>
                 </tr>

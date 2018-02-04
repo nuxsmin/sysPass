@@ -930,11 +930,11 @@ sysPass.Actions = function (Common) {
         viewPass: function ($obj) {
             log.info("account:showpass");
 
-            var parentId = $obj.data("parent-id");
-            var id = parentId === 0 ? $obj.data("item-id") : parentId;
-            var history = $obj.data("history") || 0;
+            const parentId = $obj.data("parent-id") || 0;
+            const id = parentId === 0 ? $obj.data("item-id") : parentId;
+            const history = $obj.data("history") || 0;
 
-            var opts = Common.appRequests().getRequestOpts();
+            const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
@@ -1115,7 +1115,7 @@ sysPass.Actions = function (Common) {
         save: function ($obj) {
             log.info("account:save");
 
-            var opts = Common.appRequests().getRequestOpts();
+            const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.account.save + "?r=" + $obj.data("action-route") + "/" + $obj.data("item-id");
             opts.data = $obj.serialize();
 
