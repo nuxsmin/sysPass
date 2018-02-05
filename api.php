@@ -22,19 +22,17 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Api\ApiRequest;
-use SP\Log\Log;
-
-define('APP_ROOT', '.');
+define('APP_ROOT', __DIR__);
+define('APP_MODULE', 'api');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
 
-header('Content-type: application/json');
-
-try {
-    $ApiRequest = new ApiRequest();
-    exit($ApiRequest->runApi());
-} catch (Exception $e) {
-    Log::writeNewLog('API', $e->getMessage(), Log::ERROR);
-    exit($ApiRequest->formatJsonError($e));
-}
+//header('Content-type: application/json');
+//
+//try {
+//    $ApiRequest = new ApiRequest();
+//    exit($ApiRequest->runApi());
+//} catch (Exception $e) {
+//    Log::writeNewLog('API', $e->getMessage(), Log::ERROR);
+//    exit($ApiRequest->formatJsonError($e));
+//}

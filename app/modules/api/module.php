@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,14 +22,5 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Controller\ItemsController;
-use SP\Http\Request;
-
-define('APP_ROOT', dirname(__DIR__));
-
-require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
-
-Request::checkReferer('GET');
-
-$Controller = new ItemsController();
-$Controller->doAction();
+define('MODULE_PATH', __DIR__);
+define('PLUGINS_PATH', MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins');

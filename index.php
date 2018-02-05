@@ -22,17 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Core\Init;
-use SP\Core\SessionFactory;
-use SP\Modules\Web\Controllers\MainController;
-
 define('APP_ROOT', __DIR__);
 define('APP_MODULE', 'web');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
-
-//if (!Init::checkPostLoginActions() && Session::getAuthCompleted()) {
-//    $Controller = new MainController();
-//    $Controller->getMain();
-//    $Controller->view();
-//}
