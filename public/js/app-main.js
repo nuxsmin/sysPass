@@ -488,6 +488,7 @@ sysPass.Main = function () {
 
         return options;
     };
+
     const redirect = function (url) {
         window.location.replace(url);
     };

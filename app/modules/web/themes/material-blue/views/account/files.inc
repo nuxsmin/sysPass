@@ -20,6 +20,7 @@
                 <td class="descField"><?php echo __('Archivos'); ?></td>
                 <td class="valField">
                     <div id="list-account-files"
+                         data-action-route="<?php echo $fileListRoute; ?>"
                          data-item-id="<?php echo $accountId; ?>"
                          data-history="<?php $accountIsHistory; ?>"
                          data-delete="<?php echo (int)$accountAcl->isShowDelete(); ?>"

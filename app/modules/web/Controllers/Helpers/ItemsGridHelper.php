@@ -367,36 +367,48 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(ActionsInterface::FILE_SEARCH);
+        $GridActionSearch->setId(ActionsInterface::ACCOUNT_FILE_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchFile');
         $GridActionSearch->setTitle(__('Buscar Archivo'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::FILE_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
 
         // Grid item's actions
         $GridActionView = new DataGridAction();
-        $GridActionView->setId(ActionsInterface::FILE_VIEW);
+        $GridActionView->setId(ActionsInterface::ACCOUNT_FILE_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(__('Ver Archivo'));
         $GridActionView->setTitle(__('Ver Archivo'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('file/view');
-        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::FILE_VIEW));
+        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
 
         $Grid->setDataActions($GridActionView);
 
+        // Grid item's actions
+        $GridActionDownload = new DataGridAction();
+        $GridActionDownload->setId(ActionsInterface::ACCOUNT_FILE_DOWNLOAD);
+        $GridActionDownload->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionDownload->setName(__('Descargar Archivo'));
+        $GridActionDownload->setTitle(__('Descargar Archivo'));
+        $GridActionDownload->setIcon($this->icons->getIconDownload());
+        $GridActionDownload->setOnClickFunction('file/download');
+        $GridActionDownload->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD));
+
+        $Grid->setDataActions($GridActionDownload);
+
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(ActionsInterface::FILE_DELETE);
+        $GridActionDel->setId(ActionsInterface::ACCOUNT_FILE_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Archivo'));
         $GridActionDel->setTitle(__('Eliminar Archivo'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::FILE_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);

@@ -213,6 +213,12 @@
     </action>
     <action multiple="1">
         <id>115</id>
+        <name>ACCOUNT_FILE_SEARCH</name>
+        <text>Buscar Archivos</text>
+        <route>accountFile/search</route>
+    </action>
+    <action multiple="1">
+        <id>116</id>
         <name>ACCOUNT_FILE_LIST</name>
         <text>Listar Archivos</text>
         <route>accountFile/list</route>

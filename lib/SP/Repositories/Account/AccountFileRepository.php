@@ -67,21 +67,16 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($itemData->getAccountId());
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getType());
-        $Data->addParam($itemData->getSize());
-        $Data->addParam($itemData->getContent());
-        $Data->addParam($itemData->getExtension());
+        $Data->setParams([
+            $itemData->getAccountId(),
+            $itemData->getName(),
+            $itemData->getType(),
+            $itemData->getSize(),
+            $itemData->getContent(),
+            $itemData->getExtension(),
+            $itemData->getThumb()
+        ]);
         $Data->setOnErrorMessage(__u('No se pudo guardar el archivo'));
-
-        if (FileUtil::isImage($itemData)) {
-            $thumbnail = ImageUtil::createThumbnail($itemData->getContent());
-
-            $Data->addParam($thumbnail ?: 'no_thumb');
-        } else {
-            $Data->addParam('no_thumb');
-        }
 
 //        $Log = new Log();
 //        $LogMessage = $Log->getLogMessage();
@@ -121,17 +116,17 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
     public function getInfoById($id)
     {
         $query = /** @lang SQL */
-            'SELECT name,
-            size,
-            type,
-            accountId,
-            extension,
+            'SELECT AF.name,
+            AF.size,
+            AF.type,
+            AF.accountId,
+            AF.extension,
             A.name AS accountName,
             C.name AS clientName
-            FROM AccountFile
-            INNER JOIN Account A ON A.id = AccountFile.accountId
+            FROM AccountFile AF
+            INNER JOIN Account A ON A.id = AF.accountId
             INNER JOIN Client C ON A.clientId = C.id
-            WHERE id = ? LIMIT 1';
+            WHERE AF.id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName(FileExtData::class);
@@ -145,7 +140,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      * Returns the item for given id
      *
      * @param int $id
-     * @return mixed
+     * @return FileExtData
      */
     public function getById($id)
     {
@@ -163,7 +158,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
             FROM AccountFile AF
             INNER JOIN Account A ON A.id = AF.accountId
             INNER JOIN Client C ON A.clientId = C.id
-            WHERE id = ? LIMIT 1';
+            WHERE AF.id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setMapClassName(FileExtData::class);
@@ -177,7 +172,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      * Returns the item for given id
      *
      * @param int $id
-     * @return mixed
+     * @return FileData[]
      */
     public function getByAccountId($id)
     {
@@ -285,7 +280,6 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      */
     public function delete($id)
     {
-        // Eliminamos el archivo de la BBDD
         $query = /** @lang SQL */
             'DELETE FROM AccountFile WHERE id = ? LIMIT 1';
 
@@ -345,10 +339,10 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $Data->setMapClassName(FileExtData::class);
         $Data->setSelect('AF.id, AF.name, CONCAT(ROUND(AF.size/1000, 2), "KB") AS size, AF.thumb, AF.type, A.name as accountName, C.name as clientName');
         $Data->setFrom('AccountFile AF INNER JOIN Account A ON A.id = AF.accountId INNER JOIN Client C ON A.clientId = C.id');
-        $Data->setOrder('name');
+        $Data->setOrder('A.name');
 
         if ($itemSearchData->getSeachString() !== '') {
-            $Data->setWhere('name LIKE ? OR type LIKE ? OR A.name LIKE ? OR C.name LIKE ?');
+            $Data->setWhere('AF.name LIKE ? OR AF.type LIKE ? OR A.name LIKE ? OR C.name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
             $Data->addParam($search);

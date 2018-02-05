@@ -26,6 +26,7 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
+use Klein\Klein;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
@@ -36,9 +37,7 @@ use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeIconsBase;
 use SP\DataModel\ProfileData;
-use SP\DataModel\UserData;
 use SP\Http\JsonResponse;
-use SP\Http\Request;
 use SP\Mvc\View\Template;
 use SP\Services\User\UserLoginResponse;
 use SP\Storage\Database;
@@ -94,6 +93,8 @@ abstract class ControllerBase
     protected $theme;
     /** @var  \SP\Core\Acl\Acl */
     protected $acl;
+    /** @var Klein */
+    protected $router;
 
     use InjectableTrait;
 
@@ -153,8 +154,9 @@ abstract class ControllerBase
      * @param Theme           $theme
      * @param EventDispatcher $ev
      * @param Acl             $acl
+     * @param Klein           $router
      */
-    public function inject(Config $config, Session $session, Database $db, Theme $theme, EventDispatcher $ev, Acl $acl)
+    public function inject(Config $config, Session $session, Database $db, Theme $theme, EventDispatcher $ev, Acl $acl, Klein $router)
     {
         $this->config = $config;
         $this->configData = $config->getConfigData();
@@ -163,6 +165,7 @@ abstract class ControllerBase
         $this->theme = $theme;
         $this->eventDispatcher = $ev;
         $this->acl = $acl;
+        $this->router = $router;
     }
 
     /**

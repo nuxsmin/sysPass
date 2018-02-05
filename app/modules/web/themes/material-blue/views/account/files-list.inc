@@ -11,7 +11,7 @@
                     <?php echo \SP\Html\Html::truncate($file->getName(), 35); ?>
                     <?php printf('(%d KB)', $file->getSize() / 1024); ?>
                     <?php if ($file->getThumb() !== 'no_thumb'): ?>
-                        <img src="data:image/png;base64,<?php echo $file->getAccfileThumb(); ?>"
+                        <img src="data:image/png;base64,<?php echo $file->getThumb(); ?>"
                              title="<?php echo $file->getName(); ?>" alt="thumbnail"
                              class="btn-action"
                              data-item-id="<?php echo $file->getId(); ?>"

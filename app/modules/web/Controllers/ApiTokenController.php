@@ -194,6 +194,8 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
 
     /**
      * Saves create action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveCreateAction()
     {

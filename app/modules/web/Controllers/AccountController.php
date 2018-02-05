@@ -232,44 +232,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     }
 
     /**
-     * Obtener los datos para la vista de archivos de una cuenta
-     *
-     * @param int $id Account's ID
-     * @throws \Psr\Container\ContainerExceptionInterface
-     */
-    public function listFilesAction($id)
-    {
-        if (!$this->configData->isFilesEnabled()) {
-            die(__('Gestión de archivos deshabilitada'));
-        }
-
-        try {
-            $this->setAction(ActionsInterface::ACCOUNT_FILE);
-
-            $this->view->addTemplate('files-list', 'account');
-
-            $this->view->assign('deleteEnabled', Request::analyze('del', 0));
-            $this->view->assign('files', (new AccountFileService())->getByAccountId($id));
-            $this->view->assign('sk', SessionUtil::getSessionKey());
-            $this->view->assign('fileViewRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
-            $this->view->assign('fileDownloadRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD));
-            $this->view->assign('fileDeleteRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DELETE));
-
-            if (!is_array($this->view->files) || count($this->view->files) === 0) {
-                return;
-            }
-
-            $this->eventDispatcher->notifyEvent('show.account.listfiles', $this);
-        } catch (\Exception $e) {
-            debugLog($e->getMessage(), true);
-
-            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
-        }
-
-        $this->view();
-    }
-
-    /**
      * Create action
      */
     public function createAction()

@@ -29,7 +29,9 @@ use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
+use SP\Mgmt\Files\FileUtil;
 use SP\Repositories\Account\AccountFileRepository;
+use SP\Util\ImageUtil;
 
 /**
  * Class AccountFileService
@@ -73,6 +75,12 @@ class AccountFileService
      */
     public function create($itemData)
     {
+        if (FileUtil::isImage($itemData)) {
+            $itemData->setThumb(ImageUtil::createThumbnail($itemData->getContent()) ?: 'no_thumb');
+        } else {
+            $itemData->setThumb('no_thumb');
+        }
+
         return $this->accountFileRepository->create($itemData);
     }
 
@@ -89,7 +97,7 @@ class AccountFileService
      * Returns the item for given id
      *
      * @param int $id
-     * @return mixed
+     * @return FileExtData
      */
     public function getById($id)
     {
@@ -158,7 +166,7 @@ class AccountFileService
      * Returns the item for given id
      *
      * @param int $id
-     * @return mixed
+     * @return FileData[]
      */
     public function getByAccountId($id)
     {

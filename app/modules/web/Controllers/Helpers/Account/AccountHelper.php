@@ -245,7 +245,8 @@ class AccountHelper extends HelperBase
         $this->view->assign('addCategoryEnabled', !$this->isView && $this->acl->checkUserAccess(ActionsInterface::CATEGORY));
         $this->view->assign('addCategoryRoute', Acl::getActionRoute(ActionsInterface::CATEGORY_CREATE));
 
-        $this->view->assign('fileUploadRoute', Acl::getActionRoute(ActionsInterface::FILE_UPLOAD));
+        $this->view->assign('fileListRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_LIST));
+        $this->view->assign('fileUploadRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_UPLOAD));
 
         $this->view->assign('disabled', $this->isView ? 'disabled' : '');
         $this->view->assign('readonly', $this->isView ? 'readonly' : '');

@@ -48,7 +48,8 @@ interface ActionsInterface
     const ACCOUNT_FILE_UPLOAD = 112;
     const ACCOUNT_FILE_DOWNLOAD = 113;
     const ACCOUNT_FILE_DELETE = 114;
-    const ACCOUNT_FILE_LIST = 115;
+    const ACCOUNT_FILE_SEARCH = 115;
+    const ACCOUNT_FILE_LIST = 116;
     const ACCOUNT_REQUEST = 12;
     const ACCOUNT_FAVORITE = 13;
     const ACCOUNT_FAVORITE_VIEW = 130;
