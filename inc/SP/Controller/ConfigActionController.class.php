@@ -396,7 +396,7 @@ class ConfigActionController implements ItemControllerInterface
         $ldapBindPass = Request::analyzeEncrypted('ldap_bindpass');
 
         // Valores para la configuración de LDAP
-        if ($ldapEnabled && (!$ldapServer || !$ldapBase || !$ldapBindUser)) {
+        if ($ldapEnabled && (!$ldapServer || !$ldapBase)) {
             $this->JsonResponse->setDescription(__('Faltan parámetros de LDAP'));
             return;
         }
