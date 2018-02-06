@@ -9,7 +9,7 @@
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="authbasic_enabled">
                 <input type="checkbox" id="authbasic_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
                        name="authbasic_enabled"
-                    <?php echo $ConfigData->isAuthBasicEnabled() ? 'checked' : ''; ?>/>
+                    <?php echo $configData->isAuthBasicEnabled() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Usar Auth Basic'); ?></span>
             </label>
         </td>
@@ -21,7 +21,7 @@
                 <input type="checkbox" id="authbasicautologin_enabled"
                        class="mdl-switch__input mdl-color-text--indigo-400"
                        name="authbasicautologin_enabled"
-                    <?php echo $ConfigData->isAuthBasicAutoLoginEnabled() ? 'checked' : ''; ?>/>
+                    <?php echo $configData->isAuthBasicAutoLoginEnabled() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Usar auto-login con Auth Basic'); ?></span>
             </label>
         </td>
@@ -41,7 +41,7 @@
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="authbasic_domain" name="authbasic_domain" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                       maxlength="128" value="<?php echo $ConfigData->getAuthBasicDomain(); ?>">
+                       maxlength="128" value="<?php echo $configData->getAuthBasicDomain(); ?>">
                 <label class="mdl-textfield__label"
                        for="authbasic_domain"><?php echo __('Nombre de dominio'); ?></label>
             </div>
@@ -64,9 +64,10 @@
             <select id="sso_defaultgroup" name="sso_defaultgroup"
                     class="select-box sel-chosen-usergroup">
                 <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
-                <?php foreach ($groups as $group): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroups */
+                foreach ($userGroups as $userGroup): ?>
                     <option
-                            value="<?php echo $group->id; ?>" <?php echo $group->id === $ConfigData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php echo $group->name; ?></option>
+                            value="<?php echo $userGroup->getId(); ?>" <?php echo $userGroup->getId() === $configData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php echo $userGroup->getName(); ?></option>
                 <?php endforeach; ?>
             </select>
         </td>
@@ -88,9 +89,10 @@
             <select id="sso_defaultprofile" name="sso_defaultprofile"
                     class="select-box sel-chosen-profile">
                 <option value=""><?php echo __('Seleccionar Usuario'); ?></option>
-                <?php foreach ($profiles as $profile): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userProfiles */
+                foreach ($userProfiles as $userProfile): ?>
                     <option
-                            value="<?php echo $profile->id; ?>" <?php echo ($profile->id === $ConfigData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php echo $profile->name; ?></option>
+                            value="<?php echo $userProfile->getId(); ?>" <?php echo ($userProfile->getId() === $configData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php echo $userProfile->getName(); ?></option>
                 <?php endforeach; ?>
             </select>
         </td>

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,41 +22,26 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Core\Acl;
 
-defined('APP_ROOT') || die();
+use SP\Core\Exceptions\SPException;
 
 /**
- * Class DataGridTab para crear una matriz de datos a usar en pestañas
+ * Class AccountPermissionException
  *
- * @package SP\Html\DataGrid
+ * @package SP\Core\Acl
  */
-class DataGridTab extends DataGridBase
+class AccountPermissionException extends SPException
 {
     /**
-     * Título de la pestaña
+     * SPException constructor.
      *
-     * @var string
+     * @param string          $type
+     * @param int             $code
+     * @param \Exception|null $previous
      */
-    private $_title = '';
-
-    /**
-     * @param $title string
-     * @return DataGridTab
-     */
-    public function setTitle($title)
+    public function __construct($type, $code = 0, \Exception $previous = null)
     {
-        $this->_title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->_title;
+        parent::__construct($type, __u('No tiene permisos para acceder a esta cuenta'), __u('Consulte con el administrador'), $code, $previous);
     }
 }
-    

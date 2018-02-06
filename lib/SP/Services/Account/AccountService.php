@@ -36,6 +36,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\DataModel\ItemSearchData;
 use SP\Log\Log;
 use SP\Repositories\Account\AccountHistoryRepository;
 use SP\Repositories\Account\AccountRepository;
@@ -444,5 +445,14 @@ class AccountService implements AccountServiceInterface
     public function getAllBasic()
     {
         return $this->accountRepository->getAll();
+    }
+
+    /**
+     * @param ItemSearchData $itemSearchData
+     * @return mixed
+     */
+    public function search(ItemSearchData $itemSearchData)
+    {
+        return $this->accountRepository->search($itemSearchData);
     }
 }

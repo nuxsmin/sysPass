@@ -659,13 +659,13 @@
         <id>1000</id>
         <name>CONFIG</name>
         <text>Configuración</text>
-        <route>config/index</route>
+        <route>configManager/index</route>
     </action>
     <action multiple="1">
         <id>1001</id>
         <name>CONFIG_GENERAL</name>
         <text>Configuración General</text>
-        <route>config/general</route>
+        <route>configManager/general</route>
     </action>
     <action multiple="1">
         <id>1010</id>

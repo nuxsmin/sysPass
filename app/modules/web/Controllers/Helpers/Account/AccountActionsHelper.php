@@ -51,6 +51,7 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
+     * @throws \ReflectionException
      */
     public function getViewAction()
     {
@@ -76,6 +77,7 @@ class AccountActionsHelper extends HelperBase
      * @param AccountAcl        $accountAcl
      * @param AccountActionsDto $accountActionsDto
      * @return DataGridAction[]
+     * @throws \ReflectionException
      */
     public function getActionsForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
     {
@@ -183,6 +185,7 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
+     * @throws \ReflectionException
      */
     public function getDeleteAction()
     {
@@ -243,6 +246,7 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
+     * @throws \ReflectionException
      */
     public function getViewPassAction()
     {
@@ -265,6 +269,7 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
+     * @throws \ReflectionException
      */
     public function getCopyPassAction()
     {
@@ -290,6 +295,7 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
+     * @throws \ReflectionException
      */
     public function getCopyAction()
     {
@@ -311,6 +317,7 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
+     * @throws \ReflectionException
      */
     public function getEditPassAction()
     {
@@ -332,6 +339,7 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
+     * @throws \ReflectionException
      */
     public function getEditAction()
     {
@@ -353,6 +361,7 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
+     * @throws \ReflectionException
      */
     public function getRequestAction()
     {

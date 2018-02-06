@@ -950,6 +950,7 @@ class ItemsGridHelper extends HelperBase
         // Grid Header
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(__('Cuenta'));
+        $GridHeaders->addHeader(__('Cliente'));
         $GridHeaders->addHeader(__('Fecha Creación'));
         $GridHeaders->addHeader(__('Fecha Caducidad'));
         $GridHeaders->addHeader(__('Usuario'));
@@ -960,6 +961,7 @@ class ItemsGridHelper extends HelperBase
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('id');
         $GridData->addDataRowSource('accountName');
+        $GridData->addDataRowSource('clientName');
         $GridData->addDataRowSource('getDateAddFormat', true);
         $GridData->addDataRowSource('getDateExpireFormat', true);
         $GridData->addDataRowSource('userLogin');

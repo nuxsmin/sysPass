@@ -137,6 +137,7 @@ class DbWrapper
      * @param string     $query La consulta que genera el error
      * @param \Exception $e
      * @param string     $queryFunction
+     * @throws \SP\Core\Dic\ContainerException
      */
     private static function logDBException($query, \Exception $e, $queryFunction)
     {
@@ -166,6 +167,7 @@ class DbWrapper
      * @param DatabaseInterface $db
      * @return PDOStatement|false
      * @throws SPException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public static function getResultsRaw(QueryData $queryData, DatabaseInterface $db = null)
     {
@@ -192,6 +194,7 @@ class DbWrapper
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public static function getQuery(QueryData $queryData, DatabaseInterface $db = null)
     {

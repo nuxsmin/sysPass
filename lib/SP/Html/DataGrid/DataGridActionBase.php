@@ -144,6 +144,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
      * @param string $class
      * @param string $method
      * @return $this
+     * @throws \ReflectionException
      */
     public function setReflectionFilter($class, $method)
     {

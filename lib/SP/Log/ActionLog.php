@@ -26,9 +26,9 @@ namespace SP\Log;
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
-use SP\Core\Crypt\Session;
 use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
+use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 
 /**
@@ -77,6 +77,7 @@ abstract class ActionLog extends LogLevel
      *
      * @param LogMessage $LogMessage
      * @param string     $level El nivel del mensaje
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct(LogMessage $LogMessage = null, $level = Log::INFO)
     {
@@ -89,6 +90,7 @@ abstract class ActionLog extends LogLevel
     /**
      * @param Config   $config
      * @param Language $language
+     * @param Session  $session
      */
     public function inject(Config $config, Language $language, Session $session)
     {

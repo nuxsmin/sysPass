@@ -121,6 +121,8 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * DataGridBase constructor.
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct()
     {

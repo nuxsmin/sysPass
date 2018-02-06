@@ -171,7 +171,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -200,16 +200,19 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
               PL.useInfo,
               U.name AS userName,
               U.login AS userLogin,
-              A.name AS accountName');
+              A.name AS accountName,
+              C.name AS clientName');
         $Data->setFrom('PublicLink PL
               INNER JOIN User U ON PL.userId = U.id
-              INNER JOIN Account A ON itemId = A.id');
+              INNER JOIN Account A ON itemId = A.id
+              INNER JOIN Client C ON A.clientId = C.id');
         $Data->setOrder('PL.dateExpire DESC');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('U.login LIKE ? OR A.name LIKE ?');
+            $Data->setWhere('U.login LIKE ? OR A.name LIKE ? OR C.name LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
+            $Data->addParam($search);
             $Data->addParam($search);
             $Data->addParam($search);
         }
@@ -435,6 +438,10 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
             throw new SPException(SPException::SP_ERROR, __u('Error al obtener enlace'));
         }
 
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_ERROR, __u('El enlace no existe'));
+        }
+
         return $queryRes;
     }
 
@@ -478,6 +485,10 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 
         if ($queryRes === false) {
             throw new SPException(SPException::SP_ERROR, __u('Error al obtener enlace'));
+        }
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new SPException(SPException::SP_ERROR, __u('El enlace no existe'));
         }
 
         return $queryRes;

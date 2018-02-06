@@ -81,6 +81,7 @@ class CategoryService
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function delete($id)
     {
@@ -97,6 +98,7 @@ class CategoryService
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function create($itemData)
     {
@@ -109,6 +111,7 @@ class CategoryService
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function update($itemData)
     {

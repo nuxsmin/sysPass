@@ -25,6 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Account\AccountAcl;
+use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
@@ -44,7 +45,6 @@ use SP\Services\Tag\TagService;
 use SP\Services\User\UpdatedMasterPassException;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
-use SP\Util\ErrorUtil;
 
 /**
  * Class AccountHelper
@@ -111,10 +111,12 @@ class AccountHelper extends HelperBase
      *
      * @param AccountDetailsResponse $accountDetailsResponse
      * @param int                    $actionId
-     * @throws SPException
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
      * @throws \SP\Core\Dic\ContainerException
+     * @throws AccountPermissionException
+     * @throws SPException
+     * @throws \ReflectionException
      */
     public function setViewForAccount(AccountDetailsResponse $accountDetailsResponse, $actionId)
     {
@@ -123,7 +125,7 @@ class AccountHelper extends HelperBase
         $this->accountAcl = new AccountAcl($actionId);
 
         $this->checkActionAccess();
-        $this->checkAccess($accountDetailsResponse);
+        $accountAcl = $this->checkAccess($accountDetailsResponse);
 
         $accountData = $accountDetailsResponse->getAccountVData();
         $selectUsers = SelectItemAdapter::factory(UserService::getItemsBasic());
@@ -141,7 +143,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('maxFileSize', round($this->configData->getFilesAllowedSize() / 1024, 1));
         $this->view->assign('filesAllowedExts', implode(',', $this->configData->getFilesAllowedExts()));
 
-        if ($this->configData->isPublinksEnabled() && $this->accountAcl->isShowLink()) {
+        if ($this->configData->isPublinksEnabled() && $accountAcl->isShowLink()) {
             $publicLinkData = $this->publicLinkService->getHashForItem($this->accountId);
 
             $publicLinkUrl = $publicLinkData ? PublicLinkService::getLinkForHash($publicLinkData->getHash()) : null;
@@ -160,7 +162,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('accountData', $accountData);
         $this->view->assign('gotData', true);
 
-        $this->view->assign('actions', $this->getActionsHelper()->getActionsForAccount($this->accountAcl->getStoredAcl(), new AccountActionsDto($this->accountId, null, $accountData->getParentId())));
+        $this->view->assign('actions', $this->getActionsHelper()->getActionsForAccount($accountAcl, new AccountActionsDto($this->accountId, null, $accountData->getParentId())));
 
         $this->setViewCommon();
     }
@@ -184,7 +186,8 @@ class AccountHelper extends HelperBase
      * Comprobar si el usuario dispone de acceso al módulo
      *
      * @param AccountDetailsResponse $accountDetailsResponse
-     * @return bool
+     * @return AccountAcl
+     * @throws AccountPermissionException
      */
     protected function checkAccess(AccountDetailsResponse $accountDetailsResponse)
     {
@@ -198,13 +201,13 @@ class AccountHelper extends HelperBase
         $acccountAclDto->setUsersId($accountDetailsResponse->getUsers());
         $acccountAclDto->setUserGroupsId($accountDetailsResponse->getUserGroups());
 
-        if (!$this->accountAcl->getAcl($acccountAclDto)->checkAccountAccess()) {
-            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_ACCOUNT_NO_PERMISSION);
+        $accountAcl = $this->accountAcl->getAcl($acccountAclDto);
 
-            return false;
+        if ($accountAcl === null || !$accountAcl->checkAccountAccess()) {
+            throw new AccountPermissionException(SPException::SP_INFO);
         }
 
-        return true;
+        return $accountAcl;
     }
 
     /**

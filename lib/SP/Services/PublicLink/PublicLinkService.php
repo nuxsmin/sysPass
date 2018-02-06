@@ -272,7 +272,7 @@ class PublicLinkService
     public function addLinkView(PublicLinkData $publicLinkData)
     {
         /** @var array $useInfo */
-        $useInfo = serialize($publicLinkData->getUseInfo());
+        $useInfo = unserialize($publicLinkData->getUseInfo());
         $useInfo[] = self::getUseInfo($publicLinkData->getHash());
         $publicLinkData->setUseInfo($useInfo);
 

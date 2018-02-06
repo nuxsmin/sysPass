@@ -109,6 +109,7 @@ class AccountSearchItem
      *
      * @param AccountSearchVData $accountSearchVData
      * @param AccountAcl         $accountAcl
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct(AccountSearchVData $accountSearchVData, AccountAcl $accountAcl)
     {

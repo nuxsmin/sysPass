@@ -63,6 +63,8 @@ class TemporaryMasterPass
 
     /**
      * MasterPass constructor.
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct()
     {
@@ -134,6 +136,7 @@ class TemporaryMasterPass
      * @param $key string con la clave utilizada para encriptar
      * @return string con la clave maestra desencriptada
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function getUsingKey($key)
     {

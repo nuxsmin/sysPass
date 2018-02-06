@@ -27,6 +27,7 @@ namespace SP\Services\Account;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\AccountHistoryData;
+use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountHistoryRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Repositories\Account\AccountToUserRepository;
@@ -117,5 +118,14 @@ class AccountHistoryService
     public function getUserGroupsByAccountId($id)
     {
         return $this->accountToUserGroupRepository->getUserGroupsByAccountId($id);
+    }
+
+    /**
+     * @param ItemSearchData $itemSearchData
+     * @return mixed
+     */
+    public function search(ItemSearchData $itemSearchData)
+    {
+        return $this->accountHistoryRepository->search($itemSearchData);
     }
 }

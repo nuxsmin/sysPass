@@ -50,6 +50,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function create($itemData)
     {
@@ -79,6 +80,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
@@ -103,6 +105,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function update($itemData)
     {
@@ -137,6 +140,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
@@ -215,6 +219,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      * @return void
      * @throws SPException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -230,6 +235,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function delete($id)
     {
