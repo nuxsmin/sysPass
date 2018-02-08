@@ -29,12 +29,12 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
+use SP\Core\Upgrade\Crypt as CryptUpgrade;
 use SP\Core\Upgrade\User as UpgradeUser;
 use SP\DataModel\UserLoginData;
-use SP\Core\Upgrade\Crypt as CryptUpgrade;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Repositories\User\UserRepository;
 use SP\Services\Config\ConfigService;
 use SP\Services\Service;
@@ -222,7 +222,7 @@ class UserPassService
 
             if (!empty($cryptMPass)) {
                 if (strlen($securedKey) > 1000 || strlen($cryptMPass) > 1000) {
-                    throw new SPException(SPException::SP_ERROR, __u('Error interno'), '', Service::STATUS_INTERNAL_ERROR);
+                    throw new SPException(__u('Error interno'), SPException::ERROR, '', Service::STATUS_INTERNAL_ERROR);
                 }
 
                 $this->userRepository->updateMasterPassById($userData->getId(), $cryptMPass, $securedKey);

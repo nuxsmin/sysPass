@@ -26,6 +26,7 @@ namespace SP\Services\AuthToken;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Hash;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
@@ -34,7 +35,6 @@ use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\AuthToken\AuthTokenRepository;
 use SP\Services\ServiceItemTrait;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Util\Util;
 
 /**
@@ -104,7 +104,7 @@ class AuthTokenService
     public function delete($id)
     {
         if ($this->authTokenRepository->delete($id) === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Token no encontrado'));
+            throw new SPException(__u('Token no encontrado'), SPException::INFO);
         }
 
         return $this;

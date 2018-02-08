@@ -72,7 +72,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
     public function delete($id)
     {
         if ($this->deleteItemsDataForDefinition($id) === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al eliminar el campo personalizado', false));
+            throw new SPException(__('Error al eliminar el campo personalizado', false), SPException::ERROR);
         }
 
         $query = /** @lang SQL */
@@ -159,7 +159,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $CustomFieldDef = DbWrapper::getResults($Data);
 
         if ($CustomFieldDef === false) {
-            throw new SPException(SPException::SP_INFO, __('Campo personalizado no encontrado', false));
+            throw new SPException(__('Campo personalizado no encontrado', false), SPException::INFO);
         }
 
         /** @var CustomFieldDefinitionData $fieldDef */
@@ -212,7 +212,7 @@ class CustomFieldDef extends CustomFieldBase implements ItemInterface
         $queryRes = DbWrapper::getResultsArray($Data);
 
         if (count($queryRes) === 0) {
-            throw new SPException(SPException::SP_INFO, __('No se encontraron campos personalizados', false));
+            throw new SPException(__('No se encontraron campos personalizados', false), SPException::INFO);
         }
 
         $fields = [];

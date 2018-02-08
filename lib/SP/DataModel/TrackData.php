@@ -154,7 +154,7 @@ class TrackData extends DataModelBase
         } elseif ($ip === false) {
             debugLog(sprintf('%s : %s', __('IP inválida', true), $track_ip));
 
-            throw new InvalidArgumentException(SPException::SP_ERROR, __('IP inválida'), $track_ip);
+            throw new InvalidArgumentException(SPException::ERROR, __('IP inválida'), $track_ip);
         }
     }
 

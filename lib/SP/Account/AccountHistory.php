@@ -210,7 +210,7 @@ class AccountHistory extends AccountBase implements AccountInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('No se pudieron obtener los datos de la cuenta', false), 0);
+            throw new SPException(__('No se pudieron obtener los datos de la cuenta', false), SPException::CRITICAL, 0);
         }
 
         return $queryRes->acchistory_accountId;
@@ -387,7 +387,7 @@ class AccountHistory extends AccountBase implements AccountInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('No se pudieron obtener los datos de la cuenta', false));
+            throw new SPException(__('No se pudieron obtener los datos de la cuenta', false), SPException::CRITICAL);
         }
 
         $this->accountData = $queryRes;

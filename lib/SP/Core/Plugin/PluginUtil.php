@@ -229,8 +229,8 @@ class PluginUtil
         $PluginsLoader = new \SplClassLoader('Plugins', PLUGINS_PATH);
         $PluginsLoader->register();
 
-        foreach (PluginUtil::getPlugins() as $plugin) {
-            $Plugin = PluginUtil::loadPlugin($plugin);
+        foreach (self::getPlugins() as $plugin) {
+            $Plugin = self::loadPlugin($plugin);
 
             if ($Plugin !== false) {
                 DiFactory::getEventDispatcher()->attach($Plugin);

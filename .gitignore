@@ -49,6 +49,7 @@ app/cache/*
 app/backup/*
 app/config/*
 !app/config/actions.xml
+!app/config/*.inc
 res/
 tools/
 app/temp/*

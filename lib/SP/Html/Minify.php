@@ -24,8 +24,9 @@
 
 namespace SP\Html;
 
-use CssMin;
+use Klein\Klein;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Traits\InjectableTrait;
 use SP\Http\Request;
 use SP\Util\Util;
 
@@ -38,11 +39,18 @@ defined('APP_ROOT') || die();
  */
 class Minify
 {
+    use InjectableTrait;
+
     /**
      * Constantes para tipos de archivos
      */
     const FILETYPE_JS = 1;
     const FILETYPE_CSS = 2;
+    const OFFSET = 3600 * 24 * 30;
+    /**
+     * @var Klein
+     */
+    protected $router;
 
     /**
      * Array con los archivos a procesar
@@ -64,6 +72,25 @@ class Minify
     private $base = '';
 
     /**
+     * Minify constructor.
+     *
+     * @throws \ReflectionException
+     * @throws \SP\Core\Dic\ContainerException
+     */
+    public function __construct()
+    {
+        $this->injectDependencies();
+    }
+
+    /**
+     * @param Klein $router
+     */
+    public function inject(Klein $router)
+    {
+        $this->router = $router;
+    }
+
+    /**
      * @param string $path
      * @param bool   $checkPath
      * @return $this
@@ -81,6 +108,8 @@ class Minify
      * devuelve el código HTTP/304
      *
      * @param bool $disableMinify Deshabilitar minimizar
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function getMinified($disableMinify = false)
     {
@@ -88,40 +117,13 @@ class Minify
             return;
         }
 
-        $offset = 3600 * 24 * 30;
-        $nextCheck = time() + $offset;
-        $expire = 'Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', $nextCheck);
-        $etag = $this->getEtag();
-        $etagMatch = Request::getRequestHeaders('If-None-Match');
-        $cacheControl = Request::getRequestHeaders('Cache-Control');
-        $pragma = Request::getRequestHeaders('Pragma');
+        $this->setHeaders();
 
-        header('Etag: ' . $etag);
-        header("Cache-Control: public, max-age={$offset}, must-revalidate");
-        header("Pragma: public; maxage={$offset}");
-        header($expire);
+//        if ($this->checkZlib() || !ob_start('ob_gzhandler')) {
+//            ob_start();
+//        }
 
-        // Devolver código 304 si la versión es la misma y no se solicita refrescar
-        if ($etag === $etagMatch
-            && !($cacheControl === 'no-cache'
-                || $cacheControl === 'max-age=0'
-                || $pragma === 'no-cache')
-        ) {
-            header($_SERVER['SERVER_PROTOCOL'] . ' 304 Not Modified');
-            exit();
-        }
-
-        if ($this->type === self::FILETYPE_JS) {
-            header('Content-type: application/x-javascript; charset: UTF-8');
-        } elseif ($this->type === self::FILETYPE_CSS) {
-            header('Content-type: text/css; charset: UTF-8');
-        }
-
-        flush();
-
-        if ($this->checkZlib() || !ob_start('ob_gzhandler')) {
-            ob_start();
-        }
+        $data = '';
 
         foreach ($this->files as $file) {
             $filePath = $file['base'] . DIRECTORY_SEPARATOR . $file['name'];
@@ -129,29 +131,57 @@ class Minify
             // Obtener el recurso desde una URL
             if ($file['type'] === 'url') {
                 try {
-                    $data = Util::getDataFromUrl($file['name']);
-                    echo '/* URL: ' . $file['name'] . ' */' . PHP_EOL;
-                    echo $data;
+                    $data .= '/* URL: ' . $file['name'] . ' */' . PHP_EOL . Util::getDataFromUrl($file['name']);
                 } catch (SPException $e) {
-                    error_log($e->getMessage());
+                    debugLog($e->getMessage());
                 }
             } else {
 
                 if ($file['min'] === true && $disableMinify === false) {
-                    echo '/* MINIFIED FILE: ' . $file['name'] . ' */' . PHP_EOL;
+                    $data .= '/* MINIFIED FILE: ' . $file['name'] . ' */' . PHP_EOL;
                     if ($this->type === self::FILETYPE_JS) {
-                        echo $this->jsCompress(file_get_contents($filePath));
+                        $data .= $this->jsCompress(file_get_contents($filePath));
                     }
                 } else {
-                    echo '/* FILE: ' . $file['name'] . ' */' . PHP_EOL;
-                    echo file_get_contents($filePath);
+                    $data .= '/* FILE: ' . $file['name'] . ' */' . PHP_EOL . file_get_contents($filePath);
                 }
             }
-
-            echo PHP_EOL;
         }
 
-        ob_end_flush();
+        $this->router->response()->body($data);
+    }
+
+    /**
+     * Sets HTTP headers
+     */
+    protected function setHeaders()
+    {
+        $response = $this->router->response();
+        $headers = $this->router->request()->headers();
+
+        $etag = $this->getEtag();
+
+        // Devolver código 304 si la versión es la misma y no se solicita refrescar
+        if ($etag === $headers->get('If-None-Match')
+            && !($headers->get('Cache-Control') === 'no-cache'
+                || $headers->get('Cache-Control') === 'max-age=0'
+                || $headers->get('Pragma') === 'no-cache')
+        ) {
+            $response->header($_SERVER['SERVER_PROTOCOL'], '304 Not Modified');
+            $response->send();
+            exit();
+        }
+
+        $response->header('Etag', $etag);
+        $response->header('Cache-Control', 'public, max-age={' . self::OFFSET . '}, must-revalidate');
+        $response->header('Pragma', 'public; maxage={' . self::OFFSET . '}');
+        $response->header('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + self::OFFSET));
+
+        if ($this->type === self::FILETYPE_JS) {
+            $response->header('Content-type', 'application/x-javascript; charset: UTF-8');
+        } elseif ($this->type === self::FILETYPE_CSS) {
+            $response->header('Content-type', 'text/css; charset: UTF-8');
+        }
     }
 
     /**
@@ -171,17 +201,6 @@ class Minify
     }
 
     /**
-     * Comprobar si la salida comprimida en con zlib está activada.
-     * No es compatible con ob_gzhandler()
-     *
-     * @return bool
-     */
-    private function checkZlib()
-    {
-        return Util::boolval(ini_get('zlib.output_compression'));
-    }
-
-    /**
      * Comprimir código javascript.
      *
      * @param string $buffer código a comprimir
@@ -196,10 +215,28 @@ class Minify
             '#^[\s\t]+#m',
             '#\s*//\s.*$#m'
         );
-        $buffer = preg_replace($regexReplace, '', $buffer);
-        // remove tabs, spaces, newlines, etc.
-        $buffer = str_replace(array("\r\n", "\r", "\n", "\t"), '', $buffer);
-        return $buffer;
+
+        return str_replace(array("\r\n", "\r", "\n", "\t"), '', preg_replace($regexReplace, '', $buffer));
+    }
+
+    /**
+     * @param      $files
+     * @param bool $minify
+     * @return Minify
+     */
+    public function addFilesFromString($files, $minify = true)
+    {
+        if (strrpos($files, ',')) {
+            $files = explode(',', $files);
+
+            foreach ($files as $filename) {
+                $this->addFile($filename, $minify);
+            }
+        } else {
+            throw new \RuntimeException('Invalid string format');
+        }
+
+        return $this;
     }
 
     /**
@@ -248,6 +285,41 @@ class Minify
     }
 
     /**
+     * @param array $files
+     * @param bool  $minify
+     * @return Minify
+     */
+    public function addFiles(array $files, $minify = true)
+    {
+        foreach ($files as $filename) {
+            $this->processFile($filename, $minify);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param      $file
+     * @param bool $minify
+     */
+    protected function processFile($file, $minify = true)
+    {
+        $filePath = $this->base . DIRECTORY_SEPARATOR . $file;
+
+        if (file_exists($filePath)) {
+            $this->files[] = array(
+                'type' => 'file',
+                'base' => $this->base,
+                'name' => Request::getSecureAppFile($file, $this->base),
+                'min' => $minify === true && $this->needsMinify($file),
+                'md5' => md5_file($filePath)
+            );
+        } else {
+            debugLog('File not found: ' . $filePath);
+        }
+    }
+
+    /**
      * Añadir un recurso desde URL
      *
      * @param $url
@@ -277,5 +349,16 @@ class Minify
         $this->type = (int)$type;
 
         return $this;
+    }
+
+    /**
+     * Comprobar si la salida comprimida en con zlib está activada.
+     * No es compatible con ob_gzhandler()
+     *
+     * @return bool
+     */
+    private function checkZlib()
+    {
+        return Util::boolval(ini_get('zlib.output_compression'));
     }
 }

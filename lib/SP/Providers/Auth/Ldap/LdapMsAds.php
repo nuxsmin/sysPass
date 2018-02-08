@@ -24,7 +24,6 @@
 
 namespace SP\Providers\Auth\Ldap;
 
-use SP\Config\Config;
 use SP\Core\Exceptions\SPException;
 use SP\Log\Log;
 
@@ -139,7 +138,7 @@ class LdapMsAds extends LdapBase
             $this->LogMessage->addDetails('LDAP FILTER', $filter);
             $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
+            throw new SPException($this->LogMessage->getDescription(), SPException::ERROR);
         }
 
         foreach ($searchResults as $entry) {

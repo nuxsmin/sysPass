@@ -79,7 +79,7 @@ class SyspassImport extends ImportBase
 
             if ($this->detectEncrypted()) {
                 if ($this->ImportParams->getImportPwd() === '') {
-                    throw new SPException(SPException::SP_ERROR, __('Clave de encriptación no indicada', false));
+                    throw new SPException(__('Clave de encriptación no indicada', false), SPException::ERROR);
                 }
 
                 $this->processEncrypted();
@@ -92,7 +92,7 @@ class SyspassImport extends ImportBase
         } catch (SPException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new SPException(SPException::SP_CRITICAL, $e->getMessage());
+            throw new SPException($e->getMessage(), SPException::CRITICAL);
         }
     }
 
@@ -126,7 +126,7 @@ class SyspassImport extends ImportBase
         $hash = $this->xmlDOM->getElementsByTagName('Encrypted')->item(0)->getAttribute('hash');
 
         if ($hash !== '' && !Hash::checkHashKey($this->ImportParams->getImportPwd(), $hash)) {
-            throw new SPException(SPException::SP_ERROR, __('Clave de encriptación incorrecta', false));
+            throw new SPException(__('Clave de encriptación incorrecta', false), SPException::ERROR);
         }
 
         foreach ($this->xmlDOM->getElementsByTagName('Data') as $node) {
@@ -143,7 +143,7 @@ class SyspassImport extends ImportBase
             $newXmlData = new \DOMDocument();
 //            $newXmlData->preserveWhiteSpace = true;
             if (!$newXmlData->loadXML($xmlDecrypted)) {
-                throw new SPException(SPException::SP_ERROR, __('Clave de encriptación incorrecta', false));
+                throw new SPException(__('Clave de encriptación incorrecta', false), SPException::ERROR);
             }
 
             $newNode = $this->xmlDOM->importNode($newXmlData->documentElement, TRUE);

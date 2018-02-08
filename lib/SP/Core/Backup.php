@@ -30,8 +30,8 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Storage\DbWrapper;
 use SP\Storage\DBUtil;
+use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;
@@ -118,14 +118,12 @@ class Backup
     {
         if (@mkdir(BACKUP_PATH, 0750) === false && is_dir(BACKUP_PATH) === false) {
             throw new SPException(
-                SPException::SP_ERROR,
-                sprintf(__('No es posible crear el directorio de backups ("%s")'),BACKUP_PATH));
+                sprintf(__('No es posible crear el directorio de backups ("%s")'), BACKUP_PATH), SPException::ERROR);
         }
 
         if (!is_writable(BACKUP_PATH)) {
             throw new SPException(
-                SPException::SP_ERROR,
-                __('Compruebe los permisos del directorio de backups', false));
+                __('Compruebe los permisos del directorio de backups', false), SPException::ERROR);
         }
 
         return true;
@@ -249,7 +247,7 @@ class Backup
 
             fclose($handle);
         } catch (\Exception $e) {
-            throw new SPException(SPException::SP_CRITICAL, $e->getMessage());
+            throw new SPException($e->getMessage(), SPException::CRITICAL);
         }
 
         return true;
@@ -267,14 +265,12 @@ class Backup
         if (!class_exists(\PharData::class)) {
             if (Checks::checkIsWindows()) {
                 throw new SPException(
-                    SPException::SP_ERROR,
-                    __('Esta operación sólo es posible en entornos Linux', false));
+                    __('Esta operación sólo es posible en entornos Linux', false), SPException::ERROR);
             }
 
             if (!$this->backupAppLegacyLinux($backupFile)) {
                 throw new SPException(
-                    SPException::SP_ERROR,
-                    __('Error al realizar backup en modo compatibilidad', false));
+                    __('Error al realizar backup en modo compatibilidad', false), SPException::ERROR);
             }
 
             return true;
@@ -293,7 +289,7 @@ class Backup
 
             unlink($backupFile);
         } catch (\Exception $e) {
-            throw new SPException(SPException::SP_CRITICAL, $e->getMessage());
+            throw new SPException($e->getMessage(), SPException::CRITICAL);
         }
 
         return file_exists($backupFile);

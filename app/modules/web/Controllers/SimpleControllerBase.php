@@ -24,13 +24,12 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Klein\Klein;
 use SP\Config\Config;
-use SP\Core\Acl\Acl;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
-use SP\Storage\Database;
 
 /**
  * Class SimpleControllerBase
@@ -41,32 +40,53 @@ abstract class SimpleControllerBase
 {
     use InjectableTrait;
 
-    /** @var  int Módulo a usar */
+    /**
+     * @var  int Módulo a usar
+     */
     protected $action;
-    /** @var string Nombre del controlador */
+    /**
+     * @var string Nombre del controlador
+     */
     protected $controllerName;
-    /** @var  EventDispatcher */
+    /**
+     * @var  EventDispatcher
+     */
     protected $eventDispatcher;
-    /** @var  Config */
+    /**
+     * @var  Config
+     */
     protected $config;
-    /** @var  Session */
+    /**
+     * @var  Session
+     */
     protected $session;
-    /** @var  Database */
-    protected $db;
-    /** @var  Theme */
+    /**
+     * @var  Theme
+     */
     protected $theme;
-    /** @var  \SP\Core\Acl\Acl */
-    protected $acl;
+    /**
+     * @var string
+     */
+    protected $actionName;
+    /**
+     * @var Klein
+     */
+    protected $router;
 
     /**
-     * Constructor
+     * SimpleControllerBase constructor.
+     *
+     * @param $actionName
+     * @throws \ReflectionException
+     * @throws \SP\Core\Dic\ContainerException
      */
-    public function __construct()
+    public function __construct($actionName)
     {
         $this->injectDependencies();
 
         $class = static::class;
         $this->controllerName = substr($class, strrpos($class, '\\') + 1, -strlen('Controller'));
+        $this->actionName = $actionName;
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();
@@ -76,18 +96,16 @@ abstract class SimpleControllerBase
     /**
      * @param Config          $config
      * @param Session         $session
-     * @param Database        $db
      * @param Theme           $theme
      * @param EventDispatcher $ev
-     * @param Acl             $acl
+     * @param Klein           $router
      */
-    public function inject(Config $config, Session $session, Database $db, Theme $theme, EventDispatcher $ev, Acl $acl)
+    public function inject(Config $config, Session $session, Theme $theme, EventDispatcher $ev, Klein $router)
     {
         $this->config = $config;
         $this->session = $session;
-        $this->db = $db;
         $this->theme = $theme;
         $this->eventDispatcher = $ev;
-        $this->acl = $acl;
+        $this->router = $router;
     }
 }

@@ -52,7 +52,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_WARNING, __('Cliente duplicado', false));
+            throw new SPException(__('Cliente duplicado', false), SPException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -114,7 +114,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function delete($id)
     {
         if ($this->checkInUse($id)) {
-            throw new SPException(SPException::SP_WARNING, __('No es posible eliminar', false));
+            throw new SPException(__('No es posible eliminar', false), SPException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -128,7 +128,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Cliente no encontrado', false));
+            throw new SPException(__('Cliente no encontrado', false), SPException::INFO);
         }
 
         return $this;
@@ -178,7 +178,7 @@ class Customer extends CustomerBase implements ItemInterface, ItemSelectInterfac
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_WARNING, __('Cliente duplicado', false));
+            throw new SPException(__('Cliente duplicado', false), SPException::WARNING);
         }
 
         $query = /** @lang SQL */

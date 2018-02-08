@@ -51,7 +51,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_WARNING, __('Categoría duplicada', false));
+            throw new SPException(__('Categoría duplicada', false), SPException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -121,7 +121,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Categoría no encontrada', false));
+            throw new SPException(__('Categoría no encontrada', false), SPException::INFO);
         }
 
         return $this;
@@ -171,7 +171,7 @@ class Category extends CategoryBase implements ItemInterface, ItemSelectInterfac
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_WARNING, __('Nombre de categoría duplicado', false));
+            throw new SPException(__('Nombre de categoría duplicado', false), SPException::WARNING);
         }
 
         $query = /** @lang SQL */

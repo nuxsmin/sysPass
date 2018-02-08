@@ -28,9 +28,7 @@ namespace SP\Core\Upgrade;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
-use SP\Controller\MainActionController;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Init;
 use SP\Core\SessionFactory as CoreSession;
 use SP\Core\TaskFactory;
 use SP\Core\Traits\InjectableTrait;
@@ -71,18 +69,21 @@ class Upgrade
     /**
      * @var Config
      */
-    protected $Config;
+    protected $config;
     /**
      * @var ConfigData
      */
-    protected $ConfigData;
+    protected $configData;
     /**
      * @var Log
      */
-    protected $Log;
+    protected $log;
 
     /**
      * Upgrade constructor.
+     *
+     * @throws \ReflectionException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct()
     {
@@ -103,15 +104,11 @@ class Upgrade
         foreach (self::$dbUpgrade as $dbVersion) {
             if (Util::checkVersion($version, $dbVersion)) {
                 if ($this->auxPreDbUpgrade($dbVersion) === false) {
-                    throw new SPException(SPException::SP_CRITICAL,
-                        __('Error al aplicar la actualización auxiliar', false),
-                        __('Compruebe el registro de eventos para más detalles', false));
+                    throw new SPException(__('Error al aplicar la actualización auxiliar', false), SPException::CRITICAL, __('Compruebe el registro de eventos para más detalles', false));
                 }
 
                 if ($this->upgradeDB($dbVersion) === false) {
-                    throw new SPException(SPException::SP_CRITICAL,
-                        __('Error al aplicar la actualización de la Base de Datos', false),
-                        __('Compruebe el registro de eventos para más detalles', false));
+                    throw new SPException(__('Error al aplicar la actualización de la Base de Datos', false), SPException::CRITICAL, __('Compruebe el registro de eventos para más detalles', false));
                 }
             }
         }
@@ -120,9 +117,7 @@ class Upgrade
             if (Util::checkVersion($version, $appVersion)
                 && $this->appUpgrades($appVersion) === false
             ) {
-                throw new SPException(SPException::SP_CRITICAL,
-                    __('Error al aplicar la actualización de la aplicación', false),
-                    __('Compruebe el registro de eventos para más detalles', false));
+                throw new SPException(__('Error al aplicar la actualización de la aplicación', false), SPException::CRITICAL, __('Compruebe el registro de eventos para más detalles', false));
             }
         }
 
@@ -130,9 +125,7 @@ class Upgrade
             if (Util::checkVersion($version, $auxVersion)
                 && $this->auxUpgrades($auxVersion) === false
             ) {
-                throw new SPException(SPException::SP_CRITICAL,
-                    __('Error al aplicar la actualización auxiliar', false),
-                    __('Compruebe el registro de eventos para más detalles', false));
+                throw new SPException(__('Error al aplicar la actualización auxiliar', false), SPException::CRITICAL, __('Compruebe el registro de eventos para más detalles', false));
             }
         }
 
@@ -194,7 +187,7 @@ class Upgrade
      */
     private function upgradeDB($version)
     {
-        $LogMessage = $this->Log->getLogMessage();
+        $LogMessage = $this->log->getLogMessage();
         $LogMessage->setAction(__('Actualizar BBDD', false));
         $LogMessage->addDetails(__('Versión', false), $version);
 
@@ -223,8 +216,8 @@ class Upgrade
             } catch (SPException $e) {
                 $LogMessage->addDescription(__('Error al aplicar la actualización de la Base de Datos', false));
                 $LogMessage->addDetails('ERROR', sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
-                $this->Log->setLogLevel(Log::ERROR);
-                $this->Log->writeLog();
+                $this->log->setLogLevel(Log::ERROR);
+                $this->log->writeLog();
 
                 Email::sendEmail($LogMessage);
                 return false;
@@ -236,7 +229,7 @@ class Upgrade
         self::$currentDbVersion = $version;
 
         $LogMessage->addDescription(__('Actualización de la Base de Datos realizada correctamente.', false));
-        $this->Log->writeLog();
+        $this->log->writeLog();
 
         Email::sendEmail($LogMessage);
 
@@ -289,7 +282,7 @@ class Upgrade
                 $UserData = User::getItem()->getByLogin(Request::analyze('userlogin'));
 
                 if (!is_object($UserData)) {
-                    throw new SPException(SPException::SP_ERROR, __('Error al obtener los datos del usuario', false));
+                    throw new SPException(__('Error al obtener los datos del usuario', false), SPException::ERROR);
                 }
 
                 CoreSession::setUserData($UserData);
@@ -363,9 +356,9 @@ class Upgrade
                     case '200.17011202':
                         debugLog(__FUNCTION__ . ': ' . $version);
 
-                        $this->ConfigData->setSiteTheme('material-blue');
-                        $this->ConfigData->setConfigVersion($upgradeVersion);
-                        $this->Config->saveConfig(null, false);
+                        $this->configData->setSiteTheme('material-blue');
+                        $this->configData->setConfigVersion($upgradeVersion);
+                        $this->config->saveConfig(null, false);
                         $count++;
                         break;
                 }
@@ -383,7 +376,7 @@ class Upgrade
      */
     public function upgradeOldConfigFile($version)
     {
-        $LogMessage = $this->Log->getLogMessage();
+        $LogMessage = $this->log->getLogMessage();
         $LogMessage->setAction(__('Actualizar Configuración', false));
 
         // Include the file, save the data from $CONFIG
@@ -394,12 +387,12 @@ class Upgrade
             $paramMapper = function ($mapFrom, $mapTo) use ($CONFIG, $LogMessage) {
                 if (isset($CONFIG[$mapFrom])) {
                     $LogMessage->addDetails(__('Parámetro', false), $mapFrom);
-                    $this->ConfigData->{$mapTo}($CONFIG[$mapFrom]);
+                    $this->configData->{$mapTo}($CONFIG[$mapFrom]);
                 }
             };
 
             foreach (self::getConfigParams() as $mapTo => $mapFrom) {
-                if (method_exists($this->ConfigData, $mapTo)) {
+                if (method_exists($this->configData, $mapTo)) {
                     if (is_array($mapFrom)) {
                         /** @var array $mapFrom */
                         foreach ($mapFrom as $param) {
@@ -418,22 +411,22 @@ class Upgrade
 
         try {
 
-            $this->ConfigData->setSiteTheme('material-blue');
-            $this->ConfigData->setConfigVersion($version);
-            $this->Config->saveConfig(null, false);
+            $this->configData->setSiteTheme('material-blue');
+            $this->configData->setConfigVersion($version);
+            $this->config->saveConfig(null, false);
 
             rename(OLD_CONFIG_FILE, $oldFile);
 
             $LogMessage->addDetails(__('Versión', false), $version);
-            $this->Log->setLogLevel(Log::NOTICE);
-            $this->Log->writeLog();
+            $this->log->setLogLevel(Log::NOTICE);
+            $this->log->writeLog();
 
             return true;
         } catch (\Exception $e) {
             $LogMessage->addDescription(__('Error al actualizar la configuración', false));
             $LogMessage->addDetails(__('Archivo', false), $oldFile);
-            $this->Log->setLogLevel(Log::ERROR);
-            $this->Log->writeLog();
+            $this->log->setLogLevel(Log::ERROR);
+            $this->log->writeLog();
         }
 
         // We are here...wrong
@@ -506,7 +499,8 @@ class Upgrade
     /**
      * Comrpueba y actualiza la versión de la BBDD.
      *
-     * @return int|false
+     * @return void
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function checkDbVersion()
     {
@@ -516,18 +510,13 @@ class Upgrade
         if (Util::checkVersion($databaseVersion, $appVersion)
             && Request::analyze('nodbupgrade', 0) === 0
             && Util::checkVersion($databaseVersion, self::$dbUpgrade)
+            && !$this->configData->isMaintenance()
         ) {
-            if (!Init::checkMaintenanceMode(true)) {
-                $this->setUpgradeKey('db');
-            } else {
-                $Controller = new MainActionController();
-                $Controller->doAction($databaseVersion);
-            }
+            $this->setUpgradeKey('db');
 
-            return true;
+            // FIXME: send link for upgrading
+            throw new \RuntimeException('Needs upgrade');
         }
-
-        return false;
     }
 
     /**
@@ -538,42 +527,36 @@ class Upgrade
      */
     private function setUpgradeKey($type)
     {
-        $upgradeKey = $this->ConfigData->getUpgradeKey();
+        $upgradeKey = $this->configData->getUpgradeKey();
 
         if (empty($upgradeKey)) {
-            $this->ConfigData->setUpgradeKey(Util::generateRandomBytes(32));
+            $this->configData->setUpgradeKey(Util::generateRandomBytes(32));
         }
 
-        $this->ConfigData->setMaintenance(true);
-        $this->Config->saveConfig(null, false);
+        $this->configData->setMaintenance(true);
+        $this->config->saveConfig(null, false);
 
-        Init::initError(
-            __('La aplicación necesita actualizarse'),
-            sprintf(__('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?a=upgrade&type=' . $type . '">' . __('Actualizar') . '</a>'));
+//        Init::initError(
+//            __('La aplicación necesita actualizarse'),
+//            sprintf(__('Si es un administrador pulse en el enlace: %s'), '<a href="index.php?a=upgrade&type=' . $type . '">' . __('Actualizar') . '</a>'));
     }
 
     /**
      * Comrpueba y actualiza la versión de la aplicación.
      *
-     * @return int|false
+     * @return void
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function checkAppVersion()
     {
-        $appVersion = self::fixVersionNumber($this->ConfigData->getConfigVersion());
+        $appVersion = self::fixVersionNumber($this->configData->getConfigVersion());
 
-        if (Util::checkVersion($appVersion, self::$appUpgrade)) {
-            if (!Init::checkMaintenanceMode(true)) {
-                $this->setUpgradeKey('app');
-            } else {
-                $Controller = new MainActionController();
-                $Controller->doAction($appVersion);
-            }
+        if (Util::checkVersion($appVersion, self::$appUpgrade) && !$this->configData->isMaintenance()) {
+            $this->setUpgradeKey('app');
 
-            return true;
+            // FIXME: send link for upgrading
+            throw new \RuntimeException('Needs upgrade');
         }
-
-        return false;
     }
 
     /**
@@ -582,8 +565,8 @@ class Upgrade
      */
     public function inject(Config $config, Log $log)
     {
-        $this->Config = $config;
-        $this->ConfigData = $config->getConfigData();
-        $this->Log = $log;
+        $this->config = $config;
+        $this->configData = $config->getConfigData();
+        $this->log = $log;
     }
 }

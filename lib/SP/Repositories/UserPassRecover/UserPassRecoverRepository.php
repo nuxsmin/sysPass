@@ -119,11 +119,11 @@ class UserPassRecoverRepository extends Repository
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __u('Error en comprobación de hash'));
+            throw new SPException(__u('Error en comprobación de hash'), SPException::ERROR);
         }
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Hash inválido o expirado'));
+            throw new SPException(__u('Hash inválido o expirado'), SPException::INFO);
         }
 
         return $queryRes;

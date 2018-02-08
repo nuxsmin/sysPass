@@ -80,9 +80,7 @@ abstract class CsvImportBase extends ImportBase
             // Comprobar el número de campos de la línea
             if ($numfields !== $this->numFields) {
                 throw new SPException(
-                    SPException::SP_CRITICAL,
-                    sprintf(__('El número de campos es incorrecto (%d)', false), $numfields),
-                    sprintf(__('Compruebe el formato del archivo CSV en línea %s', false), $line)
+                    sprintf(__('El número de campos es incorrecto (%d)', false), $numfields), SPException::CRITICAL, sprintf(__('Compruebe el formato del archivo CSV en línea %s', false), $line)
                 );
             }
 

@@ -28,10 +28,8 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\UserData;
-use SP\DataModel\UserToUserGroupData;
 use SP\DataModel\UserLoginData;
-use SP\Log\Email;
+use SP\DataModel\UserToUserGroupData;
 use SP\Log\Log;
 use SP\Mgmt\Groups\GroupUsers;
 use SP\Storage\DbWrapper;
@@ -139,7 +137,7 @@ class UserMigrate
             $Log->setLogLevel(Log::ERROR);
             $Log->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $LogMessage->getDescription());
+            throw new SPException($LogMessage->getDescription(), SPException::ERROR);
         }
 
         foreach ($queryRes as $user) {

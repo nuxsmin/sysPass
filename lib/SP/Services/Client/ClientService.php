@@ -97,7 +97,7 @@ class ClientService
     public function delete($id)
     {
         if ($this->clientRepository->delete($id) === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Cliente no encontrado'));
+            throw new SPException(__u('Cliente no encontrado'), SPException::INFO);
         }
 
         return $this;

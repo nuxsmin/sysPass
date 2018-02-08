@@ -63,7 +63,7 @@ require __DIR__ . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
 initModule(APP_MODULE);
 
 try {
-    (new Bootstrap())->initialize();
+    (new Bootstrap())->run();
 } catch (\Exception $e) {
     debugLog($e->getMessage());
     debugLog($e->getTraceAsString());

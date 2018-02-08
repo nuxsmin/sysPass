@@ -24,11 +24,8 @@
 
 namespace SP\Util\Wiki;
 
-use SP\Config\Config;
-use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory;
-use SP\Core\Traits\InjectableTrait;
 use SP\Log\Log;
 use SP\Log\LogLevel;
 
@@ -69,7 +66,7 @@ class DokuWikiApi extends DokuWikiApiBase
                 SessionFactory::setDokuWikiSession($resLogin[0]);
 
                 if ($resLogin[0] === false) {
-                    throw new SPException(SPException::SP_WARNING, __('Fallo de autentificación', false));
+                    throw new SPException(__('Fallo de autentificación', false), SPException::WARNING);
                 }
             }
 
@@ -79,7 +76,7 @@ class DokuWikiApi extends DokuWikiApiBase
             throw $e;
         } catch (\InvalidArgumentException $e) {
             Log::writeNewLog('DokuWiki API', $e->getMessage(), LogLevel::ERROR);
-            throw new SPException(SPException::SP_WARNING, $e->getMessage());
+            throw new SPException($e->getMessage(), SPException::WARNING);
         }
     }
     

@@ -51,7 +51,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, __('Etiqueta duplicada', false));
+            throw new SPException(__('Etiqueta duplicada', false), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -111,7 +111,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Etiqueta no encontrada', false));
+            throw new SPException(__('Etiqueta no encontrada', false), SPException::INFO);
         }
 
         return $this;
@@ -124,7 +124,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_INFO, __('Etiqueta duplicada', false));
+            throw new SPException(__('Etiqueta duplicada', false), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -178,7 +178,7 @@ class Tag extends TagBase implements ItemInterface, ItemSelectInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener etiqueta', false));
+            throw new SPException(__('Error al obtener etiqueta', false), SPException::ERROR);
         }
 
         return $queryRes;

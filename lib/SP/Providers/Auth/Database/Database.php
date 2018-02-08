@@ -24,15 +24,10 @@
 
 namespace SP\Providers\Auth\Database;
 
-use SP\Providers\Auth\AuthInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
-use SP\DataModel\UserData;
 use SP\DataModel\UserLoginData;
-use SP\Log\Log;
-use SP\Mgmt\Users\UserMigrate;
-use SP\Repositories\User\UserRepository;
+use SP\Providers\Auth\AuthInterface;
 use SP\Services\User\UserPassService;
 use SP\Services\User\UserService;
 
@@ -55,6 +50,8 @@ class Database implements AuthInterface
      *
      * @param UserLoginData $userLoginData Datos del usuario
      * @return DatabaseAuthData
+     * @throws \SP\Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     public function authenticate(UserLoginData $userLoginData)
     {
@@ -84,6 +81,8 @@ class Database implements AuthInterface
      * se ejecuta el proceso para actualizar la clave.
      *
      * @return bool
+     * @throws \SP\Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     protected function authUser()
     {
@@ -112,7 +111,6 @@ class Database implements AuthInterface
 
     /**
      * @return bool
-     * @throws SPException
      */
     protected function checkMigrateUser()
     {

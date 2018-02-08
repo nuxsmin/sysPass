@@ -75,7 +75,7 @@ class ConfigService
         $query = $this->configRepository->getByParam($param);
 
         if (empty($query)) {
-            throw new ParameterNotFoundException(SPException::SP_ERROR, sprintf(__('Parámetro no encontrado (%s)'), $param));
+            throw new ParameterNotFoundException(SPException::ERROR, sprintf(__('Parámetro no encontrado (%s)'), $param));
         }
         return $query->value;
     }

@@ -80,7 +80,7 @@ class Json
         $json = json_encode($data, JSON_PARTIAL_OUTPUT_ON_ERROR);
 
         if ($json === false) {
-            throw new SPException(SPException::SP_CRITICAL, __u('Error de codificación'), json_last_error_msg());
+            throw new SPException(__u('Error de codificación'), SPException::CRITICAL, json_last_error_msg());
         }
 
         return $json;

@@ -157,7 +157,7 @@ class ApiRequest
 
             $attempts = count(Track::getItem($TrackData)->getTracksForClientFromTime(time() - self::TIME_TRACKING));
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error interno', false), __FUNCTION__, -32601);
+            throw new SPException(__('Error interno', false), SPException::ERROR, __FUNCTION__, -32601);
         }
 
         if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
@@ -165,7 +165,7 @@ class ApiRequest
 
             sleep(0.3 * $attempts);
 
-            throw new SPException(SPException::SP_INFO, __('Intentos excedidos', false), '', -32601);
+            throw new SPException(__('Intentos excedidos', false), SPException::INFO, '', -32601);
         }
     }
 
@@ -187,7 +187,7 @@ class ApiRequest
                 $this->verb = $requestMethod;
                 break;
             default:
-                throw new SPException(SPException::SP_WARNING, __('Método inválido', false), '', -32600);
+                throw new SPException(__('Método inválido', false), SPException::WARNING, '', -32600);
         }
     }
 
@@ -204,11 +204,11 @@ class ApiRequest
         $data = json_decode(Request::parse($request, '', true));
 
         if (!is_object($data) || json_last_error() !== JSON_ERROR_NONE) {
-            throw new SPException(SPException::SP_WARNING, __('Datos inválidos', false), '', -32700);
+            throw new SPException(__('Datos inválidos', false), SPException::WARNING, '', -32700);
         }
 
         if (!isset($data->jsonrpc, $data->method, $data->params, $data->id)) {
-            throw new SPException(SPException::SP_WARNING, __('Formato incorrecto', false), '', -32600);
+            throw new SPException(__('Formato incorrecto', false), SPException::WARNING, '', -32600);
         }
 
         $this->data = $data;
@@ -222,7 +222,7 @@ class ApiRequest
     private function checkBasicData()
     {
         if (!isset($this->data->params->authToken)) {
-            throw new SPException(SPException::SP_WARNING, __('Parámetros incorrectos', false), '', -32602);
+            throw new SPException(__('Parámetros incorrectos', false), SPException::WARNING, '', -32602);
         }
     }
 
@@ -238,7 +238,7 @@ class ApiRequest
         if (!$this->ApiReflection->hasMethod($this->data->method)) {
             ApiUtil::addTracking();
 
-            throw new SPException(SPException::SP_WARNING, __('Acción Inválida', false), '', -32601);
+            throw new SPException(__('Acción Inválida', false), SPException::WARNING, '', -32601);
         }
     }
 

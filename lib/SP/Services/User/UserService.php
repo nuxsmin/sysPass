@@ -53,6 +53,7 @@ class UserService
      * UserService constructor.
      *
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     public function __construct()
     {

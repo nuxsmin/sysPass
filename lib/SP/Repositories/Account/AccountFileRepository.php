@@ -28,13 +28,11 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
-use SP\Mgmt\Files\FileUtil;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
-use SP\Util\ImageUtil;
 
 /**
  * Class AccountFileRepository
@@ -291,7 +289,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         DbWrapper::getQuery($Data, $this->db);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Archivo no encontrado'));
+            throw new SPException(__u('Archivo no encontrado'), SPException::INFO);
         }
 
         return $this;

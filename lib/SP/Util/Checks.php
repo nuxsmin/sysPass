@@ -24,6 +24,7 @@
 
 namespace SP\Util;
 
+use Klein\Klein;
 use SP\Http\Request;
 
 /**
@@ -72,7 +73,7 @@ class Checks
      */
     public static function checkPhpVersion()
     {
-        return version_compare(PHP_VERSION, '5.6.0', '>=') && version_compare(PHP_VERSION, '7.1.0') === -1;
+        return PHP_VERSION_ID >= 50600 && version_compare(PHP_VERSION, '7.1.0') === -1;
     }
 
     /**
@@ -156,12 +157,13 @@ class Checks
     /**
      * Comprobar si la petición es Ajax
      *
+     * @param Klein $router
      * @return bool
      */
-    public static function isAjax()
+    public static function isAjax(Klein $router)
     {
-        return Request::getRequestHeaders('X-Requested-With') === 'XMLHttpRequest'
-            || Request::analyze('isAjax', false, true);
+        return $router->request()->headers()->get('X-Requested-With') === 'XMLHttpRequest'
+            || (int)$router->request()->param('isAjax') === 1;
     }
 
     /**

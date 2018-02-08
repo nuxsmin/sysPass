@@ -92,7 +92,7 @@ class Connection implements ConnectionInterface
         }
 
         if ($this->socket === false) {
-            throw new SPException(SPException::SP_WARNING, $this->getSocketError());
+            throw new SPException($this->getSocketError(), SPException::WARNING);
         }
 
         stream_set_timeout($this->socket, self::SOCKET_TIMEOUT);
@@ -119,14 +119,14 @@ class Connection implements ConnectionInterface
     public function send($message)
     {
         if (!is_resource($this->socket)) {
-            throw new SPException(SPException::SP_WARNING, __('Socket no inicializado', false));
+            throw new SPException(__('Socket no inicializado', false), SPException::WARNING);
         }
 
         $nBytes = @fwrite($this->socket, $message);
 //        $nBytes = @socket_sendto($this->_socket, $message, strlen($message), 0, $this->_host, $this->port);
 
         if ($nBytes === false) {
-            throw new SPException(SPException::SP_WARNING, __('Error al enviar datos', false), $this->getSocketError());
+            throw new SPException(__('Error al enviar datos', false), SPException::WARNING, $this->getSocketError());
         }
 
         return $nBytes;

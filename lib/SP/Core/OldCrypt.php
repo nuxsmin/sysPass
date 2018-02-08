@@ -25,7 +25,6 @@
 namespace SP\Core;
 
 use SP\Bootstrap;
-use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
 use SP\Util\Checks;
@@ -167,9 +166,7 @@ class OldCrypt
         // Comprobar el módulo de encriptación
         if (!OldCrypt::checkCryptModule()) {
             throw new SPException(
-                SPException::SP_CRITICAL,
-                __('Error interno', false),
-                __('No se puede usar el módulo de encriptación', false)
+                __('Error interno', false), SPException::CRITICAL, __('No se puede usar el módulo de encriptación', false)
             );
         }
 
@@ -179,9 +176,7 @@ class OldCrypt
 
         if (!empty($data) && ($encData['data'] === false || null === $encData['data'])) {
             throw new SPException(
-                SPException::SP_CRITICAL,
-                __('Error interno', false),
-                __('Error al generar datos cifrados', false)
+                __('Error interno', false), SPException::CRITICAL, __('Error al generar datos cifrados', false)
             );
         }
 

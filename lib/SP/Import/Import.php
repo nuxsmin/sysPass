@@ -81,20 +81,18 @@ class Import
                     break;
                 default:
                     throw new SPException(
-                        SPException::SP_WARNING,
-                        sprintf(__('Tipo mime no soportado ("%s")'), $file->getFileType()),
-                        __('Compruebe el formato del archivo', false)
+                        sprintf(__('Tipo mime no soportado ("%s")'), $file->getFileType()), SPException::WARNING, __('Compruebe el formato del archivo', false)
                     );
             }
 
             if (!DbWrapper::beginTransaction()) {
-                throw new SPException(SPException::SP_ERROR, __('No es posible iniciar una transacción', false));
+                throw new SPException(__('No es posible iniciar una transacción', false), SPException::ERROR);
             }
 
             $Import->doImport();
 
             if (!DbWrapper::endTransaction()) {
-                throw new SPException(SPException::SP_ERROR, __('No es posible finalizar una transacción', false));
+                throw new SPException(__('No es posible finalizar una transacción', false), SPException::ERROR);
             }
 
             $LogMessage->addDetails(__('Cuentas importadas'), $Import->getCounter());

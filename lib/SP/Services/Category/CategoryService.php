@@ -86,7 +86,7 @@ class CategoryService
     public function delete($id)
     {
         if ($this->categoryRepository->delete($id) === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Categoría no encontrada'));
+            throw new SPException(__u('Categoría no encontrada'), SPException::INFO);
         }
 
         return $this;

@@ -204,7 +204,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(SPException::SP_WARNING, __u('La autorización ya existe'));
+            throw new SPException(__u('La autorización ya existe'), SPException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -287,7 +287,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(SPException::SP_WARNING, __u('La autorización ya existe'));
+            throw new SPException(__u('La autorización ya existe'), SPException::WARNING);
         }
 
         $query = /** @lang SQL */

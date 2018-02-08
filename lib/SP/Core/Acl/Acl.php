@@ -26,7 +26,6 @@
 namespace SP\Core\Acl;
 
 use SP\Core\Session\Session;
-use SP\Log\Log;
 
 defined('APP_ROOT') || die();
 
@@ -80,10 +79,10 @@ class Acl implements ActionsInterface
      */
     public function checkUserAccess($action, $userId = 0)
     {
-        $curUserProfile = $this->session->getUserProfile();
+        $userProfile = $this->session->getUserProfile();
 
         // Comprobamos si la cache de permisos está inicializada
-        if (!is_object($curUserProfile)) {
+        if (!is_object($userProfile)) {
 //            error_log('ACL_CACHE_MISS');
             return false;
         }
@@ -96,95 +95,95 @@ class Acl implements ActionsInterface
 
         switch ($action) {
             case self::ACCOUNT_VIEW:
-                return ($userData->getIsAdminAcc() || $curUserProfile->isAccView() || $curUserProfile->isAccEdit());
+                return ($userData->getIsAdminAcc() || $userProfile->isAccView() || $userProfile->isAccEdit());
             case self::ACCOUNT_VIEW_PASS:
-                return ($userData->getIsAdminAcc() || $curUserProfile->isAccViewPass());
+                return ($userData->getIsAdminAcc() || $userProfile->isAccViewPass());
             case self::ACCOUNT_VIEW_HISTORY:
-                return ($userData->getIsAdminAcc() || $curUserProfile->isAccViewHistory());
+                return ($userData->getIsAdminAcc() || $userProfile->isAccViewHistory());
             case self::ACCOUNT_EDIT:
-                return ($userData->getIsAdminAcc() || $curUserProfile->isAccEdit());
+                return ($userData->getIsAdminAcc() || $userProfile->isAccEdit());
             case self::ACCOUNT_EDIT_PASS:
-                return ($userData->getIsAdminAcc() || $curUserProfile->isAccEditPass());
+                return ($userData->getIsAdminAcc() || $userProfile->isAccEditPass());
             case self::ACCOUNT_CREATE:
-                return ($userData->getIsAdminAcc() || $curUserProfile->isAccAdd());
+                return ($userData->getIsAdminAcc() || $userProfile->isAccAdd());
             case self::ACCOUNT_COPY:
-                return ($userData->getIsAdminAcc() || ($curUserProfile->isAccAdd() && $curUserProfile->isAccView()));
+                return ($userData->getIsAdminAcc() || ($userProfile->isAccAdd() && $userProfile->isAccView()));
             case self::ACCOUNT_DELETE:
-                return ($userData->getIsAdminAcc() || $curUserProfile->isAccDelete());
+                return ($userData->getIsAdminAcc() || $userProfile->isAccDelete());
             case self::ACCOUNT_FILE:
-                return ($userData->getIsAdminAcc() || $curUserProfile->isAccFiles());
+                return ($userData->getIsAdminAcc() || $userProfile->isAccFiles());
             case self::ITEMS_MANAGE:
-                return ($curUserProfile->isMgmCategories() || $curUserProfile->isMgmCustomers());
+                return ($userProfile->isMgmCategories() || $userProfile->isMgmCustomers());
             case self::CONFIG:
-                return ($curUserProfile->isConfigGeneral() || $curUserProfile->isConfigEncryption() || $curUserProfile->isConfigBackup() || $curUserProfile->isConfigImport());
+                return ($userProfile->isConfigGeneral() || $userProfile->isConfigEncryption() || $userProfile->isConfigBackup() || $userProfile->isConfigImport());
             case self::CONFIG_GENERAL:
             case self::PLUGIN:
             case self::ACCOUNT_CONFIG:
-                return $curUserProfile->isConfigGeneral();
+                return $userProfile->isConfigGeneral();
             case self::IMPORT_CONFIG:
-                return $curUserProfile->isConfigImport();
+                return $userProfile->isConfigImport();
             case self::CATEGORY:
             case self::CATEGORY_SEARCH:
-                return $curUserProfile->isMgmCategories();
+                return $userProfile->isMgmCategories();
             case self::CLIENT:
             case self::CLIENT_SEARCH:
-                return $curUserProfile->isMgmCustomers();
+                return $userProfile->isMgmCustomers();
             case self::CUSTOMFIELD:
             case self::CUSTOMFIELD_SEARCH:
-                return $curUserProfile->isMgmCustomFields();
+                return $userProfile->isMgmCustomFields();
             case self::PUBLICLINK:
             case self::PUBLICLINK_SEARCH:
-                return $curUserProfile->isMgmPublicLinks();
+                return $userProfile->isMgmPublicLinks();
             case self::PUBLICLINK_CREATE:
-                return ($curUserProfile->isMgmPublicLinks() || $curUserProfile->isAccPublicLinks());
+                return ($userProfile->isMgmPublicLinks() || $userProfile->isAccPublicLinks());
             case self::ACCOUNTMGR:
             case self::ACCOUNTMGR_SEARCH:
             case self::ACCOUNTMGR_HISTORY:
             case self::ACCOUNTMGR_SEARCH_HISTORY:
-                return $curUserProfile->isMgmAccounts();
+                return $userProfile->isMgmAccounts();
             case self::FILE:
             case self::FILE_SEARCH:
-                return $curUserProfile->isMgmFiles();
+                return $userProfile->isMgmFiles();
             case self::TAG:
             case self::TAG_SEARCH:
-                return $curUserProfile->isMgmTags();
+                return $userProfile->isMgmTags();
             case self::ENCRYPTION_CONFIG:
-                return $curUserProfile->isConfigEncryption();
+                return $userProfile->isConfigEncryption();
             case self::BACKUP_CONFIG:
-                return $curUserProfile->isConfigBackup();
+                return $userProfile->isConfigBackup();
             case self::ACCESS_MANAGE:
-                return ($curUserProfile->isMgmUsers() || $curUserProfile->isMgmGroups() || $curUserProfile->isMgmProfiles());
+                return ($userProfile->isMgmUsers() || $userProfile->isMgmGroups() || $userProfile->isMgmProfiles());
             case self::USER:
             case self::USER_SEARCH:
             case self::USER_CREATE:
             case self::USER_EDIT:
-                return $curUserProfile->isMgmUsers();
+                return $userProfile->isMgmUsers();
             case self::USER_EDIT_PASS:
                 // Comprobar si el usuario es distinto al de la sesión
-                return ($userId === $userData->getId() || $curUserProfile->isMgmUsers());
+                return ($userId === $userData->getId() || $userProfile->isMgmUsers());
             case self::GROUP:
             case self::GROUP_SEARCH:
-                return $curUserProfile->isMgmGroups();
+                return $userProfile->isMgmGroups();
             case self::PROFILE:
             case self::PROFILE_SEARCH:
-                return $curUserProfile->isMgmProfiles();
+                return $userProfile->isMgmProfiles();
             case self::APITOKEN:
             case self::APITOKEN_SEARCH:
-                return $curUserProfile->isMgmApiTokens();
+                return $userProfile->isMgmApiTokens();
             case self::EVENTLOG:
-                return $curUserProfile->isEvl();
+                return $userProfile->isEvl();
             case self::NOTICE:
             case self::NOTICE_USER:
             case self::NOTICE_USER_SEARCH:
                 return true;
         }
 
-        $Log = new Log();
-        $Log->getLogMessage()
-            ->setAction(__FUNCTION__)
-            ->addDetails(__('Acceso denegado', false), self::getActionInfo($action, false));
-        $Log->setLogLevel(Log::NOTICE);
-        $Log->writeLog();
+//        $Log = new Log();
+//        $Log->getLogMessage()
+//            ->setAction(__FUNCTION__)
+//            ->addDetails(__('Acceso denegado', false), self::getActionInfo($action, false));
+//        $Log->setLogLevel(Log::NOTICE);
+//        $Log->writeLog();
 
         return false;
     }

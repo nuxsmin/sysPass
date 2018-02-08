@@ -64,16 +64,14 @@ trait XmlImportTrait
         if ($ParentNode->length === 0) {
             if ($required === true) {
                 throw new SPException(
-                    SPException::SP_WARNING,
-                    __('Formato de XML inválido', false),
-                    sprintf(__('El nodo "%s" no existe'), $nodeName));
+                    __('Formato de XML inválido', false), SPException::WARNING, sprintf(__('El nodo "%s" no existe'), $nodeName));
             }
 
             return;
         }
 
         if (!is_callable([$this, $callback])) {
-            throw new SPException(SPException::SP_WARNING, __('Método inválido', false));
+            throw new SPException(__('Método inválido', false), SPException::WARNING);
         }
 
         /** @var \DOMElement $nodes */

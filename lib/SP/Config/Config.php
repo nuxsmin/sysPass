@@ -105,7 +105,7 @@ class Config
         } catch (\Exception $e) {
             debugLog($e->getMessage());
 
-            throw new ConfigException(ConfigException::SP_CRITICAL, $e->getMessage(), '', $e->getCode(), $e);
+            throw new ConfigException(ConfigException::CRITICAL, $e->getMessage(), '', $e->getCode(), $e);
         }
 
         return $this->configData;

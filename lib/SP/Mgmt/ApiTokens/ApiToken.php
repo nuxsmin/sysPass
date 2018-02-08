@@ -57,7 +57,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_WARNING, __('La autorización ya existe', false));
+            throw new SPException(__('La autorización ya existe', false), SPException::WARNING);
         }
 
         $token = $this->getTokenByUserId($this->itemData->getAuthtokenUserId());
@@ -181,7 +181,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Token no encontrado', false));
+            throw new SPException(__('Token no encontrado', false), SPException::INFO);
         } else {
             $Data->addParam(null);
         }
@@ -199,7 +199,7 @@ class ApiToken extends ApiTokenBase implements ItemInterface
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_WARNING, __('La autorización ya existe', false));
+            throw new SPException(__('La autorización ya existe', false), SPException::WARNING);
         }
 
         $token = $this->getTokenByUserId($this->itemData->getAuthtokenUserId());

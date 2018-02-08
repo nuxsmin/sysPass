@@ -107,7 +107,7 @@ class DbWrapper
             if (self::$fullRowCount === true) {
                 $db->getFullRowCount($queryData);
             }
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
             $queryData->setQueryStatus($e->getCode());
 
             self::logDBException($queryData->getQuery(), $e, __FUNCTION__);
@@ -194,7 +194,6 @@ class DbWrapper
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public static function getQuery(QueryData $queryData, DatabaseInterface $db = null)
     {
@@ -205,7 +204,7 @@ class DbWrapper
         }
 
         if ($queryData->getQuery() === '') {
-            throw new QueryException(SPException::SP_ERROR, $errorMessage, __u('Consulta en blanco'));
+            throw new QueryException($errorMessage, SPException::ERROR, __u('Consulta en blanco'));
         }
 
         try {
@@ -218,17 +217,17 @@ class DbWrapper
             $db->doQuery($queryData);
 
             return true;
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
             $queryData->setQueryStatus($e->getCode());
 
             self::logDBException($queryData->getQuery(), $e, __FUNCTION__);
 
             switch ($e->getCode()) {
                 case 23000:
-                    throw new ConstraintException(SPException::SP_ERROR, __u('Restricción de integridad'), $e->getMessage(), $e->getCode());
+                    throw new ConstraintException(__u('Restricción de integridad'), SPException::ERROR, $e->getMessage(), $e->getCode());
             }
 
-            throw new QueryException(SPException::SP_ERROR, $errorMessage, $e->getMessage(), $e->getCode());
+            throw new QueryException($errorMessage, SPException::ERROR, $e->getMessage(), $e->getCode());
         }
     }
 

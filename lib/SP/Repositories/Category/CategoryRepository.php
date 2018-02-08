@@ -55,7 +55,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(SPException::SP_WARNING, __u('Categoría duplicada'));
+            throw new SPException(__u('Categoría duplicada'), SPException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -110,7 +110,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(SPException::SP_WARNING, __u('Nombre de categoría duplicado'));
+            throw new SPException(__u('Nombre de categoría duplicado'), SPException::WARNING);
         }
 
         $query = /** @lang SQL */

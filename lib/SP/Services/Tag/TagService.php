@@ -90,7 +90,7 @@ class TagService
     public function delete($id)
     {
         if ($this->tagRepository->delete($id) === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Etiqueta no encontrada'));
+            throw new SPException(__u('Etiqueta no encontrada'), SPException::INFO);
         }
 
         return $this;

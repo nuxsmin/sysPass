@@ -139,7 +139,7 @@ class Template
 
             debugLog($msg);
 
-            throw new FileNotFoundException(SPException::SP_ERROR, $msg);
+            throw new FileNotFoundException(SPException::ERROR, $msg);
         }
 
         return $templateFile;
@@ -255,7 +255,7 @@ class Template
         if (!array_key_exists($name, $this->vars)) {
             debugLog(sprintf(__('No es posible obtener la variable "%s"'), $name));
 
-            throw new InvalidArgumentException(SPException::SP_ERROR, sprintf(__('No es posible obtener la variable "%s"'), $name));
+            throw new InvalidArgumentException(SPException::ERROR, sprintf(__('No es posible obtener la variable "%s"'), $name));
         }
 
         return $this->vars[$name];
@@ -300,7 +300,7 @@ class Template
         if (!array_key_exists($name, $this->vars)) {
             debugLog(sprintf(__('No es posible destruir la variable "%s"'), $name));
 
-            throw new InvalidArgumentException(SPException::SP_ERROR, sprintf(__('No es posible destruir la variable "%s"'), $name));
+            throw new InvalidArgumentException(SPException::ERROR, sprintf(__('No es posible destruir la variable "%s"'), $name));
         }
 
         unset($this->vars[$name]);
@@ -317,7 +317,7 @@ class Template
     public function render()
     {
         if (count($this->files) === 0) {
-            throw new FileNotFoundException(SPException::SP_ERROR, __('La plantilla no contiene archivos'));
+            throw new FileNotFoundException(SPException::ERROR, __('La plantilla no contiene archivos'));
         }
 
         extract($this->vars, EXTR_SKIP);

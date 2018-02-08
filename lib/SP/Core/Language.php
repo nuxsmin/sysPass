@@ -100,10 +100,10 @@ class Language
         $lang = SessionFactory::getLocale();
 
         if (empty($lang) || $force === true) {
-            $Language = new Language();
+            $language = new Language();
 
-            self::$userLang = $Language->getUserLang();
-            self::$globalLang = $Language->getGlobalLang();
+            self::$userLang = $language->getUserLang();
+            self::$globalLang = $language->getGlobalLang();
 
             $lang = self::$userLang ?: self::$globalLang;
 

@@ -101,7 +101,7 @@ trait ItemTrait
                     $customFieldService->create($customFieldData);
                 }
             } catch (CryptoException $e) {
-                throw new SPException(SPException::SP_ERROR, __u('Error interno'));
+                throw new SPException(__u('Error interno'), SPException::ERROR);
             }
         }
     }
@@ -144,7 +144,7 @@ trait ItemTrait
                     $customFieldService->update($customFieldData);
                 }
             } catch (CryptoException $e) {
-                throw new SPException(SPException::SP_ERROR, __u('Error interno'));
+                throw new SPException(__u('Error interno'), SPException::ERROR);
             }
         }
     }

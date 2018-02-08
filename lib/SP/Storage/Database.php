@@ -206,7 +206,7 @@ class Database implements DatabaseInterface
             debugLog('Exception: ' . $e->getMessage());
             debugLog(ob_get_clean());
 
-            throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode(), 0, $e);
+            throw new SPException($e->getMessage(), SPException::CRITICAL, $e->getCode(), 0, $e);
         }
     }
 

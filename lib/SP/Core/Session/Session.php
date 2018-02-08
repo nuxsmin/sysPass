@@ -284,4 +284,24 @@ class Session
     {
         return $this->getSessionKey('config');
     }
+
+    /**
+     * Devolver la clave pública
+     *
+     * @return mixed
+     */
+    public function getPublicKey()
+    {
+        return $this->getSessionKey('pubkey');
+    }
+
+    /**
+     * Establecer la clave pública
+     *
+     * @param $key
+     */
+    public function setPublicKey($key)
+    {
+        $this->setSessionKey('pubkey', $key);
+    }
 }

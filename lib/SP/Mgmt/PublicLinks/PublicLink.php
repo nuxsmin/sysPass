@@ -121,7 +121,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, __('Enlace ya creado', false));
+            throw new SPException(__('Enlace ya creado', false), SPException::INFO);
         }
 
         $this->itemData->setDateAdd(time());
@@ -184,7 +184,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Enlace no encontrado', false));
+            throw new SPException(__('Enlace no encontrado', false), SPException::INFO);
         }
 
         return $this;
@@ -245,7 +245,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener enlace', false));
+            throw new SPException(__('Error al obtener enlace', false), SPException::ERROR);
         }
 
         /** @var $PublicLink PublicLinkData */
@@ -344,7 +344,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener enlace', false));
+            throw new SPException(__('Error al obtener enlace', false), SPException::ERROR);
         } elseif (is_array($queryRes)) {
             return false;
         }
@@ -378,7 +378,7 @@ class PublicLink extends PublicLinkBase implements ItemInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __u('Error al obtener enlace'));
+            throw new SPException(__u('Error al obtener enlace'), SPException::ERROR);
         }
 
         return $queryRes;

@@ -53,7 +53,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, __('Login/email de usuario duplicados', false));
+            throw new SPException(__('Login/email de usuario duplicados', false), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -137,7 +137,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Usuario no encontrado', false));
+            throw new SPException(__('Usuario no encontrado', false), SPException::INFO);
         }
 
         $this->itemData->setId(DbWrapper::$lastId);
@@ -152,7 +152,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_INFO, __('Login/email de usuario duplicados', false));
+            throw new SPException(__('Login/email de usuario duplicados', false), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -252,7 +252,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         try {
             $queryRes = DbWrapper::getResultsArray($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener los usuarios', false));
+            throw new SPException(__('Error al obtener los usuarios', false), SPException::ERROR);
         }
 
         return $queryRes;
@@ -345,7 +345,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener los datos del usuario', false));
+            throw new SPException(__('Error al obtener los datos del usuario', false), SPException::ERROR);
         }
 
         return $queryRes;
@@ -405,7 +405,7 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener los datos del usuario', false));
+            throw new SPException(__('Error al obtener los datos del usuario', false), SPException::ERROR);
         }
 
         return $queryRes;

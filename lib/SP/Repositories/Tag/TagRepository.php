@@ -55,7 +55,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(SPException::SP_INFO, __u('Etiqueta duplicada'));
+            throw new SPException(__u('Etiqueta duplicada'), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -105,7 +105,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(SPException::SP_INFO, __u('Etiqueta duplicada'));
+            throw new SPException(__u('Etiqueta duplicada'), SPException::INFO);
         }
 
         $query = /** @lang SQL */

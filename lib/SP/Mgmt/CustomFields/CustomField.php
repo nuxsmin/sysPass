@@ -68,7 +68,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $securedKey = Crypt::makeSecuredKey($sessionKey);
 
         if (strlen($securedKey) > 1000) {
-            throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+            throw new QueryException(SPException::ERROR, __('Error interno', false));
         }
 
         $query = /** @lang SQL */
@@ -135,7 +135,7 @@ class CustomField extends CustomFieldBase implements ItemInterface
         $securedKey = Crypt::makeSecuredKey($sessionKey);
 
         if (strlen($securedKey) > 1000) {
-            throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+            throw new QueryException(SPException::ERROR, __('Error interno', false));
         }
 
         $query = /** @lang SQL */

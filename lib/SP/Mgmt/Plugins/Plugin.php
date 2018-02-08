@@ -87,7 +87,7 @@ class Plugin extends PluginBase implements ItemInterface
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Plugin no encontrado', false));
+            throw new SPException(__('Plugin no encontrado', false), SPException::INFO);
         }
 
         return $this;

@@ -64,7 +64,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
     {
         try {
             if (null === ($fileData = $this->accountFileService->getById($id))) {
-                throw new SPException(SPException::SP_INFO, __u('El archivo no existe'));
+                throw new SPException(__u('El archivo no existe'), SPException::INFO);
             }
 
             $this->view->addTemplate('file', 'itemshow');
@@ -104,7 +104,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
     {
         try {
             if (null === ($fileData = $this->accountFileService->getById($id))) {
-                throw new SPException(SPException::SP_INFO, __u('El archivo no existe'));
+                throw new SPException(__u('El archivo no existe'), SPException::INFO);
             }
 
             // Enviamos el archivo al navegador
@@ -135,13 +135,13 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
             $file = $this->router->request()->files()->get('inFile');
 
             if ($accountId === 0 || null === $file) {
-                throw new SPException(SPException::SP_ERROR, __u('CONSULTA INVÁLIDA'));
+                throw new SPException(__u('CONSULTA INVÁLIDA'), SPException::ERROR);
             }
 
             $allowedExts = $this->configData->getFilesAllowedExts();
 
             if (count($allowedExts) === 0) {
-                throw new SPException(SPException::SP_ERROR, __u('No hay extensiones permitidas'));
+                throw new SPException(__u('No hay extensiones permitidas'), SPException::ERROR);
             }
 
             $fileData = new FileData();
@@ -155,27 +155,27 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
                 $fileData->setExtension(mb_strtoupper(pathinfo($fileData->getName(), PATHINFO_EXTENSION)));
 
                 if (!in_array($fileData->getExtension(), $allowedExts, true)) {
-                    throw new SPException(SPException::SP_ERROR, __u('Tipo de archivo no soportado'), sprintf(__('Extensión: %s'), $fileData->getExtension()));
+                    throw new SPException(__u('Tipo de archivo no soportado'), SPException::ERROR, sprintf(__('Extensión: %s'), $fileData->getExtension()));
                 }
             } else {
-                throw new SPException(SPException::SP_ERROR, __u('Archivo inválido'), sprintf(__u('Archivo: %s'), $fileData->getName()));
+                throw new SPException(__u('Archivo inválido'), SPException::ERROR, sprintf(__u('Archivo: %s'), $fileData->getName()));
             }
 
             if (!file_exists($file['tmp_name'])) {
-                throw new SPException(SPException::SP_ERROR, __u('Error interno al leer el archivo'), sprintf(__u('Máximo tamaño: %s'), Util::getMaxUpload()));
+                throw new SPException(__u('Error interno al leer el archivo'), SPException::ERROR, sprintf(__u('Máximo tamaño: %s'), Util::getMaxUpload()));
             }
 
             $allowedSize = $this->configData->getFilesAllowedSize();
 
             if ($fileData->getSize() > ($allowedSize * 1000)) {
-                throw new SPException(SPException::SP_ERROR, __u('Tamaño de archivo superado'), sprintf(__u('Máximo tamaño: %d KB'), $fileData->getRoundSize()));
+                throw new SPException(__u('Tamaño de archivo superado'), SPException::ERROR, sprintf(__u('Máximo tamaño: %d KB'), $fileData->getRoundSize()));
             }
 
             // Leemos el archivo a una variable
             $fileData->setContent(file_get_contents($file['tmp_name']));
 
             if ($fileData->getContent() === false) {
-                throw new SPException(SPException::SP_ERROR, __u('Error interno al leer el archivo'));
+                throw new SPException(__u('Error interno al leer el archivo'), SPException::ERROR);
             }
 
             $this->accountFileService->create($fileData);

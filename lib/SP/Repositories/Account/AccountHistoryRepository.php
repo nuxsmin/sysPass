@@ -25,7 +25,6 @@
 namespace SP\Repositories\Account;
 
 use SP\Account\AccountUtil;
-use SP\Config\ConfigDB;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
@@ -286,7 +285,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryRes = DbWrapper::getResults($Data, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, __u('No se pudieron obtener los datos de la cuenta'));
+            throw new SPException(__u('No se pudieron obtener los datos de la cuenta'), SPException::CRITICAL);
         }
 
         return $queryRes;

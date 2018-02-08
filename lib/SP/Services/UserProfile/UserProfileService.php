@@ -91,7 +91,7 @@ class UserProfileService
     public function delete($id)
     {
         if ($this->userProfileRepository->delete($id) === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Perfil no encontrado'));
+            throw new SPException(__u('Perfil no encontrado'), SPException::INFO);
         }
 
         return $this;

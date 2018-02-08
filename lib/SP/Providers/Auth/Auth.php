@@ -24,6 +24,9 @@
 
 namespace SP\Providers\Auth;
 
+use SP\Config\ConfigData;
+use SP\Core\Exceptions\SPException;
+use SP\DataModel\UserLoginData;
 use SP\Providers\Auth\Browser\Browser;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\Database;
@@ -31,9 +34,6 @@ use SP\Providers\Auth\Database\DatabaseAuthData;
 use SP\Providers\Auth\Ldap\LdapAuthData;
 use SP\Providers\Auth\Ldap\LdapMsAds;
 use SP\Providers\Auth\Ldap\LdapStd;
-use SP\Config\ConfigData;
-use SP\Core\Exceptions\SPException;
-use SP\DataModel\UserLoginData;
 
 defined('APP_ROOT') || die();
 
@@ -91,11 +91,11 @@ class Auth
     protected function registerAuth($auth)
     {
         if (array_key_exists($auth, $this->auths)) {
-            throw new SPException(SPException::SP_ERROR, __u('Método ya inicializado'), __FUNCTION__);
+            throw new SPException(__u('Método ya inicializado'), SPException::ERROR, __FUNCTION__);
         }
 
         if (!method_exists($this, $auth)) {
-            throw new SPException(SPException::SP_ERROR, __u('Método no disponible'), __FUNCTION__);
+            throw new SPException(__u('Método no disponible'), SPException::ERROR, __FUNCTION__);
         }
 
         $this->auths[$auth] = $auth;
@@ -156,6 +156,8 @@ class Auth
      * se ejecuta el proceso para actualizar la clave.
      *
      * @return DatabaseAuthData
+     * @throws \ReflectionException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function authDatabase()
     {

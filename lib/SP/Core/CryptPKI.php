@@ -45,7 +45,7 @@ class CryptPKI
     {
         if (!file_exists($this->getPublicKeyFile()) || !file_exists($this->getPrivateKeyFile())) {
             if (!$this->createKeys()) {
-                throw new SPException(SPException::SP_CRITICAL, __('No es posible generar las claves RSA', false));
+                throw new SPException(__('No es posible generar las claves RSA', false), SPException::CRITICAL);
             }
         }
     }
@@ -115,7 +115,7 @@ class CryptPKI
         if (!file_exists($file)) {
             Log::writeNewLog(__FUNCTION__, __('El archivo de clave no existe', false), Log::NOTICE);
 
-            throw new FileNotFoundException(SPException::SP_ERROR, __('El archivo de clave no existe'));
+            throw new FileNotFoundException(SPException::ERROR, __('El archivo de clave no existe'));
         }
 
         return file_get_contents($file);
@@ -150,7 +150,7 @@ class CryptPKI
         if (!file_exists($file)) {
             Log::writeNewLog(__FUNCTION__, __('El archivo de clave no existe', false), Log::NOTICE);
 
-            throw new FileNotFoundException(SPException::SP_ERROR, __('El archivo de clave no existe'));
+            throw new FileNotFoundException(SPException::ERROR, __('El archivo de clave no existe'));
         }
 
         return file_get_contents($file);

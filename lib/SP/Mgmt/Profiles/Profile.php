@@ -28,8 +28,8 @@ namespace SP\Mgmt\Profiles;
 defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\UserProfileData;
 use SP\DataModel\ProfileData;
+use SP\DataModel\UserProfileData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemSelectInterface;
 use SP\Mgmt\ItemTrait;
@@ -53,7 +53,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, __('Nombre de perfil duplicado', false));
+            throw new SPException(__('Nombre de perfil duplicado', false), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -102,7 +102,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     public function delete($id)
     {
         if ($this->checkInUse($id)) {
-            throw new SPException(SPException::SP_INFO, __('Perfil en uso', false));
+            throw new SPException(__('Perfil en uso', false), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -116,7 +116,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Perfil no encontrado', false));
+            throw new SPException(__('Perfil no encontrado', false), SPException::INFO);
         }
 
         return $this;
@@ -179,7 +179,7 @@ class Profile extends ProfileBase implements ItemInterface, ItemSelectInterface
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_INFO, __('Nombre de perfil duplicado', false));
+            throw new SPException(__('Nombre de perfil duplicado', false), SPException::INFO);
         }
 
         $query = /** @lang SQL */

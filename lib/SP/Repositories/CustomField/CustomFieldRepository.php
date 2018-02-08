@@ -114,7 +114,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $securedKey = Crypt::makeSecuredKey($sessionKey);
 
         if (strlen($securedKey) > 1000) {
-            throw new QueryException(SPException::SP_ERROR, __u('Error interno'));
+            throw new QueryException(SPException::ERROR, __u('Error interno'));
         }
 
         $query = /** @lang SQL */
@@ -194,7 +194,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $securedKey = Crypt::makeSecuredKey($sessionKey);
 
         if (strlen($securedKey) > 1000) {
-            throw new QueryException(SPException::SP_ERROR, __u('Error interno'));
+            throw new QueryException(SPException::ERROR, __u('Error interno'));
         }
 
         $query = /** @lang SQL */

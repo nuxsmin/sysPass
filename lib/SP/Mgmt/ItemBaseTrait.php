@@ -113,7 +113,7 @@ trait ItemBaseTrait
     final public function setItemData($itemData)
     {
         if (null !== $this->dataModel && ($itemData instanceof $this->dataModel) === false) {
-            throw new InvalidClassException(SPException::SP_ERROR, $this->dataModel);
+            throw new InvalidClassException(SPException::ERROR, $this->dataModel);
         }
 
         $this->itemData = $itemData;
@@ -137,7 +137,7 @@ trait ItemBaseTrait
     final protected function setDataModel($dataModel)
     {
         if (false === class_exists($dataModel)) {
-            throw new InvalidClassException(SPException::SP_ERROR, $dataModel);
+            throw new InvalidClassException(SPException::ERROR, $dataModel);
         }
 
         $this->dataModel = $dataModel;

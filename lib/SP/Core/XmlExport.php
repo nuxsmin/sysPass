@@ -212,13 +212,13 @@ class XmlExport
     private function checkExportDir()
     {
         if (@mkdir($this->exportDir, 0750) === false && is_dir($this->exportDir) === false) {
-            throw new SPException(SPException::SP_CRITICAL, sprintf(__('No es posible crear el directorio de backups ("%s")'), $this->exportDir));
+            throw new SPException(sprintf(__('No es posible crear el directorio de backups ("%s")'), $this->exportDir), SPException::CRITICAL);
         }
 
         clearstatcache(true, $this->exportDir);
 
         if (!is_writable($this->exportDir)) {
-            throw new SPException(SPException::SP_CRITICAL, __('Compruebe los permisos del directorio de backups', false));
+            throw new SPException(__('Compruebe los permisos del directorio de backups', false), SPException::CRITICAL);
         }
 
         return true;
@@ -235,7 +235,7 @@ class XmlExport
             $root = $this->xml->createElement('Root');
             $this->root = $this->xml->appendChild($root);
         } catch (\DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
@@ -264,7 +264,7 @@ class XmlExport
 
             $this->root->appendChild($nodeMeta);
         } catch (\DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
@@ -303,7 +303,7 @@ class XmlExport
 
             $this->appendNode($nodeCategories);
         } catch (\DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
@@ -364,9 +364,9 @@ class XmlExport
                 $this->root->appendChild($node);
             }
         } catch (\DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         } catch (CryptoException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
@@ -403,7 +403,7 @@ class XmlExport
 
             $this->appendNode($nodeCustomers);
         } catch (\DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
@@ -438,7 +438,7 @@ class XmlExport
 
             $this->appendNode($nodeTags);
         } catch (\DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
@@ -496,7 +496,7 @@ class XmlExport
 
             $this->appendNode($nodeAccounts);
         } catch (\DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
@@ -519,7 +519,7 @@ class XmlExport
             $nodeMeta = $this->root->getElementsByTagName('Meta')->item(0);
             $nodeMeta->appendChild($metaHash);
         } catch (\DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
@@ -536,7 +536,7 @@ class XmlExport
             $nodeXML = $this->xml->saveXML($this->root->getElementsByTagName($node)->item(0));
             return $nodeXML;
         } catch (\DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
@@ -553,10 +553,10 @@ class XmlExport
             $this->xml->preserveWhiteSpace = false;
 
             if (!$this->xml->save($this->exportFile)) {
-                throw new SPException(SPException::SP_CRITICAL, __('Error al crear el archivo XML', false));
+                throw new SPException(__('Error al crear el archivo XML', false), SPException::CRITICAL);
             }
         } catch (\DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 

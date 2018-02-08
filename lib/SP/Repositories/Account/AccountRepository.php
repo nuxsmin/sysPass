@@ -353,11 +353,11 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, __u('No se pudieron obtener los datos de la cuenta'));
+            throw new SPException(__u('No se pudieron obtener los datos de la cuenta'), SPException::CRITICAL);
         }
 
         if (is_array($queryRes) && count($queryRes) === 0) {
-            throw new SPException(SPException::SP_CRITICAL, __u('La cuenta no existe'));
+            throw new SPException(__u('La cuenta no existe'), SPException::CRITICAL);
         }
 
         return $queryRes;
@@ -508,11 +508,11 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($Data, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __u('No se pudieron obtener los datos de la cuenta'));
+            throw new SPException(__u('No se pudieron obtener los datos de la cuenta'), SPException::ERROR);
         }
 
         if (is_array($queryRes) && count($queryRes) === 0) {
-            throw new SPException(SPException::SP_ERROR, __u('La cuenta no existe'));
+            throw new SPException(__u('La cuenta no existe'), SPException::ERROR);
         }
 
         return $queryRes;

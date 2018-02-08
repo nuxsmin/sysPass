@@ -52,7 +52,7 @@ class ApiUtil
 
             Track::getItem($TrackData)->add();
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_WARNING, __('Error interno', false), '', -32601);
+            throw new SPException(__('Error interno', false), SPException::WARNING, '', -32601);
         }
     }
 }

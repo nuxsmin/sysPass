@@ -1,9 +1,10 @@
-/*
+<?php
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -21,15 +22,14 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Fuentes para Iconos de MDL */
-@font-face {
-    font-family: 'Material Icons';
-    font-style: normal;
-    font-weight: 400;
-    src: url("public/css/fonts/MaterialIcons-Regular.eot"); /* For IE6-8 */
-    src: local('Material Icons'),
-    local('MaterialIcons-Regular'),
-    url("public/css/fonts/MaterialIcons-Regular.woff2") format('woff2'),
-    url("public/css/fonts/MaterialIcons-Regular.woff") format('woff'),
-    url("public/css/fonts/MaterialIcons-Regular.ttf") format('truetype');
+namespace SP\Core\Exceptions;
+
+/**
+ * Class InitializationException
+ *
+ * @package SP\Core\Exceptions
+ */
+class InitializationException extends SPException
+{
+
 }

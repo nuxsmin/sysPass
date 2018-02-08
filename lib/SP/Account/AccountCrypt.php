@@ -32,7 +32,6 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\OldCrypt;
 use SP\Core\Session\Session;
-use SP\Core\SessionFactory;
 use SP\Core\TaskFactory;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\AccountData;
@@ -174,7 +173,7 @@ class AccountCrypt
                 $AccountData->setKey($securedKey);
 
                 if (strlen($securedKey) > 1000 || strlen($AccountData->getPass()) > 1000) {
-                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                    throw new QueryException(SPException::ERROR, __('Error interno', false));
                 }
 
                 $Account = new Account($AccountData);
@@ -291,7 +290,7 @@ class AccountCrypt
                 $AccountData->setKey($newSecuredKey);
 
                 if (strlen($newSecuredKey) > 1000 || strlen($AccountData->getPass()) > 1000) {
-                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                    throw new QueryException(SPException::ERROR, __('Error interno', false));
                 }
 
                 $Account = new Account($AccountData);

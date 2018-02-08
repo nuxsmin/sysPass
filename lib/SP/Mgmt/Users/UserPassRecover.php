@@ -108,9 +108,9 @@ class UserPassRecover extends UserPassRecoverBase implements ItemInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __('Error en comprobación de hash', false));
+            throw new SPException(__('Error en comprobación de hash', false), SPException::ERROR);
         } elseif ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Hash inválido o expirado', false));
+            throw new SPException(__('Hash inválido o expirado', false), SPException::INFO);
         }
 
         $this->itemData = $queryRes;

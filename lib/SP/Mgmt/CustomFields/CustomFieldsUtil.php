@@ -85,7 +85,7 @@ class CustomFieldsUtil
                 $securedKey = Crypt::makeSecuredKey($newMasterPassword);
 
                 if (strlen($securedKey) > 1000) {
-                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                    throw new QueryException(SPException::ERROR, __('Error interno', false));
                 }
 
                 $query = /** @lang SQL */
@@ -156,7 +156,7 @@ class CustomFieldsUtil
                 $fieldData = OldCrypt::getDecrypt($CustomField->getCustomfielddataData(), $CustomField->getCustomfielddataKey(), $currentMasterPass);
 
                 if (strlen($securedKey) > 1000) {
-                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                    throw new QueryException(SPException::ERROR, __('Error interno', false));
                 }
 
                 $query = /** @lang SQL */
@@ -205,7 +205,7 @@ class CustomFieldsUtil
                 CustomField::getItem($CustomFieldData)->add();
             }
         } catch (CryptoException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error interno'));
+            throw new SPException(__('Error interno'), SPException::ERROR);
         }
     }
 
@@ -226,7 +226,7 @@ class CustomFieldsUtil
                 CustomField::getItem($CustomFieldData)->update();
             }
         } catch (CryptoException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error interno'));
+            throw new SPException(__('Error interno'), SPException::ERROR);
         }
     }
 

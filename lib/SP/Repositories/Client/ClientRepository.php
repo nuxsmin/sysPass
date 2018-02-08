@@ -24,7 +24,6 @@
 
 namespace SP\Repositories\Client;
 
-use SP\Account\AccountUtil;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
@@ -55,7 +54,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(SPException::SP_WARNING, __u('Cliente duplicado'));
+            throw new SPException(__u('Cliente duplicado'), SPException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -112,7 +111,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(SPException::SP_WARNING, __u('Cliente duplicado'));
+            throw new SPException(__u('Cliente duplicado'), SPException::WARNING);
         }
 
         $query = /** @lang SQL */

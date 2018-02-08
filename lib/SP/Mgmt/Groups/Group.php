@@ -55,7 +55,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, __('Nombre de grupo duplicado', false));
+            throw new SPException(__('Nombre de grupo duplicado', false), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -108,7 +108,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
     public function delete($id)
     {
         if ($this->checkInUse($id)) {
-            throw new SPException(SPException::SP_WARNING, __('Grupo en uso', false));
+            throw new SPException(__('Grupo en uso', false), SPException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -122,7 +122,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Grupo no encontrado', false));
+            throw new SPException(__('Grupo no encontrado', false), SPException::INFO);
         }
 
         GroupUsers::getItem()->delete($id);
@@ -191,7 +191,7 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
     public function update()
     {
         if ($this->checkDuplicatedOnUpdate()) {
-            throw new SPException(SPException::SP_INFO, __('Nombre de grupo duplicado', false));
+            throw new SPException(__('Nombre de grupo duplicado', false), SPException::INFO);
         }
 
         $query = /** @lang SQL */

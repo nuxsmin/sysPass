@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Account\Account;
 use SP\Account\AccountAcl;
-use SP\Services\Account\AccountSearchService;
 use SP\Account\AccountUtil;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Backup;
@@ -42,6 +41,7 @@ use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Categories\CategorySearch;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Customers\CustomerSearch;
+use SP\Services\Account\AccountSearchService;
 
 /**
  * Class Api para la gestión de peticiones a la API de sysPass
@@ -73,7 +73,7 @@ class SyspassApi extends ApiBase
         $Acl = $AccountAcl->getAcl();
 
         if (!$Acl->isShowViewPass()) {
-            throw new SPException(SPException::SP_WARNING, __('Acceso no permitido', false));
+            throw new SPException(__('Acceso no permitido', false), SPException::WARNING);
         }
 
         $Account->getAccountPassData();
@@ -145,7 +145,7 @@ class SyspassApi extends ApiBase
         $Acl = $AccountAcl->getAcl();
 
         if (!$Acl->isShowView()) {
-            throw new SPException(SPException::SP_WARNING, __('Acceso no permitido', false));
+            throw new SPException(__('Acceso no permitido', false), SPException::WARNING);
         }
 
         $Account->incrementViewCounter();
@@ -216,7 +216,7 @@ class SyspassApi extends ApiBase
         $AccountData = AccountUtil::getAccountNameById($accountId);
 
         if ($AccountData === false) {
-            throw new SPException(SPException::SP_ERROR, __('Cuenta no encontrada', false));
+            throw new SPException(__('Cuenta no encontrada', false), SPException::ERROR);
         }
 
         $Account = new Account();
@@ -306,7 +306,7 @@ class SyspassApi extends ApiBase
         $CategoryData = Category::getItem()->getById($id);
 
         if (!is_object($CategoryData)) {
-            throw new SPException(SPException::SP_ERROR, __('Categoría no encontrada', false));
+            throw new SPException(__('Categoría no encontrada', false), SPException::ERROR);
         }
 
         Category::getItem()->delete($id);
@@ -395,7 +395,7 @@ class SyspassApi extends ApiBase
         $CustomerData = Customer::getItem()->getById($id);
 
         if (!is_object($CustomerData)) {
-            throw new SPException(SPException::SP_ERROR, __('Cliente no encontrado', false));
+            throw new SPException(__('Cliente no encontrado', false), SPException::ERROR);
         }
 
         Customer::getItem()->delete($id);

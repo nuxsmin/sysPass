@@ -43,6 +43,7 @@ class Injector
      * @param                    $context
      * @return mixed
      * @throws ContainerException
+     * @throws \ReflectionException
      */
     public static function inject(ContainerInterface $container, $context)
     {

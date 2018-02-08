@@ -27,8 +27,8 @@ namespace SP\Repositories\UserProfile;
 use SP\Core\Acl\Acl;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\UserProfileData;
 use SP\DataModel\ProfileData;
+use SP\DataModel\UserProfileData;
 use SP\Log\Log;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
@@ -76,7 +76,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
     public function delete($id)
     {
         if ($this->checkInUse($id)) {
-            throw new SPException(SPException::SP_INFO, __u('Perfil en uso'));
+            throw new SPException(__u('Perfil en uso'), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -239,7 +239,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(SPException::SP_INFO, __u('Nombre de perfil duplicado'));
+            throw new SPException(__u('Nombre de perfil duplicado'), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -294,7 +294,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(SPException::SP_INFO, __u('Nombre de perfil duplicado'));
+            throw new SPException(__u('Nombre de perfil duplicado'), SPException::INFO);
         }
 
         $query = /** @lang SQL */

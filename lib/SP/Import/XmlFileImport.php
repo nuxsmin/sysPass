@@ -81,9 +81,7 @@ class XmlFileImport
             }
         } else {
             throw new SPException(
-                SPException::SP_CRITICAL,
-                __('Archivo XML no soportado', false),
-                __('No es posible detectar la aplicación que exportó los datos', false)
+                __('Archivo XML no soportado', false), SPException::CRITICAL, __('No es posible detectar la aplicación que exportó los datos', false)
             );
         }
 
@@ -102,9 +100,7 @@ class XmlFileImport
 
         if ($this->xmlDOM->load($this->FileImport->getTmpFile()) === false) {
             throw new SPException(
-                SPException::SP_CRITICAL,
-                __('Error interno', false),
-                __('No es posible procesar el archivo XML', false)
+                __('Error interno', false), SPException::CRITICAL, __('No es posible procesar el archivo XML', false)
             );
         }
     }

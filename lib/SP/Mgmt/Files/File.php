@@ -127,7 +127,7 @@ class File extends FileBase implements ItemInterface, ItemSelectInterface
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Archivo no encontrado', false));
+            throw new SPException(__('Archivo no encontrado', false), SPException::INFO);
         }
 
         return $this;

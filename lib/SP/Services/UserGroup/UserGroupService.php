@@ -91,7 +91,7 @@ class UserGroupService
     public function delete($id)
     {
         if ($this->userGroupRepository->delete($id) === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Grupo no encontrado'));
+            throw new SPException(__u('Grupo no encontrado'), SPException::INFO);
         }
 
         return $this;

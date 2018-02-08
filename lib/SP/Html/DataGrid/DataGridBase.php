@@ -285,7 +285,7 @@ abstract class DataGridBase implements DataGridInterface
         $file = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template;
 
         if (!is_readable($file)) {
-            throw new FileNotFoundException(SPException::SP_ERROR, sprintf(__('No es posible obtener la plantilla "%s" : %s'), $template, $file));
+            throw new FileNotFoundException(SPException::ERROR, sprintf(__('No es posible obtener la plantilla "%s" : %s'), $template, $file));
         }
 
         return $file;

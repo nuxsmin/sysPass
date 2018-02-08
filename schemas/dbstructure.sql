@@ -511,7 +511,7 @@ CREATE TABLE `User` (
   `isMigrate` tinyint(1) DEFAULT '0',
   `isChangePass` tinyint(1) DEFAULT '0',
   `isChangedPass` tinyint(1) DEFAULT '0',
-  `user_preferences` blob,
+  `preferences` blob,
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_login` (`login`,`ssoLogin`),
   KEY `IDX_pass` (`pass`(767)),

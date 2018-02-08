@@ -29,7 +29,6 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\SessionFactory;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountToUserGroupData;
@@ -198,9 +197,9 @@ class Account extends AccountBase implements AccountInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('No se pudieron obtener los datos de la cuenta', false));
+            throw new SPException(__('No se pudieron obtener los datos de la cuenta', false), SPException::CRITICAL);
         } elseif (is_array($queryRes) && count($queryRes) === 0) {
-            throw new SPException(SPException::SP_CRITICAL, __('La cuenta no existe', false));
+            throw new SPException(__('La cuenta no existe', false), SPException::CRITICAL);
         }
 
         // Obtener los usuarios y grupos secundarios  y las etiquetas
@@ -318,10 +317,10 @@ class Account extends AccountBase implements AccountInterface
             $this->accountData->setKey($securedKey);
 
             if (strlen($securedKey) > 1000 || strlen($this->accountData->getPass()) > 1000) {
-                throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                throw new QueryException(SPException::ERROR, __('Error interno', false));
             }
         } catch (CryptoException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error interno', false));
+            throw new SPException(__('Error interno', false), SPException::ERROR);
         }
     }
 
@@ -505,11 +504,11 @@ class Account extends AccountBase implements AccountInterface
         $queryRes = DbWrapper::getResults($Data);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_CRITICAL, __('No se pudieron obtener los datos de la cuenta', false));
+            throw new SPException(__('No se pudieron obtener los datos de la cuenta', false), SPException::CRITICAL);
         }
 
         if (is_array($queryRes) && count($queryRes) === 0) {
-            throw new SPException(SPException::SP_CRITICAL, __('La cuenta no existe', false));
+            throw new SPException(__('La cuenta no existe', false), SPException::CRITICAL);
         }
 
         return $this->accountData;

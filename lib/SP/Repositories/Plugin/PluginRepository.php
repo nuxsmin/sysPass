@@ -207,7 +207,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         DbWrapper::getQuery($Data, $this->db);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Plugin no encontrado'));
+            throw new SPException(__u('Plugin no encontrado'), SPException::INFO);
         }
 
         return $this;

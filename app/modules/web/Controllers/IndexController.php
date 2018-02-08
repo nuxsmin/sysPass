@@ -38,6 +38,8 @@ class IndexController extends ControllerBase
 {
     /**
      * Index action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {

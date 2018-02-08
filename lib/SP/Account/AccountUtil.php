@@ -24,13 +24,8 @@
 
 namespace SP\Account;
 
-use SP\Bootstrap;
-use SP\Config\Config;
-use SP\Config\ConfigData;
-use SP\Core\Dic\DicInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
-use SP\Core\SessionFactory;
 use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryCondition;
 use SP\Storage\DbWrapper;
@@ -134,7 +129,7 @@ class AccountUtil
         try {
             return DbWrapper::getResultsArray($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_CRITICAL, __('No se pudieron obtener los datos de las cuentas', false));
+            throw new SPException(__('No se pudieron obtener los datos de las cuentas', false), SPException::CRITICAL);
         }
     }
 

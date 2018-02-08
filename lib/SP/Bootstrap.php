@@ -32,22 +32,20 @@ use Klein\Klein;
 use PHPMailer\PHPMailer\Exception;
 use RuntimeException;
 use SP\Account\AccountAcl;
-use SP\Providers\Auth\Browser\Browser;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigUtil;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\SecureKeyCookie;
 use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Dic\DicInterface;
 use SP\Core\Exceptions\ConfigException;
+use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
-use SP\Mvc\View\Template;
 use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
 use SP\Core\Upgrade\Upgrade;
@@ -57,6 +55,8 @@ use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;
 use SP\Modules\Web\Controllers\MainController;
+use SP\Mvc\View\Template;
+use SP\Providers\Auth\Browser\Browser;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
@@ -143,222 +143,28 @@ class Bootstrap
      * Bootstrap constructor.
      *
      * @throws Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     public function __construct()
     {
         $this->setupContainer();
 
         $this->injectDependencies();
-    }
-
-    /**
-     * @return ContainerInterface
-     */
-    public static function getContainer()
-    {
-        return self::$container;
-    }
-
-    /**
-     * Comprobar si hay que ejecutar acciones de URL después de realizar login.
-     *
-     * @return bool
-     */
-    public function checkPostLoginActions()
-    {
-        $action = Request::analyze('a');
-
-        if ($action === '') {
-            return false;
-        }
-
-        $Controller = new MainController();
-        $Controller->doAction('postlogin.' . $action);
-
-        return false;
-    }
-
-    /**
-     * @param Config  $config
-     * @param Upgrade $upgrade
-     * @param Session $session
-     * @param Theme   $theme
-     * @param Klein   $router
-     */
-    public function inject(Config $config, Upgrade $upgrade, Session $session, Theme $theme, Klein $router)
-    {
-        $this->config = $config;
-        $this->configData = $config->getConfigData();
-        $this->upgrade = $upgrade;
-        $this->session = $session;
-        $this->theme = $theme;
-        $this->router = $router;
-    }
-
-    /**
-     * Comprueba que la aplicación esté instalada
-     * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
-     */
-    private function checkInstalled()
-    {
-        // Redirigir al instalador si no está instalada
-        if (!$this->configData->isInstalled()) {
-            if (self::$SUBURI !== '/index.php') {
-                // FIXME
-                $this->router->response()->redirect('index.php?r=install');
-
-                $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
-
-                $url = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . self::$WEBROOT . '/index.php';
-                header("Location: $url");
-                exit();
-            }
-
-            if ($this->session->getAuthCompleted()) {
-                session_destroy();
-
-                $this->initialize();
-                return;
-            }
-
-            // Comprobar si sysPass está instalada o en modo mantenimiento
-            $Controller = new MainController();
-            $Controller->getInstaller();
-            $Controller->view();
-            exit();
-        }
-    }
-
-    /**
-     * Inicializar la aplicación
-     *
-     * @throws SPException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     */
-    public function initialize()
-    {
-        self::$checkPhpVersion = Checks::checkPhpVersion();
-        self::$checkInitSourceInclude = $this->checkInitSourceInclude();
-
-        if (date_default_timezone_get() === 'UTC') {
-            date_default_timezone_set('UTC');
-        }
 
         $this->initRouter();
-
-        // Inicializar autentificación
-        $this->initAuth();
-
-        // Inicializar logging
-        $this->initLogging();
-
-        // Cargar las extensiones
-//        self::loadExtensions();
-
-        // Establecer el lenguaje por defecto
-        Language::setLocales('en_US');
-
-        //  Establecer las rutas de la aplicación
-        $this->initPaths();
-
-        if (!self::$checkPhpVersion && !self::$checkInitSourceInclude) {
-            self::initError(
-                __('Versión de PHP requerida >= ') . ' 5.6.0 <= 7.0',
-                __('Actualice la versión de PHP para que la aplicación funcione correctamente'));
-        }
-
-        // Comprobar la configuración
-        $this->initConfig();
-
-        // Iniciar la sesión de PHP
-        $this->initSession($this->configData->isEncryptSession());
-
-        // Volver a cargar la configuración si se recarga la página
-        if (!Request::checkReload()) {
-            // Cargar la configuración
-            $this->config->loadConfig();
-
-            // Cargar el lenguaje
-            Language::setLanguage();
-        } else {
-            // Cargar la configuración
-            $this->config->loadConfig(true);
-
-            // Restablecer el idioma y el tema visual
-            Language::setLanguage(true);
-            $this->theme->initTheme(true);
-
-            if ($this->session->isLoggedIn()) {
-                // Recargar los permisos del perfil de usuario
-                $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
-                // Reset de los datos de ACL de cuentas
-                AccountAcl::resetData();
-            }
-        }
-
-        // Comprobar si es necesario cambiar a HTTPS
-        HttpUtil::checkHttps();
-
-        // Comprobar si es necesario inicialización
-        if (self::$checkInitSourceInclude ||
-            ((defined('IS_INSTALLER') || defined('IS_UPGRADE')) && Checks::isAjax())
-        ) {
-            return;
-        }
-
-        // Comprobar si está instalado
-        $this->checkInstalled();
-
-        // Comprobar si el modo mantenimiento está activado
-        $this->checkMaintenanceMode();
-
-        // Comprobar si la Base de datos existe
-        if (!DBUtil::checkDatabaseExist()) {
-            self::initError(__('Error en la verificación de la base de datos'));
-        }
-
-        // Comprobar si es necesario actualizar componentes
-        $this->checkUpgrade();
-
-        // Inicializar la sesión
-        $this->initUserSession();
-
-        // Cargar los plugins
-        PluginUtil::loadPlugins();
-
-        // Comprobar acciones en URL
-        $this->checkPreLoginActions();
-
-        if ($this->session->isLoggedIn() && $this->session->getAuthCompleted() === true) {
-            $AuthBrowser = new Browser();
-
-            // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-            if ($AuthBrowser->checkServerAuthUser($this->session->getUserData()->getLogin()) === false
-                && $AuthBrowser->checkServerAuthUser($this->session->getUserData()->getSsoLogin()) === false
-            ) {
-                $this->goLogout();
-            }
-        }
-
-        $this->router->dispatch();
-
-
-        // El usuario no está logado y no es una petición, redirigir al login
-//        $this->goLogin();
     }
 
     /**
-     * Comprobar el archivo que realiza el include necesita inicialización.
-     *
-     * @returns bool
+     * Setups DI container
      */
-    private function checkInitSourceInclude()
+    private function setupContainer()
     {
-        self::$sourceScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
-        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php', 'ajax_task.php'];
+        $builder = new ContainerBuilder();
+        $builder->setDefinitionCache(new ArrayCache());
+        $builder->writeProxiesToFile(true, CACHE_PATH . DIRECTORY_SEPARATOR . 'proxies');
+        $builder->addDefinitions(BASE_PATH . DIRECTORY_SEPARATOR . 'Definitions.php');
 
-        return in_array(self::$sourceScript, $skipInit, true);
+        self::$container = $builder->build();
     }
 
     /**
@@ -384,6 +190,8 @@ class Bootstrap
                 });
 
                 try {
+                    $self->initialize();
+
                     /** @var \Klein\Request $request */
                     $route = filter_var($request->param('r', 'index/index'), FILTER_SANITIZE_STRING);
 
@@ -438,9 +246,134 @@ class Bootstrap
     }
 
     /**
+     * Inicializar la aplicación
+     *
+     * @throws SPException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     */
+    public function initialize()
+    {
+        self::$checkPhpVersion = Checks::checkPhpVersion();
+        self::$checkInitSourceInclude = $this->checkInitSourceInclude();
+
+        if (date_default_timezone_get() === 'UTC') {
+            date_default_timezone_set('UTC');
+        }
+
+        // Inicializar autentificación
+        $this->initAuthVariables();
+
+        // Inicializar logging
+        $this->initLogging();
+
+        // Cargar las extensiones
+//        self::loadExtensions();
+
+        // Establecer el lenguaje por defecto
+        Language::setLocales('en_US');
+
+        //  Establecer las rutas de la aplicación
+        $this->initPaths();
+
+        if (!self::$checkPhpVersion && !self::$checkInitSourceInclude) {
+            throw new InitializationException(
+                __u('Versión de PHP requerida >= ') . ' 5.6.0 <= 7.0',
+                SPException::ERROR,
+                __u('Actualice la versión de PHP para que la aplicación funcione correctamente')
+            );
+        }
+
+        // Comprobar la configuración
+        $this->initConfig();
+
+        // Iniciar la sesión de PHP
+        $this->initSession($this->configData->isEncryptSession());
+
+        // Volver a cargar la configuración si se recarga la página
+        if (!Request::checkReload()) {
+            // Cargar la configuración
+            $this->config->loadConfig();
+
+            // Cargar el lenguaje
+            Language::setLanguage();
+        } else {
+            // Cargar la configuración
+            $this->config->loadConfig(true);
+
+            // Restablecer el idioma y el tema visual
+            Language::setLanguage(true);
+            $this->theme->initTheme(true);
+
+            if ($this->session->isLoggedIn()) {
+                // Recargar los permisos del perfil de usuario
+                $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
+                // Reset de los datos de ACL de cuentas
+                AccountAcl::resetData();
+            }
+        }
+
+        // Comprobar si es necesario cambiar a HTTPS
+        HttpUtil::checkHttps();
+
+        // Comprobar si es necesario inicialización
+        if ((defined('IS_INSTALLER') || defined('IS_UPGRADE')) && Checks::isAjax($this->router)) {
+            return;
+        }
+
+        // Comprobar si está instalado
+        $this->checkInstalled();
+
+        // Comprobar si el modo mantenimiento está activado
+        $this->checkMaintenanceMode();
+
+        // Comprobar si la Base de datos existe
+        DBUtil::checkDatabaseExist();
+
+        // Comprobar si es necesario actualizar componentes
+//        $this->checkUpgrade();
+
+        // Inicializar la sesión
+        $this->initUserSession();
+
+        // Cargar los plugins
+        PluginUtil::loadPlugins();
+
+        // Comprobar acciones en URL
+//        $this->checkPreLoginActions();
+
+        if ($this->session->isLoggedIn() && $this->session->getAuthCompleted() === true) {
+            $AuthBrowser = new Browser();
+
+            // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
+            if ($AuthBrowser->checkServerAuthUser($this->session->getUserData()->getLogin()) === false
+                && $AuthBrowser->checkServerAuthUser($this->session->getUserData()->getSsoLogin()) === false
+            ) {
+                throw new InitializationException('Logout');
+//                $this->goLogout();
+            }
+        }
+
+        // El usuario no está logado y no es una petición, redirigir al login
+//        $this->goLogin();
+    }
+
+    /**
+     * Comprobar el archivo que realiza el include necesita inicialización.
+     *
+     * @returns bool
+     */
+    private function checkInitSourceInclude()
+    {
+        self::$sourceScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
+        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php', 'ajax_task.php'];
+
+        return in_array(self::$sourceScript, $skipInit, true);
+    }
+
+    /**
      * Establecer variables de autentificación
      */
-    private function initAuth()
+    private function initAuthVariables()
     {
         // Copiar la cabecera http de autentificación para apache+php-fcgid
         if (isset($_SERVER['HTTP_XAUTHORIZATION']) && !isset($_SERVER['HTTP_AUTHORIZATION'])) {
@@ -496,10 +429,6 @@ class Bootstrap
      */
     private function initPaths()
     {
-        // Calcular los directorios raíz
-//        $dir = substr(__DIR__, 0, strpos(__DIR__, str_replace('\\', '/', __NAMESPACE__)) - 1);
-//        self::$SERVERROOT = substr($dir, 0, strripos($dir, DIRECTORY_SEPARATOR));
-
         self::$SERVERROOT = dirname(BASE_PATH);
 
         self::$SUBURI = str_replace("\\", '/', substr(realpath($_SERVER['SCRIPT_FILENAME']), strlen(self::$SERVERROOT)));
@@ -517,9 +446,7 @@ class Bootstrap
             }
         }
 
-        $pos = strpos($scriptName, self::$SUBURI);
-
-        if ($pos === false) {
+        if (($pos = strpos($scriptName, self::$SUBURI)) === false) {
             $pos = strpos($scriptName, '?');
         }
 
@@ -533,52 +460,17 @@ class Bootstrap
     }
 
     /**
-     * Devuelve un error utilizando la plantilla de error o en formato JSON
-     *
-     * @param string $message con la descripción del error
-     * @param string $hint    opcional, con una ayuda sobre el error
-     * @param bool   $headers
-     */
-    public static function initError($message, $hint = '', $headers = false)
-    {
-        debugLog(__FUNCTION__);
-        debugLog(__($message));
-        debugLog(__($hint));
-
-        if (Checks::isJson()) {
-            $JsonResponse = new JsonResponse();
-            $JsonResponse->setDescription($message);
-            $JsonResponse->addMessage($hint);
-            Json::returnJson($JsonResponse);
-        } elseif ($headers === true) {
-            header('HTTP/1.1 503 Service Temporarily Unavailable');
-            header('Status: 503 Service Temporarily Unavailable');
-            header('Retry-After: 120');
-        }
-
-        SessionUtil::cleanSession();
-
-        $Tpl = new Template();
-        $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => __($message), 'hint' => __($hint)]);
-
-        $Controller = new MainController($Tpl, 'error', !Checks::isAjax());
-        $Controller->getError();
-    }
-
-    /**
      * Cargar la configuración
+     *
+     * @throws ConfigException
      */
     private function initConfig()
     {
         // Comprobar si es una versión antigua
         $this->checkConfigVersion();
 
-        try {
-            if (!self::$checkInitSourceInclude) {
-                ConfigUtil::checkConfigDir();
-            }
-        } catch (ConfigException $e) {
-            self::initError($e->getMessage(), $e->getHint());
+        if (!self::$checkInitSourceInclude) {
+            ConfigUtil::checkConfigDir();
         }
     }
 
@@ -590,7 +482,7 @@ class Bootstrap
         $appVersion = Util::getVersionStringNormalized();
 
         if (file_exists(OLD_CONFIG_FILE) && $this->upgrade->upgradeOldConfigFile($appVersion)) {
-            $this->logConfigUpgrade($appVersion);
+//            $this->logConfigUpgrade($appVersion);
 
             self::$UPDATED = true;
 
@@ -604,34 +496,17 @@ class Bootstrap
             && $this->upgrade->needConfigUpgrade($configVersion)
             && $this->upgrade->upgradeConfig($configVersion)
         ) {
-            $this->logConfigUpgrade($appVersion);
+//            $this->logConfigUpgrade($appVersion);
 
             self::$UPDATED = true;
         }
     }
 
     /**
-     * Registrar la actualización de la configuración
-     *
-     * @param $version
-     */
-    private function logConfigUpgrade($version)
-    {
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Actualización', false));
-        $LogMessage->addDescription(__('Actualización de versión realizada.', false));
-        $LogMessage->addDetails(__('Versión', false), $version);
-        $LogMessage->addDetails(__('Tipo', false), 'config');
-        $Log->writeLog();
-
-        Email::sendEmail($LogMessage);
-    }
-
-    /**
      * Iniciar la sesión PHP
      *
      * @param bool $encrypt Encriptar la sesión de PHP
+     * @throws InitializationException
      */
     private function initSession($encrypt = false)
     {
@@ -640,20 +515,56 @@ class Bootstrap
         ini_set('session.save_handler', 'files');
 
         if ($encrypt === true) {
-            $Key = SecureKeyCookie::getKey();
+            $key = SecureKeyCookie::getKey();
 
-            if ($Key !== false && self::$checkPhpVersion) {
-                session_set_save_handler(new CryptSessionHandler($Key), true);
+            if ($key !== false && self::$checkPhpVersion) {
+                session_set_save_handler(new CryptSessionHandler($key), true);
             }
         }
 
         // Si la sesión no puede ser iniciada, devolver un error 500
         if (session_start() === false) {
-            Log::writeNewLog(__('Sesión', false), __('La sesión no puede ser inicializada', false));
+            $this->router->response()->header('HTTP/1.1', '500 Internal Server Error');
 
-            header('HTTP/1.1 500 Internal Server Error');
+            throw new InitializationException(__u('La sesión no puede ser inicializada'));
+        }
+    }
 
-            self::initError(__('La sesión no puede ser inicializada'), __('Consulte con el administrador'));
+    /**
+     * Comprueba que la aplicación esté instalada
+     * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
+     *
+     * @throws InitializationException
+     */
+    private function checkInstalled()
+    {
+        // Redirigir al instalador si no está instalada
+        if (!$this->configData->isInstalled()) {
+            throw new InitializationException('Not installed');
+
+//            if (self::$SUBURI !== '/index.php') {
+//                // FIXME
+//                $this->router->response()->redirect('index.php?r=install');
+//
+//                $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
+//
+//                $url = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . self::$WEBROOT . '/index.php';
+//                header("Location: $url");
+//                exit();
+//            }
+//
+//            if ($this->session->getAuthCompleted()) {
+//                session_destroy();
+//
+//                $this->initialize();
+//                return;
+//            }
+//
+//            // Comprobar si sysPass está instalada o en modo mantenimiento
+//            $Controller = new MainController();
+//            $Controller->getInstaller();
+//            $Controller->view();
+//            exit();
         }
     }
 
@@ -664,6 +575,7 @@ class Bootstrap
      *
      * @param bool $check sólo comprobar si está activado el modo
      * @return bool
+     * @throws InitializationException
      */
     public function checkMaintenanceMode($check = false)
     {
@@ -671,7 +583,7 @@ class Bootstrap
             self::$LOCK = Util::getAppLock();
 
             if ($check === true
-                || Checks::isAjax()
+                || Checks::isAjax($this->router)
                 || Request::analyze('nodbupgrade', 0) === 1
                 || (Request::analyze('a') === 'upgrade' && Request::analyze('type') !== '')
                 || (self::$LOCK > 0 && $this->session->isLoggedIn() && self::$LOCK === $this->session->getUserData()->getId())
@@ -679,21 +591,10 @@ class Bootstrap
                 return true;
             }
 
-            self::initError(__('Aplicación en mantenimiento'), __('En breve estará operativa'));
+            throw new InitializationException(__u('Aplicación en mantenimiento'), SPException::INFO, __u('En breve estará operativa'));
         }
 
         return false;
-    }
-
-    /**
-     * Comprobar si es necesario actualizar componentes
-     *
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     */
-    private function checkUpgrade()
-    {
-        return self::$SUBURI === '/index.php'
-            && ($this->upgrade->checkDbVersion() || $this->upgrade->checkAppVersion());
     }
 
     /**
@@ -710,8 +611,8 @@ class Bootstrap
             && !$inMaintenance
             && (time() - $lastActivity) > $this->getSessionLifeTime()
         ) {
-            if (isset($_COOKIE[session_name()])) {
-                setcookie(session_name(), '', time() - 42000, '/');
+            if ($this->router->request()->cookies()->get(session_name()) !== null) {
+                $this->router->response()->cookie(session_name(), '', time() - 42000);
             }
 
             $this->wrLogoutInfo();
@@ -786,6 +687,98 @@ class Bootstrap
     }
 
     /**
+     * @return ContainerInterface
+     */
+    public static function getContainer()
+    {
+        return self::$container;
+    }
+
+    /**
+     * Devuelve un error utilizando la plantilla de error o en formato JSON
+     *
+     * @param string $message con la descripción del error
+     * @param string $hint    opcional, con una ayuda sobre el error
+     * @param bool   $headers
+     */
+    public static function initError($message, $hint = '', $headers = false)
+    {
+        debugLog(__FUNCTION__);
+        debugLog(__($message));
+        debugLog(__($hint));
+
+        if (Checks::isJson()) {
+            $JsonResponse = new JsonResponse();
+            $JsonResponse->setDescription($message);
+            $JsonResponse->addMessage($hint);
+            Json::returnJson($JsonResponse);
+        } elseif ($headers === true) {
+            header('HTTP/1.1 503 Service Temporarily Unavailable');
+            header('Status: 503 Service Temporarily Unavailable');
+            header('Retry-After: 120');
+        }
+
+        SessionUtil::cleanSession();
+
+        $Tpl = new Template();
+        $Tpl->append('errors', ['type' => SPException::CRITICAL, 'description' => __($message), 'hint' => __($hint)]);
+
+        $Controller = new MainController($Tpl, 'error', !Checks::isAjax());
+        $Controller->getError();
+    }
+
+    /**
+     * @param $module
+     * @throws InitializationException
+     */
+    public function run($module = APP_MODULE)
+    {
+        switch ($module) {
+            case 'web':
+                $this->router->dispatch();
+                break;
+            default;
+                throw new InitializationException('Unknown module');
+        }
+    }
+
+    /**
+     * Comprobar si hay que ejecutar acciones de URL después de realizar login.
+     *
+     * @return bool
+     */
+    public function checkPostLoginActions()
+    {
+        $action = Request::analyze('a');
+
+        if ($action === '') {
+            return false;
+        }
+
+        $Controller = new MainController();
+        $Controller->doAction('postlogin.' . $action);
+
+        return false;
+    }
+
+    /**
+     * @param Config  $config
+     * @param Upgrade $upgrade
+     * @param Session $session
+     * @param Theme   $theme
+     * @param Klein   $router
+     */
+    public function inject(Config $config, Upgrade $upgrade, Session $session, Theme $theme, Klein $router)
+    {
+        $this->config = $config;
+        $this->configData = $config->getConfigData();
+        $this->upgrade = $upgrade;
+        $this->session = $session;
+        $this->theme = $theme;
+        $this->router = $router;
+    }
+
+    /**
      * Comprobar si hay que ejecutar acciones de URL antes de presentar la pantalla de login.
      *
      * @return bool
@@ -805,18 +798,34 @@ class Bootstrap
     }
 
     /**
-     * Deslogar el usuario actual y eliminar la información de sesión.
+     * Comprobar si es necesario actualizar componentes
+     *
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
-    private function goLogout()
+    private function checkUpgrade()
     {
-        $this->wrLogoutInfo();
+        if (self::$SUBURI === '/index.php') {
+            $this->upgrade->checkDbVersion();
+            $this->upgrade->checkAppVersion();
+        }
+    }
 
-        SessionUtil::cleanSession();
+    /**
+     * Registrar la actualización de la configuración
+     *
+     * @param $version
+     */
+    private function logConfigUpgrade($version)
+    {
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Actualización', false));
+        $LogMessage->addDescription(__('Actualización de versión realizada.', false));
+        $LogMessage->addDetails(__('Versión', false), $version);
+        $LogMessage->addDetails(__('Tipo', false), 'config');
+        $Log->writeLog();
 
-        SessionFactory::setLoggedOut(true);
-
-        $Controller = new MainController();
-        $Controller->getLogout();
+        Email::sendEmail($LogMessage);
     }
 
     /**
@@ -830,15 +839,17 @@ class Bootstrap
     }
 
     /**
-     * Setups DI container
+     * Deslogar el usuario actual y eliminar la información de sesión.
      */
-    private function setupContainer()
+    private function goLogout()
     {
-        $builder = new ContainerBuilder();
-        $builder->setDefinitionCache(new ArrayCache());
-        $builder->writeProxiesToFile(true, CACHE_PATH . DIRECTORY_SEPARATOR . 'proxies');
-        $builder->addDefinitions(BASE_PATH . DIRECTORY_SEPARATOR . 'Definitions.php');
+        $this->wrLogoutInfo();
 
-        self::$container = $builder->build();
+        SessionUtil::cleanSession();
+
+        SessionFactory::setLoggedOut(true);
+
+        $Controller = new MainController();
+        $Controller->getLogout();
     }
 }

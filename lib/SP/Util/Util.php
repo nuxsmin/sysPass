@@ -238,7 +238,7 @@ class Util
         if (!Checks::curlIsAvailable()) {
             $Log = LogUtil::extensionNotLoaded('CURL', __FUNCTION__);
 
-            throw new SPException(SPException::SP_WARNING, $Log->getDescription());
+            throw new SPException($Log->getDescription(), SPException::WARNING);
         }
 
         $ch = curl_init($url);
@@ -303,7 +303,7 @@ class Util
             $Log->setLogLevel(Log::ERROR);
             $Log->writeLog();
 
-            throw new SPException(SPException::SP_WARNING, $LogMessgae->getDescription());
+            throw new SPException($LogMessgae->getDescription(), SPException::WARNING);
         }
 
         return $data;

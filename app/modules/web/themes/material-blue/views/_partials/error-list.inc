@@ -7,7 +7,7 @@
     <ul class="errors round">
         <?php foreach ($errors as $err): ?>
             <?php if (is_array($err)): ?>
-                <?php if ($err['type'] === \SP\Core\Exceptions\SPException::SP_CRITICAL): ?>
+                <?php if ($err['type'] === \SP\Core\Exceptions\SPException::CRITICAL): ?>
                     <li class="msg-critical">
                         <i class="material-icons <?php echo $icons->getIconCritical()->getClass(); ?>"><?php echo $icons->getIconCritical()->getIcon(); ?></i>
                         <strong><?php echo $err['description']; ?></strong>
@@ -17,7 +17,7 @@
                             </p>
                         <?php endif; ?>
                     </li>
-                <?php elseif ($err['type'] === \SP\Core\Exceptions\SPException::SP_WARNING): ?>
+                <?php elseif ($err['type'] === \SP\Core\Exceptions\SPException::WARNING): ?>
                     <li class="msg-warning">
                         <i class="material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
                         <strong><?php echo $err['description']; ?></strong>

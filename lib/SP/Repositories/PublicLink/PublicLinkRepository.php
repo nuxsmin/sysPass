@@ -242,7 +242,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(SPException::SP_INFO, __u('Enlace ya creado'));
+            throw new SPException(__u('Enlace ya creado'), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -435,11 +435,11 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($Data, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __u('Error al obtener enlace'));
+            throw new SPException(__u('Error al obtener enlace'), SPException::ERROR);
         }
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_ERROR, __u('El enlace no existe'));
+            throw new SPException(__u('El enlace no existe'), SPException::ERROR);
         }
 
         return $queryRes;
@@ -484,11 +484,11 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($Data, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __u('Error al obtener enlace'));
+            throw new SPException(__u('Error al obtener enlace'), SPException::ERROR);
         }
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_ERROR, __u('El enlace no existe'));
+            throw new SPException(__u('El enlace no existe'), SPException::ERROR);
         }
 
         return $queryRes;
@@ -514,7 +514,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($Data, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __u('Error al obtener enlace'));
+            throw new SPException(__u('Error al obtener enlace'), SPException::ERROR);
         }
 
         return $queryRes;

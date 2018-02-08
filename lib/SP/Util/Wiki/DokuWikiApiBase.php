@@ -135,7 +135,7 @@ abstract class DokuWikiApiBase
             $this->params = $this->xml->createElement('params');
             $this->root->appendChild($this->params);
         } catch (DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
@@ -162,7 +162,7 @@ abstract class DokuWikiApiBase
             $xmlParam->appendChild($xmlValue);
             $this->params->appendChild($xmlParam);
         } catch (DOMException $e) {
-            throw new SPException(SPException::SP_WARNING, $e->getMessage(), __FUNCTION__);
+            throw new SPException($e->getMessage(), SPException::WARNING, __FUNCTION__);
         }
     }
 
@@ -193,9 +193,7 @@ abstract class DokuWikiApiBase
 
         if (count($error) > 0) {
             throw new SPException(
-                SPException::SP_WARNING,
-                __('Error al realizar la consulta', false),
-                $error['faultString']
+                __('Error al realizar la consulta', false), SPException::WARNING, $error['faultString']
             );
         }
     }
@@ -240,7 +238,7 @@ abstract class DokuWikiApiBase
         $this->apiPassword = empty($pass) ? $this->ConfigData->getDokuwikiPass() : $pass;
 
         if (empty($this->apiUrl)) {
-            throw new SPException(SPException::SP_WARNING, __('URL de conexión no establecida', false));
+            throw new SPException(__('URL de conexión no establecida', false), SPException::WARNING);
         }
     }
 }

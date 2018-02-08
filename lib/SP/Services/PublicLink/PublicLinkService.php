@@ -27,6 +27,7 @@ namespace SP\Services\PublicLink;
 use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
@@ -37,7 +38,6 @@ use SP\Http\Request;
 use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Services\ServiceItemTrait;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
 use SP\Util\Util;
@@ -217,7 +217,7 @@ class PublicLinkService
     public function delete($id)
     {
         if ($this->publicLinkRepository->delete($id) === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Enlace no encontrado'));
+            throw new SPException(__u('Enlace no encontrado'), SPException::INFO);
         }
 
         return $this;

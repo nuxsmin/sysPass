@@ -42,6 +42,6 @@ class AccountPermissionException extends SPException
      */
     public function __construct($type, $code = 0, \Exception $previous = null)
     {
-        parent::__construct($type, __u('No tiene permisos para acceder a esta cuenta'), __u('Consulte con el administrador'), $code, $previous);
+        parent::__construct(__u('No tiene permisos para acceder a esta cuenta'), $type, __u('Consulte con el administrador'), $code, $previous);
     }
 }

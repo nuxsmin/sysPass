@@ -219,7 +219,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     public function delete($id)
     {
         if ($this->deleteItemsDataForDefinition($id) === false) {
-            throw new SPException(SPException::SP_ERROR, __u('Error al eliminar el campo personalizado'));
+            throw new SPException(__u('Error al eliminar el campo personalizado'), SPException::ERROR);
         }
 
         $query = /** @lang SQL */

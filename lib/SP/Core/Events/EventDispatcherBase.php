@@ -77,7 +77,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
         $observerClass = get_class($observer);
 
         if (!array_key_exists($observerClass, $this->observers)) {
-            throw new InvalidClassException(SPException::SP_ERROR, __('Observador no inicializado'));
+            throw new InvalidClassException(SPException::ERROR, __('Observador no inicializado'));
         }
 
         unset($this->observers[$observerClass]);
@@ -107,7 +107,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
     public function notifyEvent($event, $object)
     {
         if (!is_object($object)) {
-            throw new InvalidArgumentException(SPException::SP_ERROR, __('Es necesario un objeto'));
+            throw new InvalidArgumentException(SPException::ERROR, __('Es necesario un objeto'));
         }
 
         foreach ($this->observers as $observer) {

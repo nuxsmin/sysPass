@@ -24,7 +24,6 @@
 
 namespace SP\Mgmt\Users;
 
-use SP\Config\Config;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
@@ -73,7 +72,7 @@ class UserSSO extends User
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, __u('Login/email de usuario duplicados'));
+            throw new SPException(__u('Login/email de usuario duplicados'), SPException::INFO);
         }
 
         $groupId = $this->ConfigData->getSsoDefaultGroup();

@@ -71,7 +71,7 @@ class ErrorUtil
 
         $view->append('errors',
             [
-                'type' => SPException::SP_WARNING,
+                'type' => SPException::WARNING,
                 'description' => $error['txt'],
                 'hint' => $error['hint']
             ]);
@@ -130,7 +130,7 @@ class ErrorUtil
 
         $view->append('errors',
             [
-                'type' => SPException::SP_WARNING,
+                'type' => SPException::WARNING,
                 'description' => $error['txt'],
                 'hint' => $error['hint']
             ]);

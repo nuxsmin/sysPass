@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use SP\Bootstrap;
-use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
 use SP\Controller\LoginController;
@@ -39,7 +38,6 @@ use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Upgrade\User as UpgradeUser;
-use SP\DataModel\UserData;
 use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPassData;
 use SP\Log\Email;
@@ -260,7 +258,7 @@ class UserPass extends UserBase
 
             if (!empty($cryptMPass)) {
                 if (strlen($securedKey) > 1000 || strlen($cryptMPass) > 1000) {
-                    throw new QueryException(SPException::SP_ERROR, __u('Error interno'), '', LoginController::STATUS_INTERNAL_ERROR);
+                    throw new QueryException(SPException::ERROR, __u('Error interno'), '', LoginController::STATUS_INTERNAL_ERROR);
                 }
 
                 $query = /** @lang SQL */

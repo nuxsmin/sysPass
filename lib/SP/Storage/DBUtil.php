@@ -25,6 +25,7 @@
 namespace SP\Storage;
 
 
+use RuntimeException;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\DiFactory;
@@ -141,8 +142,8 @@ class DBUtil
         } catch (\Exception $e) {
             debugLog($e->getMessage());
             debugLog($e->getCode());
-        }
 
-        return false;
+            throw new RuntimeException(__u('Error en la verificación de la base de datos'));
+        }
     }
 }

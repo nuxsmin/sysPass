@@ -82,9 +82,7 @@ class FileImport
     {
         if (!is_array($fileData)) {
             throw new SPException(
-                SPException::SP_CRITICAL,
-                __('Archivo no subido correctamente', false),
-                __('Verifique los permisos del usuario del servidor web', false));
+                __('Archivo no subido correctamente', false), SPException::CRITICAL, __('Verifique los permisos del usuario del servidor web', false));
         }
 
         if ($fileData['name']) {
@@ -93,9 +91,7 @@ class FileImport
 
             if ($fileExtension !== 'CSV' && $fileExtension !== 'XML') {
                 throw new SPException(
-                    SPException::SP_CRITICAL,
-                    __('Tipo de archivo no soportado', false),
-                    __('Compruebe la extensión del archivo', false)
+                    __('Tipo de archivo no soportado', false), SPException::CRITICAL, __('Compruebe la extensión del archivo', false)
                 );
             }
         }
@@ -109,9 +105,7 @@ class FileImport
             Util::getMaxUpload();
 
             throw new SPException(
-                SPException::SP_CRITICAL,
-                __('Error interno al leer el archivo', false),
-                __('Compruebe la configuración de PHP para subir archivos', false)
+                __('Error interno al leer el archivo', false), SPException::CRITICAL, __('Compruebe la configuración de PHP para subir archivos', false)
             );
         }
     }
@@ -153,9 +147,7 @@ class FileImport
 
         if ($this->fileContent === false) {
             throw new SPException(
-                SPException::SP_CRITICAL,
-                __('Error interno al leer el archivo', false),
-                __('Compruebe los permisos del directorio temporal', false)
+                __('Error interno al leer el archivo', false), SPException::CRITICAL, __('Compruebe los permisos del directorio temporal', false)
             );
         }
     }
@@ -181,9 +173,7 @@ class FileImport
 
         if ($this->fileContent === false) {
             throw new SPException(
-                SPException::SP_CRITICAL,
-                __('Error interno al leer el archivo', false),
-                __('Compruebe los permisos del directorio temporal', false)
+                __('Error interno al leer el archivo', false), SPException::CRITICAL, __('Compruebe los permisos del directorio temporal', false)
             );
         }
     }

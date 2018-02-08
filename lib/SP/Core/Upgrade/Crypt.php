@@ -55,11 +55,11 @@ class Crypt
             AccountHistoryCrypt::$currentMPassHash = ConfigDB::getValue('masterPwd');
 
             if (!DbWrapper::beginTransaction()) {
-                throw new SPException(SPException::SP_ERROR, __('No es posible iniciar una transacción', false));
+                throw new SPException(__('No es posible iniciar una transacción', false), SPException::ERROR);
             }
 
             if (!self::migrateHash($masterPass)) {
-                throw new SPException(SPException::SP_INFO, __('Clave maestra incorrecta', false));
+                throw new SPException(__('Clave maestra incorrecta', false), SPException::INFO);
             }
 
             self::migrateAccounts($masterPass);
@@ -67,7 +67,7 @@ class Crypt
             UserMigrate::setMigrateUsers();
 
             if (!DbWrapper::endTransaction()) {
-                throw new SPException(SPException::SP_ERROR, __('No es posible finalizar una transacción', false));
+                throw new SPException(__('No es posible finalizar una transacción', false), SPException::ERROR);
             }
 
             debugLog('Total time: ' . getElapsedTime());

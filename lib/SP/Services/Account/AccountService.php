@@ -31,6 +31,7 @@ use SP\Account\AccountUtil;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
@@ -43,7 +44,6 @@ use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\Account\AccountToTagRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Repositories\Account\AccountToUserRepository;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Services\Config\ConfigService;
 use SP\Services\ServiceItemTrait;
 
@@ -224,12 +224,12 @@ class AccountService implements AccountServiceInterface
             $out['pass'] = Crypt::encrypt($pass, $out['key'], $masterPass);
 
             if (strlen($pass) > 1000 || strlen($out['key']) > 1000) {
-                throw new QueryException(SPException::SP_ERROR, __u('Error interno'));
+                throw new QueryException(SPException::ERROR, __u('Error interno'));
             }
 
             return $out;
         } catch (CryptoException $e) {
-            throw new SPException(SPException::SP_ERROR, __u('Error interno'));
+            throw new SPException(__u('Error interno'), SPException::ERROR);
         }
     }
 

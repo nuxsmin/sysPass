@@ -39,7 +39,6 @@ use SP\Log\Email;
 use SP\Log\Log;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
-use SP\Util\Checks;
 use SP\Util\Util;
 
 /**
@@ -185,7 +184,7 @@ class AccountHistoryCrypt
                 $AccountData->key = $securedKey;
 
                 if (strlen($securedKey) > 1000 || strlen($AccountData->pass) > 1000) {
-                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                    throw new QueryException(SPException::ERROR, __('Error interno', false));
                 }
 
                 $Account = new AccountHistory();
@@ -311,7 +310,7 @@ class AccountHistoryCrypt
                 $AccountData->key = $newSecuredKey;
 
                 if (strlen($newSecuredKey) > 1000 || strlen($AccountData->pass) > 1000) {
-                    throw new QueryException(SPException::SP_ERROR, __('Error interno', false));
+                    throw new QueryException(SPException::ERROR, __('Error interno', false));
                 }
 
                 $Account = new AccountHistory();

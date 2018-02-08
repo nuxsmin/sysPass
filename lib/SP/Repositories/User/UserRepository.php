@@ -25,12 +25,11 @@
 namespace SP\Repositories\User;
 
 use SP\Core\Acl\Acl;
-use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
-use SP\DataModel\UserLoginData;
 use SP\Log\Log;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -59,7 +58,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(SPException::SP_INFO, __u('Login/email de usuario duplicados'));
+            throw new SPException(__u('Login/email de usuario duplicados'), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -187,7 +186,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         DbWrapper::getQuery($Data, $this->db);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __u('Usuario no encontrado'));
+            throw new SPException(__u('Usuario no encontrado'), SPException::INFO);
         }
 
         return $this;
@@ -240,7 +239,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($Data, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __u('Error al obtener los datos del usuario'));
+            throw new SPException(__u('Error al obtener los datos del usuario'), SPException::ERROR);
         }
 
         return $queryRes;
@@ -446,7 +445,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(SPException::SP_INFO, __u('Login/email de usuario duplicados'));
+            throw new SPException(__u('Login/email de usuario duplicados'), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -564,7 +563,11 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($Data, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(SPException::SP_ERROR, __u('Error al obtener los datos del usuario'));
+            throw new SPException(__u('Error al obtener los datos del usuario'), SPException::ERROR);
+        }
+
+        if ($Data->getQueryNumRows() === 0) {
+            throw new NoSuchItemException(__u('El usuario no existe'));
         }
 
         return $queryRes;

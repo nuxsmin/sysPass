@@ -26,8 +26,8 @@ namespace SP\Repositories\UserGroup;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\UserGroupData;
 use SP\DataModel\ItemSearchData;
+use SP\DataModel\UserGroupData;
 use SP\Log\Log;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
@@ -54,7 +54,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     public function delete($id)
     {
         if ($this->checkInUse($id)) {
-            throw new SPException(SPException::SP_WARNING, __u('Grupo en uso'));
+            throw new SPException(__u('Grupo en uso'), SPException::WARNING);
         }
 
         $query = /** @lang SQL */
@@ -272,7 +272,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(SPException::SP_INFO, __u('Nombre de grupo duplicado'));
+            throw new SPException(__u('Nombre de grupo duplicado'), SPException::INFO);
         }
 
         $query = /** @lang SQL */
@@ -322,7 +322,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(SPException::SP_INFO, __u('Nombre de grupo duplicado'));
+            throw new SPException(__u('Nombre de grupo duplicado'), SPException::INFO);
         }
 
         $query = /** @lang SQL */

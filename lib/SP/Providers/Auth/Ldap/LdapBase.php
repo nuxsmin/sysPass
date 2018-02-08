@@ -24,7 +24,6 @@
 
 namespace SP\Providers\Auth\Ldap;
 
-use SP\Providers\Auth\AuthInterface;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
@@ -32,6 +31,7 @@ use SP\Core\Messages\LogMessage;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\UserLoginData;
 use SP\Log\Log;
+use SP\Providers\Auth\AuthInterface;
 
 /**
  * Class LdapBase
@@ -205,7 +205,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             $this->LogMessage->addDetails('LDAP ERROR', $this->ldapError());
             $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription(), $this->LogMessage->getDetails());
+            throw new SPException($this->LogMessage->getDescription(), SPException::ERROR, $this->LogMessage->getDetails());
         }
 
         @ldap_set_option($this->ldapHandler, LDAP_OPT_NETWORK_TIMEOUT, 10);
@@ -253,7 +253,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             $this->LogMessage->addDetails('LDAP DN', $dn);
             $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, __($this->LogMessage->getDescription()));
+            throw new SPException(__($this->LogMessage->getDescription()), SPException::ERROR);
         }
 
         return true;
@@ -276,7 +276,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             $this->LogMessage->addDetails('LDAP FILTER', $this->getGroupDnFilter());
             $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
+            throw new SPException($this->LogMessage->getDescription(), SPException::ERROR);
         }
 
         return $searchResults;
@@ -597,7 +597,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             $this->LogMessage->addDetails('LDAP FILTER', $this->getUserDnFilter());
             $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
+            throw new SPException($this->LogMessage->getDescription(), SPException::ERROR);
         }
 
         return $searchResults;
@@ -631,7 +631,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             $this->LogMessage->addDetails('LDAP FILTER', $filter);
             $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
+            throw new SPException($this->LogMessage->getDescription(), SPException::ERROR);
         }
 
         return $searchResults[0]['dn'];
@@ -698,7 +698,7 @@ abstract class LdapBase implements LdapInterface, AuthInterface
             $this->LogMessage->addDetails('LDAP FILTER', $this->getGroupDnFilter());
             $this->writeLog();
 
-            throw new SPException(SPException::SP_ERROR, $this->LogMessage->getDescription());
+            throw new SPException($this->LogMessage->getDescription(), SPException::ERROR);
         }
 
         return $searchResults;

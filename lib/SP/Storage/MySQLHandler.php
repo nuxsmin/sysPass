@@ -137,9 +137,7 @@ class MySQLHandler implements DBStorageInterface
                 if ($isInstalled) {
                     Init::initError(__('No es posible conectar con la BD'), __('Compruebe los datos de conexión'));
                 } else {
-                    throw new SPException(SPException::SP_CRITICAL,
-                        __('No es posible conectar con la BD', false),
-                        __('Compruebe los datos de conexión', false));
+                    throw new SPException(__('No es posible conectar con la BD', false), SPException::CRITICAL, __('Compruebe los datos de conexión', false));
                 }
             }
 
@@ -164,7 +162,7 @@ class MySQLHandler implements DBStorageInterface
                         __('No es posible conectar con la BD'),
                         'Error ' . $e->getCode() . ': ' . $e->getMessage());
                 } else {
-                    throw new SPException(SPException::SP_CRITICAL, $e->getMessage(), $e->getCode());
+                    throw new SPException($e->getMessage(), SPException::CRITICAL, $e->getCode());
                 }
             }
         }

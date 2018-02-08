@@ -26,21 +26,19 @@ namespace SP\Core;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountAcl;
-use SP\Providers\Auth\Browser\Browser;
 use SP\Config\Config;
-use SP\Modules\Web\Controllers\MainController;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\SecureKeyCookie;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Plugin\PluginUtil;
 use SP\Core\Upgrade\Upgrade;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\Profiles\Profile;
-use SP\Mgmt\Users\UserUtil;
+use SP\Modules\Web\Controllers\MainController;
+use SP\Providers\Auth\Browser\Browser;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
@@ -390,7 +388,7 @@ class Init
         SessionUtil::cleanSession();
 
         $Tpl = new Template();
-        $Tpl->append('errors', ['type' => SPException::SP_CRITICAL, 'description' => __($message), 'hint' => __($hint)]);
+        $Tpl->append('errors', ['type' => SPException::CRITICAL, 'description' => __($message), 'hint' => __($hint)]);
 
         $Controller = new MainController($Tpl, 'error', !Checks::isAjax());
         $Controller->getError();

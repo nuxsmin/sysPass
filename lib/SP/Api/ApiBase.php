@@ -96,7 +96,7 @@ abstract class ApiBase implements ApiInterface
         if ($this->ApiTokenData === false) {
             ApiUtil::addTracking();
 
-            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
+            throw new SPException(__('Acceso no permitido', false), SPException::CRITICAL);
         }
 
         $this->data = $data;
@@ -156,7 +156,7 @@ abstract class ApiBase implements ApiInterface
         ) {
             ApiUtil::addTracking();
 
-            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
+            throw new SPException(__('Acceso no permitido', false), SPException::CRITICAL);
         }
     }
 
@@ -172,7 +172,7 @@ abstract class ApiBase implements ApiInterface
     protected function getParam($name, $required = false, $default = null)
     {
         if ($required === true && !isset($this->data->params->$name)) {
-            throw new InvalidArgumentException(SPException::SP_WARNING, __('Parámetros incorrectos', false), $this->getHelp($this->data->method));
+            throw new InvalidArgumentException(SPException::WARNING, __('Parámetros incorrectos', false), $this->getHelp($this->data->method));
         }
 
         if (isset($this->data->params->$name)) {
@@ -197,10 +197,10 @@ abstract class ApiBase implements ApiInterface
             if ($Vault && $pass = $Vault->getData($this->getParam('tokenPass') . $this->getParam('authToken'))) {
                 return $pass;
             } else {
-                throw new SPException(SPException::SP_ERROR, __('Error interno', false), __('Datos inválidos', false));
+                throw new SPException(__('Error interno', false), SPException::ERROR, __('Datos inválidos', false));
             }
         } catch (CryptoException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error interno', false), $e->getMessage());
+            throw new SPException(__('Error interno', false), SPException::ERROR, $e->getMessage());
         }
     }
 
@@ -215,7 +215,7 @@ abstract class ApiBase implements ApiInterface
         if ($this->actionId !== $action) {
             ApiUtil::addTracking();
 
-            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
+            throw new SPException(__('Acceso no permitido', false), SPException::CRITICAL);
         }
     }
 
@@ -249,7 +249,7 @@ abstract class ApiBase implements ApiInterface
         if ($this->auth === false) {
             ApiUtil::addTracking();
 
-            throw new SPException(SPException::SP_CRITICAL, __('Acceso no permitido', false));
+            throw new SPException(__('Acceso no permitido', false), SPException::CRITICAL);
         }
     }
 }

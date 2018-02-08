@@ -24,11 +24,9 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use Exception;
 use SP\Bootstrap;
 use SP\Core\CryptPKI;
 use SP\Core\Plugin\PluginUtil;
-use SP\Core\SessionFactory;
 use SP\Http\Cookies;
 use SP\Http\Response;
 use SP\Providers\Auth\Browser\Browser;
@@ -42,16 +40,18 @@ class BootstrapController extends SimpleControllerBase
 {
     /**
      * Returns environment data
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function getEnvironmentAction()
     {
         $configData = $this->config->getConfigData();
 
         $data = [
-            'lang' => require PUBLIC_PATH . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'strings.js.php',
+            'lang' => require CONFIG_PATH . DIRECTORY_SEPARATOR . 'strings.js.inc',
             'locale' => $configData->getSiteLang(),
             'app_root' => Bootstrap::$WEBURI,
-            'pk' => '',
             'max_file_size' => $configData->getFilesAllowedSize(),
             'check_updates' => $this->session->getAuthCompleted()
                 && ($configData->isCheckUpdates() || $configData->isChecknotices())
@@ -61,14 +61,9 @@ class BootstrapController extends SimpleControllerBase
             'cookies_enabled' => Cookies::checkCookies(),
             'plugins' => PluginUtil::getEnabledPlugins(),
             'loggedin' => $this->session->isLoggedIn(),
-            'authbasic_autologin' => Browser::getServerAuthUser() && $configData->isAuthBasicAutoLoginEnabled()
+            'authbasic_autologin' => Browser::getServerAuthUser() && $configData->isAuthBasicAutoLoginEnabled(),
+            'pk' => $this->session->getPublicKey() ?: (new CryptPKI())->getPublicKey()
         ];
-
-        try {
-            $CryptPKI = new CryptPKI();
-            $data['pk'] = SessionFactory::getPublicKey() ?: $CryptPKI->getPublicKey();
-        } catch (Exception $e) {
-        }
 
         Response::printJson($data, 0);
     }

@@ -174,11 +174,11 @@ class AccountHelper extends HelperBase
     public function checkActionAccess()
     {
         if (!$this->acl->checkUserAccess($this->actionId)) {
-            throw new UnauthorizedPageException(SPException::SP_INFO);
+            throw new UnauthorizedPageException(SPException::INFO);
         }
 
         if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getId())) {
-            throw new UpdatedMasterPassException(SPException::SP_INFO);
+            throw new UpdatedMasterPassException(SPException::INFO);
         }
     }
 
@@ -204,7 +204,7 @@ class AccountHelper extends HelperBase
         $accountAcl = $this->accountAcl->getAcl($acccountAclDto);
 
         if ($accountAcl === null || !$accountAcl->checkAccountAccess()) {
-            throw new AccountPermissionException(SPException::SP_INFO);
+            throw new AccountPermissionException(SPException::INFO);
         }
 
         return $accountAcl;

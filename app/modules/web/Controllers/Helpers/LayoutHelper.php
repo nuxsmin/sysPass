@@ -137,9 +137,10 @@ class LayoutHelper extends HelperBase
     {
         $version = Util::getVersionStringNormalized();
 
+        $jsUri = Bootstrap::$WEBURI . '/index.php?r=resource/js';
         $jsVersionHash = md5($version);
-        $this->view->append('jsLinks', Bootstrap::$WEBROOT . '/public/js/js.php?v=' . $jsVersionHash);
-        $this->view->append('jsLinks', Bootstrap::$WEBROOT . '/public/js/js.php?g=1&v=' . $jsVersionHash);
+        $this->view->append('jsLinks', $jsUri . '&v=' . $jsVersionHash);
+        $this->view->append('jsLinks', $jsUri . '&g=1&v=' . $jsVersionHash);
 
         $themeInfo = $this->theme->getThemeInfo();
 
@@ -147,7 +148,7 @@ class LayoutHelper extends HelperBase
             $themeJsBase = urlencode($this->theme->getThemePath() . DIRECTORY_SEPARATOR . 'js');
             $themeJsFiles = urlencode(implode(',', $themeInfo['js']));
 
-            $this->view->append('jsLinks', Bootstrap::$WEBROOT . '/public/js/js.php?f=' . $themeJsFiles . '&b=' . $themeJsBase . '&v=' . $jsVersionHash);
+            $this->view->append('jsLinks', $jsUri . '&f=' . $themeJsFiles . '&b=' . $themeJsBase . '&v=' . $jsVersionHash);
         }
 
         $userPreferences = $this->session->getUserData()->getPreferences();
@@ -158,15 +159,12 @@ class LayoutHelper extends HelperBase
             $resultsAsCards = $this->configData->isResultsAsCards();
         }
 
+        $cssUri = Bootstrap::$WEBURI . '/index.php?r=resource/css';
         $cssVersionHash = md5($version . $resultsAsCards);
-        $this->view->append('cssLinks', Bootstrap::$WEBROOT . '/public/css/css.php?v=' . $cssVersionHash);
+        $this->view->append('cssLinks', $cssUri . '&v=' . $cssVersionHash);
 
         if (isset($themeInfo['css'])) {
-            if ($resultsAsCards) {
-                $themeInfo['css'][] = 'search-card.min.css';
-            } else {
-                $themeInfo['css'][] = 'search-grid.min.css';
-            }
+            $themeInfo['css'][] = $resultsAsCards ? 'search-card.min.css' : 'search-grid.min.css';
 
             if ($this->configData->isDokuwikiEnabled()) {
                 $themeInfo['css'][] = 'styles-wiki.min.css';
@@ -175,7 +173,7 @@ class LayoutHelper extends HelperBase
             $themeCssBase = urlencode($this->theme->getThemePath() . DIRECTORY_SEPARATOR . 'css');
             $themeCssFiles = urlencode(implode(',', $themeInfo['css']));
 
-            $this->view->append('cssLinks', Bootstrap::$WEBROOT . '/public/css/css.php?f=' . $themeCssFiles . '&b=' . $themeCssBase . '&v=' . $jsVersionHash);
+            $this->view->append('cssLinks', $cssUri . '&f=' . $themeCssFiles . '&b=' . $themeCssBase . '&v=' . $jsVersionHash);
         }
 
         // Cargar los recursos de los plugins
@@ -185,11 +183,11 @@ class LayoutHelper extends HelperBase
             $cssResources = $Plugin->getCssResources();
 
             if (count($jsResources) > 0) {
-                $this->view->append('jsLinks', Bootstrap::$WEBROOT . '/public/js/js.php?f=' . urlencode(implode(',', $jsResources)) . '&b=' . urlencode($base . DIRECTORY_SEPARATOR . 'js') . '&v=' . $jsVersionHash);
+                $this->view->append('jsLinks', $jsUri . '&f=' . urlencode(implode(',', $jsResources)) . '&b=' . urlencode($base . DIRECTORY_SEPARATOR . 'js') . '&v=' . $jsVersionHash);
             }
 
             if (count($cssResources) > 0) {
-                $this->view->append('cssLinks', Bootstrap::$WEBROOT . '/public/css/css.php?f=' . urlencode(implode(',', $cssResources)) . '&b=' . urlencode($base . DIRECTORY_SEPARATOR . 'css') . '&v=' . $jsVersionHash);
+                $this->view->append('cssLinks', $cssUri . '&f=' . urlencode(implode(',', $cssResources)) . '&b=' . urlencode($base . DIRECTORY_SEPARATOR . 'css') . '&v=' . $jsVersionHash);
             }
         }
     }

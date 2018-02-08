@@ -36,30 +36,30 @@ class SPException extends Exception
     /**
      * Constantes para tipos de excepción
      */
-    const SP_OK = 0;
-    const SP_CRITICAL = 1;
-    const SP_WARNING = 2;
-    const SP_ERROR = 3;
-    const SP_INFO = 4;
+    const OK = 0;
+    const CRITICAL = 1;
+    const WARNING = 2;
+    const ERROR = 3;
+    const INFO = 4;
     /**
      * @var int Tipo de excepción
      */
-    protected $type = 0;
+    protected $type;
     /**
      * @var string Ayuda de la excepción
      */
-    protected $hint = '';
+    protected $hint;
 
     /**
      * SPException constructor.
      *
-     * @param string         $type
      * @param string         $message
+     * @param int            $type
      * @param string         $hint
      * @param int            $code
      * @param Exception|null $previous
      */
-    public function __construct($type, $message, $hint = '', $code = 0, \Exception $previous = null)
+    public function __construct($message, $type = self::ERROR, $hint = null, $code = 0, \Exception $previous = null)
     {
         $this->type = $type;
         $this->hint = $hint;
@@ -74,10 +74,10 @@ class SPException extends Exception
     public static function getExceptionTypeName($type)
     {
         $typeName = [
-            self::SP_OK => 'ok',
-            self::SP_CRITICAL => 'critical',
-            self::SP_WARNING => 'warning',
-            self::SP_ERROR => 'error'
+            self::OK => 'ok',
+            self::CRITICAL => 'critical',
+            self::WARNING => 'warning',
+            self::ERROR => 'error'
         ];
 
         return $typeName[$type];

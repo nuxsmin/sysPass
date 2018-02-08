@@ -24,7 +24,6 @@
 
 namespace SP\Mgmt\Users;
 
-use SP\Config\Config;
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\LogMessage;
@@ -73,7 +72,7 @@ class UserLdap extends User
     public function add()
     {
         if ($this->checkDuplicatedOnAdd()) {
-            throw new SPException(SPException::SP_INFO, __('Login/email de usuario duplicados', false));
+            throw new SPException(__('Login/email de usuario duplicados', false), SPException::INFO);
         }
 
         $groupId = $this->ConfigData->getLdapDefaultGroup();

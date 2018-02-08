@@ -98,7 +98,7 @@ class Notice extends NoticeBase implements ItemInterface
         DbWrapper::getQuery($Data);
 
         if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(SPException::SP_INFO, __('Notificación no encontrada', false));
+            throw new SPException(__('Notificación no encontrada', false), SPException::INFO);
         }
 
         return $this;
@@ -166,7 +166,7 @@ class Notice extends NoticeBase implements ItemInterface
         try {
             $queryRes = DbWrapper::getResults($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener la notificación', false));
+            throw new SPException(__('Error al obtener la notificación', false), SPException::ERROR);
         }
 
         return $queryRes;
@@ -197,7 +197,7 @@ class Notice extends NoticeBase implements ItemInterface
         try {
             $queryRes = DbWrapper::getResultsArray($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener las notificaciones', false));
+            throw new SPException(__('Error al obtener las notificaciones', false), SPException::ERROR);
         }
 
         return $queryRes;
@@ -283,7 +283,7 @@ class Notice extends NoticeBase implements ItemInterface
         try {
             $queryRes = DbWrapper::getResultsArray($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener las notificaciones', false));
+            throw new SPException(__('Error al obtener las notificaciones', false), SPException::ERROR);
         }
 
         return $queryRes;
@@ -317,7 +317,7 @@ class Notice extends NoticeBase implements ItemInterface
         try {
             $queryRes = DbWrapper::getResultsArray($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener las notificaciones', false));
+            throw new SPException(__('Error al obtener las notificaciones', false), SPException::ERROR);
         }
 
         return $queryRes;
@@ -353,7 +353,7 @@ class Notice extends NoticeBase implements ItemInterface
         try {
             $queryRes = DbWrapper::getResultsArray($Data);
         } catch (SPException $e) {
-            throw new SPException(SPException::SP_ERROR, __('Error al obtener las notificaciones', false));
+            throw new SPException(__('Error al obtener las notificaciones', false), SPException::ERROR);
         }
 
         return $queryRes;
