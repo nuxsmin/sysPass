@@ -30,7 +30,6 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\Dto\AccountAclDto;
-use SP\DataModel\UserData;
 use SP\Repositories\UserGroup\UserToUserGroupRepository;
 use SP\Services\User\UserLoginResponse;
 use SP\Util\ArrayUtil;
@@ -164,9 +163,10 @@ class AccountAcl
     /**
      * AccountAcl constructor.
      *
-     * @param int  $action
+     * @param int $action
      * @param bool $isHistory
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     public function __construct($action, $isHistory = false)
     {
@@ -607,6 +607,7 @@ class AccountAcl
      * @return void
      * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.sleep
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     public function __wakeup()
     {

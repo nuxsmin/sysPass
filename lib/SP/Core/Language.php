@@ -81,8 +81,33 @@ class Language
     }
 
     /**
+     * Devolver los lenguajes disponibles
+     *
+     * @return array
+     */
+    public static function getAvailableLanguages()
+    {
+        $langs = [
+            'Español' => 'es_ES',
+            'Catalá' => 'ca_ES',
+            'English' => 'en_US',
+            'Deutsch' => 'de_DE',
+            'Magyar' => 'hu_HU',
+            'Français' => 'fr_FR',
+            'Polski' => 'po_PO',
+            'русский' => 'ru_RU',
+            'Nederlands' => 'nl_NL',
+            'Português' => 'pt_BR'
+        ];
+
+        ksort($langs);
+
+        return $langs;
+    }
+
+    /**
      * @param Session $session
-     * @param Config  $config
+     * @param Config $config
      */
     public function inject(Session $session, Config $config)
     {
@@ -95,23 +120,20 @@ class Language
      *
      * @param bool $force Forzar la detección del lenguaje para los inicios de sesión
      */
-    public static function setLanguage($force = false)
+    public function setLanguage($force = false)
     {
-        $lang = SessionFactory::getLocale();
+        $lang = $this->session->getLocale();
 
         if (empty($lang) || $force === true) {
-            $language = new Language();
-
-            self::$userLang = $language->getUserLang();
-            self::$globalLang = $language->getGlobalLang();
+            self::$userLang = $this->getUserLang();
+            self::$globalLang = $this->getGlobalLang();
 
             $lang = self::$userLang ?: self::$globalLang;
 
-            SessionFactory::setLocale($lang);
+            $this->session->setLocale($lang);
         }
 
-
-        self::setLocales($lang);
+        $this->setLocales($lang);
     }
 
     /**
@@ -157,11 +179,7 @@ class Language
     {
         $lang = Request::getRequestHeaders('HTTP_ACCEPT_LANGUAGE');
 
-        if ($lang) {
-            return str_replace('-', '_', substr($lang, 0, 5));
-        }
-
-        return '';
+        return $lang ? str_replace('-', '_', substr($lang, 0, 5)) : '';
     }
 
     /**
@@ -180,13 +198,14 @@ class Language
      *
      * @param string $lang El lenguaje a utilizar
      */
-    public static function setLocales($lang)
+    public function setLocales($lang)
     {
         $lang .= '.utf8';
         $fallback = 'en_US.utf8';
 
-        putenv('LANG=' . $lang);
         self::$localeStatus = setlocale(LC_MESSAGES, [$lang, $fallback]);
+
+        putenv('LANG=' . $lang);
         setlocale(LC_ALL, [$lang, $fallback]);
         bindtextdomain('messages', LOCALES_PATH);
         textdomain('messages');
@@ -194,37 +213,13 @@ class Language
     }
 
     /**
-     * Devolver los lenguajes disponibles
-     *
-     * @return array
-     */
-    public static function getAvailableLanguages()
-    {
-        $langs = [
-            'Español' => 'es_ES',
-            'Catalá' => 'ca_ES',
-            'English' => 'en_US',
-            'Deutsch' => 'de_DE',
-            'Magyar' => 'hu_HU',
-            'Français' => 'fr_FR',
-            'Polski' => 'po_PO',
-            'русский' => 'ru_RU',
-            'Nederlands' => 'nl_NL',
-            'Português' => 'pt_BR'
-        ];
-
-        ksort($langs);
-
-        return $langs;
-    }
-
-    /**
      * Establecer el lenguaje global para las traducciones
      */
     public function setAppLocales()
     {
-        if ($this->configData->getSiteLang() !== SessionFactory::getLocale()) {
-            self::setLocales($this->configData->getSiteLang());
+        if ($this->configData->getSiteLang() !== $this->session->getLocale()) {
+            $this->setLocales($this->configData->getSiteLang());
+
             self::$appSet = true;
         }
     }
@@ -235,7 +230,8 @@ class Language
     public function unsetAppLocales()
     {
         if (self::$appSet === true) {
-            self::setLocales(SessionFactory::getLocale());
+            $this->setLocales($this->session->getLocale());
+
             self::$appSet = false;
         }
     }

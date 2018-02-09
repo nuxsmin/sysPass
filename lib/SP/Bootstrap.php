@@ -31,7 +31,6 @@ use Interop\Container\ContainerInterface;
 use Klein\Klein;
 use PHPMailer\PHPMailer\Exception;
 use RuntimeException;
-use SP\Account\AccountAcl;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigUtil;
@@ -57,6 +56,7 @@ use SP\Mgmt\Profiles\Profile;
 use SP\Modules\Web\Controllers\MainController;
 use SP\Mvc\View\Template;
 use SP\Providers\Auth\Browser\Browser;
+use SP\Storage\Database;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
@@ -107,10 +107,6 @@ class Bootstrap
      */
     private static $checkPhpVersion;
     /**
-     * @var bool Indica si el script requiere inicialización
-     */
-    private static $checkInitSourceInclude;
-    /**
      * @var string
      */
     private static $sourceScript;
@@ -130,6 +126,10 @@ class Bootstrap
      * @var Klein
      */
     protected $router;
+    /**
+     * @var Language
+     */
+    protected $language;
     /**
      * @var Config
      */
@@ -187,11 +187,12 @@ class Bootstrap
 
                     /** @var Exception|\Throwable $err */
                     debugLog('Routing error: ' . formatTrace($err->getTrace()));
+
+                    /** @var Klein $router */
+                    $router->response()->body($err_msg);
                 });
 
                 try {
-                    $self->initialize();
-
                     /** @var \Klein\Request $request */
                     $route = filter_var($request->param('r', 'index/index'), FILTER_SANITIZE_STRING);
 
@@ -222,6 +223,8 @@ class Bootstrap
                             throw new RuntimeException("Oops, it looks like this content doesn't exist...\n");
                         }
 
+                        $self->initialize();
+
                         debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
 
                         return call_user_func_array($callableMethod, $params);
@@ -251,31 +254,28 @@ class Bootstrap
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
      */
-    public function initialize()
+    protected function initialize()
     {
-        self::$checkPhpVersion = Checks::checkPhpVersion();
-        self::$checkInitSourceInclude = $this->checkInitSourceInclude();
+        debugLog('Initializing ...');
 
-        if (date_default_timezone_get() === 'UTC') {
-            date_default_timezone_set('UTC');
-        }
+        self::$checkPhpVersion = Checks::checkPhpVersion();
 
         // Inicializar autentificación
         $this->initAuthVariables();
 
         // Inicializar logging
-        $this->initLogging();
+        $this->initPHPVars();
+
+        //  Establecer las rutas de la aplicación
+        $this->initPaths();
 
         // Cargar las extensiones
 //        self::loadExtensions();
 
         // Establecer el lenguaje por defecto
-        Language::setLocales('en_US');
+        $this->language->setLocales('en_US');
 
-        //  Establecer las rutas de la aplicación
-        $this->initPaths();
-
-        if (!self::$checkPhpVersion && !self::$checkInitSourceInclude) {
+        if (!self::$checkPhpVersion) {
             throw new InitializationException(
                 __u('Versión de PHP requerida >= ') . ' 5.6.0 <= 7.0',
                 SPException::ERROR,
@@ -295,20 +295,20 @@ class Bootstrap
             $this->config->loadConfig();
 
             // Cargar el lenguaje
-            Language::setLanguage();
+            $this->language->setLanguage();
         } else {
             // Cargar la configuración
             $this->config->loadConfig(true);
 
             // Restablecer el idioma y el tema visual
-            Language::setLanguage(true);
+            $this->language->setLanguage(true);
             $this->theme->initTheme(true);
 
             if ($this->session->isLoggedIn()) {
                 // Recargar los permisos del perfil de usuario
                 $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
                 // Reset de los datos de ACL de cuentas
-                AccountAcl::resetData();
+                $this->session->resetAccountAcl();
             }
         }
 
@@ -316,7 +316,9 @@ class Bootstrap
         HttpUtil::checkHttps();
 
         // Comprobar si es necesario inicialización
-        if ((defined('IS_INSTALLER') || defined('IS_UPGRADE')) && Checks::isAjax($this->router)) {
+        if ((defined('IS_INSTALLER') || defined('IS_UPGRADE'))
+            && Checks::isAjax($this->router)
+        ) {
             return;
         }
 
@@ -327,7 +329,7 @@ class Bootstrap
         $this->checkMaintenanceMode();
 
         // Comprobar si la Base de datos existe
-        DBUtil::checkDatabaseExist();
+        DBUtil::checkDatabaseExist(self::$container->get(Database::class), $this->configData->getDbName());
 
         // Comprobar si es necesario actualizar componentes
 //        $this->checkUpgrade();
@@ -342,32 +344,16 @@ class Bootstrap
 //        $this->checkPreLoginActions();
 
         if ($this->session->isLoggedIn() && $this->session->getAuthCompleted() === true) {
-            $AuthBrowser = new Browser();
+            $browser = new Browser();
 
             // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-            if ($AuthBrowser->checkServerAuthUser($this->session->getUserData()->getLogin()) === false
-                && $AuthBrowser->checkServerAuthUser($this->session->getUserData()->getSsoLogin()) === false
+            if ($browser->checkServerAuthUser($this->session->getUserData()->getLogin()) === false
+                && $browser->checkServerAuthUser($this->session->getUserData()->getSsoLogin()) === false
             ) {
                 throw new InitializationException('Logout');
 //                $this->goLogout();
             }
         }
-
-        // El usuario no está logado y no es una petición, redirigir al login
-//        $this->goLogin();
-    }
-
-    /**
-     * Comprobar el archivo que realiza el include necesita inicialización.
-     *
-     * @returns bool
-     */
-    private function checkInitSourceInclude()
-    {
-        self::$sourceScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
-        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php', 'ajax_task.php'];
-
-        return in_array(self::$sourceScript, $skipInit, true);
     }
 
     /**
@@ -375,34 +361,31 @@ class Bootstrap
      */
     private function initAuthVariables()
     {
+        $server = $this->router->request()->server();
+
         // Copiar la cabecera http de autentificación para apache+php-fcgid
-        if (isset($_SERVER['HTTP_XAUTHORIZATION']) && !isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            $_SERVER['HTTP_AUTHORIZATION'] = $_SERVER['HTTP_XAUTHORIZATION'];
+        if ($server->get('HTTP_XAUTHORIZATION') !== null
+            && $server->get('HTTP_AUTHORIZATION') === null) {
+            $server->set('HTTP_AUTHORIZATION', $server->get('HTTP_XAUTHORIZATION'));
         }
 
         // Establecer las cabeceras de autentificación para apache+php-cgi
-        if (isset($_SERVER['HTTP_AUTHORIZATION'])
-            && preg_match('/Basic\s+(.*)$/i', $_SERVER['HTTP_AUTHORIZATION'], $matches)
-        ) {
-            list($name, $password) = explode(':', base64_decode($matches[1]), 2);
-            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
-            $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
-        }
-
         // Establecer las cabeceras de autentificación para que apache+php-cgi funcione si la variable es renombrada por apache
-        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])
-            && preg_match('/Basic\s+(.*)$/i', $_SERVER['REDIRECT_HTTP_AUTHORIZATION'], $matches)
+        if (($server->get('HTTP_AUTHORIZATION') !== null
+                && preg_match('/Basic\s+(.*)$/i', $server->get('HTTP_AUTHORIZATION'), $matches))
+            || ($server->get('REDIRECT_HTTP_AUTHORIZATION') !== null
+                && preg_match('/Basic\s+(.*)$/i', $server->get('REDIRECT_HTTP_AUTHORIZATION'), $matches))
         ) {
             list($name, $password) = explode(':', base64_decode($matches[1]), 2);
-            $_SERVER['PHP_AUTH_USER'] = strip_tags($name);
-            $_SERVER['PHP_AUTH_PW'] = strip_tags($password);
+            $server->set('PHP_AUTH_USER', strip_tags($name));
+            $server->set('PHP_AUTH_PW', strip_tags($password));
         }
     }
 
     /**
      * Establecer el nivel de logging
      */
-    public function initLogging()
+    public function initPHPVars()
     {
         // Establecer el modo debug si una sesión de xdebug está activa
         if (isset($_COOKIE['XDEBUG_SESSION']) && !defined('DEBUG')) {
@@ -420,6 +403,14 @@ class Bootstrap
         if (!file_exists(LOG_FILE) && touch(LOG_FILE) && chmod(LOG_FILE, 0600)) {
             debugLog('Setup log file: ' . LOG_FILE);
         }
+
+        if (date_default_timezone_get() === 'UTC') {
+            date_default_timezone_set('UTC');
+        }
+
+        // Evita que javascript acceda a las cookies de sesion de PHP
+        ini_set('session.cookie_httponly', '1');
+        ini_set('session.save_handler', 'files');
     }
 
     /**
@@ -469,9 +460,7 @@ class Bootstrap
         // Comprobar si es una versión antigua
         $this->checkConfigVersion();
 
-        if (!self::$checkInitSourceInclude) {
-            ConfigUtil::checkConfigDir();
-        }
+        ConfigUtil::checkConfigDir();
     }
 
     /**
@@ -481,7 +470,9 @@ class Bootstrap
     {
         $appVersion = Util::getVersionStringNormalized();
 
-        if (file_exists(OLD_CONFIG_FILE) && $this->upgrade->upgradeOldConfigFile($appVersion)) {
+        if (file_exists(OLD_CONFIG_FILE)
+            && $this->upgrade->upgradeOldConfigFile($appVersion)
+        ) {
 //            $this->logConfigUpgrade($appVersion);
 
             self::$UPDATED = true;
@@ -510,14 +501,8 @@ class Bootstrap
      */
     private function initSession($encrypt = false)
     {
-        // Evita que javascript acceda a las cookies de sesion de PHP
-        ini_set('session.cookie_httponly', '1');
-        ini_set('session.save_handler', 'files');
-
         if ($encrypt === true) {
-            $key = SecureKeyCookie::getKey();
-
-            if ($key !== false && self::$checkPhpVersion) {
+            if (($key = SecureKeyCookie::getKey()) !== false && self::$checkPhpVersion) {
                 session_set_save_handler(new CryptSessionHandler($key), true);
             }
         }
@@ -593,8 +578,6 @@ class Bootstrap
 
             throw new InitializationException(__u('Aplicación en mantenimiento'), SPException::INFO, __u('En breve estará operativa'));
         }
-
-        return false;
     }
 
     /**
@@ -603,7 +586,7 @@ class Bootstrap
      */
     private function initUserSession()
     {
-        $lastActivity = SessionFactory::getLastActivity();
+        $lastActivity = $this->session->getLastActivity();
         $inMaintenance = $this->configData->isMaintenance();
 
         // Timeout de sesión
@@ -615,21 +598,21 @@ class Bootstrap
                 $this->router->response()->cookie(session_name(), '', time() - 42000);
             }
 
-            $this->wrLogoutInfo();
+//            $this->wrLogoutInfo();
 
             SessionUtil::restart();
             return;
         }
 
-        $sidStartTime = SessionFactory::getSidStartTime();
+        $sidStartTime = $this->session->getSidStartTime();
 
         // Regenerar el Id de sesión periódicamente para evitar fijación
         if ($sidStartTime === 0) {
             // Intentar establecer el tiempo de vida de la sesión en PHP
             @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
 
-            SessionFactory::setSidStartTime(time());
-            SessionFactory::setStartActivity(time());
+            $this->session->setSidStartTime(time());
+            $this->session->setStartActivity(time());
         } else if (!$inMaintenance
             && time() - $sidStartTime > 120
             && $this->session->getUserData()->getId() > 0
@@ -647,7 +630,7 @@ class Bootstrap
             }
         }
 
-        SessionFactory::setLastActivity(time());
+        $this->session->setLastActivity(time());
     }
 
     /**
@@ -657,33 +640,16 @@ class Bootstrap
      */
     private function getSessionLifeTime()
     {
-        $timeout = SessionFactory::getSessionTimeout();
+        $timeout = $this->session->getSessionTimeout();
 
         if (null === $timeout) {
             $configTimeout = $this->configData->getSessionTimeout();
-            SessionFactory::setSessionTimeout($configTimeout);
+            $this->session->setSessionTimeout($configTimeout);
 
             return $configTimeout;
         }
 
         return $timeout;
-    }
-
-    /**
-     * Escribir la información de logout en el registro de eventos.
-     */
-    private function wrLogoutInfo()
-    {
-        $inactiveTime = abs(round((time() - SessionFactory::getLastActivity()) / 60, 2));
-        $totalTime = abs(round((time() - SessionFactory::getStartActivity()) / 60, 2));
-
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Finalizar sesión', false));
-        $LogMessage->addDetails(__('Usuario', false), $this->session->getUserData()->getLogin());
-        $LogMessage->addDetails(__('Tiempo inactivo', false), $inactiveTime . ' min.');
-        $LogMessage->addDetails(__('Tiempo total', false), $totalTime . ' min.');
-        $Log->writeLog();
     }
 
     /**
@@ -698,8 +664,8 @@ class Bootstrap
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
-     * @param string $hint    opcional, con una ayuda sobre el error
-     * @param bool   $headers
+     * @param string $hint opcional, con una ayuda sobre el error
+     * @param bool $headers
      */
     public static function initError($message, $hint = '', $headers = false)
     {
@@ -762,13 +728,20 @@ class Bootstrap
     }
 
     /**
-     * @param Config  $config
+     * @param Config $config
      * @param Upgrade $upgrade
      * @param Session $session
-     * @param Theme   $theme
-     * @param Klein   $router
+     * @param Theme $theme
+     * @param Klein $router
+     * @param Language $language
      */
-    public function inject(Config $config, Upgrade $upgrade, Session $session, Theme $theme, Klein $router)
+    public function inject(Config $config,
+                           Upgrade $upgrade,
+                           Session $session,
+                           Theme $theme,
+                           Klein $router,
+                           Language $language
+    )
     {
         $this->config = $config;
         $this->configData = $config->getConfigData();
@@ -776,6 +749,7 @@ class Bootstrap
         $this->session = $session;
         $this->theme = $theme;
         $this->router = $router;
+        $this->language = $language;
     }
 
     /**
@@ -798,6 +772,20 @@ class Bootstrap
     }
 
     /**
+     * Comprobar el archivo que realiza el include necesita inicialización.
+     *
+     * @deprecated
+     * @returns bool
+     */
+    private function checkInitSourceInclude()
+    {
+        self::$sourceScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
+        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php', 'ajax_task.php'];
+
+        return in_array(self::$sourceScript, $skipInit, true);
+    }
+
+    /**
      * Comprobar si es necesario actualizar componentes
      *
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
@@ -813,6 +801,7 @@ class Bootstrap
     /**
      * Registrar la actualización de la configuración
      *
+     * @deprecated
      * @param $version
      */
     private function logConfigUpgrade($version)
@@ -840,6 +829,8 @@ class Bootstrap
 
     /**
      * Deslogar el usuario actual y eliminar la información de sesión.
+     *
+     * @deprecated
      */
     private function goLogout()
     {
@@ -851,5 +842,24 @@ class Bootstrap
 
         $Controller = new MainController();
         $Controller->getLogout();
+    }
+
+    /**
+     * Escribir la información de logout en el registro de eventos.
+     *
+     * @deprecated
+     */
+    private function wrLogoutInfo()
+    {
+        $inactiveTime = abs(round((time() - $this->session->getLastActivity()) / 60, 2));
+        $totalTime = abs(round((time() - $this->session->getStartActivity()) / 60, 2));
+
+        $Log = new Log();
+        $LogMessage = $Log->getLogMessage();
+        $LogMessage->setAction(__('Finalizar sesión', false));
+        $LogMessage->addDetails(__('Usuario', false), $this->session->getUserData()->getLogin());
+        $LogMessage->addDetails(__('Tiempo inactivo', false), $inactiveTime . ' min.');
+        $LogMessage->addDetails(__('Tiempo total', false), $totalTime . ' min.');
+        $Log->writeLog();
     }
 }

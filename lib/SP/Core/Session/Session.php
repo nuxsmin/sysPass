@@ -51,7 +51,7 @@ class Session
      * Devolver una variable de sesión
      *
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      * @return mixed
      */
     protected function getSessionKey($key, $default = null)
@@ -76,8 +76,8 @@ class Session
     /**
      * Establecer una variable de sesión
      *
-     * @param string $key   El nombre de la variable
-     * @param mixed  $value El valor de la variable
+     * @param string $key El nombre de la variable
+     * @param mixed $value El valor de la variable
      * @return mixed
      */
     protected function setSessionKey($key, $value)
@@ -187,6 +187,11 @@ class Session
         }
 
         return null;
+    }
+
+    public function resetAccountAcl()
+    {
+        $this->setSessionKey('accountAcl', null);
     }
 
     /**
@@ -303,5 +308,105 @@ class Session
     public function setPublicKey($key)
     {
         $this->setSessionKey('pubkey', $key);
+    }
+
+    /**
+     * Devuelve el timeout de la sesión
+     *
+     * @return int|null El valor en segundos
+     */
+    public function getSessionTimeout()
+    {
+        return $this->getSessionKey('sessionTimeout');
+    }
+
+    /**
+     * Establecer el timeout de la sesión
+     *
+     * @param int $timeout El valor en segundos
+     */
+    public function setSessionTimeout($timeout)
+    {
+        $this->setSessionKey('sessionTimeout', $timeout);
+    }
+
+    /**
+     * Devuelve la hora de la última actividad
+     *
+     * @return int
+     */
+    public function getLastActivity()
+    {
+        return $this->getSessionKey('lastActivity', 0);
+    }
+
+    /**
+     * Establece la hora de la última actividad
+     *
+     * @param $time int La marca de hora
+     */
+    public function setLastActivity($time)
+    {
+        $this->setSessionKey('lastActivity', $time);
+    }
+
+    /**
+     * Devuelve la hora en la que el SID de sesión fue creado
+     *
+     * @return int
+     */
+    public function getSidStartTime()
+    {
+        return $this->getSessionKey('sidStartTime', 0);
+    }
+
+    /**
+     * Establece la hora de creación del SID
+     *
+     * @param $time int La marca de hora
+     */
+    public function setSidStartTime($time)
+    {
+        $this->setSessionKey('sidStartTime', $time);
+    }
+
+    /**
+     * Devuelve la hora de inicio de actividad.
+     *
+     * @return int
+     */
+    public function getStartActivity()
+    {
+        return $this->getSessionKey('startActivity', 0);
+    }
+
+    /**
+     * Establece la hora de inicio de actividad
+     *
+     * @param $time int La marca de hora
+     */
+    public function setStartActivity($time)
+    {
+        $this->setSessionKey('startActivity', $time);
+    }
+
+    /**
+     * Establecer el lenguaje de la sesión
+     *
+     * @param $locale
+     */
+    public function setLocale($locale)
+    {
+        $this->setSessionKey('locale', $locale);
+    }
+
+    /**
+     * Devuelve el lenguaje de la sesión
+     *
+     * @return string
+     */
+    public function getLocale()
+    {
+        return $this->getSessionKey('locale');
     }
 }

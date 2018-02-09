@@ -64,24 +64,24 @@ class ConfigUtil
         if (!is_dir(CONFIG_PATH)) {
             clearstatcache();
 
-            throw new ConfigException(ConfigException::CRITICAL, __('El directorio "/config" no existe', false));
+            throw new ConfigException(__u('El directorio "/config" no existe'), ConfigException::CRITICAL);
         }
 
         if (!is_writable(CONFIG_PATH)) {
             clearstatcache();
 
-            throw new ConfigException(ConfigException::CRITICAL, __('No es posible escribir en el directorio "config"', false));
+            throw new ConfigException(__u('No es posible escribir en el directorio "config"'), ConfigException::CRITICAL);
         }
 
-        $configPerms = decoct(fileperms(CONFIG_PATH) & 0777);
-
-        if ($configPerms !== '750' && !Checks::checkIsWindows()) {
+        if (!Checks::checkIsWindows()
+            && ($configPerms = decoct(fileperms(CONFIG_PATH) & 0777)) !== '750'
+        ) {
             clearstatcache();
 
             throw new ConfigException(
+                __u('Los permisos del directorio "/config" son incorrectos'),
                 ConfigException::ERROR,
-                __('Los permisos del directorio "/config" son incorrectos', false),
-                __('Actual:', false) . ' ' . $configPerms . ' - ' . __('Necesario: 750', false));
+                sprintf(__u('Actual: %s - Necesario: 750'), $configPerms));
         }
     }
 }

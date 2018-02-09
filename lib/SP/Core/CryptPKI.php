@@ -29,6 +29,7 @@ defined('APP_ROOT') || die();
 use phpseclib\Crypt\RSA;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Traits\InjectableTrait;
 use SP\Log\Log;
 
 /**
@@ -38,16 +39,34 @@ use SP\Log\Log;
  */
 class CryptPKI
 {
+    use InjectableTrait;
+
+    /**
+     * @var RSA
+     */
+    protected $rsa;
+
     /**
      * @throws SPException
+     * @throws Dic\ContainerException
      */
     public function __construct()
     {
+        $this->injectDependencies();
+
         if (!file_exists($this->getPublicKeyFile()) || !file_exists($this->getPrivateKeyFile())) {
             if (!$this->createKeys()) {
                 throw new SPException(__('No es posible generar las claves RSA', false), SPException::CRITICAL);
             }
         }
+    }
+
+    /**
+     * @param RSA $rsa
+     */
+    public function inject(RSA $rsa)
+    {
+        $this->rsa = $rsa;
     }
 
     /**
@@ -75,8 +94,7 @@ class CryptPKI
      */
     public function createKeys()
     {
-        $Rsa = new RSA();
-        $keys = $Rsa->createKey(1024);
+        $keys = $this->rsa->createKey(1024);
 
         $priv = file_put_contents($this->getPrivateKeyFile(), $keys['privatekey']);
         $pub = file_put_contents($this->getPublicKeyFile(), $keys['publickey']);
@@ -95,11 +113,10 @@ class CryptPKI
      */
     public function encryptRSA($data)
     {
-        $Rsa = new RSA();
-        $Rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
-        $Rsa->loadKey($this->getPublicKey());
+        $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
+        $this->rsa->loadKey($this->getPublicKey());
 
-        return $Rsa->encrypt($data);
+        return $this->rsa->encrypt($data);
     }
 
     /**
@@ -130,11 +147,10 @@ class CryptPKI
      */
     public function decryptRSA($data)
     {
-        $Rsa = new RSA();
-        $Rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
-        $Rsa->loadKey($this->getPrivateKey());
+        $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
+        $this->rsa->loadKey($this->getPrivateKey());
 
-        return $Rsa->decrypt($data);
+        return $this->rsa->decrypt($data);
     }
 
     /**

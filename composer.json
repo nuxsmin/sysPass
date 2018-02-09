@@ -28,6 +28,9 @@
     "php-di/php-di": "5.4.*",
     "doctrine/common": "v2.7.*"
   },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "3.*"
+  },
   "autoload": {
     "psr-4": {
       "SP\\": "lib/SP/",

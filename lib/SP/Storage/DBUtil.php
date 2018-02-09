@@ -26,8 +26,6 @@ namespace SP\Storage;
 
 
 use RuntimeException;
-use SP\Bootstrap;
-use SP\Config\ConfigData;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\SPException;
 
@@ -110,7 +108,7 @@ class DBUtil
             foreach ($attributes as $val) {
                 $dbinfo[$val] = $db->getAttribute(constant('PDO::ATTR_' . $val));
             }
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
             return $dbinfo;
         }
 
@@ -120,25 +118,20 @@ class DBUtil
     /**
      * Comprobar que la base de datos existe.
      *
+     * @param DatabaseInterface $database
+     * @param string $dbName
      * @return bool
-     * @throws \Psr\Container\ContainerExceptionInterface
      */
-    public static function checkDatabaseExist()
+    public static function checkDatabaseExist(DatabaseInterface $database, $dbName)
     {
-        $dic = Bootstrap::getContainer();
-        /** @var Database $Db */
-        $Db = $dic->get(Database::class);
-        /** @var ConfigData $ConfigData */
-        $ConfigData = $dic->get(ConfigData::class);
-
         try {
             $query = /** @lang SQL */
                 'SELECT COUNT(*) 
                 FROM information_schema.tables
-                WHERE table_schema = \'' . $ConfigData->getDbName() . '\'
+                WHERE table_schema = \'' . $dbName . '\'
                 AND table_name IN (\'Client\', \'Category\', \'Account\', \'User\', \'Config\', \'EventLog\')';
 
-            return (int)$Db->getDbHandler()->getConnection()->query($query)->fetchColumn() === 6;
+            return (int)$database->getDbHandler()->getConnection()->query($query)->fetchColumn() === 6;
         } catch (\Exception $e) {
             debugLog($e->getMessage());
             debugLog($e->getCode());

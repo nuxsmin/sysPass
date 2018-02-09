@@ -30,6 +30,8 @@ use DOMNode;
 use DOMNodeList;
 use ReflectionObject;
 use RuntimeException;
+use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Exceptions\SPException;
 
 /**
  * Class XmlHandler para manejo básico de documentos XML
@@ -70,12 +72,12 @@ class XmlHandler implements XmlFileStorageInterface
      *
      * @param string $node
      * @return XmlFileStorageInterface
-     * @throws \RuntimeException
+     * @throws FileNotFoundException
      */
     public function load($node = 'root')
     {
         if (!$this->checkSourceFile()) {
-            throw new RuntimeException(sprintf(__('No es posible leer/escribir el archivo: %s', false), $this->file));
+            throw new FileNotFoundException(SPException::SP_ERROR, sprintf(__('No es posible leer/escribir el archivo: %s', false), $this->file));
         }
 
         $this->setDOM();
@@ -180,9 +182,9 @@ class XmlHandler implements XmlFileStorageInterface
     /**
      * Crear los nodos hijos recursivamente a partir de un array multidimensional
      *
-     * @param mixed   $items
+     * @param mixed $items
      * @param DOMNode $Node
-     * @param null    $type
+     * @param null $type
      */
     protected function writeChildNodes($items, DOMNode $Node, $type = null)
     {
@@ -211,7 +213,7 @@ class XmlHandler implements XmlFileStorageInterface
      * Analizar el tipo de elementos
      *
      * @param mixed $items
-     * @param bool  $serialize
+     * @param bool $serialize
      * @return array
      */
     protected function analyzeItems($items, $serialize = false)
