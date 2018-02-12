@@ -27,8 +27,10 @@ namespace SP\Services\UserProfile;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
+use SP\DataModel\ProfileData;
 use SP\Repositories\UserProfile\UserProfileRepository;
 use SP\Services\ServiceItemTrait;
+use SP\Util\Util;
 
 /**
  * Class UserProfileService
@@ -71,7 +73,7 @@ class UserProfileService
      */
     public function getById($id)
     {
-        return $this->userProfileRepository->getById($id);
+        return Util::unserialize(ProfileData::class, $this->userProfileRepository->getById($id)->getProfile());
     }
 
     /**

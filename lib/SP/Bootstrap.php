@@ -630,7 +630,7 @@ class Bootstrap
                 CryptSession::reKey();
 
                 // Recargar los permisos del perfil de usuario
-                $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
+//                $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
             } catch (CryptoException $e) {
                 debugLog($e->getMessage());
 

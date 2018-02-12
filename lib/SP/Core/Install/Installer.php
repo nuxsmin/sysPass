@@ -33,6 +33,7 @@ use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\InstallData;
+use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserGroupData;
 use SP\DataModel\UserProfileData;
@@ -339,6 +340,7 @@ class Installer
 
             $userProfileData = new UserProfileData();
             $userProfileData->setName('Admin');
+            $userProfileData->setProfile(new ProfileData());
 
             // Datos del usuario
             $userData = new UserData();

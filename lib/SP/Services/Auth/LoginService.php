@@ -305,6 +305,9 @@ class LoginService
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
+     * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     protected function loadMasterPass()
     {

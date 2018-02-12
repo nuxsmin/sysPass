@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -89,8 +89,8 @@ class UserProfileData extends DataModelBase implements DataModelInterface
     /**
      * @param ProfileData $profile
      */
-    public function setProfile($profile)
+    public function setProfile(ProfileData $profile)
     {
-        $this->profile = $profile;
+        $this->profile = serialize($profile);
     }
 }

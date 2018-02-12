@@ -26,12 +26,13 @@ namespace SP\Crypt;
 
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
+use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Services\Config\ConfigService;
-use SP\Core\Crypt\Session as CryptSession;
+use SP\Services\Config\ParameterNotFoundException;
 use SP\Services\ServiceException;
 use SP\Util\Util;
 
@@ -80,33 +81,37 @@ class TemporaryMasterPass
      */
     public function check($pass)
     {
-        $passMaxTime = (int)$this->configService->getByParam('tempmaster_maxtime');
+        try {
+            $passMaxTime = (int)$this->configService->getByParam('tempmaster_maxtime');
 
-        // Comprobar si el tiempo de validez o los intentos se han superado
-        if ($passMaxTime === 0 || time() > $passMaxTime) {
-            $this->expire();
+            // Comprobar si el tiempo de validez o los intentos se han superado
+            if ($passMaxTime === 0 || time() > $passMaxTime) {
+                $this->expire();
 
+                return false;
+            }
+
+            $passTime = (int)$this->configService->getByParam('tempmaster_passtime');
+            $attempts = (int)$this->configService->getByParam('tempmaster_attempts');
+
+            if ($attempts >= self::MAX_ATTEMPTS
+                || (!empty($passTime) && time() > $passMaxTime)
+            ) {
+                $this->expire();
+
+                return false;
+            }
+
+            $isValid = Hash::checkHashKey($pass, $this->configService->getByParam('tempmaster_passhash'));
+
+            if (!$isValid) {
+                $this->configService->save('tempmaster_attempts', $attempts + 1);
+            }
+
+            return $isValid;
+        } catch (ParameterNotFoundException $e) {
             return false;
         }
-
-        $passTime = (int)$this->configService->getByParam('tempmaster_passtime');
-        $attempts = (int)$this->configService->getByParam('tempmaster_attempts');
-
-        if ($attempts >= self::MAX_ATTEMPTS
-            || (!empty($passTime) && time() > $passMaxTime)
-        ) {
-            $this->expire();
-
-            return false;
-        }
-
-        $isValid = Hash::checkHashKey($pass, $this->configService->getByParam('tempmaster_passhash'));
-
-        if (!$isValid) {
-            $this->configService->save('tempmaster_attempts', $attempts + 1);
-        }
-
-        return $isValid;
     }
 
     /**

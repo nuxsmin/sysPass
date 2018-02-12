@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -35,7 +35,6 @@ use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
-use SP\Util\Util;
 
 /**
  * Class UserProfileRepository
@@ -118,7 +117,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Returns the item for given id
      *
      * @param int $id
-     * @return mixed
+     * @return UserProfileData
      */
     public function getById($id)
     {
@@ -126,27 +125,17 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
             'SELECT id, name, profile FROM UserProfile WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
-        $Data->setMapClassName(ProfileData::class);
+        $Data->setMapClassName(UserProfileData::class);
         $Data->setQuery($query);
         $Data->addParam($id);
 
-        /**
-         * @var UserProfileData $queryRes
-         * @var ProfileData     $Profile
-         */
-        $queryRes = DbWrapper::getResults($Data, $this->db);
-
-        $Profile = Util::unserialize(ProfileData::class, $queryRes->getProfile());
-        $Profile->setId($queryRes->getId());
-        $Profile->setName($queryRes->getName());
-
-        return $Profile;
+        return DbWrapper::getResults($Data, $this->db);
     }
 
     /**
      * Returns all the items
      *
-     * @return mixed
+     * @return UserProfileData[]
      */
     public function getAll()
     {
@@ -230,7 +219,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
     /**
      * Creates an item
      *
-     * @param ProfileData $itemData
+     * @param UserProfileData $itemData
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -250,8 +239,8 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($itemData->getName());
-        $Data->addParam(serialize($itemData));
-        $Data->setOnErrorMessage(__('Error al crear perfil', false));
+        $Data->addParam($itemData->getProfile());
+        $Data->setOnErrorMessage(__u('Error al crear perfil'));
 
         DbWrapper::getQuery($Data, $this->db);
 
@@ -261,7 +250,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param ProfileData $itemData
+     * @param UserProfileData $itemData
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -285,7 +274,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
     /**
      * Updates an item
      *
-     * @param ProfileData $itemData
+     * @param UserProfileData $itemData
      * @return bool
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -303,7 +292,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($itemData->getName());
-        $Data->addParam(serialize($itemData));
+        $Data->addParam($itemData->getProfile());
         $Data->addParam($itemData->getId());
         $Data->setOnErrorMessage(__u('Error al modificar perfil'));
 
@@ -319,7 +308,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param ProfileData $itemData
+     * @param UserProfileData $itemData
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException

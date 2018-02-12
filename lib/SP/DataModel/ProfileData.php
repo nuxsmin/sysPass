@@ -31,7 +31,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\DataModel
  */
-class ProfileData extends UserProfileData
+class ProfileData
 {
     /**
      * @var bool
