@@ -24,7 +24,6 @@
 
 use function DI\get;
 use function DI\object;
-use Interop\Container\ContainerInterface;
 
 return [
     \Klein\Klein::class => object(\Klein\Klein::class),
@@ -33,13 +32,15 @@ return [
         ->constructor(object(\SP\Storage\XmlHandler::class)
             ->constructor(CONFIG_FILE)),
     \SP\Core\Language::class => object(\SP\Core\Language::class),
-    \SP\Config\ConfigData::class => function (ContainerInterface $c) {
-        $config = $c->get(\SP\Config\Config::class);
-
+    \SP\Config\ConfigData::class => function (\SP\Config\Config $config) {
         return $config->getConfigData();
     },
+    \SP\Storage\DatabaseConnectionData::class => function (\SP\Config\ConfigData $configData) {
+        return \SP\Storage\DatabaseConnectionData::getFromConfig($configData);
+    },
     \SP\Storage\Database::class => object(\SP\Storage\Database::class)
-        ->constructor(object(\SP\Storage\MySQLHandler::class)),
+        ->constructor(object(\SP\Storage\MySQLHandler::class)
+            ->constructor(get(\SP\Storage\DatabaseConnectionData::class))),
     \SP\Core\Acl\Actions::class => object(\SP\Core\Acl\Actions::class)
         ->constructor(object(\SP\Storage\FileCache::class), object(\SP\Storage\XmlHandler::class)
             ->constructor(ACTIONS_FILE)),

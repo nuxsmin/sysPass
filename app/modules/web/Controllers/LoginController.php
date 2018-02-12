@@ -29,7 +29,6 @@ use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Html\Html;
 use SP\Http\Response;
-use SP\Log\Log;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Services\Auth\LoginService;
 use SP\Util\Json;
@@ -47,36 +46,39 @@ class LoginController extends ControllerBase
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
      */
     public function loginAction()
     {
-        $LoginService = new LoginService($this->config, $this->session, $this->theme, $this->eventDispatcher);
-        Json::returnJson($LoginService->doLogin());
+        $loginService = new LoginService($this->config, $this->session, $this->theme, $this->eventDispatcher);
+        Json::returnJson($loginService->doLogin());
     }
 
     /**
      * Logout action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function logoutAction()
     {
         if ($this->session->isLoggedIn()) {
-            $inactiveTime = abs(round((time() - SessionFactory::getLastActivity()) / 60, 2));
-            $totalTime = abs(round((time() - SessionFactory::getStartActivity()) / 60, 2));
+//            $inactiveTime = abs(round((time() - SessionFactory::getLastActivity()) / 60, 2));
+//            $totalTime = abs(round((time() - SessionFactory::getStartActivity()) / 60, 2));
 
-            $Log = new Log();
-            $LogMessage = $Log->getLogMessage();
-            $LogMessage->setAction(__u('Finalizar sesión'));
-            $LogMessage->addDetails(__u('Usuario'), SessionFactory::getUserData()->getLogin());
-            $LogMessage->addDetails(__u('Tiempo inactivo'), $inactiveTime . ' min.');
-            $LogMessage->addDetails(__u('Tiempo total'), $totalTime . ' min.');
-            $Log->writeLog();
+//            $Log = new Log();
+//            $LogMessage = $Log->getLogMessage();
+//            $LogMessage->setAction(__u('Finalizar sesión'));
+//            $LogMessage->addDetails(__u('Usuario'), SessionFactory::getUserData()->getLogin());
+//            $LogMessage->addDetails(__u('Tiempo inactivo'), $inactiveTime . ' min.');
+//            $LogMessage->addDetails(__u('Tiempo total'), $totalTime . ' min.');
+//            $Log->writeLog();
 
             SessionUtil::cleanSession();
             SessionFactory::setLoggedOut(true);
 
-            $LayoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $LayoutHelper->setPage('logout');
-            $LayoutHelper->initBody();
+            $layoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $layoutHelper->setPage('logout');
+            $layoutHelper->initBody();
 
             $this->view->addTemplate('logout');
 
@@ -90,12 +92,13 @@ class LoginController extends ControllerBase
 
     /**
      * Index action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {
-        $LayoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-        $LayoutHelper->setPage('login');
-        $LayoutHelper->initBody();
+        $layoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $layoutHelper->getCustomLayout('index', 'login');
 
         if (SessionFactory::getLoggedOut() === true) {
             SessionFactory::setLoggedOut();
@@ -105,12 +108,6 @@ class LoginController extends ControllerBase
             $this->view->assign('loggedOut', 0);
         }
 
-        $this->view->addTemplate('login');
-
-        $this->view->addPartial('body-footer');
-        $this->view->addPartial('body-end');
-
-        $this->view->assign('useLayout', false);
         $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
         $this->view->assign('updated', SessionFactory::getAppUpdated());
 

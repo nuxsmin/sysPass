@@ -23,8 +23,8 @@
 
 sysPass.Actions = function (Common) {
     /**
-         * Objeto con acciones para las cuentas
-         */
+     * Objeto con acciones para las cuentas
+     */
     const account = {
         view: function ($obj) {
             log.info("account:show");
@@ -638,13 +638,13 @@ sysPass.Actions = function (Common) {
         login: function ($obj) {
             log.info("main:login");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.main.login;
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
             opts.method = "get";
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
-                var $extra = $(".extra-hidden");
+                const $extra = $(".extra-hidden");
 
                 switch (json.status) {
                     case 0:
@@ -687,16 +687,16 @@ sysPass.Actions = function (Common) {
         install: function ($obj) {
             log.info("main:install");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.main.install;
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.status == 0) {
+                if (json.status === 0) {
                     setTimeout(function () {
-                        Common.redirect("index.php");
+                        Common.redirect("index.php?r=login/index");
                     }, 1000);
                 }
             });

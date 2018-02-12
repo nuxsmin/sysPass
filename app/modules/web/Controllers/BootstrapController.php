@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Bootstrap;
 use SP\Core\CryptPKI;
-use SP\Core\Plugin\PluginUtil;
 use SP\Http\Cookies;
 use SP\Http\Response;
 use SP\Providers\Auth\Browser\Browser;
@@ -43,6 +42,7 @@ class BootstrapController extends SimpleControllerBase
      *
      * @throws \SP\Core\Exceptions\FileNotFoundException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getEnvironmentAction()
     {
@@ -59,7 +59,8 @@ class BootstrapController extends SimpleControllerBase
             'timezone' => date_default_timezone_get(),
             'debug' => DEBUG || $configData->isDebug(),
             'cookies_enabled' => Cookies::checkCookies(),
-            'plugins' => PluginUtil::getEnabledPlugins(),
+//            'plugins' => PluginUtil::getEnabledPlugins(),
+            'plugins' => [],
             'loggedin' => $this->session->isLoggedIn(),
             'authbasic_autologin' => Browser::getServerAuthUser() && $configData->isAuthBasicAutoLoginEnabled(),
             'pk' => $this->session->getPublicKey() ?: (new CryptPKI())->getPublicKey()

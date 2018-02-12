@@ -29,7 +29,6 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\OldCrypt;
 use SP\Core\TaskFactory;
 use SP\DataModel\UserLoginData;
-use SP\Mgmt\Users\UserPass;
 use SP\Services\User\UserPassService;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
@@ -176,7 +175,7 @@ class User
         $mKey = OldCrypt::getDecrypt($userLoginData->getUserLoginResponse()->getMPass(), $userLoginData->getUserLoginResponse()->getMKey(), $key);
 
         try {
-            return $mKey && $userPassService->updateMasterPass($mKey, $userLoginData);
+            return $mKey && $userPassService->updateMasterPassOnLogin($mKey, $userLoginData);
         } catch (SPException $e) {
         } catch (CryptoException $e) {
         }

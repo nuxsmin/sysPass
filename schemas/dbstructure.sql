@@ -1,9 +1,3 @@
--- MySQL dump 10.13  Distrib 5.5.58, for debian-linux-gnu (x86_64)
---
--- Host: 172.18.0.2    Database: syspass
--- ------------------------------------------------------
--- Server version	5.5.53-0+deb8u1
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -14,10 +8,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `Account`
---
 
 DROP TABLE IF EXISTS `Account`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -34,15 +24,15 @@ CREATE TABLE `Account` (
   `url` varchar(255) DEFAULT NULL,
   `pass` varbinary(1000) NOT NULL,
   `key` varbinary(1000) NOT NULL,
-  `notes` text,
-  `countView` int(10) unsigned NOT NULL DEFAULT '0',
-  `countDecrypt` int(10) unsigned NOT NULL DEFAULT '0',
+  `notes` text DEFAULT NULL,
+  `countView` int(10) unsigned NOT NULL DEFAULT 0,
+  `countDecrypt` int(10) unsigned NOT NULL DEFAULT 0,
   `dateAdd` datetime NOT NULL,
   `dateEdit` datetime DEFAULT NULL,
-  `otherUserGroupEdit` tinyint(1) DEFAULT '0',
-  `otherUserEdit` tinyint(1) DEFAULT '0',
-  `isPrivate` tinyint(1) DEFAULT '0',
-  `isPrivateGroup` tinyint(1) DEFAULT '0',
+  `otherUserGroupEdit` tinyint(1) DEFAULT 0,
+  `otherUserEdit` tinyint(1) DEFAULT 0,
+  `isPrivate` tinyint(1) DEFAULT 0,
+  `isPrivateGroup` tinyint(1) DEFAULT 0,
   `passDate` int(11) unsigned DEFAULT NULL,
   `passDateChange` int(11) unsigned DEFAULT NULL,
   `parentId` mediumint(8) unsigned DEFAULT NULL,
@@ -57,12 +47,8 @@ CREATE TABLE `Account` (
   CONSTRAINT `fk_Account_userEditId` FOREIGN KEY (`userEditId`) REFERENCES `User` (`id`),
   CONSTRAINT `fk_Account_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`),
   CONSTRAINT `fk_Account_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `AccountFile`
---
 
 DROP TABLE IF EXISTS `AccountFile`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -75,16 +61,12 @@ CREATE TABLE `AccountFile` (
   `size` int(11) NOT NULL,
   `content` mediumblob NOT NULL,
   `extension` varchar(10) NOT NULL,
-  `thumb` mediumblob,
+  `thumb` mediumblob DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_accountId` (`accountId`),
   CONSTRAINT `fk_AccountFile_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `AccountHistory`
---
 
 DROP TABLE IF EXISTS `AccountHistory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -103,20 +85,20 @@ CREATE TABLE `AccountHistory` (
   `pass` varbinary(1000) NOT NULL,
   `key` varbinary(1000) NOT NULL,
   `notes` text NOT NULL,
-  `countView` int(10) unsigned NOT NULL DEFAULT '0',
-  `countDecrypt` int(10) unsigned NOT NULL DEFAULT '0',
+  `countView` int(10) unsigned NOT NULL DEFAULT 0,
+  `countDecrypt` int(10) unsigned NOT NULL DEFAULT 0,
   `dateAdd` datetime NOT NULL,
   `dateEdit` datetime DEFAULT NULL,
-  `isModify` tinyint(1) DEFAULT '0',
-  `isDeleted` tinyint(1) DEFAULT '0',
+  `isModify` tinyint(1) DEFAULT 0,
+  `isDeleted` tinyint(1) DEFAULT 0,
   `mPassHash` varbinary(255) NOT NULL,
-  `otherUserEdit` tinyint(1) DEFAULT '0',
-  `otherUserGroupEdit` tinyint(1) DEFAULT '0',
+  `otherUserEdit` tinyint(1) DEFAULT 0,
+  `otherUserGroupEdit` tinyint(1) DEFAULT 0,
   `passDate` int(10) unsigned DEFAULT NULL,
   `passDateChange` int(10) unsigned DEFAULT NULL,
   `parentId` mediumint(8) unsigned DEFAULT NULL,
-  `isPrivate` tinyint(1) DEFAULT '0',
-  `isPrivateGroup` tinyint(1) DEFAULT '0',
+  `isPrivate` tinyint(1) DEFAULT 0,
+  `isPrivateGroup` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `IDX_accountId` (`accountId`),
   KEY `fk_AccountHistory_userGroupId` (`userGroupId`),
@@ -129,12 +111,8 @@ CREATE TABLE `AccountHistory` (
   CONSTRAINT `fk_AccountHistory_userEditId` FOREIGN KEY (`userEditId`) REFERENCES `User` (`id`),
   CONSTRAINT `fk_AccountHistory_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`),
   CONSTRAINT `fk_AccountHistory_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `AccountToFavorite`
---
 
 DROP TABLE IF EXISTS `AccountToFavorite`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -144,14 +122,10 @@ CREATE TABLE `AccountToFavorite` (
   `userId` smallint(5) unsigned NOT NULL,
   KEY `search_idx` (`accountId`,`userId`),
   KEY `fk_AccountToFavorite_userId` (`userId`),
-  CONSTRAINT `fk_AccountToFavorite_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_AccountToFavorite_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_AccountToFavorite_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_AccountToFavorite_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `AccountToGroup`
---
 
 DROP TABLE IF EXISTS `AccountToGroup`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -161,14 +135,10 @@ CREATE TABLE `AccountToGroup` (
   `userGroupId` smallint(5) unsigned NOT NULL,
   KEY `IDX_accountId` (`accountId`),
   KEY `fk_AccountToGroup_userGroupId` (`userGroupId`),
-  CONSTRAINT `fk_AccountToGroup_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_AccountToGroup_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_AccountToGroup_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_AccountToGroup_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `AccountToTag`
---
 
 DROP TABLE IF EXISTS `AccountToTag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -178,14 +148,10 @@ CREATE TABLE `AccountToTag` (
   `tagId` int(10) unsigned NOT NULL,
   KEY `fk_AccountToTag_accountId` (`accountId`),
   KEY `fk_AccountToTag_tagId` (`tagId`),
-  CONSTRAINT `fk_AccountToTag_tagId` FOREIGN KEY (`tagId`) REFERENCES `Tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_AccountToTag_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_AccountToTag_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_AccountToTag_tagId` FOREIGN KEY (`tagId`) REFERENCES `Tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `AccountToUser`
---
 
 DROP TABLE IF EXISTS `AccountToUser`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -195,14 +161,10 @@ CREATE TABLE `AccountToUser` (
   `userId` smallint(5) unsigned NOT NULL,
   KEY `idx_account` (`accountId`),
   KEY `fk_AccountToUser_userId` (`userId`),
-  CONSTRAINT `fk_AccountToUser_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_AccountToUser_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_AccountToUser_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_AccountToUser_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Action`
---
 
 DROP TABLE IF EXISTS `Action`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -215,10 +177,6 @@ CREATE TABLE `Action` (
   PRIMARY KEY (`id`,`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `AuthToken`
---
 
 DROP TABLE IF EXISTS `AuthToken`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -238,12 +196,8 @@ CREATE TABLE `AuthToken` (
   KEY `fk_AuthToken_actionId` (`actionId`),
   CONSTRAINT `fk_AuthToken_actionId` FOREIGN KEY (`actionId`) REFERENCES `Action` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_AuthToken_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Category`
---
 
 DROP TABLE IF EXISTS `Category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -254,12 +208,8 @@ CREATE TABLE `Category` (
   `hash` varbinary(40) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Client`
---
 
 DROP TABLE IF EXISTS `Client`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -269,15 +219,11 @@ CREATE TABLE `Client` (
   `name` varchar(100) NOT NULL,
   `hash` varbinary(40) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `isGlobal` tinyint(1) DEFAULT '0',
+  `isGlobal` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `IDX_name` (`name`,`hash`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Config`
---
 
 DROP TABLE IF EXISTS `Config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -289,10 +235,6 @@ CREATE TABLE `Config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `CustomFieldData`
---
-
 DROP TABLE IF EXISTS `CustomFieldData`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -301,7 +243,7 @@ CREATE TABLE `CustomFieldData` (
   `moduleId` smallint(5) unsigned NOT NULL,
   `itemId` int(10) unsigned NOT NULL,
   `definitionId` int(10) unsigned NOT NULL,
-  `data` longblob,
+  `data` longblob DEFAULT NULL,
   `key` varbinary(1000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_DEFID` (`definitionId`),
@@ -310,12 +252,8 @@ CREATE TABLE `CustomFieldData` (
   KEY `IDX_ITEM` (`itemId`),
   KEY `IDX_MODULE` (`moduleId`),
   CONSTRAINT `fk_CustomFieldData_definitionId` FOREIGN KEY (`definitionId`) REFERENCES `CustomFieldDefinition` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `CustomFieldDefinition`
---
 
 DROP TABLE IF EXISTS `CustomFieldDefinition`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -324,7 +262,7 @@ CREATE TABLE `CustomFieldDefinition` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `moduleId` smallint(5) unsigned NOT NULL,
-  `field` blob,
+  `field` blob DEFAULT NULL,
   `required` tinyint(1) unsigned DEFAULT NULL,
   `help` varchar(255) DEFAULT NULL,
   `showInList` tinyint(1) unsigned DEFAULT NULL,
@@ -332,12 +270,8 @@ CREATE TABLE `CustomFieldDefinition` (
   PRIMARY KEY (`id`),
   KEY `fk_CustomFieldDefinition_typeId` (`typeId`),
   CONSTRAINT `fk_CustomFieldDefinition_typeId` FOREIGN KEY (`typeId`) REFERENCES `CustomFieldType` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `CustomFieldType`
---
 
 DROP TABLE IF EXISTS `CustomFieldType`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -347,12 +281,8 @@ CREATE TABLE `CustomFieldType` (
   `name` varchar(50) NOT NULL,
   `text` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `EventLog`
---
 
 DROP TABLE IF EXISTS `EventLog`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -364,15 +294,11 @@ CREATE TABLE `EventLog` (
   `userId` smallint(5) unsigned NOT NULL,
   `ipAddress` varchar(45) NOT NULL,
   `action` varchar(50) NOT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `level` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Notice`
---
 
 DROP TABLE IF EXISTS `Notice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -383,20 +309,16 @@ CREATE TABLE `Notice` (
   `component` varchar(100) NOT NULL,
   `description` varchar(500) NOT NULL,
   `date` int(10) unsigned NOT NULL,
-  `checked` tinyint(1) DEFAULT '0',
+  `checked` tinyint(1) DEFAULT 0,
   `userId` smallint(5) unsigned DEFAULT NULL,
-  `sticky` tinyint(1) DEFAULT '0',
-  `onlyAdmin` tinyint(1) DEFAULT '0',
+  `sticky` tinyint(1) DEFAULT 0,
+  `onlyAdmin` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `IDX_userId` (`userId`,`checked`,`date`),
   KEY `IDX_component` (`component`,`date`,`checked`,`userId`),
   CONSTRAINT `fk_Notice_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Plugin`
---
 
 DROP TABLE IF EXISTS `Plugin`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -405,16 +327,12 @@ CREATE TABLE `Plugin` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `data` varbinary(5000) DEFAULT NULL,
-  `enabled` tinyint(1) NOT NULL DEFAULT '0',
-  `available` tinyint(1) DEFAULT '0',
+  `enabled` tinyint(1) NOT NULL DEFAULT 0,
+  `available` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `plugin_name_UNIQUE` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `PublicLink`
---
 
 DROP TABLE IF EXISTS `PublicLink`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -423,16 +341,16 @@ CREATE TABLE `PublicLink` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `itemId` int(10) unsigned NOT NULL,
   `hash` varbinary(100) NOT NULL,
-  `data` longblob,
+  `data` longblob DEFAULT NULL,
   `userId` smallint(5) unsigned NOT NULL,
   `typeId` int(10) unsigned NOT NULL,
   `notify` tinyint(1) unsigned NOT NULL,
   `dateAdd` int(10) unsigned NOT NULL,
   `dateExpire` int(10) unsigned NOT NULL,
-  `countViews` smallint(5) unsigned DEFAULT '0',
-  `totalCountViews` smallint(5) unsigned DEFAULT '0',
+  `countViews` smallint(5) unsigned DEFAULT 0,
+  `totalCountViews` smallint(5) unsigned DEFAULT 0,
   `maxCountViews` smallint(5) unsigned NOT NULL,
-  `useInfo` blob,
+  `useInfo` blob DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_hash` (`hash`),
   UNIQUE KEY `unique_publicLink_hash` (`hash`),
@@ -440,12 +358,8 @@ CREATE TABLE `PublicLink` (
   KEY `IDX_itemId` (`itemId`),
   KEY `fk_PublicLink_userId` (`userId`),
   CONSTRAINT `fk_PublicLink_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Tag`
---
 
 DROP TABLE IF EXISTS `Tag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -457,12 +371,8 @@ CREATE TABLE `Tag` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `tag_hash_UNIQUE` (`hash`),
   KEY `IDX_name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Track`
---
 
 DROP TABLE IF EXISTS `Track`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -477,12 +387,8 @@ CREATE TABLE `Track` (
   PRIMARY KEY (`id`),
   KEY `IDX_userId` (`userId`),
   KEY `IDX_time-ip-source` (`time`,`ipv4`,`ipv6`,`source`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `User`
---
 
 DROP TABLE IF EXISTS `User`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -495,36 +401,32 @@ CREATE TABLE `User` (
   `ssoLogin` varchar(100) DEFAULT NULL,
   `pass` varbinary(1000) NOT NULL,
   `mPass` varbinary(1000) DEFAULT NULL,
-  `mKey` varbinary(1000) NOT NULL,
+  `mKey` varbinary(1000) DEFAULT NULL,
   `email` varchar(80) DEFAULT NULL,
-  `notes` text,
-  `loginCount` int(10) unsigned NOT NULL DEFAULT '0',
+  `notes` text DEFAULT NULL,
+  `loginCount` int(10) unsigned NOT NULL DEFAULT 0,
   `userProfileId` smallint(5) unsigned NOT NULL,
   `lastLogin` datetime DEFAULT NULL,
   `lastUpdate` datetime DEFAULT NULL,
-  `lastUpdateMPass` int(11) unsigned NOT NULL DEFAULT '0',
-  `isAdminApp` tinyint(1) DEFAULT '0',
-  `isAdminAcc` tinyint(1) DEFAULT '0',
-  `isLdap` tinyint(1) DEFAULT '0',
-  `isDisabled` tinyint(1) DEFAULT '0',
+  `lastUpdateMPass` int(11) unsigned NOT NULL DEFAULT 0,
+  `isAdminApp` tinyint(1) DEFAULT 0,
+  `isAdminAcc` tinyint(1) DEFAULT 0,
+  `isLdap` tinyint(1) DEFAULT 0,
+  `isDisabled` tinyint(1) DEFAULT 0,
   `hashSalt` varbinary(128) NOT NULL,
-  `isMigrate` tinyint(1) DEFAULT '0',
-  `isChangePass` tinyint(1) DEFAULT '0',
-  `isChangedPass` tinyint(1) DEFAULT '0',
-  `preferences` blob,
+  `isMigrate` tinyint(1) DEFAULT 0,
+  `isChangePass` tinyint(1) DEFAULT 0,
+  `isChangedPass` tinyint(1) DEFAULT 0,
+  `preferences` blob DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_login` (`login`,`ssoLogin`),
   KEY `IDX_pass` (`pass`(767)),
   KEY `fk_User_userGroupId` (`userGroupId`),
   KEY `fk_User_userProfileId` (`userProfileId`),
-  CONSTRAINT `fk_User_userProfileId` FOREIGN KEY (`userProfileId`) REFERENCES `UserProfile` (`id`),
-  CONSTRAINT `fk_User_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_User_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`),
+  CONSTRAINT `fk_User_userProfileId` FOREIGN KEY (`userProfileId`) REFERENCES `UserProfile` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `UserGroup`
---
 
 DROP TABLE IF EXISTS `UserGroup`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -534,12 +436,8 @@ CREATE TABLE `UserGroup` (
   `name` varchar(50) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `UserPassRecover`
---
 
 DROP TABLE IF EXISTS `UserPassRecover`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -549,16 +447,12 @@ CREATE TABLE `UserPassRecover` (
   `userId` smallint(5) unsigned NOT NULL,
   `hash` varbinary(128) NOT NULL,
   `date` int(10) unsigned NOT NULL,
-  `used` tinyint(1) DEFAULT '0',
+  `used` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `IDX_userId` (`userId`,`date`),
   CONSTRAINT `fk_UserPassRecover_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `UserProfile`
---
 
 DROP TABLE IF EXISTS `UserProfile`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -568,12 +462,8 @@ CREATE TABLE `UserProfile` (
   `name` varchar(45) NOT NULL,
   `profile` blob NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `UserToGroup`
---
 
 DROP TABLE IF EXISTS `UserToGroup`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -587,10 +477,6 @@ CREATE TABLE `UserToGroup` (
   CONSTRAINT `fk_UserToGroup_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Temporary table structure for view `account_data_v`
---
 
 DROP TABLE IF EXISTS `account_data_v`;
 /*!50001 DROP VIEW IF EXISTS `account_data_v`*/;
@@ -629,10 +515,6 @@ SET character_set_client = utf8;
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
---
--- Temporary table structure for view `account_search_v`
---
-
 DROP TABLE IF EXISTS `account_search_v`;
 /*!50001 DROP VIEW IF EXISTS `account_search_v`*/;
 SET @saved_cs_client     = @@character_set_client;
@@ -662,10 +544,6 @@ SET character_set_client = utf8;
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
 
---
--- Final view structure for view `account_data_v`
---
-
 /*!50001 DROP TABLE IF EXISTS `account_data_v`*/;
 /*!50001 DROP VIEW IF EXISTS `account_data_v`*/;
 /*!50001 SET @saved_cs_client          = @@character_set_client */;
@@ -675,15 +553,11 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`172.18.0.1` SQL SECURITY DEFINER */
-/*!50001 VIEW `account_data_v` AS select `Account`.`id` AS `id`,`Account`.`name` AS `name`,`Account`.`categoryId` AS `categoryId`,`Account`.`userId` AS `userId`,`Account`.`clientId` AS `clientId`,`Account`.`userGroupId` AS `userGroupId`,`Account`.`userEditId` AS `userEditId`,`Account`.`login` AS `login`,`Account`.`url` AS `url`,`Account`.`notes` AS `notes`,`Account`.`countView` AS `countView`,`Account`.`countDecrypt` AS `countDecrypt`,`Account`.`dateAdd` AS `dateAdd`,`Account`.`dateEdit` AS `dateEdit`,conv(`Account`.`otherUserEdit`,10,2) AS `otherUserEdit`,conv(`Account`.`otherUserGroupEdit`,10,2) AS `otherUserGroupEdit`,conv(`Account`.`isPrivate`,10,2) AS `isPrivate`,conv(`Account`.`isPrivateGroup`,10,2) AS `isPrivateGroup`,`Account`.`passDate` AS `passDate`,`Account`.`passDateChange` AS `passDateChange`,`Account`.`parentId` AS `parentId`,`Category`.`name` AS `categoryName`,`Client`.`name` AS `clientName`,`ug`.`name` AS `userGroupName`,`u1`.`name` AS `userName`,`u1`.`login` AS `userLogin`,`u2`.`name` AS `userEditName`,`u2`.`login` AS `userEditLogin`,`PublicLink`.`hash` AS `publicLinkHash` from ((((((`Account` left join `Category` on((`Account`.`categoryId` = `Category`.`id`))) join `UserGroup` `ug` on((`Account`.`userGroupId` = `ug`.`id`))) join `User` `u1` on((`Account`.`userId` = `u1`.`id`))) join `User` `u2` on((`Account`.`userEditId` = `u2`.`id`))) left join `Client` on((`Account`.`clientId` = `Client`.`id`))) left join `PublicLink` on((`Account`.`id` = `PublicLink`.`itemId`))) */;
+/*!50013 SQL SECURITY DEFINER */
+/*!50001 VIEW `account_data_v` AS select `Account`.`id` AS `id`,`Account`.`name` AS `name`,`Account`.`categoryId` AS `categoryId`,`Account`.`userId` AS `userId`,`Account`.`clientId` AS `clientId`,`Account`.`userGroupId` AS `userGroupId`,`Account`.`userEditId` AS `userEditId`,`Account`.`login` AS `login`,`Account`.`url` AS `url`,`Account`.`notes` AS `notes`,`Account`.`countView` AS `countView`,`Account`.`countDecrypt` AS `countDecrypt`,`Account`.`dateAdd` AS `dateAdd`,`Account`.`dateEdit` AS `dateEdit`,conv(`Account`.`otherUserEdit`,10,2) AS `otherUserEdit`,conv(`Account`.`otherUserGroupEdit`,10,2) AS `otherUserGroupEdit`,conv(`Account`.`isPrivate`,10,2) AS `isPrivate`,conv(`Account`.`isPrivateGroup`,10,2) AS `isPrivateGroup`,`Account`.`passDate` AS `passDate`,`Account`.`passDateChange` AS `passDateChange`,`Account`.`parentId` AS `parentId`,`Category`.`name` AS `categoryName`,`Client`.`name` AS `clientName`,`ug`.`name` AS `userGroupName`,`u1`.`name` AS `userName`,`u1`.`login` AS `userLogin`,`u2`.`name` AS `userEditName`,`u2`.`login` AS `userEditLogin`,`PublicLink`.`hash` AS `publicLinkHash` from ((((((`Account` left join `Category` on(`Account`.`categoryId` = `Category`.`id`)) join `UserGroup` `ug` on(`Account`.`userGroupId` = `ug`.`id`)) join `User` `u1` on(`Account`.`userId` = `u1`.`id`)) join `User` `u2` on(`Account`.`userEditId` = `u2`.`id`)) left join `Client` on(`Account`.`clientId` = `Client`.`id`)) left join `PublicLink` on(`Account`.`id` = `PublicLink`.`itemId`)) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `account_search_v`
---
 
 /*!50001 DROP TABLE IF EXISTS `account_search_v`*/;
 /*!50001 DROP VIEW IF EXISTS `account_search_v`*/;
@@ -694,8 +568,8 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`172.18.0.1` SQL SECURITY DEFINER */
-/*!50001 VIEW `account_search_v` AS select distinct `Account`.`id` AS `id`,`Account`.`clientId` AS `clientId`,`Account`.`categoryId` AS `categoryId`,`Account`.`name` AS `name`,`Account`.`login` AS `login`,`Account`.`url` AS `url`,`Account`.`notes` AS `notes`,`Account`.`userId` AS `userId`,`Account`.`userGroupId` AS `userGroupId`,`Account`.`otherUserEdit` AS `otherUserEdit`,`Account`.`otherUserGroupEdit` AS `otherUserGroupEdit`,`Account`.`isPrivate` AS `isPrivate`,`Account`.`isPrivateGroup` AS `isPrivateGroup`,`Account`.`passDate` AS `passDate`,`Account`.`passDateChange` AS `passDateChange`,`Account`.`parentId` AS `parentId`,`Account`.`countView` AS `countView`,`ug`.`name` AS `userGroupName`,`Category`.`name` AS `categoryName`,`Client`.`name` AS `customerName`,(select count(0) from `AccountFile` where (`AccountFile`.`accountId` = `Account`.`id`)) AS `num_files` from (((`Account` join `Category` on((`Account`.`categoryId` = `Category`.`id`))) join `UserGroup` `ug` on((`Account`.`userGroupId` = `ug`.`id`))) join `Client` on((`Client`.`id` = `Account`.`clientId`))) */;
+/*!50013 SQL SECURITY DEFINER */
+/*!50001 VIEW `account_search_v` AS select distinct `Account`.`id` AS `id`,`Account`.`clientId` AS `clientId`,`Account`.`categoryId` AS `categoryId`,`Account`.`name` AS `name`,`Account`.`login` AS `login`,`Account`.`url` AS `url`,`Account`.`notes` AS `notes`,`Account`.`userId` AS `userId`,`Account`.`userGroupId` AS `userGroupId`,`Account`.`otherUserEdit` AS `otherUserEdit`,`Account`.`otherUserGroupEdit` AS `otherUserGroupEdit`,`Account`.`isPrivate` AS `isPrivate`,`Account`.`isPrivateGroup` AS `isPrivateGroup`,`Account`.`passDate` AS `passDate`,`Account`.`passDateChange` AS `passDateChange`,`Account`.`parentId` AS `parentId`,`Account`.`countView` AS `countView`,`ug`.`name` AS `userGroupName`,`Category`.`name` AS `categoryName`,`Client`.`name` AS `customerName`,(select count(0) from `AccountFile` where `AccountFile`.`accountId` = `Account`.`id`) AS `num_files` from (((`Account` join `Category` on(`Account`.`categoryId` = `Category`.`id`)) join `UserGroup` `ug` on(`Account`.`userGroupId` = `ug`.`id`)) join `Client` on(`Client`.`id` = `Account`.`clientId`)) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -708,5 +582,3 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2018-01-01 13:45:54

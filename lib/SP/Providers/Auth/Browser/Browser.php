@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,11 +24,11 @@
 
 namespace SP\Providers\Auth\Browser;
 
-use SP\Providers\Auth\AuthInterface;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\UserLoginData;
+use SP\Providers\Auth\AuthInterface;
 
 /**
  * Class Browser
@@ -119,7 +119,7 @@ class Browser implements AuthInterface
 
         $authUser = self::getServerAuthUser();
 
-        return $authUser === null ?: $authUser === $login;
+        return $authUser !== null && $authUser === $login ?: true;
     }
 
     /**

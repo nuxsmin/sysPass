@@ -159,7 +159,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function viewLinkAction($hash)
     {
         $layoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-        $layoutHelper->getPublicLayout('account-link', 'account');
+        $layoutHelper->getPublicLayout(['name' => 'account-link', 'base' => 'account'], 'account');
 
         try {
             $publicLinkService = new PublicLinkService();

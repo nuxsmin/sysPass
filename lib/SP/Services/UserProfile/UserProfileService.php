@@ -99,7 +99,7 @@ class UserProfileService
 
     /**
      * @param $itemData
-     * @return mixed
+     * @return int
      * @throws SPException
      */
     public function create($itemData)

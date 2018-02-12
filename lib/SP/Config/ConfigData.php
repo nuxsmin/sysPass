@@ -36,7 +36,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $upgradeKey = '';
+    private $upgradeKey;
     /**
      * @var bool
      */
@@ -44,31 +44,31 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $dokuwikiUrl = '';
+    private $dokuwikiUrl;
     /**
      * @var string
      */
-    private $dokuwikiUrlBase = '';
+    private $dokuwikiUrlBase;
     /**
      * @var string
      */
-    private $dokuwikiUser = '';
+    private $dokuwikiUser;
     /**
      * @var string
      */
-    private $dokuwikiPass = '';
+    private $dokuwikiPass;
     /**
      * @var string
      */
-    private $dokuwikiNamespace = '';
+    private $dokuwikiNamespace;
     /**
      * @var int
      */
-    private $ldapDefaultGroup = 0;
+    private $ldapDefaultGroup;
     /**
      * @var int
      */
-    private $ldapDefaultProfile = 0;
+    private $ldapDefaultProfile;
     /**
      * @var bool
      */
@@ -76,7 +76,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $proxyServer = '';
+    private $proxyServer;
     /**
      * @var int
      */
@@ -84,11 +84,11 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $proxyUser = '';
+    private $proxyUser;
     /**
      * @var string
      */
-    private $proxyPass = '';
+    private $proxyPass;
     /**
      * @var int
      */
@@ -120,11 +120,11 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $configHash = '';
+    private $configHash;
     /**
      * @var string
      */
-    private $dbHost = '';
+    private $dbHost;
     /**
      * @var string
      */
@@ -132,15 +132,15 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $dbName = '';
+    private $dbName;
     /**
      * @var string
      */
-    private $dbPass = '';
+    private $dbPass;
     /**
      * @var string
      */
-    private $dbUser = '';
+    private $dbUser;
     /**
      * @var int
      */
@@ -176,19 +176,19 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $ldapBase = '';
+    private $ldapBase;
     /**
      * @var string
      */
-    private $ldapBindUser = '';
+    private $ldapBindUser;
     /**
      * @var string
      */
-    private $ldapBindPass = '';
+    private $ldapBindPass;
     /**
      * @var string
      */
-    private $ldapProxyUser = '';
+    private $ldapProxyUser;
     /**
      * @var bool
      */
@@ -200,15 +200,15 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $ldapGroup = '';
+    private $ldapGroup;
     /**
      * @var string
      */
-    private $ldapServer = '';
+    private $ldapServer;
     /**
      * @var string
      */
-    private $ldapUserattr = '';
+    private $ldapUserattr;
     /**
      * @var bool
      */
@@ -224,11 +224,11 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $mailFrom = '';
+    private $mailFrom ;
     /**
      * @var string
      */
-    private $mailPass = '';
+    private $mailPass;
     /**
      * @var int
      */
@@ -240,15 +240,15 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $mailSecurity = '';
+    private $mailSecurity;
     /**
      * @var string
      */
-    private $mailServer = '';
+    private $mailServer;
     /**
      * @var string
      */
-    private $mailUser = '';
+    private $mailUser;
     /**
      * @var bool
      */
@@ -256,7 +256,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $passwordSalt = '';
+    private $passwordSalt;
     /**
      * @var bool
      */
@@ -268,7 +268,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $siteLang = '';
+    private $siteLang;
     /**
      * @var string
      */
@@ -276,7 +276,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $configVersion = '';
+    private $configVersion;
     /**
      * @var bool
      */
@@ -288,11 +288,11 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $wikiPageurl = '';
+    private $wikiPageurl;
     /**
      * @var string
      */
-    private $wikiSearchurl = '';
+    private $wikiSearchurl;
     /**
      * @var int
      */
@@ -304,11 +304,11 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $backup_hash = '';
+    private $backup_hash;
     /**
      * @var string
      */
-    private $export_hash = '';
+    private $export_hash;
     /**
      * @var bool
      */
@@ -324,7 +324,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $syslogServer = '';
+    private $syslogServer;
     /**
      * @var int
      */
@@ -336,7 +336,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $configSaver = '';
+    private $configSaver;
     /**
      * @var bool
      */
@@ -360,11 +360,11 @@ class ConfigData implements JsonSerializable
     /**
      * @var int
      */
-    private $ssoDefaultGroup = 0;
+    private $ssoDefaultGroup;
     /**
      * @var int
      */
-    private $ssoDefaultProfile = 0;
+    private $ssoDefaultProfile;
 
     /**
      * @return boolean

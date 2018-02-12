@@ -26,7 +26,6 @@ namespace SP\Storage;
 
 
 use RuntimeException;
-use SP\Core\DiFactory;
 use SP\Core\Exceptions\SPException;
 
 /**
@@ -72,31 +71,33 @@ class DBUtil
     /**
      * Escapar una cadena de texto con funciones de mysqli.
      *
-     * @param $str string con la cadena a escapar
+     * @param string             $str string con la cadena a escapar
+     * @param DBStorageInterface $DBStorage
      * @return string con la cadena escapada
      */
-    public static function escape($str)
+    public static function escape($str, DBStorageInterface $DBStorage)
     {
         try {
-            $db = DiFactory::getDBStorage()->getConnection();
-
-            return $db->quote(trim($str));
+            return $DBStorage->getConnection()->quote(trim($str));
         } catch (SPException $e) {
-            return $str;
+            debugLog($e->getMessage());
         }
+
+        return $str;
     }
 
     /**
      * Obtener la información del servidor de base de datos
      *
+     * @param DBStorageInterface $DBStorage
      * @return array
      */
-    public static function getDBinfo()
+    public static function getDBinfo(DBStorageInterface $DBStorage)
     {
-        $dbinfo = array();
+        $dbinfo = [];
 
         try {
-            $db = DiFactory::getDBStorage()->getConnection();
+            $db = $DBStorage->getConnection();
 
             $attributes = [
                 'SERVER_VERSION',
@@ -109,7 +110,7 @@ class DBUtil
                 $dbinfo[$val] = $db->getAttribute(constant('PDO::ATTR_' . $val));
             }
         } catch (\Exception $e) {
-            return $dbinfo;
+            debugLog($e->getMessage());
         }
 
         return $dbinfo;
@@ -118,20 +119,20 @@ class DBUtil
     /**
      * Comprobar que la base de datos existe.
      *
-     * @param DatabaseInterface $database
-     * @param string $dbName
+     * @param DBStorageInterface $DBStorage
+     * @param string             $dbName
      * @return bool
      */
-    public static function checkDatabaseExist(DatabaseInterface $database, $dbName)
+    public static function checkDatabaseExist(DBStorageInterface $DBStorage, $dbName)
     {
         try {
             $query = /** @lang SQL */
                 'SELECT COUNT(*) 
                 FROM information_schema.tables
                 WHERE table_schema = \'' . $dbName . '\'
-                AND table_name IN (\'Client\', \'Category\', \'Account\', \'User\', \'Config\', \'EventLog\')';
+                AND `table_name` IN (\'Client\', \'Category\', \'Account\', \'User\', \'Config\', \'EventLog\')';
 
-            return (int)$database->getDbHandler()->getConnection()->query($query)->fetchColumn() === 6;
+            return (int)$DBStorage->getConnection()->query($query)->fetchColumn() === 6;
         } catch (\Exception $e) {
             debugLog($e->getMessage());
             debugLog($e->getCode());

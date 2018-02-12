@@ -48,6 +48,10 @@ class UserService
      * @var UserRepository
      */
     protected $userRepository;
+    /**
+     * @var UserPassService
+     */
+    protected $userPassService;
 
     /**
      * UserService constructor.
@@ -61,11 +65,13 @@ class UserService
     }
 
     /**
-     * @param UserRepository $userRepository
+     * @param UserRepository  $userRepository
+     * @param UserPassService $userPassService
      */
-    public function inject(UserRepository $userRepository)
+    public function inject(UserRepository $userRepository, UserPassService $userPassService)
     {
         $this->userRepository = $userRepository;
+        $this->userPassService = $userPassService;
     }
 
     /**
@@ -192,11 +198,30 @@ class UserService
      * Creates an item
      *
      * @param UserData $itemData
-     * @return mixed
+     * @return int
      * @throws SPException
      */
     public function create($itemData)
     {
+        return $this->userRepository->create($itemData);
+    }
+
+    /**
+     * Creates an item
+     *
+     * @param UserData $itemData
+     * @param null     $masterPass
+     * @return int
+     * @throws SPException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     */
+    public function createWithMasterPass($itemData, $masterPass)
+    {
+        $response = $this->userPassService->createMasterPass($masterPass, $itemData->getLogin(), $itemData->getPass());
+        $itemData->setMPass($response->getCryptMasterPass());
+        $itemData->setMKey($response->getCryptSecuredKey());
+        $itemData->setLastUpdateMPass(time());
+
         return $this->userRepository->create($itemData);
     }
 

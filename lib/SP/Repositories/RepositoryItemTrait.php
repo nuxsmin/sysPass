@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,6 +26,7 @@ namespace SP\Repositories;
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\DataModelInterface;
+use SP\Storage\DBStorageInterface;
 use SP\Storage\DBUtil;
 
 /**
@@ -64,14 +65,15 @@ trait RepositoryItemTrait
      * Esta función crear un hash para detectar nombres de elementos duplicados mediante
      * la eliminación de carácteres especiales y capitalización
      *
-     * @param $name
+     * @param string             $name
+     * @param DBStorageInterface $DBStorage
      * @return string con el hash generado
      */
-    protected function makeItemHash($name)
+    protected function makeItemHash($name, DBStorageInterface $DBStorage)
     {
         $charsSrc = ['.', ' ', '_', ', ', '-', ';', '\'', '"', ':', '(', ')', '|', '/'];
 
-        return md5(strtolower(str_replace($charsSrc, '', DBUtil::escape($name))));
+        return md5(strtolower(str_replace($charsSrc, '', DBUtil::escape($name, $DBStorage))));
     }
 
     /**

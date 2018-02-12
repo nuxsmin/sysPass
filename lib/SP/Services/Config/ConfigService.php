@@ -51,6 +51,7 @@ class ConfigService
      * ConfigService constructor.
      *
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     public function __construct()
     {
@@ -75,7 +76,11 @@ class ConfigService
         $query = $this->configRepository->getByParam($param);
 
         if (empty($query)) {
-            throw new ParameterNotFoundException(SPException::ERROR, sprintf(__('Parámetro no encontrado (%s)'), $param));
+            throw new ParameterNotFoundException(
+                sprintf(__('Parámetro no encontrado (%s)'),
+                    SPException::ERROR,
+                    $param)
+            );
         }
         return $query->value;
     }
@@ -103,11 +108,11 @@ class ConfigService
             } catch (ConstraintException $e) {
                 debugLog($e, true);
 
-                throw new ServiceException($e->getType(), $e->getMessage(), $e->getHint(), $e->getCode());
+                throw new ServiceException($e->getMessage(), $e->getType(), $e->getHint(), $e->getCode());
             } catch (QueryException $e) {
                 debugLog($e, true);
 
-                throw new ServiceException($e->getType(), $e->getMessage(), $e->getHint(), $e->getCode());
+                throw new ServiceException($e->getMessage(), $e->getType(), $e->getHint(), $e->getCode());
             }
         }
     }

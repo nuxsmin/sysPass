@@ -24,6 +24,8 @@
 
 namespace SP\Storage;
 
+use SP\Core\Exceptions\SPException;
+
 /**
  * Interface DBStorageInterface
  *
@@ -35,15 +37,17 @@ interface DBStorageInterface
      * Obtener una conexión PDO
      *
      * @return \PDO
+     * @throws SPException
      */
     public function getConnection();
 
     /**
-     * Establecer datos de conexión
+     * Obtener una conexión PDO sin seleccionar la BD
      *
-     * @return void
+     * @return \PDO
+     * @throws SPException
      */
-    public function setConnectionData();
+    public function getConnectionSimple();
 
     /**
      * Devolcer el estado de la BD
@@ -51,4 +55,9 @@ interface DBStorageInterface
      * @return int
      */
     public function getDbStatus();
+
+    /**
+     * @return mixed
+     */
+    public function getConnectionUri();
 }

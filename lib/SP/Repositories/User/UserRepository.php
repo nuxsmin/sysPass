@@ -439,7 +439,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * Creates an item
      *
      * @param UserData $itemData
-     * @return mixed
+     * @return int
      * @throws SPException
      */
     public function create($itemData)
@@ -457,8 +457,9 @@ class UserRepository extends Repository implements RepositoryItemInterface
             notes = ?,
             userGroupId = ?,
             userProfileId = ?,
-            mPass = \'\',
-            mKey = \'\',
+            mPass = ?,
+            mKey = ?,
+            lastUpdateMPass = ?,
             isAdminApp = ?,
             isAdminAcc = ?,
             isDisabled = ?,
@@ -476,6 +477,9 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $Data->addParam($itemData->getNotes());
         $Data->addParam($itemData->getUserGroupId());
         $Data->addParam($itemData->getUserProfileId());
+        $Data->addParam($itemData->getMPass());
+        $Data->addParam($itemData->getMKey());
+        $Data->addParam($itemData->getLastUpdateMPass());
         $Data->addParam($itemData->isIsAdminApp());
         $Data->addParam($itemData->isIsAdminAcc());
         $Data->addParam($itemData->isIsDisabled());

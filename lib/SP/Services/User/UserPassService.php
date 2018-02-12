@@ -76,6 +76,7 @@ class UserPassService
      * UserPassService constructor.
      *
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     public function __construct()
     {
@@ -98,19 +99,19 @@ class UserPassService
      * Actualizar la clave maestra con la clave anterior del usuario
      *
      * @param string        $oldUserPass
-     * @param UserLoginData $UserData $UserData
+     * @param UserLoginData $userLoginData $UserData
      * @return UserPassResponse
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function updateMasterPassFromOldPass($oldUserPass, UserLoginData $UserData)
+    public function updateMasterPassFromOldPass($oldUserPass, UserLoginData $userLoginData)
     {
-        $response = $this->loadUserMPass($UserData, $oldUserPass);
+        $response = $this->loadUserMPass($userLoginData, $oldUserPass);
 
         if ($response->getStatus() === self::MPASS_OK) {
-            return $this->updateMasterPass($response->getClearMasterPass(), $UserData);
+            return $this->updateMasterPassOnLogin($response->getClearMasterPass(), $userLoginData);
         }
 
         return new UserPassResponse(self::MPASS_WRONG);
@@ -151,16 +152,17 @@ class UserPassService
         }
 
         try {
-            $securedKey = Crypt::unlockSecuredKey($userLoginResponse->getMKey(), $this->getKey($userLoginData, $key));
-            $cryptMPass = Crypt::decrypt($userLoginResponse->getMPass(), $securedKey, $this->getKey($userLoginData, $key));
+            $key = self::makeKeyForUser($userLoginData->getLoginUser(), $key ?: $userLoginData->getLoginPass(), $this->configData);
+            $securedKey = Crypt::unlockSecuredKey($userLoginResponse->getMKey(), $key);
+            $clearMPass = Crypt::decrypt($userLoginResponse->getMPass(), $securedKey, $key);
 
             // Comprobamos el hash de la clave del usuario con la guardada
-            if (Hash::checkHashKey($cryptMPass, $configHashMPass)) {
-                CryptSession::saveSessionKey($cryptMPass);
+            if (Hash::checkHashKey($clearMPass, $configHashMPass)) {
+                CryptSession::saveSessionKey($clearMPass);
 
-                $response = new UserPassResponse(self::MPASS_OK, $cryptMPass);
-                $response->setCryptMasterPass($cryptMPass);
-                $response->setCryptSecuredKey($securedKey);
+                $response = new UserPassResponse(self::MPASS_OK, $clearMPass);
+                $response->setCryptMasterPass($userLoginResponse->getMPass());
+                $response->setCryptSecuredKey($userLoginResponse->getMKey());
 
                 return $response;
             }
@@ -174,21 +176,18 @@ class UserPassService
     /**
      * Obtener una clave de cifrado basada en la clave del usuario y un salt.
      *
-     * @param UserLoginData $userLoginData
-     * @param string        $key Clave de cifrado
+     * @param string     $userLogin
+     * @param string     $userPass
+     * @param ConfigData $configData
      * @return string con la clave de cifrado
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    private function getKey(UserLoginData $userLoginData, $key = null)
+    public static function makeKeyForUser($userLogin, $userPass, ConfigData $configData)
     {
-        $pass = $key === null ? $userLoginData->getLoginPass() : $key;
-
-        return $pass . $userLoginData->getLoginUser() . $this->configData->getPasswordSalt();
+        return $userPass . $userLogin . $configData->getPasswordSalt();
     }
 
     /**
-     * Actualizar la clave maestra del usuario en la BBDD.
+     * Actualizar la clave maestra del usuario al realizar login
      *
      * @param string        $userMPass     con la clave maestra
      * @param UserLoginData $userLoginData $userLoginData
@@ -199,7 +198,7 @@ class UserPassService
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\SPException
      */
-    public function updateMasterPass($userMPass, UserLoginData $userLoginData)
+    public function updateMasterPassOnLogin($userMPass, UserLoginData $userLoginData)
     {
         $userData = $userLoginData->getUserLoginResponse();
         $configHashMPass = $this->configService->getByParam('masterPwd');
@@ -217,30 +216,47 @@ class UserPassService
         if (Hash::checkHashKey($userMPass, $configHashMPass)
             || CryptUpgrade::migrateHash($userMPass)
         ) {
-            $securedKey = Crypt::makeSecuredKey($this->getKey($userLoginData));
-            $cryptMPass = Crypt::encrypt($userMPass, $securedKey, $this->getKey($userLoginData));
+            $response = $this->createMasterPass($userMPass, $userLoginData->getLoginUser(), $userLoginData->getLoginPass());
 
-            if (!empty($cryptMPass)) {
-                if (strlen($securedKey) > 1000 || strlen($cryptMPass) > 1000) {
-                    throw new SPException(__u('Error interno'), SPException::ERROR, '', Service::STATUS_INTERNAL_ERROR);
-                }
+            $this->userRepository->updateMasterPassById($userData->getId(), $response->getCryptMasterPass(), $response->getCryptSecuredKey());
 
-                $this->userRepository->updateMasterPassById($userData->getId(), $cryptMPass, $securedKey);
+            CryptSession::saveSessionKey($userMPass);
 
-                CryptSession::saveSessionKey($userMPass);
-
-//                $userData->setMPass($cryptMPass);
-//                $userData->setMKey($securedKey);
-
-                $response = new UserPassResponse(self::MPASS_OK, $userMPass);
-                $response->setCryptMasterPass($cryptMPass);
-                $response->setCryptSecuredKey($securedKey);
-
-                return $response;
-            }
+            return $response;
         }
 
         return new UserPassResponse(self::MPASS_WRONG);
+    }
+
+    /**
+     * Actualizar la clave maestra del usuario en la BBDD.
+     *
+     * @param string $masterPass
+     * @param string $userLogin
+     * @param string $userPass
+     * @return UserPassResponse
+     * @throws CryptoException
+     * @throws SPException
+     */
+    public function createMasterPass($masterPass, $userLogin, $userPass)
+    {
+        $key = self::makeKeyForUser($userLogin, $userPass, $this->configData);
+        $securedKey = Crypt::makeSecuredKey($key);
+        $cryptMPass = Crypt::encrypt($masterPass, $securedKey, $key);
+
+        if (strlen($securedKey) > 1000 || strlen($cryptMPass) > 1000) {
+            throw new SPException(
+                __u('Error interno'),
+                SPException::ERROR,
+                '',
+                Service::STATUS_INTERNAL_ERROR);
+        }
+
+        $response = new UserPassResponse(self::MPASS_OK, $masterPass);
+        $response->setCryptMasterPass($cryptMPass);
+        $response->setCryptSecuredKey($securedKey);
+
+        return $response;
     }
 
     /**

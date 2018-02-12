@@ -50,7 +50,7 @@ class Crypt
         try {
             if ($securedKey instanceof Key) {
                 $key = $securedKey;
-            } elseif (!empty($password)) {
+            } elseif (null !== $password) {
                 $key = self::unlockSecuredKey($securedKey, $password, false);
             } else {
                 $key = Key::loadFromAsciiSafeString($securedKey);
@@ -100,7 +100,7 @@ class Crypt
         try {
             if ($securedKey instanceof Key) {
                 $key = $securedKey;
-            } elseif (!empty($password) && $securedKey instanceof KeyProtectedByPassword) {
+            } elseif (null !== $password && $securedKey instanceof KeyProtectedByPassword) {
                 $key = self::unlockSecuredKey($securedKey, $password);
             } else {
                 $key = Key::loadFromAsciiSafeString($securedKey);
@@ -120,7 +120,7 @@ class Crypt
      *
      * @param string $password
      * @param bool   $useAscii
-     * @return string|Key
+     * @return string|KeyProtectedByPassword
      * @throws CryptoException
      */
     public static function makeSecuredKey($password, $useAscii = true)

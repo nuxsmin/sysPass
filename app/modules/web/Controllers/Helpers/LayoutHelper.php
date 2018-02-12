@@ -61,20 +61,24 @@ class LayoutHelper extends HelperBase
     /**
      * Sets a full layout page
      *
-     * @param Acl    $acl
      * @param string $page Page/view name
+     * @param Acl    $acl
      * @return LayoutHelper
      */
-    public function getFullLayout(Acl $acl, $page = '')
+    public function getFullLayout($page, Acl $acl = null)
     {
+        $this->view->addTemplate('main', '_layouts');
+
         $this->setPage($page);
         $this->initBody();
-        $this->getSessionBar();
-        $this->getMenu($acl);
 
-        $this->view->addPartial('body-content');
-        $this->view->addPartial('body-footer');
-        $this->view->addPartial('body-end');
+        if ($this->loggedIn) {
+            $this->getSessionBar();
+        }
+
+        if ($acl !== null) {
+            $this->getMenu($acl);
+        }
 
         return $this;
     }
@@ -96,10 +100,6 @@ class LayoutHelper extends HelperBase
     {
         $this->view->assign('startTime', microtime());
 
-        $this->view->addPartial('header');
-        $this->view->addPartial('body-start');
-
-        $this->view->assign('useLayout', true);
         $this->view->assign('isInstalled', $this->configData->isInstalled());
         $this->view->assign('sk', SessionUtil::getSessionKey(true, $this->configData));
         $this->view->assign('appInfo', Util::getAppInfo());
@@ -210,8 +210,6 @@ class LayoutHelper extends HelperBase
      */
     public function getSessionBar()
     {
-        $this->view->addPartial('sessionbar');
-
         $userType = null;
 
         $userData = $this->session->getUserData();
@@ -239,8 +237,6 @@ class LayoutHelper extends HelperBase
      */
     public function getMenu(Acl $acl)
     {
-        $this->view->addPartial('body-header-menu');
-
         $icons = $this->theme->getIcons();
 
         $actionSearch = new DataGridAction();
@@ -324,6 +320,8 @@ class LayoutHelper extends HelperBase
 
             $this->view->append('actions', $actionEventlog);
         }
+
+        $this->view->assign('useMenu', true);
     }
 
     /**
@@ -335,23 +333,39 @@ class LayoutHelper extends HelperBase
      */
     public function getPublicLayout($template, $page = '')
     {
+        $this->view->addTemplate('main', '_layouts');
+        $this->view->addContentTemplate($template);
+        $this->view->assign('useFixedHeader');
+
         $this->setPage($page);
         $this->initBody();
-
-        $this->view->addPartial('body-header');
-        $this->view->addTemplate($template);
-        $this->view->addPartial('body-footer');
-        $this->view->addPartial('body-end');
 
         return $this;
     }
 
     /**
-     * @param bool $loggedIn
+     * Sets a custom layout page
+     *
+     * @param string $template
+     * @param string $page Page/view name
+     * @return LayoutHelper
      */
-    protected function setLoggedIn($loggedIn)
+    public function getCustomLayout($template, $page = '')
     {
-        $this->loggedIn = (bool)$loggedIn;
+        $this->view->addTemplate('main', '_layouts');
+        $this->view->addContentTemplate($template);
+
+        $this->setPage($page);
+        $this->initBody();
+
+        return $this;
+    }
+
+    protected function initialize()
+    {
+        $this->loggedIn = $this->session->isLoggedIn();
+
         $this->view->assign('loggedIn', $this->loggedIn);
     }
+
 }

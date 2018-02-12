@@ -47,7 +47,7 @@ class IndexController extends ControllerBase
             Response::redirect('index.php?r=login');
         } else {
             $LayoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $LayoutHelper->getFullLayout($this->acl, 'main');
+            $LayoutHelper->getFullLayout('main', $this->acl);
 
             $this->view();
         }

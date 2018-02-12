@@ -25,11 +25,7 @@
 namespace SP\Storage;
 
 use PDO;
-use SP\Config\Config;
-use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Init;
-use SP\Core\Traits\InjectableTrait;
 
 defined('APP_ROOT') || die();
 
@@ -40,71 +36,29 @@ defined('APP_ROOT') || die();
  */
 class MySQLHandler implements DBStorageInterface
 {
-    use InjectableTrait;
-
     const STATUS_OK = 0;
     const STATUS_KO = 1;
-    /**
-     * @var ConfigData
-     */
-    protected $ConfigData;
-    /**
-     * @var Config
-     */
-    protected $Config;
     /**
      * @var PDO
      */
     private $db;
     /**
-     * @var string
-     */
-    private $dbHost = '';
-    /**
-     * @var string
-     */
-    private $dbSocket;
-    /**
-     * @var int
-     */
-    private $dbPort = 0;
-    /**
-     * @var string
-     */
-    private $dbName = '';
-    /**
-     * @var string
-     */
-    private $dbUser = '';
-    /**
-     * @var string
-     */
-    private $dbPass = '';
-    /**
      * @var int
      */
     private $dbStatus = self::STATUS_KO;
+    /**
+     * @var DatabaseConnectionData
+     */
+    private $connectionData;
 
     /**
      * MySQLHandler constructor.
+     *
+     * @param DatabaseConnectionData $connectionData
      */
-    public function __construct()
+    public function __construct(DatabaseConnectionData $connectionData)
     {
-        $this->injectDependencies();
-        $this->setConnectionData();
-    }
-
-    /**
-     * Establecer datos de conexión
-     */
-    public function setConnectionData()
-    {
-        $this->dbHost = $this->ConfigData->getDbHost();
-        $this->dbSocket = $this->ConfigData->getDbSocket();
-        $this->dbUser = $this->ConfigData->getDbUser();
-        $this->dbPass = $this->ConfigData->getDbPass();
-        $this->dbName = $this->ConfigData->getDbName();
-        $this->dbPort = $this->ConfigData->getDbPort();
+        $this->connectionData = $connectionData;
     }
 
     /**
@@ -125,45 +79,41 @@ class MySQLHandler implements DBStorageInterface
      *
      * @throws \SP\Core\Exceptions\SPException
      * @return PDO
-     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
-
     public function getConnection()
     {
         if (!$this->db) {
-            $isInstalled = $this->ConfigData->isInstalled();
-
-            if (empty($this->dbHost) || empty($this->dbUser) || empty($this->dbPass) || empty($this->dbName)) {
-                if ($isInstalled) {
-                    Init::initError(__('No es posible conectar con la BD'), __('Compruebe los datos de conexión'));
-                } else {
-                    throw new SPException(__('No es posible conectar con la BD', false), SPException::CRITICAL, __('Compruebe los datos de conexión', false));
-                }
+            if (null === $this->connectionData->getDbUser()
+                || null === $this->connectionData->getDbPass()
+                || null === $this->connectionData->getDbName()
+                || (null === $this->connectionData->getDbHost() && null === $this->connectionData->getDbSocket())
+            ) {
+                throw new SPException(
+                    __u('No es posible conectar con la BD'),
+                    SPException::CRITICAL,
+                    __u('Compruebe los datos de conexión'));
             }
 
             try {
                 $opts = [PDO::ATTR_EMULATE_PREPARES => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
 
-                if (empty($this->dbSocket)) {
-                    $dsn = 'mysql:host=' . $this->dbHost . ';port=' . $this->dbPort . ';dbname=' . $this->dbName . ';charset=utf8';
-                } else {
-                    $dsn = 'mysql:unix_socket=' . $this->dbSocket . ';dbname=' . $this->dbName . ';charset=utf8';
-                }
-
-                $this->db = new PDO($dsn, $this->dbUser, $this->dbPass, $opts);
+                $this->db = new PDO($this->getConnectionUri(), $this->connectionData->getDbUser(), $this->connectionData->getDbPass(), $opts);
                 $this->dbStatus = self::STATUS_OK;
             } catch (\Exception $e) {
-                if ($isInstalled) {
-                    if ($e->getCode() === 1049) {
-                        $this->ConfigData->setInstalled(false);
-                        $this->Config->saveConfig($this->ConfigData);
-                    }
-                    Init::initError(
-                        __('No es posible conectar con la BD'),
-                        'Error ' . $e->getCode() . ': ' . $e->getMessage());
-                } else {
-                    throw new SPException($e->getMessage(), SPException::CRITICAL, $e->getCode());
-                }
+//                if ($isInstalled) {
+//                    if ($e->getCode() === 1049) {
+//                        $this->ConfigData->setInstalled(false);
+//                        $this->Config->saveConfig($this->ConfigData);
+//                    }
+//                }
+
+                throw new SPException(
+                    __u('No es posible conectar con la BD'),
+                    SPException::CRITICAL,
+                    sprintf('Error %s: %s', $e->getCode(), $e->getMessage()),
+                    $e->getCode(),
+                    $e
+                );
             }
         }
 
@@ -171,11 +121,66 @@ class MySQLHandler implements DBStorageInterface
     }
 
     /**
-     * @param Config $config
+     * @return string
      */
-    public function inject(Config $config)
+    public function getConnectionUri()
     {
-        $this->Config = $config;
-        $this->ConfigData = $config->getConfigData();
+        if ('' === $this->connectionData->getDbSocket()) {
+            $dsn = 'mysql:host=' . $this->connectionData->getDbHost();
+
+            if (null !== $this->connectionData->getDbPort()) {
+                $dsn .= ';port=' . $this->connectionData->getDbPort();
+            }
+
+            if (null !== $this->connectionData->getDbName()) {
+                $dsn .= ';dbname=' . $this->connectionData->getDbName();
+            }
+
+
+            return $dsn . ';charset=utf8';
+        }
+
+        $dsn = 'mysql:unix_socket=' . $this->connectionData->getDbSocket();
+
+        if ('' !== $this->connectionData->getDbName()) {
+            $dsn .= ';dbname=' . $this->connectionData->getDbName();
+        }
+
+        return $dsn . ';charset=utf8';
+    }
+
+    /**
+     * Obtener una conexión PDO sin seleccionar la BD
+     *
+     * @return \PDO
+     * @throws SPException
+     */
+    public function getConnectionSimple()
+    {
+        if (!$this->db) {
+            if (null === $this->connectionData->getDbHost() && null === $this->connectionData->getDbSocket()) {
+                throw new SPException(
+                    __u('No es posible conectar con la BD'),
+                    SPException::CRITICAL,
+                    __u('Compruebe los datos de conexión'));
+            }
+
+            try {
+                $opts = [PDO::ATTR_EMULATE_PREPARES => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+
+                $this->db = new PDO($this->getConnectionUri(), $this->connectionData->getDbUser(), $this->connectionData->getDbPass(), $opts);
+                $this->dbStatus = self::STATUS_OK;
+            } catch (\Exception $e) {
+                throw new SPException(
+                    __u('No es posible conectar con la BD'),
+                    SPException::CRITICAL,
+                    sprintf('Error %s: %s', $e->getCode(), $e->getMessage()),
+                    $e->getCode(),
+                    $e
+                );
+            }
+        }
+
+        return $this->db;
     }
 }

@@ -69,7 +69,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $Data->addParam($itemData->getName());
         $Data->addParam($itemData->getDescription());
         $Data->addParam($itemData->getIsGlobal());
-        $Data->addParam($this->makeItemHash($itemData->getName()));
+        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
         $Data->setOnErrorMessage(__u('Error al crear el cliente'));
 
         DbWrapper::getQuery($Data, $this->db);
@@ -92,7 +92,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($itemData->getName()));
+        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
 
         DbWrapper::getQuery($Data, $this->db);
 
@@ -127,7 +127,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $Data->addParam($itemData->getName());
         $Data->addParam($itemData->getDescription());
         $Data->addParam($itemData->getIsGlobal());
-        $Data->addParam($this->makeItemHash($itemData->getName()));
+        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
         $Data->addParam($itemData->getId());
         $Data->setOnErrorMessage(__u('Error al actualizar el cliente'));
 
@@ -151,7 +151,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($itemData->getName()));
+        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
         $Data->addParam($itemData->getId());
 
         DbWrapper::getQuery($Data, $this->db);

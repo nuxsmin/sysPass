@@ -24,14 +24,10 @@
 
 namespace SP\Log;
 
-use SP\Core\DiFactory;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
-use SP\Core\SessionFactory;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
-use SP\Util\Checks;
 use SP\Util\HttpUtil;
 use SP\Util\Util;
 
@@ -84,7 +80,6 @@ class Log extends ActionLog
      * @return bool con el resultado
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \phpmailer\phpmailerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public static function clearEvents()
@@ -105,8 +100,7 @@ class Log extends ActionLog
      * @param string $description La descripción de la acción realizada
      * @param string $level
      * @return Log
-     * @throws \phpmailer\phpmailerException
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     public static function writeNewLogAndEmail($action, $description = null, $level = Log::INFO)
     {
@@ -123,6 +117,7 @@ class Log extends ActionLog
      * @param string $description La descripción de la acción realizada
      * @param string $level
      * @return Log
+     * @throws \SP\Core\Dic\ContainerException
      */
     public static function writeNewLog($action, $description = null, $level = Log::INFO)
     {
@@ -145,9 +140,8 @@ class Log extends ActionLog
      */
     public function writeLog($resetDescription = false, $resetDetails = false)
     {
-        if ((defined('IS_INSTALLER') && IS_INSTALLER === 1)
-            || self::$logDbEnabled === 0
-            || DiFactory::getDBStorage()->getDbStatus() === 1
+        if (self::$logDbEnabled === 0
+            || $this->db->getDbHandler()->getDbStatus() === 1
         ) {
             debugLog('Action: ' . $this->LogMessage->getAction(true) . ' -- Description: ' . $this->LogMessage->getDescription(true) . ' -- Details: ' . $this->LogMessage->getDetails(true));
 

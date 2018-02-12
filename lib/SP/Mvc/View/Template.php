@@ -66,6 +66,10 @@ class Template
      * @var string Directorio base para los archivos de plantillas
      */
     private $base;
+    /**
+     * @var array
+     */
+    private $contentTemplates = [];
 
     /**
      * @param null  $file Archivo de plantilla a añadir
@@ -146,7 +150,7 @@ class Template
     }
 
     /**
-     * Añadir un nuevo archivo de plantilla al array de plantillas de la clase.
+     * Añadir un nuevo archivo de plantilla al array de plantillas
      *
      * @param string $file Con el nombre del archivo
      * @param string $name Nombre de la plantilla
@@ -166,6 +170,36 @@ class Template
         foreach ($vars as $name => $value) {
             $this->{$name} = $value;
         }
+    }
+
+    /**
+     * Añadir una nueva plantilla al array de plantillas de la clase
+     *
+     * @param string $name Con el nombre del archivo de plantilla
+     * @param string $base Directorio base para la plantilla
+     * @return bool
+     */
+    public function addContentTemplate($name, $base = null)
+    {
+        try {
+            $template = $this->checkTemplate($name, $base);
+            $this->setContentTemplate($template, $name);
+        } catch (FileNotFoundException $e) {
+            return '';
+        }
+
+        return $template;
+    }
+
+    /**
+     * Añadir un nuevo archivo de plantilla al array de plantillas de contenido
+     *
+     * @param string $file Con el nombre del archivo
+     * @param string $name Nombre de la plantilla
+     */
+    private function setContentTemplate($file, $name)
+    {
+        $this->contentTemplates[$name] = $file;
     }
 
     /**
@@ -415,5 +449,21 @@ class Template
     public function dumpVars()
     {
         debugLog($this->vars);
+    }
+
+    /**
+     * @return array
+     */
+    public function getContentTemplates()
+    {
+        return $this->contentTemplates;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hashContentTemplates()
+    {
+        return count($this->contentTemplates) > 0;
     }
 }

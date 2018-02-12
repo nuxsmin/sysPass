@@ -29,9 +29,6 @@ use SP\Bootstrap;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Messages\LogMessage;
-use SP\Log\Log;
-use SP\Util\Util;
 
 defined('APP_ROOT') || die();
 
@@ -137,27 +134,26 @@ class DbWrapper
      * @param string     $query La consulta que genera el error
      * @param \Exception $e
      * @param string     $queryFunction
-     * @throws \SP\Core\Dic\ContainerException
      */
     private static function logDBException($query, \Exception $e, $queryFunction)
     {
-        $caller = Util::traceLastCall($queryFunction);
+//        $caller = Util::traceLastCall($queryFunction);
+//
+//        $LogMessage = new LogMessage();
+//        $LogMessage->setAction($caller);
+//        $LogMessage->addDescription(__u('Error en la consulta'));
+//        $LogMessage->addDescription(sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
+//        $LogMessage->addDetails('SQL', DBUtil::escape($query));
 
-        $LogMessage = new LogMessage();
-        $LogMessage->setAction($caller);
-        $LogMessage->addDescription(__u('Error en la consulta'));
-        $LogMessage->addDescription(sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
-        $LogMessage->addDetails('SQL', DBUtil::escape($query));
-
-        debugLog($LogMessage->getDescription(true), true);
-        debugLog($LogMessage->getDetails());
+        debugLog(sprintf('%s (%s)', $e->getMessage(), $e->getCode()), true);
+        debugLog($query);
 
         // Solo registrar eventos de ls BD si no son consultas del registro de eventos
-        if ($caller !== 'writeLog') {
-            $Log = new Log($LogMessage);
-            $Log->setLogLevel(Log::ERROR);
-            $Log->writeLog();
-        }
+//        if ($caller !== 'writeLog') {
+//            $Log = new Log($LogMessage);
+//            $Log->setLogLevel(Log::ERROR);
+//            $Log->writeLog();
+//        }
     }
 
     /**

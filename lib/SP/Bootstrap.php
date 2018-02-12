@@ -75,6 +75,11 @@ class Bootstrap
     use InjectableTrait;
 
     /**
+     * Partial initialized controllers
+     */
+    const PARTIAL_INIT = ['resource', 'install', 'bootstrap'];
+
+    /**
      * @var string The installation path on the server (e.g. /srv/www/syspass)
      */
     public static $SERVERROOT = '';
@@ -223,7 +228,7 @@ class Bootstrap
                             throw new RuntimeException("Oops, it looks like this content doesn't exist...\n");
                         }
 
-                        $self->initialize();
+                        $self->initialize(in_array($controller, self::PARTIAL_INIT, true));
 
                         debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
 
@@ -251,12 +256,16 @@ class Bootstrap
     /**
      * Inicializar la aplicación
      *
+     * @param bool $isPartial Do not perform a full initialization
+     * @throws ConfigException
+     * @throws InitializationException
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function initialize()
+    protected function initialize($isPartial = false)
     {
-        debugLog('Initializing ...');
+        debugLog('Initializing...');
 
         self::$checkPhpVersion = Checks::checkPhpVersion();
 
@@ -277,7 +286,7 @@ class Bootstrap
 
         if (!self::$checkPhpVersion) {
             throw new InitializationException(
-                __u('Versión de PHP requerida >= ') . ' 5.6.0 <= 7.0',
+                sprintf(__u('Versión de PHP requerida >= %s <= %s'), '5.6', '7.0'),
                 SPException::ERROR,
                 __u('Actualice la versión de PHP para que la aplicación funcione correctamente')
             );
@@ -315,43 +324,39 @@ class Bootstrap
         // Comprobar si es necesario cambiar a HTTPS
         HttpUtil::checkHttps();
 
-        // Comprobar si es necesario inicialización
-        if ((defined('IS_INSTALLER') || defined('IS_UPGRADE'))
-            && Checks::isAjax($this->router)
-        ) {
-            return;
-        }
+        if ($isPartial === false) {
 
-        // Comprobar si está instalado
-        $this->checkInstalled();
+            // Comprobar si está instalado
+            $this->checkInstalled();
 
-        // Comprobar si el modo mantenimiento está activado
-        $this->checkMaintenanceMode();
+            // Comprobar si el modo mantenimiento está activado
+            $this->checkMaintenanceMode();
 
-        // Comprobar si la Base de datos existe
-        DBUtil::checkDatabaseExist(self::$container->get(Database::class), $this->configData->getDbName());
+            // Comprobar si la Base de datos existe
+            DBUtil::checkDatabaseExist(self::$container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
 
-        // Comprobar si es necesario actualizar componentes
+            // Comprobar si es necesario actualizar componentes
 //        $this->checkUpgrade();
 
-        // Inicializar la sesión
-        $this->initUserSession();
+            // Inicializar la sesión
+            $this->initUserSession();
 
-        // Cargar los plugins
-        PluginUtil::loadPlugins();
+            // Cargar los plugins
+            PluginUtil::loadPlugins();
 
-        // Comprobar acciones en URL
+            // Comprobar acciones en URL
 //        $this->checkPreLoginActions();
 
-        if ($this->session->isLoggedIn() && $this->session->getAuthCompleted() === true) {
-            $browser = new Browser();
+            if ($this->session->isLoggedIn() && $this->session->getAuthCompleted() === true) {
+                $browser = new Browser();
 
-            // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-            if ($browser->checkServerAuthUser($this->session->getUserData()->getLogin()) === false
-                && $browser->checkServerAuthUser($this->session->getUserData()->getSsoLogin()) === false
-            ) {
-                throw new InitializationException('Logout');
+                // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
+                if ($browser->checkServerAuthUser($this->session->getUserData()->getLogin()) === false
+                    && $browser->checkServerAuthUser($this->session->getUserData()->getSsoLogin()) === false
+                ) {
+                    throw new InitializationException('Logout');
 //                $this->goLogout();
+                }
             }
         }
     }
@@ -524,7 +529,11 @@ class Bootstrap
     private function checkInstalled()
     {
         // Redirigir al instalador si no está instalada
-        if (!$this->configData->isInstalled()) {
+        if (!$this->configData->isInstalled()
+            && $this->router->request()->param('r') !== 'install/index'
+        ) {
+            $this->router->response()->redirect('index.php?r=install/index')->send();
+
             throw new InitializationException('Not installed');
 
 //            if (self::$SUBURI !== '/index.php') {
@@ -664,8 +673,8 @@ class Bootstrap
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
-     * @param string $hint opcional, con una ayuda sobre el error
-     * @param bool $headers
+     * @param string $hint    opcional, con una ayuda sobre el error
+     * @param bool   $headers
      */
     public static function initError($message, $hint = '', $headers = false)
     {
@@ -728,11 +737,11 @@ class Bootstrap
     }
 
     /**
-     * @param Config $config
-     * @param Upgrade $upgrade
-     * @param Session $session
-     * @param Theme $theme
-     * @param Klein $router
+     * @param Config   $config
+     * @param Upgrade  $upgrade
+     * @param Session  $session
+     * @param Theme    $theme
+     * @param Klein    $router
      * @param Language $language
      */
     public function inject(Config $config,

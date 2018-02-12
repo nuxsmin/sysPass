@@ -99,7 +99,7 @@ class UserGroupService
 
     /**
      * @param $itemData
-     * @return mixed
+     * @return int
      * @throws SPException
      */
     public function create($itemData)

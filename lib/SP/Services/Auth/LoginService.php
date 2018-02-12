@@ -322,7 +322,7 @@ class LoginService
                     $masterPass = $temporaryMasterPass->getUsingKey($masterPass);
                 }
 
-                if ($userPassService->updateMasterPass($masterPass, $this->userLoginData)->getStatus() !== UserPassService::MPASS_OK) {
+                if ($userPassService->updateMasterPassOnLogin($masterPass, $this->userLoginData)->getStatus() !== UserPassService::MPASS_OK) {
                     $this->LogMessage->addDescription(__u('Clave maestra incorrecta'));
 
                     $this->addTracking();
@@ -523,22 +523,22 @@ class LoginService
     /**
      * Comprobar si el cliente ha enviado las variables de autentificación
      *
-     * @param BrowserAuthData $AuthData
+     * @param BrowserAuthData $authData
      * @return mixed
      * @throws AuthException
      */
-    protected function authBrowser(BrowserAuthData $AuthData)
+    protected function authBrowser(BrowserAuthData $authData)
     {
         // Comprobar si concide el login con la autentificación del servidor web
-        if ($AuthData->getAuthenticated() === 0) {
-            if ($AuthData->isAuthGranted() === false) {
+        if ($authData->getAuthenticated() === 0) {
+            if ($authData->isAuthGranted() === false) {
                 return false;
             }
 
             $this->LogMessage->addDescription(__u('Login incorrecto'));
             $this->LogMessage->addDetails(__u('Tipo'), __FUNCTION__);
             $this->LogMessage->addDetails(__u('Usuario'), $this->userLoginData->getLoginUser());
-            $this->LogMessage->addDetails(__u('Autentificación'), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
+            $this->LogMessage->addDetails(__u('Autentificación'), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $authData->getName()));
 
             $this->addTracking();
 
@@ -547,17 +547,14 @@ class LoginService
 
         $this->LogMessage->addDetails(__u('Tipo'), __FUNCTION__);
 
-        if ($this->configData->isAuthBasicAutoLoginEnabled()) {
+        if ($authData->getAuthenticated() === 1 && $this->configData->isAuthBasicAutoLoginEnabled()) {
             try {
                 $userLoginRequest = new UserLoginRequest();
                 $userLoginRequest->setLogin($this->userLoginData->getLoginUser());
                 $userLoginRequest->setPassword($this->userLoginData->getLoginPass());
 
                 // Verificamos si el usuario existe en la BBDD
-                if ($this->userService->checkExistsByLogin($this->userLoginData->getLoginUser())) {
-                    // Actualizamos el usuario de SSO en la BBDD
-                    $this->userService->updateOnLogin($userLoginRequest);
-                } else {
+                if (!$this->userService->checkExistsByLogin($this->userLoginData->getLoginUser())) {
                     // Creamos el usuario de SSO en la BBDD
                     $this->userService->createOnLogin($userLoginRequest);
                 }
@@ -566,7 +563,7 @@ class LoginService
             }
 
             $this->LogMessage->addDetails(__u('Usuario'), $this->userLoginData->getLoginUser());
-            $this->LogMessage->addDetails(__u('Autentificación'), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $AuthData->getName()));
+            $this->LogMessage->addDetails(__u('Autentificación'), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $authData->getName()));
 
             return true;
         }

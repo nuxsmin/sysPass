@@ -32,7 +32,7 @@ use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
-use SP\Core\Installer;
+use SP\Core\Install\Installer;
 use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\Html\Html;

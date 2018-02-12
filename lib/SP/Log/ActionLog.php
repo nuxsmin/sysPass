@@ -30,6 +30,7 @@ use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
+use SP\Storage\Database;
 
 /**
  * Clase abstracta ActionLog para la gestión de mensajes de eventos
@@ -70,6 +71,10 @@ abstract class ActionLog extends LogLevel
     protected $language;
     /** @var  \SP\Core\Session\Session */
     protected $session;
+    /**
+     * @var Database
+     */
+    protected $db;
 
 
     /**
@@ -91,13 +96,15 @@ abstract class ActionLog extends LogLevel
      * @param Config   $config
      * @param Language $language
      * @param Session  $session
+     * @param Database $database
      */
-    public function inject(Config $config, Language $language, Session $session)
+    public function inject(Config $config, Language $language, Session $session, Database $database)
     {
         $this->config = $config;
         $this->configData = $config->getConfigData();
         $this->language = $language;
         $this->session = $session;
+        $this->db = $database;
     }
 
     /**

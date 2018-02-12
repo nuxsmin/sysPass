@@ -40,7 +40,6 @@ use SP\DataModel\ProfileData;
 use SP\Http\JsonResponse;
 use SP\Mvc\View\Template;
 use SP\Services\User\UserLoginResponse;
-use SP\Storage\Database;
 use SP\Util\Checks;
 use SP\Util\Json;
 use SP\Util\Util;
@@ -87,8 +86,6 @@ abstract class ControllerBase
     protected $config;
     /** @var  Session */
     protected $session;
-    /** @var  Database */
-    protected $db;
     /** @var  Theme */
     protected $theme;
     /** @var  \SP\Core\Acl\Acl */
@@ -103,6 +100,7 @@ abstract class ControllerBase
      *
      * @param $actionName
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     public function __construct($actionName)
     {
@@ -135,9 +133,6 @@ abstract class ControllerBase
         $this->view->assign('timeStart', $_SERVER['REQUEST_TIME_FLOAT']);
         $this->view->assign('icons', $this->icons);
         $this->view->assign('SessionUserData', $this->userData);
-
-//        $this->view->assign('actionId', Request::analyze('actionId', 0));
-//        $this->view->assign('id', Request::analyze('itemId', 0));
         $this->view->assign('queryTimeStart', microtime());
         $this->view->assign('userId', $this->userData->getId());
         $this->view->assign('userGroupId', $this->userData->getUserGroupId());
@@ -150,18 +145,16 @@ abstract class ControllerBase
     /**
      * @param Config          $config
      * @param Session         $session
-     * @param Database        $db
      * @param Theme           $theme
      * @param EventDispatcher $ev
      * @param Acl             $acl
      * @param Klein           $router
      */
-    public function inject(Config $config, Session $session, Database $db, Theme $theme, EventDispatcher $ev, Acl $acl, Klein $router)
+    public function inject(Config $config, Session $session, Theme $theme, EventDispatcher $ev, Acl $acl, Klein $router)
     {
         $this->config = $config;
         $this->configData = $config->getConfigData();
         $this->session = $session;
-        $this->db = $db;
         $this->theme = $theme;
         $this->eventDispatcher = $ev;
         $this->acl = $acl;

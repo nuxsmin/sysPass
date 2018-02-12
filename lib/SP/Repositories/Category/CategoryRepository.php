@@ -50,7 +50,6 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function create($itemData)
     {
@@ -65,7 +64,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $Data->setQuery($query);
         $Data->addParam($itemData->getName());
         $Data->addParam($itemData->getDescription());
-        $Data->addParam($this->makeItemHash($itemData->getName()));
+        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
         $Data->setOnErrorMessage(__u('Error al crear la categoría'));
 
         DbWrapper::getQuery($Data, $this->db);
@@ -80,7 +79,6 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
@@ -89,7 +87,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($itemData->getName()));
+        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
         $Data->addParam($itemData->getName());
 
         DbWrapper::getQuery($Data, $this->db);
@@ -105,7 +103,6 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function update($itemData)
     {
@@ -124,7 +121,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $Data->setQuery($query);
         $Data->addParam($itemData->getName());
         $Data->addParam($itemData->getDescription());
-        $Data->addParam($this->makeItemHash($itemData->getName()));
+        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
         $Data->addParam($itemData->getId());
         $Data->setOnErrorMessage(__u('Error al actualizar la categoría'));
 
@@ -140,7 +137,6 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
@@ -149,7 +145,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($itemData->getName()));
+        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
         $Data->addParam($itemData->getName());
         $Data->addParam($itemData->getId());
 

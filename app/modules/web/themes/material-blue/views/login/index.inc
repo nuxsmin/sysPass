@@ -1,7 +1,9 @@
 <div id="login-container">
     <div id="boxSpacer"></div>
     <div id="boxLogin" class="round shadow">
-        <form method="post" name="frmLogin" id="frmLogin" class="form-action" data-onsubmit="main/login">
+        <form method="post" name="frmLogin" id="frmLogin" class="form-action"
+              data-onsubmit="main/login"
+              data-route="login/login">
             <div id="boxData">
                 <div>
                     <i class="material-icons">perm_identity</i>
