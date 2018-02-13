@@ -35,16 +35,15 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\ItemSearchData;
 use SP\Log\Log;
-use SP\Repositories\Account\AccountHistoryRepository;
 use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\Account\AccountToTagRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Repositories\Account\AccountToUserRepository;
 use SP\Services\Config\ConfigService;
+use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -52,9 +51,8 @@ use SP\Services\ServiceItemTrait;
  *
  * @package SP\Services\Account
  */
-class AccountService implements AccountServiceInterface
+class AccountService extends Service implements AccountServiceInterface
 {
-    use InjectableTrait;
     use ServiceItemTrait;
 
     /**
@@ -79,33 +77,15 @@ class AccountService implements AccountServiceInterface
     protected $session;
 
     /**
-     * AccountService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    public function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param AccountRepository            $accountRepository
-     * @param AccountToUserGroupRepository $accountToUserGroupRepository
-     * @param AccountToUserRepository      $accountToUserRepository
-     * @param AccountToTagRepository       $accountToTagRepository
-     * @param Session                      $session
-     */
-    public function inject(AccountRepository $accountRepository,
-                           AccountToUserGroupRepository $accountToUserGroupRepository,
-                           AccountToUserRepository $accountToUserRepository,
-                           AccountToTagRepository $accountToTagRepository,
-                           Session $session)
-    {
-        $this->accountRepository = $accountRepository;
-        $this->accountToUserGroupRepository = $accountToUserGroupRepository;
-        $this->accountToUserRepository = $accountToUserRepository;
-        $this->accountToTagRepository = $accountToTagRepository;
-        $this->session = $session;
+        $this->accountRepository = $this->dic->get(AccountRepository::class);
+        $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
+        $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
+        $this->accountToTagRepository = $this->dic->get(AccountToUserRepository::class);
     }
 
     /**
@@ -121,6 +101,8 @@ class AccountService implements AccountServiceInterface
     /**
      * @param AccountDetailsResponse $accountDetailsResponse
      * @return AccountService
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function withUsersById(AccountDetailsResponse $accountDetailsResponse)
     {
@@ -224,7 +206,7 @@ class AccountService implements AccountServiceInterface
             $out['pass'] = Crypt::encrypt($pass, $out['key'], $masterPass);
 
             if (strlen($pass) > 1000 || strlen($out['key']) > 1000) {
-                throw new QueryException(SPException::ERROR, __u('Error interno'));
+                throw new QueryException(__u('Error interno'), SPException::ERROR);
             }
 
             return $out;
@@ -255,7 +237,7 @@ class AccountService implements AccountServiceInterface
                 $this->accountToTagRepository->add($accountRequest);
             }
         } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
+            debugLog($e->getMessage());
         }
     }
 
@@ -263,8 +245,13 @@ class AccountService implements AccountServiceInterface
      * Updates external items for the account
      *
      * @param AccountRequest $accountRequest
+     * @throws QueryException
      * @throws SPException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function update(AccountRequest $accountRequest)
     {
@@ -286,17 +273,21 @@ class AccountService implements AccountServiceInterface
      * @param bool $isDelete
      * @return bool
      * @throws QueryException
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Services\Config\ParameterNotFoundException
      */
     protected function addHistory($accountId, $isDelete = false)
     {
-        return (new AccountHistoryRepository())->create([
+        $accountHistoryRepository = $this->dic->get(AccountHistoryService::class);
+        $configService = $this->dic->get(ConfigService::class);
+
+        return $accountHistoryRepository->create([
             'id' => $accountId,
             'isDelete' => (int)$isDelete,
             'isModify' => (int)!$isDelete,
-            'masterPassHash' => (new ConfigService())->getByParam('masterPwd')
+            'masterPassHash' => $configService->getByParam('masterPwd')
         ]);
     }
 
@@ -329,7 +320,7 @@ class AccountService implements AccountServiceInterface
                 $this->accountToTagRepository->deleteByAccountId($accountRequest->id);
             }
         } catch (SPException $e) {
-            Log::writeNewLog(__FUNCTION__, $e->getMessage(), Log::ERROR);
+            debugLog($e->getMessage());
         }
     }
 
@@ -337,7 +328,8 @@ class AccountService implements AccountServiceInterface
      * @param AccountRequest $accountRequest
      * @throws QueryException
      * @throws SPException
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Services\Config\ParameterNotFoundException
      */
@@ -357,7 +349,8 @@ class AccountService implements AccountServiceInterface
      * @param $historyId
      * @param $accountId
      * @throws QueryException
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Services\Config\ParameterNotFoundException
      */
@@ -385,6 +378,7 @@ class AccountService implements AccountServiceInterface
      * @param int $actionId
      * @return \SP\Core\Messages\LogMessage
      * @throws SPException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function logAction($id, $actionId)
     {
@@ -454,5 +448,27 @@ class AccountService implements AccountServiceInterface
     public function search(ItemSearchData $itemSearchData)
     {
         return $this->accountRepository->search($itemSearchData);
+    }
+
+    /**
+     * Devolver el número total de cuentas
+     *
+     * @return int
+     */
+    public function getTotalNumAccounts()
+    {
+        return $this->accountRepository->getTotalNumAccounts();
+    }
+
+    /**
+     * Obtener los datos de una cuenta.
+     *
+     * @param $id
+     * @return \SP\DataModel\AccountExtData
+     * @throws SPException
+     */
+    public function getDataForLink($id)
+    {
+        return $this->accountRepository->getDataForLink($id);
     }
 }

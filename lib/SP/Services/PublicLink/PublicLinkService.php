@@ -30,13 +30,12 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\Http\Request;
-use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\PublicLink\PublicLinkRepository;
+use SP\Services\Account\AccountService;
+use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
@@ -47,33 +46,14 @@ use SP\Util\Util;
  *
  * @package SP\Services\PublicLink
  */
-class PublicLinkService
+class PublicLinkService extends Service
 {
-    use InjectableTrait;
     use ServiceItemTrait;
 
     /**
      * @var PublicLinkRepository
      */
     protected $publicLinkRepository;
-    /**
-     * @var Config
-     */
-    protected $config;
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * CategoryService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
-     */
-    public function __construct()
-    {
-        $this->injectDependencies();
-    }
 
     /**
      * Returns an HTTP URL for given hash
@@ -97,15 +77,12 @@ class PublicLinkService
     }
 
     /**
-     * @param PublicLinkRepository $publicLinkRepository
-     * @param Config               $config
-     * @param Session              $session
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function inject(PublicLinkRepository $publicLinkRepository, Config $config, Session $session)
+    protected function initialize()
     {
-        $this->publicLinkRepository = $publicLinkRepository;
-        $this->config = $config;
-        $this->session = $session;
+        $this->publicLinkRepository = $this->dic->get(PublicLinkRepository::class);
     }
 
     /**
@@ -177,14 +154,15 @@ class PublicLinkService
      * @param int    $itemId
      * @param string $linkKey
      * @return Vault
-     * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws SPException
      */
     protected function getSecuredLinkData($itemId, $linkKey)
     {
         // Obtener los datos de la cuenta
-        $accountService = new AccountRepository();
-        $accountData = $accountService->getDataForLink($itemId);
+        $accountData = $this->dic->get(AccountService::class)->getDataForLink($itemId);
 
         // Desencriptar la clave de la cuenta
         $key = CryptSession::getSessionKey();
@@ -228,6 +206,8 @@ class PublicLinkService
      * @return int
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */

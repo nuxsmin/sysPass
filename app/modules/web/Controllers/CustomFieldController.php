@@ -30,7 +30,6 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\SessionUtil;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\Forms\CustomFieldDefForm;
 use SP\Http\JsonResponse;
@@ -61,6 +60,8 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
     /**
      * Search action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
@@ -69,7 +70,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
             return;
         }
 
-        $itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $grid = $itemsGridHelper->getCustomFieldsGrid($this->customFieldService->search($this->getSearchData($this->configData)))->updatePager();
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -118,13 +119,14 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
 
         $customField = $customFieldId ? $this->customFieldService->getById($customFieldId) : new CustomFieldDefinitionData();
 
+        // FIXME
         $customFieldTypeService = new CustomFieldTypeRepository();
 
         $this->view->assign('field', $customField);
         $this->view->assign('types', $customFieldTypeService->getAll());
         $this->view->assign('modules', CustomFieldDefRepository::getFieldModules());
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
@@ -220,6 +222,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      * Saves edit action
      *
      * @param $id
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditAction($id)
     {
@@ -274,13 +277,14 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
     /**
      * Initialize class
      *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->customFieldService = new CustomFieldDefService();
+        $this->customFieldService = $this->dic->get(CustomFieldDefService::class);
     }
 
 }

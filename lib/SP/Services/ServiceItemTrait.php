@@ -24,6 +24,7 @@
 
 namespace SP\Services;
 
+use SP\Bootstrap;
 use SP\DataModel\DataModelInterface;
 
 /**
@@ -37,10 +38,12 @@ trait ServiceItemTrait
      * Returns service items for a select
      *
      * @return DataModelInterface[]
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public static function getItemsBasic()
     {
-        return (new static())->getAllBasic();
+        return Bootstrap::getContainer()->get(static::class)->getAllBasic();
     }
 
     /**

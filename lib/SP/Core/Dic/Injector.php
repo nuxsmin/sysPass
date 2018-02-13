@@ -26,7 +26,6 @@ namespace SP\Core\Dic;
 
 use Interop\Container\ContainerInterface;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use ReflectionMethod;
 
 /**
@@ -48,30 +47,25 @@ class Injector
     {
         try {
             $reflectionMethod = new ReflectionMethod($context, 'inject');
-            $methodParams = $reflectionMethod->getParameters();
 
-            $params = [];
-
-            if (!count($methodParams)) {
+            if ($reflectionMethod->getNumberOfParameters() === 0) {
                 return false;
             }
 
-            foreach ($methodParams as $key => $methodParam) {
-                if ($methodParam->getClass()) {
-                    $className = $methodParam->getClass()->getName();
+            $params = [];
 
-                    $params[$key] = $container->get($className);
+            foreach ($reflectionMethod->getParameters() as $key => $methodParam) {
+                if ($methodParam->getClass()) {
+                    $params[$key] = $container->get($methodParam->getClass()->getName());
                 } else {
                     $params[$key] = null;
                 }
             }
 
             return $reflectionMethod->invokeArgs($context, $params);
-        } catch (NotFoundExceptionInterface $e) {
+        } catch (\Exception $e) {
             throw new ContainerException($e->getMessage(), $e->getCode(), $e);
         } catch (ContainerExceptionInterface $e) {
-            throw new ContainerException($e->getMessage(), $e->getCode(), $e);
-        } catch (\ReflectionException $e) {
             throw new ContainerException($e->getMessage(), $e->getCode(), $e);
         }
     }

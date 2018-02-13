@@ -39,15 +39,16 @@ class IndexController extends ControllerBase
     /**
      * Index action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
      */
     public function indexAction()
     {
         if (!$this->session->isLoggedIn()) {
             Response::redirect('index.php?r=login');
         } else {
-            $LayoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $LayoutHelper = $this->dic->get(LayoutHelper::class);
             $LayoutHelper->getFullLayout('main', $this->acl);
 
             $this->view();

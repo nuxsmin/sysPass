@@ -51,7 +51,7 @@ class Session
      * Devolver una variable de sesión
      *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
      * @return mixed
      */
     protected function getSessionKey($key, $default = null)
@@ -76,8 +76,8 @@ class Session
     /**
      * Establecer una variable de sesión
      *
-     * @param string $key El nombre de la variable
-     * @param mixed $value El valor de la variable
+     * @param string $key   El nombre de la variable
+     * @param mixed  $value El valor de la variable
      * @return mixed
      */
     protected function setSessionKey($key, $value)
@@ -408,5 +408,25 @@ class Session
     public function getLocale()
     {
         return $this->getSessionKey('locale');
+    }
+
+    /**
+     * Devolver el color asociado a una cuenta
+     *
+     * @return string
+     */
+    public function getAccountColor()
+    {
+        return $this->getSessionKey('accountcolor');
+    }
+
+    /**
+     * Establece el color asociado a una cuenta
+     *
+     * @param array $color
+     */
+    public function setAccountColor(array $color)
+    {
+        $this->setSessionKey('accountcolor', $color);
     }
 }

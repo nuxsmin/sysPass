@@ -29,13 +29,10 @@ defined('APP_ROOT') || die();
 use Defuse\Crypto\Exception\BadFormatException;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Bootstrap;
-use SP\Config\Config;
-use SP\Core\Events\EventDispatcher;
+use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
-use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
 use SP\Crypt\TemporaryMasterPass;
 use SP\DataModel\TrackData;
@@ -66,10 +63,8 @@ use SP\Util\Util;
  *
  * @package SP\Services
  */
-class LoginService
+class LoginService extends Service
 {
-    use InjectableTrait;
-
     /**
      * Estados
      */
@@ -98,13 +93,9 @@ class LoginService
      */
     protected $LogMessage;
     /**
-     * @var $ConfigData
+     * @var ConfigData
      */
     protected $configData;
-    /**
-     * @var Config
-     */
-    protected $config;
     /**
      * @var Theme
      */
@@ -117,49 +108,23 @@ class LoginService
      * @var Language
      */
     protected $language;
-    /**
-     * @var Session
-     */
-    private $session;
-    /**
-     * @var EventDispatcher
-     */
-    private $eventDispatcher;
 
     /**
-     * LoginController constructor.
-     *
-     * @param Config          $config
-     * @param Session         $session
-     * @param Theme           $theme
-     * @param EventDispatcher $eventDispatcher
-     * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct(Config $config, Session $session, Theme $theme, EventDispatcher $eventDispatcher)
+    public function initialize()
     {
-        $this->injectDependencies();
-
-        $this->config = $config;
-        $this->configData = $config->getConfigData();
-        $this->theme = $theme;
-        $this->session = $session;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->configData = $this->config->getConfigData();
+        $this->theme = $this->dic->get(Theme::class);
+        $this->userService = $this->dic->get(UserService::class);
+        $this->language = $this->dic->get(Language::class);
 
         $this->jsonResponse = new JsonResponse();
         $this->LogMessage = new LogMessage();
         $this->userLoginData = new UserLoginData();
         $this->LogMessage->setAction(__u('Inicio sesión'));
-    }
 
-    /**
-     * @param UserService $userService
-     * @param Language    $language
-     */
-    public function inject(UserService $userService, Language $language)
-    {
-        $this->userService = $userService;
-        $this->language = $language;
     }
 
     /**
@@ -169,7 +134,6 @@ class LoginService
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \ReflectionException
      */
     public function doLogin()
     {
@@ -319,14 +283,12 @@ class LoginService
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \ReflectionException
-     * @throws \SP\Core\Dic\ContainerException
      * @throws \SP\Services\Config\ParameterNotFoundException
      */
     protected function loadMasterPass()
     {
-        $temporaryMasterPass = new TemporaryMasterPass();
-        $userPassService = new UserPassService();
+        $temporaryMasterPass = $this->dic->get(TemporaryMasterPass::class);
+        $userPassService = $this->dic->get(UserPassService::class);
 
         $masterPass = Request::analyzeEncrypted('mpass');
         $oldPass = Request::analyzeEncrypted('oldpass');
@@ -386,8 +348,10 @@ class LoginService
     /**
      * Cargar la sesión del usuario
      *
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setUserSession()
     {
@@ -398,7 +362,7 @@ class LoginService
 
         // Cargar las variables de ussuario en la sesión
         $this->session->setUserData($userLoginResponse);
-        $this->session->setUserProfile((new UserProfileService())->getById($userLoginResponse->getUserProfileId()));
+        $this->session->setUserProfile($this->dic->get(UserProfileService::class)->getById($userLoginResponse->getUserProfileId()));
 
         if ($this->configData->isDemoEnabled()) {
             $userLoginResponse->setPreferences(new UserPreferencesData());
@@ -419,8 +383,6 @@ class LoginService
 
         $this->theme->initTheme(true);
 
-//        SessionFactory::setSessionType(SessionFactory::SESSION_INTERACTIVE);
-
         $this->session->setAuthCompleted(true);
 
         $this->eventDispatcher->notifyEvent('login.preferences', $this);
@@ -437,18 +399,18 @@ class LoginService
     /**
      * Autentificación LDAP
      *
-     * @param LdapAuthData $AuthData
+     * @param LdapAuthData $authData
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      * @throws AuthException
      */
-    protected function authLdap(LdapAuthData $AuthData)
+    protected function authLdap(LdapAuthData $authData)
     {
-        if ($AuthData->getStatusCode() > 0) {
+        if ($authData->getStatusCode() > 0) {
             $this->LogMessage->addDetails(__u('Tipo'), __FUNCTION__);
             $this->LogMessage->addDetails(__u('Usuario'), $this->userLoginData->getLoginUser());
 
-            if ($AuthData->getStatusCode() === 49) {
+            if ($authData->getStatusCode() === 49) {
                 $this->LogMessage->addDescription(__u('Login incorrecto'));
 
                 $this->addTracking();
@@ -456,19 +418,19 @@ class LoginService
                 throw new AuthException($this->LogMessage->getDescription(), SPException::INFO, null, self::STATUS_INVALID_LOGIN);
             }
 
-            if ($AuthData->getStatusCode() === 701) {
+            if ($authData->getStatusCode() === 701) {
                 $this->LogMessage->addDescription(__u('Cuenta expirada'));
 
                 throw new AuthException($this->LogMessage->getDescription(), SPException::INFO, null, self::STATUS_USER_DISABLED);
             }
 
-            if ($AuthData->getStatusCode() === 702) {
+            if ($authData->getStatusCode() === 702) {
                 $this->LogMessage->addDescription(__u('El usuario no tiene grupos asociados'));
 
                 throw new AuthException($this->LogMessage->getDescription(), SPException::INFO, null, self::STATUS_USER_DISABLED);
             }
 
-            if ($AuthData->isAuthGranted() === false) {
+            if ($authData->isAuthGranted() === false) {
                 return false;
             }
 
@@ -478,14 +440,14 @@ class LoginService
         }
 
         $this->LogMessage->addDetails(__u('Tipo'), __FUNCTION__);
-        $this->LogMessage->addDetails(__u('Servidor LDAP'), $AuthData->getServer());
+        $this->LogMessage->addDetails(__u('Servidor LDAP'), $authData->getServer());
 
         try {
             $userLoginRequest = new UserLoginRequest();
             $userLoginRequest->setLogin($this->userLoginData->getLoginUser());
             $userLoginRequest->setPassword($this->userLoginData->getLoginPass());
-            $userLoginRequest->setEmail($AuthData->getEmail());
-            $userLoginRequest->setName($AuthData->getName());
+            $userLoginRequest->setEmail($authData->getEmail());
+            $userLoginRequest->setName($authData->getName());
             $userLoginRequest->setIsLdap(1);
 
 
@@ -509,16 +471,16 @@ class LoginService
     /**
      * Autentificación en BD
      *
-     * @param DatabaseAuthData $AuthData
+     * @param DatabaseAuthData $authData
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      * @throws AuthException
      */
-    protected function authDatabase(DatabaseAuthData $AuthData)
+    protected function authDatabase(DatabaseAuthData $authData)
     {
         // Autentificamos con la BBDD
-        if ($AuthData->getAuthenticated() === 0) {
-            if ($AuthData->isAuthGranted() === false) {
+        if ($authData->getAuthenticated() === 0) {
+            if ($authData->isAuthGranted() === false) {
                 return false;
             }
 
@@ -530,7 +492,7 @@ class LoginService
             throw new AuthException($this->LogMessage->getDescription(), SPException::INFO, null, self::STATUS_INVALID_LOGIN);
         }
 
-        if ($AuthData->getAuthenticated() === 1) {
+        if ($authData->getAuthenticated() === 1) {
             $this->LogMessage->addDetails(__u('Tipo'), __FUNCTION__);
         }
 

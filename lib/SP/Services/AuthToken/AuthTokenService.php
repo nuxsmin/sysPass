@@ -29,11 +29,10 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Crypt\Vault;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\AuthToken\AuthTokenRepository;
+use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
 use SP\Util\Util;
 
@@ -42,38 +41,23 @@ use SP\Util\Util;
  *
  * @package SP\Services\AuthToken
  */
-class AuthTokenService
+class AuthTokenService extends Service
 {
-    use InjectableTrait;
     use ServiceItemTrait;
 
     /**
      * @var AuthTokenRepository
      */
     protected $authTokenRepository;
-    /**
-     * @var Session
-     */
-    protected $session;
+
 
     /**
-     * CategoryService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param AuthTokenRepository $apiTokenRepository
-     * @param Session             $session
-     */
-    public function inject(AuthTokenRepository $apiTokenRepository, Session $session)
-    {
-        $this->authTokenRepository = $apiTokenRepository;
-        $this->session = $session;
+        $this->authTokenRepository = $this->dic->get(AuthTokenRepository::class);
     }
 
     /**

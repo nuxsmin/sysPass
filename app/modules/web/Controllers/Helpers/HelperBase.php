@@ -24,11 +24,12 @@
 
 namespace SP\Modules\Web\Controllers\Helpers;
 
+use DI\Container;
+use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
 use SP\Mvc\View\Template;
 
 /**
@@ -38,8 +39,6 @@ use SP\Mvc\View\Template;
  */
 abstract class HelperBase
 {
-    use InjectableTrait;
-
     /**
      * @var \SP\Mvc\View\Template
      */
@@ -60,6 +59,10 @@ abstract class HelperBase
      * @var Config
      */
     protected $config;
+    /**
+     * @var ContainerInterface
+     */
+    protected $dic;
 
     /**
      * Constructor
@@ -68,12 +71,11 @@ abstract class HelperBase
      * @param Config                $config
      * @param Session               $session
      * @param EventDispatcher       $eventDispatcher
-     * @throws \SP\Core\Dic\ContainerException
+     * @param Container             $container
      */
-    final public function __construct(Template $template, Config $config, Session $session, EventDispatcher $eventDispatcher)
+    final public function __construct(Template $template, Config $config, Session $session, EventDispatcher $eventDispatcher, Container $container)
     {
-        $this->injectDependencies();
-
+        $this->dic = $container;
         $this->view = $template;
         $this->config = $config;
         $this->configData = $config->getConfigData();

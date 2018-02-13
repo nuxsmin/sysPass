@@ -27,9 +27,9 @@ namespace SP\Services\Client;
 use SP\Account\AccountUtil;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Client\ClientRepository;
+use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -37,9 +37,8 @@ use SP\Services\ServiceItemTrait;
  *
  * @package SP\Services\Client
  */
-class ClientService
+class ClientService extends Service
 {
-    use InjectableTrait;
     use ServiceItemTrait;
 
     /**
@@ -52,23 +51,12 @@ class ClientService
     protected $session;
 
     /**
-     * ClientService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param ClientRepository $clientRepository
-     * @param Session          $session
-     */
-    public function inject(ClientRepository $clientRepository, Session $session)
-    {
-        $this->clientRepository = $clientRepository;
-        $this->session = $session;
+        $this->clientRepository = $this->dic->get(ClientRepository::class);
     }
 
     /**

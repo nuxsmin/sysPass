@@ -31,7 +31,6 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\SessionUtil;
 use SP\DataModel\AuthTokenData;
 use SP\Forms\AuthTokenForm;
 use SP\Http\JsonResponse;
@@ -63,6 +62,8 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
     /**
      * Search action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
@@ -71,7 +72,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
             return;
         }
 
-        $itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $grid = $itemsGridHelper->getApiTokensGrid($this->authTokenService->search($this->getSearchData($this->configData)))->updatePager();
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -122,10 +123,10 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
 
         $this->view->assign('authToken', $authToken);
 
-        $this->view->assign('users', (new SelectItemAdapter(UserService::getItemsBasic()))->getItemsFromModelSelected([$authToken->getUserId()]));
-        $this->view->assign('actions', (new SelectItemAdapter(ApiTokensUtil::getTokenActions()))->getItemsFromArraySelected([$authToken->getActionId()]));
+        $this->view->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected([$authToken->getUserId()]));
+        $this->view->assign('actions', SelectItemAdapter::factory(ApiTokensUtil::getTokenActions())->getItemsFromArraySelected([$authToken->getActionId()]));
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
@@ -304,12 +305,13 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
     /**
      * Initialize class
      *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->authTokenService = new AuthTokenService();
+        $this->authTokenService = $this->dic->get(AuthTokenService::class);
     }
 }

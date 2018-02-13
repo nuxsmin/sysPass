@@ -54,6 +54,23 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     use RepositoryItemTrait;
 
     /**
+     * Devolver el número total de cuentas
+     *
+     * @return int
+     */
+    public function getTotalNumAccounts()
+    {
+        $query = /** @lang SQL */
+            'SELECT SUM(n) AS num FROM 
+            (SELECT COUNT(*) AS n FROM Account UNION SELECT COUNT(*) AS n FROM AccountHistory) a';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+
+        return (int)DbWrapper::getResults($Data)->num;
+    }
+
+    /**
      * @param $id
      * @return AccountPassData
      */
@@ -628,7 +645,6 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
-
 
     /**
      * @param QueryCondition $queryFilter

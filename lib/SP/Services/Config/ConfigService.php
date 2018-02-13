@@ -31,6 +31,7 @@ use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Repositories\Config\ConfigRepository;
+use SP\Services\Service;
 use SP\Services\ServiceException;
 
 /**
@@ -38,7 +39,7 @@ use SP\Services\ServiceException;
  *
  * @package SP\Services\Config
  */
-class ConfigService
+class ConfigService extends Service
 {
     use InjectableTrait;
 
@@ -48,22 +49,12 @@ class ConfigService
     protected $configRepository;
 
     /**
-     * ConfigService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param ConfigRepository $configRepository
-     */
-    public function inject(ConfigRepository $configRepository)
-    {
-        $this->configRepository = $configRepository;
+        $this->configRepository = $this->dic->get(ConfigRepository::class);
     }
 
     /**

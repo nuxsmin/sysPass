@@ -25,6 +25,7 @@
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Account\AccountAcl;
+use SP\Bootstrap;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
@@ -89,34 +90,18 @@ class AccountHelper extends HelperBase
     private $isView = false;
 
     /**
-     * @param Acl                   $acl
-     * @param AccountService        $accountService
-     * @param AccountHistoryService $accountHistoryService
-     * @param PublicLinkService     $publicLinkService
-     */
-    public function inject(Acl $acl,
-                           AccountService $accountService,
-                           AccountHistoryService $accountHistoryService,
-                           PublicLinkService $publicLinkService
-    )
-    {
-        $this->acl = $acl;
-        $this->accountService = $accountService;
-        $this->accountHistoryService = $accountHistoryService;
-        $this->publicLinkService = $publicLinkService;
-    }
-
-    /**
      * Sets account's view variables
      *
      * @param AccountDetailsResponse $accountDetailsResponse
      * @param int                    $actionId
-     * @throws UnauthorizedPageException
-     * @throws UpdatedMasterPassException
-     * @throws \SP\Core\Dic\ContainerException
      * @throws AccountPermissionException
      * @throws SPException
+     * @throws UnauthorizedPageException
+     * @throws UpdatedMasterPassException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \ReflectionException
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function setViewForAccount(AccountDetailsResponse $accountDetailsResponse, $actionId)
     {
@@ -162,7 +147,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('accountData', $accountData);
         $this->view->assign('gotData', true);
 
-        $this->view->assign('actions', $this->getActionsHelper()->getActionsForAccount($accountAcl, new AccountActionsDto($this->accountId, null, $accountData->getParentId())));
+        $this->view->assign('actions', Bootstrap::getContainer()->get(AccountActionsHelper::class)->getActionsForAccount($accountAcl, new AccountActionsDto($this->accountId, null, $accountData->getParentId())));
 
         $this->setViewCommon();
     }
@@ -211,16 +196,10 @@ class AccountHelper extends HelperBase
     }
 
     /**
-     * @return AccountActionsHelper
-     * @throws \SP\Core\Dic\ContainerException
-     */
-    protected function getActionsHelper()
-    {
-        return new AccountActionsHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-    }
-
-    /**
      * Sets account's view common data
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function setViewCommon()
     {
@@ -265,6 +244,9 @@ class AccountHelper extends HelperBase
      * @return void
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
      * @throws \SP\Core\Dic\ContainerException
      */
     public function setViewForBlank($actionId)
@@ -287,7 +269,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('accountId', 0);
         $this->view->assign('gotData', false);
 
-        $this->view->assign('actions', $this->getActionsHelper()->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId)));
+        $this->view->assign('actions', Bootstrap::getContainer()->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId)));
 
         $this->setViewCommon();
     }
@@ -300,6 +282,9 @@ class AccountHelper extends HelperBase
      * @return bool
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
      * @throws \SP\Core\Dic\ContainerException
      */
     public function setViewForRequest(AccountDetailsResponse $accountDetailsResponse, $actionId)
@@ -315,7 +300,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('accountId', $accountData->getId());
         $this->view->assign('accountData', $accountDetailsResponse->getAccountVData());
 
-        $this->view->assign('actions', $this->getActionsHelper()->getActionsForAccount($this->accountAcl->getStoredAcl(), new AccountActionsDto($this->accountId, null, $accountData->getParentId())));
+        $this->view->assign('actions', Bootstrap::getContainer()->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl->getStoredAcl(), new AccountActionsDto($this->accountId, null, $accountData->getParentId())));
 
         return true;
     }
@@ -329,10 +314,16 @@ class AccountHelper extends HelperBase
     }
 
     /**
-     * Initialize class
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
+        $this->acl = $this->dic->get(Acl::class);
+        $this->accountService = $this->dic->get(AccountService::class);;
+        $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);;
+        $this->publicLinkService = $this->dic->get(PublicLinkService::class);;
+
         $this->view->assign('changesHash');
         $this->view->assign('chkUserEdit');
         $this->view->assign('chkGroupEdit');

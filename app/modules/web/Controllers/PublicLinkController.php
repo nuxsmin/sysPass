@@ -30,7 +30,6 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\SessionUtil;
 use SP\DataModel\PublicLinkListData;
 use SP\Forms\PublicLinkForm;
 use SP\Http\JsonResponse;
@@ -61,6 +60,8 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
     /**
      * Search action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
@@ -69,7 +70,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
             return;
         }
 
-        $itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $grid = $itemsGridHelper->getPublicLinksGrid($this->publicLinkService->search($this->getSearchData($this->configData)))->updatePager();
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -121,9 +122,9 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
 
         $this->view->assign('publicLink', $publicLink);
         $this->view->assign('usageInfo', unserialize($publicLink->getUseInfo()));
-        $this->view->assign('accounts', (new SelectItemAdapter((new AccountService())->getForUser()))->getItemsFromModelSelected([$publicLink->getItemId()]));
+        $this->view->assign('accounts', SelectItemAdapter::factory($this->dic->get(AccountService::class)->getForUser())->getItemsFromModelSelected([$publicLink->getItemId()]));
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
@@ -221,6 +222,8 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
     /**
      * Saves create action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function saveCreateAction()
@@ -291,12 +294,13 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
     /**
      * Initialize class
      *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->publicLinkService = new PublicLinkService();
+        $this->publicLinkService = $this->dic->get(PublicLinkService::class);
     }
 }

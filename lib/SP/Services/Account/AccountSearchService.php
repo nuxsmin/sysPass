@@ -31,8 +31,6 @@ use SP\Account\AccountSearchItem;
 use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
 use SP\Core\Session\Session;
-use SP\Core\SessionFactory;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountCache;
@@ -40,18 +38,17 @@ use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\Account\AccountToTagRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Repositories\Account\AccountToUserRepository;
-use SP\Repositories\User\UserRepository;
-use SP\Repositories\UserGroup\UserGroupRepository;
+use SP\Services\Service;
+use SP\Services\User\UserService;
+use SP\Services\UserGroup\UserGroupService;
 
 defined('APP_ROOT') || die();
 
 /**
  * Class AccountSearchService para la gestión de búsquedas de cuentas
  */
-class AccountSearchService
+class AccountSearchService extends Service
 {
-    use InjectableTrait;
-
     /**
      * Colores para resaltar las cuentas
      *
@@ -102,27 +99,16 @@ class AccountSearchService
     private $accountRepository;
 
     /**
-     * Constructor
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-
-        $this->accountRepository = new AccountRepository();
-        $this->accountToTagRepository = new AccountToTagRepository();
-        $this->accountToUserRepository = new AccountToUserRepository();
-        $this->accountToUserGroupRepository = new AccountToUserGroupRepository();
-    }
-
-    /**
-     * @param ConfigData $configData
-     * @param Session    $session
-     */
-    public function inject(ConfigData $configData,
-                           Session $session)
-    {
-        $this->configData = $configData;
-        $this->session = $session;
+        $this->accountRepository = $this->dic->get(AccountRepository::class);
+        $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
+        $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
+        $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
+        $this->configData = $this->config->getConfigData();
     }
 
     /**
@@ -131,8 +117,10 @@ class AccountSearchService
      *
      * @param AccountSearchFilter $accountSearchFilter
      * @return array
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function processSearchResults(AccountSearchFilter $accountSearchFilter)
     {
@@ -144,6 +132,7 @@ class AccountSearchService
         $maxTextLength = $this->configData->isResultsAsCards() ? 40 : 60;
 
         $accountLinkEnabled = $this->session->getUserData()->getPreferences()->isAccountLink() || $this->configData->isAccountLink();
+        // FIXME
         $favorites = AccountFavorites::getFavorites($this->session->getUserData()->getId());
 
         foreach ($accountSearchResponse->getData() as $accountSearchData) {
@@ -191,6 +180,8 @@ class AccountSearchService
      *
      * @param $txt
      * @return array|bool
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\SPException
      */
     private function analyzeQueryString($txt)
@@ -203,7 +194,7 @@ class AccountSearchService
 
         switch ($filters['filter']) {
             case 'user':
-                $userData = (new UserRepository())->getByLogin($filters['text']);
+                $userData = $this->dic->get(UserService::class)->getByLogin($filters['text']);
 
                 if (!is_object($userData)) {
                     return [];
@@ -216,7 +207,7 @@ class AccountSearchService
                 ];
                 break;
             case 'owner':
-                $userData = (new UserRepository())->getByLogin($filters['text']);
+                $userData = $this->dic->get(UserService::class)->getByLogin($filters['text']);
 
                 if (!is_object($userData)) {
                     return [];
@@ -229,7 +220,7 @@ class AccountSearchService
                 ];
                 break;
             case 'group':
-                $userGroupData = (new UserGroupRepository())->getByName($filters['text']);
+                $userGroupData = $this->dic->get(UserGroupService::class)->getByName($filters['text']);
 
                 if (!is_object($userGroupData)) {
                     return [];
@@ -242,7 +233,7 @@ class AccountSearchService
                 ];
                 break;
             case 'maingroup':
-                $userGroupData = (new UserGroupRepository())->getByName($filters['text']);
+                $userGroupData = $this->dic->get(UserGroupService::class)->getByName($filters['text']);
 
                 if (!is_object($userGroupData)) {
                     return [];
@@ -313,7 +304,7 @@ class AccountSearchService
      */
     private function pickAccountColor($id)
     {
-        $accountColor = SessionFactory::getAccountColor();
+        $accountColor = $this->session->getAccountColor();
 
         if (!is_array($accountColor)
             || !isset($accountColor[$id])
@@ -322,7 +313,7 @@ class AccountSearchService
             $color = array_rand(self::$colors);
 
             $accountColor[$id] = '#' . self::$colors[$color];
-            SessionFactory::setAccountColor($accountColor);
+            $this->session->setAccountColor($accountColor);
         }
 
         return $accountColor[$id];

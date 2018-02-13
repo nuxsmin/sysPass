@@ -24,10 +24,10 @@
 
 namespace SP\Repositories;
 
+use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
 use SP\Storage\Database;
 use SP\Storage\DatabaseInterface;
 
@@ -38,8 +38,6 @@ use SP\Storage\DatabaseInterface;
  */
 abstract class Repository
 {
-    use InjectableTrait;
-
     /** @var Config */
     protected $config;
     /** @var Session */
@@ -50,28 +48,22 @@ abstract class Repository
     protected $db;
 
     /**
-     * Service constructor.
+     * Repository constructor.
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     final public function __construct()
     {
-        $this->injectDependencies();
+        $dic = Bootstrap::getContainer();
+
+        $this->config = $dic->get(Config::class);
+        $this->db = $dic->get(Database::class);
+        $this->session = $dic->get(Session::class);
+        $this->eventDispatcher = $dic->get(EventDispatcher::class);
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();
         }
-    }
-
-    /**
-     * @param Config          $config
-     * @param Session         $session
-     * @param EventDispatcher $eventDispatcher
-     * @param Database        $db
-     */
-    public function inject(Config $config, Session $session, EventDispatcher $eventDispatcher, Database $db)
-    {
-        $this->config = $config;
-        $this->session = $session;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->db = $db;
     }
 }

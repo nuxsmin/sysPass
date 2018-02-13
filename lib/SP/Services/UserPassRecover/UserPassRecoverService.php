@@ -24,18 +24,16 @@
 
 namespace SP\Services\UserPassRecover;
 
-use SP\Core\Traits\InjectableTrait;
 use SP\Repositories\UserPassRecover\UserPassRecoverRepository;
+use SP\Services\Service;
 
 /**
  * Class UserPassRecoverService
  *
  * @package SP\Services\UserPassRecover
  */
-class UserPassRecoverService
+class UserPassRecoverService extends Service
 {
-    use InjectableTrait;
-
     /**
      * Tiempo máximo para recuperar la clave
      */
@@ -53,19 +51,12 @@ class UserPassRecoverService
     protected $userPassRecoverRepository;
 
     /**
-     * UserPassRecoverService constructor.
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param UserPassRecoverRepository $userPassRecoverRepository
-     */
-    public function inject(UserPassRecoverRepository $userPassRecoverRepository)
-    {
-        $this->userPassRecoverRepository = $userPassRecoverRepository;
+        $this->userPassRecoverRepository = $this->dic->get(UserPassRecoverRepository::class);
     }
 
     /**

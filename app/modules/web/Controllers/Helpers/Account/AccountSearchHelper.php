@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 use SP\Account\AccountSearchFilter;
 use SP\Account\AccountSearchItem;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\SessionUtil;
 use SP\Html\DataGrid\DataGrid;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
@@ -72,15 +71,16 @@ class AccountSearchHelper extends HelperBase
     /**
      * Obtener los datos para la caja de búsqueda
      *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function getSearchBox()
     {
         $this->view->addTemplate('search-searchbox');
 
-        $this->view->assign('clients', (new SelectItemAdapter((new ClientService())->getAllForUser()))->getItemsFromModelSelected([$this->accountSearchFilter->getClientId()]));
-        $this->view->assign('categories', (new SelectItemAdapter(CategoryService::getItemsBasic()))->getItemsFromModelSelected([$this->accountSearchFilter->getCategoryId()]));
-        $this->view->assign('tags', (new SelectItemAdapter(TagService::getItemsBasic()))->getItemsFromModelSelected($this->accountSearchFilter->getTagsId()));
+        $this->view->assign('clients', SelectItemAdapter::factory($this->dic->get(ClientService::class)->getAllForUser())->getItemsFromModelSelected([$this->accountSearchFilter->getClientId()]));
+        $this->view->assign('categories', SelectItemAdapter::factory(CategoryService::getItemsBasic())->getItemsFromModelSelected([$this->accountSearchFilter->getCategoryId()]));
+        $this->view->assign('tags', SelectItemAdapter::factory(TagService::getItemsBasic())->getItemsFromModelSelected($this->accountSearchFilter->getTagsId()));
     }
 
     /**
@@ -88,6 +88,7 @@ class AccountSearchHelper extends HelperBase
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \ReflectionException
      */
     public function getAccountSearch()
     {
@@ -121,7 +122,7 @@ class AccountSearchHelper extends HelperBase
             $this->view->assign('wikiPageUrl', $this->configData->getWikiPageurl());
         }
 
-        $accountSearchService = new AccountSearchService();
+        $accountSearchService = $this->dic->get(AccountSearchService::class);
 
         $Grid = $this->getGrid();
         $Grid->getData()->setData($accountSearchService->processSearchResults($this->accountSearchFilter));
@@ -139,7 +140,8 @@ class AccountSearchHelper extends HelperBase
      * Devuelve la matriz a utilizar en la vista
      *
      * @return DataGrid
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \ReflectionException
+     * @throws \SP\Core\Dic\ContainerException
      */
     private function getGrid()
     {
@@ -169,7 +171,7 @@ class AccountSearchHelper extends HelperBase
         $userPreferences = $this->session->getUserData()->getPreferences();
         $showOptionalActions = $userPreferences->isOptionalActions() || $userPreferences->isResultsAsCards() || ($userPreferences->getUserId() === 0 && $this->configData->isResultsAsCards());
 
-        $actions = new AccountActionsHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $actions = $this->dic->get(AccountActionsHelper::class);
 
         $Grid = new DataGrid();
         $Grid->setId('gridSearch');
@@ -252,7 +254,7 @@ class AccountSearchHelper extends HelperBase
     protected function initialize()
     {
         $this->queryTimeStart = microtime();
-        $this->sk = SessionUtil::getSessionKey(true);
+        $this->sk = $this->session->generateSecurityKey();
         $this->view->assign('sk', $this->sk);
         $this->setVars();
     }

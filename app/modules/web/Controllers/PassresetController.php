@@ -39,11 +39,13 @@ class PassresetController extends ControllerBase
     /**
      * Password reset action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {
-        $LayoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $LayoutHelper = $this->dic->get(LayoutHelper::class);
         $LayoutHelper->getPublicLayout('passreset', 'passreset');
 
         if ($this->configData->isMailEnabled() || Request::analyze('f', 0) === 1) {

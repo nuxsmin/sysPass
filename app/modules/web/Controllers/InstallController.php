@@ -46,12 +46,13 @@ class InstallController extends ControllerBase
     use JsonTrait;
 
     /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
      */
     public function indexAction()
     {
-        $layoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $layoutHelper = $this->dic->get(LayoutHelper::class);
         $layoutHelper->getPublicLayout('index', 'install');
 
         $errors = [];

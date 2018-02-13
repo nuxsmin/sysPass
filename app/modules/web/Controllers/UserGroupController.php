@@ -29,7 +29,6 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\SessionUtil;
 use SP\DataModel\UserGroupData;
 use SP\Forms\UserGroupForm;
 use SP\Http\JsonResponse;
@@ -65,6 +64,8 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
     /**
      * Search action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
@@ -73,7 +74,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             return;
         }
 
-        $itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $grid = $itemsGridHelper->getUserGroupsGrid($this->userGroupService->search($this->getSearchData($this->configData)))->updatePager();
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -114,6 +115,8 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      * Sets view data for displaying user's data
      *
      * @param $userGroupId
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function setViewData($userGroupId = null)
     {
@@ -122,9 +125,9 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
         $group = $userGroupId ? $this->userGroupService->getById($userGroupId) : new UserGroupData();
 
         $this->view->assign('group', $group);
-        $this->view->assign('users', (new SelectItemAdapter(UserService::getItemsBasic()))->getItemsFromModelSelected($this->userToUserGroupService->getUsersByGroupId($userGroupId)));
+        $this->view->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected($this->userToUserGroupService->getUsersByGroupId($userGroupId)));
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
@@ -289,13 +292,14 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
     /**
      * Initialize class
      *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->userGroupService = new UserGroupService();
-        $this->userToUserGroupService = new UserToUserGroupService();
+        $this->userGroupService = $this->dic->get(UserGroupService::class);
+        $this->userToUserGroupService =  $this->dic->get(UserToUserGroupService::class);
     }
 }

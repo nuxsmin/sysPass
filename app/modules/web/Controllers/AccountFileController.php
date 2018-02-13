@@ -197,6 +197,8 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
     /**
      * Search action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
@@ -205,7 +207,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
             return;
         }
 
-        $itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $grid = $itemsGridHelper->getFilesGrid($this->accountFileService->search($this->getSearchData($this->configData)))->updatePager();
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -284,8 +286,6 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
         }
 
         try {
-            $this->setAction(ActionsInterface::ACCOUNT_FILE);
-
             $this->view->addTemplate('files-list', 'account');
 
             $this->view->assign('deleteEnabled', Request::analyze('del', 0));
@@ -312,12 +312,13 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
     /**
      * Initialize class
      *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->accountFileService = new AccountFileService();
+        $this->accountFileService = $this->dic->get(AccountFileService::class);
     }
 }

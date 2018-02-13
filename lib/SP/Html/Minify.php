@@ -57,7 +57,7 @@ class Minify
      *
      * @var array
      */
-    private $files = array();
+    private $files = [];
     /**
      * Tipos de archivos a procesar
      *
@@ -74,18 +74,9 @@ class Minify
     /**
      * Minify constructor.
      *
-     * @throws \ReflectionException
-     * @throws \SP\Core\Dic\ContainerException
-     */
-    public function __construct()
-    {
-        $this->injectDependencies();
-    }
-
-    /**
      * @param Klein $router
      */
-    public function inject(Klein $router)
+    public function __construct(Klein $router)
     {
         $this->router = $router;
     }

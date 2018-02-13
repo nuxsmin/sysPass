@@ -100,7 +100,6 @@ class Installer
      *
      * @param InstallData $installData
      * @throws Dic\ContainerException
-     * @throws \ReflectionException
      */
     public function __construct(InstallData $installData)
     {

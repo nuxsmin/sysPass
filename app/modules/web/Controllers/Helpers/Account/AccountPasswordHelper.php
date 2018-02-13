@@ -28,7 +28,6 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\SessionUtil;
 use SP\DataModel\AccountPassData;
 use SP\Mgmt\Users\UserPass;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
@@ -87,6 +86,7 @@ class AccountPasswordHelper extends HelperBase
             throw new HelperException(__u('No tiene permisos para acceder a esta cuenta'));
         }
 
+        // FIXME
         if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getId())) {
             throw new HelperException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
         }
@@ -121,6 +121,6 @@ class AccountPasswordHelper extends HelperBase
         }
 
         $this->view->assign('isLinked', $accountData->getParentId() > 0);
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('sk', $this->session->generateSecurityKey());
     }
 }

@@ -24,12 +24,18 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use Interop\Container\ContainerInterface;
 use Klein\Klein;
+use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
+use SP\Http\JsonResponse;
+use SP\Http\Request;
+use SP\Util\Checks;
+use SP\Util\Json;
+use SP\Util\Util;
 
 /**
  * Class SimpleControllerBase
@@ -38,12 +44,6 @@ use SP\Core\UI\Theme;
  */
 abstract class SimpleControllerBase
 {
-    use InjectableTrait;
-
-    /**
-     * @var  int Módulo a usar
-     */
-    protected $action;
     /**
      * @var string Nombre del controlador
      */
@@ -72,21 +72,31 @@ abstract class SimpleControllerBase
      * @var Klein
      */
     protected $router;
+    /**
+     * @var ContainerInterface
+     */
+    protected $dic;
 
     /**
      * SimpleControllerBase constructor.
      *
      * @param $actionName
-     * @throws \ReflectionException
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function __construct($actionName)
     {
-        $this->injectDependencies();
+        $this->dic = Bootstrap::getContainer();
 
         $class = static::class;
         $this->controllerName = substr($class, strrpos($class, '\\') + 1, -strlen('Controller'));
         $this->actionName = $actionName;
+
+        $this->config = $this->dic->get(Config::class);
+        $this->session = $this->dic->get(Session::class);
+        $this->theme = $this->dic->get(Theme::class);
+        $this->eventDispatcher = $this->dic->get(EventDispatcher::class);
+        $this->router = $this->dic->get(Klein::class);
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();
@@ -94,18 +104,48 @@ abstract class SimpleControllerBase
     }
 
     /**
-     * @param Config          $config
-     * @param Session         $session
-     * @param Theme           $theme
-     * @param EventDispatcher $ev
-     * @param Klein           $router
+     * Comprobar si la sesión está activa
      */
-    public function inject(Config $config, Session $session, Theme $theme, EventDispatcher $ev, Klein $router)
+    protected function checkSession()
     {
-        $this->config = $config;
-        $this->session = $session;
-        $this->theme = $theme;
-        $this->eventDispatcher = $ev;
-        $this->router = $router;
+        if (!$this->session->isLoggedIn()) {
+            if (Checks::isJson()) {
+                $JsonResponse = new JsonResponse();
+                $JsonResponse->setDescription(__u('La sesión no se ha iniciado o ha caducado'));
+                $JsonResponse->setStatus(10);
+                Json::returnJson($JsonResponse);
+            } else {
+                Util::logout();
+            }
+        }
+    }
+
+    /**
+     * Comprobaciones
+     */
+    protected function checks()
+    {
+        $this->checkSession();
+        $this->preActionChecks();
+    }
+
+    /**
+     * Comprobaciones antes de realizar una acción
+     */
+    protected function preActionChecks()
+    {
+        $sk = Request::analyze('sk');
+
+        if (!$sk || (null !== $this->session->getSecurityKey() && $this->session->getSecurityKey() === $sk)) {
+            $this->invalidAction();
+        }
+    }
+
+    /**
+     * Acción no disponible
+     */
+    protected function invalidAction()
+    {
+        Json::returnJson((new JsonResponse())->setDescription(__u('Acción Inválida')));
     }
 }

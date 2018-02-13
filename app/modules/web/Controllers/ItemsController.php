@@ -24,9 +24,9 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Controller\RequestControllerTrait;
 use SP\Core\SessionUtil;
 use SP\DataModel\DataModelInterface;
+use SP\Http\JsonResponse;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
@@ -38,16 +38,14 @@ use SP\Util\Json;
  *
  * @package SP\Modules\Web\Controllers
  */
-class ItemsController
+class ItemsController extends SimpleControllerBase
 {
-    use RequestControllerTrait;
-
     /**
      * ItemsController constructor.
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->init();
+        $this->checks();
     }
 
     /**
@@ -60,9 +58,7 @@ class ItemsController
     {
         $outItems = [];
 
-        $accountService = new AccountService();
-
-        foreach ($accountService->getForUser($accountId) as $account) {
+        foreach ($this->dic->get(AccountService::class)->getForUser($accountId) as $account) {
             $obj = new \stdClass();
             $obj->id = $account->id;
             $obj->name = $account->clientName . ' - ' . $account->name;
@@ -70,29 +66,32 @@ class ItemsController
             $outItems[] = $obj;
         }
 
-        $this->JsonResponse->setStatus(0);
-        $this->JsonResponse->setData($outItems);
-        $this->JsonResponse->setCsrf(SessionUtil::getSessionKey());
+        $jsonResponse = new JsonResponse();
+        $jsonResponse->setStatus(0);
+        $jsonResponse->setData($outItems);
+        $jsonResponse->setCsrf(SessionUtil::getSessionKey());
 
-        Json::returnJson($this->JsonResponse);
+        Json::returnJson($jsonResponse);
     }
 
     /**
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\SPException
      */
     public function clientsAction()
     {
-        Json::returnRawJson((new SelectItemAdapter((new ClientService())->getAllForUser()))->getJsonItemsFromModel());
+        Json::returnRawJson(SelectItemAdapter::factory($this->dic->get(ClientService::class)->getAllForUser())->getJsonItemsFromModel());
     }
 
     /**
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\SPException
      */
     public function categoriesAction()
     {
-        Json::returnRawJson((new SelectItemAdapter((new CategoryService())->getAllBasic()))->getJsonItemsFromModel());
+        Json::returnRawJson(SelectItemAdapter::factory($this->dic->get(CategoryService::class)->getAllBasic())->getJsonItemsFromModel());
     }
 
     /**

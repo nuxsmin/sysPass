@@ -25,9 +25,9 @@
 namespace SP\Services\Category;
 
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Category\CategoryRepository;
+use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -35,9 +35,8 @@ use SP\Services\ServiceItemTrait;
  *
  * @package SP\Services\Category
  */
-class CategoryService
+class CategoryService extends Service
 {
-    use InjectableTrait;
     use ServiceItemTrait;
 
     /**
@@ -46,15 +45,12 @@ class CategoryService
     protected $categoryRepository;
 
     /**
-     * CategoryService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    public function initialize()
     {
-        $this->injectDependencies();
-
-        $this->categoryRepository = new CategoryRepository();
+        $this->categoryRepository = $this->dic->get(CategoryRepository::class);
     }
 
     /**
@@ -98,7 +94,6 @@ class CategoryService
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function create($itemData)
     {
@@ -111,7 +106,6 @@ class CategoryService
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function update($itemData)
     {

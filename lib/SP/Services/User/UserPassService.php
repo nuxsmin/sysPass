@@ -25,13 +25,11 @@
 namespace SP\Services\User;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\Core\Upgrade\Crypt as CryptUpgrade;
 use SP\Core\Upgrade\User as UpgradeUser;
 use SP\DataModel\UserLoginData;
@@ -44,10 +42,8 @@ use SP\Services\Service;
  *
  * @package SP\Services\User
  */
-class UserPassService
+class UserPassService extends Service
 {
-    use InjectableTrait;
-
     // La clave maestra incorrecta
     const MPASS_WRONG = 0;
     // La clave maestra correcta
@@ -73,26 +69,14 @@ class UserPassService
     protected $configService;
 
     /**
-     * UserPassService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param Config         $config
-     * @param UserRepository $userRepository
-     * @param ConfigService  $configService
-     */
-    public function inject(Config $config, UserRepository $userRepository, ConfigService $configService)
-    {
-        $this->configData = $config->getConfigData();
-        $this->userRepository = $userRepository;
-        $this->configService = $configService;
+        $this->configData = $this->config->getConfigData();
+        $this->userRepository = $this->dic->get(UserRepository::class);
+        $this->configService = $this->dic->get(ConfigService::class);;
     }
 
     /**

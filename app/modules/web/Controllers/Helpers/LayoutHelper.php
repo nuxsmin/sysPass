@@ -46,18 +46,14 @@ use SP\Util\Util;
  */
 class LayoutHelper extends HelperBase
 {
-    /** @var  bool */
-    protected $loggedIn;
-    /** @var  ThemeInterface */
-    protected $theme;
-
     /**
-     * @param Theme $theme
+     * @var  bool
      */
-    public function inject(Theme $theme)
-    {
-        $this->theme = $theme;
-    }
+    protected $loggedIn;
+    /**
+     * @var ThemeInterface
+     */
+    protected $theme;
 
     /**
      * Sets a full layout page
@@ -106,7 +102,7 @@ class LayoutHelper extends HelperBase
         $this->view->assign('startTime', microtime());
 
         $this->view->assign('isInstalled', $this->configData->isInstalled());
-        $this->view->assign('sk', SessionUtil::getSessionKey(true, $this->configData));
+        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('appInfo', Util::getAppInfo());
         $this->view->assign('appVersion', Util::getVersionString());
         $this->view->assign('isDemoMode', $this->configData->isDemoEnabled());
@@ -368,8 +364,14 @@ class LayoutHelper extends HelperBase
         return $this;
     }
 
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
     protected function initialize()
     {
+        $this->theme = Bootstrap::getContainer()->get(Theme::class);
+
         $this->loggedIn = $this->session->isLoggedIn();
 
         $this->view->assign('loggedIn', $this->loggedIn);

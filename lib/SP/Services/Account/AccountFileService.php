@@ -31,6 +31,7 @@ use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
 use SP\Mgmt\Files\FileUtil;
 use SP\Repositories\Account\AccountFileRepository;
+use SP\Services\Service;
 use SP\Util\ImageUtil;
 
 /**
@@ -38,7 +39,7 @@ use SP\Util\ImageUtil;
  *
  * @package SP\Services\Account
  */
-class AccountFileService
+class AccountFileService extends Service
 {
     use InjectableTrait;
 
@@ -48,21 +49,12 @@ class AccountFileService
     protected $accountFileRepository;
 
     /**
-     * AccountFileService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    public function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param AccountFileRepository $accountFileRepository
-     */
-    public function inject(AccountFileRepository $accountFileRepository)
-    {
-        $this->accountFileRepository = $accountFileRepository;
+        $this->accountFileRepository = $this->dic->get(AccountFileRepository::class);
     }
 
     /**

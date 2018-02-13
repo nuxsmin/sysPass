@@ -46,19 +46,19 @@ class LoginController extends ControllerBase
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \ReflectionException
      */
     public function loginAction()
     {
-        $loginService = new LoginService($this->config, $this->session, $this->theme, $this->eventDispatcher);
+        $loginService = $this->dic->get(LoginService::class);
         Json::returnJson($loginService->doLogin());
     }
 
     /**
      * Logout action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
      */
     public function logoutAction()
     {
@@ -77,7 +77,7 @@ class LoginController extends ControllerBase
             SessionUtil::cleanSession();
             SessionFactory::setLoggedOut(true);
 
-            $layoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $layoutHelper = $this->dic->get(LayoutHelper::class);
             $layoutHelper->getCustomLayout('logout', 'logout');
 
             $this->view();
@@ -89,12 +89,13 @@ class LoginController extends ControllerBase
     /**
      * Index action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
      */
     public function indexAction()
     {
-        $layoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $layoutHelper = $this->dic->get(LayoutHelper::class);
         $layoutHelper->getCustomLayout('index', 'login');
 
         if (SessionFactory::getLoggedOut() === true) {

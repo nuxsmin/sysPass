@@ -24,9 +24,9 @@
 
 namespace SP\Services\CustomField;
 
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\CustomField\CustomFieldDefRepository;
+use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -34,9 +34,8 @@ use SP\Services\ServiceItemTrait;
  *
  * @package SP\Services\CustomField
  */
-class CustomFieldDefService
+class CustomFieldDefService extends Service
 {
-    use InjectableTrait;
     use ServiceItemTrait;
 
     /**
@@ -45,21 +44,12 @@ class CustomFieldDefService
     protected $customFieldDefRepository;
 
     /**
-     * ClientService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param CustomFieldDefRepository $customFieldDefRepository
-     */
-    public function inject(CustomFieldDefRepository $customFieldDefRepository)
-    {
-        $this->customFieldDefRepository = $customFieldDefRepository;
+        $this->customFieldDefRepository = $this->dic->get(CustomFieldDefRepository::class);
     }
 
     /**

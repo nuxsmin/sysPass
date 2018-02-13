@@ -27,13 +27,14 @@ namespace SP\Controller;
 defined('APP_ROOT') || die();
 
 use Klein\Klein;
+use Psr\Container\ContainerInterface;
+use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeIconsBase;
 use SP\DataModel\ProfileData;
@@ -59,55 +60,94 @@ abstract class ControllerBase
     const ERR_OPERATION_NO_PERMISSION = 4;
     const ERR_EXCEPTION = 5;
 
-
-    /** @var Template Instancia del motor de plantillas a utilizar */
+    /**
+     * @var Template Instancia del motor de plantillas a utilizar
+     */
     protected $view;
-    /** @var  int ID de la acción */
+    /**
+     * @var  int ID de la acción
+     */
     protected $action;
-    /** @var string Nombre de la acción */
+    /**
+     * @var string Nombre de la acción
+     */
     protected $actionName;
-    /** @var ThemeIconsBase Instancia de los iconos del tema visual */
+    /**
+     * @var ThemeIconsBase Instancia de los iconos del tema visual
+     */
     protected $icons;
-    /** @var string Nombre del controlador */
+    /**
+     * @var string Nombre del controlador
+     */
     protected $controllerName;
-    /** @var  JsonResponse */
-    protected $jsonResponse;
-    /** @var  UserLoginResponse */
+    /**
+     * @var  UserLoginResponse
+     */
     protected $userData;
-    /** @var  ProfileData */
+    /**
+     * @var  ProfileData
+     */
     protected $userProfileData;
-    /** @var  EventDispatcher */
+    /**
+     * @var  EventDispatcher
+     */
     protected $eventDispatcher;
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $loggedIn = false;
-    /** @var  ConfigData */
+    /**
+     * @var  ConfigData
+     */
     protected $configData;
-    /** @var  Config */
+    /**
+     * @var  Config
+     */
     protected $config;
-    /** @var  Session */
+    /**
+     * @var  Session
+     */
     protected $session;
-    /** @var  Theme */
+    /**
+     * @var  Theme
+     */
     protected $theme;
-    /** @var  \SP\Core\Acl\Acl */
+    /**
+     * @var  \SP\Core\Acl\Acl
+     */
     protected $acl;
-    /** @var Klein */
+    /**
+     * @var Klein
+     */
     protected $router;
-
-    use InjectableTrait;
+    /**
+     * @var ContainerInterface
+     */
+    protected $dic;
 
     /**
      * Constructor
      *
      * @param $actionName
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function __construct($actionName)
     {
-        $this->injectDependencies();
+        $this->dic = Bootstrap::getContainer();
 
         $class = static::class;
         $this->controllerName = substr($class, strrpos($class, '\\') + 1, -strlen('Controller'));
         $this->actionName = $actionName;
+
+        $this->config = $this->dic->get(Config::class);
+        $this->configData = $this->config->getConfigData();
+        $this->session = $this->dic->get(Session::class);
+        $this->theme = $this->dic->get(Theme::class);
+        $this->eventDispatcher = $this->dic->get(EventDispatcher::class);
+        $this->acl = $this->dic->get(Acl::class);
+        $this->router = $this->dic->get(Klein::class);
+        $this->view = $this->dic->get(Template::class);
 
         $this->view->setBase(strtolower($this->controllerName));
 
@@ -141,45 +181,6 @@ abstract class ControllerBase
     }
 
     /**
-     * @param Config          $config
-     * @param Session         $session
-     * @param Theme           $theme
-     * @param EventDispatcher $ev
-     * @param Acl             $acl
-     * @param Klein           $router
-     * @param Template        $view
-     */
-    public function inject(Config $config, Session $session, Theme $theme, EventDispatcher $ev, Acl $acl, Klein $router, Template $view)
-    {
-        $this->config = $config;
-        $this->configData = $config->getConfigData();
-        $this->session = $session;
-        $this->theme = $theme;
-        $this->eventDispatcher = $ev;
-        $this->acl = $acl;
-        $this->router = $router;
-        $this->view = $view;
-    }
-
-    /**
-     * @return int El id de la acción
-     */
-    public function getAction()
-    {
-        return $this->action;
-    }
-
-    /**
-     * Establecer el módulo a presentar.
-     *
-     * @param int $action El id de la acción
-     */
-    public function setAction($action)
-    {
-        $this->action = (int)$action;
-    }
-
-    /**
      * Mostrar los datos de la plantilla
      */
     public function view()
@@ -205,7 +206,7 @@ abstract class ControllerBase
         } catch (FileNotFoundException $e) {
             debugLog($e->getMessage(), true);
 
-            echo $e->getMessage();
+            return $e->getMessage();
         }
     }
 
@@ -224,29 +225,6 @@ abstract class ControllerBase
     }
 
     /**
-     * Establecer la plantilla de error con el código indicado.
-     *
-     * @param int  $type int con el tipo de error
-     * @param bool $reset
-     * @param null $replace
-     * @deprecated Use ErrorUtil class
-     */
-    public function showError($type, $reset = true, $replace = null)
-    {
-
-    }
-
-    /**
-     * Realizar las acciones del controlador
-     *
-     * @param mixed $type Tipo de acción
-     */
-    public function doAction($type = null)
-    {
-
-    }
-
-    /**
      * Comprobar si el usuario está logado.
      */
     public function checkLoggedIn()
@@ -254,7 +232,7 @@ abstract class ControllerBase
         if (!$this->session->isLoggedIn()) {
             if (Checks::isJson()) {
                 $jsonResponse = new JsonResponse();
-                $jsonResponse->setDescription(__('La sesión no se ha iniciado o ha caducado', false));
+                $jsonResponse->setDescription(__u('La sesión no se ha iniciado o ha caducado'));
                 $jsonResponse->setStatus(10);
 
                 Json::returnJson($jsonResponse);
@@ -274,29 +252,13 @@ abstract class ControllerBase
     }
 
     /**
-     * Establecer la instancia del motor de plantillas a utilizar.
-     *
-     * @param Template $template
-     */
-    protected function setTemplate(Template $template)
-    {
-        $this->view = $template;
-    }
-
-    /**
      * Comprobar si está permitido el acceso al módulo/página.
      *
      * @param null $action La acción a comprobar
      * @return bool
      */
-    protected function checkAccess($action = null)
+    protected function checkAccess($action)
     {
-        $checkAction = $this->action;
-
-        if (null !== $action) {
-            $checkAction = $action;
-        }
-
-        return $this->session->getUserData()->getIsAdminApp() || $this->acl->checkUserAccess($checkAction);
+        return $this->session->getUserData()->getIsAdminApp() || $this->acl->checkUserAccess($action);
     }
 }

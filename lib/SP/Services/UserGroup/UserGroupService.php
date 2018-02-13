@@ -26,9 +26,10 @@ namespace SP\Services\UserGroup;
 
 
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
+use SP\DataModel\UserGroupData;
 use SP\Repositories\UserGroup\UserGroupRepository;
+use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -36,9 +37,8 @@ use SP\Services\ServiceItemTrait;
  *
  * @package SP\Services\UserGroup
  */
-class UserGroupService
+class UserGroupService extends Service
 {
-    use InjectableTrait;
     use ServiceItemTrait;
 
     /**
@@ -46,23 +46,13 @@ class UserGroupService
      */
     protected $userGroupRepository;
 
-
     /**
-     * UserGroup constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param UserGroupRepository $userGroupRepository
-     */
-    public function inject(UserGroupRepository $userGroupRepository)
-    {
-        $this->userGroupRepository = $userGroupRepository;
+        $this->userGroupRepository = $this->dic->get(UserGroupRepository::class);
     }
 
     /**
@@ -127,5 +117,16 @@ class UserGroupService
     public function getAllBasic()
     {
         return $this->userGroupRepository->getAll();
+    }
+
+    /**
+     * Returns the item for given name
+     *
+     * @param string $name
+     * @return UserGroupData
+     */
+    public function getByName($name)
+    {
+        return $this->userGroupRepository->getByName($name);
     }
 }

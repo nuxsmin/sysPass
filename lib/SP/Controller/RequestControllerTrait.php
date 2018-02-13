@@ -94,8 +94,6 @@ trait RequestControllerTrait
      */
     protected function init()
     {
-        $this->injectDependencies();
-
         $this->JsonResponse = new JsonResponse();
 
         $this->checkSession();

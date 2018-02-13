@@ -24,12 +24,11 @@
 
 namespace SP\Services;
 
+use Psr\Container\ContainerInterface;
+use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
-use SP\Storage\Database;
-use SP\Storage\DatabaseInterface;
 
 /**
  * Class Service
@@ -38,8 +37,6 @@ use SP\Storage\DatabaseInterface;
  */
 abstract class Service
 {
-    use InjectableTrait;
-    
     const STATUS_INTERNAL_ERROR = 1000;
 
     /**
@@ -55,33 +52,26 @@ abstract class Service
      */
     protected $eventDispatcher;
     /**
-     * @var DatabaseInterface
+     * @var ContainerInterface
      */
-    protected $db;
+    protected $dic;
 
     /**
      * Service constructor.
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     final public function __construct()
     {
-        $this->injectDependencies();
+        $this->dic = Bootstrap::getContainer();
+
+        $this->config = $this->dic->get(Config::class);
+        $this->session = $this->dic->get(Session::class);
+        $this->eventDispatcher = $this->dic->get(EventDispatcher::class);
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();
         }
-    }
-
-    /**
-     * @param Config          $config
-     * @param Session         $session
-     * @param EventDispatcher $eventDispatcher
-     * @param Database        $db
-     */
-    public function inject(Config $config, Session $session, EventDispatcher $eventDispatcher, Database $db)
-    {
-        $this->config = $config;
-        $this->session = $session;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->db = $db;
     }
 }

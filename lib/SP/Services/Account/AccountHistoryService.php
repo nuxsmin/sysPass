@@ -24,23 +24,22 @@
 
 namespace SP\Services\Account;
 
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountHistoryRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Repositories\Account\AccountToUserRepository;
+use SP\Services\Service;
 
 /**
  * Class AccountHistoryService
  *
  * @package SP\Services\Account
  */
-class AccountHistoryService
+class AccountHistoryService extends Service
 {
-    use InjectableTrait;
-
     /**
      * @var AccountHistoryRepository
      */
@@ -55,27 +54,14 @@ class AccountHistoryService
     protected $accountToUserRepository;
 
     /**
-     * AccountHistoryService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    public function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param AccountHistoryRepository     $accountHistoryRepository
-     * @param AccountToUserGroupRepository $accountToUserGroupRepository
-     * @param AccountToUserRepository      $accountToUserRepository
-     */
-    public function inject(AccountHistoryRepository $accountHistoryRepository,
-                           AccountToUserGroupRepository $accountToUserGroupRepository,
-                           AccountToUserRepository $accountToUserRepository)
-    {
-        $this->accountHistoryRepository = $accountHistoryRepository;
-        $this->accountToUserGroupRepository = $accountToUserGroupRepository;
-        $this->accountToUserRepository = $accountToUserRepository;
+        $this->accountHistoryRepository = $this->dic->get(AccountHistoryRepository::class);
+        $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
+        $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
     }
 
     /**
@@ -128,4 +114,19 @@ class AccountHistoryService
     {
         return $this->accountHistoryRepository->search($itemSearchData);
     }
+
+    /**
+     * Crea una nueva cuenta en la BBDD
+     *
+     * @param array $itemData ['id' => <int>, 'isModify' => <bool>,'isDelete' => <bool>, 'masterPassHash' => <string>]
+     * @return bool
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function create($itemData)
+    {
+        return $this->accountHistoryRepository->create($itemData);
+    }
+
 }

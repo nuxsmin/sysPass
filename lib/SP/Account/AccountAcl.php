@@ -166,7 +166,6 @@ class AccountAcl
      * @param int $action
      * @param bool $isHistory
      * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
      */
     public function __construct($action, $isHistory = false)
     {

@@ -25,9 +25,9 @@
 namespace SP\Services\Tag;
 
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Tag\TagRepository;
+use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -35,9 +35,8 @@ use SP\Services\ServiceItemTrait;
  *
  * @package SP\Services\Tag
  */
-class TagService
+class TagService extends Service
 {
-    use InjectableTrait;
     use ServiceItemTrait;
 
     /**
@@ -45,23 +44,13 @@ class TagService
      */
     protected $tagRepository;
 
-
     /**
-     * TagService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param TagRepository $tagRepository
-     */
-    public function inject(TagRepository $tagRepository)
-    {
-        $this->tagRepository = $tagRepository;
+        $this->tagRepository = $this->dic->get(TagRepository::class);
     }
 
     /**

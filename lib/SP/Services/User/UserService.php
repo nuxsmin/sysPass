@@ -26,11 +26,11 @@ namespace SP\Services\User;
 
 use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Repositories\User\UserRepository;
+use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
 use SP\Util\Util;
 
@@ -39,9 +39,8 @@ use SP\Util\Util;
  *
  * @package SP\Services\User
  */
-class UserService
+class UserService extends Service
 {
-    use InjectableTrait;
     use ServiceItemTrait;
 
     /**
@@ -54,23 +53,13 @@ class UserService
     protected $userPassService;
 
     /**
-     * UserService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param UserRepository  $userRepository
-     * @param UserPassService $userPassService
-     */
-    public function inject(UserRepository $userRepository, UserPassService $userPassService)
-    {
-        $this->userRepository = $userRepository;
-        $this->userPassService = $userPassService;
+        $this->userRepository = $this->dic->get(UserRepository::class);
+        $this->userPassService = $this->dic->get(UserPassService::class);
     }
 
     /**

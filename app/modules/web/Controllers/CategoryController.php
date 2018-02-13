@@ -29,7 +29,6 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\SessionUtil;
 use SP\DataModel\CategoryData;
 use SP\Forms\CategoryForm;
 use SP\Http\JsonResponse;
@@ -58,6 +57,8 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
     /**
      * Search action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
@@ -66,7 +67,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
             return;
         }
 
-        $itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $grid = $itemsGridHelper->getCategoriesGrid($this->categoryService->search($this->getSearchData($this->configData)))->updatePager();
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -117,7 +118,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
 
         $this->view->assign('category', $category);
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
@@ -162,6 +163,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      * Delete action
      *
      * @param $id
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function deleteAction($id)
     {
@@ -186,6 +188,8 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
 
     /**
      * Saves create action
+     *
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveCreateAction()
     {
@@ -217,6 +221,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      * Saves edit action
      *
      * @param $id
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditAction($id)
     {
@@ -273,13 +278,14 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
     /**
      * Initialize class
      *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->categoryService = new CategoryService();
+        $this->categoryService = $this->dic->get(CategoryService::class);
     }
 
 }

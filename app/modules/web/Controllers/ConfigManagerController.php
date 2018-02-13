@@ -50,8 +50,9 @@ class ConfigManagerController extends ControllerBase
     protected $tabsHelper;
 
     /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {
@@ -61,12 +62,13 @@ class ConfigManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\InvalidArgumentException
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getTabs()
     {
-        $this->tabsHelper = new TabsHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $this->tabsHelper = $this->dic->get(TabsHelper::class);
 
         if ($this->checkAccess(ActionsInterface::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getConfigGeneral());
@@ -110,6 +112,8 @@ class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function getConfigGeneral()
     {
@@ -170,6 +174,8 @@ class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function getLdapConfig()
     {
@@ -187,6 +193,8 @@ class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function getMailConfig()
     {
@@ -204,6 +212,8 @@ class ConfigManagerController extends ControllerBase
 
     /**
      * @return DataTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function getEncryptionConfig()
     {

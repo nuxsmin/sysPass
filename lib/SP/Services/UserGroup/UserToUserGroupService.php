@@ -24,40 +24,28 @@
 
 namespace SP\Services\UserGroup;
 
-use SP\Core\Traits\InjectableTrait;
 use SP\Repositories\UserGroup\UserToUserGroupRepository;
-use SP\Services\ServiceItemTrait;
+use SP\Services\Service;
 
 /**
  * Class UserToUserGroupService
  *
  * @package SP\Services\UserGroup
  */
-class UserToUserGroupService
+class UserToUserGroupService extends Service
 {
-    use InjectableTrait;
-
     /**
      * @var UserToUserGroupRepository
      */
     protected $userToUserGroupRepository;
 
     /**
-     * UserGroup constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param UserToUserGroupRepository $userToUserGroupRepository
-     */
-    public function inject(UserToUserGroupRepository $userToUserGroupRepository)
-    {
-        $this->userToUserGroupRepository = $userToUserGroupRepository;
+        $this->userToUserGroupRepository = $this->dic->get(UserToUserGroupRepository::class);
     }
 
     /**

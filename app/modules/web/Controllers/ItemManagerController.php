@@ -61,8 +61,10 @@ class ItemManagerController extends ControllerBase
     protected $tabsGridHelper;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function indexAction()
     {
@@ -72,17 +74,18 @@ class ItemManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function getGridTabs()
     {
         $this->itemSearchData = new ItemSearchData();
         $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
 
-        $this->itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-
-        $this->tabsGridHelper = new TabsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $this->itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
+        $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
 
         if ($this->checkAccess(ActionsInterface::CATEGORY)) {
             $this->tabsGridHelper->addTab($this->getCategoriesList());
@@ -126,96 +129,106 @@ class ItemManagerController extends ControllerBase
     /**
      * Returns categories' data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getCategoriesList()
     {
-        $service = new CategoryService();
-
-        return $this->itemsGridHelper->getCategoriesGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getCategoriesGrid($this->dic->get(CategoryService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns tags' data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getTagsList()
     {
-        $service = new TagService();
-
-        return $this->itemsGridHelper->getTagsGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getTagsGrid($this->dic->get(TagService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns clients' data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getClientsList()
     {
-        $service = new ClientService();
-
-        return $this->itemsGridHelper->getClientsGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getClientsGrid($this->dic->get(ClientService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns custom fields' data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getCustomFieldsList()
     {
-        $service = new CustomFieldDefService();
-
-        return $this->itemsGridHelper->getCustomFieldsGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getCustomFieldsGrid($this->dic->get(CustomFieldDefService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns account files' data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getAccountFilesList()
     {
-        $service = new AccountFileService();
-
-        return $this->itemsGridHelper->getFilesGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getFilesGrid($this->dic->get(AccountFileService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns accounts' data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getAccountsList()
     {
-        $service = new AccountService();
-
-        return $this->itemsGridHelper->getAccountsGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getAccountsGrid($this->dic->get(AccountService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns accounts' history data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getAccountsHistoryList()
     {
-        $service = new AccountHistoryService();
-
-        return $this->itemsGridHelper->getAccountsHistoryGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getAccountsHistoryGrid($this->dic->get(AccountHistoryService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns plugins' data tab
+     *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getPluginsList()
     {
         // FIXME: create Plugin Service
-        $service = new PluginRepository();
-
-        return $this->itemsGridHelper->getPluginsGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getPluginsGrid($this->dic->get(PluginRepository::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**

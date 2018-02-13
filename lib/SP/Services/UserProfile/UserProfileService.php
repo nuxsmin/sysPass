@@ -29,6 +29,7 @@ use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\Repositories\UserProfile\UserProfileRepository;
+use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
 use SP\Util\Util;
 
@@ -37,7 +38,7 @@ use SP\Util\Util;
  *
  * @package SP\Services\UserProfile
  */
-class UserProfileService
+class UserProfileService extends Service
 {
     use InjectableTrait;
     use ServiceItemTrait;
@@ -48,23 +49,12 @@ class UserProfileService
     protected $userProfileRepository;
 
     /**
-     * UserProfileService constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct()
+    protected function initialize()
     {
-        $this->injectDependencies();
-
-        $this->userProfileRepository = new UserProfileRepository();
-    }
-
-    /**
-     * @param UserProfileRepository $userProfileRepository
-     */
-    public function inject(UserProfileRepository $userProfileRepository)
-    {
-        $this->userProfileRepository = $userProfileRepository;
+        $this->userProfileRepository = $this->dic->get(UserProfileRepository::class);
     }
 
     /**

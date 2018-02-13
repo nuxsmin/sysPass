@@ -25,7 +25,9 @@
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Account\AccountAcl;
+use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
+use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\Mgmt\Users\UserPass;
@@ -68,22 +70,14 @@ class AccountHistoryHelper extends HelperBase
      */
     protected $accountAcl;
 
-
-    /**
-     * @param Acl                   $acl
-     * @param AccountHistoryService $accountHistoryService
-     */
-    public function inject(Acl $acl, AccountHistoryService $accountHistoryService)
-    {
-        $this->acl = $acl;
-        $this->accountHistoryService = $accountHistoryService;
-    }
-
     /**
      * @param AccountHistoryData $accountHistoryData
      * @param int                $actionId
-     * @return bool
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
      * @throws \SP\Core\Dic\ContainerException
+     * @throws AccountPermissionException
      */
     public function setView(AccountHistoryData $accountHistoryData, $actionId)
     {
@@ -93,8 +87,7 @@ class AccountHistoryHelper extends HelperBase
         $this->accountAcl = new AccountAcl($actionId, true);
 
         if (!$this->checkActionAccess() || !$this->checkAccess($accountHistoryData)) {
-            // FIXME: throw exception
-            return false;
+            throw new AccountPermissionException(SPException::INFO);
         }
 
         $this->view->assign('isView', true);
@@ -111,11 +104,9 @@ class AccountHistoryHelper extends HelperBase
         $this->view->assign('clients', SelectItemAdapter::factory(ClientService::getItemsBasic())->getItemsFromModelSelected([$accountHistoryData->getClientId()]));
         $this->view->assign('isModified', strtotime($accountHistoryData->getDateEdit()) !== false);
 
-        $actions = new AccountActionsHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $actions = $this->dic->get(AccountActionsHelper::class);
 
         $this->view->assign('actions', $actions->getActionsForAccount($this->accountAcl->getStoredAcl(), new AccountActionsDto($this->accountId, $this->accountHistoryId)));
-
-        return true;
     }
 
     /**
@@ -165,9 +156,15 @@ class AccountHistoryHelper extends HelperBase
 
     /**
      * Initialize class
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
+        $this->acl = $this->dic->get(Acl::class);
+        $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);;
+
         $this->view->assign('sk', $this->session->generateSecurityKey());
     }
 }

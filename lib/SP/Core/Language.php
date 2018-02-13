@@ -27,7 +27,6 @@ namespace SP\Core;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
 use SP\Http\Request;
 
 defined('APP_ROOT') || die();
@@ -39,8 +38,6 @@ defined('APP_ROOT') || die();
  */
 class Language
 {
-    use InjectableTrait;
-
     /**
      * Lenguaje del usuario
      *
@@ -69,15 +66,21 @@ class Language
      * @var ConfigData
      */
     protected $configData;
-    /** @var  Session */
+    /**
+     * @var  Session
+     */
     protected $session;
 
     /**
      * Language constructor.
+     *
+     * @param Session $session
+     * @param Config  $config
      */
-    public function __construct()
+    public function __construct(Session $session, Config $config)
     {
-        $this->injectDependencies();
+        $this->session = $session;
+        $this->configData = $config->getConfigData();
     }
 
     /**
@@ -103,16 +106,6 @@ class Language
         ksort($langs);
 
         return $langs;
-    }
-
-    /**
-     * @param Session $session
-     * @param Config $config
-     */
-    public function inject(Session $session, Config $config)
-    {
-        $this->session = $session;
-        $this->configData = $config->getConfigData();
     }
 
     /**

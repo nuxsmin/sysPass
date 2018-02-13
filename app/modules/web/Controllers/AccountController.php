@@ -71,7 +71,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function indexAction()
     {
         try {
-            $accountSearchHelper = new AccountSearchHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $accountSearchHelper = $this->dic->get(AccountSearchHelper::class);
             $accountSearchHelper->getSearchBox();
             $accountSearchHelper->getAccountSearch();
 
@@ -93,7 +93,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function searchAction()
     {
         try {
-            $AccountSearchHelper = new AccountSearchHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $AccountSearchHelper = $this->dic->get(AccountSearchHelper::class);
             $AccountSearchHelper->getAccountSearch();
 
             $this->eventDispatcher->notifyEvent('show.account.search', $this);
@@ -115,6 +115,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * View action
      *
      * @param int $id Account's ID
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function viewAction($id)
     {
@@ -125,7 +127,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withUserGroupsById($accountDetailsResponse)
                 ->withTagsById($accountDetailsResponse);
 
-            $accountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setIsView(true);
             $accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_VIEW);
 
@@ -154,15 +156,17 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * View public link action
      *
      * @param string $hash Link's hash
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function viewLinkAction($hash)
     {
-        $layoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-        $layoutHelper->getPublicLayout(['name' => 'account-link', 'base' => 'account'], 'account');
+        $layoutHelper = $this->dic->get(LayoutHelper::class);
+        $layoutHelper->getPublicLayout('account-link', 'account');
 
         try {
-            $publicLinkService = new PublicLinkService();
+            $publicLinkService = $this->dic->get(PublicLinkService::class);
             $publicLinkData = $publicLinkService->getByHash($hash);
 
             if (time() < $publicLinkData->getDateExpire()
@@ -235,7 +239,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function createAction()
     {
         try {
-            $accountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setViewForBlank(ActionsInterface::ACCOUNT_CREATE);
 
             $this->view->addTemplate('account');
@@ -262,6 +266,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Copy action
      *
      * @param int $id Account's ID
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function copyAction($id)
     {
@@ -272,7 +278,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withUserGroupsById($accountDetailsResponse)
                 ->withTagsById($accountDetailsResponse);
 
-            $accountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_COPY);
 
             $this->view->addTemplate('account');
@@ -299,6 +305,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Edit action
      *
      * @param int $id Account's ID
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function editAction($id)
     {
@@ -309,7 +317,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withUserGroupsById($accountDetailsResponse)
                 ->withTagsById($accountDetailsResponse);
 
-            $accountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_EDIT);
 
             $this->view->addTemplate('account');
@@ -339,6 +347,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Delete action
      *
      * @param int $id Account's ID
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteAction($id)
     {
@@ -348,7 +358,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withUsersById($accountDetailsResponse)
                 ->withUserGroupsById($accountDetailsResponse);
 
-            $accountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_DELETE);
 
             $this->view->addTemplate('account');
@@ -375,6 +385,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Obtener los datos para mostrar el interface para modificar la clave de cuenta
      *
      * @param int $id Account's ID
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function editPassAction($id)
     {
@@ -384,7 +396,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ->withUsersById($accountDetailsResponse)
                 ->withUserGroupsById($accountDetailsResponse);
 
-            $accountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setViewForAccount($accountDetailsResponse, ActionsInterface::ACCOUNT_EDIT_PASS);
 
             $this->view->addTemplate('account-editpass');
@@ -413,14 +425,16 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Obtener los datos para mostrar el interface para ver cuenta en fecha concreta
      *
      * @param int $id Account's ID
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function viewHistoryAction($id)
     {
         try {
-            $accountHistoryService = new AccountHistoryService();
+            $accountHistoryService = $this->dic->get(AccountHistoryService::class);
             $accountHistoryData = $accountHistoryService->getById($id);
 
-            $accountHistoryHelper = new AccountHistoryHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $accountHistoryHelper = $this->dic->get(AccountHistoryHelper::class);
             $accountHistoryHelper->setView($accountHistoryData, ActionsInterface::ACCOUNT_VIEW_HISTORY);
 
             $this->view->addTemplate('account-history');
@@ -449,11 +463,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Obtener los datos para mostrar el interface de solicitud de cambios en una cuenta
      *
      * @param int $id Account's ID
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function requestAccessAction($id)
     {
         try {
-            $accountHelper = new AccountHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $accountHelper = $this->dic->get(AccountHelper::class);
             $accountHelper->setIsView(true);
             $accountHelper->setViewForRequest($this->accountService->getById($id), ActionsInterface::ACCOUNT_REQUEST);
 
@@ -480,7 +496,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function viewPassAction($id, $isHistory)
     {
         try {
-            $accountPassHelper = new AccountPasswordHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+            $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
             $account = $isHistory === 0 ? $this->accountService->getPasswordForId($id) : $this->accountService->getPasswordHistoryForId($id);
 
@@ -509,12 +525,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * @throws Helpers\HelperException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function copyPassAction($id, $isHistory)
     {
-        $accountPassHelper = new AccountPasswordHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
         $account = $isHistory === 0 ? $this->accountService->getPasswordForId($id) : $this->accountService->getPasswordHistoryForId($id);
 
@@ -576,6 +593,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Saves edit action
      *
      * @param $id Account's ID
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditAction($id)
@@ -611,6 +630,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Saves edit action
      *
      * @param $id Account's ID
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditPassAction($id)
@@ -645,7 +666,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      *
      * @param int $historyId Account's history ID
      * @param int $id        Account's ID
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function saveEditRestoreAction($historyId, $id)
     {
@@ -698,7 +720,8 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Initialize class
      *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
@@ -706,6 +729,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->checkLoggedIn();
         }
 
-        $this->accountService = new AccountService();
+        $this->accountService = $this->dic->get(AccountService::class);
     }
 }

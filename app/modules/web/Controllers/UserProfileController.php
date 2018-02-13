@@ -29,7 +29,6 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\SessionUtil;
 use SP\DataModel\ProfileData;
 use SP\Forms\UserProfileForm;
 use SP\Http\JsonResponse;
@@ -58,6 +57,8 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
     /**
      * Search action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
@@ -66,7 +67,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             return;
         }
 
-        $itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $grid = $itemsGridHelper->getUserProfilesGrid($this->userProfileService->search($this->getSearchData($this->configData)))->updatePager();
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -117,7 +118,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
 
         $this->view->assign('profile', $profile);
 
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
@@ -282,12 +283,13 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
     /**
      * Initialize class
      *
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
         $this->checkLoggedIn();
 
-        $this->userProfileService = new UserProfileService();
+        $this->userProfileService = $this->dic->get(UserProfileService::class);
     }
 }

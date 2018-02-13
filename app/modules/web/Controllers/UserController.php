@@ -62,6 +62,8 @@ class UserController extends ControllerBase implements CrudControllerInterface
     /**
      * Search action
      *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
@@ -70,7 +72,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
             return;
         }
 
-        $itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $grid = $itemsGridHelper->getUsersGrid($this->userService->search($this->getSearchData($this->configData)))->updatePager();
 
         $this->view->addTemplate('datagrid-table', 'grid');
@@ -121,10 +123,10 @@ class UserController extends ControllerBase implements CrudControllerInterface
         $user = $userId ? $this->userService->getById($userId) : new UserData();
 
         $this->view->assign('user', $user);
-        $this->view->assign('groups', (new SelectItemAdapter(UserGroupService::getItemsBasic()))->getItemsFromModel());
-        $this->view->assign('profiles', (new SelectItemAdapter(UserProfileService::getItemsBasic()))->getItemsFromModel());
+        $this->view->assign('groups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
+        $this->view->assign('profiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
         $this->view->assign('isUseSSO', $this->configData->isAuthBasicAutoLoginEnabled());
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true || $user->getLogin() === 'demo') {
@@ -376,6 +378,6 @@ class UserController extends ControllerBase implements CrudControllerInterface
     {
         $this->checkLoggedIn();
 
-        $this->userService = new UserService();
+        $this->userService = $this->dic->get(UserService::class);
     }
 }

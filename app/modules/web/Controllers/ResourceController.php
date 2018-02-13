@@ -42,15 +42,13 @@ class ResourceController extends SimpleControllerBase
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \ReflectionException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function cssAction()
     {
         $file = Request::analyze('f');
         $base = Request::analyze('b');
 
-        $minify = new Minify();
+        $minify = $this->dic->get(Minify::class);
 
         if ($file && $base) {
             $minify->setType(Minify::FILETYPE_CSS)
@@ -76,15 +74,13 @@ class ResourceController extends SimpleControllerBase
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \ReflectionException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function jsAction()
     {
         $file = Request::analyze('f');
         $base = Request::analyze('b');
 
-        $minify = new Minify();
+        $minify = $this->dic->get(Minify::class);
 
         if ($file && $base) {
             $minify->setType(Minify::FILETYPE_JS)

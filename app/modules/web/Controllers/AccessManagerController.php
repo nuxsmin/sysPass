@@ -58,8 +58,10 @@ class AccessManagerController extends ControllerBase
     protected $tabsGridHelper;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function indexAction()
     {
@@ -69,17 +71,18 @@ class AccessManagerController extends ControllerBase
     /**
      * Returns a tabbed grid with items
      *
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function getGridTabs()
     {
         $this->itemSearchData = new ItemSearchData();
         $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
 
-        $this->itemsGridHelper = new ItemsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-
-        $this->tabsGridHelper = new TabsGridHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
+        $this->itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
+        $this->tabsGridHelper = $this->dic->get(TabsGridHelper::class);
 
         if ($this->checkAccess(ActionsInterface::USER)) {
             $this->tabsGridHelper->addTab($this->getUsersList());
@@ -111,61 +114,67 @@ class AccessManagerController extends ControllerBase
     /**
      * Returns users' data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getUsersList()
     {
-        $service = new UserService();
 
-        return $this->itemsGridHelper->getUsersGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getUsersGrid($this->dic->get(UserService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns users group data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getUsersGroupList()
     {
-        $service = new UserGroupService();
-
-        return $this->itemsGridHelper->getUserGroupsGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getUserGroupsGrid($this->dic->get(UserGroupService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns users profile data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getUsersProfileList()
     {
-        $service = new UserProfileService();
-
-        return $this->itemsGridHelper->getUserProfilesGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getUserProfilesGrid($this->dic->get(UserProfileService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns API tokens data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getApiTokensList()
     {
-        $service = new AuthTokenService();
-
-        return $this->itemsGridHelper->getApiTokensGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getApiTokensGrid($this->dic->get(AuthTokenService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
      * Returns public links data tab
      *
+     * @return \SP\Html\DataGrid\DataGridTab
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getPublicLinksList()
     {
-        $service = new PublicLinkService();
-
-        return $this->itemsGridHelper->getPublicLinksGrid($service->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getPublicLinksGrid($this->dic->get(PublicLinkService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**
