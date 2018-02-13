@@ -271,18 +271,10 @@ class Installer
     }
 
     /**
-     * Setup database connection for sysPass
-     */
-    private function setupDBConnectionData()
-    {
-        // FIXME: ugly!!
-        $this->databaseConnectionData->refreshFromConfig($this->configData);
-    }
-
-    /**
      * @throws Dic\ContainerException
      * @throws SPException
      * @throws \ReflectionException
+     * @todo Select DB type
      */
     private function setupDb()
     {
@@ -300,6 +292,15 @@ class Installer
         $this->dbs->createDatabase();
         $this->dbs->createDBStructure();
         $this->dbs->checkConnection();
+    }
+
+    /**
+     * Setup database connection for sysPass
+     */
+    private function setupDBConnectionData()
+    {
+        // FIXME: ugly!!
+        $this->databaseConnectionData->refreshFromConfig($this->configData);
     }
 
     /**
@@ -347,11 +348,10 @@ class Installer
             $userData->setUserGroupId($this->userGroupService->create($userGroupData));
             $userData->setUserProfileId($this->userProfileService->create($userProfileData));
             $userData->setLogin($this->installData->getAdminLogin());
-            $userData->setPass(Hash::hashKey($this->installData->getAdminPass()));
             $userData->setName('sysPass Admin');
             $userData->setIsAdminApp(1);
 
-            $this->userService->createWithMasterPass($userData, $this->installData->getMasterPassword());
+            $this->userService->createWithMasterPass($userData, $this->installData->getAdminPass(), $this->installData->getMasterPassword());
 
 //                    __u('Error al actualizar la clave maestra del usuario "admin"'),
         } catch (\Exception $e) {

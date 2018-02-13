@@ -58,6 +58,7 @@ class SessionUtil
      * Establecer la clave pública RSA en la sessión
      *
      * @throws \SP\Core\Exceptions\SPException
+     * @throws Dic\ContainerException
      */
     public static function loadPublicKey()
     {
@@ -70,8 +71,6 @@ class SessionUtil
      *
      * @return string con la clave maestra
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     * @throws \Defuse\Crypto\Exception\BadFormatException
      */
     public static function getSessionMPass()
     {

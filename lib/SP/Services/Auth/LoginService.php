@@ -114,6 +114,10 @@ class LoginService
      */
     protected $userService;
     /**
+     * @var Language
+     */
+    protected $language;
+    /**
      * @var Session
      */
     private $session;
@@ -142,11 +146,20 @@ class LoginService
         $this->session = $session;
         $this->eventDispatcher = $eventDispatcher;
 
-        $this->userService = new UserService();
         $this->jsonResponse = new JsonResponse();
         $this->LogMessage = new LogMessage();
         $this->userLoginData = new UserLoginData();
         $this->LogMessage->setAction(__u('Inicio sesión'));
+    }
+
+    /**
+     * @param UserService $userService
+     * @param Language    $language
+     */
+    public function inject(UserService $userService, Language $language)
+    {
+        $this->userService = $userService;
+        $this->language = $language;
     }
 
     /**
@@ -156,6 +169,7 @@ class LoginService
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \ReflectionException
      */
     public function doLogin()
     {
@@ -401,7 +415,7 @@ class LoginService
      */
     protected function loadUserPreferences()
     {
-        Language::setLanguage(true);
+        $this->language->setLanguage(true);
 
         $this->theme->initTheme(true);
 

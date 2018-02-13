@@ -58,6 +58,7 @@ class LoginController extends ControllerBase
      * Logout action
      *
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     public function logoutAction()
     {
@@ -77,13 +78,8 @@ class LoginController extends ControllerBase
             SessionFactory::setLoggedOut(true);
 
             $layoutHelper = new LayoutHelper($this->view, $this->config, $this->session, $this->eventDispatcher);
-            $layoutHelper->setPage('logout');
-            $layoutHelper->initBody();
+            $layoutHelper->getCustomLayout('logout', 'logout');
 
-            $this->view->addTemplate('logout');
-
-            $this->view->addPartial('body-footer');
-            $this->view->addPartial('body-end');
             $this->view();
         } else {
             Response::redirect('index.php?r=login');
@@ -94,6 +90,7 @@ class LoginController extends ControllerBase
      * Index action
      *
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     public function indexAction()
     {

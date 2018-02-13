@@ -110,7 +110,6 @@ abstract class ControllerBase
         $this->controllerName = substr($class, strrpos($class, '\\') + 1, -strlen('Controller'));
         $this->actionName = $actionName;
 
-        $this->view = new Template();
         $this->view->setBase(strtolower($this->controllerName));
 
         $this->icons = $this->theme->getIcons();
@@ -149,8 +148,9 @@ abstract class ControllerBase
      * @param EventDispatcher $ev
      * @param Acl             $acl
      * @param Klein           $router
+     * @param Template        $view
      */
-    public function inject(Config $config, Session $session, Theme $theme, EventDispatcher $ev, Acl $acl, Klein $router)
+    public function inject(Config $config, Session $session, Theme $theme, EventDispatcher $ev, Acl $acl, Klein $router, Template $view)
     {
         $this->config = $config;
         $this->configData = $config->getConfigData();
@@ -159,6 +159,7 @@ abstract class ControllerBase
         $this->eventDispatcher = $ev;
         $this->acl = $acl;
         $this->router = $router;
+        $this->view = $view;
     }
 
     /**

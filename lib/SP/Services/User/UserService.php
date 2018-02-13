@@ -210,14 +210,17 @@ class UserService
      * Creates an item
      *
      * @param UserData $itemData
-     * @param null     $masterPass
+     * @param string   $userPass
+     * @param string   $masterPass
      * @return int
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public function createWithMasterPass($itemData, $masterPass)
+    public function createWithMasterPass($itemData, $userPass, $masterPass)
     {
-        $response = $this->userPassService->createMasterPass($masterPass, $itemData->getLogin(), $itemData->getPass());
+        $response = $this->userPassService->createMasterPass($masterPass, $itemData->getLogin(), $userPass);
+
+        $itemData->setPass(Hash::hashKey($userPass));
         $itemData->setMPass($response->getCryptMasterPass());
         $itemData->setMKey($response->getCryptSecuredKey());
         $itemData->setLastUpdateMPass(time());

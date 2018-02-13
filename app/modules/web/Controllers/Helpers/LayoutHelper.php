@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers\Helpers;
 use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Dic\ContainerException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
@@ -64,10 +65,12 @@ class LayoutHelper extends HelperBase
      * @param string $page Page/view name
      * @param Acl    $acl
      * @return LayoutHelper
+     * @throws ContainerException
      */
     public function getFullLayout($page, Acl $acl = null)
     {
         $this->view->addTemplate('main', '_layouts');
+        $this->view->assign('useFixedHeader');
 
         $this->setPage($page);
         $this->initBody();
@@ -95,6 +98,8 @@ class LayoutHelper extends HelperBase
 
     /**
      * Inicializar las variables para la vista principal de la aplicación
+     *
+     * @throws ContainerException
      */
     public function initBody()
     {
@@ -330,6 +335,7 @@ class LayoutHelper extends HelperBase
      * @param string $template
      * @param string $page Page/view name
      * @return LayoutHelper
+     * @throws ContainerException
      */
     public function getPublicLayout($template, $page = '')
     {
@@ -349,6 +355,7 @@ class LayoutHelper extends HelperBase
      * @param string $template
      * @param string $page Page/view name
      * @return LayoutHelper
+     * @throws ContainerException
      */
     public function getCustomLayout($template, $page = '')
     {

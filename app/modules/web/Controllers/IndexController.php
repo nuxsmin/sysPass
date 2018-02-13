@@ -40,6 +40,7 @@ class IndexController extends ControllerBase
      * Index action
      *
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \ReflectionException
      */
     public function indexAction()
     {

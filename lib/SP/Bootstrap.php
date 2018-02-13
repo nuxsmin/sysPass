@@ -52,7 +52,6 @@ use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Log\Email;
 use SP\Log\Log;
-use SP\Mgmt\Profiles\Profile;
 use SP\Modules\Web\Controllers\MainController;
 use SP\Mvc\View\Template;
 use SP\Providers\Auth\Browser\Browser;
@@ -177,6 +176,8 @@ class Bootstrap
      */
     protected function initRouter()
     {
+        $oops = "Oops, it looks like this content doesn't exist...";
+
         // Update request when we have a subdirectory
 //        $_SERVER['REQUEST_URI'] = self::$WEBROOT;
 
@@ -185,7 +186,7 @@ class Bootstrap
         // Manejar URLs con módulo indicado
         $this->router->respond(['GET', 'POST'],
             '@/(index\.php)?',
-            function ($request, $response, $service) use ($self) {
+            function ($request, $response, $service) use ($self, $oops) {
 
                 $self->router->onError(function ($router, $err_msg, $type, $err) {
                     debugLog('Routing error: ' . $err_msg);
@@ -202,7 +203,7 @@ class Bootstrap
                     $route = filter_var($request->param('r', 'index/index'), FILTER_SANITIZE_STRING);
 
                     if (!preg_match_all('#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d]+)+)?#', $route, $components)) {
-                        throw new RuntimeException("Oops, invalid route\n");
+                        throw new RuntimeException($oops);
                     }
 
                     $controller = $components['controller'][0];
@@ -221,21 +222,19 @@ class Bootstrap
 
                     $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
 
-                    if (class_exists($controllerClass)) {
-                        $callableMethod = [new $controllerClass($method), $method];
+                    $reflection = new \ReflectionMethod($controllerClass, $method);
 
-                        if (!is_callable($callableMethod)) {
-                            throw new RuntimeException("Oops, it looks like this content doesn't exist...\n");
-                        }
-
-                        $self->initialize(in_array($controller, self::PARTIAL_INIT, true));
-
-                        debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
-
-                        return call_user_func_array($callableMethod, $params);
+                    if (!$reflection->isPublic()) {
+                        throw new RuntimeException($oops);
                     }
 
-                    throw new RuntimeException("Oops, it looks like this content doesn't exist...\n");
+                    $self->initialize(in_array($controller, self::PARTIAL_INIT, true));
+
+                    debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
+
+                    return $reflection->invokeArgs(new $controllerClass($method), $params);
+                } catch (\ReflectionException $e) {
+                    throw new RuntimeException($oops);
                 } catch (RuntimeException $e) {
                     debugLog($e->getMessage(), true);
 
@@ -315,7 +314,7 @@ class Bootstrap
 
             if ($this->session->isLoggedIn()) {
                 // Recargar los permisos del perfil de usuario
-                $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
+//                $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
                 // Reset de los datos de ACL de cuentas
                 $this->session->resetAccountAcl();
             }
@@ -332,8 +331,14 @@ class Bootstrap
             // Comprobar si el modo mantenimiento está activado
             $this->checkMaintenanceMode();
 
-            // Comprobar si la Base de datos existe
-            DBUtil::checkDatabaseExist(self::$container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
+            try {
+                // Comprobar si la Base de datos existe
+                DBUtil::checkDatabaseExist(self::$container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
+            } catch (\Exception $e) {
+                if ($e->getCode() === 1049) {
+                    $this->router->response()->redirect('index.php?r=install/index')->send();
+                }
+            }
 
             // Comprobar si es necesario actualizar componentes
 //        $this->checkUpgrade();

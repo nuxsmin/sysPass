@@ -43,7 +43,6 @@ class Injector
      * @param                    $context
      * @return mixed
      * @throws ContainerException
-     * @throws \ReflectionException
      */
     public static function inject(ContainerInterface $container, $context)
     {
@@ -71,6 +70,8 @@ class Injector
         } catch (NotFoundExceptionInterface $e) {
             throw new ContainerException($e->getMessage(), $e->getCode(), $e);
         } catch (ContainerExceptionInterface $e) {
+            throw new ContainerException($e->getMessage(), $e->getCode(), $e);
+        } catch (\ReflectionException $e) {
             throw new ContainerException($e->getMessage(), $e->getCode(), $e);
         }
     }

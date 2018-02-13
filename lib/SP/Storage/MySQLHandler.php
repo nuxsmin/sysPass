@@ -125,7 +125,7 @@ class MySQLHandler implements DBStorageInterface
      */
     public function getConnectionUri()
     {
-        if ('' === $this->connectionData->getDbSocket()) {
+        if (empty($this->connectionData->getDbSocket())) {
             $dsn = 'mysql:host=' . $this->connectionData->getDbHost();
 
             if (null !== $this->connectionData->getDbPort()) {
@@ -135,14 +135,13 @@ class MySQLHandler implements DBStorageInterface
             if (null !== $this->connectionData->getDbName()) {
                 $dsn .= ';dbname=' . $this->connectionData->getDbName();
             }
-
-
+            
             return $dsn . ';charset=utf8';
         }
 
         $dsn = 'mysql:unix_socket=' . $this->connectionData->getDbSocket();
 
-        if ('' !== $this->connectionData->getDbName()) {
+        if (!empty($this->connectionData->getDbName())) {
             $dsn .= ';dbname=' . $this->connectionData->getDbName();
         }
 
