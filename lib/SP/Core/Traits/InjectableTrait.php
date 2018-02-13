@@ -38,7 +38,6 @@ trait InjectableTrait
      * Injects dependencies through the DI container
      *
      * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
      */
     final protected function injectDependencies()
     {

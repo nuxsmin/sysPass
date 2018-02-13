@@ -25,8 +25,7 @@
 namespace SP;
 
 use Defuse\Crypto\Exception\CryptoException;
-use DI\ContainerBuilder;
-use Doctrine\Common\Cache\ArrayCache;
+use DI\Container;
 use Interop\Container\ContainerInterface;
 use Klein\Klein;
 use PHPMailer\PHPMailer\Exception;
@@ -99,7 +98,7 @@ class Bootstrap
      */
     public static $LOCK = 0;
     /**
-     * @var ContainerInterface
+     * @var ContainerInterface|Container
      */
     protected static $container;
     /**
@@ -146,29 +145,16 @@ class Bootstrap
     /**
      * Bootstrap constructor.
      *
+     * @param Container $container
      * @throws Core\Dic\ContainerException
-     * @throws \ReflectionException
      */
-    public function __construct()
+    private final function __construct(Container $container)
     {
-        $this->setupContainer();
+        self::$container = $container;
 
         $this->injectDependencies();
 
         $this->initRouter();
-    }
-
-    /**
-     * Setups DI container
-     */
-    private function setupContainer()
-    {
-        $builder = new ContainerBuilder();
-        $builder->setDefinitionCache(new ArrayCache());
-        $builder->writeProxiesToFile(true, CACHE_PATH . DIRECTORY_SEPARATOR . 'proxies');
-        $builder->addDefinitions(BASE_PATH . DIRECTORY_SEPARATOR . 'Definitions.php');
-
-        self::$container = $builder->build();
     }
 
     /**
@@ -181,23 +167,22 @@ class Bootstrap
         // Update request when we have a subdirectory
 //        $_SERVER['REQUEST_URI'] = self::$WEBROOT;
 
+        $this->router->onError(function ($router, $err_msg, $type, $err) {
+            debugLog('Routing error: ' . $err_msg);
+
+            /** @var Exception|\Throwable $err */
+            debugLog('Routing error: ' . formatTrace($err->getTrace()));
+
+            /** @var Klein $router */
+            $router->response()->body($err_msg);
+        });
+
         $self = $this;
 
         // Manejar URLs con módulo indicado
         $this->router->respond(['GET', 'POST'],
             '@/(index\.php)?',
             function ($request, $response, $service) use ($self, $oops) {
-
-                $self->router->onError(function ($router, $err_msg, $type, $err) {
-                    debugLog('Routing error: ' . $err_msg);
-
-                    /** @var Exception|\Throwable $err */
-                    debugLog('Routing error: ' . formatTrace($err->getTrace()));
-
-                    /** @var Klein $router */
-                    $router->response()->body($err_msg);
-                });
-
                 try {
                     /** @var \Klein\Request $request */
                     $route = filter_var($request->param('r', 'index/index'), FILTER_SANITIZE_STRING);
@@ -222,9 +207,7 @@ class Bootstrap
 
                     $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
 
-                    $reflection = new \ReflectionMethod($controllerClass, $method);
-
-                    if (!$reflection->isPublic()) {
+                    if (!method_exists($controllerClass, $method)) {
                         throw new RuntimeException($oops);
                     }
 
@@ -232,10 +215,8 @@ class Bootstrap
 
                     debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
 
-                    return $reflection->invokeArgs(new $controllerClass($method), $params);
-                } catch (\ReflectionException $e) {
-                    throw new RuntimeException($oops);
-                } catch (RuntimeException $e) {
+                    return call_user_func_array([new $controllerClass($method), $method], $params);
+                } catch (\Exception $e) {
                     debugLog($e->getMessage(), true);
 
                     return $e->getMessage();
@@ -678,8 +659,8 @@ class Bootstrap
      * Devuelve un error utilizando la plantilla de error o en formato JSON
      *
      * @param string $message con la descripción del error
-     * @param string $hint    opcional, con una ayuda sobre el error
-     * @param bool   $headers
+     * @param string $hint opcional, con una ayuda sobre el error
+     * @param bool $headers
      */
     public static function initError($message, $hint = '', $headers = false)
     {
@@ -708,14 +689,18 @@ class Bootstrap
     }
 
     /**
-     * @param $module
+     * @param Container $container
+     * @param string $module
+     * @throws Core\Dic\ContainerException
      * @throws InitializationException
      */
-    public function run($module = APP_MODULE)
+    public static function run(Container $container, $module = APP_MODULE)
     {
+        $bs = new static($container);
+
         switch ($module) {
             case 'web':
-                $this->router->dispatch();
+                $bs->router->dispatch();
                 break;
             default;
                 throw new InitializationException('Unknown module');
@@ -742,11 +727,11 @@ class Bootstrap
     }
 
     /**
-     * @param Config   $config
-     * @param Upgrade  $upgrade
-     * @param Session  $session
-     * @param Theme    $theme
-     * @param Klein    $router
+     * @param Config $config
+     * @param Upgrade $upgrade
+     * @param Session $session
+     * @param Theme $theme
+     * @param Klein $router
      * @param Language $language
      */
     public function inject(Config $config,

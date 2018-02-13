@@ -22,6 +22,8 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use DI\ContainerBuilder;
+use Doctrine\Common\Cache\ArrayCache;
 use SP\Bootstrap;
 
 require __DIR__ . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
@@ -63,7 +65,12 @@ require __DIR__ . DIRECTORY_SEPARATOR . 'SplClassLoader.php';
 initModule(APP_MODULE);
 
 try {
-    (new Bootstrap())->run();
+    $builder = new ContainerBuilder();
+    $builder->setDefinitionCache(new ArrayCache());
+    $builder->writeProxiesToFile(true, CACHE_PATH . DIRECTORY_SEPARATOR . 'proxies');
+    $builder->addDefinitions(BASE_PATH . DIRECTORY_SEPARATOR . 'Definitions.php');
+
+    Bootstrap::run($builder->build());
 } catch (\Exception $e) {
     debugLog($e->getMessage());
     debugLog($e->getTraceAsString());

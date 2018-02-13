@@ -67,6 +67,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getCategoriesGrid(array $data)
     {
@@ -168,6 +169,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getClientsGrid(array $data)
     {
@@ -251,6 +253,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getCustomFieldsGrid(array $data)
     {
@@ -334,6 +337,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getFilesGrid(array $data)
     {
@@ -419,6 +423,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getAccountsGrid(array $data)
     {
@@ -475,6 +480,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getAccountsHistoryGrid(array $data)
     {
@@ -549,6 +555,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getUsersGrid(array $data)
     {
@@ -676,6 +683,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getUserGroupsGrid(array $data)
     {
@@ -766,6 +774,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getUserProfilesGrid(array $data)
     {
@@ -854,6 +863,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getApiTokensGrid(array $data)
     {
@@ -944,6 +954,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getPublicLinksGrid(array $data)
     {
@@ -1043,6 +1054,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getTagsGrid(array $data)
     {
@@ -1120,6 +1132,7 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
+     * @throws \SP\Core\Dic\ContainerException
      */
     public function getPluginsGrid(array $data)
     {

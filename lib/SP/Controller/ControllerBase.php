@@ -100,7 +100,6 @@ abstract class ControllerBase
      *
      * @param $actionName
      * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
      */
     public function __construct($actionName)
     {
