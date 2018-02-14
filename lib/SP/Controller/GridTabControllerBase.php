@@ -29,7 +29,7 @@ defined('APP_ROOT') || die();
 use SP\Controller\Grids\Items;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
-use SP\Util\Checks;
+use SP\Modules\Web\Controllers\ControllerBase;
 
 /**
  * Class GridTabController para la construcción de clases que utilicen el grid de pestañas

@@ -23,6 +23,7 @@
  */
 
 namespace SP\Controller;
+use SP\Modules\Web\Controllers\ControllerBase;
 
 
 /**

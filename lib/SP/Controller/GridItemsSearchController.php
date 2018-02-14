@@ -35,6 +35,7 @@ defined('APP_ROOT') || die();
 
 use SP\DataModel\ItemSearchData;
 use SP\Html\DataGrid\DataGridPagerInterface;
+use SP\Modules\Web\Controllers\ControllerBase;
 
 /**
  * Class GridItemsSearch para construcción de clases que usen el Grid de búsqueda de registros

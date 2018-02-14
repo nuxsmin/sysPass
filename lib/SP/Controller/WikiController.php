@@ -26,14 +26,13 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
-use SP\Config\Config;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Core\Template;
 use SP\Http\Request;
-use SP\Util\Checks;
+use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Util\Json;
 use SP\Util\Wiki\DokuWikiApi;
 

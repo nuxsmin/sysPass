@@ -132,7 +132,7 @@ class Config
         $configData = $this->session->getConfig();
 
         if ($reload === true
-            || null === $configData
+            || $configData === null
             || time() >= ($this->session->getConfigTime() + $configData->getSessionTimeout() / 2)
         ) {
             $this->saveConfigInSession();

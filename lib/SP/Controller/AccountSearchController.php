@@ -27,13 +27,11 @@ namespace SP\Controller;
 defined('APP_ROOT') || die();
 
 use SP\Account\AccountSearchFilter;
-use SP\Services\Account\AccountSearchService;
 use SP\Account\AccountSearchItem;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
-use SP\Mvc\View\Template;
 use SP\Html\DataGrid\DataGrid;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
@@ -46,6 +44,9 @@ use SP\Http\Request;
 use SP\Mgmt\Categories\Category;
 use SP\Mgmt\Customers\Customer;
 use SP\Mgmt\Tags\Tag;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Mvc\View\Template;
+use SP\Services\Account\AccountSearchService;
 
 /**
  * Clase encargada de obtener los datos para presentar la búsqueda

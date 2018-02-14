@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Controller\ControllerBase;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Install\Installer;
 use SP\Core\Language;

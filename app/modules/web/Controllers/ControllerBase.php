@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Controller;
+namespace SP\Modules\Web\Controllers;
 
 defined('APP_ROOT') || die();
 
@@ -40,6 +40,8 @@ use SP\Core\UI\ThemeIconsBase;
 use SP\DataModel\ProfileData;
 use SP\Http\JsonResponse;
 use SP\Mvc\View\Template;
+use SP\Providers\Auth\Browser\Browser;
+use SP\Services\Auth\AuthException;
 use SP\Services\User\UserLoginResponse;
 use SP\Util\Checks;
 use SP\Util\Json;
@@ -168,7 +170,7 @@ abstract class ControllerBase
         $this->userData = $this->session->getUserData();
         $this->userProfileData = $this->session->getUserProfile();
 
-        $this->view->assign('timeStart', $_SERVER['REQUEST_TIME_FLOAT']);
+        $this->view->assign('timeStart', $this->router->request()->server()->get('REQUEST_TIME_FLOAT'));
         $this->view->assign('icons', $this->icons);
         $this->view->assign('SessionUserData', $this->userData);
         $this->view->assign('queryTimeStart', microtime());
@@ -219,16 +221,33 @@ abstract class ControllerBase
 
         $this->view->addTemplate('debug', 'common');
 
-        $this->view->assign('time', getElapsedTime());
+        $this->view->assign('time', getElapsedTime($this->router->request()->server()->get('REQUEST_TIME_FLOAT')));
         $this->view->assign('memInit', $memInit / 1000);
         $this->view->assign('memEnd', memory_get_usage() / 1000);
     }
 
     /**
      * Comprobar si el usuario está logado.
+     *
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws AuthException
      */
     public function checkLoggedIn()
     {
+        if ($this->session->isLoggedIn()
+            && $this->session->getAuthCompleted() === true
+        ) {
+            $browser = $this->dic->get(Browser::class);
+
+            // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
+            if ($browser->checkServerAuthUser($this->session->getUserData()->getLogin()) === false
+                && $browser->checkServerAuthUser($this->session->getUserData()->getSsoLogin()) === false
+            ) {
+                throw new AuthException('Invalid browser auth');
+            }
+        }
+
         if (!$this->session->isLoggedIn()) {
             if (Checks::isJson()) {
                 $jsonResponse = new JsonResponse();
@@ -240,15 +259,6 @@ abstract class ControllerBase
                 Util::logout();
             }
         }
-    }
-
-    /**
-     * @param bool $loggedIn
-     */
-    protected function setLoggedIn($loggedIn)
-    {
-        $this->loggedIn = (bool)$loggedIn;
-        $this->view->assign('loggedIn', $this->loggedIn);
     }
 
     /**

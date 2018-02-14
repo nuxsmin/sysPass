@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 defined('APP_ROOT') || die();
 
 use SP\Account\AccountUtil;
-use SP\Controller\ControllerBase;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\SPException;

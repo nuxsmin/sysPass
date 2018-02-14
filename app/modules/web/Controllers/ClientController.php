@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers;
 
 
-use SP\Controller\ControllerBase;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;

@@ -30,11 +30,12 @@
  */
 function debugLog($data, $printLastCaller = false)
 {
-    $useOwn = true;
     $line = date('Y-m-d H:i:s') . ' - ' . print_r($data, true) . PHP_EOL;
+    $useOwn = (!defined('LOG_FILE')
+        || !error_log($line, 3, LOG_FILE)
+    );
 
-    if (!defined('LOG_FILE') || !error_log($line, 3, LOG_FILE)) {
-        $useOwn = false;
+    if ($useOwn === false) {
         error_log(print_r($data, true));
     }
 
@@ -119,11 +120,12 @@ function mb_ucfirst($string)
  * Devuelve el tiempo actual en coma flotante.
  * Esta función se utiliza para calcular el tiempo de renderizado con coma flotante
  *
+ * @param float $from
  * @returns float con el tiempo actual
  */
-function getElapsedTime()
+function getElapsedTime($from)
 {
-    return microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
+    return microtime(true) - (float)$from;
 }
 
 /**
@@ -164,6 +166,7 @@ function nDirname($dir, $levels)
 
 /**
  * @param Exception $exception
+ * @throws ReflectionException
  */
 function flattenExceptionBacktrace(\Exception $exception)
 {

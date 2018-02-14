@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Controller\ControllerBase;
 use SP\Http\Response;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Util\Util;

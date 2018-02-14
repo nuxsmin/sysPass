@@ -28,14 +28,14 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
-use SP\Mvc\View\Template;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Log\Log;
-use SP\Util\Checks;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Mvc\View\Template;
 
 /**
  * Clase encargada de preparar la presentación del registro de eventos

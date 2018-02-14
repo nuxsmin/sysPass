@@ -28,11 +28,11 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
-use SP\Mvc\View\Template;
 use SP\DataModel\NoticeData;
 use SP\Mgmt\Notices\Notice;
 use SP\Mgmt\Users\User;
-use SP\Util\Checks;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Mvc\View\Template;
 use SP\Util\Json;
 
 /**

@@ -37,7 +37,6 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
-use SP\Mvc\View\Template;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\PublicLinkData;
@@ -50,6 +49,8 @@ use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Mgmt\Tags\Tag;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
+use SP\Modules\Web\Controllers\ControllerBase;
+use SP\Mvc\View\Template;
 use SP\Util\ImageUtil;
 use SP\Util\Json;
 

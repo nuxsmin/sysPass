@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Controller\ControllerBase;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Html\Html;

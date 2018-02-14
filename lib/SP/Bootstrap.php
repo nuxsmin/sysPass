@@ -44,7 +44,6 @@ use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
-use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
 use SP\Core\Upgrade\Upgrade;
 use SP\Http\JsonResponse;
@@ -53,7 +52,6 @@ use SP\Log\Email;
 use SP\Log\Log;
 use SP\Modules\Web\Controllers\MainController;
 use SP\Mvc\View\Template;
-use SP\Providers\Auth\Browser\Browser;
 use SP\Storage\Database;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
@@ -70,8 +68,6 @@ defined('APP_ROOT') || die();
  */
 class Bootstrap
 {
-    use InjectableTrait;
-
     /**
      * Partial initialized controllers
      */
@@ -146,13 +142,20 @@ class Bootstrap
      * Bootstrap constructor.
      *
      * @param Container $container
-     * @throws Core\Dic\ContainerException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     private final function __construct(Container $container)
     {
         self::$container = $container;
 
-        $this->injectDependencies();
+        $this->config = $container->get(Config::class);
+        $this->configData = $this->config->getConfigData();
+        $this->session = $container->get(Session::class);
+        $this->theme = $container->get(Theme::class);
+        $this->router = $container->get(Klein::class);
+        $this->language = $container->get(Language::class);
+        $this->upgrade = $container->get(Upgrade::class);
 
         $this->initRouter();
     }
@@ -211,7 +214,11 @@ class Bootstrap
                         throw new RuntimeException($oops);
                     }
 
-                    $self->initialize(in_array($controller, self::PARTIAL_INIT, true));
+                    $self->initializeCommon();
+
+                    if (in_array($controller, self::PARTIAL_INIT, true)) {
+                        $self->initializeApp();
+                    }
 
                     debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
 
@@ -234,18 +241,13 @@ class Bootstrap
     }
 
     /**
-     * Inicializar la aplicación
-     *
-     * @param bool $isPartial Do not perform a full initialization
      * @throws ConfigException
      * @throws InitializationException
-     * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function initialize($isPartial = false)
+    protected function initializeCommon()
     {
-        debugLog('Initializing...');
+        debugLog(__FUNCTION__);
 
         self::$checkPhpVersion = Checks::checkPhpVersion();
 
@@ -303,48 +305,6 @@ class Bootstrap
 
         // Comprobar si es necesario cambiar a HTTPS
         HttpUtil::checkHttps();
-
-        if ($isPartial === false) {
-
-            // Comprobar si está instalado
-            $this->checkInstalled();
-
-            // Comprobar si el modo mantenimiento está activado
-            $this->checkMaintenanceMode();
-
-            try {
-                // Comprobar si la Base de datos existe
-                DBUtil::checkDatabaseExist(self::$container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
-            } catch (\Exception $e) {
-                if ($e->getCode() === 1049) {
-                    $this->router->response()->redirect('index.php?r=install/index')->send();
-                }
-            }
-
-            // Comprobar si es necesario actualizar componentes
-//        $this->checkUpgrade();
-
-            // Inicializar la sesión
-            $this->initUserSession();
-
-            // Cargar los plugins
-            PluginUtil::loadPlugins();
-
-            // Comprobar acciones en URL
-//        $this->checkPreLoginActions();
-
-            if ($this->session->isLoggedIn() && $this->session->getAuthCompleted() === true) {
-                $browser = new Browser();
-
-                // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-                if ($browser->checkServerAuthUser($this->session->getUserData()->getLogin()) === false
-                    && $browser->checkServerAuthUser($this->session->getUserData()->getSsoLogin()) === false
-                ) {
-                    throw new InitializationException('Logout');
-//                $this->goLogout();
-                }
-            }
-        }
     }
 
     /**
@@ -504,6 +464,46 @@ class Bootstrap
 
             throw new InitializationException(__u('La sesión no puede ser inicializada'));
         }
+    }
+
+    /**
+     * Inicializar la aplicación
+     *
+     * @throws InitializationException
+     * @throws SPException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initializeApp()
+    {
+        debugLog(__FUNCTION__);
+
+        // Comprobar si está instalado
+        $this->checkInstalled();
+
+        // Comprobar si el modo mantenimiento está activado
+        $this->checkMaintenanceMode();
+
+        try {
+            // Comprobar si la Base de datos existe
+            DBUtil::checkDatabaseExist(self::$container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
+        } catch (\Exception $e) {
+            if ($e->getCode() === 1049) {
+                $this->router->response()->redirect('index.php?r=install/index')->send();
+            }
+        }
+
+        // Comprobar si es necesario actualizar componentes
+//        $this->checkUpgrade();
+
+        // Inicializar la sesión
+        $this->initUserSession();
+
+        // Cargar los plugins
+        PluginUtil::loadPlugins();
+
+        // Comprobar acciones en URL
+//        $this->checkPreLoginActions();
     }
 
     /**
@@ -724,31 +724,6 @@ class Bootstrap
         $Controller->doAction('postlogin.' . $action);
 
         return false;
-    }
-
-    /**
-     * @param Config $config
-     * @param Upgrade $upgrade
-     * @param Session $session
-     * @param Theme $theme
-     * @param Klein $router
-     * @param Language $language
-     */
-    public function inject(Config $config,
-                           Upgrade $upgrade,
-                           Session $session,
-                           Theme $theme,
-                           Klein $router,
-                           Language $language
-    )
-    {
-        $this->config = $config;
-        $this->configData = $config->getConfigData();
-        $this->upgrade = $upgrade;
-        $this->session = $session;
-        $this->theme = $theme;
-        $this->router = $router;
-        $this->language = $language;
     }
 
     /**
