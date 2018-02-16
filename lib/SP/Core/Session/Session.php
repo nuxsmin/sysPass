@@ -37,6 +37,16 @@ use SP\Services\User\UserLoginResponse;
  */
 class Session
 {
+    private static $isLocked = false;
+
+    /**
+     * @return bool
+     */
+    public static function isLocked()
+    {
+        return self::$isLocked;
+    }
+
     /**
      * Devuelve el tema visual utilizado en sysPass
      *
@@ -51,7 +61,7 @@ class Session
      * Devolver una variable de sesión
      *
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      * @return mixed
      */
     protected function getSessionKey($key, $default = null)
@@ -76,15 +86,31 @@ class Session
     /**
      * Establecer una variable de sesión
      *
-     * @param string $key   El nombre de la variable
-     * @param mixed  $value El valor de la variable
+     * @param string $key El nombre de la variable
+     * @param mixed $value El valor de la variable
      * @return mixed
      */
     protected function setSessionKey($key, $value)
     {
-        $_SESSION[$key] = $value;
+        if (self::$isLocked ) {
+            debugLog('Session locked; key=' . $key);
+        } else {
+            $_SESSION[$key] = $value;
+        }
 
         return $value;
+    }
+
+    /**
+     * Closes session
+     */
+    public static function close()
+    {
+        debugLog('Session closed');
+
+        session_write_close();
+
+        self::$isLocked = true;
     }
 
     /**

@@ -216,8 +216,11 @@ class Bootstrap
 
                     $self->initializeCommon();
 
-                    if (in_array($controller, self::PARTIAL_INIT, true)) {
+                    if (!in_array($controller, APP_PARTIAL_INIT, true)) {
                         $self->initializeApp();
+                    } else {
+                        // Do not keep the PHP's session opened
+                        Session::close();
                     }
 
                     debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));

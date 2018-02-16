@@ -84,6 +84,7 @@ class SessionUtil
      * @param bool            $new si es necesrio regenerar el hash
      * @param ConfigData|null $configData
      * @return string con el hash de verificación
+     * @deprecated
      */
     public static function getSessionKey($new = false, ConfigData $configData = null)
     {
