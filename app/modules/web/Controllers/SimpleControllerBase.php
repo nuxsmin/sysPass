@@ -24,18 +24,14 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\Container;
 use Interop\Container\ContainerInterface;
 use Klein\Klein;
-use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
 use SP\Core\UI\Theme;
-use SP\Http\JsonResponse;
-use SP\Http\Request;
-use SP\Util\Checks;
-use SP\Util\Json;
-use SP\Util\Util;
+use SP\Mvc\Controller\ControllerTrait;
 
 /**
  * Class SimpleControllerBase
@@ -44,6 +40,8 @@ use SP\Util\Util;
  */
 abstract class SimpleControllerBase
 {
+    use ControllerTrait;
+
     /**
      * @var string Nombre del controlador
      */
@@ -80,16 +78,16 @@ abstract class SimpleControllerBase
     /**
      * SimpleControllerBase constructor.
      *
-     * @param $actionName
+     * @param Container $container
+     * @param           $actionName
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct($actionName)
+    public function __construct(Container $container, $actionName)
     {
-        $this->dic = Bootstrap::getContainer();
+        $this->dic = $container;
 
-        $class = static::class;
-        $this->controllerName = substr($class, strrpos($class, '\\') + 1, -strlen('Controller'));
+        $this->controllerName = $this->getControllerName();
         $this->actionName = $actionName;
 
         $this->config = $this->dic->get(Config::class);
@@ -104,48 +102,11 @@ abstract class SimpleControllerBase
     }
 
     /**
-     * Comprobar si la sesión está activa
-     */
-    protected function checkSession()
-    {
-        if (!$this->session->isLoggedIn()) {
-            if (Checks::isJson()) {
-                $JsonResponse = new JsonResponse();
-                $JsonResponse->setDescription(__u('La sesión no se ha iniciado o ha caducado'));
-                $JsonResponse->setStatus(10);
-                Json::returnJson($JsonResponse);
-            } else {
-                Util::logout();
-            }
-        }
-    }
-
-    /**
      * Comprobaciones
      */
     protected function checks()
     {
-        $this->checkSession();
-        $this->preActionChecks();
-    }
-
-    /**
-     * Comprobaciones antes de realizar una acción
-     */
-    protected function preActionChecks()
-    {
-        $sk = Request::analyze('sk');
-
-        if (!$sk || (null !== $this->session->getSecurityKey() && $this->session->getSecurityKey() === $sk)) {
-            $this->invalidAction();
-        }
-    }
-
-    /**
-     * Acción no disponible
-     */
-    protected function invalidAction()
-    {
-        Json::returnJson((new JsonResponse())->setDescription(__u('Acción Inválida')));
+        $this->checkLoggedInSession($this->session);
+        $this->checkSecurityToken($this->session);
     }
 }

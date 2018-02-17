@@ -225,7 +225,7 @@ class Bootstrap
 
                     debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
 
-                    return call_user_func_array([new $controllerClass($method), $method], $params);
+                    return call_user_func_array([new $controllerClass(self::$container, $method), $method], $params);
                 } catch (\Exception $e) {
                     debugLog($e->getMessage(), true);
 

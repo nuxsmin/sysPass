@@ -25,12 +25,13 @@
 namespace SP\Modules\Web\Controllers\Traits;
 
 use Defuse\Crypto\Exception\CryptoException;
+use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
-use SP\Repositories\CustomField\CustomFieldRepository;
+use SP\Services\CustomField\CustomFieldService;
 
 /**
  * Trait ItemTrait
@@ -45,13 +46,25 @@ trait ItemTrait
      * @param $moduleId
      * @param $itemId
      * @return array
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function getCustomFieldsForItem($moduleId, $itemId)
     {
-        $customFieldService = new CustomFieldRepository();
+        $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
         $customFields = [];
 
         $customFieldBase = new \stdClass();
+        $customFieldBase->required = false;
+        $customFieldBase->showInList = false;
+        $customFieldBase->help = '';
+        $customFieldBase->definitionId = 0;
+        $customFieldBase->definitionName = '';
+        $customFieldBase->typeId = 0;
+        $customFieldBase->typeName = '';
+        $customFieldBase->moduleId = 0;
+        $customFieldBase->formId = '';
+        $customFieldBase->value = '';
 
         foreach ($customFieldService->getForModuleById($moduleId, $itemId) as $item) {
             try {
@@ -64,8 +77,8 @@ trait ItemTrait
                 $customField->typeId = (int)$item->typeId;
                 $customField->typeName = $item->typeName;
                 $customField->moduleId = (int)$item->moduleId;
-                $customField->formId = CustomFieldRepository::getFormIdForName($item->definitionName);
-                $customField->value = $item->data !== null ? CustomFieldRepository::unencryptData($item->data) : '';
+                $customField->formId = CustomFieldService::getFormIdForName($item->definitionName);
+                $customField->value = $item->data !== null ? CustomFieldService::decryptData($item->data) : '';
 
                 $customFields[] = $customField;
             } catch (CryptoException $e) {
@@ -82,6 +95,10 @@ trait ItemTrait
      * @param int       $moduleId
      * @param int|int[] $itemId
      * @throws SPException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function addCustomFieldsForItem($moduleId, $itemId)
     {
@@ -92,7 +109,8 @@ trait ItemTrait
             $customFieldData->setId($itemId);
             $customFieldData->setModuleId($moduleId);
 
-            $customFieldService = new CustomFieldRepository();
+            $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
+
             try {
                 foreach ($customFields as $id => $value) {
                     $customFieldData->setDefinitionId($id);
@@ -112,11 +130,12 @@ trait ItemTrait
      * @param int       $moduleId
      * @param int|int[] $itemId
      * @throws SPException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function deleteCustomFieldsForItem($moduleId, $itemId)
     {
-        $customFieldService = new CustomFieldRepository();
-        $customFieldService->deleteCustomFieldData($itemId, $moduleId);
+        Bootstrap::getContainer()->get(CustomFieldService::class)->deleteCustomFieldData($itemId, $moduleId);
     }
 
     /**
@@ -125,16 +144,21 @@ trait ItemTrait
      * @param int       $moduleId
      * @param int|int[] $itemId
      * @throws SPException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function updateCustomFieldsForItem($moduleId, $itemId)
     {
         $customFields = Request::analyze('customfield');
 
         if (is_array($customFields)) {
-            $customFieldService = new CustomFieldRepository();
             $customFieldData = new CustomFieldData();
             $customFieldData->setId($itemId);
             $customFieldData->setModuleId($moduleId);
+
+            $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
 
             try {
                 foreach ($customFields as $id => $value) {

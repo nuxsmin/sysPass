@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,11 +24,7 @@
 
 namespace SP\Repositories\CustomField;
 
-use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
@@ -44,79 +40,15 @@ use SP\Storage\QueryData;
 class CustomFieldRepository extends Repository implements RepositoryItemInterface
 {
     /**
-     * Returns the form Id for a given name
-     *
-     * @param $name
-     * @return string
-     */
-    public static function getFormIdForName($name)
-    {
-        return 'cf_' . strtolower(preg_replace('/\W*/', '', $name));
-    }
-
-    /**
-     * Desencriptar y formatear los datos del campo
-     *
-     * @param CustomFieldData $CustomFieldData
-     * @return string
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     */
-    public static function unencryptData(CustomFieldData $CustomFieldData)
-    {
-        if ($CustomFieldData->getData() !== '') {
-            $securedKey = Crypt::unlockSecuredKey($CustomFieldData->getKey(), CryptSession::getSessionKey());
-
-            return self::formatValue(Crypt::decrypt($CustomFieldData->getData(), $securedKey));
-        }
-
-        return '';
-    }
-
-    /**
-     * Formatear el valor del campo
-     *
-     * @param $value string El valor del campo
-     * @return string
-     */
-    public static function formatValue($value)
-    {
-        if (preg_match('#https?://#', $value)) {
-            return '<a href="' . $value . '" target="_blank">' . $value . '</a>';
-        }
-
-        return $value;
-    }
-
-    /**
      * Updates an item
      *
      * @param CustomFieldData $itemData
      * @return bool
-     * @throws CryptoException
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function update($itemData)
     {
-        $exists = $this->checkExists($itemData);
-
-        // Deletes item's custom field data if value is left blank
-        if ($exists && $itemData->getData() === '') {
-            return $this->delete($itemData->getId());
-        }
-
-        // Create item's custom field data if value is set
-        if (!$exists && $itemData->getData() !== '') {
-            return $this->create($itemData);
-        }
-
-        $sessionKey = CryptSession::getSessionKey();
-        $securedKey = Crypt::makeSecuredKey($sessionKey);
-
-        if (strlen($securedKey) > 1000) {
-            throw new QueryException(SPException::ERROR, __u('Error interno'));
-        }
-
         $query = /** @lang SQL */
             'UPDATE CustomFieldData SET
             `data` = ?,
@@ -127,8 +59,8 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
 
         $Data = new QueryData();
         $Data->setQuery($query);
-        $Data->addParam(Crypt::encrypt($itemData->getData(), $securedKey, $sessionKey));
-        $Data->addParam($securedKey);
+        $Data->addParam($itemData->getData());
+        $Data->addParam($itemData->getKey());
         $Data->addParam($itemData->getModuleId());
         $Data->addParam($itemData->getId());
         $Data->addParam($itemData->getDefinitionId());
@@ -144,7 +76,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    protected function checkExists($itemData)
+    public function checkExists($itemData)
     {
         $query = /** @lang SQL */
             'SELECT id
@@ -180,23 +112,11 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @param CustomFieldData $itemData
      * @return bool
-     * @throws CryptoException
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function create($itemData)
     {
-        if ($itemData->getData() === '') {
-            return true;
-        }
-
-        $sessionKey = CryptSession::getSessionKey();
-        $securedKey = Crypt::makeSecuredKey($sessionKey);
-
-        if (strlen($securedKey) > 1000) {
-            throw new QueryException(SPException::ERROR, __u('Error interno'));
-        }
-
         $query = /** @lang SQL */
             'INSERT INTO CustomFieldData SET itemId = ?, moduleId = ?, definitionId = ?, `data` = ?, `key` = ?';
 
@@ -205,8 +125,8 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $Data->addParam($itemData->getId());
         $Data->addParam($itemData->getModuleId());
         $Data->addParam($itemData->getDefinitionId());
-        $Data->addParam(Crypt::encrypt($itemData->getData(), $securedKey, $sessionKey));
-        $Data->addParam($securedKey);
+        $Data->addParam($itemData->getData());
+        $Data->addParam($itemData->getKey());
 
         return DbWrapper::getQuery($Data, $this->db);
     }

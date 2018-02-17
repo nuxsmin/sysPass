@@ -26,9 +26,9 @@ namespace SP\Modules\Web\Controllers;
 
 defined('APP_ROOT') || die();
 
+use DI\Container;
 use Klein\Klein;
 use Psr\Container\ContainerInterface;
-use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
@@ -38,20 +38,19 @@ use SP\Core\Session\Session;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeIconsBase;
 use SP\DataModel\ProfileData;
-use SP\Http\JsonResponse;
+use SP\Mvc\Controller\ControllerTrait;
 use SP\Mvc\View\Template;
 use SP\Providers\Auth\Browser\Browser;
 use SP\Services\Auth\AuthException;
 use SP\Services\User\UserLoginResponse;
-use SP\Util\Checks;
-use SP\Util\Json;
-use SP\Util\Util;
 
 /**
  * Clase base para los controladores
  */
 abstract class ControllerBase
 {
+    use ControllerTrait;
+
     /**
      * Constantes de errores
      */
@@ -130,16 +129,16 @@ abstract class ControllerBase
     /**
      * Constructor
      *
-     * @param $actionName
+     * @param Container $container
+     * @param           $actionName
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct($actionName)
+    public function __construct(Container $container, $actionName)
     {
-        $this->dic = Bootstrap::getContainer();
+        $this->dic = $container;
 
-        $class = static::class;
-        $this->controllerName = substr($class, strrpos($class, '\\') + 1, -strlen('Controller'));
+        $this->controllerName = $this->getControllerName();
         $this->actionName = $actionName;
 
         $this->config = $this->dic->get(Config::class);
@@ -248,17 +247,7 @@ abstract class ControllerBase
             }
         }
 
-        if (!$this->session->isLoggedIn()) {
-            if (Checks::isJson()) {
-                $jsonResponse = new JsonResponse();
-                $jsonResponse->setDescription(__u('La sesión no se ha iniciado o ha caducado'));
-                $jsonResponse->setStatus(10);
-
-                Json::returnJson($jsonResponse);
-            } else {
-                Util::logout();
-            }
-        }
+        $this->checkLoggedInSession($this->session);
     }
 
     /**
