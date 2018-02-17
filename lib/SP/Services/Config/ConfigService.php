@@ -59,20 +59,26 @@ class ConfigService extends Service
 
     /**
      * @param string $param
+     * @param null   $default
      * @return mixed
      * @throws ParameterNotFoundException
      */
-    public function getByParam($param)
+    public function getByParam($param, $default = null)
     {
         $query = $this->configRepository->getByParam($param);
 
         if (empty($query)) {
+            if ($default !== null) {
+                return $default;
+            }
+
             throw new ParameterNotFoundException(
                 sprintf(__('Parámetro no encontrado (%s)'),
                     SPException::ERROR,
                     $param)
             );
         }
+
         return $query->value;
     }
 

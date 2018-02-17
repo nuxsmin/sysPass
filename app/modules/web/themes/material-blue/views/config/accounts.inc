@@ -303,9 +303,6 @@
             </td>
         </tr>
     </table>
-
-    <input type="hidden" name="sk" value="">
-    <input type="hidden" name="isAjax" value="1"/>
 </form>
 
 <div class="tab-actions">
