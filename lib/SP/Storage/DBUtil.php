@@ -39,7 +39,7 @@ class DBUtil
      * @var array Tablas de la BBDD
      */
     public static $tables = [
-        'Customer',
+        'Client',
         'Category',
         'Tag',
         'UserGroup',
@@ -51,13 +51,13 @@ class DBUtil
         'AccountToUserGroup',
         'AccountHistory',
         'AccountToTag',
-        'AccountTouser',
+        'AccountToUser',
         'AuthToken',
         'Config',
         'Action',
         'CustomFieldType',
         'CustomFieldDefinition',
-        'customFieldData',
+        'CustomFieldData',
         'EventLog',
         'PublicLink',
         'UserPassRecover',

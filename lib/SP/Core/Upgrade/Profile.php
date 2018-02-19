@@ -52,7 +52,7 @@ class Profile
         try {
             TaskFactory::$Message->setTask(__FUNCTION__);
             TaskFactory::$Message->setMessage(__('Actualizando IDs de perfil'));
-            TaskFactory::sendTaskMessage();
+            TaskFactory::update();
 
             DbWrapper::beginTransaction();
 

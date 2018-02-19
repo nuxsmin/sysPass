@@ -45,7 +45,7 @@ class Account
     {
         TaskFactory::$Message->setTask(__FUNCTION__);
         TaskFactory::$Message->setMessage(__('Actualizando IDs de cuentas'));
-        TaskFactory::sendTaskMessage();
+        TaskFactory::update();
 
         try {
             DbWrapper::beginTransaction();
@@ -58,7 +58,7 @@ class Account
             DbWrapper::getQuery($Data);
 
             $query = /** @lang SQL */
-                'DELETE FROM AccountToGroup WHERE accountId NOT IN (SELECT account_id FROM Account) OR accountId IS NULL';
+                'DELETE FROM AccountToUserGroup WHERE accountId NOT IN (SELECT account_id FROM Account) OR accountId IS NULL';
             $Data->setQuery($query);
 
             DbWrapper::getQuery($Data);

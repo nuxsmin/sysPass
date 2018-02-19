@@ -44,10 +44,6 @@
     <?php endif; ?>
 </table>
 
-<form method="post" name="frmBackup" id="frmBackup" class="form-action"
-      data-onsubmit="config/backup">
-</form>
-
 <div class="tab-actions">
     <ul>
         <li>
@@ -66,8 +62,10 @@
         </li>
         <li>
 
-            <button form="frmBackup"
-                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
+            <button type="button"
+                    class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconPlay()->getClassButton(); ?>"
+                    data-onclick="config/backup"
+                    data-action-route="configBackup/fileBackup"
                     title="<?php echo $icons->getIconPlay()->getTitle(); ?>">
                 <i class="material-icons"><?php echo $icons->getIconPlay()->getIcon(); ?></i>
             </button>
@@ -79,8 +77,8 @@
     <?php echo __('Exportar Cuentas'); ?>
 </div>
 
-<form method="post" name="frmExport" id="frmExport" class="form-action"
-      data-onsubmit="config/export">
+<form method="post" name="frmExport" id="frmExport" class="form-action" data-onsubmit="config/export"
+      data-action-route="configBackup/xmlExport">
     <table class="data round">
         <tr>
             <td class="descField">

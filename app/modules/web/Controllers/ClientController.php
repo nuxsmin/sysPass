@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Events\Event;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ClientData;
@@ -96,8 +97,10 @@ class ClientController extends ControllerBase implements CrudControllerInterface
         try {
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.client.create', $this);
+            $this->eventDispatcher->notifyEvent('show.client.create', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(1, $e->getMessage());
         }
 
@@ -151,8 +154,10 @@ class ClientController extends ControllerBase implements CrudControllerInterface
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.client.edit', $this);
+            $this->eventDispatcher->notifyEvent('show.client.edit', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 
@@ -175,11 +180,11 @@ class ClientController extends ControllerBase implements CrudControllerInterface
 
             $this->deleteCustomFieldsForItem(ActionsInterface::CLIENT, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.client', $this);
+            $this->eventDispatcher->notifyEvent('delete.client', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente eliminado'));
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -202,13 +207,13 @@ class ClientController extends ControllerBase implements CrudControllerInterface
 
             $this->clientService->create($form->getItemData());
 
-            $this->eventDispatcher->notifyEvent('create.client', $this);
+            $this->eventDispatcher->notifyEvent('create.client', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente creado'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -232,13 +237,13 @@ class ClientController extends ControllerBase implements CrudControllerInterface
 
             $this->clientService->update($form->getItemData());
 
-            $this->eventDispatcher->notifyEvent('edit.client', $this);
+            $this->eventDispatcher->notifyEvent('edit.client', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente actualizado'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -262,8 +267,10 @@ class ClientController extends ControllerBase implements CrudControllerInterface
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.client', $this);
+            $this->eventDispatcher->notifyEvent('show.client', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 

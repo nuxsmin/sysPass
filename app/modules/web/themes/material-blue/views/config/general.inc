@@ -4,7 +4,7 @@
 ?>
 <form method="post" name="frmConfig" id="frmConfig" class="form-action"
       data-onsubmit="config/save"
-      data-type="general"
+      data-action-route="configGeneral/save"
       data-reload="1"
       data-hash="">
 
@@ -12,9 +12,6 @@
     <?php include $this->includeTemplate('general-events'); ?>
     <?php include $this->includeTemplate('general-proxy'); ?>
     <?php include $this->includeTemplate('general-auth'); ?>
-
-    <input type="hidden" name="sk" value="">
-    <input type="hidden" name="isAjax" value="1"/>
 </form>
 
 <div class="tab-actions">

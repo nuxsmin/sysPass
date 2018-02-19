@@ -168,11 +168,18 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
     /**
      * Returns all the items
      *
-     * @return mixed
+     * @return CustomFieldData[]
      */
     public function getAll()
     {
-        throw new \RuntimeException('Unimplemented');
+        $query = /** @lang SQL */
+            'SELECT * FROM CustomFieldData';
+
+        $queryData = new QueryData();
+        $queryData->setMapClassName(CustomFieldData::class);
+        $queryData->setQuery($query);
+
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**

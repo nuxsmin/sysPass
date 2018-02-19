@@ -117,7 +117,7 @@ class MainController extends ControllerBase implements ActionsInterface
             // Cargar la clave pública en la sesión
             SessionUtil::loadPublicKey();
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
         }
 
         $this->getResourcesLinks();

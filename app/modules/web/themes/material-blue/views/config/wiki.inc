@@ -1,6 +1,8 @@
 <?php /** @var $icons \Theme\Icons */ ?>
 
-<form method="post" name="frmWiki" id="frmWiki" class="form-action" data-onsubmit="config/save" data-type="wiki"
+<form method="post" name="frmWiki" id="frmWiki" class="form-action"
+      data-onsubmit="config/save"
+      data-action-route="configWiki/save"
       data-hash="">
 
     <div id="title" class="midroundup titleNormal">
@@ -258,10 +260,6 @@
             </td>
         </tr>
     </table>
-
-    <input type="hidden" name="type" value="dokuwiki"/>
-    <input type="hidden" name="sk" value="">
-    <input type="hidden" name="isAjax" value="1"/>
 </form>
 
 <div class="tab-actions">
@@ -277,6 +275,7 @@
             <button type="button"
                     class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
                     data-onclick="checks/wiki"
+                    data-action-route="configWiki/checkDokuwiki"
                     data-src="#frmWiki"
                     title="<?php echo $icons->getIconCheck()->getTitle(); ?>">
                 <i class="material-icons"><?php echo $icons->getIconCheck()->getIcon(); ?></i>

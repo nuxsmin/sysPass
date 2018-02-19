@@ -59,6 +59,18 @@ class TaskMessage implements MessageInterface, JsonSerializable
     protected $end = 0;
 
     /**
+     * TaskMessage constructor.
+     *
+     * @param string $taskId
+     * @param string $task
+     */
+    public function __construct($taskId, $task)
+    {
+        $this->taskId = $taskId;
+        $this->task = $task;
+    }
+
+    /**
      * @return string
      */
     public function getTask()
@@ -68,10 +80,13 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param string $task
+     * @return TaskMessage
      */
     public function setTask($task)
     {
         $this->task = $task;
+
+        return $this;
     }
 
     /**
@@ -84,10 +99,13 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param string $message
+     * @return TaskMessage
      */
     public function setMessage($message)
     {
         $this->message = $message;
+
+        return $this;
     }
 
     /**
@@ -100,10 +118,13 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param int $time
+     * @return TaskMessage
      */
     public function setTime($time)
     {
         $this->time = $time;
+
+        return $this;
     }
 
     /**
@@ -116,10 +137,13 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param int $progress
+     * @return TaskMessage
      */
     public function setProgress($progress)
     {
         $this->progress = $progress;
+
+        return $this;
     }
 
     /**
@@ -132,10 +156,13 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param int $end
+     * @return TaskMessage
      */
     public function setEnd($end)
     {
         $this->end = $end;
+
+        return $this;
     }
 
     /**
@@ -203,9 +230,12 @@ class TaskMessage implements MessageInterface, JsonSerializable
 
     /**
      * @param string $taskId
+     * @return TaskMessage
      */
     public function setTaskId($taskId)
     {
         $this->taskId = $taskId;
+
+        return $this;
     }
 }

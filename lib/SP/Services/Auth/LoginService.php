@@ -30,6 +30,7 @@ use Defuse\Crypto\Exception\BadFormatException;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
+use SP\Core\Events\Event;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
@@ -385,7 +386,7 @@ class LoginService extends Service
 
         $this->session->setAuthCompleted(true);
 
-        $this->eventDispatcher->notifyEvent('login.preferences', $this);
+        $this->eventDispatcher->notifyEvent('login.preferences', new Event($this));
     }
 
     /**

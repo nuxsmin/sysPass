@@ -29,6 +29,7 @@ use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\CryptMasterPass;
+use SP\Core\Events\Event;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Task;
@@ -63,6 +64,7 @@ class ConfigManagerController extends ControllerBase
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function indexAction()
     {
@@ -76,6 +78,7 @@ class ConfigManagerController extends ControllerBase
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function getTabs()
     {
@@ -118,7 +121,7 @@ class ConfigManagerController extends ControllerBase
         }
 
 
-        $this->eventDispatcher->notifyEvent('show.config', $this);
+        $this->eventDispatcher->notifyEvent('show.config', new Event($this));
 
         $this->tabsHelper->renderTabs(Acl::getActionRoute(ActionsInterface::CONFIG), Request::analyze('tabIndex', 0));
 
@@ -261,7 +264,7 @@ class ConfigManagerController extends ControllerBase
         $template->addTemplate('backup');
 
         $template->assign('siteName', Util::getAppInfo('appname'));
-        $template->assign('backupDir', Bootstrap::$SERVERROOT . '/backup');
+        $template->assign('backupDir', BACKUP_PATH);
         $template->assign('backupPath', Bootstrap::$WEBROOT . '/backup');
 
         $backupHash = $this->configData->getBackupHash();
@@ -270,7 +273,7 @@ class ConfigManagerController extends ControllerBase
         $backupFile = $template->siteName . '-' . $backupHash . '.tar.gz';
 
         $template->assign('backupFile', [
-            'absolute' => $template->backupDir . DIRECTORY_SEPARATOR . $backupFile,
+            'absolute' => BACKUP_PATH . DIRECTORY_SEPARATOR . $backupFile,
             'relative' => $template->backupPath . '/' . $backupFile,
             'filename' => $backupFile
         ]);
@@ -278,7 +281,7 @@ class ConfigManagerController extends ControllerBase
         $backupDbFile = $template->siteName . '_db-' . $backupHash . '.sql';
 
         $template->assign('backupDbFile', [
-            'absolute' => $template->backupDir . DIRECTORY_SEPARATOR . $backupDbFile,
+            'absolute' => BACKUP_PATH . DIRECTORY_SEPARATOR . $backupDbFile,
             'relative' => $template->backupPath . '/' . $backupDbFile,
             'filename' => $backupDbFile
         ]);
@@ -291,7 +294,7 @@ class ConfigManagerController extends ControllerBase
         $exportFile = $template->siteName . '-' . $exportHash . '.xml';
 
         $template->assign('exportFile', [
-            'absolute' => $template->backupDir . DIRECTORY_SEPARATOR . $exportFile,
+            'absolute' => BACKUP_PATH . DIRECTORY_SEPARATOR . $exportFile,
             'relative' => $template->backupPath . '/' . $exportFile,
             'filename' => $exportFile
         ]);

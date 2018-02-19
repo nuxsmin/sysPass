@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Exceptions\SPException;
+use SP\Core\Events\Event;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
 use SP\Forms\UserProfileForm;
@@ -95,8 +95,10 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
         try {
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.userProfile.create', $this);
+            $this->eventDispatcher->notifyEvent('show.userProfile.create', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(1, $e->getMessage());
         }
 
@@ -152,8 +154,10 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.userProfile.edit', $this);
+            $this->eventDispatcher->notifyEvent('show.userProfile.edit', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 
@@ -177,11 +181,11 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
 
             $this->deleteCustomFieldsForItem(ActionsInterface::PROFILE, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.userProfile', $this);
+            $this->eventDispatcher->notifyEvent('delete.userProfile', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfil eliminado'));
-        } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+        } catch (\Exception $e) {
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -207,13 +211,13 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
 
             $this->addCustomFieldsForItem(ActionsInterface::PROFILE, $id);
 
-            $this->eventDispatcher->notifyEvent('create.userProfile', $this);
+            $this->eventDispatcher->notifyEvent('create.userProfile', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfil creado'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+        } catch (\Exception $e) {
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -241,13 +245,13 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
 
             $this->updateCustomFieldsForItem(ActionsInterface::PROFILE, $id);
 
-            $this->eventDispatcher->notifyEvent('edit.userProfile', $this);
+            $this->eventDispatcher->notifyEvent('edit.userProfile', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfil actualizado'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+        } catch (\Exception $e) {
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -271,8 +275,10 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.userProfile', $this);
+            $this->eventDispatcher->notifyEvent('show.userProfile', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 

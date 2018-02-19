@@ -29,6 +29,7 @@ use SP\Account\AccountSearchFilter;
 use SP\Account\AccountUtil;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
 use SP\DataModel\AccountPassData;
 use SP\DataModel\AccountSearchVData;
@@ -41,6 +42,7 @@ use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
+use SP\Services\Account\AccountPasswordRequest;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 
@@ -195,7 +197,6 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      *
      * @param AccountRequest $accountRequest
      * @return bool
-     * @throws QueryException
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
@@ -203,24 +204,50 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     {
         $query = /** @lang SQL */
             'UPDATE Account SET 
-            pass = :pass,
-            `key` = :key,
-            userEditId = :userEditId,
+            pass = ?,
+            `key` = ?,
+            userEditId = ?,
             dateEdit = NOW(),
             passDate = UNIX_TIMESTAMP(),
-            passDateChange = :passDateChange
-            WHERE id = :id';
+            passDateChange = ?
+            WHERE id = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($accountRequest->pass, 'pass');
-        $Data->addParam($accountRequest->key, 'key');
-        $Data->addParam($accountRequest->userEditId, 'userEditId');
-        $Data->addParam($accountRequest->passDateChange, 'passDateChange');
-        $Data->addParam($accountRequest->id, 'id');
-        $Data->setOnErrorMessage(__u('Error al actualizar la clave'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($accountRequest->pass);
+        $queryData->addParam($accountRequest->key);
+        $queryData->addParam($accountRequest->userEditId);
+        $queryData->addParam($accountRequest->passDateChange);
+        $queryData->addParam($accountRequest->id);
+        $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
+    }
+
+    /**
+     * Actualiza la clave de una cuenta en la BBDD.
+     *
+     * @param AccountPasswordRequest $request
+     * @return bool
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function updatePassword(AccountPasswordRequest $request)
+    {
+        $query = /** @lang SQL */
+            'UPDATE Account SET 
+            pass = ?,
+            `key` = ?
+            WHERE id = ?';
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($request->pass);
+        $queryData->addParam($request->key);
+        $queryData->addParam($request->id);
+        $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
+
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -383,10 +410,18 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     /**
      * Returns all the items
      *
+     * @return AccountData[]
      */
     public function getAll()
     {
-        throw new \RuntimeException('Not implemented');
+        $query = /** @lang SQL */
+            'SELECT * FROM Account A ORDER BY id';
+
+        $queryData = new QueryData();
+        $queryData->setMapClassName(AccountData::class);
+        $queryData->setQuery($query);
+
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -663,5 +698,21 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams($queryFilter->getParams());
 
         return DbWrapper::getResultsArray($queryData, $this->db);
+    }
+
+    /**
+     * Obtener los datos relativos a la clave de todas las cuentas.
+     *
+     * @return array Con los datos de la clave
+     */
+    public function getAccountsPassData()
+    {
+        $query = /** @lang SQL */
+            'SELECT id, name, pass, `key` FROM Account WHERE BIT_LENGTH(pass) > 0';
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+
+        return DbWrapper::getResultsArray($queryData);
     }
 }

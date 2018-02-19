@@ -28,6 +28,7 @@ use DI\Container;
 use Interop\Container\ContainerInterface;
 use Klein\Klein;
 use SP\Config\Config;
+use SP\Core\Acl\Acl;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
 use SP\Core\UI\Theme;
@@ -74,6 +75,10 @@ abstract class SimpleControllerBase
      * @var ContainerInterface
      */
     protected $dic;
+    /**
+     * @var Acl
+     */
+    protected $acl;
 
     /**
      * SimpleControllerBase constructor.
@@ -95,6 +100,7 @@ abstract class SimpleControllerBase
         $this->theme = $this->dic->get(Theme::class);
         $this->eventDispatcher = $this->dic->get(EventDispatcher::class);
         $this->router = $this->dic->get(Klein::class);
+        $this->acl = $this->dic->get(Acl::class);
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();
@@ -108,5 +114,16 @@ abstract class SimpleControllerBase
     {
         $this->checkLoggedInSession($this->session);
         $this->checkSecurityToken($this->session);
+    }
+
+    /**
+     * Comprobar si está permitido el acceso al módulo/página.
+     *
+     * @param null $action La acción a comprobar
+     * @return bool
+     */
+    protected function checkAccess($action)
+    {
+        return $this->session->getUserData()->getIsAdminApp() || $this->acl->checkUserAccess($action);
     }
 }

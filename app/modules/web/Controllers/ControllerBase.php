@@ -189,7 +189,7 @@ abstract class ControllerBase
         try {
             echo $this->view->render();
         } catch (FileNotFoundException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             echo $e->getMessage();
         }
@@ -205,7 +205,7 @@ abstract class ControllerBase
         try {
             return $this->view->render();
         } catch (FileNotFoundException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             return $e->getMessage();
         }

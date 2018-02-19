@@ -32,6 +32,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\Repositories\CustomField\CustomFieldRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 
 /**
  * Class CustomFieldService
@@ -150,6 +151,7 @@ class CustomFieldService extends Service
      * @return bool
      * @throws CryptoException
      * @throws QueryException
+     * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function create(CustomFieldData $customFieldData)
@@ -165,20 +167,47 @@ class CustomFieldService extends Service
 
     /**
      * @param CustomFieldData $customFieldData
+     * @param null            $key
      * @throws CryptoException
-     * @throws QueryException
+     * @throws ServiceException
      */
-    protected function setSecureData(CustomFieldData $customFieldData)
+    protected function setSecureData(CustomFieldData $customFieldData, $key = null)
     {
-        $sessionKey = CryptSession::getSessionKey();
-        $securedKey = Crypt::makeSecuredKey($sessionKey);
+        $key = $key ?: CryptSession::getSessionKey();
+        $securedKey = Crypt::makeSecuredKey($key);
 
         if (strlen($securedKey) > 1000) {
-            throw new QueryException(__u('Error interno'), SPException::ERROR);
+            throw new ServiceException(__u('Error interno'), SPException::ERROR);
         }
 
-        $customFieldData->setData(Crypt::encrypt($customFieldData->getData(), $securedKey, $sessionKey));
+        $customFieldData->setData(Crypt::encrypt($customFieldData->getData(), $securedKey, $key));
         $customFieldData->setKey($securedKey);
+    }
+
+    /**
+     * Updates an item
+     *
+     * @param CustomFieldData $customFieldData
+     * @param string          $masterPass
+     * @return bool
+     * @throws CryptoException
+     * @throws QueryException
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function updateMasterPass(CustomFieldData $customFieldData, $masterPass)
+    {
+        $this->setSecureData($customFieldData, $masterPass);
+
+        return $this->customFieldRepository->update($customFieldData);
+    }
+
+    /**
+     * @return CustomFieldData[]
+     */
+    public function getAll()
+    {
+        return $this->customFieldRepository->getAll();
     }
 
     /**

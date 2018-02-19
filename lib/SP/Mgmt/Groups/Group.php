@@ -143,10 +143,10 @@ class Group extends GroupBase implements ItemInterface, ItemSelectInterface
             FROM usrData WHERE user_groupId = ?
             UNION ALL
             SELECT userGroupId as groupId
-            FROM UserToGroup WHERE userGroupId = ?
+            FROM UserToUserGroup WHERE userGroupId = ?
             UNION ALL
             SELECT userGroupId as groupId
-            FROM AccountToGroup WHERE userGroupId = ?
+            FROM AccountToUserGroup WHERE userGroupId = ?
             UNION ALL
             SELECT account_userGroupId as groupId
             FROM Account WHERE account_userGroupId = ?';

@@ -50,7 +50,7 @@ class User
     {
         TaskFactory::$Message->setTask(__FUNCTION__);
         TaskFactory::$Message->setMessage(__('Actualizando IDs de usuarios'));
-        TaskFactory::sendTaskMessage();
+        TaskFactory::update();
 
         try {
             DbWrapper::beginTransaction();
@@ -105,7 +105,7 @@ class User
             DbWrapper::getQuery($Data);
 
             $query = /** @lang SQL */
-                'DELETE FROM UserToGroup WHERE usertogroup_userId <> ? AND usertogroup_userId NOT IN (' . $paramsIn . ') OR usertogroup_userId IS NULL';
+                'DELETE FROM UserToUserGroup WHERE usertogroup_userId <> ? AND usertogroup_userId NOT IN (' . $paramsIn . ') OR usertogroup_userId IS NULL';
             $Data->setQuery($query);
 
             DbWrapper::getQuery($Data);

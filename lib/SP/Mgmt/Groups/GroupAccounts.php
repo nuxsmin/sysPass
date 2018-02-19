@@ -62,7 +62,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
     public function delete($id)
     {
         $query = /** @lang SQL */
-            'DELETE FROM AccountToGroup WHERE accountId = ?';
+            'DELETE FROM AccountToUserGroup WHERE accountId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -87,7 +87,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO AccountToGroup (accountId, userGroupId) VALUES ' . $this->getParamsFromArray($this->itemData->getGroups(), '(?,?)');
+            'INSERT INTO AccountToUserGroup (accountId, userGroupId) VALUES ' . $this->getParamsFromArray($this->itemData->getGroups(), '(?,?)');
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -111,7 +111,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT userGroupId, accountId FROM AccountToGroup WHERE userGroupId = ?';
+            'SELECT userGroupId, accountId FROM AccountToUserGroup WHERE userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -136,7 +136,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
     public function checkInUse($id)
     {
         $query = /** @lang SQL */
-            'SELECT userGroupId FROM AccountToGroup WHERE userGroupId = ?';
+            'SELECT userGroupId FROM AccountToUserGroup WHERE userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -170,7 +170,7 @@ class GroupAccounts extends GroupAccountsBase implements ItemInterface
     public function getByAccountId($id)
     {
         $query = /** @lang SQL */
-            'SELECT userGroupId, accountId FROM AccountToGroup WHERE accountId = ?';
+            'SELECT userGroupId, accountId FROM AccountToUserGroup WHERE accountId = ?';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());

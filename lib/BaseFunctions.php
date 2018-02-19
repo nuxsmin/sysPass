@@ -26,7 +26,7 @@
  * Función para enviar mensajes al log de errores
  *
  * @param mixed $data
- * @param bool $printLastCaller
+ * @param bool  $printLastCaller
  */
 function debugLog($data, $printLastCaller = false)
 {
@@ -45,6 +45,20 @@ function debugLog($data, $printLastCaller = false)
         } else {
             error_log(formatTrace(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)));
         }
+    }
+}
+
+/**
+ * Procesar una excepción y registrarla en el log
+ *
+ * @param \Exception $exception
+ */
+function processException(\Exception $exception)
+{
+    debugLog(__($exception->getMessage()), true);
+
+    if ($exception->getPrevious() !== null) {
+        debugLog(__($exception->getPrevious()->getMessage()));
     }
 }
 
@@ -73,7 +87,7 @@ function formatTrace($trace)
  * Alias gettext function
  *
  * @param string $message
- * @param bool $translate Si es necesario traducir
+ * @param bool   $translate Si es necesario traducir
  * @return string
  */
 function __($message, $translate = true)
@@ -97,7 +111,7 @@ function __u($message)
  *
  * @param string $domain
  * @param string $message
- * @param bool $translate
+ * @param bool   $translate
  * @return string
  */
 function _t($domain, $message, $translate = true)

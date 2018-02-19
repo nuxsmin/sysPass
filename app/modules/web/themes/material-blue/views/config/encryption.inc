@@ -1,7 +1,8 @@
 <?php /** @var $icons \Theme\Icons */ ?>
 
-<form method="post" name="frmCrypt" id="frmCrypt" class="form-action" data-onsubmit="config/masterpass"
-      data-type="masterpass"
+<form method="post" name="frmCrypt" id="frmCrypt" class="form-action"
+      data-onsubmit="config/save"
+      data-action-route="configEncryption/save"
       data-hash="">
 
     <div id="title" class="midroundup titleNormal">
@@ -138,7 +139,7 @@
                 <button type="button"
                         class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
                         data-onclick="config/refreshMpass"
-                        data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::ENCRYPTION_REFRESH; ?>"
+                        data-action-route="configEncryption/refresh"
                         title="<?php echo __('Actualizar hash de clave maestra'); ?>">
                     <i class="material-icons"><?php echo $icons->getIconRefresh()->getIcon(); ?></i>
                 </button>
@@ -163,8 +164,7 @@
 
 <form method="post" name="frmTempMasterPass" id="frmTempMasterPass" class="form-action"
       data-onsubmit="config/save"
-      data-type="temppass"
-      data-nextaction-id="<?php echo \SP\Core\Acl\ActionsInterface::ENCRYPTION_TEMPPASS; ?>">
+      data-action-route="configEncryption/saveTemp">
     <table class="data tblConfig round">
         <tr>
             <td class="descField">
@@ -266,8 +266,6 @@
             </tr>
         <?php endif; ?>
     </table>
-    <input type="hidden" name="sk" value="">
-    <input type="hidden" name="isAjax" value="1"/>
 </form>
 
 <div class="tab-actions">

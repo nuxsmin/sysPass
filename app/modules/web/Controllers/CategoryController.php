@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Events\Event;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CategoryData;
@@ -95,8 +96,10 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
         try {
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.category.create', $this);
+            $this->eventDispatcher->notifyEvent('show.category.create', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(1, $e->getMessage());
         }
 
@@ -150,8 +153,10 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.category.edit', $this);
+            $this->eventDispatcher->notifyEvent('show.category.edit', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 
@@ -175,11 +180,11 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
 
             $this->deleteCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.category', $this);
+            $this->eventDispatcher->notifyEvent('delete.category', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría eliminada'));
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -204,13 +209,13 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
 
             $this->addCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
 
-            $this->eventDispatcher->notifyEvent('create.category', $this);
+            $this->eventDispatcher->notifyEvent('create.category', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría creada'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -236,13 +241,13 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
 
             $this->updateCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
 
-            $this->eventDispatcher->notifyEvent('edit.category', $this);
+            $this->eventDispatcher->notifyEvent('edit.category', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría actualizada'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -266,8 +271,10 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.category', $this);
+            $this->eventDispatcher->notifyEvent('show.category', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 

@@ -97,7 +97,7 @@ class MainActionController
                     throw new ValidationException(__('Es necesario confirmar la actualización', false));
                 }
 
-                TaskFactory::createTask('upgrade', $taskId);
+                TaskFactory::create('upgrade', $taskId);
 
                 $this->upgrade($version, $type);
 
@@ -105,7 +105,7 @@ class MainActionController
                 $JsonResponse->addMessage(__('En 5 segundos será redirigido al login', false));
                 $JsonResponse->setStatus(0);
             } catch (\Exception $e) {
-                TaskFactory::endTask();
+                TaskFactory::end();
 
                 $JsonResponse->setDescription($e->getMessage());
             }
@@ -131,7 +131,7 @@ class MainActionController
         $Upgrade = new Upgrade();
         $Upgrade->doUpgrade($version);
 
-        TaskFactory::endTask();
+        TaskFactory::end();
 
         $this->ConfigData->setMaintenance(false);
         $this->ConfigData->setUpgradeKey('');

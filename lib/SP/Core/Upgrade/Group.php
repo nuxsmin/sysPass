@@ -49,7 +49,7 @@ class Group
     {
         TaskFactory::$Message->setTask(__FUNCTION__);
         TaskFactory::$Message->setMessage(__('Actualizando IDs de grupos'));
-        TaskFactory::sendTaskMessage();
+        TaskFactory::update();
 
         try {
             DbWrapper::beginTransaction();
@@ -80,7 +80,7 @@ class Group
             DbWrapper::getQuery($Data);
 
             $query = /** @lang SQL */
-                'DELETE FROM UserToGroup WHERE usertogroup_groupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR usertogroup_groupId IS NULL';
+                'DELETE FROM UserToUserGroup WHERE usertogroup_groupId NOT IN (SELECT usergroup_id FROM usrGroups ORDER BY usergroup_id) OR usertogroup_groupId IS NULL';
             $Data->setQuery($query);
             $Data->setParams([]);
 

@@ -33,6 +33,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
+use SP\Services\Account\AccountPasswordRequest;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 
@@ -415,5 +416,50 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryRes['count'] = $Data->getQueryNumRows();
 
         return $queryRes;
+    }
+
+    /**
+     * Obtener los datos relativos a la clave de todas las cuentas.
+     *
+     * @return array Con los datos de la clave
+     */
+    public function getAccountsPassData()
+    {
+        $query = /** @lang SQL */
+            'SELECT id, name, pass, `key`, mPassHash
+            FROM AccountHistory WHERE BIT_LENGTH(pass) > 0';
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+
+        return DbWrapper::getResultsArray($queryData);
+    }
+
+    /**
+     * Actualiza la clave de una cuenta en la BBDD.
+     *
+     * @param AccountPasswordRequest $request
+     * @return bool
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function updatePassword(AccountPasswordRequest $request)
+    {
+        $query = /** @lang SQL */
+            'UPDATE AccountHistory SET 
+            pass = ?,
+            `key` = ?,
+            mPassHash = ?
+            WHERE id = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->addParam($request->pass);
+        $Data->addParam($request->key);
+        $Data->addParam($request->hash);
+        $Data->addParam($request->id);
+        $Data->setOnErrorMessage(__u('Error al actualizar la clave'));
+
+        return DbWrapper::getQuery($Data, $this->db);
     }
 }

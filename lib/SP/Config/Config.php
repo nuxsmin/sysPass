@@ -29,6 +29,7 @@ use SP\Core\Exceptions\ConfigException;
 use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 use SP\Storage\XmlFileStorageInterface;
+use SP\Storage\XmlHandler;
 
 defined('APP_ROOT') || die();
 
@@ -48,7 +49,7 @@ class Config
      */
     private $configData;
     /**
-     * @var XmlFileStorageInterface
+     * @var XmlHandler
      */
     private $fileStorage;
     /**
@@ -153,22 +154,22 @@ class Config
     /**
      * Guardar la configuración
      *
-     * @param ConfigData $Config
+     * @param ConfigData $configData
      * @param bool       $backup
      */
-    public function saveConfig(ConfigData $Config = null, $backup = true)
+    public function saveConfig(ConfigData $configData = null, $backup = true)
     {
-        $ConfigData = null === $Config ? $this->configData : $Config;
-        $ConfigData->setConfigDate(time());
-        $ConfigData->setConfigSaver($this->session->getUserData()->getLogin());
-        $ConfigData->setConfigHash();
+        $configData = null === $configData ? $this->configData : $configData;
+        $configData->setConfigDate(time());
+        $configData->setConfigSaver($this->session->getUserData()->getLogin());
+        $configData->setConfigHash();
 
-        $this->fileStorage->setItems($ConfigData);
+        $this->fileStorage->setItems($configData);
         $this->fileStorage->save('config');
 
-        if ($backup) {
-            $this->backupToDB();
-        }
+//        if ($backup) {
+//            $this->backupToDB();
+//        }
     }
 
     /**

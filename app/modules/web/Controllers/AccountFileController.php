@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Events\Event;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\Html\Html;
@@ -73,7 +74,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
                 $this->view->assign('fileData', $fileData);
                 $this->view->assign('isImage', 1);
 
-                $this->eventDispatcher->notifyEvent('show.accountFile', $this);
+                $this->eventDispatcher->notifyEvent('show.accountFile', new Event($this));
 
                 $this->returnJsonResponseData(['html' => $this->render()]);
             }
@@ -81,12 +82,12 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
             if (mb_strtoupper($fileData->getExtension()) === 'TXT') {
                 $this->view->assign('data', htmlentities($fileData->getContent()));
 
-                $this->eventDispatcher->notifyEvent('show.accountFile', $this);
+                $this->eventDispatcher->notifyEvent('show.accountFile', new Event($this));
 
                 $this->returnJsonResponseData(['html' => $this->render()]);
             }
         } catch (\Exception $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(1, $e->getMessage());
         }
@@ -115,11 +116,11 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
             header('Content-Description: PHP Generated Data');
             header('Content-transfer-encoding: binary');
 
-            $this->eventDispatcher->notifyEvent('download.accountFile', $this);
+            $this->eventDispatcher->notifyEvent('download.accountFile', new Event($this));
 
             exit($fileData->getContent());
         } catch (\Exception $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
         }
     }
 
@@ -179,15 +180,15 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
 
             $this->accountFileService->create($fileData);
 
-            $this->eventDispatcher->notifyEvent('upload.accountFile', $this);
+            $this->eventDispatcher->notifyEvent('upload.accountFile', new Event($this));
 
             $this->returnJsonResponse(0, __u('Archivo guardado'));
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(1, $e->getMessage(), [$e->getHint()]);
         } catch (\Exception $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(1, $e->getMessage());
         }
@@ -244,11 +245,11 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
         try {
             $this->accountFileService->delete($id);
 
-            $this->eventDispatcher->notifyEvent('delete.accountFile', $this);
+            $this->eventDispatcher->notifyEvent('delete.accountFile', new Event($this));
 
             $this->returnJsonResponse(0, __('Archivo Eliminado'));
         } catch (\Exception $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(1, $e->getMessage());
         }
@@ -298,9 +299,9 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
                 return;
             }
 
-            $this->eventDispatcher->notifyEvent('list.accountFile', $this);
+            $this->eventDispatcher->notifyEvent('list.accountFile', new Event($this));
         } catch (\Exception $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }

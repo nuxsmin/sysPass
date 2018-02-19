@@ -25,6 +25,7 @@
 namespace SP\Services\Category;
 
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Category\CategoryRepository;
 use SP\Services\Service;
@@ -115,7 +116,7 @@ class CategoryService extends Service
     /**
      * Get all items from the service's repository
      *
-     * @return array
+     * @return CategoryData[]
      */
     public function getAllBasic()
     {

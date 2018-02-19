@@ -77,7 +77,7 @@ class XmlHandler implements XmlFileStorageInterface
     public function load($node = 'root')
     {
         if (!$this->checkSourceFile()) {
-            throw new FileNotFoundException(SPException::SP_ERROR, sprintf(__('No es posible leer/escribir el archivo: %s', false), $this->file));
+            throw new FileNotFoundException(sprintf(__('No es posible leer/escribir el archivo: %s'), $this->file), SPException::ERROR);
         }
 
         $this->setDOM();
@@ -163,7 +163,7 @@ class XmlHandler implements XmlFileStorageInterface
     public function save($node = 'root')
     {
         if (null === $this->items) {
-            throw new RuntimeException(__('No hay elementos para guardar', false));
+            throw new RuntimeException(__u('No hay elementos para guardar'));
         }
 
         $this->setDOM();

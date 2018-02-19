@@ -203,7 +203,7 @@ class Upgrade
 
         TaskFactory::$Message->setTask(__('Actualizar BBDD'));
         TaskFactory::$Message->setMessage(sprintf('%s : %s', __('Versión'), $version));
-        TaskFactory::sendTaskMessage();
+        TaskFactory::update();
 
         debugLog(__FUNCTION__ . ': ' . $version);
 

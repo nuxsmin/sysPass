@@ -27,6 +27,7 @@ namespace SP\Crypt;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
@@ -130,7 +131,7 @@ class TemporaryMasterPass
         // Guardar la configuración
         $this->configService->saveBatch($configRequest);
 
-        $this->eventDispatcher->notifyEvent('temporaryMasterPass.expired', $this);
+        $this->eventDispatcher->notifyEvent('temporaryMasterPass.expired', new Event($this));
 
         // Log::writeNewLog(__FUNCTION__, __u('Clave temporal caducada'), Log::INFO);
     }

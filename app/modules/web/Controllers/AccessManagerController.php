@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Events\Event;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
@@ -103,7 +104,7 @@ class AccessManagerController extends ControllerBase
             $this->tabsGridHelper->addTab($this->getPublicLinksList());
         }
 
-        $this->eventDispatcher->notifyEvent('show.itemlist.accesses', $this);
+        $this->eventDispatcher->notifyEvent('show.itemlist.accesses', new Event($this));
 
         $this->tabsGridHelper->renderTabs(Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE), Request::analyze('tabIndex', 0));
 

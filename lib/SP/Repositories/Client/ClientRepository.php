@@ -181,7 +181,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
     /**
      * Returns all the items
      *
-     * @return array
+     * @return ClientData[]
      */
     public function getAll()
     {

@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Events\Event;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CustomFieldDefinitionData;
@@ -98,8 +99,10 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
         try {
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.customField.create', $this);
+            $this->eventDispatcher->notifyEvent('show.customField.create', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(1, $e->getMessage());
         }
 
@@ -156,8 +159,10 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.customField.edit', $this);
+            $this->eventDispatcher->notifyEvent('show.customField.edit', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 
@@ -180,11 +185,11 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
 
             $this->deleteCustomFieldsForItem(ActionsInterface::CUSTOMFIELD, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.customField', $this);
+            $this->eventDispatcher->notifyEvent('delete.customField', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo eliminado'));
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -205,13 +210,13 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
 
             $this->customFieldService->create($form->getItemData());
 
-            $this->eventDispatcher->notifyEvent('create.customField', $this);
+            $this->eventDispatcher->notifyEvent('create.customField', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo creado'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -235,13 +240,13 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
 
             $this->customFieldService->update($form->getItemData());
 
-            $this->eventDispatcher->notifyEvent('edit.customField', $this);
+            $this->eventDispatcher->notifyEvent('edit.customField', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo actualizado'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -265,8 +270,10 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.customField', $this);
+            $this->eventDispatcher->notifyEvent('show.customField', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 

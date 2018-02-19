@@ -22,6 +22,225 @@
  */
 
 sysPass.Actions = function (Common) {
+    "use strict";
+
+    const log = Common.log;
+
+    // Variable para almacenar la llamada a setTimeout()
+    let timeout = 0;
+
+    // Atributos de la ordenación de búsquedas
+    const order = {key: 0, dir: 0};
+
+    // Objeto con las URLs de las acciones
+    const ajaxUrl = {
+        entrypoint: "/index.php",
+        doAction: "/index.php",
+        updateItems: "/index.php",
+        user: {
+            savePreferences: "/ajax/ajax_userPrefsSave.php",
+            password: "/ajax/ajax_usrpass.php",
+            passreset: "/ajax/ajax_passReset.php"
+        },
+        main: {
+            login: "/index.php?r=login/login",
+            install: "/ajax/ajax_install.php",
+            upgrade: "/ajax/ajax_upgrade.php",
+            getUpdates: "/index.php?r=index/checkUpdates",
+            task: "/ajax/ajax_task.php"
+        },
+        checks: "/ajax/ajax_checkConnection.php",
+        config: {
+            save: "/ajax/ajax_configSave.php",
+            export: "/ajax/ajax_configSave.php",
+            import: "/ajax/ajax_configSave.php"
+        },
+        file: "/ajax/ajax_filesMgmt.php",
+        link: "/index.php",
+        plugin: "/ajax/ajax_itemSave.php",
+        account: {
+            save: "/index.php",
+            saveFavorite: "/ajax/ajax_itemSave.php",
+            request: "/ajax/ajax_itemSave.php",
+            getFiles: "/index.php",
+            search: "/index.php?r=account/search"
+        },
+        appMgmt: {
+            show: "/index.php",
+            save: "/index.php",
+            search: "/index.php"
+        },
+        eventlog: "/ajax/ajax_eventlog.php",
+        wiki: {
+            show: "/ajax/ajax_wiki.php"
+        },
+        notice: {
+            show: "/ajax/ajax_noticeShow.php",
+            search: "/ajax/ajax_noticeSearch.php"
+        }
+    };
+
+    Object.freeze(ajaxUrl);
+
+    // Función para cargar el contenido de la acción del menú seleccionada
+    const doAction = function (obj, view) {
+        var itemId = obj.itemId !== undefined ? "/" + obj.itemId : "";
+
+        var data = {
+            r: obj.r + itemId,
+            isAjax: 1
+        };
+
+        var opts = Common.appRequests().getRequestOpts();
+        opts.url = ajaxUrl.doAction;
+        opts.method = "get";
+        opts.type = "html";
+        opts.addHistory = true;
+        opts.data = data;
+
+        Common.appRequests().getActionCall(opts, function (response) {
+            var $content = $("#content");
+
+            $content.empty().html(response);
+
+            var views = Common.triggers().views;
+            views.common($content);
+
+            if (view !== undefined && typeof views[view] === "function") {
+                views[view]();
+            }
+
+            var $mdlContent = $(".mdl-layout__content");
+
+            if ($mdlContent.scrollTop() > 0) {
+                $mdlContent.animate({scrollTop: 0}, 1000);
+            }
+        });
+    };
+
+    // Función para cargar el contenido de la acción del menú seleccionada
+    const getContent = function (data, view) {
+        log.info("getContent");
+
+        data.isAjax = 1;
+
+        const opts = Common.appRequests().getRequestOpts();
+        opts.url = ajaxUrl.doAction;
+        opts.method = "get";
+        opts.type = "html";
+        opts.addHistory = true;
+        opts.data = data;
+
+        Common.appRequests().getActionCall(opts, function (response) {
+            const $content = $("#content");
+
+            $content.empty().html(response);
+
+            const views = Common.triggers().views;
+            views.common($content);
+
+            if (view !== undefined && typeof views[view] === "function") {
+                views[view]();
+            }
+
+            const $mdlContent = $(".mdl-layout__content");
+
+            if ($mdlContent.scrollTop() > 0) {
+                $mdlContent.animate({scrollTop: 0}, 1000);
+            }
+        });
+    };
+
+    /**
+     * Mostrar el contenido en una caja flotante
+     *
+     * @param response
+     * @param {Object} callback
+     * @param {function} callback.open
+     * @param {function} callback.close
+     */
+    const showFloatingBox = function (response, callback) {
+        response = response || "";
+
+        $.magnificPopup.open({
+            items: {
+                src: response,
+                type: "inline"
+            },
+            callbacks: {
+                open: function () {
+                    var $boxPopup = $("#box-popup");
+
+                    Common.appTriggers().views.common($boxPopup);
+
+                    $boxPopup.find(":input:text:visible:first").focus();
+
+                    if (callback !== undefined && typeof callback.open === "function") {
+                        callback.open();
+                    }
+                },
+                close: function () {
+                    if (callback !== undefined && typeof callback.close === "function") {
+                        callback.close();
+                    }
+                }
+            },
+            showCloseBtn: false
+        });
+    };
+
+    /**
+     * Mostrar una imagen
+     *
+     * @param $obj
+     * @param response
+     */
+    const showImageBox = function ($obj, response) {
+        const $content = $("<div id=\"box-popup\" class=\"image\">" + response + "</div>");
+        const $image = $content.find("img");
+
+        if ($image.length === 0) {
+            return showFloatingBox(response);
+        }
+
+        $image.hide();
+
+        $.magnificPopup.open({
+            items: {
+                src: $content,
+                type: "inline"
+            },
+            callbacks: {
+                open: function () {
+                    const $popup = this;
+
+                    $image.on("click", function () {
+                        $popup.close();
+                    });
+
+                    setTimeout(function () {
+                        const image = Common.resizeImage($image);
+
+                        $content.css({
+                            backgroundColor: "#fff",
+                            width: image.width,
+                            height: "auto"
+                        });
+
+                        $image.show("slow");
+                    }, 500);
+                }
+            }
+        });
+    };
+
+    /**
+     * Cerrar los diálogos
+     */
+    var closeFloatingBox = function () {
+        $.magnificPopup.close();
+    };
+
     /**
      * Objeto con acciones para las cuentas
      */
@@ -44,7 +263,7 @@ sysPass.Actions = function (Common) {
         delete: function ($obj) {
             log.info("account:delete");
 
-            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[3] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[3] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
@@ -59,7 +278,7 @@ sysPass.Actions = function (Common) {
                 positive: {
                     title: Common.config().LANG[43],
                     onClick: function (e) {
-                        var opts = Common.appRequests().getRequestOpts();
+                        const opts = Common.appRequests().getRequestOpts();
                         opts.url = ajaxUrl.account.save;
                         opts.data = {
                             r: "account/saveDelete/" + $obj.data("item-id"),
@@ -280,224 +499,6 @@ sysPass.Actions = function (Common) {
                 }
             });
         }
-    };
-    "use strict";
-
-    const log = Common.log;
-
-    // Variable para almacenar la llamada a setTimeout()
-    let timeout = 0;
-
-    // Atributos de la ordenación de búsquedas
-    const order = {key: 0, dir: 0};
-
-    // Objeto con las URLs de las acciones
-    const ajaxUrl = {
-        entrypoint: "/index.php",
-        doAction: "/index.php",
-        updateItems: "/index.php",
-        user: {
-            savePreferences: "/ajax/ajax_userPrefsSave.php",
-            password: "/ajax/ajax_usrpass.php",
-            passreset: "/ajax/ajax_passReset.php"
-        },
-        main: {
-            login: "/index.php?r=login/login",
-            install: "/ajax/ajax_install.php",
-            upgrade: "/ajax/ajax_upgrade.php",
-            getUpdates: "/index.php?r=index/checkUpdates",
-            task: "/ajax/ajax_task.php"
-        },
-        checks: "/ajax/ajax_checkConnection.php",
-        config: {
-            save: "/ajax/ajax_configSave.php",
-            export: "/ajax/ajax_configSave.php",
-            import: "/ajax/ajax_configSave.php"
-        },
-        file: "/ajax/ajax_filesMgmt.php",
-        link: "/index.php",
-        plugin: "/ajax/ajax_itemSave.php",
-        account: {
-            save: "/index.php",
-            saveFavorite: "/ajax/ajax_itemSave.php",
-            request: "/ajax/ajax_itemSave.php",
-            getFiles: "/index.php",
-            search: "/index.php?r=account/search"
-        },
-        appMgmt: {
-            show: "/index.php",
-            save: "/index.php",
-            search: "/index.php"
-        },
-        eventlog: "/ajax/ajax_eventlog.php",
-        wiki: {
-            show: "/ajax/ajax_wiki.php"
-        },
-        notice: {
-            show: "/ajax/ajax_noticeShow.php",
-            search: "/ajax/ajax_noticeSearch.php"
-        }
-    };
-
-    Object.freeze(ajaxUrl);
-
-    // Función para cargar el contenido de la acción del menú seleccionada
-    const doAction = function (obj, view) {
-        var itemId = obj.itemId !== undefined ? "/" + obj.itemId : "";
-
-        var data = {
-            r: obj.r + itemId,
-            isAjax: 1
-        };
-
-        var opts = Common.appRequests().getRequestOpts();
-        opts.url = ajaxUrl.doAction;
-        opts.method = "get";
-        opts.type = "html";
-        opts.addHistory = true;
-        opts.data = data;
-
-        Common.appRequests().getActionCall(opts, function (response) {
-            var $content = $("#content");
-
-            $content.empty().html(response);
-
-            var views = Common.triggers().views;
-            views.common($content);
-
-            if (view !== undefined && typeof views[view] === "function") {
-                views[view]();
-            }
-
-            var $mdlContent = $(".mdl-layout__content");
-
-            if ($mdlContent.scrollTop() > 0) {
-                $mdlContent.animate({scrollTop: 0}, 1000);
-            }
-        });
-    };
-
-    // Función para cargar el contenido de la acción del menú seleccionada
-    const getContent = function (data, view) {
-        log.info("getContent");
-
-        data.isAjax = 1;
-
-        var opts = Common.appRequests().getRequestOpts();
-        opts.url = ajaxUrl.doAction;
-        opts.method = "get";
-        opts.type = "html";
-        opts.addHistory = true;
-        opts.data = data;
-
-        Common.appRequests().getActionCall(opts, function (response) {
-            var $content = $("#content");
-
-            $content.empty().html(response);
-
-            var views = Common.triggers().views;
-            views.common($content);
-
-            if (view !== undefined && typeof views[view] === "function") {
-                views[view]();
-            }
-
-            var $mdlContent = $(".mdl-layout__content");
-
-            if ($mdlContent.scrollTop() > 0) {
-                $mdlContent.animate({scrollTop: 0}, 1000);
-            }
-        });
-    };
-
-    /**
-     * Mostrar el contenido en una caja flotante
-     *
-     * @param response
-     * @param {Object} callback
-     * @param {function} callback.open
-     * @param {function} callback.close
-     */
-    const showFloatingBox = function (response, callback) {
-        response = response || "";
-
-        $.magnificPopup.open({
-            items: {
-                src: response,
-                type: "inline"
-            },
-            callbacks: {
-                open: function () {
-                    var $boxPopup = $("#box-popup");
-
-                    Common.appTriggers().views.common($boxPopup);
-
-                    $boxPopup.find(":input:text:visible:first").focus();
-
-                    if (callback !== undefined && typeof callback.open === "function") {
-                        callback.open();
-                    }
-                },
-                close: function () {
-                    if (callback !== undefined && typeof callback.close === "function") {
-                        callback.close();
-                    }
-                }
-            },
-            showCloseBtn: false
-        });
-    };
-
-    /**
-     * Mostrar una imagen
-     *
-     * @param $obj
-     * @param response
-     */
-    const showImageBox = function ($obj, response) {
-        const $content = $("<div id=\"box-popup\" class=\"image\">" + response + "</div>");
-        const $image = $content.find("img");
-
-        if ($image.length === 0) {
-            return showFloatingBox(response);
-        }
-
-        $image.hide();
-
-        $.magnificPopup.open({
-            items: {
-                src: $content,
-                type: "inline"
-            },
-            callbacks: {
-                open: function () {
-                    const $popup = this;
-
-                    $image.on("click", function () {
-                        $popup.close();
-                    });
-
-                    setTimeout(function () {
-                        const image = Common.resizeImage($image);
-
-                        $content.css({
-                            backgroundColor: "#fff",
-                            width: image.width,
-                            height: "auto"
-                        });
-
-                        $image.show("slow");
-                    }, 500);
-                }
-            }
-        });
-    };
-
-    /**
-     * Cerrar los diálogos
-     */
-    var closeFloatingBox = function () {
-        $.magnificPopup.close();
     };
 
     /**
@@ -837,24 +838,25 @@ sysPass.Actions = function (Common) {
      *
      * @type {{save: config.save, backup: config.backup, export: config.export, import: config.import}}
      */
-    var config = {
+    const config = {
         save: function ($obj) {
             log.info("config:save");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.config.save;
-            opts.data = $obj.serialize();
+            tabs.state.update($obj);
 
-            if ($obj.data("type") === "masterpass") {
-                opts.useFullLoading = true;
-            }
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
+            opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
                 if (json.status === 0) {
-                    if ($obj.data("nextaction-id") !== undefined) {
-                        doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                    if (tabs.state.tab.refresh === true) {
+                        getContent({
+                            r: tabs.state.tab.route,
+                            tabIndex: tabs.state.tab.index
+                        });
                     } else if ($obj.data("reload") !== undefined) {
                         setTimeout(function () {
                             Common.redirect("index.php");
@@ -864,7 +866,7 @@ sysPass.Actions = function (Common) {
             });
         },
         masterpass: function ($obj) {
-            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
@@ -881,28 +883,28 @@ sysPass.Actions = function (Common) {
                 positive: {
                     title: Common.config().LANG[43],
                     onClick: function (e) {
-                        var $useTask = $obj.find("input[name='useTask']");
-                        var $taskStatus = $("#taskStatus");
+                        const $useTask = $obj.find("input[name='useTask']");
+                        const $taskStatus = $("#taskStatus");
 
                         $taskStatus.empty().html(Common.config().LANG[62]);
 
                         if ($useTask.length > 0 && $useTask.val() == 1) {
-                            var optsTask = Common.appRequests().getRequestOpts();
+                            const optsTask = Common.appRequests().getRequestOpts();
                             optsTask.url = ajaxUrl.main.task;
                             optsTask.data = {
                                 source: $obj.find("input[name='lock']").val(),
                                 taskId: $obj.find("input[name='taskId']").val()
                             };
 
-                            var task = Common.appRequests().getActionEvent(optsTask, function (result) {
-                                var text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
+                            const task = Common.appRequests().getActionEvent(optsTask, function (result) {
+                                let text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
                                 text += "<br>" + Common.config().LANG[62];
 
                                 $taskStatus.empty().html(text);
                             });
                         }
 
-                        var opts = Common.appRequests().getRequestOpts();
+                        const opts = Common.appRequests().getRequestOpts();
                         opts.url = ajaxUrl.config.save;
                         opts.useFullLoading = true;
                         opts.data = $obj.serialize();
@@ -923,58 +925,61 @@ sysPass.Actions = function (Common) {
         backup: function ($obj) {
             log.info("config:backup");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.config.export;
-            opts.method = "post";
+            tabs.state.update($obj);
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.useFullLoading = true;
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.status === 0 && $obj.data("nextaction-id") !== undefined) {
-                    doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                if (json.status === 0) {
+                    getContent({
+                        r: tabs.state.tab.route,
+                        tabIndex: tabs.state.tab.index
+                    });
                 }
             });
         },
         export: function ($obj) {
             log.info("config:export");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.config.export;
+            tabs.state.update($obj);
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.status === 0 && $obj.data("nextaction-id") !== undefined) {
-                    doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                if (json.status === 0) {
+                    getContent({
+                        r: tabs.state.tab.route,
+                        tabIndex: tabs.state.tab.index
+                    });
                 }
             });
         },
         import: function ($obj) {
             log.info("config:import");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.config.import;
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
-
-                if (json.status === 0 && $obj.data("nextaction-id") !== undefined) {
-                    doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
-                }
             });
         },
         refreshMpass: function ($obj) {
             log.info("config:import");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.config.save;
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.data = {
-                actionId: $obj.data("action-id"),
-                itemId: $obj.data("item-id"),
                 sk: $obj.data("sk"),
                 isAjax: 1
             };
@@ -987,8 +992,6 @@ sysPass.Actions = function (Common) {
 
     /**
      * Objeto con las acciones de los archivos
-     *
-     * @type {{view: file.view, download: file.download, delete: file.delete}}
      */
     const file = {
         view: function ($obj) {
@@ -1122,19 +1125,15 @@ sysPass.Actions = function (Common) {
                 Common.msg.out(json);
 
                 getContent({
-                    r: appMgmt.state.tab.route,
-                    tabIndex: appMgmt.state.tab.index
+                    r: tabs.state.tab.route,
+                    tabIndex: tabs.state.tab.index
                 });
             });
         }
     };
 
 
-    /**
-     * Objeto con acciones sobre elementos de la aplicación
-     */
-    var appMgmt = {
-        refreshTab: true,
+    const tabs = {
         state: {
             tab: {
                 index: 0,
@@ -1143,22 +1142,28 @@ sysPass.Actions = function (Common) {
             },
             itemId: 0,
             update: function ($obj) {
-                var $currentTab = $("#content").find("[id^='tabs-'].is-active");
+                const $currentTab = $("#content").find("[id^='tabs-'].is-active");
 
                 if ($currentTab.length > 0) {
-                    appMgmt.state.tab.refresh = !$obj.data("item-dst");
-                    appMgmt.state.tab.index = $currentTab.data("tab-index");
-                    appMgmt.state.tab.route = $currentTab.data("tab-route");
-                    appMgmt.state.itemId = $obj.data("item-id");
+                    tabs.state.tab.refresh = !$obj.data("item-dst");
+                    tabs.state.tab.index = $currentTab.data("tab-index");
+                    tabs.state.tab.route = $currentTab.data("tab-route");
+                    tabs.state.itemId = $obj.data("item-id");
                 }
             }
-        },
+        }
+    };
+
+    /**
+     * Objeto con acciones sobre elementos de la aplicación
+     */
+    const appMgmt = {
         show: function ($obj) {
             log.info("appMgmt:show");
 
-            appMgmt.state.update($obj);
+            tabs.state.update($obj);
 
-            var opts = Common.appRequests().getRequestOpts();
+            const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.appMgmt.show;
             opts.method = "get";
             opts.data = {
@@ -1176,7 +1181,7 @@ sysPass.Actions = function (Common) {
                     showFloatingBox(json.data.html, {
                         open: function () {
                             if ($itemDst) {
-                                appMgmt.state.tab.refresh = false;
+                                tabs.state.tab.refresh = false;
                             }
                         },
                         close: function () {
@@ -1191,16 +1196,16 @@ sysPass.Actions = function (Common) {
         delete: function ($obj) {
             log.info("appMgmt:delete");
 
-            appMgmt.state.update($obj);
+            tabs.state.update($obj);
 
-            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[12] + "</p></div>";
-            var selection = $obj.data("selection");
-            var items = [];
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[12] + "</p></div>";
+            const selection = $obj.data("selection");
+            const items = [];
 
             // FIXME
             if (selection) {
                 $(selection).find(".is-selected").each(function () {
-                    var $this = $(this);
+                    const $this = $(this);
 
                     items.push($this.data("item-id"));
                 });
@@ -1225,8 +1230,8 @@ sysPass.Actions = function (Common) {
                     onClick: function (e) {
                         e.preventDefault();
 
-                        var opts = Common.appRequests().getRequestOpts();
-                        opts.url = ajaxUrl.appMgmt.save;
+                        const opts = Common.appRequests().getRequestOpts();
+                        opts.url = ajaxUrl.entrypoint;
                         opts.method = "get";
                         opts.data = {
                             r: $obj.data("action-route") + "/" + $obj.data("item-id"),
@@ -1238,8 +1243,8 @@ sysPass.Actions = function (Common) {
                             Common.msg.out(json);
 
                             getContent({
-                                r: appMgmt.state.tab.route,
-                                tabIndex: appMgmt.state.tab.index
+                                r: tabs.state.tab.route,
+                                tabIndex: tabs.state.tab.index
                             });
                         });
                     }
@@ -1249,18 +1254,18 @@ sysPass.Actions = function (Common) {
         save: function ($obj) {
             log.info("appMgmt:save");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.appMgmt.save + "?r=" + $obj.data("route");
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
                 if (json.status === 0) {
-                    if (appMgmt.state.tab.refresh === true) {
+                    if (tabs.state.tab.refresh === true) {
                         getContent({
-                            r: appMgmt.state.tab.route,
-                            tabIndex: appMgmt.state.tab.index
+                            r: tabs.state.tab.route,
+                            tabIndex: tabs.state.tab.index
                         });
                     }
 
@@ -1271,9 +1276,9 @@ sysPass.Actions = function (Common) {
         search: function ($obj) {
             log.info("appMgmt:search");
 
-            var $target = $($obj.data("target"));
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.appMgmt.search + "?r=" + $obj.data("action-route");
+            const $target = $($obj.data("target"));
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.method = "get";
             opts.data = $obj.serialize();
 
@@ -1290,7 +1295,7 @@ sysPass.Actions = function (Common) {
         nav: function ($obj) {
             log.info("appMgmt:nav");
 
-            var $form = $("#" + $obj.data("action-form"));
+            const $form = $("#" + $obj.data("action-form"));
 
             $form.find("[name='start']").val($obj.data("start"));
             $form.find("[name='count']").val($obj.data("count"));

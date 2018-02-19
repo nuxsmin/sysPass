@@ -46,7 +46,7 @@ class Customer
     {
         TaskFactory::$Message->setTask(__FUNCTION__);
         TaskFactory::$Message->setMessage(__('Actualizando IDs de clientes'));
-        TaskFactory::sendTaskMessage();
+        TaskFactory::update();
 
         try {
             DbWrapper::beginTransaction();

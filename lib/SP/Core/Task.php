@@ -62,6 +62,10 @@ class Task
      * @var bool Si se ha inicializado para escribir en el archivo
      */
     protected $initialized = false;
+    /**
+     * @var string
+     */
+    protected $uid;
 
     /**
      * Task constructor.
@@ -74,6 +78,7 @@ class Task
         $this->name = $name;
         $this->taskId = $id;
         $this->initialized = $this->checkFile();
+        $this->uid = $this->genUid();
     }
 
     /**
@@ -107,6 +112,14 @@ class Task
 
         array_map('unlink', glob($filesOut));
         array_map('unlink', glob($filesTask));
+    }
+
+    /**
+     * @return string
+     */
+    public function genUid()
+    {
+        return md5($this->name . $this->taskId);
     }
 
     /**
@@ -215,7 +228,7 @@ class Task
     {
         debugLog('Deregister Task: ' . $this->name);
 
-        unlink($this->fileTask);
+        return unlink($this->fileTask);
     }
 
     /**
@@ -242,10 +255,13 @@ class Task
 
     /**
      * @param int $interval
+     * @return Task
      */
     public function setInterval($interval)
     {
         $this->interval = $interval;
+
+        return $this;
     }
 
     /**
@@ -270,6 +286,7 @@ class Task
      * Es necesario bloquear la sesión para permitir la ejecución de otros scripts
      *
      * @param bool $lockSession Bloquear la sesión
+     * @return Task
      */
     public function register($lockSession = true)
     {
@@ -280,6 +297,8 @@ class Task
         if ($lockSession === true) {
             session_write_close();
         }
+
+        return $this;
     }
 
     /**
@@ -288,5 +307,13 @@ class Task
     public function getFileTask()
     {
         return $this->fileTask;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUid()
+    {
+        return $this->uid;
     }
 }

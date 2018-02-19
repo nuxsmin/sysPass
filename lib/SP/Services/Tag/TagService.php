@@ -26,6 +26,7 @@ namespace SP\Services\Tag;
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
+use SP\DataModel\TagData;
 use SP\Repositories\Tag\TagRepository;
 use SP\Services\Service;
 use SP\Services\ServiceItemTrait;
@@ -110,7 +111,7 @@ class TagService extends Service
     /**
      * Get all items from the service's repository
      *
-     * @return array
+     * @return TagData[]
      */
     public function getAllBasic()
     {

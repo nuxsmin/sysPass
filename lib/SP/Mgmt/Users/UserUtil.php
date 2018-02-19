@@ -161,7 +161,7 @@ class UserUtil
         $query = /** @lang SQL */
             'SELECT user_id, user_login, user_name, user_email 
             FROM usrData 
-            LEFT JOIN UserToGroup ON usertogroup_userId = user_id
+            LEFT JOIN UserToUserGroup ON usertogroup_userId = user_id
             WHERE user_email IS NOT NULL 
             AND user_groupId = ? OR usertogroup_groupId = ?
             AND user_isDisabled = 0

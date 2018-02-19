@@ -27,6 +27,7 @@ namespace SP\Services\Client;
 use SP\Account\AccountUtil;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
+use SP\DataModel\ClientData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Client\ClientRepository;
 use SP\Services\Service;
@@ -116,7 +117,7 @@ class ClientService extends Service
     /**
      * Get all items from the service's repository
      *
-     * @return array
+     * @return ClientData[]
      */
     public function getAllBasic()
     {

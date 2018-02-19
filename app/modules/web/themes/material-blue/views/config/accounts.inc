@@ -2,7 +2,7 @@
 
 <form method="post" name="frmAccounts" id="frmAccounts" class="form-action"
       data-onsubmit="config/save"
-      data-type="general"
+      data-action-route="configAccount/save"
       data-reload="1"
       data-hash="">
 

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -34,9 +34,8 @@ interface EventDispatcherInterface extends \SplSubject
     /**
      * Notificar a los observadores y establecer el estado
      *
-     * @param string $event Nombre del evento
-     * @param mixed $object Objeto del evento
-     * @return
+     * @param string $event  Nombre del evento
+     * @param Event  $object Objeto del evento
      */
-    public function notifyEvent($event, $object);
+    public function notifyEvent($event, Event $object);
 }

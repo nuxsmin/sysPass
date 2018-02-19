@@ -64,7 +64,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     public function delete($id)
     {
         $query = /** @lang SQL */
-            'DELETE FROM UserToGroup WHERE userGroupId = ?';
+            'DELETE FROM UserToUserGroup WHERE userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -89,7 +89,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
         }
 
         $query = /** @lang SQL */
-            'INSERT INTO UserToGroup (userId, userGroupId) VALUES ' . $this->getParamsFromArray($this->itemData->getUsers(), '(?,?)');
+            'INSERT INTO UserToUserGroup (userId, userGroupId) VALUES ' . $this->getParamsFromArray($this->itemData->getUsers(), '(?,?)');
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -113,7 +113,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT userGroupId, userId FROM UserToGroup WHERE userGroupId = ?';
+            'SELECT userGroupId, userId FROM UserToUserGroup WHERE userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setMapClassName($this->getDataModel());
@@ -140,7 +140,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     public function checkInUse($id)
     {
         $query = /** @lang SQL */
-            'SELECT userGroupId FROM UserToGroup WHERE userGroupId = ?';
+            'SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -188,7 +188,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     public function checkUserInGroup($groupId, $userId)
     {
         $query = /** @lang SQL */
-            'SELECT userGroupId FROM UserToGroup WHERE userGroupId = ? AND userId = ?';
+            'SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = ? AND userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -209,7 +209,7 @@ class GroupUsers extends GroupUsersBase implements ItemInterface, ItemSelectInte
     public function getGroupsForUser($userId)
     {
         $query = /** @lang SQL */
-            'SELECT userGroupId AS groupId FROM UserToGroup WHERE userId = ?';
+            'SELECT userGroupId AS groupId FROM UserToUserGroup WHERE userId = ?';
 
         $Data = new QueryData();
         $Data->setQuery($query);

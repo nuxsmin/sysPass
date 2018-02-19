@@ -99,14 +99,12 @@ class Crypt
     {
         try {
             if ($securedKey instanceof Key) {
-                $key = $securedKey;
+                return Crypto::decrypt($data, $securedKey);
             } elseif (null !== $password && $securedKey instanceof KeyProtectedByPassword) {
-                $key = self::unlockSecuredKey($securedKey, $password);
-            } else {
-                $key = Key::loadFromAsciiSafeString($securedKey);
+                return Crypto::decrypt($data, self::unlockSecuredKey($securedKey, $password));
             }
 
-            return Crypto::decrypt($data, $key);
+            return Crypto::decrypt($data, Key::loadFromAsciiSafeString($securedKey));
         } catch (CryptoException $e) {
             debugLog($e->getMessage());
 

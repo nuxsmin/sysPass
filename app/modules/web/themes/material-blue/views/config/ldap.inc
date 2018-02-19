@@ -6,7 +6,7 @@
 
 <form method="post" name="frmLdap" id="frmLdap" class="form-action"
       data-onsubmit="config/save"
-      data-type="ldap"
+      data-action-route="configLdap/save"
       data-hash="">
     <table id="tblLdap" class="data tblConfig round">
         <?php if ($ldapIsAvailable || $isDemoMode): ?>
@@ -312,10 +312,6 @@
             </tr>
         <?php endif; ?>
     </table>
-
-    <input type="hidden" name="type" value="ldap"/>
-    <input type="hidden" name="sk" value="">
-    <input type="hidden" name="isAjax" value="1"/>
 </form>
 
 <div class="tab-actions">
@@ -331,7 +327,7 @@
             <button type="button"
                     class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                     data-onclick="appMgmt/ldapSync"
-                    data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::LDAP_SYNC; ?>"
+                    data-action-route="configLdap/sync"
                     title="<?php echo __('Importar usuarios de LDAP'); ?>">
                 <i class="material-icons">get_app</i>
             </button>
@@ -340,6 +336,7 @@
             <button type="button"
                     class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
                     data-onclick="checks/ldap"
+                    data-action-route="configLdap/check"
                     data-src="#frmLdap"
                     title="<?php echo $icons->getIconCheck()->getTitle(); ?>">
                 <i class="material-icons"><?php echo $icons->getIconCheck()->getIcon(); ?></i>

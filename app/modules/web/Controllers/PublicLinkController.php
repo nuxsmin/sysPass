@@ -24,9 +24,9 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Events\Event;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkListData;
@@ -98,8 +98,10 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
         try {
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.publicLink.create', $this);
+            $this->eventDispatcher->notifyEvent('show.publicLink.create', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(1, $e->getMessage());
         }
 
@@ -150,15 +152,11 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
         try {
             $this->publicLinkService->refresh($id);
 
-            $this->eventDispatcher->notifyEvent('edit.publicLink.refresh', $this);
+            $this->eventDispatcher->notifyEvent('edit.publicLink.refresh', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace actualizado'));
-        } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
-
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (CryptoException $e) {
-            debugLog($e->getMessage(), true);
+        } catch (\Exception $e) {
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -183,8 +181,10 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.publicLink.edit', $this);
+            $this->eventDispatcher->notifyEvent('show.publicLink.edit', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 
@@ -208,11 +208,11 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
 
             $this->deleteCustomFieldsForItem(ActionsInterface::PUBLICLINK, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.publicLink', $this);
+            $this->eventDispatcher->notifyEvent('delete.publicLink', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace eliminado'));
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -223,7 +223,6 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveCreateAction()
     {
@@ -238,17 +237,13 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
             $this->publicLinkService->create($form->getItemData());
 //            $this->publicLinkService->logAction($id, ActionsInterface::PUBLICLINK_CREATE);
 
-            $this->eventDispatcher->notifyEvent('create.publicLink', $this);
+            $this->eventDispatcher->notifyEvent('create.publicLink', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace creado'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (CryptoException $e) {
-            debugLog($e->getMessage(), true);
-
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+        } catch (\Exception $e) {
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -282,8 +277,10 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.publicLink', $this);
+            $this->eventDispatcher->notifyEvent('show.publicLink', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 

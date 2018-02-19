@@ -34,49 +34,92 @@ use SP\Core\Messages\TaskMessage;
 class TaskFactory
 {
     /**
-     * @var TaskMessage
+     * @var Task[]
      */
-    public static $Message;
-    /**
-     * @var Task
-     */
-    private static $Task;
+    private static $tasks = [];
 
     /**
      * Crear una tarea para la actualización de estado de la actualización
      *
      * @param $name
      * @param $id
+     * @return Task
      */
-    public static function createTask($name, $id)
+    public static function create($name, $id)
     {
-        if (self::$Task === null) {
-            self::$Task = new Task($name, $id);
-            self::$Task->register(false);
+        return self::add((new Task($name, $id))->register(false));
+    }
+
+    /**
+     * @param Task $task
+     * @return Task
+     */
+    private static function add(Task $task)
+    {
+        if (isset(self::$tasks[$task->getTaskId()])) {
+            throw new \RuntimeException('Task already registered');
         }
 
-        self::$Message = new TaskMessage();
-        self::$Message->setTaskId($id);
+        self::$tasks[$task->getTaskId()] = $task;
+
+        return $task;
     }
 
     /**
      * Finalizar la tarea
+     *
+     * @param $id
      */
-    public static function endTask()
+    public static function end($id)
     {
-        if (self::$Task !== null) {
-            self::$Task->end(false);
-            self::$Task = null;
+        self::get($id)->end(false);
+
+        self::delete($id);
+    }
+
+    /**
+     * @param $id
+     * @return Task
+     */
+    private static function get($id)
+    {
+        if (isset(self::$tasks[$id])) {
+            return self::$tasks[$id];
+        } else {
+            throw new \RuntimeException('Task not registered');
         }
     }
 
     /**
-     * Enviar un mensaje de actualización a la tarea
+     * @param $id
      */
-    public static function sendTaskMessage()
+    private static function delete($id)
     {
-        if (self::$Task !== null) {
-            self::$Task->writeJsonStatusAndFlush(self::$Message);
+        if (!isset(self::$tasks[$id])) {
+            throw new \RuntimeException('Task not registered');
         }
+
+        unset(self::$tasks[$id]);
+    }
+
+    /**
+     * @param string $taskId
+     * @param string $task
+     * @return TaskMessage
+     */
+    public static function createMessage($taskId, $task)
+    {
+        return new TaskMessage($taskId, $task);
+    }
+
+    /**
+     * Enviar un mensaje de actualización a la tarea
+     *
+     * @param string      $id
+     * @param TaskMessage $taskMessage
+     */
+    public static function update($id, TaskMessage $taskMessage)
+    {
+        self::get($id)->writeJsonStatusAndFlush($taskMessage);
     }
 }

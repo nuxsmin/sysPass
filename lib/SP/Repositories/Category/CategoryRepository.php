@@ -176,7 +176,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
     /**
      * Returns all the items
      *
-     * @return array
+     * @return CategoryData[]
      */
     public function getAll()
     {

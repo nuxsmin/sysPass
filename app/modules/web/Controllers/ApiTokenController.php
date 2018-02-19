@@ -28,6 +28,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Events\Event;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AuthTokenData;
@@ -100,8 +101,10 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         try {
             $this->setViewData();
 
-            $this->eventDispatcher->notifyEvent('show.authToken.create', $this);
+            $this->eventDispatcher->notifyEvent('show.authToken.create', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(1, $e->getMessage());
         }
 
@@ -158,8 +161,10 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.authToken.edit', $this);
+            $this->eventDispatcher->notifyEvent('show.authToken.edit', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 
@@ -182,11 +187,11 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
 
             $this->deleteCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.authToken', $this);
+            $this->eventDispatcher->notifyEvent('delete.authToken', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización eliminada'));
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -213,21 +218,21 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
 
             $this->addCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
 
-            $this->eventDispatcher->notifyEvent('create.authToken', $this);
+            $this->eventDispatcher->notifyEvent('create.authToken', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización creada'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (EnvironmentIsBrokenException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (CryptoException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -252,11 +257,11 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
             if ($form->isRefresh()){
                 $this->authTokenService->refreshAndUpdate($form->getItemData());
 
-                $this->eventDispatcher->notifyEvent('refresh.authToken', $this);
+                $this->eventDispatcher->notifyEvent('refresh.authToken', new Event($this));
             } else {
                 $this->authTokenService->update($form->getItemData());
 
-                $this->eventDispatcher->notifyEvent('edit.authToken', $this);
+                $this->eventDispatcher->notifyEvent('edit.authToken', new Event($this));
             }
 
             $this->updateCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
@@ -265,11 +270,11 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (SPException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         } catch (CryptoException $e) {
-            debugLog($e->getMessage(), true);
+            processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
@@ -293,8 +298,10 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         try {
             $this->setViewData($id);
 
-            $this->eventDispatcher->notifyEvent('show.authToken', $this);
+            $this->eventDispatcher->notifyEvent('show.authToken', new Event($this));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
 

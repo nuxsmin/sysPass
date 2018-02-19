@@ -35,6 +35,7 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Session\Session;
+use SP\DataModel\AccountData;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\ItemSearchData;
 use SP\Log\Log;
@@ -44,6 +45,7 @@ use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Repositories\Account\AccountToUserRepository;
 use SP\Services\Config\ConfigService;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -83,9 +85,9 @@ class AccountService extends Service implements AccountServiceInterface
     public function initialize()
     {
         $this->accountRepository = $this->dic->get(AccountRepository::class);
-        $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
         $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
-        $this->accountToTagRepository = $this->dic->get(AccountToUserRepository::class);
+        $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
+        $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
     }
 
     /**
@@ -194,8 +196,7 @@ class AccountService extends Service implements AccountServiceInterface
      * @param string $pass
      * @param string $masterPass Clave maestra a utilizar
      * @return array
-     * @throws QueryException
-     * @throws SPException
+     * @throws ServiceException
      */
     public function getPasswordEncrypted($pass, $masterPass = null)
     {
@@ -206,12 +207,12 @@ class AccountService extends Service implements AccountServiceInterface
             $out['pass'] = Crypt::encrypt($pass, $out['key'], $masterPass);
 
             if (strlen($pass) > 1000 || strlen($out['key']) > 1000) {
-                throw new QueryException(__u('Error interno'), SPException::ERROR);
+                throw new ServiceException(__u('Error interno'), SPException::ERROR);
             }
 
             return $out;
         } catch (CryptoException $e) {
-            throw new SPException(__u('Error interno'), SPException::ERROR);
+            throw new ServiceException(__u('Error interno'), SPException::ERROR);
         }
     }
 
@@ -326,16 +327,18 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param AccountRequest $accountRequest
-     * @throws QueryException
+     * @param bool           $addHistory
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Services\Config\ParameterNotFoundException
      */
-    public function editPassword(AccountRequest $accountRequest)
+    public function editPassword(AccountRequest $accountRequest, $addHistory = true)
     {
-        $this->addHistory($accountRequest->id);
+        if ($addHistory) {
+            $this->addHistory($accountRequest->id);
+        }
 
         $pass = $this->getPasswordEncrypted($accountRequest->pass);
 
@@ -344,6 +347,17 @@ class AccountService extends Service implements AccountServiceInterface
 
         $this->accountRepository->editPassword($accountRequest);
     }
+
+    /**
+     * @param AccountPasswordRequest $accountRequest
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest)
+    {
+        $this->accountRepository->updatePassword($accountRequest);
+    }
+
 
     /**
      * @param $historyId
@@ -434,7 +448,7 @@ class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @return array
+     * @return AccountData[]
      */
     public function getAllBasic()
     {
@@ -470,5 +484,15 @@ class AccountService extends Service implements AccountServiceInterface
     public function getDataForLink($id)
     {
         return $this->accountRepository->getDataForLink($id);
+    }
+
+    /**
+     * Obtener los datos relativos a la clave de todas las cuentas.
+     *
+     * @return array Con los datos de la clave
+     */
+    public function getAccountsPassData()
+    {
+        return $this->accountRepository->getAccountsPassData();
     }
 }

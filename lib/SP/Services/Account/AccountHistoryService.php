@@ -129,4 +129,23 @@ class AccountHistoryService extends Service
         return $this->accountHistoryRepository->create($itemData);
     }
 
+    /**
+     * @return array
+     */
+    public function getAccountsPassData()
+    {
+        return $this->accountHistoryRepository->getAccountsPassData();
+    }
+
+    /**
+     * @param AccountPasswordRequest $accountRequest
+     * @return bool
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function updatePasswordMasterPass(AccountPasswordRequest $accountRequest)
+    {
+        return $this->accountHistoryRepository->updatePassword($accountRequest);
+    }
+
 }

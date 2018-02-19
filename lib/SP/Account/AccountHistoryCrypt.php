@@ -135,7 +135,7 @@ class AccountHistoryCrypt
         $AccountDataBase->hash = Hash::hashKey($currentMasterPass);
 
         TaskFactory::$Message->setTask(__('Actualizar Clave Maestra (H)'));
-        TaskFactory::sendTaskMessage();
+        TaskFactory::update();
 
         $counter = 0;
         $startTime = time();
@@ -158,7 +158,7 @@ class AccountHistoryCrypt
                 TaskFactory::$Message->setProgress(round(($counter * 100) / $numAccounts, 2));
                 TaskFactory::$Message->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
 
-                TaskFactory::sendTaskMessage();
+                TaskFactory::update();
 
                 debugLog(TaskFactory::$Message->composeText());
             }
@@ -263,7 +263,7 @@ class AccountHistoryCrypt
         $AccountDataBase->hash = Hash::hashKey($newMasterPass);
 
         TaskFactory::$Message->setTask(__('Actualizar Clave Maestra (H)'));
-        TaskFactory::sendTaskMessage();
+        TaskFactory::update();
 
         $counter = 0;
         $startTime = time();
@@ -286,7 +286,7 @@ class AccountHistoryCrypt
                 TaskFactory::$Message->setProgress(round(($counter * 100) / $numAccounts, 2));
                 TaskFactory::$Message->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
 
-                TaskFactory::sendTaskMessage();
+                TaskFactory::update();
 
                 debugLog(TaskFactory::$Message->composeText());
             }
