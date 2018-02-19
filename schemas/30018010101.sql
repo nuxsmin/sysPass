@@ -763,17 +763,17 @@ FOREIGN KEY (userId) REFERENCES User (id)
 ALTER TABLE AccountToFavorite
   ADD PRIMARY KEY (accountId, userId);
 
-CREATE INDEX fk_AccountToGroup_userGroupId
+CREATE INDEX fk_AccountToUserGroup_userGroupId
   ON AccountToUserGroup (userGroupId);
 
 ALTER TABLE AccountToUserGroup
-  ADD CONSTRAINT fk_AccountToGroup_accountId
+  ADD CONSTRAINT fk_AccountToUserGroup_accountId
 FOREIGN KEY (accountId) REFERENCES Account (id)
   ON UPDATE CASCADE
   ON DELETE CASCADE;
 
 ALTER TABLE AccountToUserGroup
-  ADD CONSTRAINT fk_AccountToGroup_userGroupId
+  ADD CONSTRAINT fk_AccountToUserGroup_userGroupId
 FOREIGN KEY (userGroupId) REFERENCES UserGroup (id)
   ON UPDATE CASCADE
   ON DELETE CASCADE;
