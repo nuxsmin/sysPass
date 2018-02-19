@@ -69,11 +69,6 @@ defined('APP_ROOT') || die();
 class Bootstrap
 {
     /**
-     * Partial initialized controllers
-     */
-    const PARTIAL_INIT = ['resource', 'install', 'bootstrap'];
-
-    /**
      * @var string The installation path on the server (e.g. /srv/www/syspass)
      */
     public static $SERVERROOT = '';
@@ -174,7 +169,7 @@ class Bootstrap
             debugLog('Routing error: ' . $err_msg);
 
             /** @var Exception|\Throwable $err */
-            debugLog('Routing error: ' . formatTrace($err->getTrace()));
+            debugLog('Routing error: ' . $err->getTraceAsString());
 
             /** @var Klein $router */
             $router->response()->body($err_msg);
@@ -227,7 +222,7 @@ class Bootstrap
 
                     return call_user_func_array([new $controllerClass(self::$container, $method), $method], $params);
                 } catch (\Exception $e) {
-                    debugLog($e->getMessage(), true);
+                    processException($e);
 
                     return $e->getMessage();
                 }

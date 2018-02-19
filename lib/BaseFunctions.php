@@ -55,10 +55,14 @@ function debugLog($data, $printLastCaller = false)
  */
 function processException(\Exception $exception)
 {
-    debugLog(__($exception->getMessage()), true);
+    debugLog(__($exception->getMessage()));
+    debugLog($exception->getTraceAsString());
 
-    if ($exception->getPrevious() !== null) {
-        debugLog(__($exception->getPrevious()->getMessage()));
+    $previous = $exception->getPrevious();
+
+    if ($previous !== null) {
+        debugLog(__($previous->getMessage()));
+        debugLog($previous->getTraceAsString());
     }
 }
 
