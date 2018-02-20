@@ -39,7 +39,7 @@ CREATE TABLE `Account` (
   PRIMARY KEY (`id`),
   KEY `IDX_categoryId` (`categoryId`),
   KEY `IDX_userId` (`userGroupId`,`userId`),
-  KEY `IDX_customerId` (`clientId`),
+  KEY `IDX_clientId` (`clientId`),
   KEY `fk_Account_userId` (`userId`),
   KEY `fk_Account_userEditId` (`userEditId`),
   CONSTRAINT `fk_Account_categoryId` FOREIGN KEY (`categoryId`) REFERENCES `Category` (`id`),
@@ -539,7 +539,7 @@ SET character_set_client = utf8;
   `countView` tinyint NOT NULL,
   `userGroupName` tinyint NOT NULL,
   `categoryName` tinyint NOT NULL,
-  `customerName` tinyint NOT NULL,
+  `clientName` tinyint NOT NULL,
   `num_files` tinyint NOT NULL
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
@@ -569,7 +569,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 SQL SECURITY DEFINER */
-/*!50001 VIEW `account_search_v` AS select distinct `Account`.`id` AS `id`,`Account`.`clientId` AS `clientId`,`Account`.`categoryId` AS `categoryId`,`Account`.`name` AS `name`,`Account`.`login` AS `login`,`Account`.`url` AS `url`,`Account`.`notes` AS `notes`,`Account`.`userId` AS `userId`,`Account`.`userGroupId` AS `userGroupId`,`Account`.`otherUserEdit` AS `otherUserEdit`,`Account`.`otherUserGroupEdit` AS `otherUserGroupEdit`,`Account`.`isPrivate` AS `isPrivate`,`Account`.`isPrivateGroup` AS `isPrivateGroup`,`Account`.`passDate` AS `passDate`,`Account`.`passDateChange` AS `passDateChange`,`Account`.`parentId` AS `parentId`,`Account`.`countView` AS `countView`,`ug`.`name` AS `userGroupName`,`Category`.`name` AS `categoryName`,`Client`.`name` AS `customerName`,(select count(0) from `AccountFile` where `AccountFile`.`accountId` = `Account`.`id`) AS `num_files` from (((`Account` join `Category` on(`Account`.`categoryId` = `Category`.`id`)) join `UserGroup` `ug` on(`Account`.`userGroupId` = `ug`.`id`)) join `Client` on(`Client`.`id` = `Account`.`clientId`)) */;
+/*!50001 VIEW `account_search_v` AS select distinct `Account`.`id` AS `id`,`Account`.`clientId` AS `clientId`,`Account`.`categoryId` AS `categoryId`,`Account`.`name` AS `name`,`Account`.`login` AS `login`,`Account`.`url` AS `url`,`Account`.`notes` AS `notes`,`Account`.`userId` AS `userId`,`Account`.`userGroupId` AS `userGroupId`,`Account`.`otherUserEdit` AS `otherUserEdit`,`Account`.`otherUserGroupEdit` AS `otherUserGroupEdit`,`Account`.`isPrivate` AS `isPrivate`,`Account`.`isPrivateGroup` AS `isPrivateGroup`,`Account`.`passDate` AS `passDate`,`Account`.`passDateChange` AS `passDateChange`,`Account`.`parentId` AS `parentId`,`Account`.`countView` AS `countView`,`ug`.`name` AS `userGroupName`,`Category`.`name` AS `categoryName`,`Client`.`name` AS `clientName`,(select count(0) from `AccountFile` where `AccountFile`.`accountId` = `Account`.`id`) AS `num_files` from (((`Account` join `Category` on(`Account`.`categoryId` = `Category`.`id`)) join `UserGroup` `ug` on(`Account`.`userGroupId` = `ug`.`id`)) join `Client` on(`Client`.`id` = `Account`.`clientId`)) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;

@@ -211,7 +211,7 @@ class AccountSearchItem
     /**
      * @return string
      */
-    public function getShortCustomerName()
+    public function getShortClientName()
     {
         return Html::truncate($this->accountSearchVData->getClientName(), $this->textMaxLength / 3);
     }
@@ -219,7 +219,7 @@ class AccountSearchItem
     /**
      * @return string
      */
-    public function getCustomerLink()
+    public function getClientLink()
     {
         return self::$wikiEnabled ? $this->configData->getWikiSearchurl() . $this->accountSearchVData->getClientName() : '';
     }

@@ -274,7 +274,7 @@ class AccountUtil
         }
 
         $queryFilter->addFilter(/** @lang SQL */
-            '(A.isPrivate = 0 OR (A.isPrivate = 1 AND A.userId = ?)) AND (A.isPrivateGroup = 0 OR (A.isPrivateGroup = 1 AND A.userGroupId = ?))', [$userData->getId(), $userData->getUserGroupId()]);
+            '(A.isPrivate IS NULL OR A.isPrivate = 0 OR (A.isPrivate = 1 AND A.userId = ?)) AND (A.isPrivateGroup IS NULL OR A.isPrivateGroup = 0 OR (A.isPrivateGroup = 1 AND A.userGroupId = ?))', [$userData->getId(), $userData->getUserGroupId()]);
 
         return $queryFilter;
     }
@@ -318,7 +318,7 @@ class AccountUtil
         }
 
         $queryFilter->addFilter(/** @lang SQL */
-            '(AH.isPrivate = 0 OR (AH.isPrivate = 1 AND AH.userId = ?)) AND (AH.isPrivateGroup = 0 OR (AH.isPrivateGroup = 1 AND AH.userGroupId = ?))', [$userData->getId(), $userData->getUserGroupId()]);
+            '(AH.isPrivate IS NULL OR AH.isPrivate = 0 OR (AH.isPrivate = 1 AND AH.userId = ?)) AND (AH.isPrivateGroup IS NULL OR AH.isPrivateGroup = 0 OR (AH.isPrivateGroup = 1 AND AH.userGroupId = ?))', [$userData->getId(), $userData->getUserGroupId()]);
 
         return $queryFilter;
     }

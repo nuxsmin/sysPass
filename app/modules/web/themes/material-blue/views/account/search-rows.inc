@@ -19,14 +19,14 @@
                 <div class="label-row-up">
                     <div class="field-customer label-field">
                         <div class="field-name-hidden"><?php echo __('Cliente'); ?></div>
-                        <?php if (!empty($accountSearchItem->getCustomerLink())): ?>
-                            <a href="<?php echo $accountSearchItem->getCustomerLink(); ?>" target="blank"
+                        <?php if (!empty($accountSearchItem->getClientLink())): ?>
+                            <a href="<?php echo $accountSearchItem->getClientLink(); ?>" target="blank"
                                title="<?php echo __('Buscar en Wiki'); ?>">
                                 <span class="mdl-chip mdl-chip--contact">
                                     <span style="background-color: <?php echo $accountSearchItem->getColor(); ?>;"
                                           class="mdl-chip__contact mdl-color-text--white"><?php echo mb_ucfirst($accountSearchData->getClientName()); ?></span>
                                     <span class="mdl-chip__text"
-                                          title="<?php echo $accountSearchData->getClientName(); ?>"><?php echo $accountSearchItem->getShortCustomerName(); ?></span>
+                                          title="<?php echo $accountSearchData->getClientName(); ?>"><?php echo $accountSearchItem->getShortClientName(); ?></span>
                                 </span>
                             </a>
                         <?php else: ?>
@@ -34,7 +34,7 @@
                                 <span style="background-color: <?php echo $accountSearchItem->getColor(); ?>;"
                                       class="mdl-chip__contact mdl-color-text--white"><?php echo mb_ucfirst($accountSearchData->getClientName()); ?></span>
                                 <span class="mdl-chip__text"
-                                      title="<?php echo $accountSearchData->getClientName(); ?>"><?php echo $accountSearchItem->getShortCustomerName(); ?></span>
+                                      title="<?php echo $accountSearchData->getClientName(); ?>"><?php echo $accountSearchItem->getShortClientName(); ?></span>
                             </span>
                         <?php endif; ?>
                     </div>
