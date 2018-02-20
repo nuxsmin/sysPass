@@ -48,14 +48,14 @@ class FileImport
      *
      * @var string
      */
-    protected $tmpFile = '';
+    protected $tmpFile;
 
     /**
      * Tipo Mime del archivo
      *
      * @var string
      */
-    protected $fileType = '';
+    protected $fileType;
 
     /**
      * FileImport constructor.
@@ -107,7 +107,7 @@ class FileImport
 
         if (!file_exists($this->tmpFile) || !is_readable($this->tmpFile)) {
             // Registramos el máximo tamaño permitido por PHP
-            Util::getMaxUpload();
+            debugLog('Max. upload size: ' . Util::getMaxUpload());
 
             throw new SPException(
                 __u('Error interno al leer el archivo'),
@@ -150,9 +150,7 @@ class FileImport
     {
         $this->autodetectEOL();
 
-        $this->fileContent = file($this->tmpFile, FILE_SKIP_EMPTY_LINES);
-
-        if ($this->fileContent === false) {
+        if (($this->fileContent = file($this->tmpFile, FILE_SKIP_EMPTY_LINES)) === false) {
             throw new SPException(
                 __u('Error interno al leer el archivo'),
                 SPException::ERROR,
@@ -178,9 +176,7 @@ class FileImport
     {
         $this->autodetectEOL();
 
-        $this->fileContent = file_get_contents($this->tmpFile);
-
-        if ($this->fileContent === false) {
+        if (($this->fileContent = file_get_contents($this->tmpFile)) === false) {
             throw new SPException(
                 __u('Error interno al leer el archivo'),
                 SPException::ERROR,

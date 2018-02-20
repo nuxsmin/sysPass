@@ -59,12 +59,12 @@ class XmlFileImport
     {
         $this->readXMLFile();
 
-        $tags = $this->xmlDOM->getElementsByTagName('Generator');
+        $nodes = $this->xmlDOM->getElementsByTagName('Generator');
 
-        /** @var \DOMElement[] $tags */
-        foreach ($tags as $tag) {
-            if ($tag->nodeValue === 'KeePass' || $tag->nodeValue === 'sysPass') {
-                return strtolower($tag->nodeValue);
+        /** @var \DOMElement[] $nodes */
+        foreach ($nodes as $node) {
+            if ($node->nodeValue === 'KeePass' || $node->nodeValue === 'sysPass') {
+                return strtolower($node->nodeValue);
             }
         }
 
@@ -77,15 +77,13 @@ class XmlFileImport
                 default:
                     break;
             }
-        } else {
-            throw new ImportException(
-                __u('Archivo XML no soportado'),
-                ImportException::ERROR,
-                __u('No es posible detectar la aplicación que exportó los datos')
-            );
         }
 
-        return '';
+        throw new ImportException(
+            __u('Archivo XML no soportado'),
+            ImportException::ERROR,
+            __u('No es posible detectar la aplicación que exportó los datos')
+        );
     }
 
     /**
@@ -109,23 +107,18 @@ class XmlFileImport
 
     /**
      * Leer la cabecera del archivo XML y obtener patrones de aplicaciones conocidas.
-     *
-     * @return bool
      */
     protected function parseFileHeader()
     {
-        $handle = @fopen($this->fileImport->getTmpFile(), 'r');
-        $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
-
-        if ($handle) {
+        if (($handle = @fopen($this->fileImport->getTmpFile(), 'r')) !== false) {
             // No. de líneas a leer como máximo
             $maxLines = 5;
             $count = 0;
 
             while (($buffer = fgets($handle, 4096)) !== false && $count <= $maxLines) {
-                if (preg_match($headersRegex, $buffer, $app)) {
+                if (preg_match('/(?P<header>KEEPASSX_DATABASE|revelationdata)/i', $buffer, $matches)) {
                     fclose($handle);
-                    return strtolower($app[0]);
+                    return strtolower($matches['header']);
                 }
                 $count++;
             }
@@ -133,7 +126,7 @@ class XmlFileImport
             fclose($handle);
         }
 
-        return false;
+        return null;
     }
 
     /**

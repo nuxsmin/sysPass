@@ -50,6 +50,7 @@ class ImportService extends Service
      *
      * @param ImportParams $importParams
      * @param FileImport   $fileImport
+     * @return int
      * @throws \Exception
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -70,12 +71,13 @@ class ImportService extends Service
                 throw new ImportException(__u('No es posible iniciar una transacción'));
             }
 
-            $import->doImport();
+            $counter = $import->doImport()->getCounter();
 
             if (!DbWrapper::endTransaction($db)) {
                 throw new ImportException(__u('No es posible finalizar una transacción'));
             }
 
+            return $counter;
 //            $LogMessage->addDetails(__('Cuentas importadas'), $Import->getCounter());
         } catch (\Exception $e) {
             if (DbWrapper::rollbackTransaction($db)) {

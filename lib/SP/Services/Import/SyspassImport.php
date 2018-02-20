@@ -319,11 +319,11 @@ class SyspassImport extends XmlImportBase implements ImportInterface
                                 $accountRequest->login = $node->nodeValue;
                                 break;
                             case 'categoryId';
-                                $accountRequest->categoryId = $this->categories[(int)$node->nodeValue];
+                                $accountRequest->categoryId = isset($this->categories[(int)$node->nodeValue]) ? $this->categories[(int)$node->nodeValue] : null;
                                 break;
                             case 'clientId';
                             case 'customerId';
-                                $accountRequest->clientId = $this->clients[(int)$node->nodeValue];
+                                $accountRequest->clientId = isset($this->clients[(int)$node->nodeValue]) ? $this->clients[(int)$node->nodeValue] : null;
                                 break;
                             case 'url';
                                 $accountRequest->url = $node->nodeValue;

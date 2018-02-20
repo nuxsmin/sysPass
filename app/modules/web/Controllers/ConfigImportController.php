@@ -62,9 +62,13 @@ class ConfigImportController extends SimpleControllerBase
 
         try {
             $importService = $this->dic->get(ImportService::class);
-            $importService->doImport($importParams, new FileImport($this->router->request()->files()->get('inFile')));
+            $counter = $importService->doImport($importParams, new FileImport($this->router->request()->files()->get('inFile')));
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Importación finalizada'), [__u('Revise el registro de eventos para más detalles')]);
+            if ($counter > 0) {
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Importación finalizada'), [__u('Revise el registro de eventos para más detalles')]);
+            } else {
+                $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('No se importaron cuentas'), [__u('Revise el registro de eventos para más detalles')]);
+            }
         } catch (\Exception $e) {
             processException($e);
 
