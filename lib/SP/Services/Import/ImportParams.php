@@ -22,13 +22,13 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Import;
+namespace SP\Services\Import;
 
 
 /**
  * Class ImportParams
  *
- * @package SP\Import
+ * @package SP\Services\Import
  */
 class ImportParams
 {

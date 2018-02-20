@@ -63,7 +63,9 @@ class BootstrapController extends SimpleControllerBase
             'plugins' => [],
             'loggedin' => $this->session->isLoggedIn(),
             'authbasic_autologin' => Browser::getServerAuthUser() && $configData->isAuthBasicAutoLoginEnabled(),
-            'pk' => $this->session->getPublicKey() ?: (new CryptPKI())->getPublicKey()
+            'pk' => $this->session->getPublicKey() ?: (new CryptPKI())->getPublicKey(),
+            'import_allowed_exts' => ['CSV', 'XML'],
+            'files_allowed_exts' => $configData->getFilesAllowedExts()
         ];
 
         Response::printJson($data, 0);

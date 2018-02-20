@@ -22,11 +22,11 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Import;
+namespace SP\Services\Import;
 
 use DOMElement;
 use DOMXPath;
-use SP\DataModel\AccountExtData;
+use SP\Account\AccountRequest;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 
@@ -35,53 +35,51 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de importar cuentas desde KeePass
  */
-class KeepassImport extends ImportBase
+class KeepassImport extends XmlImportBase implements ImportInterface
 {
-    use XmlImportTrait;
-
-    /**
-     * @var int
-     */
-    protected $customerId = 0;
-
     /**
      * Iniciar la importación desde KeePass
      *
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return ImportInterface
      */
     public function doImport()
     {
-        $customerData = new ClientData(null, 'KeePass');
-        $this->addCustomer($customerData);
-
-        $this->customerId = $customerData->getId();
-
         $this->process();
+
+        return $this;
     }
 
     /**
      * Obtener los grupos y procesar lan entradas de KeePass.
+     *
+     * @throws \SP\Core\Exceptions\SPException
      */
     protected function process()
     {
+        $clientId = $this->addClient(new ClientData(null, 'KeePass'));
+
         foreach ($this->getItems() as $group => $entry) {
-            $CategoryData = new CategoryData(null, $group);
-            $this->addCategory($CategoryData);
+            try {
+                $categoryData = new CategoryData(null, $group);
+                $this->addCategory($categoryData);
 
-            if (count($entry) > 0) {
-                foreach ($entry as $account) {
-                    $AccountData = new AccountExtData();
-                    $AccountData->setNotes($account['Notes']);
-                    $AccountData->setPass($account['Password']);
-                    $AccountData->setName($account['Title']);
-                    $AccountData->setUrl($account['URL']);
-                    $AccountData->setLogin($account['UserName']);
-                    $AccountData->setCategoryId($CategoryData->getId());
-                    $AccountData->setClientId($this->customerId);
+                if (count($entry) > 0) {
+                    foreach ($entry as $account) {
+                        $accountRequest = new AccountRequest();
+                        $accountRequest->notes = $account['Notes'];
+                        $accountRequest->pass = $account['Password'];
+                        $accountRequest->name = $account['Title'];
+                        $accountRequest->url = $account['URL'];
+                        $accountRequest->login = $account['UserName'];
+                        $accountRequest->categoryId = $categoryData->getId();
+                        $accountRequest->clientId = $clientId;
 
-                    $this->addAccount($AccountData);
+                        $this->addAccount($accountRequest);
+                    }
                 }
+            } catch (\Exception $e) {
+                processException($e);
             }
         }
     }
@@ -94,11 +92,11 @@ class KeepassImport extends ImportBase
     protected function getItems()
     {
         $DomXpath = new DOMXPath($this->xmlDOM);
-        $Tags = $DomXpath->query('/KeePassFile/Root/Group//Group|/KeePassFile/Root/Group//Entry');
+        $tags = $DomXpath->query('/KeePassFile/Root/Group//Group|/KeePassFile/Root/Group//Entry');
         $items = [];
 
-        /** @var DOMElement[] $Tags */
-        foreach ($Tags as $tag) {
+        /** @var DOMElement[] $tags */
+        foreach ($tags as $tag) {
             if ($tag->nodeType === 1) {
                 if ($tag->nodeName === 'Entry') {
                     $path = $tag->getNodePath();

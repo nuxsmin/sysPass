@@ -93,8 +93,6 @@ class CategoryService extends Service
      * @param $itemData
      * @return mixed
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
     public function create($itemData)
     {

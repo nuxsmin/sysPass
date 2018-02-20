@@ -188,8 +188,8 @@ class DbWrapper
      * @param QueryData         $queryData Los datos para realizar la consulta
      * @param DatabaseInterface $db
      * @return bool
-     * @throws ConstraintException
      * @throws QueryException
+     * @throws ConstraintException
      */
     public static function getQuery(QueryData $queryData, DatabaseInterface $db = null)
     {
@@ -220,7 +220,13 @@ class DbWrapper
 
             switch ($e->getCode()) {
                 case 23000:
-                    throw new ConstraintException(__u('Restricción de integridad'), SPException::ERROR, $e->getMessage(), $e->getCode());
+                    throw new ConstraintException(
+                        __u('Restricción de integridad'),
+                        SPException::ERROR,
+                        $e->getMessage(),
+                        $e->getCode(),
+                        $e
+                    );
             }
 
             throw new QueryException($errorMessage, SPException::ERROR, $e->getMessage(), $e->getCode());
@@ -240,6 +246,7 @@ class DbWrapper
      *
      * @param DatabaseInterface $db
      * @return bool
+     * @throws SPException
      */
     public static function beginTransaction(DatabaseInterface $db)
     {
@@ -253,6 +260,7 @@ class DbWrapper
      *
      * @param DatabaseInterface $db
      * @return bool
+     * @throws SPException
      */
     public static function endTransaction(DatabaseInterface $db)
     {
@@ -266,6 +274,7 @@ class DbWrapper
      *
      * @param DatabaseInterface $db
      * @return bool
+     * @throws SPException
      */
     public static function rollbackTransaction(DatabaseInterface $db)
     {

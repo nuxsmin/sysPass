@@ -1,0 +1,131 @@
+<?php
+
+/**
+ * sysPass
+ *
+ * @author    nuxsmin
+ * @link      http://syspass.org
+ * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Services\Import;
+
+use SP\Services\Service;
+use SP\Storage\Database;
+use SP\Storage\DbWrapper;
+
+defined('APP_ROOT') || die();
+
+/**
+ * Esta clase es la encargada de importar cuentas.
+ */
+class ImportService extends Service
+{
+    /**
+     * @var ImportParams
+     */
+    protected $importParams;
+    /**
+     * @var FileImport
+     */
+    protected $fileImport;
+
+    /**
+     * Iniciar la importación de cuentas.
+     *
+     * @param ImportParams $importParams
+     * @param FileImport   $fileImport
+     * @throws \Exception
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function doImport(ImportParams $importParams, FileImport $fileImport)
+    {
+        $this->importParams = $importParams;
+        $this->fileImport = $fileImport;
+
+//        $LogMessage->setAction(__('Importar Cuentas', false));
+
+        $import = $this->selectImportType();
+
+        $db = $this->dic->get(Database::class);
+
+        try {
+            if (!DbWrapper::beginTransaction($db)) {
+                throw new ImportException(__u('No es posible iniciar una transacción'));
+            }
+
+            $import->doImport();
+
+            if (!DbWrapper::endTransaction($db)) {
+                throw new ImportException(__u('No es posible finalizar una transacción'));
+            }
+
+//            $LogMessage->addDetails(__('Cuentas importadas'), $Import->getCounter());
+        } catch (\Exception $e) {
+            if (DbWrapper::rollbackTransaction($db)) {
+                debugLog('Rollback');
+            }
+
+//            $LogMessage->addDescription($e->getMessage());
+//            $LogMessage->addDetails(__('Ayuda', false), $e->getHint());
+//            $Log->setLogLevel(Log::ERROR);
+//            $Log->writeLog();
+
+            throw $e;
+        }
+
+
+//        $LogMessage->addDescription(__('Importación finalizada', false));
+//        $LogMessage->addDescription(__('Revise el registro de eventos para más detalles', false));
+    }
+
+    /**
+     * @return ImportInterface
+     * @throws ImportException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function selectImportType()
+    {
+        switch ($this->fileImport->getFileType()) {
+            case 'text/csv':
+            case 'application/vnd.ms-excel':
+                return new CsvImport($this->fileImport, $this->importParams);
+                break;
+            case 'text/xml':
+                return new XmlImport(new XmlFileImport($this->fileImport), $this->importParams);
+                break;
+        }
+
+        throw new ImportException(
+            sprintf(__('Tipo mime no soportado ("%s")'), $this->fileImport->getFileType()),
+            ImportException::ERROR,
+            __u('Compruebe el formato del archivo')
+        );
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        set_time_limit(0);
+    }
+}

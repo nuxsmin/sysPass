@@ -72,8 +72,8 @@
             <div class="lowres-title"><?php echo __('Archivo'); ?></div>
 
             <div id="drop-import-files" class="round active-tooltip dropzone"
-                 data-files-ext="csv,xml"
-                 title="<?php echo __('Soltar archivo aquí o click para seleccionar'); ?>">
+                 title="<?php echo __('Soltar archivo aquí o click para seleccionar'); ?>"
+                 data-action-route="configImport/import">
                 <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>
             </div>
             <form method="post" enctype="multipart/form-data" name="upload_form" id="fileUploadForm">

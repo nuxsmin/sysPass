@@ -26,8 +26,6 @@ namespace SP\Controller;
 
 use SP\Account\AccountCrypt;
 use SP\Account\AccountHistoryCrypt;
-use SP\Config\Config;
-use SP\Config\ConfigData;
 use SP\Config\ConfigDB;
 use SP\Core\ActionsInterface;
 use SP\Core\Backup;
@@ -43,15 +41,14 @@ use SP\Core\TaskFactory;
 use SP\Core\Traits\InjectableTrait;
 use SP\Core\XmlExport;
 use SP\Http\Request;
-use SP\Import\Import;
-use SP\Import\ImportParams;
 use SP\Log\Email;
 use SP\Log\Log;
 use SP\Mgmt\CustomFields\CustomFieldsUtil;
 use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
+use SP\Services\Import\ImportParams;
+use SP\Services\Import\ImportService;
 use SP\Storage\DbWrapper;
-use SP\Util\Checks;
 use SP\Util\Json;
 use SP\Util\Util;
 
@@ -710,7 +707,7 @@ class ConfigActionController implements ItemControllerInterface
         $ImportParams->setImportMasterPwd(Request::analyzeEncrypted('importMasterPwd'));
         $ImportParams->setCsvDelimiter(Request::analyze('csvDelimiter'));
 
-        $Import = new Import($ImportParams);
+        $Import = new ImportService($ImportParams);
         $LogMessage = $Import->doImport($_FILES['inFile']);
 
         $this->JsonResponse->setDescription($LogMessage->getHtmlDescription(true));

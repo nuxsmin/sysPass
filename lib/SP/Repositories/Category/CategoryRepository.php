@@ -48,8 +48,6 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @param CategoryData $itemData
      * @return mixed
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
     public function create($itemData)
     {

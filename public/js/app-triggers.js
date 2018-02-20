@@ -332,7 +332,8 @@ sysPass.Triggers = function (Common) {
             if ($dropFiles.length > 0) {
                 const upload = Common.fileUpload($dropFiles);
 
-                upload.url = Common.appActions().ajaxUrl.config.import;
+                upload.url = Common.appActions().ajaxUrl.entrypoint + "?r=" + $dropFiles.data("action-route");
+                upload.allowedExts = Common.config().IMPORT_ALLOWED_EXTS;
                 upload.beforeSendAction = function () {
                     upload.setRequestData({
                         sk: Common.sk.get(),

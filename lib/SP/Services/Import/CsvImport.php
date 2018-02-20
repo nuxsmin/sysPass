@@ -22,24 +22,28 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Import;
+namespace SP\Services\Import;
+
+defined('APP_ROOT') || die();
 
 /**
- * Interface ImportInterface
+ * Class CsvImport para importar cuentas desde archivos CSV
  *
- * @package Import
+ * @package SP
  */
-interface ImportInterface
+class CsvImport extends CsvImportBase implements ImportInterface
 {
     /**
-     * Iniciar la importación
-     */
-    public function doImport();
-
-    /**
-     * Devolver el contador de objetos importados
+     * Iniciar la importación desde XML.
      *
-     * @return int
+     * @throws \SP\Core\Exceptions\SPException
      */
-    public function getCounter();
+    public function doImport()
+    {
+//            $this->LogMessage->addDescription(sprintf(__('Formato detectado: %s'), 'CSV'));
+        $this->fileImport->readFileToArray();
+        $this->processAccounts();
+
+        return $this;
+    }
 }

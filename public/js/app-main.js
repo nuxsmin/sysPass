@@ -368,7 +368,8 @@ sysPass.Main = function () {
                 return requestData;
             },
             beforeSendAction: "",
-            url: ""
+            url: "",
+            allowedExts: []
         };
 
         // Subir un archivo
@@ -418,10 +419,8 @@ sysPass.Main = function () {
         };
 
         const checkFileExtension = function (name) {
-            const file_exts_ok = $obj.data("files-ext").toLowerCase().split(",");
-
-            for (let i = 0; i <= file_exts_ok.length; i++) {
-                if (name.indexOf(file_exts_ok[i]) !== -1) {
+            for (let ext in options.allowedExts) {
+                if (name.indexOf(options.allowedExts[ext]) !== -1){
                     return true;
                 }
             }
@@ -440,7 +439,7 @@ sysPass.Main = function () {
                 const file = filesArray[i];
                 if (checkFileSize(file.size)) {
                     msg.error(config.LANG[18] + "<br>" + file.name + " (Max: " + config.MAX_FILE_SIZE + ")");
-                } else if (!checkFileExtension(file.name)) {
+                } else if (!checkFileExtension(file.name.toUpperCase())) {
                     msg.error(config.LANG[19] + "<br>" + file.name);
                 } else {
                     sendFile(filesArray[i]);
@@ -557,7 +556,9 @@ sysPass.Main = function () {
         COOKIES_ENABLED: false,
         PLUGINS: [],
         LOGGEDIN: false,
-        AUTHBASIC_AUTOLOGIN: false
+        AUTHBASIC_AUTOLOGIN: false,
+        FILES_ALLOWED_EXTS: "",
+        IMPORT_ALLOWED_EXTS: []
     };
 
     // Atributos del generador de claves
@@ -791,6 +792,8 @@ sysPass.Main = function () {
             config.PLUGINS = json.plugins;
             config.LOGGEDIN = json.loggedin;
             config.AUTHBASIC_AUTOLOGIN = json.authbasic_autologin;
+            config.IMPORT_ALLOWED_EXTS = json.import_allowed_exts;
+            config.FILES_ALLOWED_EXTS = json.files_allowed_exts;
 
             Object.freeze(config);
         });

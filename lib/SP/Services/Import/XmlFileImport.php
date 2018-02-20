@@ -22,9 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Import;
-
-use SP\Core\Exceptions\SPException;
+namespace SP\Services\Import;
 
 /**
  * Class XmlFileImport
@@ -36,7 +34,7 @@ class XmlFileImport
     /**
      * @var FileImport
      */
-    protected $FileImport;
+    protected $fileImport;
     /**
      * @var \DOMDocument
      */
@@ -45,17 +43,17 @@ class XmlFileImport
     /**
      * XmlFileImport constructor.
      *
-     * @param FileImport $FileImport
+     * @param FileImport $fileImport
      */
-    public function __construct(FileImport $FileImport)
+    public function __construct(FileImport $fileImport)
     {
-        $this->FileImport = $FileImport;
+        $this->fileImport = $fileImport;
     }
 
     /**
      * Detectar la aplicación que generó el XML.
      *
-     * @throws SPException
+     * @throws ImportException
      */
     public function detectXMLFormat()
     {
@@ -80,8 +78,10 @@ class XmlFileImport
                     break;
             }
         } else {
-            throw new SPException(
-                __('Archivo XML no soportado', false), SPException::CRITICAL, __('No es posible detectar la aplicación que exportó los datos', false)
+            throw new ImportException(
+                __u('Archivo XML no soportado'),
+                ImportException::ERROR,
+                __u('No es posible detectar la aplicación que exportó los datos')
             );
         }
 
@@ -91,16 +91,18 @@ class XmlFileImport
     /**
      * Leer el archivo a un objeto XML.
      *
-     * @throws SPException
+     * @throws ImportException
      */
     protected function readXMLFile()
     {
         // Cargar el XML con DOM
         $this->xmlDOM = new \DOMDocument();
 
-        if ($this->xmlDOM->load($this->FileImport->getTmpFile()) === false) {
-            throw new SPException(
-                __('Error interno', false), SPException::CRITICAL, __('No es posible procesar el archivo XML', false)
+        if ($this->xmlDOM->load($this->fileImport->getTmpFile()) === false) {
+            throw new ImportException(
+                __u('Error interno'),
+                ImportException::ERROR,
+                __u('No es posible procesar el archivo XML')
             );
         }
     }
@@ -112,7 +114,7 @@ class XmlFileImport
      */
     protected function parseFileHeader()
     {
-        $handle = @fopen($this->FileImport->getTmpFile(), 'r');
+        $handle = @fopen($this->fileImport->getTmpFile(), 'r');
         $headersRegex = '/(KEEPASSX_DATABASE|revelationdata)/i';
 
         if ($handle) {

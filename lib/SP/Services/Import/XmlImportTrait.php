@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Import;
+namespace SP\Services\Import;
 
 use SP\Core\Exceptions\SPException;
 
@@ -55,7 +55,7 @@ trait XmlImportTrait
      * @param string $childNodeName Nombre de los nodos hijos
      * @param string $callback      Método a ejecutar
      * @param bool   $required      Indica si el nodo es requerido
-     * @throws SPException
+     * @throws ImportException
      */
     protected function getNodesData($nodeName, $childNodeName, $callback, $required = true)
     {
@@ -63,22 +63,25 @@ trait XmlImportTrait
 
         if ($ParentNode->length === 0) {
             if ($required === true) {
-                throw new SPException(
-                    __('Formato de XML inválido', false), SPException::WARNING, sprintf(__('El nodo "%s" no existe'), $nodeName));
+                throw new ImportException(
+                    __u('Formato de XML inválido'),
+                    SPException::WARNING,
+                    sprintf(__('El nodo "%s" no existe'), $nodeName)
+                );
             }
 
             return;
         }
 
         if (!is_callable([$this, $callback])) {
-            throw new SPException(__('Método inválido', false), SPException::WARNING);
+            throw new ImportException(__u('Método inválido'), SPException::WARNING);
         }
 
         /** @var \DOMElement $nodes */
         foreach ($ParentNode as $nodes) {
             /** @var \DOMElement $Account */
-            foreach ($nodes->getElementsByTagName($childNodeName) as $Node) {
-                $this->$callback($Node);
+            foreach ($nodes->getElementsByTagName($childNodeName) as $node) {
+                $this->$callback($node);
             }
         }
     }

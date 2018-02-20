@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Import;
+namespace SP\Services\Import;
 
 use SP\Core\Exceptions\SPException;
 use SP\Util\Util;
@@ -63,7 +63,7 @@ class FileImport
      * @param array $fileData Datos del archivo a importar
      * @throws SPException
      */
-    public function __construct(&$fileData)
+    public function __construct($fileData)
     {
         try {
             $this->checkFile($fileData);
@@ -78,11 +78,14 @@ class FileImport
      * @param array $fileData con los datos del archivo
      * @throws SPException
      */
-    private function checkFile(&$fileData)
+    private function checkFile($fileData)
     {
         if (!is_array($fileData)) {
             throw new SPException(
-                __('Archivo no subido correctamente', false), SPException::CRITICAL, __('Verifique los permisos del usuario del servidor web', false));
+                __u('Archivo no subido correctamente'),
+                SPException::ERROR,
+                __u('Verifique los permisos del usuario del servidor web')
+            );
         }
 
         if ($fileData['name']) {
@@ -91,7 +94,9 @@ class FileImport
 
             if ($fileExtension !== 'CSV' && $fileExtension !== 'XML') {
                 throw new SPException(
-                    __('Tipo de archivo no soportado', false), SPException::CRITICAL, __('Compruebe la extensión del archivo', false)
+                    __u('Tipo de archivo no soportado'),
+                    SPException::ERROR,
+                    __u('Compruebe la extensión del archivo')
                 );
             }
         }
@@ -105,7 +110,9 @@ class FileImport
             Util::getMaxUpload();
 
             throw new SPException(
-                __('Error interno al leer el archivo', false), SPException::CRITICAL, __('Compruebe la configuración de PHP para subir archivos', false)
+                __u('Error interno al leer el archivo'),
+                SPException::ERROR,
+                __u('Compruebe la configuración de PHP para subir archivos')
             );
         }
     }
@@ -147,7 +154,9 @@ class FileImport
 
         if ($this->fileContent === false) {
             throw new SPException(
-                __('Error interno al leer el archivo', false), SPException::CRITICAL, __('Compruebe los permisos del directorio temporal', false)
+                __u('Error interno al leer el archivo'),
+                SPException::ERROR,
+                __u('Compruebe los permisos del directorio temporal')
             );
         }
     }
@@ -173,7 +182,9 @@ class FileImport
 
         if ($this->fileContent === false) {
             throw new SPException(
-                __('Error interno al leer el archivo', false), SPException::CRITICAL, __('Compruebe los permisos del directorio temporal', false)
+                __u('Error interno al leer el archivo'),
+                SPException::ERROR,
+                __u('Compruebe los permisos del directorio temporal')
             );
         }
     }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,10 +22,10 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Import;
+namespace SP\Services\Import;
 
 use SimpleXMLElement;
-use SP\DataModel\AccountExtData;
+use SP\Account\AccountRequest;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 
@@ -33,31 +33,30 @@ defined('APP_ROOT') || die();
 
 /**
  * Esta clase es la encargada de importar cuentas desde KeePassX
+ *
+ * @todo Use xmlDOM
  */
-class KeepassXImport extends ImportBase
+class KeepassXImport extends XmlImportBase implements ImportInterface
 {
-    use XmlImportTrait;
-
     /**
      * @var int
      */
-    protected $customerId = 0;
+    protected $clientId;
 
     /**
      * Iniciar la importación desde KeePassX.
      *
      * @throws \SP\Core\Exceptions\SPException
-     * @return bool
      * @throws \SP\Core\Exceptions\InvalidClassException
+     * @return ImportInterface
      */
     public function doImport()
     {
-        $customerData = new ClientData(null, 'KeePassX');
-        $this->addCustomer($customerData);
+        $this->clientId = $this->addClient(new ClientData(null, 'KeePassX'));
 
-        $this->customerId = $customerData->getId();
+        $this->processCategories($this->xmlDOM);
 
-        $this->processCategories($this->xml);
+        return $this;
     }
 
     /**
@@ -75,11 +74,8 @@ class KeepassXImport extends ImportBase
                     // Analizar grupo
                     if ($node->group->entry) {
                         // Crear la categoría
-                        $CategoryData = new CategoryData(null, $group->title, 'KeePassX');
-                        $this->addCategory($CategoryData);
-
                         // Crear cuentas
-                        $this->processAccounts($group->entry, $CategoryData->getId());
+                        $this->processAccounts($group->entry, $this->addCategory(new CategoryData(null, $group->title, 'KeePassX')));
                     }
 
                     if ($group->group) {
@@ -90,11 +86,8 @@ class KeepassXImport extends ImportBase
             }
 
             if ($node->entry) {
-                $CategoryData = new CategoryData(null, $node->title, 'KeePassX');
-                $this->addCategory($CategoryData);
-
                 // Crear cuentas
-                $this->processAccounts($node->entry, $CategoryData->getId());
+                $this->processAccounts($node->entry, $this->addCategory(new CategoryData(null, $node->title, 'KeePassX')));
             }
         }
     }
@@ -102,9 +95,8 @@ class KeepassXImport extends ImportBase
     /**
      * Obtener los datos de las entradas de KeePass.
      *
-     * @param SimpleXMLElement $entries El objeto XML con las entradas
-     * @param int $categoryId Id de la categoría
-     * @throws \SP\Core\Exceptions\SPException
+     * @param SimpleXMLElement $entries    El objeto XML con las entradas
+     * @param int              $categoryId Id de la categoría
      */
     protected function processAccounts(SimpleXMLElement $entries, $categoryId)
     {
@@ -115,16 +107,20 @@ class KeepassXImport extends ImportBase
             $notes = isset($entry->comment) ? (string)$entry->comment : '';
             $username = isset($entry->username) ? (string)$entry->username : '';
 
-            $AccountData = new AccountExtData();
-            $AccountData->setPass($password);
-            $AccountData->setNotes($notes);
-            $AccountData->setName($name);
-            $AccountData->setUrl($url);
-            $AccountData->setLogin($username);
-            $AccountData->setClientId($this->customerId);
-            $AccountData->setCategoryId($categoryId);
+            $accountRequest = new AccountRequest();
+            $accountRequest->pass = $password;
+            $accountRequest->notes = $notes;
+            $accountRequest->name = $name;
+            $accountRequest->url = $url;
+            $accountRequest->login = $username;
+            $accountRequest->clientId = $this->clientId;
+            $accountRequest->categoryId = $categoryId;
 
-            $this->addAccount($AccountData);
+            try {
+                $this->addAccount($accountRequest);
+            } catch (\Exception $e) {
+                processException($e);
+            }
         }
     }
 }

@@ -22,9 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Import;
-
-use SP\Core\Messages\LogMessage;
+namespace SP\Services\Import;
 
 defined('APP_ROOT') || die();
 
@@ -39,75 +37,66 @@ class XmlImport implements ImportInterface
     /**
      * @var FileImport
      */
-    protected $File;
+    protected $xmlFileImport;
     /**
      * @var ImportParams
      */
-    protected $ImportParams;
-    /**
-     * @var LogMessage
-     */
-    protected $LogMessage;
-    /**
-     * @var ImportBase
-     */
-    protected $Import;
+    protected $importParams;
 
     /**
      * XmlImport constructor.
      *
-     * @param FileImport   $File
-     * @param ImportParams $ImportParams
-     * @param LogMessage   $LogMessage
+     * @param XmlFileImport $xmlFileImport
+     * @param ImportParams  $importParams
      */
-    public function __construct(FileImport $File, ImportParams $ImportParams, LogMessage $LogMessage)
+    public function __construct(XmlFileImport $xmlFileImport, ImportParams $importParams)
     {
-        $this->File = $File;
-        $this->ImportParams = $ImportParams;
-        $this->LogMessage = $LogMessage;
+        $this->xmlFileImport = $xmlFileImport;
+        $this->importParams = $importParams;
     }
 
     /**
      * Iniciar la importación desde XML.
      *
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws ImportException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @return ImportInterface
      */
     public function doImport()
     {
-        $XmlFileImport = new XmlFileImport($this->File);
+        $format = $this->xmlFileImport->detectXMLFormat();
 
-        $format = $XmlFileImport->detectXMLFormat();
-
-        switch ($format) {
-            case 'syspass':
-                $this->Import = new SyspassImport();
-                break;
-            case 'keepass':
-                $this->Import = new KeepassImport();
-                break;
-            case 'keepassx':
-                $this->Import = new KeepassXImport();
-                break;
-            default:
-                return;
-        }
-
-        $this->Import->setImportParams($this->ImportParams);
-        $this->Import->setXmlDOM($XmlFileImport->getXmlDOM());
-        $this->Import->setLogMessage($this->LogMessage);
-
-        $this->LogMessage->addDescription(sprintf(__('Formato detectado: %s'), mb_strtoupper($format)));
-
-        $this->Import->doImport();
+//        $this->LogMessage->addDescription(sprintf(__('Formato detectado: %s'), mb_strtoupper($format)));
+        return $this->selectImportType($format)->doImport();
     }
 
     /**
-     * Devolver el contador de objetos importados
-     *
-     * @return int
+     * @param $format
+     * @return KeepassImport|KeepassXImport|SyspassImport
+     * @throws ImportException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function selectImportType($format)
+    {
+        switch ($format) {
+            case 'syspass':
+                return new SyspassImport($this->xmlFileImport, $this->importParams);
+            case 'keepass':
+                return new KeepassImport($this->xmlFileImport, $this->importParams);
+            case 'keepassx':
+                return new KeepassXImport($this->xmlFileImport, $this->importParams);
+        }
+
+        throw new ImportException(__u('Formato no detectado'));
+    }
+
+    /**
+     * @throws ImportException
      */
     public function getCounter()
     {
-        return $this->Import->getCounter();
+        throw new ImportException(__u('Not implemented'));
     }
 }
