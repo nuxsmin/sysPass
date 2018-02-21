@@ -53,15 +53,15 @@ class CategoryData extends DataModelBase implements DataModelInterface
     /**
      * categoryData constructor.
      *
-     * @param int    $category_id
-     * @param string $category_name
-     * @param string $category_description
+     * @param int    $id
+     * @param string $name
+     * @param string $description
      */
-    public function __construct($category_id = null, $category_name = null, $category_description = null)
+    public function __construct($id = null, $name = null, $description = null)
     {
-        $this->id = $category_id;
-        $this->name = $category_name;
-        $this->description = $category_description;
+        $this->id = $id;
+        $this->name = $name;
+        $this->description = $description;
     }
 
     /**

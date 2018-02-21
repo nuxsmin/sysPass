@@ -26,6 +26,9 @@ namespace SP\Services\Import;
 
 use SP\Account\AccountRequest;
 use SP\Bootstrap;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\Services\Account\AccountService;
@@ -56,11 +59,15 @@ abstract class CsvImportBase
      * @var FileImport
      */
     protected $fileImport;
+    /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
 
     /**
      * ImportBase constructor.
      *
-     * @param FileImport   $fileImport
+     * @param FileImport $fileImport
      * @param ImportParams $importParams
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -75,6 +82,7 @@ abstract class CsvImportBase
         $this->categoryService = $dic->get(CategoryService::class);
         $this->clientService = $dic->get(ClientService::class);
         $this->tagService = $dic->get(TagService::class);
+        $this->eventDispatcher = $dic->get(EventDispatcher::class);
     }
 
     /**
@@ -97,6 +105,7 @@ abstract class CsvImportBase
      * Obtener los datos de las entradas de sysPass y crearlas
      *
      * @throws ImportException
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function processAccounts()
     {
@@ -140,9 +149,13 @@ abstract class CsvImportBase
                 $this->addAccount($accountRequest);
             } catch (\Exception $e) {
                 processException($e);
-//                $this->LogMessage->addDetails(__('Error importando cuenta', false), $accountName);
-//                $this->LogMessage->addDetails(__('Error procesando línea', false), $line);
-//                $this->LogMessage->addDetails(__('Error', false), $e->getMessage());
+
+                $this->eventDispatcher->notifyEvent('exception',
+                    new Event($e,
+                        EventMessage::factory()
+                            ->addDetail(__u('Error importando cuenta'), $accountName)
+                            ->addDetail(__u('Error procesando línea'), $line))
+                );
             }
         }
     }

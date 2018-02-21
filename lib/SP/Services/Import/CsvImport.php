@@ -24,6 +24,9 @@
 
 namespace SP\Services\Import;
 
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
+
 defined('APP_ROOT') || die();
 
 /**
@@ -40,7 +43,12 @@ class CsvImport extends CsvImportBase implements ImportInterface
      */
     public function doImport()
     {
-//            $this->LogMessage->addDescription(sprintf(__('Formato detectado: %s'), 'CSV'));
+        $this->eventDispatcher->notifyEvent('run.import.csv',
+            new Event($this,
+                EventMessage::factory()
+                    ->addDescription(sprintf(__('Formato detectado: %s'), 'CSV')))
+        );
+
         $this->fileImport->readFileToArray();
         $this->processAccounts();
 

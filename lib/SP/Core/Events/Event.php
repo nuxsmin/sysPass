@@ -24,6 +24,7 @@
 
 namespace SP\Core\Events;
 
+use InvalidArgumentException;
 
 /**
  * Class Event
@@ -39,18 +40,23 @@ class Event
     /**
      * @var array
      */
-    private $data;
+    private $eventMessage;
 
     /**
      * Event constructor.
      *
      * @param object $source
-     * @param array  $data
+     * @param EventMessage $eventMessage
+     * @throws InvalidArgumentException
      */
-    public function __construct($source, array $data = [])
+    public function __construct($source, EventMessage $eventMessage = null)
     {
+        if (!is_object($source)) {
+            throw new InvalidArgumentException(__u('Es necesario un objeto'));
+        }
+
         $this->source = $source;
-        $this->data = $data;
+        $this->eventMessage = $eventMessage;
     }
 
     /**
@@ -64,9 +70,9 @@ class Event
     /**
      * @return array
      */
-    public function getData()
+    public function getEventMessage()
     {
-        return $this->data;
+        return $this->eventMessage;
     }
 
 }

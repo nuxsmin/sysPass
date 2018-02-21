@@ -49,7 +49,7 @@ class ImportService extends Service
      * Iniciar la importación de cuentas.
      *
      * @param ImportParams $importParams
-     * @param FileImport   $fileImport
+     * @param FileImport $fileImport
      * @return int
      * @throws \Exception
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -78,16 +78,10 @@ class ImportService extends Service
             }
 
             return $counter;
-//            $LogMessage->addDetails(__('Cuentas importadas'), $Import->getCounter());
         } catch (\Exception $e) {
             if (DbWrapper::rollbackTransaction($db)) {
                 debugLog('Rollback');
             }
-
-//            $LogMessage->addDescription($e->getMessage());
-//            $LogMessage->addDetails(__('Ayuda', false), $e->getHint());
-//            $Log->setLogLevel(Log::ERROR);
-//            $Log->writeLog();
 
             throw $e;
         }

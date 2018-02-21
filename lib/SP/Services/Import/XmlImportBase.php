@@ -25,6 +25,7 @@
 namespace SP\Services\Import;
 
 use SP\Bootstrap;
+use SP\Core\Events\EventDispatcher;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
@@ -47,6 +48,10 @@ abstract class XmlImportBase
      * @var \DOMDocument
      */
     protected $xmlDOM;
+    /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
 
     /**
      * ImportBase constructor.
@@ -67,6 +72,7 @@ abstract class XmlImportBase
         $this->categoryService = $dic->get(CategoryService::class);
         $this->clientService = $dic->get(ClientService::class);
         $this->tagService = $dic->get(TagService::class);
+        $this->eventDispatcher = $dic->get(EventDispatcher::class);
     }
 
     /**
@@ -91,18 +97,16 @@ abstract class XmlImportBase
                 );
             }
 
-            return;
-        }
+            if (!is_callable($callback)) {
+                throw new ImportException(__u('Método inválido'), ImportException::WARNING);
+            }
 
-        if (!is_callable($callback)) {
-            throw new ImportException(__u('Método inválido'), ImportException::WARNING);
-        }
-
-        /** @var \DOMElement $nodes */
-        foreach ($nodeList as $nodes) {
-            /** @var \DOMElement $Account */
-            foreach ($nodes->getElementsByTagName($childNodeName) as $node) {
-                $callback($node);
+            /** @var \DOMElement $nodes */
+            foreach ($nodeList as $nodes) {
+                /** @var \DOMElement $Account */
+                foreach ($nodes->getElementsByTagName($childNodeName) as $node) {
+                    $callback($node);
+                }
             }
         }
     }

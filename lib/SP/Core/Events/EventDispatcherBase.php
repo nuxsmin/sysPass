@@ -24,7 +24,6 @@
 
 namespace SP\Core\Events;
 
-use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
 use SplObserver;
@@ -101,15 +100,10 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
      * Notificar un evento
      *
      * @param string $eventType
-     * @param Event  $event
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * @param Event $event
      */
     public function notifyEvent($eventType, Event $event)
     {
-        if (!is_object($event->getSource())) {
-            throw new InvalidArgumentException(__u('Es necesario un objeto'), SPException::ERROR);
-        }
-
         foreach ($this->observers as $observer) {
             if (in_array($eventType, $observer->getEvents(), true)) {
                 // FIXME: update receivers Event

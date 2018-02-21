@@ -30,6 +30,8 @@ use SP\Account\AccountRequest;
 use SP\Config\ConfigDB;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Core\OldCrypt;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
@@ -167,6 +169,12 @@ class SyspassImport extends XmlImportBase implements ImportInterface
             $nodeData = $this->xmlDOM->getElementsByTagName('Encrypted')->item(0);
             $nodeData->parentNode->removeChild($nodeData);
         }
+
+        $this->eventDispatcher->notifyEvent('run.import.syspass',
+            new Event($this,
+                EventMessage::factory()
+                    ->addDescription(__('Datos desencriptados')))
+        );
     }
 
     /**
@@ -195,6 +203,12 @@ class SyspassImport extends XmlImportBase implements ImportInterface
 
                 try {
                     $this->categories[$category->getAttribute('id')] = $this->addCategory($categoryData);
+
+                    $this->eventDispatcher->notifyEvent('run.import.syspass',
+                        new Event($this,
+                            EventMessage::factory()
+                                ->addDetail(__('Categoría importada'), $categoryData->getName()))
+                    );
                 } catch (\Exception $e) {
                     processException($e);
                 }
@@ -226,8 +240,13 @@ class SyspassImport extends XmlImportBase implements ImportInterface
                 }
 
                 try {
-
                     $this->clients[$client->getAttribute('id')] = $this->addClient($clientData);
+
+                    $this->eventDispatcher->notifyEvent('run.import.syspass',
+                        new Event($this,
+                            EventMessage::factory()
+                                ->addDetail(__('Cliente importado'), $clientData->getName()))
+                    );
                 } catch (\Exception $e) {
                     processException($e);
                 }
@@ -262,6 +281,12 @@ class SyspassImport extends XmlImportBase implements ImportInterface
                 try {
 
                     $this->clients[$client->getAttribute('id')] = $this->addClient($clientData);
+
+                    $this->eventDispatcher->notifyEvent('run.import.syspass',
+                        new Event($this,
+                            EventMessage::factory()
+                                ->addDetail(__('Cliente importado'), $clientData->getName()))
+                    );
                 } catch (\Exception $e) {
                     processException($e);
                 }
@@ -291,6 +316,12 @@ class SyspassImport extends XmlImportBase implements ImportInterface
 
                 try {
                     $this->tags[$tag->getAttribute('id')] = $this->addTag($tagData);
+
+                    $this->eventDispatcher->notifyEvent('run.import.syspass',
+                        new Event($this,
+                            EventMessage::factory()
+                                ->addDetail(__('Etiqueta importada'), $tagData->getName()))
+                    );
                 } catch (\Exception $e) {
                     processException($e);
                 }
@@ -345,6 +376,12 @@ class SyspassImport extends XmlImportBase implements ImportInterface
 
                 try {
                     $this->addAccount($accountRequest);
+
+                    $this->eventDispatcher->notifyEvent('run.import.syspass',
+                        new Event($this,
+                            EventMessage::factory()
+                                ->addDetail(__('Cuenta importada'), $accountRequest->name))
+                    );
                 } catch (\Exception $e) {
                     processException($e);
                 }

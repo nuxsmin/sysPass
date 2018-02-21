@@ -57,15 +57,15 @@ class ClientData extends DataModelBase implements DataModelInterface
     /**
      * CustomerData constructor.
      *
-     * @param int    $customer_id
-     * @param string $customer_name
-     * @param string $customer_description
+     * @param int    $id
+     * @param string $name
+     * @param string $description
      */
-    public function __construct($customer_id = null, $customer_name = null, $customer_description = null)
+    public function __construct($id = null, $name = null, $description = null)
     {
-        $this->id = $customer_id;
-        $this->name = $customer_name;
-        $this->description = $customer_description;
+        $this->id = $id;
+        $this->name = $name;
+        $this->description = $description;
     }
 
     /**

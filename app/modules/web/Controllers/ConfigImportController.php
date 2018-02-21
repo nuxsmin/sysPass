@@ -24,9 +24,10 @@
 
 namespace SP\Modules\Web\Controllers;
 
-
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -64,6 +65,11 @@ class ConfigImportController extends SimpleControllerBase
             $importService = $this->dic->get(ImportService::class);
             $counter = $importService->doImport($importParams, new FileImport($this->router->request()->files()->get('inFile')));
 
+            $this->eventDispatcher->notifyEvent('run.import', new Event($this,
+                EventMessage::factory()
+                    ->addDetail(__('Cuentas importadas'), $counter))
+            );
+
             if ($counter > 0) {
                 $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Importación finalizada'), [__u('Revise el registro de eventos para más detalles')]);
             } else {
@@ -71,6 +77,11 @@ class ConfigImportController extends SimpleControllerBase
             }
         } catch (\Exception $e) {
             processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception',
+                new Event($e, EventMessage::factory()
+                    ->addDescription($e->getMessage()))
+            );
 
             $this->returnJsonResponseException($e);
         }

@@ -27,6 +27,8 @@ namespace SP\Services\Import;
 use DOMElement;
 use DOMXPath;
 use SP\Account\AccountRequest;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 
@@ -59,10 +61,21 @@ class KeepassImport extends XmlImportBase implements ImportInterface
     {
         $clientId = $this->addClient(new ClientData(null, 'KeePass'));
 
+        $this->eventDispatcher->notifyEvent('run.import.keepass',
+            new Event($this,
+                EventMessage::factory()
+                    ->addDetail(__('Cliente creado'), 'KeePass'))
+        );
+
         foreach ($this->getItems() as $group => $entry) {
             try {
-                $categoryData = new CategoryData(null, $group);
-                $this->addCategory($categoryData);
+                $categoryId = $this->addCategory(new CategoryData(null, $group));
+
+                $this->eventDispatcher->notifyEvent('run.import.keepass',
+                    new Event($this,
+                        EventMessage::factory()
+                            ->addDetail(__('Categoría importada'), $group))
+                );
 
                 if (count($entry) > 0) {
                     foreach ($entry as $account) {
@@ -72,10 +85,16 @@ class KeepassImport extends XmlImportBase implements ImportInterface
                         $accountRequest->name = $account['Title'];
                         $accountRequest->url = $account['URL'];
                         $accountRequest->login = $account['UserName'];
-                        $accountRequest->categoryId = $categoryData->getId();
+                        $accountRequest->categoryId = $categoryId;
                         $accountRequest->clientId = $clientId;
 
                         $this->addAccount($accountRequest);
+
+                        $this->eventDispatcher->notifyEvent('run.import.keepass',
+                            new Event($this,
+                                EventMessage::factory()
+                                    ->addDetail(__('Cuenta importada'), $accountRequest->name))
+                        );
                     }
                 }
             } catch (\Exception $e) {
