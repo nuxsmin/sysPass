@@ -61,7 +61,6 @@ class AccessManagerController extends ControllerBase
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function indexAction()
     {
@@ -74,7 +73,6 @@ class AccessManagerController extends ControllerBase
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function getGridTabs()
     {

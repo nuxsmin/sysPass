@@ -30,7 +30,7 @@ use SP\Config\ConfigData;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
+use SP\Core\Events\EventMessage;
 use SP\DataModel\CategoryData;
 use SP\Services\Account\AccountService;
 use SP\Services\Account\AccountToTagService;
@@ -157,8 +157,6 @@ class XmlExportService extends Service
     public function makeXML()
     {
         try {
-            $this->eventDispatcher->notifyEvent('export.xml.start', new Event($this, [__u('Exportar XML')]));
-
             $this->checkExportDir();
             $this->createRoot();
             $this->createMeta();
@@ -168,14 +166,16 @@ class XmlExportService extends Service
             $this->createAccounts();
             $this->createHash();
             $this->writeXML();
-
-            $this->eventDispatcher->notifyEvent('export.xml.end', new Event($this, [__u('Exportación realizada correctamente')]));
         } catch (ServiceException $e) {
             throw $e;
         } catch (\Exception $e) {
-            processException($e);
-
-            throw new ServiceException(__u('Error al realizar la exportación'), SPException::ERROR, __u('Revise el registro de eventos para más detalles'));
+            throw new ServiceException(
+                __u('Error al realizar la exportación'),
+                ServiceException::ERROR,
+                __u('Revise el registro de eventos para más detalles'),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -188,13 +188,13 @@ class XmlExportService extends Service
     private function checkExportDir()
     {
         if (@mkdir($this->exportDir, 0750) === false && is_dir($this->exportDir) === false) {
-            throw new ServiceException(sprintf(__('No es posible crear el directorio de backups ("%s")'), $this->exportDir), SPException::ERROR);
+            throw new ServiceException(sprintf(__('No es posible crear el directorio de backups ("%s")'), $this->exportDir));
         }
 
         clearstatcache(true, $this->exportDir);
 
         if (!is_writable($this->exportDir)) {
-            throw new ServiceException(__u('Compruebe los permisos del directorio de backups'), SPException::ERROR);
+            throw new ServiceException(__u('Compruebe los permisos del directorio de backups'));
         }
 
         return true;
@@ -211,7 +211,7 @@ class XmlExportService extends Service
             $root = $this->xml->createElement('Root');
             $this->root = $this->xml->appendChild($root);
         } catch (\Exception $e) {
-            throw new ServiceException($e->getMessage(), SPException::WARNING, __FUNCTION__);
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
     }
 
@@ -243,7 +243,7 @@ class XmlExportService extends Service
 
             $this->root->appendChild($nodeMeta);
         } catch (\Exception $e) {
-            throw new ServiceException($e->getMessage(), SPException::WARNING, __FUNCTION__);
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
     }
 
@@ -257,6 +257,11 @@ class XmlExportService extends Service
     private function createCategories()
     {
         try {
+            $this->eventDispatcher->notifyEvent('run.export.process',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Exportando categorías')))
+            );
+
             $categoryService = $this->dic->get(CategoryService::class);
             $categories = $categoryService->getAllBasic();
 
@@ -286,22 +291,8 @@ class XmlExportService extends Service
 
             $this->appendNode($nodeCategories);
         } catch (\Exception $e) {
-            throw new ServiceException($e->getMessage(), SPException::WARNING, __FUNCTION__);
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
-    }
-
-    /**
-     * Escapar carácteres no válidos en XML
-     *
-     * @param $data string Los datos a escapar
-     * @return mixed
-     */
-    private function escapeChars($data)
-    {
-        $arrStrFrom = ['&', '<', '>', '"', '\''];
-        $arrStrTo = ['&#38;', '&#60;', '&#62;', '&#34;', '&#39;'];
-
-        return str_replace($arrStrFrom, $arrStrTo, $data);
     }
 
     /**
@@ -347,8 +338,22 @@ class XmlExportService extends Service
                 $this->root->appendChild($node);
             }
         } catch (\Exception $e) {
-            throw new ServiceException($e->getMessage(), SPException::WARNING, __FUNCTION__);
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
+    }
+
+    /**
+     * Escapar carácteres no válidos en XML
+     *
+     * @param $data string Los datos a escapar
+     * @return mixed
+     */
+    private function escapeChars($data)
+    {
+        $arrStrFrom = ['&', '<', '>', '"', '\''];
+        $arrStrTo = ['&#38;', '&#60;', '&#62;', '&#34;', '&#39;'];
+
+        return str_replace($arrStrFrom, $arrStrTo, $data);
     }
 
     /**
@@ -362,6 +367,11 @@ class XmlExportService extends Service
     private function createClients()
     {
         try {
+            $this->eventDispatcher->notifyEvent('run.export.process',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Exportando clientes')))
+            );
+
             $clientService = $this->dic->get(ClientService::class);
             $clients = $clientService->getAllBasic();
 
@@ -389,7 +399,7 @@ class XmlExportService extends Service
 
             $this->appendNode($nodeClients);
         } catch (\Exception $e) {
-            throw new ServiceException($e->getMessage(), SPException::WARNING, __FUNCTION__);
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
     }
 
@@ -403,6 +413,11 @@ class XmlExportService extends Service
     private function createTags()
     {
         try {
+            $this->eventDispatcher->notifyEvent('run.export.process',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Exportando etiquetas')))
+            );
+
             $tagService = $this->dic->get(TagService::class);
             $tags = $tagService->getAllBasic();
 
@@ -428,7 +443,7 @@ class XmlExportService extends Service
 
             $this->appendNode($nodeTags);
         } catch (\Exception $e) {
-            throw new ServiceException($e->getMessage(), SPException::WARNING, __FUNCTION__);
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
     }
 
@@ -442,6 +457,11 @@ class XmlExportService extends Service
     private function createAccounts()
     {
         try {
+            $this->eventDispatcher->notifyEvent('run.export.process',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Exportando cuentas')))
+            );
+
             $accountService = $this->dic->get(AccountService::class);
             $accountToTagService = $this->dic->get(AccountToTagService::class);
             $accounts = $accountService->getAllBasic();
@@ -491,7 +511,7 @@ class XmlExportService extends Service
 
             $this->appendNode($nodeAccounts);
         } catch (\Exception $e) {
-            throw new ServiceException($e->getMessage(), SPException::WARNING, __FUNCTION__);
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
     }
 
@@ -514,7 +534,7 @@ class XmlExportService extends Service
             $nodeMeta = $this->root->getElementsByTagName('Meta')->item(0);
             $nodeMeta->appendChild($metaHash);
         } catch (\Exception $e) {
-            throw new ServiceException($e->getMessage(), SPException::WARNING, __FUNCTION__);
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
     }
 
@@ -531,7 +551,7 @@ class XmlExportService extends Service
             $nodeXML = $this->xml->saveXML($this->root->getElementsByTagName($node)->item(0));
             return $nodeXML;
         } catch (\Exception $e) {
-            throw new ServiceException($e->getMessage(), SPException::WARNING, __FUNCTION__);
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
     }
 
@@ -547,10 +567,10 @@ class XmlExportService extends Service
             $this->xml->preserveWhiteSpace = false;
 
             if (!$this->xml->save($this->exportFile)) {
-                throw new ServiceException(__u('Error al crear el archivo XML'), SPException::ERROR);
+                throw new ServiceException(__u('Error al crear el archivo XML'));
             }
         } catch (\Exception $e) {
-            throw new ServiceException($e->getMessage(), SPException::ERROR, __FUNCTION__);
+            throw new ServiceException($e->getMessage(), ServiceException::ERROR, __FUNCTION__);
         }
     }
 

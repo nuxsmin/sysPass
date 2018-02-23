@@ -62,7 +62,6 @@ class ConfigManagerController extends ControllerBase
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      * @throws \SP\Services\Config\ParameterNotFoundException
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -76,7 +75,6 @@ class ConfigManagerController extends ControllerBase
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      * @throws \SP\Services\Config\ParameterNotFoundException
      * @throws \SP\Core\Exceptions\SPException
      */

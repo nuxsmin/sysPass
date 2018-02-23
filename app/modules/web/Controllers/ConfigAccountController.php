@@ -42,7 +42,6 @@ class ConfigAccountController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function saveAction()
     {

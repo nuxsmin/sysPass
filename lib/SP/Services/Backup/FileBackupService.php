@@ -29,12 +29,14 @@ use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\Database;
 use SP\Storage\DBUtil;
 use SP\Storage\DbWrapper;
+use SP\Storage\FileHandler;
 use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;
@@ -54,7 +56,6 @@ class FileBackupService extends Service
     /**
      * Realizar backup de la BBDD y aplicación.
      *
-     * @return bool
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws ServiceException
@@ -72,21 +73,26 @@ class FileBackupService extends Service
         $bakFileDB = BACKUP_PATH . DIRECTORY_SEPARATOR . $siteName . '_db-' . $backupUniqueHash . '.sql';
 
         try {
-            $this->eventDispatcher->notifyEvent('run.backup.start', new Event($this, [__u('Realizar Backup')]));
-
             $this->checkBackupDir();
             $this->deleteOldBackups();
-            $this->backupTables('*', $bakFileDB);
-            $this->backupApp($bakFileApp);
 
-            $this->eventDispatcher->notifyEvent('run.backup.end', new Event($this, [__u('Copia de la aplicación y base de datos realizada correctamente')]));
+            $this->eventDispatcher->notifyEvent('run.backup.start',
+                new Event($this,
+                    EventMessage::factory()->addDescription(__u('Realizar Backup'))));
+
+            $this->backupTables('*', new FileHandler($bakFileDB));
+            $this->backupApp($bakFileApp);
         } catch (ServiceException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new ServiceException(__u('Error al realizar el backup'), SPException::ERROR, __u('Revise el registro de eventos para más detalles'));
+            throw new ServiceException(
+                __u('Error al realizar el backup'),
+                SPException::ERROR,
+                __u('Revise el registro de eventos para más detalles'),
+                $e->getCode(),
+                $e
+            );
         }
-
-        return true;
     }
 
     /**
@@ -99,12 +105,12 @@ class FileBackupService extends Service
     {
         if (@mkdir(BACKUP_PATH, 0750) === false && is_dir(BACKUP_PATH) === false) {
             throw new ServiceException(
-                sprintf(__('No es posible crear el directorio de backups ("%s")'), BACKUP_PATH), SPException::ERROR);
+                sprintf(__('No es posible crear el directorio de backups ("%s")'), BACKUP_PATH));
         }
 
         if (!is_writable(BACKUP_PATH)) {
             throw new ServiceException(
-                __u('Compruebe los permisos del directorio de backups'), SPException::ERROR);
+                __u('Compruebe los permisos del directorio de backups'));
         }
 
         return true;
@@ -124,118 +130,122 @@ class FileBackupService extends Service
      * Utilizar '*' para toda la BBDD o 'table1 table2 table3...'
      *
      * @param string|array $tables
-     * @param string       $backupFile
-     * @throws ServiceException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @param FileHandler $fileHandler
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws SPException
+     * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Storage\FileException
      */
-    private function backupTables($tables = '*', $backupFile)
+    private function backupTables($tables = '*', FileHandler $fileHandler)
     {
+        $this->eventDispatcher->notifyEvent('run.backup.process',
+            new Event($this,
+                EventMessage::factory()->addDescription(__u('Copiando base de datos')))
+        );
+
+        $fileHandler->open('w');
+
         $db = $this->dic->get(Database::class);
+
+        $queryData = new QueryData();
+
+        if ($tables === '*') {
+            $resTables = DBUtil::$tables;
+        } else {
+            $resTables = is_array($tables) ? $tables : explode(',', $tables);
+        }
+
+        $lineSeparator = PHP_EOL . PHP_EOL;
 
         $dbname = $this->configData->getDbName();
 
-        try {
-            $handle = fopen($backupFile, 'w');
+        $sqlOut = '--' . PHP_EOL;
+        $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (START)' . PHP_EOL;
+        $sqlOut .= '--' . PHP_EOL;
+        $sqlOut .= '-- Please, do not alter this file, it could break your DB' . PHP_EOL;
+        $sqlOut .= '--' . PHP_EOL . PHP_EOL;
+        $sqlOut .= 'CREATE DATABASE IF NOT EXISTS `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
+        $sqlOut .= 'USE `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
 
-            $Data = new QueryData();
+        $fileHandler->write($sqlOut);
 
-            if ($tables === '*') {
-                $resTables = DBUtil::$tables;
-            } else {
-                $resTables = is_array($tables) ? $tables : explode(',', $tables);
+        $sqlOutViews = '';
+        // Recorrer las tablas y almacenar los datos
+        foreach ($resTables as $table) {
+            $tableName = is_object($table) ? $table->{'Tables_in_' . $dbname} : $table;
+
+            $queryData->setQuery('SHOW CREATE TABLE ' . $tableName);
+
+            // Consulta para crear la tabla
+            $txtCreate = DbWrapper::getResults($queryData, $db);
+
+            if (isset($txtCreate->{'Create Table'})) {
+                $sqlOut = '-- ' . PHP_EOL;
+                $sqlOut .= '-- Table ' . strtoupper($tableName) . PHP_EOL;
+                $sqlOut .= '-- ' . PHP_EOL;
+                $sqlOut .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
+                $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
+
+                $fileHandler->write($sqlOut);
+            } elseif ($txtCreate->{'Create View'}) {
+                $sqlOutViews .= '-- ' . PHP_EOL;
+                $sqlOutViews .= '-- View ' . strtoupper($tableName) . PHP_EOL;
+                $sqlOutViews .= '-- ' . PHP_EOL;
+                $sqlOutViews .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
+                $sqlOutViews .= $txtCreate->{'Create View'} . ';' . PHP_EOL . PHP_EOL;
             }
 
-            $sqlOut = '--' . PHP_EOL;
-            $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (START)' . PHP_EOL;
-            $sqlOut .= '--' . PHP_EOL;
-            $sqlOut .= '-- Please, do not alter this file, it could break your DB' . PHP_EOL;
-            $sqlOut .= '--' . PHP_EOL . PHP_EOL;
-            $sqlOut .= 'CREATE DATABASE IF NOT EXISTS `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
-            $sqlOut .= 'USE `' . $dbname . '`;' . PHP_EOL . PHP_EOL;
-            fwrite($handle, $sqlOut);
+            $fileHandler->write($lineSeparator);
+        }
 
-            $sqlOutViews = '';
-            // Recorrer las tablas y almacenar los datos
-            foreach ($resTables as $table) {
-                $tableName = is_object($table) ? $table->{'Tables_in_' . $dbname} : $table;
+        // Guardar las vistas
+        $fileHandler->write($sqlOutViews);
 
-                $Data->setQuery('SHOW CREATE TABLE ' . $tableName);
-
-                // Consulta para crear la tabla
-                $txtCreate = DbWrapper::getResults($Data, $db);
-
-                if (isset($txtCreate->{'Create Table'})) {
-                    $sqlOut = '-- ' . PHP_EOL;
-                    $sqlOut .= '-- Table ' . strtoupper($tableName) . PHP_EOL;
-                    $sqlOut .= '-- ' . PHP_EOL;
-                    $sqlOut .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
-                    $sqlOut .= $txtCreate->{'Create Table'} . ';' . PHP_EOL . PHP_EOL;
-                    fwrite($handle, $sqlOut);
-                } elseif ($txtCreate->{'Create View'}) {
-                    $sqlOutViews .= '-- ' . PHP_EOL;
-                    $sqlOutViews .= '-- View ' . strtoupper($tableName) . PHP_EOL;
-                    $sqlOutViews .= '-- ' . PHP_EOL;
-                    $sqlOutViews .= 'DROP TABLE IF EXISTS `' . $tableName . '`;' . PHP_EOL . PHP_EOL;
-                    $sqlOutViews .= $txtCreate->{'Create View'} . ';' . PHP_EOL . PHP_EOL;
-                }
-
-                fwrite($handle, PHP_EOL . PHP_EOL);
+        // Guardar los datos
+        foreach ($resTables as $tableName) {
+            // No guardar las vistas!
+            if (strrpos($tableName, '_v') !== false) {
+                continue;
             }
 
-            // Guardar las vistas
-            fwrite($handle, $sqlOutViews);
+            $queryData->setQuery('SELECT * FROM `' . $tableName . '`');
 
-            // Guardar los datos
-            foreach ($resTables as $tableName) {
-                // No guardar las vistas!
-                if (strrpos($tableName, '_v') !== false) {
-                    continue;
-                }
+            // Consulta para obtener los registros de la tabla
+            $queryRes = DbWrapper::getResultsRaw($queryData, $db);
 
-                $Data->setQuery('SELECT * FROM `' . $tableName . '`');
+            $numColumns = $queryRes->columnCount();
 
-                // Consulta para obtener los registros de la tabla
-                $queryRes = DbWrapper::getResultsRaw($Data);
+            while ($row = $queryRes->fetch(\PDO::FETCH_NUM)) {
+                $fileHandler->write('INSERT INTO `' . $tableName . '` VALUES(');
 
-                $numColumns = $queryRes->columnCount();
-
-                while ($row = $queryRes->fetch(\PDO::FETCH_NUM)) {
-                    fwrite($handle, 'INSERT INTO `' . $tableName . '` VALUES(');
-
-                    $field = 1;
-                    foreach ($row as $value) {
-                        if (is_numeric($value)) {
-                            fwrite($handle, $value);
-                        } else {
-                            fwrite($handle, DBUtil::escape($value, $db->getDbHandler()));
-                        }
-
-                        if ($field < $numColumns) {
-                            fwrite($handle, ',');
-                        }
-
-                        $field++;
+                $field = 1;
+                foreach ($row as $value) {
+                    if (is_numeric($value)) {
+                        $fileHandler->write($value);
+                    } else {
+                        $fileHandler->write(DBUtil::escape($value, $db->getDbHandler()));
                     }
 
-                    fwrite($handle, ');' . PHP_EOL);
+                    if ($field < $numColumns) {
+                        $fileHandler->write(',');
+                    }
+
+                    $field++;
                 }
+
+                $fileHandler->write(');' . PHP_EOL);
             }
-
-            $sqlOut = '--' . PHP_EOL;
-            $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (END)' . PHP_EOL;
-            $sqlOut .= '--' . PHP_EOL;
-            $sqlOut .= '-- Please, do not alter this file, it could break your DB' . PHP_EOL;
-            $sqlOut .= '--' . PHP_EOL . PHP_EOL;
-
-            fwrite($handle, $sqlOut);
-
-            fclose($handle);
-        } catch (\Exception $e) {
-            processException($e);
-
-            throw new ServiceException($e->getMessage(), SPException::CRITICAL);
         }
+
+        $sqlOut = '--' . PHP_EOL;
+        $sqlOut .= '-- sysPass DB dump generated on ' . time() . ' (END)' . PHP_EOL;
+        $sqlOut .= '--' . PHP_EOL;
+        $sqlOut .= '-- Please, do not alter this file, it could break your DB' . PHP_EOL;
+        $sqlOut .= '--' . PHP_EOL . PHP_EOL;
+
+        $fileHandler->write($sqlOut);
+        $fileHandler->close();
     }
 
     /**
@@ -247,37 +257,36 @@ class FileBackupService extends Service
      */
     private function backupApp($backupFile)
     {
+        $this->eventDispatcher->notifyEvent('run.backup.process',
+            new Event($this,
+                EventMessage::factory()->addDescription(__u('Copiando aplicación')))
+        );
+
         if (!class_exists(\PharData::class)) {
             if (Checks::checkIsWindows()) {
                 throw new ServiceException(
-                    __u('Esta operación sólo es posible en entornos Linux'), SPException::INFO);
+                    __u('Esta operación sólo es posible en entornos Linux'), ServiceException::INFO);
             }
 
             if (!$this->backupAppLegacyLinux($backupFile)) {
                 throw new ServiceException(
-                    __u('Error al realizar backup en modo compatibilidad'), SPException::ERROR);
+                    __u('Error al realizar backup en modo compatibilidad'));
             }
         }
 
         $compressedFile = $backupFile . '.gz';
 
-        try {
-            if (file_exists($compressedFile)) {
-                unlink($compressedFile);
-            }
-
-            $archive = new \PharData($backupFile);
-            $archive->buildFromDirectory(Bootstrap::$SERVERROOT, '/^(?!backup).*$/');
-            $archive->compress(\Phar::GZ);
-
-            unlink($backupFile);
-
-            return file_exists($backupFile);
-        } catch (\Exception $e) {
-            processException($e);
-
-            throw new ServiceException($e->getMessage(), SPException::CRITICAL);
+        if (file_exists($compressedFile)) {
+            unlink($compressedFile);
         }
+
+        $archive = new \PharData($backupFile);
+        $archive->buildFromDirectory(Bootstrap::$SERVERROOT, '/^(?!backup).*$/');
+        $archive->compress(\Phar::GZ);
+
+        unlink($backupFile);
+
+        return file_exists($backupFile);
     }
 
     /**

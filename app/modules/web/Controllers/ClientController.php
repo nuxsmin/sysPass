@@ -28,7 +28,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
+use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ClientData;
 use SP\Forms\ClientForm;
@@ -101,7 +101,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -158,7 +158,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -168,6 +168,8 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      * Delete action
      *
      * @param $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteAction($id)
     {
@@ -180,13 +182,18 @@ class ClientController extends ControllerBase implements CrudControllerInterface
 
             $this->deleteCustomFieldsForItem(ActionsInterface::CLIENT, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.client', new Event($this));
+            $this->eventDispatcher->notifyEvent('delete.client',
+                new Event($this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Cliente eliminado'))
+                        ->addDetail(__u('Cliente'), $id))
+            );
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente eliminado'));
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -205,17 +212,24 @@ class ClientController extends ControllerBase implements CrudControllerInterface
             $form = new ClientForm();
             $form->validate(ActionsInterface::CLIENT_CREATE);
 
-            $this->clientService->create($form->getItemData());
+            $itemData = $form->getItemData();
 
-            $this->eventDispatcher->notifyEvent('create.client', new Event($this));
+            $this->clientService->create($itemData);
+
+            $this->eventDispatcher->notifyEvent('create.client',
+                new Event($this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Cliente creado'))
+                        ->addDetail(__u('Cliente'), $itemData->getName()))
+            );
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente creado'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -237,15 +251,20 @@ class ClientController extends ControllerBase implements CrudControllerInterface
 
             $this->clientService->update($form->getItemData());
 
-            $this->eventDispatcher->notifyEvent('edit.client', new Event($this));
+            $this->eventDispatcher->notifyEvent('edit.client',
+                new Event($this,
+                    EventMessage::factory()
+                        ->addDescription(__u('Cliente actualizado'))
+                        ->addDetail(__u('Cliente'), $id))
+            );
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente actualizado'));
         } catch (ValidationException $e) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -271,7 +290,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -282,6 +301,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()
     {

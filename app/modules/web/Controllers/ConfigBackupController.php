@@ -26,6 +26,8 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -56,8 +58,17 @@ class ConfigBackupController extends SimpleControllerBase
             $backupService = new FileBackupService();
             $backupService->doBackup();
 
+            $this->eventDispatcher->notifyEvent('run.backup.end',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Copia de la aplicación y base de datos realizada correctamente')))
+            );
+
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Proceso de backup finalizado'));
         } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             $this->returnJsonResponseException($e);
         }
     }
@@ -76,11 +87,25 @@ class ConfigBackupController extends SimpleControllerBase
         }
 
         try {
+            $this->eventDispatcher->notifyEvent('run.export.start',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Exportación de sysPass en XML')))
+            );
+
             $exportService = $this->dic->get(XmlExportService::class);
             $exportService->doExport($exportPassword);
 
+            $this->eventDispatcher->notifyEvent('run.export.end',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Proceso de exportación finalizado')))
+            );
+
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Proceso de exportación finalizado'));
         } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             $this->returnJsonResponseException($e);
         }
     }
@@ -92,7 +117,7 @@ class ConfigBackupController extends SimpleControllerBase
                 throw new UnauthorizedPageException(SPException::INFO);
             }
         } catch (UnauthorizedPageException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage(), [$e->getHint()]);
+            $this->returnJsonResponseException($e);
         }
     }
 }

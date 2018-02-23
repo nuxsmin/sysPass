@@ -67,7 +67,7 @@ class ConfigImportController extends SimpleControllerBase
 
             $this->eventDispatcher->notifyEvent('run.import', new Event($this,
                 EventMessage::factory()
-                    ->addDetail(__('Cuentas importadas'), $counter))
+                    ->addDetail(__u('Cuentas importadas'), $counter))
             );
 
             if ($counter > 0) {
