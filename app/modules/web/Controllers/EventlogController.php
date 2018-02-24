@@ -25,6 +25,8 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
@@ -95,6 +97,10 @@ class EventlogController extends ControllerBase
     {
         try {
             $this->eventLogService->clear();
+
+            $this->eventDispatcher->notifyEvent('show.account.search',
+                new Event($this, EventMessage::factory()->addDescription(__u('Registro de eventos vaciado')))
+            );
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Registro de eventos vaciado'));
         } catch (\Exception $e) {
