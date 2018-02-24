@@ -30,6 +30,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Install\Installer;
 use SP\Core\Language;
 use SP\DataModel\InstallData;
+use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -119,11 +120,9 @@ class InstallController extends ControllerBase
         try {
             Installer::run($installData);
 
-            $this->returnJsonResponse(0, __('Instalación finalizada'));
-        } catch (SPException $e) {
-            $this->returnJsonResponse(1, $e->getMessage(), [$e->getHint()]);
+            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __('Instalación finalizada'));
         } catch (\Exception $e) {
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 }

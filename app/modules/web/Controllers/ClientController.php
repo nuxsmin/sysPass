@@ -98,13 +98,13 @@ class ClientController extends ControllerBase implements CrudControllerInterface
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.client.create', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
             $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -155,13 +155,13 @@ class ClientController extends ControllerBase implements CrudControllerInterface
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.client.edit', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
             $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -199,8 +199,6 @@ class ClientController extends ControllerBase implements CrudControllerInterface
 
     /**
      * Saves create action
-     *
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveCreateAction()
     {
@@ -225,7 +223,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente creado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
@@ -237,7 +235,6 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      * Saves edit action
      *
      * @param $id
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditAction($id)
     {
@@ -260,7 +257,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente actualizado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
@@ -287,13 +284,13 @@ class ClientController extends ControllerBase implements CrudControllerInterface
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.client', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
             $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**

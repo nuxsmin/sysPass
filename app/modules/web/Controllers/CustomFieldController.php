@@ -28,7 +28,6 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\Forms\CustomFieldDefForm;
@@ -100,13 +99,13 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.customField.create', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
             $this->returnJsonResponse(1, $e->getMessage());
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -160,19 +159,21 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.customField.edit', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
      * Delete action
      *
      * @param $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteAction($id)
     {
@@ -188,7 +189,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
             $this->eventDispatcher->notifyEvent('delete.customField', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo eliminado'));
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
             processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
@@ -214,11 +215,11 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo creado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (SPException $e) {
+            $this->returnJsonResponseException($e);
+        } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -226,7 +227,6 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      * Saves edit action
      *
      * @param $id
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditAction($id)
     {
@@ -244,8 +244,8 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo actualizado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (SPException $e) {
+            $this->returnJsonResponseException($e);
+        } catch (\Exception $e) {
             processException($e);
 
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
@@ -285,6 +285,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()
     {

@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionUtil;
 use SP\DataModel\UserData;
@@ -102,13 +101,13 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.user.create', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -163,13 +162,13 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.user.edit', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -199,19 +198,21 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $this->view->assign('user', $user);
 
             $this->eventDispatcher->notifyEvent('show.user.editPass', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
      * Delete action
      *
      * @param $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteAction($id)
     {
@@ -230,10 +231,10 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $this->eventDispatcher->notifyEvent('delete.user', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario eliminado'));
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -269,11 +270,11 @@ class UserController extends ControllerBase implements CrudControllerInterface
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario creado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -281,6 +282,8 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * Saves edit action
      *
      * @param $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function saveEditAction($id)
     {
@@ -312,11 +315,11 @@ class UserController extends ControllerBase implements CrudControllerInterface
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario actualizado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -342,11 +345,11 @@ class UserController extends ControllerBase implements CrudControllerInterface
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave actualizada'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -370,13 +373,13 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.user', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**

@@ -28,7 +28,6 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\TagData;
 use SP\Forms\TagForm;
@@ -98,13 +97,13 @@ class TagController extends ControllerBase implements CrudControllerInterface
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.tag.create', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -153,19 +152,21 @@ class TagController extends ControllerBase implements CrudControllerInterface
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.tag.edit', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
      * Delete action
      *
      * @param $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteAction($id)
     {
@@ -181,17 +182,15 @@ class TagController extends ControllerBase implements CrudControllerInterface
             $this->eventDispatcher->notifyEvent('delete.tag', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiqueta eliminada'));
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
     /**
      * Saves create action
-     *
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveCreateAction()
     {
@@ -209,11 +208,11 @@ class TagController extends ControllerBase implements CrudControllerInterface
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiqueta creada'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (SPException $e) {
+            $this->returnJsonResponseException($e);
+        } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -221,7 +220,6 @@ class TagController extends ControllerBase implements CrudControllerInterface
      * Saves edit action
      *
      * @param $id
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditAction($id)
     {
@@ -239,11 +237,11 @@ class TagController extends ControllerBase implements CrudControllerInterface
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiqueta actualizada'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
-        } catch (SPException $e) {
+            $this->returnJsonResponseException($e);
+        } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -266,13 +264,13 @@ class TagController extends ControllerBase implements CrudControllerInterface
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.tag', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -280,6 +278,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()
     {

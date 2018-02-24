@@ -97,13 +97,13 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.category.create', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
             $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -154,20 +154,21 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.category.edit', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
             $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
      * Delete action
      *
      * @param $id
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteAction($id)
     {
@@ -226,7 +227,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría creada'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
@@ -240,7 +241,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      * @param $id
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
+     *
      */
     public function saveEditAction($id)
     {
@@ -267,7 +268,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría actualizada'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
@@ -294,13 +295,13 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.category', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
             $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,7 +24,6 @@
 
 namespace SP\Util;
 
-use SP\Core\Init;
 use SP\Log\LogUtil;
 
 defined('APP_ROOT') || die();
@@ -67,7 +66,7 @@ class ImageUtil
         imagefilledrectangle($im, 0, 0, $width, 30, $bgColor);
 
         // Ruta de la fuente
-        $font = Init::$SERVERROOT . '/css/fonts/NotoSans-Regular-webfont.ttf';
+        $font = PUBLIC_PATH . '/css/fonts/NotoSans-Regular-webfont.ttf';
 
         // Sombra
 //        imagettftext($im, 14, 0, 13, 23, $shadowColor, $font, $text);
@@ -91,6 +90,7 @@ class ImageUtil
      *
      * @param $image string La imagen a redimensionar
      * @return bool|string
+     * @throws \SP\Core\Exceptions\SPException
      */
     public static function createThumbnail($image)
     {

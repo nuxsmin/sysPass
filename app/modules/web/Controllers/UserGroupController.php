@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserGroupData;
 use SP\Forms\UserGroupForm;
@@ -104,13 +103,13 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.userGroup.create', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -163,19 +162,21 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.userGroup.edit', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
      * Delete action
      *
      * @param $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteAction($id)
     {
@@ -192,10 +193,10 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             $this->eventDispatcher->notifyEvent('delete.userGroup', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Grupo eliminado'));
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -224,11 +225,11 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Grupo creado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -236,6 +237,8 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      * Saves edit action
      *
      * @param $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function saveEditAction($id)
     {
@@ -259,11 +262,11 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Grupo actualizado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -286,13 +289,13 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.userGroup', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -300,6 +303,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()
     {

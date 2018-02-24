@@ -96,13 +96,13 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.userProfile.create', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -155,19 +155,21 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.userProfile.edit', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
      * Delete action
      *
      * @param $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteAction($id)
     {
@@ -187,7 +189,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -215,11 +217,11 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfil creado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -227,6 +229,8 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      * Saves edit action
      *
      * @param $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function saveEditAction($id)
     {
@@ -249,11 +253,11 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfil actualizado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -276,13 +280,13 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.userProfile', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -290,6 +294,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()
     {

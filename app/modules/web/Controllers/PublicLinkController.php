@@ -99,13 +99,13 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
             $this->setViewData();
 
             $this->eventDispatcher->notifyEvent('show.publicLink.create', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(1, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -158,7 +158,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -182,19 +182,21 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.publicLink.edit', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
      * Delete action
      *
      * @param $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteAction($id)
     {
@@ -211,10 +213,10 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
             $this->eventDispatcher->notifyEvent('delete.publicLink', new Event($this));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace eliminado'));
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -241,11 +243,11 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace creado'));
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
     }
 
@@ -278,13 +280,13 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.publicLink', new Event($this));
+
+            $this->returnJsonResponseData(['html' => $this->render()]);
         } catch (\Exception $e) {
             processException($e);
 
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         }
-
-        $this->returnJsonResponseData(['html' => $this->render()]);
     }
 
     /**
@@ -292,6 +294,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()
     {

@@ -80,13 +80,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $accountSearchHelper->getAccountSearch();
 
             $this->eventDispatcher->notifyEvent('show.account.search', new Event($this));
+
+            $this->view();
         } catch (\Exception $e) {
             processException($e);
 
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }
-
-        $this->view();
     }
 
     /**
@@ -147,13 +147,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->accountService->incrementViewCounter($id);
 
             $this->eventDispatcher->notifyEvent('show.account', new Event($this));
+
+            $this->view();
         } catch (\Exception $e) {
             processException($e);
 
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }
-
-        $this->view();
     }
 
     /**
@@ -233,13 +233,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             } else {
                 ErrorUtil::showErrorFull($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION, 'account-link');
             }
+
+            $this->view();
         } catch (\Exception $e) {
             processException($e);
 
             ErrorUtil::showErrorFull($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION, 'account-link');
         }
-
-        $this->view();
     }
 
     /**
@@ -262,13 +262,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->view->assign('formRoute', 'account/saveCreate');
 
             $this->eventDispatcher->notifyEvent('show.account.create', new Event($this));
+
+            $this->view();
         } catch (\Exception $e) {
             processException($e);
 
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }
-
-        $this->view();
     }
 
     /**
@@ -301,13 +301,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->view->assign('formRoute', 'account/saveCopy');
 
             $this->eventDispatcher->notifyEvent('show.account.copy', new Event($this));
+
+            $this->view();
         } catch (\Exception $e) {
             processException($e);
 
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }
-
-        $this->view();
     }
 
     /**
@@ -343,13 +343,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->accountService->incrementViewCounter($id);
 
             $this->eventDispatcher->notifyEvent('show.account.edit', new Event($this));
+
+            $this->view();
         } catch (\Exception $e) {
             processException($e);
 
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }
-
-        $this->view();
     }
 
     /**
@@ -381,13 +381,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->view->assign('formRoute', 'account/saveDelete');
 
             $this->eventDispatcher->notifyEvent('show.account.delete', new Event($this));
+
+            $this->view();
         } catch (\Exception $e) {
             processException($e);
 
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }
-
-        $this->view();
     }
 
     /**
@@ -421,13 +421,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->view->assign('accountPassDateChange', gmdate('Y-m-d', $accountDetailsResponse->getAccountVData()->getPassDateChange()));
 
             $this->eventDispatcher->notifyEvent('show.account.editpass', new Event($this));
+
+            $this->view();
         } catch (\Exception $e) {
             processException($e);
 
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }
-
-        $this->view();
     }
 
     /**
@@ -459,13 +459,13 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->view->assign('formRoute', 'account/saveRestore');
 
             $this->eventDispatcher->notifyEvent('show.account.history', new Event($this));
+
+            $this->view();
         } catch (\Exception $e) {
             processException($e);
 
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }
-
-        $this->view();
     }
 
     /**
@@ -486,19 +486,19 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->view->assign('formRoute', 'account/saveRequest');
 
             $this->eventDispatcher->notifyEvent('show.account.request', new Event($this));
+
+            $this->view();
         } catch (\Exception $e) {
             processException($e);
 
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }
-
-        $this->view();
     }
 
     /**
      * Display account's password
      *
-     * @param int $id Account's ID
+     * @param int $id        Account's ID
      * @param int $isHistory The account's ID refers to history
      * @throws \Psr\Container\ContainerExceptionInterface
      */
@@ -534,7 +534,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Copy account's password
      *
-     * @param int $id Account's ID
+     * @param int $id        Account's ID
      * @param int $isHistory The account's ID refers to history
      * @throws Helpers\HelperException
      * @throws SPException
@@ -602,7 +602,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 __u('Cuenta creada')
             );
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
@@ -616,7 +616,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * @param $id Account's ID
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditAction($id)
     {
@@ -646,7 +645,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 __u('Cuenta actualizada')
             );
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
@@ -660,7 +659,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * @param $id Account's ID
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditPassAction($id)
     {
@@ -688,7 +686,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 __u('Clave actualizada')
             );
         } catch (ValidationException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage());
+            $this->returnJsonResponseException($e);
         } catch (\Exception $e) {
             processException($e);
 
@@ -700,7 +698,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Saves restore action
      *
      * @param int $historyId Account's history ID
-     * @param int $id Account's ID
+     * @param int $id        Account's ID
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
