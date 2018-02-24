@@ -42,10 +42,11 @@ trait ConfigTrait
     /**
      * Guardar la configuración
      *
-     * @param ConfigData $configData
-     * @param Config     $config
+     * @param ConfigData    $configData
+     * @param Config        $config
+     * @param callable|null $onSuccess
      */
-    protected function saveConfig(ConfigData $configData, Config $config)
+    protected function saveConfig(ConfigData $configData, Config $config, callable $onSuccess = null)
     {
         try {
             if ($configData->isDemoEnabled()) {
@@ -60,8 +61,14 @@ trait ConfigTrait
                 Util::unlockApp(false);
             }
 
+            if ($onSuccess !== null) {
+                $onSuccess();
+            }
+
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Configuración actualizada'));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error al guardar la configuración'));
         }
     }

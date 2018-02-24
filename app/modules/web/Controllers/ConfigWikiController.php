@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
+use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
@@ -42,11 +42,11 @@ class ConfigWikiController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * saveAction
      */
     public function saveAction()
     {
-        $messages = [];
+        $eventMessage = EventMessage::factory();
         $configData = clone $this->config->getConfigData();
 
         // Wiki
@@ -66,11 +66,13 @@ class ConfigWikiController extends SimpleControllerBase
             $configData->setWikiPageurl($wikiPageUrl);
             $configData->setWikiFilter(explode(',', $wikiFilter));
 
-            $messages[] = __u('Wiki habiltada');
-        } elseif ($configData->isWikiEnabled()) {
+            if ($configData->isWikiEnabled() === false) {
+                $eventMessage->addDescription(__u('Wiki habiltada'));
+            }
+        } elseif ($wikiEnabled === false && $configData->isWikiEnabled()) {
             $configData->setWikiEnabled(false);
 
-            $messages[] = __u('Wiki deshabilitada');
+            $eventMessage->addDescription(__u('Wiki deshabilitada'));
         }
 
         // DokuWiki
@@ -94,26 +96,28 @@ class ConfigWikiController extends SimpleControllerBase
             $configData->setDokuwikiPass($dokuWikiPass);
             $configData->setDokuwikiNamespace($dokuWikiNamespace);
 
-            $messages[] = __u('DokuWiki habilitada');
-        } elseif ($configData->isDokuwikiEnabled()) {
+            if ($configData->isDokuwikiEnabled() === false) {
+                $eventMessage->addDescription(__u('DokuWiki habilitada'));
+            }
+        } elseif ($dokuWikiEnabled === false && $configData->isDokuwikiEnabled()) {
             $configData->setDokuwikiEnabled(false);
 
-            $messages[] = __u('DokuWiki deshabilitada');
+            $eventMessage->addDescription(__u('DokuWiki deshabilitada'));
         }
 
-        $this->eventDispatcher->notifyEvent('save.config.wiki', new Event($this, $messages));
-
-        $this->saveConfig($configData, $this->config);
+        $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
+            $this->eventDispatcher->notifyEvent('save.config.wiki', new Event($this, $eventMessage));
+        });
     }
 
     protected function initialize()
     {
         try {
-            if (!$this->checkAccess(ActionsInterface::WIKI_CONFIG)) {
-                throw new UnauthorizedPageException(SPException::INFO);
-            }
+            $this->checkAccess(ActionsInterface::WIKI_CONFIG);
         } catch (UnauthorizedPageException $e) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, $e->getMessage(), [$e->getHint()]);
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            $this->returnJsonResponseException($e);
         }
     }
 }

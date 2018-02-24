@@ -29,6 +29,7 @@ use Interop\Container\ContainerInterface;
 use Klein\Klein;
 use SP\Config\Config;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
 use SP\Core\UI\Theme;
@@ -120,10 +121,12 @@ abstract class SimpleControllerBase
      * Comprobar si está permitido el acceso al módulo/página.
      *
      * @param null $action La acción a comprobar
-     * @return bool
+     * @throws UnauthorizedPageException
      */
     protected function checkAccess($action)
     {
-        return $this->session->getUserData()->getIsAdminApp() || $this->acl->checkUserAccess($action);
+        if (!$this->session->getUserData()->getIsAdminApp() || !$this->acl->checkUserAccess($action)) {
+            throw new UnauthorizedPageException(UnauthorizedPageException::INFO);
+        }
     }
 }

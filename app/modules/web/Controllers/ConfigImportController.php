@@ -26,6 +26,8 @@ namespace SP\Modules\Web\Controllers;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Core\Acl\ActionsInterface;
+use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -82,6 +84,17 @@ class ConfigImportController extends SimpleControllerBase
                 new Event($e, EventMessage::factory()
                     ->addDescription($e->getMessage()))
             );
+
+            $this->returnJsonResponseException($e);
+        }
+    }
+
+    protected function initialize()
+    {
+        try {
+            $this->checkAccess(ActionsInterface::IMPORT_CONFIG);
+        } catch (UnauthorizedPageException $e) {
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
             $this->returnJsonResponseException($e);
         }

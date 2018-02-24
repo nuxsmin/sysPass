@@ -28,7 +28,6 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\SPException;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
@@ -113,10 +112,10 @@ class ConfigBackupController extends SimpleControllerBase
     protected function initialize()
     {
         try {
-            if (!$this->checkAccess(ActionsInterface::BACKUP_CONFIG)) {
-                throw new UnauthorizedPageException(SPException::INFO);
-            }
+            $this->checkAccess(ActionsInterface::BACKUP_CONFIG);
         } catch (UnauthorizedPageException $e) {
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             $this->returnJsonResponseException($e);
         }
     }

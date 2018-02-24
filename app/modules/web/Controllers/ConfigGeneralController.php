@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
+use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
@@ -42,12 +42,12 @@ class ConfigGeneralController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * saveAction
      */
     public function saveAction()
     {
-        $messages = [];
         $configData = clone $this->config->getConfigData();
+        $eventMessage = EventMessage::factory();
 
         // General
         $siteLang = Request::analyze('sitelang');
@@ -80,18 +80,22 @@ class ConfigGeneralController extends SimpleControllerBase
         $configData->setLogEnabled($logEnabled);
         $configData->setSyslogEnabled($syslogEnabled);
 
-        if ($remoteSyslogEnabled && (!$syslogServer || !$syslogPort)) {
-            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de syslog remoto'));
-        }
-
         if ($remoteSyslogEnabled) {
-            $configData->setSyslogRemoteEnabled($remoteSyslogEnabled);
+            if (!$syslogServer || !$syslogPort) {
+                $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de syslog remoto'));
+            }
+
+            $configData->setSyslogRemoteEnabled(true);
             $configData->setSyslogServer($syslogServer);
             $configData->setSyslogPort($syslogPort);
-        } elseif ($configData->isSyslogEnabled()) {
+
+            if ($configData->isSyslogRemoteEnabled() === false) {
+                $eventMessage->addDescription(__u('Syslog remoto habilitado'));
+            }
+        } elseif ($remoteSyslogEnabled === false && $configData->isSyslogEnabled()) {
             $configData->setSyslogRemoteEnabled(false);
 
-            $messages[] = __u('Syslog remoto deshabilitado');
+            $eventMessage->addDescription(__u('Syslog remoto deshabilitado'));
         }
 
         // Proxy
@@ -114,16 +118,18 @@ class ConfigGeneralController extends SimpleControllerBase
             $configData->setProxyUser($proxyUser);
             $configData->setProxyPass($proxyPass);
 
-            $messages[] = __u('Proxy habiltado');
-        } elseif ($configData->isProxyEnabled()) {
+            if ($configData->isProxyEnabled() === false) {
+                $eventMessage->addDescription(__u('Proxy habiltado'));
+            }
+        } elseif ($proxyEnabled === false && $configData->isProxyEnabled()) {
             $configData->setProxyEnabled(false);
 
-            $messages[] = __u('Proxy deshabilitado');
+            $eventMessage->addDescription(__u('Proxy deshabilitado'));
         }
 
         // Autentificación
         $authBasicEnabled = Request::analyze('authbasic_enabled', false, false, true);
-        $authBasicAutologinEnabled = Request::analyze('authbasic_enabled', false, false, true);
+        $authBasicAutologinEnabled = Request::analyze('authbasicautologin_enabled', false, false, true);
         $authBasicDomain = Request::analyze('authbasic_domain');
         $authSsoDefaultGroup = Request::analyze('sso_defaultgroup', false, false, true);
         $authSsoDefaultProfile = Request::analyze('sso_defaultprofile', false, false, true);
@@ -136,26 +142,28 @@ class ConfigGeneralController extends SimpleControllerBase
             $configData->setSsoDefaultGroup($authSsoDefaultGroup);
             $configData->setSsoDefaultProfile($authSsoDefaultProfile);
 
-            $messages[] = __u('Auth Basic habilitada');
-        } elseif ($configData->isAuthBasicEnabled()) {
+            if ($configData->isAuthBasicEnabled() === false) {
+                $eventMessage->addDescription(__u('Auth Basic habilitada'));
+            }
+        } elseif ($authBasicEnabled === false && $configData->isAuthBasicEnabled()) {
             $configData->setAuthBasicEnabled(false);
             $configData->setAuthBasicAutoLoginEnabled(false);
 
-            $messages[] = __u('Auth Basic deshabiltada');
+            $eventMessage->addDescription(__u('Auth Basic deshabiltada'));
         }
 
-        $this->eventDispatcher->notifyEvent('save.config.general', new Event($this, $messages));
-
-        $this->saveConfig($configData, $this->config);
+        $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
+            $this->eventDispatcher->notifyEvent('save.config.general', new Event($this, $eventMessage));
+        });
     }
 
     protected function initialize()
     {
         try {
-            if (!$this->checkAccess(ActionsInterface::CONFIG_GENERAL)) {
-                throw new UnauthorizedPageException(SPException::INFO);
-            }
+            $this->checkAccess(ActionsInterface::CONFIG_GENERAL);
         } catch (UnauthorizedPageException $e) {
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             $this->returnJsonResponseException($e);
         }
     }

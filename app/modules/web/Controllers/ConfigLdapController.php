@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
+use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
@@ -42,11 +42,11 @@ class ConfigLdapController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * saveAction
      */
     public function saveAction()
     {
-        $messages = [];
+        $eventMessage = EventMessage::factory();
         $configData = clone $this->config->getConfigData();
 
         // LDAP
@@ -76,25 +76,27 @@ class ConfigLdapController extends SimpleControllerBase
             $configData->setLdapBindUser($ldapBindUser);
             $configData->setLdapBindPass($ldapBindPass);
 
-            $messages[] = __u('LDAP habiltado');
-        } elseif ($configData->isLdapEnabled()) {
+            if ($configData->isLdapEnabled() === false) {
+                $eventMessage->addDescription(__u('LDAP habiltado'));
+            }
+        } elseif ($ldapEnabled === false && $configData->isLdapEnabled()) {
             $configData->setLdapEnabled(false);
 
-            $messages[] = __u('LDAP deshabilitado');
+            $eventMessage->addDescription(__u('LDAP deshabilitado'));
         }
 
-        $this->eventDispatcher->notifyEvent('save.config.ldap', new Event($this, $messages));
-
-        $this->saveConfig($configData, $this->config);
+        $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
+            $this->eventDispatcher->notifyEvent('save.config.ldap', new Event($this, $eventMessage));
+        });
     }
 
     protected function initialize()
     {
         try {
-            if (!$this->checkAccess(ActionsInterface::LDAP_CONFIG)) {
-                throw new UnauthorizedPageException(SPException::INFO);
-            }
+            $this->checkAccess(ActionsInterface::LDAP_CONFIG);
         } catch (UnauthorizedPageException $e) {
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             $this->returnJsonResponseException($e);
         }
     }

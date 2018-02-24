@@ -31,7 +31,6 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
 use SP\Core\TaskFactory;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -200,10 +199,10 @@ class ConfigEncryptionController extends SimpleControllerBase
     protected function initialize()
     {
         try {
-            if (!$this->checkAccess(ActionsInterface::ENCRYPTION_CONFIG)) {
-                throw new UnauthorizedPageException(SPException::INFO);
-            }
+            $this->checkAccess(ActionsInterface::ENCRYPTION_CONFIG);
         } catch (UnauthorizedPageException $e) {
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             $this->returnJsonResponseException($e);
         }
     }

@@ -27,7 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
+use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
@@ -42,11 +42,11 @@ class ConfigMailController extends SimpleControllerBase
     use ConfigTrait;
 
     /**
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
+     * saveAction
      */
     public function saveAction()
     {
-        $messages = [];
+        $eventMessage = EventMessage::factory();
         $configData = clone $this->config->getConfigData();
 
         // Mail
@@ -79,27 +79,29 @@ class ConfigMailController extends SimpleControllerBase
                 $configData->setMailPass($mailPass);
             }
 
-            $messages[] = __u('Correo habiltado');
-        } elseif ($configData->isMailEnabled()) {
+            if ($configData->isMailEnabled() === false) {
+                $eventMessage->addDescription(__u('Correo habiltado'));
+            }
+        } elseif ($mailEnabled === false && $configData->isMailEnabled()) {
             $configData->setMailEnabled(false);
             $configData->setMailRequestsEnabled(false);
             $configData->setMailAuthenabled(false);
 
-            $messages[] = __u('Correo deshabilitado');
+            $eventMessage->addDescription(__u('Correo deshabilitado'));
         }
 
-        $this->eventDispatcher->notifyEvent('save.config.mail', new Event($this, $messages));
-
-        $this->saveConfig($configData, $this->config);
+        $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
+            $this->eventDispatcher->notifyEvent('save.config.mail', new Event($this, $eventMessage));
+        });
     }
 
     protected function initialize()
     {
         try {
-            if (!$this->checkAccess(ActionsInterface::MAIL_CONFIG)) {
-                throw new UnauthorizedPageException(SPException::INFO);
-            }
+            $this->checkAccess(ActionsInterface::MAIL_CONFIG);
         } catch (UnauthorizedPageException $e) {
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             $this->returnJsonResponseException($e);
         }
     }
