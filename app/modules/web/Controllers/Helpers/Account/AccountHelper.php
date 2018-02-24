@@ -113,6 +113,9 @@ class AccountHelper extends HelperBase
         $accountAcl = $this->checkAccess($accountDetailsResponse);
 
         $accountData = $accountDetailsResponse->getAccountVData();
+
+        $accountActionsDto = new AccountActionsDto($this->accountId, null, $accountData->getParentId());
+
         $selectUsers = SelectItemAdapter::factory(UserService::getItemsBasic());
         $selectUserGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
         $selectTags = SelectItemAdapter::factory(TagService::getItemsBasic());
@@ -135,6 +138,8 @@ class AccountHelper extends HelperBase
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
             $this->view->assign('publicLinkId', $publicLinkData ? $publicLinkData->getId() : 0);
             $this->view->assign('publicLinkShow', true);
+
+            $accountActionsDto->setPublicLink(!empty($publicLinkUrl));
         } else {
             $this->view->assign('publicLinkShow', false);
         }
@@ -147,7 +152,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('accountData', $accountData);
         $this->view->assign('gotData', true);
 
-        $this->view->assign('actions', Bootstrap::getContainer()->get(AccountActionsHelper::class)->getActionsForAccount($accountAcl, new AccountActionsDto($this->accountId, null, $accountData->getParentId())));
+        $this->view->assign('actions', Bootstrap::getContainer()->get(AccountActionsHelper::class)->getActionsForAccount($accountAcl, $accountActionsDto));
 
         $this->setViewCommon();
     }

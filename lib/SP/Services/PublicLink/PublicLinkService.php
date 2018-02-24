@@ -107,11 +107,13 @@ class PublicLinkService extends Service
     /**
      * @param $id
      * @return bool
+     * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function refresh($id)
     {

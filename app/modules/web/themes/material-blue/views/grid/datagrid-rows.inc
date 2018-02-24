@@ -12,16 +12,14 @@ use SP\Html\Html;
 <?php if ($data->getData()->getDataCount() > 0):
     foreach ($data->getData()->getData() as $dataIndex => $dataItem):
         if ($dataIndex === 'count'): continue; endif;
-
-        $numFields = count($data->getData()->getDataRowSources());
-        ?>
+        $numFields = count($data->getData()->getDataRowSources()); ?>
 
         <tr data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>"
             data-activetab="<?php echo $index; ?>">
             <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
                 <?php $value = $rowSrc['isMethod'] === true && method_exists($dataItem, $rowSrc['name']) ? $dataItem->{$rowSrc['name']}() : $dataItem->{$rowSrc['name']}; ?>
                 <?php $value = $rowSrc['filter'] !== null && is_callable($rowSrc['filter']) ? $rowSrc['filter']($value) : $value; ?>
-                <td class="cell-data"><?php echo $value !== '' ? Html::truncate($value, 100 / $numFields) : '&nbsp;'; // Fix height ?></td>
+                <td class="cell-data"><?php echo $value !== '' ? Html::truncate($value, 150 / $numFields) : '&nbsp;'; // Fix height ?></td>
             <?php endforeach; ?>
 
             <?php if (count($data->getData()->getDataRowSourcesWithIcon()) > 0): ?>

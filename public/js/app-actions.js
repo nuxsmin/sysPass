@@ -84,14 +84,14 @@ sysPass.Actions = function (Common) {
 
     // Función para cargar el contenido de la acción del menú seleccionada
     const doAction = function (obj, view) {
-        var itemId = obj.itemId !== undefined ? "/" + obj.itemId : "";
+        const itemId = obj.itemId !== undefined ? "/" + obj.itemId : "";
 
-        var data = {
+        const data = {
             r: obj.r + itemId,
             isAjax: 1
         };
 
-        var opts = Common.appRequests().getRequestOpts();
+        const opts = Common.appRequests().getRequestOpts();
         opts.url = ajaxUrl.doAction;
         opts.method = "get";
         opts.type = "html";
@@ -99,18 +99,18 @@ sysPass.Actions = function (Common) {
         opts.data = data;
 
         Common.appRequests().getActionCall(opts, function (response) {
-            var $content = $("#content");
+            const $content = $("#content");
 
             $content.empty().html(response);
 
-            var views = Common.triggers().views;
+            const views = Common.triggers().views;
             views.common($content);
 
             if (view !== undefined && typeof views[view] === "function") {
                 views[view]();
             }
 
-            var $mdlContent = $(".mdl-layout__content");
+            const $mdlContent = $(".mdl-layout__content");
 
             if ($mdlContent.scrollTop() > 0) {
                 $mdlContent.animate({scrollTop: 0}, 1000);
@@ -169,7 +169,7 @@ sysPass.Actions = function (Common) {
             },
             callbacks: {
                 open: function () {
-                    var $boxPopup = $("#box-popup");
+                    const $boxPopup = $("#box-popup");
 
                     Common.appTriggers().views.common($boxPopup);
 
@@ -237,7 +237,7 @@ sysPass.Actions = function (Common) {
     /**
      * Cerrar los diálogos
      */
-    var closeFloatingBox = function () {
+    const closeFloatingBox = function () {
         $.magnificPopup.close();
     };
 
@@ -506,14 +506,14 @@ sysPass.Actions = function (Common) {
      *
      * @param $obj
      */
-    var items = {
+    const items = {
         get: function ($obj) {
             log.info("items:get");
 
-            var $dst = $obj[0].selectize;
+            const $dst = $obj[0].selectize;
             $dst.clearOptions();
             $dst.load(function (callback) {
-                var opts = Common.appRequests().getRequestOpts();
+                const opts = Common.appRequests().getRequestOpts();
                 opts.url = ajaxUrl.updateItems;
                 opts.method = "get";
                 opts.data = {
@@ -533,11 +533,11 @@ sysPass.Actions = function (Common) {
         update: function ($obj) {
             log.info("items:update");
 
-            var $dst = $("#" + $obj.data("item-dst"))[0].selectize;
+            const $dst = $("#" + $obj.data("item-dst"))[0].selectize;
 
             $dst.clearOptions();
             $dst.load(function (callback) {
-                var opts = Common.appRequests().getRequestOpts();
+                const opts = Common.appRequests().getRequestOpts();
                 opts.url = ajaxUrl.updateItems;
                 opts.method = "get";
                 opts.data = {
@@ -557,11 +557,11 @@ sysPass.Actions = function (Common) {
      *
      * @type {{savePreferences: user.savePreferences, saveSecurity: user.saveSecurity, password: user.password, passreset: user.passreset}}
      */
-    var user = {
+    const user = {
         savePreferences: function ($obj) {
             log.info("user:savePreferences");
 
-            var opts = Common.appRequests().getRequestOpts();
+            const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.user.savePreferences;
             opts.data = $obj.serialize();
 
@@ -573,23 +573,10 @@ sysPass.Actions = function (Common) {
                 }, 2000);
             });
         },
-        saveSecurity: function ($obj) {
-            log.info("user:saveSecurity");
-
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.user.savePreferences;
-            opts.data = $obj.serialize();
-
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
-
-                doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
-            });
-        },
         password: function ($obj) {
             log.info("user:password");
 
-            var opts = Common.appRequests().getRequestOpts();
+            const opts = Common.appRequests().getRequestOpts();
             opts.type = "html";
             opts.method = "get";
             opts.url = ajaxUrl.user.password;
@@ -611,7 +598,7 @@ sysPass.Actions = function (Common) {
         passreset: function ($obj) {
             log.info("user:passreset");
 
-            var opts = Common.appRequests().getRequestOpts();
+            const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.user.passreset;
             opts.data = $obj.serialize();
 
@@ -794,14 +781,14 @@ sysPass.Actions = function (Common) {
      *
      * @type {{ldap: checks.ldap, wiki: checks.wiki}}
      */
-    var checks = {
+    const checks = {
         ldap: function ($obj) {
             log.info("checks:ldap");
 
-            var $form = $($obj.data("src"));
+            const $form = $($obj.data("src"));
             $form.find("[name='sk']").val(Common.sk.get());
 
-            var opts = Common.appRequests().getRequestOpts();
+            const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.checks;
             opts.data = $form.serialize();
 
@@ -816,10 +803,10 @@ sysPass.Actions = function (Common) {
         wiki: function ($obj) {
             log.info("checks:wiki");
 
-            var $form = $($obj.data("src"));
+            const $form = $($obj.data("src"));
             $form.find("[name='sk']").val(Common.sk.get());
 
-            var opts = Common.appRequests().getRequestOpts();
+            const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.checks;
             opts.data = $form.serialize();
 
@@ -1065,20 +1052,23 @@ sysPass.Actions = function (Common) {
     /**
      * Objeto para las acciones de los enlaces
      */
-    var link = {
+    const link = {
         save: function ($obj) {
             log.info("link:save");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.link;
+            const itemId = $obj.data("item-id");
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint;
             opts.data = {
-                itemId: $obj.data("item-id"),
-                actionId: $obj.data("action-id"),
+                r: $obj.data("action-route"),
+                accountId: itemId,
+                notify: 0,
                 sk: Common.sk.get(),
                 isAjax: 1
             };
 
-            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[48] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[48] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
@@ -1089,6 +1079,10 @@ sysPass.Actions = function (Common) {
 
                         Common.appRequests().getActionCall(opts, function (json) {
                             Common.msg.out(json);
+
+                            if (json.status === 0) {
+                                getContent({r: $obj.data("action-next") + "/" + itemId});
+                            }
                         });
                     }
                 },
@@ -1102,7 +1096,11 @@ sysPass.Actions = function (Common) {
                         Common.appRequests().getActionCall(opts, function (json) {
                             Common.msg.out(json);
 
-                            doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("item-id")});
+                            if (json.status === 0) {
+                                getContent({
+                                    r: $obj.data("action-next") + "/" + itemId
+                                });
+                            }
                         });
                     }
                 }
@@ -1111,12 +1109,14 @@ sysPass.Actions = function (Common) {
         refresh: function ($obj) {
             log.info("link:refresh");
 
-            appMgmt.state.update($obj);
+            tabs.state.update($obj);
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.link
+            const itemId = $obj.data("item-id");
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint;
             opts.data = {
-                r: $obj.data("action-route") + "/" + $obj.data("item-id"),
+                r: $obj.data("action-route") + "/" + itemId,
                 sk: Common.sk.get(),
                 isAjax: 1
             };
@@ -1124,10 +1124,20 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                getContent({
-                    r: tabs.state.tab.route,
-                    tabIndex: tabs.state.tab.index
-                });
+                if (json.status === 0) {
+                    const actionNext = $obj.data("action-next");
+
+                    if (actionNext) {
+                        getContent({
+                            r: actionNext + "/" + itemId
+                        });
+                    } else {
+                        getContent({
+                            r: tabs.state.tab.route,
+                            tabIndex: tabs.state.tab.index
+                        });
+                    }
+                }
             });
         }
     };
@@ -1176,7 +1186,7 @@ sysPass.Actions = function (Common) {
                 if (json.status !== 0) {
                     Common.msg.out(json);
                 } else {
-                    var $itemDst = $obj.data("item-dst");
+                    const $itemDst = $obj.data("item-dst");
 
                     showFloatingBox(json.data.html, {
                         open: function () {

@@ -98,7 +98,7 @@ class AccessManagerController extends ControllerBase
             $this->tabsGridHelper->addTab($this->getApiTokensList());
         }
 
-        if ($this->checkAccess(ActionsInterface::PUBLICLINK)) {
+        if ($this->configData->isPublinksEnabled() && $this->checkAccess(ActionsInterface::PUBLICLINK)) {
             $this->tabsGridHelper->addTab($this->getPublicLinksList());
         }
 

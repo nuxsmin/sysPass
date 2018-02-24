@@ -105,7 +105,9 @@ class AccountActionsHelper extends HelperBase
             && $accountAcl->isShowLink()
             && $accountAcl->isShowViewPass()
         ) {
-            $actionsEnabled[] = $accountActionsDto->hasPublicLink() ? $this->getPublicLinkRefreshAction() : $this->getPublicLinkAction();
+            $action = $accountActionsDto->hasPublicLink() ? $this->getPublicLinkRefreshAction() : $this->getPublicLinkAction();
+
+            $actionsEnabled[] = $action->addData('item-id', $accountActionsDto->getAccountId());
         }
 
         if ($accountAcl->isShowViewPass()) {
@@ -214,6 +216,7 @@ class AccountActionsHelper extends HelperBase
         $action->setId(ActionsInterface::PUBLICLINK_REFRESH);
         $action->setName(__('Actualizar Enlace Público'));
         $action->setTitle(__('Actualizar Enlace Público'));
+        $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconPublicLink());
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_REFRESH));
         $action->addData('action-sk', $this->sk);
@@ -235,7 +238,7 @@ class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Crear Enlace Público'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconPublicLink());
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::PUBLICLINK_CREATE));
+        $action->addData('action-route', 'publicLink/saveCreate');
         $action->addData('action-sk', $this->sk);
         $action->addData('onclick', 'link/save');
         $action->addData('action-next', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));

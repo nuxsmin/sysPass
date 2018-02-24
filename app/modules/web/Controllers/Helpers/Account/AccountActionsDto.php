@@ -91,7 +91,7 @@ class AccountActionsDto
      */
     public function isHistory()
     {
-        return $this->accountHistoryId !== null;
+        return $this->accountHistoryId !== null && $this->accountHistoryId > 0;
     }
 
     /**
@@ -99,7 +99,7 @@ class AccountActionsDto
      */
     public function isLinked()
     {
-        return $this->accountParentId !== null;
+        return $this->accountParentId !== null && $this->accountParentId > 0;
     }
 
     /**

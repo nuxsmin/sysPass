@@ -64,7 +64,6 @@ class ItemManagerController extends ControllerBase
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Dic\ContainerException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function indexAction()
     {
@@ -102,7 +101,7 @@ class ItemManagerController extends ControllerBase
             $this->tabsGridHelper->addTab($this->getCustomFieldsList());
         }
 
-        if ($this->checkAccess(ActionsInterface::FILE)) {
+        if ($this->configData->isFilesEnabled() && $this->checkAccess(ActionsInterface::FILE)) {
             $this->tabsGridHelper->addTab($this->getAccountFilesList());
         }
 

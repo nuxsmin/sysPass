@@ -142,6 +142,8 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      * Create action
      *
      * @param int $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function refreshAction($id)
     {
@@ -228,7 +230,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::USER_CREATE)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE)) {
             return;
         }
 
@@ -237,7 +239,6 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
             $form->validate(ActionsInterface::PUBLICLINK_CREATE);
 
             $this->publicLinkService->create($form->getItemData());
-//            $this->publicLinkService->logAction($id, ActionsInterface::PUBLICLINK_CREATE);
 
             $this->eventDispatcher->notifyEvent('create.publicLink', new Event($this));
 
