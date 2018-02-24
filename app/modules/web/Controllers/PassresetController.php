@@ -57,7 +57,7 @@ class PassresetController extends ControllerBase
 
             $this->view->assign('passReset', $this->view->action === 'passreset' && !empty($this->view->hash) && !empty($this->view->time));
         } else {
-            ErrorUtil::showErrorFull($this->view, self::ERR_UNAVAILABLE, 'passreset');
+            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE);
         }
 
         $this->view();

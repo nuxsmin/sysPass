@@ -24,6 +24,7 @@
 
 namespace SP\Util;
 
+use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
 use SP\Mvc\View\Template;
 
@@ -43,39 +44,6 @@ class ErrorUtil
     const ERR_UPDATE_MPASS = 3;
     const ERR_OPERATION_NO_PERMISSION = 4;
     const ERR_EXCEPTION = 5;
-
-    /**
-     * Establecer la plantilla de error con el código indicado.
-     *
-     * @param \SP\Mvc\View\Template $view
-     * @param int                   $type int con el tipo de error
-     */
-    public static function showErrorInViewAndReset(Template $view, $type)
-    {
-        $view->resetTemplates();
-
-        self::showErrorInView($view, $type);
-    }
-
-    /**
-     * Establecer la plantilla de error con el código indicado.
-     *
-     * @param \SP\Mvc\View\Template $view
-     * @param int                   $type int con el tipo de error
-     */
-    public static function showErrorInView(Template $view, $type)
-    {
-        $view->addPartial('error');
-
-        $error = self::getErrorTypes($type);
-
-        $view->append('errors',
-            [
-                'type' => SPException::WARNING,
-                'description' => $error['txt'],
-                'hint' => $error['hint']
-            ]);
-    }
 
     /**
      * Return error message by type
@@ -122,9 +90,15 @@ class ErrorUtil
      * @param int                   $type    int con el tipo de error
      * @param  string               $replace Template replacement
      */
-    public static function showErrorFull(Template $view, $type, $replace)
+    public static function showErrorInView(Template $view, $type, $replace = null)
     {
-        $view->replaceTemplate('error-full', $replace, Template::PARTIALS_DIR);
+        if ($replace === null) {
+            $view->resetContentTemplates();
+        } else {
+            $view->removeContentTemplate($replace);
+        }
+
+        $view->addContentTemplate('error', Template::PARTIALS_DIR);
 
         $error = self::getErrorTypes($type);
 
@@ -134,5 +108,15 @@ class ErrorUtil
                 'description' => $error['txt'],
                 'hint' => $error['hint']
             ]);
+
+        try {
+            echo $view->render();
+        } catch (FileNotFoundException $e) {
+            processException($e);
+
+            echo $e->getMessage();
+        }
+
+        die();
     }
 }

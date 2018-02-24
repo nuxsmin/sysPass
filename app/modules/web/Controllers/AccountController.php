@@ -231,14 +231,14 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                             ->addDetail(__('Cliente'), $accountData->getClientName()))
                 );
             } else {
-                ErrorUtil::showErrorFull($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION, 'account-link');
+                ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION);
             }
 
             $this->view();
         } catch (\Exception $e) {
             processException($e);
 
-            ErrorUtil::showErrorFull($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION, 'account-link');
+            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_EXCEPTION);
         }
     }
 

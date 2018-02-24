@@ -206,10 +206,26 @@ class Template
      * Removes a template from the stack
      *
      * @param $name
+     * @return Template
      */
     public function removeTemplate($name)
     {
         unset($this->files[$name]);
+
+        return $this;
+    }
+
+    /**
+     * Removes a template from the stack
+     *
+     * @param $name
+     * @return Template
+     */
+    public function removeContentTemplate($name)
+    {
+        unset($this->contentTemplates[$name]);
+
+        return $this;
     }
 
     /**
@@ -217,19 +233,20 @@ class Template
      *
      * @param string $src Source template
      * @param string $dst Destination template
+     * @param string $base
      * @return mixed|string
      */
     public function replaceTemplate($src, $dst, $base)
     {
         try {
-            if (isset($this->files[$dst])) {
-                $this->files[$dst] = $this->checkTemplate($src, $base);
+            if (isset($this->contentTemplates[$dst])) {
+                $this->contentTemplates[$dst] = $this->checkTemplate($src, $base);
             }
         } catch (FileNotFoundException $e) {
             return '';
         }
 
-        return $this->files[$dst];
+        return $this->contentTemplates[$dst];
     }
 
     /**
@@ -409,6 +426,18 @@ class Template
     public function resetTemplates()
     {
         $this->files = [];
+
+        return $this;
+    }
+
+    /**
+     * Reset de las plantillas añadidas
+     */
+    public function resetContentTemplates()
+    {
+        $this->contentTemplates = [];
+
+        return $this;
     }
 
     /**

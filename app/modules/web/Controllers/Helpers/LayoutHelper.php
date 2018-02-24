@@ -102,7 +102,7 @@ class LayoutHelper extends HelperBase
         $this->view->assign('startTime', microtime());
 
         $this->view->assign('isInstalled', $this->configData->isInstalled());
-        $this->view->assign('sk', $this->session->generateSecurityKey());
+        $this->view->assign('sk', $this->loggedIn ? $this->session->generateSecurityKey() : '');
         $this->view->assign('appInfo', Util::getAppInfo());
         $this->view->assign('appVersion', Util::getVersionString());
         $this->view->assign('isDemoMode', $this->configData->isDemoEnabled());
