@@ -103,11 +103,11 @@ class ConfigService extends Service
             try {
                 $this->save($param, $value);
             } catch (ConstraintException $e) {
-                debugLog($e, true);
+                processException($e);
 
                 throw new ServiceException($e->getMessage(), $e->getType(), $e->getHint(), $e->getCode());
             } catch (QueryException $e) {
-                debugLog($e, true);
+                processException($e);
 
                 throw new ServiceException($e->getMessage(), $e->getType(), $e->getHint(), $e->getCode());
             }

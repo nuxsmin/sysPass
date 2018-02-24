@@ -31,6 +31,7 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Core\TaskFactory;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -146,7 +147,8 @@ class ConfigEncryptionController extends SimpleControllerBase
             $configService = $this->dic->get(ConfigService::class);
             $configService->save('masterPwd', Hash::hashKey(CryptSession::getSessionKey()));
 
-            $this->eventDispatcher->notifyEvent('refresh.masterPassword', new Event($this, [__u('Hash de clave maestra actualizado')]));
+            $this->eventDispatcher->notifyEvent('refresh.masterPassword',
+                new Event($this, EventMessage::factory()->addDescription(__u('Hash de clave maestra actualizado'))));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Hash de clave maestra actualizado'));
         } catch (\Exception $e) {
