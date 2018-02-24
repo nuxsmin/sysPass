@@ -193,4 +193,10 @@ interface DataGridInterface
      * @return DataGridActionInterface[]
      */
     public function getDataActionsMenuFiltered($filter);
+
+    /**
+     * Actualizar los datos del paginador
+     * @return static
+     */
+    public function updatePager();
 }

@@ -164,4 +164,6 @@ interface ActionsInterface
     const LDAP_CONFIG = 1080;
     const LDAP_SYNC = 1081;
     const EVENTLOG = 90;
+    const EVENTLOG_SEARCH = 905;
+    const EVENTLOG_CLEAR = 906;
 }

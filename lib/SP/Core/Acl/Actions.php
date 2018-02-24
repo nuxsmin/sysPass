@@ -61,6 +61,7 @@ class Actions
      *
      * @param FileStorageInterface    $fileStorage
      * @param XmlFileStorageInterface $xmlFileStorage
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function __construct(FileStorageInterface $fileStorage, XmlFileStorageInterface $xmlFileStorage)
     {
@@ -73,6 +74,7 @@ class Actions
      * Loads actions from cache file
      *
      * @param FileStorageInterface $fileStorage
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function loadCache(FileStorageInterface $fileStorage)
     {
@@ -93,6 +95,8 @@ class Actions
 
     /**
      * Sets an array of actions using id as key
+     *
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function map()
     {
@@ -104,7 +108,7 @@ class Actions
 
         foreach ($this->load() as $a) {
             if (isset($this->actions[$a['id']])) {
-                throw new \RuntimeException('Duplicated action id');
+                throw new \RuntimeException('Duplicated action id: ' . $a['id']);
             }
 
             $action = clone $actionBase;
@@ -121,6 +125,7 @@ class Actions
      * Loads actions from DB
      *
      * @return ActionData[]
+     * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     protected function load()
     {
@@ -142,9 +147,14 @@ class Actions
      *
      * @param $id
      * @return ActionData
+     * @throws ActionNotFoundException
      */
     public function getActionById($id)
     {
+        if (!isset($this->actions[$id])) {
+            throw new ActionNotFoundException(__u('Acción no encontrada'), ActionNotFoundException::ERROR);
+        }
+
         return $this->actions[$id];
     }
 }

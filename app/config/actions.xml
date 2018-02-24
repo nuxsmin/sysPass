@@ -128,6 +128,18 @@
         <route>eventlog/index</route>
     </action>
     <action multiple="1">
+        <id>905</id>
+        <name>EVENTLOG_SEARCH</name>
+        <text>Buscar Eventos</text>
+        <route>eventlog/search</route>
+    </action>
+    <action multiple="1">
+        <id>906</id>
+        <name>EVENTLOG_CLEAR</name>
+        <text>Limpiar Eventos</text>
+        <route>eventlog/clear</route>
+    </action>
+    <action multiple="1">
         <id>100</id>
         <name>ACCOUNT_VIEW</name>
         <text>Ver Cuenta</text>

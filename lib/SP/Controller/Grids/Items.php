@@ -26,7 +26,6 @@ namespace SP\Controller\Grids;
 
 defined('APP_ROOT') || die();
 
-use SP\Config\Config;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\InvalidArgumentException;
@@ -86,7 +85,7 @@ class Items extends GridBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::CATEGORY_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nueva Categoría'));
         $GridActionNew->setTitle(__('Nueva Categoría'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -160,7 +159,7 @@ class Items extends GridBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::CLIENT_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nuevo Cliente'));
         $GridActionNew->setTitle(__('Nuevo Cliente'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -236,7 +235,7 @@ class Items extends GridBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::CUSTOMFIELD_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nuevo Campo'));
         $GridActionNew->setTitle(__('Nuevo Campo'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -511,7 +510,7 @@ class Items extends GridBase
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::USER_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nuevo Usuario'));
         $GridActionNew->setTitle(__('Nuevo Usuario'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -525,7 +524,7 @@ class Items extends GridBase
         ) {
             $GridActionLdapSync = new DataGridAction();
             $GridActionLdapSync->setId(self::LDAP_SYNC);
-            $GridActionLdapSync->setType(DataGridActionType::NEW_ITEM);
+            $GridActionLdapSync->setType(DataGridActionType::MENUBAR_ITEM);
             $GridActionLdapSync->setName(__('Importar usuarios de LDAP'));
             $GridActionLdapSync->setTitle(__('Importar usuarios de LDAP'));
             $GridActionLdapSync->setIcon(new FontIcon('get_app'));
@@ -622,7 +621,7 @@ class Items extends GridBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::GROUP_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nuevo Grupo'));
         $GridActionNew->setTitle(__('Nuevo Grupo'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -694,7 +693,7 @@ class Items extends GridBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::PROFILE_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nuevo Perfil'));
         $GridActionNew->setTitle(__('Nuevo Perfil'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -778,7 +777,7 @@ class Items extends GridBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::APITOKEN_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nueva Autorización'));
         $GridActionNew->setTitle(__('Nueva Autorización'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -940,7 +939,7 @@ class Items extends GridBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(self::TAG_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nueva Etiqueta'));
         $GridActionNew->setTitle(__('Nueva Etiqueta'));
         $GridActionNew->setIcon($this->icons->getIconAdd());

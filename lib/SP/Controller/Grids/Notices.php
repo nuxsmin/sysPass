@@ -91,7 +91,7 @@ class Notices extends GridBase
             // Grid item's actions
             $GridActionNew = new DataGridAction();
             $GridActionNew->setId(self::NOTICE_USER_CREATE);
-            $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+            $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
             $GridActionNew->setName(__('Nueva Notificación'));
             $GridActionNew->setTitle(__('Nueva Notificación'));
             $GridActionNew->setIcon($this->icons->getIconAdd());

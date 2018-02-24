@@ -304,7 +304,7 @@ class AccountActionsHelper extends HelperBase
     {
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_COPY);
-        $action->setType(DataGridActionType::NEW_ITEM);
+        $action->setType(DataGridActionType::MENUBAR_ITEM);
         $action->setName(__('Copiar Cuenta'));
         $action->setTitle(__('Copiar Cuenta'));
         $action->addClass('btn-action');

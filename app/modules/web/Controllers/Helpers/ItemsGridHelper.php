@@ -30,12 +30,15 @@ use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\UI\ThemeIconsBase;
+use SP\DataModel\ItemSearchData;
 use SP\Html\Assets\FontIcon;
+use SP\Html\DataGrid\DataGrid;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridActionType;
 use SP\Html\DataGrid\DataGridData;
 use SP\Html\DataGrid\DataGridHeader;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Repositories\CustomField\CustomFieldDefRepository;
@@ -101,7 +104,7 @@ class ItemsGridHelper extends HelperBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(ActionsInterface::CATEGORY_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nueva Categoría'));
         $GridActionNew->setTitle(__('Nueva Categoría'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -207,7 +210,7 @@ class ItemsGridHelper extends HelperBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(ActionsInterface::CLIENT_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nuevo Cliente'));
         $GridActionNew->setTitle(__('Nuevo Cliente'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -291,7 +294,7 @@ class ItemsGridHelper extends HelperBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(ActionsInterface::CUSTOMFIELD_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nuevo Campo'));
         $GridActionNew->setTitle(__('Nuevo Campo'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -597,7 +600,7 @@ class ItemsGridHelper extends HelperBase
 
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(ActionsInterface::USER_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nuevo Usuario'));
         $GridActionNew->setTitle(__('Nuevo Usuario'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -612,7 +615,7 @@ class ItemsGridHelper extends HelperBase
         ) {
             $GridActionLdapSync = new DataGridAction();
             $GridActionLdapSync->setId(ActionsInterface::LDAP_SYNC);
-            $GridActionLdapSync->setType(DataGridActionType::NEW_ITEM);
+            $GridActionLdapSync->setType(DataGridActionType::MENUBAR_ITEM);
             $GridActionLdapSync->setName(__('Importar usuarios de LDAP'));
             $GridActionLdapSync->setTitle(__('Importar usuarios de LDAP'));
             $GridActionLdapSync->setIcon(new FontIcon('get_app'));
@@ -717,7 +720,7 @@ class ItemsGridHelper extends HelperBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(ActionsInterface::GROUP_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nuevo Grupo'));
         $GridActionNew->setTitle(__('Nuevo Grupo'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -806,7 +809,7 @@ class ItemsGridHelper extends HelperBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(ActionsInterface::PROFILE_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nuevo Perfil'));
         $GridActionNew->setTitle(__('Nuevo Perfil'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -897,7 +900,7 @@ class ItemsGridHelper extends HelperBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(ActionsInterface::APITOKEN_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nueva Autorización'));
         $GridActionNew->setTitle(__('Nueva Autorización'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -998,7 +1001,7 @@ class ItemsGridHelper extends HelperBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(ActionsInterface::PUBLICLINK_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nuevo Enlace'));
         $GridActionNew->setTitle(__('Nuevo Enlace'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -1086,7 +1089,7 @@ class ItemsGridHelper extends HelperBase
         // Grid item's actions
         $GridActionNew = new DataGridAction();
         $GridActionNew->setId(ActionsInterface::TAG_CREATE);
-        $GridActionNew->setType(DataGridActionType::NEW_ITEM);
+        $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nueva Etiqueta'));
         $GridActionNew->setTitle(__('Nueva Etiqueta'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
@@ -1214,6 +1217,118 @@ class ItemsGridHelper extends HelperBase
         $Grid->setDataActions($GridActionReset);
 
         return $Grid;
+    }
+
+    /**
+     * @param array $data
+     * @return DataGrid
+     * @throws \SP\Core\Dic\ContainerException
+     */
+    public function getEventLogGrid(array $data)
+    {
+        // Grid Header
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(__('ID'));
+        $GridHeaders->addHeader(__('Fecha / Hora'));
+        $GridHeaders->addHeader(__('Nivel'));
+        $GridHeaders->addHeader(__('Evento'));
+        $GridHeaders->addHeader(__('Login'));
+        $GridHeaders->addHeader(__('IP'));
+        $GridHeaders->addHeader(__('Descripción'));
+
+        $isDemoMode = $this->configData->isDemoEnabled();
+
+        // Grid Data
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('id');
+        $GridData->addDataRowSource('date');
+        $GridData->addDataRowSource('level');
+        $GridData->addDataRowSource('action');
+        $GridData->addDataRowSource('login');
+        $GridData->addDataRowSource('ipAddress', false,
+            function ($value) use ($isDemoMode) {
+                return $isDemoMode ? preg_replace('#\d+#', '*', $value) : $value;
+            });
+        $GridData->addDataRowSource('description', false,
+            function ($value) use ($isDemoMode) {
+                if ($isDemoMode) {
+                    $value = preg_replace('/\\d+\\.\\d+\\.\\d+\\.\\d+/', "*.*.*.*", $value);
+                }
+
+                $text = str_replace(';;', PHP_EOL, utf8_decode($value));
+
+                if (preg_match('/^SQL.*/m', $text)) {
+                    $text = preg_replace('/([[:alpha:]_]+),/m', '\\1,<br>', $text);
+                    $text = preg_replace('/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m', '<br>\\1', $text);
+                }
+
+                if (strlen($text) >= 150) {
+                    $text = wordwrap($text, 150, PHP_EOL, true);
+                }
+
+                return str_replace(PHP_EOL, '<br>', $text);
+            });
+        $GridData->setData($data);
+
+        // Grid
+        $Grid = new DataGrid();
+        $Grid->setId('tblEventLog');
+        $Grid->setDataTableTemplate('datagrid-table-simple', 'grid');
+        $Grid->setDataRowTemplate('datagrid-rows', $this->view->getBase());
+        $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(__('Registro de Eventos'));
+        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+
+        // Grid Actions
+        $GridActionSearch = new DataGridActionSearch();
+        $GridActionSearch->setId(ActionsInterface::EVENTLOG_SEARCH);
+        $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
+        $GridActionSearch->setName('frmSearchEvent');
+        $GridActionSearch->setTitle(__('Buscar Evento'));
+        $GridActionSearch->setOnSubmitFunction('eventlog/search');
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH));
+
+        $Grid->setDataActions($GridActionSearch);
+
+        $GridActionClear = new DataGridAction();
+        $GridActionClear->setId(ActionsInterface::EVENTLOG_CLEAR);
+        $GridActionClear->setType(DataGridActionType::MENUBAR_ITEM);
+        $GridActionClear->setName(__('Vaciar registro de eventos'));
+        $GridActionClear->setTitle(__('Vaciar registro de eventos'));
+        $GridActionClear->setIcon($this->icons->getIconClear());
+        $GridActionClear->setOnClickFunction('eventlog/clear');
+        $GridActionClear->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_CLEAR));
+        $GridActionClear->addData('action-next', Acl::getActionRoute(ActionsInterface::EVENTLOG));
+
+        $Grid->setDataActions($GridActionClear);
+
+        $Grid->setPager($this->getPager($GridActionSearch)
+            ->setOnClickFunction('eventlog/nav')
+        );
+
+        return $Grid;
+    }
+
+    /**
+     * Actualizar los datos del paginador
+     *
+     * @param DataGridInterface $dataGrid
+     * @param ItemSearchData    $itemSearchData
+     * @return DataGridInterface
+     */
+    public function updatePager(DataGridInterface $dataGrid, ItemSearchData $itemSearchData)
+    {
+        $dataGrid->getPager()
+            ->setLimitStart($itemSearchData->getLimitStart())
+            ->setLimitCount($itemSearchData->getLimitCount())
+            ->setFilterOn($itemSearchData->getSeachString() !== '');
+
+        $dataGrid->updatePager();
+
+        return $dataGrid;
     }
 
     /**

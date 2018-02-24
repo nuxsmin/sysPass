@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
 use SplObjectStorage;
@@ -79,11 +78,19 @@ abstract class DataGridBase implements DataGridInterface
      */
     protected $_actions;
     /**
+     * @var int
+     */
+    protected $_actionsCount = 0;
+    /**
      * Las acciones asociadas a los elementos de la matriz que se muestran en un menú
      *
      * @var DataGridActionInterface[]
      */
     protected $_actionsMenu;
+    /**
+     * @var int
+     */
+    protected $_actionsMenuCount = 0;
     /**
      * La acción a realizar al cerrar la matriz
      *
@@ -114,6 +121,12 @@ abstract class DataGridBase implements DataGridInterface
      * @var string
      */
     protected $_rowsTemplate;
+    /**
+     * La plantilla a utilizar para presentar la tabla
+     *
+     * @var string
+     */
+    protected $_tableTemplate;
     /**
      * @var Theme
      */
@@ -215,7 +228,7 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param DataGridActionInterface $action
-     * @param bool $isMenu Añadir al menu de acciones
+     * @param bool                    $isMenu Añadir al menu de acciones
      * @return $this
      */
     public function setDataActions(DataGridActionInterface $action, $isMenu = false)
@@ -226,12 +239,20 @@ abstract class DataGridBase implements DataGridInterface
             }
 
             $this->_actions->attach($action);
+
+            if (!$action->isSkip()) {
+                $this->_actionsCount++;
+            }
         } else {
             if (null === $this->_actionsMenu) {
                 $this->_actionsMenu = new SplObjectStorage();
             }
 
             $this->_actionsMenu->attach($action);
+
+            if (!$action->isSkip()) {
+                $this->_actionsMenuCount++;
+            }
         }
 
         return $this;
@@ -257,7 +278,7 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para la cabecera
      *
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base Directorio base para la plantilla
+     * @param string $base     Directorio base para la plantilla
      * @return $this
      */
     public function setDataHeaderTemplate($template, $base = null)
@@ -265,7 +286,7 @@ abstract class DataGridBase implements DataGridInterface
         try {
             $this->_headerTemplate = $this->checkTemplate($template, $base);
         } catch (FileNotFoundException $e) {
-            debugLog($e->getMessage());
+            processException($e);
         }
 
         return $this;
@@ -285,7 +306,7 @@ abstract class DataGridBase implements DataGridInterface
         $file = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . $template;
 
         if (!is_readable($file)) {
-            throw new FileNotFoundException(SPException::ERROR, sprintf(__('No es posible obtener la plantilla "%s" : %s'), $template, $file));
+            throw new FileNotFoundException(sprintf(__('No es posible obtener la plantilla "%s" : %s'), $template, $file));
         }
 
         return $file;
@@ -332,7 +353,7 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para el paginador
      *
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base Directorio base para la plantilla
+     * @param string $base     Directorio base para la plantilla
      * @return $this
      */
     public function setDataPagerTemplate($template, $base = null)
@@ -358,7 +379,7 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base Directorio base para la plantilla
+     * @param string $base     Directorio base para la plantilla
      * @return mixed
      */
     public function setDataRowTemplate($template, $base = null)
@@ -366,7 +387,7 @@ abstract class DataGridBase implements DataGridInterface
         try {
             $this->_rowsTemplate = $this->checkTemplate($template, $base);
         } catch (FileNotFoundException $e) {
-            debugLog($e->getMessage());
+            processException($e);
         }
 
         return $this;
@@ -480,5 +501,45 @@ abstract class DataGridBase implements DataGridInterface
         }
 
         return $actions;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDataTableTemplate()
+    {
+        return $this->_tableTemplate;
+    }
+
+    /**
+     * @param      $template
+     * @param null $base
+     * @return DataGridBase
+     */
+    public function setDataTableTemplate($template, $base = null)
+    {
+        try {
+            $this->_tableTemplate = $this->checkTemplate($template, $base);
+        } catch (FileNotFoundException $e) {
+            processException($e);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDataActionsMenuCount()
+    {
+        return $this->_actionsMenuCount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDataActionsCount()
+    {
+        return $this->_actionsCount;
     }
 }

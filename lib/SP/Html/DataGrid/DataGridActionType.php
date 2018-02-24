@@ -33,7 +33,7 @@ defined('APP_ROOT') || die();
  */
 class DataGridActionType
 {
-    const NEW_ITEM = 1;
+    const MENUBAR_ITEM = 1;
     const VIEW_ITEM = 2;
     const EDIT_ITEM = 3;
     const DELETE_ITEM = 4;

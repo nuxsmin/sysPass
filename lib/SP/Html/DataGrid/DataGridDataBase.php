@@ -40,13 +40,13 @@ abstract class DataGridDataBase implements DataGridDataInterface
      *
      * @var array
      */
-    private $_data = array();
+    private $_data = [];
     /**
      * Las columnas a mostrar de los datos obtenidos
      *
      * @var array
      */
-    private $_sources = array();
+    private $_sources = [];
     /**
      * La columna que identifica cada elemento de los datos de la matriz
      *
@@ -58,7 +58,7 @@ abstract class DataGridDataBase implements DataGridDataInterface
      *
      * @var array
      */
-    private $_sourcesWithIcon = array();
+    private $_sourcesWithIcon = [];
     /**
      * @var int
      */
@@ -73,13 +73,17 @@ abstract class DataGridDataBase implements DataGridDataInterface
     }
 
     /**
-     * @param string $source
-     * @param bool   $isMethod
-     * @param null   $filter
+     * @param string   $source
+     * @param bool     $isMethod
+     * @param callable $filter
      */
-    public function addDataRowSource($source, $isMethod = false, $filter = null)
+    public function addDataRowSource($source, $isMethod = false, callable $filter = null)
     {
-        $this->_sources[] = ['name' => $source, 'isMethod' => $isMethod, 'filter' => $filter];
+        $this->_sources[] = [
+            'name' => $source,
+            'isMethod' => $isMethod,
+            'filter' => $filter
+        ];
     }
 
     /**
@@ -130,7 +134,11 @@ abstract class DataGridDataBase implements DataGridDataInterface
      */
     public function addDataRowSourceWithIcon($source, IconInterface $icon, $value = 1)
     {
-        $this->_sourcesWithIcon[] = ['field' => $source, 'icon' => $icon, 'value' => $value];
+        $this->_sourcesWithIcon[] = [
+            'field' => $source,
+            'icon' => $icon,
+            'value' => $value
+        ];
     }
 
     /**

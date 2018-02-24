@@ -263,7 +263,7 @@ class AccountSearchController extends ControllerBase implements ActionsInterface
 
         $GridActionCopy = new DataGridAction();
         $GridActionCopy->setId(self::ACCOUNT_COPY);
-        $GridActionCopy->setType(DataGridActionType::NEW_ITEM);
+        $GridActionCopy->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionCopy->setName(__('Copiar Cuenta'));
         $GridActionCopy->setTitle(__('Copiar Cuenta'));
         $GridActionCopy->setIcon($this->icons->getIconCopy());

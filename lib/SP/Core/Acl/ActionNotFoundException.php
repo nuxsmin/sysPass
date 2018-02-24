@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -22,40 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Core\Acl;
 
-defined('APP_ROOT') || die();
+use SP\Core\Exceptions\SPException;
 
 /**
- * Class DataGrid para crear una matriz de datos
+ * Class ActionNotFoundException
  *
- * @package SP\Html\DataGrid
+ * @package SP\Core\Acl
  */
-class DataGrid extends DataGridBase
+class ActionNotFoundException extends SPException
 {
-    /**
-     * Título de la pestaña
-     *
-     * @var string
-     */
-    private $_title = '';
 
-    /**
-     * @param $title string
-     * @return DataGrid
-     */
-    public function setTitle($title)
-    {
-        $this->_title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->_title;
-    }
 }

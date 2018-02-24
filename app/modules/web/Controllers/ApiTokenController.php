@@ -173,6 +173,8 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      * Delete action
      *
      * @param $id
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function deleteAction($id)
     {
@@ -202,8 +204,6 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
 
     /**
      * Saves create action
-     *
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveCreateAction()
     {
@@ -239,7 +239,6 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      * @param $id
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function saveEditAction($id)
     {

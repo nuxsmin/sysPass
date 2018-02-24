@@ -14,11 +14,10 @@ use SP\Html\Html;
         if ($dataIndex === 'count'): continue; endif;
         $numFields = count($data->getData()->getDataRowSources()); ?>
 
-        <tr data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>"
-            data-activetab="<?php echo $index; ?>">
+        <tr data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>">
             <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
                 <?php $value = $rowSrc['isMethod'] === true && method_exists($dataItem, $rowSrc['name']) ? $dataItem->{$rowSrc['name']}() : $dataItem->{$rowSrc['name']}; ?>
-                <?php $value = $rowSrc['filter'] !== null && is_callable($rowSrc['filter']) ? $rowSrc['filter']($value) : $value; ?>
+                <?php $value = $rowSrc['filter'] !== null && $rowSrc['filter'] ? $rowSrc['filter']($value) : $value; ?>
                 <td class="cell-data"><?php echo $value !== '' ? Html::truncate($value, 150 / $numFields) : '&nbsp;'; // Fix height ?></td>
             <?php endforeach; ?>
 
@@ -33,10 +32,10 @@ use SP\Html\Html;
                 </td>
             <?php endif; ?>
 
-            <td class="cell-actions">
-                <div>
-                    <?php if (count($data->getDataActions()) > 0):
-                        foreach ($data->getDataActions() as $action):
+            <?php if ($data->getDataActionsCount() > 0): ?>
+                <td class="cell-actions">
+                    <div>
+                        <?php foreach ($data->getDataActions() as $action):
                             if (!$action->isSkip()):
                                 $filter = $action->getFilterRowSource();
 
@@ -60,11 +59,9 @@ use SP\Html\Html;
                                         class="mdl-tooltip mdl-tooltip--top"><?php echo $action->getTitle(); ?></span>
                             <?php endif; ?>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        &nbsp;
-                    <?php endif; ?>
-                </div>
-            </td>
+                    </div>
+                </td>
+            <?php endif; ?>
         </tr>
     <?php endforeach; ?>
 <?php endif; ?>

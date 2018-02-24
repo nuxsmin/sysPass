@@ -1356,32 +1356,39 @@ sysPass.Actions = function (Common) {
      *
      * @type {{nav: eventlog.nav, clear: eventlog.clear}}
      */
-    var eventlog = {
-        nav: function ($obj) {
-            if ($obj.data("start") === undefined) {
-                return false;
-            }
+    const eventlog = {
+        search: function ($obj) {
+            log.info("eventlog:search");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.eventlog;
+            const $target = $($obj.data("target"));
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.method = "get";
-            opts.type = "html";
-            opts.data = {
-                actionId: $obj.data("action-id"),
-                sk: Common.sk.get(),
-                isAjax: 1,
-                start: $obj.data("start"),
-                count: $obj.data("count"),
-                current: $obj.data("current")
-            };
+            opts.data = $obj.serialize();
 
-            Common.appRequests().getActionCall(opts, function (response) {
-                $("#content").html(response);
-                Common.scrollUp();
+            Common.appRequests().getActionCall(opts, function (json) {
+                if (json.status === 0) {
+                    $target.html(json.data.html);
+                } else {
+                    $target.html(Common.msg.html.error(json.description));
+                }
+
+                Common.sk.set(json.csrf);
             });
         },
+        nav: function ($obj) {
+            log.info("eventlog:nav");
+
+            const $form = $("#" + $obj.data("action-form"));
+
+            $form.find("[name='start']").val($obj.data("start"));
+            $form.find("[name='count']").val($obj.data("count"));
+            $form.find("[name='sk']").val(Common.sk.get());
+
+            eventlog.search($form);
+        },
         clear: function ($obj) {
-            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[20] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[20] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
@@ -1398,17 +1405,20 @@ sysPass.Actions = function (Common) {
                     onClick: function (e) {
                         e.preventDefault();
 
-                        var opts = Common.appRequests().getRequestOpts();
-                        opts.url = ajaxUrl.eventlog;
+                        const $target = $($obj.data("target"));
+                        const opts = Common.appRequests().getRequestOpts();
+                        opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
                         opts.method = "get";
-                        opts.data = {clear: 1, sk: Common.sk.get(), isAjax: 1};
+                        opts.data = {sk: Common.sk.get(), isAjax: 1};
 
                         Common.appRequests().getActionCall(opts, function (json) {
                             Common.msg.out(json);
 
-                            if (json.status == 0) {
-                                doAction({actionId: $obj.data("nextaction-id")});
+                            if (json.status === 0) {
+                                getContent({r: $obj.data("action-next")});
                             }
+
+                            Common.sk.set(json.csrf);
                         });
                     }
                 }

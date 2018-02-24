@@ -64,7 +64,33 @@ class Acl implements ActionsInterface
      */
     public static function getActionRoute($actionId)
     {
-        return self::$action->getActionById($actionId)->getRoute();
+        try {
+            return self::$action->getActionById($actionId)->getRoute();
+        } catch (ActionNotFoundException $e) {
+            processException($e);
+        }
+
+        return '';
+    }
+
+    /**
+     * Obtener el nombre de la acción indicada
+     *
+     * @param int  $actionId El id de la acción
+     * @param bool $translate
+     * @return string
+     * @internal param bool $shortName Si se devuelve el nombre corto de la acción
+     */
+    public static function getActionInfo($actionId, $translate = true)
+    {
+        try {
+            $text = self::$action->getActionById($actionId)->getText();
+            return $translate ? __($text) : $text;
+        } catch (ActionNotFoundException $e) {
+            processException($e);
+        }
+
+        return '';
     }
 
     /**
@@ -171,6 +197,7 @@ class Acl implements ActionsInterface
             case self::APITOKEN_SEARCH:
                 return $userProfile->isMgmApiTokens();
             case self::EVENTLOG:
+            case self::EVENTLOG_SEARCH:
                 return $userProfile->isEvl();
             case self::NOTICE:
             case self::NOTICE_USER:
@@ -186,20 +213,5 @@ class Acl implements ActionsInterface
 //        $Log->writeLog();
 
         return false;
-    }
-
-    /**
-     * Obtener el nombre de la acción indicada
-     *
-     * @param int  $actionId El id de la acción
-     * @param bool $translate
-     * @return string
-     * @internal param bool $shortName Si se devuelve el nombre corto de la acción
-     */
-    public static function getActionInfo($actionId, $translate = true)
-    {
-        $text = self::$action->getActionById($actionId)->getText();
-
-        return $translate ? __($text) : $text;
     }
 }

@@ -53,6 +53,7 @@ interface DataGridPagerInterface
      * Establecer el registro de inicio de la página
      *
      * @param int $limitStart
+     * @return static
      */
     public function setLimitStart($limitStart);
 
@@ -67,6 +68,7 @@ interface DataGridPagerInterface
      * Establecer el número de registros en una página
      *
      * @param int $limitCount
+     * @return static
      */
     public function setLimitCount($limitCount);
 
@@ -95,6 +97,7 @@ interface DataGridPagerInterface
      * Establecer si está activado el filtro
      *
      * @param bool $filterOn
+     * @return static
      */
     public function setFilterOn($filterOn);
 
