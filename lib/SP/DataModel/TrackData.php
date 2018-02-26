@@ -25,7 +25,6 @@
 namespace SP\DataModel;
 
 use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\SPException;
 
 /**
  * Class TrackData
@@ -152,9 +151,9 @@ class TrackData extends DataModelBase
         } elseif (strlen($ip) > 4) {
             $this->ipv6 = $ip;
         } elseif ($ip === false) {
-            debugLog(sprintf('%s : %s', __('IP inválida', true), $track_ip));
+            debugLog(sprintf('%s : %s', __('IP inválida'), $track_ip));
 
-            throw new InvalidArgumentException(SPException::ERROR, __('IP inválida'), $track_ip);
+            throw new InvalidArgumentException(__u('IP inválida'), InvalidArgumentException::ERROR, $track_ip);
         }
     }
 

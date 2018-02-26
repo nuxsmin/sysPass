@@ -29,10 +29,11 @@ use SP\Core\Events\EventMessage;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Html\Html;
+use SP\Http\Request;
 use SP\Http\Response;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
+use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Auth\LoginService;
-use SP\Util\Json;
 
 /**
  * Class LoginController
@@ -41,17 +42,37 @@ use SP\Util\Json;
  */
 class LoginController extends ControllerBase
 {
+    use JsonTrait;
+
     /**
      * Login action
      *
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function loginAction()
     {
-        $loginService = $this->dic->get(LoginService::class);
-        Json::returnJson($loginService->doLogin());
+        try {
+            $loginService = $this->dic->get(LoginService::class);
+            $loginResponmse = $loginService->doLogin();
+
+            $forward = Request::getRequestHeaders('X-Forwarded-For');
+
+            if ($forward) {
+                $this->eventDispatcher->notifyEvent('login.info',
+                    new Event($this, EventMessage::factory()
+                        ->addDetail('X-Forwarded-For', $this->configData->isDemoEnabled() ? '***' : $forward))
+                );
+            }
+
+            $this->returnJsonResponseData(['url' => $loginResponmse->getRedirect()]);
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            $this->returnJsonResponse($e->getCode(), $e->getMessage());
+        }
     }
 
     /**

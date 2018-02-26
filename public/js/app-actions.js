@@ -1559,7 +1559,7 @@ sysPass.Actions = function (Common) {
 
     const grid = {
         search: function ($obj) {
-            log.info("appMgmt:search");
+            log.info("grid:search");
 
             const $target = $($obj.data("target"));
             const opts = Common.appRequests().getRequestOpts();
@@ -1589,7 +1589,7 @@ sysPass.Actions = function (Common) {
             if (typeof callback === "function") {
                 callback($form);
             } else {
-                grid.search($obj);
+                grid.search($form);
             }
         },
         delete: function ($obj, onAccept) {

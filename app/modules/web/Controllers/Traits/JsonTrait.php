@@ -38,9 +38,9 @@ trait JsonTrait
     /**
      * Returns JSON response
      *
-     * @param int        $status      Status code
-     * @param string     $description Untranslated description string
-     * @param array|null $messages    Untranslated massages array of strings
+     * @param int $status Status code
+     * @param string $description Untranslated description string
+     * @param array|null $messages Untranslated massages array of strings
      */
     protected function returnJsonResponse($status, $description, array $messages = null)
     {
@@ -59,10 +59,10 @@ trait JsonTrait
      * Returns JSON response
      *
      * @param mixed $data
-     * @param int   $status      Status code
-     * @param null  $description Untranslated description string
+     * @param int $status Status code
+     * @param null $description Untranslated description string
      */
-    protected function returnJsonResponseData($data, $status = 0, $description = null)
+    protected function returnJsonResponseData($data, $status = JsonResponse::JSON_SUCCESS, $description = null)
     {
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);
@@ -80,7 +80,7 @@ trait JsonTrait
      * Returns JSON response
      *
      * @param \Exception $exception
-     * @param int        $status Status code
+     * @param int $status Status code
      */
     protected function returnJsonResponseException(\Exception $exception, $status = JsonResponse::JSON_ERROR)
     {
@@ -88,7 +88,7 @@ trait JsonTrait
         $jsonResponse->setStatus($status);
         $jsonResponse->setDescription($exception->getMessage());
 
-        if ($exception instanceof SPException && $exception->getHint() !== null ) {
+        if ($exception instanceof SPException && $exception->getHint() !== null) {
             $jsonResponse->setMessages([$exception->getHint()]);
         }
 

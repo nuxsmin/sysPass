@@ -27,34 +27,31 @@ namespace SP\Services\Auth;
 defined('APP_ROOT') || die();
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\UI\Theme;
-use SP\DataModel\TrackData;
 use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPreferencesData;
-use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Mgmt\Tracks\Track;
 use SP\Providers\Auth\Auth;
 use SP\Providers\Auth\AuthResult;
 use SP\Providers\Auth\AuthUtil;
 use SP\Providers\Auth\Browser\BrowserAuthData;
 use SP\Providers\Auth\Database\DatabaseAuthData;
 use SP\Providers\Auth\Ldap\LdapAuthData;
+use SP\Repositories\Track\TrackRequest;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Service;
+use SP\Services\Track\TrackService;
 use SP\Services\User\UserLoginRequest;
 use SP\Services\User\UserPassService;
 use SP\Services\User\UserService;
 use SP\Services\UserPassRecover\UserPassRecoverService;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Util\HttpUtil;
-use SP\Util\Json;
 use SP\Util\Util;
 
 /**
@@ -72,17 +69,10 @@ class LoginService extends Service
     const STATUS_USER_DISABLED = 3;
     const STATUS_NEED_OLD_PASS = 5;
     const STATUS_MAX_ATTEMPTS_EXCEEDED = 6;
+    const STATUS_PASS_RESET = 7;
+    const STATUS_PASS = 0;
+    const STATUS_NONE = 100;
 
-    /**
-     * Tiempo para contador de intentos
-     */
-    const TIME_TRACKING = 600;
-    const TIME_TRACKING_MAX_ATTEMPTS = 5;
-
-    /**
-     * @var JsonResponse
-     */
-    protected $jsonResponse;
     /**
      * @var UserLoginData
      */
@@ -103,10 +93,19 @@ class LoginService extends Service
      * @var Language
      */
     protected $language;
+    /**
+     * @var TrackService
+     */
+    protected $trackService;
+    /**
+     * @var TrackRequest
+     */
+    protected $trackRequest;
 
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function initialize()
     {
@@ -114,132 +113,125 @@ class LoginService extends Service
         $this->theme = $this->dic->get(Theme::class);
         $this->userService = $this->dic->get(UserService::class);
         $this->language = $this->dic->get(Language::class);
+        $this->trackService = $this->dic->get(TrackService::class);
 
-        $this->jsonResponse = new JsonResponse();
         $this->userLoginData = new UserLoginData();
+        $this->trackRequest = TrackService::getTrackRequest('login');
     }
 
     /**
      * Ejecutar las acciones de login
      *
-     * @return JsonResponse
+     * @return LoginResponse
+     * @throws AuthException
+     * @throws SPException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function doLogin()
     {
         $this->userLoginData->setLoginUser(Request::analyze('user'));
         $this->userLoginData->setLoginPass(Request::analyzeEncrypted('pass'));
 
-        try {
-            // FIXME: add service
-//            $this->checkTracking();
+        $this->trackRequest->userId = $this->userLoginData->getLoginUser();
 
-            $auth = new Auth($this->userLoginData, $this->configData);
+        $this->checkTracking();
 
-            if (($result = $auth->doAuth()) !== false) {
-                // Ejecutar la acción asociada al tipo de autentificación
+        $auth = new Auth($this->userLoginData, $this->configData);
 
+        if (($result = $auth->doAuth()) !== false) {
+            // Ejecutar la acción asociada al tipo de autentificación
+            foreach ($result as $authResult) {
                 /** @var AuthResult $authResult */
-                foreach ($result as $authResult) {
-                    if ($authResult->isAuthGranted() === true
-                        && $this->{$authResult->getAuth()}($authResult->getData()) === true) {
-                        break;
-                    }
+                if ($authResult->isAuthGranted() === true
+                    && $this->{$authResult->getAuth()}($authResult->getData()) === true) {
+                    break;
                 }
-            } else {
-                $this->addTracking();
-
-                throw new AuthException(__u('Login incorrecto'), AuthException::INFO, null, self::STATUS_INVALID_LOGIN);
             }
+        } else {
+            $this->addTracking();
 
-            $this->checkUser();
-            $this->loadMasterPass();
-            $this->setUserSession();
-            $this->loadUserPreferences();
-            $this->cleanUserData();
-        } catch (SPException $e) {
-            processException($e);
-
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
-
-            $this->jsonResponse->setDescription($e->getMessage());
-            $this->jsonResponse->setStatus($e->getCode());
-
-            Json::returnJson($this->jsonResponse);
-        }
-
-        $forward = Request::getRequestHeaders('X-Forwarded-For');
-
-        if ($forward) {
-            $this->eventDispatcher->notifyEvent('login.info',
-                new Event($this, EventMessage::factory()
-                    ->addDetail('X-Forwarded-For', $this->configData->isDemoEnabled() ? '***' : $forward))
+            throw new AuthException(
+                __u('Login incorrecto'),
+                AuthException::INFO,
+                __FUNCTION__,
+                self::STATUS_INVALID_LOGIN
             );
         }
 
-//        $data = ['url' => 'index.php' . Request::importUrlParamsToGet()];
-        $data = ['url' => 'index.php?r=index'];
-        $this->jsonResponse->setStatus(JsonResponse::JSON_SUCCESS);
-        $this->jsonResponse->setData($data);
+        if (($loginResponse = $this->checkUser())->getStatus() !== self::STATUS_NONE) {
+            return $loginResponse;
+        }
 
-        return $this->jsonResponse;
+        $this->loadMasterPass();
+        $this->setUserSession();
+        $this->loadUserPreferences();
+        $this->cleanUserData();
+
+        return new LoginResponse(self::STATUS_PASS, 'index.php?r=index');
     }
 
     /**
      * Comprobar los intentos de login
      *
-     * @throws \SP\Services\Auth\AuthException
+     * @throws AuthException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     private function checkTracking()
     {
         try {
-            $TrackData = new TrackData();
-            $TrackData->setSource('Login');
-            $TrackData->setTrackIp(HttpUtil::getClientAddress());
-
-            $attempts = count(Track::getItem($TrackData)->getTracksForClientFromTime(time() - self::TIME_TRACKING));
-        } catch (SPException $e) {
+            $attempts = count($this->trackService->getTracksForClientFromTime($this->trackRequest));
+        } catch (\Exception $e) {
             processException($e);
 
             throw new AuthException(__u('Error interno'), AuthException::ERROR, null, Service::STATUS_INTERNAL_ERROR);
         }
 
-        if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
+        if ($attempts >= TrackService::TIME_TRACKING_MAX_ATTEMPTS) {
             $this->addTracking();
 
             $this->eventDispatcher->notifyEvent('login.track.delay',
                 new Event($this, EventMessage::factory()
-                    ->addDescription(sprintf(__('Intentos excedidos (%d/%d)'), $attempts, self::TIME_TRACKING_MAX_ATTEMPTS))
+                    ->addDescription(sprintf(__('Intentos excedidos (%d/%d)'), $attempts, TrackService::TIME_TRACKING_MAX_ATTEMPTS))
                     ->addDetail(__u('Segundos'), 0.3 * $attempts))
             );
 
-            sleep(0.3 * $attempts);
+            sleep(TrackService::TIME_SLEEP * $attempts);
 
-            throw new AuthException(__u('Intentos excedidos'), AuthException::INFO, null, self::STATUS_MAX_ATTEMPTS_EXCEEDED);
+            throw new AuthException(
+                __u('Intentos excedidos'),
+                AuthException::INFO,
+                null,
+                self::STATUS_MAX_ATTEMPTS_EXCEEDED
+            );
         }
     }
 
     /**
      * Añadir un seguimiento
      *
-     * @throws \SP\Services\Auth\AuthException
+     * @throws AuthException
      */
     private function addTracking()
     {
         try {
-            $TrackData = new TrackData();
-            $TrackData->setSource('Login');
-            $TrackData->setTrackIp(HttpUtil::getClientAddress());
-
-            Track::getItem($TrackData)->add();
+            $this->trackService->add($this->trackRequest);
 
             $this->eventDispatcher->notifyEvent('login.track.add',
-                new Event($this, EventMessage::factory()->addDescription(HttpUtil::getClientAddress(true)))
+                new Event($this, EventMessage::factory()
+                    ->addDescription(HttpUtil::getClientAddress(true)))
             );
-        } catch (SPException $e) {
-            throw new AuthException(__u('Error interno'), AuthException::ERROR, null, Service::STATUS_INTERNAL_ERROR);
+        } catch (\Exception $e) {
+            throw new AuthException(
+                __u('Error interno'),
+                AuthException::ERROR,
+                null,
+                Service::STATUS_INTERNAL_ERROR
+            );
         }
     }
 
@@ -252,6 +244,7 @@ class LoginService extends Service
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @return LoginResponse
      */
     protected function checkUser()
     {
@@ -268,7 +261,12 @@ class LoginService extends Service
 
             $this->addTracking();
 
-            throw new AuthException(__u('Usuario deshabilitado'), AuthException::INFO, null, self::STATUS_USER_DISABLED);
+            throw new AuthException(
+                __u('Usuario deshabilitado'),
+                AuthException::INFO,
+                null,
+                self::STATUS_USER_DISABLED
+            );
         }
 
         // Comprobar si se ha forzado un cambio de clave
@@ -283,11 +281,10 @@ class LoginService extends Service
 
             $this->dic->get(UserPassRecoverService::class)->add($userLoginResponse->getId(), $hash);
 
-            $this->jsonResponse->setData(['url' => Bootstrap::$WEBURI . '/index.php?u=userPassReset/change/' . $hash]);
-            $this->jsonResponse->setStatus(0);
-
-            Json::returnJson($this->jsonResponse);
+            return new LoginResponse(self::STATUS_PASS_RESET, 'index.php?r=userPassReset/change/' . $hash);
         }
+
+        return new LoginResponse(self::STATUS_NONE);
     }
 
     /**
@@ -323,7 +320,12 @@ class LoginService extends Service
 
                     $this->addTracking();
 
-                    throw new AuthException(__u('Clave maestra incorrecta'), AuthException::INFO, null, self::STATUS_INVALID_MASTER_PASS);
+                    throw new AuthException(
+                        __u('Clave maestra incorrecta'),
+                        AuthException::INFO,
+                        null,
+                        self::STATUS_INVALID_MASTER_PASS
+                    );
                 }
 
                 $this->eventDispatcher->notifyEvent('login.masterPass',
@@ -337,7 +339,12 @@ class LoginService extends Service
 
                     $this->addTracking();
 
-                    throw new AuthException(__u('Clave maestra incorrecta'), AuthException::INFO, null, self::STATUS_INVALID_MASTER_PASS);
+                    throw new AuthException(
+                        __u('Clave maestra incorrecta'),
+                        AuthException::INFO,
+                        null,
+                        self::STATUS_INVALID_MASTER_PASS
+                    );
                 }
 
                 $this->eventDispatcher->notifyEvent('login.masterPass',
@@ -346,21 +353,37 @@ class LoginService extends Service
             } else {
                 switch ($userPassService->loadUserMPass($this->userLoginData)->getStatus()) {
                     case UserPassService::MPASS_CHECKOLD:
-                        throw new AuthException(__u('Es necesaria su clave anterior'), AuthException::INFO, null, self::STATUS_NEED_OLD_PASS);
+                        throw new AuthException(
+                            __u('Es necesaria su clave anterior'),
+                            AuthException::INFO,
+                            null,
+                            self::STATUS_NEED_OLD_PASS
+                        );
                         break;
                     case UserPassService::MPASS_NOTSET:
                     case UserPassService::MPASS_CHANGED:
                     case UserPassService::MPASS_WRONG:
                         $this->addTracking();
 
-                        throw new AuthException(__u('La clave maestra no ha sido guardada o es incorrecta'), AuthException::INFO, null, self::STATUS_INVALID_MASTER_PASS);
+                        throw new AuthException(
+                            __u('La clave maestra no ha sido guardada o es incorrecta'),
+                            AuthException::INFO,
+                            null,
+                            self::STATUS_INVALID_MASTER_PASS
+                        );
                         break;
                 }
             }
         } catch (CryptoException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            throw new AuthException(__u('Error interno'), AuthException::ERROR, $e->getMessage(), Service::STATUS_INTERNAL_ERROR);
+            throw new AuthException(
+                __u('Error interno'),
+                AuthException::ERROR,
+                $e->getMessage(),
+                Service::STATUS_INTERNAL_ERROR,
+                $e
+            );
         }
     }
 
@@ -437,7 +460,12 @@ class LoginService extends Service
 
                 $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
 
-                throw new AuthException(__u('Login incorrecto'), AuthException::INFO, null, self::STATUS_INVALID_LOGIN);
+                throw new AuthException(
+                    __u('Login incorrecto'),
+                    AuthException::INFO,
+                    __FUNCTION__,
+                    self::STATUS_INVALID_LOGIN
+                );
             }
 
             if ($authData->getStatusCode() === 701) {
@@ -445,7 +473,12 @@ class LoginService extends Service
 
                 $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
 
-                throw new AuthException(__u('Cuenta expirada'), AuthException::INFO, null, self::STATUS_USER_DISABLED);
+                throw new AuthException(
+                    __u('Cuenta expirada'),
+                    AuthException::INFO,
+                    __FUNCTION__,
+                    self::STATUS_USER_DISABLED
+                );
             }
 
             if ($authData->getStatusCode() === 702) {
@@ -453,7 +486,12 @@ class LoginService extends Service
 
                 $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
 
-                throw new AuthException(__u('El usuario no tiene grupos asociados'), AuthException::INFO, null, self::STATUS_USER_DISABLED);
+                throw new AuthException(
+                    __u('El usuario no tiene grupos asociados'),
+                    AuthException::INFO,
+                    __FUNCTION__,
+                    self::STATUS_USER_DISABLED
+                );
             }
 
             if ($authData->isAuthGranted() === false) {
@@ -464,7 +502,12 @@ class LoginService extends Service
 
             $this->eventDispatcher->notifyEvent('login.auth.ldap', new Event($this, $eventMessage));
 
-            throw new AuthException(__u('Error interno'), AuthException::INFO, null, Service::STATUS_INTERNAL_ERROR);
+            throw new AuthException(
+                __u('Error interno'),
+                AuthException::INFO,
+                __FUNCTION__,
+                Service::STATUS_INTERNAL_ERROR
+            );
         }
 
         $this->eventDispatcher->notifyEvent('login.auth.ldap',
@@ -492,7 +535,13 @@ class LoginService extends Service
                 $this->userService->createOnLogin($userLoginRequest);
             }
         } catch (\Exception $e) {
-            throw new AuthException(__u('Error interno'), AuthException::ERROR, null, Service::STATUS_INTERNAL_ERROR, $e);
+            throw new AuthException(
+                __u('Error interno'),
+                AuthException::ERROR,
+                __FUNCTION__,
+                Service::STATUS_INTERNAL_ERROR,
+                $e
+            );
         }
 
         return true;
@@ -524,7 +573,12 @@ class LoginService extends Service
 
             $this->eventDispatcher->notifyEvent('login.auth.database', new Event($this, $eventMessage));
 
-            throw new AuthException(__u('Login incorrecto'), AuthException::INFO, null, self::STATUS_INVALID_LOGIN);
+            throw new AuthException(
+                __u('Login incorrecto'),
+                AuthException::INFO,
+                __FUNCTION__,
+                self::STATUS_INVALID_LOGIN
+            );
         }
 
         if ($authData->getAuthenticated() === 1) {
@@ -560,7 +614,12 @@ class LoginService extends Service
 
             $this->eventDispatcher->notifyEvent('login.auth.browser', new Event($this, $eventMessage));
 
-            throw new AuthException(__u('Login incorrecto'), AuthException::INFO, null, self::STATUS_INVALID_LOGIN);
+            throw new AuthException(
+                __u('Login incorrecto'),
+                AuthException::INFO,
+                __FUNCTION__,
+                self::STATUS_INVALID_LOGIN
+            );
         }
 
         if ($authData->getAuthenticated() === 1 && $this->configData->isAuthBasicAutoLoginEnabled()) {
@@ -579,7 +638,13 @@ class LoginService extends Service
 
                 return true;
             } catch (\Exception $e) {
-                throw new AuthException(__u('Error interno'), AuthException::ERROR, null, Service::STATUS_INTERNAL_ERROR, $e);
+                throw new AuthException(
+                    __u('Error interno'),
+                    AuthException::ERROR,
+                    __FUNCTION__,
+                    Service::STATUS_INTERNAL_ERROR,
+                    $e
+                );
             }
         }
 
