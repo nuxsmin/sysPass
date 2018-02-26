@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -51,7 +51,6 @@ use SP\Services\User\UserPassService;
 use SP\Services\User\UserService;
 use SP\Services\UserPassRecover\UserPassRecoverService;
 use SP\Services\UserProfile\UserProfileService;
-use SP\Util\HttpUtil;
 use SP\Util\Util;
 
 /**
@@ -130,15 +129,23 @@ class LoginService extends Service
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \Exception
      */
     public function doLogin()
     {
         $this->userLoginData->setLoginUser(Request::analyze('user'));
         $this->userLoginData->setLoginPass(Request::analyzeEncrypted('pass'));
 
-        $this->trackRequest->userId = $this->userLoginData->getLoginUser();
+        if ($this->trackService->checkTracking($this->trackRequest)) {
+            $this->addTracking();
 
-        $this->checkTracking();
+            throw new AuthException(
+                __u('Intentos excedidos'),
+                AuthException::INFO,
+                null,
+                self::STATUS_MAX_ATTEMPTS_EXCEEDED
+            );
+        }
 
         $auth = new Auth($this->userLoginData, $this->configData);
 
@@ -175,43 +182,6 @@ class LoginService extends Service
     }
 
     /**
-     * Comprobar los intentos de login
-     *
-     * @throws AuthException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    private function checkTracking()
-    {
-        try {
-            $attempts = count($this->trackService->getTracksForClientFromTime($this->trackRequest));
-        } catch (\Exception $e) {
-            processException($e);
-
-            throw new AuthException(__u('Error interno'), AuthException::ERROR, null, Service::STATUS_INTERNAL_ERROR);
-        }
-
-        if ($attempts >= TrackService::TIME_TRACKING_MAX_ATTEMPTS) {
-            $this->addTracking();
-
-            $this->eventDispatcher->notifyEvent('login.track.delay',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(sprintf(__('Intentos excedidos (%d/%d)'), $attempts, TrackService::TIME_TRACKING_MAX_ATTEMPTS))
-                    ->addDetail(__u('Segundos'), 0.3 * $attempts))
-            );
-
-            sleep(TrackService::TIME_SLEEP * $attempts);
-
-            throw new AuthException(
-                __u('Intentos excedidos'),
-                AuthException::INFO,
-                null,
-                self::STATUS_MAX_ATTEMPTS_EXCEEDED
-            );
-        }
-    }
-
-    /**
      * Añadir un seguimiento
      *
      * @throws AuthException
@@ -220,11 +190,6 @@ class LoginService extends Service
     {
         try {
             $this->trackService->add($this->trackRequest);
-
-            $this->eventDispatcher->notifyEvent('login.track.add',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(HttpUtil::getClientAddress(true)))
-            );
         } catch (\Exception $e) {
             throw new AuthException(
                 __u('Error interno'),

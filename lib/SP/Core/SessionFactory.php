@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,14 +24,8 @@
 
 namespace SP\Core;
 
-use SP\Account\AccountAcl;
-use SP\Services\Account\AccountSearchService;
-use SP\Config\ConfigData;
 use SP\Core\Crypt\Vault;
-use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
-use SP\DataModel\UserPreferencesData;
-use SP\Mgmt\Users\UserPreferences;
 
 defined('APP_ROOT') || die();
 

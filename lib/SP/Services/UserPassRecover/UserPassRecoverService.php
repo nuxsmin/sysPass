@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,8 +24,13 @@
 
 namespace SP\Services\UserPassRecover;
 
+use SP\Bootstrap;
+use SP\Core\Messages\MailMessage;
+use SP\Html\Html;
 use SP\Repositories\UserPassRecover\UserPassRecoverRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
+use SP\Util\Util;
 
 /**
  * Class UserPassRecoverService
@@ -51,12 +56,56 @@ class UserPassRecoverService extends Service
     protected $userPassRecoverRepository;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @param $hash
+     * @return MailMessage
      */
-    protected function initialize()
+    public static function getMailMessage($hash)
     {
-        $this->userPassRecoverRepository = $this->dic->get(UserPassRecoverRepository::class);
+        $mailMessage = new MailMessage();
+        $mailMessage->setTitle(__('Cambio de Clave'));
+        $mailMessage->addDescription(__('Se ha solicitado el cambio de su clave de usuario.'));
+        $mailMessage->addDescriptionLine();
+        $mailMessage->addDescription(__('Para completar el proceso es necesario que acceda a la siguiente URL:'));
+        $mailMessage->addDescriptionLine();
+        $mailMessage->addDescription(Html::anchorText(Bootstrap::$WEBURI . '/index.php?r=userPassReset/reset/' . $hash));
+        $mailMessage->addDescriptionLine();
+        $mailMessage->addDescription(__('Si no ha solicitado esta acción, ignore este mensaje.'));
+
+        return $mailMessage;
+    }
+
+    /**
+     * @param $hash
+     * @return void
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function toggleUsedByHash($hash)
+    {
+        if ($this->userPassRecoverRepository->toggleUsedByHash($hash, time() - self::MAX_PASS_RECOVER_TIME) === 0) {
+            throw new ServiceException(__u('Hash inválido o expirado'), ServiceException::INFO);
+        }
+    }
+
+    /**
+     * @param int $id
+     * @return string
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ServiceException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public function requestForUserId($id)
+    {
+        if ($this->checkAttemptsByUserId($id)) {
+            throw new ServiceException(__u('Intentos excedidos'), ServiceException::WARNING);
+        }
+
+        $hash = Util::generateRandomBytes(16);
+
+        $this->add($id, $hash);
+
+        return $hash;
     }
 
     /**
@@ -85,12 +134,29 @@ class UserPassRecoverService extends Service
     }
 
     /**
-     * @param $hash
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * Comprobar el hash de recuperación de clave.
+     *
+     * @param string $hash
+     * @return int
+     * @throws ServiceException
      */
-    public function toggleUsedByHash($hash)
+    public function getUserIdForHash($hash)
     {
-        return $this->userPassRecoverRepository->toggleUsedByHash($hash, time() - self::MAX_PASS_RECOVER_TIME);
+        $result = $this->userPassRecoverRepository->getUserIdForHash($hash, time() - self::MAX_PASS_RECOVER_TIME);
+
+        if (!is_object($result)) {
+            throw new ServiceException(__u('Hash inválido o expirado'), ServiceException::INFO);
+        }
+
+        return (int)$result->userId;
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->userPassRecoverRepository = $this->dic->get(UserPassRecoverRepository::class);
     }
 }

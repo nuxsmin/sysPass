@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -58,7 +58,7 @@ class UserSearch extends UserBase implements ItemSearchInterface
         $Data->setOrder('user_name');
 
         if ($SearchData->getSeachString() !== '') {
-            if (SessionFactory::getUserData()->isIsAdminApp()) {
+            if (SessionFactory::getUserData()->isAdminApp()) {
                 $Data->setWhere('user_name LIKE ? OR user_login LIKE ?');
             } else {
                 $Data->setWhere('user_name LIKE ? OR user_login LIKE ? AND user_isAdminApp = 0');
@@ -67,7 +67,7 @@ class UserSearch extends UserBase implements ItemSearchInterface
             $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);
             $Data->addParam($search);
-        } elseif (!SessionFactory::getUserData()->isIsAdminApp()) {
+        } elseif (!SessionFactory::getUserData()->isAdminApp()) {
             $Data->setWhere('user_isAdminApp = 0');
         }
 

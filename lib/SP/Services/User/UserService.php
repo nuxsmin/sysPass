@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -52,16 +52,6 @@ class UserService extends Service
      * @var UserPassService
      */
     protected $userPassService;
-
-    /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function initialize()
-    {
-        $this->userRepository = $this->dic->get(UserRepository::class);
-        $this->userPassService = $this->dic->get(UserPassService::class);
-    }
 
     /**
      * Actualiza el último inicio de sesión del usuario en la BBDD.
@@ -124,13 +114,13 @@ class UserService extends Service
             ->setUserGroupId($userData->getUserGroupId())
             ->setUserProfileId($userData->getUserProfileId())
             ->setPreferences(self::getUserPreferences($userData->getPreferences()))
-            ->setIsLdap($userData->isIsLdap())
-            ->setIsAdminAcc($userData->isIsAdminAcc())
-            ->setIsAdminApp($userData->isIsAdminApp())
-            ->setIsMigrate($userData->isIsMigrate())
+            ->setIsLdap($userData->isLdap())
+            ->setIsAdminAcc($userData->isAdminAcc())
+            ->setIsAdminApp($userData->isAdminApp())
+            ->setIsMigrate($userData->isMigrate())
             ->setIsChangedPass($userData->isIsChangedPass())
-            ->setIsChangePass($userData->isIsChangePass())
-            ->setIsDisabled($userData->isIsDisabled());
+            ->setIsChangePass($userData->isChangePass())
+            ->setIsDisabled($userData->isDisabled());
 
         return $userLoginResponse;
     }
@@ -198,7 +188,7 @@ class UserService extends Service
         $userData->setName($userLoginRequest->getName());
         $userData->setEmail($userLoginRequest->getEmail());
         $userData->setIsLdap($userLoginRequest->getisLdap());
-        $userData->setPass(Hash::hashKey($userLoginRequest->getPassword()));
+        $userData->setPass($userLoginRequest->getPassword());
 
         return $this->create($userData);
     }
@@ -212,6 +202,8 @@ class UserService extends Service
      */
     public function create($itemData)
     {
+        $itemData->setPass(Hash::hashKey($itemData->getPass()));
+
         return $this->userRepository->create($itemData);
     }
 
@@ -265,18 +257,19 @@ class UserService extends Service
     /**
      * Updates an user's pass
      *
-     * @param UserData $itemData
+     * @param int    $userId
+     * @param string $pass
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function updatePass(UserData $itemData)
+    public function updatePass($userId, $pass)
     {
-        $passRequest = new UpdatePassRequest(Hash::hashKey($itemData->getPass()));
+        $passRequest = new UpdatePassRequest(Hash::hashKey($pass));
         $passRequest->setIsChangePass(0);
         $passRequest->setIsChangedPass(1);
 
-        return $this->userRepository->updatePassById($itemData->getId(), $passRequest);
+        return $this->userRepository->updatePassById($userId, $passRequest);
     }
 
     /**
@@ -305,5 +298,15 @@ class UserService extends Service
     public function getAllBasic()
     {
         return $this->userRepository->getBasicInfo();
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->userRepository = $this->dic->get(UserRepository::class);
+        $this->userPassService = $this->dic->get(UserPassService::class);
     }
 }

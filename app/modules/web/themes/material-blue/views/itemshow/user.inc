@@ -36,11 +36,11 @@
                         <input id="login" name="login" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $user->getLogin(); ?>"
-                               maxlength="80" <?php echo $user->isIsLdap() ? 'readonly' : $readonly; ?>>
+                               maxlength="80" <?php echo $user->isLdap() ? 'readonly' : $readonly; ?>>
                         <label class="mdl-textfield__label"
                                for="login"><?php echo __('Login de inicio de sesión'); ?></label>
                     </div>
-                    <?php if ($user->isIsLdap()): ?>
+                    <?php if ($user->isLdap()): ?>
                         <i class="material-icons <?php echo $icons->getIconLdapUser()->getClass(); ?>"
                            title="<?php echo $icons->getIconLdapUser()->getTitle(); ?>"><?php echo $icons->getIconLdapUser()->getIcon(); ?></i>
                     <?php endif; ?>
@@ -158,14 +158,14 @@
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminapp"
                                title="<?php echo __('Administrador de la aplicación'); ?>">
                             <input type="checkbox" id="adminapp" class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="adminapp" <?php echo $user->isIsAdminApp() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
+                                   name="adminapp" <?php echo $user->isAdminApp() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Admin Aplicación'); ?></span>
                         </label>
 
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="adminacc"
                                title="<?php echo __('Administrador de cuentas'); ?>">
                             <input type="checkbox" id="adminacc" class="mdl-switch__input mdl-color-text--indigo-400"
-                                   name="adminacc" <?php echo $user->isIsAdminAcc() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
+                                   name="adminacc" <?php echo $user->isAdminAcc() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Admin Cuentas'); ?></span>
                         </label>
                     <?php endif; ?>
@@ -173,14 +173,14 @@
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="disabled"
                            title="<?php echo __('Deshabilitado'); ?>">
                         <input type="checkbox" id="disabled" class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="disabled" <?php echo $user->isIsDisabled() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
+                               name="disabled" <?php echo $user->isDisabled() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Deshabilitado'); ?></span>
                     </label>
 
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="changepass"
                            title="<?php echo __('Forzar cambio de clave'); ?>">
                         <input type="checkbox" id="changepass" class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="changepass" <?php echo $user->isIsChangePass() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
+                               name="changepass" <?php echo $user->isChangePass() ? 'checked' : ' '; ?> <?php echo $disabled; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Cambio de Clave'); ?></span>
                     </label>
                 </td>
@@ -230,7 +230,7 @@
             </tbody>
         </table>
         <?php if (!$isView): ?>
-            <input type="hidden" name="isLdap" value="<?php echo $user->isIsLdap(); ?>"/>
+            <input type="hidden" name="isLdap" value="<?php echo $user->isLdap(); ?>"/>
             <input type="hidden" name="sk" value="<?php echo $sk; ?>">
             <input type="hidden" name="isAjax" value="1">
         <?php endif; ?>

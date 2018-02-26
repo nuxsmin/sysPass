@@ -782,6 +782,10 @@ footer {
       .tab-actions > ul > li.datagrid-action-search form {
         width: 100%; }
 
+h5.datagrid-header-title {
+  padding: .7em;
+  border-bottom: 1px solid #d9d9d9; }
+
 .fullWidth {
   max-width: 100% !important; }
 

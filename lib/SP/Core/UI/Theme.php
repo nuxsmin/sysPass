@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -29,7 +29,6 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Init;
 use SP\Core\Session\Session;
-use SP\Core\SessionFactory;
 use SP\Core\Traits\InjectableTrait;
 use Theme\Icons;
 

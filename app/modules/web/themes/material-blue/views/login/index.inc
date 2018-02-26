@@ -74,7 +74,7 @@
         <!-- Close boxData -->
         <?php if ($mailEnabled): ?>
             <div id="boxActions">
-                <a href="index.php?r=passreset"><?php echo __('¿Olvidó su clave?'); ?></a>
+                <a href="index.php?r=userPassReset"><?php echo __('¿Olvidó su clave?'); ?></a>
             </div>
         <?php endif; ?>
     </div><!-- Close boxLogin -->

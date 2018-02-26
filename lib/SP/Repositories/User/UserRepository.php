@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin 
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -85,11 +85,11 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($itemData->getNotes());
         $queryData->addParam($itemData->getUserGroupId());
         $queryData->addParam($itemData->getUserProfileId());
-        $queryData->addParam($itemData->isIsAdminApp());
-        $queryData->addParam($itemData->isIsAdminAcc());
-        $queryData->addParam($itemData->isIsDisabled());
-        $queryData->addParam($itemData->isIsChangePass());
-        $queryData->addParam($itemData->isIsLdap());
+        $queryData->addParam($itemData->isAdminApp());
+        $queryData->addParam($itemData->isAdminAcc());
+        $queryData->addParam($itemData->isDisabled());
+        $queryData->addParam($itemData->isChangePass());
+        $queryData->addParam($itemData->isLdap());
         $queryData->addParam($itemData->getId());
         $queryData->setOnErrorMessage(__u('Error al actualizar el usuario'));
 
@@ -452,11 +452,11 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($itemData->getMPass());
         $queryData->addParam($itemData->getMKey());
         $queryData->addParam($itemData->getLastUpdateMPass());
-        $queryData->addParam($itemData->isIsAdminApp());
-        $queryData->addParam($itemData->isIsAdminAcc());
-        $queryData->addParam($itemData->isIsDisabled());
-        $queryData->addParam($itemData->isIsChangePass());
-        $queryData->addParam($itemData->isIsLdap());
+        $queryData->addParam($itemData->isAdminApp());
+        $queryData->addParam($itemData->isAdminAcc());
+        $queryData->addParam($itemData->isDisabled());
+        $queryData->addParam($itemData->isChangePass());
+        $queryData->addParam($itemData->isLdap());
         $queryData->addParam($itemData->getPass());
         $queryData->setOnErrorMessage(__u('Error al crear el usuario'));
 
@@ -664,7 +664,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($itemData->getPass());
         $queryData->addParam($itemData->getName());
         $queryData->addParam($itemData->getEmail());
-        $queryData->addParam($itemData->isIsLdap());
+        $queryData->addParam($itemData->isLdap());
         $queryData->addParam($itemData->getLogin());
         $queryData->addParam($itemData->getLogin());
         $queryData->setOnErrorMessage(__u('Error al actualizar el usuario'));

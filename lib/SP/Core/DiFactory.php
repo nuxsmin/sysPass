@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,12 +27,11 @@ namespace SP\Core;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventDispatcherInterface;
 use SP\Core\Exceptions\InvalidClassException;
-use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Mgmt\ItemBaseInterface;
 use SP\Storage\DBStorageInterface;
-use SP\Storage\XmlFileStorageInterface;
 use SP\Storage\MySQLHandler;
+use SP\Storage\XmlFileStorageInterface;
 use SP\Storage\XmlHandler;
 
 /**

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
+ * @author nuxsmin 
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -52,16 +52,16 @@ class UserPassRecoverRepository extends Repository
             FROM UserPassRecover
             WHERE userId = ?
             AND used = 0
-            AND date >= ?';
+            AND `date` >= ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($userId);
-        $Data->addParam($time);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($userId);
+        $queryData->addParam($time);
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return $Data->getQueryNumRows();
+        return $queryData->getQueryNumRows();
     }
 
     /**
@@ -78,17 +78,17 @@ class UserPassRecoverRepository extends Repository
         $query = /** @lang SQL */
             'INSERT INTO UserPassRecover SET 
             userId = ?,
-            hash = ?,
-            date = UNIX_TIMESTAMP(),
+            `hash` = ?,
+            `date` = UNIX_TIMESTAMP(),
             used = 0';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($userId);
-        $Data->addParam($hash);
-        $Data->setOnErrorMessage(__u('Error al generar el hash de recuperación'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($userId);
+        $queryData->addParam($hash);
+        $queryData->setOnErrorMessage(__u('Error al generar el hash de recuperación'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -103,29 +103,44 @@ class UserPassRecoverRepository extends Repository
     {
         $query = /** @lang SQL */
             'UPDATE UserPassRecover SET used = 1 
-            WHERE hash = (SELECT userId
-            FROM UserPassRecover
-            WHERE hash = ?
+            WHERE `hash` = ?
             AND used = 0
-            AND date >= ?
-            ORDER BY date DESC LIMIT 1) LIMIT 1';
+            AND `date` >= ? 
+            LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($hash);
-        $Data->addParam($time);
-        $Data->setOnErrorMessage(__u('Error interno'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($hash);
+        $queryData->addParam($time);
+        $queryData->setOnErrorMessage(__u('Error en comprobación de hash'));
 
-        $queryRes = DbWrapper::getResults($Data);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        if ($queryRes === false) {
-            throw new SPException(__u('Error en comprobación de hash'), SPException::ERROR);
-        }
+        return $this->db->getNumRows();
+    }
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(__u('Hash inválido o expirado'), SPException::INFO);
-        }
+    /**
+     * Comprobar el hash de recuperación de clave.
+     *
+     * @param $hash
+     * @param $time
+     * @return mixed
+     */
+    public function getUserIdForHash($hash, $time)
+    {
+        $query = /** @lang SQL */
+            'SELECT userId
+            FROM UserPassRecover
+            WHERE `hash` = ?
+            AND used = 0
+            AND `date` >= ? 
+            ORDER BY date DESC LIMIT 1';
 
-        return $queryRes;
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($hash);
+        $queryData->addParam($time);
+
+        return DbWrapper::getResults($queryData, $this->db);
     }
 }

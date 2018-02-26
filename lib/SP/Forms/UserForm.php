@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,13 +25,10 @@
 namespace SP\Forms;
 
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\Crypt\Hash;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionFactory;
 use SP\DataModel\UserData;
 use SP\Http\Request;
-use SP\Mgmt\Users\UserUtil;
-use SP\Util\Checks;
 
 /**
  * Class UserForm
@@ -100,7 +97,7 @@ class UserForm extends FormBase implements FormInterface
         $this->userData->setIsAdminAcc(Request::analyze('adminacc', 0, false, 1));
         $this->userData->setIsDisabled(Request::analyze('disabled', 0, false, 1));
         $this->userData->setIsChangePass(Request::analyze('changepass', 0, false, 1));
-        $this->userData->setPass(Hash::hashKey(Request::analyzeEncrypted('pass')));
+        $this->userData->setPass(Request::analyzeEncrypted('pass'));
     }
 
     /**
@@ -130,7 +127,7 @@ class UserForm extends FormBase implements FormInterface
 
         if ($this->configData->isDemoEnabled()
             && $this->userData->getLogin() === 'demo'
-            && !SessionFactory::getUserData()->isIsAdminApp()) {
+            && !SessionFactory::getUserData()->isAdminApp()) {
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
     }
@@ -142,7 +139,7 @@ class UserForm extends FormBase implements FormInterface
     {
         $userPassR = Request::analyzeEncrypted('passR');
 
-        if ($this->configData->isDemoEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
+        if ($this->configData->isDemoEnabled()) {
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
 
@@ -150,7 +147,7 @@ class UserForm extends FormBase implements FormInterface
             throw new ValidationException(__u('La clave no puede estar en blanco'));
         }
 
-        if (!Hash::checkHashKey($userPassR, $this->userData->getPass())) {
+        if ($userPassR !== $this->userData->getPass()) {
             throw new ValidationException(__u('Las claves no coinciden'));
         }
     }
@@ -160,12 +157,14 @@ class UserForm extends FormBase implements FormInterface
      */
     protected function checkDelete()
     {
-        if ($this->configData->isDemoEnabled() && UserUtil::getUserLoginById($this->itemId) === 'demo') {
+        if ($this->configData->isDemoEnabled()) {
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
 
-        if ((!is_array($this->itemId) === SessionFactory::getUserData()->getId())
-            || (is_array($this->itemId) && in_array(SessionFactory::getUserData()->getId(), $this->itemId))
+        $userData = $this->session->getUserData();
+
+        if ((is_array($this->itemId) && in_array($userData->getId(), $this->itemId))
+            || $this->itemId === $userData->getId()
         ) {
             throw new ValidationException(__u('No es posible eliminar, usuario en uso'));
         }

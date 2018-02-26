@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,11 +24,9 @@
 
 namespace SP\Http;
 
-use SP\Bootstrap;
 use SP\Core\CryptPKI;
 use SP\Core\Init;
 use SP\Html\Html;
-use SP\Util\HttpUtil;
 
 /**
  * Clase Request para la gestión de peticiones HTTP

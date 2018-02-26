@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin 
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -57,8 +57,8 @@ class WikiController extends ControllerBase implements ActionsInterface
         $this->init();
 
         $this->view->assign('sk', SessionUtil::getSessionKey(true));
-        $this->view->assign('isDemoMode', $this->configData->isDemoEnabled() && !SessionFactory::getUserData()->isIsAdminApp());
-        $this->view->assign('isDisabled', ($this->configData->isDemoEnabled() && !SessionFactory::getUserData()->isIsAdminApp()) ? 'DISABLED' : '');
+        $this->view->assign('isDemoMode', $this->configData->isDemoEnabled() && !SessionFactory::getUserData()->isAdminApp());
+        $this->view->assign('isDisabled', ($this->configData->isDemoEnabled() && !SessionFactory::getUserData()->isAdminApp()) ? 'DISABLED' : '');
     }
 
     /**

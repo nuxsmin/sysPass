@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -161,7 +161,7 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @return boolean
      */
-    public function isIsMigrate()
+    public function isMigrate()
     {
         return (int)$this->isMigrate;
     }
@@ -257,7 +257,7 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @return boolean
      */
-    public function isIsAdminApp()
+    public function isAdminApp()
     {
         return (int)$this->isAdminApp;
     }
@@ -273,7 +273,7 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @return boolean
      */
-    public function isIsAdminAcc()
+    public function isAdminAcc()
     {
         return (int)$this->isAdminAcc;
     }
@@ -289,7 +289,7 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @return boolean
      */
-    public function isIsDisabled()
+    public function isDisabled()
     {
         return (int)$this->isDisabled;
     }
@@ -305,7 +305,7 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @return boolean
      */
-    public function isIsChangePass()
+    public function isChangePass()
     {
         return (int)$this->isChangePass;
     }
@@ -321,7 +321,7 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @return boolean
      */
-    public function isIsLdap()
+    public function isLdap()
     {
         return (int)$this->isLdap;
     }

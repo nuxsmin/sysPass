@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -102,7 +102,7 @@ class UserSSO extends User
         $Data->addParam(__('Usuario de SSO'));
         $Data->addParam($groupId);
         $Data->addParam($profileId);
-        $Data->addParam((int)$this->itemData->isIsDisabled());
+        $Data->addParam((int)$this->itemData->isDisabled());
         $Data->addParam(Hash::hashKey($this->itemData->getLoginPass()));
         $Data->setOnErrorMessage(__('Error al guardar los datos de SSO', false));
 

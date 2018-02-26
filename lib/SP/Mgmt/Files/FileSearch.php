@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -24,11 +24,11 @@
 
 namespace SP\Mgmt\Files;
 
+use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
 use SP\Mgmt\ItemSearchInterface;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
-use SP\DataModel\FileExtData;
 
 /**
  * Class FileSearch

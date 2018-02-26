@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -39,9 +39,10 @@ use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Providers\Auth\AuthUtil;
+use SP\Providers\Mail\Mailer;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
+use SP\Services\UserPassRecover\UserPassRecoverService;
 use SP\Services\UserProfile\UserProfileService;
 
 /**
@@ -267,22 +268,19 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $form = new UserForm();
             $form->validate(ActionsInterface::USER_CREATE);
 
-            $id = $this->userService->create($form->getItemData());
-//            $this->userService->logAction($id, ActionsInterface::USER_CREATE);
+            $itemData = $form->getItemData();
+
+            $id = $this->userService->create($itemData);
 
             $this->addCustomFieldsForItem(ActionsInterface::USER, $id);
 
-            $this->eventDispatcher->notifyEvent('create.user', new Event($this));
+            $this->eventDispatcher->notifyEvent('create.user',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Usuario creado'))
+                    ->addDetail(__u('Usuario'), $itemData->getName()))
+            );
 
-            if ($form->getItemData()->isIsChangePass()
-                && !AuthUtil::mailPassRecover($form->getItemData())
-            ) {
-                $this->returnJsonResponse(
-                    JsonResponse::JSON_WARNING,
-                    __u('Usuario creado'),
-                    [__('No se pudo realizar la petición de cambio de clave.')]
-                );
-            }
+            $this->checkChangeUserPass($itemData);
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario creado'));
         } catch (ValidationException $e) {
@@ -291,6 +289,28 @@ class UserController extends ControllerBase implements CrudControllerInterface
             processException($e);
 
             $this->returnJsonResponseException($e);
+        }
+    }
+
+    /**
+     * @param UserData $userData
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Providers\Mail\MailerException
+     * @throws \SP\Services\ServiceException
+     */
+    protected function checkChangeUserPass(UserData $userData)
+    {
+        if ($userData->isChangePass()) {
+            $hash = $this->dic->get(UserPassRecoverService::class)->requestForUserId($userData->getId());
+            $this->dic->get(Mailer::class)->send(__('Cambio de Clave'), $userData->getEmail(), UserPassRecoverService::getMailMessage($hash));
+
+//            $this->returnJsonResponse(
+//                JsonResponse::JSON_WARNING,
+//                __u('Usuario creado'),
+//                [__('No se pudo realizar la petición de cambio de clave.')]
+//            );
         }
     }
 
@@ -312,22 +332,19 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $form->setIsLdap(Request::analyze('isLdap', 0));
             $form->validate(ActionsInterface::USER_EDIT);
 
-            $this->userService->update($form->getItemData());
-//            $this->userService->logAction($id, ActionsInterface::USER_EDIT);
+            $itemData = $form->getItemData();
+
+            $this->userService->update($itemData);
 
             $this->updateCustomFieldsForItem(ActionsInterface::USER, $id);
 
-            $this->eventDispatcher->notifyEvent('edit.user', new Event($this));
+            $this->eventDispatcher->notifyEvent('edit.user',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Usuario actualizado'))
+                    ->addDetail(__u('Usuario'), $itemData->getName()))
+            );
 
-            if ($form->getItemData()->isIsChangePass()
-                && !AuthUtil::mailPassRecover($form->getItemData())
-            ) {
-                $this->returnJsonResponse(
-                    JsonResponse::JSON_WARNING,
-                    __u('Usuario actualizado'),
-                    [__('No se pudo realizar la petición de cambio de clave.')]
-                );
-            }
+            $this->checkChangeUserPass($itemData);
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario actualizado'));
         } catch (ValidationException $e) {
@@ -354,10 +371,15 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $form = new UserForm($id);
             $form->validate(ActionsInterface::USER_EDIT_PASS);
 
-            $this->userService->updatePass($form->getItemData());
-//            $this->userService->logAction($id, ActionsInterface::USER_EDIT_PASS);
+            $itemData = $form->getItemData();
 
-            $this->eventDispatcher->notifyEvent('edit.user.pass', new Event($this));
+            $this->userService->updatePass($id, $itemData->getPass());
+
+            $this->eventDispatcher->notifyEvent('edit.user.pass',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Clave actualizada'))
+                    ->addDetail(__u('Usuario'), $id))
+            );
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave actualizada'));
         } catch (ValidationException $e) {

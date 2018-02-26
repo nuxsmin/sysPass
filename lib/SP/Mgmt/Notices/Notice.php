@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -86,7 +86,7 @@ class Notice extends NoticeBase implements ItemInterface
     {
         $query = 'DELETE FROM Notification WHERE id = ? AND BIN(sticky) = 0 LIMIT 1';
 
-        if (SessionFactory::getUserData()->isIsAdminApp()) {
+        if (SessionFactory::getUserData()->isAdminApp()) {
             $query = 'DELETE FROM Notification WHERE id = ? LIMIT 1';
         }
 

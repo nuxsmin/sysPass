@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin 
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -236,7 +236,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDetails(__('Nombre', false), $Form->getItemData()->getName());
                 $this->LogMessage->addDetails(__('Login', false), $Form->getItemData()->getLogin());
 
-                if ($Form->getItemData()->isIsChangePass()
+                if ($Form->getItemData()->isChangePass()
                     && !AuthUtil::mailPassRecover($Form->getItemData())
                 ) {
                     $this->LogMessage->addDescription(__('No se pudo realizar la petición de cambio de clave.', false));

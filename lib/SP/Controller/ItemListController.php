@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin 
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,12 +28,9 @@ defined('APP_ROOT') || die();
 
 use SP\Account\AccountHistoryUtil;
 use SP\Account\AccountUtil;
-use SP\Config\Config;
 use SP\Controller\Grids\Items;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
-use SP\Mvc\View\Template;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Mgmt\ApiTokens\ApiTokenSearch;
@@ -48,7 +45,7 @@ use SP\Mgmt\Profiles\ProfileSearch;
 use SP\Mgmt\PublicLinks\PublicLinkSearch;
 use SP\Mgmt\Tags\TagSearch;
 use SP\Mgmt\Users\UserSearch;
-use SP\Util\Checks;
+use SP\Mvc\View\Template;
 
 /**
  * Clase encargada de de preparar la presentación de las vistas de gestión de accesos

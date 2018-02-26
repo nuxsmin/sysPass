@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin 
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,14 +26,12 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
-use SP\Config\Config;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\DiFactory;
 use SP\Core\Language;
 use SP\Core\SessionUtil;
-use SP\Mvc\View\Template;
 use SP\DataModel\UserPreferencesData;
 use SP\Mgmt\Users\UserPreferences;
+use SP\Mvc\View\Template;
 
 /**
  * Class UsersPrefs encargada de mostrar las preferencias de los usuarios

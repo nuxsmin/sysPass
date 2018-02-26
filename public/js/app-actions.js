@@ -2,8 +2,8 @@
  * sysPass
  *
  * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -599,13 +599,13 @@ sysPass.Actions = function (Common) {
             log.info("user:passreset");
 
             const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.user.passreset;
+            opts.url = ajaxUrl.entrypoint + "/?r=" + $obj.data("action-route");
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.status == 0) {
+                if (json.status === 0) {
                     setTimeout(function () {
                         Common.redirect("index.php");
                     }, 2000);

@@ -2,9 +2,9 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -84,10 +84,10 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getNotes());
         $Data->addParam($this->itemData->getUserGroupId());
         $Data->addParam($this->itemData->getUserProfileId());
-        $Data->addParam($this->itemData->isIsAdminApp());
-        $Data->addParam($this->itemData->isIsAdminAcc());
-        $Data->addParam($this->itemData->isIsDisabled());
-        $Data->addParam($this->itemData->isIsChangePass());
+        $Data->addParam($this->itemData->isAdminApp());
+        $Data->addParam($this->itemData->isAdminAcc());
+        $Data->addParam($this->itemData->isDisabled());
+        $Data->addParam($this->itemData->isChangePass());
         $Data->addParam(Hash::hashKey($this->itemData->getPass()));
         $Data->setOnErrorMessage(__('Error al crear el usuario', false));
 
@@ -180,10 +180,10 @@ class User extends UserBase implements ItemInterface, ItemSelectInterface
         $Data->addParam($this->itemData->getNotes());
         $Data->addParam($this->itemData->getUserGroupId());
         $Data->addParam($this->itemData->getUserProfileId());
-        $Data->addParam($this->itemData->isIsAdminApp());
-        $Data->addParam($this->itemData->isIsAdminAcc());
-        $Data->addParam($this->itemData->isIsDisabled());
-        $Data->addParam($this->itemData->isIsChangePass());
+        $Data->addParam($this->itemData->isAdminApp());
+        $Data->addParam($this->itemData->isAdminAcc());
+        $Data->addParam($this->itemData->isDisabled());
+        $Data->addParam($this->itemData->isChangePass());
         $Data->addParam($this->itemData->getId());
         $Data->setOnErrorMessage(__('Error al actualizar el usuario', false));
 

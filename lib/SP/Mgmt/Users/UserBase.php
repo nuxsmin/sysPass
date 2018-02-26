@@ -3,8 +3,8 @@
  * sysPass
  *
  * @author nuxsmin
- * @link http://syspass.org
- * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
+ * @link https://syspass.org
+ * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -26,7 +26,6 @@ namespace SP\Mgmt\Users;
 
 defined('APP_ROOT') || die();
 
-use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\DataModel\UserData;

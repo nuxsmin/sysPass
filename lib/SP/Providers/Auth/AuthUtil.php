@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author nuxsmin 
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,17 +24,6 @@
 
 namespace SP\Providers\Auth;
 
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use PHPMailer\PHPMailer\Exception;
-use SP\Core\Init;
-use SP\Core\Messages\LogMessage;
-use SP\DataModel\UserData;
-use SP\DataModel\UserPassRecoverData;
-use SP\Html\Html;
-use SP\Log\Email;
-use SP\Mgmt\Users\UserPassRecover;
-use SP\Util\Util;
-
 /**
  * Class AuthUtil
  *
@@ -42,47 +31,6 @@ use SP\Util\Util;
  */
 class AuthUtil
 {
-    /**
-     * Proceso para la recuperación de clave.
-     *
-     * @param UserData $UserData
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public static function mailPassRecover(UserData $UserData)
-    {
-        try {
-            if (!$UserData->isIsDisabled()
-                && !$UserData->isIsLdap()
-                && !UserPassRecover::checkPassRecoverLimit($UserData)
-            ) {
-                $hash = Util::generateRandomBytes(16);
-
-                $LogMessage = new LogMessage();
-                $LogMessage->setAction(__('Cambio de Clave'));
-                $LogMessage->addDescriptionHtml(__('Se ha solicitado el cambio de su clave de usuario.'));
-                $LogMessage->addDescriptionLine();
-                $LogMessage->addDescription(__('Para completar el proceso es necesario que acceda a la siguiente URL:'));
-                $LogMessage->addDescriptionLine();
-                $LogMessage->addDescription(Html::anchorText(Init::$WEBURI . '/index.php?a=passreset&h=' . $hash . '&t=' . time()));
-                $LogMessage->addDescriptionLine();
-                $LogMessage->addDescription(__('Si no ha solicitado esta acción, ignore este mensaje.'));
-
-                $UserPassRecoverData = new UserPassRecoverData();
-                $UserPassRecoverData->setUserId($UserData->getId());
-                $UserPassRecoverData->setHash($hash);
-
-                return (Email::sendEmail($LogMessage, $UserData->getEmail(), false) && UserPassRecover::getItem($UserPassRecoverData)->add());
-            }
-        } catch (EnvironmentIsBrokenException $e) {
-            debugLog($e->getMessage());
-        } catch (Exception $e) {
-            debugLog($e->getMessage());
-        }
-
-        return false;
-    }
-
     /**
      * Devuelve el typo de autentificación del servidor web
      *

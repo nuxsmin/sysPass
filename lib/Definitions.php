@@ -49,5 +49,7 @@ return [
     \SP\Core\UI\Theme::class => object(\SP\Core\UI\Theme::class)
         ->constructor(APP_MODULE),
     \SP\Core\Events\EventDispatcher::class => object(\SP\Core\Events\EventDispatcher::class),
-    \SP\Log\Log::class => object(\SP\Log\Log::class)->scope(\DI\Scope::PROTOTYPE)
+    \SP\Log\Log::class => object(\SP\Log\Log::class)->scope(\DI\Scope::PROTOTYPE),
+    \PHPMailer\PHPMailer\PHPMailer::class => object(\PHPMailer\PHPMailer\PHPMailer::class)
+        ->constructor(true)
 ];
