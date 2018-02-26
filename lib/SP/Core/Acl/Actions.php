@@ -152,7 +152,7 @@ class Actions
     public function getActionById($id)
     {
         if (!isset($this->actions[$id])) {
-            throw new ActionNotFoundException(__u('Acción no encontrada'), ActionNotFoundException::ERROR);
+            throw new ActionNotFoundException(__u('Acción no encontrada'));
         }
 
         return $this->actions[$id];

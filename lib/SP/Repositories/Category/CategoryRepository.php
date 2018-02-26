@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -211,15 +211,20 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return void
-     * @throws SPException
-     * @throws \SP\Core\Dic\ContainerException
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
-        foreach ($ids as $id) {
-            $this->delete($id);
-        }
+        $Data = new QueryData();
+        $Data->setQuery('DELETE FROM Category WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+        $Data->setParams($ids);
+        $Data->setOnErrorMessage(__u('Error al eliminar la categorías'));
+
+        DbWrapper::getQuery($Data, $this->db);
+
+        return $this->db->getNumRows();
     }
 
     /**
@@ -229,7 +234,6 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function delete($id)
     {

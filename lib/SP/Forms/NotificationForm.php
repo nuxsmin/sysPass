@@ -27,20 +27,20 @@ namespace SP\Forms;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\Messages\NoticeMessage;
-use SP\DataModel\NoticeData;
+use SP\DataModel\NotificationData;
 use SP\Http\Request;
 
 /**
- * Class NoticeForm
+ * Class NotificationForm
  *
  * @package SP\Forms
  */
-class NoticeForm extends FormBase implements FormInterface
+class NotificationForm extends FormBase implements FormInterface
 {
     /**
-     * @var NoticeData
+     * @var NotificationData
      */
-    protected $noticeData;
+    protected $notificationData;
 
     /**
      * Validar el formulario
@@ -52,8 +52,8 @@ class NoticeForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::NOTICE_USER_CREATE:
-            case ActionsInterface::NOTICE_USER_EDIT:
+            case ActionsInterface::NOTIFICATION_CREATE:
+            case ActionsInterface::NOTIFICATION_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -69,19 +69,17 @@ class NoticeForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $Description = new NoticeMessage();
-        $Description->addDescription(Request::analyze('notice_description'));
+        $this->notificationData = new NotificationData();
+        $this->notificationData->setId($this->itemId);
+        $this->notificationData->setType(Request::analyze('notification_type'));
+        $this->notificationData->setComponent(Request::analyze('notification_component'));
+        $this->notificationData->setDescription(NoticeMessage::factory()->addDescription(Request::analyze('notification_description')));
+        $this->notificationData->setUserId(Request::analyze('notification_user', 0));
+        $this->notificationData->setChecked(Request::analyze('notification_checkout', 0, false, 1));
 
-        $this->noticeData = new NoticeData();
-        $this->noticeData->setId($this->itemId);
-        $this->noticeData->setType(Request::analyze('notice_type'));
-        $this->noticeData->setComponent(Request::analyze('notice_component'));
-        $this->noticeData->setDescription($Description);
-        $this->noticeData->setUserId(Request::analyze('notice_user', 0));
-
-        if ($this->noticeData->getUserId() === 0) {
-            $this->noticeData->setOnlyAdmin(Request::analyze('notice_onlyadmin', 0, false, 1));
-            $this->noticeData->setSticky(Request::analyze('notice_sticky', 0, false, 1));
+        if ($this->session->getUserData()->getIsAdminApp() && $this->notificationData->getUserId() === 0) {
+            $this->notificationData->setOnlyAdmin(Request::analyze('notification_onlyadmin', 0, false, 1));
+            $this->notificationData->setSticky(Request::analyze('notification_sticky', 0, false, 1));
         }
     }
 
@@ -90,30 +88,30 @@ class NoticeForm extends FormBase implements FormInterface
      */
     private function checkCommon()
     {
-        if (!$this->noticeData->getComponent()) {
+        if (!$this->notificationData->getComponent()) {
             throw new ValidationException(__u('Es necesario un componente'));
         }
 
-        if (!$this->noticeData->getType()) {
+        if (!$this->notificationData->getType()) {
             throw new ValidationException(__u('Es necesario un tipo'));
         }
 
-        if (!$this->noticeData->getDescription()) {
+        if (!$this->notificationData->getDescription()) {
             throw new ValidationException(__u('Es necesaria una descripción'));
         }
 
-        if (!$this->noticeData->getUserId()
-            && !$this->noticeData->isOnlyAdmin()
-            && !$this->noticeData->isSticky()) {
+        if (!$this->notificationData->getUserId()
+            && !$this->notificationData->isOnlyAdmin()
+            && !$this->notificationData->isSticky()) {
             throw new ValidationException(__u('Es necesario un destinatario'));
         }
     }
 
     /**
-     * @return NoticeData
+     * @return NotificationData
      */
     public function getItemData()
     {
-        return $this->noticeData;
+        return $this->notificationData;
     }
 }

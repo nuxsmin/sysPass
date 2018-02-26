@@ -73,7 +73,7 @@ class NoticesController extends GridTabControllerBase implements ActionsInterfac
      */
     public function getUserNotices()
     {
-        $this->setAction(self::NOTICE_USER);
+        $this->setAction(self::NOTIFICATION);
 
         if (!$this->checkAccess()) {
             return;

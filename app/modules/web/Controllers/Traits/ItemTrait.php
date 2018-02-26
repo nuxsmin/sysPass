@@ -135,7 +135,13 @@ trait ItemTrait
      */
     protected function deleteCustomFieldsForItem($moduleId, $itemId)
     {
-        Bootstrap::getContainer()->get(CustomFieldService::class)->deleteCustomFieldData($itemId, $moduleId);
+        $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
+
+        if (is_array($itemId)) {
+            $customFieldService->deleteCustomFieldDataBatch($itemId, $moduleId);
+        } else {
+            $customFieldService->deleteCustomFieldData($itemId, $moduleId);
+        }
     }
 
     /**
@@ -188,5 +194,13 @@ trait ItemTrait
         $itemSearchData->setLimitCount(Request::analyze('count', $configData->getAccountCount()));
 
         return $itemSearchData;
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getItemsIdFromRequest()
+    {
+        return Request::analyze('items', 0);
     }
 }

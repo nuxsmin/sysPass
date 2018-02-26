@@ -24,12 +24,10 @@
 
 namespace SP\Repositories\UserProfile;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
-use SP\Log\Log;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -53,14 +51,11 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      */
     public function getUsersForProfile($id)
     {
-        $query = /** @lang SQL */
-            'SELECT login FROM User WHERE userProfileId = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT login FROM User WHERE userProfileId = ?');
+        $queryData->addParam($id);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -78,17 +73,14 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
             throw new SPException(__u('Perfil en uso'), SPException::INFO);
         }
 
-        $query = /** @lang SQL */
-            'DELETE FROM UserProfile WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM UserProfile WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar perfil'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__('Error al eliminar perfil', false));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows();
+        return $this->db->getNumRows();
     }
 
     /**
@@ -101,16 +93,13 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      */
     public function checkInUse($id)
     {
-        $query = /** @lang SQL */
-            'SELECT userProfileId FROM User WHERE userProfileId = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT userProfileId FROM User WHERE userProfileId = ?');
+        $queryData->addParam($id);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return ($Data->getQueryNumRows() > 0);
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
@@ -121,15 +110,12 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      */
     public function getById($id)
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, profile FROM UserProfile WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, name, profile FROM UserProfile WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setMapClassName(UserProfileData::class);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserProfileData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
-
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -139,14 +125,11 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      */
     public function getAll()
     {
-        $query = /** @lang SQL */
-            'SELECT id, name FROM UserProfile ORDER BY name';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, name FROM UserProfile ORDER BY name');
+        $queryData->setMapClassName(UserProfileData::class);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserProfileData::class);
-        $Data->setQuery($query);
-
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -164,23 +147,32 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $query = /** @lang SQL */
             'SELECT id, name FROM UserProfile WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(ProfileData::class);
-        $Data->setQuery($query);
-        $Data->setParams($ids);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams($ids);
+        $queryData->setMapClassName(ProfileData::class);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return void
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Not implemented');
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM UserProfile WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+        $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error al eliminar los perfiles'));
+
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getNumRows();
     }
 
     /**
@@ -191,27 +183,27 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      */
     public function search(ItemSearchData $SearchData)
     {
-        $Data = new QueryData();
-        $Data->setSelect('id, name');
-        $Data->setFrom('UserProfile');
-        $Data->setOrder('name');
+        $queryData = new QueryData();
+        $queryData->setSelect('id, name');
+        $queryData->setFrom('UserProfile');
+        $queryData->setOrder('name');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('name LIKE ?');
+            $queryData->setWhere('name LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
-            $Data->addParam($search);
+            $queryData->addParam($search);
         }
 
-        $Data->setLimit('?,?');
-        $Data->addParam($SearchData->getLimitStart());
-        $Data->addParam($SearchData->getLimitCount());
+        $queryData->setLimit('?,?');
+        $queryData->addParam($SearchData->getLimitStart());
+        $queryData->addParam($SearchData->getLimitCount());
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
     }
@@ -231,18 +223,13 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
             throw new SPException(__u('Nombre de perfil duplicado'), SPException::INFO);
         }
 
-        $query = /** @lang SQL */
-            'INSERT INTO UserProfile SET
-            name = ?,
-            profile = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('INSERT INTO UserProfile SET name = ?, profile = ?');
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam(serialize($itemData->getProfile()));
+        $queryData->setOnErrorMessage(__u('Error al crear perfil'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getProfile());
-        $Data->setOnErrorMessage(__u('Error al crear perfil'));
-
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -257,18 +244,13 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        $query = /** @lang SQL */
-            'SELECT name
-            FROM UserProfile
-            WHERE UPPER(name) = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT name FROM UserProfile WHERE UPPER(name) = ?');
+        $queryData->addParam($itemData->getName());
 
-        $Data = new QueryData();
-        $Data->addParam($itemData->getName());
-        $Data->setQuery($query);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return ($Data->getQueryNumRows() > 0);
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
@@ -289,20 +271,16 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $query = /** @lang SQL */
             'UPDATE UserProfile SET name = ?, profile = ? WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getProfile());
-        $Data->addParam($itemData->getId());
-        $Data->setOnErrorMessage(__u('Error al modificar perfil'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam(serialize($itemData->getProfile()));
+        $queryData->addParam($itemData->getId());
+        $queryData->setOnErrorMessage(__u('Error al modificar perfil'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-//        if ($Data->getQueryNumRows() > 0) {
-//            $this->updateSessionProfile();
-//        }
-
-        return $Data->getQueryNumRows() > 0;
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
@@ -321,41 +299,13 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
             WHERE UPPER(name) = ?
             AND id <> ?';
 
-        $Data = new QueryData();
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getId());
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getId());
+        $queryData->setQuery($query);
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return ($Data->getQueryNumRows() > 0);
-    }
-
-    /**
-     * Logs profile action
-     *
-     * @param int $id
-     * @param int $actionId
-     * @return \SP\Core\Messages\LogMessage
-     */
-    public function logAction($id, $actionId)
-    {
-        $query = /** @lang SQL */
-            'SELECT name FROM UserProfile WHERE id = ? LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-
-        $userprofile = DbWrapper::getResults($Data, $this->db);
-
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(Acl::getActionInfo($actionId));
-        $LogMessage->addDetails(__u('Perfil'), $userprofile->name);
-        $LogMessage->addDetails(__u('ID'), $id);
-        $Log->writeLog();
-
-        return $LogMessage;
+        return ($queryData->getQueryNumRows() > 0);
     }
 }

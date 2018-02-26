@@ -31,6 +31,7 @@ use SP\DataModel\ClientData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Client\ClientRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -86,10 +87,26 @@ class ClientService extends Service
     public function delete($id)
     {
         if ($this->clientRepository->delete($id) === 0) {
-            throw new SPException(__u('Cliente no encontrado'), SPException::INFO);
+            throw new ServiceException(__u('Cliente no encontrado'), ServiceException::INFO);
         }
 
         return $this;
+    }
+
+    /**
+     * @param array $ids
+     * @return int
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteByIdBatch(array $ids)
+    {
+        if (($count = $this->clientRepository->deleteByIdBatch($ids)) !== count($ids)) {
+            throw new ServiceException(__u('Error al eliminar los clientes'), ServiceException::WARNING);
+        }
+
+        return $count;
     }
 
     /**

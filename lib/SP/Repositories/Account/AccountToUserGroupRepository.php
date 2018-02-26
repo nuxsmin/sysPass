@@ -55,11 +55,11 @@ class AccountToUserGroupRepository extends Repository
             WHERE AUG.accountId = ?
             ORDER BY G.name';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
 
-        return DbWrapper::getResultsArray($Data);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -77,11 +77,11 @@ class AccountToUserGroupRepository extends Repository
             WHERE AUG.userGroupId = ?
             ORDER BY G.name';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
 
-        return DbWrapper::getResultsArray($Data);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -92,15 +92,12 @@ class AccountToUserGroupRepository extends Repository
      */
     public function deleteByUserGroupId($id)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM AccountToUserGroup WHERE userGroupId = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE userGroupId = ?');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
-
-        return DbWrapper::getQuery($Data);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -125,15 +122,12 @@ class AccountToUserGroupRepository extends Repository
      */
     public function deleteByAccountId($id)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM AccountToUserGroup WHERE accountId = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE accountId = ?');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
-
-        return DbWrapper::getQuery($Data);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -147,16 +141,16 @@ class AccountToUserGroupRepository extends Repository
         $query = /** @lang SQL */
             'INSERT INTO AccountToUserGroup (accountId, userGroupId) VALUES ' . $this->getParamsFromArray($accountRequest->userGroups, '(?,?)');
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
 
         foreach ($accountRequest->userGroups as $userGroup) {
-            $Data->addParam($accountRequest->id);
-            $Data->addParam($userGroup);
+            $queryData->addParam($accountRequest->id);
+            $queryData->addParam($userGroup);
         }
 
-        $Data->setOnErrorMessage(__u('Error al actualizar los grupos secundarios'));
+        $queryData->setOnErrorMessage(__u('Error al actualizar los grupos secundarios'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 }

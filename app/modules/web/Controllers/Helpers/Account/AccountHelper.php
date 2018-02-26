@@ -33,7 +33,6 @@ use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountDetailsResponse;
-use SP\Mgmt\Users\UserPass;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -41,6 +40,7 @@ use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
+use SP\Services\Crypt\MasterPassService;
 use SP\Services\PublicLink\PublicLinkService;
 use SP\Services\Tag\TagService;
 use SP\Services\User\UpdatedMasterPassException;
@@ -160,6 +160,7 @@ class AccountHelper extends HelperBase
     /**
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function checkActionAccess()
     {
@@ -167,7 +168,7 @@ class AccountHelper extends HelperBase
             throw new UnauthorizedPageException(SPException::INFO);
         }
 
-        if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getId())) {
+        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
             throw new UpdatedMasterPassException(SPException::INFO);
         }
     }
@@ -253,6 +254,7 @@ class AccountHelper extends HelperBase
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \ReflectionException
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function setViewForBlank($actionId)
     {
@@ -291,6 +293,7 @@ class AccountHelper extends HelperBase
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \ReflectionException
      * @throws \SP\Core\Dic\ContainerException
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function setViewForRequest(AccountDetailsResponse $accountDetailsResponse, $actionId)
     {

@@ -26,7 +26,3 @@
 
 <!-- Pager -->
 <?php include $data->getDataPagerTemplate(); ?>
-
-<script type="text/javascript">
-    sysPassApp.sk.set("<?php echo $sk; ?>");
-</script>

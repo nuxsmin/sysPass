@@ -133,7 +133,8 @@ class LoginService extends Service
         $this->userLoginData->setLoginPass(Request::analyzeEncrypted('pass'));
 
         try {
-            $this->checkTracking();
+            // FIXME: add service
+//            $this->checkTracking();
 
             $auth = new Auth($this->userLoginData, $this->configData);
 
@@ -380,7 +381,7 @@ class LoginService extends Service
 
         // Cargar las variables de ussuario en la sesión
         $this->session->setUserData($userLoginResponse);
-        $this->session->setUserProfile($this->dic->get(UserProfileService::class)->getById($userLoginResponse->getUserProfileId()));
+        $this->session->setUserProfile($this->dic->get(UserProfileService::class)->getById($userLoginResponse->getUserProfileId())->getProfile());
 
         if ($this->configData->isDemoEnabled()) {
             $userLoginResponse->setPreferences(new UserPreferencesData());

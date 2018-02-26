@@ -25,7 +25,6 @@
 namespace SP\Core\Crypt;
 
 use SP\Core\SessionFactory as CoreSession;
-use SP\Core\SessionUtil;
 
 /**
  * Class Vault
@@ -54,18 +53,17 @@ class Vault
     /**
      * Regenerar la clave de sesión
      *
-     * @param  string $key
+     * @param string $newSeed
+     * @param string $oldSeed
      * @return Vault
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public function reKey($key = null)
+    public function reKey($newSeed, $oldSeed)
     {
         $this->timeUpdated = time();
-        $sessionMPass = $this->getData($key);
+        $sessionMPass = $this->getData($oldSeed);
 
-        SessionUtil::regenerate();
-
-        $this->saveData($sessionMPass, $key);
+        $this->saveData($sessionMPass, $newSeed);
 
         return $this;
     }
@@ -80,9 +78,8 @@ class Vault
     public function getData($key = null)
     {
         $key = $key ?: $this->getKey();
-        $securedKey = Crypt::unlockSecuredKey($this->key, $key);
 
-        return Crypt::decrypt($this->data, $securedKey, $key);
+        return Crypt::decrypt($this->data, Crypt::unlockSecuredKey($this->key, $key), $key);
     }
 
     /**

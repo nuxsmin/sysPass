@@ -496,7 +496,7 @@ sysPass.Main = function () {
     const checkLogout = function () {
         log.info("checkLogout");
 
-        if (parseInt(getUrlVars("r")) === "login/logout") {
+        if (getUrlVars("r") === "login/logout") {
             msg.sticky(config.LANG[61], function () {
                 redirect("index.php?r=login");
             });

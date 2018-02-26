@@ -24,6 +24,8 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Html\Html;
@@ -62,19 +64,20 @@ class LoginController extends ControllerBase
     public function logoutAction()
     {
         if ($this->session->isLoggedIn()) {
-//            $inactiveTime = abs(round((time() - SessionFactory::getLastActivity()) / 60, 2));
-//            $totalTime = abs(round((time() - SessionFactory::getStartActivity()) / 60, 2));
+            $inactiveTime = abs(round((time() - $this->session->getLastActivity()) / 60, 2));
+            $totalTime = abs(round((time() - $this->session->getStartActivity()) / 60, 2));
 
-//            $Log = new Log();
-//            $LogMessage = $Log->getLogMessage();
-//            $LogMessage->setAction(__u('Finalizar sesión'));
-//            $LogMessage->addDetails(__u('Usuario'), SessionFactory::getUserData()->getLogin());
-//            $LogMessage->addDetails(__u('Tiempo inactivo'), $inactiveTime . ' min.');
-//            $LogMessage->addDetails(__u('Tiempo total'), $totalTime . ' min.');
-//            $Log->writeLog();
+            $this->eventDispatcher->notifyEvent('logout',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Finalizar sesión'))
+                    ->addDetail(__u('Usuario'), $this->session->getUserData()->getLogin())
+                    ->addDetail(__u('Tiempo inactivo'), $inactiveTime . ' min.')
+                    ->addDetail(__u('Tiempo total'), $totalTime . ' min.'))
+            );
 
             SessionUtil::cleanSession();
-            SessionFactory::setLoggedOut(true);
+
+            $this->session->setLoggedOut(true);
 
             $layoutHelper = $this->dic->get(LayoutHelper::class);
             $layoutHelper->getCustomLayout('logout', 'logout');

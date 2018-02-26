@@ -32,6 +32,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Mgmt\Files\FileUtil;
 use SP\Repositories\Account\AccountFileRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Util\ImageUtil;
 
 /**
@@ -62,6 +63,7 @@ class AccountFileService extends Service
      *
      * @param FileData $itemData
      * @return mixed
+     * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -121,26 +123,35 @@ class AccountFileService extends Service
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return void
-     * @throws SPException
+     * @return int
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
-        foreach ($ids as $id) {
-            $this->delete($id);
+        if (($count = $this->accountFileRepository->deleteByIdBatch($ids)) !== count($ids)) {
+            throw new ServiceException(__u('Error al eliminar archivos'), ServiceException::WARNING);
         }
+
+        return $count;
     }
 
     /**
      * Deletes an item
      *
      * @param $id
-     * @return AccountFileRepository
+     * @return AccountFileService
      * @throws SPException
+     * @throws ServiceException
      */
     public function delete($id)
     {
-        return $this->accountFileRepository->delete($id);
+        if ($this->accountFileRepository->delete($id) === 0) {
+            throw new ServiceException(__u('Archivo no encontrado'), ServiceException::INFO);
+        }
+
+        return $this;
     }
 
     /**

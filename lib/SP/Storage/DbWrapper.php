@@ -25,7 +25,6 @@
 namespace SP\Storage;
 
 use PDOStatement;
-use SP\Bootstrap;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -63,12 +62,6 @@ class DbWrapper
      */
     public static function getResultsArray(QueryData $queryData, DatabaseInterface $db = null)
     {
-        // FIXME: remove
-        if ($db === null) {
-            /** @var Database $db */
-            $db = Bootstrap::getContainer()->get(Database::class);
-        }
-
         $results = self::getResults($queryData, $db);
 
         if ($results === false) {
@@ -93,22 +86,15 @@ class DbWrapper
         }
 
         try {
-            // FIXME: remove
-            if ($db === null) {
-                /** @var Database $db */
-                $db = Bootstrap::getContainer()->get(Database::class);
-            }
-
             $db->doQuery($queryData);
 
             if (self::$fullRowCount === true) {
                 $db->getFullRowCount($queryData);
             }
         } catch (\Exception $e) {
-            $queryData->setQueryStatus($e->getCode());
+            processException($e);
 
-            self::logDBException($queryData->getQuery(), $e, __FUNCTION__);
-            return false;
+            $queryData->setQueryStatus($e->getCode());
         }
 
         self::resetVars();
@@ -162,21 +148,14 @@ class DbWrapper
      * @param QueryData         $queryData
      * @param DatabaseInterface $db
      * @return PDOStatement|false
-     * @throws SPException
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Exception
      */
     public static function getResultsRaw(QueryData $queryData, DatabaseInterface $db = null)
     {
         try {
-            // FIXME: remove
-            if ($db === null) {
-                /** @var Database $db */
-                $db = Bootstrap::getContainer()->get(Database::class);
-            }
-
             return $db->doQuery($queryData, true);
-        } catch (SPException $e) {
-            self::logDBException($queryData->getQuery(), $e, __FUNCTION__);
+        } catch (\Exception $e) {
+            processException($e);
 
             throw $e;
         }
@@ -204,19 +183,13 @@ class DbWrapper
         }
 
         try {
-            // FIXME: remove
-            if ($db === null) {
-                /** @var Database $db */
-                $db = Bootstrap::getContainer()->get(Database::class);
-            }
-
             $db->doQuery($queryData);
 
             return true;
         } catch (\Exception $e) {
-            $queryData->setQueryStatus($e->getCode());
+            processException($e);
 
-            self::logDBException($queryData->getQuery(), $e, __FUNCTION__);
+            $queryData->setQueryStatus($e->getCode());
 
             switch ($e->getCode()) {
                 case 23000:

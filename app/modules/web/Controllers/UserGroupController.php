@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\UserGroupData;
 use SP\Forms\UserGroupForm;
@@ -178,21 +179,36 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::GROUP_DELETE)) {
             return;
         }
 
         try {
-//            $this->userGroupService->logAction($id, ActionsInterface::GROUP_DELETE);
-            $this->userGroupService->delete($id);
+            if ($id === null) {
+                $this->userGroupService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::GROUP, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::GROUP, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.userGroup', new Event($this));
+                $this->eventDispatcher->notifyEvent('delete.userGroup.selection',
+                    new Event($this, EventMessage::factory()->addDescription(__u('Grupos eliminados')))
+                );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Grupo eliminado'));
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Grupos eliminados'));
+            } else {
+                $this->userGroupService->delete($id);
+
+                $this->deleteCustomFieldsForItem(ActionsInterface::GROUP, $id);
+
+                $this->eventDispatcher->notifyEvent('delete.userGroup',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Grupo eliminado'))
+                        ->addDetail(__u('Grupo'), $id))
+                );
+
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Grupo eliminado'));
+            }
         } catch (\Exception $e) {
             processException($e);
 
@@ -215,13 +231,15 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
 
             $groupData = $form->getItemData();
 
-            $id = $this->userGroupService->create($groupData);
-//            $this->userGroupService->logAction($id, ActionsInterface::GROUP_CREATE);
-            $this->userToUserGroupService->add($id, $groupData->getUsers());
+            $id = $this->userGroupService->create($groupData, $groupData->getUsers());
 
             $this->addCustomFieldsForItem(ActionsInterface::GROUP, $id);
 
-            $this->eventDispatcher->notifyEvent('create.userGroup', new Event($this));
+            $this->eventDispatcher->notifyEvent('create.userGroup',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Grupo creado'))
+                    ->addDetail(__u('Nombre'), $groupData->getName()))
+            );
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Grupo creado'));
         } catch (ValidationException $e) {
@@ -253,12 +271,14 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             $groupData = $form->getItemData();
 
             $this->userGroupService->update($groupData);
-//            $this->userGroupService->logAction($id, ActionsInterface::GROUP_EDIT);
-            $this->userToUserGroupService->update($groupData->getId(), $groupData->getUsers());
 
             $this->updateCustomFieldsForItem(ActionsInterface::GROUP, $id);
 
-            $this->eventDispatcher->notifyEvent('edit.useGroup', new Event($this));
+            $this->eventDispatcher->notifyEvent('edit.userGroup',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Grupo actualizado'))
+                    ->addDetail(__u('Nombre'), $groupData->getName()))
+            );
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Grupo actualizado'));
         } catch (ValidationException $e) {
@@ -310,6 +330,6 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
         $this->checkLoggedIn();
 
         $this->userGroupService = $this->dic->get(UserGroupService::class);
-        $this->userToUserGroupService =  $this->dic->get(UserToUserGroupService::class);
+        $this->userToUserGroupService = $this->dic->get(UserToUserGroupService::class);
     }
 }

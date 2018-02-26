@@ -31,6 +31,7 @@ use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
 use SP\Repositories\User\UserRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 use SP\Util\Util;
 
@@ -153,14 +154,34 @@ class UserService extends Service
      * Deletes an item
      *
      * @param $id
-     * @return UserRepository
+     * @return UserService
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
-        return $this->userRepository->delete($id);
+        if ($this->userRepository->delete($id) === 0) {
+            throw new ServiceException(__u('Usuario no encontrado'), ServiceException::INFO);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array $ids
+     * @return int
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteByIdBatch(array $ids)
+    {
+        if (($count = $this->userRepository->deleteByIdBatch($ids)) !== count($ids)) {
+            throw new ServiceException(__u('Error al eliminar los usuarios'), ServiceException::WARNING);
+        }
+
+        return $count;
     }
 
     /**

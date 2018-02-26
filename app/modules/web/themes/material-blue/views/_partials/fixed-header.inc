@@ -27,28 +27,21 @@
                               class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                     <?php endforeach; ?>
 
-                    <?php if ($userNotices > 0): ?>
-                        <a id="notices-user" class="btn-menu mdl-navigation__link"
-                           data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::NOTICE; ?>"
-                           data-historyreset="1"
-                           data-view="notices">
-                            <i class="material-icons mdl-badge mdl-badge--overlap"
-                               data-badge="<?php echo $userNotices; ?>">notifications</i>
-                        </a>
+                    <a id="notifications" class="btn-menu mdl-navigation__link"
+                       data-route="notification/index"
+                       data-historyreset="1"
+                       data-view="notifications">
+                        <i class="material-icons mdl-badge mdl-badge--overlap"
+                           data-badge="<?php echo $notifications; ?>">notifications</i>
+                    </a>
 
-                        <span for="notices-user"
-                              class="mdl-tooltip mdl-tooltip--bottom"><?php printf(__('Hay %d notificaciones pendientes'), $userNotices); ?></span>
-                    <?php else: ?>
-                        <a id="notices-user" class="btn-menu mdl-navigation__link"
-                           data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::NOTICE; ?>"
-                           data-historyreset="1"
-                           data-view="notices">
-                            <i class="material-icons mdl-badge mdl-badge--overlap"
-                               data-badge="0">notifications</i>
-                        </a>
-                        <span for="notices-user"
-                              class="mdl-tooltip mdl-tooltip--bottom"><?php echo __('No hay no hay notificaciones pendientes'); ?></span>
-                    <?php endif; ?>
+                    <span for="notifications" class="mdl-tooltip mdl-tooltip--bottom">
+                            <?php if ($notifications > 0): ?>
+                                <?php printf(__('Hay %d notificaciones pendientes'), $notifications); ?>
+                            <?php else: ?>
+                                <?php echo __('No hay no hay notificaciones pendientes'); ?>
+                            <?php endif; ?>
+                        </span>
 
                     <!-- User's menu -->
                     <!-- Right aligned menu below button -->
@@ -101,24 +94,22 @@
                     </a>
                 <?php endforeach; ?>
 
-                <?php if ($userNotices > 0): ?>
-                    <a id="notices-user" class="btn-menu mdl-navigation__link"
-                       data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::NOTICE; ?>"
-                       data-historyreset="1"
-                       data-view="notices">
-                        <i class="material-icons mdl-badge mdl-badge--overlap"
-                           data-badge="<?php echo $userNotices; ?>">notifications</i>
-                        <?php echo __('Notificaciones'); ?>
-                    </a>
-                <?php else: ?>
-                    <a id="notices-user" class="btn-menu mdl-navigation__link"
-                       data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::NOTICE; ?>"
-                       data-historyreset="1"
-                       data-view="notices">
-                        <i class="material-icons mdl-badge mdl-badge--overlap" data-badge="0">notifications</i>
-                        <?php echo __('Notificaciones'); ?>
-                    </a>
-                <?php endif; ?>
+                <a id="notifications-drawer" class="btn-menu mdl-navigation__link"
+                   data-route="notification/index"
+                   data-historyreset="1"
+                   data-view="notifications">
+                    <i class="material-icons mdl-badge mdl-badge--overlap"
+                       data-badge="<?php echo $notifications; ?>">notifications</i>
+                </a>
+
+                <span for="notifications-drawer" class="mdl-tooltip mdl-tooltip--bottom">
+                            <?php if ($notifications > 0): ?>
+                                <?php printf(__('Hay %d notificaciones pendientes'), $notifications); ?>
+                            <?php else: ?>
+                                <?php echo __('No hay no hay notificaciones pendientes'); ?>
+                            <?php endif; ?>
+                        </span>
+
 
                 <?php if ($showPassIcon): ?>
                     <a class="btn-action mdl-navigation__link"

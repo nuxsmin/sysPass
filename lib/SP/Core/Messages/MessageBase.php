@@ -45,6 +45,14 @@ abstract class MessageBase implements MessageInterface
     protected $description = [];
 
     /**
+     * @return static
+     */
+    public static function factory()
+    {
+        return new static();
+    }
+
+    /**
      * @return string
      */
     public function getTitle()
@@ -54,10 +62,13 @@ abstract class MessageBase implements MessageInterface
 
     /**
      * @param string $title
+     * @return MessageBase
      */
     public function setTitle($title)
     {
         $this->title = $title;
+
+        return $this;
     }
 
     /**
@@ -70,22 +81,28 @@ abstract class MessageBase implements MessageInterface
 
     /**
      * @param array $description
+     * @return MessageBase
      */
     public function setDescription(array $description)
     {
         $this->description = $description;
+
+        return $this;
     }
 
     /**
      * @param string $description
+     * @return MessageBase
      */
     public function addDescription($description)
     {
         $this->description[] = $description;
+
+        return $this;
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getFooter()
     {
@@ -94,9 +111,12 @@ abstract class MessageBase implements MessageInterface
 
     /**
      * @param array $footer
+     * @return MessageBase
      */
     public function setFooter(array $footer)
     {
         $this->footer = $footer;
+
+        return $this;
     }
 }

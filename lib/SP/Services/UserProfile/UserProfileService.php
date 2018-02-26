@@ -28,8 +28,10 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
+use SP\DataModel\UserProfileData;
 use SP\Repositories\UserProfile\UserProfileRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 use SP\Util\Util;
 
@@ -59,11 +61,14 @@ class UserProfileService extends Service
 
     /**
      * @param $id
-     * @return mixed
+     * @return UserProfileData
      */
     public function getById($id)
     {
-        return Util::unserialize(ProfileData::class, $this->userProfileRepository->getById($id)->getProfile());
+        $userProfileData = $this->userProfileRepository->getById($id);
+        $userProfileData->setProfile(Util::unserialize(ProfileData::class, $userProfileData->getProfile()));
+
+        return $userProfileData;
     }
 
     /**
@@ -83,10 +88,26 @@ class UserProfileService extends Service
     public function delete($id)
     {
         if ($this->userProfileRepository->delete($id) === 0) {
-            throw new SPException(__u('Perfil no encontrado'), SPException::INFO);
+            throw new ServiceException(__u('Perfil no encontrado'), ServiceException::INFO);
         }
 
         return $this;
+    }
+
+    /**
+     * @param array $ids
+     * @return int
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteByIdBatch(array $ids)
+    {
+        if (($count = $this->userProfileRepository->deleteByIdBatch($ids)) !== count($ids)) {
+            throw new ServiceException(__u('Error al eliminar los perfiles'), ServiceException::WARNING);
+        }
+
+        return $count;
     }
 
     /**

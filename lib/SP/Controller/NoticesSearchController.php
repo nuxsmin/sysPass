@@ -26,15 +26,13 @@ namespace SP\Controller;
 
 defined('APP_ROOT') || die();
 
-use SP\Config\Config;
 use SP\Controller\Grids\Notices;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
-use SP\Mvc\View\Template;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
 use SP\Mgmt\Notices\NoticeSearch;
-use SP\Util\Checks;
+use SP\Mvc\View\Template;
 use SP\Util\Json;
 
 /**
@@ -92,7 +90,7 @@ class NoticesSearchController extends GridItemsSearchController implements Actio
 
         try {
             switch ($this->actionId) {
-                case ActionsInterface::NOTICE_USER_SEARCH:
+                case ActionsInterface::NOTIFICATION_SEARCH:
                     $this->getNoticesUser();
                     break;
                 default:
@@ -117,7 +115,7 @@ class NoticesSearchController extends GridItemsSearchController implements Actio
      */
     protected function getNoticesUser()
     {
-        $this->setAction(self::NOTICE_USER_SEARCH);
+        $this->setAction(self::NOTIFICATION_SEARCH);
 
         if (!$this->checkAccess()) {
             return;
@@ -132,7 +130,7 @@ class NoticesSearchController extends GridItemsSearchController implements Actio
         $this->updatePager($Grid->getPager(), $this->ItemSearchData);
 
         $this->view->assign('data', $Grid);
-        $this->view->assign('actionId', self::NOTICE_USER);
+        $this->view->assign('actionId', self::NOTIFICATION);
 
         $this->JsonResponse->setStatus(0);
     }

@@ -27,8 +27,10 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ProfileData;
+use SP\DataModel\UserProfileData;
 use SP\Forms\UserProfileForm;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -115,9 +117,10 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
     {
         $this->view->addTemplate('userprofile', 'itemshow');
 
-        $profile = $profileId ? $this->userProfileService->getById($profileId) : new ProfileData();
+        $profile = $profileId ? $this->userProfileService->getById($profileId) : new UserProfileData();
 
         $this->view->assign('profile', $profile);
+        $this->view->assign('profileData', $profile->getProfile() ?: new ProfileData());
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
@@ -171,21 +174,36 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::PROFILE_DELETE)) {
             return;
         }
 
         try {
-//            $this->userProfileService->logAction($id, ActionsInterface::PROFILE_DELETE);
-            $this->userProfileService->delete($id);
+            if ($id === null) {
+                $this->userProfileService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::PROFILE, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::PROFILE, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.userProfile', new Event($this));
+                $this->eventDispatcher->notifyEvent('delete.userProfile.selection',
+                    new Event($this, EventMessage::factory()->addDescription(__u('Perfiles eliminados')))
+                );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfil eliminado'));
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfiles eliminados'));
+            } else {
+                $this->userProfileService->delete($id);
+
+                $this->deleteCustomFieldsForItem(ActionsInterface::PROFILE, $id);
+
+                $this->eventDispatcher->notifyEvent('delete.userProfile',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Perfil eliminado'))
+                        ->addDetail(__u('Perfil'), $id))
+                );
+
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Perfil eliminado'));
+            }
         } catch (\Exception $e) {
             processException($e);
 
@@ -209,7 +227,6 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             $profileData = $form->getItemData();
 
             $id = $this->userProfileService->create($profileData);
-//            $this->userProfileService->logAction($id, ActionsInterface::PROFILE_CREATE);
 
             $this->addCustomFieldsForItem(ActionsInterface::PROFILE, $id);
 

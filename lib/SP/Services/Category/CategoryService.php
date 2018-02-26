@@ -29,6 +29,7 @@ use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Category\CategoryRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -78,15 +79,32 @@ class CategoryService extends Service
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function delete($id)
     {
         if ($this->categoryRepository->delete($id) === 0) {
-            throw new SPException(__u('Categoría no encontrada'), SPException::INFO);
+            throw new ServiceException(__u('Categoría no encontrada'), ServiceException::INFO);
         }
 
         return $this;
+    }
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array $ids
+     * @return int
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteByIdBatch(array $ids)
+    {
+        if (($count = $this->categoryRepository->deleteByIdBatch($ids)) === count($ids)) {
+            throw new ServiceException(__u('Error al eliminar la categoría'), ServiceException::WARNING);
+        }
+
+        return $count;
     }
 
     /**

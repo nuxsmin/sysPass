@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,7 +23,6 @@
  */
 
 namespace SP\Repositories\Tag;
-
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
@@ -58,16 +57,13 @@ class TagRepository extends Repository implements RepositoryItemInterface
             throw new SPException(__u('Etiqueta duplicada'), SPException::INFO);
         }
 
-        $query = /** @lang SQL */
-            'INSERT INTO Tag SET name = ?, `hash` = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('INSERT INTO Tag SET name = ?, `hash` = ?');
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->setOnErrorMessage(__u('Error al crear etiqueta'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getHash());
-        $Data->setOnErrorMessage(__u('Error al crear etiqueta'));
-
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -75,22 +71,20 @@ class TagRepository extends Repository implements RepositoryItemInterface
     /**
      * Checks whether the item is duplicated on adding
      *
-     * @param mixed $itemData
+     * @param TagData $itemData
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        $query = /** @lang SQL */
-            'SELECT id FROM Tag WHERE `hash` = ?';
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getTagHash());
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id FROM Tag WHERE `hash` = ?');
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($queryData);
 
-        return $Data->getQueryNumRows() > 0;
+        return $this->db->getNumRows() > 0;
     }
 
     /**
@@ -108,39 +102,34 @@ class TagRepository extends Repository implements RepositoryItemInterface
             throw new SPException(__u('Etiqueta duplicada'), SPException::INFO);
         }
 
-        $query = /** @lang SQL */
-            'UPDATE Tag SET name = ?, `hash` = ? WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE Tag SET name = ?, `hash` = ? WHERE id = ? LIMIT 1');
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->addParam($itemData->getId());
+        $queryData->setOnErrorMessage(__u('Error al actualizar etiqueta'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getHash());
-        $Data->addParam($itemData->getId());
-        $Data->setOnErrorMessage(__u('Error al actualizar etiqueta'));
-
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
      * Checks whether the item is duplicated on updating
      *
-     * @param mixed $itemData
+     * @param TagData $itemData
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        $query = /** @lang SQL */
-            'SELECT hash FROM Tag WHERE `hash` = ? AND id <> ?';
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getTagHash());
-        $Data->addParam($itemData->getTagId());
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT hash FROM Tag WHERE `hash` = ? AND id <> ?');
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->addParam($itemData->getId());
 
-        DbWrapper::getQuery($Data);
+        DbWrapper::getQuery($queryData);
 
-        return $Data->getQueryNumRows() > 0;
+        return $this->db->getNumRows() > 0;
     }
 
     /**
@@ -151,15 +140,12 @@ class TagRepository extends Repository implements RepositoryItemInterface
      */
     public function getById($id)
     {
-        $query = /** @lang SQL */
-            'SELECT id, name FROM Tag WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, name FROM Tag WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setMapClassName(TagData::class);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setMapClassName(TagData::class);
-
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -169,14 +155,11 @@ class TagRepository extends Repository implements RepositoryItemInterface
      */
     public function getAll()
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, `hash` FROM Tag ORDER BY name';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, name, `hash` FROM Tag ORDER BY name');
+        $queryData->setMapClassName(TagData::class);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setMapClassName(TagData::class);
-
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -190,26 +173,31 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $query = /** @lang SQL */
             'SELECT id, name FROM Tag WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(TagData::class);
-        $Data->setQuery($query);
-        $Data->setParams($ids);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(TagData::class);
+        $queryData->setQuery($query);
+        $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return void
+     * @return int
      * @throws SPException
      */
     public function deleteByIdBatch(array $ids)
     {
-        foreach ($ids as $id) {
-            $this->delete($id);
-        }
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM Tag WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+        $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error al eliminar etiquetas'));
+
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getNumRows();
     }
 
     /**
@@ -222,17 +210,14 @@ class TagRepository extends Repository implements RepositoryItemInterface
      */
     public function delete($id)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM Tag WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM Tag WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar etiqueta'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar etiqueta'));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows();
+        return $this->db->getNumRows();
     }
 
     /**
@@ -245,47 +230,44 @@ class TagRepository extends Repository implements RepositoryItemInterface
      */
     public function checkInUse($id)
     {
-        $query = /** @lang SQL */
-            'SELECT tagId FROM AccountToTag WHERE tagId = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT tagId FROM AccountToTag WHERE tagId = ?');
+        $queryData->addParam($id);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows() > 0;
+        return $this->db->getNumRows() > 0;
     }
 
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      * @return mixed
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData)
     {
-        $Data = new QueryData();
-        $Data->setSelect('id, name');
-        $Data->setFrom('Tag');
-        $Data->setOrder('name');
+        $queryData = new QueryData();
+        $queryData->setSelect('id, name');
+        $queryData->setFrom('Tag');
+        $queryData->setOrder('name');
 
-        if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('name LIKE ?');
+        if ($itemSearchData->getSeachString() !== '') {
+            $queryData->setWhere('name LIKE ?');
 
-            $search = '%' . $SearchData->getSeachString() . '%';
-            $Data->addParam($search);
+            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $queryData->addParam($search);
         }
 
-        $Data->setLimit('?,?');
-        $Data->addParam($SearchData->getLimitStart());
-        $Data->addParam($SearchData->getLimitCount());
+        $queryData->setLimit('?,?');
+        $queryData->addParam($itemSearchData->getLimitStart());
+        $queryData->addParam($itemSearchData->getLimitCount());
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $this->db->getNumRows();
 
         return $queryRes;
     }

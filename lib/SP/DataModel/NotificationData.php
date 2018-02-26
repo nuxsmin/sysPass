@@ -31,7 +31,7 @@ use SP\Core\Messages\MessageInterface;
  *
  * @package SP\DataModel
  */
-class NoticeData implements DataModelInterface
+class NotificationData implements DataModelInterface
 {
     /**
      * @var int
@@ -60,7 +60,7 @@ class NoticeData implements DataModelInterface
     /**
      * @var int
      */
-    public $userId = 0;
+    public $userId;
     /**
      * @var bool
      */
@@ -139,7 +139,7 @@ class NoticeData implements DataModelInterface
      */
     public function getDate()
     {
-        return $this->date;
+        return (int)$this->date;
     }
 
     /**

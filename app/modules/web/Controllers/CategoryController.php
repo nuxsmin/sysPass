@@ -170,25 +170,39 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::CATEGORY_DELETE)) {
             return;
         }
 
         try {
-            $this->categoryService->delete($id);
+            if ($id === null) {
+                $this->categoryService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.category',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Categoría eliminada'))
-                        ->addDetail(__u('Categoría'), $id))
-            );
+                $this->eventDispatcher->notifyEvent('delete.category',
+                    new Event($this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Categorías eliminadas')))
+                );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría eliminada'));
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categorías eliminadas'));
+            } else {
+                $this->categoryService->delete($id);
+
+                $this->deleteCustomFieldsForItem(ActionsInterface::CATEGORY, $id);
+
+                $this->eventDispatcher->notifyEvent('delete.category',
+                    new Event($this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Categoría eliminada'))
+                            ->addDetail(__u('Categoría'), $id))
+                );
+
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Categoría eliminada'));
+            }
         } catch (\Exception $e) {
             processException($e);
 

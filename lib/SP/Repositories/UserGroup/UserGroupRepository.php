@@ -24,11 +24,9 @@
 
 namespace SP\Repositories\UserGroup;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
-use SP\Log\Log;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -57,17 +55,14 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
             throw new SPException(__u('Grupo en uso'), SPException::WARNING);
         }
 
-        $query = /** @lang SQL */
-            'DELETE FROM UserGroup WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM UserGroup WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar el grupo'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar el grupo'));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows();
+        return $queryData->getQueryNumRows();
     }
 
     /**
@@ -87,13 +82,13 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
             SELECT userGroupId
             FROM Account WHERE userGroupId = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParams(array_fill(0, 2, (int)$id));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams([(int)$id, (int)$id]);
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return $Data->getQueryNumRows() > 0;
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
@@ -105,23 +100,23 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     public function getUsage($id)
     {
         $query = /** @lang SQL */
-            'SELECT userGroupId, "User" as ref
+            'SELECT userGroupId, "User" AS ref
             FROM User WHERE userGroupId = ?
             UNION ALL
-            SELECT userGroupId, "UserGroup" as ref
+            SELECT userGroupId, "UserGroup" AS ref
             FROM UserToUserGroup WHERE userGroupId = ?
             UNION ALL
-            SELECT userGroupId, "AccountToUserGroup" as ref
+            SELECT userGroupId, "AccountToUserGroup" AS ref
             FROM AccountToUserGroup WHERE userGroupId = ?
             UNION ALL
-            SELECT userGroupId, "Account" as ref
+            SELECT userGroupId, "Account" AS ref
             FROM Account WHERE userGroupId = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParams(array_fill(0, 4, (int)$id));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParams(array_fill(0, 4, (int)$id));
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -132,15 +127,12 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      */
     public function getById($id)
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, description FROM UserGroup WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, name, description FROM UserGroup WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setMapClassName(UserGroupData::class);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserGroupData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
-
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -151,15 +143,12 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      */
     public function getByName($name)
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, description FROM UserGroup WHERE name = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, name, description FROM UserGroup WHERE name = ? LIMIT 1');
+        $queryData->addParam($name);
+        $queryData->setMapClassName(UserGroupData::class);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserGroupData::class);
-        $Data->setQuery($query);
-        $Data->addParam($name);
-
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -169,14 +158,11 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      */
     public function getAll()
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, description FROM UserGroup ORDER BY name';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, name, description FROM UserGroup ORDER BY name');
+        $queryData->setMapClassName(UserGroupData::class);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserGroupData::class);
-        $Data->setQuery($query);
-
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -194,12 +180,12 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $query = /** @lang SQL */
             'SELECT id, name, description FROM UserGroup WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserGroupData::class);
-        $Data->setQuery($query);
-        $Data->setParams($ids);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(UserGroupData::class);
+        $queryData->setQuery($query);
+        $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -212,17 +198,13 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      */
     public function deleteByIdBatch(array $ids)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM UserGroup WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM UserGroup WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+        $queryData->setParams($ids);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserGroupData::class);
-        $Data->setQuery($query);
-        $Data->setParams($ids);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows();
+        return $this->db->getNumRows();
     }
 
     /**
@@ -233,29 +215,29 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      */
     public function search(ItemSearchData $SearchData)
     {
-        $Data = new QueryData();
-        $Data->setMapClassName(UserGroupData::class);
-        $Data->setSelect('id, name, description');
-        $Data->setFrom('UserGroup');
-        $Data->setOrder('name');
+        $queryData = new QueryData();
+        $queryData->setMapClassName(UserGroupData::class);
+        $queryData->setSelect('id, name, description');
+        $queryData->setFrom('UserGroup');
+        $queryData->setOrder('name');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('name LIKE ? OR description LIKE ?');
+            $queryData->setWhere('name LIKE ? OR description LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
-            $Data->addParam($search);
-            $Data->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
         }
 
-        $Data->setLimit('?,?');
-        $Data->addParam($SearchData->getLimitStart());
-        $Data->addParam($SearchData->getLimitCount());
+        $queryData->setLimit('?,?');
+        $queryData->addParam($SearchData->getLimitStart());
+        $queryData->addParam($SearchData->getLimitCount());
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
     }
@@ -278,13 +260,13 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $query = /** @lang SQL */
             'INSERT INTO UserGroup SET name = ?, description = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getDescription());
-        $Data->setOnErrorMessage(__u('Error al crear el grupo'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getDescription());
+        $queryData->setOnErrorMessage(__u('Error al crear el grupo'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -299,15 +281,13 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        $query = /** @lang SQL */
-            'SELECT name FROM UserGroup WHERE UPPER(name) = UPPER(?)';
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT name FROM UserGroup WHERE UPPER(name) = UPPER(?)');
+        $queryData->addParam($itemData->getName());
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return $Data->getQueryNumRows() > 0;
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
@@ -325,17 +305,14 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
             throw new SPException(__u('Nombre de grupo duplicado'), SPException::INFO);
         }
 
-        $query = /** @lang SQL */
-            'UPDATE UserGroup SET name = ?, description = ? WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE UserGroup SET name = ?, description = ? WHERE id = ? LIMIT 1');
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getDescription());
+        $queryData->addParam($itemData->getId());
+        $queryData->setOnErrorMessage(__u('Error al actualizar el grupo'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getDescription());
-        $Data->addParam($itemData->getId());
-        $Data->setOnErrorMessage(__u('Error al actualizar el grupo'));
-
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this;
     }
@@ -350,43 +327,13 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        $query = /** @lang SQL */
-            'SELECT name FROM UserGroup WHERE UPPER(name) = UPPER(?) AND id <> ?';
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getId());
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT name FROM UserGroup WHERE UPPER(name) = UPPER(?) AND id <> ?');
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getId());
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return $Data->getQueryNumRows() > 0;
-    }
-
-    /**
-     * Logs group action
-     *
-     * @param int $id
-     * @param int $actionId
-     * @return \SP\Core\Messages\LogMessage
-     */
-    public function logAction($id, $actionId)
-    {
-        $query = /** @lang SQL */
-            'SELECT name FROM UserGroup WHERE id = ? LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-
-        $usergroup = DbWrapper::getResults($Data, $this->db);
-
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(Acl::getActionInfo($actionId));
-        $LogMessage->addDetails(__u('Grupo'), $usergroup->name);
-        $LogMessage->addDetails(__u('ID'), $id);
-        $Log->writeLog();
-
-        return $LogMessage;
+        return $queryData->getQueryNumRows() > 0;
     }
 }

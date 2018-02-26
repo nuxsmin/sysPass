@@ -33,7 +33,6 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\SessionUtil;
 use SP\DataModel\AccountExtData;
 use SP\Forms\AccountForm;
 use SP\Http\JsonResponse;
@@ -103,7 +102,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->eventDispatcher->notifyEvent('show.account.search', new Event($this));
 
             $data = [
-                'sk' => SessionUtil::getSessionKey(),
+                'sk' => $this->session->generateSecurityKey(),
                 'html' => $this->render()
             ];
 
@@ -359,7 +358,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
         try {
             $accountDetailsResponse = $this->accountService->getById($id);
@@ -739,7 +738,23 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     public function saveDeleteAction($id)
     {
         try {
-            if ($this->accountService->delete($id)) {
+            if ($id === null) {
+                $this->accountService->deleteByIdBatch($this->getItemsIdFromRequest());
+
+                $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
+
+                $this->eventDispatcher->notifyEvent('delete.account.selection',
+                    new Event($this, EventMessage::factory()->addDescription(__u('Cuentas eliminadas')))
+                );
+
+                $this->returnJsonResponseData(
+                    ['nextAction' => Acl::getActionRoute(ActionsInterface::ACCOUNT_SEARCH)],
+                    JsonResponse::JSON_SUCCESS,
+                    __u('Cuentas eliminadas')
+                );
+            } else {
+                $this->accountService->delete($id);
+
                 $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.account',

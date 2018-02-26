@@ -35,7 +35,6 @@ use SP\Core\SessionUtil;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Html\DataGrid\DataGridAction;
-use SP\Mgmt\Notices\Notice;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -228,7 +227,7 @@ class LayoutHelper extends HelperBase
         $this->view->assign('userName', $userData->getName() ?: mb_strtoupper($this->view->userLogin));
         $this->view->assign('userGroup', $userData->getUserGroupId());
         $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userData->getIsLdap()));
-        $this->view->assign('userNotices', count(Notice::getItem()->getAllActiveForUser()));
+        $this->view->assign('notifications', 0);
     }
 
     /**

@@ -59,23 +59,20 @@ class AccountToUserRepository extends Repository
      * Eliminar la asociación de grupos con cuentas.
      *
      * @param int $id con el Id de la cuenta
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function deleteByAccountId($id)
     {
-        $Data = new QueryData();
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AccountToUser WHERE accountId = ?');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar usuarios asociados a la cuenta'));
 
-        $query = /** @lang SQL */
-            'DELETE FROM AccountToUser WHERE accountId = ?';
+        DbWrapper::getQuery($queryData, $this->db);
 
-        $Data->addParam($id);
-
-        $Data->setQuery($query);
-        $Data->setOnErrorMessage(__u('Error al eliminar usuarios asociados a la cuenta'));
-
-        return DbWrapper::getQuery($Data);
+        return $this->db->getNumRows();
     }
 
     /**
@@ -91,16 +88,16 @@ class AccountToUserRepository extends Repository
         $query = /** @lang SQL */
             'INSERT INTO AccountToUser (accountId, userId) VALUES ' . $this->getParamsFromArray($accountRequest->users, '(?,?)');
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setOnErrorMessage(__u('Error al actualizar los usuarios de la cuenta'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setOnErrorMessage(__u('Error al actualizar los usuarios de la cuenta'));
 
         foreach ($accountRequest->users as $user) {
-            $Data->addParam($accountRequest->id);
-            $Data->addParam($user);
+            $queryData->addParam($accountRequest->id);
+            $queryData->addParam($user);
         }
 
-        return DbWrapper::getQuery($Data);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -118,10 +115,10 @@ class AccountToUserRepository extends Repository
             WHERE AU.accountId = ?
             ORDER BY U.name';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
 
-        return DbWrapper::getResultsArray($Data);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 }

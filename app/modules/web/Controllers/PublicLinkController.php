@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\PublicLinkListData;
@@ -200,21 +201,37 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_DELETE)) {
             return;
         }
 
         try {
-//            $this->publicLinkService->logAction($id, ActionsInterface::PROFILE_DELETE);
-            $this->publicLinkService->delete($id);
+            if ($id === null) {
+                $this->publicLinkService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::PUBLICLINK, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::PUBLICLINK, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.publicLink', new Event($this));
+                $this->eventDispatcher->notifyEvent('delete.publicLink.selection',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Enlaces eliminados')))
+                );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace eliminado'));
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlaces eliminados'));
+            } else {
+                $this->publicLinkService->delete($id);
+
+                $this->deleteCustomFieldsForItem(ActionsInterface::PUBLICLINK, $id);
+
+                $this->eventDispatcher->notifyEvent('delete.publicLink',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Enlace eliminado'))
+                        ->addDetail(__u('Enlace'), $id))
+                );
+
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace eliminado'));
+            }
         } catch (\Exception $e) {
             processException($e);
 

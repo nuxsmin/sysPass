@@ -171,25 +171,39 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::CLIENT_DELETE)) {
             return;
         }
 
         try {
-            $this->clientService->delete($id);
+            if ($id === null) {
+                $this->clientService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::CLIENT, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::CLIENT, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.client',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Cliente eliminado'))
-                        ->addDetail(__u('Cliente'), $id))
-            );
+                $this->eventDispatcher->notifyEvent('delete.client.selection',
+                    new Event($this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Clientes eliminados')))
+                );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente eliminado'));
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clientes eliminados'));
+            } else {
+                $this->clientService->delete($id);
+
+                $this->deleteCustomFieldsForItem(ActionsInterface::CLIENT, $id);
+
+                $this->eventDispatcher->notifyEvent('delete.client',
+                    new Event($this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Cliente eliminado'))
+                            ->addDetail(__u('Cliente'), $id))
+                );
+
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente eliminado'));
+            }
         } catch (\Exception $e) {
             processException($e);
 

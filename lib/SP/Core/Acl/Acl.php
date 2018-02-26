@@ -199,9 +199,9 @@ class Acl implements ActionsInterface
             case self::EVENTLOG:
             case self::EVENTLOG_SEARCH:
                 return $userProfile->isEvl();
-            case self::NOTICE:
-            case self::NOTICE_USER:
-            case self::NOTICE_USER_SEARCH:
+            case self::NOTIFICATION:
+            case self::NOTIFICATION_SEARCH:
+            case self::NOTIFICATION_CHECK:
                 return true;
         }
 

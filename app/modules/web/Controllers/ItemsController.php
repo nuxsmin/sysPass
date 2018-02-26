@@ -24,13 +24,13 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Core\SessionUtil;
 use SP\DataModel\DataModelInterface;
 use SP\Http\JsonResponse;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
+use SP\Services\Notification\NotificationService;
 use SP\Util\Json;
 
 /**
@@ -41,18 +41,9 @@ use SP\Util\Json;
 class ItemsController extends SimpleControllerBase
 {
     /**
-     * ItemsController constructor.
-     */
-    protected function initialize()
-    {
-        $this->checks();
-    }
-
-    /**
      * Devolver las cuentas visibles por el usuario
      *
      * @param int $accountId
-     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function accountsUserAction($accountId = null)
     {
@@ -69,14 +60,12 @@ class ItemsController extends SimpleControllerBase
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus(0);
         $jsonResponse->setData($outItems);
-        $jsonResponse->setCsrf(SessionUtil::getSessionKey());
+        $jsonResponse->setCsrf($this->session->getSecurityKey());
 
         Json::returnJson($jsonResponse);
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\SPException
      */
     public function clientsAction()
@@ -85,13 +74,27 @@ class ItemsController extends SimpleControllerBase
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \SP\Core\Exceptions\SPException
      */
     public function categoriesAction()
     {
         Json::returnRawJson(SelectItemAdapter::factory($this->dic->get(CategoryService::class)->getAllBasic())->getJsonItemsFromModel());
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function notificationsAction()
+    {
+        Json::returnRawJson(Json::getJson($this->dic->get(NotificationService::class)->getAllActiveForUserId($this->session->getUserData()->getId())));
+    }
+
+    /**
+     * ItemsController constructor.
+     */
+    protected function initialize()
+    {
+        $this->checks();
     }
 
     /**

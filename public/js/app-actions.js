@@ -619,7 +619,7 @@ sysPass.Actions = function (Common) {
      *
      * @type {{logout: main.logout, login: main.login, install: main.install, twofa: main.twofa}}
      */
-    var main = {
+    const main = {
         logout: function () {
             Common.redirect("index.php?r=login/logout");
         },
@@ -1208,57 +1208,27 @@ sysPass.Actions = function (Common) {
 
             tabs.state.update($obj);
 
-            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[12] + "</p></div>";
-            const selection = $obj.data("selection");
-            const items = [];
+            grid.delete($obj, function (items) {
+                const itemId = $obj.data("item-id");
 
-            // FIXME
-            if (selection) {
-                $(selection).find(".is-selected").each(function () {
-                    const $this = $(this);
+                const opts = Common.appRequests().getRequestOpts();
+                opts.url = ajaxUrl.entrypoint;
+                opts.method = "get";
+                opts.data = {
+                    r: $obj.data("action-route") + (itemId ? "/" + itemId : ''),
+                    items: items,
+                    sk: Common.sk.get(),
+                    isAjax: 1
+                };
 
-                    items.push($this.data("item-id"));
+                Common.appRequests().getActionCall(opts, function (json) {
+                    Common.msg.out(json);
+
+                    getContent({
+                        r: tabs.state.tab.route,
+                        tabIndex: tabs.state.tab.index
+                    });
                 });
-
-                if (items.length === 0) {
-                    return;
-                }
-            }
-
-            mdlDialog().show({
-                text: atext,
-                negative: {
-                    title: Common.config().LANG[44],
-                    onClick: function (e) {
-                        e.preventDefault();
-
-                        Common.msg.error(Common.config().LANG[44]);
-                    }
-                },
-                positive: {
-                    title: Common.config().LANG[43],
-                    onClick: function (e) {
-                        e.preventDefault();
-
-                        const opts = Common.appRequests().getRequestOpts();
-                        opts.url = ajaxUrl.entrypoint;
-                        opts.method = "get";
-                        opts.data = {
-                            r: $obj.data("action-route") + "/" + $obj.data("item-id"),
-                            sk: Common.sk.get(),
-                            isAjax: 1
-                        };
-
-                        Common.appRequests().getActionCall(opts, function (json) {
-                            Common.msg.out(json);
-
-                            getContent({
-                                r: tabs.state.tab.route,
-                                tabIndex: tabs.state.tab.index
-                            });
-                        });
-                    }
-                }
             });
         },
         save: function ($obj) {
@@ -1286,32 +1256,12 @@ sysPass.Actions = function (Common) {
         search: function ($obj) {
             log.info("appMgmt:search");
 
-            const $target = $($obj.data("target"));
-            const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
-            opts.method = "get";
-            opts.data = $obj.serialize();
-
-            Common.appRequests().getActionCall(opts, function (json) {
-                if (json.status === 0) {
-                    $target.html(json.data.html);
-                } else {
-                    $target.html(Common.msg.html.error(json.description));
-                }
-
-                Common.sk.set(json.csrf);
-            });
+            grid.search($obj);
         },
         nav: function ($obj) {
             log.info("appMgmt:nav");
 
-            const $form = $("#" + $obj.data("action-form"));
-
-            $form.find("[name='start']").val($obj.data("start"));
-            $form.find("[name='count']").val($obj.data("count"));
-            $form.find("[name='sk']").val(Common.sk.get());
-
-            appMgmt.search($form);
+            grid.nav($obj);
         },
         ldapSync: function ($obj) {
             log.info("appMgmt:ldapSync");
@@ -1360,32 +1310,12 @@ sysPass.Actions = function (Common) {
         search: function ($obj) {
             log.info("eventlog:search");
 
-            const $target = $($obj.data("target"));
-            const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
-            opts.method = "get";
-            opts.data = $obj.serialize();
-
-            Common.appRequests().getActionCall(opts, function (json) {
-                if (json.status === 0) {
-                    $target.html(json.data.html);
-                } else {
-                    $target.html(Common.msg.html.error(json.description));
-                }
-
-                Common.sk.set(json.csrf);
-            });
+            grid.search($obj);
         },
         nav: function ($obj) {
             log.info("eventlog:nav");
 
-            const $form = $("#" + $obj.data("action-form"));
-
-            $form.find("[name='start']").val($obj.data("start"));
-            $form.find("[name='count']").val($obj.data("count"));
-            $form.find("[name='sk']").val(Common.sk.get());
-
-            eventlog.search($form);
+            grid.nav($obj);
         },
         clear: function ($obj) {
             const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[20] + "</p></div>";
@@ -1405,7 +1335,6 @@ sysPass.Actions = function (Common) {
                     onClick: function (e) {
                         e.preventDefault();
 
-                        const $target = $($obj.data("target"));
                         const opts = Common.appRequests().getRequestOpts();
                         opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
                         opts.method = "get";
@@ -1415,7 +1344,7 @@ sysPass.Actions = function (Common) {
                             Common.msg.out(json);
 
                             if (json.status === 0) {
-                                getContent({r: $obj.data("action-next")});
+                                getContent({r: $obj.data("nextaction")});
                             }
 
                             Common.sk.set(json.csrf);
@@ -1529,34 +1458,112 @@ sysPass.Actions = function (Common) {
     /**
      * Objeto para las acciones de las notificaciones
      */
-    var notice = {
+    const notification = {
         check: function ($obj) {
-            log.info("notice:check");
+            log.info("notification:check");
 
-            var data = {
-                "itemId": $obj.data("item-id"),
-                "actionId": $obj.data("action-id"),
-                "sk": Common.sk.get()
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint;
+            opts.method = "get";
+            opts.data = {
+                r: $obj.data("action-route") + "/" + $obj.data("item-id"),
+                sk: Common.sk.get(),
+                isAjax: 1
             };
-
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.appMgmt.save;
-            opts.data = data;
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
                 if (json.status === 0) {
-                    doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
+                    getContent({r: $obj.data("nextaction")});
                 }
+
+                Common.sk.set(json.csrf);
             });
         },
         search: function ($obj) {
-            log.info("notice:search");
+            log.info("notification:search");
 
-            var $target = $($obj.data("target"));
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.notice.search;
+            grid.search($obj);
+        },
+        show: function ($obj) {
+            log.info("notification:show");
+
+            appMgmt.show($obj);
+        },
+        save: function ($obj) {
+            log.info("notification:save");
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
+            opts.data = $obj.serialize();
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+
+                if (json.status === 0) {
+                    getContent({r: $obj.data("nextaction")});
+
+                    $.magnificPopup.close();
+                }
+            });
+        },
+        delete: function ($obj) {
+            log.info("notification:delete");
+
+            grid.delete($obj, function (items) {
+                if (items.length > 0) {
+                    items.join(",");
+                } else {
+                    items = $obj.data("item-id");
+                }
+
+                const opts = Common.appRequests().getRequestOpts();
+                opts.url = ajaxUrl.entrypoint;
+                opts.method = "get";
+                opts.data = {
+                    r: $obj.data("action-route") + "/" + items,
+                    sk: Common.sk.get(),
+                    isAjax: 1
+                };
+
+                Common.appRequests().getActionCall(opts, function (json) {
+                    Common.msg.out(json);
+
+                    getContent({r: $obj.data("nextaction")});
+                });
+            });
+        },
+        getActive: function () {
+            log.info("notification:getActive");
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint;
+            opts.method = "get";
+            opts.data = {
+                r: "items/notifications",
+                sk: Common.sk.get(),
+                isAjax: 1
+            };
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                return json;
+            });
+        },
+        nav: function ($obj) {
+            log.info("eventlog:nav");
+
+            grid.nav($obj);
+        }
+    };
+
+    const grid = {
+        search: function ($obj) {
+            log.info("appMgmt:search");
+
+            const $target = $($obj.data("target"));
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.method = "get";
             opts.data = $obj.serialize();
 
@@ -1570,25 +1577,55 @@ sysPass.Actions = function (Common) {
                 Common.sk.set(json.csrf);
             });
         },
-        show: function ($obj) {
-            log.info("notice:show");
+        nav: function ($obj, callback) {
+            log.info("grid:nav");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.notice.show;
-            opts.method = "get";
-            opts.data = {
-                itemId: $obj.data("item-id"),
-                actionId: $obj.data("action-id"),
-                activeTab: $obj.data("activetab"),
-                sk: Common.sk.get(),
-                isAjax: 1
-            };
+            const $form = $("#" + $obj.data("action-form"));
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                if (json.status !== 0) {
-                    Common.msg.out(json);
-                } else {
-                    showFloatingBox(json.data.html);
+            $form.find("[name='start']").val($obj.data("start"));
+            $form.find("[name='count']").val($obj.data("count"));
+            $form.find("[name='sk']").val(Common.sk.get());
+
+            if (typeof callback === "function") {
+                callback($form);
+            } else {
+                grid.search($obj);
+            }
+        },
+        delete: function ($obj, onAccept) {
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[12] + "</p></div>";
+            const selection = $obj.data("selection");
+            const items = [];
+
+            if (selection) {
+                $(selection).find(".is-selected").each(function () {
+                    items.push($(this).data("item-id"));
+                });
+
+                if (items.length === 0) {
+                    return;
+                }
+            }
+
+            mdlDialog().show({
+                text: atext,
+                negative: {
+                    title: Common.config().LANG[44],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        Common.msg.error(Common.config().LANG[44]);
+                    }
+                },
+                positive: {
+                    title: Common.config().LANG[43],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        if (typeof onAccept === "function") {
+                            onAccept(items);
+                        }
+                    }
                 }
             });
         }
@@ -1607,7 +1644,7 @@ sysPass.Actions = function (Common) {
         eventlog: eventlog,
         ajaxUrl: ajaxUrl,
         plugin: plugin,
-        notice: notice,
+        notification: notification,
         wiki: wiki,
         items: items
     };

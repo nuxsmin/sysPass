@@ -256,20 +256,6 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
     }
 
     /**
-     * Deletes all the items for given ids
-     *
-     * @param array $ids
-     * @return void
-     * @throws SPException
-     */
-    public function deleteByIdBatch(array $ids)
-    {
-        foreach ($ids as $id) {
-            $this->delete($id);
-        }
-    }
-
-    /**
      * Deletes an item
      *
      * @param $id
@@ -293,6 +279,26 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         }
 
         return $this;
+    }
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array $ids
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteByIdBatch(array $ids)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AccountFile WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+        $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error al eliminar el archivos'));
+
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getNumRows();
     }
 
     /**

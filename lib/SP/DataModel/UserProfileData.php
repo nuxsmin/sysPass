@@ -91,6 +91,6 @@ class UserProfileData extends DataModelBase implements DataModelInterface
      */
     public function setProfile(ProfileData $profile)
     {
-        $this->profile = serialize($profile);
+        $this->profile = $profile;
     }
 }

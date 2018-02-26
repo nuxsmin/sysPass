@@ -38,6 +38,7 @@ class Session
      *
      * @return string
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @todo Use session from DI
      */
     public static function getSessionKey()
     {
@@ -49,20 +50,29 @@ class Session
      *
      * @param $data
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @todo Use session from DI
      */
     public static function saveSessionKey($data)
     {
-        $Vault = new Vault();
-        CoreSession::setVault($Vault->saveData($data));
+        CoreSession::setVault((new Vault())->saveData($data));
     }
 
     /**
      * Regenerar la clave de sesión
      *
+     * @param \SP\Core\Session\Session $session
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public static function reKey()
+    public static function reKey(\SP\Core\Session\Session $session)
     {
-        CoreSession::setVault(CoreSession::getVault()->reKey());
+        debugLog(__METHOD__);
+
+        $oldSeed = session_id() . $session->getSidStartTime();
+
+        session_regenerate_id(true);
+
+        $newSeed = session_id() . $session->setSidStartTime(time());
+
+        CoreSession::setVault(CoreSession::getVault()->reKey($newSeed, $oldSeed));
     }
 }

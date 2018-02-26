@@ -176,25 +176,39 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::APITOKEN_DELETE)) {
             return;
         }
 
         try {
-            $this->authTokenService->delete($id);
+            if ($id === null) {
+                $this->authTokenService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.authToken',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Autorización eliminada'))
-                        ->addDetail(__u('Autorización'), $id))
-            );
+                $this->eventDispatcher->notifyEvent('delete.authToken.selection',
+                    new Event($this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Autorizaciones eliminadas')))
+                );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización eliminada'));
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorizaciones eliminadas'));
+            } else {
+                $this->authTokenService->delete($id);
+
+                $this->deleteCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
+
+                $this->eventDispatcher->notifyEvent('delete.authToken',
+                    new Event($this,
+                        EventMessage::factory()
+                            ->addDescription(__u('Autorización eliminada'))
+                            ->addDetail(__u('Autorización'), $id))
+                );
+
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización eliminada'));
+            }
         } catch (\Exception $e) {
             processException($e);
 

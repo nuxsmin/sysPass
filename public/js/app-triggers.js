@@ -215,6 +215,10 @@ sysPass.Triggers = function (Common) {
                 Common.appActions().doAction({actionId: $(this).data("route")});
             });
 
+            // setInterval(function () {
+            //     Common.appActions().notification.getActive();
+            // }, 60000);
+
             Common.appActions().doAction({r: "account/index"}, "search");
 
             if (typeof Common.appTheme().viewsTriggers.main === "function") {
@@ -361,6 +365,7 @@ sysPass.Triggers = function (Common) {
                 const upload = Common.fileUpload($dropFiles);
 
                 upload.url = Common.appActions().ajaxUrl.entrypoint + "?r=" + $dropFiles.data("action-route") + "/" + $dropFiles.data("item-id");
+                upload.allowedExts = Common.config().FILES_ALLOWED_EXTS;
 
                 upload.requestDoneAction = function () {
                     Common.appActions().account.listFiles($listFiles);

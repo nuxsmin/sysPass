@@ -19,7 +19,7 @@ if (!isset($index)): $index = 0; endif;
                             id="btn-add-<?php echo $action->getId(); ?>"
                             type="button"
                             class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200 mdl-js-ripple-effect"
-                            data-nextaction-id="<?php echo $data->getOnCloseAction(); ?>"
+                            data-nextaction="<?php echo $data->getOnCloseAction(); ?>"
                             data-onclick="<?php echo $action->getOnClick(); ?>"
                         <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                         <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
@@ -78,20 +78,21 @@ if (!isset($index)): $index = 0; endif;
             <span for="btn-back-<?php echo $index; ?>"
                   class="mdl-tooltip mdl-tooltip--bottom"><?php echo $icons->getIconBack()->getTitle(); ?></span>
         </li>
+
         <?php if (count($data->getDataActionsMenu()) > 0): ?>
             <li>
-                <button id="<?php echo $data->getId(); ?>-menu-lower-right"
+                <button id="menu-<?php echo $data->getId(); ?>-menu-lower-right"
                         class="mdl-button mdl-js-button mdl-button--icon">
                     <i class="material-icons">more_vert</i>
                 </button>
 
                 <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
-                    for="<?php echo $data->getId(); ?>-menu-lower-right">
+                    for="menu-<?php echo $data->getId(); ?>-menu-lower-right">
                     <?php foreach ($data->getDataActionsMenu() as $action): ?>
                         <li class="btn-action mdl-menu__item"
+                            data-selection="#data-table-<?php echo $data->getId(); ?>"
                             data-onclick="<?php echo $action->getOnClick(); ?>"
-                            data-action-id="<?php echo $action->getId(); ?>"
-                            data-selection="#data-table-<?php echo $data->getId(); ?>">
+                                <?php foreach ($action->getData() as $dataName => $dataValue): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
                             <i class="material-icons <?php echo $action->getIcon()->getClass(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>
                             <?php echo __('Eliminar Seleccionados'); ?>
                         </li>

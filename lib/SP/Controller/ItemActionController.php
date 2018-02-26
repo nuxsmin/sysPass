@@ -35,7 +35,7 @@ use SP\Core\Messages\LogMessage;
 use SP\Core\SessionFactory;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\CustomFieldData;
-use SP\DataModel\NoticeData;
+use SP\DataModel\NotificationData;
 use SP\DataModel\PluginData;
 use SP\DataModel\PublicLinkData;
 use SP\Forms\AccountForm;
@@ -43,7 +43,7 @@ use SP\Forms\AuthTokenForm;
 use SP\Forms\CategoryForm;
 use SP\Forms\ClientForm;
 use SP\Forms\CustomFieldDefForm;
-use SP\Forms\NoticeForm;
+use SP\Forms\NotificationForm;
 use SP\Forms\TagForm;
 use SP\Forms\UserForm;
 use SP\Forms\UserGroupForm;
@@ -181,11 +181,11 @@ class ItemActionController implements ItemControllerInterface
                 case ActionsInterface::LDAP_SYNC:
                     $this->ldapImportAction();
                     break;
-                case ActionsInterface::NOTICE_USER_CHECK:
-                case ActionsInterface::NOTICE_USER_VIEW:
-                case ActionsInterface::NOTICE_USER_CREATE:
-                case ActionsInterface::NOTICE_USER_EDIT:
-                case ActionsInterface::NOTICE_USER_DELETE:
+                case ActionsInterface::NOTIFICATION_CHECK:
+                case ActionsInterface::NOTIFICATION_VIEW:
+                case ActionsInterface::NOTIFICATION_CREATE:
+                case ActionsInterface::NOTIFICATION_EDIT:
+                case ActionsInterface::NOTIFICATION_DELETE:
                     $this->noticeAction();
                     break;
                 case ActionsInterface::ACCOUNT_REQUEST:
@@ -1110,28 +1110,28 @@ class ItemActionController implements ItemControllerInterface
     protected function noticeAction()
     {
         switch ($this->actionId) {
-            case ActionsInterface::NOTICE_USER_CHECK:
+            case ActionsInterface::NOTIFICATION_CHECK:
                 Notice::getItem()->setChecked($this->itemId);
 
                 $this->JsonResponse->setDescription(__('Notificación leída'));
                 break;
-            case ActionsInterface::NOTICE_USER_CREATE:
-                $Form = new NoticeForm($this->itemId);
+            case ActionsInterface::NOTIFICATION_CREATE:
+                $Form = new NotificationForm($this->itemId);
                 $Form->validate($this->actionId);
 
                 Notice::getItem($Form->getItemData())->add();
 
                 $this->JsonResponse->setDescription(__('Notificación creada'));
                 break;
-            case ActionsInterface::NOTICE_USER_EDIT:
-                $Form = new NoticeForm($this->itemId);
+            case ActionsInterface::NOTIFICATION_EDIT:
+                $Form = new NotificationForm($this->itemId);
                 $Form->validate($this->actionId);
 
                 Notice::getItem($Form->getItemData())->update();
 
                 $this->JsonResponse->setDescription(__('Notificación actualizada'));
                 break;
-            case ActionsInterface::NOTICE_USER_DELETE:
+            case ActionsInterface::NOTIFICATION_DELETE:
                 if (is_array($this->itemId)) {
                     Notice::getItem()->deleteBatch($this->itemId);
 
@@ -1199,7 +1199,7 @@ class ItemActionController implements ItemControllerInterface
 
         // Crear notificaciones
         foreach ($users as $user) {
-            $NoticeData = new NoticeData();
+            $NoticeData = new NotificationData();
             $NoticeData->setUserId($user);
             $NoticeData->setComponent('Accounts');
             $NoticeData->setType(__('Solicitud'));

@@ -131,42 +131,20 @@ class SessionUtil
         foreach ($_SESSION as $key => $value) {
             unset($_SESSION[$key]);
         }
-
-//        Session::unsetSessionKey('userData');
-//        Session::unsetSessionKey('usrprofile');
-//        Session::unsetSessionKey('searchFilters');
-//        Session::unsetSessionKey('updated');
-//        Session::unsetSessionKey('sessionTimeout');
-//        Session::unsetSessionKey('reload');
-//        Session::unsetSessionKey('sk');
-//        Session::unsetSessionKey('mPass');
-//        Session::unsetSessionKey('mPassPwd');
-//        Session::unsetSessionKey('mPassIV');
-//        Session::unsetSessionKey('sidStartTime');
-//        Session::unsetSessionKey('startActivity');
-//        Session::unsetSessionKey('lastActivity');
-//        Session::unsetSessionKey('lastAccountId');
-//        Session::unsetSessionKey('theme');
-//        Session::unsetSessionKey('2fapass');
-//        Session::unsetSessionKey('pubkey');
-//        Session::unsetSessionKey('locale');
-//        Session::unsetSessionKey('userpreferences');
-//        Session::unsetSessionKey('tempmasterpass');
-//        Session::unsetSessionKey('accountcolor');
-//        Session::unsetSessionKey('curlcookiesession');
-//        Session::unsetSessionKey('dokuwikisession');
-//        Session::unsetSessionKey('sessiontype');
-//        Session::unsetSessionKey('config');
-//        Session::unsetSessionKey('configTime');
     }
 
     /**
      * Regenerad el ID de sesión
+     *
+     * @param Session $session
      */
-    public static function regenerate()
+    public static function regenerate(Session $session)
     {
+        debugLog(__METHOD__);
+
         session_regenerate_id(true);
-        SessionFactory::setSidStartTime(time());
+
+        $session->setSidStartTime(time());
     }
 
     /**

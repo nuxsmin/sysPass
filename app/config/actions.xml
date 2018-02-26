@@ -656,16 +656,10 @@
         <route>userPreference/security</route>
     </action>
     <action multiple="1">
-        <id>760</id>
-        <name>NOTICE</name>
+        <id>76</id>
+        <name>NOTIFICATION</name>
         <text>Notificaciones</text>
-        <route>notice/index</route>
-    </action>
-    <action multiple="1">
-        <id>761</id>
-        <name>NOTICE_USER</name>
-        <text>Notificaciones Usuario</text>
-        <route>noticeUser/index</route>
+        <route>notification/index</route>
     </action>
     <action multiple="1">
         <id>1000</id>
@@ -776,39 +770,39 @@
         <route>accountManager/restore</route>
     </action>
     <action multiple="1">
-        <id>7610</id>
-        <name>NOTICE_USER_VIEW</name>
+        <id>760</id>
+        <name>NOTIFICATION_VIEW</name>
         <text>Ver Notificación</text>
-        <route>userNotice/view</route>
+        <route>notification/view</route>
     </action>
     <action multiple="1">
-        <id>7611</id>
-        <name>NOTICE_USER_CREATE</name>
+        <id>761</id>
+        <name>NOTIFICATION_CREATE</name>
         <text>Crear Notificación</text>
-        <route>userNotice/create</route>
+        <route>notification/create</route>
     </action>
     <action multiple="1">
-        <id>7612</id>
-        <name>NOTICE_USER_EDIT</name>
+        <id>762</id>
+        <name>NOTIFICATION_EDIT</name>
         <text>Editar Notificación</text>
-        <route>userNotice/edit</route>
+        <route>notification/edit</route>
     </action>
     <action multiple="1">
-        <id>7613</id>
-        <name>NOTICE_USER_DELETE</name>
+        <id>763</id>
+        <name>NOTIFICATION_DELETE</name>
         <text>Eliminar Notificación</text>
-        <route>userNotice/delete</route>
+        <route>notification/delete</route>
     </action>
     <action multiple="1">
-        <id>7614</id>
-        <name>NOTICE_USER_CHECK</name>
+        <id>764</id>
+        <name>NOTIFICATION_CHECK</name>
         <text>Marcar Notificación</text>
-        <route>userNotice/check</route>
+        <route>notification/check</route>
     </action>
     <action multiple="1">
-        <id>7615</id>
-        <name>NOTICE_USER_SEARCH</name>
+        <id>765</id>
+        <name>NOTIFICATION_SEARCH</name>
         <text>Buscar Notificación</text>
-        <route>userNotice/search</route>
+        <route>notification/search</route>
     </action>
 </actions>

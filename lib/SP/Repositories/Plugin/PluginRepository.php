@@ -273,7 +273,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         DbWrapper::setFullRowCount();
 
         /** @var array $queryRes */
-        $queryRes = DbWrapper::getResultsArray($Data);
+        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
 
         $queryRes['count'] = $Data->getQueryNumRows();
 

@@ -377,12 +377,32 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param $id
-     * @return bool
+     * @return AccountService
      * @throws SPException
+     * @throws ServiceException
      */
     public function delete($id)
     {
-        return $this->accountRepository->delete($id);
+        if ($this->accountRepository->delete($id) === 0) {
+            throw new ServiceException(__u('Cuenta no encontrada'), ServiceException::INFO);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array $ids
+     * @return AccountService
+     * @throws SPException
+     * @throws ServiceException
+     */
+    public function deleteByIdBatch(array $ids)
+    {
+        if ($this->accountRepository->deleteByIdBatch($ids) === 0) {
+            throw new ServiceException(__u('Error al eliminar las cuentas'), ServiceException::WARNING);
+        }
+
+        return $this;
     }
 
     /**
@@ -467,7 +487,7 @@ class AccountService extends Service implements AccountServiceInterface
     /**
      * Devolver el número total de cuentas
      *
-     * @return int
+     * @return \stdClass
      */
     public function getTotalNumAccounts()
     {

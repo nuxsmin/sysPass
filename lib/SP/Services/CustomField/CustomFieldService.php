@@ -185,6 +185,20 @@ class CustomFieldService extends Service
     }
 
     /**
+     * Eliminar los datos de los campos personalizados del módulo
+     *
+     * @param int[] $ids
+     * @param int   $moduleId
+     * @return bool
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function deleteCustomFieldDataBatch(array $ids, $moduleId)
+    {
+        return $this->customFieldRepository->deleteCustomFieldDataBatch($ids, $moduleId);
+    }
+
+    /**
      * Updates an item
      *
      * @param CustomFieldData $customFieldData

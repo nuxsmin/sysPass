@@ -58,7 +58,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     /**
      * Devolver el número total de cuentas
      *
-     * @return int
+     * @return \stdClass
      */
     public function getTotalNumAccounts()
     {
@@ -66,10 +66,10 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             'SELECT SUM(n) AS num FROM 
             (SELECT COUNT(*) AS n FROM Account UNION SELECT COUNT(*) AS n FROM AccountHistory) a';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
 
-        return (int)DbWrapper::getResults($Data)->num;
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -301,18 +301,15 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function delete($id)
     {
-        $Data = new QueryData();
+        $queryData = new QueryData();
 
-        $query = /** @lang SQL */
-            'DELETE FROM Account WHERE id = ? LIMIT 1';
+        $queryData->setQuery('DELETE FROM Account WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar la cuenta'));
 
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar la cuenta'));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows();
+        return $this->db->getNumRows();
     }
 
     /**
@@ -385,16 +382,13 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function getById($id)
     {
-        $query = /** @lang SQL */
-            'SELECT * FROM account_data_v WHERE id = ? LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setMapClassName(AccountVData::class);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT * FROM account_data_v WHERE id = ? LIMIT 1');
+        $queryData->setMapClassName(AccountVData::class);
+        $queryData->addParam($id);
 
         /** @var AccountVData|array $queryRes */
-        $queryRes = DbWrapper::getResults($Data);
+        $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
             throw new SPException(__u('No se pudieron obtener los datos de la cuenta'), SPException::CRITICAL);
@@ -414,12 +408,9 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function getAll()
     {
-        $query = /** @lang SQL */
-            'SELECT * FROM Account A ORDER BY id';
-
         $queryData = new QueryData();
         $queryData->setMapClassName(AccountData::class);
-        $queryData->setQuery($query);
+        $queryData->setQuery('SELECT * FROM Account A ORDER BY id');
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -438,10 +429,21 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Deletes all the items for given ids
      *
      * @param array $ids
+     * @return int
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function deleteByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Not implemented');
+        $queryData = new QueryData();
+
+        $queryData->setQuery('DELETE FROM Account WHERE id IN (' . $this->getParamsFromArray($ids) . ') LIMIT 1');
+        $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error al eliminar las cuentas'));
+
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getNumRows();
     }
 
     /**
@@ -482,28 +484,28 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function search(ItemSearchData $SearchData)
     {
-        $Data = new QueryData();
-        $Data->setSelect('A.id, A.name, C.name AS clientName');
-        $Data->setFrom('Account A INNER JOIN Client C ON A.clientId = C.id');
-        $Data->setOrder('A.name');
+        $queryData = new QueryData();
+        $queryData->setSelect('A.id, A.name, C.name AS clientName');
+        $queryData->setFrom('Account A INNER JOIN Client C ON A.clientId = C.id');
+        $queryData->setOrder('A.name');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('A.name LIKE ? OR C.name LIKE ?');
+            $queryData->setWhere('A.name LIKE ? OR C.name LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
-            $Data->addParam($search);
-            $Data->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
         }
 
-        $Data->setLimit('?,?');
-        $Data->addParam($SearchData->getLimitStart());
-        $Data->addParam($SearchData->getLimitCount());
+        $queryData->setLimit('?,?');
+        $queryData->addParam($SearchData->getLimitStart());
+        $queryData->addParam($SearchData->getLimitCount());
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
     }
@@ -518,14 +520,11 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function incrementViewCounter($id = null)
     {
-        $query = /** @lang SQL */
-            'UPDATE Account SET countView = (countView + 1) WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE Account SET countView = (countView + 1) WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -551,13 +550,13 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             INNER JOIN Category C2 ON A.categoryId = C2.id 
             WHERE A.id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setMapClassName(AccountExtData::class);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setMapClassName(AccountExtData::class);
+        $queryData->addParam($id);
 
         /** @var AccountExtData|array $queryRes */
-        $queryRes = DbWrapper::getResults($Data, $this->db);
+        $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
             throw new SPException(__u('No se pudieron obtener los datos de la cuenta'), SPException::ERROR);
@@ -707,12 +706,9 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function getAccountsPassData()
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, pass, `key` FROM Account WHERE BIT_LENGTH(pass) > 0';
-
         $queryData = new QueryData();
-        $queryData->setQuery($query);
+        $queryData->setQuery('SELECT id, name, pass, `key` FROM Account WHERE BIT_LENGTH(pass) > 0');
 
-        return DbWrapper::getResultsArray($queryData);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 }

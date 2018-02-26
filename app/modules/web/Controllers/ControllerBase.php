@@ -191,7 +191,7 @@ abstract class ControllerBase
         } catch (FileNotFoundException $e) {
             processException($e);
 
-            echo $e->getMessage();
+            echo __($e->getMessage());
         }
 
         die();

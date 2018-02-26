@@ -36,6 +36,7 @@ use SP\Http\Request;
 use SP\Repositories\PublicLink\PublicLinkRepository;
 use SP\Services\Account\AccountService;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
@@ -197,10 +198,28 @@ class PublicLinkService extends Service
     public function delete($id)
     {
         if ($this->publicLinkRepository->delete($id) === 0) {
-            throw new SPException(__u('Enlace no encontrado'), SPException::INFO);
+            throw new ServiceException(__u('Enlace no encontrado'), ServiceException::INFO);
         }
 
         return $this;
+    }
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array $ids
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ServiceException
+     */
+    public function deleteByIdBatch(array $ids)
+    {
+        if (($count = $this->publicLinkRepository->deleteByIdBatch($ids)) !== count($ids)) {
+            throw new ServiceException(__u('Error al eliminar los enlaces'), ServiceException::WARNING);
+        }
+
+        return $count;
     }
 
     /**

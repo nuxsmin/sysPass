@@ -64,15 +64,15 @@ class ClientRepository extends Repository implements RepositoryItemInterface
             isGlobal = ?,
             `hash` = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getDescription());
-        $Data->addParam($itemData->getIsGlobal());
-        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
-        $Data->setOnErrorMessage(__u('Error al crear el cliente'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getDescription());
+        $queryData->addParam($itemData->getIsGlobal());
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->setOnErrorMessage(__u('Error al crear el cliente'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -87,16 +87,13 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        $query = /** @lang SQL */
-            'SELECT id FROM Client WHERE `hash` = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id FROM Client WHERE `hash` = ? LIMIT 1');
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows() > 0;
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
@@ -122,16 +119,16 @@ class ClientRepository extends Repository implements RepositoryItemInterface
             `hash` = ?
             WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getDescription());
-        $Data->addParam($itemData->getIsGlobal());
-        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
-        $Data->addParam($itemData->getId());
-        $Data->setOnErrorMessage(__u('Error al actualizar el cliente'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getDescription());
+        $queryData->addParam($itemData->getIsGlobal());
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->addParam($itemData->getId());
+        $queryData->setOnErrorMessage(__u('Error al actualizar el cliente'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this;
     }
@@ -146,17 +143,14 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        $query = /** @lang SQL */
-            'SELECT id FROM Client WHERE `hash` = ? AND id <> ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id FROM Client WHERE `hash` = ? AND id <> ? LIMIT 1');
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->addParam($itemData->getId());
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
-        $Data->addParam($itemData->getId());
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows() > 0;
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
@@ -167,15 +161,12 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      */
     public function getById($id)
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, description, isGlobal FROM Client WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, name, description, isGlobal FROM Client WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setMapClassName(ClientData::class);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(ClientData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
-
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -185,14 +176,11 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      */
     public function getAll()
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, description, isGlobal FROM Client ORDER BY name';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, name, description, isGlobal FROM Client ORDER BY name');
+        $queryData->setMapClassName(ClientData::class);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(ClientData::class);
-        $Data->setQuery($query);
-
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -206,26 +194,32 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $query = /** @lang SQL */
             'SELECT id, name, description, isGlobal FROM Client WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(ClientData::class);
-        $Data->setQuery($query);
-        $Data->setParams($ids);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams($ids);
+        $queryData->setMapClassName(ClientData::class);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return void
-     * @throws SPException
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
-        foreach ($ids as $id) {
-            $this->delete($id);
-        }
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM Client WHERE id IN ('. $this->getParamsFromArray($ids) . ')');
+        $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error al eliminar los clientes'));
+
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getNumRows();
     }
 
     /**
@@ -237,17 +231,14 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      */
     public function delete($id)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM Client WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM Client WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar el cliente'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar el cliente'));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows();
+        return $this->db->getNumRows();
     }
 
     /**
@@ -269,29 +260,29 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      */
     public function search(ItemSearchData $SearchData)
     {
-        $Data = new QueryData();
-        $Data->setMapClassName(ClientData::class);
-        $Data->setSelect('id, name, description, isGlobal');
-        $Data->setFrom('Client');
-        $Data->setOrder('name');
+        $queryData = new QueryData();
+        $queryData->setMapClassName(ClientData::class);
+        $queryData->setSelect('id, name, description, isGlobal');
+        $queryData->setFrom('Client');
+        $queryData->setOrder('name');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('name LIKE ? OR description LIKE ?');
+            $queryData->setWhere('name LIKE ? OR description LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
-            $Data->addParam($search);
-            $Data->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
         }
 
-        $Data->setLimit('?,?');
-        $Data->addParam($SearchData->getLimitStart());
-        $Data->addParam($SearchData->getLimitCount());
+        $queryData->setLimit('?,?');
+        $queryData->addParam($SearchData->getLimitStart());
+        $queryData->addParam($SearchData->getLimitCount());
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
     }

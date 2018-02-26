@@ -54,11 +54,11 @@ class AccountToTagRepository extends Repository
                 WHERE AT.accountId = ?
                 ORDER BY T.name';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
 
-        return DbWrapper::getResultsArray($Data);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -74,16 +74,16 @@ class AccountToTagRepository extends Repository
         $query = /** @lang SQL */
             'INSERT INTO AccountToTag (accountId, tagId) VALUES ' . $this->getParamsFromArray($accountRequest->tags, '(?,?)');
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setOnErrorMessage(__u('Error al añadir las etiquetas de la cuenta'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setOnErrorMessage(__u('Error al añadir las etiquetas de la cuenta'));
 
         foreach ($accountRequest->tags as $tag) {
-            $Data->addParam($accountRequest->id);
-            $Data->addParam($tag);
+            $queryData->addParam($accountRequest->id);
+            $queryData->addParam($tag);
         }
 
-        return DbWrapper::getQuery($Data);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -96,16 +96,12 @@ class AccountToTagRepository extends Repository
      */
     public function deleteByAccountId($id)
     {
-        $Data = new QueryData();
-        $query = /** @lang SQL */
-            'DELETE FROM AccountToTag WHERE accountId = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AccountToTag WHERE accountId = ?');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar las etiquetas de la cuenta'));
 
-        $Data->addParam($id);
-
-        $Data->setQuery($query);
-        $Data->setOnErrorMessage(__u('Error al eliminar las etiquetas de la cuenta'));
-
-        return DbWrapper::getQuery($Data);
+        return DbWrapper::getQuery($queryData,$this->db);
     }
 
     /**

@@ -168,20 +168,30 @@ class TagController extends ControllerBase implements CrudControllerInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::TAG_DELETE)) {
             return;
         }
 
         try {
-            $this->tagService->delete($id);
+            if ($id === null) {
+                $this->tagService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::TAG, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::TAG, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.tag', new Event($this));
+                $this->eventDispatcher->notifyEvent('delete.tag.selection', new Event($this));
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiqueta eliminada'));
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiquetas eliminadas'));
+            } else {
+                $this->tagService->delete($id);
+
+                $this->deleteCustomFieldsForItem(ActionsInterface::TAG, $id);
+
+                $this->eventDispatcher->notifyEvent('delete.tag', new Event($this));
+
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Etiqueta eliminada'));
+            }
         } catch (\Exception $e) {
             processException($e);
 
@@ -286,5 +296,4 @@ class TagController extends ControllerBase implements CrudControllerInterface
 
         $this->tagService = $this->dic->get(TagService::class);
     }
-
 }

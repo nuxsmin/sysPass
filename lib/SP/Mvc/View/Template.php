@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
@@ -124,26 +123,12 @@ class Template
             $templateFile = $this->theme->getViewsPath() . DIRECTORY_SEPARATOR . (null === $base ? $this->base : $base) . DIRECTORY_SEPARATOR . $template . self::TEMPLATE_EXTENSION;
         }
 
-//        $base = null !== $base ? $base : $this->base;
-//
-//        if (null !== $base) {
-//            $template = $base . DIRECTORY_SEPARATOR . $template . '.inc';
-//
-//            $useBase = is_readable($template);
-//        } elseif (null !== $this->base) {
-//            $template = $this->base . DIRECTORY_SEPARATOR . $template . '.inc';
-//
-//            $useBase = is_readable($template);
-//        } else {
-//            $template .= '.inc';
-//        }
-
         if (!is_readable($templateFile)) {
             $msg = sprintf(__('No es posible obtener la plantilla "%s" : %s'), $templateFile, $template);
 
             debugLog($msg);
 
-            throw new FileNotFoundException(SPException::ERROR, $msg);
+            throw new FileNotFoundException($msg);
         }
 
         return $templateFile;
@@ -306,7 +291,7 @@ class Template
         if (!array_key_exists($name, $this->vars)) {
             debugLog(sprintf(__('No es posible obtener la variable "%s"'), $name));
 
-            throw new InvalidArgumentException(SPException::ERROR, sprintf(__('No es posible obtener la variable "%s"'), $name));
+            throw new InvalidArgumentException(sprintf(__('No es posible obtener la variable "%s"'), $name));
         }
 
         return $this->vars[$name];
@@ -351,7 +336,7 @@ class Template
         if (!array_key_exists($name, $this->vars)) {
             debugLog(sprintf(__('No es posible destruir la variable "%s"'), $name));
 
-            throw new InvalidArgumentException(SPException::ERROR, sprintf(__('No es posible destruir la variable "%s"'), $name));
+            throw new InvalidArgumentException(sprintf(__('No es posible destruir la variable "%s"'), $name));
         }
 
         unset($this->vars[$name]);
@@ -368,7 +353,7 @@ class Template
     public function render()
     {
         if (count($this->files) === 0) {
-            throw new FileNotFoundException(SPException::ERROR, __('La plantilla no contiene archivos'));
+            throw new FileNotFoundException(__u('La plantilla no contiene archivos'));
         }
 
         extract($this->vars, EXTR_SKIP);

@@ -33,6 +33,7 @@ use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\AuthToken\AuthTokenRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 use SP\Util\Util;
 
@@ -92,6 +93,24 @@ class AuthTokenService extends Service
         }
 
         return $this;
+    }
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array $ids
+     * @return bool
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteByIdBatch(array $ids)
+    {
+        if (($count = $this->authTokenRepository->deleteByIdBatch($ids)) !== count($ids)) {
+            throw new ServiceException(__u('Error al eliminar tokens'), ServiceException::WARNING);
+        }
+
+        return $count;
     }
 
     /**

@@ -28,7 +28,7 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\SessionUtil;
-use SP\DataModel\NoticeData;
+use SP\DataModel\NotificationData;
 use SP\Mgmt\Notices\Notice;
 use SP\Mgmt\Users\User;
 use SP\Modules\Web\Controllers\ControllerBase;
@@ -83,16 +83,16 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
     {
         try {
             switch ($this->actionId) {
-                case self::NOTICE_USER_VIEW:
+                case self::NOTIFICATION_VIEW:
                     $this->view->assign('header', __('Ver Notificación'));
                     $this->view->assign('isView', true);
                     $this->getNotice();
                     break;
-                case self::NOTICE_USER_CREATE:
+                case self::NOTIFICATION_CREATE:
                     $this->view->assign('header', __('Nueva Notificación'));
                     $this->getNotice();
                     break;
-                case self::NOTICE_USER_EDIT:
+                case self::NOTIFICATION_EDIT:
                     $this->view->assign('header', __('Editar Notificación'));
                     $this->getNotice();
                     break;
@@ -122,8 +122,8 @@ class NoticeShowController extends ControllerBase implements ActionsInterface, I
         $this->module = self::USER;
         $this->view->addTemplate('notices');
 
-        $this->view->assign('notice', $this->itemId ? Notice::getItem()->getById($this->itemId) : new NoticeData());
-        $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::NOTICE_USER_VIEW) ? 'disabled' : '');
+        $this->view->assign('notice', $this->itemId ? Notice::getItem()->getById($this->itemId) : new NotificationData());
+        $this->view->assign('isDisabled', ($this->view->isDemo || $this->view->actionId === self::NOTIFICATION_VIEW) ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 
         if ($this->userData->isIsAdminApp()){

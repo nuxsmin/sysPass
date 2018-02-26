@@ -29,9 +29,9 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\DataModel\AccountPassData;
-use SP\Mgmt\Users\UserPass;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Helpers\HelperException;
+use SP\Services\Crypt\MasterPassService;
 use SP\Util\ImageUtil;
 
 /**
@@ -77,6 +77,7 @@ class AccountPasswordHelper extends HelperBase
      * @return string
      * @throws HelperException
      * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     protected function getPasswordClear(AccountPassData $accountData)
     {
@@ -86,8 +87,7 @@ class AccountPasswordHelper extends HelperBase
             throw new HelperException(__u('No tiene permisos para acceder a esta cuenta'));
         }
 
-        // FIXME
-        if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getId())) {
+        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
             throw new HelperException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
         }
 

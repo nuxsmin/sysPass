@@ -30,6 +30,7 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
 use SP\Repositories\UserGroup\UserGroupRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -45,15 +46,10 @@ class UserGroupService extends Service
      * @var UserGroupRepository
      */
     protected $userGroupRepository;
-
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @var UserToUserGroupService
      */
-    protected function initialize()
-    {
-        $this->userGroupRepository = $this->dic->get(UserGroupRepository::class);
-    }
+    protected $userToUserGroupService;
 
     /**
      * @param ItemSearchData $itemSearchData
@@ -81,32 +77,57 @@ class UserGroupService extends Service
     public function delete($id)
     {
         if ($this->userGroupRepository->delete($id) === 0) {
-            throw new SPException(__u('Grupo no encontrado'), SPException::INFO);
+            throw new ServiceException(__u('Grupo no encontrado'), ServiceException::INFO);
         }
 
         return $this;
     }
 
     /**
-     * @param $itemData
+     * @param array $ids
      * @return int
-     * @throws SPException
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
-    public function create($itemData)
+    public function deleteByIdBatch(array $ids)
     {
-        return $this->userGroupRepository->create($itemData);
+        if (($count = $this->userGroupRepository->deleteByIdBatch($ids)) !== count($ids)) {
+            throw new ServiceException(__u('Error al eliminar los grupos'), ServiceException::WARNING);
+        }
+
+        return $count;
     }
 
     /**
-     * @param $itemData
-     * @return mixed
+     * @param       $itemData
+     * @param array $users
+     * @return int
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function create($itemData, array $users)
+    {
+        $userGroupId = $this->userGroupRepository->create($itemData);
+
+        if (count($users) > 0) {
+            $this->userToUserGroupService->add($userGroupId, $users);
+        }
+
+        return $userGroupId;
+    }
+
+    /**
+     * @param UserGroupData $itemData
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function update($itemData)
     {
-        return $this->userGroupRepository->update($itemData);
+        $this->userGroupRepository->update($itemData);
+        $this->userToUserGroupService->update($itemData->getId(), $itemData->getUsers());
     }
 
     /**
@@ -128,5 +149,15 @@ class UserGroupService extends Service
     public function getByName($name)
     {
         return $this->userGroupRepository->getByName($name);
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->userGroupRepository = $this->dic->get(UserGroupRepository::class);
+        $this->userToUserGroupService = $this->dic->get(UserToUserGroupService::class);
     }
 }

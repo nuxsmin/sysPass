@@ -300,10 +300,10 @@ CREATE TABLE `EventLog` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-DROP TABLE IF EXISTS `Notice`;
+DROP TABLE IF EXISTS Notification;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Notice` (
+CREATE TABLE `Notification` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(100) DEFAULT NULL,
   `component` varchar(100) NOT NULL,
@@ -316,7 +316,7 @@ CREATE TABLE `Notice` (
   PRIMARY KEY (`id`),
   KEY `IDX_userId` (`userId`,`checked`,`date`),
   KEY `IDX_component` (`component`,`date`,`checked`,`userId`),
-  CONSTRAINT `fk_Notice_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_Notification_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -367,7 +367,7 @@ DROP TABLE IF EXISTS `Tag`;
 CREATE TABLE `Tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
-  `hash` binary(40) NOT NULL,
+  `hash` VARBINARY(40) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tag_hash_UNIQUE` (`hash`),
   KEY `IDX_name` (`name`)

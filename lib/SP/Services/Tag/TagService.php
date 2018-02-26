@@ -29,6 +29,7 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
 use SP\Repositories\Tag\TagRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -44,15 +45,6 @@ class TagService extends Service
      * @var TagRepository
      */
     protected $tagRepository;
-
-    /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function initialize()
-    {
-        $this->tagRepository = $this->dic->get(TagRepository::class);
-    }
 
     /**
      * @param ItemSearchData $itemSearchData
@@ -80,7 +72,21 @@ class TagService extends Service
     public function delete($id)
     {
         if ($this->tagRepository->delete($id) === 0) {
-            throw new SPException(__u('Etiqueta no encontrada'), SPException::INFO);
+            throw new ServiceException(__u('Etiqueta no encontrada'), ServiceException::INFO);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array $ids
+     * @return $this
+     * @throws SPException
+     */
+    public function deleteByIdBatch(array $ids)
+    {
+        if ($this->tagRepository->deleteByIdBatch($ids) !== count($ids)) {
+            throw new ServiceException(__u('Error al eliminar etiquetas'), ServiceException::WARNING);
         }
 
         return $this;
@@ -116,5 +122,14 @@ class TagService extends Service
     public function getAllBasic()
     {
         return $this->tagRepository->getAll();
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->tagRepository = $this->dic->get(TagRepository::class);
     }
 }

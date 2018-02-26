@@ -261,18 +261,29 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
      *
      * @param $id
      */
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
         try {
-            $this->accountFileService->delete($id);
+            if ($id === null) {
+                $this->accountFileService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-            $this->eventDispatcher->notifyEvent('delete.accountFile',
-                new Event($this, EventMessage::factory()
-                    ->addDescription(__u('Archivo eliminado'))
-                    ->addDetail(__u('Archivo'), $id))
-            );
+                $this->eventDispatcher->notifyEvent('delete.accountFile.selection',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Archivos eliminados')))
+                );
 
-            $this->returnJsonResponse(0, __u('Archivo Eliminado'));
+                $this->returnJsonResponse(0, __u('Archivos Eliminados'));
+            } else {
+                $this->eventDispatcher->notifyEvent('delete.accountFile',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Archivo eliminado'))
+                        ->addDetail(__u('Archivo'), $id))
+                );
+
+                $this->accountFileService->delete($id);
+
+                $this->returnJsonResponse(0, __u('Archivo Eliminado'));
+            }
         } catch (\Exception $e) {
             processException($e);
 

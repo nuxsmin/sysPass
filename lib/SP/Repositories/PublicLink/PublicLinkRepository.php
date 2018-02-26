@@ -55,17 +55,14 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      */
     public function delete($id)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM PublicLink WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM PublicLink WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar enlace'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar enlace'));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows();
+        return $this->db->getNumRows();
     }
 
     /**
@@ -97,11 +94,11 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
               INNER JOIN User U ON PL.userId = U.id
               INNER JOIN Account A ON itemId = A.id';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(PublicLinkListData::class);
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(PublicLinkListData::class);
+        $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -135,12 +132,12 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
               INNER JOIN Account A ON itemId = A.id
               WHERE PL.id IN (' . $this->getParamsFromArray($ids) . ')';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(PublicLinkListData::class);
-        $Data->setQuery($query);
-        $Data->setParams($ids);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(PublicLinkListData::class);
+        $queryData->setQuery($query);
+        $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -153,14 +150,13 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      */
     public function deleteByIdBatch(array $ids)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM PublicLink WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM PublicLink WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+        $queryData->setParams($ids);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setParams($ids);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return $this->db->getNumRows();
     }
 
     /**
@@ -182,9 +178,9 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      */
     public function search(ItemSearchData $SearchData)
     {
-        $Data = new QueryData();
-        $Data->setMapClassName(PublicLinkListData::class);
-        $Data->setSelect('PL.id, 
+        $queryData = new QueryData();
+        $queryData->setMapClassName(PublicLinkListData::class);
+        $queryData->setSelect('PL.id, 
               PL.itemId,
               PL.hash,
               PL.data,
@@ -202,30 +198,30 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
               U.login AS userLogin,
               A.name AS accountName,
               C.name AS clientName');
-        $Data->setFrom('PublicLink PL
+        $queryData->setFrom('PublicLink PL
               INNER JOIN User U ON PL.userId = U.id
               INNER JOIN Account A ON itemId = A.id
               INNER JOIN Client C ON A.clientId = C.id');
-        $Data->setOrder('PL.dateExpire DESC');
+        $queryData->setOrder('PL.dateExpire DESC');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('U.login LIKE ? OR A.name LIKE ? OR C.name LIKE ?');
+            $queryData->setWhere('U.login LIKE ? OR A.name LIKE ? OR C.name LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
-            $Data->addParam($search);
-            $Data->addParam($search);
-            $Data->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
         }
 
-        $Data->setLimit('?,?');
-        $Data->addParam($SearchData->getLimitStart());
-        $Data->addParam($SearchData->getLimitCount());
+        $queryData->setLimit('?,?');
+        $queryData->addParam($SearchData->getLimitStart());
+        $queryData->addParam($SearchData->getLimitCount());
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
     }
@@ -257,19 +253,19 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
             dateExpire = ?,
             maxCountViews = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getItemId());
-        $Data->addParam($itemData->getHash());
-        $Data->addParam($itemData->getData());
-        $Data->addParam($itemData->getUserId());
-        $Data->addParam($itemData->getTypeId());
-        $Data->addParam((int)$itemData->isNotify());
-        $Data->addParam($itemData->getDateExpire());
-        $Data->addParam($itemData->getMaxCountViews());
-        $Data->setOnErrorMessage(__u('Error al crear enlace'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getItemId());
+        $queryData->addParam($itemData->getHash());
+        $queryData->addParam($itemData->getData());
+        $queryData->addParam($itemData->getUserId());
+        $queryData->addParam($itemData->getTypeId());
+        $queryData->addParam((int)$itemData->isNotify());
+        $queryData->addParam($itemData->getDateExpire());
+        $queryData->addParam($itemData->getMaxCountViews());
+        $queryData->setOnErrorMessage(__u('Error al crear enlace'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -282,16 +278,13 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        $query = /** @lang SQL */
-            'SELECT id FROM PublicLink WHERE itemId = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id FROM PublicLink WHERE itemId = ? LIMIT 1');
+        $queryData->addParam($itemData->getItemId());
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getItemId());
+        DbWrapper::getResults($queryData, $this->db);
 
-        DbWrapper::getResults($Data, $this->db);
-
-        return ($Data->getQueryNumRows() === 1);
+        return ($queryData->getQueryNumRows() === 1);
     }
 
     /**
@@ -322,13 +315,13 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
             useInfo = ?
             WHERE `hash` = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($publicLinkData->getUseInfo());
-        $Data->addParam($publicLinkData->getHash());
-        $Data->setOnErrorMessage(__u('Error al actualizar enlace'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($publicLinkData->getUseInfo());
+        $queryData->addParam($publicLinkData->getHash());
+        $queryData->setOnErrorMessage(__u('Error al actualizar enlace'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -351,17 +344,17 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
             maxCountViews = ?
             WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getHash());
-        $Data->addParam($itemData->getData());
-        $Data->addParam((int)$itemData->isNotify());
-        $Data->addParam($itemData->getDateExpire());
-        $Data->addParam($itemData->getMaxCountViews());
-        $Data->addParam($itemData->getId());
-        $Data->setOnErrorMessage(__u('Error al actualizar enlace'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getHash());
+        $queryData->addParam($itemData->getData());
+        $queryData->addParam((int)$itemData->isNotify());
+        $queryData->addParam($itemData->getDateExpire());
+        $queryData->addParam($itemData->getMaxCountViews());
+        $queryData->addParam($itemData->getId());
+        $queryData->setOnErrorMessage(__u('Error al actualizar enlace'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -384,16 +377,16 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
             maxCountViews = ?
             WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($publicLinkData->getHash());
-        $Data->addParam($publicLinkData->getData());
-        $Data->addParam($publicLinkData->getDateExpire());
-        $Data->addParam($publicLinkData->getMaxCountViews());
-        $Data->addParam($publicLinkData->getId());
-        $Data->setOnErrorMessage(__u('Error al renovar enlace'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($publicLinkData->getHash());
+        $queryData->addParam($publicLinkData->getData());
+        $queryData->addParam($publicLinkData->getDateExpire());
+        $queryData->addParam($publicLinkData->getMaxCountViews());
+        $queryData->addParam($publicLinkData->getId());
+        $queryData->setOnErrorMessage(__u('Error al renovar enlace'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -427,18 +420,18 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
               INNER JOIN Account A ON PL.itemId = A.id
               WHERE PL.id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(PublicLinkListData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(PublicLinkListData::class);
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
 
-        $queryRes = DbWrapper::getResults($Data, $this->db);
+        $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
             throw new SPException(__u('Error al obtener enlace'), SPException::ERROR);
         }
 
-        if ($Data->getQueryNumRows() === 0) {
+        if ($queryData->getQueryNumRows() === 0) {
             throw new SPException(__u('El enlace no existe'), SPException::ERROR);
         }
 
@@ -475,19 +468,19 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
               INNER JOIN Account A ON itemId = A.id
               WHERE PL.hash = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(PublicLinkData::class);
-        $Data->setQuery($query);
-        $Data->addParam($hash);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(PublicLinkData::class);
+        $queryData->setQuery($query);
+        $queryData->addParam($hash);
 
         /** @var PublicLinkData $queryRes */
-        $queryRes = DbWrapper::getResults($Data, $this->db);
+        $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
             throw new SPException(__u('Error al obtener enlace'), SPException::ERROR);
         }
 
-        if ($Data->getQueryNumRows() === 0) {
+        if ($queryData->getQueryNumRows() === 0) {
             throw new SPException(__u('El enlace no existe'), SPException::ERROR);
         }
 
@@ -503,15 +496,12 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      */
     public function getHashForItem($itemId)
     {
-        $query = /** @lang SQL */
-            'SELECT id, `hash` FROM PublicLink WHERE itemId = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, `hash` FROM PublicLink WHERE itemId = ? LIMIT 1');
+        $queryData->addParam($itemId);
+        $queryData->setMapClassName(PublicLinkData::class);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(PublicLinkData::class);
-        $Data->setQuery($query);
-        $Data->addParam($itemId);
-
-        $queryRes = DbWrapper::getResults($Data, $this->db);
+        $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
             throw new SPException(__u('Error al obtener enlace'), SPException::ERROR);

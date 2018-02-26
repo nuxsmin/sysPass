@@ -42,21 +42,15 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session\Session;
-use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Core\UI\Theme;
 use SP\Core\Upgrade\Upgrade;
-use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Log\Email;
 use SP\Log\Log;
-use SP\Modules\Web\Controllers\MainController;
-use SP\Mvc\View\Template;
 use SP\Storage\Database;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
-use SP\Util\Json;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -100,10 +94,6 @@ class Bootstrap
      * @var bool Indica si la versión de PHP es correcta
      */
     private static $checkPhpVersion;
-    /**
-     * @var string
-     */
-    private static $sourceScript;
     /**
      * @var Upgrade
      */
@@ -175,12 +165,10 @@ class Bootstrap
             $router->response()->body($err_msg);
         });
 
-        $self = $this;
-
         // Manejar URLs con módulo indicado
         $this->router->respond(['GET', 'POST'],
             '@/(index\.php)?',
-            function ($request, $response, $service) use ($self, $oops) {
+            function ($request, $response, $service) use ($oops) {
                 try {
                     /** @var \Klein\Request $request */
                     $route = filter_var($request->param('r', 'index/index'), FILTER_SANITIZE_STRING);
@@ -209,10 +197,10 @@ class Bootstrap
                         throw new RuntimeException($oops);
                     }
 
-                    $self->initializeCommon();
+                    $this->initializeCommon();
 
                     if (!in_array($controller, APP_PARTIAL_INIT, true)) {
-                        $self->initializeApp();
+                        $this->initializeApp();
                     } else {
                         // Do not keep the PHP's session opened
                         Session::close();
@@ -520,17 +508,7 @@ class Bootstrap
 
             throw new InitializationException('Not installed');
 
-//            if (self::$SUBURI !== '/index.php') {
-//                // FIXME
-//                $this->router->response()->redirect('index.php?r=install');
-//
-//                $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
-//
-//                $url = $protocol . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'] . self::$WEBROOT . '/index.php';
-//                header("Location: $url");
-//                exit();
-//            }
-//
+//             FIXME:
 //            if ($this->session->getAuthCompleted()) {
 //                session_destroy();
 //
@@ -538,11 +516,6 @@ class Bootstrap
 //                return;
 //            }
 //
-//            // Comprobar si sysPass está instalada o en modo mantenimiento
-//            $Controller = new MainController();
-//            $Controller->getInstaller();
-//            $Controller->view();
-//            exit();
         }
     }
 
@@ -585,45 +558,43 @@ class Bootstrap
         // Timeout de sesión
         if ($lastActivity > 0
             && !$inMaintenance
-            && (time() - $lastActivity) > $this->getSessionLifeTime()
+            && time() > ($lastActivity + $this->getSessionLifeTime())
         ) {
             if ($this->router->request()->cookies()->get(session_name()) !== null) {
                 $this->router->response()->cookie(session_name(), '', time() - 42000);
             }
 
-//            $this->wrLogoutInfo();
-
             SessionUtil::restart();
-            return;
-        }
+        } else {
 
-        $sidStartTime = $this->session->getSidStartTime();
+            $sidStartTime = $this->session->getSidStartTime();
 
-        // Regenerar el Id de sesión periódicamente para evitar fijación
-        if ($sidStartTime === 0) {
-            // Intentar establecer el tiempo de vida de la sesión en PHP
-            @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
+            // Regenerar el Id de sesión periódicamente para evitar fijación
+            if ($sidStartTime === 0) {
+                // Intentar establecer el tiempo de vida de la sesión en PHP
+                @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
 
-            $this->session->setSidStartTime(time());
-            $this->session->setStartActivity(time());
-        } else if (!$inMaintenance
-            && time() - $sidStartTime > 120
-            && $this->session->getUserData()->getId() > 0
-        ) {
-            try {
-                CryptSession::reKey();
+                $this->session->setSidStartTime(time());
+                $this->session->setStartActivity(time());
+            } else if (!$inMaintenance
+                && time() > ($sidStartTime + 120)
+                && $this->session->isLoggedIn()
+            ) {
+                try {
+                    CryptSession::reKey($this->session);
 
-                // Recargar los permisos del perfil de usuario
+                    // Recargar los permisos del perfil de usuario
 //                $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
-            } catch (CryptoException $e) {
-                debugLog($e->getMessage());
+                } catch (CryptoException $e) {
+                    debugLog($e->getMessage());
 
-                SessionUtil::restart();
-                return;
+                    SessionUtil::restart();
+                    return;
+                }
             }
-        }
 
-        $this->session->setLastActivity(time());
+            $this->session->setLastActivity(time());
+        }
     }
 
     /**
@@ -633,13 +604,8 @@ class Bootstrap
      */
     private function getSessionLifeTime()
     {
-        $timeout = $this->session->getSessionTimeout();
-
-        if (null === $timeout) {
-            $configTimeout = $this->configData->getSessionTimeout();
-            $this->session->setSessionTimeout($configTimeout);
-
-            return $configTimeout;
+        if (($timeout = $this->session->getSessionTimeout()) === null) {
+            return $this->session->setSessionTimeout($this->configData->getSessionTimeout());
         }
 
         return $timeout;
@@ -654,43 +620,11 @@ class Bootstrap
     }
 
     /**
-     * Devuelve un error utilizando la plantilla de error o en formato JSON
-     *
-     * @param string $message con la descripción del error
-     * @param string $hint opcional, con una ayuda sobre el error
-     * @param bool $headers
-     */
-    public static function initError($message, $hint = '', $headers = false)
-    {
-        debugLog(__FUNCTION__);
-        debugLog(__($message));
-        debugLog(__($hint));
-
-        if (Checks::isJson()) {
-            $JsonResponse = new JsonResponse();
-            $JsonResponse->setDescription($message);
-            $JsonResponse->addMessage($hint);
-            Json::returnJson($JsonResponse);
-        } elseif ($headers === true) {
-            header('HTTP/1.1 503 Service Temporarily Unavailable');
-            header('Status: 503 Service Temporarily Unavailable');
-            header('Retry-After: 120');
-        }
-
-        SessionUtil::cleanSession();
-
-        $Tpl = new Template();
-        $Tpl->append('errors', ['type' => SPException::CRITICAL, 'description' => __($message), 'hint' => __($hint)]);
-
-        $Controller = new MainController($Tpl, 'error', !Checks::isAjax());
-        $Controller->getError();
-    }
-
-    /**
      * @param Container $container
-     * @param string $module
-     * @throws Core\Dic\ContainerException
+     * @param string    $module
      * @throws InitializationException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public static function run(Container $container, $module = APP_MODULE)
     {
@@ -703,58 +637,6 @@ class Bootstrap
             default;
                 throw new InitializationException('Unknown module');
         }
-    }
-
-    /**
-     * Comprobar si hay que ejecutar acciones de URL después de realizar login.
-     *
-     * @return bool
-     */
-    public function checkPostLoginActions()
-    {
-        $action = Request::analyze('a');
-
-        if ($action === '') {
-            return false;
-        }
-
-        $Controller = new MainController();
-        $Controller->doAction('postlogin.' . $action);
-
-        return false;
-    }
-
-    /**
-     * Comprobar si hay que ejecutar acciones de URL antes de presentar la pantalla de login.
-     *
-     * @return bool
-     */
-    public function checkPreLoginActions()
-    {
-        $action = Request::analyze('a');
-
-        if ($action === '') {
-            return false;
-        }
-
-        $Controller = new MainController();
-        $Controller->doAction('prelogin.' . $action);
-
-        return true;
-    }
-
-    /**
-     * Comprobar el archivo que realiza el include necesita inicialización.
-     *
-     * @deprecated
-     * @returns bool
-     */
-    private function checkInitSourceInclude()
-    {
-        self::$sourceScript = pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME);
-        $skipInit = ['js.php', 'css.php', 'api.php', 'ajax_getEnvironment.php', 'ajax_task.php'];
-
-        return in_array(self::$sourceScript, $skipInit, true);
     }
 
     /**
@@ -784,54 +666,6 @@ class Bootstrap
         $LogMessage->addDescription(__('Actualización de versión realizada.', false));
         $LogMessage->addDetails(__('Versión', false), $version);
         $LogMessage->addDetails(__('Tipo', false), 'config');
-        $Log->writeLog();
-
-        Email::sendEmail($LogMessage);
-    }
-
-    /**
-     * Comprobar si es necesario cerrar la sesión
-     */
-    private function checkLogout()
-    {
-        if (Request::analyze('logout', false, true)) {
-            $this->goLogout();
-        }
-    }
-
-    /**
-     * Deslogar el usuario actual y eliminar la información de sesión.
-     *
-     * @deprecated
-     */
-    private function goLogout()
-    {
-        $this->wrLogoutInfo();
-
-        SessionUtil::cleanSession();
-
-        SessionFactory::setLoggedOut(true);
-
-        $Controller = new MainController();
-        $Controller->getLogout();
-    }
-
-    /**
-     * Escribir la información de logout en el registro de eventos.
-     *
-     * @deprecated
-     */
-    private function wrLogoutInfo()
-    {
-        $inactiveTime = abs(round((time() - $this->session->getLastActivity()) / 60, 2));
-        $totalTime = abs(round((time() - $this->session->getStartActivity()) / 60, 2));
-
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Finalizar sesión', false));
-        $LogMessage->addDetails(__('Usuario', false), $this->session->getUserData()->getLogin());
-        $LogMessage->addDetails(__('Tiempo inactivo', false), $inactiveTime . ' min.');
-        $LogMessage->addDetails(__('Tiempo total', false), $totalTime . ' min.');
         $Log->writeLog();
     }
 }

@@ -24,11 +24,9 @@
 
 namespace SP\Repositories\User;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
-use SP\Log\Log;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
@@ -78,26 +76,26 @@ class UserRepository extends Repository implements RepositoryItemInterface
             lastUpdate = NOW()
             WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getLogin());
-        $Data->addParam($itemData->getSsoLogin());
-        $Data->addParam($itemData->getEmail());
-        $Data->addParam($itemData->getNotes());
-        $Data->addParam($itemData->getUserGroupId());
-        $Data->addParam($itemData->getUserProfileId());
-        $Data->addParam($itemData->isIsAdminApp());
-        $Data->addParam($itemData->isIsAdminAcc());
-        $Data->addParam($itemData->isIsDisabled());
-        $Data->addParam($itemData->isIsChangePass());
-        $Data->addParam($itemData->isIsLdap());
-        $Data->addParam($itemData->getId());
-        $Data->setOnErrorMessage(__u('Error al actualizar el usuario'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getLogin());
+        $queryData->addParam($itemData->getSsoLogin());
+        $queryData->addParam($itemData->getEmail());
+        $queryData->addParam($itemData->getNotes());
+        $queryData->addParam($itemData->getUserGroupId());
+        $queryData->addParam($itemData->getUserProfileId());
+        $queryData->addParam($itemData->isIsAdminApp());
+        $queryData->addParam($itemData->isIsAdminAcc());
+        $queryData->addParam($itemData->isIsDisabled());
+        $queryData->addParam($itemData->isIsChangePass());
+        $queryData->addParam($itemData->isIsLdap());
+        $queryData->addParam($itemData->getId());
+        $queryData->setOnErrorMessage(__u('Error al actualizar el usuario'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        if ($Data->getQueryNumRows() > 0) {
+        if ($queryData->getQueryNumRows() > 0) {
             $itemData->setId(DbWrapper::getLastId());
         }
 
@@ -121,16 +119,16 @@ class UserRepository extends Repository implements RepositoryItemInterface
             OR (ssoLogin <> "" AND UPPER(ssoLogin) = UPPER(?)) 
             OR UPPER(email) = UPPER(?))';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getId());
-        $Data->addParam($itemData->getLogin());
-        $Data->addParam($itemData->getSsoLogin());
-        $Data->addParam($itemData->getEmail());
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getId());
+        $queryData->addParam($itemData->getLogin());
+        $queryData->addParam($itemData->getSsoLogin());
+        $queryData->addParam($itemData->getEmail());
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return $Data->getQueryNumRows() > 0;
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
@@ -154,42 +152,35 @@ class UserRepository extends Repository implements RepositoryItemInterface
             lastUpdate = NOW()
             WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($passRequest->getPass());
-        $Data->addParam($passRequest->getisChangePass());
-        $Data->addParam($passRequest->getisChangedPass());
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al modificar la clave'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($passRequest->getPass());
+        $queryData->addParam($passRequest->getisChangePass());
+        $queryData->addParam($passRequest->getisChangedPass());
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al modificar la clave'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
      * Deletes an item
      *
      * @param $id
-     * @return UserRepository
-     * @throws SPException
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
-        $query = 'DELETE FROM User WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM User WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar el usuario'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar el usuario'));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(__u('Usuario no encontrado'), SPException::INFO);
-        }
-
-        return $this;
+        return $this->db->getNumRows();
     }
 
     /**
@@ -231,12 +222,12 @@ class UserRepository extends Repository implements RepositoryItemInterface
             INNER JOIN UserGroup UG ON U.userGroupId = UG.id
             WHERE U.id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(UserData::class);
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
 
-        $queryRes = DbWrapper::getResults($Data, $this->db);
+        $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
             throw new SPException(__u('Error al obtener los datos del usuario'), SPException::ERROR);
@@ -279,11 +270,11 @@ class UserRepository extends Repository implements RepositoryItemInterface
             U.isMigrate
             FROM User U';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserData::class);
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(UserData::class);
+        $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -328,23 +319,32 @@ class UserRepository extends Repository implements RepositoryItemInterface
             INNER JOIN UserGroup UG ON U.userGroupId = UG.id
             WHERE U.id IN (' . $this->getParamsFromArray($ids) . ')';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserData::class);
-        $Data->setQuery($query);
-        $Data->setParams($ids);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(UserData::class);
+        $queryData->setQuery($query);
+        $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return void
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Not implemented');
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM User WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+        $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error al eliminar los usuarios'));
+
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getNumRows();
     }
 
     /**
@@ -366,8 +366,8 @@ class UserRepository extends Repository implements RepositoryItemInterface
      */
     public function search(ItemSearchData $SearchData)
     {
-        $Data = new QueryData();
-        $Data->setSelect('U.id,
+        $queryData = new QueryData();
+        $queryData->setSelect('U.id,
             U.name, 
             U.login,
             UP.name AS userProfileName,
@@ -377,62 +377,34 @@ class UserRepository extends Repository implements RepositoryItemInterface
             U.isLdap,
             U.isDisabled,
             U.isChangePass');
-        $Data->setFrom('User U INNER JOIN UserProfile UP ON U.userProfileId = UP.id INNER JOIN UserGroup UG ON U.userGroupId = UG.id');
-        $Data->setOrder('U.name');
+        $queryData->setFrom('User U INNER JOIN UserProfile UP ON U.userProfileId = UP.id INNER JOIN UserGroup UG ON U.userGroupId = UG.id');
+        $queryData->setOrder('U.name');
 
         if ($SearchData->getSeachString() !== '') {
             if ($this->session->getUserData()->getIsAdminApp()) {
-                $Data->setWhere('U.name LIKE ? OR U.login LIKE ?');
+                $queryData->setWhere('U.name LIKE ? OR U.login LIKE ?');
             } else {
-                $Data->setWhere('U.name LIKE ? OR U.login LIKE ? AND U.isAdminApp = 0');
+                $queryData->setWhere('U.name LIKE ? OR U.login LIKE ? AND U.isAdminApp = 0');
             }
 
             $search = '%' . $SearchData->getSeachString() . '%';
-            $Data->addParam($search);
-            $Data->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
         } elseif (!$this->session->getUserData()->getIsAdminApp()) {
-            $Data->setWhere('U.isAdminApp = 0');
+            $queryData->setWhere('U.isAdminApp = 0');
         }
 
-        $Data->setLimit('?, ?');
-        $Data->addParam($SearchData->getLimitStart());
-        $Data->addParam($SearchData->getLimitCount());
+        $queryData->setLimit('?, ?');
+        $queryData->addParam($SearchData->getLimitStart());
+        $queryData->addParam($SearchData->getLimitCount());
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
-    }
-
-    /**
-     * Logs user action
-     *
-     * @param int $id
-     * @param int $actionId
-     * @return \SP\Core\Messages\LogMessage
-     */
-    public function logAction($id, $actionId)
-    {
-        $query = /** @lang SQL */
-            'SELECT id, login, name FROM User WHERE id = ? LIMIT 1';
-
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-
-        $user = DbWrapper::getResults($Data, $this->db);
-
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(Acl::getActionInfo($actionId));
-        $LogMessage->addDetails(__u('Usuario'), sprintf('%s (%s)', $user->name, $user->login));
-        $LogMessage->addDetails(__u('ID'), $id);
-        $Log->writeLog();
-
-        return $LogMessage;
     }
 
     /**
@@ -468,27 +440,27 @@ class UserRepository extends Repository implements RepositoryItemInterface
             pass = ?,
             hashSalt = \'\'';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getLogin());
-        $Data->addParam($itemData->getSsoLogin());
-        $Data->addParam($itemData->getEmail());
-        $Data->addParam($itemData->getNotes());
-        $Data->addParam($itemData->getUserGroupId());
-        $Data->addParam($itemData->getUserProfileId());
-        $Data->addParam($itemData->getMPass());
-        $Data->addParam($itemData->getMKey());
-        $Data->addParam($itemData->getLastUpdateMPass());
-        $Data->addParam($itemData->isIsAdminApp());
-        $Data->addParam($itemData->isIsAdminAcc());
-        $Data->addParam($itemData->isIsDisabled());
-        $Data->addParam($itemData->isIsChangePass());
-        $Data->addParam($itemData->isIsLdap());
-        $Data->addParam($itemData->getPass());
-        $Data->setOnErrorMessage(__u('Error al crear el usuario'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getLogin());
+        $queryData->addParam($itemData->getSsoLogin());
+        $queryData->addParam($itemData->getEmail());
+        $queryData->addParam($itemData->getNotes());
+        $queryData->addParam($itemData->getUserGroupId());
+        $queryData->addParam($itemData->getUserProfileId());
+        $queryData->addParam($itemData->getMPass());
+        $queryData->addParam($itemData->getMKey());
+        $queryData->addParam($itemData->getLastUpdateMPass());
+        $queryData->addParam($itemData->isIsAdminApp());
+        $queryData->addParam($itemData->isIsAdminAcc());
+        $queryData->addParam($itemData->isIsDisabled());
+        $queryData->addParam($itemData->isIsChangePass());
+        $queryData->addParam($itemData->isIsLdap());
+        $queryData->addParam($itemData->getPass());
+        $queryData->setOnErrorMessage(__u('Error al crear el usuario'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -510,15 +482,15 @@ class UserRepository extends Repository implements RepositoryItemInterface
             OR UPPER(ssoLogin) = UPPER(?) 
             OR UPPER(email) = UPPER(?)';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getLogin());
-        $Data->addParam($itemData->getSsoLogin());
-        $Data->addParam($itemData->getEmail());
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getLogin());
+        $queryData->addParam($itemData->getSsoLogin());
+        $queryData->addParam($itemData->getEmail());
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return $Data->getQueryNumRows() > 0;
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
@@ -558,19 +530,19 @@ class UserRepository extends Repository implements RepositoryItemInterface
             INNER JOIN UserGroup UG ON U.userGroupId = UG.id
             WHERE U.login = ? OR U.ssoLogin = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserData::class);
-        $Data->setQuery($query);
-        $Data->addParam($login);
-        $Data->addParam($login);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(UserData::class);
+        $queryData->setQuery($query);
+        $queryData->addParam($login);
+        $queryData->addParam($login);
 
-        $queryRes = DbWrapper::getResults($Data, $this->db);
+        $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
             throw new SPException(__u('Error al obtener los datos del usuario'), SPException::ERROR);
         }
 
-        if ($Data->getQueryNumRows() === 0) {
+        if ($queryData->getQueryNumRows() === 0) {
             throw new NoSuchItemException(__u('El usuario no existe'));
         }
 
@@ -597,11 +569,11 @@ class UserRepository extends Repository implements RepositoryItemInterface
             U.isDisabled
             FROM User U';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserData::class);
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(UserData::class);
+        $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -625,13 +597,13 @@ class UserRepository extends Repository implements RepositoryItemInterface
               isChangedPass = 0 
               WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($pass);
-        $Data->addParam($key);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($pass);
+        $queryData->addParam($key);
+        $queryData->addParam($id);
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -644,11 +616,11 @@ class UserRepository extends Repository implements RepositoryItemInterface
      */
     public function updateLastLoginById($id)
     {
-        $Data = new QueryData();
-        $Data->setQuery('UPDATE User SET lastLogin = NOW(), loginCount = loginCount + 1 WHERE id = ? LIMIT 1');
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE User SET lastLogin = NOW(), loginCount = loginCount + 1 WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -659,14 +631,14 @@ class UserRepository extends Repository implements RepositoryItemInterface
      */
     public function checkExistsByLogin($login)
     {
-        $Data = new QueryData();
-        $Data->setQuery('SELECT id FROM User WHERE UPPER(login) = UPPER(?) OR UPPER(ssoLogin) = UPPER(?) LIMIT 1');
-        $Data->addParam($login);
-        $Data->addParam($login);
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id FROM User WHERE UPPER(login) = UPPER(?) OR UPPER(ssoLogin) = UPPER(?) LIMIT 1');
+        $queryData->addParam($login);
+        $queryData->addParam($login);
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return $Data->getQueryNumRows() > 0;
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
@@ -687,16 +659,16 @@ class UserRepository extends Repository implements RepositoryItemInterface
             isLdap = ? 
             WHERE UPPER(login) = UPPER(?) OR UPPER(ssoLogin) = UPPER(?) LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getPass());
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getEmail());
-        $Data->addParam($itemData->isIsLdap());
-        $Data->addParam($itemData->getLogin());
-        $Data->addParam($itemData->getLogin());
-        $Data->setOnErrorMessage(__u('Error al actualizar el usuario'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getPass());
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getEmail());
+        $queryData->addParam($itemData->isIsLdap());
+        $queryData->addParam($itemData->getLogin());
+        $queryData->addParam($itemData->getLogin());
+        $queryData->setOnErrorMessage(__u('Error al actualizar el usuario'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 }

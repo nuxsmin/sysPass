@@ -27,6 +27,7 @@ namespace SP\Services\CustomField;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\CustomField\CustomFieldDefRepository;
 use SP\Services\Service;
+use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
 
 /**
@@ -72,14 +73,38 @@ class CustomFieldDefService extends Service
 
     /**
      * @param $id
-     * @return bool
+     * @return CustomFieldDefService
+     * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function delete($id)
     {
-        return $this->customFieldDefRepository->delete($id);
+        if ($this->customFieldDefRepository->delete($id) === 0) {
+            throw new ServiceException(__u('Campo no encontrado'), ServiceException::INFO);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array $ids
+     * @return int
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    public function deleteByIdBatch(array $ids)
+    {
+        if (($count = $this->customFieldDefRepository->deleteByIdBatch($ids)) !== count($ids)){
+            throw new ServiceException(__u('Error al eliminar los campos'), ServiceException::WARNING);
+        }
+
+        return $count;
     }
 
     /**

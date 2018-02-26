@@ -53,17 +53,14 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      */
     public function delete($id)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM AuthToken WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AuthToken WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error interno'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error interno'));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows();
+        return $this->db->getNumRows();
     }
 
     /**
@@ -84,12 +81,12 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             FROM AuthToken 
             WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(AuthTokenData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
+        $queryData->setMapClassName(AuthTokenData::class);
 
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -123,15 +120,14 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      */
     public function deleteByIdBatch(array $ids)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM AuthToken WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AuthToken WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+        $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error interno'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setParams($ids);
-        $Data->setOnErrorMessage(__u('Error interno'));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return $this->db->getNumRows();
     }
 
     /**
@@ -162,32 +158,32 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             FROM AuthToken AT 
             INNER JOIN User U ON userid = U.id';
 
-        $Data = new QueryData();
+        $queryData = new QueryData();
 
         if ($SearchData->getSeachString() !== '') {
             $search = '%' . $SearchData->getSeachString() . '%';
             $query .= ' WHERE U.login LIKE ?';
 
-            $Data->addParam($search);
+            $queryData->addParam($search);
         }
 
         $query .= ' ORDER BY U.login';
         $query .= ' LIMIT ?, ?';
 
-        $Data->addParam($SearchData->getLimitStart());
-        $Data->addParam($SearchData->getLimitCount());
+        $queryData->addParam($SearchData->getLimitStart());
+        $queryData->addParam($SearchData->getLimitCount());
 
-        $Data->setQuery($query);
+        $queryData->setQuery($query);
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
         foreach ($queryRes as $token) {
             $token->actionId = Acl::getActionInfo($token->actionId);
         }
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
     }
@@ -217,17 +213,17 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             `hash` = ?,
             startDate = UNIX_TIMESTAMP()';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getUserId());
-        $Data->addParam($itemData->getActionId());
-        $Data->addParam($itemData->getCreatedBy());
-        $Data->addParam($itemData->getToken());
-        $Data->addParam($itemData->getVault());
-        $Data->addParam($itemData->getHash());
-        $Data->setOnErrorMessage(__u('Error interno'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getUserId());
+        $queryData->addParam($itemData->getActionId());
+        $queryData->addParam($itemData->getCreatedBy());
+        $queryData->addParam($itemData->getToken());
+        $queryData->addParam($itemData->getVault());
+        $queryData->addParam($itemData->getHash());
+        $queryData->setOnErrorMessage(__u('Error interno'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -245,14 +241,14 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             WHERE userId = ? 
             AND actionId = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getUserId());
-        $Data->addParam($itemData->getActionId());
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getUserId());
+        $queryData->addParam($itemData->getActionId());
 
-        DbWrapper::getResults($Data, $this->db);
+        DbWrapper::getResults($queryData, $this->db);
 
-        return $Data->getQueryNumRows() === 1;
+        return $queryData->getQueryNumRows() === 1;
     }
 
     /**
@@ -263,16 +259,13 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      */
     public function getTokenByUserId($id)
     {
-        $query = /** @lang SQL */
-            'SELECT token FROM AuthToken WHERE userId = ? AND token <> \'\' LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT token FROM AuthToken WHERE userId = ? AND token <> \'\' LIMIT 1');
+        $queryData->addParam($id);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryRes = DbWrapper::getResults($queryData, $this->db);
 
-        $queryRes = DbWrapper::getResults($Data, $this->db);
-
-        return $Data->getQueryNumRows() === 1 ? $queryRes->token : null;
+        return $queryData->getQueryNumRows() === 1 ? $queryRes->token : null;
     }
 
     /**
@@ -301,18 +294,18 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             startDate = UNIX_TIMESTAMP() 
             WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getUserId());
-        $Data->addParam($itemData->getActionId());
-        $Data->addParam($itemData->getCreatedBy());
-        $Data->addParam($itemData->getToken());
-        $Data->addParam($itemData->getVault());
-        $Data->addParam($itemData->getHash());
-        $Data->addParam($itemData->getId());
-        $Data->setOnErrorMessage(__u('Error interno'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getUserId());
+        $queryData->addParam($itemData->getActionId());
+        $queryData->addParam($itemData->getCreatedBy());
+        $queryData->addParam($itemData->getToken());
+        $queryData->addParam($itemData->getVault());
+        $queryData->addParam($itemData->getHash());
+        $queryData->addParam($itemData->getId());
+        $queryData->setOnErrorMessage(__u('Error interno'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -329,15 +322,15 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             AND actionId = ? 
             AND id <> ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getUserId());
-        $Data->addParam($itemData->getActionId());
-        $Data->addParam($itemData->getId());
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getUserId());
+        $queryData->addParam($itemData->getActionId());
+        $queryData->addParam($itemData->getId());
 
-        DbWrapper::getResults($Data, $this->db);
+        DbWrapper::getResults($queryData, $this->db);
 
-        return $Data->getQueryNumRows() === 1;
+        return $queryData->getQueryNumRows() === 1;
     }
 
     /**
@@ -357,13 +350,13 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             startDate = UNIX_TIMESTAMP() 
             WHERE userId = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($token);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error interno'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($token);
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error interno'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -385,14 +378,14 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             startDate = UNIX_TIMESTAMP() 
             WHERE userId = ? AND vault IS NOT NULL';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($vault);
-        $Data->addParam($hash);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error interno'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($vault);
+        $queryData->addParam($hash);
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error interno'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -403,16 +396,13 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      */
     public function getUserIdForToken($token)
     {
-        $query = /** @lang SQL */
-            'SELECT userId FROM AuthToken WHERE token = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT userId FROM AuthToken WHERE token = ? LIMIT 1');
+        $queryData->addParam($token);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($token);
+        $queryRes = DbWrapper::getResults($queryData, $this->db);
 
-        $queryRes = DbWrapper::getResults($Data, $this->db);
-
-        return $Data->getQueryNumRows() === 1 ? $queryRes->userId : false;
+        return $queryData->getQueryNumRows() === 1 ? $queryRes->userId : false;
     }
 
     /**
@@ -430,14 +420,14 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             WHERE actionId = ? 
             AND token = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(AuthTokenData::class);
-        $Data->setQuery($query);
-        $Data->addParam($actionId);
-        $Data->addParam($token);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(AuthTokenData::class);
+        $queryData->setQuery($query);
+        $queryData->addParam($actionId);
+        $queryData->addParam($token);
 
-        $queryRes = DbWrapper::getResults($Data, $this->db);
+        $queryRes = DbWrapper::getResults($queryData, $this->db);
 
-        return $Data->getQueryNumRows() === 1 ? $queryRes : false;
+        return $queryData->getQueryNumRows() === 1 ? $queryRes : false;
     }
 }

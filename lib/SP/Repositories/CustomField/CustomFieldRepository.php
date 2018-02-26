@@ -29,6 +29,7 @@ use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
+use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 
@@ -39,6 +40,8 @@ use SP\Storage\QueryData;
  */
 class CustomFieldRepository extends Repository implements RepositoryItemInterface
 {
+    use RepositoryItemTrait;
+
     /**
      * Updates an item
      *
@@ -104,7 +107,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      */
     public function delete($id)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -151,7 +154,35 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $Data->addParam($id);
         $Data->addParam($moduleId);
 
-        return DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($Data, $this->db);
+
+        return $this->db->getNumRows();
+    }
+
+    /**
+     * Eliminar los datos de los campos personalizados del módulo
+     *
+     * @param int[] $ids
+     * @param int   $moduleId
+     * @return int
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function deleteCustomFieldDataBatch(array $ids, $moduleId)
+    {
+        $query = /** @lang SQL */
+            'DELETE FROM CustomFieldData
+            WHERE itemId IN (' . $this->getParamsFromArray($ids) . ')
+            AND moduleId = ?';
+
+        $Data = new QueryData();
+        $Data->setQuery($query);
+        $Data->setParams($ids);
+        $Data->addParam($moduleId);
+
+        DbWrapper::getQuery($Data, $this->db);
+
+        return $this->db->getNumRows();
     }
 
     /**
@@ -162,7 +193,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      */
     public function getById($id)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -190,7 +221,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      */
     public function getByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -201,7 +232,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      */
     public function deleteByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -212,7 +243,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      */
     public function checkInUse($id)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -223,7 +254,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      */
     public function search(ItemSearchData $SearchData)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -270,7 +301,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 
     /**
@@ -281,6 +312,6 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        throw new \RuntimeException('Unimplemented');
+        throw new \RuntimeException('Not implemented');
     }
 }

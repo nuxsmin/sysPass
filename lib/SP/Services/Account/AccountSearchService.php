@@ -25,7 +25,6 @@
 namespace SP\Services\Account;
 
 use SP\Account\AccountAcl;
-use SP\Account\AccountFavorites;
 use SP\Account\AccountSearchFilter;
 use SP\Account\AccountSearchItem;
 use SP\Config\ConfigData;
@@ -132,8 +131,7 @@ class AccountSearchService extends Service
         $maxTextLength = $this->configData->isResultsAsCards() ? 40 : 60;
 
         $accountLinkEnabled = $this->session->getUserData()->getPreferences()->isAccountLink() || $this->configData->isAccountLink();
-        // FIXME
-        $favorites = AccountFavorites::getFavorites($this->session->getUserData()->getId());
+        $favorites = $this->dic->get(AccountFavoriteService::class)->getForUserId($this->session->getUserData()->getId());
 
         foreach ($accountSearchResponse->getData() as $accountSearchData) {
             $cache = $this->getCacheForAccount($accountSearchData);

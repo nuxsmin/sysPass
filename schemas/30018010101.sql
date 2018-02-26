@@ -330,7 +330,7 @@ ALTER TABLE notices
 ALTER TABLE notices
   CHANGE notice_onlyAdmin onlyAdmin TINYINT(1) DEFAULT 0;
 ALTER TABLE notices
-RENAME TO Notice;
+RENAME TO Notification;
 
 -- Plugin
 ALTER TABLE plugins
@@ -522,7 +522,7 @@ ALTER TABLE tags
 ALTER TABLE tags
   CHANGE tag_name name VARCHAR(45) NOT NULL;
 ALTER TABLE tags
-  CHANGE tag_hash hash BINARY(40) NOT NULL;
+  CHANGE tag_hash hash VARBINARY(40) NOT NULL;
 ALTER TABLE tags
 RENAME TO Tag;
 
@@ -841,8 +841,8 @@ ALTER TABLE CustomFieldDefinition
 FOREIGN KEY (typeId) REFERENCES CustomFieldType (id)
   ON UPDATE CASCADE;
 
-ALTER TABLE Notice
-  ADD CONSTRAINT fk_Notice_userId
+ALTER TABLE Notification
+  ADD CONSTRAINT fk_Notification_userId
 FOREIGN KEY (userId) REFERENCES User (id)
   ON UPDATE CASCADE
   ON DELETE CASCADE;

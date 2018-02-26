@@ -42,6 +42,7 @@ use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Repositories\CustomField\CustomFieldDefRepository;
+use SP\Util\DateUtil;
 
 /**
  * Class Grids con las plantillas de tablas de datos
@@ -1301,13 +1302,137 @@ class ItemsGridHelper extends HelperBase
         $GridActionClear->setIcon($this->icons->getIconClear());
         $GridActionClear->setOnClickFunction('eventlog/clear');
         $GridActionClear->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_CLEAR));
-        $GridActionClear->addData('action-next', Acl::getActionRoute(ActionsInterface::EVENTLOG));
+        $GridActionClear->addData('nextaction', Acl::getActionRoute(ActionsInterface::EVENTLOG));
 
         $Grid->setDataActions($GridActionClear);
 
         $Grid->setPager($this->getPager($GridActionSearch)
             ->setOnClickFunction('eventlog/nav')
         );
+
+        return $Grid;
+    }
+
+    /**
+     * @param array $data
+     * @return DataGrid
+     * @throws \SP\Core\Dic\ContainerException
+     */
+    public function getNoticesGrid(array $data)
+    {
+        $isAdminApp = $this->session->getUserData()->getIsAdminApp();
+
+        // Grid Header
+        $GridHeaders = new DataGridHeader();
+        $GridHeaders->addHeader(__('Fecha'));
+        $GridHeaders->addHeader(__('Tipo'));
+        $GridHeaders->addHeader(__('Componente'));
+        $GridHeaders->addHeader(__('Descripción'));
+        $GridHeaders->addHeader(__('Estado'));
+
+        // Grid Data
+        $GridData = new DataGridData();
+        $GridData->setDataRowSourceId('id');
+        $GridData->addDataRowSource('date', false,
+            function ($value) {
+                return DateUtil::getDateFromUnix($value);
+            });
+        $GridData->addDataRowSource('type');
+        $GridData->addDataRowSource('component');
+        $GridData->addDataRowSource('description');
+        $GridData->addDataRowSourceWithIcon('checked', $this->icons->getIconEnabled()->setTitle(__('Leída')));
+        $GridData->addDataRowSourceWithIcon('onlyAdmin', $this->icons->getIconAppAdmin()->setTitle(__('Sólo Admins')));
+        $GridData->addDataRowSourceWithIcon('sticky', $this->icons->getIconGroup()->setTitle(__('Global')));
+        $GridData->setData($data);
+
+        // Grid
+        $Grid = new DataGrid();
+        $Grid->setId('tblNotifications');
+        $Grid->setDataRowTemplate('datagrid-rows', 'grid');
+        $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
+        $Grid->setHeader($GridHeaders);
+        $Grid->setData($GridData);
+        $Grid->setTitle(__('Notificaciones'));
+        $Grid->setTime(round(microtime() - $this->queryTimeStart, 5));
+
+        // Grid Actions
+        $GridActionSearch = new DataGridActionSearch();
+        $GridActionSearch->setId(ActionsInterface::NOTIFICATION_SEARCH);
+        $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
+        $GridActionSearch->setName('frmSearchNotification');
+        $GridActionSearch->setTitle(__('Buscar Notificación'));
+        $GridActionSearch->setOnSubmitFunction('notification/search');
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_SEARCH));
+
+        $Grid->setDataActions($GridActionSearch);
+        $Grid->setPager($this->getPager($GridActionSearch));
+
+        if ($isAdminApp) {
+            // Grid item's actions
+            $GridActionNew = new DataGridAction();
+            $GridActionNew->setId(ActionsInterface::NOTIFICATION_CREATE);
+            $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
+            $GridActionNew->setName(__('Nueva Notificación'));
+            $GridActionNew->setTitle(__('Nueva Notificación'));
+            $GridActionNew->setIcon($this->icons->getIconAdd());
+            $GridActionNew->setSkip(true);
+            $GridActionNew->setOnClickFunction('notification/show');
+            $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_CREATE));
+
+            $Grid->setDataActions($GridActionNew);
+        }
+
+        $GridActionView = new DataGridAction();
+        $GridActionView->setId(ActionsInterface::NOTIFICATION_VIEW);
+        $GridActionView->setType(DataGridActionType::VIEW_ITEM);
+        $GridActionView->setName(__('Ver Notificación'));
+        $GridActionView->setTitle(__('Ver Notificación'));
+        $GridActionView->setIcon($this->icons->getIconView());
+        $GridActionView->setOnClickFunction('notification/show');
+        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_VIEW));
+
+        $Grid->setDataActions($GridActionView);
+
+        $GridActionCheck = new DataGridAction();
+        $GridActionCheck->setId(ActionsInterface::NOTIFICATION_CHECK);
+        $GridActionCheck->setName(__('Marcar Notificación'));
+        $GridActionCheck->setTitle(__('Marcar Notificación'));
+        $GridActionCheck->setIcon($this->icons->getIconEnabled());
+        $GridActionCheck->setOnClickFunction('notification/check');
+        $GridActionCheck->setFilterRowSource('checked');
+        $GridActionCheck->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_CHECK));
+        $GridActionCheck->addData('nextaction', Acl::getActionRoute(ActionsInterface::NOTIFICATION));
+
+        $Grid->setDataActions($GridActionCheck);
+
+        $GridActionEdit = new DataGridAction();
+        $GridActionEdit->setId(ActionsInterface::NOTIFICATION_EDIT);
+        $GridActionEdit->setName(__('Editar Notificación'));
+        $GridActionEdit->setTitle(__('Editar Notificación'));
+        $GridActionEdit->setIcon($this->icons->getIconEdit());
+        $GridActionEdit->setOnClickFunction('notification/show');
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_EDIT));
+
+        $Grid->setDataActions($GridActionEdit);
+
+        $GridActionDel = new DataGridAction();
+        $GridActionDel->setId(ActionsInterface::NOTIFICATION_DELETE);
+        $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
+        $GridActionDel->setName(__('Eliminar Notificación'));
+        $GridActionDel->setTitle(__('Eliminar Notificación'));
+        $GridActionDel->setIcon($this->icons->getIconDelete());
+        $GridActionDel->setOnClickFunction('notification/delete');
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::NOTIFICATION_DELETE));
+        $GridActionDel->addData('nextaction', Acl::getActionRoute(ActionsInterface::NOTIFICATION));
+
+        if (!$isAdminApp) {
+            $GridActionCheck->setFilterRowSource('sticky');
+            $GridActionEdit->setFilterRowSource('sticky');
+            $GridActionDel->setFilterRowSource('sticky');
+        }
+
+        $Grid->setDataActions($GridActionDel);
+        $Grid->setDataActions($GridActionDel, true);
 
         return $Grid;
     }

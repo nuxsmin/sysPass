@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionUtil;
 use SP\DataModel\UserData;
@@ -214,7 +215,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::USER_DELETE)) {
             return;
@@ -223,14 +224,29 @@ class UserController extends ControllerBase implements CrudControllerInterface
         $this->view->assign(__FUNCTION__, 1);
 
         try {
-//            $this->userService->logAction($id, ActionsInterface::USER_DELETE);
-            $this->userService->delete($id);
+            if ($id === null) {
+                $this->userService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::USER, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::USER, $id);
 
-            $this->eventDispatcher->notifyEvent('delete.user', new Event($this));
+                $this->eventDispatcher->notifyEvent('delete.user.selection',
+                    new Event($this, EventMessage::factory()->addDescription(__u('Usuarios eliminados')))
+                );
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario eliminado'));
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuarios eliminados'));
+            } else {
+                $this->userService->delete($id);
+
+                $this->deleteCustomFieldsForItem(ActionsInterface::USER, $id);
+
+                $this->eventDispatcher->notifyEvent('delete.user',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Usuario eliminado'))
+                        ->addDetail(__u('Usuario'), $id))
+                );
+
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Usuario eliminado'));
+            }
         } catch (\Exception $e) {
             processException($e);
 

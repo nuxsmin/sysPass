@@ -28,6 +28,7 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\Forms\CustomFieldDefForm;
@@ -175,20 +176,28 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function deleteAction($id)
+    public function deleteAction($id = null)
     {
         if (!$this->acl->checkUserAccess(ActionsInterface::CUSTOMFIELD_DELETE)) {
             return;
         }
 
         try {
-            $this->customFieldService->delete($id);
+            if ($id === null) {
+                $this->customFieldService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-            $this->deleteCustomFieldsForItem(ActionsInterface::CUSTOMFIELD, $id);
+                $this->eventDispatcher->notifyEvent('delete.customField.selection',
+                    new Event($this, EventMessage::factory()->addDescription(__u('Campos eliminados')))
+                );
 
-            $this->eventDispatcher->notifyEvent('delete.customField', new Event($this));
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campos eliminados'));
+            } else {
+                $this->customFieldService->delete($id);
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo eliminado'));
+                $this->eventDispatcher->notifyEvent('delete.customField', new Event($this));
+
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo eliminado'));
+            }
         } catch (\Exception $e) {
             processException($e);
 

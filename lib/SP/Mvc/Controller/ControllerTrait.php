@@ -74,8 +74,9 @@ trait ControllerTrait
     protected function checkSecurityToken(Session $session)
     {
         $sk = Request::analyze('sk');
+        $sessionKey = $session->getSecurityKey();
 
-        if (!$sk || (null !== $session->getSecurityKey() && $session->getSecurityKey() === $sk)) {
+        if (!$sk || (null !== $sessionKey && $sessionKey !== $sk)) {
             $this->invalidAction();
         }
     }

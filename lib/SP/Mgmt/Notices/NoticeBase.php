@@ -27,7 +27,7 @@ namespace SP\Mgmt\Notices;
 defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\InvalidClassException;
-use SP\DataModel\NoticeData;
+use SP\DataModel\NotificationData;
 use SP\Mgmt\ItemBaseInterface;
 use SP\Mgmt\ItemBaseTrait;
 
@@ -48,6 +48,6 @@ abstract class NoticeBase implements ItemBaseInterface
      */
     protected function init()
     {
-        $this->setDataModel(NoticeData::class);
+        $this->setDataModel(NotificationData::class);
     }
 }

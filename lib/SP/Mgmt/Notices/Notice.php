@@ -26,7 +26,7 @@ namespace SP\Mgmt\Notices;
 
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory;
-use SP\DataModel\NoticeData;
+use SP\DataModel\NotificationData;
 use SP\Mgmt\ItemInterface;
 use SP\Mgmt\ItemTrait;
 use SP\Storage\DbWrapper;
@@ -36,8 +36,8 @@ use SP\Storage\QueryData;
  * Class Notice
  *
  * @package SP\Mgmt\Notices
- * @property NoticeData $itemData
- * @method NoticeData getItemData()
+ * @property NotificationData $itemData
+ * @method NotificationData getItemData()
  */
 class Notice extends NoticeBase implements ItemInterface
 {
@@ -50,7 +50,7 @@ class Notice extends NoticeBase implements ItemInterface
     public function add()
     {
         $query = /** @lang SQL */
-            'INSERT INTO Notice 
+            'INSERT INTO Notification 
             SET type = ?,
             component = ?,
             description = ?,
@@ -84,10 +84,10 @@ class Notice extends NoticeBase implements ItemInterface
      */
     public function delete($id)
     {
-        $query = 'DELETE FROM Notice WHERE id = ? AND BIN(sticky) = 0 LIMIT 1';
+        $query = 'DELETE FROM Notification WHERE id = ? AND BIN(sticky) = 0 LIMIT 1';
 
         if (SessionFactory::getUserData()->isIsAdminApp()) {
-            $query = 'DELETE FROM Notice WHERE id = ? LIMIT 1';
+            $query = 'DELETE FROM Notification WHERE id = ? LIMIT 1';
         }
 
         $Data = new QueryData();
@@ -111,7 +111,7 @@ class Notice extends NoticeBase implements ItemInterface
     public function update()
     {
         $query = /** @lang SQL */
-            'UPDATE Notice 
+            'UPDATE Notification 
             SET type = ?,
             component = ?,
             description = ?,
@@ -140,7 +140,7 @@ class Notice extends NoticeBase implements ItemInterface
 
     /**
      * @param $id int
-     * @return NoticeData
+     * @return NotificationData
      * @throws SPException
      */
     public function getById($id)
@@ -155,7 +155,7 @@ class Notice extends NoticeBase implements ItemInterface
             BIN(checked) AS notice_checked,
             BIN(sticky) as notice_sticky,
             BIN(onlyAdmin) AS notice_onlyAdmin 
-            FROM Notice 
+            FROM Notification 
             WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
@@ -173,7 +173,7 @@ class Notice extends NoticeBase implements ItemInterface
     }
 
     /**
-     * @return NoticeData[]
+     * @return NotificationData[]
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getAll()
@@ -188,7 +188,7 @@ class Notice extends NoticeBase implements ItemInterface
             BIN(checked) AS notice_checked,
             BIN(sticky) as notice_sticky,
             BIN(onlyAdmin) AS notice_onlyAdmin 
-            FROM Notice';
+            FROM Notification';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -238,7 +238,7 @@ class Notice extends NoticeBase implements ItemInterface
     public function setChecked($id)
     {
         $query = /** @lang SQL */
-            'UPDATE Notice SET checked = 1 WHERE id = ? LIMIT 1';
+            'UPDATE Notification SET checked = 1 WHERE id = ? LIMIT 1';
 
         $Data = new QueryData();
         $Data->setQuery($query);
@@ -269,7 +269,7 @@ class Notice extends NoticeBase implements ItemInterface
             BIN(checked) AS notice_checked,
             BIN(sticky) as notice_sticky,
             BIN(onlyAdmin) AS notice_onlyAdmin 
-            FROM Notice 
+            FROM Notification 
             WHERE component = ? AND 
             (UNIX_TIMESTAMP() - date) <= 86400 AND
             userId = ?';
@@ -290,7 +290,7 @@ class Notice extends NoticeBase implements ItemInterface
     }
 
     /**
-     * @return NoticeData[]
+     * @return NotificationData[]
      * @throws \SP\Core\Exceptions\SPException
      */
     public function getAllForUser()
@@ -305,7 +305,7 @@ class Notice extends NoticeBase implements ItemInterface
             BIN(checked) AS notice_checked,
             BIN(sticky) as notice_sticky,
             BIN(onlyAdmin) AS notice_onlyAdmin 
-            FROM Notice 
+            FROM Notification 
             WHERE userId = ? OR (userId = NULL AND BIN(onlyAdmin) = 0) OR BIN(sticky) = 1
             ORDER BY date DESC ';
 
@@ -324,7 +324,7 @@ class Notice extends NoticeBase implements ItemInterface
     }
 
     /**
-     * @return NoticeData[]
+     * @return NotificationData[]
      * @throws SPException
      */
     public function getAllActiveForUser()
@@ -339,7 +339,7 @@ class Notice extends NoticeBase implements ItemInterface
             BIN(checked) AS notice_checked,
             BIN(sticky) as notice_sticky,
             BIN(onlyAdmin) AS notice_onlyAdmin 
-            FROM Notice 
+            FROM Notification 
             WHERE (userId = ? OR BIN(sticky) = 1) 
             AND BIN(onlyAdmin) = 0 
             AND BIN(checked) = 0
@@ -377,7 +377,7 @@ class Notice extends NoticeBase implements ItemInterface
             BIN(checked) AS notice_checked,
             BIN(sticky) as notice_sticky,
             BIN(onlyAdmin) AS notice_onlyAdmin 
-            FROM Notice 
+            FROM Notification 
             WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();

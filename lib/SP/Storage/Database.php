@@ -127,6 +127,7 @@ class Database implements DatabaseInterface
 
             $queryData->setQueryNumRows($this->numRows);
         } else {
+            $this->numRows = $stmt->rowCount();
             $queryData->setQueryNumRows($stmt->rowCount());
         }
 

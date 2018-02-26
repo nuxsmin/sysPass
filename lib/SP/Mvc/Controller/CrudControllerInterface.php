@@ -38,7 +38,7 @@ interface CrudControllerInterface
      *
      * @param $id
      */
-    public function deleteAction($id);
+    public function deleteAction($id = null);
 
     /**
      * Saves create action
