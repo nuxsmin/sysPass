@@ -34,50 +34,7 @@ sysPass.Actions = function (Common) {
 
     // Objeto con las URLs de las acciones
     const ajaxUrl = {
-        entrypoint: "/index.php",
-        doAction: "/index.php",
-        updateItems: "/index.php",
-        user: {
-            savePreferences: "/ajax/ajax_userPrefsSave.php",
-            password: "/ajax/ajax_usrpass.php",
-            passreset: "/ajax/ajax_passReset.php"
-        },
-        main: {
-            login: "/index.php?r=login/login",
-            install: "/ajax/ajax_install.php",
-            upgrade: "/ajax/ajax_upgrade.php",
-            getUpdates: "/index.php?r=index/checkUpdates",
-            task: "/ajax/ajax_task.php"
-        },
-        checks: "/ajax/ajax_checkConnection.php",
-        config: {
-            save: "/ajax/ajax_configSave.php",
-            export: "/ajax/ajax_configSave.php",
-            import: "/ajax/ajax_configSave.php"
-        },
-        file: "/ajax/ajax_filesMgmt.php",
-        link: "/index.php",
-        plugin: "/ajax/ajax_itemSave.php",
-        account: {
-            save: "/index.php",
-            saveFavorite: "/ajax/ajax_itemSave.php",
-            request: "/ajax/ajax_itemSave.php",
-            getFiles: "/index.php",
-            search: "/index.php?r=account/search"
-        },
-        appMgmt: {
-            show: "/index.php",
-            save: "/index.php",
-            search: "/index.php"
-        },
-        eventlog: "/ajax/ajax_eventlog.php",
-        wiki: {
-            show: "/ajax/ajax_wiki.php"
-        },
-        notice: {
-            show: "/ajax/ajax_noticeShow.php",
-            search: "/ajax/ajax_noticeSearch.php"
-        }
+        entrypoint: "/index.php"
     };
 
     Object.freeze(ajaxUrl);
@@ -92,7 +49,7 @@ sysPass.Actions = function (Common) {
         };
 
         const opts = Common.appRequests().getRequestOpts();
-        opts.url = ajaxUrl.doAction;
+        opts.url = ajaxUrl.entrypoint;
         opts.method = "get";
         opts.type = "html";
         opts.addHistory = true;
@@ -125,7 +82,7 @@ sysPass.Actions = function (Common) {
         data.isAjax = 1;
 
         const opts = Common.appRequests().getRequestOpts();
-        opts.url = ajaxUrl.doAction;
+        opts.url = ajaxUrl.entrypoint;
         opts.method = "get";
         opts.type = "html";
         opts.addHistory = true;
@@ -279,7 +236,7 @@ sysPass.Actions = function (Common) {
                     title: Common.config().LANG[43],
                     onClick: function (e) {
                         const opts = Common.appRequests().getRequestOpts();
-                        opts.url = ajaxUrl.account.save;
+                        opts.url = ajaxUrl.entrypoint;
                         opts.data = {
                             r: "account/saveDelete/" + $obj.data("item-id"),
                             sk: Common.sk.get()
@@ -372,7 +329,7 @@ sysPass.Actions = function (Common) {
             };
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.account.saveFavorite;
+            opts.url = ajaxUrl.entrypoint;
             opts.data = data;
 
             Common.appRequests().getActionCall(opts, function (json) {
@@ -391,7 +348,7 @@ sysPass.Actions = function (Common) {
             log.info("account:request");
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.account.request;
+            opts.url = ajaxUrl.entrypoint;
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
@@ -470,7 +427,7 @@ sysPass.Actions = function (Common) {
             }
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.account.search;
+            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = $frmSearch.serialize();
 
@@ -488,7 +445,7 @@ sysPass.Actions = function (Common) {
             log.info("account:save");
 
             const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.account.save + "?r=" + $obj.data("action-route") + "/" + $obj.data("item-id");
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + $obj.data("item-id");
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
@@ -514,7 +471,7 @@ sysPass.Actions = function (Common) {
             $dst.clearOptions();
             $dst.load(function (callback) {
                 const opts = Common.appRequests().getRequestOpts();
-                opts.url = ajaxUrl.updateItems;
+                opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
                 opts.data = {
                     r: $obj.data("action-route") + "/" + $obj.data("item-id"),
@@ -538,7 +495,7 @@ sysPass.Actions = function (Common) {
             $dst.clearOptions();
             $dst.load(function (callback) {
                 const opts = Common.appRequests().getRequestOpts();
-                opts.url = ajaxUrl.updateItems;
+                opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
                 opts.data = {
                     r: $obj.data("item-route"),
@@ -554,24 +511,17 @@ sysPass.Actions = function (Common) {
 
     /**
      * Objeto con las acciones de usuario
-     *
-     * @type {{savePreferences: user.savePreferences, saveSecurity: user.saveSecurity, password: user.password, passreset: user.passreset}}
      */
     const user = {
-        savePreferences: function ($obj) {
-            log.info("user:savePreferences");
+        showSettings: function ($obj) {
+            log.info("user:showSettings");
 
-            const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.user.savePreferences;
-            opts.data = $obj.serialize();
+            getContent({r: $obj.data("action-route")}, "userSettings");
+        },
+        saveSettings: function ($obj) {
+            log.info("user:saveSettings");
 
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
-
-                setTimeout(function () {
-                    Common.redirect("index.php");
-                }, 2000);
-            });
+            tabs.save($obj);
         },
         password: function ($obj) {
             log.info("user:password");
@@ -579,10 +529,9 @@ sysPass.Actions = function (Common) {
             const opts = Common.appRequests().getRequestOpts();
             opts.type = "html";
             opts.method = "get";
-            opts.url = ajaxUrl.user.password;
+            opts.url = ajaxUrl.entrypoint;
             opts.data = {
-                actionId: $obj.data("action-id"),
-                itemId: $obj.data("item-id"),
+                r: $obj.data("action-route") + "/" + $obj.data("item-id"),
                 sk: Common.sk.get(),
                 isAjax: 1
             };
@@ -714,7 +663,7 @@ sysPass.Actions = function (Common) {
 
                         if ($useTask.length > 0 && $useTask.val() == 1) {
                             var optsTask = Common.appRequests().getRequestOpts();
-                            optsTask.url = ajaxUrl.main.task;
+                            optsTask.url = ajaxUrl.entrypoint;
                             optsTask.data = {
                                 source: $obj.find("input[name='lock']").val(),
                                 taskId: $obj.find("input[name='taskId']").val()
@@ -729,7 +678,7 @@ sysPass.Actions = function (Common) {
                         }
 
                         var opts = Common.appRequests().getRequestOpts();
-                        opts.url = ajaxUrl.main.upgrade;
+                        opts.url = ajaxUrl.entrypoint;
                         opts.method = "get";
                         opts.useFullLoading = true;
                         opts.data = $obj.serialize();
@@ -757,7 +706,7 @@ sysPass.Actions = function (Common) {
             log.info("main:getUpdates");
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.main.getUpdates;
+            opts.url = ajaxUrl.entrypoint;
             opts.type = "html";
             opts.method = "get";
             opts.timeout = 10000;
@@ -789,7 +738,7 @@ sysPass.Actions = function (Common) {
             $form.find("[name='sk']").val(Common.sk.get());
 
             const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.checks;
+            opts.url = ajaxUrl.entrypoint;
             opts.data = $form.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
@@ -807,7 +756,7 @@ sysPass.Actions = function (Common) {
             $form.find("[name='sk']").val(Common.sk.get());
 
             const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.checks;
+            opts.url = ajaxUrl.entrypoint;
             opts.data = $form.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
@@ -829,28 +778,7 @@ sysPass.Actions = function (Common) {
         save: function ($obj) {
             log.info("config:save");
 
-            tabs.state.update($obj);
-
-            const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
-            opts.data = $obj.serialize();
-
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
-
-                if (json.status === 0) {
-                    if (tabs.state.tab.refresh === true) {
-                        getContent({
-                            r: tabs.state.tab.route,
-                            tabIndex: tabs.state.tab.index
-                        });
-                    } else if ($obj.data("reload") !== undefined) {
-                        setTimeout(function () {
-                            Common.redirect("index.php");
-                        }, 2000);
-                    }
-                }
-            });
+            tabs.save($obj);
         },
         masterpass: function ($obj) {
             const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
@@ -877,7 +805,7 @@ sysPass.Actions = function (Common) {
 
                         if ($useTask.length > 0 && $useTask.val() == 1) {
                             const optsTask = Common.appRequests().getRequestOpts();
-                            optsTask.url = ajaxUrl.main.task;
+                            optsTask.url = ajaxUrl.entrypoint;
                             optsTask.data = {
                                 source: $obj.find("input[name='lock']").val(),
                                 taskId: $obj.find("input[name='taskId']").val()
@@ -892,7 +820,7 @@ sysPass.Actions = function (Common) {
                         }
 
                         const opts = Common.appRequests().getRequestOpts();
-                        opts.url = ajaxUrl.config.save;
+                        opts.url = ajaxUrl.entrypoint;
                         opts.useFullLoading = true;
                         opts.data = $obj.serialize();
 
@@ -933,22 +861,7 @@ sysPass.Actions = function (Common) {
         export: function ($obj) {
             log.info("config:export");
 
-            tabs.state.update($obj);
-
-            const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
-            opts.data = $obj.serialize();
-
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
-
-                if (json.status === 0) {
-                    getContent({
-                        r: tabs.state.tab.route,
-                        tabIndex: tabs.state.tab.index
-                    });
-                }
-            });
+            tabs.save($obj);
         },
         import: function ($obj) {
             log.info("config:import");
@@ -1155,12 +1068,44 @@ sysPass.Actions = function (Common) {
                 const $currentTab = $("#content").find("[id^='tabs-'].is-active");
 
                 if ($currentTab.length > 0) {
-                    tabs.state.tab.refresh = !$obj.data("item-dst");
+                    tabs.state.tab.refresh = !!$obj.data("item-dst");
                     tabs.state.tab.index = $currentTab.data("tab-index");
                     tabs.state.tab.route = $currentTab.data("tab-route");
                     tabs.state.itemId = $obj.data("item-id");
                 }
             }
+        },
+        save: function ($obj, onSuccess) {
+            log.info("tabs:save");
+
+            tabs.state.update($obj);
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
+            opts.data = $obj.serialize();
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+
+                if (json.status === 0) {
+                    if (typeof onSuccess === "function") {
+                        onSuccess();
+                    }
+
+                    if (tabs.state.tab.refresh === true) {
+                        getContent({
+                            r: tabs.state.tab.route,
+                            tabIndex: tabs.state.tab.index
+                        });
+                    } else if ($obj.data("reload") !== undefined) {
+                        log.info('reload');
+
+                        setTimeout(function () {
+                            Common.redirect("index.php");
+                        }, 2000);
+                    }
+                }
+            });
         }
     };
 
@@ -1174,7 +1119,7 @@ sysPass.Actions = function (Common) {
             tabs.state.update($obj);
 
             const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.appMgmt.show;
+            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
                 r: $obj.data("action-route") + "/" + $obj.data("item-id"),
@@ -1234,23 +1179,8 @@ sysPass.Actions = function (Common) {
         save: function ($obj) {
             log.info("appMgmt:save");
 
-            const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("route");
-            opts.data = $obj.serialize();
-
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
-
-                if (json.status === 0) {
-                    if (tabs.state.tab.refresh === true) {
-                        getContent({
-                            r: tabs.state.tab.route,
-                            tabIndex: tabs.state.tab.index
-                        });
-                    }
-
-                    $.magnificPopup.close();
-                }
+            tabs.save($obj, function () {
+                closeFloatingBox();
             });
         },
         search: function ($obj) {
@@ -1282,7 +1212,7 @@ sysPass.Actions = function (Common) {
                     title: Common.config().LANG[43],
                     onClick: function (e) {
                         var opts = Common.appRequests().getRequestOpts();
-                        opts.url = ajaxUrl.appMgmt.save;
+                        opts.url = ajaxUrl.entrypoint;
                         opts.data = {
                             actionId: $obj.data("action-id"),
                             sk: Common.sk.get(),
@@ -1365,7 +1295,7 @@ sysPass.Actions = function (Common) {
             log.info("wiki:show");
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.wiki.show;
+            opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
                 pageName: $obj.data("pagename"),
@@ -1399,7 +1329,7 @@ sysPass.Actions = function (Common) {
             };
 
             var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.appMgmt.save;
+            opts.url = ajaxUrl.entrypoint;
             opts.data = data;
 
             Common.appRequests().getActionCall(opts, function (json) {
@@ -1443,7 +1373,7 @@ sysPass.Actions = function (Common) {
                         };
 
                         var opts = Common.appRequests().getRequestOpts();
-                        opts.url = ajaxUrl.appMgmt.save;
+                        opts.url = ajaxUrl.entrypoint;
                         opts.data = data;
 
                         Common.appRequests().getActionCall(opts, function (json) {

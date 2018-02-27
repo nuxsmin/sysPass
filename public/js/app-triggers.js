@@ -211,10 +211,6 @@ sysPass.Triggers = function (Common) {
                 Common.appActions().main.logout();
             });
 
-            $("#btnPrefs").click(function (e) {
-                Common.appActions().doAction({actionId: $(this).data("route")});
-            });
-
             // setInterval(function () {
             //     Common.appActions().notification.getActive();
             // }, 60000);

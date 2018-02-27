@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -194,6 +194,8 @@ class Bootstrap
                     $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
 
                     if (!method_exists($controllerClass, $method)) {
+                        debugLog($controllerClass . '::' . $method);
+
                         throw new RuntimeException($oops);
                     }
 
@@ -621,7 +623,7 @@ class Bootstrap
 
     /**
      * @param Container $container
-     * @param string    $module
+     * @param string $module
      * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException

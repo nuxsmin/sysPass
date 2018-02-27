@@ -139,9 +139,8 @@ interface ActionsInterface
     const PROFILE_EDIT = 732;
     const PROFILE_DELETE = 733;
     const PROFILE_SEARCH = 735;
-    const PREFERENCE = 740;
-    const PREFERENCE_GENERAL = 741;
-    const PREFERENCE_SECURITY = 742;
+    const USERSETTINGS = 74;
+    const USERSETTINGS_GENERAL = 741;
     const NOTIFICATION = 76;
     const NOTIFICATION_VIEW = 760;
     const NOTIFICATION_CREATE = 761;

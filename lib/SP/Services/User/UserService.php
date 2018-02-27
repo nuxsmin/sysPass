@@ -211,8 +211,8 @@ class UserService extends Service
      * Creates an item
      *
      * @param UserData $itemData
-     * @param string   $userPass
-     * @param string   $masterPass
+     * @param string $userPass
+     * @param string $masterPass
      * @return int
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -257,7 +257,7 @@ class UserService extends Service
     /**
      * Updates an user's pass
      *
-     * @param int    $userId
+     * @param int $userId
      * @param string $pass
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -270,6 +270,18 @@ class UserService extends Service
         $passRequest->setIsChangedPass(1);
 
         return $this->userRepository->updatePassById($userId, $passRequest);
+    }
+
+    /**
+     * @param $userId
+     * @param UserPreferencesData $userPreferencesData
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function updatePreferencesById($userId, UserPreferencesData $userPreferencesData)
+    {
+        return $this->userRepository->updatePreferencesById($userId, $userPreferencesData);
     }
 
     /**

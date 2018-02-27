@@ -55,15 +55,15 @@
                         <?php if ($showPassIcon): ?>
                             <li id="btnUserPass" class="btn-action mdl-menu__item"
                                 data-onclick="appMgmt/show"
-                                data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::USER_EDIT_PASS; ?>"
-                                data-item-id="<?php echo $userId; ?>"
+                                data-action-route="user/editPass/<?php echo $userId; ?>"
                                 data-sk="<?php echo $sk; ?>">
                                 <i class="material-icons">security</i>
                                 <?php echo __('Cambiar Clave de Usuario'); ?>
                             </li>
                         <?php endif; ?>
-                        <li id="btnPrefs" class="mdl-menu__item"
-                            data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::PREFERENCE; ?>">
+                        <li id="btnPrefs" class="btn-action mdl-menu__item"
+                            data-onclick="user/showSettings"
+                            data-action-route="userSettingsManager/index">
                             <i class="material-icons">account_circle</i>
                             <?php echo __('Preferencias de usuario'); ?>
                         </li>
@@ -83,15 +83,14 @@
             <nav class="mdl-navigation">
                 <?php /** @var \SP\Html\DataGrid\DataGridAction $action */
                 foreach ($actions as $action): ?>
-                    <a class="btn-menu mdl-navigation__link"
-                       title="<?php echo $action->getTitle(); ?>"
-                       data-action-id="<?php echo $action->getId(); ?>"
+                    <a id="btn-drawer-<?php echo $action->getId(); ?>" class="btn-menu mdl-navigation__link"
                         <?php foreach ($action->getData() as $dataName => $dataValue): ?>
                             <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
                         <?php endforeach; ?>>
                         <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
-                        <?php echo $action->getTitle(); ?>
                     </a>
+                    <span for="btn-drawer-<?php echo $action->getId(); ?>"
+                          class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                 <?php endforeach; ?>
 
                 <a id="notifications-drawer" class="btn-menu mdl-navigation__link"
@@ -115,16 +114,17 @@
                     <a class="btn-action mdl-navigation__link"
                        title="<?php echo __('Cambiar Clave de Usuario'); ?>"
                        data-onclick="appMgmt/show"
-                       data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::USER_EDIT_PASS; ?>"
-                       data-item-id="<?php echo $userId; ?>"
+                       data-action-route="user/editPass/<?php echo $userId; ?>"
                        data-sk="<?php echo $sk; ?>">
                         <i class="btn-action material-icons">security</i>
                         <?php echo __('Cambiar Clave de Usuario'); ?>
                     </a>
                 <?php endif; ?>
+
                 <a class="btn-menu mdl-navigation__link"
                    title="<?php echo __('Preferencias de usuario'); ?>"
-                   data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::PREFERENCE; ?>">
+                   data-onclick="user/showSettings"
+                   data-action-route="userSettingsManager/index">
                     <i class="btn-action material-icons">account_circle</i>
                     <span id="user-name"><?php echo $userName; ?></span>
                     <span for="user-name"

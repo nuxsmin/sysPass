@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -27,6 +27,7 @@ namespace SP\Repositories\User;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
+use SP\DataModel\UserPreferencesData;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
@@ -134,7 +135,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * Updates an user's pass
      *
-     * @param int               $id
+     * @param int $id
      * @param UpdatePassRequest $passRequest
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -668,6 +669,26 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($itemData->getLogin());
         $queryData->addParam($itemData->getLogin());
         $queryData->setOnErrorMessage(__u('Error al actualizar el usuario'));
+
+        return DbWrapper::getQuery($queryData, $this->db);
+    }
+
+    /**
+     * Updates an user's pass
+     *
+     * @param int $id
+     * @param UserPreferencesData $userPreferencesData
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function updatePreferencesById($id, UserPreferencesData $userPreferencesData)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE User SET preferences = ? WHERE id = ? LIMIT 1');
+        $queryData->addParam(serialize($userPreferencesData));
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al actualizar preferencias\''));
 
         return DbWrapper::getQuery($queryData, $this->db);
     }

@@ -63,6 +63,21 @@ class Language
      */
     protected static $appSet = false;
     /**
+     * @var array Available languages
+     */
+    private static $langs = [
+        'es_ES' => 'Español',
+        'ca_ES' => 'Catalá',
+        'en_US' => 'English',
+        'de_DE' => 'Deutsch',
+        'hu_HU' => 'Magyar',
+        'fr_FR' => 'Français',
+        'po_PO' => 'Polski',
+        'ru_RU' => 'русский',
+        'nl_NL' => 'Nederlands',
+        'pt_BR' => 'Português'
+    ];
+    /**
      * @var ConfigData
      */
     protected $configData;
@@ -75,12 +90,14 @@ class Language
      * Language constructor.
      *
      * @param Session $session
-     * @param Config  $config
+     * @param Config $config
      */
     public function __construct(Session $session, Config $config)
     {
         $this->session = $session;
         $this->configData = $config->getConfigData();
+
+        sort(self::$langs);
     }
 
     /**
@@ -90,22 +107,7 @@ class Language
      */
     public static function getAvailableLanguages()
     {
-        $langs = [
-            'Español' => 'es_ES',
-            'Catalá' => 'ca_ES',
-            'English' => 'en_US',
-            'Deutsch' => 'de_DE',
-            'Magyar' => 'hu_HU',
-            'Français' => 'fr_FR',
-            'Polski' => 'po_PO',
-            'русский' => 'ru_RU',
-            'Nederlands' => 'nl_NL',
-            'Português' => 'pt_BR'
-        ];
-
-        ksort($langs);
-
-        return $langs;
+        return self::$langs;
     }
 
     /**

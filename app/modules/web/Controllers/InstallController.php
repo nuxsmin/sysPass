@@ -34,6 +34,7 @@ use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Util\Checks;
 
 /**
@@ -92,8 +93,7 @@ class InstallController extends ControllerBase
         }
 
         $this->view->assign('errors', $errors);
-        $this->view->assign('langsAvailable', Language::getAvailableLanguages());
-        $this->view->assign('langBrowser', Language::$globalLang);
+        $this->view->assign('langs', SelectItemAdapter::factory(Language::getAvailableLanguages())->getItemsFromArraySelected([Language::$globalLang]));
 
         $this->view();
     }

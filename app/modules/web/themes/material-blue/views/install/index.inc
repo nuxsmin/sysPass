@@ -135,8 +135,9 @@
                 <label for="sel-sitelang"><?php echo __('Idioma'); ?></label>
                 <select name="sitelang" id="sel-sitelang" size="1" class="select-box"
                         title="<?php echo __('Idioma'); ?>">
-                    <?php foreach ($langsAvailable as $langName => $langValue): ?>
-                        <option value="<?php echo $langValue; ?>" <?php echo ($langBrowser === $langValue) ? 'selected="selected"' : ''; ?>><?php echo $langName; ?></option>
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $langs */
+                    foreach ($langs as $lang): ?>
+                        <option value="<?php echo $lang->getId(); ?>" <?php echo $lang->isSelected() ? 'selected' : ''; ?>><?php echo $lang->getName(); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

@@ -24,9 +24,10 @@
             <div class="lowres-title"><?php echo __('Idioma'); ?></div>
 
             <select name="sitelang" id="sel-sitelang" size="1" class="select-box sel-chosen-ns">
-                <?php foreach ($langsAvailable as $langName => $langValue): ?>
+                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $langs */
+                foreach ($langs as $lang): ?>
                     <option
-                        value='<?php echo $langValue; ?>' <?php echo ($configData->getSiteLang() === $langValue) ? 'SELECTED' : ''; ?>><?php echo $langName; ?></option>
+                            value='<?php echo $lang->getId(); ?>' <?php echo $lang->isSelected() ? 'selected' : ''; ?>><?php echo $lang->getName(); ?></option>
                 <?php endforeach; ?>
             </select>
         </td>
@@ -46,10 +47,11 @@
             <div class="lowres-title"><?php echo __('Tema Visual'); ?></div>
 
             <select name="sitetheme" id="sel-sitetheme" size="1"
-                    class="select-box sel-chosen-ns" >
-                <?php foreach ($themesAvailable as $themeDir => $themeName): ?>
+                    class="select-box sel-chosen-ns">
+                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $themes */
+                foreach ($themes as $theme): ?>
                     <option
-                        value='<?php echo $themeDir; ?>' <?php echo ($configData->getSiteTheme() === $themeDir) ? "SELECTED" : ""; ?>><?php echo $themeName; ?></option>
+                            value='<?php echo $theme->getId(); ?>' <?php echo $theme->isSelected() ? 'selected' : ""; ?>><?php echo $theme->getName(); ?></option>
                 <?php endforeach; ?>
             </select>
         </td>
@@ -117,7 +119,8 @@
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="maintenance">
-                <input type="checkbox" id="maintenance" class="mdl-switch__input mdl-color-text--indigo-400" name="maintenance"
+                <input type="checkbox" id="maintenance" class="mdl-switch__input mdl-color-text--indigo-400"
+                       name="maintenance"
                     <?php echo $configData->isMaintenance() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Modo mantenimiento'); ?></span>
             </label>
@@ -174,7 +177,8 @@
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="encryptsession">
-                <input type="checkbox" id="encryptsession" class="mdl-switch__input mdl-color-text--indigo-400" name="encryptsession"
+                <input type="checkbox" id="encryptsession" class="mdl-switch__input mdl-color-text--indigo-400"
+                       name="encryptsession"
                     <?php echo $configData->isEncryptSession() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Encriptar Sesión'); ?></span>
             </label>

@@ -139,8 +139,8 @@ class ConfigManagerController extends ControllerBase
 
         $userData = $this->session->getUserData();
 
-        $template->assign('langsAvailable', Language::getAvailableLanguages());
-        $template->assign('themesAvailable', $this->theme->getThemesAvailable());
+        $template->assign('langs', SelectItemAdapter::factory(Language::getAvailableLanguages())->getItemsFromArraySelected([$this->configData->getSiteLang()]));
+        $template->assign('themes', SelectItemAdapter::factory($this->theme->getThemesAvailable())->getItemsFromArraySelected([$this->configData->getSiteTheme()]));
         $template->assign('isDemoMode', $this->configData->isDemoEnabled() && !$userData->getIsAdminApp());
         $template->assign('isDisabled', $this->configData->isDemoEnabled() && !$userData->getIsAdminApp() ? 'disabled' : '');
         $template->assign('configData', $this->configData);

@@ -638,22 +638,16 @@
         <route>userProfile/search</route>
     </action>
     <action multiple="1">
-        <id>740</id>
-        <name>PREFERENCE</name>
-        <text>Gestión Preferencias</text>
-        <route>userPreference/index</route>
+        <id>74</id>
+        <name>USERSETTINGS</name>
+        <text>Configuración Usuario</text>
+        <route>userSettingsManager/index</route>
     </action>
     <action multiple="1">
         <id>741</id>
-        <name>PREFERENCE_GENERAL</name>
+        <name>USERSETTINGS_GENERAL</name>
         <text>Preferencias General</text>
-        <route>userPreference/general</route>
-    </action>
-    <action multiple="1">
-        <id>742</id>
-        <name>PREFERENCE_SECURITY</name>
-        <text>Preferencias Seguridad</text>
-        <route>userPreference/security</route>
+        <route>userSettings/general</route>
     </action>
     <action multiple="1">
         <id>76</id>
