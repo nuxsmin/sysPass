@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -170,8 +170,6 @@ abstract class ControllerBase
         $this->userProfileData = $this->session->getUserProfile();
 
         $this->view->assign('timeStart', $this->router->request()->server()->get('REQUEST_TIME_FLOAT'));
-        $this->view->assign('icons', $this->icons);
-        $this->view->assign('SessionUserData', $this->userData);
         $this->view->assign('queryTimeStart', microtime());
         $this->view->assign('userId', $this->userData->getId());
         $this->view->assign('userGroupId', $this->userData->getUserGroupId());
@@ -179,6 +177,8 @@ abstract class ControllerBase
         $this->view->assign('userIsAdminAcc', $this->userData->getIsAdminAcc());
         $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
+        $this->view->assign('icons', clone $this->icons);
+        $this->view->assign('configData', clone $this->configData);
     }
 
     /**

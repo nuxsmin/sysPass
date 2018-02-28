@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -61,7 +61,7 @@ class SelectItem
      */
     public function __construct($id, $name, $item = null)
     {
-        $this->id = (int)$id;
+        $this->id = is_numeric($id) ? (int)$id : $id;
         $this->name = (string)$name;
         $this->item = $item;
     }

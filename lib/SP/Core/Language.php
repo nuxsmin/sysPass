@@ -97,7 +97,7 @@ class Language
         $this->session = $session;
         $this->configData = $config->getConfigData();
 
-        sort(self::$langs);
+        ksort(self::$langs);
     }
 
     /**

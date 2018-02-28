@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -137,13 +137,10 @@ class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('general');
 
-        $userData = $this->session->getUserData();
-
         $template->assign('langs', SelectItemAdapter::factory(Language::getAvailableLanguages())->getItemsFromArraySelected([$this->configData->getSiteLang()]));
         $template->assign('themes', SelectItemAdapter::factory($this->theme->getThemesAvailable())->getItemsFromArraySelected([$this->configData->getSiteTheme()]));
-        $template->assign('isDemoMode', $this->configData->isDemoEnabled() && !$userData->getIsAdminApp());
-        $template->assign('isDisabled', $this->configData->isDemoEnabled() && !$userData->getIsAdminApp() ? 'disabled' : '');
-        $template->assign('configData', $this->configData);
+        $template->assign('isDemoMode', $this->configData->isDemoEnabled() && !$this->userData->getIsAdminApp());
+        $template->assign('isDisabled', $this->configData->isDemoEnabled() && !$this->userData->getIsAdminApp() ? 'disabled' : '');
 
         $template->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModel());
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
@@ -161,8 +158,6 @@ class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('accounts');
 
-        $template->assign('configData', $this->configData);
-
         return new DataTab(__('Cuentas'), $template);
     }
 
@@ -174,8 +169,6 @@ class ConfigManagerController extends ControllerBase
         $template = clone $this->view;
         $template->setBase('config');
         $template->addTemplate('wiki');
-
-        $template->assign('configData', $this->configData);
 
         return new DataTab(__('Wiki'), $template);
     }
@@ -192,7 +185,6 @@ class ConfigManagerController extends ControllerBase
         $template->addTemplate('ldap');
 
         $template->assign('ldapIsAvailable', Checks::ldapIsAvailable());
-        $template->assign('configData', $this->configData);
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
 
@@ -211,7 +203,6 @@ class ConfigManagerController extends ControllerBase
         $template->addTemplate('mail');
 
         $template->assign('mailSecurity', ['SSL', 'TLS']);
-        $template->assign('configData', $this->configData);
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
 
@@ -231,8 +222,6 @@ class ConfigManagerController extends ControllerBase
         $template->addTemplate('encryption');
 
         $template->assign('mailSecurity', ['SSL', 'TLS']);
-        $template->assign('configData', $this->configData);
-
         $template->assign('numAccounts', $this->dic->get(AccountService::class)->getTotalNumAccounts()->num);
         $template->assign('taskId', Task::genTaskId('masterpass'));
 
