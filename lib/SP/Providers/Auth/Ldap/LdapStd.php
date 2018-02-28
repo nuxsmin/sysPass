@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,8 +24,8 @@
 
 namespace SP\Providers\Auth\Ldap;
 
-use SP\Core\Exceptions\SPException;
-use SP\Log\Log;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 
 /**
  * Class LdapStd
@@ -36,21 +36,24 @@ use SP\Log\Log;
  */
 class LdapStd extends LdapBase
 {
+    const userObjectFilter = '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))';
+    const groupObjectFilter = '(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group))';
+
     /**
      * Devolver el filtro para comprobar la pertenecia al grupo
      *
      * @return mixed
      * @throws \SP\Core\Exceptions\SPException
      */
-    protected function getGroupDnFilter()
+    protected function getGroupMembershipFilter()
     {
-        if (empty($this->group)) {
-            return '(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject))';
+        if (empty($this->ldapParams->getGroup())) {
+            return self::userObjectFilter;
         }
 
         $groupDN = ldap_escape($this->searchGroupDN());
 
-        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        return '(&(|(memberOf=' . $groupDN . ')(groupMembership=' . $groupDN . '))' . self::userObjectFilter . ')';
     }
 
     /**
@@ -60,7 +63,7 @@ class LdapStd extends LdapBase
      */
     protected function pickServer()
     {
-        return $this->ConfigData->getLdapServer();
+        return $this->ldapParams->getServer();
     }
 
     /**
@@ -72,52 +75,57 @@ class LdapStd extends LdapBase
     {
         $userLogin = ldap_escape($this->userLogin);
 
-        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))(|(objectClass=inetOrgPerson)(objectClass=person)(objectClass=simpleSecurityObject)))';
+        return '(&(|(samaccountname=' . $userLogin . ')(cn=' . $userLogin . ')(uid=' . $userLogin . '))' . self::userObjectFilter . ')';
     }
 
     /**
      * Buscar al usuario en un grupo.
      *
-     * @throws SPException
+     * @throws LdapException
      * @return bool
      */
     protected function searchUserInGroup()
     {
-        $this->LogMessage->setAction(__FUNCTION__);
-
         // Comprobar si está establecido el filtro de grupo o el grupo coincide con
         // los grupos del usuario
-        if (!$this->group
-            || $this->group === '*'
-            || in_array($this->LdapAuthData->getGroupDn(), $this->LdapAuthData->getGroups())
+        if (!$this->ldapParams->getGroup()
+            || $this->ldapParams->getGroup() === '*'
+            || in_array($this->ldapAuthData->getGroupDn(), $this->ldapAuthData->getGroups())
         ) {
-            $this->LogMessage->addDescription(__('Usuario verificado en grupo', false));
-            $this->writeLog(Log::INFO);
+            $this->eventDispatcher->notifyEvent('ldap.check.group',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Usuario verificado en grupo')))
+            );
 
             return true;
         }
 
-        $userDN = $this->LdapAuthData->getDn();
-        $groupName = $this->getGroupName() ?: $this->group;
+        $userDN = ldap_escape($this->ldapAuthData->getDn());
+        $groupName = $this->getGroupName() ?: $this->ldapParams->getGroup();
 
-        $filter = '(&(cn=' . ldap_escape($groupName) . ')(|(member=' . ldap_escape($userDN) . ')(uniqueMember=' . ldap_escape($userDN) . '))(|(objectClass=groupOfNames)(objectClass=groupOfUniqueNames)(objectClass=group)))';
+        $filter = '(&(cn=' . ldap_escape($groupName) . ')(|(member=' . $userDN . ')(uniqueMember=' . $userDN . '))' . self::groupObjectFilter . ')';
 
         $searchResults = $this->getResults($filter, ['member', 'uniqueMember']);
 
         if ($searchResults === false) {
-            $this->LogMessage->addDescription(__('Error al buscar el grupo de usuarios', false));
-            $this->LogMessage->addDetails(__('Grupo', false), $groupName);
-            $this->LogMessage->addDetails(__('Usuario', false), $userDN);
-            $this->LogMessage->addDetails('LDAP ERROR', sprintf('%s (%d)', ldap_error($this->ldapHandler), ldap_errno($this->ldapHandler)));
-            $this->LogMessage->addDetails('LDAP FILTER', $filter);
-            $this->writeLog();
+            $this->eventDispatcher->notifyEvent('ldap.check.group',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Error al buscar el grupo de usuarios'))
+                    ->addDetail(__u('Usuario'), $this->ldapAuthData->getDn())
+                    ->addDetail(__u('Grupo'), $groupName)
+                    ->addDetail('LDAP ERROR', $this->getLdapErrorMessage())
+                    ->addDetail('LDAP FILTER', $filter))
+            );
 
-            throw new SPException($this->LogMessage->getDescription(), SPException::ERROR);
+            throw new LdapException(__u('Error al buscar el grupo de usuarios'));
         }
 
-        $this->LogMessage->addDescription(__('Usuario verificado en grupo', false));
-        $this->LogMessage->addDescription($groupName);
-        $this->writeLog(Log::INFO);
+        $this->eventDispatcher->notifyEvent('ldap.check.group',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Usuario no pertenece al grupo'))
+                ->addDetail(__u('Usuario'), $this->ldapAuthData->getDn())
+                ->addDetail(__u('Grupo'), $groupName))
+        );
 
         return true;
     }
@@ -133,5 +141,15 @@ class LdapStd extends LdapBase
         @ldap_set_option($this->ldapHandler, LDAP_OPT_REFERRALS, 0);
 
         return true;
+    }
+
+    /**
+     * Devolver el filtro para objetos del tipo grupo
+     *
+     * @return mixed
+     */
+    protected function getGroupObjectFilter()
+    {
+        return self::groupObjectFilter;
     }
 }

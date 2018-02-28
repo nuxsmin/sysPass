@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,8 +24,8 @@
 
 namespace SP\Services;
 
+use DI\Container;
 use Psr\Container\ContainerInterface;
-use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
@@ -59,16 +59,17 @@ abstract class Service
     /**
      * Service constructor.
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @param Container       $dic
+     * @param Config          $config
+     * @param Session         $session
+     * @param EventDispatcher $eventDispatcher
      */
-    final public function __construct()
+    final public function __construct(Container $dic, Config $config, Session $session, EventDispatcher $eventDispatcher)
     {
-        $this->dic = Bootstrap::getContainer();
-
-        $this->config = $this->dic->get(Config::class);
-        $this->session = $this->dic->get(Session::class);
-        $this->eventDispatcher = $this->dic->get(EventDispatcher::class);
+        $this->dic = $dic;
+        $this->config = $config;
+        $this->session = $session;
+        $this->eventDispatcher = $eventDispatcher;
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();

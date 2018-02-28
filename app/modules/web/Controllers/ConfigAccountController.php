@@ -46,7 +46,7 @@ class ConfigAccountController extends SimpleControllerBase
      */
     public function saveAction()
     {
-        $configData = clone $this->config->getConfigData();
+        $configData = $this->config->getConfigData();
 
         $eventMessage = EventMessage::factory();
 

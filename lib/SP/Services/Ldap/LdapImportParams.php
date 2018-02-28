@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -22,32 +22,33 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Auth\Ldap;
+namespace SP\Services\Ldap;
 
 /**
- * Interface LdapInterface
+ * Class LdapImportParams
  *
- * @package Auth\Ldap
+ * @package SP\Services\Ldap
  */
-interface LdapInterface
+class LdapImportParams
 {
     /**
-     * Comprobar la conexión al servidor de LDAP.
+     * @var int
      */
-    public function checkConnection();
-
-
+    public $defaultUserGroup;
     /**
-     * Comprobar si los parámetros necesarios de LDAP están establecidos.
-     *
-     * @return bool
+     * @var int
      */
-    public function checkParams();
-
+    public $defaultUserProfile;
     /**
-     * Obtener los atributos del usuario.
-     *
-     * @return LdapAuthData
+     * @var string
      */
-    public function getAttributes();
+    public $loginAttribute;
+    /**
+     * @var string
+     */
+    public $userNameAttribute;
+    /**
+     * @var string
+     */
+    public $userGroupNameAttribute;
 }

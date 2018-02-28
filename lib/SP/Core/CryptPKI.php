@@ -30,7 +30,6 @@ use phpseclib\Crypt\RSA;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Traits\InjectableTrait;
-use SP\Log\Log;
 
 /**
  * Class CryptPKI para el manejo de las funciones para PKI
@@ -130,8 +129,6 @@ class CryptPKI
         $file = $this->getPublicKeyFile();
 
         if (!file_exists($file)) {
-            Log::writeNewLog(__FUNCTION__, __('El archivo de clave no existe', false), Log::NOTICE);
-
             throw new FileNotFoundException(SPException::ERROR, __('El archivo de clave no existe'));
         }
 
@@ -150,7 +147,7 @@ class CryptPKI
         $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
         $this->rsa->loadKey($this->getPrivateKey());
 
-        return $this->rsa->decrypt($data);
+        return @$this->rsa->decrypt($data);
     }
 
     /**
@@ -164,8 +161,6 @@ class CryptPKI
         $file = $this->getPrivateKeyFile();
 
         if (!file_exists($file)) {
-            Log::writeNewLog(__FUNCTION__, __('El archivo de clave no existe', false), Log::NOTICE);
-
             throw new FileNotFoundException(SPException::ERROR, __('El archivo de clave no existe'));
         }
 

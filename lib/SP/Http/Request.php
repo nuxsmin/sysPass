@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -118,10 +118,14 @@ class Request
 
         try {
             // Desencriptar con la clave RSA
-            $CryptPKI = new CryptPKI();
-            $clearData = $CryptPKI->decryptRSA(base64_decode($encryptedData));
+            if (($clearData = (new CryptPKI())->decryptRSA(base64_decode($encryptedData))) === false) {
+                debugLog('No RSA encrypted data from request');
+
+                return $encryptedData;
+            }
         } catch (\Exception $e) {
-            debugLog($e->getMessage());
+            processException($e);
+
             return $encryptedData;
         }
 

@@ -24,7 +24,6 @@
 
 namespace SP\Providers\Auth\Ldap;
 
-
 /**
  * Class LdapUtil
  *
@@ -32,27 +31,5 @@ namespace SP\Providers\Auth\Ldap;
  */
 class LdapUtil
 {
-    /**
-     * Obtener los datos de una búsqueda de LDAP de un atributo
-     *
-     * @param array  $results
-     * @param string $attribute
-     * @return array
-     */
-    public static function getResultsData(array &$results, $attribute)
-    {
-        $out = [];
 
-        foreach ($results as $result) {
-            if (is_array($result)) {
-                foreach ($result as $ldapAttribute => $value) {
-                    if (strtolower($ldapAttribute) === $attribute) {
-                        $out[] = $value;
-                    }
-                }
-            }
-        }
-
-        return $out;
-    }
 }

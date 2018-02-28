@@ -67,7 +67,7 @@ class FileBackupService extends Service
         // Generar hash unico para evitar descargas no permitidas
         $backupUniqueHash = sha1(uniqid('sysPassBackup', true));
         $this->configData->setBackupHash($backupUniqueHash);
-        $this->config->saveConfig();
+        $this->config->saveConfig($this->configData);
 
         $bakFileApp = BACKUP_PATH . DIRECTORY_SEPARATOR . $siteName . '-' . $backupUniqueHash . '.tar';
         $bakFileDB = BACKUP_PATH . DIRECTORY_SEPARATOR . $siteName . '_db-' . $backupUniqueHash . '.sql';
@@ -130,11 +130,8 @@ class FileBackupService extends Service
      * Utilizar '*' para toda la BBDD o 'table1 table2 table3...'
      *
      * @param string|array $tables
-     * @param FileHandler $fileHandler
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws SPException
-     * @throws \SP\Core\Dic\ContainerException
+     * @param FileHandler  $fileHandler
+     * @throws \Exception
      * @throws \SP\Storage\FileException
      */
     private function backupTables($tables = '*', FileHandler $fileHandler)

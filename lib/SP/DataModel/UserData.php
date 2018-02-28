@@ -36,23 +36,23 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @var string
      */
-    public $login = '';
+    public $login;
     /**
      * @var string
      */
-    public $ssoLogin = '';
+    public $ssoLogin;
     /**
      * @var string
      */
-    public $name = '';
+    public $name;
     /**
      * @var string
      */
-    public $email = '';
+    public $email;
     /**
      * @var string
      */
-    public $notes = '';
+    public $notes;
     /**
      * @var int
      */
@@ -92,11 +92,11 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @var string
      */
-    public $lastLogin = '';
+    public $lastLogin;
     /**
      * @var string
      */
-    public $lastUpdate = '';
+    public $lastUpdate;
     /**
      * @var bool
      */
@@ -108,7 +108,7 @@ class UserData extends UserPassData implements DataModelInterface
     /**
      * @var string
      */
-    public $userGroupName = '';
+    public $userGroupName;
 
     /**
      * @return int

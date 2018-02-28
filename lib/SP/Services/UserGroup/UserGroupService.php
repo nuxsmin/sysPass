@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -100,14 +100,14 @@ class UserGroupService extends Service
     }
 
     /**
-     * @param       $itemData
-     * @param array $users
+     * @param UserGroupData $itemData
+     * @param array         $users
      * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function create($itemData, array $users)
+    public function create($itemData, array $users = [])
     {
         $userGroupId = $this->userGroupRepository->create($itemData);
 

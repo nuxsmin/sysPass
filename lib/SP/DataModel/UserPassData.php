@@ -38,19 +38,19 @@ class UserPassData extends DataModelBase
     /**
      * @var string
      */
-    public $pass = '';
+    public $pass;
     /**
      * @var string
      */
-    public $hashSalt = '';
+    public $hashSalt;
     /**
      * @var string
      */
-    public $mPass = '';
+    public $mPass;
     /**
      * @var string
      */
-    public $mKey = '';
+    public $mKey;
     /**
      * @var int
      */

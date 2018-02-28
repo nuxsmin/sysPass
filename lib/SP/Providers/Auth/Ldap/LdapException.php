@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -24,30 +24,14 @@
 
 namespace SP\Providers\Auth\Ldap;
 
+use SP\Core\Exceptions\SPException;
+
 /**
- * Interface LdapInterface
+ * Class LdapException
  *
- * @package Auth\Ldap
+ * @package SP\Providers\Auth\Ldap
  */
-interface LdapInterface
+class LdapException extends SPException
 {
-    /**
-     * Comprobar la conexión al servidor de LDAP.
-     */
-    public function checkConnection();
 
-
-    /**
-     * Comprobar si los parámetros necesarios de LDAP están establecidos.
-     *
-     * @return bool
-     */
-    public function checkParams();
-
-    /**
-     * Obtener los atributos del usuario.
-     *
-     * @return LdapAuthData
-     */
-    public function getAttributes();
 }

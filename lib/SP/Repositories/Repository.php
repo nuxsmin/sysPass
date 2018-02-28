@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,8 +24,8 @@
 
 namespace SP\Repositories;
 
-use SP\Bootstrap;
 use SP\Config\Config;
+use SP\Core\Dic\Container;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Session\Session;
 use SP\Storage\Database;
@@ -38,29 +38,45 @@ use SP\Storage\DatabaseInterface;
  */
 abstract class Repository
 {
-    /** @var Config */
+    /**
+     * @var Config
+     */
     protected $config;
-    /** @var Session */
+    /**
+     * @var Session
+     */
     protected $session;
-    /** @var EventDispatcher */
+    /**
+     * @var EventDispatcher
+     */
     protected $eventDispatcher;
-    /** @var DatabaseInterface */
+    /**
+     * @var DatabaseInterface
+     */
     protected $db;
+    /**
+     * @var Container
+     */
+    private $dic;
 
     /**
      * Repository constructor.
      *
+     * @param Container       $dic
+     * @param Config          $config
+     * @param Database        $database
+     * @param Session         $session
+     * @param EventDispatcher $eventDispatcher
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    final public function __construct()
+    final public function __construct(Container $dic, Config $config, Database $database, Session $session, EventDispatcher $eventDispatcher)
     {
-        $dic = Bootstrap::getContainer();
-
-        $this->config = $dic->get(Config::class);
-        $this->db = $dic->get(Database::class);
-        $this->session = $dic->get(Session::class);
-        $this->eventDispatcher = $dic->get(EventDispatcher::class);
+        $this->dic = $dic;
+        $this->config = $config;
+        $this->db = $database;
+        $this->session = $session;
+        $this->eventDispatcher = $eventDispatcher;
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();

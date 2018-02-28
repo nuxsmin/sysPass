@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -38,9 +38,9 @@ trait JsonTrait
     /**
      * Returns JSON response
      *
-     * @param int $status Status code
-     * @param string $description Untranslated description string
-     * @param array|null $messages Untranslated massages array of strings
+     * @param int        $status      Status code
+     * @param string     $description Untranslated description string
+     * @param array|null $messages    Untranslated massages array of strings
      */
     protected function returnJsonResponse($status, $description, array $messages = null)
     {
@@ -58,11 +58,12 @@ trait JsonTrait
     /**
      * Returns JSON response
      *
-     * @param mixed $data
-     * @param int $status Status code
-     * @param null $description Untranslated description string
+     * @param mixed  $data
+     * @param int    $status      Status code
+     * @param string $description Untranslated description string
+     * @param array  $messages
      */
-    protected function returnJsonResponseData($data, $status = JsonResponse::JSON_SUCCESS, $description = null)
+    protected function returnJsonResponseData($data, $status = JsonResponse::JSON_SUCCESS, $description = null, array $messages = null)
     {
         $jsonResponse = new JsonResponse();
         $jsonResponse->setStatus($status);
@@ -72,6 +73,9 @@ trait JsonTrait
             $jsonResponse->setDescription($description);
         }
 
+        if (null !== $messages) {
+            $jsonResponse->setMessages($messages);
+        }
 
         Json::returnJson($jsonResponse);
     }
@@ -80,7 +84,7 @@ trait JsonTrait
      * Returns JSON response
      *
      * @param \Exception $exception
-     * @param int $status Status code
+     * @param int        $status Status code
      */
     protected function returnJsonResponseException(\Exception $exception, $status = JsonResponse::JSON_ERROR)
     {

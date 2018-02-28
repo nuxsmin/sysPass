@@ -46,17 +46,18 @@ class ConfigRepository extends Repository
      */
     public function update(ConfigData $configData)
     {
-        $Data = new QueryData();
-        $Data->setQuery('UPDATE Config SET value = ? WHERE parameter = ?');
-        $Data->addParam($configData->getValue());
-        $Data->addParam($configData->getParam());
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE Config SET value = ? WHERE parameter = ?');
+        $queryData->addParam($configData->getValue());
+        $queryData->addParam($configData->getParam());
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
      * @param ConfigData[] $data
      * @return bool
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function updateBatch(array $data)
     {
@@ -64,12 +65,12 @@ class ConfigRepository extends Repository
 
         try {
             foreach ($data as $configData) {
-                $Data = new QueryData();
-                $Data->setQuery('UPDATE Config SET value = ? WHERE parameter = ?');
-                $Data->addParam($configData->getValue());
-                $Data->addParam($configData->getParam());
+                $queryData = new QueryData();
+                $queryData->setQuery('UPDATE Config SET value = ? WHERE parameter = ?');
+                $queryData->addParam($configData->getValue());
+                $queryData->addParam($configData->getParam());
 
-                DbWrapper::getQuery($Data, $this->db);
+                DbWrapper::getQuery($queryData, $this->db);
             }
         } catch (QueryException $e) {
             debugLog($e->getMessage());
@@ -88,15 +89,12 @@ class ConfigRepository extends Repository
      */
     public function create(ConfigData $configData)
     {
-        $query = /** @lang SQL */
-            'INSERT INTO Config SET parameter = ?, value = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('INSERT INTO Config SET parameter = ?, value = ?');
+        $queryData->addParam($configData->getParam());
+        $queryData->addParam($configData->getValue());
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($configData->getParam());
-        $Data->addParam($configData->getValue());
-
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -106,10 +104,10 @@ class ConfigRepository extends Repository
      */
     public function getAll()
     {
-        $Data = new QueryData();
-        $Data->setQuery('SELECT parameter, value FROM Config');
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT parameter, value FROM Config');
 
-        return DbWrapper::getResults($Data);
+        return DbWrapper::getResults($queryData);
     }
 
     /**
@@ -118,11 +116,11 @@ class ConfigRepository extends Repository
      */
     public function getByParam($param)
     {
-        $Data = new QueryData();
-        $Data->setQuery('SELECT value FROM Config WHERE parameter = ? LIMIT 1');
-        $Data->addParam($param);
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT value FROM Config WHERE parameter = ? LIMIT 1');
+        $queryData->addParam($param);
 
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -133,11 +131,11 @@ class ConfigRepository extends Repository
      */
     public function has($param)
     {
-        $Data = new QueryData();
-        $Data->setQuery('SELECT parameter FROM Config WHERE parameter = ? LIMIT 1');
-        $Data->addParam($param);
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT parameter FROM Config WHERE parameter = ? LIMIT 1');
+        $queryData->addParam($param);
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getNumRows() === 1;
     }
@@ -150,10 +148,10 @@ class ConfigRepository extends Repository
      */
     public function deleteByParam($param)
     {
-        $Data = new QueryData();
-        $Data->setQuery('DELETE FROM Config WHERE parameter = ? LIMIT 1');
-        $Data->addParam($param);
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM Config WHERE parameter = ? LIMIT 1');
+        $queryData->addParam($param);
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 }

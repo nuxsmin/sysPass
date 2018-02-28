@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,7 +25,6 @@
 namespace SP\Providers\Auth;
 
 use SP\Config\ConfigData;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
 use SP\Providers\Auth\Browser\Browser;
 use SP\Providers\Auth\Browser\BrowserAuthData;
@@ -33,7 +32,12 @@ use SP\Providers\Auth\Database\Database;
 use SP\Providers\Auth\Database\DatabaseAuthData;
 use SP\Providers\Auth\Ldap\LdapAuthData;
 use SP\Providers\Auth\Ldap\LdapMsAds;
+use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Providers\Auth\Ldap\LdapStd;
+use SP\Providers\Provider;
+use SP\Services\Auth\AuthException;
+use SP\Services\User\UserPassService;
+use SP\Services\User\UserService;
 
 defined('APP_ROOT') || die();
 
@@ -44,7 +48,7 @@ defined('APP_ROOT') || die();
  *
  * @package SP\Providers\Auth
  */
-class Auth
+class Auth extends Provider
 {
     /**
      * @var array
@@ -60,54 +64,15 @@ class Auth
     protected $configData;
 
     /**
-     * Auth constructor.
-     *
-     * @param UserLoginData $userLoginData
-     * @param ConfigData    $configData
-     * @throws SPException
-     */
-    public function __construct(UserLoginData $userLoginData, ConfigData $configData)
-    {
-        $this->userLoginData = $userLoginData;
-        $this->configData = $configData;
-
-        if ($this->configData->isAuthBasicEnabled()) {
-            $this->registerAuth('authBrowser');
-        }
-
-        if ($this->configData->isLdapEnabled()) {
-            $this->registerAuth('authLdap');
-        }
-
-        $this->registerAuth('authDatabase');
-    }
-
-    /**
-     * Registrar un método de autentificación primarios
-     *
-     * @param string $auth Función de autentificación
-     * @throws SPException
-     */
-    protected function registerAuth($auth)
-    {
-        if (array_key_exists($auth, $this->auths)) {
-            throw new SPException(__u('Método ya inicializado'), SPException::ERROR, __FUNCTION__);
-        }
-
-        if (!method_exists($this, $auth)) {
-            throw new SPException(__u('Método no disponible'), SPException::ERROR, __FUNCTION__);
-        }
-
-        $this->auths[$auth] = $auth;
-    }
-
-    /**
      * Probar los métodos de autentificación
      *
+     * @param UserLoginData $userLoginData
      * @return bool|array
      */
-    public function doAuth()
+    public function doAuth(UserLoginData $userLoginData)
     {
+        $this->userLoginData = $userLoginData;
+
         $auths = [];
 
         /** @var AuthDataBase $pAuth */
@@ -129,7 +94,18 @@ class Auth
      */
     public function authLdap()
     {
-        $ldap = $this->configData->isLdapAds() ? new LdapMsAds() : new LdapStd();
+        $ldapParams = (new LdapParams())
+            ->setServer($this->configData->getLdapServer())
+            ->setBindDn($this->configData->getLdapBindUser())
+            ->setBindPass($this->configData->getLdapBindPass())
+            ->setSearchBase($this->configData->getLdapBase())
+            ->setAds($this->configData->isLdapAds());
+
+        if ($this->configData->isLdapAds()) {
+            $ldap = new LdapMsAds($ldapParams, $this->eventDispatcher, $this->configData->isDebug());
+        } else {
+            $ldap = new LdapStd($ldapParams, $this->eventDispatcher, $this->configData->isDebug());
+        }
 
         $ldapAuthData = $ldap->getLdapAuthData();
 
@@ -156,12 +132,13 @@ class Auth
      * se ejecuta el proceso para actualizar la clave.
      *
      * @return DatabaseAuthData
-     * @throws \ReflectionException
-     * @throws \SP\Core\Dic\ContainerException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function authDatabase()
     {
-        return (new Database())->authenticate($this->userLoginData);
+        return (new Database($this->dic->get(UserService::class), $this->dic->get(UserPassService::class)))
+            ->authenticate($this->userLoginData);
     }
 
     /**
@@ -171,6 +148,45 @@ class Auth
      */
     public function authBrowser()
     {
-        return (new Browser())->authenticate($this->userLoginData);
+        return (new Browser($this->configData))->authenticate($this->userLoginData);
+    }
+
+    /**
+     * Auth constructor.
+     *
+     * @throws AuthException
+     */
+    protected function initialize()
+    {
+        $this->configData = $this->config->getConfigData();
+
+        if ($this->configData->isAuthBasicEnabled()) {
+            $this->registerAuth('authBrowser');
+        }
+
+        if ($this->configData->isLdapEnabled()) {
+            $this->registerAuth('authLdap');
+        }
+
+        $this->registerAuth('authDatabase');
+    }
+
+    /**
+     * Registrar un método de autentificación primarios
+     *
+     * @param string $auth Función de autentificación
+     * @throws AuthException
+     */
+    protected function registerAuth($auth)
+    {
+        if (array_key_exists($auth, $this->auths)) {
+            throw new AuthException(__u('Método ya inicializado'), AuthException::ERROR, __FUNCTION__);
+        }
+
+        if (!method_exists($this, $auth)) {
+            throw new AuthException(__u('Método no disponible'), AuthException::ERROR, __FUNCTION__);
+        }
+
+        $this->auths[$auth] = $auth;
     }
 }

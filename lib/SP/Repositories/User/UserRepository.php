@@ -480,8 +480,8 @@ class UserRepository extends Repository implements RepositoryItemInterface
             'SELECT login, email
             FROM User
             WHERE UPPER(login) = UPPER(?) 
-            OR UPPER(ssoLogin) = UPPER(?) 
-            OR UPPER(email) = UPPER(?)';
+            OR UPPER(?) IN (SELECT ssoLogin FROM User WHERE ssoLogin IS NOT NULL OR ssoLogin <> \'\')
+            OR UPPER(?) IN (SELECT email FROM User WHERE email IS NOT NULL OR email <> \'\')';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);

@@ -81,7 +81,7 @@ class ConfigUtil
             throw new ConfigException(
                 __u('Los permisos del directorio "/config" son incorrectos'),
                 ConfigException::ERROR,
-                sprintf(__u('Actual: %s - Necesario: 750'), $configPerms));
+                sprintf(__('Actual: %s - Necesario: 750'), $configPerms));
         }
     }
 }

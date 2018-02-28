@@ -47,7 +47,7 @@ class ConfigWikiController extends SimpleControllerBase
     public function saveAction()
     {
         $eventMessage = EventMessage::factory();
-        $configData = clone $this->config->getConfigData();
+        $configData = $this->config->getConfigData();
 
         // Wiki
         $wikiEnabled = Request::analyze('wiki_enabled', false, false, true);

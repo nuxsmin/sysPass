@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,9 +24,7 @@
 
 namespace SP\Providers\Auth\Browser;
 
-use SP\Config\Config;
 use SP\Config\ConfigData;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\UserLoginData;
 use SP\Providers\Auth\AuthInterface;
 
@@ -39,25 +37,19 @@ use SP\Providers\Auth\AuthInterface;
  */
 class Browser implements AuthInterface
 {
-    use InjectableTrait;
-
-    /** @var ConfigData */
-    protected $configData;
+    /**
+     * @var ConfigData
+     */
+    private $configData;
 
     /**
      * Browser constructor.
+     *
+     * @param ConfigData $configData
      */
-    public function __construct()
+    public function __construct(ConfigData $configData)
     {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param Config $config
-     */
-    public function inject(Config $config)
-    {
-        $this->configData = $config->getConfigData();
+        $this->configData = $configData;
     }
 
     /**

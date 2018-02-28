@@ -54,8 +54,7 @@ class ConfigBackupController extends SimpleControllerBase
         }
 
         try {
-            $backupService = new FileBackupService();
-            $backupService->doBackup();
+            $this->dic->get(FileBackupService::class)->doBackup();
 
             $this->eventDispatcher->notifyEvent('run.backup.end',
                 new Event($this, EventMessage::factory()

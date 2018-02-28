@@ -1,7 +1,7 @@
 <?php /** @var $icons \Theme\Icons */ ?>
 
 <div id="title" class="midroundup titleNormal">
-    <?php echo __('LDAP'); ?>
+    <?php echo __('Configuración'); ?>
 </div>
 
 <form method="post" name="frmLdap" id="frmLdap" class="form-action"
@@ -249,12 +249,66 @@
                     </select>
                 </td>
             </tr>
+            <tr id="ldap-results" style="display: none;">
+                <td class="descField">
+                    <?php echo __('Resultados'); ?>
+                </td>
+                <td class="valField">
+                    <div class="lowres-title"><?php echo __('Resultados'); ?></div>
+                    <div class="list-wrap"></div>
+                </td>
+            </tr>
+        <?php else: ?>
+            <tr>
+                <td class="option-disabled">
+                    <?php echo __('Módulo no disponible'); ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+    </table>
+
+
+    <div class="tab-actions">
+        <ul>
+            <li>
+                <button id="btnBack" type="button"
+                        class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                        title="<?php echo __('Atrás'); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                </button>
+            </li>
+            <li>
+                <button type="button"
+                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
+                        data-onclick="ldap/check"
+                        data-action-route="configLdap/check"
+                        data-src="#frmLdap"
+                        title="<?php echo $icons->getIconCheck()->getTitle(); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconCheck()->getIcon(); ?></i>
+                </button>
+            </li>
+            <li>
+                <button form="frmLdap"
+                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                        title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div id="title" class="midroundup titleNormal">
+        <?php echo __('Importación'); ?>
+    </div>
+
+    <table id="tblLdap" class="data tblConfig round">
+        <?php if ($ldapIsAvailable || $isDemoMode): ?>
             <tr>
                 <td class="descField">
                     <?php echo __('Atributo Login'); ?>
-                    <div id="help-ldap_loginattribute"
+                    <div id="help-ldap_login_attribute"
                          class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_loginattribute">
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_login_attribute">
                         <p>
                             <?php echo __('Define el atributo a utilizar para el login del usuario en la importación.'); ?>
                         </p>
@@ -263,7 +317,7 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Atributo Login'); ?></div>
 
-                    <select id="ldap_loginattribute" name="ldap_loginattribute"
+                    <select id="ldap_login_attribute" name="ldap_login_attribute"
                             class="select-box" required>
                         <option value="samaccountname" selected>sAMAccountName</option>
                         <option value="userprincipalname">userPrincipalName</option>
@@ -275,9 +329,9 @@
             <tr>
                 <td class="descField">
                     <?php echo __('Atributo Nombre'); ?>
-                    <div id="help-ldap_nameattribute"
+                    <div id="help-ldap_username_attribute"
                          class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_nameattribute">
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_username_attribute">
                         <p>
                             <?php echo __('Define el atributo a utilizar para el nombre del usuario en la importación.'); ?>
                         </p>
@@ -286,10 +340,42 @@
                 <td class="valField">
                     <div class="lowres-title"><?php echo __('Atributo Nombre'); ?></div>
 
-                    <select id="ldap_nameattribute" name="ldap_nameattribute"
+                    <select id="ldap_username_attribute" name="ldap_username_attribute"
                             class="select-box" required>
                         <option value="displayname" selected>displayName</option>
                         <option value="fullname">fullName</option>
+                        <option value="cn">cn</option>
+                        <option value="name">name</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField"></td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_import_groups">
+                        <input type="checkbox" id="ldap_import_groups"
+                               class="mdl-switch__input mdl-color-text--indigo-400"
+                               name="ldap_import_groups"/>
+                        <span class="mdl-switch__label"><?php echo __('Importar Grupos'); ?></span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo __('Atributo Nombre Grupo'); ?>
+                    <div id="help-ldap_groupname_attribute"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_groupname_attribute">
+                        <p>
+                            <?php echo __('Define el atributo a utilizar para el nombre del grupo en la importación.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <div class="lowres-title"><?php echo __('Atributo Nombre Grupo'); ?></div>
+
+                    <select id="ldap_groupname_attribute" name="ldap_groupname_attribute"
+                            class="select-box" required>
                         <option value="cn">cn</option>
                         <option value="name">name</option>
                     </select>
@@ -312,42 +398,25 @@
             </tr>
         <?php endif; ?>
     </table>
-</form>
 
-<div class="tab-actions">
-    <ul>
-        <li>
-            <button id="btnBack" type="button"
-                    class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                    title="<?php echo __('Atrás'); ?>">
-                <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-            </button>
-        </li>
-        <li>
-            <button type="button"
-                    class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                    data-onclick="appMgmt/ldapSync"
-                    data-action-route="configLdap/sync"
-                    title="<?php echo __('Importar usuarios de LDAP'); ?>">
-                <i class="material-icons">get_app</i>
-            </button>
-        </li>
-        <li>
-            <button type="button"
-                    class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
-                    data-onclick="checks/ldap"
-                    data-action-route="configLdap/check"
-                    data-src="#frmLdap"
-                    title="<?php echo $icons->getIconCheck()->getTitle(); ?>">
-                <i class="material-icons"><?php echo $icons->getIconCheck()->getIcon(); ?></i>
-            </button>
-        </li>
-        <li>
-            <button form="frmLdap"
-                    class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                    title="<?php echo $icons->getIconSave()->getTitle(); ?>">
-                <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
-            </button>
-        </li>
-    </ul>
-</div>
+    <div class="tab-actions">
+        <ul>
+            <li>
+                <button id="btnBack" type="button"
+                        class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                        title="<?php echo __('Atrás'); ?>">
+                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                </button>
+            </li>
+            <li>
+                <button type="button"
+                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                        data-onclick="ldap/import"
+                        data-action-route="configLdap/import"
+                        data-src="#frmLdap"
+                        title="<?php echo __('Importar usuarios de LDAP'); ?>">
+                    <i class="material-icons">get_app</i>
+                </button>
+            </li>
+    </div>
+</form>

@@ -479,27 +479,21 @@ sysPass.Theme = function (Common) {
 
     /**
      * Elementos HTML del tema
-     *
-     * @type {{getList: html.getList}}
      */
-    var html = {
+    const html = {
         getList: function (items, icon) {
-            var $ul = $("<ul class=\"ldap-list-item mdl-list\"></ul>");
-            var $li = $("<li class=\"mdl-list__item\"></li>");
-            var $span = $("<span class=\"mdl-list__item-primary-content\"></span>");
+            const $ul = $("<ul class=\"ldap-list-item mdl-list\"></ul>");
+            const $li = $("<li class=\"mdl-list__item\"></li>");
+            const $span = $("<span class=\"mdl-list__item-primary-content\"></span>");
 
-            if (icon === undefined) {
-                icon = "<i class=\"material-icons mdl-list__item-icon\">person</i>";
-            } else {
-                icon = "<i class=\"material-icons mdl-list__item-icon\">" + icon + "</i>";
-            }
+            const i = "<i class=\"material-icons mdl-list__item-icon\">" + (icon === undefined ? "person" : icon) + "</i>";
 
             items.forEach(function (value) {
-                var $spanClone = $span.clone();
-                $spanClone.append(icon);
+                const $spanClone = $span.clone();
+                $spanClone.append(i);
                 $spanClone.append(value);
 
-                var $item = $li.clone().append($spanClone);
+                const $item = $li.clone().append($spanClone);
                 $ul.append($item);
             });
 
@@ -507,15 +501,15 @@ sysPass.Theme = function (Common) {
         },
         tabs: {
             add: function (header, index, title, isActive) {
-                var $header = $(header);
-                var active = "";
+                const $header = $(header);
+                let active;
 
                 if (isActive === 1) {
                     $header.parent().find("#tabs-" + index).addClass("is-active");
                     active = "is-active";
                 }
 
-                var tab = "<a href=\"#tabs-" + index + "\" class=\"mdl-tabs__tab " + active + "\">" + title + "</a>";
+                const tab = "<a href=\"#tabs-" + index + "\" class=\"mdl-tabs__tab " + active + "\">" + title + "</a>";
 
                 $header.append(tab);
             }

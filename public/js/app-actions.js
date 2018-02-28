@@ -729,24 +729,6 @@ sysPass.Actions = function (Common) {
      * @type {{ldap: checks.ldap, wiki: checks.wiki}}
      */
     const checks = {
-        ldap: function ($obj) {
-            log.info("checks:ldap");
-
-            const $form = $($obj.data("src"));
-            $form.find("[name='sk']").val(Common.sk.get());
-
-            const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
-            opts.data = $form.serialize();
-
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
-
-                var $results = $("#ldap-results");
-                $results.find(".list-wrap").html(Common.appTheme().html.getList(json.data));
-                $results.show("slow");
-            });
-        },
         wiki: function ($obj) {
             log.info("checks:wiki");
 
@@ -1190,42 +1172,6 @@ sysPass.Actions = function (Common) {
             log.info("appMgmt:nav");
 
             grid.nav($obj);
-        },
-        ldapSync: function ($obj) {
-            log.info("appMgmt:ldapSync");
-
-            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[57] + "</p></div>";
-
-            mdlDialog().show({
-                text: atext,
-                negative: {
-                    title: Common.config().LANG[44],
-                    onClick: function (e) {
-                        e.preventDefault();
-
-                        Common.msg.error(Common.config().LANG[44]);
-                    }
-                },
-                positive: {
-                    title: Common.config().LANG[43],
-                    onClick: function (e) {
-                        var opts = Common.appRequests().getRequestOpts();
-                        opts.url = ajaxUrl.entrypoint;
-                        opts.data = {
-                            actionId: $obj.data("action-id"),
-                            sk: Common.sk.get(),
-                            isAjax: 1,
-                            ldap_loginattribute: $("#ldap_loginattribute").val(),
-                            ldap_nameattribute: $("#ldap_nameattribute").val(),
-                            ldap_ads: $("#ldap_ads").prop("checked")
-                        };
-
-                        Common.appRequests().getActionCall(opts, function (json) {
-                            Common.msg.out(json);
-                        });
-                    }
-                }
-            });
         }
     };
 
@@ -1559,6 +1505,62 @@ sysPass.Actions = function (Common) {
         }
     };
 
+    const ldap = {
+        check: function ($obj) {
+            log.info("checks:ldap");
+
+            const $form = $($obj.data("src"));
+            $form.find("[name='sk']").val(Common.sk.get());
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + '?r=' + $obj.data("action-route");
+            opts.data = $form.serialize();
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+
+                const $results = $("#ldap-results");
+                $results.find(".list-wrap")
+                    .empty()
+                    .append(Common.appTheme().html.getList(json.data.users))
+                    .append(Common.appTheme().html.getList(json.data.groups, 'group'));
+                $results.show("slow");
+            });
+        },
+        import: function ($obj) {
+            log.info("appMgmt:ldapSync");
+
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[57] + "</p></div>";
+
+            mdlDialog().show({
+                text: atext,
+                negative: {
+                    title: Common.config().LANG[44],
+                    onClick: function (e) {
+                        e.preventDefault();
+
+                        Common.msg.error(Common.config().LANG[44]);
+                    }
+                },
+                positive: {
+                    title: Common.config().LANG[43],
+                    onClick: function (e) {
+                        const $form = $($obj.data("src"));
+                        $form.find("[name='sk']").val(Common.sk.get());
+
+                        const opts = Common.appRequests().getRequestOpts();
+                        opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
+                        opts.data = $form.serialize();
+
+                        Common.appRequests().getActionCall(opts, function (json) {
+                            Common.msg.out(json);
+                        });
+                    }
+                }
+            });
+        }
+    };
+
     return {
         doAction: doAction,
         appMgmt: appMgmt,
@@ -1574,6 +1576,7 @@ sysPass.Actions = function (Common) {
         plugin: plugin,
         notification: notification,
         wiki: wiki,
-        items: items
+        items: items,
+        ldap: ldap
     };
 };

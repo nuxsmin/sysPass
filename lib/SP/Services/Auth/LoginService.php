@@ -147,9 +147,7 @@ class LoginService extends Service
             );
         }
 
-        $auth = new Auth($this->userLoginData, $this->configData);
-
-        if (($result = $auth->doAuth()) !== false) {
+        if (($result = $this->dic->get(Auth::class)->doAuth($this->userLoginData)) !== false) {
             // Ejecutar la acción asociada al tipo de autentificación
             foreach ($result as $authResult) {
                 /** @var AuthResult $authResult */

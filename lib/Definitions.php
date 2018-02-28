@@ -30,7 +30,7 @@ return [
     \SP\Core\Session\Session::class => object(\SP\Core\Session\Session::class),
     \SP\Config\Config::class => object(\SP\Config\Config::class)
         ->constructor(object(\SP\Storage\XmlHandler::class)
-            ->constructor(CONFIG_FILE)),
+            ->constructor(CONFIG_FILE), get(\SP\Core\Session\Session::class)),
     \SP\Core\Language::class => object(\SP\Core\Language::class),
     \SP\Config\ConfigData::class => function (\SP\Config\Config $config) {
         return $config->getConfigData();

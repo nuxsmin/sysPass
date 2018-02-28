@@ -25,9 +25,9 @@
 namespace SP\Providers\Auth\Database;
 
 use SP\Core\Crypt\Hash;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\UserLoginData;
 use SP\Providers\Auth\AuthInterface;
+use SP\Services\User\UserLoginResponse;
 use SP\Services\User\UserPassService;
 use SP\Services\User\UserService;
 
@@ -44,14 +44,33 @@ class Database implements AuthInterface
      * @var UserLoginData $userLoginData
      */
     protected $userLoginData;
+    /**
+     * @var UserService
+     */
+    private $userService;
+    /**
+     * @var UserPassService
+     */
+    private $userPassService;
+
+    /**
+     * Database constructor.
+     *
+     * @param UserService     $userService
+     * @param UserPassService $userPassService
+     */
+    public function __construct(UserService $userService, UserPassService $userPassService)
+    {
+        $this->userService = $userService;
+        $this->userPassService = $userPassService;
+    }
+
 
     /**
      * Autentificar al usuario
      *
      * @param UserLoginData $userLoginData Datos del usuario
      * @return DatabaseAuthData
-     * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
      */
     public function authenticate(UserLoginData $userLoginData)
     {
@@ -81,23 +100,22 @@ class Database implements AuthInterface
      * se ejecuta el proceso para actualizar la clave.
      *
      * @return bool
-     * @throws \SP\Core\Dic\ContainerException
-     * @throws \ReflectionException
      */
     protected function authUser()
     {
         try {
-            $userLoginResponse = (new UserService())->getByLogin($this->userLoginData->getLoginUser());
+            $userLoginResponse = $this->userService->getByLogin($this->userLoginData->getLoginUser());
 
             $this->userLoginData->setUserLoginResponse($userLoginResponse);
 
-            if ($userLoginResponse->getIsMigrate() && $this->checkMigrateUser()) {
-                return (new UserPassService())->migrateUserPassById($userLoginResponse->getId(), $this->userLoginData->getLoginPass());
+            if ($userLoginResponse->getIsMigrate() && $this->checkMigrateUser($userLoginResponse)) {
+                return $this->userPassService->migrateUserPassById($userLoginResponse->getId(), $this->userLoginData->getLoginPass());
 
             }
 
             return Hash::checkHashKey($this->userLoginData->getLoginPass(), $userLoginResponse->getPass());
-        } catch (SPException $e) {
+        } catch (\Exception $e) {
+            processException($e);
 //            $Log = new Log();
 //            $LogMessage = $Log->getLogMessage();
 //            $LogMessage->setAction(__FUNCTION__);
@@ -110,12 +128,11 @@ class Database implements AuthInterface
     }
 
     /**
+     * @param UserLoginResponse $userLoginResponse
      * @return bool
      */
-    protected function checkMigrateUser()
+    protected function checkMigrateUser(UserLoginResponse $userLoginResponse)
     {
-        $userLoginResponse = $this->userLoginData->getUserLoginResponse();
-
         return ($userLoginResponse->getPass() === sha1($userLoginResponse->getHashSalt() . $this->userLoginData->getLoginPass())
             || $userLoginResponse->getPass() === md5($this->userLoginData->getLoginPass())
             || hash_equals($userLoginResponse->getPass(), crypt($this->userLoginData->getLoginPass(), $userLoginResponse->getHashSalt()))

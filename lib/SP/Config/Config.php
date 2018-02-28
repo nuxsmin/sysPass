@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,10 +24,11 @@
 
 namespace SP\Config;
 
+use DI\Container;
 use ReflectionObject;
 use SP\Core\Exceptions\ConfigException;
 use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
+use SP\Services\Config\ConfigBackupService;
 use SP\Storage\XmlFileStorageInterface;
 use SP\Storage\XmlHandler;
 
@@ -38,8 +39,6 @@ defined('APP_ROOT') || die();
  */
 class Config
 {
-    use InjectableTrait;
-
     /**
      * @var bool
      */
@@ -56,18 +55,24 @@ class Config
      * @var Session
      */
     private $session;
+    /**
+     * @var Container
+     */
+    private $dic;
 
     /**
      * Config constructor.
      *
      * @param XmlFileStorageInterface $fileStorage
-     * @throws \SP\Core\Exceptions\ConfigException
-     * @throws \SP\Core\Dic\ContainerException
+     * @param Session                 $session
+     * @param Container               $dic
+     * @throws ConfigException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct(XmlFileStorageInterface $fileStorage)
+    public function __construct(XmlFileStorageInterface $fileStorage, Session $session, Container $dic)
     {
-        $this->injectDependencies();
-
+        $this->session = $session;
         $this->fileStorage = $fileStorage;
 
         if (!self::$configLoaded) {
@@ -77,6 +82,7 @@ class Config
 
             self::$configLoaded = true;
         }
+        $this->dic = $dic;
     }
 
     /**
@@ -90,11 +96,11 @@ class Config
         ConfigUtil::checkConfigDir();
 
         try {
-            // Mapear el array de elementos de configuración con las propieades de la clase configData
+            // Mapear el array de elementos de configuración con las propiedades de la clase configData
             $items = $this->fileStorage->load('config')->getItems();
-            $Reflection = new ReflectionObject($this->configData);
+            $reflectionObject = new ReflectionObject($this->configData);
 
-            foreach ($Reflection->getProperties() as $property) {
+            foreach ($reflectionObject->getProperties() as $property) {
                 $property->setAccessible(true);
 
                 if (isset($items[$property->getName()])) {
@@ -110,16 +116,6 @@ class Config
         }
 
         return $this->configData;
-    }
-
-    /**
-     * Obtener la configuración o devolver una nueva
-     *
-     * @return void
-     * @deprecated
-     */
-    public static function getConfig()
-    {
     }
 
     /**
@@ -156,29 +152,21 @@ class Config
      *
      * @param ConfigData $configData
      * @param bool       $backup
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
-    public function saveConfig(ConfigData $configData = null, $backup = true)
+    public function saveConfig(ConfigData $configData, $backup = true)
     {
-        $configData = null === $configData ? $this->configData : $configData;
+        if ($backup) {
+            $this->dic->get(ConfigBackupService::class)->backup();
+        }
+
         $configData->setConfigDate(time());
         $configData->setConfigSaver($this->session->getUserData()->getLogin());
         $configData->setConfigHash();
 
         $this->fileStorage->setItems($configData);
         $this->fileStorage->save('config');
-
-//        if ($backup) {
-//            $this->backupToDB();
-//        }
-    }
-
-    /**
-     * Realizar un backup de la configuración en la BD
-     */
-    private function backupToDB()
-    {
-        ConfigDB::setValue('config_backup', json_encode($this->configData), true, true);
-        ConfigDB::setValue('config_backupdate', time());
     }
 
     /**
@@ -186,26 +174,6 @@ class Config
      */
     public function getConfigData()
     {
-        return $this->configData;
-    }
-
-    /**
-     * @param Session $session
-     */
-    public function inject(Session $session)
-    {
-        $this->session = $session;
-    }
-
-    /**
-     * Restaurar la configuración desde la BD
-     *
-     * @return array
-     */
-    private function restoreBackupFromDB()
-    {
-        $configBackup = ConfigDB::getValue('config_backup');
-
-        return json_decode($configBackup);
+        return clone $this->configData;
     }
 }

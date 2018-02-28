@@ -47,7 +47,7 @@ class ConfigMailController extends SimpleControllerBase
     public function saveAction()
     {
         $eventMessage = EventMessage::factory();
-        $configData = clone $this->config->getConfigData();
+        $configData = $this->config->getConfigData();
 
         // Mail
         $mailEnabled = Request::analyze('mail_enabled', false, false, true);
