@@ -7,7 +7,8 @@
  */
 ?>
 <div id="searchbox" class="round5 shadow">
-    <form method="post" name="frmSearch" id="frmSearch" class="form-action" data-onsubmit="account/search">
+    <form method="post" name="frmSearch" id="frmSearch" class="form-action" data-onsubmit="account/search"
+          data-action-route="<?php echo $searchRoute; ?>">
         <div class="search-text">
             <div class="mdl-textfield mdl-js-textfield">
                 <input class="mdl-textfield__input mdl-color-text--indigo-400" type="text" id="search"

@@ -44,7 +44,7 @@ class AccountFavoriteRepository extends Repository
     public function getForUserId($id)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT accountId FROM AccountToFavorite WHERE userId = ?');
+        $queryData->setQuery('SELECT accountId, userId FROM AccountToFavorite WHERE userId = ?');
         $queryData->addParam($id);
         $queryData->setUseKeyPair(true);
 

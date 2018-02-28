@@ -162,7 +162,7 @@ class AccountSearchService extends Service
             $accountsSearchItem->setTextMaxLength($maxTextLength);
             $accountsSearchItem->setColor($this->pickAccountColor($accountSearchData->getClientId()));
             $accountsSearchItem->setLink($accountLinkEnabled);
-            $accountsSearchItem->setFavorite(in_array($accountSearchData->getId(), $favorites, true));
+            $accountsSearchItem->setFavorite(isset($favorites[$accountSearchData->getId()]));
 
             $accountsData[] = $accountsSearchItem;
         }

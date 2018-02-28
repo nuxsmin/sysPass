@@ -577,9 +577,6 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function getByFilter(AccountSearchFilter $accountSearchFilter)
     {
-        $queryJoin = [];
-        $queryLimit = '';
-
         $queryFilterCommon = new QueryCondition();
         $queryFilterSelect = new QueryCondition();
 
@@ -632,28 +629,27 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             $where[] = $queryFilterUser->getFilters();
         }
 
+        $join = ['query' => [], 'param' => []];
+
+        if ($accountSearchFilter->isSearchFavorites() === true) {
+            $join['query'][] = 'INNER JOIN AccountToFavorite AF ON (AF.accountId = A.id AND AF.userId = ?)';
+            $join['param'][] = $this->session->getUserData()->getId();
+        }
+
         $queryData = new QueryData();
         $queryData->setWhere($where);
-        $queryData->setParams(array_merge($queryFilterCommon->getParams(), $queryFilterSelect->getParams(), $queryFilterUser->getParams()));
+        $queryData->setParams(array_merge($join['param'], $queryFilterCommon->getParams(), $queryFilterSelect->getParams(), $queryFilterUser->getParams()));
+        $queryData->setSelect('*');
+        $queryData->setFrom('account_search_v A ' . implode(PHP_EOL, $join['query']));
+        $queryData->setOrder($accountSearchFilter->getOrderString());
 
         if ($accountSearchFilter->getLimitCount() > 0) {
             $queryLimit = '?, ?';
 
             $queryData->addParam($accountSearchFilter->getLimitStart());
             $queryData->addParam($accountSearchFilter->getLimitCount());
+            $queryData->setLimit($queryLimit);
         }
-
-        if ($accountSearchFilter->isSearchFavorites() === true) {
-            $queryJoin[] = 'INNER JOIN AccountToFavorite AF ON (AF.accountId = id AND AF.userId = ?)';
-            $queryData->addParam($this->session->getUserData()->getId());
-        }
-
-        $queryJoin = implode('', $queryJoin);
-
-        $queryData->setSelect('*');
-        $queryData->setFrom('account_search_v A' . $queryJoin);
-        $queryData->setOrder($accountSearchFilter->getOrderString());
-        $queryData->setLimit($queryLimit);
 
         $queryData->setMapClassName(AccountSearchVData::class);
 

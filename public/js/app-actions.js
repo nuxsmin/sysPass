@@ -414,7 +414,7 @@ sysPass.Actions = function (Common) {
         search: function ($obj) {
             log.info("account:search");
 
-            var $frmSearch = $("#frmSearch");
+            const $frmSearch = $("#frmSearch");
             $frmSearch.find("input[name='sk']").val(Common.sk.get());
 
             order.key = $frmSearch.find("input[name='skey']").val();
@@ -424,8 +424,8 @@ sysPass.Actions = function (Common) {
                 $frmSearch.find("input[name='start']").val(0);
             }
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.method = "get";
             opts.data = $frmSearch.serialize();
 

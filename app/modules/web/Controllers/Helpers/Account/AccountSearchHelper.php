@@ -280,6 +280,7 @@ class AccountSearchHelper extends HelperBase
         $this->view->assign('searchGlobal', $this->accountSearchFilter->getGlobalSearch());
         $this->view->assign('searchFavorites', $this->accountSearchFilter->isSearchFavorites());
 
+        $this->view->assign('searchRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_SEARCH));
         $this->view->assign('favoriteRouteOn', Acl::getActionRoute(ActionsInterface::ACCOUNT_FAVORITE_ADD));
         $this->view->assign('favoriteRouteOff', Acl::getActionRoute(ActionsInterface::ACCOUNT_FAVORITE_DELETE));
     }

@@ -188,7 +188,7 @@ class Database implements DatabaseInterface
                 $stmt = $connection->query($query);
             }
 
-            if ($queryData->isUseKeyPair() === true) {
+            if ($queryData->isUseKeyPair()) {
                 $stmt->setFetchMode(PDO::FETCH_KEY_PAIR);
             } elseif (null !== $queryData->getMapClass()) {
                 $stmt->setFetchMode(PDO::FETCH_INTO, $queryData->getMapClass());
