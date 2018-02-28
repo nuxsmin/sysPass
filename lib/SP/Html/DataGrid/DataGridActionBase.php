@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -38,9 +38,9 @@ abstract class DataGridActionBase implements DataGridActionInterface
     /**
      * El objeto reflexivo que determina si se muestra la acción
      *
-     * @var \ReflectionMethod
+     * @var callable
      */
-    protected $_reflectionFilter;
+    protected $_runtimeFilter;
     /**
      * El nombre de la acción
      *
@@ -131,11 +131,11 @@ abstract class DataGridActionBase implements DataGridActionInterface
     /**
      * Devolver el método reflexivo que determina si se muestra la acción
      *
-     * @return \ReflectionMethod
+     * @return callable
      */
-    public function getReflectionFilter()
+    public function getRuntimeFilter()
     {
-        return $this->_reflectionFilter;
+        return $this->_runtimeFilter;
     }
 
     /**
@@ -143,12 +143,19 @@ abstract class DataGridActionBase implements DataGridActionInterface
      *
      * @param string $class
      * @param string $method
+     * @throws \RuntimeException
      * @return $this
-     * @throws \ReflectionException
      */
-    public function setReflectionFilter($class, $method)
+    public function setRuntimeFilter($class, $method)
     {
-        $this->_reflectionFilter = new \ReflectionMethod($class, $method);
+        if (method_exists($class, $method)) {
+            $this->_runtimeFilter = function ($filter) use ($method) {
+//                new \ReflectionMethod($class, $method);
+                return $filter->{$method}();
+            };
+        } else {
+            throw new \RuntimeException('Method doen\'t exist');
+        }
 
         return $this;
     }

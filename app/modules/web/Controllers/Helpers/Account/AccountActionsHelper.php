@@ -51,7 +51,6 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
-     * @throws \ReflectionException
      */
     public function getViewAction()
     {
@@ -62,7 +61,7 @@ class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Detalles de Cuenta'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconView());
-        $action->setReflectionFilter(AccountSearchItem::class, 'isShowView');
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowView');
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
         $action->addData('action-sk', $this->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
@@ -198,7 +197,7 @@ class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Eliminar Cuenta'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconDelete());
-        $action->setReflectionFilter(AccountSearchItem::class, 'isShowDelete');
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowDelete');
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_DELETE));
         $action->addData('action-sk', $this->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_DELETE));
@@ -260,7 +259,7 @@ class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Ver Clave'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconViewPass());
-        $action->setReflectionFilter(AccountSearchItem::class, 'isShowViewPass');
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW_PASS));
         $action->addData('action-full', 1);
         $action->addData('action-sk', $this->sk);
@@ -286,7 +285,7 @@ class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Copiar Clave en Portapapeles'));
         $action->addClass('btn-action');
         $action->setIcon($ClipboardIcon);
-        $action->setReflectionFilter(AccountSearchItem::class, 'isShowCopyPass');
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopyPass');
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY_PASS));
         $action->addData('action-full', 0);
         $action->addData('action-sk', $this->sk);
@@ -309,7 +308,7 @@ class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Copiar Cuenta'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconCopy());
-        $action->setReflectionFilter(AccountSearchItem::class, 'isShowCopy');
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopy');
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY));
         $action->addData('action-sk', $this->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY));
@@ -331,7 +330,7 @@ class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Modificar Clave de Cuenta'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconEditPass());
-        $action->setReflectionFilter(AccountSearchItem::class, 'isShowViewPass');
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT_PASS));
         $action->addData('action-sk', $this->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT_PASS));
@@ -353,7 +352,7 @@ class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Editar Cuenta'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconEdit());
-        $action->setReflectionFilter(AccountSearchItem::class, 'isShowEdit');
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowEdit');
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT));
         $action->addData('action-sk', $this->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT));
@@ -374,7 +373,7 @@ class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Solicitar Modificación'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconEmail());
-        $action->setReflectionFilter(AccountSearchItem::class, 'isShowRequest');
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowRequest');
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_REQUEST));
         $action->addData('action-sk', $this->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));

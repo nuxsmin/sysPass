@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Account\AccountSearchFilter;
 use SP\Account\AccountSearchItem;
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Html\DataGrid\DataGrid;
 use SP\Html\DataGrid\DataGridAction;
@@ -152,7 +153,7 @@ class AccountSearchHelper extends HelperBase
         $GridActionOptional->setName(__('Más Acciones'));
         $GridActionOptional->setTitle(__('Más Acciones'));
         $GridActionOptional->setIcon($icons->getIconOptional());
-        $GridActionOptional->setReflectionFilter(AccountSearchItem::class, 'isShowOptional');
+        $GridActionOptional->setRuntimeFilter(AccountSearchItem::class, 'isShowOptional');
         $GridActionOptional->addData('onclick', 'account/menu');
 
         $GridPager = new DataGridPager();
@@ -278,6 +279,9 @@ class AccountSearchHelper extends HelperBase
         $this->view->assign('searchTxt', $this->accountSearchFilter->getTxtSearch());
         $this->view->assign('searchGlobal', $this->accountSearchFilter->getGlobalSearch());
         $this->view->assign('searchFavorites', $this->accountSearchFilter->isSearchFavorites());
+
+        $this->view->assign('favoriteRouteOn', Acl::getActionRoute(ActionsInterface::ACCOUNT_FAVORITE_ADD));
+        $this->view->assign('favoriteRouteOff', Acl::getActionRoute(ActionsInterface::ACCOUNT_FAVORITE_DELETE));
     }
 
     /**

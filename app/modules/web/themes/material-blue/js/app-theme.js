@@ -366,7 +366,7 @@ sysPass.Theme = function (Common) {
                 $frmSearch.submit();
             });
 
-            var checkFavorite = function ($obj) {
+            const checkFavorite = function ($obj) {
                 if ($obj.data("status") === "on") {
                     $obj.addClass("mdl-color-text--amber-A100");
                     $obj.attr("title", Common.config().LANG[50]);
@@ -378,9 +378,9 @@ sysPass.Theme = function (Common) {
                 }
             };
 
-            var $tagsSelect = $frmSearch.find("#tags")[0];
-            var $tagsBar = $frmSearch.find(".search-filters-tags");
-            var $showFilter = $frmSearch.find("i.show-filter");
+            const $tagsSelect = $frmSearch.find("#tags")[0];
+            const $tagsBar = $frmSearch.find(".search-filters-tags");
+            const $showFilter = $frmSearch.find("i.show-filter");
 
             $resContent.on("click", "#data-search-header .sort-down,#data-search-header .sort-up", function () {
                 var $this = $(this);
@@ -388,7 +388,7 @@ sysPass.Theme = function (Common) {
 
                 Common.appActions().account.sort($this);
             }).on("click", "#search-rows i.icon-favorite", function () {
-                var $this = $(this);
+                const $this = $(this);
 
                 Common.appActions().account.saveFavorite($this, function () {
                     checkFavorite($this);
@@ -398,7 +398,7 @@ sysPass.Theme = function (Common) {
                     $showFilter.trigger("click");
                 }
 
-                $tagsSelect.selectize.addItem($(this).data("tag-id"));
+                $tagsSelect.selectize.addItem($(this).data("tag-id"), false);
             });
 
             $showFilter.on("click", function () {
@@ -525,7 +525,7 @@ sysPass.Theme = function (Common) {
     /**
      * Inicialización
      */
-    var init = function () {
+    const init = function () {
     };
 
     init();

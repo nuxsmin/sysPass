@@ -872,7 +872,7 @@ sysPass.Main = function () {
                 }
 
                 if (config.CHECK_UPDATES === true) {
-                    appActions.main.getUpdates();
+                    // appActions.main.getUpdates();
                 }
 
                 if (config.COOKIES_ENABLED === false) {

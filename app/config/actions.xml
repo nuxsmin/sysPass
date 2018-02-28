@@ -245,13 +245,13 @@
         <id>131</id>
         <name>ACCOUNT_FAVORITE_ADD</name>
         <text>Añadir Favorito</text>
-        <route>favorite/add</route>
+        <route>accountFavorite/mark</route>
     </action>
     <action multiple="1">
         <id>133</id>
         <name>ACCOUNT_FAVORITE_DELETE</name>
         <text>Eliminar Favorito</text>
-        <route>favorite/delete</route>
+        <route>accountFavorite/unmark</route>
     </action>
     <action multiple="1">
         <id>200</id>

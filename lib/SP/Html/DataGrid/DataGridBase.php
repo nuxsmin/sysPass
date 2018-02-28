@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -476,7 +476,7 @@ abstract class DataGridBase implements DataGridInterface
         $actions = [];
 
         foreach ($this->_actions as $action) {
-            if ($action->getReflectionFilter()->invoke($filter)) {
+            if ($action->getRuntimeFilter()($filter)) {
                 $actions[] = $action;
             }
         }
@@ -495,7 +495,7 @@ abstract class DataGridBase implements DataGridInterface
         $actions = [];
 
         foreach ($this->_actionsMenu as $action) {
-            if ($action->getReflectionFilter()->invoke($filter)) {
+            if ($action->getRuntimeFilter()($filter)) {
                 $actions[] = $action;
             }
         }

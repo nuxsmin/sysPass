@@ -177,9 +177,9 @@ interface DataGridActionInterface
     /**
      * Devolver el método reflexivo que determina si se muestra la acción
      *
-     * @return \ReflectionMethod
+     * @return callable
      */
-    public function getReflectionFilter();
+    public function getRuntimeFilter();
 
     /**
      * Establecer el método reflexivo que determina si se muestra la acción
@@ -188,7 +188,7 @@ interface DataGridActionInterface
      * @param string $method
      * @return $this
      */
-    public function setReflectionFilter($class, $method);
+    public function setRuntimeFilter($class, $method);
 
     /**
      * Returns classes as a string

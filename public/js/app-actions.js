@@ -319,18 +319,16 @@ sysPass.Actions = function (Common) {
         saveFavorite: function ($obj, callback) {
             log.info("account:saveFavorite");
 
-            var isOn = $obj.data("status") === "on";
-            var actionId = isOn ? $obj.data("action-id-off") : $obj.data("action-id-on");
+            const isOn = $obj.data("status") === "on";
+            const actionRoute = isOn ? $obj.data("action-route-off") : $obj.data("action-route-on");
 
-            var data = {
-                r: actionId + "/" + $obj.data("item-id"),
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint;
+            opts.data = {
+                r: actionRoute + "/" + $obj.data("item-id"),
                 sk: Common.sk.get(),
                 isAjax: 1
             };
-
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
-            opts.data = data;
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);

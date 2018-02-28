@@ -117,8 +117,8 @@
                         <?php if ($accountSearchItem->isFavorite()): ?>
                             <i id="btn-favorite-<?php echo $accountSearchData->getId(); ?>"
                                class="material-icons icon-favorite mdl-color-text--amber-A100"
-                               data-action-id-on="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_FAVORITE_ADD; ?>"
-                               data-action-id-off="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_FAVORITE_DELETE; ?>"
+                               data-action-route-on="<?php echo $favoriteRouteOn; ?>"
+                               data-action-route-off="<?php echo $favoriteRouteOff; ?>"
                                data-item-id="<?php echo $accountSearchData->getId(); ?>"
                                data-status="<?php echo 'on'; ?>">star</i>
                             <span
@@ -127,8 +127,8 @@
                         <?php else: ?>
                             <i id="btn-favorite-<?php echo $accountSearchData->getId(); ?>"
                                class="material-icons icon-favorite"
-                               data-action-id-on="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_FAVORITE_ADD; ?>"
-                               data-action-id-off="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_FAVORITE_DELETE; ?>"
+                               data-action-route-on="<?php echo $favoriteRouteOn; ?>"
+                               data-action-route-off="<?php echo $favoriteRouteOff; ?>"
                                data-item-id="<?php echo $accountSearchData->getId(); ?>"
                                data-status="<?php echo 'off'; ?>">star_border</i>
                             <span
@@ -193,7 +193,7 @@
                                     class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                         <?php endforeach; ?>
 
-                        <?php if (count($data->getDataActionsMenu()) > 0): $actionsMenu = $data->getDataActionsMenuFiltered($accountSearchItem); ?>
+                        <?php if ($data->getDataActionsMenuCount()): $actionsMenu = $data->getDataActionsMenuFiltered($accountSearchItem); ?>
                             <?php if (count($actionsMenu) > 0): ?>
                                 <button id="actions-menu-lower-right-<?php echo $accountSearchData->getId(); ?>"
                                         class="mdl-button mdl-js-button mdl-button--icon">
