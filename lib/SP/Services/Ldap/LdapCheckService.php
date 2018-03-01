@@ -58,19 +58,31 @@ class LdapCheckService extends Service
     }
 
     /**
+     * @param bool $includeGroups
      * @return array
      * @throws \SP\Providers\Auth\Ldap\LdapException
      */
-    public function getUsersAndGroups()
+    public function getObjects($includeGroups = true)
     {
-        $users = $this->ldapResultsMapper($this->ldap->findUsersByGroupFilter(['dn']));
-        $groups = $this->ldapResultsMapper($this->ldap->findGroups(['dn']));
+        $data = ['count' => 0, 'results' => []];
 
-        return [
-            'count' => count($users) + count($groups),
-            'users' => $users,
-            'groups' => $groups
+        $data['results'][] = [
+            'icon' => 'person',
+            'items' => $this->ldapResultsMapper($this->ldap->findUsersByGroupFilter(['dn']))
         ];
+
+        if ($includeGroups) {
+            $data['results'][] = [
+                'icon' => 'group',
+                'items' => $this->ldapResultsMapper($this->ldap->findGroups(['dn']))
+            ];
+        }
+
+        array_walk($data['results'], function ($value) use (&$data) {
+            $data['count'] += count($value['items']);
+        });
+
+        return $data;
     }
 
     /**
@@ -95,5 +107,25 @@ class LdapCheckService extends Service
         }
 
         return $out;
+    }
+
+    /**
+     * @param $filter
+     * @return array
+     * @throws \SP\Providers\Auth\Ldap\LdapException
+     */
+    public function getObjectsByFilter($filter)
+    {
+        $objects = $this->ldapResultsMapper($this->ldap->findObjectsByFilter($filter, ['dn']));
+
+        return [
+            'count' => count($objects),
+            'results' => [
+                [
+                    'icon' => '',
+                    'items' => $objects
+                ]
+            ]
+        ];
     }
 }

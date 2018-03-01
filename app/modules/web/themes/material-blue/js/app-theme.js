@@ -486,7 +486,7 @@ sysPass.Theme = function (Common) {
             const $li = $("<li class=\"mdl-list__item\"></li>");
             const $span = $("<span class=\"mdl-list__item-primary-content\"></span>");
 
-            const i = "<i class=\"material-icons mdl-list__item-icon\">" + (icon === undefined ? "person" : icon) + "</i>";
+            const i = "<i class=\"material-icons mdl-list__item-icon\">" + (icon === undefined || icon === "" ? "description" : icon) + "</i>";
 
             items.forEach(function (value) {
                 const $spanClone = $span.clone();

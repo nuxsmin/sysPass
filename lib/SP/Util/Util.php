@@ -554,14 +554,14 @@ class Util
      */
     public static function boolval($in, $strict = false)
     {
-        $in = (is_string($in) ? strtolower($in) : $in);
+        $in = is_string($in) ? strtolower($in) : $in;
 
         // if not strict, we only have to check if something is false
-        if (in_array($in, array('false', 'no', 'n', '0', 'off', false, 0), true) || !$in) {
+        if (in_array($in, ['false', 'no', 'n', '0', 'off', false, 0], true) || !$in) {
             return false;
         }
 
-        if ($strict && in_array($in, array('true', 'yes', 'y', '1', 'on', true, 1), true)) {
+        if ($strict && in_array($in, ['true', 'yes', 'y', '1', 'on', true, 1], true)) {
             return true;
         }
 

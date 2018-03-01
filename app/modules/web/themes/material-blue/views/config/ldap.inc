@@ -1,15 +1,16 @@
 <?php /** @var $icons \Theme\Icons */ ?>
 
-<div id="title" class="midroundup titleNormal">
-    <?php echo __('Configuración'); ?>
-</div>
+<?php if ($ldapIsAvailable || $isDemo): ?>
+    <div id="title" class="midroundup titleNormal">
+        <?php echo __('Configuración'); ?>
+    </div>
 
-<form method="post" name="frmLdap" id="frmLdap" class="form-action"
-      data-onsubmit="config/save"
-      data-action-route="configLdap/save"
-      data-hash="">
-    <table id="tblLdap" class="data tblConfig round">
-        <?php if ($ldapIsAvailable || $isDemoMode): ?>
+    <form method="post" name="frmLdap" id="frmLdap" class="form-action"
+          data-onsubmit="config/save"
+          data-action-route="configLdap/save"
+          data-hash="">
+        <table id="tblLdap" class="data tblConfig round">
+
             <tr>
                 <td class="descField">
                     <div id="help-ldap_enabled"
@@ -249,60 +250,43 @@
                     </select>
                 </td>
             </tr>
-            <tr id="ldap-results" style="display: none;">
-                <td class="descField">
-                    <?php echo __('Resultados'); ?>
-                </td>
-                <td class="valField">
-                    <div class="lowres-title"><?php echo __('Resultados'); ?></div>
-                    <div class="list-wrap"></div>
-                </td>
-            </tr>
-        <?php else: ?>
-            <tr>
-                <td class="option-disabled">
-                    <?php echo __('Módulo no disponible'); ?>
-                </td>
-            </tr>
-        <?php endif; ?>
-    </table>
+        </table>
 
 
-    <div class="tab-actions">
-        <ul>
-            <li>
-                <button id="btnBack" type="button"
-                        class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                        title="<?php echo __('Atrás'); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-                </button>
-            </li>
-            <li>
-                <button type="button"
-                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
-                        data-onclick="ldap/check"
-                        data-action-route="configLdap/check"
-                        data-src="#frmLdap"
-                        title="<?php echo $icons->getIconCheck()->getTitle(); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconCheck()->getIcon(); ?></i>
-                </button>
-            </li>
-            <li>
-                <button form="frmLdap"
-                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-                        title="<?php echo $icons->getIconSave()->getTitle(); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
-                </button>
-            </li>
-        </ul>
-    </div>
+        <div class="tab-actions">
+            <ul>
+                <li>
+                    <button id="btnBack" type="button"
+                            class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                            title="<?php echo __('Atrás'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    </button>
+                </li>
+                <li>
+                    <button type="button"
+                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
+                            data-onclick="ldap/check"
+                            data-action-route="configLdap/check"
+                            data-src="#frmLdap"
+                            title="<?php echo $icons->getIconCheck()->getTitle(); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconCheck()->getIcon(); ?></i>
+                    </button>
+                </li>
+                <li>
+                    <button form="frmLdap"
+                            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                            title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
 
-    <div id="title" class="midroundup titleNormal">
-        <?php echo __('Importación'); ?>
-    </div>
+        <div id="title" class="midroundup titleNormal">
+            <?php echo __('Importación'); ?>
+        </div>
 
-    <table id="tblLdap" class="data tblConfig round">
-        <?php if ($ldapIsAvailable || $isDemoMode): ?>
+        <table id="tblLdap" class="data tblConfig round">
             <tr>
                 <td class="descField">
                     <?php echo __('Atributo Login'); ?>
@@ -401,42 +385,46 @@
                     </div>
                 </td>
             </tr>
-            <tr id="ldap-results" style="display: none;">
-                <td class="descField">
-                    <?php echo __('Resultados'); ?>
-                </td>
-                <td class="valField">
-                    <div class="lowres-title"><?php echo __('Resultados'); ?></div>
-                    <div class="list-wrap"></div>
-                </td>
-            </tr>
-        <?php else: ?>
-            <tr>
-                <td class="option-disabled">
-                    <?php echo __('Módulo no disponible'); ?>
-                </td>
-            </tr>
-        <?php endif; ?>
-    </table>
+        </table>
 
-    <div class="tab-actions">
-        <ul>
-            <li>
-                <button id="btnBack" type="button"
-                        class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
-                        title="<?php echo __('Atrás'); ?>">
-                    <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
-                </button>
-            </li>
-            <li>
-                <button type="button"
-                        class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
-                        data-onclick="ldap/import"
-                        data-action-route="configLdap/import"
-                        data-src="#frmLdap"
-                        title="<?php echo __('Importar usuarios de LDAP'); ?>">
-                    <i class="material-icons">get_app</i>
-                </button>
-            </li>
-    </div>
-</form>
+        <div class="tab-actions">
+            <ul>
+                <li>
+                    <button id="btnBack" type="button"
+                            class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"
+                            title="<?php echo __('Atrás'); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                    </button>
+                </li>
+                <li>
+                    <button type="button"
+                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
+                            data-onclick="ldap/check"
+                            data-action-route="configLdap/checkImport"
+                            data-src="#frmLdap"
+                            title="<?php echo $icons->getIconCheck()->getTitle(); ?>">
+                        <i class="material-icons"><?php echo $icons->getIconCheck()->getIcon(); ?></i>
+                    </button>
+                </li>
+                <li>
+                    <button type="button"
+                            class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
+                            data-onclick="ldap/import"
+                            data-action-route="configLdap/import"
+                            data-src="#frmLdap"
+                            title="<?php echo __('Importar usuarios de LDAP'); ?>">
+                        <i class="material-icons">get_app</i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </form>
+<?php else: ?>
+    <table id="tblLdap" class="data tblConfig round">
+        <tr>
+            <td class="option-disabled">
+                <?php echo __('Módulo no disponible'); ?>
+            </td>
+        </tr>
+    </table>
+<?php endif; ?>

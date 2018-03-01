@@ -1507,7 +1507,7 @@ sysPass.Actions = function (Common) {
 
     const ldap = {
         check: function ($obj) {
-            log.info("checks:ldap");
+            log.info("ldap:check");
 
             const $form = $($obj.data("src"));
             $form.find("[name='sk']").val(Common.sk.get());
@@ -1519,18 +1519,24 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                if (json.status === 0) {
-                    const $results = $("#ldap-results");
-                    $results.find(".list-wrap")
-                        .empty()
-                        .append(Common.appTheme().html.getList(json.data.users))
-                        .append(Common.appTheme().html.getList(json.data.groups, 'group'));
-                    $results.show("slow");
+                if (json.status === 0
+                    && json.data['template'] !== undefined
+                    && json.data['items'] !== undefined
+                ) {
+                    showFloatingBox(json.data.template, {
+                        open: function () {
+                            const $list = $("#ldap-results").find(".list-wrap").empty();
+
+                            json.data.items.forEach(function (value) {
+                                $list.append(Common.appTheme().html.getList(value.items, value.icon));
+                            });
+                        }
+                    });
                 }
             });
         },
         import: function ($obj) {
-            log.info("appMgmt:ldapSync");
+            log.info("ldap:import");
 
             const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[57] + "</p></div>";
 

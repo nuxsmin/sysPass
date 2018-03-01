@@ -33,10 +33,12 @@ use SP\Core\Exceptions\ValidationException;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
+use SP\Mvc\View\Template;
 use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Services\Ldap\LdapCheckService;
 use SP\Services\Ldap\LdapImportParams;
 use SP\Services\Ldap\LdapImportService;
+use SP\Util\Util;
 
 /**
  * Class ConfigLdapController
@@ -134,13 +136,60 @@ class ConfigLdapController extends SimpleControllerBase
             $ldapCheckService = $this->dic->get(LdapCheckService::class);
             $ldapCheckService->checkConnection($ldapParams);
 
-            $results = $ldapCheckService->getUsersAndGroups();
+            $data = $ldapCheckService->getObjects();
+
+            $template = $this->dic->get(Template::class);
+            $template->addTemplate('results', 'itemshow');
+            $template->assign('header', __('Resultados'));
 
             $this->returnJsonResponseData(
-                $results,
+                ['template' => $template->render(), 'items' => $data['results']],
                 JsonResponse::JSON_SUCCESS,
                 __u('Conexión a LDAP correcta'),
-                [sprintf(__('Objetos encontrados: %d'), $results['count'])]
+                [sprintf(__('Objetos encontrados: %d'), $data['count'])]
+            );
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->returnJsonResponseException($e);
+//            $this->JsonResponse->addMessage(__('Revise el registro de eventos para más detalles', false));
+        }
+    }
+
+    /**
+     * checkAction
+     */
+    public function checkImportAction()
+    {
+        try {
+            $ldapParams = $this->getLdapParamsFromRequest();
+
+            // Valores para la configuración de LDAP
+            if (!($ldapParams->getServer() || $ldapParams->getSearchBase() || $ldapParams->getBindDn())) {
+                $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de LDAP'));
+            }
+
+            $ldapCheckService = $this->dic->get(LdapCheckService::class);
+            $ldapCheckService->checkConnection($ldapParams);
+
+            $filter = Request::analyze('ldap_import_filter');
+
+            if (empty($filter)) {
+                $data = $ldapCheckService->getObjects(Util::boolval(Request::analyze('ldap_import_groups')));
+            } else {
+                $data = $ldapCheckService->getObjectsByFilter($filter);
+            }
+
+            $template = $this->dic->get(Template::class);
+            $template->addTemplate('results', 'itemshow');
+            $template->assign('header', __('Resultados'));
+            $template->assign('results', $data);
+
+            $this->returnJsonResponseData(
+                ['template' => $template->render(), 'items' => $data['results']],
+                JsonResponse::JSON_SUCCESS,
+                __u('Conexión a LDAP correcta'),
+                [sprintf(__('Objetos encontrados: %d'), $data['count'])]
             );
         } catch (\Exception $e) {
             processException($e);
@@ -168,7 +217,7 @@ class ConfigLdapController extends SimpleControllerBase
             $ldapImportParams->defaultUserGroup = Request::analyze('ldap_defaultgroup', 0);
             $ldapImportParams->defaultUserProfile = Request::analyze('ldap_defaultprofile', 0);
 
-            $checkImportGroups = Request::analyze('ldap_group_import', false, false, true);
+            $checkImportGroups = Util::boolval(Request::analyze('ldap_import_groups'));
 
             if ((empty($ldapImportParams->loginAttribute)
                     || empty($ldapImportParams->userNameAttribute)
@@ -189,7 +238,10 @@ class ConfigLdapController extends SimpleControllerBase
 
             $userLdapService->importUsers($ldapParams, $ldapImportParams);
 
-            if ($checkImportGroups === true) {
+            $filter = Request::analyze('ldap_import_filter');
+
+            // Groups won't be imported if filter is set
+            if ($checkImportGroups === true && empty($filter)) {
                 $userLdapService->importGroups($ldapParams, $ldapImportParams);
             }
 

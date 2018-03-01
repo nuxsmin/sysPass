@@ -508,16 +508,13 @@
   }
 }
 
-#box-popup .list-wrap {
-  max-height: 10em;
-  overflow: auto;
-  padding: .5em;
-  margin: 1em 0;
-}
-
 #content .data,
 #box-popup {
   .list-wrap {
+    max-height: 20em;
+    overflow: auto;
+    padding: .5em;
+    margin: 1em 0;
     ul {
       list-style-type: none;
       margin: 0;
