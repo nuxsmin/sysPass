@@ -381,6 +381,26 @@
                     </select>
                 </td>
             </tr>
+            <tr>
+                <td class="descField">
+                    <?php echo __('Filtro'); ?>
+                    <div id="help-ldap_import_filter"
+                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                    <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_import_filter">
+                        <p>
+                            <?php echo __('Filtro para importar usuarios o grupos de LDAP.'); ?>
+                        </p>
+                    </div>
+                </td>
+                <td class="valField">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="ldap_import_filter" name="ldap_import_filter" type="text"
+                               class="mdl-textfield__input mdl-color-text--indigo-400"/>
+                        <label class="mdl-textfield__label"
+                               for="ldap_import_filter"><?php echo __('Filtro'); ?></label>
+                    </div>
+                </td>
+            </tr>
             <tr id="ldap-results" style="display: none;">
                 <td class="descField">
                     <?php echo __('Resultados'); ?>

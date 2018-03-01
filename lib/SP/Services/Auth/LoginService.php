@@ -36,7 +36,7 @@ use SP\Core\UI\Theme;
 use SP\DataModel\UserLoginData;
 use SP\DataModel\UserPreferencesData;
 use SP\Http\Request;
-use SP\Providers\Auth\Auth;
+use SP\Providers\Auth\AuthProvider;
 use SP\Providers\Auth\AuthResult;
 use SP\Providers\Auth\AuthUtil;
 use SP\Providers\Auth\Browser\BrowserAuthData;
@@ -147,7 +147,7 @@ class LoginService extends Service
             );
         }
 
-        if (($result = $this->dic->get(Auth::class)->doAuth($this->userLoginData)) !== false) {
+        if (($result = $this->dic->get(AuthProvider::class)->doAuth($this->userLoginData)) !== false) {
             // Ejecutar la acción asociada al tipo de autentificación
             foreach ($result as $authResult) {
                 /** @var AuthResult $authResult */

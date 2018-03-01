@@ -51,4 +51,8 @@ class LdapImportParams
      * @var string
      */
     public $userGroupNameAttribute;
+    /**
+     * @var string
+     */
+    public $filter;
 }

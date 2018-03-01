@@ -84,13 +84,19 @@ class LdapImportService extends Service
     /**
      * Sincronizar usuarios de LDAP
      *
-     * @param LdapParams       $ldapParams
+     * @param LdapParams $ldapParams
      * @param LdapImportParams $ldapImportParams
      * @throws LdapException
      */
     public function importGroups(LdapParams $ldapParams, LdapImportParams $ldapImportParams)
     {
-        $objects = $this->getLdap($ldapParams)->findGroups();
+        $ldap = $this->getLdap($ldapParams);
+
+        if (empty($ldapImportParams->filter)) {
+            $objects = $ldap->findGroups();
+        } else {
+            $objects = $ldap->findObjectsByFilter($ldapImportParams->filter);
+        }
 
         $numObjects = (int)$objects['count'];
 
@@ -159,13 +165,19 @@ class LdapImportService extends Service
     }
 
     /**
-     * @param LdapParams       $ldapParams
+     * @param LdapParams $ldapParams
      * @param LdapImportParams $ldapImportParams
      * @throws LdapException
      */
     public function importUsers(LdapParams $ldapParams, LdapImportParams $ldapImportParams)
     {
-        $objects = $this->getLdap($ldapParams)->findUsersByGroupFilter();
+        $ldap = $this->getLdap($ldapParams);
+
+        if (empty($ldapImportParams->filter)) {
+            $objects = $ldap->findUsersByGroupFilter();
+        } else {
+            $objects = $ldap->findObjectsByFilter($ldapImportParams->filter);
+        }
 
         $numObjects = (int)$objects['count'];
 

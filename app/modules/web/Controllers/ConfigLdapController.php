@@ -161,6 +161,7 @@ class ConfigLdapController extends SimpleControllerBase
         try {
             $ldapImportParams = new LdapImportParams();
 
+            $ldapImportParams->filter = Request::analyze('ldap_import_filter');
             $ldapImportParams->loginAttribute = Request::analyze('ldap_login_attribute');
             $ldapImportParams->userNameAttribute = Request::analyze('ldap_username_attribute');
             $ldapImportParams->userGroupNameAttribute = Request::analyze('ldap_groupname_attribute');

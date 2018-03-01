@@ -1519,12 +1519,14 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 
-                const $results = $("#ldap-results");
-                $results.find(".list-wrap")
-                    .empty()
-                    .append(Common.appTheme().html.getList(json.data.users))
-                    .append(Common.appTheme().html.getList(json.data.groups, 'group'));
-                $results.show("slow");
+                if (json.status === 0) {
+                    const $results = $("#ldap-results");
+                    $results.find(".list-wrap")
+                        .empty()
+                        .append(Common.appTheme().html.getList(json.data.users))
+                        .append(Common.appTheme().html.getList(json.data.groups, 'group'));
+                    $results.show("slow");
+                }
             });
         },
         import: function ($obj) {

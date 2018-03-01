@@ -31,5 +31,22 @@ namespace SP\Providers\Auth\Ldap;
  */
 class LdapUtil
 {
+    /**
+     * Escapar carácteres especiales en el RDN de LDAP.
+     *
+     * @param string $dn con el RDN del usuario
+     * @return string
+     */
+    public static function escapeLdapDN($dn)
+    {
+        $chars = [
+            '/(,)(?!uid|cn|ou|dc)/i',
+            '/(?<!uid|cn|ou|dc)(=)/i',
+            '/([";<>\+#\/]+)/',
+            '/\G(\s)/',
+            '/(\s)(?=\s*$)/'
+        ];
 
+        return preg_replace($chars, '\\\1', $dn);
+    }
 }
