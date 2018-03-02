@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,9 +24,11 @@
 
 namespace SP\Services\EventLog;
 
+use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\EventLog\EventlogRepository;
 use SP\Services\Service;
+use SP\Util\HttpUtil;
 
 /**
  * Class EventlogService
@@ -58,6 +60,23 @@ class EventlogService extends Service
     public function clear()
     {
         return $this->eventLogRepository->clear();
+    }
+
+    /**
+     * @param EventlogData $eventlogData
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function create(EventlogData $eventlogData)
+    {
+        $userData = $this->session->getUserData();
+
+        $eventlogData->setUserId($userData->getId());
+        $eventlogData->setLogin($userData->getLogin());
+        $eventlogData->setIpAddress(HttpUtil::getClientAddress());
+
+        return $this->eventLogRepository->create($eventlogData);
     }
 
     /**

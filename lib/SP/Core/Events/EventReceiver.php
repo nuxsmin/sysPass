@@ -54,16 +54,9 @@ interface EventReceiver extends SplObserver
     public function getEvents();
 
     /**
-     * Devuelve los recursos Javascript necesarios para el plugin
+     * Devuelve los eventos que implementa el observador en formato cadena
      *
-     * @return array
+     * @return string
      */
-    public function getJsResources();
-
-    /**
-     * Devuelve los recursos CSS necesarios para el plugin
-     *
-     * @return array
-     */
-    public function getCssResources();
+    public function getEventsString();
 }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -100,12 +100,16 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
      * Notificar un evento
      *
      * @param string $eventType
-     * @param Event $event
+     * @param Event  $event
      */
     public function notifyEvent($eventType, Event $event)
     {
         foreach ($this->observers as $observer) {
-            if (in_array($eventType, $observer->getEvents(), true)) {
+            $events = $observer->getEventsString();
+
+            if ($events === '*'
+                || preg_match('/' . $events . '/i', $eventType)
+            ) {
                 // FIXME: update receivers Event
                 $observer->updateEvent($eventType, $event);
             }

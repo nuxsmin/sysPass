@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -115,34 +115,6 @@ class DbWrapper
     }
 
     /**
-     * Método para registar los eventos de BD en el log
-     *
-     * @param string     $query La consulta que genera el error
-     * @param \Exception $e
-     * @param string     $queryFunction
-     */
-    private static function logDBException($query, \Exception $e, $queryFunction)
-    {
-//        $caller = Util::traceLastCall($queryFunction);
-//
-//        $LogMessage = new LogMessage();
-//        $LogMessage->setAction($caller);
-//        $LogMessage->addDescription(__u('Error en la consulta'));
-//        $LogMessage->addDescription(sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
-//        $LogMessage->addDetails('SQL', DBUtil::escape($query));
-
-        debugLog(sprintf('%s (%s)', $e->getMessage(), $e->getCode()), true);
-        debugLog($query);
-
-        // Solo registrar eventos de ls BD si no son consultas del registro de eventos
-//        if ($caller !== 'writeLog') {
-//            $Log = new Log($LogMessage);
-//            $Log->setLogLevel(Log::ERROR);
-//            $Log->writeLog();
-//        }
-    }
-
-    /**
      * Devolver los resultados como objeto PDOStatement
      *
      * @param QueryData         $queryData
@@ -170,7 +142,7 @@ class DbWrapper
      * @throws QueryException
      * @throws ConstraintException
      */
-    public static function getQuery(QueryData $queryData, DatabaseInterface $db = null)
+    public static function getQuery(QueryData $queryData, DatabaseInterface $db)
     {
         if (null === $queryData->getOnErrorMessage()) {
             $errorMessage = __u('Error en la consulta');
@@ -202,7 +174,13 @@ class DbWrapper
                     );
             }
 
-            throw new QueryException($errorMessage, SPException::ERROR, $e->getMessage(), $e->getCode());
+            throw new QueryException(
+                $errorMessage,
+                SPException::ERROR,
+                $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
     }
 
@@ -254,5 +232,33 @@ class DbWrapper
         $conn = $db->getDbHandler()->getConnection();
 
         return $conn->inTransaction() && $conn->rollBack();
+    }
+
+    /**
+     * Método para registar los eventos de BD en el log
+     *
+     * @param string     $query La consulta que genera el error
+     * @param \Exception $e
+     * @param string     $queryFunction
+     */
+    private static function logDBException($query, \Exception $e, $queryFunction)
+    {
+//        $caller = Util::traceLastCall($queryFunction);
+//
+//        $LogMessage = new LogMessage();
+//        $LogMessage->setAction($caller);
+//        $LogMessage->addDescription(__u('Error en la consulta'));
+//        $LogMessage->addDescription(sprintf('%s (%s)', $e->getMessage(), $e->getCode()));
+//        $LogMessage->addDetails('SQL', DBUtil::escape($query));
+
+        debugLog(sprintf('%s (%s)', $e->getMessage(), $e->getCode()), true);
+        debugLog($query);
+
+        // Solo registrar eventos de ls BD si no son consultas del registro de eventos
+//        if ($caller !== 'writeLog') {
+//            $Log = new Log($LogMessage);
+//            $Log->setLogLevel(Log::ERROR);
+//            $Log->writeLog();
+//        }
     }
 }

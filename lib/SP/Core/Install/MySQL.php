@@ -62,7 +62,6 @@ class MySQL implements DatabaseSetupInterface
      *
      * @param InstallData $installData
      * @throws SPException
-     * @throws \ReflectionException
      * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct(InstallData $installData)

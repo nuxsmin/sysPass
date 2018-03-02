@@ -98,7 +98,7 @@ class EventlogController extends ControllerBase
         try {
             $this->eventLogService->clear();
 
-            $this->eventDispatcher->notifyEvent('show.account.search',
+            $this->eventDispatcher->notifyEvent('clear.eventlog',
                 new Event($this, EventMessage::factory()->addDescription(__u('Registro de eventos vaciado')))
             );
 

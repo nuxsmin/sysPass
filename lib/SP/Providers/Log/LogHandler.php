@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,20 +26,34 @@ namespace SP\Providers\Log;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
+use SP\DataModel\EventlogData;
+use SP\Providers\Provider;
+use SP\Services\EventLog\EventlogService;
 use SplSubject;
 
 /**
  * Class LogHandler
+ *
  * @package SP\Providers\Log
  */
-class LogHandler implements EventReceiver
+class LogHandler extends Provider implements EventReceiver
 {
     /**
+     * @var EventlogService
+     */
+    protected $eventlogService;
+    /**
+     * @var string
+     */
+    protected $events;
+
+    /**
      * Receive update from subject
-     * @link http://php.net/manual/en/splobserver.update.php
+     *
+     * @link  http://php.net/manual/en/splobserver.update.php
      * @param SplSubject $subject <p>
-     * The <b>SplSubject</b> notifying the observer of an update.
-     * </p>
+     *                            The <b>SplSubject</b> notifying the observer of an update.
+     *                            </p>
      * @return void
      * @since 5.1.0
      */
@@ -60,11 +74,45 @@ class LogHandler implements EventReceiver
      * Evento de actualización
      *
      * @param string $eventType Nombre del evento
-     * @param Event $event Objeto del evento
+     * @param Event  $event     Objeto del evento
      */
     public function updateEvent($eventType, Event $event)
     {
-        // TODO: Implement updateEvent() method.
+        $eventlogData = new EventlogData();
+        $eventlogData->setAction($eventType);
+        $eventlogData->setLevel('INFO');
+
+        if (($eventMessage = $event->getEventMessage()) !== null) {
+            $eventlogData->setDescription($eventMessage->composeText());
+        }
+
+        if (($e = $event->getSource()) instanceof \Exception) {
+            /** @var \Exception $e */
+            $eventlogData->setDescription($e->getMessage());
+        }
+
+        try {
+            $this->eventlogService->create($eventlogData);
+        } catch (\Exception $e) {
+            processException($e);
+        }
+    }
+
+    /**
+     * Devuelve los eventos que implementa el observador en formato cadena
+     *
+     * @return string
+     */
+    public function getEventsString()
+    {
+        return $this->events;
+    }
+
+    protected function initialize()
+    {
+        $this->eventlogService = $this->dic->get(EventlogService::class);
+
+        $this->events = str_replace('.', '\\.', implode('|', $this->getEvents()));
     }
 
     /**
@@ -74,26 +122,6 @@ class LogHandler implements EventReceiver
      */
     public function getEvents()
     {
-        // TODO: Implement getEvents() method.
-    }
-
-    /**
-     * Devuelve los recursos Javascript necesarios para el plugin
-     *
-     * @return array
-     */
-    public function getJsResources()
-    {
-        // TODO: Implement getJsResources() method.
-    }
-
-    /**
-     * Devuelve los recursos CSS necesarios para el plugin
-     *
-     * @return array
-     */
-    public function getCssResources()
-    {
-        // TODO: Implement getCssResources() method.
+        return ['create.', 'delete.', 'edit.', 'exception', 'save.', 'show.account.pass', 'copy.account.pass', 'clear.eventlog', 'login.', 'logout'];
     }
 }

@@ -8,7 +8,7 @@
 
     <form method="post" name="updUsrPass" id="frmUpdUsrPass" class="form-action"
           data-onsubmit="appMgmt/save"
-          data-route="<?php echo $route; ?>"
+          data-action-route="<?php echo $route; ?>"
           data-hash="">
         <table class="popup-data">
             <tr>

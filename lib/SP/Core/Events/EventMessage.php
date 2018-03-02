@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -28,6 +28,7 @@ use SP\Html\Html;
 
 /**
  * Class EventMessage
+ *
  * @package SP\Core\Events
  */
 class EventMessage
@@ -80,15 +81,11 @@ class EventMessage
             return '';
         }
 
-        if (count($this->description) > 1) {
-            if ($translate === true) {
-                return implode(PHP_EOL, array_map('__', $this->description));
-            }
-
-            return implode(PHP_EOL, $this->description);
+        if ($translate === true) {
+            return implode(PHP_EOL, array_map('__', $this->description));
         }
 
-        return $translate === true ? __($this->description[0]) : $this->description[0];
+        return implode(PHP_EOL, $this->description);
     }
 
     /**
@@ -179,10 +176,7 @@ class EventMessage
      */
     public function composeText()
     {
-        $message[] = $this->getDescription(true);
-        $message[] = $this->getDetails(true);
-
-        return implode(PHP_EOL, $message);
+        return implode(PHP_EOL, [$this->getDescription(true), $this->getDetails(true)]);
     }
 
     /**
@@ -197,24 +191,16 @@ class EventMessage
             return '';
         }
 
-        if (count($this->details) > 1) {
-            if ($translate === true) {
-                return implode(PHP_EOL, array_map(function ($detail) use ($translate) {
-                    return $this->formatDetail($detail, $translate);
-                }, $this->details));
-            }
-
-            return implode(PHP_EOL, array_map([$this, 'formatDetail'], $this->details));
-        }
-
-        return $this->formatDetail($this->details[0], $translate);
+        return implode(PHP_EOL, array_map(function ($detail) use ($translate) {
+            return $this->formatDetail($detail, $translate);
+        }, $this->details));
     }
 
     /**
      * Devolver un detalle formateado
      *
      * @param array $detail
-     * @param bool $translate
+     * @param bool  $translate
      * @return string
      */
     protected function formatDetail(array $detail, $translate = false)
@@ -233,10 +219,12 @@ class EventMessage
      */
     public function composeHtml()
     {
-        $message[] = '<div class="log-message">';
-        $message[] = '<p class="description">' . nl2br($this->getDescription(true)) . '</p>';
-        $message[] = '<p class="details">' . nl2br($this->getDetails(true)) . '</p>';
-        $message[] = '</div>';
+        $message = [
+            '<div class="log-message">',
+            '<p class="description">' . nl2br($this->getDescription(true)) . '</p>',
+            '<p class="details">' . nl2br($this->getDetails(true)) . '</p>',
+            '</div>'
+        ];
 
         return implode('', $message);
     }

@@ -82,7 +82,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id FROM Tag WHERE `hash` = ?');
         $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
 
-        DbWrapper::getQuery($queryData);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getNumRows() > 0;
     }
@@ -127,7 +127,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
         $queryData->addParam($itemData->getId());
 
-        DbWrapper::getQuery($queryData);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getNumRows() > 0;
     }

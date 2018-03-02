@@ -1048,7 +1048,7 @@ sysPass.Actions = function (Common) {
                 const $currentTab = $("#content").find("[id^='tabs-'].is-active");
 
                 if ($currentTab.length > 0) {
-                    tabs.state.tab.refresh = !!$obj.data("item-dst");
+                    tabs.state.tab.refresh = !$obj.data("item-dst");
                     tabs.state.tab.index = $currentTab.data("tab-index");
                     tabs.state.tab.route = $currentTab.data("tab-route");
                     tabs.state.itemId = $obj.data("item-id");

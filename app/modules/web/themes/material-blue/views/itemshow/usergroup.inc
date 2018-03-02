@@ -1,7 +1,5 @@
 <?php
 
-use SP\Util\ArrayUtil;
-
 /** @var $icons \Theme\Icons */
 /** @var $group \SP\DataModel\UserGroupData */
 /** @var $groupUsers \SP\DataModel\UserToUserGroupData */
@@ -12,7 +10,7 @@ use SP\Util\ArrayUtil;
 
     <form method="post" name="frmGroups" id="frmGroups" class="form-action"
           data-onsubmit="appMgmt/save"
-          data-route="<?php echo isset($route) ? $route : ''; ?>"
+          data-action-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
           data-nextaction="<?php echo $nextAction; ?>"
           data-hash="">

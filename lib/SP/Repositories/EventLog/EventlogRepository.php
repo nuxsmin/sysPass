@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\EventLog;
 
+use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
 use SP\Storage\DbWrapper;
@@ -87,5 +88,37 @@ class EventlogRepository extends Repository
         $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
+    }
+
+
+    /**
+     * @param EventlogData $eventlogData
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function create(EventlogData $eventlogData)
+    {
+        $sql = 'INSERT INTO EventLog SET
+                `date` = UNIX_TIMESTAMP(),
+                login = ?,
+                userId = ?,
+                ipAddress = ?,
+                `action` = ?,
+                description = ?,
+                `level` = ?';
+
+        $queryData = new QueryData();
+        $queryData->setQuery($sql);
+        $queryData->addParam($eventlogData->getLogin());
+        $queryData->addParam($eventlogData->getUserId());
+        $queryData->addParam($eventlogData->getIpAddress());
+        $queryData->addParam($eventlogData->getAction());
+        $queryData->addParam($eventlogData->getDescription());
+        $queryData->addParam($eventlogData->getLevel());
+
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getLastId();
     }
 }

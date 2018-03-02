@@ -272,7 +272,6 @@ class Installer
     /**
      * @throws Dic\ContainerException
      * @throws SPException
-     * @throws \ReflectionException
      * @todo Select DB type
      */
     private function setupDb()

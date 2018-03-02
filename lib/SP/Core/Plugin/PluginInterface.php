@@ -24,14 +24,12 @@
 
 namespace SP\Core\Plugin;
 
-use SP\Core\Events\EventReceiver;
-
 /**
  * Interface PluginInterface
  *
  * @package SP\Core\Plugin
  */
-interface PluginInterface extends EventReceiver
+interface PluginInterface extends PluginEventReceiver
 {
     /**
      * Devuelve el tipo de plugin

@@ -87,11 +87,11 @@ class AccountForm extends FormBase implements FormInterface
         $this->accountRequest->url = Request::analyze('url');
         $this->accountRequest->notes = Request::analyze('notes');
         $this->accountRequest->userEditId = SessionFactory::getUserData()->getId();
-        $this->accountRequest->otherUserEdit = Request::analyze('otherUserEditEnabled', 0, false, 1);
-        $this->accountRequest->otherUserGroupEdit = Request::analyze('otherUserGroupEditEnabled', 0, false, 1);
+        $this->accountRequest->otherUserEdit = (int)Request::analyze('otherUserEditEnabled', 0, false, 1);
+        $this->accountRequest->otherUserGroupEdit = (int)Request::analyze('otherUserGroupEditEnabled', 0, false, 1);
         $this->accountRequest->pass = Request::analyzeEncrypted('pass');
-        $this->accountRequest->isPrivate = Request::analyze('privateEnabled', 0, false, 1);
-        $this->accountRequest->isPrivateGroup = Request::analyze('privateGroupEnabled', 0, false, 1);
+        $this->accountRequest->isPrivate = (int)Request::analyze('privateEnabled', 0, false, 1);
+        $this->accountRequest->isPrivateGroup = (int)Request::analyze('privateGroupEnabled', 0, false, 1);
         $this->accountRequest->passDateChange = Request::analyze('passworddatechange_unix', 0);
         $this->accountRequest->parentId = Request::analyze('parentAccountId', 0);
         $this->accountRequest->userGroupId = Request::analyze('mainUserGroupId', 0);

@@ -196,9 +196,9 @@ ALTER TABLE log
 ALTER TABLE log
   CHANGE log_date date INT(10) UNSIGNED NOT NULL;
 ALTER TABLE log
-  CHANGE log_login login VARCHAR(25) NOT NULL;
+  CHANGE log_login login VARCHAR(25);
 ALTER TABLE log
-  CHANGE log_userId userId SMALLINT(5) UNSIGNED NOT NULL;
+  CHANGE log_userId userId SMALLINT(5) UNSIGNED;
 ALTER TABLE log
   CHANGE log_ipAddress ipAddress VARCHAR(45) NOT NULL;
 ALTER TABLE log

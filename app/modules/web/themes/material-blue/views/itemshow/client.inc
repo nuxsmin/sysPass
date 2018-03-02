@@ -10,7 +10,7 @@
 
     <form method="post" name="frmCustomers" id="frmCustomers" class="form-action"
           data-onsubmit="appMgmt/save"
-          data-route="<?php echo isset($route) ? $route : ''; ?>"
+          data-action-route="<?php echo isset($route) ? $route : ''; ?>"
           data-activetab="<?php echo isset($activeTab) ? $activeTab : ''; ?>"
           data-nextaction="<?php echo $nextAction; ?>"
           data-hash="">

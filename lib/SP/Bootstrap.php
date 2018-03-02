@@ -36,6 +36,7 @@ use SP\Config\ConfigUtil;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\SecureKeyCookie;
 use SP\Core\Crypt\Session as CryptSession;
+use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\SPException;
@@ -47,6 +48,7 @@ use SP\Core\UI\Theme;
 use SP\Core\Upgrade\Upgrade;
 use SP\Http\Request;
 use SP\Log\Log;
+use SP\Providers\Log\LogHandler;
 use SP\Storage\Database;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
@@ -141,6 +143,8 @@ class Bootstrap
         $this->router = $container->get(Klein::class);
         $this->language = $container->get(Language::class);
         $this->upgrade = $container->get(Upgrade::class);
+
+        $container->get(EventDispatcher::class)->attach($container->get(LogHandler::class));
 
         $this->initRouter();
     }

@@ -22,57 +22,49 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Events;
+namespace SP\Core\Plugin;
 
-use InvalidArgumentException;
+use SP\Core\Events\Event;
+use SplObserver;
 
 /**
- * Class Event
+ * Interface EventReceiver
  *
  * @package SP\Core\Events
  */
-class Event
+interface PluginEventReceiver extends SplObserver
 {
     /**
-     * @var object
+     * Inicialización del observador
      */
-    private $source;
-    /**
-     * @var array
-     */
-    private $eventMessage;
+    public function init();
 
     /**
-     * Event constructor.
+     * Evento de actualización
      *
-     * @param object $source
-     * @param EventMessage $eventMessage
-     * @throws InvalidArgumentException
+     * @param string $eventType Nombre del evento
+     * @param Event  $event     Objeto del evento
      */
-    public function __construct($source, EventMessage $eventMessage = null)
-    {
-        if (!is_object($source)) {
-            throw new InvalidArgumentException(__u('Es necesario un objeto'));
-        }
-
-        $this->source = $source;
-        $this->eventMessage = $eventMessage;
-    }
+    public function updateEvent($eventType, Event $event);
 
     /**
-     * @return object
+     * Devuelve los eventos que implementa el observador
+     *
+     * @return array
      */
-    public function getSource()
-    {
-        return $this->source;
-    }
+    public function getEvents();
 
     /**
-     * @return EventMessage
+     * Devuelve los recursos Javascript necesarios para el plugin
+     *
+     * @return array
      */
-    public function getEventMessage()
-    {
-        return $this->eventMessage;
-    }
+    public function getJsResources();
 
+    /**
+     * Devuelve los recursos CSS necesarios para el plugin
+     *
+     * @return array
+     */
+    public function getCssResources();
 }
