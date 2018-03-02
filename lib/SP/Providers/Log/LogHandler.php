@@ -38,6 +38,18 @@ use SplSubject;
  */
 class LogHandler extends Provider implements EventReceiver
 {
+    const EVENTS = [
+        'create.',
+        'delete.',
+        'edit.',
+        'exception',
+        'save.',
+        'show.account.pass',
+        'copy.account.pass',
+        'clear.eventlog',
+        'login.',
+        'logout'
+    ];
     /**
      * @var EventlogService
      */
@@ -108,13 +120,6 @@ class LogHandler extends Provider implements EventReceiver
         return $this->events;
     }
 
-    protected function initialize()
-    {
-        $this->eventlogService = $this->dic->get(EventlogService::class);
-
-        $this->events = str_replace('.', '\\.', implode('|', $this->getEvents()));
-    }
-
     /**
      * Devuelve los eventos que implementa el observador
      *
@@ -122,6 +127,13 @@ class LogHandler extends Provider implements EventReceiver
      */
     public function getEvents()
     {
-        return ['create.', 'delete.', 'edit.', 'exception', 'save.', 'show.account.pass', 'copy.account.pass', 'clear.eventlog', 'login.', 'logout'];
+        return self::EVENTS;
+    }
+
+    protected function initialize()
+    {
+        $this->eventlogService = $this->dic->get(EventlogService::class);
+
+        $this->events = str_replace('.', '\\.', implode('|', self::EVENTS));
     }
 }
