@@ -137,6 +137,6 @@ class ClientData extends DataModelBase implements DataModelInterface
      */
     public function setIsGlobal($isGlobal)
     {
-        $this->isGlobal = (bool)$isGlobal;
+        $this->isGlobal = (int)$isGlobal;
     }
 }

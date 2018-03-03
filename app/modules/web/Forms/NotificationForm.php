@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
@@ -33,7 +33,7 @@ use SP\Http\Request;
 /**
  * Class NotificationForm
  *
- * @package SP\Forms
+ * @package SP\Modules\Web\Forms
  */
 class NotificationForm extends FormBase implements FormInterface
 {
@@ -71,15 +71,15 @@ class NotificationForm extends FormBase implements FormInterface
     {
         $this->notificationData = new NotificationData();
         $this->notificationData->setId($this->itemId);
-        $this->notificationData->setType(Request::analyze('notification_type'));
-        $this->notificationData->setComponent(Request::analyze('notification_component'));
-        $this->notificationData->setDescription(NoticeMessage::factory()->addDescription(Request::analyze('notification_description')));
-        $this->notificationData->setUserId(Request::analyze('notification_user', 0));
-        $this->notificationData->setChecked(Request::analyze('notification_checkout', 0, false, 1));
+        $this->notificationData->setType(Request::analyzeString('notification_type'));
+        $this->notificationData->setComponent(Request::analyzeString('notification_component'));
+        $this->notificationData->setDescription(NoticeMessage::factory()->addDescription(Request::analyzeString('notification_description')));
+        $this->notificationData->setUserId(Request::analyzeInt('notification_user'));
+        $this->notificationData->setChecked(Request::analyzeBool('notification_checkout', false));
 
         if ($this->session->getUserData()->getIsAdminApp() && $this->notificationData->getUserId() === 0) {
-            $this->notificationData->setOnlyAdmin(Request::analyze('notification_onlyadmin', 0, false, 1));
-            $this->notificationData->setSticky(Request::analyze('notification_sticky', 0, false, 1));
+            $this->notificationData->setOnlyAdmin(Request::analyzeBool('notification_onlyadmin', false));
+            $this->notificationData->setSticky(Request::analyzeBool('notification_sticky', false));
         }
     }
 

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -50,10 +50,10 @@ class ConfigWikiController extends SimpleControllerBase
         $configData = $this->config->getConfigData();
 
         // Wiki
-        $wikiEnabled = Request::analyze('wiki_enabled', false, false, true);
-        $wikiSearchUrl = Request::analyze('wiki_searchurl');
-        $wikiPageUrl = Request::analyze('wiki_pageurl');
-        $wikiFilter = Request::analyze('wiki_filter');
+        $wikiEnabled = Request::analyzeBool('wiki_enabled', false);
+        $wikiSearchUrl = Request::analyzeString('wiki_searchurl');
+        $wikiPageUrl = Request::analyzeString('wiki_pageurl');
+        $wikiFilter = Request::analyzeString('wiki_filter');
 
         // Valores para la conexión a la Wiki
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
@@ -76,12 +76,12 @@ class ConfigWikiController extends SimpleControllerBase
         }
 
         // DokuWiki
-        $dokuWikiEnabled = Request::analyze('dokuwiki_enabled', false, false, true);
-        $dokuWikiUrl = Request::analyze('dokuwiki_url');
-        $dokuWikiUrlBase = Request::analyze('dokuwiki_urlbase');
-        $dokuWikiUser = Request::analyze('dokuwiki_user');
+        $dokuWikiEnabled = Request::analyzeBool('dokuwiki_enabled', false);
+        $dokuWikiUrl = Request::analyzeString('dokuwiki_url');
+        $dokuWikiUrlBase = Request::analyzeString('dokuwiki_urlbase');
+        $dokuWikiUser = Request::analyzeString('dokuwiki_user');
         $dokuWikiPass = Request::analyzeEncrypted('dokuwiki_pass');
-        $dokuWikiNamespace = Request::analyze('dokuwiki_namespace');
+        $dokuWikiNamespace = Request::analyzeString('dokuwiki_namespace');
 
         // Valores para la conexión a la API de DokuWiki
         if ($dokuWikiEnabled && (!$dokuWikiUrl || !$dokuWikiUrlBase)) {

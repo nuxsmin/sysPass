@@ -57,11 +57,11 @@ class ConfigImportController extends SimpleControllerBase
         }
 
         $importParams = new ImportParams();
-        $importParams->setDefaultUser(Request::analyze('import_defaultuser', $this->session->getUserData()->getId()));
-        $importParams->setDefaultGroup(Request::analyze('import_defaultgroup', $this->session->getUserData()->getUserGroupId()));
+        $importParams->setDefaultUser(Request::analyzeInt('import_defaultuser', $this->session->getUserData()->getId()));
+        $importParams->setDefaultGroup(Request::analyzeInt('import_defaultgroup', $this->session->getUserData()->getUserGroupId()));
         $importParams->setImportPwd(Request::analyzeEncrypted('importPwd'));
         $importParams->setImportMasterPwd(Request::analyzeEncrypted('importMasterPwd'));
-        $importParams->setCsvDelimiter(Request::analyze('csvDelimiter'));
+        $importParams->setCsvDelimiter(Request::analyzeString('csvDelimiter'));
 
         try {
             $importService = $this->dic->get(ImportService::class);

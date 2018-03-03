@@ -40,17 +40,15 @@ class ConfigUtil
      * @param $filesAllowedExts
      * @return array
      */
-    public static function filesExtsAdapter(&$filesAllowedExts)
+    public static function filesExtsAdapter($filesAllowedExts)
     {
-        $exts = explode(',', $filesAllowedExts);
-
-        array_walk($exts, function (&$value) {
+        return array_map(function ($value) {
             if (preg_match('/[^a-z0-9_-]+/i', $value)) {
-                $value = null;
+                return null;
             }
-        });
 
-        return $exts;
+            return strtoupper($value);
+        }, explode(',', $filesAllowedExts));
     }
 
     /**

@@ -22,24 +22,24 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\TagData;
+use SP\DataModel\UserGroupData;
 use SP\Http\Request;
 
 /**
- * Class TagForm
+ * Class UserGroupForm
  *
- * @package SP\Forms
+ * @package SP\Modules\Web\Forms
  */
-class TagForm extends FormBase implements FormInterface
+class UserGroupForm extends FormBase implements FormInterface
 {
     /**
-     * @var TagData
+     * @var UserGroupData
      */
-    protected $tagData;
+    protected $groupData;
 
     /**
      * Validar el formulario
@@ -51,8 +51,8 @@ class TagForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::TAG_CREATE:
-            case ActionsInterface::TAG_EDIT:
+            case ActionsInterface::GROUP_CREATE:
+            case ActionsInterface::GROUP_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -68,9 +68,11 @@ class TagForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->tagData = new TagData();
-        $this->tagData->setId($this->itemId);
-        $this->tagData->setName(Request::analyze('name'));
+        $this->groupData = new UserGroupData();
+        $this->groupData->setId($this->itemId);
+        $this->groupData->setName(Request::analyzeString('name'));
+        $this->groupData->setDescription(Request::analyzeString('description'));
+        $this->groupData->setUsers(Request::analyzeArray('users'));
     }
 
     /**
@@ -78,16 +80,16 @@ class TagForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->tagData->getName()) {
-            throw new ValidationException(__u('Es necesario un nombre de etiqueta'));
+        if (!$this->groupData->getName()) {
+            throw new ValidationException(__u('Es necesario un nombre de grupo'));
         }
     }
 
     /**
-     * @return TagData
+     * @return UserGroupData
      */
     public function getItemData()
     {
-        return $this->tagData;
+        return $this->groupData;
     }
 }

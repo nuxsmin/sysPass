@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -37,6 +37,7 @@ use SP\Services\User\UserLoginResponse;
  */
 class Session
 {
+    private static $isReset = false;
     private static $isLocked = false;
 
     /**
@@ -57,6 +58,18 @@ class Session
         session_write_close();
 
         self::$isLocked = true;
+    }
+
+    /**
+     * Destruir la sesión y reiniciar
+     */
+    public static function restart()
+    {
+        self::$isReset = true;
+
+        session_unset();
+        session_destroy();
+        session_start();
     }
 
     /**
@@ -227,10 +240,8 @@ class Session
      */
     public function isLoggedIn()
     {
-        $userData = $this->getUserData();
-
-        return $userData->getLogin()
-            && is_object($userData->getPreferences());
+        return self::$isReset === false && $this->getUserData()->getLogin()
+            && is_object($this->getUserData()->getPreferences());
     }
 
     /**

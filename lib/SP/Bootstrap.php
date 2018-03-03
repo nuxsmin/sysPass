@@ -43,7 +43,6 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\Session\Session;
-use SP\Core\SessionUtil;
 use SP\Core\UI\Theme;
 use SP\Core\Upgrade\Upgrade;
 use SP\Http\Request;
@@ -541,8 +540,7 @@ class Bootstrap
 
             if ($check === true
                 || Checks::isAjax($this->router)
-                || Request::analyze('nodbupgrade', 0) === 1
-                || (Request::analyze('a') === 'upgrade' && Request::analyze('type') !== '')
+                || Request::analyzeInt('nodbupgrade') === 1
                 || (self::$LOCK > 0 && $this->session->isLoggedIn() && self::$LOCK === $this->session->getUserData()->getId())
             ) {
                 return true;
@@ -570,7 +568,7 @@ class Bootstrap
                 $this->router->response()->cookie(session_name(), '', time() - 42000);
             }
 
-            SessionUtil::restart();
+            Session::restart();
         } else {
 
             $sidStartTime = $this->session->getSidStartTime();
@@ -594,7 +592,7 @@ class Bootstrap
                 } catch (CryptoException $e) {
                     debugLog($e->getMessage());
 
-                    SessionUtil::restart();
+                    Session::restart();
                     return;
                 }
             }

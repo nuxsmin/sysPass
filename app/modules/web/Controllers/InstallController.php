@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -107,15 +107,15 @@ class InstallController extends ControllerBase
     public function installAction()
     {
         $installData = new InstallData();
-        $installData->setSiteLang(Request::analyze('sitelang', 'en_US'));
-        $installData->setAdminLogin(Request::analyze('adminlogin', 'admin'));
+        $installData->setSiteLang(Request::analyzeString('sitelang', 'en_US'));
+        $installData->setAdminLogin(Request::analyzeString('adminlogin', 'admin'));
         $installData->setAdminPass(Request::analyzeEncrypted('adminpass'));
         $installData->setMasterPassword(Request::analyzeEncrypted('masterpassword'));
-        $installData->setDbAdminUser(Request::analyze('dbuser', 'root'));
+        $installData->setDbAdminUser(Request::analyzeString('dbuser', 'root'));
         $installData->setDbAdminPass(Request::analyzeEncrypted('dbpass'));
-        $installData->setDbName(Request::analyze('dbname', 'syspass'));
-        $installData->setDbHost(Request::analyze('dbhost', 'localhost'));
-        $installData->setHostingMode(Request::analyze('hostingmode', false));
+        $installData->setDbName(Request::analyzeString('dbname', 'syspass'));
+        $installData->setDbHost(Request::analyzeString('dbhost', 'localhost'));
+        $installData->setHostingMode(Request::analyzeBool('hostingmode', false));
 
         try {
             Installer::run($installData);

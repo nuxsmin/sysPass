@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
@@ -33,7 +33,7 @@ use SP\Http\Request;
 /**
  * Class UserForm
  *
- * @package SP\Forms
+ * @package SP\Modules\Web\Forms
  */
 class UserForm extends FormBase implements FormInterface
 {
@@ -86,17 +86,17 @@ class UserForm extends FormBase implements FormInterface
     {
         $this->userData = new UserData();
         $this->userData->setId($this->itemId);
-        $this->userData->setName(Request::analyze('name'));
-        $this->userData->setLogin(Request::analyze('login'));
-        $this->userData->setSsoLogin(Request::analyze('login_sso'));
-        $this->userData->setEmail(Request::analyze('email'));
-        $this->userData->setNotes(Request::analyze('notes'));
-        $this->userData->setUserGroupId(Request::analyze('groupid', 0));
-        $this->userData->setUserProfileId(Request::analyze('profileid', 0));
-        $this->userData->setIsAdminApp(Request::analyze('adminapp', 0, false, 1));
-        $this->userData->setIsAdminAcc(Request::analyze('adminacc', 0, false, 1));
-        $this->userData->setIsDisabled(Request::analyze('disabled', 0, false, 1));
-        $this->userData->setIsChangePass(Request::analyze('changepass', 0, false, 1));
+        $this->userData->setName(Request::analyzeString('name'));
+        $this->userData->setLogin(Request::analyzeString('login'));
+        $this->userData->setSsoLogin(Request::analyzeString('login_sso'));
+        $this->userData->setEmail(Request::analyzeEmail('email'));
+        $this->userData->setNotes(Request::analyzeString('notes'));
+        $this->userData->setUserGroupId(Request::analyzeInt('groupid'));
+        $this->userData->setUserProfileId(Request::analyzeInt('profileid'));
+        $this->userData->setIsAdminApp(Request::analyzeBool('adminapp', false));
+        $this->userData->setIsAdminAcc(Request::analyzeBool('adminacc', false));
+        $this->userData->setIsDisabled(Request::analyzeBool('disabled', false));
+        $this->userData->setIsChangePass(Request::analyzeBool('changepass', false));
         $this->userData->setPass(Request::analyzeEncrypted('pass'));
     }
 

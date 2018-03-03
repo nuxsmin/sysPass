@@ -31,12 +31,12 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\ClientData;
-use SP\Forms\ClientForm;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Forms\ClientForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Services\Client\ClientService;
 
@@ -69,7 +69,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyze('activetab', 0));
+        $this->view->assign('index', Request::analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);

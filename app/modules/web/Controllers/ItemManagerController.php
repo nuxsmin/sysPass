@@ -119,7 +119,7 @@ class ItemManagerController extends ControllerBase
 
         $this->eventDispatcher->notifyEvent('show.itemlist.items', new Event($this));
 
-        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE), Request::analyze('tabIndex', 0));
+        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE), Request::analyzeInt('tabIndex', 0));
 
         $this->view();
     }

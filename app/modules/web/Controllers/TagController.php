@@ -30,12 +30,12 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\TagData;
-use SP\Forms\TagForm;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Forms\TagForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Services\Tag\TagService;
 
@@ -68,7 +68,7 @@ class TagController extends ControllerBase implements CrudControllerInterface
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyze('activetab', 0));
+        $this->view->assign('index', Request::analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);

@@ -111,7 +111,7 @@ class Request
      */
     public static function analyzeEncrypted($param)
     {
-        $encryptedData = self::analyze($param, '', false, false, false);
+        $encryptedData = self::analyzeString($param);
 
         if ($encryptedData === '') {
             return '';
@@ -131,6 +131,34 @@ class Request
         }
 
         return $clearData;
+    }
+
+    /**
+     * @param $param
+     * @param $default
+     * @return string
+     */
+    public static function analyzeString($param, $default = null)
+    {
+        if (!isset($_REQUEST[$param])) {
+            return (string)$default;
+        }
+
+        return filter_var($_REQUEST[$param], FILTER_SANITIZE_STRING);
+    }
+
+    /**
+     * @param $param
+     * @param $default
+     * @return string
+     */
+    public static function analyzeEmail($param, $default = null)
+    {
+        if (!isset($_REQUEST[$param])) {
+            return (string)$default;
+        }
+
+        return filter_var($_REQUEST[$param], FILTER_SANITIZE_EMAIL);
     }
 
     /**
@@ -199,7 +227,7 @@ class Request
      */
     public static function analyzeArray($param)
     {
-        if (is_array($_REQUEST[$param])) {
+        if (isset($_REQUEST[$param]) && is_array($_REQUEST[$param])) {
             return array_map(function ($value) {
                 if (is_numeric($value)) {
                     return (int)filter_var($value, FILTER_SANITIZE_NUMBER_INT);
@@ -209,16 +237,15 @@ class Request
             }, $_REQUEST[$param]);
         }
 
-        return false;
+        return null;
     }
-
 
     /**
      * @param $param
      * @param $default
      * @return int
      */
-    public static function analyzeInt($param, $default = 0)
+    public static function analyzeInt($param, $default = null)
     {
         if (!isset($_REQUEST[$param])) {
             return (int)$default;
@@ -230,23 +257,9 @@ class Request
     /**
      * @param $param
      * @param $default
-     * @return string
-     */
-    public static function analyzeString($param, $default = '')
-    {
-        if (!isset($_REQUEST[$param])) {
-            return (string)$default;
-        }
-
-        return filter_var($_REQUEST[$param], FILTER_SANITIZE_STRING);
-    }
-
-    /**
-     * @param $param
-     * @param $default
      * @return bool
      */
-    public static function analyzeBool($param, $default = false)
+    public static function analyzeBool($param, $default = null)
     {
         if (!isset($_REQUEST[$param])) {
             return (bool)$default;

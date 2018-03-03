@@ -38,7 +38,6 @@ use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Services\Ldap\LdapCheckService;
 use SP\Services\Ldap\LdapImportParams;
 use SP\Services\Ldap\LdapImportService;
-use SP\Util\Util;
 
 /**
  * Class ConfigLdapController
@@ -59,9 +58,9 @@ class ConfigLdapController extends SimpleControllerBase
             $configData = $this->config->getConfigData();
 
             // LDAP
-            $ldapEnabled = Request::analyze('ldap_enabled', false, false, true);
-            $ldapDefaultGroup = Request::analyze('ldap_defaultgroup', 0);
-            $ldapDefaultProfile = Request::analyze('ldap_defaultprofile', 0);
+            $ldapEnabled = Request::analyzeBool('ldap_enabled', false);
+            $ldapDefaultGroup = Request::analyzeInt('ldap_defaultgroup');
+            $ldapDefaultProfile = Request::analyzeInt('ldap_defaultprofile');
 
             $ldapParams = $this->getLdapParamsFromRequest();
 
@@ -104,7 +103,7 @@ class ConfigLdapController extends SimpleControllerBase
      */
     protected function getLdapParamsFromRequest()
     {
-        $data = LdapParams::getServerAndPort(Request::analyze('ldap_server'));
+        $data = LdapParams::getServerAndPort(Request::analyzeString('ldap_server'));
 
         if ($data === false) {
             throw new ValidationException(__u('Parámetros de LDAP incorrectos'));
@@ -113,11 +112,11 @@ class ConfigLdapController extends SimpleControllerBase
         return (new LdapParams())
             ->setServer($data['server'])
             ->setPort(isset($data['port']) ? $data['port'] : 389)
-            ->setSearchBase(Request::analyze('ldap_base'))
-            ->setGroup(Request::analyze('ldap_group'))
-            ->setBindDn(Request::analyze('ldap_binduser'))
+            ->setSearchBase(Request::analyzeString('ldap_base'))
+            ->setGroup(Request::analyzeString('ldap_group'))
+            ->setBindDn(Request::analyzeString('ldap_binduser'))
             ->setBindPass(Request::analyzeEncrypted('ldap_bindpass'))
-            ->setAds(Request::analyze('ldap_ads', false, false, true));
+            ->setAds(Request::analyzeBool('ldap_ads', false));
     }
 
     /**
@@ -172,10 +171,10 @@ class ConfigLdapController extends SimpleControllerBase
             $ldapCheckService = $this->dic->get(LdapCheckService::class);
             $ldapCheckService->checkConnection($ldapParams);
 
-            $filter = Request::analyze('ldap_import_filter');
+            $filter = Request::analyzeString('ldap_import_filter');
 
             if (empty($filter)) {
-                $data = $ldapCheckService->getObjects(Util::boolval(Request::analyze('ldap_import_groups')));
+                $data = $ldapCheckService->getObjects(Request::analyzeBool('ldap_import_groups', false));
             } else {
                 $data = $ldapCheckService->getObjectsByFilter($filter);
             }
@@ -210,14 +209,14 @@ class ConfigLdapController extends SimpleControllerBase
         try {
             $ldapImportParams = new LdapImportParams();
 
-            $ldapImportParams->filter = Request::analyze('ldap_import_filter');
-            $ldapImportParams->loginAttribute = Request::analyze('ldap_login_attribute');
-            $ldapImportParams->userNameAttribute = Request::analyze('ldap_username_attribute');
-            $ldapImportParams->userGroupNameAttribute = Request::analyze('ldap_groupname_attribute');
-            $ldapImportParams->defaultUserGroup = Request::analyze('ldap_defaultgroup', 0);
-            $ldapImportParams->defaultUserProfile = Request::analyze('ldap_defaultprofile', 0);
+            $ldapImportParams->filter = Request::analyzeString('ldap_import_filter');
+            $ldapImportParams->loginAttribute = Request::analyzeString('ldap_login_attribute');
+            $ldapImportParams->userNameAttribute = Request::analyzeString('ldap_username_attribute');
+            $ldapImportParams->userGroupNameAttribute = Request::analyzeString('ldap_groupname_attribute');
+            $ldapImportParams->defaultUserGroup = Request::analyzeInt('ldap_defaultgroup');
+            $ldapImportParams->defaultUserProfile = Request::analyzeInt('ldap_defaultprofile');
 
-            $checkImportGroups = Util::boolval(Request::analyze('ldap_import_groups'));
+            $checkImportGroups = Request::analyzeBool('ldap_import_groups', false);
 
             if ((empty($ldapImportParams->loginAttribute)
                     || empty($ldapImportParams->userNameAttribute)
@@ -238,7 +237,7 @@ class ConfigLdapController extends SimpleControllerBase
 
             $userLdapService->importUsers($ldapParams, $ldapImportParams);
 
-            $filter = Request::analyze('ldap_import_filter');
+            $filter = Request::analyzeString('ldap_import_filter');
 
             // Groups won't be imported if filter is set
             if ($checkImportGroups === true && empty($filter)) {

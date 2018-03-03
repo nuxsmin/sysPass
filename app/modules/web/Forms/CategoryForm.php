@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
@@ -32,7 +32,7 @@ use SP\Http\Request;
 /**
  * Class CategoryForm
  *
- * @package SP\Forms
+ * @package SP\Modules\Web\Forms
  */
 class CategoryForm extends FormBase implements FormInterface
 {
@@ -70,8 +70,8 @@ class CategoryForm extends FormBase implements FormInterface
     {
         $this->categoryData = new CategoryData();
         $this->categoryData->setId($this->itemId);
-        $this->categoryData->setName(Request::analyze('name'));
-        $this->categoryData->setDescription(Request::analyze('description'));
+        $this->categoryData->setName(Request::analyzeString('name'));
+        $this->categoryData->setDescription(Request::analyzeString('description'));
     }
 
     /**

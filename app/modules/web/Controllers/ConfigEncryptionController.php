@@ -64,8 +64,8 @@ class ConfigEncryptionController extends SimpleControllerBase
         $currentMasterPass = Request::analyzeEncrypted('curMasterPwd');
         $newMasterPass = Request::analyzeEncrypted('newMasterPwd');
         $newMasterPassR = Request::analyzeEncrypted('newMasterPwdR');
-        $confirmPassChange = Request::analyze('confirmPassChange', 0, false, 1);
-        $noAccountPassChange = Request::analyze('chkNoAccountChange', 0, false, 1);
+        $confirmPassChange = Request::analyzeBool('confirmPassChange', false);
+        $noAccountPassChange = Request::analyzeBool('chkNoAccountChange', false);
 
         if (!$mastePassService->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __u('Clave maestra actualizada'), [__u('Reinicie la sesión para cambiarla')]);
@@ -165,7 +165,7 @@ class ConfigEncryptionController extends SimpleControllerBase
     {
         try {
             $temporaryMasterPassService = $this->dic->get(TemporaryMasterPassService::class);
-            $temporaryMasterPassService->create(Request::analyze('tmpass_maxtime', 3600));
+            $temporaryMasterPassService->create(Request::analyzeInt('tmpass_maxtime', 3600));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave Temporal Generada'));
         } catch (ServiceException $e) {

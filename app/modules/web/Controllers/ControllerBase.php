@@ -153,10 +153,13 @@ abstract class ControllerBase
         $this->view->setBase(strtolower($this->controllerName));
 
         $this->icons = $this->theme->getIcons();
-        $this->userData = clone $this->session->getUserData();
-        $this->userProfileData = clone $this->session->getUserProfile();
 
-        $this->setViewVars();
+        if ($this->session->isLoggedIn()) {
+            $this->userData = clone $this->session->getUserData();
+            $this->userProfileData = clone $this->session->getUserProfile();
+
+            $this->setViewVars();
+        }
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();

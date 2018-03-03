@@ -50,15 +50,15 @@ class ConfigMailController extends SimpleControllerBase
         $configData = $this->config->getConfigData();
 
         // Mail
-        $mailEnabled = Request::analyze('mail_enabled', false, false, true);
-        $mailServer = Request::analyze('mail_server');
-        $mailPort = Request::analyze('mail_port', 25);
-        $mailUser = Request::analyze('mail_user');
+        $mailEnabled = Request::analyzeBool('mail_enabled', false);
+        $mailServer = Request::analyzeString('mail_server');
+        $mailPort = Request::analyzeInt('mail_port', 25);
+        $mailUser = Request::analyzeString('mail_user');
         $mailPass = Request::analyzeEncrypted('mail_pass');
-        $mailSecurity = Request::analyze('mail_security');
-        $mailFrom = Request::analyze('mail_from');
-        $mailRequests = Request::analyze('mail_requestsenabled', false, false, true);
-        $mailAuth = Request::analyze('mail_authenabled', false, false, true);
+        $mailSecurity = Request::analyzeString('mail_security');
+        $mailFrom = Request::analyzeEmail('mail_from');
+        $mailRequests = Request::analyzeBool('mail_requestsenabled', false);
+        $mailAuth = Request::analyzeBool('mail_authenabled', false);
 
         // Valores para la configuración del Correo
         if ($mailEnabled && (!$mailServer || !$mailFrom)) {

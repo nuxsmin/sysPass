@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,12 +22,11 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 use SP\Account\AccountRequest;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\SessionFactory;
 use SP\Http\Request;
 
 /**
@@ -80,36 +79,36 @@ class AccountForm extends FormBase implements FormInterface
     {
         $this->accountRequest = new AccountRequest();
         $this->accountRequest->id = $this->itemId;
-        $this->accountRequest->name = Request::analyze('name');
-        $this->accountRequest->clientId = Request::analyze('clientId', 0);
-        $this->accountRequest->categoryId = Request::analyze('categoryId', 0);
-        $this->accountRequest->login = Request::analyze('login');
-        $this->accountRequest->url = Request::analyze('url');
-        $this->accountRequest->notes = Request::analyze('notes');
-        $this->accountRequest->userEditId = SessionFactory::getUserData()->getId();
-        $this->accountRequest->otherUserEdit = (int)Request::analyze('otherUserEditEnabled', 0, false, 1);
-        $this->accountRequest->otherUserGroupEdit = (int)Request::analyze('otherUserGroupEditEnabled', 0, false, 1);
+        $this->accountRequest->name = Request::analyzeString('name');
+        $this->accountRequest->clientId = Request::analyzeInt('clientId', 0);
+        $this->accountRequest->categoryId = Request::analyzeInt('categoryId', 0);
+        $this->accountRequest->login = Request::analyzeString('login');
+        $this->accountRequest->url = Request::analyzeString('url');
+        $this->accountRequest->notes = Request::analyzeString('notes');
+        $this->accountRequest->userEditId = $this->session->getUserData()->getId();
+        $this->accountRequest->otherUserEdit = (int)Request::analyzeBool('otherUserEditEnabled', false);
+        $this->accountRequest->otherUserGroupEdit = (int)Request::analyzeBool('otherUserGroupEditEnabled', false);
         $this->accountRequest->pass = Request::analyzeEncrypted('pass');
-        $this->accountRequest->isPrivate = (int)Request::analyze('privateEnabled', 0, false, 1);
-        $this->accountRequest->isPrivateGroup = (int)Request::analyze('privateGroupEnabled', 0, false, 1);
-        $this->accountRequest->passDateChange = Request::analyze('passworddatechange_unix', 0);
-        $this->accountRequest->parentId = Request::analyze('parentAccountId', 0);
-        $this->accountRequest->userGroupId = Request::analyze('mainUserGroupId', 0);
+        $this->accountRequest->isPrivate = (int)Request::analyzeBool('privateEnabled', false);
+        $this->accountRequest->isPrivateGroup = (int)Request::analyzeBool('privateGroupEnabled', false);
+        $this->accountRequest->passDateChange = Request::analyzeInt('passworddatechange_unix');
+        $this->accountRequest->parentId = Request::analyzeInt('parentAccountId');
+        $this->accountRequest->userGroupId = Request::analyzeInt('mainUserGroupId');
 
         // Arrays
-        $accountOtherGroups = Request::analyze('otherUserGroups', 0);
-        $accountOtherUsers = Request::analyze('otherUsers', 0);
-        $accountTags = Request::analyze('tags', 0);
+        $accountOtherGroups = Request::analyzeArray('otherUserGroups');
+        $accountOtherUsers = Request::analyzeArray('otherUsers');
+        $accountTags = Request::analyzeArray('tags');
 
-        if (is_array($accountOtherUsers)) {
+        if ($accountOtherUsers) {
             $this->accountRequest->users = $accountOtherUsers;
         }
 
-        if (is_array($accountOtherGroups)) {
+        if ($accountOtherGroups) {
             $this->accountRequest->userGroups = $accountOtherGroups;
         }
 
-        if (is_array($accountTags)) {
+        if ($accountTags) {
             $this->accountRequest->tags = $accountTags;
         }
     }

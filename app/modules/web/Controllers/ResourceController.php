@@ -45,8 +45,8 @@ class ResourceController extends SimpleControllerBase
      */
     public function cssAction()
     {
-        $file = Request::analyze('f');
-        $base = Request::analyze('b');
+        $file = Request::analyzeString('f');
+        $base = Request::analyzeString('b');
 
         $minify = $this->dic->get(Minify::class);
 
@@ -77,8 +77,8 @@ class ResourceController extends SimpleControllerBase
      */
     public function jsAction()
     {
-        $file = Request::analyze('f');
-        $base = Request::analyze('b');
+        $file = Request::analyzeString('f');
+        $base = Request::analyzeString('b');
 
         $minify = $this->dic->get(Minify::class);
 
@@ -91,7 +91,7 @@ class ResourceController extends SimpleControllerBase
             $minify->setType(Minify::FILETYPE_JS)
                 ->setBase(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'js');
 
-            $group = Request::analyze('g', 0);
+            $group = Request::analyzeInt('g', 0);
 
             if ($group === 0) {
                 $minify->addFiles([

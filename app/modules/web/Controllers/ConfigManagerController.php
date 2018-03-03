@@ -121,7 +121,7 @@ class ConfigManagerController extends ControllerBase
 
         $this->eventDispatcher->notifyEvent('show.config', new Event($this));
 
-        $this->tabsHelper->renderTabs(Acl::getActionRoute(ActionsInterface::CONFIG), Request::analyze('tabIndex', 0));
+        $this->tabsHelper->renderTabs(Acl::getActionRoute(ActionsInterface::CONFIG), Request::analyzeInt('tabIndex', 0));
 
         $this->view();
     }

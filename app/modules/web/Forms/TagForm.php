@@ -22,24 +22,24 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\CustomFieldDefinitionData;
+use SP\DataModel\TagData;
 use SP\Http\Request;
 
 /**
- * Class CustomFieldDefForm
+ * Class TagForm
  *
- * @package SP\Forms
+ * @package SP\Modules\Web\Forms
  */
-class CustomFieldDefForm extends FormBase implements FormInterface
+class TagForm extends FormBase implements FormInterface
 {
     /**
-     * @var CustomFieldDefinitionData
+     * @var TagData
      */
-    protected $customFieldDefData;
+    protected $tagData;
 
     /**
      * Validar el formulario
@@ -51,8 +51,8 @@ class CustomFieldDefForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::CUSTOMFIELD_CREATE:
-            case ActionsInterface::CUSTOMFIELD_EDIT:
+            case ActionsInterface::TAG_CREATE:
+            case ActionsInterface::TAG_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -68,13 +68,9 @@ class CustomFieldDefForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->customFieldDefData = new CustomFieldDefinitionData();
-        $this->customFieldDefData->setId($this->itemId);
-        $this->customFieldDefData->setName(Request::analyze('name'));
-        $this->customFieldDefData->setTypeId(Request::analyze('type', 0));
-        $this->customFieldDefData->setModuleId(Request::analyze('module', 0));
-        $this->customFieldDefData->setHelp(Request::analyze('help'));
-        $this->customFieldDefData->setRequired(Request::analyze('required', false, false, true));
+        $this->tagData = new TagData();
+        $this->tagData->setId($this->itemId);
+        $this->tagData->setName(Request::analyzeString('name'));
     }
 
     /**
@@ -82,24 +78,16 @@ class CustomFieldDefForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->customFieldDefData->getName()) {
-            throw new ValidationException(__u('Nombre del campo no indicado'));
-        }
-
-        if ($this->customFieldDefData->getTypeId() === 0) {
-            throw new ValidationException(__u('Tipo del campo no indicado'));
-        }
-
-        if ($this->customFieldDefData->getModuleId() === 0) {
-            throw new ValidationException(__u('Módulo del campo no indicado'));
+        if (!$this->tagData->getName()) {
+            throw new ValidationException(__u('Es necesario un nombre de etiqueta'));
         }
     }
 
     /**
-     * @return CustomFieldDefinitionData
+     * @return TagData
      */
     public function getItemData()
     {
-        return $this->customFieldDefData;
+        return $this->tagData;
     }
 }

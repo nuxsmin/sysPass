@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
@@ -32,7 +32,7 @@ use SP\Http\Request;
 /**
  * Class ApiTokenForm
  *
- * @package SP\Forms
+ * @package SP\Modules\Web\Forms
  */
 class AuthTokenForm extends FormBase implements FormInterface
 {
@@ -72,12 +72,12 @@ class AuthTokenForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->refresh = (bool)Request::analyze('refreshtoken', 0, false, 1);
+        $this->refresh = Request::analyzeBool('refreshtoken', false);
 
         $this->authTokenData = new AuthTokenData();
         $this->authTokenData->setId($this->itemId);
-        $this->authTokenData->setUserId(Request::analyze('users', 0));
-        $this->authTokenData->setActionId(Request::analyze('actions', 0));
+        $this->authTokenData->setUserId(Request::analyzeInt('users'));
+        $this->authTokenData->setActionId(Request::analyzeInt('actions'));
         $this->authTokenData->setHash(Request::analyzeEncrypted('pass'));
     }
 

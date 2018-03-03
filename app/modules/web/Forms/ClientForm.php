@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
@@ -32,7 +32,7 @@ use SP\Http\Request;
 /**
  * Class ClientForm
  *
- * @package SP\Forms
+ * @package SP\Modules\Web\Forms
  */
 class ClientForm extends FormBase implements FormInterface
 {
@@ -70,9 +70,9 @@ class ClientForm extends FormBase implements FormInterface
     {
         $this->clientData = new ClientData();
         $this->clientData->setId($this->itemId);
-        $this->clientData->setName(Request::analyze('name'));
-        $this->clientData->setDescription(Request::analyze('description'));
-        $this->clientData->setIsGlobal(Request::analyze('isglobal', 0, false, 1));
+        $this->clientData->setName(Request::analyzeString('name'));
+        $this->clientData->setDescription(Request::analyzeString('description'));
+        $this->clientData->setIsGlobal(Request::analyzeBool('isglobal', false));
     }
 
     /**

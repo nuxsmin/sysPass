@@ -133,7 +133,7 @@ class LoginService extends Service
      */
     public function doLogin()
     {
-        $this->userLoginData->setLoginUser(Request::analyze('user'));
+        $this->userLoginData->setLoginUser(Request::analyzeString('user'));
         $this->userLoginData->setLoginPass(Request::analyzeEncrypted('pass'));
 
         if ($this->trackService->checkTracking($this->trackRequest)) {

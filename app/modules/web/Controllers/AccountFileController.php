@@ -228,7 +228,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyze('activetab', 0));
+        $this->view->assign('index', Request::analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);
@@ -334,8 +334,8 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
         try {
             $this->view->addTemplate('files-list', 'account');
 
-            $this->view->assign('deleteEnabled', Request::analyze('del', 0));
-            $this->view->assign('files', (new AccountFileService())->getByAccountId($accountId));
+            $this->view->assign('deleteEnabled', Request::analyzeBool('del', false));
+            $this->view->assign('files', $this->dic->get(AccountFileService::class)->getByAccountId($accountId));
             $this->view->assign('sk', $this->session->getSecurityKey());
             $this->view->assign('fileViewRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
             $this->view->assign('fileDownloadRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_DOWNLOAD));

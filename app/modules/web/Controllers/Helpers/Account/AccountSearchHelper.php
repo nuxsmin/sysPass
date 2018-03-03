@@ -294,7 +294,7 @@ class AccountSearchHelper extends HelperBase
     {
         $accountSearchFilter = $this->session->getSearchFilters();
 
-        if ($accountSearchFilter !== null && empty(Request::analyze('sk'))) {
+        if ($accountSearchFilter !== null && empty(Request::analyzeString('sk'))) {
             // Obtener el filtro de búsqueda desde la sesión
             return $accountSearchFilter;
         }
@@ -303,16 +303,16 @@ class AccountSearchHelper extends HelperBase
         $limitCount = ($userPreferences->getResultsPerPage() > 0) ? $userPreferences->getResultsPerPage() : $this->configData->getAccountCount();
 
         $accountSearchFilter = new AccountSearchFilter();
-        $accountSearchFilter->setSortKey(Request::analyze('skey', 0));
-        $accountSearchFilter->setSortOrder(Request::analyze('sorder', 0));
-        $accountSearchFilter->setLimitStart(Request::analyze('start', 0));
-        $accountSearchFilter->setLimitCount(Request::analyze('rpp', $limitCount));
-        $accountSearchFilter->setGlobalSearch(Request::analyze('gsearch', false));
-        $accountSearchFilter->setClientId(Request::analyze('customer', 0));
-        $accountSearchFilter->setCategoryId(Request::analyze('category', 0));
-        $accountSearchFilter->setTagsId(Request::analyze('tags'));
-        $accountSearchFilter->setSearchFavorites(Request::analyze('searchfav', false));
-        $accountSearchFilter->setTxtSearch(Request::analyze('search'));
+        $accountSearchFilter->setSortKey(Request::analyzeInt('skey', 0));
+        $accountSearchFilter->setSortOrder(Request::analyzeInt('sorder', 0));
+        $accountSearchFilter->setLimitStart(Request::analyzeInt('start', 0));
+        $accountSearchFilter->setLimitCount(Request::analyzeInt('rpp', $limitCount));
+        $accountSearchFilter->setGlobalSearch(Request::analyzeBool('gsearch', false));
+        $accountSearchFilter->setClientId(Request::analyzeInt('client'));
+        $accountSearchFilter->setCategoryId(Request::analyzeInt('category'));
+        $accountSearchFilter->setTagsId(Request::analyzeArray('tags'));
+        $accountSearchFilter->setSearchFavorites(Request::analyzeBool('searchfav', false));
+        $accountSearchFilter->setTxtSearch(Request::analyzeString('search'));
         $accountSearchFilter->setSortViews($userPreferences->isSortViews());
 
         return $accountSearchFilter;

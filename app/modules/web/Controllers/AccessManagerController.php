@@ -104,7 +104,7 @@ class AccessManagerController extends ControllerBase
 
         $this->eventDispatcher->notifyEvent('show.itemlist.accesses', new Event($this));
 
-        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE), Request::analyze('tabIndex', 0));
+        $this->tabsGridHelper->renderTabs(Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE), Request::analyzeInt('tabIndex', 0));
 
         $this->view();
     }

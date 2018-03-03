@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -224,7 +224,7 @@ class ConfigData implements JsonSerializable
     /**
      * @var string
      */
-    private $mailFrom ;
+    private $mailFrom;
     /**
      * @var string
      */
@@ -998,19 +998,15 @@ class ConfigData implements JsonSerializable
      */
     public function getFilesAllowedExts()
     {
-        return is_array($this->filesAllowedExts) ? $this->filesAllowedExts : [];
+        return (array)$this->filesAllowedExts;
     }
 
     /**
      * @param array $filesAllowedExts
      * @return $this
      */
-    public function setFilesAllowedExts($filesAllowedExts = [])
+    public function setFilesAllowedExts(array $filesAllowedExts = [])
     {
-        if (!is_array($filesAllowedExts)) {
-            $filesAllowedExts = ConfigUtil::filesExtsAdapter($filesAllowedExts);
-        }
-
         $this->filesAllowedExts = $filesAllowedExts;
 
         return $this;

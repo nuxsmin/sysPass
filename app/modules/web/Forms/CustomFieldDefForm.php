@@ -22,24 +22,24 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\DataModel\UserGroupData;
+use SP\DataModel\CustomFieldDefinitionData;
 use SP\Http\Request;
 
 /**
- * Class UserGroupForm
+ * Class CustomFieldDefForm
  *
- * @package SP\Forms
+ * @package SP\Modules\Web\Forms
  */
-class UserGroupForm extends FormBase implements FormInterface
+class CustomFieldDefForm extends FormBase implements FormInterface
 {
     /**
-     * @var UserGroupData
+     * @var CustomFieldDefinitionData
      */
-    protected $groupData;
+    protected $customFieldDefData;
 
     /**
      * Validar el formulario
@@ -51,8 +51,8 @@ class UserGroupForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::GROUP_CREATE:
-            case ActionsInterface::GROUP_EDIT:
+            case ActionsInterface::CUSTOMFIELD_CREATE:
+            case ActionsInterface::CUSTOMFIELD_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;
@@ -68,11 +68,13 @@ class UserGroupForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
-        $this->groupData = new UserGroupData();
-        $this->groupData->setId($this->itemId);
-        $this->groupData->setName(Request::analyze('name'));
-        $this->groupData->setDescription(Request::analyze('description'));
-        $this->groupData->setUsers(Request::analyze('users', 0));
+        $this->customFieldDefData = new CustomFieldDefinitionData();
+        $this->customFieldDefData->setId($this->itemId);
+        $this->customFieldDefData->setName(Request::analyzeString('name'));
+        $this->customFieldDefData->setTypeId(Request::analyzeInt('type'));
+        $this->customFieldDefData->setModuleId(Request::analyzeInt('module'));
+        $this->customFieldDefData->setHelp(Request::analyzeString('help'));
+        $this->customFieldDefData->setRequired(Request::analyzeBool('required', false));
     }
 
     /**
@@ -80,16 +82,24 @@ class UserGroupForm extends FormBase implements FormInterface
      */
     protected function checkCommon()
     {
-        if (!$this->groupData->getName()) {
-            throw new ValidationException(__u('Es necesario un nombre de grupo'));
+        if (!$this->customFieldDefData->getName()) {
+            throw new ValidationException(__u('Nombre del campo no indicado'));
+        }
+
+        if ($this->customFieldDefData->getTypeId() === 0) {
+            throw new ValidationException(__u('Tipo del campo no indicado'));
+        }
+
+        if ($this->customFieldDefData->getModuleId() === 0) {
+            throw new ValidationException(__u('Módulo del campo no indicado'));
         }
     }
 
     /**
-     * @return UserGroupData
+     * @return CustomFieldDefinitionData
      */
     public function getItemData()
     {
-        return $this->groupData;
+        return $this->customFieldDefData;
     }
 }

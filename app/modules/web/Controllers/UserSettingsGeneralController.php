@@ -52,14 +52,14 @@ class UserSettingsGeneralController extends SimpleControllerBase
         $userPreferencesData = clone $userData->getPreferences();
 
         $userPreferencesData->setUserId($userData->getId());
-        $userPreferencesData->setLang(Request::analyze('userlang'));
-        $userPreferencesData->setTheme(Request::analyze('usertheme', 'material-blue'));
-        $userPreferencesData->setResultsPerPage(Request::analyze('resultsperpage', 12));
-        $userPreferencesData->setAccountLink(Request::analyze('account_link', false, false, true));
-        $userPreferencesData->setSortViews(Request::analyze('sort_views', false, false, true));
-        $userPreferencesData->setTopNavbar(Request::analyze('top_navbar', false, false, true));
-        $userPreferencesData->setOptionalActions(Request::analyze('optional_actions', false, false, true));
-        $userPreferencesData->setResultsAsCards(Request::analyze('resultsascards', false, false, true));
+        $userPreferencesData->setLang(Request::analyzeString('userlang'));
+        $userPreferencesData->setTheme(Request::analyzeString('usertheme', 'material-blue'));
+        $userPreferencesData->setResultsPerPage(Request::analyzeInt('resultsperpage', 12));
+        $userPreferencesData->setAccountLink(Request::analyzeBool('account_link', false));
+        $userPreferencesData->setSortViews(Request::analyzeBool('sort_views', false));
+        $userPreferencesData->setTopNavbar(Request::analyzeBool('top_navbar', false));
+        $userPreferencesData->setOptionalActions(Request::analyzeBool('optional_actions', false));
+        $userPreferencesData->setResultsAsCards(Request::analyzeBool('resultsascards', false));
 
         try {
             $this->userService->updatePreferencesById($userData->getId(), $userPreferencesData);

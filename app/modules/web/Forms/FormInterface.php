@@ -22,12 +22,12 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 /**
  * Interface FormInterface
  *
- * @package SP\Forms
+ * @package SP\Modules\Web\Forms
  */
 interface FormInterface
 {

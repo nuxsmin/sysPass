@@ -82,8 +82,8 @@ class UserPassResetController extends ControllerBase
         try {
             $this->checkTracking();
 
-            $login = Request::analyze('login');
-            $email = Request::analyze('email');
+            $login = Request::analyzeString('login');
+            $email = Request::analyzeEmail('email');
 
             $userLoginResponse = $this->dic->get(UserService::class)->getByLogin($login);
 
@@ -97,7 +97,7 @@ class UserPassResetController extends ControllerBase
 
             $hash = $this->dic->get(UserPassRecoverService::class)->requestForUserId($userLoginResponse->getId());
 
-            $this->eventDispatcher->notifyEvent('userPassReset.request',
+            $this->eventDispatcher->notifyEvent('request.user.passReset',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Recuperación de Clave'))
                     ->addDetail(__u('Solicitado para'), sprintf('%s (%s)', $login, $email)))
@@ -174,7 +174,7 @@ class UserPassResetController extends ControllerBase
                 throw new ValidationException(__u('Las claves no coinciden'));
             }
 
-            $hash = Request::analyze('hash');
+            $hash = Request::analyzeString('hash');
 
             $userPassRecoverService = $this->dic->get(UserPassRecoverService::class);
             $userId = $userPassRecoverService->getUserIdForHash($hash);
@@ -182,7 +182,7 @@ class UserPassResetController extends ControllerBase
 
             $this->dic->get(UserService::class)->updatePass($userId, $pass);
 
-            $this->eventDispatcher->notifyEvent('edit.user.pass',
+            $this->eventDispatcher->notifyEvent('edit.user.password',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Clave actualizada'))
                     ->addDetail(__u('Usuario'), $userId))

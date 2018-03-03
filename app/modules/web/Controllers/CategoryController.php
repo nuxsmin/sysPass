@@ -30,12 +30,12 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\CategoryData;
-use SP\Forms\CategoryForm;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Modules\Web\Forms\CategoryForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Services\Category\CategoryService;
 
@@ -68,7 +68,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
-        $this->view->assign('index', Request::analyze('activetab', 0));
+        $this->view->assign('index', Request::analyzeInt('activetab', 0));
         $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);

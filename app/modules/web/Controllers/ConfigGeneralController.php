@@ -50,15 +50,15 @@ class ConfigGeneralController extends SimpleControllerBase
         $eventMessage = EventMessage::factory();
 
         // General
-        $siteLang = Request::analyze('sitelang');
-        $siteTheme = Request::analyze('sitetheme', 'material-blue');
-        $sessionTimeout = Request::analyze('session_timeout', 300);
-        $httpsEnabled = Request::analyze('https_enabled', false, false, true);
-        $debugEnabled = Request::analyze('debug', false, false, true);
-        $maintenanceEnabled = Request::analyze('maintenance', false, false, true);
-        $checkUpdatesEnabled = Request::analyze('updates', false, false, true);
-        $checkNoticesEnabled = Request::analyze('notices', false, false, true);
-        $encryptSessionEnabled = Request::analyze('encryptsession', false, false, true);
+        $siteLang = Request::analyzeString('sitelang');
+        $siteTheme = Request::analyzeString('sitetheme', 'material-blue');
+        $sessionTimeout = Request::analyzeInt('session_timeout', 300);
+        $httpsEnabled = Request::analyzeBool('https_enabled', false);
+        $debugEnabled = Request::analyzeBool('debug', false);
+        $maintenanceEnabled = Request::analyzeBool('maintenance', false);
+        $checkUpdatesEnabled = Request::analyzeBool('updates', false);
+        $checkNoticesEnabled = Request::analyzeBool('notices', false);
+        $encryptSessionEnabled = Request::analyzeBool('encryptsession', false);
 
         $configData->setSiteLang($siteLang);
         $configData->setSiteTheme($siteTheme);
@@ -71,11 +71,11 @@ class ConfigGeneralController extends SimpleControllerBase
         $configData->setEncryptSession($encryptSessionEnabled);
 
         // Events
-        $logEnabled = Request::analyze('log_enabled', false, false, true);
-        $syslogEnabled = Request::analyze('syslog_enabled', false, false, true);
-        $remoteSyslogEnabled = Request::analyze('remotesyslog_enabled', false, false, true);
-        $syslogServer = Request::analyze('remotesyslog_server');
-        $syslogPort = Request::analyze('remotesyslog_port', 0);
+        $logEnabled = Request::analyzeBool('log_enabled', false);
+        $syslogEnabled = Request::analyzeBool('syslog_enabled', false);
+        $remoteSyslogEnabled = Request::analyzeBool('remotesyslog_enabled', false);
+        $syslogServer = Request::analyzeString('remotesyslog_server');
+        $syslogPort = Request::analyzeInt('remotesyslog_port', 0);
 
         $configData->setLogEnabled($logEnabled);
         $configData->setSyslogEnabled($syslogEnabled);
@@ -99,10 +99,10 @@ class ConfigGeneralController extends SimpleControllerBase
         }
 
         // Proxy
-        $proxyEnabled = Request::analyze('proxy_enabled', false, false, true);
-        $proxyServer = Request::analyze('proxy_server');
-        $proxyPort = Request::analyze('proxy_port', 0);
-        $proxyUser = Request::analyze('proxy_user');
+        $proxyEnabled = Request::analyzeBool('proxy_enabled', false);
+        $proxyServer = Request::analyzeString('proxy_server');
+        $proxyPort = Request::analyzeInt('proxy_port', 8080);
+        $proxyUser = Request::analyzeString('proxy_user');
         $proxyPass = Request::analyzeEncrypted('proxy_pass');
 
 
@@ -128,11 +128,11 @@ class ConfigGeneralController extends SimpleControllerBase
         }
 
         // Autentificación
-        $authBasicEnabled = Request::analyze('authbasic_enabled', false, false, true);
-        $authBasicAutologinEnabled = Request::analyze('authbasicautologin_enabled', false, false, true);
-        $authBasicDomain = Request::analyze('authbasic_domain');
-        $authSsoDefaultGroup = Request::analyze('sso_defaultgroup', false, false, true);
-        $authSsoDefaultProfile = Request::analyze('sso_defaultprofile', false, false, true);
+        $authBasicEnabled = Request::analyzeBool('authbasic_enabled', false);
+        $authBasicAutologinEnabled = Request::analyzeBool('authbasicautologin_enabled', false);
+        $authBasicDomain = Request::analyzeString('authbasic_domain');
+        $authSsoDefaultGroup = Request::analyzeInt('sso_defaultgroup');
+        $authSsoDefaultProfile = Request::analyzeInt('sso_defaultprofile');
 
         // Valores para Autentificación
         if ($authBasicEnabled) {

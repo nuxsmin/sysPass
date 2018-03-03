@@ -146,14 +146,4 @@ class SessionUtil
 
         $session->setSidStartTime(time());
     }
-
-    /**
-     * Destruir la sesión y reiniciar
-     */
-    public static function restart()
-    {
-        session_unset();
-        session_destroy();
-        session_start();
-    }
 }

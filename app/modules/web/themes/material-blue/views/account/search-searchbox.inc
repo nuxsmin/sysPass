@@ -46,7 +46,7 @@
                 <input type="hidden" name="gsearch" value="<?php echo $searchGlobal; ?>">
             <?php endif; ?>
 
-            <select id="customer" name="customer" class="select-box select-box-deselect" tabindex="3">
+            <select id="client" name="client" class="select-box select-box-deselect" tabindex="3">
                 <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
                 <?php /** @var \SP\Mvc\View\Components\SelectItem[] $clients */
                 foreach ($clients as $client): ?>

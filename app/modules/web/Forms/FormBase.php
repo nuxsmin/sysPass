@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
@@ -32,7 +32,7 @@ use SP\Core\Traits\InjectableTrait;
 /**
  * Class FormBase
  *
- * @package SP\Forms
+ * @package SP\Modules\Web\Forms
  */
 abstract class FormBase
 {

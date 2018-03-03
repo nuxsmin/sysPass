@@ -30,12 +30,12 @@ use SP\Core\Acl\Acl;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountAclDto;
-use SP\Mgmt\Users\UserPass;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
+use SP\Services\Crypt\MasterPassService;
 use SP\Util\ErrorUtil;
 
 /**
@@ -111,6 +111,7 @@ class AccountHistoryHelper extends HelperBase
 
     /**
      * @return bool
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     protected function checkActionAccess()
     {
@@ -120,7 +121,7 @@ class AccountHistoryHelper extends HelperBase
             return false;
         }
 
-        if (!UserPass::checkUserUpdateMPass($this->session->getUserData()->getId())) {
+        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
             ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_UPDATE_MPASS);
 
             return false;

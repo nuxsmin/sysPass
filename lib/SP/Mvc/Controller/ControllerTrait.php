@@ -73,7 +73,7 @@ trait ControllerTrait
      */
     protected function checkSecurityToken(Session $session)
     {
-        $sk = Request::analyze('sk');
+        $sk = Request::analyzeString('sk');
         $sessionKey = $session->getSecurityKey();
 
         if (!$sk || (null !== $sessionKey && $sessionKey !== $sk)) {

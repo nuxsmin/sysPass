@@ -101,9 +101,7 @@ trait ItemTrait
      */
     protected function addCustomFieldsForItem($moduleId, $itemId)
     {
-        $customFields = Request::analyzeArray('customfield');
-
-        if ($customFields !== false) {
+        if ($customFields = Request::analyzeArray('customfield')) {
             $customFieldData = new CustomFieldData();
             $customFieldData->setId($itemId);
             $customFieldData->setModuleId($moduleId);
@@ -156,9 +154,7 @@ trait ItemTrait
      */
     protected function updateCustomFieldsForItem($moduleId, $itemId)
     {
-        $customFields = Request::analyzeArray('customfield');
-
-        if ($customFields !== false) {
+        if ($customFields = Request::analyzeArray('customfield')) {
             $customFieldData = new CustomFieldData();
             $customFieldData->setId($itemId);
             $customFieldData->setModuleId($moduleId);

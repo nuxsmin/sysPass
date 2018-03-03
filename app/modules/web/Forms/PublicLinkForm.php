@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Forms;
+namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
@@ -34,7 +34,7 @@ use SP\Util\Util;
 /**
  * Class PublicLinkForm
  *
- * @package SP\Forms
+ * @package SP\Modules\Web\Forms
  */
 class PublicLinkForm extends FormBase implements FormInterface
 {
@@ -75,8 +75,8 @@ class PublicLinkForm extends FormBase implements FormInterface
         $this->publicLinkData = new PublicLinkData();
         $this->publicLinkData->setId($this->itemId);
         $this->publicLinkData->setTypeId(PublicLink::TYPE_ACCOUNT);
-        $this->publicLinkData->setItemId(Request::analyze('accountId', 0));
-        $this->publicLinkData->setNotify(Request::analyze('notify', false, false, true));
+        $this->publicLinkData->setItemId(Request::analyzeInt('accountId'));
+        $this->publicLinkData->setNotify(Request::analyzeBool('notify', false));
         $this->publicLinkData->setHash(Util::generateRandomBytes());
     }
 

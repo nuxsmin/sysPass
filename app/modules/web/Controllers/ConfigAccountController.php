@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Config\ConfigUtil;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
@@ -51,12 +52,12 @@ class ConfigAccountController extends SimpleControllerBase
         $eventMessage = EventMessage::factory();
 
         // Accounts
-        $globalSearchEnabled = Request::analyze('globalsearch', false, false, true);
-        $accountPassToImageEnabled = Request::analyze('account_passtoimage', false, false, true);
-        $accountLinkEnabled = Request::analyze('account_link', false, false, true);
-        $accountFullGroupAccessEnabled = Request::analyze('account_fullgroup_access', false, false, true);
-        $accountCount = Request::analyze('account_count', 10);
-        $resultsAsCardsEnabled = Request::analyze('resultsascards', false, false, true);
+        $globalSearchEnabled = Request::analyzeBool('globalsearch', false);
+        $accountPassToImageEnabled = Request::analyzeBool('account_passtoimage', false);
+        $accountLinkEnabled = Request::analyzeBool('account_link', false);
+        $accountFullGroupAccessEnabled = Request::analyzeBool('account_fullgroup_access', false);
+        $accountCount = Request::analyzeInt('account_count', 10);
+        $resultsAsCardsEnabled = Request::analyzeBool('resultsascards', false);
 
         $configData->setGlobalSearch($globalSearchEnabled);
         $configData->setAccountPassToImage($accountPassToImageEnabled);
@@ -66,9 +67,9 @@ class ConfigAccountController extends SimpleControllerBase
         $configData->setResultsAsCards($resultsAsCardsEnabled);
 
         // Files
-        $filesEnabled = Request::analyze('files_enabled', false, false, true);
-        $filesAllowedSize = Request::analyze('files_allowed_size', 1024);
-        $filesAllowedExts = Request::analyze('files_allowed_exts');
+        $filesEnabled = Request::analyzeBool('files_enabled', false);
+        $filesAllowedSize = Request::analyzeInt('files_allowed_size', 1024);
+        $filesAllowedExts = ConfigUtil::filesExtsAdapter(Request::analyzeString('files_allowed_exts'));
 
         if ($filesEnabled) {
             if ($filesAllowedSize >= 16384) {
@@ -85,10 +86,10 @@ class ConfigAccountController extends SimpleControllerBase
         $configData->setFilesAllowedSize($filesAllowedSize);
 
         // Public Links
-        $pubLinksEnabled = Request::analyze('publinks_enabled', false, false, true);
-        $pubLinksImageEnabled = Request::analyze('publinks_image_enabled', false, false, true);
-        $pubLinksMaxTime = Request::analyze('publinks_maxtime', 10);
-        $pubLinksMaxViews = Request::analyze('publinks_maxviews', 3);
+        $pubLinksEnabled = Request::analyzeBool('publinks_enabled', false);
+        $pubLinksImageEnabled = Request::analyzeBool('publinks_image_enabled', false);
+        $pubLinksMaxTime = Request::analyzeInt('publinks_maxtime', 10);
+        $pubLinksMaxViews = Request::analyzeInt('publinks_maxviews', 3);
 
         $configData->setPublinksEnabled($pubLinksEnabled);
         $configData->setPublinksImageEnabled($pubLinksImageEnabled);

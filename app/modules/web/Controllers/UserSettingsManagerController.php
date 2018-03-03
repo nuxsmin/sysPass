@@ -60,7 +60,7 @@ class UserSettingsManagerController extends ControllerBase
 
         $this->eventDispatcher->notifyEvent('show.userSettings', new Event($this));
 
-        $this->tabsHelper->renderTabs(Acl::getActionRoute(ActionsInterface::USERSETTINGS), Request::analyze('tabIndex', 0));
+        $this->tabsHelper->renderTabs(Acl::getActionRoute(ActionsInterface::USERSETTINGS), Request::analyzeInt('tabIndex', 0));
 
         $this->view();
     }
