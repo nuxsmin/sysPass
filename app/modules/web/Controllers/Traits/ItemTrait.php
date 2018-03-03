@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\Traits;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Bootstrap;
-use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
@@ -102,9 +101,9 @@ trait ItemTrait
      */
     protected function addCustomFieldsForItem($moduleId, $itemId)
     {
-        $customFields = Request::analyze('customfield');
+        $customFields = Request::analyzeArray('customfield');
 
-        if (is_array($customFields)) {
+        if ($customFields !== false) {
             $customFieldData = new CustomFieldData();
             $customFieldData->setId($itemId);
             $customFieldData->setModuleId($moduleId);
@@ -157,9 +156,9 @@ trait ItemTrait
      */
     protected function updateCustomFieldsForItem($moduleId, $itemId)
     {
-        $customFields = Request::analyze('customfield');
+        $customFields = Request::analyzeArray('customfield');
 
-        if (is_array($customFields)) {
+        if ($customFields !== false) {
             $customFieldData = new CustomFieldData();
             $customFieldData->setId($itemId);
             $customFieldData->setModuleId($moduleId);
@@ -182,16 +181,15 @@ trait ItemTrait
     /**
      * Returns search data object for the current request
      *
-     * @param ConfigData $configData
+     * @param int $limitCount
      * @return ItemSearchData
      */
-    protected function getSearchData(ConfigData $configData)
+    protected function getSearchData($limitCount)
     {
         $itemSearchData = new ItemSearchData();
-        $itemSearchData->setLimitCount($configData->getAccountCount());
-        $itemSearchData->setSeachString(Request::analyze('search'));
-        $itemSearchData->setLimitStart(Request::analyze('start', 0));
-        $itemSearchData->setLimitCount(Request::analyze('count', $configData->getAccountCount()));
+        $itemSearchData->setSeachString(Request::analyzeString('search'));
+        $itemSearchData->setLimitStart(Request::analyzeInt('start'));
+        $itemSearchData->setLimitCount(Request::analyzeInt('count', $limitCount));
 
         return $itemSearchData;
     }
@@ -201,6 +199,6 @@ trait ItemTrait
      */
     protected function getItemsIdFromRequest()
     {
-        return Request::analyze('items', 0);
+        return Request::analyzeArray('items');
     }
 }

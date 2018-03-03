@@ -72,15 +72,17 @@ class NotificationController extends ControllerBase implements CrudControllerInt
     }
 
     /**
+     * getSearchGrid
+     *
      * @return $this
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemSearchData = $this->getSearchData($this->configData);
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getNoticesGrid($this->notificationService->search($itemSearchData)), $itemSearchData);
+        return $itemsGridHelper->updatePager($itemsGridHelper->getNotificationsGrid($this->notificationService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

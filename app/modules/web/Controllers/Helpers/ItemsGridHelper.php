@@ -1318,7 +1318,7 @@ class ItemsGridHelper extends HelperBase
      * @return DataGrid
      * @throws \SP\Core\Dic\ContainerException
      */
-    public function getNoticesGrid(array $data)
+    public function getNotificationsGrid(array $data)
     {
         $isAdminApp = $this->session->getUserData()->getIsAdminApp();
 

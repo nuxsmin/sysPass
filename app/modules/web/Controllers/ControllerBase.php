@@ -153,6 +153,8 @@ abstract class ControllerBase
         $this->view->setBase(strtolower($this->controllerName));
 
         $this->icons = $this->theme->getIcons();
+        $this->userData = clone $this->session->getUserData();
+        $this->userProfileData = clone $this->session->getUserProfile();
 
         $this->setViewVars();
 
@@ -166,9 +168,6 @@ abstract class ControllerBase
      */
     private function setViewVars()
     {
-        $this->userData = $this->session->getUserData();
-        $this->userProfileData = $this->session->getUserProfile();
-
         $this->view->assign('timeStart', $this->router->request()->server()->get('REQUEST_TIME_FLOAT'));
         $this->view->assign('queryTimeStart', microtime());
         $this->view->assign('userId', $this->userData->getId());
@@ -240,8 +239,8 @@ abstract class ControllerBase
             $browser = $this->dic->get(Browser::class);
 
             // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
-            if ($browser->checkServerAuthUser($this->session->getUserData()->getLogin()) === false
-                && $browser->checkServerAuthUser($this->session->getUserData()->getSsoLogin()) === false
+            if ($browser->checkServerAuthUser($this->userData->getLogin()) === false
+                && $browser->checkServerAuthUser($this->userData->getSsoLogin()) === false
             ) {
                 throw new AuthException('Invalid browser auth');
             }
@@ -258,6 +257,6 @@ abstract class ControllerBase
      */
     protected function checkAccess($action)
     {
-        return $this->session->getUserData()->getIsAdminApp() || $this->acl->checkUserAccess($action);
+        return $this->userData->getIsAdminApp() || $this->acl->checkUserAccess($action);
     }
 }

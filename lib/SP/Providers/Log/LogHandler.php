@@ -48,8 +48,10 @@ class LogHandler extends Provider implements EventReceiver
         'copy.account.pass',
         'clear.eventlog',
         'login.',
-        'logout'
+        'logout',
+        'track.'
     ];
+
     /**
      * @var EventlogService
      */
@@ -92,13 +94,18 @@ class LogHandler extends Provider implements EventReceiver
     {
         $eventlogData = new EventlogData();
         $eventlogData->setAction($eventType);
-        $eventlogData->setLevel('INFO');
 
-        if (($eventMessage = $event->getEventMessage()) !== null) {
+        if (($e = $event->getSource()) instanceof \Exception) {
+            /** @var \Exception $e */
+            $eventlogData->setDescription($e->getMessage());
+            $eventlogData->setLevel('ERROR');
+        } elseif (($eventMessage = $event->getEventMessage()) !== null) {
             $eventlogData->setDescription($eventMessage->composeText());
+            $eventlogData->setLevel('INFO');
         }
 
         if (($e = $event->getSource()) instanceof \Exception) {
+            $eventlogData->setLevel('INFO');
             /** @var \Exception $e */
             $eventlogData->setDescription($e->getMessage());
         }

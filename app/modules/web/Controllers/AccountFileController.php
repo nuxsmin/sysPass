@@ -220,7 +220,6 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -228,14 +227,25 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
             return;
         }
 
-        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $grid = $itemsGridHelper->getFilesGrid($this->accountFileService->search($this->getSearchData($this->configData)))->updatePager();
-
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('index', Request::analyze('activetab', 0));
-        $this->view->assign('data', $grid);
+        $this->view->assign('data', $this->getSearchGrid());
 
         $this->returnJsonResponseData(['html' => $this->render()]);
+    }
+
+    /**
+     * getSearchGrid
+     *
+     * @return $this
+     * @throws \SP\Core\Dic\ContainerException
+     */
+    protected function getSearchGrid()
+    {
+        $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
+
+        return $itemsGridHelper->updatePager($itemsGridHelper->getFilesGrid($this->accountFileService->search($itemSearchData)), $itemSearchData);
     }
 
     /**

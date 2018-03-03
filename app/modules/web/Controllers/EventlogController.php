@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -48,6 +48,8 @@ class EventlogController extends ControllerBase
     protected $eventLogService;
 
     /**
+     * indexAction
+     *
      * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
@@ -64,19 +66,21 @@ class EventlogController extends ControllerBase
     }
 
     /**
+     * getSearchGrid
+     *
      * @return $this
      * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
-        $itemSearchData = $this->getSearchData($this->configData);
+        $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
 
         return $itemsGridHelper->updatePager($itemsGridHelper->getEventLogGrid($this->eventLogService->search($itemSearchData)), $itemSearchData);
     }
 
     /**
-     * @throws \SP\Core\Dic\ContainerException
+     * searchAction
      */
     public function searchAction()
     {

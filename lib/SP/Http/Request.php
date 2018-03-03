@@ -27,6 +27,7 @@ namespace SP\Http;
 use SP\Core\CryptPKI;
 use SP\Core\Init;
 use SP\Html\Html;
+use SP\Util\Util;
 
 /**
  * Clase Request para la gestión de peticiones HTTP
@@ -190,6 +191,82 @@ class Request
         }
 
         return $value;
+    }
+
+    /**
+     * @param $param
+     * @return mixed
+     */
+    public static function analyzeArray($param)
+    {
+        if (is_array($_REQUEST[$param])) {
+            return array_map(function ($value) {
+                if (is_numeric($value)) {
+                    return (int)filter_var($value, FILTER_SANITIZE_NUMBER_INT);
+                } else {
+                    return (string)filter_var($value, FILTER_SANITIZE_STRING);
+                }
+            }, $_REQUEST[$param]);
+        }
+
+        return false;
+    }
+
+
+    /**
+     * @param $param
+     * @param $default
+     * @return int
+     */
+    public static function analyzeInt($param, $default = 0)
+    {
+        if (!isset($_REQUEST[$param])) {
+            return (int)$default;
+        }
+
+        return (int)filter_var($_REQUEST[$param], FILTER_SANITIZE_NUMBER_INT);
+    }
+
+    /**
+     * @param $param
+     * @param $default
+     * @return string
+     */
+    public static function analyzeString($param, $default = '')
+    {
+        if (!isset($_REQUEST[$param])) {
+            return (string)$default;
+        }
+
+        return filter_var($_REQUEST[$param], FILTER_SANITIZE_STRING);
+    }
+
+    /**
+     * @param $param
+     * @param $default
+     * @return bool
+     */
+    public static function analyzeBool($param, $default = false)
+    {
+        if (!isset($_REQUEST[$param])) {
+            return (bool)$default;
+        }
+
+        return Util::boolval($_REQUEST[$param]);
+    }
+
+    /**
+     * @param $param
+     * @param $default
+     * @return string
+     */
+    public static function analyzePassword($param, $default = '')
+    {
+        if (!isset($_REQUEST[$param])) {
+            return (string)$default;
+        }
+
+        return filter_var($_REQUEST[$param], FILTER_SANITIZE_STRING);
     }
 
     /**

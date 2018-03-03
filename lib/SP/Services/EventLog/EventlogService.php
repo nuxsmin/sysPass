@@ -73,7 +73,7 @@ class EventlogService extends Service
         $userData = $this->session->getUserData();
 
         $eventlogData->setUserId($userData->getId());
-        $eventlogData->setLogin($userData->getLogin());
+        $eventlogData->setLogin($userData->getLogin() ?: '-');
         $eventlogData->setIpAddress(HttpUtil::getClientAddress());
 
         return $this->eventLogRepository->create($eventlogData);

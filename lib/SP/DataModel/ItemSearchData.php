@@ -82,7 +82,7 @@ class ItemSearchData
      */
     public function setLimitStart($limitStart)
     {
-        $this->limitStart = $limitStart;
+        $this->limitStart = (int)$limitStart;
     }
 
     /**
@@ -98,7 +98,7 @@ class ItemSearchData
      */
     public function setLimitCount($limitCount)
     {
-        $this->limitCount = $limitCount;
+        $this->limitCount = (int)$limitCount;
     }
 
     /**
