@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -1257,11 +1257,14 @@ class ItemsGridHelper extends HelperBase
                     $value = preg_replace('/\\d+\\.\\d+\\.\\d+\\.\\d+/', "*.*.*.*", $value);
                 }
 
-                $text = str_replace(';;', PHP_EOL, utf8_decode($value));
+                $text = str_replace(';;', PHP_EOL, $value);
 
                 if (preg_match('/^SQL.*/m', $text)) {
-                    $text = preg_replace('/([[:alpha:]_]+),/m', '\\1,<br>', $text);
-                    $text = preg_replace('/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m', '<br>\\1', $text);
+                    $text = preg_replace([
+                        '/([[:alpha:]_]+),/m',
+                        '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'],
+                        ['\\1,<br>', '<br>\\1'],
+                        $text);
                 }
 
                 if (strlen($text) >= 150) {
@@ -1293,6 +1296,18 @@ class ItemsGridHelper extends HelperBase
         $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
+
+        $GridActionRefresh = new DataGridAction();
+        $GridActionRefresh->setId(ActionsInterface::EVENTLOG_SEARCH);
+        $GridActionRefresh->setType(DataGridActionType::MENUBAR_ITEM);
+        $GridActionRefresh->setName(__('Refrescar'));
+        $GridActionRefresh->setTitle(__('Refrescar'));
+        $GridActionRefresh->setIcon($this->icons->getIconRefresh());
+        $GridActionRefresh->setOnClickFunction('eventlog/search');
+        $GridActionRefresh->addData('action-route', Acl::getActionRoute(ActionsInterface::EVENTLOG_SEARCH));
+        $GridActionRefresh->addData('target', '#data-table-tblEventLog');
+
+        $Grid->setDataActions($GridActionRefresh);
 
         $GridActionClear = new DataGridAction();
         $GridActionClear->setId(ActionsInterface::EVENTLOG_CLEAR);

@@ -49,7 +49,8 @@ class LogHandler extends Provider implements EventReceiver
         'clear.eventlog',
         'login.',
         'logout',
-        'track.'
+        'track.',
+        'acl.deny'
     ];
 
     /**

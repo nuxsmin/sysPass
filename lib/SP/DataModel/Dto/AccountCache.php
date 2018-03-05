@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,8 @@
 
 namespace SP\DataModel\Dto;
 
+use SP\DataModel\ItemData;
+
 /**
  * Class AccountCacheDto
  *
@@ -40,20 +42,20 @@ class AccountCache
      */
     private $accountId;
     /**
-     * @var array
+     * @var ItemData[]
      */
     private $users;
     /**
-     * @var array
+     * @var ItemData[]
      */
     private $userGroups;
 
     /**
      * AccountCacheDto constructor.
      *
-     * @param int   $accountId
-     * @param array $users
-     * @param array $userGroups
+     * @param int        $accountId
+     * @param ItemData[] $users
+     * @param ItemData[] $userGroups
      */
     public function __construct($accountId, array $users, array $userGroups)
     {
@@ -72,7 +74,7 @@ class AccountCache
     }
 
     /**
-     * @return array
+     * @return ItemData[]
      */
     public function getUsers()
     {
@@ -80,7 +82,7 @@ class AccountCache
     }
 
     /**
-     * @return array
+     * @return ItemData[]
      */
     public function getUserGroups()
     {

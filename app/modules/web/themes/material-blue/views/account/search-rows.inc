@@ -98,20 +98,27 @@
                                     class="mdl-tooltip mdl-tooltip--top"><?php echo __('Clave Caducada'); ?></span>
                         <?php endif; ?>
 
-                        <?php if ($accountSearchData->getIsPrivate() === 0): ?>
-                            <i id="accesses-<?php echo $accountSearchData->getId(); ?>"
-                               class="material-icons">face</i>
-
-                            <div class="mdl-tooltip mdl-tooltip--top"
-                                 for="accesses-<?php echo $accountSearchData->getId(); ?>">
-                                <?php echo __('Permisos'), '<br>', $accountSearchItem->getAccesses(); ?>
-                            </div>
-                        <?php else: ?>
+                        <?php if ($accountSearchData->getIsPrivate() === 1): ?>
                             <i id="icon-private-<?php echo $accountSearchData->getId(); ?>"
                                class="material-icons">lock</i>
                             <span
                                     for="icon-private-<?php echo $accountSearchData->getId(); ?>"
                                     class="mdl-tooltip mdl-tooltip--top"><?php echo __('Cuenta Privada'); ?></span>
+                        <?php elseif ($accountSearchData->getIsPrivateGroup() === 1): ?>
+                            <i id="icon-private-<?php echo $accountSearchData->getId(); ?>"
+                               class="material-icons">lock_open</i>
+                            <span
+                                    for="icon-private-<?php echo $accountSearchData->getId(); ?>"
+                                    class="mdl-tooltip mdl-tooltip--top"><?php echo __('Cuenta Privada (Grupo)'); ?></span>
+                        <?php else: ?>
+                            <i id="accesses-<?php echo $accountSearchData->getId(); ?>"
+                               class="material-icons">face</i>
+
+                            <div class="mdl-tooltip mdl-tooltip--top"
+                                 for="accesses-<?php echo $accountSearchData->getId(); ?>">
+                                <div class="tooltip-header"><?php echo __('Permisos'); ?></div>
+                                <?php echo implode('<br>', $accountSearchItem->getAccesses()); ?>
+                            </div>
                         <?php endif; ?>
 
                         <?php if ($accountSearchItem->isFavorite()): ?>
@@ -140,7 +147,8 @@
                             <i id="notes-<?php echo $accountSearchData->getId(); ?>" class="material-icons">speaker_notes</i>
                             <div class="mdl-tooltip mdl-tooltip--top"
                                  for="notes-<?php echo $accountSearchData->getId(); ?>">
-                                <?php echo __('Notas'), '<br>', $accountSearchItem->getShortNotes(); ?>
+                                <div class="tooltip-header"><?php echo __('Notes'); ?></div>
+                                <?php echo $accountSearchItem->getShortNotes(); ?>
                             </div>
                         <?php endif; ?>
 

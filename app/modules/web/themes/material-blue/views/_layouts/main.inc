@@ -1,6 +1,6 @@
 <?php /** @var \SP\Mvc\View\Template $this */ ?>
 <!DOCTYPE html>
-<html lang="<?php echo $lang; ?>">
+<html lang="<?php echo $language; ?>">
 <head>
     <title><?php echo $appInfo['appname'], ' :: ', $appInfo['appdesc']; ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -21,7 +21,7 @@
         <div id="taskStatus"></div>
     </div>
 
-    <div id="container" class="<?php echo $page; ?>" data-page="<?php echo $page; ?>">
+    <div id="container" class="<?php echo $page; ?>" data-page="<?php echo $page; ?>" data-upgraded="<?php echo (int)$this->isUpgraded(); ?>">
         <?php
         if (isset($useFixedHeader)):
             include $this->includePartial('fixed-header');

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -256,10 +256,10 @@ class AccountUtil
             // Filtro usuario y grupo
             $filter =
                 /** @lang SQL */
-                'A.userId = ? 
+                '(A.userId = ? 
             OR A.userGroupId = ? 
             OR A.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = A.id AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = A.id AND userGroupId = ?)
-            OR A.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = ?)';
+            OR A.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = A.userGroupId AND userId = ?))';
 
             $params = [$userData->getId(), $userData->getUserGroupId(), $userData->getId(), $userData->getUserGroupId(), $userData->getId()];
 
@@ -300,10 +300,10 @@ class AccountUtil
             // Filtro usuario y grupo
             $filter =
                 /** @lang SQL */
-                'AH.userId = ? 
+                '(AH.userId = ? 
             OR AH.userGroupId = ? 
             OR AH.accountId IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = AH.accountId AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AH.accountId AND userGroupId = ?)
-            OR AH.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = ?)';
+            OR AH.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AH.userGroupId AND userId = ?))';
 
             $params = [$userData->getId(), $userData->getUserGroupId(), $userData->getId(), $userData->getUserGroupId(), $userData->getId()];
 

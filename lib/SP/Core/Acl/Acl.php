@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,6 +25,9 @@
 
 namespace SP\Core\Acl;
 
+use SP\Core\Events\Event;
+use SP\Core\Events\EventDispatcher;
+use SP\Core\Events\EventMessage;
 use SP\Core\Session\Session;
 
 defined('APP_ROOT') || die();
@@ -42,16 +45,22 @@ class Acl implements ActionsInterface
      * @var Session
      */
     private $session;
+    /**
+     * @var EventDispatcher
+     */
+    private $eventDispatcher;
 
     /**
      * Acl constructor.
      *
-     * @param Session      $session
-     * @param Actions|null $action
+     * @param Session         $session
+     * @param EventDispatcher $eventDispatcher
+     * @param Actions|null    $action
      */
-    public function __construct(Session $session, Actions $action = null)
+    public function __construct(Session $session, EventDispatcher $eventDispatcher, Actions $action = null)
     {
         $this->session = $session;
+        $this->eventDispatcher = $eventDispatcher;
 
         self::$action = $action;
     }
@@ -105,11 +114,7 @@ class Acl implements ActionsInterface
      */
     public function checkUserAccess($action, $userId = 0)
     {
-        $userProfile = $this->session->getUserProfile();
-
-        // Comprobamos si la cache de permisos está inicializada
-        if (!is_object($userProfile)) {
-//            error_log('ACL_CACHE_MISS');
+        if (!($userProfile = $this->session->getUserProfile())) {
             return false;
         }
 
@@ -161,6 +166,7 @@ class Acl implements ActionsInterface
             case self::PUBLICLINK_SEARCH:
                 return $userProfile->isMgmPublicLinks();
             case self::PUBLICLINK_CREATE:
+            case self::PUBLICLINK_REFRESH:
                 return ($userProfile->isMgmPublicLinks() || $userProfile->isAccPublicLinks());
             case self::ACCOUNTMGR:
             case self::ACCOUNTMGR_SEARCH:
@@ -199,18 +205,26 @@ class Acl implements ActionsInterface
             case self::EVENTLOG:
             case self::EVENTLOG_SEARCH:
                 return $userProfile->isEvl();
+            case self::ACCOUNT_REQUEST:
             case self::NOTIFICATION:
+            case self::NOTIFICATION_VIEW:
             case self::NOTIFICATION_SEARCH:
             case self::NOTIFICATION_CHECK:
                 return true;
         }
 
-//        $Log = new Log();
-//        $Log->getLogMessage()
-//            ->setAction(__FUNCTION__)
-//            ->addDetails(__('Acceso denegado', false), self::getActionInfo($action, false));
-//        $Log->setLogLevel(Log::NOTICE);
-//        $Log->writeLog();
+        try {
+            $actionName = self::$action->getActionById($action)->getName();
+        } catch (ActionNotFoundException $e) {
+            $actionName = __u('N/D');
+        }
+
+        $this->eventDispatcher->notifyEvent('acl.deny',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Acceso denegado'))
+                ->addDetail(__u('Acción'), $actionName)
+                ->addDetail(__u('Usuario'), $userData->getLogin()))
+        );
 
         return false;
     }

@@ -24,7 +24,6 @@
 
 namespace SP\Core\Session;
 
-use SP\Account\AccountAcl;
 use SP\Account\AccountSearchFilter;
 use SP\Config\ConfigData;
 use SP\DataModel\ProfileData;
@@ -37,6 +36,11 @@ use SP\Services\User\UserLoginResponse;
  */
 class Session
 {
+    const APP_STATUS_UPDATED = 'updated';
+    const APP_STATUS_RELOADED = 'reloaded';
+    const APP_STATUS_INSTALLED = 'installed';
+    const APP_STATUS_LOGGEDOUT = 'loggedout';
+
     private static $isReset = false;
     private static $isLocked = false;
 
@@ -200,32 +204,6 @@ class Session
     public function setSearchFilters(AccountSearchFilter $searchFilters)
     {
         $this->setSessionKey('searchFilters', $searchFilters);
-    }
-
-    /**
-     * Establecer la ACL de una cuenta
-     *
-     * @param AccountAcl $AccountAcl
-     */
-    public function setAccountAcl(AccountAcl $AccountAcl)
-    {
-        $_SESSION['accountAcl'][$AccountAcl->getAccountId()] = $AccountAcl;
-    }
-
-    /**
-     * Devolver la ACL de una cuenta
-     *
-     * @param $accountId
-     *
-     * @return null|AccountAcl
-     */
-    public function getAccountAcl($accountId)
-    {
-        if (isset($_SESSION['accountAcl'][$accountId])) {
-            return $_SESSION['accountAcl'][$accountId];
-        }
-
-        return null;
     }
 
     public function resetAccountAcl()
@@ -477,22 +455,32 @@ class Session
     }
 
     /**
-     * Devuelve si se ha realizado un cierre de sesión
+     * Devuelve el estado de la aplicación
      *
      * @return bool
      */
-    public function getLoggedOut()
+    public function getAppStatus()
     {
-        return $this->getSessionKey('loggedout', false);
+        return $this->getSessionKey('status');
     }
 
     /**
-     * Establecer si se ha realizado un cierre de sesión
+     * Establecer el estado de la aplicación
      *
-     * @param bool $loggedout
+     * @param string $status
      */
-    public function setLoggedOut($loggedout = false)
+    public function setAppStatus($status)
     {
-        $this->setSessionKey('loggedout', $loggedout);
+        $this->setSessionKey('status', $status);
+    }
+
+    /**
+     * Reset del estado de la aplicación
+     *
+     * @return bool
+     */
+    public function resetAppStatus()
+    {
+        return $this->setSessionKey('status', null);
     }
 }

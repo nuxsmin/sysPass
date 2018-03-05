@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -48,6 +48,8 @@ use SP\Core\Upgrade\Upgrade;
 use SP\Http\Request;
 use SP\Log\Log;
 use SP\Providers\Log\LogHandler;
+use SP\Providers\Notification\NotificationHandler;
+use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database;
 use SP\Storage\DBUtil;
 use SP\Util\Checks;
@@ -143,7 +145,9 @@ class Bootstrap
         $this->language = $container->get(Language::class);
         $this->upgrade = $container->get(Upgrade::class);
 
-        $container->get(EventDispatcher::class)->attach($container->get(LogHandler::class));
+        $eventDispatcher = $container->get(EventDispatcher::class);
+        $eventDispatcher->attach($container->get(LogHandler::class));
+        $eventDispatcher->attach($container->get(NotificationHandler::class));
 
         $this->initRouter();
     }
@@ -272,26 +276,23 @@ class Bootstrap
         $this->initSession($this->configData->isEncryptSession());
 
         // Volver a cargar la configuración si se recarga la página
-        if (!Request::checkReload()) {
+        if (Request::checkReload($this->router) === false) {
             // Cargar la configuración
             $this->config->loadConfig();
 
             // Cargar el lenguaje
             $this->language->setLanguage();
         } else {
+            debugLog('Browser reload');
+
+            $this->session->setAppStatus(Session::APP_STATUS_RELOADED);
+
             // Cargar la configuración
             $this->config->loadConfig(true);
 
             // Restablecer el idioma y el tema visual
             $this->language->setLanguage(true);
             $this->theme->initTheme(true);
-
-            if ($this->session->isLoggedIn()) {
-                // Recargar los permisos del perfil de usuario
-//                $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
-                // Reset de los datos de ACL de cuentas
-                $this->session->resetAccountAcl();
-            }
         }
 
         // Comprobar si es necesario cambiar a HTTPS
@@ -495,6 +496,12 @@ class Bootstrap
 
         // Comprobar acciones en URL
 //        $this->checkPreLoginActions();
+
+        if ($this->session->isLoggedIn() && $this->session->getAppStatus() === Session::APP_STATUS_RELOADED) {
+            debugLog('Reload user profile');
+            // Recargar los permisos del perfil de usuario
+            $this->session->setUserProfile(self::$container->get(UserProfileService::class)->getById($this->session->getUserData()->getUserProfileId())->getProfile());
+        }
     }
 
     /**
@@ -625,7 +632,7 @@ class Bootstrap
 
     /**
      * @param Container $container
-     * @param string $module
+     * @param string    $module
      * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException

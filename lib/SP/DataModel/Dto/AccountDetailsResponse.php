@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,6 +25,7 @@
 namespace SP\DataModel\Dto;
 
 use SP\DataModel\AccountVData;
+use SP\DataModel\ItemData;
 
 /**
  * Class AccountDto
@@ -42,15 +43,15 @@ class AccountDetailsResponse
      */
     private $accountVData;
     /**
-     * @var array Los Ids de los usuarios secundarios de la cuenta.
+     * @var ItemData[] Los usuarios secundarios de la cuenta.
      */
     private $users = [];
     /**
-     * @var array Los Ids de los grupos secundarios de la cuenta.
+     * @var ItemData[] Los grupos secundarios de la cuenta.
      */
     private $userGroups = [];
     /**
-     * @var array
+     * @var ItemData[] Las etiquetas de la cuenta.
      */
     private $tags = [];
 
@@ -67,7 +68,7 @@ class AccountDetailsResponse
     }
 
     /**
-     * @return array
+     * @return ItemData[]
      */
     public function getUsers()
     {
@@ -75,7 +76,7 @@ class AccountDetailsResponse
     }
 
     /**
-     * @param array $users
+     * @param ItemData[] $users
      */
     public function setUsers(array $users)
     {
@@ -83,7 +84,7 @@ class AccountDetailsResponse
     }
 
     /**
-     * @return array
+     * @return ItemData[]
      */
     public function getUserGroups()
     {
@@ -91,7 +92,7 @@ class AccountDetailsResponse
     }
 
     /**
-     * @param array $userGroups
+     * @param ItemData[] $userGroups
      */
     public function setUserGroups(array $userGroups)
     {
@@ -99,7 +100,7 @@ class AccountDetailsResponse
     }
 
     /**
-     * @return array
+     * @return ItemData[]
      */
     public function getTags()
     {
@@ -107,7 +108,7 @@ class AccountDetailsResponse
     }
 
     /**
-     * @param array $tags
+     * @param ItemData[] $tags
      */
     public function setTags(array $tags)
     {

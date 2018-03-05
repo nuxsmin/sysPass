@@ -44,4 +44,11 @@ interface FileStorageInterface
      * @return FileStorageInterface
      */
     public function save($path, $data);
+
+    /**
+     * @param string $path
+     *
+     * @return mixed
+     */
+    public function delete($path);
 }

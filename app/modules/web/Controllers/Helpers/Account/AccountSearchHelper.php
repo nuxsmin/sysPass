@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -50,15 +50,25 @@ use SP\Services\Tag\TagService;
  */
 class AccountSearchHelper extends HelperBase
 {
-    /** @var bool Indica si el filtrado de cuentas está activo */
+    /**
+     * @var bool Indica si el filtrado de cuentas está activo
+     */
     private $filterOn = false;
-    /** @var string */
+    /**
+     * @var string
+     */
     private $sk;
-    /** @var int */
+    /**
+     * @var int
+     */
     private $queryTimeStart = 0;
-    /** @var bool */
+    /**
+     * @var bool
+     */
     private $isAjax = false;
-    /** @var  AccountSearchFilter */
+    /**
+     * @var  AccountSearchFilter
+     */
     private $accountSearchFilter;
 
     /**
@@ -89,7 +99,6 @@ class AccountSearchHelper extends HelperBase
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \ReflectionException
      */
     public function getAccountSearch()
     {
@@ -141,7 +150,6 @@ class AccountSearchHelper extends HelperBase
      * Devuelve la matriz a utilizar en la vista
      *
      * @return DataGrid
-     * @throws \ReflectionException
      * @throws \SP\Core\Dic\ContainerException
      */
     private function getGrid()

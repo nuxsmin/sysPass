@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -485,9 +485,9 @@ class XmlExportService extends Service
                 $accountIV = $this->xml->createElement('key', $this->escapeChars($account->getKey()));
                 $tags = $this->xml->createElement('tags');
 
-                foreach ($accountToTagService->getTagsByAccountId($account->getId()) as $id => $name) {
+                foreach ($accountToTagService->getTagsByAccountId($account->getId()) as $itemData) {
                     $tag = $this->xml->createElement('tag');
-                    $tag->setAttribute('id', $id);
+                    $tag->setAttribute('id', $itemData->getId());
 
                     $tags->appendChild($tag);
                 }

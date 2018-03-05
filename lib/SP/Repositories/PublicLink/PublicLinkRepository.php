@@ -472,13 +472,10 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(PublicLinkData::class);
         $queryData->setQuery($query);
         $queryData->addParam($hash);
+        $queryData->setOnErrorMessage(__u('Error al obtener enlace'));
 
         /** @var PublicLinkData $queryRes */
         $queryRes = DbWrapper::getResults($queryData, $this->db);
-
-        if ($queryRes === false) {
-            throw new SPException(__u('Error al obtener enlace'), SPException::ERROR);
-        }
 
         if ($queryData->getQueryNumRows() === 0) {
             throw new SPException(__u('El enlace no existe'), SPException::ERROR);

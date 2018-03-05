@@ -67,6 +67,7 @@
                     </td>
                 </tr>
             <?php endif; ?>
+
             <?php if ($userIsAdminApp || $userIsAdminAcc): ?>
                 <tr>
                     <td class="descField"><?php echo __('Grupo Principal'); ?></td>
@@ -84,7 +85,7 @@
                 </tr>
             <?php endif; ?>
 
-            <?php if ($allowPrivate === 1): ?>
+            <?php if ($allowPrivate === true): ?>
                 <tr>
                     <td class="descField"><?php echo __('Cuenta Privada'); ?></td>
                     <td class="valField">
@@ -97,7 +98,7 @@
                 </tr>
             <?php endif; ?>
 
-            <?php if ($allowPrivateGroup === 1): ?>
+            <?php if ($allowPrivateGroup === true): ?>
                 <tr>
                     <td class="descField"><?php echo __('Cuenta Privada Grupo'); ?></td>
                     <td class="valField">

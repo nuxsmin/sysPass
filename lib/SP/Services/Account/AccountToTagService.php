@@ -24,6 +24,7 @@
 
 namespace SP\Services\Account;
 
+use SP\DataModel\ItemData;
 use SP\Repositories\Account\AccountToTagRepository;
 use SP\Services\Service;
 
@@ -50,7 +51,7 @@ class AccountToTagService extends Service
 
     /**
      * @param $id
-     * @return array
+     * @return ItemData[]
      */
     public function getTagsByAccountId($id)
     {

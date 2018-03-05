@@ -190,7 +190,7 @@ sysPass.Triggers = function (Common) {
      * Triggers que se ejecutan en determinadas vistas
      */
     const views = {
-        main: function () {
+        main: function ($obj) {
             log.info("views:main");
 
             if (!clipboard.isSupported()) {
@@ -215,9 +215,20 @@ sysPass.Triggers = function (Common) {
             //     Common.appActions().notification.getActive();
             // }, 60000);
 
-            Common.appActions().doAction({r: "account/index"}, "search");
+            if ($obj.data("upgraded") === 0) {
+                Common.appActions().doAction({r: "account/index"}, "search");
+            } else {
+                const $content = $("#content");
+                const page = $content.data('page');
 
-            if (typeof Common.appTheme().viewsTriggers.main === "function") {
+                views.common($content);
+
+                if (page !== "" && typeof views[page] === "function") {
+                    views[page]();
+                }
+            }
+
+            if (typeof Common.appTheme().viewsTriggers["main"] === "function") {
                 Common.appTheme().viewsTriggers.main();
             }
         },

@@ -24,6 +24,7 @@
 
 namespace SP\Http;
 
+use Klein\Klein;
 use SP\Core\CryptPKI;
 use SP\Core\Init;
 use SP\Html\Html;
@@ -285,11 +286,12 @@ class Request
     /**
      * Comprobar si se realiza una recarga de la página
      *
+     * @param Klein $router
      * @return bool
      */
-    public static function checkReload()
+    public static function checkReload(Klein $router)
     {
-        return (self::getRequestHeaders('Cache-Control') === 'max-age=0');
+        return $router->request()->headers()->get('Cache-Control') === 'max-age=0';
     }
 
     /**

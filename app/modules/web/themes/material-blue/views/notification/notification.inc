@@ -43,7 +43,7 @@
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="notification_date" name="notification_date" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   value="<?php echo $notification->getDate(); ?>" <?php echo $disabled; ?>>
+                                   value="<?php echo \SP\Util\DateUtil::getDateFromUnix($notification->getDate()); ?>" <?php echo $disabled; ?>>
                             <label class="mdl-textfield__label"
                                    for="notification_date"><?php echo __('Fecha'); ?></label>
                         </div>

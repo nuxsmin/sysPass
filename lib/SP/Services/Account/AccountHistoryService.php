@@ -27,6 +27,7 @@ namespace SP\Services\Account;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
+use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountHistoryRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
@@ -90,7 +91,7 @@ class AccountHistoryService extends Service
 
     /**
      * @param $id
-     * @return array
+     * @return ItemData[]
      */
     public function getUsersByAccountId($id)
     {
@@ -99,7 +100,7 @@ class AccountHistoryService extends Service
 
     /**
      * @param $id
-     * @return array
+     * @return ItemData[]
      */
     public function getUserGroupsByAccountId($id)
     {

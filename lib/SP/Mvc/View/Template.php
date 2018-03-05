@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\InvalidArgumentException;
-use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 
@@ -43,8 +42,6 @@ use SP\Core\UI\ThemeInterface;
  */
 class Template
 {
-    use InjectableTrait;
-
     const TEMPLATE_EXTENSION = '.inc';
     const PARTIALS_DIR = '_partials';
     const LAYOUTS_DIR = '_layouts';
@@ -56,7 +53,7 @@ class Template
     /**
      * @var array Variable con los archivos de plantilla a cargar
      */
-    private $files = [];
+    private $templates = [];
     /**
      * @var array Variable con las variables a incluir en la plantilla
      */
@@ -69,23 +66,17 @@ class Template
      * @var array
      */
     private $contentTemplates = [];
+    /**
+     * @var bool
+     */
+    private $upgraded = false;
 
     /**
-     * @param null  $file Archivo de plantilla a añadir
-     * @param array $vars Variables a inicializar
-     * @throws \SP\Core\Dic\ContainerException
+     * @param Theme $theme
      */
-    public function __construct($file = null, array $vars = [])
+    public function __construct(Theme $theme)
     {
-        $this->injectDependencies();
-
-        if (null !== $file) {
-            $this->addTemplate($file);
-        }
-
-        if (!empty($vars)) {
-            $this->setVars($vars);
-        }
+        $this->theme = $theme;
     }
 
     /**
@@ -95,11 +86,11 @@ class Template
      * @param string $base Directorio base para la plantilla
      * @return bool
      */
-    public function addTemplate($name, $base = null)
+    public function addContentTemplate($name, $base = null)
     {
         try {
             $template = $this->checkTemplate($name, $base);
-            $this->setTemplate($template, $name);
+            $this->setContentTemplate($template, $name);
         } catch (FileNotFoundException $e) {
             return '';
         }
@@ -135,48 +126,6 @@ class Template
     }
 
     /**
-     * Añadir un nuevo archivo de plantilla al array de plantillas
-     *
-     * @param string $file Con el nombre del archivo
-     * @param string $name Nombre de la plantilla
-     */
-    private function setTemplate($file, $name)
-    {
-        $this->files[$name] = $file;
-    }
-
-    /**
-     * Establecer los atributos de la clase a partir de un array.
-     *
-     * @param array $vars Con los atributos de la clase
-     */
-    private function setVars(&$vars)
-    {
-        foreach ($vars as $name => $value) {
-            $this->{$name} = $value;
-        }
-    }
-
-    /**
-     * Añadir una nueva plantilla al array de plantillas de la clase
-     *
-     * @param string $name Con el nombre del archivo de plantilla
-     * @param string $base Directorio base para la plantilla
-     * @return bool
-     */
-    public function addContentTemplate($name, $base = null)
-    {
-        try {
-            $template = $this->checkTemplate($name, $base);
-            $this->setContentTemplate($template, $name);
-        } catch (FileNotFoundException $e) {
-            return '';
-        }
-
-        return $template;
-    }
-
-    /**
      * Añadir un nuevo archivo de plantilla al array de plantillas de contenido
      *
      * @param string $file Con el nombre del archivo
@@ -195,7 +144,7 @@ class Template
      */
     public function removeTemplate($name)
     {
-        unset($this->files[$name]);
+        unset($this->templates[$name]);
 
         return $this;
     }
@@ -235,14 +184,6 @@ class Template
     }
 
     /**
-     * @param Theme $theme
-     */
-    public function inject(Theme $theme)
-    {
-        $this->theme = $theme;
-    }
-
-    /**
      * Add partial template
      *
      * @param $partial
@@ -250,6 +191,36 @@ class Template
     public function addPartial($partial)
     {
         $this->addTemplate($partial, self::PARTIALS_DIR);
+    }
+
+    /**
+     * Añadir una nueva plantilla al array de plantillas de la clase
+     *
+     * @param string $name Con el nombre del archivo de plantilla
+     * @param string $base Directorio base para la plantilla
+     * @return bool
+     */
+    public function addTemplate($name, $base = null)
+    {
+        try {
+            $template = $this->checkTemplate($name, $base);
+            $this->setTemplate($template, $name);
+        } catch (FileNotFoundException $e) {
+            return '';
+        }
+
+        return $template;
+    }
+
+    /**
+     * Añadir un nuevo archivo de plantilla al array de plantillas
+     *
+     * @param string $file Con el nombre del archivo
+     * @param string $name Nombre de la plantilla
+     */
+    private function setTemplate($file, $name)
+    {
+        $this->templates[$name] = $file;
     }
 
     /**
@@ -352,7 +323,7 @@ class Template
      */
     public function render()
     {
-        if (count($this->files) === 0) {
+        if (count($this->templates) === 0) {
             throw new FileNotFoundException(__u('La plantilla no contiene archivos'));
         }
 
@@ -361,27 +332,11 @@ class Template
         ob_start();
 
         // Añadimos las plantillas
-        foreach ($this->files as $template) {
+        foreach ($this->templates as $template) {
             include_once $template;
         }
 
         return ob_get_clean();
-    }
-
-    /**
-     * Crear la variable y asignarle un valor en el array de variables
-     *
-     * @param      $name  string nombre de la variable
-     * @param      $value mixed valor de la variable
-     * @param null $scope string ámbito de la variable
-     */
-    public function assign($name, $value = '', $scope = null)
-    {
-        if (null !== $scope) {
-            $name = $scope . '_' . $name;
-        }
-
-        $this->vars[$name] = $value;
     }
 
     /**
@@ -410,7 +365,7 @@ class Template
      */
     public function resetTemplates()
     {
-        $this->files = [];
+        $this->templates = [];
 
         return $this;
     }
@@ -479,5 +434,67 @@ class Template
     public function hashContentTemplates()
     {
         return count($this->contentTemplates) > 0;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTemplates()
+    {
+        return $this->templates;
+    }
+
+    /**
+     * Assigns the current templates to contentTemplates
+     *
+     * @return $this
+     */
+    public function upgrade()
+    {
+        if (count($this->templates) > 0) {
+            $this->contentTemplates = $this->templates;
+
+            $this->templates = [];
+
+            $this->upgraded = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Crear la variable y asignarle un valor en el array de variables
+     *
+     * @param      $name  string nombre de la variable
+     * @param      $value mixed valor de la variable
+     * @param null $scope string ámbito de la variable
+     */
+    public function assign($name, $value = '', $scope = null)
+    {
+        if (null !== $scope) {
+            $name = $scope . '_' . $name;
+        }
+
+        $this->vars[$name] = $value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUpgraded()
+    {
+        return $this->upgraded;
+    }
+
+    /**
+     * Establecer los atributos de la clase a partir de un array.
+     *
+     * @param array $vars Con los atributos de la clase
+     */
+    private function setVars(&$vars)
+    {
+        foreach ($vars as $name => $value) {
+            $this->{$name} = $value;
+        }
     }
 }

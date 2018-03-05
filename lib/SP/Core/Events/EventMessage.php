@@ -24,6 +24,7 @@
 
 namespace SP\Core\Events;
 
+use SP\Core\Messages\MessageInterface;
 use SP\Html\Html;
 
 /**
@@ -31,7 +32,7 @@ use SP\Html\Html;
  *
  * @package SP\Core\Events
  */
-class EventMessage
+class EventMessage implements MessageInterface
 {
     /**
      * @var array Detalles de la acción en formato "detalle : descripción"
@@ -49,6 +50,10 @@ class EventMessage
      * @var array
      */
     protected $description = [];
+    /**
+     * @var array
+     */
+    protected $data = [];
 
     /**
      * @return static
@@ -254,5 +259,29 @@ class EventMessage
     public function getDetailsCounter()
     {
         return $this->detailsCounter;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param string $type
+     * @param mixed  $data
+     * @return EventMessage
+     */
+    public function addData($type, $data)
+    {
+        if (isset($this->data[$type]) && in_array($data, $this->data[$type])) {
+            return $this;
+        }
+
+        $this->data[$type][] = $data;
+
+        return $this;
     }
 }

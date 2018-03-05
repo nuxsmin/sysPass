@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,12 +24,10 @@
 
 namespace SP\Services\Account;
 
-use SP\Account\AccountAcl;
 use SP\Account\AccountSearchFilter;
 use SP\Account\AccountSearchItem;
 use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
-use SP\Core\Session\Session;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountCache;
@@ -49,11 +47,14 @@ defined('APP_ROOT') || die();
 class AccountSearchService extends Service
 {
     /**
-     * Colores para resaltar las cuentas
-     *
-     * @var array
+     * Regex filter for special searching
      */
-    private static $colors = [
+    const FILTERS_REGEX = '^(?:(?P<filter>user|group|file|owner|maingroup|expired|private):(?:"(?P<text>[\w\.]+)")?)$';
+
+    /**
+     * Colores para resaltar las cuentas
+     */
+    const COLORS = [
         '2196F3',
         '03A9F4',
         '00BCD4',
@@ -72,10 +73,6 @@ class AccountSearchService extends Service
         '673AB7',
         '3F51B5',
     ];
-    /**
-     * @var Session
-     */
-    protected $session;
     /**
      * @var ConfigData
      */
@@ -98,19 +95,6 @@ class AccountSearchService extends Service
     private $accountRepository;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function initialize()
-    {
-        $this->accountRepository = $this->dic->get(AccountRepository::class);
-        $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
-        $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
-        $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
-        $this->configData = $this->config->getConfigData();
-    }
-
-    /**
      * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta
      * a mostrar.
      *
@@ -118,7 +102,6 @@ class AccountSearchService extends Service
      * @return array
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      * @throws \SP\Core\Exceptions\SPException
      */
     public function processSearchResults(AccountSearchFilter $accountSearchFilter)
@@ -133,25 +116,26 @@ class AccountSearchService extends Service
         $accountLinkEnabled = $this->session->getUserData()->getPreferences()->isAccountLink() || $this->configData->isAccountLink();
         $favorites = $this->dic->get(AccountFavoriteService::class)->getForUserId($this->session->getUserData()->getId());
 
+        $accountAclService = $this->dic->get(AccountAclService::class);
+
         foreach ($accountSearchResponse->getData() as $accountSearchData) {
             $cache = $this->getCacheForAccount($accountSearchData);
 
-            $acccountAclDto = new AccountAclDto();
-            $acccountAclDto->setAccountId($accountSearchData->getId());
-            $acccountAclDto->setDateEdit($accountSearchData->getDateEdit());
-            $acccountAclDto->setUserId($accountSearchData->getUserId());
-            $acccountAclDto->setUserGroupId($accountSearchData->getUserGroupId());
-            $acccountAclDto->setUsersId($cache->getUsers());
-            $acccountAclDto->setUserGroupsId($cache->getUserGroups());
+            $accountAclDto = new AccountAclDto();
+            $accountAclDto->setAccountId($accountSearchData->getId());
+            $accountAclDto->setDateEdit($accountSearchData->getDateEdit());
+            $accountAclDto->setUserId($accountSearchData->getUserId());
+            $accountAclDto->setUserGroupId($accountSearchData->getUserGroupId());
+            $accountAclDto->setUsersId($cache->getUsers());
+            $accountAclDto->setUserGroupsId($cache->getUserGroups());
+            $accountAclDto->setOtherUserEdit($accountSearchData->getOtherUserEdit());
+            $accountAclDto->setOtherUserGroupEdit($accountSearchData->getOtherUserGroupEdit());
 
             // Obtener la ACL de la cuenta
-            $accountAcl = (new AccountAcl(Acl::ACCOUNT_SEARCH))->getAcl($acccountAclDto);
-
-            // Guardar la ACL
-            $this->session->setAccountAcl($accountAcl);
+            $accountAcl = $accountAclService->getAcl(Acl::ACCOUNT_SEARCH, $accountAclDto);
 
             // Propiedades de búsqueda de cada cuenta
-            $accountsSearchItem = new AccountSearchItem($accountSearchData, $accountAcl);
+            $accountsSearchItem = new AccountSearchItem($accountSearchData, $accountAcl, $this->configData);
 
             if (!$accountSearchData->getIsPrivate()) {
                 $accountsSearchItem->setUsers($cache->getUsers());
@@ -184,17 +168,16 @@ class AccountSearchService extends Service
      */
     private function analyzeQueryString($txt)
     {
-        if (!preg_match('/^(?P<filter>user|group|file|owner|maingroup):"(?P<text>[\w\.]+)"$/i', $txt, $filters)
-            && !preg_match('/^(?P<filter>expired|private):$/i', $txt, $filters)
-        ) {
+        if (!preg_match('/' . self::FILTERS_REGEX . '/i', $txt, $filters)) {
             return [];
         }
 
+        $text = isset($filters['text']) && empty($filters['text']) === false ? $filters['text'] : false;
+
         switch ($filters['filter']) {
             case 'user':
-                $userData = $this->dic->get(UserService::class)->getByLogin($filters['text']);
-
-                if (!is_object($userData)) {
+                if ($text === false
+                    || is_object(($userData = $this->dic->get(UserService::class)->getByLogin($text))) === false) {
                     return [];
                 }
 
@@ -205,22 +188,19 @@ class AccountSearchService extends Service
                 ];
                 break;
             case 'owner':
-                $userData = $this->dic->get(UserService::class)->getByLogin($filters['text']);
-
-                if (!is_object($userData)) {
+                if ($text === false) {
                     return [];
                 }
 
                 return [
                     'type' => 'user',
-                    'query' => 'A.userId = ?',
-                    'values' => [$userData->getId()]
+                    'query' => 'A.userLogin LIKE ?',
+                    'values' => ['%' . $text . '%']
                 ];
                 break;
             case 'group':
-                $userGroupData = $this->dic->get(UserGroupService::class)->getByName($filters['text']);
-
-                if (!is_object($userGroupData)) {
+                if ($text === false
+                    || is_object(($userGroupData = $this->dic->get(UserGroupService::class)->getByName($text))) === false) {
                     return [];
                 }
 
@@ -231,23 +211,21 @@ class AccountSearchService extends Service
                 ];
                 break;
             case 'maingroup':
-                $userGroupData = $this->dic->get(UserGroupService::class)->getByName($filters['text']);
-
-                if (!is_object($userGroupData)) {
+                if ($text === false) {
                     return [];
                 }
 
                 return [
                     'type' => 'group',
-                    'query' => 'A.userGroupId = ?',
-                    'values' => [$userGroupData->getId()]
+                    'query' => 'A.userGroupName = ?',
+                    'values' => ['%' . $text . '%']
                 ];
                 break;
             case 'file':
                 return [
                     'type' => 'file',
                     'query' => 'A.id IN (SELECT AF.accountId FROM AccountFile AF WHERE AF.name LIKE ?)',
-                    'values' => ['%' . $filters[2] . '%']
+                    'values' => ['%' . $text . '%']
                 ];
                 break;
             case 'expired':
@@ -308,12 +286,25 @@ class AccountSearchService extends Service
             || !isset($accountColor[$id])
         ) {
             // Se asigna el color de forma aleatoria a cada id
-            $color = array_rand(self::$colors);
+            $color = array_rand(self::COLORS);
 
-            $accountColor[$id] = '#' . self::$colors[$color];
+            $accountColor[$id] = '#' . self::COLORS[$color];
             $this->session->setAccountColor($accountColor);
         }
 
         return $accountColor[$id];
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->accountRepository = $this->dic->get(AccountRepository::class);
+        $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
+        $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
+        $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
+        $this->configData = $this->config->getConfigData();
     }
 }

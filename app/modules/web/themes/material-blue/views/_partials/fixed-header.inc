@@ -159,13 +159,13 @@
     <?php endif; ?>
 
     <main class="mdl-layout__content">
-        <?php /** @var \SP\Mvc\View\Template $this */
-        if ($this->hashContentTemplates()):
-            foreach ($this->getContentTemplates() as $template):
-                include $template;
-            endforeach;
-        else: ?>
-            <div id="content"></div>
-        <?php endif; ?>
+        <div id="content" data-page="<?php echo isset($contentPage) ? $contentPage : '' ?>">
+            <?php /** @var \SP\Mvc\View\Template $this */
+            if ($this->hashContentTemplates()):
+                foreach ($this->getContentTemplates() as $template):
+                    include $template;
+                endforeach;
+            endif; ?>
+        </div>
     </main>
 </div> <!-- Close mdl-layout -->

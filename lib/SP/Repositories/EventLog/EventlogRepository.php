@@ -68,12 +68,10 @@ class EventlogRepository extends Repository
         $queryData->setOrder('id DESC');
 
         if ($itemSearchData->getSeachString() !== '') {
-            $queryData->setWhere('action LIKE ? OR ipAddress LIKE ? OR description LIKE ?');
+            $queryData->setWhere('action LIKE ? OR login LIKE ? OR ipAddress LIKE ? OR description LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
-            $queryData->addParam($search);
-            $queryData->addParam($search);
-            $queryData->addParam($search);
+            $queryData->setParams(array_fill(0, 4, $search));
         }
 
         $queryData->setLimit('?,?');

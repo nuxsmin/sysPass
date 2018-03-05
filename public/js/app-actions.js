@@ -245,7 +245,7 @@ sysPass.Actions = function (Common) {
                         Common.appRequests().getActionCall(opts, function (json) {
                             Common.msg.out(json);
 
-                            account.search();
+                            account.search($obj);
                         });
                     }
                 }
@@ -272,7 +272,7 @@ sysPass.Actions = function (Common) {
                 if (json.status !== 0) {
                     Common.msg.out(json);
                 } else {
-                    var $container = $(json.data.html);
+                    const $container = $(json.data.html);
 
                     showFloatingBox($container);
 
@@ -296,10 +296,10 @@ sysPass.Actions = function (Common) {
         copyPass: function ($obj) {
             log.info("account:copypass");
 
-            var parentId = $obj.data("parent-id");
-            var id = parentId === 0 ? $obj.data("item-id") : parentId;
+            const parentId = $obj.data("parent-id");
+            const id = parentId === 0 ? $obj.data("item-id") : parentId;
 
-            var opts = Common.appRequests().getRequestOpts();
+            const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.async = false;
@@ -345,25 +345,29 @@ sysPass.Actions = function (Common) {
         request: function ($obj) {
             log.info("account:request");
 
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + $obj.data("item-id");
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
+
+                if (json.status === 0 && json.data['nextAction'] !== undefined) {
+                    getContent({r: json.data.nextAction['nextAction']}, "account");
+                }
             });
         },
         // Mostrar los botones de acción en los resultados de búsqueda
         menu: function ($obj) {
             $obj.hide();
 
-            var actions = $obj.parent().children(".actions-optional");
+            const actions = $obj.parent().children(".actions-optional");
             actions.show(250);
         },
         sort: function ($obj) {
             log.info("account:sort");
 
-            var $frmSearch = $("#frmSearch");
+            const $frmSearch = $("#frmSearch");
 
             $frmSearch.find("input[name=\"skey\"]").val($obj.data("key"));
             $frmSearch.find("input[name=\"sorder\"]").val($obj.data("dir"));
@@ -374,8 +378,8 @@ sysPass.Actions = function (Common) {
         editPass: function ($obj) {
             log.info("account:editpass");
 
-            var parentId = $obj.data("parent-id");
-            var itemId = parentId === undefined ? $obj.data("item-id") : parentId;
+            const parentId = $obj.data("parent-id");
+            const itemId = parentId === undefined ? $obj.data("item-id") : parentId;
 
             getContent(Common.appRequests().getRouteForQuery($obj.data("action-route"), itemId), "account");
         },
@@ -425,7 +429,7 @@ sysPass.Actions = function (Common) {
             }
 
             const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
+            opts.url = ajaxUrl.entrypoint + "?r=" + $frmSearch.data("action-route");
             opts.method = "get";
             opts.data = $frmSearch.serialize();
 
@@ -1008,6 +1012,7 @@ sysPass.Actions = function (Common) {
 
             const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
+            opts.method = "get";
             opts.data = {
                 r: $obj.data("action-route") + "/" + itemId,
                 sk: Common.sk.get(),
@@ -1386,17 +1391,14 @@ sysPass.Actions = function (Common) {
             log.info("notification:delete");
 
             grid.delete($obj, function (items) {
-                if (items.length > 0) {
-                    items.join(",");
-                } else {
-                    items = $obj.data("item-id");
-                }
+                const itemId = $obj.data("item-id");
 
                 const opts = Common.appRequests().getRequestOpts();
                 opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
                 opts.data = {
-                    r: $obj.data("action-route") + "/" + items,
+                    r: $obj.data("action-route") + (itemId ? "/" + itemId : ''),
+                    items: items,
                     sk: Common.sk.get(),
                     isAjax: 1
                 };

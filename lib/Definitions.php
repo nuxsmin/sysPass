@@ -44,12 +44,11 @@ return [
     \SP\Core\Acl\Actions::class => object(\SP\Core\Acl\Actions::class)
         ->constructor(object(\SP\Storage\FileCache::class), object(\SP\Storage\XmlHandler::class)
             ->constructor(ACTIONS_FILE)),
-    \SP\Core\Acl\Acl::class => object(\SP\Core\Acl\Acl::class)
-        ->constructor(get(\SP\Core\Session\Session::class), get(\SP\Core\Acl\Actions::class)),
-    \SP\Core\UI\Theme::class => object(\SP\Core\UI\Theme::class)
-        ->constructor(APP_MODULE),
     \SP\Core\Events\EventDispatcher::class => object(\SP\Core\Events\EventDispatcher::class),
-    \SP\Log\Log::class => object(\SP\Log\Log::class)->scope(\DI\Scope::PROTOTYPE),
+    \SP\Core\Acl\Acl::class => object(\SP\Core\Acl\Acl::class)
+        ->constructor(get(\SP\Core\Session\Session::class), get(\SP\Core\Events\EventDispatcher::class), get(\SP\Core\Acl\Actions::class)),
+    \SP\Core\UI\Theme::class => object(\SP\Core\UI\Theme::class)
+        ->constructor(APP_MODULE, get(\SP\Config\Config::class), get(\SP\Core\Session\Session::class)),
     \PHPMailer\PHPMailer\PHPMailer::class => object(\PHPMailer\PHPMailer\PHPMailer::class)
         ->constructor(true)
 ];

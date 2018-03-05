@@ -89,7 +89,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
         $this->view->assign('deleteEnabled', Request::analyze('del', 0));
         $this->view->assign('files', FileUtil::getAccountFiles($this->view->accountId));
 
-        if (!is_array($this->view->files) || count($this->view->files) === 0) {
+        if (!is_array($this->view->templates) || count($this->view->templates) === 0) {
             return;
         }
     }

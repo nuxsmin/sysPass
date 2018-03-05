@@ -47,8 +47,7 @@ class IndexController extends ControllerBase
         if (!$this->session->isLoggedIn()) {
             Response::redirect('index.php?r=login');
         } else {
-            $LayoutHelper = $this->dic->get(LayoutHelper::class);
-            $LayoutHelper->getFullLayout('main', $this->acl);
+            $this->dic->get(LayoutHelper::class)->getFullLayout('main', $this->acl);
 
             $this->view();
         }
@@ -58,6 +57,7 @@ class IndexController extends ControllerBase
      * Updates checking action
      *
      * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
      */
     public function checkUpdatesAction()
     {

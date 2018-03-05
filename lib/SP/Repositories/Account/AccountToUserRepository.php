@@ -25,6 +25,7 @@
 namespace SP\Repositories\Account;
 
 use SP\Account\AccountRequest;
+use SP\DataModel\ItemData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\DbWrapper;
@@ -104,7 +105,7 @@ class AccountToUserRepository extends Repository
      * Obtiene el listado de usuarios de una cuenta.
      *
      * @param int $id con el id de la cuenta
-     * @return array con los id de usuarios de la cuenta
+     * @return ItemData[] con los id de usuarios de la cuenta
      */
     public function getUsersByAccountId($id)
     {
@@ -118,6 +119,7 @@ class AccountToUserRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->addParam($id);
+        $queryData->setMapClassName(ItemData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }

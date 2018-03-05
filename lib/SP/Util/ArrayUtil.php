@@ -83,6 +83,10 @@ class ArrayUtil
      */
     public static function checkInObjectArray(array $objectArray, $property, $value)
     {
+        if (empty($objectArray)) {
+            return false;
+        }
+
         foreach ($objectArray as $object) {
             if (is_object($object)
                 && isset($object->$property)

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,16 +27,18 @@ namespace SP\Modules\Web\Controllers\Helpers\Account;
 use SP\Account\AccountAcl;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
+use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Services\Account\AccountAclService;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
 use SP\Services\Crypt\MasterPassService;
-use SP\Util\ErrorUtil;
+use SP\Services\User\UpdatedMasterPassException;
 
 /**
  * Class AccountHistoryHelper
@@ -73,27 +75,26 @@ class AccountHistoryHelper extends HelperBase
     /**
      * @param AccountHistoryData $accountHistoryData
      * @param int                $actionId
+     * @throws AccountPermissionException
+     * @throws UnauthorizedPageException
+     * @throws UpdatedMasterPassException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \ReflectionException
-     * @throws \SP\Core\Dic\ContainerException
-     * @throws AccountPermissionException
+     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function setView(AccountHistoryData $accountHistoryData, $actionId)
     {
         $this->actionId = $actionId;
         $this->accountHistoryId = $accountHistoryData->getId();
         $this->accountId = $accountHistoryData->getAccountId();
-        $this->accountAcl = new AccountAcl($actionId, true);
 
-        if (!$this->checkActionAccess() || !$this->checkAccess($accountHistoryData)) {
-            throw new AccountPermissionException(SPException::INFO);
-        }
+        $this->checkActionAccess();
+        $this->checkAccess($accountHistoryData);
 
         $this->view->assign('isView', true);
         $this->view->assign('accountIsHistory', true);
         $this->view->assign('accountData', $accountHistoryData);
-        $this->view->assign('accountAcl', $this->accountAcl->getStoredAcl());
+        $this->view->assign('accountAcl', $this->accountAcl);
         $this->view->assign('actionId', $this->actionId);
         $this->view->assign('accountId', $this->accountId);
         $this->view->assign('accountHistoryId', $this->accountHistoryId);
@@ -106,35 +107,30 @@ class AccountHistoryHelper extends HelperBase
 
         $actions = $this->dic->get(AccountActionsHelper::class);
 
-        $this->view->assign('actions', $actions->getActionsForAccount($this->accountAcl->getStoredAcl(), new AccountActionsDto($this->accountId, $this->accountHistoryId)));
+        $this->view->assign('accountActions', $actions->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId, $this->accountHistoryId)));
     }
 
     /**
-     * @return bool
+     * @throws UnauthorizedPageException
      * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws UpdatedMasterPassException
      */
     protected function checkActionAccess()
     {
         if (!$this->acl->checkUserAccess($this->actionId)) {
-            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION);
-
-            return false;
+            throw new UnauthorizedPageException(UnauthorizedPageException::INFO);
         }
 
         if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
-            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_UPDATE_MPASS);
-
-            return false;
+            throw new UpdatedMasterPassException(UpdatedMasterPassException::INFO);
         }
-
-        return true;
     }
 
     /**
      * Comprobar si el usuario dispone de acceso al módulo
      *
      * @param AccountHistoryData $accountHistoryData
-     * @return bool
+     * @throws AccountPermissionException
      */
     protected function checkAccess(AccountHistoryData $accountHistoryData)
     {
@@ -146,13 +142,11 @@ class AccountHistoryHelper extends HelperBase
         $acccountAclDto->setUsersId($this->accountHistoryService->getUsersByAccountId($this->accountId));
         $acccountAclDto->setUserGroupsId($this->accountHistoryService->getUserGroupsByAccountId($this->accountId));
 
-        if (!$this->accountAcl->getAcl($acccountAclDto)->getStoredAcl()->checkAccountAccess()) {
-            ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_ACCOUNT_NO_PERMISSION);
+        $this->accountAcl = $this->dic->get(AccountAclService::class)->getAcl($this->actionId, $acccountAclDto, true);
 
-            return false;
+        if ($this->accountAcl === null || $this->accountAcl->checkAccountAccess($this->actionId) === false) {
+            throw new AccountPermissionException(SPException::INFO);
         }
-
-        return true;
     }
 
     /**

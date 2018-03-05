@@ -41,7 +41,7 @@ use SP\Util\Util;
  *
  * @package SP\Providers\Mail
  */
-class Mailer extends Provider
+class MailHandler extends Provider
 {
     /**
      * @var PHPMailer
@@ -56,7 +56,7 @@ class Mailer extends Provider
      * @param string      $subject
      * @param string      $to
      * @param MailMessage $mailMessage
-     * @throws MailerException
+     * @throws MailHandlerException
      */
     public function send($subject, $to, MailMessage $mailMessage)
     {
@@ -84,7 +84,7 @@ class Mailer extends Provider
     }
 
     /**
-     * @throws MailerException
+     * @throws MailHandlerException
      */
     private function sendMail()
     {
@@ -101,14 +101,14 @@ class Mailer extends Provider
 
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
-            throw new MailerException(__u('Error al enviar correo'));
+            throw new MailHandlerException(__u('Error al enviar correo'));
         }
     }
 
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws MailerException
+     * @throws MailHandlerException
      */
     protected function initialize()
     {
@@ -122,7 +122,7 @@ class Mailer extends Provider
      * @return PHPMailer
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws MailerException
+     * @throws MailHandlerException
      */
     private function getMailer()
     {
@@ -154,9 +154,9 @@ class Mailer extends Provider
         } catch (\Exception $e) {
             processException($e);
 
-            throw new MailerException(
+            throw new MailHandlerException(
                 __u('No es posible inicializar'),
-                MailerException::ERROR,
+                MailHandlerException::ERROR,
                 $e->getMessage(),
                 $e->getCode(),
                 $e

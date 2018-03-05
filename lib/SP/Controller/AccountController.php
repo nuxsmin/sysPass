@@ -62,7 +62,7 @@ use SP\Util\Json;
 class AccountController extends ControllerBase implements ActionsInterface
 {
     /**
-     * @var AccountAcl
+     * @var \SP\Account\AccountAcl
      */
     protected $AccountAcl;
     /**

@@ -623,17 +623,19 @@ CREATE OR REPLACE VIEW account_search_v AS
     `Account`.`parentId`                                 AS `parentId`,
     `Account`.`countView`                                AS `countView`,
     `Account`.`dateEdit`                                 AS `dateEdit`,
-    `ug`.`name`                                          AS `userGroupName`,
+    `User`.`name`                                        AS `userName`,
+    `User`.`login`                                       AS `userLogin`,
+    `UserGroup`.`name`                                   AS `userGroupName`,
     `Category`.`name`                                    AS `categoryName`,
     `Client`.`name`                                      AS `clientName`,
     (SELECT count(0)
      FROM `AccountFile`
      WHERE (`AccountFile`.`accountId` = `Account`.`id`)) AS `num_files`
-  FROM (((`Account`
-    LEFT JOIN `Category`
-      ON ((`Account`.`categoryId` = `Category`.`id`))) LEFT JOIN
-    `UserGroup` `ug` ON ((`Account`.`userGroupId` = `ug`.`id`))) LEFT JOIN
-    `Client` ON ((`Client`.`id` = `Account`.`clientId`)));
+  FROM `Account`
+    INNER JOIN `Category` ON `Account`.`categoryId` = `Category`.`id`
+    INNER JOIN `Client` ON `Client`.`id` = `Account`.`clientId`
+    INNER JOIN `User` ON Account.userId = `User`.id
+    INNER JOIN `UserGroup` ON `Account`.`userGroupId` = `UserGroup`.`id`;
 
 CREATE OR REPLACE VIEW account_data_v AS
   SELECT

@@ -54,13 +54,6 @@
                 <input type="hidden" name="loggedOut" value="<?php echo $loggedOut; ?>"/>
                 <input type="hidden" name="login" value="1"/>
                 <input type="hidden" name="isAjax" value="1"/>
-
-                <?php if (is_array($getParams)): ?>
-                    <?php foreach ($getParams as $param => $value): ?>
-                        <input type="hidden" name="<?php echo $param; ?>" value="<?php echo $value; ?>"/>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-
             </div>
             <div id="boxButton">
                 <button id="btnLogin" type="submit" form="frmLogin"

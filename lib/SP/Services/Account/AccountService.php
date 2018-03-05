@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,11 +25,8 @@
 namespace SP\Services\Account;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Account\AccountAcl;
 use SP\Account\AccountRequest;
 use SP\Account\AccountUtil;
-use SP\Core\Acl\Acl;
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
@@ -38,7 +35,6 @@ use SP\Core\Session\Session;
 use SP\DataModel\AccountData;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\ItemSearchData;
-use SP\Log\Log;
 use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\Account\AccountToTagRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
@@ -171,13 +167,12 @@ class AccountService extends Service implements AccountServiceInterface
      * @return int
      * @throws QueryException
      * @throws SPException
-     * @throws \SP\Core\Dic\ContainerException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function create(AccountRequest $accountRequest)
     {
-        $accountRequest->changePermissions = (new AccountAcl(ActionsInterface::ACCOUNT_EDIT))->isShowPermission();
-        $accountRequest->userGroupId ?: $this->session->getUserData()->getUserGroupId();
+        $accountRequest->changePermissions = AccountAclService::getShowPermission($this->session->getUserData(), $this->session->getUserProfile());
+        $accountRequest->userGroupId = $accountRequest->userGroupId ?: $this->session->getUserData()->getUserGroupId();
 
         $pass = $this->getPasswordEncrypted($accountRequest->pass);
 
@@ -250,13 +245,12 @@ class AccountService extends Service implements AccountServiceInterface
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function update(AccountRequest $accountRequest)
     {
-        $accountRequest->changePermissions = (new AccountAcl(ActionsInterface::ACCOUNT_EDIT))->isShowPermission();
+        $accountRequest->changePermissions = AccountAclService::getShowPermission($this->session->getUserData(), $this->session->getUserProfile());
 
         // Cambiar el grupo principal si el usuario es Admin
         $accountRequest->changeUserGroup = ($accountRequest->userGroupId !== 0
@@ -403,29 +397,6 @@ class AccountService extends Service implements AccountServiceInterface
         }
 
         return $this;
-    }
-
-    /**
-     * Logs account action
-     *
-     * @param int $id
-     * @param int $actionId
-     * @return \SP\Core\Messages\LogMessage
-     * @throws SPException
-     * @throws \SP\Core\Dic\ContainerException
-     */
-    public function logAction($id, $actionId)
-    {
-        $account = $this->accountRepository->getById($id);
-
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(Acl::getActionInfo($actionId));
-        $LogMessage->addDetails(__u('ID'), $id);
-        $LogMessage->addDetails(__u('Cuenta'), $account->getClientName() . ' / ' . $account->getName());
-        $Log->writeLog();
-
-        return $LogMessage;
     }
 
     /**

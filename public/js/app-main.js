@@ -653,10 +653,11 @@ sysPass.Main = function () {
     const setupCallbacks = function () {
         log.info("setupCallbacks");
 
-        const page = $("#container").data("page");
+        const $container = $("#container");
+        const page = $container.data("page");
 
         if (page !== "" && typeof appTriggers.views[page] === "function") {
-            appTriggers.views[page]();
+            appTriggers.views[page]($container);
         }
 
         if ($("footer").length > 0) {

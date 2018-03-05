@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,8 +27,8 @@ namespace SP\Account;
 defined('APP_ROOT') || die();
 
 use SP\Config\ConfigData;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\AccountSearchVData;
+use SP\DataModel\ItemData;
 use SP\Html\Html;
 
 /**
@@ -38,19 +38,33 @@ use SP\Html\Html;
  */
 class AccountSearchItem
 {
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public static $accountLink = false;
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public static $topNavbar = false;
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public static $optionalActions = false;
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public static $requestEnabled = true;
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public static $wikiEnabled = false;
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public static $dokuWikiEnabled = false;
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public static $isDemoMode = false;
 
     /**
@@ -82,15 +96,15 @@ class AccountSearchItem
      */
     protected $textMaxLength = 60;
     /**
-     * @var array
+     * @var ItemData[]
      */
     protected $users;
     /**
-     * @var array
+     * @var ItemData[]
      */
     protected $tags;
     /**
-     * @var array
+     * @var ItemData[]
      */
     protected $userGroups;
     /**
@@ -102,28 +116,17 @@ class AccountSearchItem
      */
     private $accountAcl;
 
-    use InjectableTrait;
-
     /**
      * AccountsSearchItem constructor.
      *
      * @param AccountSearchVData $accountSearchVData
      * @param AccountAcl         $accountAcl
-     * @throws \SP\Core\Dic\ContainerException
+     * @param ConfigData         $configData
      */
-    public function __construct(AccountSearchVData $accountSearchVData, AccountAcl $accountAcl)
+    public function __construct(AccountSearchVData $accountSearchVData, AccountAcl $accountAcl, ConfigData $configData)
     {
-        $this->injectDependencies();
-
         $this->accountSearchVData = $accountSearchVData;
         $this->accountAcl = $accountAcl;
-    }
-
-    /**
-     * @param ConfigData $configData
-     */
-    public function inject(ConfigData $configData)
-    {
         $this->configData = $configData;
     }
 
@@ -257,18 +260,24 @@ class AccountSearchItem
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getAccesses()
     {
-        $accesses = sprintf('<em>(G) %s*</em><br>', $this->accountSearchVData->getUserGroupName());
+        $accesses = [
+            '(G*) <em>' . $this->accountSearchVData->getUserGroupName() . '</em>',
+            '(U*) <em>' . $this->accountSearchVData->getUserLogin() . '</em>'
+        ];
+
+        $userLabel = $this->accountSearchVData->getOtherUserEdit() === 1 ? 'U+' : 'U';
+        $userGroupLabel = $this->accountSearchVData->getOtherUserGroupEdit() === 1 ? 'G+' : 'G';
 
         foreach ($this->userGroups as $group) {
-            $accesses .= sprintf('<em>(G) %s</em><br>', $group->name);
+            $accesses[] = sprintf('(%s) <em>%s</em>', $userGroupLabel, $group->getName());
         }
 
         foreach ($this->users as $user) {
-            $accesses .= sprintf('<em>(U) %s</em><br>', $user->login);
+            $accesses[] = sprintf('(%s) <em>%s</em>', $userLabel, $user->login);
         }
 
         return $accesses;
@@ -364,7 +373,7 @@ class AccountSearchItem
     }
 
     /**
-     * @param array $userGroups
+     * @param ItemData[] $userGroups
      */
     public function setUserGroups(array $userGroups)
     {
@@ -372,7 +381,7 @@ class AccountSearchItem
     }
 
     /**
-     * @param array $users
+     * @param ItemData[] $users
      */
     public function setUsers(array $users)
     {
@@ -380,7 +389,7 @@ class AccountSearchItem
     }
 
     /**
-     * @return array
+     * @return ItemData[]
      */
     public function getTags()
     {
@@ -388,7 +397,7 @@ class AccountSearchItem
     }
 
     /**
-     * @param array $tags
+     * @param ItemData[] $tags
      */
     public function setTags(array $tags)
     {

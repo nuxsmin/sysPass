@@ -46,19 +46,16 @@ class UserToUserGroupRepository extends Repository
      * @param $groupId
      * @return bool
      */
-    public static function checkUserInGroup($groupId, $userId)
+    public function checkUserInGroup($groupId, $userId)
     {
-        $query = /** @lang SQL */
-            'SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = ? AND userId = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = ? AND userId = ?');
+        $queryData->addParam($groupId);
+        $queryData->addParam($userId);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($groupId);
-        $Data->addParam($userId);
+        DbWrapper::getResults($queryData, $this->db);
 
-        DbWrapper::getResults($Data);
-
-        return ($Data->getQueryNumRows() === 1);
+        return ($queryData->getQueryNumRows() === 1);
     }
 
     /**
@@ -67,16 +64,13 @@ class UserToUserGroupRepository extends Repository
      * @param $userId
      * @return array
      */
-    public static function getGroupsForUser($userId)
+    public function getGroupsForUser($userId)
     {
-        $query = /** @lang SQL */
-            'SELECT userGroupId AS groupId FROM UserToUserGroup WHERE userId = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT userGroupId AS groupId FROM UserToUserGroup WHERE userId = ?');
+        $queryData->addParam($userId);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($userId);
-
-        return DbWrapper::getResultsArray($Data);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -104,15 +98,12 @@ class UserToUserGroupRepository extends Repository
      */
     public function delete($id)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM UserToUserGroup WHERE userGroupId = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM UserToUserGroup WHERE userGroupId = ?');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar los usuarios del grupo'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar los usuarios del grupo'));
-
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this;
     }
@@ -131,17 +122,17 @@ class UserToUserGroupRepository extends Repository
         $query = /** @lang SQL */
             'INSERT INTO UserToUserGroup (userId, userGroupId) VALUES ' . $this->getParamsFromArray($users, '(?,?)');
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
 
         foreach ($users as $user) {
-            $Data->addParam($user);
-            $Data->addParam($groupId);
+            $queryData->addParam($user);
+            $queryData->addParam($groupId);
         }
 
-        $Data->setOnErrorMessage(__u('Error al asignar los usuarios al grupo'));
+        $queryData->setOnErrorMessage(__u('Error al asignar los usuarios al grupo'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this;
     }
@@ -154,14 +145,11 @@ class UserToUserGroupRepository extends Repository
      */
     public function getById($id)
     {
-        $query = /** @lang SQL */
-            'SELECT userGroupId, userId FROM UserToUserGroup WHERE userGroupId = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT userGroupId, userId FROM UserToUserGroup WHERE userGroupId = ?');
+        $queryData->addParam($id);
+        $queryData->setMapClassName(UserToUserGroupData::class);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(UserToUserGroupData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
-
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 }

@@ -25,6 +25,7 @@
 namespace SP\Repositories\Account;
 
 use SP\Account\AccountRequest;
+use SP\DataModel\ItemData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\DbWrapper;
@@ -43,7 +44,7 @@ class AccountToTagRepository extends Repository
      * Devolver las etiquetas de una cuenta
      *
      * @param int $id
-     * @return array
+     * @return ItemData[]
      */
     public function getTagsByAccountId($id)
     {
@@ -57,6 +58,7 @@ class AccountToTagRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->addParam($id);
+        $queryData->setMapClassName(ItemData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }

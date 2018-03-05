@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,9 +24,12 @@
 
 namespace SP\Util;
 
+use SP\Core\Acl\AccountPermissionException;
+use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
 use SP\Mvc\View\Template;
+use SP\Services\User\UpdatedMasterPassException;
 
 /**
  * Class ErrorUtil
@@ -44,6 +47,72 @@ class ErrorUtil
     const ERR_UPDATE_MPASS = 3;
     const ERR_OPERATION_NO_PERMISSION = 4;
     const ERR_EXCEPTION = 5;
+
+    /**
+     * Establecer la plantilla de error con el código indicado.
+     *
+     * @param \SP\Mvc\View\Template $view
+     * @param \Exception            $e
+     * @param  string               $replace Template replacement
+     */
+    public static function showExceptionInView(Template $view, \Exception $e, $replace = null)
+    {
+        switch (get_class($e)) {
+            case UpdatedMasterPassException::class:
+                self::showErrorInView($view, self::ERR_UPDATE_MPASS, $replace);
+                break;
+            case UnauthorizedPageException::class:
+                self::showErrorInView($view, self::ERR_PAGE_NO_PERMISSION, $replace);
+                break;
+            case AccountPermissionException::class:
+                self::showErrorInView($view, self::ERR_ACCOUNT_NO_PERMISSION, $replace);
+                break;
+            default;
+                self::showErrorInView($view, self::ERR_EXCEPTION, $replace);
+        }
+    }
+
+    /**
+     * Establecer la plantilla de error con el código indicado.
+     *
+     * @param \SP\Mvc\View\Template $view
+     * @param int                   $type    int con el tipo de error
+     * @param  string               $replace Template replacement
+     */
+    public static function showErrorInView(Template $view, $type, $replace = null)
+    {
+        if ($replace === null) {
+            $view->resetTemplates();
+            $view->resetContentTemplates();
+        } else {
+            if ($view->hashContentTemplates()) {
+                $view->removeContentTemplate($replace);
+                $view->addContentTemplate('error', Template::PARTIALS_DIR);
+            } else {
+                $view->removeTemplate($replace);
+                $view->addTemplate('error', Template::PARTIALS_DIR);
+            }
+        }
+
+        $error = self::getErrorTypes($type);
+
+        $view->append('errors',
+            [
+                'type' => SPException::WARNING,
+                'description' => $error['txt'],
+                'hint' => $error['hint']
+            ]);
+
+        try {
+            echo $view->render();
+        } catch (FileNotFoundException $e) {
+            processException($e);
+
+            echo $e->getMessage();
+        }
+
+        die();
+    }
 
     /**
      * Return error message by type
@@ -80,43 +149,13 @@ class ErrorUtil
             ]
         ];
 
+        if (!isset($errorTypes[$type])) {
+            return [
+                'txt' => __('Se ha producido una excepción'),
+                'hint' => __('Consulte con el administrador')
+            ];
+        }
+
         return $errorTypes[$type];
-    }
-
-    /**
-     * Establecer la plantilla de error con el código indicado.
-     *
-     * @param \SP\Mvc\View\Template $view
-     * @param int                   $type    int con el tipo de error
-     * @param  string               $replace Template replacement
-     */
-    public static function showErrorInView(Template $view, $type, $replace = null)
-    {
-        if ($replace === null) {
-            $view->resetContentTemplates();
-        } else {
-            $view->removeContentTemplate($replace);
-        }
-
-        $view->addContentTemplate('error', Template::PARTIALS_DIR);
-
-        $error = self::getErrorTypes($type);
-
-        $view->append('errors',
-            [
-                'type' => SPException::WARNING,
-                'description' => $error['txt'],
-                'hint' => $error['hint']
-            ]);
-
-        try {
-            echo $view->render();
-        } catch (FileNotFoundException $e) {
-            processException($e);
-
-            echo $e->getMessage();
-        }
-
-        die();
     }
 }

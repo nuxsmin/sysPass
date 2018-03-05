@@ -62,7 +62,6 @@ class AccountCryptService extends Service
      *
      * @param UpdateMasterPassRequest $updateMasterPassRequest
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     public function updateOldPass(UpdateMasterPassRequest $updateMasterPassRequest)
     {
@@ -77,14 +76,14 @@ class AccountCryptService extends Service
         $this->eventDispatcher->notifyEvent('update.masterPassword.accounts.start', new Event($this, [__u('Actualizar Clave Maestra')]));
 
         if (!OldCrypt::checkCryptModule()) {
-            throw new ServiceException(__u('Error en el módulo de encriptación'), SPException::ERROR);
+            throw new ServiceException(__u('Error en el módulo de encriptación'), ServiceException::ERROR);
         }
 
         $accountsPass = $this->accountService->getAccountsPassData();
         $numAccounts = count($accountsPass);
 
         if ($numAccounts === 0) {
-            throw new ServiceException(__u('Error al obtener las claves de las cuentas'), SPException::ERROR);
+            throw new ServiceException(__u('Error al obtener las claves de las cuentas'), ServiceException::ERROR);
         }
 
         $taskId = $this->request->getTask()->getTaskId();
@@ -171,7 +170,7 @@ class AccountCryptService extends Service
 
             $this->eventDispatcher->notifyEvent('update.masterPassword.accounts.end', new Event($this, $process));
         } catch (\Exception $e) {
-            throw new ServiceException(__u('Errores al actualizar las claves de las cuentas'), SPException::ERROR, null, $e->getCode(), $e);
+            throw new ServiceException(__u('Errores al actualizar las claves de las cuentas'), ServiceException::ERROR, null, $e->getCode(), $e);
         }
     }
 
@@ -193,7 +192,7 @@ class AccountCryptService extends Service
         $numAccounts = count($accounts);
 
         if ($numAccounts === 0) {
-            throw new ServiceException(__u('Error al obtener las claves de las cuentas'), SPException::ERROR);
+            throw new ServiceException(__u('Error al obtener las claves de las cuentas'), ServiceException::ERROR);
         }
 
         $configData = $this->config->getConfigData();
@@ -292,7 +291,7 @@ class AccountCryptService extends Service
 
             $this->eventDispatcher->notifyEvent('update.masterPassword.accountsHistory.end', new Event($this, $process));
         } catch (\Exception $e) {
-            throw new ServiceException(__u('Errores al actualizar las claves de las cuentas del histórico'), SPException::ERROR, null, $e->getCode(), $e);
+            throw new ServiceException(__u('Errores al actualizar las claves de las cuentas del histórico'), ServiceException::ERROR, null, $e->getCode(), $e);
         }
     }
 

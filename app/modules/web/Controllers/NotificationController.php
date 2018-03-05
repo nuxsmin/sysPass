@@ -94,7 +94,7 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_CREATE)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::NOTIFICATION_VIEW)) {
             return;
         }
 

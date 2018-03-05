@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,8 @@
 
 namespace SP\DataModel\Dto;
 
+use SP\DataModel\ItemData;
+
 /**
  * Class AccountAclDto
  *
@@ -40,7 +42,7 @@ class AccountAclDto
      */
     private $userId;
     /**
-     * @var int[]
+     * @var ItemData[]
      */
     private $usersId;
     /**
@@ -48,7 +50,7 @@ class AccountAclDto
      */
     private $userGroupId;
     /**
-     * @var int[]
+     * @var ItemData[]
      */
     private $userGroupsId;
     /**
@@ -81,7 +83,7 @@ class AccountAclDto
     }
 
     /**
-     * @return int[]
+     * @return ItemData[]
      */
     public function getUsersId()
     {
@@ -89,7 +91,7 @@ class AccountAclDto
     }
 
     /**
-     * @param int[] $usersId
+     * @param ItemData[] $usersId
      */
     public function setUsersId(array $usersId)
     {
@@ -113,7 +115,7 @@ class AccountAclDto
     }
 
     /**
-     * @return int[]
+     * @return ItemData[]
      */
     public function getUserGroupsId()
     {
@@ -121,7 +123,7 @@ class AccountAclDto
     }
 
     /**
-     * @param int[] $userGroupsId
+     * @param ItemData[] $userGroupsId
      */
     public function setUserGroupsId(array $userGroupsId)
     {
@@ -141,7 +143,7 @@ class AccountAclDto
      */
     public function setDateEdit($dateEdit)
     {
-        $this->dateEdit = (int)$dateEdit;
+        $this->dateEdit = $dateEdit;
     }
 
     /**

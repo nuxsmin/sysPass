@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -76,7 +76,6 @@ class AccountActionsHelper extends HelperBase
      * @param AccountAcl        $accountAcl
      * @param AccountActionsDto $accountActionsDto
      * @return DataGridAction[]
-     * @throws \ReflectionException
      */
     public function getActionsForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
     {
@@ -101,12 +100,13 @@ class AccountActionsHelper extends HelperBase
 
         if ($accountActionsDto->isHistory() === false
             && $accountActionsDto->isLinked() === false
+            && $this->configData->isPublinksEnabled()
             && $accountAcl->isShowLink()
             && $accountAcl->isShowViewPass()
         ) {
-            $action = $accountActionsDto->hasPublicLink() ? $this->getPublicLinkRefreshAction() : $this->getPublicLinkAction();
+            $action = $accountActionsDto->getPublicLinkId() ? $this->getPublicLinkRefreshAction() : $this->getPublicLinkAction();
 
-            $actionsEnabled[] = $action->addData('item-id', $accountActionsDto->getAccountId());
+            $actionsEnabled[] = $action->addData('item-id', $accountActionsDto->getPublicLinkId());
         }
 
         if ($accountAcl->isShowViewPass()) {
@@ -143,7 +143,7 @@ class AccountActionsHelper extends HelperBase
             $actionsEnabled[] = $this->getEditAction()->addData('item-id', $accountActionsDto->getAccountId());
         }
 
-        if ($accountAcl->getAction() === ActionsInterface::ACCOUNT_VIEW
+        if ($accountAcl->getActionId() === ActionsInterface::ACCOUNT_VIEW
             && !$accountAcl->isShowEdit()
             && $this->configData->isMailRequestsEnabled()
         ) {
@@ -186,7 +186,6 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
-     * @throws \ReflectionException
      */
     public function getDeleteAction()
     {
@@ -248,7 +247,6 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
-     * @throws \ReflectionException
      */
     public function getViewPassAction()
     {
@@ -271,7 +269,6 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
-     * @throws \ReflectionException
      */
     public function getCopyPassAction()
     {
@@ -297,7 +294,6 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
-     * @throws \ReflectionException
      */
     public function getCopyAction()
     {
@@ -319,7 +315,6 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
-     * @throws \ReflectionException
      */
     public function getEditPassAction()
     {
@@ -341,7 +336,6 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
-     * @throws \ReflectionException
      */
     public function getEditAction()
     {
@@ -363,7 +357,6 @@ class AccountActionsHelper extends HelperBase
 
     /**
      * @return DataGridAction
-     * @throws \ReflectionException
      */
     public function getRequestAction()
     {

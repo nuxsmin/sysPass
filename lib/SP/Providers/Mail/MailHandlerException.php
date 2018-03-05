@@ -31,7 +31,7 @@ use SP\Core\Exceptions\SPException;
  *
  * @package SP\Providers\Mail
  */
-class MailerException extends SPException
+class MailHandlerException extends SPException
 {
 
 }

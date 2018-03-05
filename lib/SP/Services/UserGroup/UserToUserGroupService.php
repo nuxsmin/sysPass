@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -38,15 +38,6 @@ class UserToUserGroupService extends Service
      * @var UserToUserGroupRepository
      */
     protected $userToUserGroupRepository;
-
-    /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function initialize()
-    {
-        $this->userToUserGroupRepository = $this->dic->get(UserToUserGroupRepository::class);
-    }
 
     /**
      * @param $id
@@ -94,5 +85,37 @@ class UserToUserGroupService extends Service
         }
 
         return $usersId;
+    }
+
+    /**
+     * Checks whether the user is included in the group
+     *
+     * @param $userId
+     * @param $groupId
+     * @return bool
+     */
+    public function checkUserInGroup($groupId, $userId)
+    {
+        return $this->userToUserGroupRepository->checkUserInGroup($groupId, $userId);
+    }
+
+    /**
+     * Returns the groups which the user belongs to
+     *
+     * @param $userId
+     * @return array
+     */
+    public function getGroupsForUser($userId)
+    {
+        return $this->userToUserGroupRepository->getGroupsForUser($userId);
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->userToUserGroupRepository = $this->dic->get(UserToUserGroupRepository::class);
     }
 }

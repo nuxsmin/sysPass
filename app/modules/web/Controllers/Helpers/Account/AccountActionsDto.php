@@ -46,7 +46,7 @@ class AccountActionsDto
     /**
      * @var bool
      */
-    private $publicLink = false;
+    private $publicLinkId;
 
     /**
      * AccountActionsDto constructor.
@@ -105,16 +105,16 @@ class AccountActionsDto
     /**
      * @return bool
      */
-    public function hasPublicLink()
+    public function getPublicLinkId()
     {
-        return $this->publicLink;
+        return $this->publicLinkId;
     }
 
     /**
-     * @param bool $publicLink
+     * @param bool $publicLinkId
      */
-    public function setPublicLink($publicLink)
+    public function setPublicLinkId($publicLinkId)
     {
-        $this->publicLink = (bool)$publicLink;
+        $this->publicLinkId = (int)$publicLinkId;
     }
 }

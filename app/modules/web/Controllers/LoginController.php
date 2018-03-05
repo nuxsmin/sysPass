@@ -26,9 +26,9 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
-use SP\Html\Html;
 use SP\Http\Request;
 use SP\Http\Response;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
@@ -98,7 +98,7 @@ class LoginController extends ControllerBase
 
             SessionUtil::cleanSession();
 
-            $this->session->setLoggedOut(true);
+            $this->session->setAppStatus(Session::APP_STATUS_LOGGEDOUT);
 
             $layoutHelper = $this->dic->get(LayoutHelper::class);
             $layoutHelper->getCustomLayout('logout', 'logout');
@@ -132,18 +132,6 @@ class LoginController extends ControllerBase
         $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
         $this->view->assign('updated', SessionFactory::getAppUpdated());
 
-        SessionFactory::setAppUpdated(false);
-
-        $getParams = [];
-
-        // Comprobar y parsear los parámetros GET para pasarlos como POST en los inputs
-        if (count($_GET) > 0) {
-            foreach ($_GET as $param => $value) {
-                $getParams['g_' . Html::sanitizeFull($param)] = Html::sanitizeFull($value);
-            }
-        }
-
-        $this->view->assign('getParams', $getParams);
         $this->view();
     }
 }

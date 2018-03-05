@@ -1,6 +1,9 @@
 <?php
-/** @var \SP\Account\AccountAcl $accountAcl */
-/** @var \SP\DataModel\AccountExtData $accountData */
+/**
+ * @var \SP\Account\AccountAcl       $accountAcl
+ * @var \SP\DataModel\AccountExtData $accountData
+ * @var \SP\Config\ConfigData        $configData
+ */
 ?>
 
 <div class="data-container">
@@ -238,7 +241,7 @@
             <?php endif; ?>
         </table>
 
-        <?php if (!$isView && $accountAcl->isShowPermission()): ?>
+        <?php if (!$isView && ($accountAcl->isShowPermission() || $allowPrivate || $allowPrivateGroup)): ?>
             <?php include $this->includeTemplate('account-permissions'); ?>
         <?php endif; ?>
 
@@ -264,7 +267,7 @@
 
     <?php
     // Filex box
-    if ($gotData && $accountAcl->isShowFiles()) {
+    if ($gotData && $configData->isFilesEnabled() && $accountAcl->isShowFiles()) {
         include $this->includeTemplate('files');
     }
 

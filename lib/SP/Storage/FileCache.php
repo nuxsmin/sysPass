@@ -58,12 +58,36 @@ class FileCache implements FileStorageInterface
      */
     public function save($path, $data)
     {
+        $dir = dirname($path);
+
+        if (!is_dir($dir) && mkdir($dir, 0700, true) === false) {
+            throw new RuntimeException(sprintf(__('No es posible crear el directorio: %s'), $dir));
+        }
+
         if (file_exists($path) && !is_writable($path)) {
             throw new RuntimeException(sprintf(__('No es posible leer/escribir el archivo: %s'), $path));
         }
 
         if (!file_put_contents($path, serialize($data))) {
             throw new RuntimeException(sprintf(__('Error al escribir datos en el archivo: %s'), $path));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return FileStorageInterface
+     */
+    public function delete($path)
+    {
+        if (file_exists($path) && !is_writable($path)) {
+            throw new RuntimeException(sprintf(__('No es posible leer/escribir el archivo: %s'), $path));
+        }
+
+        if (!unlink($path)) {
+            throw new RuntimeException(sprintf(__('Error al eliminar el archivo: %s'), $path));
         }
 
         return $this;

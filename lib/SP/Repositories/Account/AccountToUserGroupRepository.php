@@ -25,7 +25,7 @@
 namespace SP\Repositories\Account;
 
 use SP\Account\AccountRequest;
-use SP\DataModel\UserGroupData;
+use SP\DataModel\ItemData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Storage\DbWrapper;
@@ -44,7 +44,7 @@ class AccountToUserGroupRepository extends Repository
      * Obtiene el listado con el nombre de los grupos de una cuenta.
      *
      * @param int $id con el Id de la cuenta
-     * @return array
+     * @return ItemData[]
      */
     public function getUserGroupsByAccountId($id)
     {
@@ -58,6 +58,7 @@ class AccountToUserGroupRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->addParam($id);
+        $queryData->setMapClassName(ItemData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -66,7 +67,7 @@ class AccountToUserGroupRepository extends Repository
      * Obtiene el listado con el nombre de los grupos de una cuenta.
      *
      * @param $id
-     * @return UserGroupData[]
+     * @return ItemData[]
      */
     public function getUserGroupsByUserGroupId($id)
     {
@@ -80,6 +81,7 @@ class AccountToUserGroupRepository extends Repository
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->addParam($id);
+        $queryData->setMapClassName(ItemData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }

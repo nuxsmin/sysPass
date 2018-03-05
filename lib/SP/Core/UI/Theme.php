@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,12 +24,10 @@
 
 namespace SP\Core\UI;
 
-use Pimple\Container;
+use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigData;
-use SP\Core\Init;
 use SP\Core\Session\Session;
-use SP\Core\Traits\InjectableTrait;
 use Theme\Icons;
 
 defined('APP_ROOT') || die();
@@ -41,8 +39,6 @@ defined('APP_ROOT') || die();
  */
 class Theme implements ThemeInterface
 {
-    use InjectableTrait;
-
     /**
      * @var string
      */
@@ -83,12 +79,14 @@ class Theme implements ThemeInterface
     /**
      * Theme constructor.
      *
-     * @param $module
-     * @throws \SP\Core\Dic\ContainerException
+     * @param         $module
+     * @param Config  $config
+     * @param Session $session
      */
-    public function __construct($module)
+    public function __construct($module, Config $config, Session $session)
     {
-        $this->injectDependencies();
+        $this->configData = $config->getConfigData();
+        $this->session = $session;
 
         if (is_dir(VIEW_PATH)) {
             $this->initTheme();
@@ -111,7 +109,7 @@ class Theme implements ThemeInterface
             $this->session->setTheme($this->themeName);
         }
 
-        $this->themeUri = Init::$WEBURI . '/app/modules/' . $this->module . 'themes' . $this->themeName;
+        $this->themeUri = Bootstrap::$WEBURI . '/app/modules/' . $this->module . 'themes' . $this->themeName;
         $this->themePath = str_replace(APP_ROOT, '', VIEW_PATH) . DIRECTORY_SEPARATOR . $this->themeName;
         $this->themePathFull = VIEW_PATH . DIRECTORY_SEPARATOR . $this->themeName;
         $this->viewsPath = $this->themePathFull . DIRECTORY_SEPARATOR . 'views';
@@ -156,23 +154,13 @@ class Theme implements ThemeInterface
     }
 
     /**
-     * @param Config  $config
-     * @param Session $session
-     */
-    public function inject(Config $config, Session $session)
-    {
-        $this->configData = $config->getConfigData();
-        $this->session = $session;
-    }
-
-    /**
      * Obtener los temas disponibles desde el directorio de temas
      *
      * @return array Con la información del tema
      */
     public function getThemesAvailable()
     {
-        $themesAvailable = array();
+        $themesAvailable = [];
 
         $themesDirs = dir(VIEW_PATH);
 

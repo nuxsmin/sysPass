@@ -4,7 +4,7 @@
 <div class="item-actions">
     <ul>
         <?php /** @var \SP\Html\DataGrid\DataGridActionInterface[] $actions */
-        foreach ($actions as $action): ?>
+        foreach ($accountActions as $action): ?>
             <li>
                 <button id="<?php echo $action->getId(); ?>"
                         class="<?php echo $action->getClassesAsString(); ?> mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $action->getIcon()->getClassButton(); ?>"

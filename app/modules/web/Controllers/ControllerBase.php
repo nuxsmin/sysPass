@@ -34,10 +34,12 @@ use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Language;
 use SP\Core\Session\Session;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeIconsBase;
 use SP\DataModel\ProfileData;
+use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\Controller\ControllerTrait;
 use SP\Mvc\View\Template;
 use SP\Providers\Auth\Browser\Browser;
@@ -125,6 +127,10 @@ abstract class ControllerBase
      * @var ContainerInterface
      */
     protected $dic;
+    /**
+     * @var
+     */
+    protected $isAjax = false;
 
     /**
      * Constructor
@@ -134,7 +140,7 @@ abstract class ControllerBase
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct(Container $container, $actionName)
+    public final function __construct(Container $container, $actionName)
     {
         $this->dic = $container;
 
@@ -154,12 +160,16 @@ abstract class ControllerBase
 
         $this->icons = $this->theme->getIcons();
 
+        $this->isAjax = $this->router->request()->headers()->get('X_REQUESTED_WITH') === 'XMLHttpRequest';
+
         if ($this->session->isLoggedIn()) {
             $this->userData = clone $this->session->getUserData();
             $this->userProfileData = clone $this->session->getUserProfile();
 
             $this->setViewVars();
         }
+
+        $this->view->assign('language', substr(Language::$globalLang, 0, 2));
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();
@@ -186,7 +196,7 @@ abstract class ControllerBase
     /**
      * Mostrar los datos de la plantilla
      */
-    public function view()
+    protected function view()
     {
         try {
             echo $this->view->render();
@@ -202,7 +212,7 @@ abstract class ControllerBase
     /**
      * Renderizar los datos de la plantilla y devolverlos
      */
-    public function render()
+    protected function render()
     {
         try {
             return $this->view->render();
@@ -214,9 +224,31 @@ abstract class ControllerBase
     }
 
     /**
+     * Upgrades a View to use a full page layout
+     *
+     * @param string $page
+     */
+    protected function upgradeView($page = null)
+    {
+        $this->view->upgrade();
+
+        if ($this->view->isUpgraded() === false) {
+            return;
+        }
+
+        $this->view->assign('contentPage', $page ?: strtolower($this->controllerName));
+
+        try {
+            $this->dic->get(LayoutHelper::class)->getFullLayout('main', $this->acl);
+        } catch (\Exception $e) {
+            processException($e);
+        }
+    }
+
+    /**
      * Obtener los datos para la vista de depuración
      */
-    public function getDebug()
+    protected function getDebug()
     {
         global $memInit;
 
@@ -234,7 +266,7 @@ abstract class ControllerBase
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws AuthException
      */
-    public function checkLoggedIn()
+    protected function checkLoggedIn()
     {
         if ($this->session->isLoggedIn()
             && $this->session->getAuthCompleted() === true
