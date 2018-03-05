@@ -145,10 +145,6 @@ class Bootstrap
         $this->language = $container->get(Language::class);
         $this->upgrade = $container->get(Upgrade::class);
 
-        $eventDispatcher = $container->get(EventDispatcher::class);
-        $eventDispatcher->attach($container->get(LogHandler::class));
-        $eventDispatcher->attach($container->get(NotificationHandler::class));
-
         $this->initRouter();
     }
 
@@ -488,6 +484,8 @@ class Bootstrap
         // Comprobar si es necesario actualizar componentes
 //        $this->checkUpgrade();
 
+        $this->initEventHandlers();
+
         // Inicializar la sesión
         $this->initUserSession();
 
@@ -648,6 +646,20 @@ class Bootstrap
             default;
                 throw new InitializationException('Unknown module');
         }
+    }
+
+    /**
+     * Initializes event handlers
+     */
+    protected function initEventHandlers()
+    {
+        $eventDispatcher = self::$container->get(EventDispatcher::class);
+
+        if ($this->configData->isLogEnabled()) {
+            $eventDispatcher->attach(self::$container->get(LogHandler::class));
+        }
+
+        $eventDispatcher->attach(self::$container->get(NotificationHandler::class));
     }
 
     /**

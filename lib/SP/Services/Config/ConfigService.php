@@ -79,7 +79,7 @@ class ConfigService extends Service
             );
         }
 
-        return $query->value;
+        return empty($query->value) ? $default : $query->value;
     }
 
     /**
