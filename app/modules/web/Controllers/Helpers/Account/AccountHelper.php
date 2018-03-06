@@ -177,7 +177,7 @@ class AccountHelper extends HelperBase
         }
 
         if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
-            throw new UpdatedMasterPassException(UnauthorizedPageException::INFO);
+            throw new UpdatedMasterPassException(UpdatedMasterPassException::INFO);
         }
     }
 

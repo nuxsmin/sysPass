@@ -82,23 +82,33 @@ class CustomFieldCryptService extends Service
 
     /**
      * @param callable $decryptor
-     * @throws ServiceException
      */
     protected function processUpdateMasterPassword(callable $decryptor)
     {
         $customFields = $this->customFieldService->getAll();
 
         if (count($customFields) === 0) {
-            throw new ServiceException(__u('No hay datos de campos personalizados'), ServiceException::INFO);
+            $this->eventDispatcher->notifyEvent('update.masterPassword.customFields',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Actualizar Clave Maestra'))
+                    ->addDescription(__u('No hay datos de campos personalizados')))
+            );
+            return;
         }
 
         $this->eventDispatcher->notifyEvent('update.masterPassword.customFields.start',
-            new Event($this, EventMessage::factory()->addDescription(__u('Actualizar Clave Maestra')))
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Actualizar Clave Maestra'))
+                ->addDescription(__u('Actualizando datos encriptados')))
         );
 
-        $taskId = $this->request->getTask()->getTaskId();
+        if ($this->request->useTask()) {
+            $taskId = $this->request->getTask()->getTaskId();
 
-        TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra'))->setMessage(__u('Actualizando datos encriptados')));
+            TaskFactory::update($taskId,
+                TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra'))
+                    ->setMessage(__('Actualizando datos encriptados')));
+        }
 
         $errors = [];
         $success = [];
@@ -144,8 +154,6 @@ class CustomFieldCryptService extends Service
                     Crypt::unlockSecuredKey($customFieldData->getKey(), $this->request->getCurrentMasterPass()),
                     $this->request->getCurrentMasterPass());
             });
-        } catch (ServiceException $e) {
-            throw $e;
         } catch (\Exception $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
 

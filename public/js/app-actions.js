@@ -657,31 +657,17 @@ sysPass.Actions = function (Common) {
                 positive: {
                     title: Common.config().LANG[43],
                     onClick: function (e) {
-                        const $useTask = $obj.find("input[name='useTask']");
-                        const $taskStatus = $("#taskStatus");
+                        let taskRunner;
+                        const taskId = $obj.find("input[name='taskId']").val();
 
-                        $taskStatus.empty().html(Common.config().LANG[62]);
-
-                        if ($useTask.length > 0 && $useTask.val() == 1) {
-                            const optsTask = Common.appRequests().getRequestOpts();
-                            optsTask.url = ajaxUrl.entrypoint;
-                            optsTask.data = {
-                                source: $obj.find("input[name='lock']").val(),
-                                taskId: $obj.find("input[name='taskId']").val()
-                            };
-
-                            const task = Common.appRequests().getActionEvent(optsTask, function (result) {
-                                let text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
-                                text += "<br>" + Common.config().LANG[62];
-
-                                $taskStatus.empty().html(text);
-                            });
+                        if (taskId) {
+                            taskRunner = task(taskId);
                         }
 
                         const opts = Common.appRequests().getRequestOpts();
                         opts.url = ajaxUrl.entrypoint;
                         opts.method = "get";
-                        opts.useFullLoading = true;
+                        opts.useFullLoading = !!taskId;
                         opts.data = $obj.serialize();
 
                         Common.appRequests().getActionCall(opts, function (json) {
@@ -690,8 +676,8 @@ sysPass.Actions = function (Common) {
                             if (json.status !== 0) {
                                 $obj.find(":input[name=h]").val("");
                             } else {
-                                if (task !== undefined) {
-                                    task.close();
+                                if (taskRunner !== undefined) {
+                                    taskRunner.close();
                                 }
 
                                 setTimeout(function () {
@@ -781,30 +767,16 @@ sysPass.Actions = function (Common) {
                 positive: {
                     title: Common.config().LANG[43],
                     onClick: function (e) {
-                        const $useTask = $obj.find("input[name='useTask']");
-                        const $taskStatus = $("#taskStatus");
+                        let taskRunner;
+                        const taskId = $obj.find("input[name='taskId']").val();
 
-                        $taskStatus.empty().html(Common.config().LANG[62]);
-
-                        if ($useTask.length > 0 && $useTask.val() == 1) {
-                            const optsTask = Common.appRequests().getRequestOpts();
-                            optsTask.url = ajaxUrl.entrypoint;
-                            optsTask.data = {
-                                source: $obj.find("input[name='lock']").val(),
-                                taskId: $obj.find("input[name='taskId']").val()
-                            };
-
-                            const task = Common.appRequests().getActionEvent(optsTask, function (result) {
-                                let text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
-                                text += "<br>" + Common.config().LANG[62];
-
-                                $taskStatus.empty().html(text);
-                            });
+                        if (taskId) {
+                            taskRunner = task(taskId);
                         }
 
                         const opts = Common.appRequests().getRequestOpts();
                         opts.url = ajaxUrl.entrypoint;
-                        opts.useFullLoading = true;
+                        opts.useFullLoading = !!taskId;
                         opts.data = $obj.serialize();
 
                         Common.appRequests().getActionCall(opts, function (json) {
@@ -812,8 +784,8 @@ sysPass.Actions = function (Common) {
 
                             $obj.find(":input[type=password]").val("");
 
-                            if (task !== undefined) {
-                                task.close();
+                            if (taskRunner !== undefined) {
+                                taskRunner.close();
                             }
                         });
                     }
@@ -956,14 +928,13 @@ sysPass.Actions = function (Common) {
                 const itemId = $obj.data("item-id");
 
                 const opts = Common.appRequests().getRequestOpts();
-                opts.url = ajaxUrl.entrypoint;
-                opts.data = {
-                    r: $obj.data("action-route"),
-                    accountId: itemId,
-                    notify: notify,
-                    sk: Common.sk.get(),
-                    isAjax: 1
-                };
+
+                if (itemId) {
+                    opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + itemId + "/" + notify;
+                } else {
+                    opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
+                    opts.data = $obj.serialize();
+                }
 
                 Common.appRequests().getActionCall(opts, function (json) {
                     Common.msg.out(json);
@@ -1542,6 +1513,23 @@ sysPass.Actions = function (Common) {
                 }
             });
         }
+    };
+
+    const task = function (taskId) {
+        const $taskStatus = $("#taskStatus");
+
+        $taskStatus.empty().html(Common.config().LANG[62]);
+
+        const opts = Common.appRequests().getRequestOpts();
+        opts.method = "get";
+        opts.url = ajaxUrl.entrypoint + "?r=task/runTask/" + taskId;
+
+        return Common.appRequests().getActionEvent(opts, function (result) {
+            let text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
+            text += "<br>" + Common.config().LANG[62];
+
+            $taskStatus.empty().html(text);
+        });
     };
 
     return {

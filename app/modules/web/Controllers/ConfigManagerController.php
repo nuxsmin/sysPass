@@ -221,9 +221,12 @@ class ConfigManagerController extends ControllerBase
         $template->setBase('config');
         $template->addTemplate('encryption');
 
-        $template->assign('mailSecurity', ['SSL', 'TLS']);
-        $template->assign('numAccounts', $this->dic->get(AccountService::class)->getTotalNumAccounts()->num);
-        $template->assign('taskId', Task::genTaskId('masterpass'));
+        $numAccounts = $this->dic->get(AccountService::class)->getTotalNumAccounts()->num;
+        $template->assign('numAccounts', $numAccounts);
+
+        if ($numAccounts > 500) {
+            $template->assign('taskId', Task::genTaskId('masterpass'));
+        }
 
         $configService = $this->dic->get(ConfigService::class);
 

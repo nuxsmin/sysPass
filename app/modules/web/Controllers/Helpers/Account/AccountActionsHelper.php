@@ -105,8 +105,9 @@ class AccountActionsHelper extends HelperBase
             && $accountAcl->isShowViewPass()
         ) {
             $action = $accountActionsDto->getPublicLinkId() ? $this->getPublicLinkRefreshAction() : $this->getPublicLinkAction();
+            $itemId = $accountActionsDto->getPublicLinkId() ?: $accountActionsDto->getAccountId();
 
-            $actionsEnabled[] = $action->addData('item-id', $accountActionsDto->getPublicLinkId());
+            $actionsEnabled[] = $action->addData('item-id', $itemId);
         }
 
         if ($accountAcl->isShowViewPass()) {

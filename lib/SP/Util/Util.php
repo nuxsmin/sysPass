@@ -327,7 +327,7 @@ class Util
     public static function getTempDir()
     {
         $sysTmp = sys_get_temp_dir();
-        $appTmp = Init::$SERVERROOT . DIRECTORY_SEPARATOR . 'tmp';
+        $appTmp = APP_PATH . DIRECTORY_SEPARATOR . 'temp';
         $file = 'syspass.test';
 
         $checkDir = function ($dir) use ($file) {

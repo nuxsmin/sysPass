@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,6 +25,7 @@
 namespace SP\Core;
 
 use SP\Core\Messages\TaskMessage;
+use SP\Core\Session\Session;
 use SP\Util\Util;
 
 /**
@@ -130,7 +131,7 @@ class Task
      */
     public static function genTaskId($name)
     {
-        return uniqid($name, true);
+        return uniqid($name);
     }
 
     /**
@@ -295,7 +296,7 @@ class Task
         file_put_contents($this->fileTask, serialize($this));
 
         if ($lockSession === true) {
-            session_write_close();
+            Session::close();
         }
 
         return $this;

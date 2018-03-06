@@ -88,9 +88,11 @@ class AccountCryptService extends Service
             throw new ServiceException(__u('Error al obtener las claves de las cuentas'), ServiceException::ERROR);
         }
 
-        $taskId = $this->request->getTask()->getTaskId();
+        if ($this->request->useTask()) {
+            $taskId = $this->request->getTask()->getTaskId();
 
-        TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra')));
+            TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra')));
+        }
 
         $counter = 0;
         $startTime = time();
@@ -107,14 +109,25 @@ class AccountCryptService extends Service
             if ($counter % 100 === 0) {
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
 
-                $taskMessage = TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra'))
-                    ->setMessage(sprintf(__('Cuentas actualizadas: %d /%d'), $counter, $numAccounts))
-                    ->setProgress(round(($counter * 100) / $numAccounts, 2))
-                    ->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
+                if (isset($taskId)) {
+                    $taskMessage = TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra'))
+                        ->setMessage(sprintf(__('Cuentas actualizadas: %d / %d'), $counter, $numAccounts))
+                        ->setProgress(round(($counter * 100) / $numAccounts, 2))
+                        ->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
 
-                TaskFactory::update($taskId, $taskMessage);
 
-                debugLog($taskMessage->composeText());
+                    TaskFactory::update($taskId, $taskMessage);
+
+                    debugLog($taskMessage->composeText());
+                } else {
+                    debugLog(
+                        sprintf(__('Cuentas actualizadas: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
+                            $counter,
+                            $numAccounts,
+                            round(($counter * 100) / $numAccounts, 2),
+                            $eta[0], $eta[1])
+                    );
+                }
             }
 
             $accountRequest = new AccountPasswordRequest();
@@ -161,9 +174,11 @@ class AccountCryptService extends Service
                 new Event($this, EventMessage::factory()->addDescription(__u('Actualizar Clave Maestra')))
             );
 
-            $taskId = $this->request->getTask();
+            if ($this->request->useTask()) {
+                $taskId = $this->request->getTask();
 
-            TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __u('Actualizar Clave Maestra')));
+                TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __u('Actualizar Clave Maestra')));
+            }
 
             $eventMessage = $this->processAccounts($this->accountService->getAccountsPassData(), function ($request) {
                 $this->accountService->updatePasswordMasterPass($request);
@@ -204,7 +219,11 @@ class AccountCryptService extends Service
 
         $configData = $this->config->getConfigData();
         $currentMasterPassHash = $this->request->getCurrentHash();
-        $taskId = $this->request->getTask()->getTaskId();
+
+        if ($this->request->useTask()) {
+            $taskId = $this->request->getTask()->getTaskId();
+        }
+
         $eventMessage = EventMessage::factory();
 
         foreach ($accounts as $account) {
@@ -217,14 +236,24 @@ class AccountCryptService extends Service
             if ($counter % 100 === 0) {
                 $eta = Util::getETA($startTime, $counter, $numAccounts);
 
-                $taskMessage = TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra'))
-                    ->setMessage(sprintf(__('Cuentas actualizadas: %d /%d'), $counter, $numAccounts))
-                    ->setProgress(round(($counter * 100) / $numAccounts, 2))
-                    ->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
+                if (isset($taskId)) {
+                    $taskMessage = TaskFactory::createMessage($taskId, __('Actualizar Clave Maestra'))
+                        ->setMessage(sprintf(__('Cuentas actualizadas: %d / %d'), $counter, $numAccounts))
+                        ->setProgress(round(($counter * 100) / $numAccounts, 2))
+                        ->setTime(sprintf('ETA: %ds (%.2f/s)', $eta[0], $eta[1]));
 
-                TaskFactory::update($taskId, $taskMessage);
+                    TaskFactory::update($taskId, $taskMessage);
 
-                debugLog($taskMessage->composeText());
+                    debugLog($taskMessage->composeText());
+                } else {
+                    debugLog(
+                        sprintf(__('Cuentas actualizadas: %d / %d - %d%% - ETA: %ds (%.2f/s)'),
+                            $counter,
+                            $numAccounts,
+                            round(($counter * 100) / $numAccounts, 2),
+                            $eta[0], $eta[1])
+                    );
+                }
             }
 
             if (isset($account->mPassHash) && $account->mPassHash !== $currentMasterPassHash) {
@@ -285,7 +314,9 @@ class AccountCryptService extends Service
 
             $taskId = $this->request->getTask();
 
-            TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __u('Actualizar Clave Maestra (H)')));
+            if ($this->request->useTask()) {
+                TaskFactory::update($taskId, TaskFactory::createMessage($taskId, __u('Actualizar Clave Maestra (H)')));
+            }
 
             $eventMessage = $this->processAccounts($this->accountHistoryService->getAccountsPassData(), function ($request) {
                 /** @var AccountPasswordRequest $request */

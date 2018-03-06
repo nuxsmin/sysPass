@@ -41,13 +41,13 @@ class TaskFactory
     /**
      * Crear una tarea para la actualización de estado de la actualización
      *
-     * @param $name
-     * @param $id
+     * @param string $name
+     * @param string $id
      * @return Task
      */
     public static function create($name, $id)
     {
-        return self::add((new Task($name, $id))->register(false));
+        return self::add((new Task($name, $id))->register());
     }
 
     /**

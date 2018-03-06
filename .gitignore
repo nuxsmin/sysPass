@@ -56,4 +56,7 @@ app/temp/*
 app/modules/web/plugins/*
 vendor/*
 
+.phpstorm.meta.php
+composer.phar
+
 !.blank

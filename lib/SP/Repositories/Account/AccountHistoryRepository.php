@@ -66,13 +66,13 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             WHERE AH.accountId = ?
             ORDER BY AH.id DESC';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
 
         $items = [];
 
-        foreach (DbWrapper::getResultsArray($Data, $this->db) as $history) {
+        foreach (DbWrapper::getResultsArray($queryData, $this->db) as $history) {
             // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
             if (empty($history->dateEdit) || $history->dateEdit === '0000-00-00 00:00:00') {
                 $date = $history->dateAdd . ' - ' . $history->userAdd;
@@ -130,7 +130,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      */
     public function create($itemData)
     {
-        $Data = new QueryData();
+        $queryData = new QueryData();
         $query = /** @lang SQL */
             'INSERT INTO AccountHistory
             (accountId,
@@ -178,14 +178,14 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             isPrivateGroup,
             ?,?,? FROM Account WHERE id = ?';
 
-        $Data->setQuery($query);
-        $Data->addParam($itemData['isModify']);
-        $Data->addParam($itemData['isDelete']);
-        $Data->addParam($itemData['masterPassHash']);
-        $Data->addParam($itemData['id']);
-        $Data->setOnErrorMessage(__u('Error al actualizar el historial'));
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData['isModify']);
+        $queryData->addParam($itemData['isDelete']);
+        $queryData->addParam($itemData['masterPassHash']);
+        $queryData->addParam($itemData['id']);
+        $queryData->setOnErrorMessage(__u('Error al actualizar el historial'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -211,14 +211,14 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $query = /** @lang SQL */
             'DELETE FROM AccountHistory WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar la cuenta'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar la cuenta'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return $Data->getQueryNumRows() === 1;
+        return $queryData->getQueryNumRows() === 1;
     }
 
     /**
@@ -278,12 +278,12 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             LEFT JOIN User U2 ON AH.userEditId = U2.id
             WHERE AH.id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setMapClassName(AccountHistoryData::class);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setMapClassName(AccountHistoryData::class);
+        $queryData->addParam($id);
 
-        $queryRes = DbWrapper::getResults($Data, $this->db);
+        $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
             throw new SPException(__u('No se pudieron obtener los datos de la cuenta'), SPException::CRITICAL);
@@ -310,12 +310,12 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             LEFT JOIN User U2 ON AH.userEditId = U2.id 
             ORDER BY AH.id DESC';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
 
         $items = [];
 
-        foreach (DbWrapper::getResultsArray($Data, $this->db) as $history) {
+        foreach (DbWrapper::getResultsArray($queryData, $this->db) as $history) {
             // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
             if (empty($history->dateEdit) || $history->dateEdit === '0000-00-00 00:00:00') {
                 $date = $history->dateAdd . ' - ' . $history->userAdd;
@@ -432,7 +432,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData = new QueryData();
         $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($queryData);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**

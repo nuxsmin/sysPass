@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,7 +25,8 @@
 namespace SP\Services\Crypt;
 
 use SP\Core\Crypt\Hash;
-use SP\Core\Exceptions\SPException;
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Services\Account\AccountCryptService;
 use SP\Services\Config\ConfigService;
 use SP\Services\CustomField\CustomFieldCryptService;
@@ -79,31 +80,37 @@ class MasterPassService extends Service
 
     /**
      * @param UpdateMasterPassRequest $request
-     * @throws SPException
-     * @throws ServiceException
+     * @throws \Exception
      */
     public function changeMasterPassword(UpdateMasterPassRequest $request)
     {
         $db = $this->dic->get(Database::class);
 
-        if (!DbWrapper::beginTransaction($db)) {
-            throw new ServiceException(__u('No es posible iniciar una transacción'), ServiceException::ERROR);
-        }
-
         try {
+            if (!DbWrapper::beginTransaction($db)) {
+                throw new ServiceException(__u('No es posible iniciar una transacción'), ServiceException::ERROR);
+            }
+
             $this->accountCryptService->updateMasterPassword($request);
 
             $this->accountCryptService->updateHistoryMasterPassword($request);
 
             $this->customFieldCryptService->updateMasterPassword($request);
-        } catch (ServiceException $e) {
-            DbWrapper::rollbackTransaction($db);
+
+            if (!DbWrapper::endTransaction($db)) {
+                throw new ServiceException(__u('No es posible finalizar una transacción'), ServiceException::ERROR);
+            }
+        } catch (\Exception $e) {
+            if (DbWrapper::rollbackTransaction($db)) {
+                $this->eventDispatcher->notifyEvent('update.masterPassword.rollback',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Rollback')))
+                );
+
+                debugLog('Rollback');
+            }
 
             throw $e;
-        }
-
-        if (!DbWrapper::endTransaction($db)) {
-            throw new ServiceException(__u('No es posible finalizar una transacción'), ServiceException::ERROR);
         }
     }
 

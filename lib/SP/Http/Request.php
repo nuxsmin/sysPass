@@ -114,7 +114,7 @@ class Request
     {
         $encryptedData = self::analyzeString($param);
 
-        if ($encryptedData === '') {
+        if ($encryptedData === null) {
             return '';
         }
 
@@ -142,7 +142,7 @@ class Request
     public static function analyzeString($param, $default = null)
     {
         if (!isset($_REQUEST[$param])) {
-            return (string)$default;
+            return $default;
         }
 
         return filter_var($_REQUEST[$param], FILTER_SANITIZE_STRING);
@@ -156,7 +156,7 @@ class Request
     public static function analyzeEmail($param, $default = null)
     {
         if (!isset($_REQUEST[$param])) {
-            return (string)$default;
+            return $default;
         }
 
         return filter_var($_REQUEST[$param], FILTER_SANITIZE_EMAIL);

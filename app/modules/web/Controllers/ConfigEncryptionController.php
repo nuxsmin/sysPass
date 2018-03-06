@@ -68,6 +68,7 @@ class ConfigEncryptionController extends SimpleControllerBase
         $newMasterPassR = Request::analyzeEncrypted('newMasterPwdR');
         $confirmPassChange = Request::analyzeBool('confirmPassChange', false);
         $noAccountPassChange = Request::analyzeBool('chkNoAccountChange', false);
+        $taskId = Request::analyzeString('taskId');
 
         if (!$mastePassService->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __u('Clave maestra actualizada'), [__u('Reinicie la sesión para cambiarla')]);
@@ -102,11 +103,13 @@ class ConfigEncryptionController extends SimpleControllerBase
         if (!$noAccountPassChange) {
             Util::lockApp($this->session->getUserData()->getId(), 'masterpass');
 
+            $task = $taskId !== null ? TaskFactory::create(__FUNCTION__, $taskId) : null;
+
             $request = new UpdateMasterPassRequest(
                 $currentMasterPass,
                 $newMasterPass,
                 $configService->getByParam('masterPwd'),
-                TaskFactory::create(__FUNCTION__, 'masterpass')
+                $task
             );
 
             try {
@@ -126,7 +129,9 @@ class ConfigEncryptionController extends SimpleControllerBase
             } finally {
                 Util::unlockApp();
 
-                TaskFactory::end($request->getTask()->getTaskId());
+                if ($task) {
+                    TaskFactory::end($task->getTaskId());
+                }
             }
         } else {
             try {

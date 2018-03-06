@@ -114,8 +114,7 @@
         </tr>
     </table>
 
-    <?php if ($numAccounts >= 500): ?>
-        <input type="hidden" name="useTask" value="1">
+    <?php if (isset($taskId)): ?>
         <input type="hidden" name="taskId" value="<?php echo $taskId; ?>">
         <input type="hidden" name="lock" value="masterpass">
     <?php endif; ?>

@@ -163,7 +163,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (\Exception $e) {
             processException($e);
 
-            ErrorUtil::showExceptionInView($this->view, $e);
+            ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
     }
 
@@ -267,7 +267,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (\Exception $e) {
             processException($e);
 
-            ErrorUtil::showExceptionInView($this->view, $e);
+            ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
     }
 
@@ -310,7 +310,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (\Exception $e) {
             processException($e);
 
-            ErrorUtil::showExceptionInView($this->view, $e);
+            ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
     }
 
@@ -356,7 +356,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (\Exception $e) {
             processException($e);
 
-            ErrorUtil::showExceptionInView($this->view, $e);
+            ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
     }
 
@@ -398,7 +398,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (\Exception $e) {
             processException($e);
 
-            ErrorUtil::showExceptionInView($this->view, $e);
+            ErrorUtil::showExceptionInView($this->view, $e, 'account');
         }
     }
 
@@ -442,7 +442,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (\Exception $e) {
             processException($e);
 
-            ErrorUtil::showExceptionInView($this->view, $e);
+            ErrorUtil::showExceptionInView($this->view, $e, 'account-editpass');
         }
     }
 
@@ -484,7 +484,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (\Exception $e) {
             processException($e);
 
-            ErrorUtil::showExceptionInView($this->view, $e);
+            ErrorUtil::showExceptionInView($this->view, $e, 'account-history');
         }
     }
 
@@ -515,7 +515,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         } catch (\Exception $e) {
             processException($e);
 
-            ErrorUtil::showExceptionInView($this->view, $e);
+            ErrorUtil::showExceptionInView($this->view, $e, 'account-request');
         }
     }
 
