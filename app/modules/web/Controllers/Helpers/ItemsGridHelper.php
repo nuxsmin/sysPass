@@ -63,7 +63,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getCategoriesGrid(array $data)
     {
@@ -80,7 +79,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblCategories');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -165,7 +164,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getClientsGrid(array $data)
     {
@@ -186,7 +184,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblCustomers');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -249,7 +247,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getCustomFieldsGrid(array $data)
     {
@@ -270,7 +267,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblCustomFields');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -333,7 +330,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getFilesGrid(array $data)
     {
@@ -356,7 +352,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblFiles');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -419,7 +415,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getAccountsGrid(array $data)
     {
@@ -436,7 +431,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblAccounts');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -476,7 +471,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getAccountsHistoryGrid(array $data)
     {
@@ -501,7 +495,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblAccountsHistory');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -551,7 +545,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getUsersGrid(array $data)
     {
@@ -577,7 +570,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblUsers');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -679,7 +672,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getUserGroupsGrid(array $data)
     {
@@ -696,7 +688,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblGroups');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -770,7 +762,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getUserProfilesGrid(array $data)
     {
@@ -785,7 +776,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblProfiles');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -859,7 +850,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getApiTokensGrid(array $data)
     {
@@ -876,7 +866,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblTokens');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -950,7 +940,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getPublicLinksGrid(array $data)
     {
@@ -977,7 +966,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblLinks');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -1050,7 +1039,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getTagsGrid(array $data)
     {
@@ -1065,7 +1053,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblTags');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -1128,7 +1116,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGridTab
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getPluginsGrid(array $data)
     {
@@ -1147,7 +1134,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGridTab();
+        $Grid = new DataGridTab($this->view->getTheme());
         $Grid->setId('tblPlugins');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -1190,6 +1177,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEnable->setFilterRowSource('enabled');
         $GridActionEnable->setFilterRowSource('available', 0);
         $GridActionEnable->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_ENABLE));
+        $GridActionEnable->addData('action-method', 'get');
 
         $Grid->setDataActions($GridActionEnable);
 
@@ -1202,6 +1190,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionDisable->setFilterRowSource('enabled', 0);
         $GridActionDisable->setFilterRowSource('available', 0);
         $GridActionDisable->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_DISABLE));
+        $GridActionDisable->addData('action-method', 'get');
 
         $Grid->setDataActions($GridActionDisable);
 
@@ -1213,6 +1202,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionReset->setOnClickFunction('plugin/reset');
         $GridActionReset->setFilterRowSource('available', 0);
         $GridActionReset->addData('action-route', Acl::getActionRoute(ActionsInterface::PLUGIN_RESET));
+        $GridActionReset->addData('action-method', 'get');
 
         $Grid->setDataActions($GridActionReset);
 
@@ -1222,7 +1212,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGrid
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getEventLogGrid(array $data)
     {
@@ -1260,7 +1249,7 @@ class ItemsGridHelper extends HelperBase
 
                 if (preg_match('/^SQL.*/m', $text)) {
                     $text = preg_replace([
-                        '/([[:alpha:]_]+),/m',
+                        '/([a-zA-Z_]+),/m',
                         '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'],
                         ['\\1,<br>', '<br>\\1'],
                         $text);
@@ -1275,7 +1264,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGrid();
+        $Grid = new DataGrid($this->view->getTheme());
         $Grid->setId('tblEventLog');
         $Grid->setDataTableTemplate('datagrid-table-simple', 'grid');
         $Grid->setDataRowTemplate('datagrid-rows', $this->view->getBase());
@@ -1330,7 +1319,6 @@ class ItemsGridHelper extends HelperBase
     /**
      * @param array $data
      * @return DataGrid
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getNotificationsGrid(array $data)
     {
@@ -1360,7 +1348,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setData($data);
 
         // Grid
-        $Grid = new DataGrid();
+        $Grid = new DataGrid($this->view->getTheme());
         $Grid->setId('tblNotifications');
         $Grid->setDataRowTemplate('datagrid-rows', 'grid');
         $Grid->setDataPagerTemplate('datagrid-nav-full', 'grid');
@@ -1455,7 +1443,7 @@ class ItemsGridHelper extends HelperBase
      * Actualizar los datos del paginador
      *
      * @param DataGridInterface $dataGrid
-     * @param ItemSearchData    $itemSearchData
+     * @param ItemSearchData $itemSearchData
      * @return DataGridInterface
      */
     public function updatePager(DataGridInterface $dataGrid, ItemSearchData $itemSearchData)

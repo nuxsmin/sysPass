@@ -160,6 +160,7 @@ class ConfigGeneralController extends SimpleControllerBase
     protected function initialize()
     {
         try {
+            $this->checks();
             $this->checkAccess(ActionsInterface::CONFIG_GENERAL);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

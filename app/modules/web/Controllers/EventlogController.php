@@ -49,8 +49,6 @@ class EventlogController extends ControllerBase
 
     /**
      * indexAction
-     *
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {
@@ -69,7 +67,6 @@ class EventlogController extends ControllerBase
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {
@@ -114,8 +111,15 @@ class EventlogController extends ControllerBase
         }
     }
 
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
+     */
     protected function initialize()
     {
+        $this->checkLoggedIn();
+
         $this->eventLogService = $this->dic->get(EventlogService::class);
     }
 }

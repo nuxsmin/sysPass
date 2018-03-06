@@ -28,8 +28,8 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
+use SP\Core\UI\ThemeInterface;
 use SplObjectStorage;
 
 /**
@@ -39,8 +39,6 @@ use SplObjectStorage;
  */
 abstract class DataGridBase implements DataGridInterface
 {
-    use InjectableTrait;
-
     /**
      * Tiempo de ejecución
      *
@@ -135,17 +133,9 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * DataGridBase constructor.
      *
-     * @throws \SP\Core\Dic\ContainerException
+     * @param ThemeInterface $theme
      */
-    public function __construct()
-    {
-        $this->injectDependencies();
-    }
-
-    /**
-     * @param Theme $theme
-     */
-    public function inject(Theme $theme)
+    public function __construct(ThemeInterface $theme)
     {
         $this->theme = $theme;
     }
@@ -228,7 +218,7 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param DataGridActionInterface $action
-     * @param bool                    $isMenu Añadir al menu de acciones
+     * @param bool $isMenu Añadir al menu de acciones
      * @return $this
      */
     public function setDataActions(DataGridActionInterface $action, $isMenu = false)
@@ -278,7 +268,7 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para la cabecera
      *
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base     Directorio base para la plantilla
+     * @param string $base Directorio base para la plantilla
      * @return $this
      */
     public function setDataHeaderTemplate($template, $base = null)
@@ -353,7 +343,7 @@ abstract class DataGridBase implements DataGridInterface
      * Establecer la plantilla utilizada para el paginador
      *
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base     Directorio base para la plantilla
+     * @param string $base Directorio base para la plantilla
      * @return $this
      */
     public function setDataPagerTemplate($template, $base = null)
@@ -379,7 +369,7 @@ abstract class DataGridBase implements DataGridInterface
 
     /**
      * @param string $template El nombre de la plantilla a utilizar
-     * @param string $base     Directorio base para la plantilla
+     * @param string $base Directorio base para la plantilla
      * @return mixed
      */
     public function setDataRowTemplate($template, $base = null)

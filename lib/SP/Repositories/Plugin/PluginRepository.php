@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -25,6 +25,7 @@
 namespace SP\Repositories\Plugin;
 
 use SP\Core\Exceptions\SPException;
+use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PluginData;
 use SP\Repositories\Repository;
@@ -46,24 +47,24 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      * Creates an item
      *
      * @param PluginData $itemData
-     * @return mixed
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function create($itemData)
     {
         $query = /** @lang SQL */
-            'INSERT INTO Plugin SET name = ?, data = ?, enabled = ?, available = ?';
+            'INSERT INTO Plugin SET `name` = ?, `data` = ?, enabled = ?, available = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getData());
-        $Data->addParam($itemData->getEnabled());
-        $Data->addParam($itemData->getAvailable());
-        $Data->setOnErrorMessage(__u('Error al crear el plugin'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getData());
+        $queryData->addParam($itemData->getEnabled());
+        $queryData->addParam($itemData->getAvailable());
+        $queryData->setOnErrorMessage(__u('Error al crear el plugin'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -80,47 +81,47 @@ class PluginRepository extends Repository implements RepositoryItemInterface
     {
         $query = /** @lang SQL */
             'UPDATE Plugin
-              SET name = ?,
-              data = ?,
+              SET `name` = ?,
+              `data` = ?,
               enabled = ?,
               available = ?
-              WHERE name = ? LIMIT 1';
+              WHERE `name` = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getData());
-        $Data->addParam($itemData->getEnabled());
-        $Data->addParam($itemData->getAvailable());
-        $Data->addParam($itemData->getName());
-        $Data->setOnErrorMessage(__u('Error al actualizar el plugin'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getData());
+        $queryData->addParam($itemData->getEnabled());
+        $queryData->addParam($itemData->getAvailable());
+        $queryData->addParam($itemData->getName());
+        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
      * Returns the item for given id
      *
      * @param int $id
-     * @return mixed
+     * @return PluginData
      */
     public function getById($id)
     {
         $query = /** @lang SQL */
             'SELECT id,
-            name,
-            data,
+            `name`,
+            `data`,
             enabled,
             available 
             FROM Plugin 
             WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(PluginData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
+        $queryData->setMapClassName(PluginData::class);
 
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -132,41 +133,41 @@ class PluginRepository extends Repository implements RepositoryItemInterface
     {
         $query = /** @lang SQL */
             'SELECT id,
-            name,
+            `name`,
             enabled,
             available 
             FROM Plugin 
-            ORDER BY name';
+            ORDER BY `name`';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(PluginData::class);
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setMapClassName(PluginData::class);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
      * Returns all the items for given ids
      *
      * @param array $ids
-     * @return array
+     * @return PluginData[]
      */
     public function getByIdBatch(array $ids)
     {
         $query = /** @lang SQL */
             'SELECT id,
-            name,
+            `name`,
             enabled,
             available 
             FROM Plugin 
             WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(PluginData::class);
-        $Data->setQuery($query);
-        $Data->setParams($ids);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams($ids);
+        $queryData->setMapClassName(PluginData::class);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -189,28 +190,21 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      * Deletes an item
      *
      * @param $id
-     * @return PluginRepository
+     * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM Plugin WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM Plugin WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar el plugin'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar el plugin'));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(__u('Plugin no encontrado'), SPException::INFO);
-        }
-
-        return $this;
+        return $this->db->getNumRows();
     }
 
     /**
@@ -249,33 +243,33 @@ class PluginRepository extends Repository implements RepositoryItemInterface
     /**
      * Searches for items by a given filter
      *
-     * @param ItemSearchData $SearchData
+     * @param ItemSearchData $itemSearchData
      * @return mixed
      */
-    public function search(ItemSearchData $SearchData)
+    public function search(ItemSearchData $itemSearchData)
     {
-        $Data = new QueryData();
-        $Data->setSelect('id, name, enabled, available');
-        $Data->setFrom('Plugin');
-        $Data->setOrder('name');
+        $queryData = new QueryData();
+        $queryData->setSelect('id, name, enabled, available');
+        $queryData->setFrom('Plugin');
+        $queryData->setOrder('name');
 
-        if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('name LIKE ?');
+        if ($itemSearchData->getSeachString() !== '') {
+            $queryData->setWhere('name LIKE ?');
 
-            $search = '%' . $SearchData->getSeachString() . '%';
-            $Data->addParam($search);
+            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $queryData->addParam($search);
         }
 
-        $Data->setLimit('?,?');
-        $Data->addParam($SearchData->getLimitStart());
-        $Data->addParam($SearchData->getLimitCount());
+        $queryData->setLimit('?,?');
+        $queryData->addParam($itemSearchData->getLimitStart());
+        $queryData->addParam($itemSearchData->getLimitCount());
 
         DbWrapper::setFullRowCount();
 
         /** @var array $queryRes */
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
     }
@@ -283,26 +277,26 @@ class PluginRepository extends Repository implements RepositoryItemInterface
     /**
      * Devuelve los datos de un plugin por su nombre
      *
-     * @param $name int
-     * @return mixed
+     * @param string $name
+     * @return PluginData
      */
     public function getByName($name)
     {
         $query = /** @lang SQL */
             'SELECT id,
-            name,
-            data,
+            `name`,
+            `data`,
             enabled,
             available 
             FROM Plugin 
-            WHERE name = ? LIMIT 1';
+            WHERE `name` = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(PluginData::class);
-        $Data->setQuery($query);
-        $Data->addParam($name);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($name);
+        $queryData->setMapClassName(PluginData::class);
 
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -316,18 +310,13 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      */
     public function toggleEnabled($id, $enabled)
     {
-        $query = /** @lang SQL */
-            'UPDATE Plugin
-              SET enabled = ?
-              WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE Plugin SET enabled = ? WHERE id = ? LIMIT 1');
+        $queryData->addParam($enabled);
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($enabled);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al actualizar el plugin'));
-
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -341,18 +330,13 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      */
     public function toggleEnabledByName($name, $enabled)
     {
-        $query = /** @lang SQL */
-            'UPDATE Plugin
-              SET enabled = ?
-              WHERE name = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE Plugin SET enabled = ? WHERE name = ? LIMIT 1');
+        $queryData->addParam($enabled);
+        $queryData->addParam($name);
+        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($enabled);
-        $Data->addParam($name);
-        $Data->setOnErrorMessage(__u('Error al actualizar el plugin'));
-
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -366,18 +350,13 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      */
     public function toggleAvailable($id, $available)
     {
-        $query = /** @lang SQL */
-            'UPDATE Plugin
-              SET available = ?
-              WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE Plugin SET available = ? WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->addParam($available);
+        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->addParam($available);
-        $Data->setOnErrorMessage(__u('Error al actualizar el plugin'));
-
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -391,18 +370,13 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      */
     public function toggleAvailableByName($name, $available)
     {
-        $query = /** @lang SQL */
-            'UPDATE Plugin
-              SET available = ?
-              WHERE name = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE Plugin SET available = ? WHERE `name` = ? LIMIT 1');
+        $queryData->addParam($available);
+        $queryData->addParam($name);
+        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($available);
-        $Data->addParam($name);
-        $Data->setOnErrorMessage(__u('Error al actualizar el plugin'));
-
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -415,32 +389,25 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      */
     public function resetById($id)
     {
-        $query = /** @lang SQL */
-            'UPDATE Plugin
-              SET data = NULL 
-              WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE Plugin SET `data` = NULL WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al actualizar el plugin'));
-
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
      * Devolver los plugins activados
      *
-     * @return array
+     * @return ItemData[]
      */
     public function getEnabled()
     {
-        $query = /** @lang SQL */
-            'SELECT name FROM Plugin WHERE enabled = 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, name FROM Plugin WHERE enabled = 1');
+        $queryData->setMapClassName(ItemData::class);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 }

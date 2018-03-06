@@ -47,8 +47,7 @@ use SP\Services\Client\ClientService;
  */
 class ClientController extends ControllerBase implements CrudControllerInterface
 {
-    use JsonTrait;
-    use ItemTrait;
+    use JsonTrait, ItemTrait;
 
     /**
      * @var ClientService
@@ -60,7 +59,6 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -79,7 +77,6 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {
@@ -331,5 +328,4 @@ class ClientController extends ControllerBase implements CrudControllerInterface
 
         $this->clientService = $this->dic->get(ClientService::class);
     }
-
 }

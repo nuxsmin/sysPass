@@ -51,7 +51,6 @@ class ErrorController
     /**
      * ErrorController constructor.
      *
-     * @throws \ReflectionException
      * @throws \SP\Core\Dic\ContainerException
      */
     public function __construct()

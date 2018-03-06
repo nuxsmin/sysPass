@@ -76,6 +76,8 @@ class AccountFavoriteController extends SimpleControllerBase
 
     protected function initialize()
     {
+        $this->checks();
+
         $this->accountFavoriteService = $this->dic->get(AccountFavoriteService::class);
     }
 

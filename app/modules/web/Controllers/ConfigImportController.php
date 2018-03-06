@@ -91,6 +91,7 @@ class ConfigImportController extends SimpleControllerBase
     protected function initialize()
     {
         try {
+            $this->checks();
             $this->checkAccess(ActionsInterface::IMPORT_CONFIG);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

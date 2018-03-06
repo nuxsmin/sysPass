@@ -24,7 +24,6 @@
 
 namespace SP\Modules\Web\Controllers;
 
-
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
@@ -49,8 +48,7 @@ use SP\Services\CustomField\CustomFieldDefService;
  */
 class CustomFieldController extends ControllerBase implements CrudControllerInterface
 {
-    use JsonTrait;
-    use ItemTrait;
+    use JsonTrait, ItemTrait;
 
     /**
      * @var CustomFieldDefService
@@ -62,7 +60,6 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -81,7 +78,6 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {

@@ -62,8 +62,8 @@ use SP\Util\Util;
  */
 class AccountController extends ControllerBase implements CrudControllerInterface
 {
-    use JsonTrait;
-    use ItemTrait;
+    use JsonTrait, ItemTrait;
+
     /**
      * @var AccountService
      */
@@ -531,7 +531,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Display account's password
      *
-     * @param int $id        Account's ID
+     * @param int $id Account's ID
      * @param int $isHistory The account's ID refers to history
      * @throws \Psr\Container\ContainerExceptionInterface
      */
@@ -567,7 +567,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Copy account's password
      *
-     * @param int $id        Account's ID
+     * @param int $id Account's ID
      * @param int $isHistory The account's ID refers to history
      * @throws Helpers\HelperException
      * @throws SPException
@@ -738,7 +738,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Saves restore action
      *
      * @param int $historyId Account's history ID
-     * @param int $id        Account's ID
+     * @param int $id Account's ID
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */

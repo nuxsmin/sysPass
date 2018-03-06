@@ -271,6 +271,7 @@ class ConfigLdapController extends SimpleControllerBase
     protected function initialize()
     {
         try {
+            $this->checks();
             $this->checkAccess(ActionsInterface::LDAP_CONFIG);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

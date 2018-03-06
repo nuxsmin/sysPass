@@ -60,7 +60,6 @@ class AccessManagerController extends ControllerBase
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {
@@ -72,7 +71,6 @@ class AccessManagerController extends ControllerBase
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getGridTabs()
     {
@@ -115,7 +113,6 @@ class AccessManagerController extends ControllerBase
      * @return \SP\Html\DataGrid\DataGridTab
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getUsersList()
     {
@@ -129,7 +126,6 @@ class AccessManagerController extends ControllerBase
      * @return \SP\Html\DataGrid\DataGridTab
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getUsersGroupList()
     {
@@ -142,7 +138,6 @@ class AccessManagerController extends ControllerBase
      * @return \SP\Html\DataGrid\DataGridTab
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getUsersProfileList()
     {
@@ -155,7 +150,6 @@ class AccessManagerController extends ControllerBase
      * @return \SP\Html\DataGrid\DataGridTab
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getApiTokensList()
     {
@@ -168,7 +162,6 @@ class AccessManagerController extends ControllerBase
      * @return \SP\Html\DataGrid\DataGridTab
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getPublicLinksList()
     {

@@ -49,8 +49,7 @@ use SP\Services\User\UserService;
  */
 class ApiTokenController extends ControllerBase implements CrudControllerInterface
 {
-    use JsonTrait;
-    use ItemTrait;
+    use JsonTrait, ItemTrait;
 
     /**
      * @var AuthTokenService
@@ -62,7 +61,6 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -81,7 +79,6 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {

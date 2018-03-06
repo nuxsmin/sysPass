@@ -49,8 +49,7 @@ use SP\Services\UserGroup\UserToUserGroupService;
  */
 class UserGroupController extends ControllerBase implements CrudControllerInterface
 {
-    use JsonTrait;
-    use ItemTrait;
+    use JsonTrait, ItemTrait;
 
     /**
      * @var UserGroupService
@@ -66,7 +65,6 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -85,7 +83,6 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {

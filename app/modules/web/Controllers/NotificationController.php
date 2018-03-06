@@ -56,7 +56,7 @@ class NotificationController extends ControllerBase implements CrudControllerInt
     protected $notificationService;
 
     /**
-     * @throws \SP\Core\Dic\ContainerException
+     * indexAction
      */
     public function indexAction()
     {
@@ -75,7 +75,6 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {
@@ -147,8 +146,6 @@ class NotificationController extends ControllerBase implements CrudControllerInt
 
     /**
      * Search action
-     *
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -361,8 +358,15 @@ class NotificationController extends ControllerBase implements CrudControllerInt
         }
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
+     */
     protected function initialize()
     {
+        $this->checkLoggedIn();
+
         $this->notificationService = $this->dic->get(NotificationService::class);
     }
 }

@@ -80,6 +80,8 @@ class UserSettingsGeneralController extends SimpleControllerBase
      */
     protected function initialize()
     {
+        $this->checks();
+
         $this->userService = $this->dic->get(UserService::class);
     }
 }

@@ -150,7 +150,6 @@ class AccountSearchHelper extends HelperBase
      * Devuelve la matriz a utilizar en la vista
      *
      * @return DataGrid
-     * @throws \SP\Core\Dic\ContainerException
      */
     private function getGrid()
     {
@@ -182,7 +181,7 @@ class AccountSearchHelper extends HelperBase
 
         $actions = $this->dic->get(AccountActionsHelper::class);
 
-        $Grid = new DataGrid();
+        $Grid = new DataGrid($this->view->getTheme());
         $Grid->setId('gridSearch');
         $Grid->setDataHeaderTemplate('search-header', $this->view->getBase());
         $Grid->setDataRowTemplate('search-rows', $this->view->getBase());

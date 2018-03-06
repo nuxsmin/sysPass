@@ -49,8 +49,7 @@ use SP\Services\PublicLink\PublicLinkService;
  */
 class PublicLinkController extends ControllerBase implements CrudControllerInterface
 {
-    use JsonTrait;
-    use ItemTrait;
+    use JsonTrait, ItemTrait;
 
     /**
      * @var PublicLinkService
@@ -62,7 +61,6 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -81,7 +79,6 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {

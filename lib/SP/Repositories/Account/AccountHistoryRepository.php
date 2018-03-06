@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -92,20 +92,20 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      */
     public function getPasswordForHistoryId($id)
     {
-        $Data = new QueryData();
-        $Data->setMapClassName(AccountPassData::class);
-        $Data->setLimit(1);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(AccountPassData::class);
+        $queryData->setLimit(1);
 
-        $Data->setSelect('AH.id, AH.name, AH.login, AH.pass, AH.key, AH.parentId');
-        $Data->setFrom('AccountHistory AH');
+        $queryData->setSelect('AH.id, AH.name, AH.login, AH.pass, AH.key, AH.parentId');
+        $queryData->setFrom('AccountHistory AH');
 
-        $queryWhere = AccountUtil::getAccountHistoryFilterUser($Data, $this->session);
+        $queryWhere = AccountUtil::getAccountHistoryFilterUser($this->session);
         $queryWhere[] = 'AH.id = ?';
-        $Data->addParam($id);
+        $queryData->addParam($id);
 
-        $Data->setWhere($queryWhere);
+        $queryData->setWhere($queryWhere);
 
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**

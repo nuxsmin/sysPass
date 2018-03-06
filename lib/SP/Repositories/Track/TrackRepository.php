@@ -92,9 +92,9 @@ class TrackRepository extends Repository
     {
         $query = /** @lang SQL */
             'UPDATE Track SET 
-            track_userId = ?, 
-            source = ?, 
-            time = UNIX_TIMESTAMP(),
+            userId = ?, 
+            `source` = ?, 
+            `time` = UNIX_TIMESTAMP(),
             ipv4 = ?,
             ipv6 = ? 
             WHERE id = ? LIMIT 1';
@@ -120,8 +120,8 @@ class TrackRepository extends Repository
         $query = /** @lang SQL */
             'SELECT id, 
             userId, 
-            source, 
-            time,
+            `source`, 
+            `time`,
             ipv4,
             ipv6 
             FROM Track 

@@ -89,4 +89,14 @@ class UserSettingsManagerController extends ControllerBase
 
         return new DataTab(__('Preferencias'), $template);
     }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
+     */
+    protected function initialize()
+    {
+        $this->checkLoggedIn();
+    }
 }

@@ -78,15 +78,6 @@ class PublicLinkService extends Service
     }
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function initialize()
-    {
-        $this->publicLinkRepository = $this->dic->get(PublicLinkRepository::class);
-    }
-
-    /**
      * @param ItemSearchData $itemSearchData
      * @return mixed
      */
@@ -144,6 +135,7 @@ class PublicLinkService extends Service
      * Returns the hash from a composed key
      *
      * @param string $key
+     * @param string $salt
      * @return mixed
      */
     public static function getHashForKey($key, $salt)
@@ -154,7 +146,7 @@ class PublicLinkService extends Service
     /**
      * Obtener los datos de una cuenta y encriptarlos para el enlace
      *
-     * @param int    $itemId
+     * @param int $itemId
      * @param string $linkKey
      * @return Vault
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -243,7 +235,7 @@ class PublicLinkService extends Service
     }
 
     /**
-     * @param string         $salt
+     * @param string $salt
      * @param PublicLinkData $publicLinkData
      * @return string
      */
@@ -331,5 +323,14 @@ class PublicLinkService extends Service
     public function getHashForItem($itemId)
     {
         return $this->publicLinkRepository->getHashForItem($itemId);
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->publicLinkRepository = $this->dic->get(PublicLinkRepository::class);
     }
 }

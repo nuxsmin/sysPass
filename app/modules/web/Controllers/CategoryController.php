@@ -46,8 +46,7 @@ use SP\Services\Category\CategoryService;
  */
 class CategoryController extends ControllerBase implements CrudControllerInterface
 {
-    use JsonTrait;
-    use ItemTrait;
+    use JsonTrait, ItemTrait;
 
     /**
      * @var CategoryService
@@ -59,7 +58,6 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -78,7 +76,6 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {

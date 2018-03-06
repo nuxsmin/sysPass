@@ -49,8 +49,7 @@ use SP\Util\Util;
  */
 class AccountFileController extends ControllerBase implements CrudControllerInterface
 {
-    use JsonTrait;
-    use ItemTrait;
+    use JsonTrait, ItemTrait;
 
     /**
      * @var AccountFileService
@@ -238,7 +237,6 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {

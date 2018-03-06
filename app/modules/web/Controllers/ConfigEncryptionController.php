@@ -224,6 +224,7 @@ class ConfigEncryptionController extends SimpleControllerBase
     protected function initialize()
     {
         try {
+            $this->checks();
             $this->checkAccess(ActionsInterface::ENCRYPTION_CONFIG);
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notifyEvent('exception', new Event($e));

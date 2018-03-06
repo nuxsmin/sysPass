@@ -51,7 +51,7 @@ class AccountPasswordHelper extends HelperBase
      * @param AccountPassData  $account
      * @param \SP\Core\Acl\Acl $acl
      * @param                  $type
-     * @return string
+     * @return string|null
      * @throws HelperException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \SP\Core\Exceptions\SPException
@@ -68,6 +68,8 @@ class AccountPasswordHelper extends HelperBase
                 $this->setTemplateVars($account);
                 break;
         }
+
+        return null;
     }
 
     /**

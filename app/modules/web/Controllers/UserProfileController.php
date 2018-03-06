@@ -47,8 +47,7 @@ use SP\Services\UserProfile\UserProfileService;
  */
 class UserProfileController extends ControllerBase implements CrudControllerInterface
 {
-    use JsonTrait;
-    use ItemTrait;
+    use JsonTrait, ItemTrait;
 
     /**
      * @var UserProfileService
@@ -60,7 +59,6 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -79,7 +77,6 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {

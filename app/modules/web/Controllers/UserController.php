@@ -29,7 +29,6 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\SessionUtil;
 use SP\DataModel\UserData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -65,7 +64,6 @@ class UserController extends ControllerBase implements CrudControllerInterface
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function searchAction()
     {
@@ -84,7 +82,6 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * getSearchGrid
      *
      * @return $this
-     * @throws \SP\Core\Dic\ContainerException
      */
     protected function getSearchGrid()
     {
@@ -203,7 +200,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
         $this->view->assign('header', __('Cambio de Clave'));
         $this->view->assign('isView', false);
         $this->view->assign('route', 'user/saveEditPass/' . $id);
-        $this->view->assign('sk', SessionUtil::getSessionKey(true));
+        $this->view->assign('sk', $this->session->generateSecurityKey());
 
         try {
             $user = $id ? $this->userService->getById($id) : new UserData();
@@ -432,7 +429,9 @@ class UserController extends ControllerBase implements CrudControllerInterface
     }
 
     /**
-     * Initialize class
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
      */
     protected function initialize()
     {

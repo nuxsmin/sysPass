@@ -493,7 +493,6 @@ sysPass.Actions = function (Common) {
             log.info("items:update");
 
             const $dst = $("#" + $obj.data("item-dst"))[0].selectize;
-
             $dst.clearOptions();
             $dst.load(function (callback) {
                 const opts = Common.appRequests().getRequestOpts();
@@ -643,7 +642,7 @@ sysPass.Actions = function (Common) {
         upgrade: function ($obj) {
             log.info("main:upgrade");
 
-            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[59] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
@@ -658,28 +657,28 @@ sysPass.Actions = function (Common) {
                 positive: {
                     title: Common.config().LANG[43],
                     onClick: function (e) {
-                        var $useTask = $obj.find("input[name='useTask']");
-                        var $taskStatus = $("#taskStatus");
+                        const $useTask = $obj.find("input[name='useTask']");
+                        const $taskStatus = $("#taskStatus");
 
                         $taskStatus.empty().html(Common.config().LANG[62]);
 
                         if ($useTask.length > 0 && $useTask.val() == 1) {
-                            var optsTask = Common.appRequests().getRequestOpts();
+                            const optsTask = Common.appRequests().getRequestOpts();
                             optsTask.url = ajaxUrl.entrypoint;
                             optsTask.data = {
                                 source: $obj.find("input[name='lock']").val(),
                                 taskId: $obj.find("input[name='taskId']").val()
                             };
 
-                            var task = Common.appRequests().getActionEvent(optsTask, function (result) {
-                                var text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
+                            const task = Common.appRequests().getActionEvent(optsTask, function (result) {
+                                let text = result.task + " - " + result.message + " - " + result.time + " - " + result.progress + "%";
                                 text += "<br>" + Common.config().LANG[62];
 
                                 $taskStatus.empty().html(text);
                             });
                         }
 
-                        var opts = Common.appRequests().getRequestOpts();
+                        const opts = Common.appRequests().getRequestOpts();
                         opts.url = ajaxUrl.entrypoint;
                         opts.method = "get";
                         opts.useFullLoading = true;
@@ -707,7 +706,7 @@ sysPass.Actions = function (Common) {
         getUpdates: function () {
             log.info("main:getUpdates");
 
-            var opts = Common.appRequests().getRequestOpts();
+            const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.type = "html";
             opts.method = "get";
@@ -1040,7 +1039,11 @@ sysPass.Actions = function (Common) {
         }
     };
 
-
+    /**
+     * Common tabs actions
+     *
+     * @type {{state: {tab: {index: number, refresh: boolean, route: string}, itemId: number, update: update}, save: save}}
+     */
     const tabs = {
         state: {
             tab: {
@@ -1067,6 +1070,7 @@ sysPass.Actions = function (Common) {
 
             const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
+            opts.method = $obj.data("action-method") || "post";
             opts.data = $obj.serialize();
 
             Common.appRequests().getActionCall(opts, function (json) {
@@ -1145,7 +1149,7 @@ sysPass.Actions = function (Common) {
                 opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
                 opts.data = {
-                    r: $obj.data("action-route") + (itemId ? "/" + itemId : ''),
+                    r: $obj.data("action-route") + (itemId && "/" + itemId),
                     items: items,
                     sk: Common.sk.get(),
                     isAjax: 1
@@ -1239,11 +1243,11 @@ sysPass.Actions = function (Common) {
      *
      * @type {{view: wiki.view}}
      */
-    var wiki = {
+    const wiki = {
         show: function ($obj) {
             log.info("wiki:show");
 
-            var opts = Common.appRequests().getRequestOpts();
+            const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
@@ -1266,38 +1270,21 @@ sysPass.Actions = function (Common) {
     /**
      * Objeto para las acciones de los plugins
      */
-    var plugin = {
+    const plugin = {
         toggle: function ($obj) {
             log.info("plugin:enable");
 
-            var data = {
-                itemId: $obj.data("item-id"),
-                actionId: $obj.data("action-id"),
-                sk: Common.sk.get(),
-                activeTab: $obj.data("activetab")
-            };
-
-            var opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
-            opts.data = data;
-
-            Common.appRequests().getActionCall(opts, function (json) {
-                Common.msg.out(json);
-
-                if (json.status === 0) {
-                    // Recargar para cargar/descargar el plugin
-                    setTimeout(function () {
-                        Common.redirect("index.php");
-                    }, 2000);
-
-                    //doAction({actionId: $obj.data("nextaction-id"), itemId: $obj.data("activetab")});
-                }
+            tabs.save($obj, function () {
+                // Recargar para cargar/descargar el plugin
+                setTimeout(function () {
+                    Common.redirect("index.php");
+                }, 2000);
             });
         },
         reset: function ($obj) {
             log.info("plugin:reset");
 
-            var atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[58] + "</p></div>";
+            const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[58] + "</p></div>";
 
             mdlDialog().show({
                 text: atext,
@@ -1314,20 +1301,7 @@ sysPass.Actions = function (Common) {
                     onClick: function (e) {
                         e.preventDefault();
 
-                        var data = {
-                            "itemId": $obj.data("item-id"),
-                            "actionId": $obj.data("action-id"),
-                            "sk": Common.sk.get(),
-                            "activeTab": $obj.data("activetab")
-                        };
-
-                        var opts = Common.appRequests().getRequestOpts();
-                        opts.url = ajaxUrl.entrypoint;
-                        opts.data = data;
-
-                        Common.appRequests().getActionCall(opts, function (json) {
-                            Common.msg.out(json);
-                        });
+                        tabs.save($obj);
                     }
                 }
             });
@@ -1433,6 +1407,11 @@ sysPass.Actions = function (Common) {
         }
     };
 
+    /**
+     * Common grids actions
+     *
+     * @type {{search: search, nav: nav, delete: delete}}
+     */
     const grid = {
         search: function ($obj) {
             log.info("grid:search");

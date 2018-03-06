@@ -375,5 +375,4 @@ class LayoutHelper extends HelperBase
 
         $this->view->assign('loggedIn', $this->loggedIn);
     }
-
 }

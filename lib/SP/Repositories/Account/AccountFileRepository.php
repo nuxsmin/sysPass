@@ -245,7 +245,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
             FROM AccountFile AF
             INNER JOIN Account A ON A.id = AF.accountId
             INNER JOIN Client C ON A.clientId = C.id
-            WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
+            WHERE AF.id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $Data = new QueryData();
         $Data->setMapClassName(FileExtData::class);
