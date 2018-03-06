@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,6 +27,7 @@ namespace SP\Repositories\Category;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
+use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -46,26 +47,24 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * Creates an item
      *
      * @param CategoryData $itemData
-     * @return mixed
+     * @return int
      * @throws SPException
+     * @throws DuplicatedItemException
      */
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(__u('Categoría duplicada'), SPException::WARNING);
+            throw new DuplicatedItemException(__u('Categoría duplicada'), DuplicatedItemException::WARNING);
         }
 
-        $query = /** @lang SQL */
-            'INSERT INTO Category SET name = ?, description = ?, `hash` = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('INSERT INTO Category SET `name` = ?, description = ?, `hash` = ?');
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getDescription());
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->setOnErrorMessage(__u('Error al crear la categoría'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getDescription());
-        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
-        $Data->setOnErrorMessage(__u('Error al crear la categoría'));
-
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -80,17 +79,14 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      */
     public function checkDuplicatedOnAdd($itemData)
     {
-        $query = /** @lang SQL */
-            'SELECT id FROM Category WHERE `hash` = ? OR name = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id FROM Category WHERE `hash` = ? OR `name` = ?');
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->addParam($itemData->getName());
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
-        $Data->addParam($itemData->getName());
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows() > 0;
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
@@ -99,31 +95,32 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @param CategoryData $itemData
      * @return mixed
      * @throws SPException
+     * @throws DuplicatedItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(__u('Nombre de categoría duplicado'), SPException::WARNING);
+            throw new DuplicatedItemException(__u('Nombre de categoría duplicado'), DuplicatedItemException::WARNING);
         }
 
         $query = /** @lang SQL */
             'UPDATE Category
-              SET name = ?,
+              SET `name` = ?,
               description = ?,
               `hash` = ?
               WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getDescription());
-        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
-        $Data->addParam($itemData->getId());
-        $Data->setOnErrorMessage(__u('Error al actualizar la categoría'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getDescription());
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->addParam($itemData->getId());
+        $queryData->setOnErrorMessage(__u('Error al actualizar la categoría'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this;
     }
@@ -138,37 +135,48 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
-        $query = /** @lang SQL */
-            'SELECT id FROM Category WHERE (`hash` = ? OR name = ?) AND id <> ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id FROM Category WHERE (`hash` = ? OR `name` = ?) AND id <> ?');
+        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getId());
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getId());
+        DbWrapper::getQuery($queryData, $this->db);
 
-        DbWrapper::getQuery($Data, $this->db);
-
-        return $Data->getQueryNumRows() > 0;
+        return $queryData->getQueryNumRows() > 0;
     }
 
     /**
      * Returns the item for given id
      *
      * @param int $id
-     * @return mixed
+     * @return CategoryData
      */
     public function getById($id)
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, description FROM Category WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, `name`, description FROM Category WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setMapClassName(CategoryData::class);
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setMapClassName(CategoryData::class);
+        return DbWrapper::getResults($queryData, $this->db);
+    }
 
-        return DbWrapper::getResults($Data, $this->db);
+    /**
+     * Returns the item for given id
+     *
+     * @param string $name
+     * @return CategoryData
+     */
+    public function getByName($name)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, `name`, description FROM Category WHERE `name` = ? OR `hash` = ? LIMIT 1');
+        $queryData->addParam($name);
+        $queryData->addParam($this->makeItemHash($name, $this->db->getDbHandler()));
+        $queryData->setMapClassName(CategoryData::class);
+
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -178,14 +186,11 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      */
     public function getAll()
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, description, `hash` FROM Category ORDER BY name';
+        $queryData = new QueryData();
+        $queryData->setMapClassName(CategoryData::class);
+        $queryData->setQuery('SELECT id, `name`, description, `hash` FROM Category ORDER BY `name`');
 
-        $Data = new QueryData();
-        $Data->setMapClassName(CategoryData::class);
-        $Data->setQuery($query);
-
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -197,14 +202,14 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
     public function getByIdBatch(array $ids)
     {
         $query = /** @lang SQL */
-            'SELECT id, name, description FROM Category WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT id, `name`, description FROM Category WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setParams($ids);
-        $Data->setMapClassName(CategoryData::class);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams($ids);
+        $queryData->setMapClassName(CategoryData::class);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -217,12 +222,12 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      */
     public function deleteByIdBatch(array $ids)
     {
-        $Data = new QueryData();
-        $Data->setQuery('DELETE FROM Category WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
-        $Data->setParams($ids);
-        $Data->setOnErrorMessage(__u('Error al eliminar la categorías'));
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM Category WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
+        $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error al eliminar la categorías'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getNumRows();
     }
@@ -240,14 +245,14 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $query = /** @lang SQL */
             'DELETE FROM Category WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar la categoría'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar la categoría'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return $Data->getQueryNumRows();
+        return $queryData->getQueryNumRows();
     }
 
     /**
@@ -269,29 +274,29 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      */
     public function search(ItemSearchData $SearchData)
     {
-        $Data = new QueryData();
-        $Data->setSelect('id, name, description');
-        $Data->setFrom('Category');
-        $Data->setOrder('name');
+        $queryData = new QueryData();
+        $queryData->setSelect('id, name, description');
+        $queryData->setFrom('Category');
+        $queryData->setOrder('name');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('name LIKE ? OR description LIKE ?');
+            $queryData->setWhere('name LIKE ? OR description LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
-            $Data->addParam($search);
-            $Data->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
         }
 
-        $Data->setLimit('?,?');
-        $Data->addParam($SearchData->getLimitStart());
-        $Data->addParam($SearchData->getLimitCount());
+        $queryData->setLimit('?,?');
+        $queryData->addParam($SearchData->getLimitStart());
+        $queryData->addParam($SearchData->getLimitCount());
 
         DbWrapper::setFullRowCount();
 
         /** @var array $queryRes */
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
     }

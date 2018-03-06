@@ -55,10 +55,8 @@ trait ConfigTrait
 
             $config->saveConfig($configData);
 
-            if ($configData->isMaintenance()) {
-                Util::lockApp(false);
-            } elseif (Bootstrap::$LOCK > 0) {
-                Util::unlockApp(false);
+            if ($configData->isMaintenance() === false && Bootstrap::$LOCK !== false) {
+                Util::unlockApp();
             }
 
             if ($onSuccess !== null) {

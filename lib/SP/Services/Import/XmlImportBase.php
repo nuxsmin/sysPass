@@ -24,7 +24,7 @@
 
 namespace SP\Services\Import;
 
-use SP\Bootstrap;
+use DI\Container;
 use SP\Core\Events\EventDispatcher;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
@@ -56,18 +56,18 @@ abstract class XmlImportBase
     /**
      * ImportBase constructor.
      *
+     * @param Container     $dic
      * @param XmlFileImport $xmlFileImport
      * @param ImportParams  $importParams
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct(XmlFileImport $xmlFileImport, ImportParams $importParams)
+    public function __construct(Container $dic, XmlFileImport $xmlFileImport, ImportParams $importParams)
     {
         $this->xmlFileImport = $xmlFileImport;
         $this->importParams = $importParams;
         $this->xmlDOM = $xmlFileImport->getXmlDOM();
 
-        $dic = Bootstrap::getContainer();
         $this->accountService = $dic->get(AccountService::class);
         $this->categoryService = $dic->get(CategoryService::class);
         $this->clientService = $dic->get(ClientService::class);

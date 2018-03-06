@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -32,15 +32,17 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Core\Messages\MailMessage;
 use SP\Core\TaskFactory;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Providers\Mail\MailProvider;
 use SP\Services\Config\ConfigService;
 use SP\Services\Crypt\MasterPassService;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Crypt\UpdateMasterPassRequest;
-use SP\Services\ServiceException;
+use SP\Services\User\UserService;
 use SP\Util\Util;
 
 /**
@@ -98,7 +100,7 @@ class ConfigEncryptionController extends SimpleControllerBase
         $configService = $this->dic->get(ConfigService::class);
 
         if (!$noAccountPassChange) {
-            Util::lockApp();
+            Util::lockApp($this->session->getUserData()->getId(), 'masterpass');
 
             $request = new UpdateMasterPassRequest(
                 $currentMasterPass,
@@ -108,11 +110,17 @@ class ConfigEncryptionController extends SimpleControllerBase
             );
 
             try {
+                $this->eventDispatcher->notifyEvent('update.masterPassword.start', new Event($this));
+
                 $mastePassService->changeMasterPassword($request);
                 $configService->save('masterPwd', $request->getHash());
                 $configService->save('lastupdatempass', time());
+
+                $this->eventDispatcher->notifyEvent('update.masterPassword.end', new Event($this));
             } catch (\Exception $e) {
                 processException($e);
+
+                $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
                 $this->returnJsonResponseException($e);
             } finally {
@@ -126,6 +134,8 @@ class ConfigEncryptionController extends SimpleControllerBase
                 $configService->save('lastupdatempass', time());
             } catch (\Exception $e) {
                 processException($e);
+
+                $this->eventDispatcher->notifyEvent('exception', new Event($e));
 
                 $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error al guardar el hash de la clave maestra'));
             }
@@ -154,6 +164,9 @@ class ConfigEncryptionController extends SimpleControllerBase
         } catch (\Exception $e) {
             processException($e);
 
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Error al actualizar el hash de la clave maestra'));
         }
     }
@@ -165,37 +178,47 @@ class ConfigEncryptionController extends SimpleControllerBase
     {
         try {
             $temporaryMasterPassService = $this->dic->get(TemporaryMasterPassService::class);
-            $temporaryMasterPassService->create(Request::analyzeInt('tmpass_maxtime', 3600));
+            $key = $temporaryMasterPassService->create(Request::analyzeInt('tmpass_maxtime', 3600));
+
+            $groupId = Request::analyzeInt('tmpass_group');
+            $sendEmail = Request::analyzeBool('tmpass_chkSendEmail');
+
+            if ($sendEmail && $groupId) {
+                $mailMessage = new MailMessage();
+                $mailMessage->setTitle(sprintf(__('Clave Maestra %s'), Util::getAppInfo('appname')));
+                $mailMessage->addDescription(__('Se ha generado una nueva clave para el acceso a sysPass y se solicitará en el siguiente inicio.'));
+                $mailMessage->addDescriptionLine();
+                $mailMessage->addDescription(sprintf(__('La nueva clave es: %s'), $key));
+                $mailMessage->addDescriptionLine();
+                $mailMessage->addDescription(sprintf(__('Esta clave estará activa hasta: %s'), date('r', $temporaryMasterPassService->getMaxTime())));
+                $mailMessage->addDescriptionLine();
+                $mailMessage->addDescription(__('No olvide acceder lo antes posible para guardar los cambios.'));
+
+                try {
+                    $emails = array_map(function ($value) {
+                        return $value->email;
+                    }, $this->dic->get(UserService::class)->getUserEmailForGroup($groupId));
+
+                    $this->dic->get(MailProvider::class)->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
+
+                    $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave Temporal Generada'), [__u('Email enviado')]);
+                } catch (\Exception $e) {
+                    processException($e);
+
+                    $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+                    $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Clave Temporal Generada'), [__u('Error al enviar email')]);
+                }
+            }
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave Temporal Generada'));
-        } catch (ServiceException $e) {
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
             $this->returnJsonResponseException($e);
         }
-
-
-//        $tempMasterGroup = Request::analyze('tmpass_group', 0);
-//        $tempMasterEmail = Request::analyze('tmpass_chkSendEmail', 0, false, 1);
-//
-//            $this->LogMessage->addDescription(__('Clave Temporal Generada', false));
-//
-//            if ($tempMasterEmail) {
-//                $Message = new NoticeMessage();
-//                $Message->setTitle(sprintf(__('Clave Maestra %s'), Util::getAppInfo('appname')));
-//                $Message->addDescription(__('Se ha generado una nueva clave para el acceso a sysPass y se solicitará en el siguiente inicio.'));
-//                $Message->addDescription('');
-//                $Message->addDescription(sprintf(__('La nueva clave es: %s'), $tempMasterPass));
-//                $Message->addDescription('');
-//                $Message->addDescription(__('No olvide acceder lo antes posible para guardar los cambios.'));
-//
-//                if ($tempMasterGroup !== 0) {
-//                    Email::sendEmailBatch($Message, UserUtil::getUserGroupEmail($tempMasterGroup));
-//                } else {
-//                    Email::sendEmailBatch($Message, UserUtil::getUsersEmail());
-//                }
-//            }
-//
-//            $this->JsonResponse->setStatus(0);
-
     }
 
     protected function initialize()

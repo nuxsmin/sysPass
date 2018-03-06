@@ -152,13 +152,15 @@ class Config
      *
      * @param ConfigData $configData
      * @param bool       $backup
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function saveConfig(ConfigData $configData, $backup = true)
     {
         if ($backup) {
-            $this->dic->get(ConfigBackupService::class)->backup();
+            try {
+                $this->dic->get(ConfigBackupService::class)->backup();
+            } catch (\Exception $e) {
+                processException($e);
+            }
         }
 
         $configData->setConfigDate(time());

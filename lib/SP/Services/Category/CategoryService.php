@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -28,6 +28,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Category\CategoryRepository;
+use SP\Repositories\DuplicatedItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
@@ -65,12 +66,23 @@ class CategoryService extends Service
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param int $id
+     * @return CategoryData
      */
     public function getById($id)
     {
         return $this->categoryRepository->getById($id);
+    }
+
+    /**
+     * Returns the item for given id
+     *
+     * @param string $name
+     * @return CategoryData
+     */
+    public function getByName($name)
+    {
+        return $this->categoryRepository->getByName($name);
     }
 
     /**
@@ -109,8 +121,9 @@ class CategoryService extends Service
 
     /**
      * @param $itemData
-     * @return mixed
+     * @return int
      * @throws SPException
+     * @throws DuplicatedItemException
      */
     public function create($itemData)
     {

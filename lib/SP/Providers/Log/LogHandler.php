@@ -50,7 +50,13 @@ class LogHandler extends Provider implements EventReceiver
         'login.',
         'logout',
         'track.',
-        'acl.deny'
+        'acl.deny',
+        'check.tempMasterPassword',
+        'expire.tempMasterPassword',
+        'refresh.masterPassword',
+        'update.',
+        'import.ldap.',
+        'run.'
     ];
 
     /**
@@ -99,7 +105,7 @@ class LogHandler extends Provider implements EventReceiver
 
         if (($e = $event->getSource()) instanceof \Exception) {
             /** @var \Exception $e */
-            $eventlogData->setDescription($e->getMessage());
+            $eventlogData->setDescription(__($e->getMessage()));
             $eventlogData->setLevel('ERROR');
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
             $eventlogData->setDescription($eventMessage->composeText());

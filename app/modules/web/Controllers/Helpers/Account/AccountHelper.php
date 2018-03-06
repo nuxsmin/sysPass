@@ -25,7 +25,6 @@
 namespace SP\Modules\Web\Controllers\Helpers\Account;
 
 use SP\Account\AccountAcl;
-use SP\Bootstrap;
 use SP\Core\Acl\AccountPermissionException;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
@@ -156,7 +155,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('accountData', $accountData);
         $this->view->assign('gotData', true);
 
-        $this->view->assign('accountActions', Bootstrap::getContainer()->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, $accountActionsDto));
+        $this->view->assign('accountActions', $this->dic->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, $accountActionsDto));
 
         $this->setViewCommon();
     }
@@ -281,7 +280,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('accountId', 0);
         $this->view->assign('gotData', false);
 
-        $this->view->assign('accountActions', Bootstrap::getContainer()->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId)));
+        $this->view->assign('accountActions', $this->dic->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId)));
 
         $this->setViewCommon();
     }
@@ -311,7 +310,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('accountId', $accountData->getId());
         $this->view->assign('accountData', $accountDetailsResponse->getAccountVData());
 
-        $this->view->assign('accountActions', Bootstrap::getContainer()->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId, null, $accountData->getParentId())));
+        $this->view->assign('accountActions', $this->dic->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId, null, $accountData->getParentId())));
 
         return true;
     }

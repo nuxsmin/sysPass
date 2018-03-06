@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin
+ * @author nuxsmin 
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -22,19 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Providers\Mail;
 
+use SP\Core\Exceptions\SPException;
 
 /**
- * Interface CacheableInterface
+ * Class MailerException
  *
- * @package SP\Storage
+ * @package SP\Providers\Mail
  */
-interface CacheableInterface
+class MailProviderException extends SPException
 {
-    /**
-     * @return mixed
-     */
-    public function save();
 
 }

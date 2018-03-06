@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -48,6 +48,10 @@ class TemporaryMasterPassService extends Service
      * @var ConfigService
      */
     protected $configService;
+    /**
+     * @var int
+     */
+    protected $maxTime;
 
     /**
      * Crea una clave temporal para encriptar la clave maestra y guardarla.
@@ -59,20 +63,23 @@ class TemporaryMasterPassService extends Service
     public function create($maxTime = 14400)
     {
         try {
+            $this->maxTime = time() + $maxTime;
+
             // Encriptar la clave maestra con hash aleatorio generado
             $randomKey = Util::generateRandomBytes(32);
 
             $this->configService->save('tempmaster_passkey', Crypt::makeSecuredKey($randomKey));
             $this->configService->save('tempmaster_passhash', Hash::hashKey($randomKey));
             $this->configService->save('tempmaster_passtime', time());
-            $this->configService->save('tempmaster_maxtime', time() + $maxTime);
+            $this->configService->save('tempmaster_maxtime', $this->maxTime);
             $this->configService->save('tempmaster_attempts', 0);
 
             // Guardar la clave temporal hasta que finalice la sesión
             $this->session->setTemporaryMasterPass($randomKey);
 
-            $this->eventDispatcher->notifyEvent('create.tempMasterPass',
-                new Event($this, EventMessage::factory()->addDescription(__u('Generar Clave Temporal')))
+            $this->eventDispatcher->notifyEvent('create.tempMasterPassword',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Generar Clave Temporal')))
             );
 
             return $randomKey;
@@ -100,7 +107,7 @@ class TemporaryMasterPassService extends Service
 
             // Comprobar si el tiempo de validez o los intentos se han superado
             if ($passMaxTime === 0) {
-                $this->eventDispatcher->notifyEvent('check.tempMasterPass',
+                $this->eventDispatcher->notifyEvent('check.tempMasterPassword',
                     new Event($this, EventMessage::factory()->addDescription(__u('Clave temporal caducada')))
                 );
 
@@ -140,8 +147,9 @@ class TemporaryMasterPassService extends Service
         $this->configService->save('tempmaster_maxtime', '');
         $this->configService->save('tempmaster_attempts', 0);
 
-        $this->eventDispatcher->notifyEvent('tempMasterPass.expire',
-            new Event($this, EventMessage::factory()->addDescription(__u('Clave temporal caducada')))
+        $this->eventDispatcher->notifyEvent('expire.tempMasterPassword',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Clave temporal caducada')))
         );
     }
 
@@ -158,6 +166,14 @@ class TemporaryMasterPassService extends Service
         return Crypt::decrypt($this->configService->getByParam('tempmaster_pass'),
             Crypt::unlockSecuredKey($this->configService->getByParam('tempmaster_passkey'), $key),
             $key);
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxTime()
+    {
+        return $this->maxTime;
     }
 
     /**

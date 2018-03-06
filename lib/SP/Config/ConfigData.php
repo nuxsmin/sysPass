@@ -1378,7 +1378,7 @@ class ConfigData implements JsonSerializable
      */
     public function isMaintenance()
     {
-        return $this->maintenance;
+        return (bool)$this->maintenance;
     }
 
     /**

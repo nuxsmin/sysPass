@@ -236,4 +236,14 @@ class ItemManagerController extends ControllerBase
     {
         return $this->tabsGridHelper;
     }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
+     */
+    protected function initialize()
+    {
+        $this->checkLoggedIn();
+    }
 }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -64,12 +64,11 @@ class ConfigImportController extends SimpleControllerBase
         $importParams->setCsvDelimiter(Request::analyzeString('csvDelimiter'));
 
         try {
-            $importService = $this->dic->get(ImportService::class);
-            $counter = $importService->doImport($importParams, new FileImport($this->router->request()->files()->get('inFile')));
+            $counter = $this->dic->get(ImportService::class)
+                ->doImport($importParams, new FileImport($this->router->request()->files()->get('inFile')));
 
-            $this->eventDispatcher->notifyEvent('run.import', new Event($this,
-                EventMessage::factory()
-                    ->addDetail(__u('Cuentas importadas'), $counter))
+            $this->eventDispatcher->notifyEvent('run.import.end',
+                new Event($this, EventMessage::factory()->addDetail(__u('Cuentas importadas'), $counter))
             );
 
             if ($counter > 0) {

@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -22,16 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Providers\Mail;
+namespace SP\Repositories;
 
 use SP\Core\Exceptions\SPException;
 
 /**
- * Class MailerException
+ * Class DuplicatedItemException
  *
- * @package SP\Providers\Mail
+ * @package SP\Repositories
  */
-class MailHandlerException extends SPException
+class DuplicatedItemException extends SPException
 {
 
 }

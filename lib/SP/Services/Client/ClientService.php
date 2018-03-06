@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,10 +26,11 @@ namespace SP\Services\Client;
 
 use SP\Account\AccountUtil;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Session\Session;
 use SP\DataModel\ClientData;
+use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Client\ClientRepository;
+use SP\Repositories\DuplicatedItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
@@ -47,19 +48,6 @@ class ClientService extends Service
      * @var ClientRepository
      */
     protected $clientRepository;
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function initialize()
-    {
-        $this->clientRepository = $this->dic->get(ClientRepository::class);
-    }
 
     /**
      * @param ItemSearchData $itemSearchData
@@ -71,12 +59,23 @@ class ClientService extends Service
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param int $id
+     * @return ClientData
      */
     public function getById($id)
     {
         return $this->clientRepository->getById($id);
+    }
+
+    /**
+     * Returns the item for given name
+     *
+     * @param string $name
+     * @return ClientData
+     */
+    public function getByName($name)
+    {
+        return $this->clientRepository->getByName($name);
     }
 
     /**
@@ -111,8 +110,9 @@ class ClientService extends Service
 
     /**
      * @param $itemData
-     * @return mixed
+     * @return int
      * @throws SPException
+     * @throws DuplicatedItemException
      */
     public function create($itemData)
     {
@@ -144,10 +144,19 @@ class ClientService extends Service
     /**
      * Returns all clients visible for a given user
      *
-     * @return array
+     * @return ItemData[]
      */
     public function getAllForUser()
     {
         return $this->clientRepository->getAllForFilter(AccountUtil::getAccountFilterUser($this->session));
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->clientRepository = $this->dic->get(ClientRepository::class);
     }
 }

@@ -134,7 +134,7 @@ class XmlExportService extends Service
         // Generar hash unico para evitar descargas no permitidas
         $exportUniqueHash = sha1(uniqid('sysPassExport', true));
         $this->configData->setExportHash($exportUniqueHash);
-        $this->config->saveConfig();
+        $this->config->saveConfig($this->configData);
 
         $this->exportFile = $this->exportDir . DIRECTORY_SEPARATOR . Util::getAppInfo('appname') . '-' . $exportUniqueHash . '.xml';
     }

@@ -94,6 +94,16 @@ class EventMessage implements MessageInterface
     }
 
     /**
+     * Devuelve la descripción
+     *
+     * @return array
+     */
+    public function getDescriptionRaw()
+    {
+        return $this->description;
+    }
+
+    /**
      * Añadir detalle en formato HTML. Se resalta el texto clave.
      *
      * @param $key   string
@@ -215,6 +225,16 @@ class EventMessage implements MessageInterface
         }
 
         return sprintf('%s : %s', $detail[0], $detail[1]);
+    }
+
+    /**
+     * Devuelve los detalles
+     *
+     * @return array
+     */
+    public function getDetailsRaw()
+    {
+        return $this->details;
     }
 
     /**

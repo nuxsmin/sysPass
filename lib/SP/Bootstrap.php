@@ -48,6 +48,7 @@ use SP\Core\Upgrade\Upgrade;
 use SP\Http\Request;
 use SP\Log\Log;
 use SP\Providers\Log\LogHandler;
+use SP\Providers\Mail\MailHandler;
 use SP\Providers\Notification\NotificationHandler;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database;
@@ -82,9 +83,9 @@ class Bootstrap
      */
     public static $UPDATED = false;
     /**
-     * @var int
+     * @var mixed
      */
-    public static $LOCK = 0;
+    public static $LOCK;
     /**
      * @var ContainerInterface|Container
      */
@@ -292,7 +293,7 @@ class Bootstrap
         }
 
         // Comprobar si es necesario cambiar a HTTPS
-        HttpUtil::checkHttps();
+        HttpUtil::checkHttps($this->configData);
     }
 
     /**
@@ -535,7 +536,6 @@ class Bootstrap
      * Devuelve un error 503 y un reintento de 120s al cliente.
      *
      * @param bool $check sólo comprobar si está activado el modo
-     * @return bool
      * @throws InitializationException
      */
     public function checkMaintenanceMode($check = false)
@@ -546,13 +546,35 @@ class Bootstrap
             if ($check === true
                 || Checks::isAjax($this->router)
                 || Request::analyzeInt('nodbupgrade') === 1
-                || (self::$LOCK > 0 && $this->session->isLoggedIn() && self::$LOCK === $this->session->getUserData()->getId())
+                || (self::$LOCK !== false && self::$LOCK->userId > 0 && $this->session->isLoggedIn() && self::$LOCK->userId === $this->session->getUserData()->getId())
             ) {
-                return true;
+                return;
             }
 
-            throw new InitializationException(__u('Aplicación en mantenimiento'), SPException::INFO, __u('En breve estará operativa'));
+            throw new InitializationException(
+                __u('Aplicación en mantenimiento'),
+                InitializationException::INFO,
+                __u('En breve estará operativa')
+            );
         }
+    }
+
+    /**
+     * Initializes event handlers
+     */
+    protected function initEventHandlers()
+    {
+        $eventDispatcher = self::$container->get(EventDispatcher::class);
+
+        if ($this->configData->isLogEnabled()) {
+            $eventDispatcher->attach(self::$container->get(LogHandler::class));
+        }
+
+        if ($this->configData->isMailEnabled()) {
+            $eventDispatcher->attach(self::$container->get(MailHandler::class));
+        }
+
+        $eventDispatcher->attach(self::$container->get(NotificationHandler::class));
     }
 
     /**
@@ -646,20 +668,6 @@ class Bootstrap
             default;
                 throw new InitializationException('Unknown module');
         }
-    }
-
-    /**
-     * Initializes event handlers
-     */
-    protected function initEventHandlers()
-    {
-        $eventDispatcher = self::$container->get(EventDispatcher::class);
-
-        if ($this->configData->isLogEnabled()) {
-            $eventDispatcher->attach(self::$container->get(LogHandler::class));
-        }
-
-        $eventDispatcher->attach(self::$container->get(NotificationHandler::class));
     }
 
     /**

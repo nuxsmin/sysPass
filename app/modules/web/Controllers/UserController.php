@@ -39,7 +39,7 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\UserForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Providers\Mail\MailHandler;
+use SP\Providers\Mail\MailProvider;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserPassRecover\UserPassRecoverService;
@@ -308,14 +308,14 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Providers\Mail\MailHandlerException
+     * @throws \SP\Providers\Mail\MailProviderException
      * @throws \SP\Services\ServiceException
      */
     protected function checkChangeUserPass(UserData $userData)
     {
         if ($userData->isChangePass()) {
             $hash = $this->dic->get(UserPassRecoverService::class)->requestForUserId($userData->getId());
-            $this->dic->get(MailHandler::class)->send(__('Cambio de Clave'), $userData->getEmail(), UserPassRecoverService::getMailMessage($hash));
+            $this->dic->get(MailProvider::class)->send(__('Cambio de Clave'), $userData->getEmail(), UserPassRecoverService::getMailMessage($hash));
 
 //            $this->returnJsonResponse(
 //                JsonResponse::JSON_WARNING,

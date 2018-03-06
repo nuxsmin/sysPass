@@ -202,10 +202,11 @@ class Database implements DatabaseInterface
 
             return $stmt;
         } catch (\Exception $e) {
-            ob_start();
-            debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            debugLog('Exception: ' . $e->getMessage());
-            debugLog(ob_get_clean());
+            processException($e);
+//            ob_start();
+//            debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+//            debugLog('Exception: ' . $e->getMessage());
+//            debugLog(ob_get_clean());
 
             throw new SPException($e->getMessage(), SPException::CRITICAL, $e->getCode(), 0, $e);
         }

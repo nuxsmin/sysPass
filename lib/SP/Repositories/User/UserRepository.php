@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -135,7 +135,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * Updates an user's pass
      *
-     * @param int $id
+     * @param int               $id
      * @param UpdatePassRequest $passRequest
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -676,7 +676,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * Updates an user's pass
      *
-     * @param int $id
+     * @param int                 $id
      * @param UserPreferencesData $userPreferencesData
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -691,5 +691,31 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setOnErrorMessage(__u('Error al actualizar preferencias\''));
 
         return DbWrapper::getQuery($queryData, $this->db);
+    }
+
+    /**
+     * Obtener el email de los usuarios de un grupo
+     *
+     * @param $groupId
+     * @return array
+     */
+    public function getUserEmailForGroup($groupId)
+    {
+        $query = /** @lang SQL */
+            'SELECT U.id, U.login, U.name, U.email 
+            FROM User U
+            INNER JOIN UserGroup UG ON U.userGroupId = UG.id
+            LEFT JOIN UserToUserGroup UUG ON U.id = UUG.userId
+            WHERE U.email IS NOT NULL 
+            AND U.userGroupId = ? OR UUG.userGroupId = ?
+            AND U.isDisabled = 0
+            ORDER BY U.login';
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($groupId);
+        $queryData->addParam($groupId);
+
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 }

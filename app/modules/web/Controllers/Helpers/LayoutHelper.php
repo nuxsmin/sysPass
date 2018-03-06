@@ -369,7 +369,7 @@ class LayoutHelper extends HelperBase
      */
     protected function initialize()
     {
-        $this->theme = Bootstrap::getContainer()->get(Theme::class);
+        $this->theme = $this->dic->get(Theme::class);
 
         $this->loggedIn = $this->session->isLoggedIn();
 

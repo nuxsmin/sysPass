@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,7 @@
 
 namespace SP\Mvc\Controller;
 
+use Klein\Klein;
 use SP\Core\Session\Session;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -53,11 +54,12 @@ trait ControllerTrait
      * Comprobar si la sesión está activa
      *
      * @param Session $session
+     * @param Klein   $router
      */
-    protected function checkLoggedInSession(Session $session)
+    protected function checkLoggedInSession(Session $session, Klein $router)
     {
         if (!$session->isLoggedIn()) {
-            if (Checks::isJson()) {
+            if (Checks::isJson($router)) {
                 $JsonResponse = new JsonResponse();
                 $JsonResponse->setDescription(__u('La sesión no se ha iniciado o ha caducado'));
                 $JsonResponse->setStatus(10);

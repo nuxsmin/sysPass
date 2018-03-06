@@ -24,7 +24,6 @@
 
 namespace SP\Util;
 
-use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Http\Request;
 
@@ -38,14 +37,11 @@ class HttpUtil
     /**
      * Comprobar y forzar (si es necesario) la conexión HTTPS
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @param ConfigData $configData
      */
-    public static function checkHttps()
+    public static function checkHttps(ConfigData $configData)
     {
-        /** @var ConfigData $ConfigData */
-        $ConfigData = Bootstrap::getContainer()->get(ConfigData::class);
-
-        if ($ConfigData->isHttpsEnabled() && !Checks::httpsEnabled()) {
+        if ($configData->isHttpsEnabled() && !Checks::httpsEnabled()) {
             $port = ((int)$_SERVER['SERVER_PORT'] !== 443) ? ':' . $_SERVER['SERVER_PORT'] : '';
             $host = str_replace('http', 'https', self::getHttpHost());
 

@@ -32,7 +32,7 @@ use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Providers\Mail\MailHandler;
+use SP\Providers\Mail\MailProvider;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\Track\TrackService;
 use SP\Services\User\UserService;
@@ -103,7 +103,7 @@ class UserPassResetController extends ControllerBase
                     ->addDetail(__u('Solicitado para'), sprintf('%s (%s)', $login, $email)))
             );
 
-            $this->dic->get(MailHandler::class)->send(__('Cambio de Clave'), $email, UserPassRecoverService::getMailMessage($hash));
+            $this->dic->get(MailProvider::class)->send(__('Cambio de Clave'), $email, UserPassRecoverService::getMailMessage($hash));
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Solicitud enviada'), [__u('En breve recibirá un correo para completar la solicitud.')]);
         } catch (\Exception $e) {

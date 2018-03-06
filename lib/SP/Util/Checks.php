@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,7 +25,6 @@
 namespace SP\Util;
 
 use Klein\Klein;
-use SP\Http\Request;
 
 /**
  * Class Checks utilidades de comprobación
@@ -169,10 +168,11 @@ class Checks
     /**
      * Comprobar si la petición es en formato JSON
      *
+     * @param Klein $router
      * @return bool
      */
-    public static function isJson()
+    public static function isJson(Klein $router)
     {
-        return strpos(Request::getRequestHeaders('Accept'), 'application/json') === 0;
+        return $router->request()->headers()->get('Accept') === 'application/json';
     }
 }

@@ -42,6 +42,7 @@ define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
 define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
 define('OLD_CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.php');
 define('LOG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'syspass.log');
+define('LOCK_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . '.lock');
 
 // Setup application paths
 define('MODULES_PATH', APP_PATH . DIRECTORY_SEPARATOR . 'modules');

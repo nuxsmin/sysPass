@@ -59,17 +59,16 @@ abstract class Provider
     /**
      * Provider constructor.
      *
-     * @param Container       $dic
-     * @param Config          $config
-     * @param Session         $session
-     * @param EventDispatcher $eventDispatcher
+     * @param Container $dic
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
-    final public function __construct(Container $dic, Config $config, Session $session, EventDispatcher $eventDispatcher)
+    public function __construct(Container $dic)
     {
         $this->dic = $dic;
-        $this->config = $config;
-        $this->session = $session;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->config = $dic->get(Config::class);
+        $this->session = $dic->get(Session::class);
+        $this->eventDispatcher = $dic->get(EventDispatcher::class);
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();

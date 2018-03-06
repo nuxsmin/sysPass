@@ -113,7 +113,7 @@ abstract class SimpleControllerBase
      */
     protected function checks()
     {
-        $this->checkLoggedInSession($this->session);
+        $this->checkLoggedInSession($this->session, $this->router);
         $this->checkSecurityToken($this->session);
     }
 

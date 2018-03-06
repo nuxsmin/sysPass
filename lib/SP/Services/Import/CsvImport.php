@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -44,9 +44,8 @@ class CsvImport extends CsvImportBase implements ImportInterface
     public function doImport()
     {
         $this->eventDispatcher->notifyEvent('run.import.csv',
-            new Event($this,
-                EventMessage::factory()
-                    ->addDescription(sprintf(__('Formato detectado: %s'), 'CSV')))
+            new Event($this, EventMessage::factory()
+                ->addDescription(sprintf(__('Formato detectado: %s'), 'CSV')))
         );
 
         $this->fileImport->readFileToArray();

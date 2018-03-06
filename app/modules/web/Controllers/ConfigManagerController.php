@@ -337,4 +337,14 @@ class ConfigManagerController extends ControllerBase
     {
         return $this->tabsHelper;
     }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Services\Auth\AuthException
+     */
+    protected function initialize()
+    {
+        $this->checkLoggedIn();
+    }
 }

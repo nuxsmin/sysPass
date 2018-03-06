@@ -4,7 +4,8 @@
     <?php echo __('Correo'); ?>
 </div>
 
-<form method="post" name="frmMail" id="frmMail" class="form-action" data-onsubmit="config/save" data-type="mail"
+<form method="post" name="frmMail" id="frmMail" class="form-action" data-onsubmit="config/save"
+      data-action-route="configMail/save"
       data-hash="">
     <table id="tblMail" class="data tblConfig round">
         <tr>

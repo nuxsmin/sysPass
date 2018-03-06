@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,9 +27,7 @@ namespace SP\Util;
 use Defuse\Crypto\Core;
 use Defuse\Crypto\Encoding;
 use SP\Bootstrap;
-use SP\Config\Config;
 use SP\Config\ConfigData;
-use SP\Config\ConfigDB;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Install\Installer;
@@ -701,37 +699,25 @@ class Util
     /**
      * Bloquear la aplicación
      *
-     * @param bool $setMaintenance
+     * @param int    $userId
+     * @param string $subject
+     * @return bool
      */
-    public static function lockApp($setMaintenance = true)
+    public static function lockApp($userId, $subject)
     {
-        ConfigDB::setValue('lock', SessionFactory::getUserData()->getId(), false);
+        $data = ['time' => time(), 'userId' => (int)$userId, 'subject' => $subject];
 
-        /** @var Config $Config */
-        $Config = Bootstrap::getContainer()['config'];
-
-        if ($setMaintenance) {
-            $Config->getConfigData()->setMaintenance(true);
-            $Config->saveConfig(null, false);
-        }
+        return file_put_contents(LOCK_FILE, json_encode($data));
     }
 
     /**
      * Desbloquear la aplicación
      *
-     * @param bool $unsetMaintenance
+     * @return bool
      */
-    public static function unlockApp($unsetMaintenance = true)
+    public static function unlockApp()
     {
-        ConfigDB::setValue('lock', 0, false);
-
-        /** @var Config $Config */
-        $Config = Bootstrap::getContainer()['config'];
-
-        if ($unsetMaintenance) {
-            $Config->getConfigData()->setMaintenance(false);
-            $Config->saveConfig(null, false);
-        }
+        return unlink(LOCK_FILE);
     }
 
     /**
@@ -741,7 +727,13 @@ class Util
      */
     public static function getAppLock()
     {
-        return (int)ConfigDB::getValue('lock', 0);
+        if (file_exists(LOCK_FILE)
+            && ($data = file_get_contents(LOCK_FILE)) !== false
+        ) {
+            return json_decode($data) ?: false;
+        }
+
+        return false;
     }
 
     /**

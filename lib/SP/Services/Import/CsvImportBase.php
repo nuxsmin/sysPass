@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,8 +24,8 @@
 
 namespace SP\Services\Import;
 
+use DI\Container;
 use SP\Account\AccountRequest;
-use SP\Bootstrap;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
@@ -63,21 +63,29 @@ abstract class CsvImportBase
      * @var EventDispatcher
      */
     protected $eventDispatcher;
+    /**
+     * @var array
+     */
+    protected $categories = [];
+    /**
+     * @var array
+     */
+    protected $clients = [];
 
     /**
      * ImportBase constructor.
      *
-     * @param FileImport $fileImport
+     * @param Container    $dic
+     * @param FileImport   $fileImport
      * @param ImportParams $importParams
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
-    public function __construct(FileImport $fileImport, ImportParams $importParams)
+    public function __construct(Container $dic, FileImport $fileImport, ImportParams $importParams)
     {
         $this->fileImport = $fileImport;
         $this->importParams = $importParams;
 
-        $dic = Bootstrap::getContainer();
         $this->accountService = $dic->get(AccountService::class);
         $this->categoryService = $dic->get(CategoryService::class);
         $this->clientService = $dic->get(ClientService::class);
@@ -105,7 +113,6 @@ abstract class CsvImportBase
      * Obtener los datos de las entradas de sysPass y crearlas
      *
      * @throws ImportException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function processAccounts()
     {
@@ -130,31 +137,32 @@ abstract class CsvImportBase
 
             try {
                 // Obtener los ids de cliente y categoría
-                $clientData = new ClientData(null, $clientName);
-                $this->addClient($clientData);
-
-                $categoryData = new CategoryData(null, $categoryName);
-                $this->addCategory($categoryData);
+                $clientId = $this->addClient(new ClientData(null, $clientName));
+                $categoryId = $this->addCategory(new CategoryData(null, $categoryName));
 
                 // Crear la nueva cuenta
                 $accountRequest = new AccountRequest();
                 $accountRequest->name = $accountName;
                 $accountRequest->login = $login;
-                $accountRequest->clientId = $clientData->getId();
-                $accountRequest->categoryId = $categoryData->getId();
+                $accountRequest->clientId = $clientId;
+                $accountRequest->categoryId = $categoryId;
                 $accountRequest->notes = $notes;
                 $accountRequest->url = $url;
                 $accountRequest->pass = $password;
 
                 $this->addAccount($accountRequest);
+
+                $this->eventDispatcher->notifyEvent('run.import.csv.account',
+                    new Event($this, EventMessage::factory()
+                        ->addDetail(__('Cuenta importada'), $accountRequest->name))
+                );
             } catch (\Exception $e) {
                 processException($e);
 
                 $this->eventDispatcher->notifyEvent('exception',
-                    new Event($e,
-                        EventMessage::factory()
-                            ->addDetail(__u('Error importando cuenta'), $accountName)
-                            ->addDetail(__u('Error procesando línea'), $line))
+                    new Event($e, EventMessage::factory()
+                        ->addDetail(__u('Error importando cuenta'), $accountName)
+                        ->addDetail(__u('Error procesando línea'), $line))
                 );
             }
         }

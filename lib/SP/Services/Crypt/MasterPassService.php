@@ -79,16 +79,15 @@ class MasterPassService extends Service
 
     /**
      * @param UpdateMasterPassRequest $request
+     * @throws SPException
      * @throws ServiceException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public function changeMasterPassword(UpdateMasterPassRequest $request)
     {
         $db = $this->dic->get(Database::class);
 
         if (!DbWrapper::beginTransaction($db)) {
-            throw new ServiceException(__u('No es posible iniciar una transacción'), SPException::ERROR);
+            throw new ServiceException(__u('No es posible iniciar una transacción'), ServiceException::ERROR);
         }
 
         try {
@@ -104,7 +103,7 @@ class MasterPassService extends Service
         }
 
         if (!DbWrapper::endTransaction($db)) {
-            throw new ServiceException(__u('No es posible finalizar una transacción'), SPException::ERROR);
+            throw new ServiceException(__u('No es posible finalizar una transacción'), ServiceException::ERROR);
         }
     }
 

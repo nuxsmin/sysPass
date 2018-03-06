@@ -63,7 +63,7 @@ class DBUtil
         'UserPassRecover',
         'UserToUserGroup',
         'Plugin',
-        'Notice',
+        'Notification',
         'account_data_v',
         'account_search_v'
     ];

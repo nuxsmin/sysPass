@@ -133,7 +133,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
         $customField = $customFieldId ? $this->customFieldService->getById($customFieldId) : new CustomFieldDefinitionData();
 
         // FIXME
-        $customFieldTypeService = new CustomFieldTypeRepository();
+        $customFieldTypeService = $this->dic->get(CustomFieldTypeRepository::class);
 
         $this->view->assign('field', $customField);
         $this->view->assign('types', $customFieldTypeService->getAll());

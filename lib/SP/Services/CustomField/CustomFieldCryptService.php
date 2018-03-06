@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -28,7 +28,7 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
-use SP\Core\Exceptions\SPException;
+use SP\Core\Events\EventMessage;
 use SP\Core\OldCrypt;
 use SP\Core\TaskFactory;
 use SP\DataModel\CustomFieldData;
@@ -56,7 +56,6 @@ class CustomFieldCryptService extends Service
      * Actualizar los datos encriptados con una nueva clave
      *
      * @param UpdateMasterPassRequest $request
-     * @return array
      * @throws ServiceException
      */
     public function updateMasterPasswordOld(UpdateMasterPassRequest $request)
@@ -64,32 +63,38 @@ class CustomFieldCryptService extends Service
         $this->request = $request;
 
         try {
-            return $this->processUpdateMasterPassword(function (CustomFieldData $customFieldData) {
+            $this->processUpdateMasterPassword(function (CustomFieldData $customFieldData) {
                 return OldCrypt::getDecrypt($customFieldData->getData(), $customFieldData->getKey(), $this->request->getCurrentMasterPass());
             });
         } catch (ServiceException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new ServiceException(__u('Errores al actualizar datos de campos personalizados'), SPException::ERROR, null, $e->getCode(), $e);
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            throw new ServiceException(
+                __u('Errores al actualizar datos de campos personalizados'),
+                ServiceException::ERROR,
+                null,
+                $e->getCode(),
+                $e);
         }
     }
 
     /**
      * @param callable $decryptor
-     * @return array
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function processUpdateMasterPassword(callable $decryptor)
     {
-        $messages = [];
         $customFields = $this->customFieldService->getAll();
 
         if (count($customFields) === 0) {
-            throw new ServiceException(__u('No hay datos de campos personalizados'), SPException::INFO);
+            throw new ServiceException(__u('No hay datos de campos personalizados'), ServiceException::INFO);
         }
 
-        $this->eventDispatcher->notifyEvent('update.masterPassword.customFields.start', new Event($this, [__u('Actualizar Clave Maestra')]));
+        $this->eventDispatcher->notifyEvent('update.masterPassword.customFields.start',
+            new Event($this, EventMessage::factory()->addDescription(__u('Actualizar Clave Maestra')))
+        );
 
         $taskId = $this->request->getTask()->getTaskId();
 
@@ -108,25 +113,24 @@ class CustomFieldCryptService extends Service
             } catch (\Exception $e) {
                 processException($e);
 
+                $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
                 $errors[] = $customField->getId();
             }
         }
 
-        $messages[] = __u('Registros no actualizados');
-        $messages[] = implode(',', $errors);
-        $messages[] = __u('Registros actualizados');
-        $messages[] = implode(',', $success);
-
-        $this->eventDispatcher->notifyEvent('update.masterPassword.customFields.end', new Event($this, [__u('Actualizar Clave Maestra')]));
-
-        return $messages;
+        $this->eventDispatcher->notifyEvent('update.masterPassword.customFields.end',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Actualizar Clave Maestra'))
+                ->addDetail(__u('Registros actualizados'), implode(',', $success))
+                ->addDetail(__u('Registros no actualizados'), implode(',', $errors)))
+        );
     }
 
     /**
      * Actualizar los datos encriptados con una nueva clave
      *
      * @param UpdateMasterPassRequest $request
-     * @return array
      * @throws ServiceException
      */
     public function updateMasterPassword(UpdateMasterPassRequest $request)
@@ -134,7 +138,7 @@ class CustomFieldCryptService extends Service
         try {
             $this->request = $request;
 
-            return $this->processUpdateMasterPassword(function (CustomFieldData $customFieldData) {
+            $this->processUpdateMasterPassword(function (CustomFieldData $customFieldData) {
                 return Crypt::decrypt(
                     $customFieldData->getData(),
                     Crypt::unlockSecuredKey($customFieldData->getKey(), $this->request->getCurrentMasterPass()),
@@ -143,7 +147,14 @@ class CustomFieldCryptService extends Service
         } catch (ServiceException $e) {
             throw $e;
         } catch (\Exception $e) {
-            throw new ServiceException(__u('Errores al actualizar datos de campos personalizados'), SPException::ERROR, null, $e->getCode(), $e);
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            throw new ServiceException(
+                __u('Errores al actualizar datos de campos personalizados'),
+                ServiceException::ERROR,
+                null,
+                $e->getCode(),
+                $e);
         }
     }
 

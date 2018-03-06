@@ -120,7 +120,7 @@ class InstallController extends ControllerBase
         try {
             Installer::run($installData);
 
-            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __('Instalación finalizada'));
+            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __u('Instalación finalizada'));
         } catch (\Exception $e) {
             $this->returnJsonResponseException($e);
         }

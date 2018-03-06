@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,8 @@
 
 namespace SP\Services\Import;
 
+use DI\Container;
+
 defined('APP_ROOT') || die();
 
 /**
@@ -42,17 +44,23 @@ class XmlImport implements ImportInterface
      * @var ImportParams
      */
     protected $importParams;
+    /**
+     * @var Container
+     */
+    private $dic;
 
     /**
      * XmlImport constructor.
      *
+     * @param Container     $dic
      * @param XmlFileImport $xmlFileImport
      * @param ImportParams  $importParams
      */
-    public function __construct(XmlFileImport $xmlFileImport, ImportParams $importParams)
+    public function __construct(Container $dic, XmlFileImport $xmlFileImport, ImportParams $importParams)
     {
         $this->xmlFileImport = $xmlFileImport;
         $this->importParams = $importParams;
+        $this->dic = $dic;
     }
 
     /**
@@ -82,11 +90,11 @@ class XmlImport implements ImportInterface
     {
         switch ($format) {
             case 'syspass':
-                return new SyspassImport($this->xmlFileImport, $this->importParams);
+                return new SyspassImport($this->dic, $this->xmlFileImport, $this->importParams);
             case 'keepass':
-                return new KeepassImport($this->xmlFileImport, $this->importParams);
+                return new KeepassImport($this->dic, $this->xmlFileImport, $this->importParams);
             case 'keepassx':
-                return new KeepassXImport($this->xmlFileImport, $this->importParams);
+                return new KeepassXImport($this->dic, $this->xmlFileImport, $this->importParams);
         }
 
         throw new ImportException(__u('Formato no detectado'));

@@ -313,6 +313,17 @@ class UserService extends Service
     }
 
     /**
+     * Obtener el email de los usuarios de un grupo
+     *
+     * @param $groupId
+     * @return array
+     */
+    public function getUserEmailForGroup($groupId)
+    {
+        return $this->userRepository->getUserEmailForGroup($groupId);
+    }
+
+    /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */

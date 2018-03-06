@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -49,7 +49,7 @@ class ImportService extends Service
      * Iniciar la importación de cuentas.
      *
      * @param ImportParams $importParams
-     * @param FileImport $fileImport
+     * @param FileImport   $fileImport
      * @return int
      * @throws \Exception
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -59,8 +59,6 @@ class ImportService extends Service
     {
         $this->importParams = $importParams;
         $this->fileImport = $fileImport;
-
-//        $LogMessage->setAction(__('Importar Cuentas', false));
 
         $import = $this->selectImportType();
 
@@ -85,10 +83,6 @@ class ImportService extends Service
 
             throw $e;
         }
-
-
-//        $LogMessage->addDescription(__('Importación finalizada', false));
-//        $LogMessage->addDescription(__('Revise el registro de eventos para más detalles', false));
     }
 
     /**
@@ -102,10 +96,10 @@ class ImportService extends Service
         switch ($this->fileImport->getFileType()) {
             case 'text/csv':
             case 'application/vnd.ms-excel':
-                return new CsvImport($this->fileImport, $this->importParams);
+                return new CsvImport($this->dic, $this->fileImport, $this->importParams);
                 break;
             case 'text/xml':
-                return new XmlImport(new XmlFileImport($this->fileImport), $this->importParams);
+                return new XmlImport($this->dic, new XmlFileImport($this->fileImport), $this->importParams);
                 break;
         }
 

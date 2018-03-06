@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers\Helpers;
 
 defined('APP_ROOT') || die();
 
-use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\UI\ThemeIconsBase;
@@ -1477,7 +1476,7 @@ class ItemsGridHelper extends HelperBase
      */
     protected function initialize()
     {
-        $this->acl = Bootstrap::getContainer()->get(Acl::class);
+        $this->acl = $this->dic->get(Acl::class);
         $this->icons = $this->view->getTheme()->getIcons();
     }
 }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,143 +24,110 @@
 
 namespace SP\Providers\Mail;
 
-use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\PHPMailer;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use SP\Bootstrap;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
-use SP\Html\Html;
 use SP\Providers\Provider;
-use SP\Util\Util;
+use SplSubject;
 
 /**
- * Class Mailer
+ * Class MailHandler
  *
  * @package SP\Providers\Mail
  */
-class MailHandler extends Provider
+class MailHandler extends Provider implements EventReceiver
 {
-    /**
-     * @var PHPMailer
-     */
-    private $mailer;
-    /**
-     * @var array
-     */
-    private $appInfo;
+    const EVENTS = [
+        'create.',
+        'delete.',
+        'edit.',
+        'save.',
+        'clear.eventlog',
+        'refresh.masterPassword',
+        'update.masterPassword.end',
+        'import.ldap.end',
+        'run.backup.end',
+        'run.import.end'
+    ];
 
     /**
-     * @param string      $subject
-     * @param string      $to
-     * @param MailMessage $mailMessage
-     * @throws MailHandlerException
+     * @var MailProvider
      */
-    public function send($subject, $to, MailMessage $mailMessage)
+    protected $mailProvider;
+    /**
+     * @var string
+     */
+    protected $events;
+
+    /**
+     * Inicialización del observador
+     */
+    public function init()
     {
-        $this->mailer->isHTML();
-        $this->mailer->addAddress($to);
-        $this->mailer->Subject = sprintf('%s - %s', $this->appInfo['appname'], $subject);;
-        $this->mailer->Body = $mailMessage->setFooter($this->getEmailFooter())->composeHtml();
-
-        $this->sendMail();
+        // TODO: Implement init() method.
     }
 
     /**
-     * Devolver el pie del email con la firma de la aplicación
+     * Evento de actualización
+     *
+     * @param string $eventType Nombre del evento
+     * @param Event  $event     Objeto del evento
+     */
+    public function updateEvent($eventType, Event $event)
+    {
+        if (($eventMessage = $event->getEventMessage()) !== null) {
+            try {
+                $configData = $this->config->getConfigData();
+
+                $mailMessage = new MailMessage();
+                $mailMessage->setDescription($eventMessage->getDescriptionRaw());
+
+                $this->mailProvider->send($eventMessage->getDescription(), $configData->getMailFrom(), $mailMessage);
+            } catch (\Exception $e) {
+                processException($e);
+            }
+        }
+    }
+
+    /**
+     * Devuelve los eventos que implementa el observador
      *
      * @return array
      */
-    protected function getEmailFooter()
+    public function getEvents()
     {
-        return [
-            '',
-            '--',
-            sprintf('%s - %s', $this->appInfo['appname'], $this->appInfo['appdesc']),
-            Html::anchorText(Bootstrap::$WEBURI)
-        ];
+        return self::EVENTS;
     }
 
     /**
-     * @throws MailHandlerException
+     * Devuelve los eventos que implementa el observador en formato cadena
+     *
+     * @return string
      */
-    private function sendMail()
+    public function getEventsString()
     {
-        try {
-            $this->mailer->send();
-
-            $this->eventDispatcher->notifyEvent('mail.send', new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Correo enviado'))
-                        ->addDetail(__u('Destinatario'), implode(',', $this->mailer->getToAddresses())))
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->eventDispatcher->notifyEvent('exception', new Event($e));
-
-            throw new MailHandlerException(__u('Error al enviar correo'));
-        }
+        return $this->events;
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws MailHandlerException
+     * Receive update from subject
+     *
+     * @link  http://php.net/manual/en/splobserver.update.php
+     * @param SplSubject $subject <p>
+     *                            The <b>SplSubject</b> notifying the observer of an update.
+     *                            </p>
+     * @return void
+     * @since 5.1.0
      */
+    public function update(SplSubject $subject)
+    {
+        // TODO: Implement update() method.
+    }
+
     protected function initialize()
     {
-        $this->mailer = $this->getMailer();
-        $this->appInfo = Util::getAppInfo();
-    }
+        $this->mailProvider = $this->dic->get(MailProvider::class);
 
-    /**
-     * Inicializar la clase PHPMailer.
-     *
-     * @return PHPMailer
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws MailHandlerException
-     */
-    private function getMailer()
-    {
-        try {
-            $configData = $this->config->getConfigData();
-
-            $mailer = $this->dic->get(PHPMailer::class);
-            $mailer->SMTPAutoTLS = false;
-            $mailer->isSMTP();
-            $mailer->CharSet = 'utf-8';
-            $mailer->Host = $configData->getMailServer();
-            $mailer->Port = $configData->getMailPort();
-
-            if ($configData->isMailAuthenabled()) {
-                $mailer->SMTPAuth = true;
-                $mailer->Username = $configData->getMailUser();
-                $mailer->Password = $configData->getMailPass();
-            }
-
-            $mailer->SMTPSecure = strtolower($configData->getMailSecurity());
-            //$mail->SMTPDebug = 2;
-            //$mail->Debugoutput = 'error_log';
-
-            $mailer->setFrom($configData->getMailFrom(), $this->appInfo['appname']);
-            $mailer->addReplyTo($configData->getMailFrom(), $this->appInfo['appname']);
-            $mailer->WordWrap = 100;
-
-            return $mailer;
-        } catch (\Exception $e) {
-            processException($e);
-
-            throw new MailHandlerException(
-                __u('No es posible inicializar'),
-                MailHandlerException::ERROR,
-                $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
+        $this->events = str_replace('.', '\\.', implode('|', self::EVENTS));
     }
 }

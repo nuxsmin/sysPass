@@ -58,6 +58,8 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
 //            throw new InvalidClassException(sprintf(__('Observador ya inicializado "%s"'), $observerClass));
         }
 
+        debugLog('Attach: ' . $observerClass);
+
         $this->observers[$observerClass] = $observer;
     }
 

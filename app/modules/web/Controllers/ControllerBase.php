@@ -281,7 +281,7 @@ abstract class ControllerBase
             }
         }
 
-        $this->checkLoggedInSession($this->session);
+        $this->checkLoggedInSession($this->session, $this->router);
     }
 
     /**

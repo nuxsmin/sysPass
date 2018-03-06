@@ -32,6 +32,7 @@ use SP\Services\Service;
 use SP\Services\User\UserLoginResponse;
 use SP\Services\UserGroup\UserToUserGroupService;
 use SP\Storage\FileCache;
+use SP\Storage\FileException;
 use SP\Util\ArrayUtil;
 use SP\Util\FileUtil;
 
@@ -136,7 +137,7 @@ class AccountAclService extends Service
     {
         try {
             return $this->fileCache->load($this->getCacheFileForAcl($accountId, $actionId));
-        } catch (\RuntimeException $e) {
+        } catch (FileException $e) {
             return null;
         }
     }
@@ -311,7 +312,7 @@ class AccountAclService extends Service
     {
         try {
             return $this->fileCache->save($this->getCacheFileForAcl($accountAcl->getAccountId(), $accountAcl->getActionId()), $accountAcl);
-        } catch (\RuntimeException $e) {
+        } catch (FileException $e) {
             return null;
         }
     }

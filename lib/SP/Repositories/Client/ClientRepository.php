@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,6 +29,7 @@ use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryCondition;
+use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -48,18 +49,19 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Creates an item
      *
      * @param ClientData $itemData
-     * @return mixed
+     * @return int
+     * @throws DuplicatedItemException
      * @throws SPException
      */
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(__u('Cliente duplicado'), SPException::WARNING);
+            throw new DuplicatedItemException(__u('Cliente duplicado'), DuplicatedItemException::WARNING);
         }
 
         $query = /** @lang SQL */
             'INSERT INTO Client
-            SET name = ?,
+            SET `name` = ?,
             description = ?,
             isGlobal = ?,
             `hash` = ?';
@@ -101,19 +103,19 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      *
      * @param ClientData $itemData
      * @return mixed
-     * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws DuplicatedItemException
      */
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(__u('Cliente duplicado'), SPException::WARNING);
+            throw new DuplicatedItemException(__u('Cliente duplicado'), DuplicatedItemException::WARNING);
         }
 
         $query = /** @lang SQL */
             'UPDATE Client
-            SET name = ?,
+            SET `name` = ?,
             description = ?,
             isGlobal = ?,
             `hash` = ?
@@ -157,13 +159,30 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Returns the item for given id
      *
      * @param int $id
-     * @return mixed
+     * @return ClientData
      */
     public function getById($id)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, name, description, isGlobal FROM Client WHERE id = ? LIMIT 1');
+        $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
+        $queryData->setMapClassName(ClientData::class);
+
+        return DbWrapper::getResults($queryData, $this->db);
+    }
+
+    /**
+     * Returns the item for given name
+     *
+     * @param string $name
+     * @return ClientData
+     */
+    public function getByName($name)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client WHERE `name` = ? OR `hash` = ? LIMIT 1');
+        $queryData->addParam($name);
+        $queryData->addParam($this->makeItemHash($name, $this->db->getDbHandler()));
         $queryData->setMapClassName(ClientData::class);
 
         return DbWrapper::getResults($queryData, $this->db);
@@ -177,7 +196,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
     public function getAll()
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, name, description, isGlobal FROM Client ORDER BY name');
+        $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client ORDER BY `name`');
         $queryData->setMapClassName(ClientData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
@@ -192,7 +211,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
     public function getByIdBatch(array $ids)
     {
         $query = /** @lang SQL */
-            'SELECT id, name, description, isGlobal FROM Client WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT id, `name`, description, isGlobal FROM Client WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
@@ -213,7 +232,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
     public function deleteByIdBatch(array $ids)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM Client WHERE id IN ('. $this->getParamsFromArray($ids) . ')');
+        $queryData->setQuery('DELETE FROM Client WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar los clientes'));
 
@@ -291,19 +310,19 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Devolver los clientes visibles por el usuario
      *
      * @param QueryCondition $queryFilter
-     * @return array
+     * @return ItemData[]
      */
     public function getAllForFilter(QueryCondition $queryFilter)
     {
         $query = /** @lang SQL */
             'SELECT C.id, C.name 
             FROM Account A
-            RIGHT JOIN Client C ON clientId = C.id
+            RIGHT JOIN Client C ON A.clientId = C.id
             WHERE A.clientId IS NULL
-            OR isGlobal = 1
+            OR C.isGlobal = 1
             OR (' . $queryFilter->getFilters() . ')
             GROUP BY id
-            ORDER BY name';
+            ORDER BY C.name';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(ItemData::class);

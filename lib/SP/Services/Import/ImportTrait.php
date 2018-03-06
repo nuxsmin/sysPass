@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,6 +31,7 @@ use SP\Core\OldCrypt;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\TagData;
+use SP\Repositories\DuplicatedItemException;
 use SP\Services\Account\AccountService;
 use SP\Services\Category\CategoryService;
 use SP\Services\Client\ClientService;
@@ -75,6 +76,10 @@ trait ImportTrait
      * @var TagService
      */
     private $tagService;
+    /**
+     * @var array
+     */
+    private $items;
 
     /**
      * @return int
@@ -91,17 +96,16 @@ trait ImportTrait
      * @throws ImportException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @throws \SP\Core\Dic\ContainerException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     protected function addAccount(AccountRequest $accountRequest)
     {
-        if ($accountRequest->categoryId === 0) {
+        if (empty($accountRequest->categoryId)) {
             throw new ImportException(__u('Id de categoría no definido. No es posible importar cuenta.'));
         }
 
-        if ($accountRequest->clientId === 0) {
+        if (empty($accountRequest->clientId)) {
             throw new ImportException(__u('Id de cliente no definido. No es posible importar cuenta.'));
         }
 
@@ -122,7 +126,6 @@ trait ImportTrait
 
         $this->accountService->create($accountRequest);
 
-//            $this->LogMessage->addDetails(__('Cuenta creada', false), $accountRequest->name);
         $this->counter++;
     }
 
@@ -132,10 +135,56 @@ trait ImportTrait
      * @param CategoryData $categoryData
      * @return int
      * @throws SPException
+     * @throws DuplicatedItemException
      */
     protected function addCategory(CategoryData $categoryData)
     {
-        return $this->categoryService->create($categoryData);
+        try {
+            if ($categoryId = $this->getWorkingItem('category', $categoryData->getName()) === null) {
+                return $this->categoryService->create($categoryData);
+            }
+
+            return $categoryId;
+        } catch (DuplicatedItemException $e) {
+            $itemData = $this->categoryService->getByName($categoryData->getName());
+
+            if (empty($itemData)) {
+                throw $e;
+            }
+
+            return $this->addWorkingItem('category', $itemData->getName(), $itemData->getId());
+        }
+    }
+
+    /**
+     * @param string $type
+     * @param string $value
+     * @return int|null
+     */
+    protected function getWorkingItem($type, $value)
+    {
+        if (!isset($this->items[$type][$value])) {
+            return null;
+        }
+
+        return $this->items[$type][$value];
+    }
+
+    /**
+     * @param string $type
+     * @param string $value
+     * @param int    $id
+     * @return int|bool
+     */
+    protected function addWorkingItem($type, $value, $id)
+    {
+        if (isset($this->items[$type][$value])) {
+            return false;
+        }
+
+        $this->items[$type][$value] = $id;
+
+        return $id;
     }
 
     /**
@@ -144,10 +193,25 @@ trait ImportTrait
      * @param ClientData $clientData
      * @return int
      * @throws SPException
+     * @throws DuplicatedItemException
      */
     protected function addClient(ClientData $clientData)
     {
-        return $this->clientService->create($clientData);
+        try {
+            if ($clientId = $this->getWorkingItem('client', $clientData->getName()) === null) {
+                return $this->clientService->create($clientData);
+            }
+
+            return $clientId;
+        } catch (DuplicatedItemException $e) {
+            $itemData = $this->clientService->getByName($clientData->getName());
+
+            if (empty($itemData)) {
+                throw $e;
+            }
+
+            return $this->addWorkingItem('client', $itemData->getName(), $itemData->getId());
+        }
     }
 
     /**

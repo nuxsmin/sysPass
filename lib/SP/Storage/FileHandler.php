@@ -60,7 +60,7 @@ class FileHandler
         }
 
         if (fwrite($this->handle, $data) === false) {
-            throw new FileException(sprintf(__u('No es posible escribir en el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('No es posible escribir en el archivo (%s)'), $this->file));
         }
 
         return $this;
@@ -74,7 +74,7 @@ class FileHandler
     public function open($mode)
     {
         if (($this->handle = fopen($this->file, $mode)) === false) {
-            throw new FileException(sprintf(__u('No es posible abrir el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('No es posible abrir el archivo (%s)'), $this->file));
         }
 
         return $this->handle;
@@ -86,7 +86,7 @@ class FileHandler
     public function close()
     {
         if (fclose($this->handle) === false) {
-            throw new FileException(sprintf(__u('No es posible cerrar el archivo (%s)'), $this->file));
+            throw new FileException(sprintf(__('No es posible cerrar el archivo (%s)'), $this->file));
         }
 
         return $this;

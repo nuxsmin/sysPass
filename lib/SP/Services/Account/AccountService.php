@@ -31,7 +31,6 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Session\Session;
 use SP\DataModel\AccountData;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\ItemSearchData;
@@ -69,10 +68,6 @@ class AccountService extends Service implements AccountServiceInterface
      * @var AccountToTagRepository
      */
     protected $accountToTagRepository;
-    /**
-     * @var Session
-     */
-    protected $session;
 
     /**
      * @throws \Psr\Container\ContainerExceptionInterface

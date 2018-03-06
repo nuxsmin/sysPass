@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -61,20 +61,18 @@ class KeepassImport extends XmlImportBase implements ImportInterface
     {
         $clientId = $this->addClient(new ClientData(null, 'KeePass'));
 
-        $this->eventDispatcher->notifyEvent('run.import.keepass',
-            new Event($this,
-                EventMessage::factory()
-                    ->addDetail(__('Cliente creado'), 'KeePass'))
+        $this->eventDispatcher->notifyEvent('run.import.keepass.client',
+            new Event($this, EventMessage::factory()
+                ->addDetail(__('Cliente creado'), 'KeePass'))
         );
 
         foreach ($this->getItems() as $group => $entry) {
             try {
                 $categoryId = $this->addCategory(new CategoryData(null, $group));
 
-                $this->eventDispatcher->notifyEvent('run.import.keepass',
-                    new Event($this,
-                        EventMessage::factory()
-                            ->addDetail(__('Categoría importada'), $group))
+                $this->eventDispatcher->notifyEvent('run.import.keepass.category',
+                    new Event($this, EventMessage::factory()
+                        ->addDetail(__('Categoría importada'), $group))
                 );
 
                 if (count($entry) > 0) {
@@ -90,7 +88,7 @@ class KeepassImport extends XmlImportBase implements ImportInterface
 
                         $this->addAccount($accountRequest);
 
-                        $this->eventDispatcher->notifyEvent('run.import.keepass',
+                        $this->eventDispatcher->notifyEvent('run.import.keepass.account',
                             new Event($this,
                                 EventMessage::factory()
                                     ->addDetail(__('Cuenta importada'), $accountRequest->name))
