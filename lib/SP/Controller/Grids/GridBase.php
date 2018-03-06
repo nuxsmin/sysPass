@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -25,9 +25,7 @@
 namespace SP\Controller\Grids;
 
 use SP\Config\ConfigData;
-use SP\Core\ActionsInterface;
-use SP\Core\SessionUtil;
-use SP\Core\Traits\InjectableTrait;
+use SP\Core\Session\Session;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeIconsBase;
 use SP\Html\DataGrid\DataGridActionSearch;
@@ -38,10 +36,8 @@ use SP\Html\DataGrid\DataGridPager;
  *
  * @package SP\Controller\Grids
  */
-abstract class GridBase implements ActionsInterface
+abstract class GridBase
 {
-    use InjectableTrait;
-
     /**
      * @var ThemeIconsBase
      */
@@ -65,27 +61,43 @@ abstract class GridBase implements ActionsInterface
     /**
      * @var Theme
      */
-    protected $Theme;
+    protected $theme;
 
     /**
      * Grids constructor.
+     * @param Theme $theme
+     * @param Session $session
      */
-    public function __construct()
+    public function __construct(Theme $theme, Session $session)
     {
-        $this->injectDependencies();
-
-        $this->sk = SessionUtil::getSessionKey();
-        $this->icons = $this->Theme->getIcons();
+        $this->sk = $session->getSecurityKey();
+        $this->icons = $this->theme->getIcons();
     }
 
     /**
      * @param ConfigData $configData
-     * @param Theme      $theme
+     * @param Theme $theme
      */
     public function inject(ConfigData $configData, Theme $theme)
     {
         $this->ConfigData = $configData;
-        $this->Theme = $theme;
+        $this->theme = $theme;
+    }
+
+    /**
+     * @param boolean $filter
+     */
+    public function setFilter($filter)
+    {
+        $this->filter = $filter;
+    }
+
+    /**
+     * @param int $queryTimeStart
+     */
+    public function setQueryTimeStart($queryTimeStart)
+    {
+        $this->queryTimeStart = $queryTimeStart;
     }
 
     /**
@@ -107,21 +119,5 @@ abstract class GridBase implements ActionsInterface
         $GridPager->setIconLast($this->icons->getIconNavLast());
 
         return $GridPager;
-    }
-
-    /**
-     * @param boolean $filter
-     */
-    public function setFilter($filter)
-    {
-        $this->filter = $filter;
-    }
-
-    /**
-     * @param int $queryTimeStart
-     */
-    public function setQueryTimeStart($queryTimeStart)
-    {
-        $this->queryTimeStart = $queryTimeStart;
     }
 }

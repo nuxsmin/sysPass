@@ -45,6 +45,7 @@ class LogHandler extends Provider implements EventReceiver
         'exception',
         'save.',
         'show.account.pass',
+        'show.account.link',
         'copy.account.pass',
         'clear.eventlog',
         'login.',

@@ -952,16 +952,26 @@ sysPass.Actions = function (Common) {
         save: function ($obj) {
             log.info("link:save");
 
-            const itemId = $obj.data("item-id");
+            const request = function (notify) {
+                const itemId = $obj.data("item-id");
 
-            const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
-            opts.data = {
-                r: $obj.data("action-route"),
-                accountId: itemId,
-                notify: 0,
-                sk: Common.sk.get(),
-                isAjax: 1
+                const opts = Common.appRequests().getRequestOpts();
+                opts.url = ajaxUrl.entrypoint;
+                opts.data = {
+                    r: $obj.data("action-route"),
+                    accountId: itemId,
+                    notify: notify,
+                    sk: Common.sk.get(),
+                    isAjax: 1
+                };
+
+                Common.appRequests().getActionCall(opts, function (json) {
+                    Common.msg.out(json);
+
+                    if (json.status === 0) {
+                        getContent({r: $obj.data("action-next") + "/" + itemId});
+                    }
+                });
             };
 
             const atext = "<div id=\"alert\"><p id=\"alert-text\">" + Common.config().LANG[48] + "</p></div>";
@@ -973,13 +983,7 @@ sysPass.Actions = function (Common) {
                     onClick: function (e) {
                         e.preventDefault();
 
-                        Common.appRequests().getActionCall(opts, function (json) {
-                            Common.msg.out(json);
-
-                            if (json.status === 0) {
-                                getContent({r: $obj.data("action-next") + "/" + itemId});
-                            }
-                        });
+                        request(0);
                     }
                 },
                 positive: {
@@ -987,17 +991,7 @@ sysPass.Actions = function (Common) {
                     onClick: function (e) {
                         e.preventDefault();
 
-                        opts.data.notify = 1;
-
-                        Common.appRequests().getActionCall(opts, function (json) {
-                            Common.msg.out(json);
-
-                            if (json.status === 0) {
-                                getContent({
-                                    r: $obj.data("action-next") + "/" + itemId
-                                });
-                            }
-                        });
+                        request(1);
                     }
                 }
             });
@@ -1071,7 +1065,7 @@ sysPass.Actions = function (Common) {
             const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.method = $obj.data("action-method") || "post";
-            opts.data = $obj.serialize();
+            opts.data = $obj.serialize() + "&sk=" + Common.sk.get();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);

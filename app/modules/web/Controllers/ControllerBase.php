@@ -37,7 +37,6 @@ use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Language;
 use SP\Core\Session\Session;
 use SP\Core\UI\Theme;
-use SP\Core\UI\ThemeIconsBase;
 use SP\DataModel\ProfileData;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\Controller\ControllerTrait;
@@ -75,10 +74,6 @@ abstract class ControllerBase
      * @var string Nombre de la acción
      */
     protected $actionName;
-    /**
-     * @var ThemeIconsBase Instancia de los iconos del tema visual
-     */
-    protected $icons;
     /**
      * @var string Nombre del controlador
      */
@@ -158,8 +153,6 @@ abstract class ControllerBase
 
         $this->view->setBase(strtolower($this->controllerName));
 
-        $this->icons = $this->theme->getIcons();
-
         $this->isAjax = $this->router->request()->headers()->get('X_REQUESTED_WITH') === 'XMLHttpRequest';
 
         if ($this->session->isLoggedIn()) {
@@ -189,8 +182,8 @@ abstract class ControllerBase
         $this->view->assign('userIsAdminAcc', $this->userData->getIsAdminAcc());
         $this->view->assign('themeUri', $this->view->getTheme()->getThemeUri());
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
-        $this->view->assign('icons', clone $this->icons);
-        $this->view->assign('configData', clone $this->configData);
+        $this->view->assign('icons', $this->theme->getIcons());
+        $this->view->assign('configData', $this->configData);
     }
 
     /**

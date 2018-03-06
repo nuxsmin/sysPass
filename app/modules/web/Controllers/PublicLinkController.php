@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -30,9 +30,11 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
+use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
+use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -41,6 +43,7 @@ use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\Account\AccountService;
 use SP\Services\PublicLink\PublicLinkService;
+use SP\Util\Util;
 
 /**
  * Class PublicLinkController
@@ -278,13 +281,46 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
     }
 
     /**
+     * Saves create action
+     *
+     * @param int $accountId
+     * @param int $notify
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function saveCreateFromAccountAction($accountId, $notify)
+    {
+        if (!$this->acl->checkUserAccess(ActionsInterface::PUBLICLINK_CREATE)) {
+            return;
+        }
+
+        try {
+            $publicLinkData = new PublicLinkData();
+            $publicLinkData->setTypeId(PublicLink::TYPE_ACCOUNT);
+            $publicLinkData->setItemId($accountId);
+            $publicLinkData->setNotify((bool)$notify);
+            $publicLinkData->setHash(Util::generateRandomBytes());
+
+            $this->publicLinkService->create($publicLinkData);
+
+            $this->eventDispatcher->notifyEvent('create.publicLink.account', new Event($this));
+
+            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Enlace creado'));
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->returnJsonResponseException($e);
+        }
+    }
+
+    /**
      * Saves edit action
      *
      * @param $id
      */
     public function saveEditAction($id)
     {
-
+        throw new \RuntimeException('Not implemented');
     }
 
     /**

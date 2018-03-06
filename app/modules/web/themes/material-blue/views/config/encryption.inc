@@ -1,4 +1,8 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php
+/**
+ * @var $icons \Theme\Icons
+ * @var $configData \SP\Config\ConfigData
+ */ ?>
 
 <form method="post" name="frmCrypt" id="frmCrypt" class="form-action"
       data-onsubmit="config/save"
@@ -230,7 +234,8 @@
             <td class="valField">
                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="tmpass_chkSendEmail">
                     <input type="checkbox" id="tmpass_chkSendEmail"
-                           class="mdl-switch__input mdl-color-text--indigo-400" name="tmpass_chkSendEmail"/>
+                           class="mdl-switch__input mdl-color-text--indigo-400"
+                           name="tmpass_chkSendEmail" <?php echo !$configData->isMailEnabled() ? 'disabled' : ''; ?> />
                     <span class="mdl-switch__label"><?php echo __('Enviar correo'); ?></span>
                 </label>
             </td>
@@ -243,9 +248,9 @@
                 <div class="lowres-title"><?php echo __('Grupo'); ?></div>
 
                 <select id="tmpass_group" name="tmpass_group"
-                        class="select-box select-box-deselect">
+                        class="select-box select-box-deselect" <?php echo !$configData->isMailEnabled() ? 'disabled' : ''; ?>>
                     <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
-                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $groups */
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroups */
                     foreach ($userGroups as $userGroup): ?>
                         <option
                                 value="<?php echo $userGroup->getId(); ?>"><?php echo $userGroup->getName(); ?></option>

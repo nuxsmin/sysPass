@@ -60,7 +60,7 @@ class Theme implements ThemeInterface
      */
     protected $viewsPath = '';
     /**
-     * @var ThemeIconsInterface
+     * @var ThemeIconsBase
      */
     protected $icons;
     /**
@@ -228,11 +228,11 @@ class Theme implements ThemeInterface
     }
 
     /**
-     * @return ThemeIconsInterface
+     * @return ThemeIconsBase
      */
     public function getIcons()
     {
-        return $this->icons;
+        return clone $this->icons;
     }
 
     /**

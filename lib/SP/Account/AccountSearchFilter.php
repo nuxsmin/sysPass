@@ -311,7 +311,7 @@ class AccountSearchFilter
                 $orderKey[] = 'A.clientName';
                 break;
             default :
-                $orderKey[] = 'A.name';
+                $orderKey[] = 'A.clientName, A.name';
                 break;
         }
 

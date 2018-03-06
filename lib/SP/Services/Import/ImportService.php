@@ -25,6 +25,8 @@
 
 namespace SP\Services\Import;
 
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Services\Service;
 use SP\Storage\Database;
 use SP\Storage\DbWrapper;
@@ -49,7 +51,7 @@ class ImportService extends Service
      * Iniciar la importación de cuentas.
      *
      * @param ImportParams $importParams
-     * @param FileImport   $fileImport
+     * @param FileImport $fileImport
      * @return int
      * @throws \Exception
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -78,6 +80,11 @@ class ImportService extends Service
             return $counter;
         } catch (\Exception $e) {
             if (DbWrapper::rollbackTransaction($db)) {
+                $this->eventDispatcher->notifyEvent('run.import.rollback',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Rollback')))
+                );
+
                 debugLog('Rollback');
             }
 

@@ -34,6 +34,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\Session\Session;
+use SP\Core\UI\ThemeIconsBase;
 use SP\DataModel\AccountExtData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -68,6 +69,10 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * @var AccountService
      */
     protected $accountService;
+    /**
+     * @var ThemeIconsBase
+     */
+    protected $icons;
 
     /**
      * Index action
@@ -183,24 +188,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             ) {
                 $publicLinkService->addLinkView($publicLinkData);
 
-//                if ($publicLinkData->isNotify()) {
-//                    $Message = new NoticeMessage();
-//                    $Message->setTitle(__('Enlace visualizado'));
-//                    $Message->addDescription(sprintf('%s : %s', __('Cuenta'), $PublicLink->getItemId()));
-//                    $Message->addDescription(sprintf('%s : %s', __('Origen'), $this->configData->isDemoEnabled() ? '*.*.*.*' : HttpUtil::getClientAddress(true)));
-//                    $Message->addDescription(sprintf('%s : %s', __('Agente'), Request::getRequestHeaders('HTTP_USER_AGENT')));
-//                    $Message->addDescription(sprintf('HTTPS : %s', Checks::httpsEnabled() ? 'ON' : 'OFF'));
-//
-//
-//                    $NoticeData = new NoticeData();
-//                    $NoticeData->setNoticeComponent(__('Cuentas'));
-//                    $NoticeData->setNoticeDescription($Message);
-//                    $NoticeData->setNoticeType(__('Información'));
-//                    $NoticeData->setNoticeUserId($PublicLink->getPublicLinkUserId());
-//
-//                    Notice::getItem($NoticeData)->add();
-//                }
-
                 $this->accountService->incrementViewCounter($publicLinkData->getItemId());
                 $this->accountService->incrementDecryptCounter($publicLinkData->getItemId());
 
@@ -229,11 +216,15 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
 
                 $this->view->assign('accountData', $accountData);
 
-                $this->eventDispatcher->notifyEvent('show.account.link', new Event($this,
-                        EventMessage::factory()
-                            ->addDescription(__('Enlace visualizado'))
-                            ->addDetail(__('Cuenta'), $accountData->getName())
-                            ->addDetail(__('Cliente'), $accountData->getClientName()))
+                $this->eventDispatcher->notifyEvent('show.account.link',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Enlace visualizado'))
+                        ->addDetail(__u('Cuenta'), $accountData->getName())
+                        ->addDetail(__u('Cliente'), $accountData->getClientName())
+                        ->addDetail(__u('Agente'), $this->router->request()->headers()->get('User-Agent'))
+                        ->addDetail(__u('HTTPS'), $this->router->request()->isSecure() ? __u('ON') : __u('OFF'))
+                        ->addData('userId', $publicLinkData->getUserId())
+                        ->addData('notify', $publicLinkData->isNotify()))
                 );
             } else {
                 ErrorUtil::showErrorInView($this->view, ErrorUtil::ERR_PAGE_NO_PERMISSION, 'account-link');
@@ -886,5 +877,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         }
 
         $this->accountService = $this->dic->get(AccountService::class);
+        $this->icons = $this->theme->getIcons();
     }
 }

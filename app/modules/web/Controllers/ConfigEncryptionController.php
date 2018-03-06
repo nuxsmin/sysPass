@@ -130,6 +130,8 @@ class ConfigEncryptionController extends SimpleControllerBase
             }
         } else {
             try {
+                $this->eventDispatcher->notifyEvent('update.masterPassword.hash', new Event($this));
+
                 $configService->save('masterPwd', Hash::hashKey($newMasterPass));
                 $configService->save('lastupdatempass', time());
             } catch (\Exception $e) {
@@ -183,7 +185,7 @@ class ConfigEncryptionController extends SimpleControllerBase
             $groupId = Request::analyzeInt('tmpass_group');
             $sendEmail = Request::analyzeBool('tmpass_chkSendEmail');
 
-            if ($sendEmail && $groupId) {
+            if ($this->configData->isMailEnabled() && $sendEmail && $groupId) {
                 $mailMessage = new MailMessage();
                 $mailMessage->setTitle(sprintf(__('Clave Maestra %s'), Util::getAppInfo('appname')));
                 $mailMessage->addDescription(__('Se ha generado una nueva clave para el acceso a sysPass y se solicitará en el siguiente inicio.'));

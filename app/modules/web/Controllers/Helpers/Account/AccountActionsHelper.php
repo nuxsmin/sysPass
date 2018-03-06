@@ -236,7 +236,7 @@ class AccountActionsHelper extends HelperBase
         $action->setTitle(__('Crear Enlace Público'));
         $action->addClass('btn-action');
         $action->setIcon($this->icons->getIconPublicLink());
-        $action->addData('action-route', 'publicLink/saveCreate');
+        $action->addData('action-route', 'publicLink/saveCreateFromAccount');
         $action->addData('action-sk', $this->sk);
         $action->addData('onclick', 'link/save');
         $action->addData('action-next', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));

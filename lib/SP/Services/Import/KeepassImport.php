@@ -47,7 +47,17 @@ class KeepassImport extends XmlImportBase implements ImportInterface
      */
     public function doImport()
     {
+        $this->eventDispatcher->notifyEvent('run.import.keepass.start',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Importación XML KeePass')))
+        );
+
         $this->process();
+
+        $this->eventDispatcher->notifyEvent('run.import.keepass.end',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Importación XML KeePass')))
+        );
 
         return $this;
     }
@@ -63,7 +73,7 @@ class KeepassImport extends XmlImportBase implements ImportInterface
 
         $this->eventDispatcher->notifyEvent('run.import.keepass.client',
             new Event($this, EventMessage::factory()
-                ->addDetail(__('Cliente creado'), 'KeePass'))
+                ->addDetail(__u('Cliente creado'), 'KeePass'))
         );
 
         foreach ($this->getItems() as $group => $entry) {
@@ -72,7 +82,7 @@ class KeepassImport extends XmlImportBase implements ImportInterface
 
                 $this->eventDispatcher->notifyEvent('run.import.keepass.category',
                     new Event($this, EventMessage::factory()
-                        ->addDetail(__('Categoría importada'), $group))
+                        ->addDetail(__u('Categoría importada'), $group))
                 );
 
                 if (count($entry) > 0) {
@@ -91,7 +101,7 @@ class KeepassImport extends XmlImportBase implements ImportInterface
                         $this->eventDispatcher->notifyEvent('run.import.keepass.account',
                             new Event($this,
                                 EventMessage::factory()
-                                    ->addDetail(__('Cuenta importada'), $accountRequest->name))
+                                    ->addDetail(__u('Cuenta importada'), $accountRequest->name))
                         );
                     }
                 }

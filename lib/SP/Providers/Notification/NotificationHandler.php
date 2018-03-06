@@ -24,7 +24,6 @@
 
 namespace SP\Providers\Notification;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\DataModel\NotificationData;
@@ -39,7 +38,10 @@ use SplSubject;
  */
 class NotificationHandler extends Provider implements EventReceiver
 {
-    const EVENTS = ['request.account'];
+    const EVENTS = [
+        'request.account',
+        'show.account.link'
+    ];
 
     /**
      * @var NotificationService
@@ -62,9 +64,24 @@ class NotificationHandler extends Provider implements EventReceiver
      * Evento de actualización
      *
      * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
+     * @param Event $event Objeto del evento
      */
     public function updateEvent($eventType, Event $event)
+    {
+        switch ($eventType) {
+            case 'request.account':
+                $this->requestAccountNotification($event);
+                break;
+            case 'show.account.link':
+                $this->showAccountLinkNotification($event);
+                break;
+        }
+    }
+
+    /**
+     * @param Event $event
+     */
+    protected function requestAccountNotification(Event $event)
     {
         $eventMessage = $event->getEventMessage();
         $data = $eventMessage->getData();
@@ -76,11 +93,38 @@ class NotificationHandler extends Provider implements EventReceiver
             $notificationData->setUserId($userId);
             $notificationData->setDescription($eventMessage);
 
-            try {
-                $this->notificationService->create($notificationData);
-            } catch (\Exception $e) {
-                processException($e);
-            }
+            $this->notify($notificationData);
+        }
+    }
+
+    /**
+     * @param NotificationData $notificationData
+     */
+    protected function notify(NotificationData $notificationData)
+    {
+        try {
+            $this->notificationService->create($notificationData);
+        } catch (\Exception $e) {
+            processException($e);
+        }
+    }
+
+    /**
+     * @param Event $event
+     */
+    protected function showAccountLinkNotification(Event $event)
+    {
+        $eventMessage = $event->getEventMessage();
+        $data = $eventMessage->getData();
+
+        if ($data['notify'] === true) {
+            $notificationData = new NotificationData();
+            $notificationData->setType(__('Notificación'));
+            $notificationData->setComponent(__('Cuentas'));
+            $notificationData->setUserId($data['userId']);
+            $notificationData->setDescription($eventMessage);
+
+            $this->notify($notificationData);
         }
     }
 

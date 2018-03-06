@@ -64,6 +64,9 @@ class ConfigImportController extends SimpleControllerBase
         $importParams->setCsvDelimiter(Request::analyzeString('csvDelimiter'));
 
         try {
+
+            $this->eventDispatcher->notifyEvent('run.import.start', new Event($this));
+
             $counter = $this->dic->get(ImportService::class)
                 ->doImport($importParams, new FileImport($this->router->request()->files()->get('inFile')));
 

@@ -28,6 +28,7 @@ use DI\Container;
 use Interop\Container\ContainerInterface;
 use Klein\Klein;
 use SP\Config\Config;
+use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\EventDispatcher;
@@ -80,6 +81,10 @@ abstract class SimpleControllerBase
      * @var Acl
      */
     protected $acl;
+    /**
+     * @var ConfigData
+     */
+    protected $configData;
 
     /**
      * SimpleControllerBase constructor.
@@ -97,6 +102,7 @@ abstract class SimpleControllerBase
         $this->actionName = $actionName;
 
         $this->config = $this->dic->get(Config::class);
+        $this->configData = $this->config->getConfigData();
         $this->session = $this->dic->get(Session::class);
         $this->theme = $this->dic->get(Theme::class);
         $this->eventDispatcher = $this->dic->get(EventDispatcher::class);

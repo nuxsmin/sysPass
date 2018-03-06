@@ -93,7 +93,7 @@ class AccountHelper extends HelperBase
      * Sets account's view variables
      *
      * @param AccountDetailsResponse $accountDetailsResponse
-     * @param int                    $actionId
+     * @param int $actionId
      * @throws AccountPermissionException
      * @throws SPException
      * @throws UnauthorizedPageException
@@ -131,12 +131,17 @@ class AccountHelper extends HelperBase
         if ($this->configData->isPublinksEnabled() && $this->accountAcl->isShowLink()) {
             $publicLinkData = $this->publicLinkService->getHashForItem($this->accountId);
 
-            $publicLinkUrl = $publicLinkData ? PublicLinkService::getLinkForHash($publicLinkData->getHash()) : null;
+            $hasPublicLink = !empty($publicLinkData);
+
+            $publicLinkUrl = $hasPublicLink ? PublicLinkService::getLinkForHash($publicLinkData->getHash()) : null;
+
             $this->view->assign('publicLinkUrl', $publicLinkUrl);
-            $this->view->assign('publicLinkId', $publicLinkData ? $publicLinkData->getId() : 0);
+            $this->view->assign('publicLinkId', $hasPublicLink ? $publicLinkData->getId() : 0);
             $this->view->assign('publicLinkShow', true);
 
-            $accountActionsDto->setPublicLinkId($publicLinkData->getId());
+            if ($hasPublicLink) {
+                $accountActionsDto->setPublicLinkId($publicLinkData->getId());
+            }
         } else {
             $this->view->assign('publicLinkShow', false);
         }
@@ -289,7 +294,7 @@ class AccountHelper extends HelperBase
      * Sets account's view variables
      *
      * @param AccountDetailsResponse $accountDetailsResponse
-     * @param int                    $actionId
+     * @param int $actionId
      * @return bool
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException

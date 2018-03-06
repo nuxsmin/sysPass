@@ -96,7 +96,7 @@ abstract class XmlImportBase
                     sprintf(__('El nodo "%s" no existe'), $nodeName)
                 );
             }
-
+        } else {
             if (!is_callable($callback)) {
                 throw new ImportException(__u('Método inválido'), ImportException::WARNING);
             }

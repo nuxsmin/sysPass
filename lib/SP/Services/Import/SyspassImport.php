@@ -53,6 +53,11 @@ class SyspassImport extends XmlImportBase implements ImportInterface
     public function doImport()
     {
         try {
+            $this->eventDispatcher->notifyEvent('run.import.syspass.start',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Importación XML sysPass')))
+            );
+
             if ($this->importParams->getImportMasterPwd() !== '') {
                 $this->mPassValidHash = Hash::checkHashKey($this->importParams->getImportMasterPwd(), ConfigDB::getValue('masterPwd'));
             }
@@ -77,6 +82,11 @@ class SyspassImport extends XmlImportBase implements ImportInterface
 
             $this->processTags();
             $this->processAccounts();
+
+            $this->eventDispatcher->notifyEvent('run.import.syspass.end',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Importación XML sysPass')))
+            );
 
             return $this;
         } catch (ImportException $e) {
@@ -153,7 +163,7 @@ class SyspassImport extends XmlImportBase implements ImportInterface
 
         $this->eventDispatcher->notifyEvent('run.import.syspass.decryption',
             new Event($this, EventMessage::factory()
-                ->addDescription(__('Datos desencriptados')))
+                ->addDescription(__u('Datos desencriptados')))
         );
     }
 
@@ -186,7 +196,7 @@ class SyspassImport extends XmlImportBase implements ImportInterface
 
                     $this->eventDispatcher->notifyEvent('run.import.syspass.category',
                         new Event($this, EventMessage::factory()
-                            ->addDetail(__('Categoría importada'), $categoryData->getName()))
+                            ->addDetail(__u('Categoría importada'), $categoryData->getName()))
                     );
                 } catch (\Exception $e) {
                     processException($e);
@@ -223,7 +233,7 @@ class SyspassImport extends XmlImportBase implements ImportInterface
 
                     $this->eventDispatcher->notifyEvent('run.import.syspass.client',
                         new Event($this, EventMessage::factory()
-                            ->addDetail(__('Cliente importado'), $clientData->getName()))
+                            ->addDetail(__u('Cliente importado'), $clientData->getName()))
                     );
                 } catch (\Exception $e) {
                     processException($e);
@@ -261,7 +271,7 @@ class SyspassImport extends XmlImportBase implements ImportInterface
 
                     $this->eventDispatcher->notifyEvent('run.import.syspass.customer',
                         new Event($this, EventMessage::factory()
-                            ->addDetail(__('Cliente importado'), $clientData->getName()))
+                            ->addDetail(__u('Cliente importado'), $clientData->getName()))
                     );
                 } catch (\Exception $e) {
                     processException($e);
@@ -295,7 +305,7 @@ class SyspassImport extends XmlImportBase implements ImportInterface
 
                     $this->eventDispatcher->notifyEvent('run.import.syspass.tag',
                         new Event($this, EventMessage::factory()
-                            ->addDetail(__('Etiqueta importada'), $tagData->getName()))
+                            ->addDetail(__u('Etiqueta importada'), $tagData->getName()))
                     );
                 } catch (\Exception $e) {
                     processException($e);
@@ -354,7 +364,7 @@ class SyspassImport extends XmlImportBase implements ImportInterface
 
                     $this->eventDispatcher->notifyEvent('run.import.syspass.account',
                         new Event($this, EventMessage::factory()
-                            ->addDetail(__('Cuenta importada'), $accountRequest->name))
+                            ->addDetail(__u('Cuenta importada'), $accountRequest->name))
                     );
                 } catch (\Exception $e) {
                     processException($e);

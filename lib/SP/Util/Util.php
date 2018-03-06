@@ -717,7 +717,7 @@ class Util
      */
     public static function unlockApp()
     {
-        return unlink(LOCK_FILE);
+        return @unlink(LOCK_FILE);
     }
 
     /**
