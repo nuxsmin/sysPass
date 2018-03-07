@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -31,6 +31,8 @@ use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
+use SP\Providers\Mail\MailParams;
+use SP\Providers\Mail\MailProvider;
 
 /**
  * Class ConfigMailController
@@ -93,6 +95,31 @@ class ConfigMailController extends SimpleControllerBase
         $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
             $this->eventDispatcher->notifyEvent('save.config.mail', new Event($this, $eventMessage));
         });
+    }
+
+    public function checkAction()
+    {
+        $mailParams = new MailParams();
+
+        // Mail
+        $mailParams->server = Request::analyzeString('mail_server');
+        $mailParams->port = Request::analyzeInt('mail_port', 25);
+        $mailParams->security = Request::analyzeString('mail_security');
+        $mailParams->from = Request::analyzeEmail('mail_from');
+        $mailParams->mailAuthenabled = Request::analyzeBool('mail_authenabled', false);
+
+        // Valores para la configuración del Correo
+        if (!$mailParams->server || !$mailParams->from) {
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Correo'));
+        }
+
+
+        if ($mailParams->mailAuthenabled) {
+            $mailParams->user = Request::analyzeString('mail_user');
+            $mailParams->pass = Request::analyzeEncrypted('mail_pass');
+        }
+
+        $mailProvider = $this->dic->get(MailProvider::class);
     }
 
     protected function initialize()

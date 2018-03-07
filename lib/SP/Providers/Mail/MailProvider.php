@@ -53,8 +53,8 @@ class MailProvider extends Provider
     private $appInfo;
 
     /**
-     * @param string      $subject
-     * @param string      $to
+     * @param string $subject
+     * @param string $to
      * @param MailMessage $mailMessage
      * @throws MailProviderException
      */
@@ -106,8 +106,8 @@ class MailProvider extends Provider
     }
 
     /**
-     * @param string      $subject
-     * @param array       $to
+     * @param string $subject
+     * @param array $to
      * @param MailMessage $mailMessage
      * @throws MailProviderException
      */
@@ -132,42 +132,39 @@ class MailProvider extends Provider
      */
     protected function initialize()
     {
-        $this->mailer = $this->getMailer();
+        $this->mailer = $this->getMailer($this->getParamsFromConfig());
         $this->appInfo = Util::getAppInfo();
     }
 
     /**
      * Inicializar la clase PHPMailer.
      *
+     * @param MailParams $mailParams
      * @return PHPMailer
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws MailProviderException
      */
-    private function getMailer()
+    private function getMailer(MailParams $mailParams)
     {
         try {
-            $configData = $this->config->getConfigData();
-
             $mailer = $this->dic->get(PHPMailer::class);
             $mailer->SMTPAutoTLS = false;
             $mailer->isSMTP();
             $mailer->CharSet = 'utf-8';
-            $mailer->Host = $configData->getMailServer();
-            $mailer->Port = $configData->getMailPort();
+            $mailer->Host = $mailParams->server;
+            $mailer->Port = $mailParams->port;
 
-            if ($configData->isMailAuthenabled()) {
+            if ($mailParams->mailAuthenabled) {
                 $mailer->SMTPAuth = true;
-                $mailer->Username = $configData->getMailUser();
-                $mailer->Password = $configData->getMailPass();
+                $mailer->Username = $mailParams->user;
+                $mailer->Password = $mailParams->pass;
             }
 
-            $mailer->SMTPSecure = strtolower($configData->getMailSecurity());
+            $mailer->SMTPSecure = strtolower($mailParams->security);
             //$mail->SMTPDebug = 2;
             //$mail->Debugoutput = 'error_log';
 
-            $mailer->setFrom($configData->getMailFrom(), $this->appInfo['appname']);
-            $mailer->addReplyTo($configData->getMailFrom(), $this->appInfo['appname']);
+            $mailer->setFrom($mailParams->from, $this->appInfo['appname']);
+            $mailer->addReplyTo($mailParams->from, $this->appInfo['appname']);
             $mailer->WordWrap = 100;
 
             return $mailer;
@@ -182,5 +179,24 @@ class MailProvider extends Provider
                 $e
             );
         }
+    }
+
+    /**
+     * @return MailParams
+     */
+    public function getParamsFromConfig()
+    {
+        $configData = $this->config->getConfigData();
+
+        $mailParams = new MailParams();
+        $mailParams->server = $configData->getMailServer();
+        $mailParams->port = $configData->getMailPort();
+        $mailParams->user = $configData->getMailUser();
+        $mailParams->pass = $configData->getMailPass();
+        $mailParams->security = $configData->getMailSecurity();
+        $mailParams->from = $configData->getMailFrom();
+        $mailParams->mailAuthenabled = $configData->isMailAuthenabled();
+
+        return $mailParams;
     }
 }
