@@ -35,13 +35,15 @@ interface FileStorageInterface
      * @param string $path
      *
      * @return mixed
+     * @throws FileException
      */
     public function load($path);
 
     /**
      * @param string $path
-     * @param mixed  $data
+     * @param mixed $data
      * @return FileStorageInterface
+     * @throws FileException
      */
     public function save($path, $data);
 
@@ -51,4 +53,13 @@ interface FileStorageInterface
      * @return mixed
      */
     public function delete($path);
+
+    /**
+     * Returns whether the file is expired
+     *
+     * @param string $path
+     * @param int $time
+     * @return mixed
+     */
+    public function isExpired($path, $time = 86400);
 }

@@ -53,8 +53,13 @@ class AccountSearchService extends Service
      */
     const FILTERS_REGEX = '^(?:(?P<filter>user|group|file|owner|maingroup|expired|private):(?:"(?P<text>[\w\.]+)")?)$';
 
-    const COLORS_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'colors.cache';
+    const COLORS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'colors.cache';
 
+    /**
+     * Cache expire time
+     */
+    const CACHE_EXPIRE = 86400;
+    
     /**
      * Colores para resaltar las cuentas
      */
@@ -300,7 +305,9 @@ class AccountSearchService extends Service
         $this->accountColor[$id] = '#' . self::COLORS[array_rand(self::COLORS)];
 
         try {
-            $this->fileCache->save(self::COLORS_FILE, $this->accountColor);
+            $this->fileCache->save(self::COLORS_CACHE_FILE, $this->accountColor);
+
+            debugLog('Saved accounts color cache');
 
             return $this->accountColor[$id];
         } catch (FileException $e) {
@@ -332,7 +339,9 @@ class AccountSearchService extends Service
     private function loadColors()
     {
         try {
-            $this->accountColor = $this->fileCache->load(self::COLORS_FILE);
+            $this->accountColor = $this->fileCache->load(self::COLORS_CACHE_FILE);
+
+            debugLog('Loaded accounts color cache');
         } catch (FileException $e) {
             processException($e);
         }

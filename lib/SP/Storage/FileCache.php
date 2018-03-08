@@ -51,7 +51,7 @@ class FileCache implements FileStorageInterface
 
     /**
      * @param string $path
-     * @param mixed  $data
+     * @param mixed $data
      * @return FileStorageInterface
      * @throws FileException
      */
@@ -91,5 +91,17 @@ class FileCache implements FileStorageInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Returns whether the file is expired
+     *
+     * @param string $path
+     * @param int $time
+     * @return mixed
+     */
+    public function isExpired($path, $time = 86400)
+    {
+        return !file_exists($path) || time() > filemtime($path) + $time;
     }
 }

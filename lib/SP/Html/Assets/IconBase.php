@@ -38,27 +38,27 @@ abstract class IconBase implements IconInterface
      *
      * @var string
      */
-    protected $_icon = '';
+    protected $icon = '';
 
     /**
      * Título del icono
      *
      * @var string
      */
-    protected $_title = '';
+    protected $title = '';
     /**
      * Clases CSS del icono
      *
      * @var array
      */
-    protected $_class = array();
+    protected $class = [];
 
     /**
      * @return string
      */
     public function getTitle()
     {
-        return $this->_title;
+        return __($this->title);
     }
 
     /**
@@ -67,18 +67,7 @@ abstract class IconBase implements IconInterface
      */
     public function setTitle($title)
     {
-        $this->_title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @param $class
-     * @return $this
-     */
-    public function setClass($class)
-    {
-        $this->_class[] = $class;
+        $this->title = $title;
 
         return $this;
     }
@@ -88,7 +77,18 @@ abstract class IconBase implements IconInterface
      */
     public function getClass()
     {
-        return implode(' ', $this->_class);
+        return implode(' ', $this->class);
+    }
+
+    /**
+     * @param $class
+     * @return $this
+     */
+    public function setClass($class)
+    {
+        $this->class[] = $class;
+
+        return $this;
     }
 
     /**
@@ -96,7 +96,7 @@ abstract class IconBase implements IconInterface
      */
     public function getIcon()
     {
-        return $this->_icon;
+        return $this->icon;
     }
 
     /**
@@ -105,7 +105,7 @@ abstract class IconBase implements IconInterface
      */
     public function setIcon($icon)
     {
-        $this->_icon = $icon;
+        $this->icon = $icon;
         return $this;
     }
 }

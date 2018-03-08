@@ -28,6 +28,8 @@ use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Session\Session;
+use SP\Storage\FileCache;
+use SP\Storage\FileException;
 use Theme\Icons;
 
 defined('APP_ROOT') || die();
@@ -39,6 +41,11 @@ defined('APP_ROOT') || die();
  */
 class Theme implements ThemeInterface
 {
+    const ICONS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'icons.cache';
+    /**
+     * Cache expire time
+     */
+    const CACHE_EXPIRE = 86400;
     /**
      * @var string
      */
@@ -75,18 +82,23 @@ class Theme implements ThemeInterface
      * @var string
      */
     protected $module;
+    /**
+     * @var FileCache
+     */
+    private $fileCache;
 
     /**
      * Theme constructor.
      *
      * @param         $module
-     * @param Config  $config
+     * @param Config $config
      * @param Session $session
      */
-    public function __construct($module, Config $config, Session $session)
+    public function __construct($module, Config $config, Session $session, FileCache $fileCache)
     {
         $this->configData = $config->getConfigData();
         $this->session = $session;
+        $this->fileCache = $fileCache;
 
         if (is_dir(VIEW_PATH)) {
             $this->initTheme();
@@ -142,12 +154,32 @@ class Theme implements ThemeInterface
      */
     protected function initIcons()
     {
+        if (!$this->fileCache->isExpired(self::ICONS_CACHE_FILE, self::CACHE_EXPIRE)) {
+            try {
+                $this->icons = $this->fileCache->load(self::ICONS_CACHE_FILE);
+
+                debugLog('Loaded icons cache');
+
+                return $this->icons;
+            } catch (FileException $e) {
+                processException($e);
+            }
+        }
+
         $iconsClass = $this->themePathFull . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Icons.php';
 
         if (file_exists($iconsClass)) {
             require $iconsClass;
 
             $this->icons = new Icons();
+
+            try {
+                $this->fileCache->save(self::ICONS_CACHE_FILE, $this->icons);
+
+                debugLog('Saved icons cache');
+            } catch (FileException $e) {
+                processException($e);
+            }
         }
 
         return $this->icons;

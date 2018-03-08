@@ -25,6 +25,7 @@
 namespace SP\Core\Acl;
 
 use SP\DataModel\ActionData;
+use SP\Storage\FileException;
 use SP\Storage\FileStorageInterface;
 use SP\Storage\XmlFileStorageInterface;
 
@@ -38,7 +39,7 @@ class Actions
     /**
      * Cache file name
      */
-    const CACHE_NAME = 'actions';
+    const ACTIONS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'actions.cache';
     /**
      * Cache expire time
      */
@@ -55,42 +56,58 @@ class Actions
      * @var XmlFileStorageInterface
      */
     protected $xmlFileStorage;
+    /**
+     * @var FileStorageInterface
+     */
+    private $fileStorage;
 
     /**
      * Action constructor.
      *
-     * @param FileStorageInterface    $fileStorage
+     * @param FileStorageInterface $fileStorage
      * @param XmlFileStorageInterface $xmlFileStorage
      * @throws \SP\Core\Exceptions\FileNotFoundException
      */
     public function __construct(FileStorageInterface $fileStorage, XmlFileStorageInterface $xmlFileStorage)
     {
         $this->xmlFileStorage = $xmlFileStorage;
+        $this->fileStorage = $fileStorage;
 
-        $this->loadCache($fileStorage);
+        $this->loadCache();
     }
 
     /**
      * Loads actions from cache file
      *
-     * @param FileStorageInterface $fileStorage
+     * @return void
      * @throws \SP\Core\Exceptions\FileNotFoundException
      */
-    protected function loadCache(FileStorageInterface $fileStorage)
+    protected function loadCache()
     {
-        $fileName = CACHE_PATH . DIRECTORY_SEPARATOR . self::CACHE_NAME;
-
-        if (!file_exists($fileName) || filemtime($fileName) + self::CACHE_EXPIRE < time()) {
-            $this->map();
-            $this->saveCache($fileStorage);
+        if ($this->fileStorage->isExpired(self::ACTIONS_CACHE_FILE, self::CACHE_EXPIRE)) {
+            $this->mapAndSave();
         } else {
-            $this->actions = $fileStorage->load($fileName);
+            try {
+                $this->actions = $this->fileStorage->load(self::ACTIONS_CACHE_FILE);
 
-            if ($this->actions === false) {
-                $this->map();
-                $this->saveCache($fileStorage);
+                debugLog('Loaded actions cache');
+            } catch (FileException $e) {
+                processException($e);
+
+                $this->mapAndSave();
             }
         }
+    }
+
+    /**
+     * @throws \SP\Core\Exceptions\FileNotFoundException
+     */
+    protected function mapAndSave()
+    {
+        debugLog('ACTION CACHE MISS');
+
+        $this->map();
+        $this->saveCache();
     }
 
     /**
@@ -100,8 +117,6 @@ class Actions
      */
     protected function map()
     {
-        debugLog('ACTION CACHE MISS');
-
         $this->actions = [];
 
         $actionBase = new ActionData();
@@ -134,12 +149,16 @@ class Actions
 
     /**
      * Saves actions into cache file
-     *
-     * @param FileStorageInterface $fileStorage
      */
-    protected function saveCache(FileStorageInterface $fileStorage)
+    protected function saveCache()
     {
-        $fileStorage->save(CACHE_PATH . DIRECTORY_SEPARATOR . self::CACHE_NAME, $this->actions);
+        try {
+            $this->fileStorage->save(self::ACTIONS_CACHE_FILE, $this->actions);
+
+            debugLog('Saved actions cache');
+        } catch (FileException $e) {
+            processException($e);
+        }
     }
 
     /**
