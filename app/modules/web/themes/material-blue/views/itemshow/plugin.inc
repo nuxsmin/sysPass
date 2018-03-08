@@ -1,7 +1,7 @@
 <?php
 /** @var  \SP\DataModel\PluginData $plugin */
 /** @var  \SP\Core\Plugin\PluginInterface $pluginInfo */
-/** @var  \SP\Core\UI\ThemeIconsBase $icons */
+/** @var  \SP\Core\UI\ThemeIcons $icons */
 ?>
 <div id="box-popup">
     <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>

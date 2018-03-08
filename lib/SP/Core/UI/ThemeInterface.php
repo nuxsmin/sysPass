@@ -73,7 +73,7 @@ interface ThemeInterface
     public function getThemeName();
 
     /**
-     * @return ThemeIconsBase
+     * @return ThemeIcons
      */
     public function getIcons();
 

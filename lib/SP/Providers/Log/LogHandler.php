@@ -57,7 +57,8 @@ class LogHandler extends Provider implements EventReceiver
         'refresh.masterPassword',
         'update.',
         'import.ldap.',
-        'run.'
+        'run.',
+        'send.mail'
     ];
 
     /**

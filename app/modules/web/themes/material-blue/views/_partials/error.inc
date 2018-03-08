@@ -23,7 +23,7 @@
  */
 
 /**
- * @var $icons \SP\Core\UI\ThemeIconsBase
+ * @var $icons \SP\Core\UI\ThemeIcons
  * @var \SP\Mvc\View\Template $this
  */
 ?>

@@ -1,6 +1,6 @@
 <?php
 /** @var  \SP\DataModel\CategoryData $category */
-/** @var  \SP\Core\UI\ThemeIconsBase $icons */
+/** @var  \SP\Core\UI\ThemeIcons $icons */
 ?>
 <div id="box-popup">
     <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>

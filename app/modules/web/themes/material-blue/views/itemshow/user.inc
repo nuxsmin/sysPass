@@ -1,5 +1,5 @@
 <?php
-/** @var $icons \SP\Core\UI\ThemeIconsBase */
+/** @var $icons \SP\Core\UI\ThemeIcons */
 /** @var $user \SP\DataModel\UserData */
 ?>
 

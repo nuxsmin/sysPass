@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -34,98 +34,90 @@ defined('APP_ROOT') || die();
  *
  * @package SP\Core
  */
-abstract class ThemeIconsBase implements ThemeIconsInterface
+class ThemeIcons
 {
     /** @var  FontIcon|ImageIcon */
-    protected $iconAdd;
+    public $iconAdd;
     /** @var  FontIcon|ImageIcon */
-    protected $iconView;
+    public $iconView;
     /** @var  FontIcon|ImageIcon */
-    protected $iconEdit;
+    public $iconEdit;
     /** @var  FontIcon|ImageIcon */
-    protected $iconDelete;
+    public $iconDelete;
     /** @var  FontIcon|ImageIcon */
-    protected $iconNavPrev;
+    public $iconNavPrev;
     /** @var  FontIcon|ImageIcon */
-    protected $iconNavNext;
+    public $iconNavNext;
     /** @var  FontIcon|ImageIcon */
-    protected $iconNavFirst;
+    public $iconNavFirst;
     /** @var  FontIcon|ImageIcon */
-    protected $iconNavLast;
+    public $iconNavLast;
     /** @var  FontIcon|ImageIcon */
-    protected $iconEditPass;
+    public $iconEditPass;
     /** @var  FontIcon|ImageIcon */
-    protected $iconAppAdmin;
+    public $iconAppAdmin;
     /** @var  FontIcon|ImageIcon */
-    protected $iconAccAdmin;
+    public $iconAccAdmin;
     /** @var  FontIcon|ImageIcon */
-    protected $iconLdapUser;
+    public $iconLdapUser;
     /** @var  FontIcon|ImageIcon */
-    protected $iconDisabled;
+    public $iconDisabled;
     /** @var  FontIcon|ImageIcon */
-    protected $iconEnabled;
+    public $iconEnabled;
     /** @var  FontIcon|ImageIcon */
-    protected $iconViewPass;
+    public $iconViewPass;
     /** @var  FontIcon|ImageIcon */
-    protected $iconCopy;
+    public $iconCopy;
     /** @var  FontIcon|ImageIcon */
-    protected $iconClipboard;
+    public $iconClipboard;
     /** @var  FontIcon|ImageIcon */
-    protected $iconEmail;
+    public $iconEmail;
     /** @var  FontIcon|ImageIcon */
-    protected $iconOptional;
+    public $iconOptional;
     /** @var  FontIcon|ImageIcon */
-    protected $iconUp;
+    public $iconUp;
     /** @var  FontIcon|ImageIcon */
-    protected $iconDown;
+    public $iconDown;
     /** @var  FontIcon|ImageIcon */
-    protected $iconRefresh;
+    public $iconRefresh;
     /** @var  FontIcon|ImageIcon */
-    protected $iconPublicLink;
+    public $iconPublicLink;
     /** @var  FontIcon|ImageIcon */
-    protected $iconBack;
+    public $iconBack;
     /** @var  FontIcon|ImageIcon */
-    protected $iconRestore;
+    public $iconRestore;
     /** @var  FontIcon|ImageIcon */
-    protected $iconSave;
+    public $iconSave;
     /** @var  FontIcon|ImageIcon */
-    protected $iconHelp;
+    public $iconHelp;
     /** @var  FontIcon|ImageIcon */
-    protected $iconClear;
+    public $iconClear;
     /** @var  FontIcon|ImageIcon */
-    protected $iconPlay;
+    public $iconPlay;
     /** @var  FontIcon|ImageIcon */
-    protected $iconDownload;
+    public $iconDownload;
     /** @var  FontIcon|ImageIcon */
-    protected $iconWarning;
+    public $iconWarning;
     /** @var  FontIcon|ImageIcon */
-    protected $iconCheck;
+    public $iconCheck;
     /** @var  FontIcon|ImageIcon */
-    protected $iconSearch;
+    public $iconSearch;
     /** @var  FontIcon|ImageIcon */
-    protected $iconAccount;
+    public $iconAccount;
     /** @var  FontIcon|ImageIcon */
-    protected $iconGroup;
+    public $iconGroup;
     /** @var  FontIcon|ImageIcon */
-    protected $iconSettings;
+    public $iconSettings;
     /** @var  FontIcon|ImageIcon */
-    protected $iconHeadline;
+    public $iconHeadline;
     /** @var  FontIcon|ImageIcon */
-    protected $iconInfo;
+    public $iconInfo;
     /** @var  FontIcon|ImageIcon */
-    protected $iconCritical;
+    public $iconCritical;
     /** @var  FontIcon|ImageIcon */
-    protected $iconNotices;
+    public $iconNotices;
     /** @var  FontIcon|ImageIcon */
-    protected $iconRemove;
-
-    /**
-     * Icons constructor.
-     */
-    public function __construct()
-    {
-        $this->setIcons();
-    }
+    public $iconRemove;
 
     /**
      * @return FontIcon|ImageIcon
@@ -384,27 +376,11 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     }
 
     /**
-     * @param FontIcon|ImageIcon $iconSearch
-     */
-    public function setIconSearch($iconSearch)
-    {
-        $this->iconSearch = $iconSearch;
-    }
-
-    /**
      * @return FontIcon|ImageIcon
      */
     public function getIconAccount()
     {
         return $this->iconAccount;
-    }
-
-    /**
-     * @param FontIcon|ImageIcon $iconAccount
-     */
-    public function setIconAccount($iconAccount)
-    {
-        $this->iconAccount = $iconAccount;
     }
 
     /**
@@ -416,27 +392,11 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     }
 
     /**
-     * @param FontIcon|ImageIcon $iconGroup
-     */
-    public function setIconGroup($iconGroup)
-    {
-        $this->iconGroup = $iconGroup;
-    }
-
-    /**
      * @return FontIcon|ImageIcon
      */
     public function getIconSettings()
     {
         return $this->iconSettings;
-    }
-
-    /**
-     * @param FontIcon|ImageIcon $iconSettings
-     */
-    public function setIconSettings($iconSettings)
-    {
-        $this->iconSettings = $iconSettings;
     }
 
     /**
@@ -448,27 +408,11 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     }
 
     /**
-     * @param FontIcon|ImageIcon $iconHeadline
-     */
-    public function setIconHeadline($iconHeadline)
-    {
-        $this->iconHeadline = $iconHeadline;
-    }
-
-    /**
      * @return FontIcon|ImageIcon
      */
     public function getIconInfo()
     {
         return $this->iconInfo;
-    }
-
-    /**
-     * @param FontIcon|ImageIcon $iconInfo
-     */
-    public function setIconInfo($iconInfo)
-    {
-        $this->iconInfo = $iconInfo;
     }
 
     /**
@@ -480,27 +424,11 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     }
 
     /**
-     * @param FontIcon|ImageIcon $iconCritical
-     */
-    public function setIconCritical($iconCritical)
-    {
-        $this->iconCritical = $iconCritical;
-    }
-
-    /**
      * @return FontIcon|ImageIcon
      */
     public function getIconEnabled()
     {
         return $this->iconEnabled;
-    }
-
-    /**
-     * @param FontIcon|ImageIcon $iconEnabled
-     */
-    public function setIconEnabled($iconEnabled)
-    {
-        $this->iconEnabled = $iconEnabled;
     }
 
     /**
@@ -512,26 +440,10 @@ abstract class ThemeIconsBase implements ThemeIconsInterface
     }
 
     /**
-     * @param FontIcon|ImageIcon $iconNotices
-     */
-    public function setIconNotices($iconNotices)
-    {
-        $this->iconNotices = $iconNotices;
-    }
-
-    /**
      * @return FontIcon|ImageIcon
      */
     public function getIconRemove()
     {
         return $this->iconRemove;
-    }
-
-    /**
-     * @param FontIcon|ImageIcon $iconRemove
-     */
-    public function setIconRemove($iconRemove)
-    {
-        $this->iconRemove = $iconRemove;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $icons   SP\Core\UI\ThemeIconsBase
+ * @var $icons   SP\Core\UI\ThemeIcons
  * @var $this    \SP\Mvc\View\Template
  * @var $tabs    \SP\Mvc\View\Components\DataTab[]
  */

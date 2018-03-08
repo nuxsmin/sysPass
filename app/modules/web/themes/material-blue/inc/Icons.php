@@ -23,70 +23,58 @@
  *
  */
 
-namespace Theme;
-
 defined('APP_ROOT') || die();
 
-use SP\Core\UI\ThemeIconsBase;
+use SP\Core\UI\ThemeIcons;
 use SP\Html\Assets\FontIcon;
 
-/**
- * Class Icons con los iconos del tema visual
- *
- * @package Theme
- */
-class Icons extends ThemeIconsBase
-{
-    /**
-     * Establecer los iconos utilizados en el DataGrid
-     */
-    public function setIcons()
-    {
-        // Iconos de Acciones
-        $this->iconAdd = new FontIcon('add', 'mdl-color-text--indigo-A200', __u('Añadir'));
-        $this->iconView = new FontIcon('visibility', 'mdl-color-text--indigo-A200', __u('Ver Detalles'));
-        $this->iconViewPass = new FontIcon('lock_open', 'mdl-color-text--indigo-A200', __u('Ver Clave'));
-        $this->iconEdit = new FontIcon('mode_edit', 'mdl-color-text--amber-A200', __u('Editar'));
-        $this->iconDelete = new FontIcon('remove_circle', 'mdl-color-text--red-A200', __u('Eliminar'));
-        $this->iconEditPass = new FontIcon('lock_outline', 'mdl-color-text--amber-A200', __u('Cambiar Clave'));
-        $this->iconAppAdmin = new FontIcon('star', 'mdl-color-text--amber-A100', __u('Admin Aplicación'));
-        $this->iconAccAdmin = new FontIcon('star_half', 'mdl-color-text--amber-A100', __u('Admin Cuentas'));
-        $this->iconLdapUser = new FontIcon('business', 'mdl-color-text--deep-purple-A100', __u('Usuario de LDAP'));
-        $this->iconDisabled = new FontIcon('error', 'mdl-color-text--red-A100', __u('Deshabilitado'));
-        $this->iconEnabled = new FontIcon('check_circle', 'mdl-color-text--teal-500', __u('Habilitado'));
-        $this->iconRefresh = new FontIcon('refresh', 'mdl-color-text--teal-500', __u('Actualizar'));
-        $this->iconCopy = new FontIcon('content_copy', 'mdl-color-text--indigo-A200', __u('Copiar'));
-        $this->iconClipboard = new FontIcon('content_paste', 'mdl-color-text--indigo-A200');
-        $this->iconEmail = new FontIcon('email', 'mdl-color-text--indigo-A200', __u('Email'));
-        $this->iconOptional = new FontIcon('settings');
-        $this->iconPublicLink = new FontIcon('link', 'mdl-color-text--teal-500');
-        $this->iconBack = new FontIcon('arrow_back', 'mdl-color-text--indigo-A200', __u('Volver'));
-        $this->iconRestore = new FontIcon('restore', 'mdl-color-text--teal-500', __u('Restaurar'));
-        $this->iconSave = new FontIcon('save', 'mdl-color-text--teal-500', __u('Guardar'));
-        $this->iconHelp = new FontIcon('help_outline', 'mdl-color-text--indigo-A100', __u('Ayuda'));
-        $this->iconClear = new FontIcon('clear_all', 'mdl-color--indigo-A200', __u('Limpiar'));
-        $this->iconPlay = new FontIcon('play_circle_filled', 'mdl-color-text--teal-500', __u('Realizar'));
-        $this->iconDownload = new FontIcon('file_download', 'mdl-color-text--indigo-A200', __u('Descargar'));
-        $this->iconWarning = new FontIcon('warning', 'mdl-color-text--amber-A100', __u('Aviso'));
-        $this->iconCheck = new FontIcon('cached', 'mdl-color-text--indigo-A200', __u('Comprobar'));
-        $this->iconSearch = new FontIcon('search', 'mdl-color-text--indigo-A200', __u('Buscar'));
-        $this->iconAccount = new FontIcon('account_box', 'mdl-color-text--indigo-A200');
-        $this->iconGroup = new FontIcon('group_work', 'mdl-color-text--indigo-A200');
-        $this->iconSettings = new FontIcon('settings', 'mdl-color-text--indigo-A200', __u('Configuración'));
-        $this->iconHeadline = new FontIcon('view_headline', 'mdl-color-text--indigo-A200');
-        $this->iconInfo = new FontIcon('info_outline', 'mdl-color-text--indigo-A200', __u('Información'));
-        $this->iconCritical = new FontIcon('error_outline', 'mdl-color-text--red-A200', __u('Crítico'));
-        $this->iconNotices = new FontIcon('notifications', 'mdl-color-text--indigo-A200', __u('Notificaciones'));
-        $this->iconRemove = new FontIcon('remove', 'mdl-color-text--indigo-A200', __u('Eliminar'));
+$themeIcons = new ThemeIcons();
 
-        // Iconos de Navegación
-        $this->iconNavPrev = new FontIcon('chevron_left', null, __u('Página anterior'));
-        $this->iconNavNext = new FontIcon('chevron_right', null, __u('Página siguiente'));
-        $this->iconNavFirst = new FontIcon('arrow_back', null, __u('Primera página'));
-        $this->iconNavLast = new FontIcon('arrow_forward', null, __u('Última página'));
+// Iconos de Acciones
+$themeIcons->iconAdd = new FontIcon('add', 'mdl-color-text--indigo-A200', __u('Añadir'));
+$themeIcons->iconView = new FontIcon('visibility', 'mdl-color-text--indigo-A200', __u('Ver Detalles'));
+$themeIcons->iconViewPass = new FontIcon('lock_open', 'mdl-color-text--indigo-A200', __u('Ver Clave'));
+$themeIcons->iconEdit = new FontIcon('mode_edit', 'mdl-color-text--amber-A200', __u('Editar'));
+$themeIcons->iconDelete = new FontIcon('remove_circle', 'mdl-color-text--red-A200', __u('Eliminar'));
+$themeIcons->iconEditPass = new FontIcon('lock_outline', 'mdl-color-text--amber-A200', __u('Cambiar Clave'));
+$themeIcons->iconAppAdmin = new FontIcon('star', 'mdl-color-text--amber-A100', __u('Admin Aplicación'));
+$themeIcons->iconAccAdmin = new FontIcon('star_half', 'mdl-color-text--amber-A100', __u('Admin Cuentas'));
+$themeIcons->iconLdapUser = new FontIcon('business', 'mdl-color-text--deep-purple-A100', __u('Usuario de LDAP'));
+$themeIcons->iconDisabled = new FontIcon('error', 'mdl-color-text--red-A100', __u('Deshabilitado'));
+$themeIcons->iconEnabled = new FontIcon('check_circle', 'mdl-color-text--teal-500', __u('Habilitado'));
+$themeIcons->iconRefresh = new FontIcon('refresh', 'mdl-color-text--teal-500', __u('Actualizar'));
+$themeIcons->iconCopy = new FontIcon('content_copy', 'mdl-color-text--indigo-A200', __u('Copiar'));
+$themeIcons->iconClipboard = new FontIcon('content_paste', 'mdl-color-text--indigo-A200');
+$themeIcons->iconEmail = new FontIcon('email', 'mdl-color-text--indigo-A200', __u('Email'));
+$themeIcons->iconOptional = new FontIcon('settings');
+$themeIcons->iconPublicLink = new FontIcon('link', 'mdl-color-text--teal-500');
+$themeIcons->iconBack = new FontIcon('arrow_back', 'mdl-color-text--indigo-A200', __u('Volver'));
+$themeIcons->iconRestore = new FontIcon('restore', 'mdl-color-text--teal-500', __u('Restaurar'));
+$themeIcons->iconSave = new FontIcon('save', 'mdl-color-text--teal-500', __u('Guardar'));
+$themeIcons->iconHelp = new FontIcon('help_outline', 'mdl-color-text--indigo-A100', __u('Ayuda'));
+$themeIcons->iconClear = new FontIcon('clear_all', 'mdl-color--indigo-A200', __u('Limpiar'));
+$themeIcons->iconPlay = new FontIcon('play_circle_filled', 'mdl-color-text--teal-500', __u('Realizar'));
+$themeIcons->iconDownload = new FontIcon('file_download', 'mdl-color-text--indigo-A200', __u('Descargar'));
+$themeIcons->iconWarning = new FontIcon('warning', 'mdl-color-text--amber-A100', __u('Aviso'));
+$themeIcons->iconCheck = new FontIcon('cached', 'mdl-color-text--indigo-A200', __u('Comprobar'));
+$themeIcons->iconSearch = new FontIcon('search', 'mdl-color-text--indigo-A200', __u('Buscar'));
+$themeIcons->iconAccount = new FontIcon('account_box', 'mdl-color-text--indigo-A200');
+$themeIcons->iconGroup = new FontIcon('group_work', 'mdl-color-text--indigo-A200');
+$themeIcons->iconSettings = new FontIcon('settings', 'mdl-color-text--indigo-A200', __u('Configuración'));
+$themeIcons->iconHeadline = new FontIcon('view_headline', 'mdl-color-text--indigo-A200');
+$themeIcons->iconInfo = new FontIcon('info_outline', 'mdl-color-text--indigo-A200', __u('Información'));
+$themeIcons->iconCritical = new FontIcon('error_outline', 'mdl-color-text--red-A200', __u('Crítico'));
+$themeIcons->iconNotices = new FontIcon('notifications', 'mdl-color-text--indigo-A200', __u('Notificaciones'));
+$themeIcons->iconRemove = new FontIcon('remove', 'mdl-color-text--indigo-A200', __u('Eliminar'));
 
-        // Iconos de Ordenación
-        $this->iconUp = new FontIcon('arrow_drop_up');
-        $this->iconDown = new FontIcon('arrow_drop_down');
-    }
-}
+// Iconos de Navegación
+$themeIcons->iconNavPrev = new FontIcon('chevron_left', null, __u('Página anterior'));
+$themeIcons->iconNavNext = new FontIcon('chevron_right', null, __u('Página siguiente'));
+$themeIcons->iconNavFirst = new FontIcon('arrow_back', null, __u('Primera página'));
+$themeIcons->iconNavLast = new FontIcon('arrow_forward', null, __u('Última página'));
+
+// Iconos de Ordenación
+$themeIcons->iconUp = new FontIcon('arrow_drop_up');
+$themeIcons->iconDown = new FontIcon('arrow_drop_down');
+
+return $themeIcons;

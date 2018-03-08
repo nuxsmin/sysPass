@@ -1,6 +1,6 @@
 <?php
 /** @var  \SP\DataModel\CategoryData $category */
-/** @var  \SP\Core\UI\ThemeIconsBase $icons */
+/** @var  \SP\Core\UI\ThemeIcons $icons */
 ?>
 <div id="box-popup" class="box-password-view">
     <?php if (!$isLinked): ?>

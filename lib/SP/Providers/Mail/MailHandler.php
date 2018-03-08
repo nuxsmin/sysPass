@@ -29,6 +29,7 @@ use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
 use SP\Providers\Provider;
 use SP\Services\MailService;
+use SP\Util\HttpUtil;
 use SplSubject;
 
 /**
@@ -72,16 +73,19 @@ class MailHandler extends Provider implements EventReceiver
      * Evento de actualización
      *
      * @param string $eventType Nombre del evento
-     * @param Event $event Objeto del evento
+     * @param Event  $event     Objeto del evento
      */
     public function updateEvent($eventType, Event $event)
     {
         if (($eventMessage = $event->getEventMessage()) !== null) {
             try {
                 $configData = $this->config->getConfigData();
+                $userData = $this->session->getUserData();
 
                 $mailMessage = new MailMessage();
-                $mailMessage->setDescription($eventMessage->getDescriptionRaw());
+                $mailMessage->addDescription($eventMessage->composeText());
+                $mailMessage->addDescription(sprintf(__('Realizado por: %s (%s)'), $userData->getName(), $userData->getLogin()));
+                $mailMessage->addDescription(sprintf(__('Dirección IP: %s'), HttpUtil::getClientAddress(true)));
 
                 $this->mailService->send($eventMessage->getDescription(), $configData->getMailFrom(), $mailMessage);
             } catch (\Exception $e) {

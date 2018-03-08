@@ -5,7 +5,7 @@
  * @var $this              \SP\Mvc\View\Template
  * @var $action            \SP\Html\DataGrid\DataGridActionBase
  * @var $actionMenu        \SP\Html\DataGrid\DataGridActionBase
- * @var $icons             \SP\Core\UI\ThemeIconsBase
+ * @var $icons             \SP\Core\UI\ThemeIcons
  */
 ?>
 <div id="data-search">

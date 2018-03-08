@@ -28,7 +28,7 @@ use SP\Account\AccountAcl;
 use SP\Account\AccountSearchItem;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\UI\ThemeIconsBase;
+use SP\Core\UI\ThemeIcons;
 use SP\Html\DataGrid\DataGridAction;
 use SP\Html\DataGrid\DataGridActionType;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
@@ -41,7 +41,7 @@ use SP\Modules\Web\Controllers\Helpers\HelperBase;
 class AccountActionsHelper extends HelperBase
 {
     /**
-     * @var ThemeIconsBase
+     * @var ThemeIcons
      */
     protected $icons;
     /**

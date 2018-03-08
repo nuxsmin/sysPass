@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $icons \SP\Core\UI\ThemeIconsBase
+ * @var $icons \SP\Core\UI\ThemeIcons
  */
 ?>
 <?php if (count($errors) > 0): ?>

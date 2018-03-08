@@ -27,6 +27,7 @@ namespace SP\Core\UI;
 use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Session\Session;
 use SP\Storage\FileCache;
 use SP\Storage\FileException;
@@ -67,7 +68,7 @@ class Theme implements ThemeInterface
      */
     protected $viewsPath = '';
     /**
-     * @var ThemeIconsBase
+     * @var ThemeIcons
      */
     protected $icons;
     /**
@@ -90,9 +91,10 @@ class Theme implements ThemeInterface
     /**
      * Theme constructor.
      *
-     * @param         $module
-     * @param Config $config
-     * @param Session $session
+     * @param string    $module
+     * @param Config    $config
+     * @param Session   $session
+     * @param FileCache $fileCache
      */
     public function __construct($module, Config $config, Session $session, FileCache $fileCache)
     {
@@ -151,6 +153,7 @@ class Theme implements ThemeInterface
      * Inicializar los iconos del tema actual
      *
      * @return ThemeIconsInterface
+     * @throws InvalidClassException
      */
     protected function initIcons()
     {
@@ -169,9 +172,9 @@ class Theme implements ThemeInterface
         $iconsClass = $this->themePathFull . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'Icons.php';
 
         if (file_exists($iconsClass)) {
-            require $iconsClass;
-
-            $this->icons = new Icons();
+            if (!($this->icons = require $iconsClass) instanceof ThemeIcons) {
+                throw new InvalidClassException(__u('Clase no válida para iconos'));
+            }
 
             try {
                 $this->fileCache->save(self::ICONS_CACHE_FILE, $this->icons);
@@ -260,7 +263,7 @@ class Theme implements ThemeInterface
     }
 
     /**
-     * @return ThemeIconsBase
+     * @return ThemeIcons
      */
     public function getIcons()
     {

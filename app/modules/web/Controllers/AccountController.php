@@ -34,7 +34,7 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\Session\Session;
-use SP\Core\UI\ThemeIconsBase;
+use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
@@ -70,7 +70,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      */
     protected $accountService;
     /**
-     * @var ThemeIconsBase
+     * @var ThemeIcons
      */
     protected $icons;
 

@@ -3,7 +3,7 @@
  * @var $data    SP\Html\DataGrid\DataGridTab
  * @var $account SP\Account\AccountSearchItem
  * @var $this    \SP\Mvc\View\Template
- * @var $icons   \SP\Core\UI\ThemeIconsBase
+ * @var $icons   \SP\Core\UI\ThemeIcons
  */
 ?>
 <div id="searchbox" class="round5 shadow">

@@ -37,6 +37,7 @@ use SP\Util\Util;
 
 /**
  * Class MailService
+ *
  * @package SP\Services
  */
 class MailService extends Service
@@ -54,7 +55,7 @@ class MailService extends Service
      * Checks mail params by sending a test email
      *
      * @param MailParams $mailParams
-     * @param string $to
+     * @param string     $to
      * @throws ServiceException
      */
     public function check(MailParams $mailParams, $to)
@@ -111,8 +112,8 @@ class MailService extends Service
     }
 
     /**
-     * @param string $subject
-     * @param string $to
+     * @param string      $subject
+     * @param string      $to
      * @param MailMessage $mailMessage
      * @throws ServiceException
      */
@@ -134,10 +135,12 @@ class MailService extends Service
         try {
             $this->mailer->send();
 
-            $this->eventDispatcher->notifyEvent('send.mail', new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Correo enviado'))
-                        ->addDetail(__u('Destinatario'), implode(',', $this->mailer->getToAddresses())))
+            $this->eventDispatcher->notifyEvent('send.mail',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Correo enviado'))
+                    ->addDetail(__u('Destinatario'), implode(',', array_map(function ($value) {
+                        return $value[0];
+                    }, $this->mailer->getToAddresses()))))
             );
         } catch (\Exception $e) {
             processException($e);
@@ -149,8 +152,8 @@ class MailService extends Service
     }
 
     /**
-     * @param string $subject
-     * @param array $to
+     * @param string      $subject
+     * @param array       $to
      * @param MailMessage $mailMessage
      * @throws ServiceException
      */

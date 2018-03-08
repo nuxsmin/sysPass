@@ -1,4 +1,4 @@
-<?php /** @var \SP\Core\UI\ThemeIconsBase $icons */
+<?php /** @var \SP\Core\UI\ThemeIcons $icons */
     /** @var \SP\Html\Assets\IconInterface $userType */
     if ($useLayout === true): ?>
     </div> <!-- Close mdl-layout -->

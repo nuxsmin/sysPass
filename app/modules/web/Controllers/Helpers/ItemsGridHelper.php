@@ -28,7 +28,7 @@ defined('APP_ROOT') || die();
 
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
-use SP\Core\UI\ThemeIconsBase;
+use SP\Core\UI\ThemeIcons;
 use SP\DataModel\ItemSearchData;
 use SP\Html\Assets\FontIcon;
 use SP\Html\DataGrid\DataGrid;
@@ -52,7 +52,7 @@ class ItemsGridHelper extends HelperBase
 {
     protected $queryTimeStart;
     /**
-     * @var ThemeIconsBase
+     * @var ThemeIcons
      */
     protected $icons;
     /**

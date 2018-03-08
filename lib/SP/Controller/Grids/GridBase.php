@@ -27,7 +27,7 @@ namespace SP\Controller\Grids;
 use SP\Config\ConfigData;
 use SP\Core\Session\Session;
 use SP\Core\UI\Theme;
-use SP\Core\UI\ThemeIconsBase;
+use SP\Core\UI\ThemeIcons;
 use SP\Html\DataGrid\DataGridActionSearch;
 use SP\Html\DataGrid\DataGridPager;
 
@@ -39,7 +39,7 @@ use SP\Html\DataGrid\DataGridPager;
 abstract class GridBase
 {
     /**
-     * @var ThemeIconsBase
+     * @var ThemeIcons
      */
     protected $icons;
     /**

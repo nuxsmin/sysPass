@@ -1,6 +1,6 @@
 <?php
 /** @var $tag \SP\DataModel\TagData */
-/** @var $icons \SP\Core\UI\ThemeIconsBase */
+/** @var $icons \SP\Core\UI\ThemeIcons */
 ?>
 <div id="box-popup">
     <h2 class="center"><?php echo $header; ?><i class="btn-popup-close material-icons">close</i></h2>

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -48,7 +48,7 @@ class MailMessage extends MessageBase implements MessageInterface
     {
         $message[] = '<div class="mail-message" style="font-family: Helvetica, Arial, sans-serif">';
         $message[] = '<h3>' . $this->title . '</h3>';
-        $message[] = '<div class="mail-description">' . implode('<br>', $this->description) . '</div>';
+        $message[] = '<div class="mail-description">' . nl2br(implode('<br>', $this->getDescription())) . '</div>';
         $message[] = '<footer>' . implode('<br>', $this->footer) . '</footer>';
         $message[] = '</div>';
 

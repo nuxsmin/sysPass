@@ -1,7 +1,7 @@
 <?php
 /** @var \SP\Account\AccountAcl $accountAcl */
 /** @var \SP\DataModel\AccountExtData $accountData */
-/** @var $icons \SP\Core\UI\ThemeIconsBase */
+/** @var $icons \SP\Core\UI\ThemeIcons */
 ?>
 
 <fieldset class="data round">
