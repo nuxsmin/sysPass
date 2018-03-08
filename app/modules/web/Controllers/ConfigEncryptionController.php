@@ -37,11 +37,11 @@ use SP\Core\TaskFactory;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
-use SP\Providers\Mail\MailProvider;
 use SP\Services\Config\ConfigService;
 use SP\Services\Crypt\MasterPassService;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Crypt\UpdateMasterPassRequest;
+use SP\Services\MailService;
 use SP\Services\User\UserService;
 use SP\Util\Util;
 
@@ -206,7 +206,7 @@ class ConfigEncryptionController extends SimpleControllerBase
                         return $value->email;
                     }, $this->dic->get(UserService::class)->getUserEmailForGroup($groupId));
 
-                    $this->dic->get(MailProvider::class)->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
+                    $this->dic->get(MailService::class)->sendBatch($mailMessage->getTitle(), $emails, $mailMessage);
 
                     $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clave Temporal Generada'), [__u('Email enviado')]);
                 } catch (\Exception $e) {

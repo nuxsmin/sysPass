@@ -842,6 +842,20 @@ sysPass.Actions = function (Common) {
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
             });
+        },
+        mailCheck: function ($obj) {
+            log.info("config:mailCheck");
+
+            const $form = $($obj.data("src"));
+            $form.find("[name='sk']").val(Common.sk.get());
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + '?r=' + $obj.data("action-route");
+            opts.data = $form.serialize();
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                Common.msg.out(json);
+            });
         }
     };
 

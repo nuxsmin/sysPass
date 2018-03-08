@@ -250,6 +250,10 @@ class ConfigData implements JsonSerializable
      */
     private $mailUser;
     /**
+     * @var array
+     */
+    private $mailRecipients = [];
+    /**
      * @var bool
      */
     private $maintenance = false;
@@ -1928,5 +1932,21 @@ class ConfigData implements JsonSerializable
     public function setSsoDefaultProfile($ssoDefaultProfile)
     {
         $this->ssoDefaultProfile = $ssoDefaultProfile;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMailRecipients()
+    {
+        return (array)$this->mailRecipients;
+    }
+
+    /**
+     * @param array $mailRecipients
+     */
+    public function setMailRecipients(array $mailRecipients)
+    {
+        $this->mailRecipients = $mailRecipients;
     }
 }

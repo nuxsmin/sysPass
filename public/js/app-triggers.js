@@ -25,6 +25,9 @@ sysPass.Triggers = function (Common) {
     "use strict";
 
     const log = Common.log;
+    const regex = {
+        email: "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
+    };
 
     // Detectar los campos select y añadir funciones
     const selectDetect = function ($container) {
@@ -70,6 +73,17 @@ sysPass.Triggers = function (Common) {
         $container.find("#wikifilter").selectize({
             create: true,
             createFilter: new RegExp("^[a-z0-9:._-]+$", "i"),
+            plugins: ["remove_button"]
+        });
+
+        $container.find(".select-items-tag").selectize({
+            create: function (input) {
+                return {
+                    value: input.toLowerCase(),
+                    text: input.toLowerCase()
+                };
+            },
+            createFilter: new RegExp(regex.email),
             plugins: ["remove_button"]
         });
     };

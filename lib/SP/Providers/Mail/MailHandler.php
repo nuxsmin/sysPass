@@ -28,6 +28,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
 use SP\Providers\Provider;
+use SP\Services\MailService;
 use SplSubject;
 
 /**
@@ -51,9 +52,9 @@ class MailHandler extends Provider implements EventReceiver
     ];
 
     /**
-     * @var MailProvider
+     * @var MailService
      */
-    protected $mailProvider;
+    protected $mailService;
     /**
      * @var string
      */
@@ -71,7 +72,7 @@ class MailHandler extends Provider implements EventReceiver
      * Evento de actualización
      *
      * @param string $eventType Nombre del evento
-     * @param Event  $event     Objeto del evento
+     * @param Event $event Objeto del evento
      */
     public function updateEvent($eventType, Event $event)
     {
@@ -82,7 +83,7 @@ class MailHandler extends Provider implements EventReceiver
                 $mailMessage = new MailMessage();
                 $mailMessage->setDescription($eventMessage->getDescriptionRaw());
 
-                $this->mailProvider->send($eventMessage->getDescription(), $configData->getMailFrom(), $mailMessage);
+                $this->mailService->send($eventMessage->getDescription(), $configData->getMailFrom(), $mailMessage);
             } catch (\Exception $e) {
                 processException($e);
             }
@@ -126,7 +127,7 @@ class MailHandler extends Provider implements EventReceiver
 
     protected function initialize()
     {
-        $this->mailProvider = $this->dic->get(MailProvider::class);
+        $this->mailService = $this->dic->get(MailService::class);
 
         $this->events = str_replace('.', '\\.', implode('|', self::EVENTS));
     }

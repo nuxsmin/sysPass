@@ -52,6 +52,19 @@ class ConfigUtil
     }
 
     /**
+     * Adaptador para convertir una cadena de direcciones de email a un array
+     *
+     * @param $mailAddresses
+     * @return array
+     */
+    public static function mailAddressesAdapter($mailAddresses)
+    {
+        return array_map(function ($value) {
+            return filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : null;
+        }, explode(',', $mailAddresses));
+    }
+
+    /**
      * Comprobar el archivo de configuración.
      * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.
      *

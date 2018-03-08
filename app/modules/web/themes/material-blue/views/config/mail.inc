@@ -1,4 +1,9 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php
+/**
+ * @var \Theme\Icons $icons
+ * @var \SP\Config\ConfigData $configData
+ */
+?>
 
 <div id="title" class="midroundup titleNormal">
     <?php echo __('Correo'); ?>
@@ -17,6 +22,25 @@
                            name="mail_enabled"
                         <?php echo $configData->isMailEnabled() ? 'checked' : ''; ?>/>
                     <span class="mdl-switch__label"><?php echo __('Habilitar notificaciones de correo'); ?></span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td class="descField">
+                <div id="help-mail_requestsenabled"
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                <div class="mdl-tooltip mdl-tooltip--large" for="help-mail_requestsenabled">
+                    <p>
+                        <?php echo __('Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos.'); ?>
+                    </p>
+                </div>
+            </td>
+            <td class="valField">
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_requestsenabled">
+                    <input type="checkbox" id="mail_requestsenabled"
+                           class="mdl-switch__input mdl-color-text--indigo-400"
+                           name="mail_requestsenabled" <?php echo $configData->isMailRequestsEnabled() ? 'checked' : ''; ?>/>
+                    <span class="mdl-switch__label"><?php echo __('Habilitar peticiones por correo'); ?></span>
                 </label>
             </td>
         </tr>
@@ -115,21 +139,13 @@
         </tr>
         <tr>
             <td class="descField">
-                <div id="help-mail_requestsenabled"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-mail_requestsenabled">
-                    <p>
-                        <?php echo __('Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos.'); ?>
-                    </p>
-                </div>
+                <?php echo __('Destinatarios'); ?>
             </td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_requestsenabled">
-                    <input type="checkbox" id="mail_requestsenabled"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="mail_requestsenabled" <?php echo $configData->isMailRequestsEnabled() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Habilitar peticiones por correo'); ?></span>
-                </label>
+                <div class="lowres-title"><?php echo __('Destinatarios'); ?></div>
+
+                <input type="text" name="mail_recipients" id="mail_recipients" class="select-items-tag"
+                       value="<?php echo implode(',', $configData->getMailRecipients()); ?>"/>
             </td>
         </tr>
     </table>
@@ -140,6 +156,16 @@
 
 <div class="tab-actions">
     <ul>
+        <li>
+            <button type="button"
+                    class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconCheck()->getClassButton(); ?>"
+                    data-onclick="config/mailCheck"
+                    data-action-route="configMail/check"
+                    data-src="#frmMail"
+                    title="<?php echo $icons->getIconCheck()->getTitle(); ?>">
+                <i class="material-icons"><?php echo $icons->getIconCheck()->getIcon(); ?></i>
+            </button>
+        </li>
         <li>
             <button id="btnBack" type="button"
                     class="btn-back mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconBack()->getClassButton(); ?>"

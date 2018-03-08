@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Config\ConfigUtil;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
@@ -32,7 +33,7 @@ use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\ConfigTrait;
 use SP\Providers\Mail\MailParams;
-use SP\Providers\Mail\MailProvider;
+use SP\Services\MailService;
 
 /**
  * Class ConfigMailController
@@ -61,9 +62,10 @@ class ConfigMailController extends SimpleControllerBase
         $mailFrom = Request::analyzeEmail('mail_from');
         $mailRequests = Request::analyzeBool('mail_requestsenabled', false);
         $mailAuth = Request::analyzeBool('mail_authenabled', false);
+        $mailRecipients = ConfigUtil::mailAddressesAdapter(Request::analyzeString('mail_recipients'));
 
         // Valores para la configuración del Correo
-        if ($mailEnabled && (!$mailServer || !$mailFrom)) {
+        if ($mailEnabled && (!$mailServer || !$mailFrom || count($mailRecipients) === 0)) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Correo'));
         }
 
@@ -74,6 +76,7 @@ class ConfigMailController extends SimpleControllerBase
             $configData->setMailPort($mailPort);
             $configData->setMailSecurity($mailSecurity);
             $configData->setMailFrom($mailFrom);
+            $configData->setMailRecipients($mailRecipients);
 
             if ($mailAuth) {
                 $configData->setMailAuthenabled($mailAuth);
@@ -97,29 +100,50 @@ class ConfigMailController extends SimpleControllerBase
         });
     }
 
+    /**
+     * checkAction
+     */
     public function checkAction()
     {
         $mailParams = new MailParams();
-
-        // Mail
         $mailParams->server = Request::analyzeString('mail_server');
         $mailParams->port = Request::analyzeInt('mail_port', 25);
         $mailParams->security = Request::analyzeString('mail_security');
         $mailParams->from = Request::analyzeEmail('mail_from');
         $mailParams->mailAuthenabled = Request::analyzeBool('mail_authenabled', false);
+        $mailRecipients = ConfigUtil::mailAddressesAdapter(Request::analyzeString('mail_recipients'));
 
         // Valores para la configuración del Correo
-        if (!$mailParams->server || !$mailParams->from) {
+        if (!$mailParams->server || empty($mailParams->from) || empty($mailRecipients)) {
             $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Faltan parámetros de Correo'));
         }
-
 
         if ($mailParams->mailAuthenabled) {
             $mailParams->user = Request::analyzeString('mail_user');
             $mailParams->pass = Request::analyzeEncrypted('mail_pass');
         }
 
-        $mailProvider = $this->dic->get(MailProvider::class);
+        try {
+            $this->dic->get(MailService::class)->check($mailParams, $mailRecipients[0]);
+
+            $this->eventDispatcher->notifyEvent('send.mail.check',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Correo enviado'))
+                    ->addDetail(__u('Destinatario'), $mailRecipients[0]))
+            );
+
+            $this->returnJsonResponse(
+                JsonResponse::JSON_SUCCESS,
+                __u('Correo enviado'),
+                [__u('Compruebe su buzón de correo')]
+            );
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notifyEvent('exception', new Event($e));
+
+            $this->returnJsonResponseException($e);
+        }
     }
 
     protected function initialize()

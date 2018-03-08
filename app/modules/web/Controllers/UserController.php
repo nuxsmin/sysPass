@@ -38,7 +38,7 @@ use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\UserForm;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Providers\Mail\MailProvider;
+use SP\Services\MailService;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserPassRecover\UserPassRecoverService;
@@ -312,7 +312,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
     {
         if ($userData->isChangePass()) {
             $hash = $this->dic->get(UserPassRecoverService::class)->requestForUserId($userData->getId());
-            $this->dic->get(MailProvider::class)->send(__('Cambio de Clave'), $userData->getEmail(), UserPassRecoverService::getMailMessage($hash));
+            $this->dic->get(MailService::class)->send(__('Cambio de Clave'), $userData->getEmail(), UserPassRecoverService::getMailMessage($hash));
 
 //            $this->returnJsonResponse(
 //                JsonResponse::JSON_WARNING,
