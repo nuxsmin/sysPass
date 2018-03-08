@@ -38,6 +38,8 @@ use SP\Repositories\Account\AccountToUserRepository;
 use SP\Services\Service;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
+use SP\Storage\FileCache;
+use SP\Storage\FileException;
 
 defined('APP_ROOT') || die();
 
@@ -50,6 +52,8 @@ class AccountSearchService extends Service
      * Regex filter for special searching
      */
     const FILTERS_REGEX = '^(?:(?P<filter>user|group|file|owner|maingroup|expired|private):(?:"(?P<text>[\w\.]+)")?)$';
+
+    const COLORS_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'colors.cache';
 
     /**
      * Colores para resaltar las cuentas
@@ -89,6 +93,14 @@ class AccountSearchService extends Service
      * @var AccountToUserGroupRepository
      */
     protected $accountToUserGroupRepository;
+    /**
+     * @var FileCache
+     */
+    protected $fileCache;
+    /**
+     * @var array
+     */
+    protected $accountColor;
     /**
      * @var AccountRepository
      */
@@ -276,23 +288,26 @@ class AccountSearchService extends Service
      * Seleccionar un color para la cuenta
      *
      * @param int $id El id del elemento a asignar
-     * @return mixed
+     * @return string
      */
     private function pickAccountColor($id)
     {
-        $accountColor = $this->session->getAccountColor();
-
-        if (!is_array($accountColor)
-            || !isset($accountColor[$id])
-        ) {
-            // Se asigna el color de forma aleatoria a cada id
-            $color = array_rand(self::COLORS);
-
-            $accountColor[$id] = '#' . self::COLORS[$color];
-            $this->session->setAccountColor($accountColor);
+        if ($this->accountColor !== null && isset($this->accountColor[$id])) {
+            return $this->accountColor[$id];
         }
 
-        return $accountColor[$id];
+        // Se asigna el color de forma aleatoria a cada id
+        $this->accountColor[$id] = '#' . self::COLORS[array_rand(self::COLORS)];
+
+        try {
+            $this->fileCache->save(self::COLORS_FILE, $this->accountColor);
+
+            return $this->accountColor[$id];
+        } catch (FileException $e) {
+            processException($e);
+
+            return '';
+        }
     }
 
     /**
@@ -305,6 +320,21 @@ class AccountSearchService extends Service
         $this->accountToTagRepository = $this->dic->get(AccountToTagRepository::class);
         $this->accountToUserRepository = $this->dic->get(AccountToUserRepository::class);
         $this->accountToUserGroupRepository = $this->dic->get(AccountToUserGroupRepository::class);
+        $this->fileCache = $this->dic->get(FileCache::class);
         $this->configData = $this->config->getConfigData();
+
+        $this->loadColors();
+    }
+
+    /**
+     * Load colors from cache
+     */
+    private function loadColors()
+    {
+        try {
+            $this->accountColor = $this->fileCache->load(self::COLORS_FILE);
+        } catch (FileException $e) {
+            processException($e);
+        }
     }
 }
