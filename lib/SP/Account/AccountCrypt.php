@@ -27,11 +27,11 @@ namespace SP\Account;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\OldCrypt;
-use SP\Core\Session\Session;
 use SP\Core\TaskFactory;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\AccountData;
@@ -58,7 +58,7 @@ class AccountCrypt
      */
     protected $configData;
     /**
-     * @var Session
+     * @var SessionContext
      */
     protected $session;
     /**
@@ -77,9 +77,9 @@ class AccountCrypt
     /**
      * @param Config  $config
      * @param Log     $log
-     * @param Session $session
+     * @param SessionContext $session
      */
-    public function inject(Config $config, Log $log, Session $session)
+    public function inject(Config $config, Log $log, SessionContext $session)
     {
         $this->config = $config;
         $this->configData = $config->getConfigData();

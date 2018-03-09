@@ -26,7 +26,7 @@ namespace SP\Modules\Web\Controllers;
 
 use DI\Container;
 use Klein\Klein;
-use SP\Core\Session\Session;
+use SP\Core\Context\SessionContext;
 use SP\Core\Task;
 use SP\Core\TaskFactory;
 use SP\Services\ServiceException;
@@ -63,7 +63,7 @@ class TaskController
      */
     public function runTaskAction($taskId)
     {
-        Session::close();
+        SessionContext::close();
 
         $router = $this->container->get(Klein::class);
         $router->response()->header('Content-Type', 'text/event-stream');

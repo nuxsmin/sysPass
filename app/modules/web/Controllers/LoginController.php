@@ -24,9 +24,9 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Http\Request;
@@ -98,7 +98,7 @@ class LoginController extends ControllerBase
 
             SessionUtil::cleanSession();
 
-            $this->session->setAppStatus(Session::APP_STATUS_LOGGEDOUT);
+            $this->session->setAppStatus(SessionContext::APP_STATUS_LOGGEDOUT);
 
             $layoutHelper = $this->dic->get(LayoutHelper::class);
             $layoutHelper->getCustomLayout('logout', 'logout');

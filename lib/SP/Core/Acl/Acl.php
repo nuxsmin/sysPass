@@ -25,10 +25,10 @@
 
 namespace SP\Core\Acl;
 
+use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
-use SP\Core\Session\Session;
 
 defined('APP_ROOT') || die();
 
@@ -42,7 +42,7 @@ class Acl implements ActionsInterface
      */
     protected static $action;
     /**
-     * @var Session
+     * @var SessionContext
      */
     private $session;
     /**
@@ -53,11 +53,11 @@ class Acl implements ActionsInterface
     /**
      * Acl constructor.
      *
-     * @param Session         $session
+     * @param SessionContext         $session
      * @param EventDispatcher $eventDispatcher
      * @param Actions|null    $action
      */
-    public function __construct(Session $session, EventDispatcher $eventDispatcher, Actions $action = null)
+    public function __construct(SessionContext $session, EventDispatcher $eventDispatcher, Actions $action = null)
     {
         $this->session = $session;
         $this->eventDispatcher = $eventDispatcher;

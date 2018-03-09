@@ -28,12 +28,12 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Vault;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\Session\Session;
 use SP\Core\UI\ThemeIcons;
 use SP\DataModel\AccountExtData;
 use SP\Http\JsonResponse;
@@ -869,7 +869,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $this->checkLoggedIn();
         }
 
-        if (DEBUG === true && $this->session->getAppStatus() === Session::APP_STATUS_RELOADED) {
+        if (DEBUG === true && $this->session->getAppStatus() === SessionContext::APP_STATUS_RELOADED) {
             $this->session->resetAppStatus();
 
             // Reset de los datos de ACL de cuentas

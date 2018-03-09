@@ -25,7 +25,7 @@
 namespace SP\Controller\Grids;
 
 use SP\Config\ConfigData;
-use SP\Core\Session\Session;
+use SP\Core\Context\SessionContext;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeIcons;
 use SP\Html\DataGrid\DataGridActionSearch;
@@ -66,9 +66,9 @@ abstract class GridBase
     /**
      * Grids constructor.
      * @param Theme $theme
-     * @param Session $session
+     * @param SessionContext $session
      */
-    public function __construct(Theme $theme, Session $session)
+    public function __construct(Theme $theme, SessionContext $session)
     {
         $this->sk = $session->getSecurityKey();
         $this->icons = $this->theme->getIcons();

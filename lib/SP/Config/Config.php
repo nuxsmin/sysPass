@@ -26,8 +26,8 @@ namespace SP\Config;
 
 use DI\Container;
 use ReflectionObject;
+use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\ConfigException;
-use SP\Core\Session\Session;
 use SP\Services\Config\ConfigBackupService;
 use SP\Storage\XmlFileStorageInterface;
 use SP\Storage\XmlHandler;
@@ -52,7 +52,7 @@ class Config
      */
     private $fileStorage;
     /**
-     * @var Session
+     * @var SessionContext
      */
     private $session;
     /**
@@ -64,13 +64,13 @@ class Config
      * Config constructor.
      *
      * @param XmlFileStorageInterface $fileStorage
-     * @param Session                 $session
+     * @param SessionContext                 $session
      * @param Container               $dic
      * @throws ConfigException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct(XmlFileStorageInterface $fileStorage, Session $session, Container $dic)
+    public function __construct(XmlFileStorageInterface $fileStorage, SessionContext $session, Container $dic)
     {
         $this->session = $session;
         $this->fileStorage = $fileStorage;

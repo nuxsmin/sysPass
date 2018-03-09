@@ -28,10 +28,10 @@ use Defuse\Crypto\Core;
 use Defuse\Crypto\Encoding;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
+use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Install\Installer;
-use SP\Core\Session\Session;
 use SP\Core\SessionFactory;
 use SP\Html\Html;
 use SP\Log\Log;
@@ -760,11 +760,11 @@ class Util
     /**
      * Comprobar si el usuario está logado.
      *
-     * @param Session $session
+     * @param SessionContext $session
      * @return bool
      * @internal param Database $db
      */
-    public static function isLoggedIn(Session $session)
+    public static function isLoggedIn(SessionContext $session)
     {
         $userData = $session->getUserData();
 

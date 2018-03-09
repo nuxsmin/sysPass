@@ -26,8 +26,8 @@ namespace SP\Controller;
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Context\SessionContext;
 use SP\Core\Messages\LogMessage;
-use SP\Core\Session\Session;
 use SP\Core\SessionUtil;
 use SP\Core\Traits\InjectableTrait;
 use SP\Http\JsonResponse;
@@ -69,7 +69,7 @@ trait RequestControllerTrait
      * @var LogMessage
      */
     protected $LogMessage;
-    /** @var  Session */
+    /** @var  SessionContext */
     protected $session;
     /** @var  Config */
     protected $Config;
@@ -77,10 +77,10 @@ trait RequestControllerTrait
     protected $ConfigData;
 
     /**
-     * @param Session $session
+     * @param SessionContext $session
      * @param Config  $config
      */
-    final public function inject(Session $session, Config $config)
+    final public function inject(SessionContext $session, Config $config)
     {
         $this->session = $session;
         $this->Config = $config;

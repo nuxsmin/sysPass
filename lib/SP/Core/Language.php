@@ -26,7 +26,7 @@ namespace SP\Core;
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
-use SP\Core\Session\Session;
+use SP\Core\Context\SessionContext;
 use SP\Http\Request;
 
 defined('APP_ROOT') || die();
@@ -82,17 +82,17 @@ class Language
      */
     protected $configData;
     /**
-     * @var  Session
+     * @var  SessionContext
      */
     protected $session;
 
     /**
      * Language constructor.
      *
-     * @param Session $session
+     * @param SessionContext $session
      * @param Config $config
      */
-    public function __construct(Session $session, Config $config)
+    public function __construct(SessionContext $session, Config $config)
     {
         $this->session = $session;
         $this->configData = $config->getConfigData();

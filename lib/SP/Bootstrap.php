@@ -33,6 +33,7 @@ use RuntimeException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigUtil;
+use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\SecureKeyCookie;
 use SP\Core\Crypt\Session as CryptSession;
@@ -42,7 +43,6 @@ use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
-use SP\Core\Session\Session;
 use SP\Core\UI\Theme;
 use SP\Core\Upgrade\Upgrade;
 use SP\Http\Request;
@@ -103,7 +103,7 @@ class Bootstrap
      */
     protected $upgrade;
     /**
-     * @var Session
+     * @var SessionContext
      */
     protected $session;
     /**
@@ -140,7 +140,7 @@ class Bootstrap
 
         $this->config = $container->get(Config::class);
         $this->configData = $this->config->getConfigData();
-        $this->session = $container->get(Session::class);
+        $this->session = $container->get(SessionContext::class);
         $this->theme = $container->get(Theme::class);
         $this->router = $container->get(Klein::class);
         $this->language = $container->get(Language::class);
@@ -209,7 +209,7 @@ class Bootstrap
                         $this->initializeApp();
                     } else {
                         // Do not keep the PHP's session opened
-                        Session::close();
+                        SessionContext::close();
                     }
 
                     debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
@@ -282,7 +282,7 @@ class Bootstrap
         } else {
             debugLog('Browser reload');
 
-            $this->session->setAppStatus(Session::APP_STATUS_RELOADED);
+            $this->session->setAppStatus(SessionContext::APP_STATUS_RELOADED);
 
             // Cargar la configuración
             $this->config->loadConfig(true);
@@ -441,17 +441,18 @@ class Bootstrap
      */
     private function initSession($encrypt = false)
     {
-        if ($encrypt === true) {
-            if (($key = SecureKeyCookie::getKey()) !== false && self::$checkPhpVersion) {
-                session_set_save_handler(new CryptSessionHandler($key), true);
-            }
+        if ($encrypt === true
+            && self::$checkPhpVersion
+            && ($key = SecureKeyCookie::getKey()) !== false) {
+            session_set_save_handler(new CryptSessionHandler($key), true);
         }
 
-        // Si la sesión no puede ser iniciada, devolver un error 500
-        if (session_start() === false) {
+        try {
+            $this->session->initialize();
+        } catch (InitializationException $e) {
             $this->router->response()->header('HTTP/1.1', '500 Internal Server Error');
 
-            throw new InitializationException(__u('La sesión no puede ser inicializada'));
+            throw $e;
         }
     }
 
@@ -496,7 +497,7 @@ class Bootstrap
         // Comprobar acciones en URL
 //        $this->checkPreLoginActions();
 
-        if ($this->session->isLoggedIn() && $this->session->getAppStatus() === Session::APP_STATUS_RELOADED) {
+        if ($this->session->isLoggedIn() && $this->session->getAppStatus() === SessionContext::APP_STATUS_RELOADED) {
             debugLog('Reload user profile');
             // Recargar los permisos del perfil de usuario
             $this->session->setUserProfile(self::$container->get(UserProfileService::class)->getById($this->session->getUserData()->getUserProfileId())->getProfile());
@@ -595,7 +596,7 @@ class Bootstrap
                 $this->router->response()->cookie(session_name(), '', time() - 42000);
             }
 
-            Session::restart();
+            SessionContext::restart();
         } else {
 
             $sidStartTime = $this->session->getSidStartTime();
@@ -619,7 +620,7 @@ class Bootstrap
                 } catch (CryptoException $e) {
                     debugLog($e->getMessage());
 
-                    Session::restart();
+                    SessionContext::restart();
                     return;
                 }
             }
@@ -652,7 +653,7 @@ class Bootstrap
 
     /**
      * @param Container $container
-     * @param string    $module
+     * @param string $module
      * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException

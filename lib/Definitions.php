@@ -27,10 +27,10 @@ use function DI\object;
 
 return [
     \Klein\Klein::class => object(\Klein\Klein::class),
-    \SP\Core\Session\Session::class => object(\SP\Core\Session\Session::class),
+    \SP\Core\Context\SessionContext::class => object(\SP\Core\Context\SessionContext::class),
     \SP\Config\Config::class => object(\SP\Config\Config::class)
         ->constructor(object(\SP\Storage\XmlHandler::class)
-            ->constructor(CONFIG_FILE), get(\SP\Core\Session\Session::class)),
+            ->constructor(CONFIG_FILE), get(\SP\Core\Context\SessionContext::class)),
     \SP\Core\Language::class => object(\SP\Core\Language::class),
     \SP\Config\ConfigData::class => function (\SP\Config\Config $config) {
         return $config->getConfigData();
@@ -46,9 +46,9 @@ return [
             ->constructor(ACTIONS_FILE)),
     \SP\Core\Events\EventDispatcher::class => object(\SP\Core\Events\EventDispatcher::class),
     \SP\Core\Acl\Acl::class => object(\SP\Core\Acl\Acl::class)
-        ->constructor(get(\SP\Core\Session\Session::class), get(\SP\Core\Events\EventDispatcher::class), get(\SP\Core\Acl\Actions::class)),
+        ->constructor(get(\SP\Core\Context\SessionContext::class), get(\SP\Core\Events\EventDispatcher::class), get(\SP\Core\Acl\Actions::class)),
     \SP\Core\UI\Theme::class => object(\SP\Core\UI\Theme::class)
-        ->constructor(APP_MODULE, get(\SP\Config\Config::class), get(\SP\Core\Session\Session::class)),
+        ->constructor(APP_MODULE, get(\SP\Config\Config::class), get(\SP\Core\Context\SessionContext::class)),
     \PHPMailer\PHPMailer\PHPMailer::class => object(\PHPMailer\PHPMailer\PHPMailer::class)
         ->constructor(true)
 ];

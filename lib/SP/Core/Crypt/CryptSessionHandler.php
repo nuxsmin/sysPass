@@ -27,7 +27,6 @@ namespace SP\Core\Crypt;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Key;
 
-
 /**
  * Class CryptSessionHandler
  *

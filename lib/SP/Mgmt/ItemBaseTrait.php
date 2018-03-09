@@ -25,10 +25,10 @@
 namespace SP\Mgmt;
 
 use SP\Config\Config;
+use SP\Core\Context\SessionContext;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\DataModelInterface;
 use SP\Storage\Database;
@@ -50,7 +50,7 @@ trait ItemBaseTrait
      * @var mixed|DataModelInterface
      */
     protected $itemData;
-    /** @var  Session */
+    /** @var  SessionContext */
     protected $session;
 
     /**
@@ -148,9 +148,9 @@ trait ItemBaseTrait
     /**
      * @param Config   $config
      * @param Database $db
-     * @param Session  $session
+     * @param SessionContext  $session
      */
-    public function inject(Config $config, Database $db, Session $session)
+    public function inject(Config $config, Database $db, SessionContext $session)
     {
         $this->ConfigData = $config->getConfigData();
         $this->db = $db;

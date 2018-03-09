@@ -24,12 +24,12 @@
 
 namespace SP\Crypt;
 
+use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Services\Config\ConfigService;
@@ -53,7 +53,7 @@ class TemporaryMasterPass
      */
     protected $configService;
     /**
-     * @var Session
+     * @var SessionContext
      */
     protected $session;
     /**
@@ -153,10 +153,10 @@ class TemporaryMasterPass
 
     /**
      * @param ConfigService   $configService
-     * @param Session         $session
+     * @param SessionContext         $session
      * @param EventDispatcher $eventDispatcher
      */
-    public function inject(ConfigService $configService, Session $session, EventDispatcher $eventDispatcher)
+    public function inject(ConfigService $configService, SessionContext $session, EventDispatcher $eventDispatcher)
     {
         $this->configService = $configService;
         $this->session = $session;

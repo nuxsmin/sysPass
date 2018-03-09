@@ -60,10 +60,10 @@ class Session
     /**
      * Regenerar la clave de sesión
      *
-     * @param \SP\Core\Session\Session $session
+     * @param \SP\Core\Context\SessionContext $session
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public static function reKey(\SP\Core\Session\Session $session)
+    public static function reKey(\SP\Core\Context\SessionContext $session)
     {
         debugLog(__METHOD__);
 

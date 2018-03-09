@@ -24,8 +24,8 @@
 
 namespace SP\Core;
 
+use SP\Core\Context\SessionContext;
 use SP\Core\Messages\TaskMessage;
-use SP\Core\Session\Session;
 use SP\Util\Util;
 
 /**
@@ -296,7 +296,7 @@ class Task
         file_put_contents($this->fileTask, serialize($this));
 
         if ($lockSession === true) {
-            Session::close();
+            SessionContext::close();
         }
 
         return $this;

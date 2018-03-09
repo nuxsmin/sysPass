@@ -24,7 +24,7 @@
 
 namespace SP\Account;
 
-use SP\Core\Session\Session;
+use SP\Core\Context\SessionContext;
 use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\AccountData;
 use SP\DataModel\AccountExtData;
@@ -47,7 +47,7 @@ abstract class AccountBase
      * @var AccountData|AccountExtData|AccountHistoryData
      */
     protected $accountData;
-    /** @var  Session */
+    /** @var  SessionContext */
     protected $session;
     /**
      * @var int Id de la cuenta padre.
@@ -71,9 +71,9 @@ abstract class AccountBase
     }
 
     /**
-     * @param Session $session
+     * @param SessionContext $session
      */
-    public function inject(Session $session)
+    public function inject(SessionContext $session)
     {
         $this->session = $session;
     }

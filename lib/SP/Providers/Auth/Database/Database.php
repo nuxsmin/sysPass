@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -56,7 +56,7 @@ class Database implements AuthInterface
     /**
      * Database constructor.
      *
-     * @param UserService     $userService
+     * @param UserService $userService
      * @param UserPassService $userPassService
      */
     public function __construct(UserService $userService, UserPassService $userPassService)
@@ -116,12 +116,6 @@ class Database implements AuthInterface
             return Hash::checkHashKey($this->userLoginData->getLoginPass(), $userLoginResponse->getPass());
         } catch (\Exception $e) {
             processException($e);
-//            $Log = new Log();
-//            $LogMessage = $Log->getLogMessage();
-//            $LogMessage->setAction(__FUNCTION__);
-//            $LogMessage->addDescription($e->getMessage());
-//            $LogMessage->addDetails(__u('Login'), $this->userLoginData->getLoginUser());
-//            $Log->writeLog();
 
             return false;
         }

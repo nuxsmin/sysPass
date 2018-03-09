@@ -25,7 +25,7 @@
 namespace SP\Mvc\Controller;
 
 use Klein\Klein;
-use SP\Core\Session\Session;
+use SP\Core\Context\SessionContext;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Util\Checks;
@@ -53,10 +53,10 @@ trait ControllerTrait
     /**
      * Comprobar si la sesión está activa
      *
-     * @param Session $session
+     * @param SessionContext $session
      * @param Klein   $router
      */
-    protected function checkLoggedInSession(Session $session, Klein $router)
+    protected function checkLoggedInSession(SessionContext $session, Klein $router)
     {
         if (!$session->isLoggedIn()) {
             if (Checks::isJson($router)) {
@@ -71,9 +71,9 @@ trait ControllerTrait
     }
 
     /**
-     * @param Session $session
+     * @param SessionContext $session
      */
-    protected function checkSecurityToken(Session $session)
+    protected function checkSecurityToken(SessionContext $session)
     {
         $sk = Request::analyzeString('sk');
         $sessionKey = $session->getSecurityKey();

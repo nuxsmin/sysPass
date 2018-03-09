@@ -28,8 +28,8 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
+use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Session\Session;
 use SP\DataModel\UserData;
 use SP\Mgmt\Profiles\Profile;
 
@@ -46,9 +46,9 @@ class SessionUtil
      * Establece las variables de sesión del usuario.
      *
      * @param UserData $UserData
-     * @param Session  $session
+     * @param SessionContext  $session
      */
-    public static function loadUserSession(UserData $UserData, Session $session)
+    public static function loadUserSession(UserData $UserData, SessionContext $session)
     {
         $session->setUserData($UserData);
         $session->setUserProfile(Profile::getItem()->getById($UserData->getUserProfileId()));
@@ -136,9 +136,9 @@ class SessionUtil
     /**
      * Regenerad el ID de sesión
      *
-     * @param Session $session
+     * @param SessionContext $session
      */
-    public static function regenerate(Session $session)
+    public static function regenerate(SessionContext $session)
     {
         debugLog(__METHOD__);
 

@@ -27,8 +27,8 @@ namespace SP\Core\UI;
 use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\InvalidClassException;
-use SP\Core\Session\Session;
 use SP\Storage\FileCache;
 use SP\Storage\FileException;
 use Theme\Icons;
@@ -76,7 +76,7 @@ class Theme implements ThemeInterface
      */
     protected $configData;
     /**
-     * @var Session
+     * @var SessionContext
      */
     protected $session;
     /**
@@ -93,10 +93,10 @@ class Theme implements ThemeInterface
      *
      * @param string    $module
      * @param Config    $config
-     * @param Session   $session
+     * @param SessionContext   $session
      * @param FileCache $fileCache
      */
-    public function __construct($module, Config $config, Session $session, FileCache $fileCache)
+    public function __construct($module, Config $config, SessionContext $session, FileCache $fileCache)
     {
         $this->configData = $config->getConfigData();
         $this->session = $session;

@@ -25,9 +25,9 @@
 namespace SP\Repositories;
 
 use SP\Config\Config;
+use SP\Core\Context\SessionContext;
 use SP\Core\Dic\Container;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Session\Session;
 use SP\Storage\Database;
 use SP\Storage\DatabaseInterface;
 
@@ -43,7 +43,7 @@ abstract class Repository
      */
     protected $config;
     /**
-     * @var Session
+     * @var SessionContext
      */
     protected $session;
     /**
@@ -65,12 +65,12 @@ abstract class Repository
      * @param Container       $dic
      * @param Config          $config
      * @param Database        $database
-     * @param Session         $session
+     * @param SessionContext         $session
      * @param EventDispatcher $eventDispatcher
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    final public function __construct(Container $dic, Config $config, Database $database, Session $session, EventDispatcher $eventDispatcher)
+    final public function __construct(Container $dic, Config $config, Database $database, SessionContext $session, EventDispatcher $eventDispatcher)
     {
         $this->dic = $dic;
         $this->config = $config;

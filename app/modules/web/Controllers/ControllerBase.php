@@ -32,10 +32,10 @@ use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
+use SP\Core\Context\SessionContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Language;
-use SP\Core\Session\Session;
 use SP\Core\UI\Theme;
 use SP\DataModel\ProfileData;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
@@ -103,7 +103,7 @@ abstract class ControllerBase
      */
     protected $config;
     /**
-     * @var  Session
+     * @var  SessionContext
      */
     protected $session;
     /**
@@ -144,7 +144,7 @@ abstract class ControllerBase
 
         $this->config = $this->dic->get(Config::class);
         $this->configData = $this->config->getConfigData();
-        $this->session = $this->dic->get(Session::class);
+        $this->session = $this->dic->get(SessionContext::class);
         $this->theme = $this->dic->get(Theme::class);
         $this->eventDispatcher = $this->dic->get(EventDispatcher::class);
         $this->acl = $this->dic->get(Acl::class);

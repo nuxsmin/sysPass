@@ -36,8 +36,6 @@ use SP\Providers\Auth\Ldap\LdapParams;
 use SP\Providers\Auth\Ldap\LdapStd;
 use SP\Providers\Provider;
 use SP\Services\Auth\AuthException;
-use SP\Services\User\UserPassService;
-use SP\Services\User\UserService;
 
 defined('APP_ROOT') || die();
 
@@ -137,8 +135,7 @@ class AuthProvider extends Provider
      */
     public function authDatabase()
     {
-        return (new Database($this->dic->get(UserService::class), $this->dic->get(UserPassService::class)))
-            ->authenticate($this->userLoginData);
+        return $this->dic->get(Database::class)->authenticate($this->userLoginData);
     }
 
     /**
@@ -148,7 +145,7 @@ class AuthProvider extends Provider
      */
     public function authBrowser()
     {
-        return (new Browser($this->configData))->authenticate($this->userLoginData);
+        return $this->dic->get(Browser::class)->authenticate($this->userLoginData);
     }
 
     /**

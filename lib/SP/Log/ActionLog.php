@@ -26,9 +26,9 @@ namespace SP\Log;
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Context\SessionContext;
 use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
-use SP\Core\Session\Session;
 use SP\Core\Traits\InjectableTrait;
 use SP\Storage\Database;
 
@@ -69,7 +69,7 @@ abstract class ActionLog extends LogLevel
      * @var Language
      */
     protected $language;
-    /** @var  \SP\Core\Session\Session */
+    /** @var  \SP\Core\Context\SessionContext */
     protected $session;
     /**
      * @var Database
@@ -95,10 +95,10 @@ abstract class ActionLog extends LogLevel
     /**
      * @param Config   $config
      * @param Language $language
-     * @param Session  $session
+     * @param SessionContext  $session
      * @param Database $database
      */
-    public function inject(Config $config, Language $language, Session $session, Database $database)
+    public function inject(Config $config, Language $language, SessionContext $session, Database $database)
     {
         $this->config = $config;
         $this->configData = $config->getConfigData();

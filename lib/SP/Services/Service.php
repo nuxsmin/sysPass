@@ -27,8 +27,8 @@ namespace SP\Services;
 use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
+use SP\Core\Context\SessionContext;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Session\Session;
 
 /**
  * Class Service
@@ -44,7 +44,7 @@ abstract class Service
      */
     protected $config;
     /**
-     * @var Session
+     * @var SessionContext
      */
     protected $session;
     /**
@@ -67,7 +67,7 @@ abstract class Service
     {
         $this->dic = $dic;
         $this->config = $dic->get(Config::class);
-        $this->session = $dic->get(Session::class);
+        $this->session = $dic->get(SessionContext::class);
         $this->eventDispatcher = $dic->get(EventDispatcher::class);
 
         if (method_exists($this, 'initialize')) {

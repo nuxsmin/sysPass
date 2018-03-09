@@ -24,7 +24,7 @@
 
 namespace SP\Account;
 
-use SP\Core\Session\Session;
+use SP\Core\Context\SessionContext;
 use SP\DataModel\ItemSearchData;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
@@ -116,11 +116,11 @@ class AccountHistoryUtil
      *
      * @param         $id int El Id del registro en el histórico
      * @param         $accountId
-     * @param Session $session
+     * @param SessionContext $session
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      */
-    public static function restoreFromHistory($id, $accountId, Session $session)
+    public static function restoreFromHistory($id, $accountId, SessionContext $session)
     {
         // Guardamos una copia de la cuenta en el histórico
         AccountHistory::addHistory($accountId, false);

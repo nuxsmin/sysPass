@@ -24,8 +24,8 @@
 
 namespace SP\Account;
 
+use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Session\Session;
 use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryCondition;
 use SP\Storage\DbWrapper;
@@ -210,10 +210,10 @@ class AccountUtil
      * Devolver las cuentas enlazadas
      *
      * @param         $accountId
-     * @param Session $session
+     * @param SessionContext $session
      * @return array
      */
-    public static function getLinkedAccounts($accountId, Session $session)
+    public static function getLinkedAccounts($accountId, SessionContext $session)
     {
         if ($accountId === 0) {
             return [];
@@ -238,11 +238,11 @@ class AccountUtil
     /**
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      *
-     * @param Session $session
+     * @param SessionContext $session
      * @param bool    $useGlobalSearch
      * @return QueryCondition
      */
-    public static function getAccountFilterUser(Session $session, $useGlobalSearch = false)
+    public static function getAccountFilterUser(SessionContext $session, $useGlobalSearch = false)
     {
         $queryFilter = new QueryCondition();
 
@@ -282,11 +282,11 @@ class AccountUtil
     /**
      * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
      *
-     * @param Session $session
+     * @param SessionContext $session
      * @param bool    $useGlobalSearch
      * @return QueryCondition
      */
-    public static function getAccountHistoryFilterUser(Session $session, $useGlobalSearch = false)
+    public static function getAccountHistoryFilterUser(SessionContext $session, $useGlobalSearch = false)
     {
         $queryFilter = new QueryCondition();
 
@@ -326,11 +326,11 @@ class AccountUtil
     /**
      * Obtiene los datos de las cuentas visibles por el usuario
      *
-     * @param Session $session
+     * @param SessionContext $session
      * @param int     $accountId Cuenta actual
      * @return array
      */
-    public static function getAccountsForUser(Session $session, $accountId = null)
+    public static function getAccountsForUser(SessionContext $session, $accountId = null)
     {
         $queryFilter = self::getAccountFilterUser($session);
 

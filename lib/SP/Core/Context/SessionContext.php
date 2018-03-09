@@ -22,10 +22,11 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Session;
+namespace SP\Core\Context;
 
 use SP\Account\AccountSearchFilter;
 use SP\Config\ConfigData;
+use SP\Core\Exceptions\InitializationException;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
 
@@ -34,13 +35,8 @@ use SP\Services\User\UserLoginResponse;
  *
  * @package SP\Core\Session
  */
-class Session
+class SessionContext extends ContextBase
 {
-    const APP_STATUS_UPDATED = 'updated';
-    const APP_STATUS_RELOADED = 'reloaded';
-    const APP_STATUS_INSTALLED = 'installed';
-    const APP_STATUS_LOGGEDOUT = 'loggedout';
-
     private static $isReset = false;
     private static $isLocked = false;
 
@@ -83,23 +79,19 @@ class Session
      */
     public function getTheme()
     {
-        return $this->getSessionKey('theme');
+        return $this->getContextKey('theme');
     }
 
     /**
      * Devolver una variable de sesión
      *
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      * @return mixed
      */
-    protected function getSessionKey($key, $default = null)
+    protected function getContextKey($key, $default = null)
     {
-        if (isset($_SESSION[$key])) {
-            return is_numeric($default) ? (int)$_SESSION[$key] : $_SESSION[$key];
-        }
-
-        return $default;
+        return parent::getContextKey($key, $default);
     }
 
     /**
@@ -109,22 +101,22 @@ class Session
      */
     public function setTheme($theme)
     {
-        $this->setSessionKey('theme', $theme);
+        $this->setContextKey('theme', $theme);
     }
 
     /**
      * Establecer una variable de sesión
      *
-     * @param string $key   El nombre de la variable
-     * @param mixed  $value El valor de la variable
+     * @param string $key El nombre de la variable
+     * @param mixed $value El valor de la variable
      * @return mixed
      */
-    protected function setSessionKey($key, $value)
+    protected function setContextKey($key, $value)
     {
         if (self::$isLocked) {
             debugLog('Session locked; key=' . $key);
         } else {
-            $_SESSION[$key] = $value;
+            parent::setContextKey($key, $value);
         }
 
         return $value;
@@ -137,7 +129,7 @@ class Session
      */
     public function setConfig(ConfigData $config)
     {
-        $this->setSessionKey('config', $config);
+        $this->setContextKey('config', $config);
     }
 
     /**
@@ -147,7 +139,7 @@ class Session
      */
     public function setConfigTime($time)
     {
-        $this->setSessionKey('configTime', $time);
+        $this->setContextKey('configTime', $time);
     }
 
     /**
@@ -157,7 +149,7 @@ class Session
      */
     public function getConfigTime()
     {
-        return $this->getSessionKey('configTime');
+        return $this->getContextKey('configTime');
     }
 
     /**
@@ -167,7 +159,7 @@ class Session
      */
     public function setUserData(UserLoginResponse $userLoginResponse = null)
     {
-        $this->setSessionKey('userData', $userLoginResponse);
+        $this->setContextKey('userData', $userLoginResponse);
     }
 
     /**
@@ -177,7 +169,7 @@ class Session
      */
     public function getUserProfile()
     {
-        return $this->getSessionKey('userProfile');
+        return $this->getContextKey('userProfile');
     }
 
     /**
@@ -187,7 +179,7 @@ class Session
      */
     public function setUserProfile(ProfileData $ProfileData)
     {
-        $this->setSessionKey('userProfile', $ProfileData);
+        $this->setContextKey('userProfile', $ProfileData);
     }
 
     /**
@@ -195,7 +187,7 @@ class Session
      */
     public function getSearchFilters()
     {
-        return $this->getSessionKey('searchFilters', null);
+        return $this->getContextKey('searchFilters', null);
     }
 
     /**
@@ -203,12 +195,12 @@ class Session
      */
     public function setSearchFilters(AccountSearchFilter $searchFilters)
     {
-        $this->setSessionKey('searchFilters', $searchFilters);
+        $this->setContextKey('searchFilters', $searchFilters);
     }
 
     public function resetAccountAcl()
     {
-        $this->setSessionKey('accountAcl', null);
+        $this->setContextKey('accountAcl', null);
     }
 
     /**
@@ -229,7 +221,7 @@ class Session
      */
     public function getUserData()
     {
-        return $this->getSessionKey('userData', new UserLoginResponse());
+        return $this->getContextKey('userData', new UserLoginResponse());
     }
 
     /**
@@ -239,7 +231,7 @@ class Session
      */
     public function setAuthCompleted($bool)
     {
-        $this->setSessionKey('authCompleted', (bool)$bool);
+        $this->setContextKey('authCompleted', (bool)$bool);
     }
 
     /**
@@ -247,7 +239,7 @@ class Session
      */
     public function getAuthCompleted()
     {
-        return $this->getSessionKey('authCompleted', false);
+        return $this->getContextKey('authCompleted', false);
     }
 
     /**
@@ -257,7 +249,7 @@ class Session
      */
     public function getTemporaryMasterPass()
     {
-        return $this->getSessionKey('tempmasterpass');
+        return $this->getContextKey('tempmasterpass');
     }
 
     /**
@@ -267,7 +259,7 @@ class Session
      */
     public function setTemporaryMasterPass($password)
     {
-        $this->setSessionKey('tempmasterpass', $password);
+        $this->setContextKey('tempmasterpass', $password);
     }
 
     /**
@@ -275,7 +267,7 @@ class Session
      */
     public function getSecurityKey()
     {
-        return $this->getSessionKey('sk');
+        return $this->getContextKey('sk');
     }
 
     /**
@@ -292,7 +284,7 @@ class Session
      */
     public function setSecurityKey($sk)
     {
-        return $this->setSessionKey('sk', $sk);
+        return $this->setContextKey('sk', $sk);
     }
 
     /**
@@ -302,7 +294,7 @@ class Session
      */
     public function getConfig()
     {
-        return $this->getSessionKey('config');
+        return $this->getContextKey('config');
     }
 
     /**
@@ -312,7 +304,7 @@ class Session
      */
     public function getPublicKey()
     {
-        return $this->getSessionKey('pubkey');
+        return $this->getContextKey('pubkey');
     }
 
     /**
@@ -322,7 +314,7 @@ class Session
      */
     public function setPublicKey($key)
     {
-        $this->setSessionKey('pubkey', $key);
+        $this->setContextKey('pubkey', $key);
     }
 
     /**
@@ -332,7 +324,7 @@ class Session
      */
     public function getSessionTimeout()
     {
-        return $this->getSessionKey('sessionTimeout');
+        return $this->getContextKey('sessionTimeout');
     }
 
     /**
@@ -343,7 +335,7 @@ class Session
      */
     public function setSessionTimeout($timeout)
     {
-        $this->setSessionKey('sessionTimeout', $timeout);
+        $this->setContextKey('sessionTimeout', $timeout);
 
         return $timeout;
     }
@@ -355,7 +347,7 @@ class Session
      */
     public function getLastActivity()
     {
-        return $this->getSessionKey('lastActivity', 0);
+        return $this->getContextKey('lastActivity', 0);
     }
 
     /**
@@ -365,7 +357,7 @@ class Session
      */
     public function setLastActivity($time)
     {
-        $this->setSessionKey('lastActivity', $time);
+        $this->setContextKey('lastActivity', $time);
     }
 
     /**
@@ -375,7 +367,7 @@ class Session
      */
     public function getSidStartTime()
     {
-        return $this->getSessionKey('sidStartTime', 0);
+        return $this->getContextKey('sidStartTime', 0);
     }
 
     /**
@@ -386,7 +378,7 @@ class Session
      */
     public function setSidStartTime($time)
     {
-        $this->setSessionKey('sidStartTime', $time);
+        $this->setContextKey('sidStartTime', $time);
 
         return $time;
     }
@@ -398,7 +390,7 @@ class Session
      */
     public function getStartActivity()
     {
-        return $this->getSessionKey('startActivity', 0);
+        return $this->getContextKey('startActivity', 0);
     }
 
     /**
@@ -409,7 +401,7 @@ class Session
      */
     public function setStartActivity($time)
     {
-        $this->setSessionKey('startActivity', $time);
+        $this->setContextKey('startActivity', $time);
 
         return $time;
     }
@@ -421,7 +413,7 @@ class Session
      */
     public function setLocale($locale)
     {
-        $this->setSessionKey('locale', $locale);
+        $this->setContextKey('locale', $locale);
     }
 
     /**
@@ -431,7 +423,7 @@ class Session
      */
     public function getLocale()
     {
-        return $this->getSessionKey('locale');
+        return $this->getContextKey('locale');
     }
 
     /**
@@ -441,7 +433,7 @@ class Session
      */
     public function getAccountColor()
     {
-        return $this->getSessionKey('accountcolor');
+        return $this->getContextKey('accountcolor');
     }
 
     /**
@@ -451,7 +443,7 @@ class Session
      */
     public function setAccountColor(array $color)
     {
-        $this->setSessionKey('accountcolor', $color);
+        $this->setContextKey('accountcolor', $color);
     }
 
     /**
@@ -461,7 +453,7 @@ class Session
      */
     public function getAppStatus()
     {
-        return $this->getSessionKey('status');
+        return $this->getContextKey('status');
     }
 
     /**
@@ -471,7 +463,7 @@ class Session
      */
     public function setAppStatus($status)
     {
-        $this->setSessionKey('status', $status);
+        $this->setContextKey('status', $status);
     }
 
     /**
@@ -481,6 +473,20 @@ class Session
      */
     public function resetAppStatus()
     {
-        return $this->setSessionKey('status', null);
+        return $this->setContextKey('status', null);
+    }
+
+    /**
+     * @return void
+     * @throws InitializationException
+     */
+    public function initialize()
+    {
+        // Si la sesión no puede ser iniciada, devolver un error 500
+        if (session_start() === false) {
+            throw new InitializationException(__u('La sesión no puede ser inicializada'));
+        }
+
+        $this->setContextReference($_SESSION);
     }
 }
