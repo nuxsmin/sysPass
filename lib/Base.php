@@ -55,8 +55,6 @@ define('VENDOR_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'vendor');
 define('SQL_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'schemas');
 define('PUBLIC_PATH', APP_ROOT . DIRECTORY_SEPARATOR . 'public');
 
-define('APP_PARTIAL_INIT', ['resource', 'install', 'bootstrap']);
-
 define('DEBUG', true);
 
 // Empezar a calcular la memoria utilizada

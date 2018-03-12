@@ -64,8 +64,8 @@ class Config
      * Config constructor.
      *
      * @param XmlFileStorageInterface $fileStorage
-     * @param SessionContext                 $session
-     * @param Container               $dic
+     * @param SessionContext $session
+     * @param Container $dic
      * @throws ConfigException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -121,37 +121,42 @@ class Config
     /**
      * Cargar la configuración desde el archivo
      *
+     * @param SessionContext $sessionContext
      * @param bool $reload
      * @return ConfigData
      */
-    public function loadConfig($reload = false)
+    public function loadConfig(SessionContext $sessionContext, $reload = false)
     {
-        $configData = $this->session->getConfig();
+        $configData = $sessionContext->getConfig();
 
         if ($reload === true
             || $configData === null
-            || time() >= ($this->session->getConfigTime() + $configData->getSessionTimeout() / 2)
+            || time() >= ($sessionContext->getConfigTime() + $configData->getSessionTimeout() / 2)
         ) {
-            $this->saveConfigInSession();
+            return $this->saveConfigInSession($sessionContext);
         }
 
-        return $this->configData;
+        return $configData;
     }
 
     /**
      * Guardar la configuración en la sesión
+     * @param SessionContext $sessionContext
+     * @return ConfigData
      */
-    private function saveConfigInSession()
+    private function saveConfigInSession(SessionContext $sessionContext)
     {
-        $this->session->setConfig($this->configData);
-        $this->session->setConfigTime(time());
+        $sessionContext->setConfig($this->configData);
+        $sessionContext->setConfigTime(time());
+
+        return $this->configData;
     }
 
     /**
      * Guardar la configuración
      *
      * @param ConfigData $configData
-     * @param bool       $backup
+     * @param bool $backup
      */
     public function saveConfig(ConfigData $configData, $backup = true)
     {

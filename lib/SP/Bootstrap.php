@@ -24,7 +24,6 @@
 
 namespace SP;
 
-use Defuse\Crypto\Exception\CryptoException;
 use DI\Container;
 use Interop\Container\ContainerInterface;
 use Klein\Klein;
@@ -33,26 +32,16 @@ use RuntimeException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigUtil;
-use SP\Core\Context\SessionContext;
-use SP\Core\Crypt\CryptSessionHandler;
-use SP\Core\Crypt\SecureKeyCookie;
-use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Events\EventDispatcher;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
-use SP\Core\Plugin\PluginUtil;
 use SP\Core\UI\Theme;
 use SP\Core\Upgrade\Upgrade;
-use SP\Http\Request;
 use SP\Log\Log;
-use SP\Providers\Log\LogHandler;
-use SP\Providers\Mail\MailHandler;
-use SP\Providers\Notification\NotificationHandler;
-use SP\Services\UserProfile\UserProfileService;
-use SP\Storage\Database;
-use SP\Storage\DBUtil;
+use SP\Modules\Api\Init as InitApi;
+use SP\Modules\Web\Init as InitWeb;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
 use SP\Util\Util;
@@ -87,25 +76,25 @@ class Bootstrap
      */
     public static $LOCK;
     /**
-     * @var ContainerInterface|Container
+     * @var bool Indica si la versión de PHP es correcta
      */
-    protected static $container;
+    public static $checkPhpVersion;
     /**
      * @var string
      */
-    private static $SUBURI = '';
+    public static $SUBURI = '';
     /**
-     * @var bool Indica si la versión de PHP es correcta
+     * @var ContainerInterface|Container
      */
-    private static $checkPhpVersion;
+    protected static $container;
     /**
      * @var Upgrade
      */
     protected $upgrade;
     /**
-     * @var SessionContext
+     * @var ContextInterface
      */
-    protected $session;
+    protected $context;
     /**
      * @var Theme
      */
@@ -140,11 +129,8 @@ class Bootstrap
 
         $this->config = $container->get(Config::class);
         $this->configData = $this->config->getConfigData();
-        $this->session = $container->get(SessionContext::class);
-        $this->theme = $container->get(Theme::class);
         $this->router = $container->get(Klein::class);
         $this->language = $container->get(Language::class);
-        $this->upgrade = $container->get(Upgrade::class);
 
         $this->initRouter();
     }
@@ -169,7 +155,7 @@ class Bootstrap
             $router->response()->body($err_msg);
         });
 
-        // Manejar URLs con módulo indicado
+        // Manejar URLs de módulo web
         $this->router->respond(['GET', 'POST'],
             '@/(index\.php)?',
             function ($request, $response, $service) use ($oops) {
@@ -177,16 +163,17 @@ class Bootstrap
                     /** @var \Klein\Request $request */
                     $route = filter_var($request->param('r', 'index/index'), FILTER_SANITIZE_STRING);
 
-                    if (!preg_match_all('#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d]+)+)?#', $route, $components)) {
+                    if (!preg_match_all('#(?P<app>web|api)?(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d]+)+)?#', $route, $matches)) {
                         throw new RuntimeException($oops);
                     }
 
-                    $controller = $components['controller'][0];
-                    $method = !empty($components['action'][0]) ? $components['action'][0] . 'Action' : 'indexAction';
+                    $app = $matches['app'][0] ?: 'web';
+                    $controller = $matches['controller'][0];
+                    $method = !empty($matches['action'][0]) ? $matches['action'][0] . 'Action' : 'indexAction';
                     $params = [];
 
-                    if (!empty($components['params'][0])) {
-                        foreach (explode('/', $components['params'][0]) as $value) {
+                    if (!empty($matches['params'][0])) {
+                        foreach (explode('/', $matches['params'][0]) as $value) {
                             if (is_numeric($value)) {
                                 $params[] = (int)filter_var($value, FILTER_SANITIZE_NUMBER_INT);
                             } elseif (!empty($value)) {
@@ -205,11 +192,15 @@ class Bootstrap
 
                     $this->initializeCommon();
 
-                    if (!in_array($controller, APP_PARTIAL_INIT, true)) {
-                        $this->initializeApp();
-                    } else {
-                        // Do not keep the PHP's session opened
-                        SessionContext::close();
+                    switch ($app) {
+                        case 'web':
+                            self::$container->get(InitWeb::class)
+                                ->initialize($controller);
+                            break;
+                        case 'api':
+                            self::$container->get(InitApi::class)
+                                ->initialize($controller);
+                            break;
                     }
 
                     debugLog('Routing call: ' . $controllerClass . '::' . $method . '::' . print_r($params, true));
@@ -252,9 +243,6 @@ class Bootstrap
         //  Establecer las rutas de la aplicación
         $this->initPaths();
 
-        // Cargar las extensiones
-//        self::loadExtensions();
-
         // Establecer el lenguaje por defecto
         $this->language->setLocales('en_US');
 
@@ -268,32 +256,6 @@ class Bootstrap
 
         // Comprobar la configuración
         $this->initConfig();
-
-        // Iniciar la sesión de PHP
-        $this->initSession($this->configData->isEncryptSession());
-
-        // Volver a cargar la configuración si se recarga la página
-        if (Request::checkReload($this->router) === false) {
-            // Cargar la configuración
-            $this->config->loadConfig();
-
-            // Cargar el lenguaje
-            $this->language->setLanguage();
-        } else {
-            debugLog('Browser reload');
-
-            $this->session->setAppStatus(SessionContext::APP_STATUS_RELOADED);
-
-            // Cargar la configuración
-            $this->config->loadConfig(true);
-
-            // Restablecer el idioma y el tema visual
-            $this->language->setLanguage(true);
-            $this->theme->initTheme(true);
-        }
-
-        // Comprobar si es necesario cambiar a HTTPS
-        HttpUtil::checkHttps($this->configData);
     }
 
     /**
@@ -434,216 +396,6 @@ class Bootstrap
     }
 
     /**
-     * Iniciar la sesión PHP
-     *
-     * @param bool $encrypt Encriptar la sesión de PHP
-     * @throws InitializationException
-     */
-    private function initSession($encrypt = false)
-    {
-        if ($encrypt === true
-            && self::$checkPhpVersion
-            && ($key = SecureKeyCookie::getKey()) !== false) {
-            session_set_save_handler(new CryptSessionHandler($key), true);
-        }
-
-        try {
-            $this->session->initialize();
-        } catch (InitializationException $e) {
-            $this->router->response()->header('HTTP/1.1', '500 Internal Server Error');
-
-            throw $e;
-        }
-    }
-
-    /**
-     * Inicializar la aplicación
-     *
-     * @throws InitializationException
-     * @throws SPException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function initializeApp()
-    {
-        debugLog(__FUNCTION__);
-
-        // Comprobar si está instalado
-        $this->checkInstalled();
-
-        // Comprobar si el modo mantenimiento está activado
-        $this->checkMaintenanceMode();
-
-        try {
-            // Comprobar si la Base de datos existe
-            DBUtil::checkDatabaseExist(self::$container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
-        } catch (\Exception $e) {
-            if ($e->getCode() === 1049) {
-                $this->router->response()->redirect('index.php?r=install/index')->send();
-            }
-        }
-
-        // Comprobar si es necesario actualizar componentes
-//        $this->checkUpgrade();
-
-        $this->initEventHandlers();
-
-        // Inicializar la sesión
-        $this->initUserSession();
-
-        // Cargar los plugins
-        PluginUtil::loadPlugins();
-
-        // Comprobar acciones en URL
-//        $this->checkPreLoginActions();
-
-        if ($this->session->isLoggedIn() && $this->session->getAppStatus() === SessionContext::APP_STATUS_RELOADED) {
-            debugLog('Reload user profile');
-            // Recargar los permisos del perfil de usuario
-            $this->session->setUserProfile(self::$container->get(UserProfileService::class)->getById($this->session->getUserData()->getUserProfileId())->getProfile());
-        }
-    }
-
-    /**
-     * Comprueba que la aplicación esté instalada
-     * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
-     *
-     * @throws InitializationException
-     */
-    private function checkInstalled()
-    {
-        // Redirigir al instalador si no está instalada
-        if (!$this->configData->isInstalled()
-            && $this->router->request()->param('r') !== 'install/index'
-        ) {
-            $this->router->response()->redirect('index.php?r=install/index')->send();
-
-            throw new InitializationException('Not installed');
-
-//             FIXME:
-//            if ($this->session->getAuthCompleted()) {
-//                session_destroy();
-//
-//                $this->initialize();
-//                return;
-//            }
-//
-        }
-    }
-
-    /**
-     * Comprobar si el modo mantenimiento está activado
-     * Esta función comprueba si el modo mantenimiento está activado.
-     * Devuelve un error 503 y un reintento de 120s al cliente.
-     *
-     * @param bool $check sólo comprobar si está activado el modo
-     * @throws InitializationException
-     */
-    public function checkMaintenanceMode($check = false)
-    {
-        if ($this->configData->isMaintenance()) {
-            self::$LOCK = Util::getAppLock();
-
-            if ($check === true
-                || Checks::isAjax($this->router)
-                || Request::analyzeInt('nodbupgrade') === 1
-                || (self::$LOCK !== false && self::$LOCK->userId > 0 && $this->session->isLoggedIn() && self::$LOCK->userId === $this->session->getUserData()->getId())
-            ) {
-                return;
-            }
-
-            throw new InitializationException(
-                __u('Aplicación en mantenimiento'),
-                InitializationException::INFO,
-                __u('En breve estará operativa')
-            );
-        }
-    }
-
-    /**
-     * Initializes event handlers
-     */
-    protected function initEventHandlers()
-    {
-        $eventDispatcher = self::$container->get(EventDispatcher::class);
-
-        if ($this->configData->isLogEnabled()) {
-            $eventDispatcher->attach(self::$container->get(LogHandler::class));
-        }
-
-        if ($this->configData->isMailEnabled()) {
-            $eventDispatcher->attach(self::$container->get(MailHandler::class));
-        }
-
-        $eventDispatcher->attach(self::$container->get(NotificationHandler::class));
-    }
-
-    /**
-     * Inicializar la sesión de usuario
-     *
-     */
-    private function initUserSession()
-    {
-        $lastActivity = $this->session->getLastActivity();
-        $inMaintenance = $this->configData->isMaintenance();
-
-        // Timeout de sesión
-        if ($lastActivity > 0
-            && !$inMaintenance
-            && time() > ($lastActivity + $this->getSessionLifeTime())
-        ) {
-            if ($this->router->request()->cookies()->get(session_name()) !== null) {
-                $this->router->response()->cookie(session_name(), '', time() - 42000);
-            }
-
-            SessionContext::restart();
-        } else {
-
-            $sidStartTime = $this->session->getSidStartTime();
-
-            // Regenerar el Id de sesión periódicamente para evitar fijación
-            if ($sidStartTime === 0) {
-                // Intentar establecer el tiempo de vida de la sesión en PHP
-                @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
-
-                $this->session->setSidStartTime(time());
-                $this->session->setStartActivity(time());
-            } else if (!$inMaintenance
-                && time() > ($sidStartTime + 120)
-                && $this->session->isLoggedIn()
-            ) {
-                try {
-                    CryptSession::reKey($this->session);
-
-                    // Recargar los permisos del perfil de usuario
-//                $this->session->setUserProfile(Profile::getItem()->getById($this->session->getUserData()->getUserProfileId()));
-                } catch (CryptoException $e) {
-                    debugLog($e->getMessage());
-
-                    SessionContext::restart();
-                    return;
-                }
-            }
-
-            $this->session->setLastActivity(time());
-        }
-    }
-
-    /**
-     * Obtener el timeout de sesión desde la configuración.
-     *
-     * @return int con el tiempo en segundos
-     */
-    private function getSessionLifeTime()
-    {
-        if (($timeout = $this->session->getSessionTimeout()) === null) {
-            return $this->session->setSessionTimeout($this->configData->getSessionTimeout());
-        }
-
-        return $timeout;
-    }
-
-    /**
      * @return ContainerInterface
      */
     public static function getContainer()
@@ -666,21 +418,11 @@ class Bootstrap
             case 'web':
                 $bs->router->dispatch();
                 break;
+            case 'api':
+                $bs->router->dispatch();
+                break;
             default;
                 throw new InitializationException('Unknown module');
-        }
-    }
-
-    /**
-     * Comprobar si es necesario actualizar componentes
-     *
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     */
-    private function checkUpgrade()
-    {
-        if (self::$SUBURI === '/index.php') {
-            $this->upgrade->checkDbVersion();
-            $this->upgrade->checkAppVersion();
         }
     }
 
