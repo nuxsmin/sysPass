@@ -51,16 +51,6 @@ class AuthTokenService extends Service
      */
     protected $authTokenRepository;
 
-
-    /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function initialize()
-    {
-        $this->authTokenRepository = $this->dic->get(AuthTokenRepository::class);
-    }
-
     /**
      * @param ItemSearchData $itemSearchData
      * @return mixed
@@ -133,7 +123,7 @@ class AuthTokenService extends Service
      * Injects secure data for token
      *
      * @param AuthTokenData $authTokenData
-     * @param  string       $token
+     * @param  string $token
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
@@ -207,7 +197,7 @@ class AuthTokenService extends Service
 
     /**
      * @param AuthTokenData $itemData
-     * @param string        $token
+     * @param string $token
      * @return mixed
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -222,10 +212,31 @@ class AuthTokenService extends Service
     }
 
     /**
+     * Devolver los datos de un token
+     *
+     * @param $actionId int El id de la accion
+     * @param $token    string El token de seguridad
+     * @return false|AuthTokenData
+     */
+    public function getTokenByToken($actionId, $token)
+    {
+        return $this->authTokenRepository->getTokenByToken($actionId, $token);
+    }
+
+    /**
      * @return array
      */
     public function getAllBasic()
     {
         return $this->authTokenRepository->getAll();
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->authTokenRepository = $this->dic->get(AuthTokenRepository::class);
     }
 }
