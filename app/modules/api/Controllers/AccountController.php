@@ -28,6 +28,7 @@ use SP\Account\AccountRequest;
 use SP\Account\AccountSearchFilter;
 use SP\Api\ApiResponse;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Crypt\Crypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Services\Account\AccountService;
@@ -35,7 +36,7 @@ use SP\Services\Account\AccountService;
 /**
  * Class AccountController
  *
- * @package api\Controllers
+ * @package SP\Modules\Api\Controllers
  */
 class AccountController extends ControllerBase
 {
@@ -43,6 +44,60 @@ class AccountController extends ControllerBase
      * @var AccountService
      */
     protected $accountService;
+
+    /**
+     * viewAction
+     */
+    public function viewAction()
+    {
+        try {
+            $this->setupApi(ActionsInterface::ACCOUNT_VIEW);
+
+            $accountId = $this->apiService->getParam('id', true);
+            $accountVData = $this->accountService->getById($accountId)->getAccountVData();
+            $this->accountService->incrementViewCounter($accountId);
+
+            $this->eventDispatcher->notifyEvent('show.account',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Cuenta visualizada'))
+                    ->addDetail(__u('Cuenta'), $accountVData->getName()))
+            );
+
+            $this->returnResponse(new ApiResponse($accountVData));
+        } catch (\Exception $e) {
+            $this->returnResponseException($e);
+
+            processException($e);
+        }
+    }
+
+    /**
+     * viewAction
+     */
+    public function viewPassAction()
+    {
+        try {
+            $this->setupApi(ActionsInterface::ACCOUNT_VIEW_PASS);
+
+            $accountId = $this->apiService->getParam('id', true);
+            $accountPassData = $this->accountService->getPasswordForId($accountId);
+            $password = Crypt::decrypt($accountPassData->getPass(), Crypt::unlockSecuredKey($accountPassData->getKey(), $this->apiService->getMasterPass()));
+
+            $this->accountService->incrementDecryptCounter($accountId);
+
+            $this->eventDispatcher->notifyEvent('show.account.pass',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Clave visualizada'))
+                    ->addDetail(__u('Cuenta'), $accountPassData->getName()))
+            );
+
+            $this->returnResponse(new ApiResponse(["itemId" => $accountId, "password" => $password]));
+        } catch (\Exception $e) {
+            $this->returnResponseException($e);
+
+            processException($e);
+        }
+    }
 
     /**
      * createAction
@@ -104,7 +159,7 @@ class AccountController extends ControllerBase
             $accountSearchFilter->setCategoryId($this->apiService->getParam('categoryId'));
             $accountSearchFilter->setClientId($this->apiService->getParam('clientId'));
             $accountSearchFilter->setLimitCount($this->apiService->getParam('count', false, 50));
-            $accountSearchFilter->setSortOrder($this->apiService->getParam('order', false, AccountSearchFilter::SORT_NAME));
+            $accountSearchFilter->setSortOrder($this->apiService->getParam('order', false, AccountSearchFilter::SORT_DEFAULT));
 
             $this->returnResponse(new ApiResponse($this->accountService->getByFilter($accountSearchFilter)->getData()));
         } catch (\Exception $e) {
