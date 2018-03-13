@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link http://syspass.org
+ * @author    nuxsmin
+ * @link      http://syspass.org
  * @copyright 2012-2017, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,13 +26,3 @@ define('APP_ROOT', __DIR__);
 define('APP_MODULE', 'api');
 
 require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Base.php';
-
-//header('Content-type: application/json');
-//
-//try {
-//    $ApiRequest = new ApiRequest();
-//    exit($ApiRequest->runApi());
-//} catch (Exception $e) {
-//    Log::writeNewLog('API', $e->getMessage(), Log::ERROR);
-//    exit($ApiRequest->formatJsonError($e));
-//}
