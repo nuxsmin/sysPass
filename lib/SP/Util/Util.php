@@ -569,27 +569,6 @@ class Util
     }
 
     /**
-     * Establecer variable de sesión para recargar la aplicación.
-     */
-    public static function reload()
-    {
-        if (SessionFactory::getReload() === false) {
-            SessionFactory::setReload(true);
-        }
-    }
-
-    /**
-     * Comprobar si se necesita recargar la aplicación.
-     */
-    public static function checkReload()
-    {
-        if (SessionFactory::getReload() === true) {
-            SessionFactory::setReload(false);
-            exit('<script>location.reload();</script>');
-        }
-    }
-
-    /**
      * Recorrer un array y escapar los carácteres no válidos en Javascript.
      *
      * @param $array

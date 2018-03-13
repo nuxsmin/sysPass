@@ -127,7 +127,7 @@ class UserForm extends FormBase implements FormInterface
 
         if ($this->configData->isDemoEnabled()
             && $this->userData->getLogin() === 'demo'
-            && !SessionFactory::getUserData()->isAdminApp()) {
+            && !$this->userData->isAdminApp()) {
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
     }

@@ -72,7 +72,7 @@
         <?php endif; ?>
     </div><!-- Close boxLogin -->
 
-    <?php if ($updated): ?>
+    <?php if (isset($updated)): ?>
         <div id="boxUpdated" class="round5"><?php echo __('Aplicación actualizada correctamente'); ?></div>
     <?php endif; ?>
 

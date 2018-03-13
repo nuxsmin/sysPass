@@ -36,7 +36,6 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
-use SP\Core\Plugin\PluginUtil;
 use SP\Core\UI\Theme;
 use SP\Http\Request;
 use SP\Services\UserProfile\UserProfileService;
@@ -158,7 +157,7 @@ class Init extends ModuleBase
             $this->initUserSession();
 
             // Cargar los plugins
-            PluginUtil::loadPlugins();
+//            PluginUtil::loadPlugins();
 
             // Comprobar acciones en URL
 //        $this->checkPreLoginActions();

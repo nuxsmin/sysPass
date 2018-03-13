@@ -29,7 +29,6 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
 use SP\DataModel\AuthTokenData;
-use SP\Html\Html;
 use SP\Repositories\Track\TrackRequest;
 use SP\Services\AuthToken\AuthTokenService;
 use SP\Services\Service;
@@ -54,13 +53,9 @@ class ApiService extends Service
      */
     protected $trackService;
     /**
-     * @var mixed
+     * @var ApiRequest
      */
-    protected $requestData;
-    /**
-     * @var int
-     */
-    protected $requestId;
+    protected $apiRequest;
     /**
      * @var TrackRequest
      */
@@ -75,48 +70,6 @@ class ApiService extends Service
     protected $masterPass;
 
     /**
-     * Obtener los datos de la petición
-     *
-     * Comprueba que el JSON esté bien formado
-     *
-     * @throws ServiceException
-     */
-    public static function getRequestData()
-    {
-        $request = file_get_contents('php://input');
-        $data = json_decode(Html::sanitize($request));
-
-        if (!is_object($data) || json_last_error() !== JSON_ERROR_NONE) {
-            throw new ServiceException(
-                __u('Datos inválidos'),
-                ServiceException::ERROR,
-                null,
-                -32700
-            );
-        }
-
-        if (!isset($data->jsonrpc, $data->method, $data->params, $data->id, $data->params->authToken)) {
-            throw new ServiceException(
-                __u('Formato incorrecto'),
-                ServiceException::ERROR,
-                null,
-                -32600
-            );
-        }
-
-        if (!isset($data->params->authToken)) {
-            throw new ServiceException(
-                __u('Formato incorrecto'),
-                ServiceException::ERROR,
-                null,
-                -32602
-            );
-        }
-
-        return $data;
-    }
-
-    /**
      * Sets up API
      *
      * @param $actionId
@@ -125,8 +78,6 @@ class ApiService extends Service
      */
     public function setup($actionId)
     {
-        $this->requestId = (int)$this->requestData->id;
-
         if ($this->trackService->checkTracking($this->trackRequest)) {
             $this->addTracking();
 
@@ -173,27 +124,25 @@ class ApiService extends Service
      * Devolver el valor de un parámetro
      *
      * @param string $param
-     * @param bool $required Si es requerido
-     * @param mixed $default Valor por defecto
+     * @param bool   $required Si es requerido
+     * @param mixed  $default  Valor por defecto
      * @return int|string
      * @throws ServiceException
      */
     public function getParam($param, $required = false, $default = null)
     {
-        if (null !== $this->requestData
-            && isset($this->requestData->params->{$param})
+        if (null === $this->apiRequest
+            || ($required === true && !$this->apiRequest->exists($param))
         ) {
-            return $this->requestData->params->{$param};
-        } elseif ($required === true) {
             throw new ServiceException(
                 __u('Parámetros incorrectos'),
                 ServiceException::ERROR,
-                $this->getHelp($this->requestData->method),
+                $this->getHelp($this->apiRequest->getMethod()),
                 -32602
             );
         }
 
-        return $default;
+        return $this->apiRequest->get($param, $default);
     }
 
     /**
@@ -363,6 +312,54 @@ class ApiService extends Service
     }
 
     /**
+     * @param string $param
+     * @param bool   $required
+     * @param null   $default
+     * @return int|string
+     * @throws ServiceException
+     */
+    public function getParamInt($param, $required = false, $default = null)
+    {
+        return filter_var($this->getParam($param, $required, $default), FILTER_VALIDATE_INT);
+    }
+
+    /**
+     * @param string $param
+     * @param bool   $required
+     * @param null   $default
+     * @return int|string
+     * @throws ServiceException
+     */
+    public function getParamString($param, $required = false, $default = null)
+    {
+        return filter_var($this->getParam($param, $required, $default), FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    }
+
+    /**
+     * @param string $param
+     * @param bool   $required
+     * @param null   $default
+     * @return int|string
+     * @throws ServiceException
+     */
+    public function getParamEmail($param, $required = false, $default = null)
+    {
+        return filter_var($this->getParam($param, $required, $default), FILTER_SANITIZE_EMAIL);
+    }
+
+    /**
+     * @param string $param
+     * @param bool   $required
+     * @param null   $default
+     * @return int|string
+     * @throws ServiceException
+     */
+    public function getParamRaw($param, $required = false, $default = null)
+    {
+        return filter_var($this->getParam($param, $required, $default), FILTER_UNSAFE_RAW, FILTER_FLAG_STRIP_LOW);
+    }
+
+    /**
      * @return string
      */
     public function getMasterPass()
@@ -371,11 +368,14 @@ class ApiService extends Service
     }
 
     /**
-     * @param mixed $requestData
+     * @param ApiRequest $apiRequest
+     * @return ApiService
      */
-    public function setRequestData($requestData)
+    public function setApiRequest(ApiRequest $apiRequest)
     {
-        $this->requestData = $requestData;
+        $this->apiRequest = $apiRequest;
+
+        return $this;
     }
 
     /**
@@ -383,7 +383,7 @@ class ApiService extends Service
      */
     public function getRequestId()
     {
-        return $this->requestId;
+        return $this->apiRequest->getId();
     }
 
     /**

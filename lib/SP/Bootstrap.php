@@ -30,7 +30,6 @@ use Klein\Klein;
 use Klein\Response;
 use PHPMailer\PHPMailer\Exception;
 use RuntimeException;
-use SP\Api\JsonRpcResponse;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigUtil;
@@ -43,7 +42,8 @@ use SP\Core\UI\Theme;
 use SP\Core\Upgrade\Upgrade;
 use SP\Modules\Api\Init as InitApi;
 use SP\Modules\Web\Init as InitWeb;
-use SP\Services\Api\ApiService;
+use SP\Services\Api\ApiRequest;
+use SP\Services\Api\JsonRpcResponse;
 use SP\Services\Upgrade\UpgradeConfigService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Util\Checks;
@@ -164,9 +164,9 @@ class Bootstrap
             '@/api\.php',
             function ($request, $response, $service) use ($oops) {
                 try {
-                    $requesData = ApiService::getRequestData();
+                    $apiRequest = (new ApiRequest())->getRequestData();
 
-                    list($controller, $action) = explode('/', $requesData->method);
+                    list($controller, $action) = explode('/', $apiRequest->getMethod());
 
                     $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
                     $method = $action . 'Action';
@@ -183,7 +183,7 @@ class Bootstrap
 
                     debugLog('Routing call: ' . $controllerClass . '::' . $method);
 
-                    return call_user_func([new $controllerClass(self::$container, $method, $requesData), $method]);
+                    return call_user_func([new $controllerClass(self::$container, $method, $apiRequest), $method]);
                 } catch (\Exception $e) {
                     processException($e);
 

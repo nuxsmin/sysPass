@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,7 +27,6 @@ namespace SP\Modules\Web\Controllers;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
 use SP\Http\Request;
 use SP\Http\Response;
@@ -121,8 +120,8 @@ class LoginController extends ControllerBase
         $layoutHelper = $this->dic->get(LayoutHelper::class);
         $layoutHelper->getCustomLayout('index', 'login');
 
-        if (SessionFactory::getLoggedOut() === true) {
-            SessionFactory::setLoggedOut();
+        if ($this->session->isLoggedIn() === true) {
+            $this->session->setAppStatus(SessionContext::APP_STATUS_LOGGEDOUT);
 
             $this->view->assign('loggedOut', 1);
         } else {
@@ -130,7 +129,7 @@ class LoginController extends ControllerBase
         }
 
         $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
-        $this->view->assign('updated', SessionFactory::getAppUpdated());
+//        $this->view->assign('updated', SessionFactory::getAppUpdated());
 
         $this->view();
     }

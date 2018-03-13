@@ -22,37 +22,47 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Api;
-
-defined('APP_ROOT') || die();
+namespace SP\Services\Api;
 
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\TrackData;
-use SP\Mgmt\Tracks\Track;
-use SP\Util\HttpUtil;
+use SP\Util\Json;
 
 /**
- * Class ApiUtil
- *
+ * Class JsonRpcResponse
  * @package SP\Api
  */
-class ApiUtil
+class JsonRpcResponse
 {
     /**
-     * Añadir un seguimiento
-     *
+     * @param ApiResponse $apiResponse
+     * @param $id
+     * @return string
      * @throws \SP\Core\Exceptions\SPException
      */
-    public static function addTracking()
+    public static function getResponse(ApiResponse $apiResponse, $id)
     {
-        try {
-            $TrackData = new TrackData();
-            $TrackData->setSource('API');
-            $TrackData->setTrackIp(HttpUtil::getClientAddress());
+        return Json::getJson([
+            'jsonrpc' => '2.0',
+            'result' => $apiResponse->getResponse(),
+            'id' => $id
+        ]);
+    }
 
-            Track::getItem($TrackData)->add();
-        } catch (SPException $e) {
-            throw new SPException(__('Error interno', false), SPException::WARNING, '', -32601);
-        }
+    /**
+     * @param \Exception $e
+     * @param $id
+     * @return string
+     */
+    public static function getResponseException(\Exception $e, $id)
+    {
+        return json_encode([
+            'jsonrpc' => '2.0',
+            'error' => [
+                'message' => __($e->getMessage()),
+                'code' => $e->getCode(),
+                'data' => ($e instanceof SPException) ? $e->getHint() : null
+            ],
+            'id' => $id
+        ], JSON_PARTIAL_OUTPUT_ON_ERROR);
     }
 }
