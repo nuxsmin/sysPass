@@ -138,8 +138,8 @@ class AuthTokenService extends Service
         if ($action === ActionsInterface::ACCOUNT_VIEW_PASS
             || $action === ActionsInterface::ACCOUNT_CREATE
         ) {
-            $authTokenData->setHash(Hash::hashKey($authTokenData->getHash()));
             $authTokenData->setVault($this->getSecureData($token, $authTokenData->getHash()));
+            $authTokenData->setHash(Hash::hashKey($authTokenData->getHash()));
         } else {
             $authTokenData->setHash(null);
         }
@@ -169,10 +169,8 @@ class AuthTokenService extends Service
      */
     private function getSecureData($token, $hash)
     {
-        $Vault = new Vault();
-        $Vault->saveData(CryptSession::getSessionKey($this->context), $hash . $token);
-
-        return $Vault;
+        return (new Vault())
+            ->saveData(CryptSession::getSessionKey($this->context), $hash . $token);
     }
 
     /**

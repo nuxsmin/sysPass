@@ -68,13 +68,17 @@ abstract class ControllerBase
      * @var Klein
      */
     protected $router;
+    /**
+     * @var bool
+     */
+    private $isAuthenticated = false;
 
     /**
      * Constructor
      *
      * @param Container $container
-     * @param string    $actionName
-     * @param mixed     $requesData
+     * @param string $actionName
+     * @param mixed $requesData
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      */
@@ -99,11 +103,31 @@ abstract class ControllerBase
     /**
      * @return string
      */
-    protected function getControllerName()
+    final protected function getControllerName()
     {
         $class = static::class;
 
         return substr($class, strrpos($class, '\\') + 1, -strlen('Controller')) ?: '';
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAuthenticated()
+    {
+        return $this->isAuthenticated;
+    }
+
+    /**
+     * @param int $actionId
+     * @throws \Exception
+     * @throws \SP\Services\ServiceException
+     */
+    final protected function setupApi($actionId)
+    {
+        $this->apiService->setup($actionId);
+
+        $this->isAuthenticated = true;
     }
 
     /**
@@ -112,31 +136,35 @@ abstract class ControllerBase
      * {"jsonrpc": "2.0", "result": 19, "id": 3}
      *
      * @param ApiResponse $apiResponse
-     * @param int         $id
      * @return string La cadena en formato JSON
      */
-    protected function returnResponse(ApiResponse $apiResponse, $id = 0)
+    final protected function returnResponse(ApiResponse $apiResponse)
     {
-        $this->router->response()->headers()->set('Content-type', 'application/json; charset=utf-8');
-
         try {
-            exit(JsonRpcResponse::getResponse($apiResponse, $id));
+            if ($this->isAuthenticated === false) {
+                throw new SPException(__u('Acceso no permitido'));
+            }
+
+            $this->router->response()->headers()->set('Content-type', 'application/json; charset=utf-8');
+            $this->router->response()->send(true);
+
+            exit(JsonRpcResponse::getResponse($apiResponse, $this->apiService->getRequestId()));
         } catch (SPException $e) {
             processException($e);
 
-            exit(JsonRpcResponse::getResponseException($e, $id));
+            exit(JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId()));
         }
     }
 
     /**
      * @param \Exception $e
-     * @param int        $id
      * @return string
      */
-    protected function returnResponseException(\Exception $e, $id = 0)
+    final protected function returnResponseException(\Exception $e)
     {
         $this->router->response()->headers()->set('Content-type', 'application/json; charset=utf-8');
+        $this->router->response()->send(true);
 
-        exit(JsonRpcResponse::getResponseException($e, $id));
+        exit(JsonRpcResponse::getResponseException($e, $this->apiService->getRequestId()));
     }
 }

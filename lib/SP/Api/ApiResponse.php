@@ -42,7 +42,7 @@ class ApiResponse
      */
     private $resultCode;
     /**
-     * @var null
+     * @var int
      */
     private $itemId;
 
@@ -55,8 +55,8 @@ class ApiResponse
     public function __construct($result, $resultCode = self::RESULT_SUCCESS, $itemId = null)
     {
         $this->result = $result;
-        $this->resultCode = $resultCode;
-        $this->itemId = $itemId;
+        $this->resultCode = (int)$resultCode;
+        $this->itemId = (int)$itemId;
     }
 
     /**
@@ -64,17 +64,11 @@ class ApiResponse
      */
     public function getResponse()
     {
-        if ($this->itemId) {
-            return [
-                'itemId' => $this->itemId,
-                'result' => $this->result,
-                'resultCode' => $this->resultCode
-            ];
-        }
-
         return [
+            'itemId' => $this->itemId,
             'result' => $this->result,
-            'resultCode' => $this->resultCode
+            'resultCode' => $this->resultCode,
+            'count' => is_array($this->result) ? count($this->result) : null
         ];
     }
 }

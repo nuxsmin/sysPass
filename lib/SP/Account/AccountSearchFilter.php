@@ -44,6 +44,7 @@ class AccountSearchFilter
     const SORT_CATEGORY = 2;
     const SORT_CLIENT = 5;
     const SORT_NAME = 1;
+    const SORT_DEFAULT = 0;
 
     /**
      * @var int El número de registros de la última consulta
@@ -60,11 +61,11 @@ class AccountSearchFilter
     /**
      * @var int
      */
-    private $clientId = 0;
+    private $clientId;
     /**
      * @var int
      */
-    private $categoryId = 0;
+    private $categoryId;
     /**
      * @var array
      */
@@ -72,11 +73,11 @@ class AccountSearchFilter
     /**
      * @var int
      */
-    private $sortOrder = 0;
+    private $sortOrder = self::SORT_DEFAULT;
     /**
      * @var int
      */
-    private $sortKey = 0;
+    private $sortKey = self::SORT_DIR_ASC;
     /**
      * @var int
      */
@@ -310,7 +311,8 @@ class AccountSearchFilter
             case self::SORT_CLIENT:
                 $orderKey[] = 'A.clientName';
                 break;
-            default :
+            case self::SORT_DEFAULT:
+            default:
                 $orderKey[] = 'A.clientName, A.name';
                 break;
         }

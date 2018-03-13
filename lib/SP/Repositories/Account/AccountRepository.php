@@ -598,11 +598,11 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             }
         }
 
-        if ($accountSearchFilter->getCategoryId() !== 0) {
+        if (!empty($accountSearchFilter->getCategoryId())) {
             $queryFilterSelect->addFilter('A.categoryId = ?', [$accountSearchFilter->getCategoryId()]);
         }
 
-        if ($accountSearchFilter->getClientId() !== 0) {
+        if (!empty($accountSearchFilter->getClientId())) {
             $queryFilterSelect->addFilter('A.clientId = ?', [$accountSearchFilter->getClientId()]);
         }
 

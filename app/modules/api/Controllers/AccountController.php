@@ -24,13 +24,12 @@
 
 namespace SP\Modules\Api\Controllers;
 
+use SP\Account\AccountRequest;
 use SP\Account\AccountSearchFilter;
 use SP\Api\ApiResponse;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\Exceptions\ValidationException;
-use SP\Modules\Web\Forms\AccountForm;
 use SP\Services\Account\AccountService;
 
 /**
@@ -51,27 +50,40 @@ class AccountController extends ControllerBase
     public function createAction()
     {
         try {
-            $form = new AccountForm();
-            $form->validate(ActionsInterface::ACCOUNT_CREATE);
+            $this->setupApi(ActionsInterface::ACCOUNT_CREATE);
 
-            $itemData = $form->getItemData();
-            $itemData->userId = $this->context->getUserData()->getId();
+            $accountRequest = new AccountRequest();
+            $accountRequest->name = $this->apiService->getParam('name', true);
+            $accountRequest->clientId = $this->apiService->getParam('clientId', true);
+            $accountRequest->categoryId = $this->apiService->getParam('categoryId', true);
+            $accountRequest->login = $this->apiService->getParam('login');
+            $accountRequest->url = $this->apiService->getParam('url');
+            $accountRequest->notes = $this->apiService->getParam('notes');
+            $accountRequest->otherUserEdit = 0;
+            $accountRequest->otherUserGroupEdit = 0;
+            $accountRequest->isPrivate = $this->apiService->getParam('private');
+            $accountRequest->isPrivateGroup = $this->apiService->getParam('privateGroup');
+            $accountRequest->passDateChange = $this->apiService->getParam('expireDate');
+            $accountRequest->parentId = $this->apiService->getParam('parentId');
+            $accountRequest->userGroupId = $this->context->getUserData()->getUserGroupId();
+            $accountRequest->userId = $this->context->getUserData()->getId();
 
-            $accountId = $this->accountService->create($itemData);
+            $pass = $this->accountService->getPasswordEncrypted($this->apiService->getParam('pass', true), $this->apiService->getMasterPass());
+            $accountRequest->pass = $pass['pass'];
+            $accountRequest->key = $pass['key'];
+
+            $accountId = $this->accountService->create($accountRequest);
 
             $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent('create.account',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Cuenta creada'))
-                        ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                        ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Cuenta creada'))
+                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
             );
 
-            $this->returnResponse(new ApiResponse(__('Cuenta creada'), ApiResponse::RESULT_SUCCESS), $accountId);
-        } catch (ValidationException $e) {
-            $this->returnResponseException($e);
+            $this->returnResponse(new ApiResponse(__('Cuenta creada'), ApiResponse::RESULT_SUCCESS, $accountId));
         } catch (\Exception $e) {
             $this->returnResponseException($e);
 
@@ -85,11 +97,16 @@ class AccountController extends ControllerBase
     public function searchAction()
     {
         try {
-            $this->apiService->authenticate(ActionsInterface::ACCOUNT_SEARCH);
+            $this->setupApi(ActionsInterface::ACCOUNT_SEARCH);
 
             $accountSearchFilter = new AccountSearchFilter();
+            $accountSearchFilter->setTxtSearch($this->apiService->getParam('text'));
+            $accountSearchFilter->setCategoryId($this->apiService->getParam('categoryId'));
+            $accountSearchFilter->setClientId($this->apiService->getParam('clientId'));
+            $accountSearchFilter->setLimitCount($this->apiService->getParam('count', false, 50));
+            $accountSearchFilter->setSortOrder($this->apiService->getParam('order', false, AccountSearchFilter::SORT_NAME));
 
-            $this->accountService->getByFilter($accountSearchFilter);
+            $this->returnResponse(new ApiResponse($this->accountService->getByFilter($accountSearchFilter)->getData()));
         } catch (\Exception $e) {
             $this->returnResponseException($e);
 

@@ -31,12 +31,12 @@ use SP\Core\Crypt\Vault;
 use SP\DataModel\AuthTokenData;
 use SP\Html\Html;
 use SP\Repositories\Track\TrackRequest;
-use SP\Services\Auth\AuthException;
 use SP\Services\AuthToken\AuthTokenService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\Track\TrackService;
 use SP\Services\User\UserService;
+use SP\Services\UserProfile\UserProfileService;
 
 /**
  * Class ApiService
@@ -58,6 +58,10 @@ class ApiService extends Service
      */
     protected $requestData;
     /**
+     * @var int
+     */
+    protected $requestId;
+    /**
      * @var TrackRequest
      */
     protected $trackRequest;
@@ -66,9 +70,9 @@ class ApiService extends Service
      */
     protected $authTokenData;
     /**
-     * @var bool
+     * @var string
      */
-    protected $passIsNeeded = false;
+    protected $masterPass;
 
     /**
      * Obtener los datos de la petición
@@ -83,50 +87,67 @@ class ApiService extends Service
         $data = json_decode(Html::sanitize($request));
 
         if (!is_object($data) || json_last_error() !== JSON_ERROR_NONE) {
-            throw new ServiceException(__u('Datos inválidos'), ServiceException::WARNING, null, -32700);
+            throw new ServiceException(
+                __u('Datos inválidos'),
+                ServiceException::ERROR,
+                null,
+                -32700
+            );
         }
 
         if (!isset($data->jsonrpc, $data->method, $data->params, $data->id, $data->params->authToken)) {
-            throw new ServiceException(__u('Formato incorrecto'), ServiceException::WARNING, null, -32600);
+            throw new ServiceException(
+                __u('Formato incorrecto'),
+                ServiceException::ERROR,
+                null,
+                -32600
+            );
         }
 
         if (!isset($data->params->authToken)) {
-            throw new ServiceException(__u('Formato incorrecto'), ServiceException::WARNING, null, -32602);
+            throw new ServiceException(
+                __u('Formato incorrecto'),
+                ServiceException::ERROR,
+                null,
+                -32602
+            );
         }
 
         return $data;
     }
 
     /**
+     * Sets up API
+     *
      * @param $actionId
      * @throws ServiceException
      * @throws \Exception
      */
-    public function authenticate($actionId)
+    public function setup($actionId)
     {
+        $this->requestId = (int)$this->requestData->id;
+
         if ($this->trackService->checkTracking($this->trackRequest)) {
             $this->addTracking();
 
             throw new ServiceException(
                 __u('Intentos excedidos'),
-                AuthException::INFO,
+                ServiceException::ERROR,
                 null,
                 -32601
             );
         }
 
-        if (($this->authTokenData = $this->authTokenService->getTokenByToken($actionId, $this->getParam('authToken'))) === false
-            || $this->authTokenData->getActionId() !== $actionId
+        (($this->authTokenData = $this->authTokenService->getTokenByToken($actionId, $this->getParam('authToken'))) === false
+            || $this->authTokenData->getActionId() !== $actionId) && $this->accessDenied();
+
+        $this->setupUser();
+
+        if ($actionId === ActionsInterface::ACCOUNT_VIEW_PASS
+            || $actionId === ActionsInterface::ACCOUNT_CREATE
         ) {
-            $this->addTracking();
-
-            throw new ServiceException(__u('Acceso no permitido'));
+            $this->masterPass = $this->getMasterPassFromVault();
         }
-
-        $this->context->setUserData(UserService::mapUserLoginResponse($this->dic->get(UserService::class)->getById($this->authTokenData->getUserId())));
-
-        $this->passIsNeeded = $actionId === ActionsInterface::ACCOUNT_VIEW_PASS
-            || $actionId === ActionsInterface::ACCOUNT_CREATE;
     }
 
     /**
@@ -152,8 +173,8 @@ class ApiService extends Service
      * Devolver el valor de un parámetro
      *
      * @param string $param
-     * @param bool   $required Si es requerido
-     * @param mixed  $default  Valor por defecto
+     * @param bool $required Si es requerido
+     * @param mixed $default Valor por defecto
      * @return int|string
      * @throws ServiceException
      */
@@ -164,7 +185,12 @@ class ApiService extends Service
         ) {
             return $this->requestData->params->{$param};
         } elseif ($required === true) {
-            throw new ServiceException(__u('Parámetros incorrectos'), ServiceException::ERROR, $this->getHelp($this->requestData->method), -32602);
+            throw new ServiceException(
+                __u('Parámetros incorrectos'),
+                ServiceException::ERROR,
+                $this->getHelp($this->requestData->method),
+                -32602
+            );
         }
 
         return $default;
@@ -189,14 +215,14 @@ class ApiService extends Service
     public function getActions()
     {
         return [
-            'getAccountPassword' => [
+            'account/viewPass' => [
                 'help' => [
                     'id' => __('Id de la cuenta'),
                     'tokenPass' => __('Clave del token'),
                     'details' => __('Devolver detalles en la respuesta')
                 ]
             ],
-            'getAccountSearch' => [
+            'account/search' => [
                 'help' => [
                     'text' => __('Texto a buscar'),
                     'count' => __('Número de resultados a mostrar'),
@@ -204,66 +230,144 @@ class ApiService extends Service
                     'customerId' => __('Id de cliente a filtrar')
                 ]
             ],
-            'getAccountData' => [
+            'account/view' => [
                 'help' => [
                     'id' => __('Id de la cuenta')
                 ]
             ],
-            'deleteAccount' => [
+            'account/delete' => [
                 'help' => [
                     'id' => __('Id de la cuenta')
                 ]
             ],
-            'addAccount' => [
+            'account/create' => [
                 'help' => [
                     'tokenPass' => __('Clave del token'),
                     'name' => __('Nombre de cuenta'),
                     'categoryId' => __('Id de categoría'),
-                    'customerId' => __('Id de cliente'),
+                    'clientId' => __('Id de cliente'),
                     'pass' => __('Clave'),
                     'login' => __('Usuario de acceso'),
                     'url' => __('URL o IP de acceso'),
-                    'notes' => __('Notas sobre la cuenta')
+                    'notes' => __('Notas sobre la cuenta'),
+                    'private' => __('Cuenta Privada'),
+                    'privateGroup' => __('Cuenta Privada Grupo'),
+                    'expireDate' => __('Fecha Caducidad Clave'),
+                    'parentId' => __('Cuenta Vinculada')
                 ]
             ],
             'backup' => [
                 'help' => ''
             ],
-            'getCategories' => [
+            'category/search' => [
                 'help' => [
                     'name' => __('Nombre de categoría a buscar'),
                     'count' => __('Número de resultados a mostrar')
                 ]
             ],
-            'addCategory' => [
+            'category/create' => [
                 'help' => [
                     'name' => __('Nombre de la categoría'),
                     'description' => __('Descripción de la categoría')
                 ]
             ],
-            'deleteCategory' => [
+            'category/delete' => [
                 'help' => [
                     'id' => __('Id de categoría')
                 ]
             ],
-            'getCustomers' => [
+            'client/search' => [
                 'help' => [
                     'name' => __('Nombre de cliente a buscar'),
                     'count' => __('Número de resultados a mostrar')
                 ]
             ],
-            'addCustomer' => [
+            'client/create' => [
                 'help' => [
                     'name' => __('Nombre del cliente'),
-                    'description' => __('Descripción del cliente')
+                    'description' => __('Descripción del cliente'),
+                    'global' => __('Global')
                 ]
             ],
-            'deleteCustomer' => [
+            'client/delete' => [
                 'help' => [
                     'id' => __('Id de cliente')
                 ]
             ]
         ];
+    }
+
+    /**
+     * @throws ServiceException
+     */
+    private function accessDenied()
+    {
+        $this->addTracking();
+
+        throw new ServiceException(
+            __u('Acceso no permitido'),
+            ServiceException::ERROR,
+            null,
+            -32601
+        );
+    }
+
+    /**
+     * Sets up user's data in context and performs some user checks
+     *
+     * @throws \SP\Core\Exceptions\SPException
+     */
+    private function setupUser()
+    {
+        $userLoginResponse = UserService::mapUserLoginResponse($this->dic->get(UserService::class)->getById($this->authTokenData->getUserId()));
+        $userLoginResponse->getIsDisabled() && $this->accessDenied();
+
+        $this->context->setUserData($userLoginResponse);
+        $this->context->setUserProfile($this->dic->get(UserProfileService::class)->getById($userLoginResponse->getUserProfileId())->getProfile());
+    }
+
+    /**
+     * Devolver la clave maestra
+     *
+     * @return string
+     * @throws ServiceException
+     */
+    private function getMasterPassFromVault()
+    {
+        try {
+            $tokenPass = $this->getParam('tokenPass', true);
+
+            Hash::checkHashKey($tokenPass, $this->authTokenData->getHash()) || $this->accessDenied();
+
+            /** @var Vault $vault */
+            $vault = unserialize($this->authTokenData->getVault());
+
+            if ($vault && ($pass = $vault->getData($tokenPass . $this->getParam('authToken')))) {
+                return $pass;
+            } else {
+                throw new ServiceException(
+                    __u('Error interno'),
+                    ServiceException::ERROR,
+                    __u('Datos inválidos'),
+                    -32603
+                );
+            }
+        } catch (CryptoException $e) {
+            throw new ServiceException(
+                __u('Error interno'),
+                ServiceException::ERROR,
+                $e->getMessage(),
+                -32603
+            );
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getMasterPass()
+    {
+        return $this->masterPass;
     }
 
     /**
@@ -275,6 +379,14 @@ class ApiService extends Service
     }
 
     /**
+     * @return int
+     */
+    public function getRequestId()
+    {
+        return $this->requestId;
+    }
+
+    /**
      * @throws \SP\Core\Exceptions\InvalidArgumentException
      */
     protected function initialize()
@@ -282,43 +394,5 @@ class ApiService extends Service
         $this->authTokenService = $this->dic->get(AuthTokenService::class);
         $this->trackService = $this->dic->get(TrackService::class);
         $this->trackRequest = TrackService::getTrackRequest('api');
-    }
-
-    /**
-     * Realizar la autentificación del usuario
-     *
-     * @throws ServiceException
-     */
-    protected function doAuth()
-    {
-        if ($this->context->getUserData()->getIsDisabled()
-            || !Hash::checkHashKey($this->getParam('tokenPass', true), $this->authTokenData->getHash())
-        ) {
-            $this->addTracking();
-
-            throw new ServiceException(__u('Acceso no permitido'), ServiceException::ERROR);
-        }
-    }
-
-    /**
-     * Devolver la clave maestra
-     *
-     * @return string
-     * @throws ServiceException
-     */
-    private function getMasterPass()
-    {
-        try {
-            /** @var Vault $vault */
-            $vault = unserialize($this->authTokenData->getVault());
-
-            if ($vault && ($pass = $vault->getData($this->getParam('tokenPass') . $this->getParam('authToken')))) {
-                return $pass;
-            } else {
-                throw new ServiceException(__u('Error interno'), ServiceException::ERROR, __u('Datos inválidos'));
-            }
-        } catch (CryptoException $e) {
-            throw new ServiceException(__u('Error interno'), ServiceException::ERROR, $e->getMessage());
-        }
     }
 }

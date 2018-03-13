@@ -27,8 +27,10 @@ namespace SP;
 use DI\Container;
 use Interop\Container\ContainerInterface;
 use Klein\Klein;
+use Klein\Response;
 use PHPMailer\PHPMailer\Exception;
 use RuntimeException;
+use SP\Api\JsonRpcResponse;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Config\ConfigUtil;
@@ -185,7 +187,9 @@ class Bootstrap
                 } catch (\Exception $e) {
                     processException($e);
 
-                    return $e->getMessage();
+                    /** @var Response $response */
+                    $response->headers()->set('Content-type', 'application/json; charset=utf-8');
+                    return $response->body(JsonRpcResponse::getResponseException($e, 0));
                 }
             }
         );
@@ -434,7 +438,7 @@ class Bootstrap
 
     /**
      * @param Container $container
-     * @param string    $module
+     * @param string $module
      * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException

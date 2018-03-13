@@ -24,6 +24,7 @@
 
 namespace SP\Api;
 
+use SP\Core\Exceptions\SPException;
 use SP\Util\Json;
 
 /**
@@ -56,9 +57,10 @@ class JsonRpcResponse
     {
         return json_encode([
             'jsonrpc' => '2.0',
-            'result' => [
-                'exception' => __($e->getMessage()),
-                'code' => $e->getCode()
+            'error' => [
+                'message' => __($e->getMessage()),
+                'code' => $e->getCode(),
+                'data' => ($e instanceof SPException) ? $e->getHint() : null
             ],
             'id' => $id
         ], JSON_PARTIAL_OUTPUT_ON_ERROR);

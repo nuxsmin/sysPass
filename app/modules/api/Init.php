@@ -75,26 +75,30 @@ class Init extends ModuleBase
     {
         debugLog(__FUNCTION__);
 
-        // Cargar la configuración
+        // Initialize context
+        $this->context->initialize();
+
+        // Load config
         $this->config->loadConfig($this->context);
 
-        // Cargar el lenguaje
+        // Load language
         $this->language->setLanguage();
 
-        // Comprobar si es necesario cambiar a HTTPS
+        // Checks if it needs to switch the request over HTTPS
         HttpUtil::checkHttps($this->configData);
 
-        // Comprobar si está instalado
+        // Checks if sysPass is installed
         if (!$this->checkInstalled()) {
             throw new InitializationException('Not installed');
         }
 
-        // Comprobar si el modo mantenimiento está activado
+        // Checks is maintenance mode is turned on
         $this->checkMaintenanceMode($this->context);
 
-        // Comprobar si la Base de datos existe
+        // Checks is the database is set up
         DBUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
 
+        // Initialize event handlers
         $this->initEventHandlers();
     }
 

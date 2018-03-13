@@ -171,10 +171,13 @@ class AccountService extends Service implements AccountServiceInterface
         $accountRequest->changePermissions = AccountAclService::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
         $accountRequest->userGroupId = $accountRequest->userGroupId ?: $this->context->getUserData()->getUserGroupId();
 
-        $pass = $this->getPasswordEncrypted($accountRequest->pass);
+        if (empty($accountRequest->key)) {
+            $pass = $this->getPasswordEncrypted($accountRequest->pass);
 
-        $accountRequest->pass = $pass['pass'];
-        $accountRequest->key = $pass['key'];
+            $accountRequest->pass = $pass['pass'];
+            $accountRequest->key = $pass['key'];
+        }
+
         $accountRequest->id = $this->accountRepository->create($accountRequest);
 
         $this->addItems($accountRequest);
@@ -261,7 +264,7 @@ class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param int  $accountId
+     * @param int $accountId
      * @param bool $isDelete
      * @return bool
      * @throws QueryException
@@ -318,7 +321,7 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param AccountRequest $accountRequest
-     * @param bool           $addHistory
+     * @param bool $addHistory
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface

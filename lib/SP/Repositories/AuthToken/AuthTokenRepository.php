@@ -415,7 +415,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
     public function getTokenByToken($actionId, $token)
     {
         $query = /** @lang SQL */
-            'SELECT actionId, userId, vault, `hash` 
+            'SELECT actionId, userId, vault, `hash`
             FROM AuthToken
             WHERE actionId = ? 
             AND token = ? LIMIT 1';
