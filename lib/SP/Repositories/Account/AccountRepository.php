@@ -78,7 +78,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function getPasswordForId($id)
     {
-        $queryFilter = AccountUtil::getAccountFilterUser($this->session)
+        $queryFilter = AccountUtil::getAccountFilterUser($this->context)
             ->addFilter('A.id = ?', [$id]);
 
         $queryData = new QueryData();
@@ -286,7 +286,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $Data = new QueryData();
         $Data->setQuery($query);
         $Data->addParam($historyId, 'id');
-        $Data->addParam($this->session->getUserData()->getId(), 'userEditId');
+        $Data->addParam($this->context->getUserData()->getId(), 'userEditId');
         $Data->setOnErrorMessage(__u('Error al restaurar cuenta'));
 
         return DbWrapper::getQuery($Data, $this->db);
@@ -623,7 +623,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             $where[] = $queryFilterSelect->getFilters();
         }
 
-        $queryFilterUser = AccountUtil::getAccountFilterUser($this->session, $accountSearchFilter->getGlobalSearch());
+        $queryFilterUser = AccountUtil::getAccountFilterUser($this->context, $accountSearchFilter->getGlobalSearch());
 
         if ($queryFilterUser->hasFilters()) {
             $where[] = $queryFilterUser->getFilters();
@@ -633,7 +633,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
         if ($accountSearchFilter->isSearchFavorites() === true) {
             $join['query'][] = 'INNER JOIN AccountToFavorite AF ON (AF.accountId = A.id AND AF.userId = ?)';
-            $join['param'][] = $this->session->getUserData()->getId();
+            $join['param'][] = $this->context->getUserData()->getId();
         }
 
         $queryData = new QueryData();

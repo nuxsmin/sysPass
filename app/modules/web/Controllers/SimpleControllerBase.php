@@ -31,6 +31,7 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\UI\Theme;
@@ -103,7 +104,7 @@ abstract class SimpleControllerBase
 
         $this->config = $this->dic->get(Config::class);
         $this->configData = $this->config->getConfigData();
-        $this->session = $this->dic->get(SessionContext::class);
+        $this->session = $this->dic->get(ContextInterface::class);
         $this->theme = $this->dic->get(Theme::class);
         $this->eventDispatcher = $this->dic->get(EventDispatcher::class);
         $this->router = $this->dic->get(Klein::class);

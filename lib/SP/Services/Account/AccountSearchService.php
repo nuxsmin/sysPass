@@ -59,7 +59,7 @@ class AccountSearchService extends Service
      * Cache expire time
      */
     const CACHE_EXPIRE = 86400;
-    
+
     /**
      * Colores para resaltar las cuentas
      */
@@ -130,8 +130,8 @@ class AccountSearchService extends Service
         // Variables de configuración
         $maxTextLength = $this->configData->isResultsAsCards() ? 40 : 60;
 
-        $accountLinkEnabled = $this->session->getUserData()->getPreferences()->isAccountLink() || $this->configData->isAccountLink();
-        $favorites = $this->dic->get(AccountFavoriteService::class)->getForUserId($this->session->getUserData()->getId());
+        $accountLinkEnabled = $this->context->getUserData()->getPreferences()->isAccountLink() || $this->configData->isAccountLink();
+        $favorites = $this->dic->get(AccountFavoriteService::class)->getForUserId($this->context->getUserData()->getId());
 
         $accountAclService = $this->dic->get(AccountAclService::class);
 
@@ -256,7 +256,7 @@ class AccountSearchService extends Service
                 return [
                     'type' => 'private',
                     'query' => '(A.isPrivate = 1 AND A.userId = ?) OR (A.isPrivateGroup = 1 AND A.userGroupId = ?)',
-                    'values' => [$this->session->getUserData()->getId(), $this->session->getUserData()->getUserGroupId()]
+                    'values' => [$this->context->getUserData()->getId(), $this->context->getUserData()->getUserGroupId()]
                 ];
                 break;
             default:
@@ -275,7 +275,7 @@ class AccountSearchService extends Service
         $accountId = $accountSearchData->getId();
 
         /** @var AccountCache[] $cache */
-        $cache =& $_SESSION['accountsCache'];
+        $cache = $this->context->getAccountsCache();
 
         if (!isset($cache[$accountId])
             || $cache[$accountId]->getTime() < (int)strtotime($accountSearchData->getDateEdit())
@@ -284,6 +284,8 @@ class AccountSearchService extends Service
                 $accountId,
                 $this->accountToUserRepository->getUsersByAccountId($accountId),
                 $this->accountToUserGroupRepository->getUserGroupsByAccountId($accountId));
+
+            $this->context->setAccountsCache($cache);
         }
 
         return $cache[$accountId];

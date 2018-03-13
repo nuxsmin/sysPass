@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Bootstrap;
-use SP\Core\CryptPKI;
+use SP\Core\Crypt\CryptPKI;
 use SP\Http\Cookies;
 use SP\Http\Response;
 use SP\Providers\Auth\Browser\Browser;

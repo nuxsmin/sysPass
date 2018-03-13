@@ -27,11 +27,11 @@ namespace SP\Modules\Web\Controllers\Helpers;
 use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
+use SP\Core\Crypt\CryptPKI;
 use SP\Core\Dic\ContainerException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
-use SP\Core\SessionUtil;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Html\DataGrid\DataGridAction;
@@ -93,15 +93,13 @@ class LayoutHelper extends HelperBase
 
     /**
      * Inicializar las variables para la vista principal de la aplicación
-     *
-     * @throws ContainerException
      */
     public function initBody()
     {
         $this->view->assign('startTime', microtime());
 
         $this->view->assign('isInstalled', $this->configData->isInstalled());
-        $this->view->assign('sk', $this->loggedIn ? $this->session->generateSecurityKey() : '');
+        $this->view->assign('sk', $this->loggedIn ? $this->context->generateSecurityKey() : '');
         $this->view->assign('appInfo', Util::getAppInfo());
         $this->view->assign('appVersion', Util::getVersionString());
         $this->view->assign('isDemoMode', $this->configData->isDemoEnabled());
@@ -112,16 +110,16 @@ class LayoutHelper extends HelperBase
         $this->view->assign('logonobg', Bootstrap::$WEBURI . '/public/images/logo_full_nobg.png');
         $this->view->assign('httpsEnabled', Checks::httpsEnabled());
 
-        $this->loggedIn = $this->session->isLoggedIn();
+        $this->loggedIn = $this->context->isLoggedIn();
 
         $this->view->assign('loggedIn', $this->loggedIn);
         $this->view->assign('lang', $this->loggedIn ? Language::$userLang : Language::$globalLang);
-        $this->view->assign('loadApp', $this->session->getAuthCompleted());
+        $this->view->assign('loadApp', $this->context->getAuthCompleted());
 
 
         try {
             // Cargar la clave pública en la sesión
-            SessionUtil::loadPublicKey();
+            $this->context->setPublicKey($this->dic->get(CryptPKI::class)->getPublicKey());
         } catch (SPException $e) {
             processException($e);
         }
@@ -151,7 +149,7 @@ class LayoutHelper extends HelperBase
             $this->view->append('jsLinks', $jsUri . '&f=' . $themeJsFiles . '&b=' . $themeJsBase . '&v=' . $jsVersionHash);
         }
 
-        $userPreferences = $this->session->getUserData()->getPreferences();
+        $userPreferences = $this->context->getUserData()->getPreferences();
 
         if ($this->loggedIn && $userPreferences->getUserId() > 0) {
             $resultsAsCards = $userPreferences->isResultsAsCards();
@@ -212,7 +210,7 @@ class LayoutHelper extends HelperBase
     {
         $userType = null;
 
-        $userData = $this->session->getUserData();
+        $userData = $this->context->getUserData();
         $icons = $this->theme->getIcons();
 
         if ($userData->getIsAdminApp()) {
@@ -371,7 +369,7 @@ class LayoutHelper extends HelperBase
     {
         $this->theme = $this->dic->get(Theme::class);
 
-        $this->loggedIn = $this->session->isLoggedIn();
+        $this->loggedIn = $this->context->isLoggedIn();
 
         $this->view->assign('loggedIn', $this->loggedIn);
     }

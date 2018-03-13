@@ -1,6 +1,6 @@
 <?php
 
-/** @var $icons \Theme\Icons */
+/** @var $icons \SP\Core\UI\ThemeIcons */
 /** @var $group \SP\DataModel\UserGroupData */
 /** @var $groupUsers \SP\DataModel\UserToUserGroupData */
 ?>

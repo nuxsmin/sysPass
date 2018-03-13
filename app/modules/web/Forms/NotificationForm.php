@@ -77,7 +77,7 @@ class NotificationForm extends FormBase implements FormInterface
         $this->notificationData->setUserId(Request::analyzeInt('notification_user'));
         $this->notificationData->setChecked(Request::analyzeBool('notification_checkout', false));
 
-        if ($this->session->getUserData()->getIsAdminApp() && $this->notificationData->getUserId() === 0) {
+        if ($this->context->getUserData()->getIsAdminApp() && $this->notificationData->getUserId() === 0) {
             $this->notificationData->setOnlyAdmin(Request::analyzeBool('notification_onlyadmin', false));
             $this->notificationData->setSticky(Request::analyzeBool('notification_sticky', false));
         }

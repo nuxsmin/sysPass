@@ -25,11 +25,17 @@
 namespace SP\Modules\Api\Controllers;
 
 use DI\Container;
-use SP\Core\Context\ApiContext;
+use Klein\Klein;
+use SP\Api\ApiResponse;
+use SP\Api\JsonRpcResponse;
+use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
+use SP\Core\Exceptions\SPException;
+use SP\Services\Api\ApiService;
 
 /**
  * Class ControllerBase
+ *
  * @package SP\Modules\Api\Controllers
  */
 abstract class ControllerBase
@@ -47,27 +53,40 @@ abstract class ControllerBase
      */
     protected $actionName;
     /**
-     * @var ApiContext
+     * @var StatelessContext
      */
     protected $context;
     /**
      * @var EventDispatcher
      */
     protected $eventDispatcher;
+    /**
+     * @var ApiService
+     */
+    protected $apiService;
+    /**
+     * @var Klein
+     */
+    protected $router;
 
     /**
      * Constructor
      *
      * @param Container $container
-     * @param           $actionName
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @param string    $actionName
+     * @param mixed     $requesData
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
-    public final function __construct(Container $container, $actionName)
+    public final function __construct(Container $container, $actionName, $requesData)
     {
         $this->dic = $container;
-        $this->context = $container->get(ApiContext::class);
+        $this->context = $container->get(StatelessContext::class);
         $this->eventDispatcher = $container->get(EventDispatcher::class);
+        $this->router = $container->get(Klein::class);
+
+        $this->apiService = $container->get(ApiService::class);
+        $this->apiService->setRequestData($requesData);
 
         $this->controllerName = $this->getControllerName();
         $this->actionName = $actionName;
@@ -85,5 +104,39 @@ abstract class ControllerBase
         $class = static::class;
 
         return substr($class, strrpos($class, '\\') + 1, -strlen('Controller')) ?: '';
+    }
+
+    /**
+     * Devuelve una respuesta en formato JSON con el estado y el mensaje.
+     *
+     * {"jsonrpc": "2.0", "result": 19, "id": 3}
+     *
+     * @param ApiResponse $apiResponse
+     * @param int         $id
+     * @return string La cadena en formato JSON
+     */
+    protected function returnResponse(ApiResponse $apiResponse, $id = 0)
+    {
+        $this->router->response()->headers()->set('Content-type', 'application/json; charset=utf-8');
+
+        try {
+            exit(JsonRpcResponse::getResponse($apiResponse, $id));
+        } catch (SPException $e) {
+            processException($e);
+
+            exit(JsonRpcResponse::getResponseException($e, $id));
+        }
+    }
+
+    /**
+     * @param \Exception $e
+     * @param int        $id
+     * @return string
+     */
+    protected function returnResponseException(\Exception $e, $id = 0)
+    {
+        $this->router->response()->headers()->set('Content-type', 'application/json; charset=utf-8');
+
+        exit(JsonRpcResponse::getResponseException($e, $id));
     }
 }

@@ -26,8 +26,8 @@ namespace SP\Services\Import;
 
 use SP\Account\AccountRequest;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\OldCrypt;
 use SP\Core\Exceptions\SPException;
-use SP\Core\OldCrypt;
 use SP\DataModel\CategoryData;
 use SP\DataModel\ClientData;
 use SP\DataModel\TagData;

@@ -31,7 +31,6 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Dic;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\InstallData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
@@ -51,7 +50,7 @@ defined('APP_ROOT') || die();
  */
 class Installer
 {
-    use InjectableTrait;
+    use Dic\InjectableTrait;
 
     /**
      * Versión y número de compilación de sysPass

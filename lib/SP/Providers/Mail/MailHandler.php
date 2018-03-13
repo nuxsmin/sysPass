@@ -27,6 +27,7 @@ namespace SP\Providers\Mail;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\Core\Messages\MailMessage;
+use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 use SP\Services\MailService;
 use SP\Util\HttpUtil;
@@ -39,6 +40,8 @@ use SplSubject;
  */
 class MailHandler extends Provider implements EventReceiver
 {
+    use EventsTrait;
+
     const EVENTS = [
         'create.',
         'delete.',
@@ -80,7 +83,7 @@ class MailHandler extends Provider implements EventReceiver
         if (($eventMessage = $event->getEventMessage()) !== null) {
             try {
                 $configData = $this->config->getConfigData();
-                $userData = $this->session->getUserData();
+                $userData = $this->context->getUserData();
 
                 $mailMessage = new MailMessage();
                 $mailMessage->addDescription($eventMessage->composeText());
@@ -133,6 +136,12 @@ class MailHandler extends Provider implements EventReceiver
     {
         $this->mailService = $this->dic->get(MailService::class);
 
-        $this->events = str_replace('.', '\\.', implode('|', self::EVENTS));
+        $configEvents = $this->config->getConfigData()->getMailEvents();
+
+        if (count($configEvents) === 0) {
+            $this->events = $this->parseEventsToRegex(self::EVENTS);
+        } else {
+            $this->events = $this->parseEventsToRegex($configEvents);
+        }
     }
 }

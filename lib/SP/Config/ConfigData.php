@@ -214,6 +214,10 @@ class ConfigData implements JsonSerializable
      */
     private $logEnabled = true;
     /**
+     * @var array
+     */
+    private $logEvents = [];
+    /**
      * @var bool
      */
     private $mailAuthenabled = false;
@@ -253,6 +257,10 @@ class ConfigData implements JsonSerializable
      * @var array
      */
     private $mailRecipients = [];
+    /**
+     * @var array
+     */
+    private $mailEvents = [];
     /**
      * @var bool
      */
@@ -369,6 +377,22 @@ class ConfigData implements JsonSerializable
      * @var int
      */
     private $ssoDefaultProfile;
+
+    /**
+     * @return array
+     */
+    public function getLogEvents()
+    {
+        return (array)$this->logEvents;
+    }
+
+    /**
+     * @param array $logEvents
+     */
+    public function setLogEvents(array $logEvents)
+    {
+        $this->logEvents = $logEvents;
+    }
 
     /**
      * @return boolean
@@ -1948,5 +1972,21 @@ class ConfigData implements JsonSerializable
     public function setMailRecipients(array $mailRecipients)
     {
         $this->mailRecipients = $mailRecipients;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMailEvents()
+    {
+        return (array)$this->mailEvents;
+    }
+
+    /**
+     * @param array $mailEvents
+     */
+    public function setMailEvents(array $mailEvents)
+    {
+        $this->mailEvents = $mailEvents;
     }
 }

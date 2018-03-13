@@ -25,8 +25,7 @@
 namespace SP\Http;
 
 use Klein\Klein;
-use SP\Core\CryptPKI;
-use SP\Core\Init;
+use SP\Core\Crypt\CryptPKI;
 use SP\Html\Html;
 use SP\Util\Util;
 
@@ -40,27 +39,7 @@ class Request
     /**
      * @var array Directorios seguros para include
      */
-    private static $secureDirs = ['css', 'js'];
-
-    /**
-     * Comprobar el método utilizado para enviar un formulario.
-     *
-     * @param string $method con el método utilizado.
-     * @throws \SP\Core\Exceptions\FileNotFoundException
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    public static function checkReferer($method)
-    {
-        $referer = self::getRequestHeaders('HTTP_REFERER');
-
-        if (!$referer
-            || $_SERVER['REQUEST_METHOD'] !== strtoupper($method)
-            || !preg_match('#' . Init::$WEBROOT . '/.*$#', $referer)
-        ) {
-            Init::initError(__('No es posible acceder directamente a este archivo'));
-            exit();
-        }
-    }
+    const SECURE_DIRS = ['css', 'js'];
 
     /**
      * Devolver las cabeceras enviadas desde el cliente.
@@ -172,6 +151,7 @@ class Request
      * @param mixed  $force    valor devuelto si el parámeto está definido
      * @param bool   $sanitize escapar/eliminar carácteres especiales
      * @return mixed si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
+     * @deprecated
      */
     public static function analyze($param, $default = '', $check = false, $force = false, $sanitize = true)
     {
@@ -197,6 +177,7 @@ class Request
      * @param $default   mixed  tipo por defecto a devolver
      * @param $sanitize  bool   limpiar una cadena de caracteres
      * @return mixed
+     * @deprecated
      */
     public static function parse(&$value, $default, $sanitize)
     {
@@ -223,12 +204,17 @@ class Request
     }
 
     /**
-     * @param $param
+     * @param string        $param
+     * @param callable|null $mapper
      * @return mixed
      */
-    public static function analyzeArray($param)
+    public static function analyzeArray($param, callable $mapper = null)
     {
         if (isset($_REQUEST[$param]) && is_array($_REQUEST[$param])) {
+            if (is_callable($mapper)) {
+                return $mapper($_REQUEST[$param]);
+            }
+
             return array_map(function ($value) {
                 if (is_numeric($value)) {
                     return (int)filter_var($value, FILTER_SANITIZE_NUMBER_INT);
@@ -336,7 +322,7 @@ class Request
     {
         if ($base === null) {
             $base = APP_ROOT;
-        } elseif (!in_array(basename($base), self::$secureDirs, true)) {
+        } elseif (!in_array(basename($base), self::SECURE_DIRS, true)) {
             return '';
         }
 

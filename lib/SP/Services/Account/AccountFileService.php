@@ -25,7 +25,6 @@
 namespace SP\Services\Account;
 
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
@@ -42,8 +41,6 @@ use SP\Util\ImageUtil;
  */
 class AccountFileService extends Service
 {
-    use InjectableTrait;
-
     /**
      * @var AccountFileRepository
      */

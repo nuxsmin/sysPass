@@ -27,9 +27,9 @@ namespace SP\Modules\Web\Controllers;
 use DI\Container;
 use Klein\Klein;
 use SP\Core\Context\SessionContext;
-use SP\Core\Task;
-use SP\Core\TaskFactory;
 use SP\Services\ServiceException;
+use SP\Services\Task\Task;
+use SP\Services\Task\TaskFactory;
 use SP\Services\Task\TaskService;
 
 /**

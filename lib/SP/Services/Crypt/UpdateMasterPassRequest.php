@@ -25,7 +25,7 @@
 namespace SP\Services\Crypt;
 
 use SP\Core\Crypt\Hash;
-use SP\Core\Task;
+use SP\Services\Task\Task;
 
 
 /**

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -69,17 +69,6 @@ class UserPassService extends Service
     protected $configService;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function initialize()
-    {
-        $this->configData = $this->config->getConfigData();
-        $this->userRepository = $this->dic->get(UserRepository::class);
-        $this->configService = $this->dic->get(ConfigService::class);;
-    }
-
-    /**
      * Actualizar la clave maestra con la clave anterior del usuario
      *
      * @param string        $oldUserPass
@@ -142,7 +131,7 @@ class UserPassService extends Service
 
             // Comprobamos el hash de la clave del usuario con la guardada
             if (Hash::checkHashKey($clearMPass, $configHashMPass)) {
-                CryptSession::saveSessionKey($clearMPass);
+                CryptSession::saveSessionKey($clearMPass, $this->context);
 
                 $response = new UserPassResponse(self::MPASS_OK, $clearMPass);
                 $response->setCryptMasterPass($userLoginResponse->getMPass());
@@ -204,7 +193,7 @@ class UserPassService extends Service
 
             $this->userRepository->updateMasterPassById($userData->getId(), $response->getCryptMasterPass(), $response->getCryptSecuredKey());
 
-            CryptSession::saveSessionKey($userMPass);
+            CryptSession::saveSessionKey($userMPass, $this->context);
 
             return $response;
         }
@@ -253,5 +242,16 @@ class UserPassService extends Service
     public function migrateUserPassById($id, $userPass)
     {
         return $this->userRepository->updatePassById($id, new UpdatePassRequest(Hash::hashKey($userPass)));
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->configData = $this->config->getConfigData();
+        $this->userRepository = $this->dic->get(UserRepository::class);
+        $this->configService = $this->dic->get(ConfigService::class);;
     }
 }

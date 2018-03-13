@@ -26,7 +26,6 @@ namespace SP\Html;
 
 use Klein\Klein;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\Http\Request;
 use SP\Util\Util;
 
@@ -39,8 +38,6 @@ defined('APP_ROOT') || die();
  */
 class Minify
 {
-    use InjectableTrait;
-
     /**
      * Constantes para tipos de archivos
      */

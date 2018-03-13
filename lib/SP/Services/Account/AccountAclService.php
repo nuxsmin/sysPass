@@ -88,7 +88,7 @@ class AccountAclService extends Service
     {
         $this->accountAcl = new AccountAcl($actionId, $isHistory);
 
-        $this->accountAcl->showPermission = self::getShowPermission($this->session->getUserData(), $this->session->getUserProfile());
+        $this->accountAcl->showPermission = self::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
 
         if ($accountAclDto !== null) {
             $this->accountAclDto = $accountAclDto;
@@ -149,7 +149,7 @@ class AccountAclService extends Service
      */
     public function getCacheFileForAcl($accountId, $actionId)
     {
-        $userId = $this->session->getUserData()->getId();
+        $userId = $this->context->getUserData()->getId();
         return self::ACL_PATH . $userId . DIRECTORY_SEPARATOR . $accountId . DIRECTORY_SEPARATOR . md5($userId . $accountId . $actionId) . '.cache';
     }
 
@@ -196,7 +196,7 @@ class AccountAclService extends Service
      */
     protected function compileAccountAccess()
     {
-        $userData = $this->session->getUserData();
+        $userData = $this->context->getUserData();
 
         if ($userData->getIsAdminApp()
             || $userData->getIsAdminAcc()
@@ -229,7 +229,7 @@ class AccountAclService extends Service
      */
     protected function getIsUserInGroups()
     {
-        $userData = $this->session->getUserData();
+        $userData = $this->context->getUserData();
         $userToUserGroupService = $this->dic->get(UserToUserGroupService::class);
 
         // Comprobar si el usuario está vinculado desde el grupo principal de la cuenta

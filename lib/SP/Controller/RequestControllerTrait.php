@@ -29,7 +29,6 @@ use SP\Config\ConfigData;
 use SP\Core\Context\SessionContext;
 use SP\Core\Messages\LogMessage;
 use SP\Core\SessionUtil;
-use SP\Core\Traits\InjectableTrait;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Util\Checks;
@@ -43,7 +42,7 @@ use SP\Util\Util;
  */
 trait RequestControllerTrait
 {
-    use InjectableTrait;
+    use SP\Core\Dic\InjectableTrait;
 
     /**
      * @var int

@@ -26,7 +26,7 @@ namespace SP\Config;
 
 use DI\Container;
 use ReflectionObject;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
 use SP\Services\Config\ConfigBackupService;
 use SP\Storage\XmlFileStorageInterface;
@@ -52,9 +52,9 @@ class Config
      */
     private $fileStorage;
     /**
-     * @var SessionContext
+     * @var ContextInterface
      */
-    private $session;
+    private $context;
     /**
      * @var Container
      */
@@ -64,15 +64,13 @@ class Config
      * Config constructor.
      *
      * @param XmlFileStorageInterface $fileStorage
-     * @param SessionContext $session
-     * @param Container $dic
+     * @param ContextInterface        $session
+     * @param Container               $dic
      * @throws ConfigException
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function __construct(XmlFileStorageInterface $fileStorage, SessionContext $session, Container $dic)
+    public function __construct(XmlFileStorageInterface $fileStorage, ContextInterface $session, Container $dic)
     {
-        $this->session = $session;
+        $this->context = $session;
         $this->fileStorage = $fileStorage;
 
         if (!self::$configLoaded) {
@@ -121,19 +119,19 @@ class Config
     /**
      * Cargar la configuración desde el archivo
      *
-     * @param SessionContext $sessionContext
-     * @param bool $reload
+     * @param ContextInterface $context
+     * @param bool             $reload
      * @return ConfigData
      */
-    public function loadConfig(SessionContext $sessionContext, $reload = false)
+    public function loadConfig(ContextInterface $context, $reload = false)
     {
-        $configData = $sessionContext->getConfig();
+        $configData = $context->getConfig();
 
         if ($reload === true
             || $configData === null
-            || time() >= ($sessionContext->getConfigTime() + $configData->getSessionTimeout() / 2)
+            || time() >= ($context->getConfigTime() + $configData->getSessionTimeout() / 2)
         ) {
-            return $this->saveConfigInSession($sessionContext);
+            return $this->saveConfigInSession($context);
         }
 
         return $configData;
@@ -141,13 +139,14 @@ class Config
 
     /**
      * Guardar la configuración en la sesión
-     * @param SessionContext $sessionContext
+     *
+     * @param ContextInterface $context
      * @return ConfigData
      */
-    private function saveConfigInSession(SessionContext $sessionContext)
+    private function saveConfigInSession(ContextInterface $context)
     {
-        $sessionContext->setConfig($this->configData);
-        $sessionContext->setConfigTime(time());
+        $context->setConfig($this->configData);
+        $context->setConfigTime(time());
 
         return $this->configData;
     }
@@ -169,7 +168,7 @@ class Config
         }
 
         $configData->setConfigDate(time());
-        $configData->setConfigSaver($this->session->getUserData()->getLogin());
+        $configData->setConfigSaver($this->context->getUserData()->getLogin());
         $configData->setConfigHash();
 
         $this->fileStorage->setItems($configData);

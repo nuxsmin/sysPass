@@ -25,7 +25,7 @@
 namespace SP\Core\Upgrade;
 
 use SP\Core\Exceptions\SPException;
-use SP\Core\TaskFactory;
+use SP\Services\Task\TaskFactory;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 

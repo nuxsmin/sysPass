@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Controllers;
 
 use Klein\Klein;
 use SP\Bootstrap;
-use SP\Core\Traits\InjectableTrait;
 use SP\Mvc\View\Template;
 use SP\Util\Util;
 
@@ -37,7 +36,7 @@ use SP\Util\Util;
  */
 class ErrorController
 {
-    use InjectableTrait;
+    use SP\Core\Dic\InjectableTrait;
 
     /**
      * @var Template

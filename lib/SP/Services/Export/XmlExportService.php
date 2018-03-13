@@ -223,7 +223,7 @@ class XmlExportService extends Service
     private function createMeta()
     {
         try {
-            $userData = $this->session->getUserData();
+            $userData = $this->context->getUserData();
 
             $nodeMeta = $this->xml->createElement('Meta');
             $metaGenerator = $this->xml->createElement('Generator', 'sysPass');

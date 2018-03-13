@@ -33,7 +33,6 @@ use SP\Auth\AuthUtil;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Messages\LogMessage;
 use SP\Core\SessionFactory;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\NotificationData;
 use SP\DataModel\PluginData;
@@ -78,7 +77,7 @@ use SP\Util\Util;
  */
 class ItemActionController implements ItemControllerInterface
 {
-    use InjectableTrait;
+    use SP\Core\Dic\InjectableTrait;
     use RequestControllerTrait;
 
     /**
@@ -134,9 +133,9 @@ class ItemActionController implements ItemControllerInterface
                 case ActionsInterface::CATEGORY_DELETE:
                     $this->categoryAction();
                     break;
-                case ActionsInterface::APITOKEN_CREATE:
-                case ActionsInterface::APITOKEN_EDIT:
-                case ActionsInterface::APITOKEN_DELETE:
+                case ActionsInterface::AUTHTOKEN_CREATE:
+                case ActionsInterface::AUTHTOKEN_EDIT:
+                case ActionsInterface::AUTHTOKEN_DELETE:
                     $this->tokenAction();
                     break;
                 case ActionsInterface::CUSTOMFIELD_CREATE:
@@ -613,7 +612,7 @@ class ItemActionController implements ItemControllerInterface
         $refresh = Request::analyze('refreshtoken', false, false, true);
 
         switch ($this->actionId) {
-            case ActionsInterface::APITOKEN_CREATE:
+            case ActionsInterface::AUTHTOKEN_CREATE:
                 $Form->validate($this->actionId);
 
                 if ($refresh === true) {
@@ -626,7 +625,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Autorización creada', false));
                 $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getAuthtokenUserId()));
                 break;
-            case ActionsInterface::APITOKEN_EDIT:
+            case ActionsInterface::AUTHTOKEN_EDIT:
                 $Form->validate($this->actionId);
 
                 if ($refresh === true) {
@@ -639,7 +638,7 @@ class ItemActionController implements ItemControllerInterface
                 $this->LogMessage->addDescription(__('Autorización actualizada', false));
                 $this->LogMessage->addDetails(__('Usuario', false), UserUtil::getUserLoginById($Form->getItemData()->getAuthtokenUserId()));
                 break;
-            case ActionsInterface::APITOKEN_DELETE:
+            case ActionsInterface::AUTHTOKEN_DELETE:
                 if (is_array($this->itemId)) {
                     ApiToken::getItem()->deleteBatch($this->itemId);
 

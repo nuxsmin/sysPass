@@ -75,7 +75,7 @@ class TemporaryMasterPassService extends Service
             $this->configService->save('tempmaster_attempts', 0);
 
             // Guardar la clave temporal hasta que finalice la sesión
-            $this->session->setTemporaryMasterPass($randomKey);
+            $this->context->setTemporaryMasterPass($randomKey);
 
             $this->eventDispatcher->notifyEvent('create.tempMasterPassword',
                 new Event($this, EventMessage::factory()

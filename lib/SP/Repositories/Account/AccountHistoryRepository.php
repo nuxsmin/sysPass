@@ -99,7 +99,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData->setSelect('AH.id, AH.name, AH.login, AH.pass, AH.key, AH.parentId');
         $queryData->setFrom('AccountHistory AH');
 
-        $queryWhere = AccountUtil::getAccountHistoryFilterUser($this->session);
+        $queryWhere = AccountUtil::getAccountHistoryFilterUser($this->context);
         $queryWhere[] = 'AH.id = ?';
         $queryData->addParam($id);
 

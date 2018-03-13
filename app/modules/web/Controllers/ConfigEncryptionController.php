@@ -33,7 +33,6 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Messages\MailMessage;
-use SP\Core\TaskFactory;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -42,6 +41,7 @@ use SP\Services\Crypt\MasterPassService;
 use SP\Services\Crypt\TemporaryMasterPassService;
 use SP\Services\Crypt\UpdateMasterPassRequest;
 use SP\Services\MailService;
+use SP\Services\Task\TaskFactory;
 use SP\Services\User\UserService;
 use SP\Util\Util;
 
@@ -162,7 +162,7 @@ class ConfigEncryptionController extends SimpleControllerBase
 
         try {
             $configService = $this->dic->get(ConfigService::class);
-            $configService->save('masterPwd', Hash::hashKey(CryptSession::getSessionKey()));
+            $configService->save('masterPwd', Hash::hashKey(CryptSession::getSessionKey($this->session)));
 
             $this->eventDispatcher->notifyEvent('refresh.masterPassword',
                 new Event($this, EventMessage::factory()->addDescription(__u('Hash de clave maestra actualizado'))));

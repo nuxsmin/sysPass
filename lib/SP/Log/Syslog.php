@@ -27,7 +27,6 @@ namespace SP\Log;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\Util\Connection;
 
 /**
@@ -37,7 +36,7 @@ use SP\Util\Connection;
  */
 class Syslog extends AbstractLogger
 {
-    use InjectableTrait;
+    use SP\Core\Dic\InjectableTrait;
 
     /**
      * @var ConfigData

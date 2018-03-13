@@ -25,6 +25,7 @@
 
 namespace SP\Core\Acl;
 
+use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
@@ -44,7 +45,7 @@ class Acl implements ActionsInterface
     /**
      * @var SessionContext
      */
-    private $session;
+    private $context;
     /**
      * @var EventDispatcher
      */
@@ -53,13 +54,13 @@ class Acl implements ActionsInterface
     /**
      * Acl constructor.
      *
-     * @param SessionContext         $session
-     * @param EventDispatcher $eventDispatcher
-     * @param Actions|null    $action
+     * @param ContextInterface $context
+     * @param EventDispatcher  $eventDispatcher
+     * @param Actions|null     $action
      */
-    public function __construct(SessionContext $session, EventDispatcher $eventDispatcher, Actions $action = null)
+    public function __construct(ContextInterface $context, EventDispatcher $eventDispatcher, Actions $action = null)
     {
-        $this->session = $session;
+        $this->context = $context;
         $this->eventDispatcher = $eventDispatcher;
 
         self::$action = $action;
@@ -114,11 +115,11 @@ class Acl implements ActionsInterface
      */
     public function checkUserAccess($action, $userId = 0)
     {
-        if (!($userProfile = $this->session->getUserProfile())) {
+        if (!($userProfile = $this->context->getUserProfile())) {
             return false;
         }
 
-        $userData = $this->session->getUserData();
+        $userData = $this->context->getUserData();
 
         if ($userData->getIsAdminApp()) {
             return true;
@@ -199,8 +200,8 @@ class Acl implements ActionsInterface
             case self::PROFILE:
             case self::PROFILE_SEARCH:
                 return $userProfile->isMgmProfiles();
-            case self::APITOKEN:
-            case self::APITOKEN_SEARCH:
+            case self::AUTHTOKEN:
+            case self::AUTHTOKEN_SEARCH:
                 return $userProfile->isMgmApiTokens();
             case self::EVENTLOG:
             case self::EVENTLOG_SEARCH:

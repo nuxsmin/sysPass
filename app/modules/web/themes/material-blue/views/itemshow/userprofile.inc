@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $icons       \Theme\Icons
+ * @var $icons       \SP\Core\UI\ThemeIcons
  * @var $profile     \SP\DataModel\UserProfileData
  * @var $profileData \SP\DataModel\ProfileData
  */

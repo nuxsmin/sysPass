@@ -1,4 +1,4 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
 
 <div id="actions">
     <form id="frmPassReset" action="" method="post" class="form-action" data-onsubmit="user/passreset"

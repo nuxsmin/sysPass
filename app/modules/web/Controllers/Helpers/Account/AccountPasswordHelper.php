@@ -89,11 +89,11 @@ class AccountPasswordHelper extends HelperBase
             throw new HelperException(__u('No tiene permisos para acceder a esta cuenta'));
         }
 
-        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
+        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
             throw new HelperException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
         }
 
-        $key = CryptSession::getSessionKey();
+        $key = CryptSession::getSessionKey($this->context);
         $securedKey = Crypt::unlockSecuredKey($accountData->getKey(), $key);
 
         return trim(Crypt::decrypt($accountData->getPass(), $securedKey, $key));
@@ -123,6 +123,6 @@ class AccountPasswordHelper extends HelperBase
         }
 
         $this->view->assign('isLinked', $accountData->getParentId() > 0);
-        $this->view->assign('sk', $this->session->generateSecurityKey());
+        $this->view->assign('sk', $this->context->generateSecurityKey());
     }
 }

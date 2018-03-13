@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -146,7 +146,7 @@ class PublicLinkService extends Service
     /**
      * Obtener los datos de una cuenta y encriptarlos para el enlace
      *
-     * @param int $itemId
+     * @param int    $itemId
      * @param string $linkKey
      * @return Vault
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -160,7 +160,7 @@ class PublicLinkService extends Service
         $accountData = $this->dic->get(AccountService::class)->getDataForLink($itemId);
 
         // Desencriptar la clave de la cuenta
-        $key = CryptSession::getSessionKey();
+        $key = CryptSession::getSessionKey($this->context);
         $securedKey = Crypt::unlockSecuredKey($accountData->getKey(), $key);
         $accountData->setPass(Crypt::decrypt($accountData->getPass(), $securedKey, $key));
         $accountData->setKey(null);
@@ -229,13 +229,13 @@ class PublicLinkService extends Service
         $itemData->setData($this->getSecuredLinkData($itemData->getItemId(), self::getKeyForHash($this->config->getConfigData()->getPasswordSalt(), $itemData)));
         $itemData->setDateExpire(self::calcDateExpire($this->config));
         $itemData->setMaxCountViews($this->config->getConfigData()->getPublinksMaxViews());
-        $itemData->setUserId($this->session->getUserData()->getId());
+        $itemData->setUserId($this->context->getUserData()->getId());
 
         return $this->publicLinkRepository->create($itemData);
     }
 
     /**
-     * @param string $salt
+     * @param string         $salt
      * @param PublicLinkData $publicLinkData
      * @return string
      */

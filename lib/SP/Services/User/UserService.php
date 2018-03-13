@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -54,6 +54,49 @@ class UserService extends Service
     protected $userPassService;
 
     /**
+     * @param UserData $userData
+     * @return UserLoginResponse
+     */
+    public static function mapUserLoginResponse(UserData $userData)
+    {
+        return (new UserLoginResponse())->setId($userData->getId())
+            ->setName($userData->getName())
+            ->setLogin($userData->getLogin())
+            ->setSsoLogin($userData->getSsoLogin())
+            ->setEmail($userData->getEmail())
+            ->setPass($userData->getPass())
+            ->setHashSalt($userData->getHashSalt())
+            ->setMPass($userData->getMPass())
+            ->setMKey($userData->getMKey())
+            ->setLastUpdateMPass($userData->getLastUpdateMPass())
+            ->setUserGroupId($userData->getUserGroupId())
+            ->setUserProfileId($userData->getUserProfileId())
+            ->setPreferences(self::getUserPreferences($userData->getPreferences()))
+            ->setIsLdap($userData->isLdap())
+            ->setIsAdminAcc($userData->isAdminAcc())
+            ->setIsAdminApp($userData->isAdminApp())
+            ->setIsMigrate($userData->isMigrate())
+            ->setIsChangedPass($userData->isIsChangedPass())
+            ->setIsChangePass($userData->isChangePass())
+            ->setIsDisabled($userData->isDisabled());
+    }
+
+    /**
+     * Returns user's preferences object
+     *
+     * @param string $preferences
+     * @return UserPreferencesData
+     */
+    public static function getUserPreferences($preferences)
+    {
+        if (!empty($preferences)) {
+            return Util::unserialize(UserPreferencesData::class, $preferences, 'SP\UserPreferences');
+        }
+
+        return new UserPreferencesData();
+    }
+
+    /**
      * Actualiza el último inicio de sesión del usuario en la BBDD.
      *
      * @param $id int El id del usuario
@@ -93,51 +136,12 @@ class UserService extends Service
      * Returns the item for given id
      *
      * @param $login
-     * @return UserLoginResponse
+     * @return UserData
      * @throws SPException
      */
     public function getByLogin($login)
     {
-        $userData = $this->userRepository->getByLogin($login);
-
-        $userLoginResponse = new UserLoginResponse();
-        $userLoginResponse->setId($userData->getId())
-            ->setName($userData->getName())
-            ->setLogin($userData->getLogin())
-            ->setSsoLogin($userData->getSsoLogin())
-            ->setEmail($userData->getEmail())
-            ->setPass($userData->getPass())
-            ->setHashSalt($userData->getHashSalt())
-            ->setMPass($userData->getMPass())
-            ->setMKey($userData->getMKey())
-            ->setLastUpdateMPass($userData->getLastUpdateMPass())
-            ->setUserGroupId($userData->getUserGroupId())
-            ->setUserProfileId($userData->getUserProfileId())
-            ->setPreferences(self::getUserPreferences($userData->getPreferences()))
-            ->setIsLdap($userData->isLdap())
-            ->setIsAdminAcc($userData->isAdminAcc())
-            ->setIsAdminApp($userData->isAdminApp())
-            ->setIsMigrate($userData->isMigrate())
-            ->setIsChangedPass($userData->isIsChangedPass())
-            ->setIsChangePass($userData->isChangePass())
-            ->setIsDisabled($userData->isDisabled());
-
-        return $userLoginResponse;
-    }
-
-    /**
-     * Returns user's preferences object
-     *
-     * @param string $preferences
-     * @return UserPreferencesData
-     */
-    public static function getUserPreferences($preferences)
-    {
-        if (!empty($preferences)) {
-            return Util::unserialize(UserPreferencesData::class, $preferences, 'SP\UserPreferences');
-        }
-
-        return new UserPreferencesData();
+        return $this->userRepository->getByLogin($login);
     }
 
     /**
@@ -211,8 +215,8 @@ class UserService extends Service
      * Creates an item
      *
      * @param UserData $itemData
-     * @param string $userPass
-     * @param string $masterPass
+     * @param string   $userPass
+     * @param string   $masterPass
      * @return int
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -257,7 +261,7 @@ class UserService extends Service
     /**
      * Updates an user's pass
      *
-     * @param int $userId
+     * @param int    $userId
      * @param string $pass
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -273,7 +277,7 @@ class UserService extends Service
     }
 
     /**
-     * @param $userId
+     * @param                     $userId
      * @param UserPreferencesData $userPreferencesData
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException

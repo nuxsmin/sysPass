@@ -110,7 +110,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
                 case ActionsInterface::PROFILE_SEARCH:
                     $this->getProfiles();
                     break;
-                case ActionsInterface::APITOKEN_SEARCH:
+                case ActionsInterface::AUTHTOKEN_SEARCH:
                     $this->getTokens();
                     break;
                 case ActionsInterface::PUBLICLINK_SEARCH:
@@ -250,7 +250,7 @@ class ItemSearchController extends GridItemsSearchController implements ActionsI
      */
     public function getTokens()
     {
-        $this->setAction(self::APITOKEN_SEARCH);
+        $this->setAction(self::AUTHTOKEN_SEARCH);
 
         if (!$this->checkAccess()) {
             return;

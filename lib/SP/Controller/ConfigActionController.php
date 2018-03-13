@@ -37,8 +37,6 @@ use SP\Core\Init;
 use SP\Core\Messages\LogMessage;
 use SP\Core\Messages\NoticeMessage;
 use SP\Core\SessionFactory;
-use SP\Core\TaskFactory;
-use SP\Core\Traits\InjectableTrait;
 use SP\Core\XmlExport;
 use SP\Http\Request;
 use SP\Log\Email;
@@ -48,6 +46,7 @@ use SP\Mgmt\Users\UserPass;
 use SP\Mgmt\Users\UserUtil;
 use SP\Services\Import\ImportParams;
 use SP\Services\Import\ImportService;
+use SP\Services\Task\TaskFactory;
 use SP\Storage\DbWrapper;
 use SP\Util\Json;
 use SP\Util\Util;
@@ -60,7 +59,7 @@ use SP\Util\Util;
 class ConfigActionController implements ItemControllerInterface
 {
     use RequestControllerTrait;
-    use InjectableTrait;
+    use SP\Core\Dic\InjectableTrait;
 
     /**
      * ConfigActionController constructor.

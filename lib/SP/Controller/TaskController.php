@@ -25,8 +25,8 @@
 namespace SP\Controller;
 
 use SP\Core\Messages\TaskMessage;
-use SP\Core\Task;
 use SP\Http\Request;
+use SP\Services\Task\Task;
 use SP\Util\Util;
 
 /**

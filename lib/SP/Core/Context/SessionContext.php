@@ -26,7 +26,7 @@ namespace SP\Core\Context;
 
 use SP\Account\AccountSearchFilter;
 use SP\Config\ConfigData;
-use SP\Core\Exceptions\InitializationException;
+use SP\Core\Crypt\Vault;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
 
@@ -86,12 +86,18 @@ class SessionContext extends ContextBase
      * Devolver una variable de sesión
      *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
      * @return mixed
      */
     protected function getContextKey($key, $default = null)
     {
-        return parent::getContextKey($key, $default);
+        try {
+            return parent::getContextKey($key, $default);
+        } catch (ContextException $e) {
+            processException($e);
+        }
+
+        return $default;
     }
 
     /**
@@ -107,19 +113,25 @@ class SessionContext extends ContextBase
     /**
      * Establecer una variable de sesión
      *
-     * @param string $key El nombre de la variable
-     * @param mixed $value El valor de la variable
+     * @param string $key   El nombre de la variable
+     * @param mixed  $value El valor de la variable
      * @return mixed
      */
     protected function setContextKey($key, $value)
     {
-        if (self::$isLocked) {
-            debugLog('Session locked; key=' . $key);
-        } else {
-            parent::setContextKey($key, $value);
+        try {
+            if (self::$isLocked) {
+                debugLog('Session locked; key=' . $key);
+            } else {
+                parent::setContextKey($key, $value);
+            }
+
+            return $value;
+        } catch (ContextException $e) {
+            processException($e);
         }
 
-        return $value;
+        return null;
     }
 
     /**
@@ -135,11 +147,11 @@ class SessionContext extends ContextBase
     /**
      * Establecer la hora de carga de la configuración
      *
-     * @param $time
+     * @param int $time
      */
     public function setConfigTime($time)
     {
-        $this->setContextKey('configTime', $time);
+        $this->setContextKey('configTime', (int)$time);
     }
 
     /**
@@ -477,14 +489,51 @@ class SessionContext extends ContextBase
     }
 
     /**
-     * @return void
-     * @throws InitializationException
+     * Devuelve la clave maestra encriptada
+     *
+     * @return Vault
+     */
+    public function getVault()
+    {
+        return $this->getContextKey('vault');
+    }
+
+    /**
+     * Establecer la clave maestra encriptada
+     *
+     * @param Vault $vault
+     */
+    public function setVault(Vault $vault)
+    {
+        $this->setContextKey('vault', $vault);
+    }
+
+    /**
+     * Establece la cache de cuentas
+     *
+     * @param array $accountsCache
+     */
+    public function setAccountsCache(array $accountsCache)
+    {
+        $this->setContextKey('accountsCache', $accountsCache);
+    }
+
+    /**
+     * Devuelve la cache de cuentas
+     */
+    public function getAccountsCache()
+    {
+        $this->getContextKey('accountsCache');
+    }
+
+    /**
+     * @throws ContextException
      */
     public function initialize()
     {
         // Si la sesión no puede ser iniciada, devolver un error 500
         if (session_start() === false) {
-            throw new InitializationException(__u('La sesión no puede ser inicializada'));
+            throw new ContextException(__u('La sesión no puede ser inicializada'));
         }
 
         $this->setContextReference($_SESSION);

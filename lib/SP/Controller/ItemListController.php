@@ -368,7 +368,7 @@ class ItemListController extends GridTabControllerBase implements ActionsInterfa
      */
     public function getAPITokensList()
     {
-        $this->setAction(self::APITOKEN);
+        $this->setAction(self::AUTHTOKEN);
 
         if (!$this->checkAccess()) {
             return;

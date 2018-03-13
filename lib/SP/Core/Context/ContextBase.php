@@ -26,6 +26,7 @@ namespace SP\Core\Context;
 
 /**
  * Class ContextBase
+ *
  * @package SP\Core\Session
  */
 abstract class ContextBase implements ContextInterface
@@ -36,35 +37,57 @@ abstract class ContextBase implements ContextInterface
     const APP_STATUS_LOGGEDOUT = 'loggedout';
 
     /**
-     * @var array
+     * @var ContextCollection
      */
-    private $context = [];
+    private $context;
 
     /**
      * @param $context
+     * @throws ContextException
      */
     final protected function setContextReference(&$context)
     {
-        $this->context =& $context;
+        if ($this->context !== null) {
+            throw new ContextException(__u('Contexto ya inicializado'));
+        }
+
+        if (isset($context['context'])
+            && ($context['context'] instanceof ContextCollection) === false
+        ) {
+            throw new ContextException(__u('Contexto inválido'));
+        } elseif (!isset($context['context'])) {
+            $context['context'] = $this->context = new ContextCollection();
+            return;
+        }
+
+        $this->context =& $context['context'];
     }
 
     /**
-     * @param $context
+     * @param ContextCollection $contextCollection
+     * @throws ContextException
      */
-    final protected function setContext($context)
+    final protected function setContext(ContextCollection $contextCollection)
     {
-        $this->context = $context;
+        if ($this->context !== null) {
+            throw new ContextException(__u('Contexto ya inicializado'));
+        }
+
+        $this->context = $contextCollection;
     }
 
     /**
      * Devolver una variable de contexto
      *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
      * @return mixed
+     * @throws ContextException
      */
     protected function getContextKey($key, $default = null)
     {
+        $this->checkContext();
+
         if (isset($this->context[$key])) {
             return is_numeric($default) ? (int)$this->context[$key] : $this->context[$key];
         }
@@ -75,14 +98,27 @@ abstract class ContextBase implements ContextInterface
     /**
      * Establecer una variable de contexto
      *
-     * @param string $key El nombre de la variable
-     * @param mixed $value El valor de la variable
+     * @param string $key   El nombre de la variable
+     * @param mixed  $value El valor de la variable
      * @return mixed
+     * @throws ContextException
      */
     protected function setContextKey($key, $value)
     {
+        $this->checkContext();
+
         $this->context[$key] = $value;
 
         return $value;
+    }
+
+    /**
+     * @throws ContextException
+     */
+    private function checkContext()
+    {
+        if ($this->context === null) {
+            throw new ContextException(__u('Contexto no inicializado'));
+        }
     }
 }

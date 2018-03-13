@@ -29,7 +29,6 @@ use SP\Core\Context\SessionContext;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\DataModelInterface;
 use SP\Storage\Database;
 
@@ -40,7 +39,7 @@ use SP\Storage\Database;
  */
 trait ItemBaseTrait
 {
-    use InjectableTrait;
+    use SP\Core\Dic\InjectableTrait;
 
     /**
      * @var string

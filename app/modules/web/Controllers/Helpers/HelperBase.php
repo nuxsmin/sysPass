@@ -28,6 +28,7 @@ use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Mvc\View\Template;
@@ -50,7 +51,7 @@ abstract class HelperBase
     /**
      * @var SessionContext
      */
-    protected $session;
+    protected $context;
     /**
      * @var EventDispatcher
      */
@@ -69,17 +70,17 @@ abstract class HelperBase
      *
      * @param \SP\Mvc\View\Template $template
      * @param Config                $config
-     * @param SessionContext               $session
+     * @param ContextInterface      $context
      * @param EventDispatcher       $eventDispatcher
      * @param Container             $container
      */
-    final public function __construct(Template $template, Config $config, SessionContext $session, EventDispatcher $eventDispatcher, Container $container)
+    final public function __construct(Template $template, Config $config, ContextInterface $context, EventDispatcher $eventDispatcher, Container $container)
     {
         $this->dic = $container;
         $this->view = $template;
         $this->config = $config;
         $this->configData = $config->getConfigData();
-        $this->session = $session;
+        $this->context = $context;
         $this->eventDispatcher = $eventDispatcher;
 
         if (method_exists($this, 'initialize')) {

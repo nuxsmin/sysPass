@@ -55,8 +55,8 @@ class AuthTokenForm extends FormBase implements FormInterface
     public function validate($action)
     {
         switch ($action) {
-            case ActionsInterface::APITOKEN_CREATE:
-            case ActionsInterface::APITOKEN_EDIT:
+            case ActionsInterface::AUTHTOKEN_CREATE:
+            case ActionsInterface::AUTHTOKEN_EDIT:
                 $this->analyzeRequestData();
                 $this->checkCommon();
                 break;

@@ -26,6 +26,7 @@ namespace SP\Core;
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Http\Request;
 
@@ -84,17 +85,17 @@ class Language
     /**
      * @var  SessionContext
      */
-    protected $session;
+    protected $context;
 
     /**
      * Language constructor.
      *
-     * @param SessionContext $session
-     * @param Config $config
+     * @param ContextInterface $session
+     * @param Config           $config
      */
-    public function __construct(SessionContext $session, Config $config)
+    public function __construct(ContextInterface $session, Config $config)
     {
-        $this->session = $session;
+        $this->context = $session;
         $this->configData = $config->getConfigData();
 
         ksort(self::$langs);
@@ -117,7 +118,7 @@ class Language
      */
     public function setLanguage($force = false)
     {
-        $lang = $this->session->getLocale();
+        $lang = $this->context->getLocale();
 
         if (empty($lang) || $force === true) {
             self::$userLang = $this->getUserLang();
@@ -125,7 +126,7 @@ class Language
 
             $lang = self::$userLang ?: self::$globalLang;
 
-            $this->session->setLocale($lang);
+            $this->context->setLocale($lang);
         }
 
         $this->setLocales($lang);
@@ -138,7 +139,7 @@ class Language
      */
     private function getUserLang()
     {
-        $userData = $this->session->getUserData();
+        $userData = $this->context->getUserData();
 
         return ($userData->getId() > 0) ? $userData->getPreferences()->getLang() : '';
     }
@@ -212,7 +213,7 @@ class Language
      */
     public function setAppLocales()
     {
-        if ($this->configData->getSiteLang() !== $this->session->getLocale()) {
+        if ($this->configData->getSiteLang() !== $this->context->getLocale()) {
             $this->setLocales($this->configData->getSiteLang());
 
             self::$appSet = true;
@@ -225,7 +226,7 @@ class Language
     public function unsetAppLocales()
     {
         if (self::$appSet === true) {
-            $this->setLocales($this->session->getLocale());
+            $this->setLocales($this->context->getLocale());
 
             self::$appSet = false;
         }

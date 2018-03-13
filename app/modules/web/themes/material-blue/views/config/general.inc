@@ -1,5 +1,5 @@
 <?php
-/** @var $icons \Theme\Icons */
+/** @var $icons \SP\Core\UI\ThemeIcons */
 /** @var $this \SP\Mvc\View\Template */
 ?>
 <form method="post" name="frmConfig" id="frmConfig" class="form-action"

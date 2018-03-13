@@ -366,8 +366,8 @@ class LoginService extends Service
         $this->userService->updateLastLoginById($userLoginResponse->getId());
 
         // Cargar las variables de ussuario en la sesión
-        $this->session->setUserData($userLoginResponse);
-        $this->session->setUserProfile($this->dic->get(UserProfileService::class)->getById($userLoginResponse->getUserProfileId())->getProfile());
+        $this->context->setUserData($userLoginResponse);
+        $this->context->setUserProfile($this->dic->get(UserProfileService::class)->getById($userLoginResponse->getUserProfileId())->getProfile());
 
         if ($this->configData->isDemoEnabled()) {
             $userLoginResponse->setPreferences(new UserPreferencesData());
@@ -387,7 +387,7 @@ class LoginService extends Service
 
         $this->theme->initTheme(true);
 
-        $this->session->setAuthCompleted(true);
+        $this->context->setAuthCompleted(true);
 
         $this->eventDispatcher->notifyEvent('login.preferences.load', new Event($this));
     }

@@ -31,6 +31,7 @@ defined('APP_ROOT') || die();
 
 /**
  * Clase para manejar la variable de sesion
+ * @deprecated
  */
 class SessionFactory
 {

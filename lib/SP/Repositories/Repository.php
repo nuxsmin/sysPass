@@ -25,7 +25,7 @@
 namespace SP\Repositories;
 
 use SP\Config\Config;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Dic\Container;
 use SP\Core\Events\EventDispatcher;
 use SP\Storage\Database;
@@ -43,9 +43,9 @@ abstract class Repository
      */
     protected $config;
     /**
-     * @var SessionContext
+     * @var ContextInterface
      */
-    protected $session;
+    protected $context;
     /**
      * @var EventDispatcher
      */
@@ -62,20 +62,18 @@ abstract class Repository
     /**
      * Repository constructor.
      *
-     * @param Container       $dic
-     * @param Config          $config
-     * @param Database        $database
-     * @param SessionContext         $session
-     * @param EventDispatcher $eventDispatcher
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @param Container        $dic
+     * @param Config           $config
+     * @param Database         $database
+     * @param ContextInterface $session
+     * @param EventDispatcher  $eventDispatcher
      */
-    final public function __construct(Container $dic, Config $config, Database $database, SessionContext $session, EventDispatcher $eventDispatcher)
+    final public function __construct(Container $dic, Config $config, Database $database, ContextInterface $session, EventDispatcher $eventDispatcher)
     {
         $this->dic = $dic;
         $this->config = $config;
         $this->db = $database;
-        $this->session = $session;
+        $this->context = $session;
         $this->eventDispatcher = $eventDispatcher;
 
         if (method_exists($this, 'initialize')) {

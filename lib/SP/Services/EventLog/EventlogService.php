@@ -70,7 +70,7 @@ class EventlogService extends Service
      */
     public function create(EventlogData $eventlogData)
     {
-        $userData = $this->session->getUserData();
+        $userData = $this->context->getUserData();
 
         $eventlogData->setUserId($userData->getId());
         $eventlogData->setLogin($userData->getLogin() ?: '-');

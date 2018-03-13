@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use SP\Config\ConfigUtil;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
 use SP\Core\Events\Event;
@@ -78,6 +79,10 @@ class ConfigGeneralController extends SimpleControllerBase
         $syslogPort = Request::analyzeInt('remotesyslog_port', 0);
 
         $configData->setLogEnabled($logEnabled);
+        $configData->setLogEvents(Request::analyzeArray('log_events', function ($items) {
+            return ConfigUtil::eventsAdapter($items);
+        }));
+
         $configData->setSyslogEnabled($syslogEnabled);
 
         if ($remoteSyslogEnabled) {

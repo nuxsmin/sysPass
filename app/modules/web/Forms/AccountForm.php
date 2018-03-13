@@ -85,7 +85,7 @@ class AccountForm extends FormBase implements FormInterface
         $this->accountRequest->login = Request::analyzeString('login');
         $this->accountRequest->url = Request::analyzeString('url');
         $this->accountRequest->notes = Request::analyzeString('notes');
-        $this->accountRequest->userEditId = $this->session->getUserData()->getId();
+        $this->accountRequest->userEditId = $this->context->getUserData()->getId();
         $this->accountRequest->otherUserEdit = (int)Request::analyzeBool('otherUserEditEnabled', false);
         $this->accountRequest->otherUserGroupEdit = (int)Request::analyzeBool('otherUserGroupEditEnabled', false);
         $this->accountRequest->pass = Request::analyzeEncrypted('pass');

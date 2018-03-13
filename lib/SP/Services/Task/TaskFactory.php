@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core;
+namespace SP\Services\Task;
 
 use SP\Core\Messages\TaskMessage;
 

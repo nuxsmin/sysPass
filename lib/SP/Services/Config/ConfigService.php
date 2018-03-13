@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,8 +26,6 @@ namespace SP\Services\Config;
 
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
-use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ConfigData;
 use SP\DataModel\Dto\ConfigRequest;
 use SP\Repositories\Config\ConfigRepository;
@@ -41,21 +39,10 @@ use SP\Services\ServiceException;
  */
 class ConfigService extends Service
 {
-    use InjectableTrait;
-
     /**
      * @var ConfigRepository
      */
     protected $configRepository;
-
-    /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function initialize()
-    {
-        $this->configRepository = $this->dic->get(ConfigRepository::class);
-    }
 
     /**
      * @param string $param
@@ -74,7 +61,7 @@ class ConfigService extends Service
 
             throw new ParameterNotFoundException(
                 sprintf(__('Parámetro no encontrado (%s)'),
-                    SPException::ERROR,
+                    ParameterNotFoundException::ERROR,
                     $param)
             );
         }
@@ -149,5 +136,14 @@ class ConfigService extends Service
     public function deleteByParam($param)
     {
         return $this->configRepository->deleteByParam($param);
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->configRepository = $this->dic->get(ConfigRepository::class);
     }
 }

@@ -29,9 +29,9 @@ defined('APP_ROOT') || die();
 use SP\Account\AccountUtil;
 use SP\Core\DiFactory;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Task;
 use SP\Core\Upgrade\Check;
 use SP\Http\Request;
+use SP\Services\Task\Task;
 use SP\Util\Util;
 
 /**

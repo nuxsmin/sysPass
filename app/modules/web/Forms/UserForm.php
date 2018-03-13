@@ -161,7 +161,7 @@ class UserForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
 
-        $userData = $this->session->getUserData();
+        $userData = $this->context->getUserData();
 
         if ((is_array($this->itemId) && in_array($userData->getId(), $this->itemId))
             || $this->itemId === $userData->getId()

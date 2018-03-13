@@ -27,6 +27,8 @@ namespace SP\Modules\Web;
 use Defuse\Crypto\Exception\CryptoException;
 use DI\Container;
 use SP\Bootstrap;
+use SP\Core\Context\ContextException;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\SecureKeyCookie;
@@ -36,7 +38,6 @@ use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\UI\Theme;
-use SP\Core\Upgrade\Upgrade;
 use SP\Http\Request;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database;
@@ -45,6 +46,7 @@ use SP\Util\HttpUtil;
 
 /**
  * Class Init
+ *
  * @package SP\Modules\Web
  */
 class Init extends ModuleBase
@@ -63,13 +65,10 @@ class Init extends ModuleBase
      * @var Language
      */
     protected $language;
-    /**
-     * @var Upgrade
-     */
-    protected $upgrade;
 
     /**
      * Init constructor.
+     *
      * @param Container $container
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
@@ -78,10 +77,9 @@ class Init extends ModuleBase
     {
         parent::__construct($container);
 
-        $this->context = $container->get(SessionContext::class);
+        $this->context = $container->get(ContextInterface::class);
         $this->theme = $container->get(Theme::class);
         $this->language = $container->get(Language::class);
-        $this->upgrade = $container->get(Upgrade::class);
     }
 
     /**
@@ -95,10 +93,12 @@ class Init extends ModuleBase
      */
     public function initialize($controller)
     {
-        debugLog(__FUNCTION__);
+        debugLog(__METHOD__);
 
         // Iniciar la sesión de PHP
         $this->initSession($this->configData->isEncryptSession());
+
+        $this->theme->initialize();
 
         // Volver a cargar la configuración si se recarga la página
         if (Request::checkReload($this->router) === false) {
@@ -107,6 +107,9 @@ class Init extends ModuleBase
 
             // Cargar el lenguaje
             $this->language->setLanguage();
+
+            // Initialize theme
+            $this->theme->initialize();
         } else {
             debugLog('Browser reload');
 
@@ -115,9 +118,11 @@ class Init extends ModuleBase
             // Cargar la configuración
             $this->config->loadConfig($this->context, true);
 
-            // Restablecer el idioma y el tema visual
+            // Restablecer el idioma
             $this->language->setLanguage(true);
-            $this->theme->initTheme(true);
+
+            // Re-Initialize theme
+            $this->theme->initialize(true);
         }
 
         // Comprobar si es necesario cambiar a HTTPS
@@ -175,7 +180,7 @@ class Init extends ModuleBase
      * Iniciar la sesión PHP
      *
      * @param bool $encrypt Encriptar la sesión de PHP
-     * @throws InitializationException
+     * @throws ContextException
      */
     private function initSession($encrypt = false)
     {
@@ -185,9 +190,10 @@ class Init extends ModuleBase
             session_set_save_handler(new CryptSessionHandler($key), true);
         }
 
+
         try {
             $this->context->initialize();
-        } catch (InitializationException $e) {
+        } catch (ContextException $e) {
             $this->router->response()->header('HTTP/1.1', '500 Internal Server Error');
 
             throw $e;
@@ -271,14 +277,12 @@ class Init extends ModuleBase
 
     /**
      * Comprobar si es necesario actualizar componentes
-     *
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     private function checkUpgrade()
     {
-        if (Bootstrap::$SUBURI === '/index.php') {
-            $this->upgrade->checkDbVersion();
-            $this->upgrade->checkAppVersion();
-        }
+//        if (Bootstrap::$SUBURI === '/index.php') {
+//            $this->upgrade->checkDbVersion();
+//            $this->upgrade->checkAppVersion();
+//        }
     }
 }

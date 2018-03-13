@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -37,7 +37,7 @@ class ConfigUtil
     /**
      * Adaptador para convertir una cadena de extensiones a un array
      *
-     * @param $filesAllowedExts
+     * @param string $filesAllowedExts
      * @return array
      */
     public static function filesExtsAdapter($filesAllowedExts)
@@ -54,7 +54,7 @@ class ConfigUtil
     /**
      * Adaptador para convertir una cadena de direcciones de email a un array
      *
-     * @param $mailAddresses
+     * @param string $mailAddresses
      * @return array
      */
     public static function mailAddressesAdapter($mailAddresses)
@@ -62,6 +62,19 @@ class ConfigUtil
         return array_map(function ($value) {
             return filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : null;
         }, explode(',', $mailAddresses));
+    }
+
+    /**
+     * Adaptador para convertir una cadena de eventos a un array
+     *
+     * @param array $events
+     * @return array
+     */
+    public static function eventsAdapter(array $events)
+    {
+        return array_map(function ($value) {
+            return preg_match('/^(?:[a-z]+(?:\.)?)+$/i', $value) ? $value : null;
+        }, $events);
     }
 
     /**

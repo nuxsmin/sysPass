@@ -382,7 +382,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setOrder('U.name');
 
         if ($SearchData->getSeachString() !== '') {
-            if ($this->session->getUserData()->getIsAdminApp()) {
+            if ($this->context->getUserData()->getIsAdminApp()) {
                 $queryData->setWhere('U.name LIKE ? OR U.login LIKE ?');
             } else {
                 $queryData->setWhere('U.name LIKE ? OR U.login LIKE ? AND U.isAdminApp = 0');
@@ -391,7 +391,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
             $search = '%' . $SearchData->getSeachString() . '%';
             $queryData->addParam($search);
             $queryData->addParam($search);
-        } elseif (!$this->session->getUserData()->getIsAdminApp()) {
+        } elseif (!$this->context->getUserData()->getIsAdminApp()) {
             $queryData->setWhere('U.isAdminApp = 0');
         }
 

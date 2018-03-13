@@ -114,7 +114,7 @@ class AccountSearchHelper extends HelperBase
             || $this->accountSearchFilter->isSearchFavorites()
             || $this->accountSearchFilter->isSortViews());
 
-        $userPreferences = $this->session->getUserData()->getPreferences();
+        $userPreferences = $this->context->getUserData()->getPreferences();
 
         AccountSearchItem::$accountLink = $userPreferences->isAccountLink();
         AccountSearchItem::$topNavbar = $userPreferences->isTopNavbar();
@@ -141,7 +141,7 @@ class AccountSearchHelper extends HelperBase
 
 
         // Establecer el filtro de búsqueda en la sesión como un objeto
-        $this->session->setSearchFilters($this->accountSearchFilter);
+        $this->context->setSearchFilters($this->accountSearchFilter);
 
         $this->view->assign('data', $Grid);
     }
@@ -176,7 +176,7 @@ class AccountSearchHelper extends HelperBase
         $GridPager->setFilterOn($this->filterOn);
         $GridPager->setSourceAction(new DataGridActionSearch(ActionsInterface::ACCOUNT_SEARCH));
 
-        $userPreferences = $this->session->getUserData()->getPreferences();
+        $userPreferences = $this->context->getUserData()->getPreferences();
         $showOptionalActions = $userPreferences->isOptionalActions() || $userPreferences->isResultsAsCards() || ($userPreferences->getUserId() === 0 && $this->configData->isResultsAsCards());
 
         $actions = $this->dic->get(AccountActionsHelper::class);
@@ -262,7 +262,7 @@ class AccountSearchHelper extends HelperBase
     protected function initialize()
     {
         $this->queryTimeStart = microtime();
-        $this->sk = $this->session->generateSecurityKey();
+        $this->sk = $this->context->generateSecurityKey();
         $this->view->assign('sk', $this->sk);
         $this->setVars();
     }
@@ -272,10 +272,10 @@ class AccountSearchHelper extends HelperBase
      */
     private function setVars()
     {
-        $userData = $this->session->getUserData();
+        $userData = $this->context->getUserData();
 
         $this->view->assign('isAdmin', $userData->getIsAdminApp() || $userData->getIsAdminAcc());
-        $this->view->assign('showGlobalSearch', $this->configData->isGlobalSearch() && $this->session->getUserProfile()->isAccGlobalSearch());
+        $this->view->assign('showGlobalSearch', $this->configData->isGlobalSearch() && $this->context->getUserProfile()->isAccGlobalSearch());
 
         // Obtener el filtro de búsqueda desde la sesión
         $this->accountSearchFilter = $this->getFilters();
@@ -299,14 +299,14 @@ class AccountSearchHelper extends HelperBase
      */
     private function getFilters()
     {
-        $accountSearchFilter = $this->session->getSearchFilters();
+        $accountSearchFilter = $this->context->getSearchFilters();
 
         if ($accountSearchFilter !== null && empty(Request::analyzeString('sk'))) {
             // Obtener el filtro de búsqueda desde la sesión
             return $accountSearchFilter;
         }
 
-        $userPreferences = $this->session->getUserData()->getPreferences();
+        $userPreferences = $this->context->getUserData()->getPreferences();
         $limitCount = ($userPreferences->getResultsPerPage() > 0) ? $userPreferences->getResultsPerPage() : $this->configData->getAccountCount();
 
         $accountSearchFilter = new AccountSearchFilter();

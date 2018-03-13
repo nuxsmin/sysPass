@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,7 +24,7 @@
 
 namespace SP\Core\Crypt;
 
-use SP\Core\SessionFactory as CoreSession;
+use SP\Core\Context\SessionContext;
 
 /**
  * Class Session
@@ -36,43 +36,52 @@ class Session
     /**
      * Devolver la clave maestra de la sesión
      *
+     * @param SessionContext $sessionContext
      * @return string
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @todo Use session from DI
      */
-    public static function getSessionKey()
+    public static function getSessionKey(SessionContext $sessionContext)
     {
-        return CoreSession::getVault()->getData();
+        return $sessionContext->getVault()->getData(self::getKey($sessionContext));
+    }
+
+    /**
+     * @param SessionContext $sessionContext
+     * @return string
+     */
+    private static function getKey(SessionContext $sessionContext)
+    {
+        return session_id() . $sessionContext->getSidStartTime();
     }
 
     /**
      * Guardar la clave maestra en la sesión
      *
-     * @param $data
+     * @param                $data
+     * @param SessionContext $sessionContext
      * @throws \Defuse\Crypto\Exception\CryptoException
-     * @todo Use session from DI
      */
-    public static function saveSessionKey($data)
+    public static function saveSessionKey($data, SessionContext $sessionContext)
     {
-        CoreSession::setVault((new Vault())->saveData($data));
+        $sessionContext->setVault((new Vault())->saveData($data, self::getKey($sessionContext)));
     }
 
     /**
      * Regenerar la clave de sesión
      *
-     * @param \SP\Core\Context\SessionContext $session
+     * @param SessionContext $sessionContext
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public static function reKey(\SP\Core\Context\SessionContext $session)
+    public static function reKey(SessionContext $sessionContext)
     {
         debugLog(__METHOD__);
 
-        $oldSeed = session_id() . $session->getSidStartTime();
+        $oldSeed = session_id() . $sessionContext->getSidStartTime();
 
         session_regenerate_id(true);
 
-        $newSeed = session_id() . $session->setSidStartTime(time());
+        $newSeed = session_id() . $sessionContext->setSidStartTime(time());
 
-        CoreSession::setVault(CoreSession::getVault()->reKey($newSeed, $oldSeed));
+        $sessionContext->setVault($sessionContext->getVault()->reKey($newSeed, $oldSeed));
     }
 }

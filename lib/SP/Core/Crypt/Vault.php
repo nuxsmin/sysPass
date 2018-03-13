@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,8 +23,6 @@
  */
 
 namespace SP\Core\Crypt;
-
-use SP\Core\SessionFactory as CoreSession;
 
 /**
  * Class Vault
@@ -75,21 +73,9 @@ class Vault
      * @return string
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public function getData($key = null)
+    public function getData($key)
     {
-        $key = $key ?: $this->getKey();
-
         return Crypt::decrypt($this->data, Crypt::unlockSecuredKey($this->key, $key), $key);
-    }
-
-    /**
-     * Devolver la clave utilizada para generar la llave segura
-     *
-     * @return string
-     */
-    private function getKey()
-    {
-        return session_id() . CoreSession::getSidStartTime();
     }
 
     /**
@@ -100,13 +86,12 @@ class Vault
      * @return $this
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    public function saveData($data, $key = null)
+    public function saveData($data, $key)
     {
         if ($this->timeSet === 0) {
             $this->timeSet = time();
         }
 
-        $key = $key ?: $this->getKey();
         $this->key = Crypt::makeSecuredKey($key);
         $this->data = Crypt::encrypt($data, $this->key, $key);
 

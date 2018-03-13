@@ -1,4 +1,4 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
 
 <form method="post" name="frmWiki" id="frmWiki" class="form-action"
       data-onsubmit="config/save"

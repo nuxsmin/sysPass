@@ -85,17 +85,17 @@ class UserPassResetController extends ControllerBase
             $login = Request::analyzeString('login');
             $email = Request::analyzeEmail('email');
 
-            $userLoginResponse = $this->dic->get(UserService::class)->getByLogin($login);
+            $userData = $this->dic->get(UserService::class)->getByLogin($login);
 
-            if ($userLoginResponse->getEmail() !== $email) {
+            if ($userData->getEmail() !== $email) {
                 throw new SPException(__u('Datos incorrectos'), SPException::WARNING);
             }
 
-            if ($userLoginResponse->getIsDisabled() || $userLoginResponse->getIsLdap()) {
+            if ($userData->isDisabled() || $userData->isLdap()) {
                 throw new SPException(__u('No es posible recuperar la clave'), SPException::WARNING, __u('Consulte con el administrador'));
             }
 
-            $hash = $this->dic->get(UserPassRecoverService::class)->requestForUserId($userLoginResponse->getId());
+            $hash = $this->dic->get(UserPassRecoverService::class)->requestForUserId($userData->getId());
 
             $this->eventDispatcher->notifyEvent('request.user.passReset',
                 new Event($this, EventMessage::factory()

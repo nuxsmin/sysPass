@@ -25,10 +25,10 @@
 namespace SP\Core\Upgrade;
 
 use Defuse\Crypto\Exception\CryptoException;
+use SP\Core\Crypt\OldCrypt;
 use SP\Core\Exceptions\SPException;
-use SP\Core\OldCrypt;
-use SP\Core\TaskFactory;
 use SP\DataModel\UserLoginData;
+use SP\Services\Task\TaskFactory;
 use SP\Services\User\UserPassService;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;

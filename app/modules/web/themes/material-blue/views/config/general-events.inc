@@ -1,4 +1,9 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php
+/**
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ */
+?>
 
 <div id="title" class="midroundup titleNormal">
     <?php echo __('Eventos'); ?>
@@ -7,7 +12,8 @@
 <table id="tblEvents" class="data tblConfig round">
     <tr>
         <td class="descField">
-            <div id="help-eventlog" class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+            <div id="help-eventlog"
+                 class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
             <div class="mdl-tooltip mdl-tooltip--large" for="help-eventlog">
                 <p>
                     <?php echo __('Guarda las acciones realizadas en la aplicación.'); ?>
@@ -16,7 +22,8 @@
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="log_enabled">
-                <input type="checkbox" id="log_enabled" class="mdl-switch__input mdl-color-text--indigo-400" name="log_enabled"
+                <input type="checkbox" id="log_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
+                       name="log_enabled"
                     <?php echo $configData->isLogEnabled() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Habilitar log de eventos'); ?></span>
             </label>
@@ -27,7 +34,8 @@
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="syslog_enabled">
-                <input type="checkbox" id="syslog_enabled" class="mdl-switch__input mdl-color-text--indigo-400" name="syslog_enabled"
+                <input type="checkbox" id="syslog_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
+                       name="syslog_enabled"
                     <?php echo $configData->isSyslogEnabled() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Habilitar Syslog'); ?></span>
             </label>
@@ -38,7 +46,8 @@
         </td>
         <td class="valField">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="remotesyslog_enabled">
-                <input type="checkbox" id="remotesyslog_enabled" class="mdl-switch__input mdl-color-text--indigo-400" name="remotesyslog_enabled"
+                <input type="checkbox" id="remotesyslog_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
+                       name="remotesyslog_enabled"
                     <?php echo $configData->isSyslogRemoteEnabled() ? 'checked' : ''; ?>/>
                 <span class="mdl-switch__label"><?php echo __('Habilitar Syslog Remoto'); ?></span>
             </label>
@@ -70,6 +79,23 @@
                 <label class="mdl-textfield__label"
                        for="remotesyslog_port"><?php echo __('Puerto'); ?></label>
             </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="descField">
+            <?php echo __('Eventos'); ?>
+        </td>
+        <td class="valField">
+            <div class="lowres-title"><?php echo __('Eventos'); ?></div>
+
+            <select id="log_events" name="log_events[]" multiple="multiple" class="select-box">
+                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $logEvents */
+                foreach ($logEvents as $logEvent): ?>
+                    <option
+                            value="<?php echo $logEvent->getName(); ?>"
+                        <?php echo $logEvent->isSelected() ? 'selected' : '' ?>><?php echo $logEvent->getName(); ?></option>
+                <?php endforeach; ?>
+            </select>
         </td>
     </tr>
 </table>

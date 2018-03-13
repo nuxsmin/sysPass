@@ -25,19 +25,19 @@
 namespace SP\Core\Context;
 
 use SP\Config\ConfigData;
-use SP\Core\Exceptions\InitializationException;
 use SP\DataModel\ProfileData;
 use SP\Services\User\UserLoginResponse;
 
 /**
  * Class ContextInterface
+ *
  * @package SP\Core\Session
  */
 interface ContextInterface
 {
     /**
      * @return void
-     * @throws InitializationException
+     * @throws ContextException
      */
     public function initialize();
 
@@ -47,6 +47,20 @@ interface ContextInterface
      * @param ConfigData $config
      */
     public function setConfig(ConfigData $config);
+
+    /**
+     * Establecer la hora de carga de la configuración
+     *
+     * @param int $time
+     */
+    public function setConfigTime($time);
+
+    /**
+     * Devolver la hora de carga de la configuración
+     *
+     * @return int
+     */
+    public function getConfigTime();
 
     /**
      * Establece los datos del usuario en la sesión.

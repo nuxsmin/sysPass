@@ -45,7 +45,7 @@ class ConfigBackupService extends Service
     public function backup()
     {
         try {
-            $this->configService->save('config_backup', json_encode($this->config->getConfigData()));
+            $this->configService->save('config_backup', bin2hex(gzcompress(serialize($this->config->getConfigData()))));
             $this->configService->save('config_backup_date', time());
         } catch (\Exception $e) {
             processException($e);

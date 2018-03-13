@@ -27,14 +27,14 @@ namespace SP\Services\CustomField;
 defined('APP_ROOT') || die();
 
 use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\OldCrypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Core\OldCrypt;
-use SP\Core\TaskFactory;
 use SP\DataModel\CustomFieldData;
 use SP\Services\Crypt\UpdateMasterPassRequest;
 use SP\Services\Service;
 use SP\Services\ServiceException;
+use SP\Services\Task\TaskFactory;
 
 /**
  * Class CustomFieldCryptService

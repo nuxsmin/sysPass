@@ -25,7 +25,7 @@
 namespace SP\Mvc\Controller;
 
 use Klein\Klein;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\ContextInterface;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Util\Checks;
@@ -53,12 +53,12 @@ trait ControllerTrait
     /**
      * Comprobar si la sesión está activa
      *
-     * @param SessionContext $session
-     * @param Klein   $router
+     * @param ContextInterface $context
+     * @param Klein            $router
      */
-    protected function checkLoggedInSession(SessionContext $session, Klein $router)
+    protected function checkLoggedInSession(ContextInterface $context, Klein $router)
     {
-        if (!$session->isLoggedIn()) {
+        if (!$context->isLoggedIn()) {
             if (Checks::isJson($router)) {
                 $JsonResponse = new JsonResponse();
                 $JsonResponse->setDescription(__u('La sesión no se ha iniciado o ha caducado'));
@@ -71,12 +71,12 @@ trait ControllerTrait
     }
 
     /**
-     * @param SessionContext $session
+     * @param ContextInterface $context
      */
-    protected function checkSecurityToken(SessionContext $session)
+    protected function checkSecurityToken(ContextInterface $context)
     {
         $sk = Request::analyzeString('sk');
-        $sessionKey = $session->getSecurityKey();
+        $sessionKey = $context->getSecurityKey();
 
         if (!$sk || (null !== $sessionKey && $sessionKey !== $sk)) {
             $this->invalidAction();

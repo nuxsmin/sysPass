@@ -191,16 +191,16 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
                     $this->view->assign('header', __('Nueva Categoría'));
                     $this->getCategory();
                     break;
-                case self::APITOKEN_VIEW:
+                case self::AUTHTOKEN_VIEW:
                     $this->view->assign('header', __('Ver Autorización'));
                     $this->view->assign('isView', true);
                     $this->getToken();
                     break;
-                case self::APITOKEN_CREATE:
+                case self::AUTHTOKEN_CREATE:
                     $this->view->assign('header', __('Nueva Autorización'));
                     $this->getToken();
                     break;
-                case self::APITOKEN_EDIT:
+                case self::AUTHTOKEN_EDIT:
                     $this->view->assign('header', __('Editar Autorización'));
                     $this->getToken();
                     break;
@@ -393,7 +393,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
      */
     protected function getToken()
     {
-        $this->module = self::APITOKEN;
+        $this->module = self::AUTHTOKEN;
         $this->view->addTemplate('tokens');
 
         $ApiTokenData = $this->itemId ? ApiToken::getItem()->getById($this->itemId) : new AuthTokenData();
@@ -401,7 +401,7 @@ class ItemShowController extends ControllerBase implements ActionsInterface, Ite
         $this->view->assign('users', User::getItem()->getItemsForSelect());
         $this->view->assign('actions', ApiTokensUtil::getTokenActions());
         $this->view->assign('authTokenData', $ApiTokenData);
-        $this->view->assign('isDisabled', ($this->view->actionId === self::APITOKEN_VIEW) ? 'disabled' : '');
+        $this->view->assign('isDisabled', ($this->view->actionId === self::AUTHTOKEN_VIEW) ? 'disabled' : '');
         $this->view->assign('isReadonly', $this->view->isDisabled ? 'readonly' : '');
 
         if ($this->view->isView === true) {

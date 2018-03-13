@@ -25,7 +25,6 @@
 namespace SP\Services\UserProfile;
 
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
@@ -42,7 +41,6 @@ use SP\Util\Util;
  */
 class UserProfileService extends Service
 {
-    use InjectableTrait;
     use ServiceItemTrait;
 
     /**

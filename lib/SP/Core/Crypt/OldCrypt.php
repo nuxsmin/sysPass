@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core;
+namespace SP\Core\Crypt;
 
 use SP\Bootstrap;
 use SP\Config\ConfigData;
@@ -203,10 +203,8 @@ class OldCrypt
      * @param string $masterPwd con la clave maestra
      * @return bool
      */
-    public static function mkEncrypt($data, $masterPwd = null)
+    public static function mkEncrypt($data, $masterPwd)
     {
-        $masterPwd = empty($masterPwd) ? SessionUtil::getSessionMPass() : $masterPwd;
-
         self::$strInitialVector = self::getIV();
 
         return self::encrypt($data, $masterPwd, self::$strInitialVector);
@@ -220,12 +218,10 @@ class OldCrypt
      * @param string $password  La clave maestra
      * @return string con los datos desencriptados
      */
-    public static function getDecrypt($cryptData, $cryptIV, $password = null)
+    public static function getDecrypt($cryptData, $cryptIV, $password)
     {
         if (empty($cryptData) || empty($cryptIV)) {
             return false;
-        } elseif (null === $password) {
-            $password = SessionUtil::getSessionMPass();
         }
 
         $mcryptRes = self::getMcryptResource();

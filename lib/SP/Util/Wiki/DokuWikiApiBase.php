@@ -29,7 +29,6 @@ use DOMException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\Http\XMLRPCResponseParse;
 use SP\Log\Log;
 use SP\Log\LogLevel;
@@ -42,7 +41,7 @@ use SP\Util\Util;
  */
 abstract class DokuWikiApiBase
 {
-    use InjectableTrait;
+    use SP\Core\Dic\InjectableTrait;
 
     /**
      * @var string

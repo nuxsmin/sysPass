@@ -1,4 +1,4 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
 
 <div id="title" class="midroundup titleNormal">
     <?php echo __('Copia de Seguridad'); ?>

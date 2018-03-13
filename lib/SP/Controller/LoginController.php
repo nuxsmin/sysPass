@@ -44,7 +44,6 @@ use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
 use SP\Core\SessionFactory;
 use SP\Core\SessionUtil;
-use SP\Core\Traits\InjectableTrait;
 use SP\Core\UI\Theme;
 use SP\DataModel\TrackData;
 use SP\DataModel\UserLoginData;
@@ -73,7 +72,7 @@ use SP\Util\Util;
  */
 class LoginController
 {
-    use InjectableTrait;
+    use SP\Core\Dic\InjectableTrait;
 
     /**
      * Estados

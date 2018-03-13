@@ -1,6 +1,6 @@
 <?php
 
-/** @var $icons \Theme\Icons */
+/** @var $icons \SP\Core\UI\ThemeIcons */
 /** @var \SP\DataModel\CustomFieldDefinitionData $field */
 
 ?>

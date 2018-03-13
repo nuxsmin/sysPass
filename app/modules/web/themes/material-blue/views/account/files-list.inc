@@ -1,5 +1,5 @@
 <?php
-/** @var $icons \Theme\Icons */
+/** @var $icons \SP\Core\UI\ThemeIcons */
 /** @var $files \SP\DataModel\FileData[] */
 ?>
 

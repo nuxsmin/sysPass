@@ -28,7 +28,7 @@ use Defuse\Crypto\Core;
 use Defuse\Crypto\Encoding;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Init;
 use SP\Core\Install\Installer;
@@ -760,13 +760,13 @@ class Util
     /**
      * Comprobar si el usuario está logado.
      *
-     * @param SessionContext $session
+     * @param ContextInterface $context
      * @return bool
      * @internal param Database $db
      */
-    public static function isLoggedIn(SessionContext $session)
+    public static function isLoggedIn(ContextInterface $context)
     {
-        $userData = $session->getUserData();
+        $userData = $context->getUserData();
 
         return ($userData->getLogin()
             && is_object($userData->getPreferences()));

@@ -1,4 +1,4 @@
-<?php /** @var $icons \Theme\Icons */ ?>
+<?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
 
 <?php if ($ldapIsAvailable || $isDemo): ?>
     <div id="title" class="midroundup titleNormal">

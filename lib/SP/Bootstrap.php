@@ -39,9 +39,11 @@ use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\UI\Theme;
 use SP\Core\Upgrade\Upgrade;
-use SP\Log\Log;
 use SP\Modules\Api\Init as InitApi;
 use SP\Modules\Web\Init as InitWeb;
+use SP\Services\Api\ApiService;
+use SP\Services\Upgrade\UpgradeConfigService;
+use SP\Services\Upgrade\UpgradeUtil;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
 use SP\Util\Util;
@@ -157,17 +159,50 @@ class Bootstrap
 
         // Manejar URLs de módulo web
         $this->router->respond(['GET', 'POST'],
-            '@/(index\.php)?',
+            '@/api\.php',
+            function ($request, $response, $service) use ($oops) {
+                try {
+                    $requesData = ApiService::getRequestData();
+
+                    list($controller, $action) = explode('/', $requesData->method);
+
+                    $controllerClass = 'SP\\Modules\\' . ucfirst(APP_MODULE) . '\\Controllers\\' . ucfirst($controller) . 'Controller';
+                    $method = $action . 'Action';
+
+                    if (!method_exists($controllerClass, $method)) {
+                        debugLog($controllerClass . '::' . $method);
+
+                        throw new RuntimeException($oops);
+                    }
+
+                    $this->initializeCommon();
+
+                    self::$container->get(InitApi::class)->initialize($controller);
+
+                    debugLog('Routing call: ' . $controllerClass . '::' . $method);
+
+                    return call_user_func([new $controllerClass(self::$container, $method, $requesData), $method]);
+                } catch (\Exception $e) {
+                    processException($e);
+
+                    return $e->getMessage();
+                }
+            }
+        );
+
+        // Manejar URLs de módulo web
+        $this->router->respond(['GET', 'POST'],
+            '@/index\.php',
             function ($request, $response, $service) use ($oops) {
                 try {
                     /** @var \Klein\Request $request */
                     $route = filter_var($request->param('r', 'index/index'), FILTER_SANITIZE_STRING);
 
-                    if (!preg_match_all('#(?P<app>web|api)?(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d]+)+)?#', $route, $matches)) {
+                    if (!preg_match_all('#(?P<controller>[a-zA-Z]+)(?:/(?P<action>[a-zA-Z]+))?(?P<params>(/[a-zA-Z\d]+)+)?#', $route, $matches)) {
                         throw new RuntimeException($oops);
                     }
 
-                    $app = $matches['app'][0] ?: 'web';
+//                    $app = $matches['app'][0] ?: 'web';
                     $controller = $matches['controller'][0];
                     $method = !empty($matches['action'][0]) ? $matches['action'][0] . 'Action' : 'indexAction';
                     $params = [];
@@ -192,13 +227,9 @@ class Bootstrap
 
                     $this->initializeCommon();
 
-                    switch ($app) {
+                    switch (APP_MODULE) {
                         case 'web':
                             self::$container->get(InitWeb::class)
-                                ->initialize($controller);
-                            break;
-                        case 'api':
-                            self::$container->get(InitApi::class)
                                 ->initialize($controller);
                             break;
                     }
@@ -370,27 +401,25 @@ class Bootstrap
      */
     private function checkConfigVersion()
     {
+        $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
+
         $appVersion = Util::getVersionStringNormalized();
 
         if (file_exists(OLD_CONFIG_FILE)
-            && $this->upgrade->upgradeOldConfigFile($appVersion)
+            && $upgradeConfigService->upgradeOldConfigFile($appVersion)
         ) {
-//            $this->logConfigUpgrade($appVersion);
-
             self::$UPDATED = true;
 
             return;
         }
 
-        $configVersion = Upgrade::fixVersionNumber($this->configData->getConfigVersion());
+        $configVersion = UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion());
 
         if ($this->configData->isInstalled()
             && Util::checkVersion($configVersion, Util::getVersionArrayNormalized())
-            && $this->upgrade->needConfigUpgrade($configVersion)
-            && $this->upgrade->upgradeConfig($configVersion)
+            && UpgradeConfigService::needConfigUpgrade($configVersion)
+            && $upgradeConfigService->upgradeConfig($configVersion)
         ) {
-//            $this->logConfigUpgrade($appVersion);
-
             self::$UPDATED = true;
         }
     }
@@ -405,7 +434,7 @@ class Bootstrap
 
     /**
      * @param Container $container
-     * @param string $module
+     * @param string    $module
      * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
@@ -427,19 +456,32 @@ class Bootstrap
     }
 
     /**
+     * Comprobar si es necesario actualizar componentes
+     *
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+//    private function checkUpgrade()
+//    {
+//        if (self::$SUBURI === '/index.php') {
+//            $this->upgrade->checkDbVersion();
+//            $this->upgrade->checkAppVersion();
+//        }
+//    }
+
+    /**
      * Registrar la actualización de la configuración
      *
      * @deprecated
      * @param $version
      */
-    private function logConfigUpgrade($version)
-    {
-        $Log = new Log();
-        $LogMessage = $Log->getLogMessage();
-        $LogMessage->setAction(__('Actualización', false));
-        $LogMessage->addDescription(__('Actualización de versión realizada.', false));
-        $LogMessage->addDetails(__('Versión', false), $version);
-        $LogMessage->addDetails(__('Tipo', false), 'config');
-        $Log->writeLog();
-    }
+//    private function logConfigUpgrade($version)
+//    {
+//        $Log = new Log();
+//        $LogMessage = $Log->getLogMessage();
+//        $LogMessage->setAction(__('Actualización', false));
+//        $LogMessage->addDescription(__('Actualización de versión realizada.', false));
+//        $LogMessage->addDetails(__('Versión', false), $version);
+//        $LogMessage->addDetails(__('Tipo', false), 'config');
+//        $Log->writeLog();
+//    }
 }

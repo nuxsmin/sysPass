@@ -376,7 +376,7 @@ ON config;
 ALTER TABLE config
   CHANGE config_parameter parameter VARCHAR(50) NOT NULL;
 ALTER TABLE config
-  CHANGE config_value value VARCHAR(2000);
+  CHANGE config_value value VARCHAR(4000);
 ALTER TABLE config
   ADD PRIMARY KEY (parameter);
 ALTER TABLE config

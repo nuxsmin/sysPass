@@ -121,7 +121,7 @@ class AccountHistoryHelper extends HelperBase
             throw new UnauthorizedPageException(UnauthorizedPageException::INFO);
         }
 
-        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
+        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
             throw new UpdatedMasterPassException(UpdatedMasterPassException::INFO);
         }
     }
@@ -160,6 +160,6 @@ class AccountHistoryHelper extends HelperBase
         $this->acl = $this->dic->get(Acl::class);
         $this->accountHistoryService = $this->dic->get(AccountHistoryService::class);;
 
-        $this->view->assign('sk', $this->session->generateSecurityKey());
+        $this->view->assign('sk', $this->context->generateSecurityKey());
     }
 }

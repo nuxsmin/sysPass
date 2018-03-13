@@ -26,6 +26,7 @@ namespace SP\Services\Account;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Account\AccountRequest;
+use SP\Account\AccountSearchFilter;
 use SP\Account\AccountUtil;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Session as CryptSession;
@@ -33,6 +34,7 @@ use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
 use SP\DataModel\Dto\AccountDetailsResponse;
+use SP\DataModel\Dto\AccountSearchResponse;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\Account\AccountToTagRepository;
@@ -166,8 +168,8 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function create(AccountRequest $accountRequest)
     {
-        $accountRequest->changePermissions = AccountAclService::getShowPermission($this->session->getUserData(), $this->session->getUserProfile());
-        $accountRequest->userGroupId = $accountRequest->userGroupId ?: $this->session->getUserData()->getUserGroupId();
+        $accountRequest->changePermissions = AccountAclService::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
+        $accountRequest->userGroupId = $accountRequest->userGroupId ?: $this->context->getUserData()->getUserGroupId();
 
         $pass = $this->getPasswordEncrypted($accountRequest->pass);
 
@@ -191,7 +193,7 @@ class AccountService extends Service implements AccountServiceInterface
     public function getPasswordEncrypted($pass, $masterPass = null)
     {
         try {
-            $masterPass = $masterPass ?: CryptSession::getSessionKey();
+            $masterPass = $masterPass ?: CryptSession::getSessionKey($this->context);
 
             $out['key'] = Crypt::makeSecuredKey($masterPass);
             $out['pass'] = Crypt::encrypt($pass, $out['key'], $masterPass);
@@ -245,11 +247,11 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function update(AccountRequest $accountRequest)
     {
-        $accountRequest->changePermissions = AccountAclService::getShowPermission($this->session->getUserData(), $this->session->getUserProfile());
+        $accountRequest->changePermissions = AccountAclService::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
 
         // Cambiar el grupo principal si el usuario es Admin
         $accountRequest->changeUserGroup = ($accountRequest->userGroupId !== 0
-            && ($this->session->getUserData()->getIsAdminApp() || $this->session->getUserData()->getIsAdminAcc()));
+            && ($this->context->getUserData()->getIsAdminApp() || $this->context->getUserData()->getIsAdminAcc()));
 
         $this->addHistory($accountRequest->id);
 
@@ -400,7 +402,7 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function getForUser($accountId = null)
     {
-        $queryFilter = AccountUtil::getAccountFilterUser($this->session);
+        $queryFilter = AccountUtil::getAccountFilterUser($this->context);
 
         if (null !== $accountId) {
             $queryFilter->addFilter('A.id <> ? AND (A.parentId = 0 OR A.parentId IS NULL)', [$accountId]);
@@ -415,7 +417,7 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function getLinked($accountId)
     {
-        $queryFilter = AccountUtil::getAccountFilterUser($this->session)
+        $queryFilter = AccountUtil::getAccountFilterUser($this->context)
             ->addFilter('A.parentId = ?', [$accountId]);
 
         return $this->accountRepository->getLinked($queryFilter);
@@ -427,7 +429,7 @@ class AccountService extends Service implements AccountServiceInterface
      */
     public function getPasswordHistoryForId($id)
     {
-        $queryFilter = AccountUtil::getAccountHistoryFilterUser($this->session)
+        $queryFilter = AccountUtil::getAccountHistoryFilterUser($this->context)
             ->addFilter('AH.id = ?', [$id]);
 
         return $this->accountRepository->getPasswordHistoryForId($queryFilter);
@@ -480,5 +482,16 @@ class AccountService extends Service implements AccountServiceInterface
     public function getAccountsPassData()
     {
         return $this->accountRepository->getAccountsPassData();
+    }
+
+    /**
+     * Obtener las cuentas de una búsqueda.
+     *
+     * @param AccountSearchFilter $accountSearchFilter
+     * @return AccountSearchResponse
+     */
+    public function getByFilter(AccountSearchFilter $accountSearchFilter)
+    {
+        return $this->accountRepository->getByFilter($accountSearchFilter);
     }
 }

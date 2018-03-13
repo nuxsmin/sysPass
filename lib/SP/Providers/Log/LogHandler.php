@@ -27,6 +27,7 @@ namespace SP\Providers\Log;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
 use SP\DataModel\EventlogData;
+use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
 use SP\Services\EventLog\EventlogService;
 use SplSubject;
@@ -38,6 +39,8 @@ use SplSubject;
  */
 class LogHandler extends Provider implements EventReceiver
 {
+    use EventsTrait;
+
     const EVENTS = [
         'create.',
         'delete.',
@@ -58,7 +61,8 @@ class LogHandler extends Provider implements EventReceiver
         'update.',
         'import.ldap.',
         'run.',
-        'send.mail'
+        'send.mail',
+        'show.authToken'
     ];
 
     /**
@@ -144,6 +148,12 @@ class LogHandler extends Provider implements EventReceiver
     {
         $this->eventlogService = $this->dic->get(EventlogService::class);
 
-        $this->events = str_replace('.', '\\.', implode('|', self::EVENTS));
+        $configEvents = $this->config->getConfigData()->getLogEvents();
+
+        if (count($configEvents) === 0) {
+            $this->events = $this->parseEventsToRegex(self::EVENTS);
+        } else {
+            $this->events = $this->parseEventsToRegex($configEvents);
+        }
     }
 }

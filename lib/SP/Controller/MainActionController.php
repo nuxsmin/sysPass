@@ -28,12 +28,11 @@ use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\ValidationException;
 use SP\Core\SessionFactory;
-use SP\Core\TaskFactory;
-use SP\Core\Traits\InjectableTrait;
 use SP\Core\Upgrade\Upgrade;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Log\Log;
+use SP\Services\Task\TaskFactory;
 use SP\Util\Json;
 use SP\Util\Util;
 
@@ -44,7 +43,7 @@ use SP\Util\Util;
  */
 class MainActionController
 {
-    use InjectableTrait;
+    use SP\Core\Dic\InjectableTrait;
 
     /**
      * @var ConfigData

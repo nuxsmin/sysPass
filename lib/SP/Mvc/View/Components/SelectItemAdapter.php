@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -164,14 +164,17 @@ class SelectItemAdapter implements ItemAdapterInterface
      * Returns a collection of items for a select component and set selected ones from an array
      *
      * @param array $selected
+     * @param bool  $useValueAsKey
      * @return SelectItem[]
      */
-    public function getItemsFromArraySelected(array $selected)
+    public function getItemsFromArraySelected(array $selected, $useValueAsKey = false)
     {
         $items = $this->getItemsFromArray();
 
         foreach ($items as $item) {
-            if ($selected !== null && in_array($item->getId(), $selected, false)) {
+            if (($useValueAsKey === false && in_array($item->getId(), $selected, false))
+                || ($useValueAsKey === true && in_array($item->getName(), $selected, false))
+            ) {
                 $item->setSelected(true);
             }
         }
@@ -182,7 +185,7 @@ class SelectItemAdapter implements ItemAdapterInterface
     /**
      * Returns a collection of items for a select component
      *
-     * @return array
+     * @return SelectItem[]
      */
     public function getItemsFromArray()
     {

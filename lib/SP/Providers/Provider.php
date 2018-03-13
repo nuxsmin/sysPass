@@ -27,7 +27,7 @@ namespace SP\Providers;
 use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
-use SP\Core\Context\SessionContext;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 
 /**
@@ -44,9 +44,9 @@ abstract class Provider
      */
     protected $config;
     /**
-     * @var SessionContext
+     * @var ContextInterface
      */
-    protected $session;
+    protected $context;
     /**
      * @var EventDispatcher
      */
@@ -67,7 +67,7 @@ abstract class Provider
     {
         $this->dic = $dic;
         $this->config = $dic->get(Config::class);
-        $this->session = $dic->get(SessionContext::class);
+        $this->context = $dic->get(ContextInterface::class);
         $this->eventDispatcher = $dic->get(EventDispatcher::class);
 
         if (method_exists($this, 'initialize')) {

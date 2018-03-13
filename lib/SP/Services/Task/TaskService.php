@@ -24,8 +24,6 @@
 
 namespace SP\Services\Task;
 
-use SP\Core\Task;
-use SP\Core\TaskFactory;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Util\Util;

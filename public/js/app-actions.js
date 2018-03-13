@@ -847,11 +847,9 @@ sysPass.Actions = function (Common) {
             log.info("config:mailCheck");
 
             const $form = $($obj.data("src"));
-            $form.find("[name='sk']").val(Common.sk.get());
-
             const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint + '?r=' + $obj.data("action-route");
-            opts.data = $form.serialize();
+            opts.data = $form.serialize() + "&sk=" + Common.sk.get();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
@@ -1470,11 +1468,9 @@ sysPass.Actions = function (Common) {
             log.info("ldap:check");
 
             const $form = $($obj.data("src"));
-            $form.find("[name='sk']").val(Common.sk.get());
-
             const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint + '?r=' + $obj.data("action-route");
-            opts.data = $form.serialize();
+            opts.data = $form.serialize() + "&sk=" + Common.sk.get();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);

@@ -25,7 +25,7 @@
 namespace SP\Modules\Api;
 
 use DI\Container;
-use SP\Core\Context\ApiContext;
+use SP\Core\Context\StatelessContext;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
@@ -35,12 +35,13 @@ use SP\Util\HttpUtil;
 
 /**
  * Class Init
+ *
  * @package api
  */
 class Init extends ModuleBase
 {
     /**
-     * @var ApiContext
+     * @var StatelessContext
      */
     protected $context;
     /**
@@ -59,12 +60,12 @@ class Init extends ModuleBase
     {
         parent::__construct($container);
 
-        $this->context = $container->get(ApiContext::class);
+        $this->context = $container->get(StatelessContext::class);
         $this->language = $container->get(Language::class);
     }
 
     /**
-     * @param $controller
+     * @param string $controller
      * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException

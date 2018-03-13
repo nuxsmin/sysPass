@@ -1,7 +1,7 @@
 <?php
 /**
- * @var \Theme\Icons $icons
- * @var \SP\Config\ConfigData $configData
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
  */
 ?>
 
@@ -148,10 +148,26 @@
                        value="<?php echo implode(',', $configData->getMailRecipients()); ?>"/>
             </td>
         </tr>
+        <tr>
+            <td class="descField">
+                <?php echo __('Eventos'); ?>
+            </td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Eventos'); ?></div>
+
+                <select id="mail_events" name="mail_events[]" multiple="multiple" class="select-box">
+                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $mailEvents */
+                    foreach ($mailEvents as $mailEvent): ?>
+                        <option
+                                value="<?php echo $mailEvent->getName(); ?>"
+                            <?php echo $mailEvent->isSelected() ? 'selected' : '' ?>><?php echo $mailEvent->getName(); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+        </tr>
     </table>
 
     <input type="hidden" name="sk" value="">
-    <input type="hidden" name="isAjax" value="1"/>
 </form>
 
 <div class="tab-actions">

@@ -146,8 +146,8 @@ class AccountHelper extends HelperBase
             $this->view->assign('publicLinkShow', false);
         }
 
-        $userData = $this->session->getUserData();
-        $userProfileData = $this->session->getUserProfile();
+        $userData = $this->context->getUserData();
+        $userProfileData = $this->context->getUserProfile();
 
         $this->view->assign('allowPrivate', $userProfileData->isAccPrivate() && $accountData->getUserId() === $userData->getId());
         $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup() && $accountData->getUserGroupId() === $userData->getUserGroupId());
@@ -176,7 +176,7 @@ class AccountHelper extends HelperBase
             throw new UnauthorizedPageException(UnauthorizedPageException::INFO);
         }
 
-        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
+        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
             throw new UpdatedMasterPassException(UpdatedMasterPassException::INFO);
         }
     }
@@ -277,7 +277,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('userGroups', $selectUserGroups->getItemsFromModel());
         $this->view->assign('tags', $selectTags->getItemsFromModel());
 
-        $userProfileData = $this->session->getUserProfile();
+        $userProfileData = $this->context->getUserProfile();
 
         $this->view->assign('allowPrivate', $userProfileData->isAccPrivate());
         $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup());
@@ -342,6 +342,6 @@ class AccountHelper extends HelperBase
         $this->view->assign('changesHash');
         $this->view->assign('chkUserEdit');
         $this->view->assign('chkGroupEdit');
-        $this->view->assign('sk', $this->session->generateSecurityKey());
+        $this->view->assign('sk', $this->context->generateSecurityKey());
     }
 }

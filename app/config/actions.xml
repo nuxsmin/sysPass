@@ -57,9 +57,9 @@
     </action>
     <action multiple="1">
         <id>63</id>
-        <name>APITOKEN</name>
+        <name>AUTHTOKEN</name>
         <text>Gestión Autorizaciones API</text>
-        <route>apiToken/index</route>
+        <route>authToken/index</route>
     </action>
     <action multiple="1">
         <id>64</id>
@@ -339,33 +339,33 @@
     </action>
     <action multiple="1">
         <id>630</id>
-        <name>APITOKEN_CREATE</name>
+        <name>AUTHTOKEN_CREATE</name>
         <text>Nuevo Token API</text>
-        <route>apiToken/create</route>
+        <route>authToken/create</route>
     </action>
     <action multiple="1">
         <id>631</id>
-        <name>APITOKEN_VIEW</name>
+        <name>AUTHTOKEN_VIEW</name>
         <text>Ver Token API</text>
-        <route>apiToken/view</route>
+        <route>authToken/view</route>
     </action>
     <action multiple="1">
         <id>632</id>
-        <name>APITOKEN_EDIT</name>
+        <name>AUTHTOKEN_EDIT</name>
         <text>Editar Token API</text>
-        <route>apiToken/edit</route>
+        <route>authToken/edit</route>
     </action>
     <action multiple="1">
         <id>633</id>
-        <name>APITOKEN_DELETE</name>
+        <name>AUTHTOKEN_DELETE</name>
         <text>Eliminar Token API</text>
-        <route>apiToken/delete</route>
+        <route>authToken/delete</route>
     </action>
     <action multiple="1">
         <id>635</id>
-        <name>APITOKEN_SEARCH</name>
+        <name>AUTHTOKEN_SEARCH</name>
         <text>Buscar Token API</text>
-        <route>apiToken/search</route>
+        <route>authToken/search</route>
     </action>
     <action multiple="1">
         <id>640</id>

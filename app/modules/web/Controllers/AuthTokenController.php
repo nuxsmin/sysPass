@@ -43,11 +43,11 @@ use SP\Services\AuthToken\AuthTokenService;
 use SP\Services\User\UserService;
 
 /**
- * Class ApiTokenController
+ * Class AuthTokenController
  *
  * @package SP\Modules\Web\Controllers
  */
-class ApiTokenController extends ControllerBase implements CrudControllerInterface
+class AuthTokenController extends ControllerBase implements CrudControllerInterface
 {
     use JsonTrait, ItemTrait;
 
@@ -64,7 +64,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      */
     public function searchAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::APITOKEN_SEARCH)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::AUTHTOKEN_SEARCH)) {
             return;
         }
 
@@ -85,7 +85,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
         $itemsGridHelper = $this->dic->get(ItemsGridHelper::class);
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount());
 
-        return $itemsGridHelper->updatePager($itemsGridHelper->getApiTokensGrid($this->authTokenService->search($itemSearchData)), $itemSearchData);
+        return $itemsGridHelper->updatePager($itemsGridHelper->getAuthTokensGrid($this->authTokenService->search($itemSearchData)), $itemSearchData);
     }
 
     /**
@@ -95,14 +95,14 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      */
     public function createAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::APITOKEN_CREATE)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::AUTHTOKEN_CREATE)) {
             return;
         }
 
         $this->view->assign(__FUNCTION__, 1);
         $this->view->assign('header', __('Nueva Autorización'));
         $this->view->assign('isView', false);
-        $this->view->assign('route', 'apiToken/saveCreate');
+        $this->view->assign('route', 'authToken/saveCreate');
 
         try {
             $this->setViewData();
@@ -145,7 +145,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
             $this->view->assign('readonly');
         }
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::APITOKEN, $authTokenId));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::AUTHTOKEN, $authTokenId));
     }
 
     /**
@@ -156,13 +156,13 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      */
     public function editAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::APITOKEN_EDIT)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::AUTHTOKEN_EDIT)) {
             return;
         }
 
         $this->view->assign('header', __('Editar Autorización'));
         $this->view->assign('isView', false);
-        $this->view->assign('route', 'apiToken/saveEdit/' . $id);
+        $this->view->assign('route', 'authToken/saveEdit/' . $id);
 
         try {
             $this->setViewData($id);
@@ -186,7 +186,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      */
     public function deleteAction($id = null)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::APITOKEN_DELETE)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::AUTHTOKEN_DELETE)) {
             return;
         }
 
@@ -194,7 +194,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
             if ($id === null) {
                 $this->authTokenService->deleteByIdBatch($this->getItemsIdFromRequest());
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::AUTHTOKEN, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.authToken.selection',
                     new Event($this,
@@ -206,7 +206,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
             } else {
                 $this->authTokenService->delete($id);
 
-                $this->deleteCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
+                $this->deleteCustomFieldsForItem(ActionsInterface::AUTHTOKEN, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.authToken',
                     new Event($this,
@@ -229,19 +229,19 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      */
     public function saveCreateAction()
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::APITOKEN_CREATE)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::AUTHTOKEN_CREATE)) {
             return;
         }
 
         try {
             $form = new AuthTokenForm();
-            $form->validate(ActionsInterface::APITOKEN_CREATE);
+            $form->validate(ActionsInterface::AUTHTOKEN_CREATE);
 
             $apiTokenData = $form->getItemData();
 
             $id = $this->authTokenService->create($apiTokenData);
 
-            $this->addCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
+            $this->addCustomFieldsForItem(ActionsInterface::AUTHTOKEN, $id);
 
             $this->eventDispatcher->notifyEvent('create.authToken', new Event($this));
 
@@ -264,13 +264,13 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      */
     public function saveEditAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::APITOKEN_EDIT)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::AUTHTOKEN_EDIT)) {
             return;
         }
 
         try {
             $form = new AuthTokenForm($id);
-            $form->validate(ActionsInterface::APITOKEN_EDIT);
+            $form->validate(ActionsInterface::AUTHTOKEN_EDIT);
 
             if ($form->isRefresh()) {
                 $this->authTokenService->refreshAndUpdate($form->getItemData());
@@ -292,7 +292,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
                 );
             }
 
-            $this->updateCustomFieldsForItem(ActionsInterface::APITOKEN, $id);
+            $this->updateCustomFieldsForItem(ActionsInterface::AUTHTOKEN, $id);
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Autorización actualizada'));
         } catch (ValidationException $e) {
@@ -312,7 +312,7 @@ class ApiTokenController extends ControllerBase implements CrudControllerInterfa
      */
     public function viewAction($id)
     {
-        if (!$this->acl->checkUserAccess(ActionsInterface::APITOKEN_VIEW)) {
+        if (!$this->acl->checkUserAccess(ActionsInterface::AUTHTOKEN_VIEW)) {
             return;
         }
 

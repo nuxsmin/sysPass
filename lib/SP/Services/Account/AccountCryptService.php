@@ -26,14 +26,14 @@ namespace SP\Services\Account;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\OldCrypt;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
-use SP\Core\OldCrypt;
-use SP\Core\TaskFactory;
 use SP\Services\Crypt\UpdateMasterPassRequest;
 use SP\Services\Service;
 use SP\Services\ServiceException;
+use SP\Services\Task\TaskFactory;
 use SP\Util\Util;
 
 /**

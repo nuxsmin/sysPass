@@ -223,7 +223,7 @@ class NotificationService extends Service
      */
     public function search(ItemSearchData $itemSearchData)
     {
-        $userData = $this->session->getUserData();
+        $userData = $this->context->getUserData();
 
         if ($userData->getIsAdminApp()) {
             return $this->notificationRepository->search($itemSearchData);

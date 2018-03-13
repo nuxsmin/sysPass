@@ -28,9 +28,9 @@ defined('APP_ROOT') || die();
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Core\Crypt\Crypt;
+use SP\Core\Crypt\OldCrypt;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\OldCrypt;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\Log\Log;

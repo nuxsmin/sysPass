@@ -77,7 +77,7 @@ trait ItemTrait
                 $customField->typeName = $item->typeName;
                 $customField->moduleId = (int)$item->moduleId;
                 $customField->formId = CustomFieldService::getFormIdForName($item->definitionName);
-                $customField->value = $item->data !== null ? CustomFieldService::decryptData($item->data) : '';
+                $customField->value = $item->data !== null ? CustomFieldService::decryptData($item->data, $this->session) : '';
 
                 $customFields[] = $customField;
             } catch (CryptoException $e) {

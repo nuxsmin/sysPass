@@ -78,7 +78,7 @@ abstract class ModuleBase
     }
 
     /**
-     * @param $controller
+     * @param string $controller
      * @return mixed
      */
     abstract public function initialize($controller);
@@ -89,7 +89,7 @@ abstract class ModuleBase
      * Devuelve un error 503 y un reintento de 120s al cliente.
      *
      * @param ContextInterface $context
-     * @param bool $check sólo comprobar si está activado el modo
+     * @param bool             $check sólo comprobar si está activado el modo
      * @throws InitializationException
      */
     public function checkMaintenanceMode(ContextInterface $context, $check = false)

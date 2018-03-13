@@ -28,7 +28,6 @@ use PDOException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 use SP\DataModel\InstallData;
 use SP\Storage\DatabaseConnectionData;
 use SP\Storage\DBUtil;
@@ -42,7 +41,7 @@ use SP\Util\Util;
  */
 class MySQL implements DatabaseSetupInterface
 {
-    use InjectableTrait;
+    use SP\Core\Dic\InjectableTrait;
 
     /**
      * @var InstallData

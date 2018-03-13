@@ -32,13 +32,16 @@ use SP\Core\CryptMasterPass;
 use SP\Core\Events\Event;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
-use SP\Core\Task;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Providers\Log\LogHandler;
+use SP\Providers\Mail\MailHandler;
 use SP\Services\Account\AccountService;
 use SP\Services\Config\ConfigService;
+use SP\Services\Crypt\TemporaryMasterPassService;
+use SP\Services\Task\Task;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
@@ -146,6 +149,10 @@ class ConfigManagerController extends ControllerBase
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
 
+        $template->assign('logEvents', SelectItemAdapter::factory(LogHandler::EVENTS)
+            ->getItemsFromArraySelected($this->configData->getLogEvents(), true)
+        );
+
         return new DataTab(__('General'), $template);
     }
 
@@ -205,6 +212,9 @@ class ConfigManagerController extends ControllerBase
         $template->assign('mailSecurity', ['SSL', 'TLS']);
         $template->assign('userGroups', SelectItemAdapter::factory(UserGroupService::getItemsBasic())->getItemsFromModel());
         $template->assign('userProfiles', SelectItemAdapter::factory(UserProfileService::getItemsBasic())->getItemsFromModel());
+        $template->assign('mailEvents', SelectItemAdapter::factory(MailHandler::EVENTS)
+            ->getItemsFromArraySelected($this->configData->getMailEvents(), true)
+        );
 
         return new DataTab(__('Correo'), $template);
     }
@@ -234,7 +244,7 @@ class ConfigManagerController extends ControllerBase
         $template->assign('tempMasterPassTime', $configService->getByParam('tempmaster_passtime', 0));
         $template->assign('tempMasterMaxTime', $configService->getByParam('tempmaster_maxtime', 0));
 
-        $tempMasterAttempts = sprintf('%d/%d', $configService->getByParam('tempmaster_attempts', 0), CryptMasterPass::MAX_ATTEMPTS);
+        $tempMasterAttempts = sprintf('%d/%d', $configService->getByParam('tempmaster_attempts', 0), TemporaryMasterPassService::MAX_ATTEMPTS);
 
         $template->assign('tempMasterAttempts', $tempMasterAttempts);
         $template->assign('tempMasterPass', $this->session->getTemporaryMasterPass());

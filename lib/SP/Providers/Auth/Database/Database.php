@@ -104,7 +104,7 @@ class Database implements AuthInterface
     protected function authUser()
     {
         try {
-            $userLoginResponse = $this->userService->getByLogin($this->userLoginData->getLoginUser());
+            $userLoginResponse = UserService::mapUserLoginResponse($this->userService->getByLogin($this->userLoginData->getLoginUser()));
 
             $this->userLoginData->setUserLoginResponse($userLoginResponse);
 

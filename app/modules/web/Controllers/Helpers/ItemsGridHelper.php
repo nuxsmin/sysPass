@@ -851,7 +851,7 @@ class ItemsGridHelper extends HelperBase
      * @param array $data
      * @return DataGridTab
      */
-    public function getApiTokensGrid(array $data)
+    public function getAuthTokensGrid(array $data)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -877,59 +877,59 @@ class ItemsGridHelper extends HelperBase
 
         // Grid Actions
         $GridActionSearch = new DataGridActionSearch();
-        $GridActionSearch->setId(ActionsInterface::APITOKEN_SEARCH);
+        $GridActionSearch->setId(ActionsInterface::AUTHTOKEN_SEARCH);
         $GridActionSearch->setType(DataGridActionType::SEARCH_ITEM);
         $GridActionSearch->setName('frmSearchToken');
         $GridActionSearch->setTitle(__('Buscar Token'));
         $GridActionSearch->setOnSubmitFunction('appMgmt/search');
-        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::APITOKEN_SEARCH));
+        $GridActionSearch->addData('action-route', Acl::getActionRoute(ActionsInterface::AUTHTOKEN_SEARCH));
 
         $Grid->setDataActions($GridActionSearch);
         $Grid->setPager($this->getPager($GridActionSearch));
 
         // Grid item's actions
         $GridActionNew = new DataGridAction();
-        $GridActionNew->setId(ActionsInterface::APITOKEN_CREATE);
+        $GridActionNew->setId(ActionsInterface::AUTHTOKEN_CREATE);
         $GridActionNew->setType(DataGridActionType::MENUBAR_ITEM);
         $GridActionNew->setName(__('Nueva Autorización'));
         $GridActionNew->setTitle(__('Nueva Autorización'));
         $GridActionNew->setIcon($this->icons->getIconAdd());
         $GridActionNew->setSkip(true);
         $GridActionNew->setOnClickFunction('appMgmt/show');
-        $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::APITOKEN_CREATE));
+        $GridActionNew->addData('action-route', Acl::getActionRoute(ActionsInterface::AUTHTOKEN_CREATE));
 
         $Grid->setDataActions($GridActionNew);
 
         $GridActionView = new DataGridAction();
-        $GridActionView->setId(ActionsInterface::APITOKEN_VIEW);
+        $GridActionView->setId(ActionsInterface::AUTHTOKEN_VIEW);
         $GridActionView->setType(DataGridActionType::VIEW_ITEM);
         $GridActionView->setName(__('Ver token de Autorización'));
         $GridActionView->setTitle(__('Ver token de Autorización'));
         $GridActionView->setIcon($this->icons->getIconView());
         $GridActionView->setOnClickFunction('appMgmt/show');
-        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::APITOKEN_VIEW));
+        $GridActionView->addData('action-route', Acl::getActionRoute(ActionsInterface::AUTHTOKEN_VIEW));
 
         $Grid->setDataActions($GridActionView);
 
         $GridActionEdit = new DataGridAction();
-        $GridActionEdit->setId(ActionsInterface::APITOKEN_EDIT);
+        $GridActionEdit->setId(ActionsInterface::AUTHTOKEN_EDIT);
         $GridActionEdit->setType(DataGridActionType::EDIT_ITEM);
         $GridActionEdit->setName(__('Editar Autorización'));
         $GridActionEdit->setTitle(__('Editar Autorización'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
-        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::APITOKEN_EDIT));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::AUTHTOKEN_EDIT));
 
         $Grid->setDataActions($GridActionEdit);
 
         $GridActionDel = new DataGridAction();
-        $GridActionDel->setId(ActionsInterface::APITOKEN_DELETE);
+        $GridActionDel->setId(ActionsInterface::AUTHTOKEN_DELETE);
         $GridActionDel->setType(DataGridActionType::DELETE_ITEM);
         $GridActionDel->setName(__('Eliminar Autorización'));
         $GridActionDel->setTitle(__('Eliminar Autorización'));
         $GridActionDel->setIcon($this->icons->getIconDelete());
         $GridActionDel->setOnClickFunction('appMgmt/delete');
-        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::APITOKEN_DELETE));
+        $GridActionDel->addData('action-route', Acl::getActionRoute(ActionsInterface::AUTHTOKEN_DELETE));
 
         $Grid->setDataActions($GridActionDel);
         $Grid->setDataActions($GridActionDel, true);
@@ -1255,9 +1255,9 @@ class ItemsGridHelper extends HelperBase
                         $text);
                 }
 
-                if (strlen($text) >= 150) {
-                    $text = wordwrap($text, 150, PHP_EOL, true);
-                }
+//                if (strlen($text) >= 100) {
+//                    $text = wordwrap($text, 100, PHP_EOL, true);
+//                }
 
                 return str_replace(PHP_EOL, '<br>', $text);
             });
@@ -1322,7 +1322,7 @@ class ItemsGridHelper extends HelperBase
      */
     public function getNotificationsGrid(array $data)
     {
-        $isAdminApp = $this->session->getUserData()->getIsAdminApp();
+        $isAdminApp = $this->context->getUserData()->getIsAdminApp();
 
         // Grid Header
         $GridHeaders = new DataGridHeader();

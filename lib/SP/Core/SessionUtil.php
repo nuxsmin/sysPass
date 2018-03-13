@@ -24,15 +24,6 @@
 
 namespace SP\Core;
 
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use SP\Bootstrap;
-use SP\Config\ConfigData;
-use SP\Core\Context\SessionContext;
-use SP\Core\Crypt\Session as CryptSession;
-use SP\DataModel\UserData;
-use SP\Mgmt\Profiles\Profile;
-
 defined('APP_ROOT') || die();
 
 /**
@@ -43,87 +34,6 @@ defined('APP_ROOT') || die();
 class SessionUtil
 {
     /**
-     * Establece las variables de sesión del usuario.
-     *
-     * @param UserData $UserData
-     * @param SessionContext  $session
-     */
-    public static function loadUserSession(UserData $UserData, SessionContext $session)
-    {
-        $session->setUserData($UserData);
-        $session->setUserProfile(Profile::getItem()->getById($UserData->getUserProfileId()));
-    }
-
-    /**
-     * Establecer la clave pública RSA en la sessión
-     *
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws Dic\ContainerException
-     */
-    public static function loadPublicKey()
-    {
-        $CryptPKI = new CryptPKI();
-        SessionFactory::setPublicKey($CryptPKI->getPublicKey());
-    }
-
-    /**
-     * Desencriptar la clave maestra de la sesión.
-     *
-     * @return string con la clave maestra
-     * @throws \Defuse\Crypto\Exception\CryptoException
-     */
-    public static function getSessionMPass()
-    {
-        return CryptSession::getSessionKey();
-    }
-
-    /**
-     * Devuelve un hash para verificación de formularios.
-     * Esta función genera un hash que permite verificar la autenticidad de un formulario
-     *
-     * @param bool            $new si es necesrio regenerar el hash
-     * @param ConfigData|null $configData
-     * @return string con el hash de verificación
-     * @deprecated
-     */
-    public static function getSessionKey($new = false, ConfigData $configData = null)
-    {
-        // FIXME
-        if (null === $configData) {
-            /** @var ConfigData $ConfigData */
-            try {
-                $configData = Bootstrap::getContainer()->get(ConfigData::class);
-            } catch (NotFoundExceptionInterface $e) {
-                return SessionFactory::getSecurityKey();
-            } catch (ContainerExceptionInterface $e) {
-                return SessionFactory::getSecurityKey();
-            }
-        }
-
-        // Generamos un nuevo hash si es necesario y lo guardamos en la sesión
-        if ($new === true || null === SessionFactory::getSecurityKey()) {
-            $hash = sha1(time() . $configData->getPasswordSalt());
-
-            SessionFactory::setSecurityKey($hash);
-
-            return $hash;
-        }
-
-        return SessionFactory::getSecurityKey();
-    }
-
-    /**
-     * Comprobar el hash de verificación de formularios.
-     *
-     * @param string $key con el hash a comprobar
-     * @return bool|string si no es correcto el hash devuelve bool. Si lo es, devuelve el hash actual.
-     */
-    public static function checkSessionKey($key)
-    {
-        return (null !== SessionFactory::getSecurityKey() && SessionFactory::getSecurityKey() === $key);
-    }
-
-    /**
      * Limpiar la sesión del usuario
      */
     public static function cleanSession()
@@ -131,19 +41,5 @@ class SessionUtil
         foreach ($_SESSION as $key => $value) {
             unset($_SESSION[$key]);
         }
-    }
-
-    /**
-     * Regenerad el ID de sesión
-     *
-     * @param SessionContext $session
-     */
-    public static function regenerate(SessionContext $session)
-    {
-        debugLog(__METHOD__);
-
-        session_regenerate_id(true);
-
-        $session->setSidStartTime(time());
     }
 }

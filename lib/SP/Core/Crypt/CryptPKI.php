@@ -22,14 +22,15 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core;
+namespace SP\Core\Crypt;
 
 defined('APP_ROOT') || die();
 
 use phpseclib\Crypt\RSA;
+use SP\Core\Dic;
+use SP\Core\Dic\InjectableTrait;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Traits\InjectableTrait;
 
 /**
  * Class CryptPKI para el manejo de las funciones para PKI

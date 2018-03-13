@@ -24,30 +24,29 @@
 
 namespace SP\Modules\Api\Controllers;
 
+use SP\Account\AccountSearchFilter;
 use SP\Api\ApiResponse;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\ValidationException;
-use SP\Modules\Api\Controllers\Traits\ResponseTrait;
 use SP\Modules\Web\Forms\AccountForm;
 use SP\Services\Account\AccountService;
 
 /**
  * Class AccountController
+ *
  * @package api\Controllers
  */
 class AccountController extends ControllerBase
 {
-    use ResponseTrait;
-
     /**
      * @var AccountService
      */
     protected $accountService;
 
     /**
-     * Saves create action
+     * createAction
      */
     public function createAction()
     {
@@ -73,6 +72,24 @@ class AccountController extends ControllerBase
             $this->returnResponse(new ApiResponse(__('Cuenta creada'), ApiResponse::RESULT_SUCCESS), $accountId);
         } catch (ValidationException $e) {
             $this->returnResponseException($e);
+        } catch (\Exception $e) {
+            $this->returnResponseException($e);
+
+            processException($e);
+        }
+    }
+
+    /**
+     * searchAction
+     */
+    public function searchAction()
+    {
+        try {
+            $this->apiService->authenticate(ActionsInterface::ACCOUNT_SEARCH);
+
+            $accountSearchFilter = new AccountSearchFilter();
+
+            $this->accountService->getByFilter($accountSearchFilter);
         } catch (\Exception $e) {
             $this->returnResponseException($e);
 

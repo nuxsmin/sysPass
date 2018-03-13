@@ -28,6 +28,8 @@ use DI\Container;
 use Psr\Container\ContainerInterface;
 use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
+use SP\Core\Context\SessionContext;
+use SP\Core\Context\StatelessContext;
 use SP\Core\Events\EventDispatcher;
 
 /**
@@ -44,9 +46,9 @@ abstract class Service
      */
     protected $config;
     /**
-     * @var ContextInterface
+     * @var SessionContext|StatelessContext
      */
-    protected $session;
+    protected $context;
     /**
      * @var EventDispatcher
      */
@@ -67,7 +69,7 @@ abstract class Service
     {
         $this->dic = $dic;
         $this->config = $dic->get(Config::class);
-        $this->session = $dic->get(ContextInterface::class);
+        $this->context = $dic->get(ContextInterface::class);
         $this->eventDispatcher = $dic->get(EventDispatcher::class);
 
         if (method_exists($this, 'initialize')) {

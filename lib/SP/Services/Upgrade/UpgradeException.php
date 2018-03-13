@@ -22,27 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Traits;
+namespace SP\Services\Upgrade;
 
-use SP\Bootstrap;
-use SP\Core\Dic\Injector;
+use SP\Core\Exceptions\SPException;
 
 /**
- * Trait InjectTrait
+ * Class UpgradeException
  *
- * @package SP\Core\Traits
+ * @package SP\Services\Upgrade
  */
-trait InjectableTrait
+class UpgradeException extends SPException
 {
-    /**
-     * Injects dependencies through the DI container
-     *
-     * @throws \SP\Core\Dic\ContainerException
-     */
-    final protected function injectDependencies()
-    {
-        if (method_exists($this, 'inject')) {
-            Injector::inject(Bootstrap::getContainer(), $this);
-        }
-    }
+
 }

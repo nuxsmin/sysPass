@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -77,6 +77,9 @@ class ConfigMailController extends SimpleControllerBase
             $configData->setMailSecurity($mailSecurity);
             $configData->setMailFrom($mailFrom);
             $configData->setMailRecipients($mailRecipients);
+            $configData->setMailEvents(Request::analyzeArray('mail_events', function ($items) {
+                return ConfigUtil::eventsAdapter($items);
+            }));
 
             if ($mailAuth) {
                 $configData->setMailAuthenabled($mailAuth);

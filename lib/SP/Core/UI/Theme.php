@@ -27,11 +27,11 @@ namespace SP\Core\UI;
 use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\InvalidClassException;
 use SP\Storage\FileCache;
 use SP\Storage\FileException;
-use Theme\Icons;
 
 defined('APP_ROOT') || die();
 
@@ -78,7 +78,7 @@ class Theme implements ThemeInterface
     /**
      * @var SessionContext
      */
-    protected $session;
+    protected $context;
     /**
      * @var string
      */
@@ -91,19 +91,26 @@ class Theme implements ThemeInterface
     /**
      * Theme constructor.
      *
-     * @param string    $module
-     * @param Config    $config
-     * @param SessionContext   $session
-     * @param FileCache $fileCache
+     * @param string           $module
+     * @param Config           $config
+     * @param ContextInterface $context
+     * @param FileCache        $fileCache
      */
-    public function __construct($module, Config $config, SessionContext $session, FileCache $fileCache)
+    public function __construct($module, Config $config, ContextInterface $context, FileCache $fileCache)
     {
         $this->configData = $config->getConfigData();
-        $this->session = $session;
+        $this->context = $context;
         $this->fileCache = $fileCache;
+    }
 
+    /**
+     * @param bool $force
+     * @throws InvalidClassException
+     */
+    public function initialize($force = false)
+    {
         if (is_dir(VIEW_PATH)) {
-            $this->initTheme();
+            $this->initTheme($force);
             $this->initIcons();
         }
     }
@@ -116,11 +123,8 @@ class Theme implements ThemeInterface
      */
     public function initTheme($force = false)
     {
-        $this->themeName = $this->session->getTheme();
-
         if (empty($this->themeName) || $force === true) {
             $this->themeName = $this->getUserTheme() ?: $this->getGlobalTheme();
-            $this->session->setTheme($this->themeName);
         }
 
         $this->themeUri = Bootstrap::$WEBURI . '/app/modules/' . $this->module . 'themes' . $this->themeName;
@@ -136,9 +140,7 @@ class Theme implements ThemeInterface
      */
     protected function getUserTheme()
     {
-        $userData = $this->session->getUserData();
-
-        return ($userData->getId() > 0) ? $userData->getPreferences()->getTheme() : '';
+        return $this->context->isLoggedIn() ? $this->context->getUserData()->getPreferences()->getTheme() : null;
     }
 
     /**

@@ -27,11 +27,9 @@ namespace SP\Core\Upgrade;
 
 use SP\Config\Config;
 use SP\Config\ConfigData;
-use SP\Config\ConfigDB;
+use SP\Core\Dic\InjectableTrait;
 use SP\Core\Exceptions\SPException;
 use SP\Core\SessionFactory as CoreSession;
-use SP\Core\TaskFactory;
-use SP\Core\Traits\InjectableTrait;
 use SP\Core\Upgrade\User as UserUpgrade;
 use SP\Http\Request;
 use SP\Log\Email;
@@ -41,6 +39,7 @@ use SP\Mgmt\Profiles\ProfileUtil;
 use SP\Mgmt\Users\User;
 use SP\Mgmt\Users\UserMigrate;
 use SP\Mgmt\Users\UserPreferencesUtil;
+use SP\Services\Task\TaskFactory;
 use SP\Storage\DbWrapper;
 use SP\Storage\QueryData;
 use SP\Util\Util;
@@ -82,12 +81,14 @@ class Upgrade
     /**
      * Upgrade constructor.
      *
-     * @throws \ReflectionException
+     * @param Config $config
+     * @param Log    $log
      * @throws \SP\Core\Dic\ContainerException
      */
-    public function __construct()
+    public function __construct(Config $config, Log $log)
     {
         $this->injectDependencies();
+        $this->config = $config;
     }
 
     /**
@@ -99,7 +100,7 @@ class Upgrade
      */
     public function doUpgrade($version)
     {
-        self::$currentDbVersion = self::fixVersionNumber(ConfigDB::getValue('version'));
+        self::$currentDbVersion = UserUpgrade::fixVersionNumber(ConfigDB::getValue('version'));
 
         foreach (self::$dbUpgrade as $dbVersion) {
             if (Util::checkVersion($version, $dbVersion)) {
@@ -132,24 +133,6 @@ class Upgrade
         return true;
     }
 
-    /**
-     * Normalizar un número de versión
-     *
-     * @param $version
-     * @return string
-     */
-    public static function fixVersionNumber($version)
-    {
-        if (strpos($version, '.') === false) {
-            if (strlen($version) === 10) {
-                return substr($version, 0, 2) . '0.' . substr($version, 2);
-            }
-
-            return substr($version, 0, 3) . '.' . substr($version, 3);
-        }
-
-        return $version;
-    }
 
     /**
      * Aplicar actualizaciones auxiliares antes de actualizar la BBDD
@@ -505,7 +488,7 @@ class Upgrade
     public function checkDbVersion()
     {
         $appVersion = Util::getVersionStringNormalized();
-        $databaseVersion = self::fixVersionNumber(ConfigDB::getValue('version'));
+        $databaseVersion = UserUpgrade::fixVersionNumber(ConfigDB::getValue('version'));
 
         if (Util::checkVersion($databaseVersion, $appVersion)
             && Request::analyze('nodbupgrade', 0) === 0
@@ -549,7 +532,7 @@ class Upgrade
      */
     public function checkAppVersion()
     {
-        $appVersion = self::fixVersionNumber($this->configData->getConfigVersion());
+        $appVersion = UserUpgrade::fixVersionNumber($this->configData->getConfigVersion());
 
         if (Util::checkVersion($appVersion, self::$appUpgrade) && !$this->configData->isMaintenance()) {
             $this->setUpgradeKey('app');

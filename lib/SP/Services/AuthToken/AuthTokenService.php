@@ -145,7 +145,7 @@ class AuthTokenService extends Service
         }
 
         $authTokenData->setToken($token);
-        $authTokenData->setCreatedBy($this->session->getUserData()->getId());
+        $authTokenData->setCreatedBy($this->context->getUserData()->getId());
     }
 
     /**
@@ -170,7 +170,7 @@ class AuthTokenService extends Service
     private function getSecureData($token, $hash)
     {
         $Vault = new Vault();
-        $Vault->saveData(CryptSession::getSessionKey(), $hash . $token);
+        $Vault->saveData(CryptSession::getSessionKey($this->context), $hash . $token);
 
         return $Vault;
     }

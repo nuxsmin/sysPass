@@ -92,7 +92,7 @@ class AccessManagerController extends ControllerBase
             $this->tabsGridHelper->addTab($this->getUsersProfileList());
         }
 
-        if ($this->checkAccess(ActionsInterface::APITOKEN)) {
+        if ($this->checkAccess(ActionsInterface::AUTHTOKEN)) {
             $this->tabsGridHelper->addTab($this->getApiTokensList());
         }
 
@@ -153,7 +153,7 @@ class AccessManagerController extends ControllerBase
      */
     protected function getApiTokensList()
     {
-        return $this->itemsGridHelper->getApiTokensGrid($this->dic->get(AuthTokenService::class)->search($this->itemSearchData))->updatePager();
+        return $this->itemsGridHelper->getAuthTokensGrid($this->dic->get(AuthTokenService::class)->search($this->itemSearchData))->updatePager();
     }
 
     /**

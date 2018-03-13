@@ -29,7 +29,6 @@ use SP\Config\ConfigData;
 use SP\Core\Context\SessionContext;
 use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
-use SP\Core\Traits\InjectableTrait;
 use SP\Storage\Database;
 
 /**
@@ -39,8 +38,6 @@ use SP\Storage\Database;
  */
 abstract class ActionLog extends LogLevel
 {
-    use InjectableTrait;
-
     /**
      * Constante de nueva línea para descripciones
      */

@@ -30,18 +30,11 @@ use SP\Services\User\UserLoginResponse;
 
 /**
  * Class ApiContext
+ *
  * @package SP\Core\Context
  */
-class ApiContext extends ContextBase
+class StatelessContext extends ContextBase
 {
-    /**
-     * @return void
-     */
-    public function initialize()
-    {
-        $this->setContext([]);
-    }
-
     /**
      * Establecer la configuración
      *
@@ -50,6 +43,26 @@ class ApiContext extends ContextBase
     public function setConfig(ConfigData $config)
     {
         $this->setContextKey('config', $config);
+    }
+
+    /**
+     * Establecer una variable de sesión
+     *
+     * @param string $key   El nombre de la variable
+     * @param mixed  $value El valor de la variable
+     * @return mixed
+     */
+    protected function setContextKey($key, $value)
+    {
+        try {
+            parent::setContextKey($key, $value);
+
+            return $value;
+        } catch (ContextException $e) {
+            processException($e);
+        }
+
+        return null;
     }
 
     /**
@@ -70,6 +83,24 @@ class ApiContext extends ContextBase
     public function getUserProfile()
     {
         return $this->getContextKey('userProfile');
+    }
+
+    /**
+     * Devolver una variable de sesión
+     *
+     * @param string $key
+     * @param mixed  $default
+     * @return mixed
+     */
+    protected function getContextKey($key, $default = null)
+    {
+        try {
+            return parent::getContextKey($key, $default);
+        } catch (ContextException $e) {
+            processException($e);
+        }
+
+        return $default;
     }
 
     /**
@@ -185,5 +216,34 @@ class ApiContext extends ContextBase
     public function resetAppStatus()
     {
         return $this->setContextKey('status', null);
+    }
+
+    /**
+     * @return void
+     * @throws ContextException
+     */
+    public function initialize()
+    {
+        $this->setContext(new ContextCollection());
+    }
+
+    /**
+     * Establecer la hora de carga de la configuración
+     *
+     * @param int $time
+     */
+    public function setConfigTime($time)
+    {
+        $this->setContextKey('configTime', (int)$time);
+    }
+
+    /**
+     * Devolver la hora de carga de la configuración
+     *
+     * @return int
+     */
+    public function getConfigTime()
+    {
+        return $this->getContextKey('configTime');
     }
 }

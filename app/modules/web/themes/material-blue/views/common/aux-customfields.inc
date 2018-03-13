@@ -2,7 +2,7 @@
 
 use SP\Mgmt\CustomFields\CustomFieldTypes;
 
-/** @var $icons \Theme\Icons */
+/** @var $icons \SP\Core\UI\ThemeIcons */
 
 foreach ($customFields as $index => $field):?>
     <tr>

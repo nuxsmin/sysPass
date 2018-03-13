@@ -148,7 +148,7 @@ class ClientService extends Service
      */
     public function getAllForUser()
     {
-        return $this->clientRepository->getAllForFilter(AccountUtil::getAccountFilterUser($this->session));
+        return $this->clientRepository->getAllForFilter(AccountUtil::getAccountFilterUser($this->context));
     }
 
     /**
