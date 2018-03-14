@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -89,5 +89,8 @@ return [
     64 => __('Cookies deshabilitadas. La aplicación no funcionará correctamente.'),
     65 => __('Portapapeles no soportado por el navegador.'),
     66 => __('Realizando auto-login'),
-    67 => __('Hay una versión más reciente del plugin {0} ({1})')
+    67 => __('Hay una versión más reciente del plugin {0} ({1})'),
+    68 => __('Actualizado'),
+    69 => __('Error al comprobar actualizaciones'),
+    70 => __('Avisos de sysPass')
 ];

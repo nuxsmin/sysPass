@@ -677,10 +677,15 @@ footer {
     justify-content: flex-end;
     text-align: right;
   }
-  #updates {
-    min-width: 10em;
+  #updates, #notices {
+    min-width: 5em;
     text-align: center;
     cursor: pointer;
+  }
+  #notices .notices-title {
+    font-weight: bold;
+    border-bottom: 1px solid #c9c9c9;
+    margin-bottom: 1em;
   }
   #status {
     margin: 0 1em;

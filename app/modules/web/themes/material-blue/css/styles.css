@@ -657,10 +657,14 @@ footer {
     margin: 0 1em;
     justify-content: flex-end;
     text-align: right; }
-  footer #updates {
-    min-width: 10em;
+  footer #updates, footer #notices {
+    min-width: 5em;
     text-align: center;
     cursor: pointer; }
+  footer #notices .notices-title {
+    font-weight: bold;
+    border-bottom: 1px solid #c9c9c9;
+    margin-bottom: 1em; }
   footer #status {
     margin: 0 1em; }
     footer #status > div {

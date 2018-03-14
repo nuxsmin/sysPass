@@ -784,6 +784,7 @@ sysPass.Main = function () {
             config.LANG = json.lang;
             config.PK = json.pk;
             config.CHECK_UPDATES = json.check_updates;
+            config.CHECK_NOTICES = json.check_notices;
             config.CRYPT.setPublicKey(json.pk);
             config.TIMEZONE = json.timezone;
             config.LOCALE = json.locale;
@@ -870,10 +871,6 @@ sysPass.Main = function () {
             if (!checkLogout()) {
                 if (config.PK !== "") {
                     bindPassEncrypt();
-                }
-
-                if (config.CHECK_UPDATES === true) {
-                    // appActions.main.getUpdates();
                 }
 
                 if (config.COOKIES_ENABLED === false) {

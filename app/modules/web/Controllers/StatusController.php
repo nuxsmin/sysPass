@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,6 +31,7 @@ use SP\Util\Util;
 
 /**
  * Class StatusController
+ *
  * @package SP\Modules\Web\Controllers
  */
 class StatusController extends SimpleControllerBase

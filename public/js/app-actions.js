@@ -693,21 +693,70 @@ sysPass.Actions = function (Common) {
             log.info("main:getUpdates");
 
             const opts = Common.appRequests().getRequestOpts();
-            opts.url = ajaxUrl.entrypoint;
-            opts.type = "html";
+            opts.url = ajaxUrl.entrypoint + "?r=status/checkRelease";
             opts.method = "get";
             opts.timeout = 10000;
             opts.useLoading = false;
             opts.data = {isAjax: 1};
 
-            Common.appRequests().getActionCall(opts, function (response) {
-                $("#updates").html(response);
+            const $updates = $("#updates");
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                if (json.status === 0) {
+                    if (json.data.length > 0) {
+                        $updates.html(
+                            '<a id="link-updates" href="' + json.data.url + '" target="_blank">' + json.data.title +
+                            '<div id="help-hasupdates" class="icon material-icons mdl-color-text--indigo-200">cloud_download</div>' +
+                            '</a><span for="link-updates" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + json.data.description + '</span>');
+                    } else {
+                        $updates.html(
+                            '<div id="updates-info" class="icon material-icons mdl-color-text--teal-200">check_circle</div>' +
+                            '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + Common.config().LANG[68] + '</span>');
+                    }
+                } else {
+                    $updates.html(
+                        '<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>' +
+                        '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + Common.config().LANG[69] + '</span>');
+                }
 
                 if (componentHandler !== undefined) {
                     componentHandler.upgradeDom();
                 }
             }, function () {
-                $("#updates").html("!");
+                $updates.html(
+                    '<div id="updates-info" class="icon material-icons mdl-color-text--amber-200">warning</div>' +
+                    '<span for="updates-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' + Common.config().LANG[69] + '</span>');
+            });
+        },
+        getNotices: function () {
+            log.info("main:getNotices");
+
+            const opts = Common.appRequests().getRequestOpts();
+            opts.url = ajaxUrl.entrypoint + "?r=status/checkNotices";
+            opts.method = "get";
+            opts.timeout = 10000;
+            opts.useLoading = false;
+            opts.data = {isAjax: 1};
+
+            const $notices = $("#notices");
+
+            Common.appRequests().getActionCall(opts, function (json) {
+                if (json.status === 0) {
+                    if (json.data.length > 0) {
+                        $notices.html(
+                            '<a href="https://github.com/nuxsmin/sysPass/labels/Notices" target="_blank">' +
+                            '<div id="notices-info" class="material-icons mdl-badge mdl-badge--overlap mdl-color-text--amber-200" ' +
+                            'data-badge="' + json.data.length + '">feedback</div></a>' +
+                            '<span for="notices-info" class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large">' +
+                            '<div class="notices-title">' + Common.config().LANG[70] + '</div>' +
+                            json.data.map(x => x.title).join('<br>') +
+                            '</span>');
+                    }
+                }
+
+                if (componentHandler !== undefined) {
+                    componentHandler.upgradeDom();
+                }
             });
         }
     };

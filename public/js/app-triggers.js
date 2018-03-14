@@ -242,6 +242,14 @@ sysPass.Triggers = function (Common) {
                 }
             }
 
+            if (Common.config().CHECK_UPDATES === true) {
+                Common.appActions().main.getUpdates();
+            }
+
+            if (Common.config().CHECK_NOTICES === true) {
+                Common.appActions().main.getNotices();
+            }
+
             if (typeof Common.appTheme().viewsTriggers["main"] === "function") {
                 Common.appTheme().viewsTriggers.main();
             }

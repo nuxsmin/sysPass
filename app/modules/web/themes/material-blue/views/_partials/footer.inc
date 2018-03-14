@@ -45,6 +45,7 @@
             <?php endif; ?>
 
             <div id="updates"></div>
+            <div id="notices"></div>
         </div>
 
         <div id="project">

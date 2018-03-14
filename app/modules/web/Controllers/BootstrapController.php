@@ -48,14 +48,15 @@ class BootstrapController extends SimpleControllerBase
     {
         $configData = $this->config->getConfigData();
 
+        $checkStatus= $this->session->getAuthCompleted() && ($this->session->getUserData()->getIsAdminApp() || $configData->isDemoEnabled());
+
         $data = [
             'lang' => require CONFIG_PATH . DIRECTORY_SEPARATOR . 'strings.js.inc',
             'locale' => $configData->getSiteLang(),
             'app_root' => Bootstrap::$WEBURI,
             'max_file_size' => $configData->getFilesAllowedSize(),
-            'check_updates' => $this->session->getAuthCompleted()
-                && ($configData->isCheckUpdates() || $configData->isChecknotices())
-                && ($this->session->getUserData()->getIsAdminApp() || $configData->isDemoEnabled()),
+            'check_updates' => $checkStatus && $configData->isCheckUpdates(),
+            'check_notices' => $checkStatus && $configData->isChecknotices(),
             'timezone' => date_default_timezone_get(),
             'debug' => DEBUG || $configData->isDebug(),
             'cookies_enabled' => Cookies::checkCookies(),

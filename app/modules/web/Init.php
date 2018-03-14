@@ -50,7 +50,11 @@ use SP\Util\HttpUtil;
  */
 class Init extends ModuleBase
 {
-    const PARTIAL_INIT = ['resource', 'install', 'bootstrap'];
+    /**
+     * List of controllers that don't need to perform fully initialization
+     * like: install/database checks, session/event handlers initialization
+     */
+    const PARTIAL_INIT = ['resource', 'install', 'bootstrap', 'status'];
 
     /**
      * @var SessionContext

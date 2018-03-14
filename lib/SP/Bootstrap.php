@@ -160,7 +160,7 @@ class Bootstrap
         });
 
         // Manejar URLs de módulo web
-        $this->router->respond(['GET', 'POST'],
+        $this->router->respond(['POST'],
             '@/api\.php',
             function ($request, $response, $service) use ($oops) {
                 try {
@@ -196,7 +196,7 @@ class Bootstrap
 
         // Manejar URLs de módulo web
         $this->router->respond(['GET', 'POST'],
-            '@/index\.php',
+            '@/(index\.php)?',
             function ($request, $response, $service) use ($oops) {
                 try {
                     /** @var \Klein\Request $request */

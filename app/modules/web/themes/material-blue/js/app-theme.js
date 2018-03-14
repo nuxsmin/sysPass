@@ -330,10 +330,10 @@ sysPass.Theme = function (Common) {
     /**
      * Triggers que se ejecutan en determinadas vistas
      */
-    var viewsTriggers = {
+    const viewsTriggers = {
         main: function () {
-            var layout = document.querySelector(".mdl-layout");
-            var $drawer = $(".mdl-layout__drawer");
+            const layout = document.querySelector(".mdl-layout");
+            const $drawer = $(".mdl-layout__drawer");
 
             $drawer.find("a").click(function () {
                 layout.MaterialLayout.toggleDrawer();
