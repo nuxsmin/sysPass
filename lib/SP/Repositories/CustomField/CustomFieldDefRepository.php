@@ -24,7 +24,6 @@
 
 namespace SP\Repositories\CustomField;
 
-use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
@@ -44,36 +43,6 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     use RepositoryItemTrait;
 
     /**
-     * @param $id
-     * @return mixed
-     */
-    public static function getFieldModuleById($id)
-    {
-        $modules = self::getFieldModules();
-
-        return isset($modules[$id]) ? $modules[$id] : $id;
-    }
-
-    /**
-     * Devuelve los módulos disponibles para los campos personalizados
-     *
-     * @return array
-     */
-    public static function getFieldModules()
-    {
-        $modules = [
-            ActionsInterface::ACCOUNT => __('Cuentas'),
-            ActionsInterface::CATEGORY => __('Categorías'),
-            ActionsInterface::CLIENT => __('Clientes'),
-            ActionsInterface::USER => __('Usuarios'),
-            ActionsInterface::GROUP => __('Grupos')
-
-        ];
-
-        return $modules;
-    }
-
-    /**
      * Creates an item
      *
      * @param CustomFieldDefinitionData $itemData
@@ -84,7 +53,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     public function create($itemData)
     {
         $query = /** @lang SQL */
-            'INSERT INTO CustomFieldDefinition SET name = ?, moduleId = ?, required = ?, help = ?, showInList = ?, typeId = ?';
+            'INSERT INTO CustomFieldDefinition SET `name` = ?, moduleId = ?, required = ?, `help` = ?, showInList = ?, typeId = ?';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
@@ -113,7 +82,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     {
         $query = /** @lang SQL */
             'UPDATE CustomFieldDefinition 
-              SET name = ?, moduleId = ?, required = ?, help = ?, showInList = ?, typeId = ?
+              SET `name` = ?, moduleId = ?, required = ?, `help` = ?, showInList = ?, typeId = ?
               WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
@@ -139,14 +108,14 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     public function getById($id)
     {
         $query = /** @lang SQL */
-            'SELECT id, name, moduleId, required, help, showInList, typeId
+            'SELECT id, `name`, moduleId, required, `help`, showInList, typeId
               FROM CustomFieldDefinition
               WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(CustomFieldDefinitionData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
+        $queryData->setMapClassName(CustomFieldDefinitionData::class);
 
         return DbWrapper::getResults($queryData, $this->db);
     }
@@ -159,13 +128,13 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT id, name, moduleId, required, help, showInList
+            'SELECT id, `name`, moduleId, required, `help`, showInList
               FROM CustomFieldDefinition
               ORDER BY moduleId';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(CustomFieldDefinitionData::class);
         $queryData->setQuery($query);
+        $queryData->setMapClassName(CustomFieldDefinitionData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -179,14 +148,14 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     public function getByIdBatch(array $ids)
     {
         $query = /** @lang SQL */
-            'SELECT id, name, moduleId, required, help, showInList, typeId
+            'SELECT id, `name`, moduleId, required, `help`, showInList, typeId
               FROM CustomFieldDefinition
               WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $queryData = new QueryData();
-        $queryData->setMapClassName(CustomFieldDefinitionData::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
+        $queryData->setMapClassName(CustomFieldDefinitionData::class);
 
         return DbWrapper::getResults($queryData, $this->db);
     }
@@ -202,10 +171,6 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      */
     public function deleteByIdBatch(array $ids)
     {
-        if ($this->deleteItemsDataForDefinitionBatch($ids) === false) {
-            throw new SPException(__u('Error al eliminar los campos personalizados'), SPException::ERROR);
-        }
-
         $query = /** @lang SQL */
             'DELETE FROM CustomFieldDefinition WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
@@ -213,25 +178,6 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->setQuery($query);
         $queryData->addParam($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar los campos personalizados'));
-
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
-    }
-
-    /**
-     * Eliminar los datos de los elementos de una definición
-     *
-     * @param array $ids
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    protected function deleteItemsDataForDefinitionBatch(array $ids)
-    {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM CustomFieldData WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
-        $queryData->setParams($ids);
 
         DbWrapper::getQuery($queryData, $this->db);
 
@@ -249,30 +195,10 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      */
     public function delete($id)
     {
-        if ($this->deleteItemsDataForDefinition($id) === false) {
-            throw new SPException(__u('Error al eliminar el campo personalizado'), SPException::ERROR);
-        }
-
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM CustomFieldDefinition WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar el campo personalizado'));
-
-        return DbWrapper::getQuery($queryData, $this->db);
-    }
-
-    /**
-     * Eliminar los datos de los elementos de una definición
-     *
-     * @param $id
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function deleteItemsDataForDefinition($id)
-    {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM CustomFieldData WHERE id = ?');
-        $queryData->addParam($id);
 
         return DbWrapper::getQuery($queryData, $this->db);
     }

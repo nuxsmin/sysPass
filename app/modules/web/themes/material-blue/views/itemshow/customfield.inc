@@ -34,10 +34,10 @@
                     <div class="lowres-title"><?php echo __('Tipo'); ?></div>
 
                     <select name="type" id="sel-type" size="1" class="select-box">
-                        <?php /** @var \SP\DataModel\CustomFieldTypeData[] $types */
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $types */
                         foreach ($types as $type): ?>
                             <option
-                                value='<?php echo $type->getId(); ?>' <?php echo ($type->getId() === $field->getTypeId()) ? 'selected' : ''; ?>><?php echo $type->getText(); ?></option>
+                                    value='<?php echo $type->getId(); ?>' <?php echo ($type->getId() === $field->getTypeId()) ? 'selected' : ''; ?>><?php echo __($type->getItemProperty('text')); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -48,9 +48,10 @@
                     <div class="lowres-title"><?php echo __('Módulo'); ?></div>
 
                     <select name="module" id="sel-module" size="1" class="select-box">
-                        <?php foreach ($modules as $id => $module): ?>
+                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $modules */
+                        foreach ($modules as $module): ?>
                             <option
-                                value='<?php echo $id; ?>' <?php echo ($id === $field->getModuleId()) ? 'selected' : ''; ?>><?php echo $module; ?></option>
+                                    value='<?php echo $module->getId(); ?>' <?php echo $module->isSelected() ? 'selected' : ''; ?>><?php echo $module->getName(); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </td>
@@ -85,8 +86,8 @@
     </form>
     <div class="action-in-box">
         <button
-            class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
-            form="frmCustomFields" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
+                class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $icons->getIconSave()->getClassButton(); ?>"
+                form="frmCustomFields" title="<?php echo $icons->getIconSave()->getTitle(); ?>">
             <i class="material-icons"><?php echo $icons->getIconSave()->getIcon(); ?></i>
         </button>
     </div>

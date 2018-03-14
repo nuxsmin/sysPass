@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -61,17 +61,18 @@ class CustomFieldService extends Service
     /**
      * Desencriptar y formatear los datos del campo
      *
-     * @param CustomFieldData $CustomFieldData
-     * @param SessionContext  $sessionContext
+     * @param string         $data
+     * @param string         $key
+     * @param SessionContext $sessionContext
      * @return string
      * @throws CryptoException
      */
-    public static function decryptData(CustomFieldData $CustomFieldData, SessionContext $sessionContext)
+    public static function decryptData($data, $key, SessionContext $sessionContext)
     {
-        if ($CustomFieldData->getData() !== '') {
-            $securedKey = Crypt::unlockSecuredKey($CustomFieldData->getKey(), CryptSession::getSessionKey($sessionContext));
+        if ($data !== '') {
+            $securedKey = Crypt::unlockSecuredKey($key, CryptSession::getSessionKey($sessionContext));
 
-            return self::formatValue(Crypt::decrypt($CustomFieldData->getData(), $securedKey));
+            return self::formatValue(Crypt::decrypt($data, $securedKey));
         }
 
         return '';
@@ -120,7 +121,7 @@ class CustomFieldService extends Service
 
         // Deletes item's custom field data if value is left blank
         if ($exists && $customFieldData->getData() === '') {
-            return $this->deleteCustomFieldData($customFieldData->getId(), $customFieldData->getModuleId());
+            return $this->deleteCustomFieldData($customFieldData->getId(), $customFieldData->getModuleId(), $customFieldData->getDefinitionId());
         }
 
         // Create item's custom field data if value is set
@@ -138,12 +139,17 @@ class CustomFieldService extends Service
      *
      * @param int $id
      * @param int $moduleId
+     * @param int $definitionId
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws SPException
      */
-    public function deleteCustomFieldData($id, $moduleId)
+    public function deleteCustomFieldData($id, $moduleId, $definitionId = null)
     {
-        return $this->customFieldRepository->deleteCustomFieldData($id, $moduleId);
+        if ($definitionId === null) {
+            return $this->customFieldRepository->deleteCustomFieldData($id, $moduleId);
+        } else {
+            return $this->customFieldRepository->deleteCustomFieldDataForDefinition($id, $moduleId, $definitionId);
+        }
     }
 
     /**
@@ -189,6 +195,19 @@ class CustomFieldService extends Service
     /**
      * Eliminar los datos de los campos personalizados del módulo
      *
+     * @param int $definitionId
+     * @return int
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function deleteCustomFieldDefinitionData($definitionId)
+    {
+        return $this->customFieldRepository->deleteCustomFieldDefinitionData($definitionId);
+    }
+
+    /**
+     * Eliminar los datos de los campos personalizados del módulo
+     *
      * @param int[] $ids
      * @param int   $moduleId
      * @return bool
@@ -198,6 +217,19 @@ class CustomFieldService extends Service
     public function deleteCustomFieldDataBatch(array $ids, $moduleId)
     {
         return $this->customFieldRepository->deleteCustomFieldDataBatch($ids, $moduleId);
+    }
+
+    /**
+     * Eliminar los datos de los elementos de una definición
+     *
+     * @param array $definitionIds
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteCustomFieldDefinitionDataBatch(array $definitionIds)
+    {
+        return $this->customFieldRepository->deleteCustomFieldDefinitionDataBatch($definitionIds);
     }
 
     /**

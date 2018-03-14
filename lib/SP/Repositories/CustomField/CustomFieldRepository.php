@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -60,15 +60,15 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             AND itemId = ?
             AND definitionId = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getData());
-        $Data->addParam($itemData->getKey());
-        $Data->addParam($itemData->getModuleId());
-        $Data->addParam($itemData->getId());
-        $Data->addParam($itemData->getDefinitionId());
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getData());
+        $queryData->addParam($itemData->getKey());
+        $queryData->addParam($itemData->getModuleId());
+        $queryData->addParam($itemData->getId());
+        $queryData->addParam($itemData->getDefinitionId());
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -88,15 +88,15 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             AND itemId = ?
             AND definitionId = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getModuleId());
-        $Data->addParam($itemData->getId());
-        $Data->addParam($itemData->getDefinitionId());
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getModuleId());
+        $queryData->addParam($itemData->getId());
+        $queryData->addParam($itemData->getDefinitionId());
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return $Data->getQueryNumRows() >= 1;
+        return $queryData->getQueryNumRows() >= 1;
     }
 
     /**
@@ -123,15 +123,17 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $query = /** @lang SQL */
             'INSERT INTO CustomFieldData SET itemId = ?, moduleId = ?, definitionId = ?, `data` = ?, `key` = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getId());
-        $Data->addParam($itemData->getModuleId());
-        $Data->addParam($itemData->getDefinitionId());
-        $Data->addParam($itemData->getData());
-        $Data->addParam($itemData->getKey());
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemData->getId());
+        $queryData->addParam($itemData->getModuleId());
+        $queryData->addParam($itemData->getDefinitionId());
+        $queryData->addParam($itemData->getData());
+        $queryData->addParam($itemData->getKey());
 
-        return DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getLastId();
     }
 
     /**
@@ -140,7 +142,8 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * @param int $id
      * @param int $moduleId
      * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function deleteCustomFieldData($id, $moduleId)
     {
@@ -149,12 +152,79 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             WHERE itemId = ?
             AND moduleId = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->addParam($moduleId);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
+        $queryData->addParam($moduleId);
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getNumRows();
+    }
+
+    /**
+     * Eliminar los datos de los campos personalizados del módulo
+     *
+     * @param int $id
+     * @param int $moduleId
+     * @param int $definitionId
+     * @return bool
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function deleteCustomFieldDataForDefinition($id, $moduleId, $definitionId)
+    {
+        $query = /** @lang SQL */
+            'DELETE FROM CustomFieldData
+            WHERE itemId = ?
+            AND moduleId = ?
+            AND definitionId = ?';
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
+        $queryData->addParam($moduleId);
+        $queryData->addParam($definitionId);
+
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getNumRows();
+    }
+
+    /**
+     * Eliminar los datos de los campos personalizados del módulo
+     *
+     * @param int $definitionId
+     * @return int
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function deleteCustomFieldDefinitionData($definitionId)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM CustomFieldData WHERE definitionId = ?');
+        $queryData->addParam($definitionId);
+
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getNumRows();
+    }
+
+    /**
+     * Eliminar los datos de los elementos de una definición
+     *
+     * @param array $definitionIds
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteCustomFieldDefinitionDataBatch(array $definitionIds)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM CustomFieldData WHERE definitionId IN (' . $this->getParamsFromArray($definitionIds) . ')');
+        $queryData->setParams($definitionIds);
+
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getNumRows();
     }
@@ -175,12 +245,12 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             WHERE itemId IN (' . $this->getParamsFromArray($ids) . ')
             AND moduleId = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setParams($ids);
-        $Data->addParam($moduleId);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams($ids);
+        $queryData->addParam($moduleId);
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getNumRows();
     }
@@ -203,12 +273,9 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      */
     public function getAll()
     {
-        $query = /** @lang SQL */
-            'SELECT * FROM CustomFieldData';
-
         $queryData = new QueryData();
+        $queryData->setQuery('SELECT * FROM CustomFieldData');
         $queryData->setMapClassName(CustomFieldData::class);
-        $queryData->setQuery($query);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -279,18 +346,17 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             CFT.name AS typeName,
             CFT.text AS typeText
             FROM CustomFieldDefinition CFD
-            LEFT JOIN CustomFieldData CFD2 ON CFD2.definitionId = CFD.id
+            LEFT JOIN CustomFieldData CFD2 ON CFD2.definitionId = CFD.id AND CFD2.itemId = ?
             INNER JOIN CustomFieldType CFT ON CFT.id = CFD.typeId
             WHERE CFD.moduleId = ?
-            AND (CFD2.itemId = ? OR CFD2.definitionId IS NULL) 
-            ORDER BY CFD.id';
+            ORDER BY CFT.text';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($moduleId);
-        $Data->addParam($itemId);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($itemId);
+        $queryData->addParam($moduleId);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**

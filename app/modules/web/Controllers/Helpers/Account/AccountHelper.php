@@ -224,7 +224,7 @@ class AccountHelper extends HelperBase
 
         $this->view->assign('accountIsHistory', false);
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $this->accountId));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::ACCOUNT, $this->accountId, $this->context));
         $this->view->assign('categories', SelectItemAdapter::factory($this->dic->get(CategoryService::class)->getAllBasic())->getItemsFromModel());
         $this->view->assign('clients', SelectItemAdapter::factory($this->dic->get(ClientService::class)->getAllForUser())->getItemsFromModel());
 

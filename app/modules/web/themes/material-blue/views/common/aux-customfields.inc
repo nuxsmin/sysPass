@@ -2,12 +2,15 @@
 
 use SP\Mgmt\CustomFields\CustomFieldTypes;
 
-/** @var $icons \SP\Core\UI\ThemeIcons */
+/**
+ * @var \SP\Core\UI\ThemeIcons                     $icons
+ * @var \SP\Services\CustomField\CustomFieldItem[] $customFields
+ */
 
 foreach ($customFields as $index => $field):?>
     <tr>
         <td class="descField">
-            <?php echo $field->typeName; ?>
+            <?php echo $field->definitionName; ?>
             <?php if ($field->help): ?>
                 <div id="help-<?php echo $field->formId; ?>"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
@@ -15,7 +18,7 @@ foreach ($customFields as $index => $field):?>
                 </div>
                 <div class="mdl-tooltip mdl-tooltip--large"
                      for="help-<?php echo $field->formId; ?>">
-                    <p><?php echo $field->formId; ?></p>
+                    <p><?php echo $field->help; ?></p>
                 </div>
             <?php endif; ?>
         </td>
@@ -33,7 +36,7 @@ foreach ($customFields as $index => $field):?>
                            maxlength="500"
                            value="<?php echo (!$showViewCustomPass && $field->value !== '') ? '***' : htmlspecialchars($field->value, ENT_QUOTES); ?>" <?php echo $field->required ? 'required' : ''; ?> <?php echo $readonly; ?>>
                     <label class="mdl-textfield__label"
-                           for="<?php echo $field->formId; ?>"><?php echo $field->typeName; ?></label>
+                           for="<?php echo $field->formId; ?>"><?php echo $field->definitionName; ?></label>
                 </div>
             <?php elseif ($field->typeId === CustomFieldTypes::TYPE_TEXTAREA): ?>
                 <div class="mdl-textfield mdl-js-textfield">

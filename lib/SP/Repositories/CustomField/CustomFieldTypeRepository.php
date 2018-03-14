@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,7 +23,6 @@
  */
 
 namespace SP\Repositories\CustomField;
-
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldTypeData;
@@ -54,16 +53,13 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      */
     public function create($itemData)
     {
-        $query = /** @lang SQL */
-            'INSERT INTO CustomFieldType SET name = ?, text = ?';
+        $queryData = new QueryData();
+        $queryData->setQuery('INSERT INTO CustomFieldType SET name = ?, text = ?');
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getText());
+        $queryData->setOnErrorMessage(__u('Error al crear el tipo de campo'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getText());
-        $Data->setOnErrorMessage(__u('Error al crear el tipo de campo'));
-
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -90,17 +86,16 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      */
     public function update($itemData)
     {
-        $query = /** @lang SQL */
-            'UPDATE CustomFieldType SET name = ?, text = ? WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE CustomFieldType SET name = ?, text = ? WHERE id = ? LIMIT 1');
+        $queryData->addParam($itemData->getName());
+        $queryData->addParam($itemData->getText());
+        $queryData->addParam($itemData->getId());
+        $queryData->setOnErrorMessage(__u('Error al actualizar el tipo de campo'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($itemData->getName());
-        $Data->addParam($itemData->getText());
-        $Data->addParam($itemData->getId());
-        $Data->setOnErrorMessage(__u('Error al actualizar el tipo de campo'));
+        DbWrapper::getQuery($queryData, $this->db);
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return $this->db->getNumRows();
     }
 
     /**
@@ -118,36 +113,30 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * Returns the item for given id
      *
      * @param int $id
-     * @return mixed
+     * @return CustomFieldTypeData
      */
     public function getById($id)
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, text FROM CustomFieldType WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, name, text FROM CustomFieldType WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setMapClassName(CustomFieldTypeData::class);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(CustomFieldTypeData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
-
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
      * Returns all the items
      *
-     * @return array
+     * @return CustomFieldTypeData[]
      */
     public function getAll()
     {
-        $query = /** @lang SQL */
-            'SELECT id, name, text FROM CustomFieldType';
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT id, `name`, `text` FROM CustomFieldType');
+        $queryData->setMapClassName(CustomFieldTypeData::class);
 
-        $Data = new QueryData();
-        $Data->setMapClassName(CustomFieldTypeData::class);
-        $Data->setQuery($query);
-
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -186,15 +175,12 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      */
     public function delete($id)
     {
-        $query = /** @lang SQL */
-            'DELETE FROM CustomFieldType WHERE id = ? LIMIT 1';
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM CustomFieldType WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar el tipo de campo'));
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar el tipo de campo'));
-
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**

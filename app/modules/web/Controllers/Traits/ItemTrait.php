@@ -26,10 +26,12 @@ namespace SP\Modules\Web\Controllers\Traits;
 
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Bootstrap;
+use SP\Core\Context\SessionContext;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Http\Request;
+use SP\Services\CustomField\CustomFieldItem;
 use SP\Services\CustomField\CustomFieldService;
 
 /**
@@ -42,32 +44,21 @@ trait ItemTrait
     /**
      * Obtener la lista de campos personalizados y sus valores
      *
-     * @param $moduleId
-     * @param $itemId
+     * @param int            $moduleId
+     * @param int            $itemId
+     * @param SessionContext $sessionContext
      * @return array
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function getCustomFieldsForItem($moduleId, $itemId)
+    protected function getCustomFieldsForItem($moduleId, $itemId, SessionContext $sessionContext)
     {
         $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
         $customFields = [];
 
-        $customFieldBase = new \stdClass();
-        $customFieldBase->required = false;
-        $customFieldBase->showInList = false;
-        $customFieldBase->help = '';
-        $customFieldBase->definitionId = 0;
-        $customFieldBase->definitionName = '';
-        $customFieldBase->typeId = 0;
-        $customFieldBase->typeName = '';
-        $customFieldBase->moduleId = 0;
-        $customFieldBase->formId = '';
-        $customFieldBase->value = '';
-
         foreach ($customFieldService->getForModuleById($moduleId, $itemId) as $item) {
             try {
-                $customField = clone $customFieldBase;
+                $customField = new CustomFieldItem();
                 $customField->required = (bool)$item->required;
                 $customField->showInList = (bool)$item->showInList;
                 $customField->help = $item->help;
@@ -75,9 +66,10 @@ trait ItemTrait
                 $customField->definitionName = $item->definitionName;
                 $customField->typeId = (int)$item->typeId;
                 $customField->typeName = $item->typeName;
+                $customField->typeText = $item->typeText;
                 $customField->moduleId = (int)$item->moduleId;
                 $customField->formId = CustomFieldService::getFormIdForName($item->definitionName);
-                $customField->value = $item->data !== null ? CustomFieldService::decryptData($item->data, $this->session) : '';
+                $customField->value = $item->data !== null ? CustomFieldService::decryptData($item->data, $item->key, $sessionContext) : null;
 
                 $customFields[] = $customField;
             } catch (CryptoException $e) {

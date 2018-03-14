@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -37,9 +37,9 @@ use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Modules\Web\Forms\CustomFieldDefForm;
 use SP\Mvc\Controller\CrudControllerInterface;
-use SP\Repositories\CustomField\CustomFieldDefRepository;
-use SP\Repositories\CustomField\CustomFieldTypeRepository;
+use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Services\CustomField\CustomFieldDefService;
+use SP\Services\CustomField\CustomFieldTypeService;
 
 /**
  * Class CustomFieldController
@@ -128,12 +128,9 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
 
         $customField = $customFieldId ? $this->customFieldService->getById($customFieldId) : new CustomFieldDefinitionData();
 
-        // FIXME
-        $customFieldTypeService = $this->dic->get(CustomFieldTypeRepository::class);
-
         $this->view->assign('field', $customField);
-        $this->view->assign('types', $customFieldTypeService->getAll());
-        $this->view->assign('modules', CustomFieldDefRepository::getFieldModules());
+        $this->view->assign('types', SelectItemAdapter::factory(CustomFieldTypeService::getItemsBasic())->getItemsFromModelSelected([$customField->getTypeId()]));
+        $this->view->assign('modules', SelectItemAdapter::factory(CustomFieldDefService::getFieldModules())->getItemsFromArraySelected([$customField->getModuleId()]));
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ITEMS_MANAGE));

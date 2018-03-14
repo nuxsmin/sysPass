@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,7 @@
 
 namespace SP\Services\CustomField;
 
+use SP\Core\Acl\ActionsInterface;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\CustomField\CustomFieldDefRepository;
 use SP\Services\Service;
@@ -45,12 +46,33 @@ class CustomFieldDefService extends Service
     protected $customFieldDefRepository;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @param $id
+     * @return mixed
      */
-    protected function initialize()
+    public static function getFieldModuleById($id)
     {
-        $this->customFieldDefRepository = $this->dic->get(CustomFieldDefRepository::class);
+        $modules = self::getFieldModules();
+
+        return isset($modules[$id]) ? $modules[$id] : $id;
+    }
+
+    /**
+     * Devuelve los módulos disponibles para los campos personalizados
+     *
+     * @return array
+     */
+    public static function getFieldModules()
+    {
+        $modules = [
+            ActionsInterface::ACCOUNT => __('Cuentas'),
+            ActionsInterface::CATEGORY => __('Categorías'),
+            ActionsInterface::CLIENT => __('Clientes'),
+            ActionsInterface::USER => __('Usuarios'),
+            ActionsInterface::GROUP => __('Grupos')
+
+        ];
+
+        return $modules;
     }
 
     /**
@@ -81,7 +103,8 @@ class CustomFieldDefService extends Service
      */
     public function delete($id)
     {
-        if ($this->customFieldDefRepository->delete($id) === 0) {
+        if ($this->dic->get(CustomFieldService::class)->deleteCustomFieldDefinitionData($id) === 0
+            || $this->customFieldDefRepository->delete($id) === 0) {
             throw new ServiceException(__u('Campo no encontrado'), ServiceException::INFO);
         }
 
@@ -100,7 +123,10 @@ class CustomFieldDefService extends Service
      */
     public function deleteByIdBatch(array $ids)
     {
-        if (($count = $this->customFieldDefRepository->deleteByIdBatch($ids)) !== count($ids)){
+        $numIds = count($ids);
+
+        if ($this->dic->get(CustomFieldService::class)->deleteCustomFieldDefinitionDataBatch($ids) !== $numIds
+            || ($count = $this->customFieldDefRepository->deleteByIdBatch($ids)) !== $numIds) {
             throw new ServiceException(__u('Error al eliminar los campos'), ServiceException::WARNING);
         }
 
@@ -137,5 +163,14 @@ class CustomFieldDefService extends Service
     public function getAllBasic()
     {
         return $this->customFieldDefRepository->getAll();
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->customFieldDefRepository = $this->dic->get(CustomFieldDefRepository::class);
     }
 }

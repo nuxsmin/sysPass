@@ -40,7 +40,7 @@ use SP\Html\DataGrid\DataGridHeader;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridTab;
-use SP\Repositories\CustomField\CustomFieldDefRepository;
+use SP\Services\CustomField\CustomFieldDefService;
 use SP\Util\DateUtil;
 
 /**
@@ -261,7 +261,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setDataRowSourceId('id');
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('moduleId', false, function ($value) {
-            return CustomFieldDefRepository::getFieldModuleById($value);
+            return CustomFieldDefService::getFieldModuleById($value);
         });
         $GridData->addDataRowSource('typeName');
         $GridData->setData($data);
@@ -308,7 +308,7 @@ class ItemsGridHelper extends HelperBase
         $GridActionEdit->setTitle(__('Editar Campo'));
         $GridActionEdit->setIcon($this->icons->getIconEdit());
         $GridActionEdit->setOnClickFunction('appMgmt/show');
-        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_VIEW));
+        $GridActionEdit->addData('action-route', Acl::getActionRoute(ActionsInterface::CUSTOMFIELD_EDIT));
 
         $Grid->setDataActions($GridActionEdit);
 
