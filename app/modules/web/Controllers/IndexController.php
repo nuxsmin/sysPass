@@ -40,7 +40,6 @@ class IndexController extends ControllerBase
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {

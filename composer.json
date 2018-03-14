@@ -26,7 +26,8 @@
     "phpseclib/phpseclib": "~2.0",
     "klein/klein": "v2.1.*",
     "php-di/php-di": "5.4.*",
-    "doctrine/common": "v2.7.*"
+    "doctrine/common": "v2.7.*",
+    "guzzlehttp/guzzle": "6.3.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "3.*"
