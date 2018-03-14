@@ -24,6 +24,7 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use phpseclib\Crypt\RSA;
 use SP\Bootstrap;
 use SP\Core\Crypt\CryptPKI;
 use SP\Http\Cookies;
@@ -42,7 +43,6 @@ class BootstrapController extends SimpleControllerBase
      *
      * @throws \SP\Core\Exceptions\FileNotFoundException
      * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function getEnvironmentAction()
     {
@@ -63,7 +63,7 @@ class BootstrapController extends SimpleControllerBase
             'plugins' => [],
             'loggedin' => $this->session->isLoggedIn(),
             'authbasic_autologin' => Browser::getServerAuthUser() && $configData->isAuthBasicAutoLoginEnabled(),
-            'pk' => $this->session->getPublicKey() ?: (new CryptPKI())->getPublicKey(),
+            'pk' => $this->session->getPublicKey() ?: (new CryptPKI($this->dic->get(RSA::class)))->getPublicKey(),
             'import_allowed_exts' => ['CSV', 'XML'],
             'files_allowed_exts' => $configData->getFilesAllowedExts()
         ];

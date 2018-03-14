@@ -28,11 +28,8 @@ use Defuse\Crypto\Core;
 use Defuse\Crypto\Encoding;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
-use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Init;
 use SP\Core\Install\Installer;
-use SP\Core\SessionFactory;
 use SP\Html\Html;
 use SP\Log\Log;
 use SP\Log\LogUtil;
@@ -432,7 +429,7 @@ class Util
             $nomalizedVersion = 0;
 
             foreach (str_split($version) as $key => $value) {
-                $nomalizedVersion += (int)$value * (10 ** (3 - $key));
+                $nomalizedVersion += (int)$value * (10 * (3 - $key));
             }
 
             return $nomalizedVersion . '.' . $build;
@@ -734,20 +731,5 @@ class Util
         }
 
         return [0, 0];
-    }
-
-    /**
-     * Comprobar si el usuario está logado.
-     *
-     * @param ContextInterface $context
-     * @return bool
-     * @internal param Database $db
-     */
-    public static function isLoggedIn(ContextInterface $context)
-    {
-        $userData = $context->getUserData();
-
-        return ($userData->getLogin()
-            && is_object($userData->getPreferences()));
     }
 }

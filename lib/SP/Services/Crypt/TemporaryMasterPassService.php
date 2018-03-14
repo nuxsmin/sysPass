@@ -29,6 +29,7 @@ use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Services\Config\ConfigService;
+use SP\Services\Config\ParameterNotFoundException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Util\Util;
@@ -129,6 +130,8 @@ class TemporaryMasterPassService extends Service
             }
 
             return $isValid;
+        } catch (ParameterNotFoundException $e) {
+            return false;
         } catch (\Exception $e) {
             processException($e);
 

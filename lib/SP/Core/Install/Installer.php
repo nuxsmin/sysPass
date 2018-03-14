@@ -55,8 +55,10 @@ class Installer
     /**
      * Versión y número de compilación de sysPass
      */
-    const VERSION = [2, 2, 0];
-    const BUILD = 17050101;
+    const VERSION = [3, 0, 0];
+    const VERSION_TEXT = '3.0-dev';
+    const BUILD = 18031401;
+
     /**
      * @var Config
      */
@@ -116,7 +118,6 @@ class Installer
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \ReflectionException
      */
     public static function run(InstallData $installData)
     {
@@ -199,11 +200,13 @@ class Installer
     /**
      * Iniciar instalación.
      *
+     * @throws Dic\ContainerException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \ReflectionException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function install()
     {
@@ -311,6 +314,8 @@ class Installer
             $this->configService->create(new \SP\DataModel\ConfigData('masterPwd', Hash::hashKey($this->installData->getMasterPassword())));
             $this->configService->create(new \SP\DataModel\ConfigData('lastupdatempass', time()));
         } catch (\Exception $e) {
+            processException($e);
+
             $this->dbs->rollback();
 
             throw new SPException(
@@ -352,6 +357,8 @@ class Installer
 
 //                    __u('Error al actualizar la clave maestra del usuario "admin"'),
         } catch (\Exception $e) {
+            processException($e);
+
             $this->dbs->rollback();
 
             throw new SPException(
@@ -363,11 +370,11 @@ class Installer
     }
 
     /**
-     * @param Config                 $config
-     * @param ConfigService          $configService
-     * @param UserService            $userService
-     * @param UserGroupService       $userGroupService
-     * @param UserProfileService     $userProfileService
+     * @param Config $config
+     * @param ConfigService $configService
+     * @param UserService $userService
+     * @param UserGroupService $userGroupService
+     * @param UserProfileService $userProfileService
      * @param DatabaseConnectionData $databaseConnectionData
      */
     public function inject(Config $config,

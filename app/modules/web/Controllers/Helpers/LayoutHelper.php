@@ -30,6 +30,7 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Dic\ContainerException;
 use SP\Core\Exceptions\SPException;
+use SP\Core\Install\Installer;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\UI\Theme;
@@ -60,7 +61,6 @@ class LayoutHelper extends HelperBase
      * @param string $page Page/view name
      * @param Acl    $acl
      * @return LayoutHelper
-     * @throws ContainerException
      */
     public function getFullLayout($page, Acl $acl = null)
     {
@@ -101,7 +101,7 @@ class LayoutHelper extends HelperBase
         $this->view->assign('isInstalled', $this->configData->isInstalled());
         $this->view->assign('sk', $this->loggedIn ? $this->context->generateSecurityKey() : '');
         $this->view->assign('appInfo', Util::getAppInfo());
-        $this->view->assign('appVersion', Util::getVersionString());
+        $this->view->assign('appVersion', Installer::VERSION_TEXT);
         $this->view->assign('isDemoMode', $this->configData->isDemoEnabled());
         $this->view->assign('icons', $this->theme->getIcons());
         $this->view->assign('logoIcon', Bootstrap::$WEBURI . '/public/images/logo_icon.png');

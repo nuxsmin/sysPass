@@ -27,6 +27,7 @@ namespace SP\Core\Install;
 use PDOException;
 use SP\Config\Config;
 use SP\Config\ConfigData;
+use SP\Core\Dic\InjectableTrait;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\InstallData;
 use SP\Storage\DatabaseConnectionData;
@@ -41,7 +42,7 @@ use SP\Util\Util;
  */
 class MySQL implements DatabaseSetupInterface
 {
-    use SP\Core\Dic\InjectableTrait;
+    use InjectableTrait;
 
     /**
      * @var InstallData
@@ -93,6 +94,8 @@ class MySQL implements DatabaseSetupInterface
             $this->dbs = new MySQLHandler($dbc);
             $this->dbs->getConnectionSimple();
         } catch (SPException $e) {
+            processException($e);
+
             throw new SPException(
                 __u('No es posible conectar con la BD'),
                 SPException::CRITICAL,
@@ -133,6 +136,8 @@ class MySQL implements DatabaseSetupInterface
                 $this->createDBUser();
             }
         } catch (PDOException $e) {
+            processException($e);
+
             throw new SPException(
                 sprintf(__('No es posible comprobar el usuario de sysPass (%s)'), $this->installData->getAdminLogin()),
                 SPException::CRITICAL,
@@ -170,6 +175,8 @@ class MySQL implements DatabaseSetupInterface
             $dbc->exec($queryDns);
             $dbc->exec('FLUSH PRIVILEGES');
         } catch (PDOException $e) {
+            processException($e);
+
             throw new SPException(
                 sprintf(__u('Error al crear el usuario de conexión a MySQL \'%s\''), $this->installData->getDbUser()),
                 SPException::CRITICAL, $e->getMessage()
@@ -194,13 +201,13 @@ class MySQL implements DatabaseSetupInterface
             );
         }
 
-        if (!$checkDatabase && $this->installData->isHostingMode()) {
-            throw new SPException(
-                __u('La BBDD no existe'),
-                SPException::ERROR,
-                __u('Es necesario crearla y asignar los permisos necesarios')
-            );
-        }
+//        if (!$checkDatabase && $this->installData->isHostingMode()) {
+//            throw new SPException(
+//                __u('La BBDD no existe'),
+//                SPException::ERROR,
+//                __u('Es necesario crearla y asignar los permisos necesarios')
+//            );
+//        }
 
         if (!$this->installData->isHostingMode()) {
 
@@ -229,6 +236,8 @@ class MySQL implements DatabaseSetupInterface
                 $dbc->exec($queryDns);
                 $dbc->exec('FLUSH PRIVILEGES');
             } catch (PDOException $e) {
+                processException($e);
+
                 $this->rollback();
 
                 throw new SPException(
@@ -260,6 +269,10 @@ class MySQL implements DatabaseSetupInterface
      */
     public function rollback()
     {
+        if ($this->installData->isHostingMode()) {
+            return;
+        }
+
         $dbc = $this->dbs->getConnectionSimple();
 
         $dbc->exec('DROP DATABASE IF EXISTS `' . $this->installData->getDbName() . '`');
@@ -310,9 +323,9 @@ class MySQL implements DatabaseSetupInterface
                         $query = str_replace("\n", '', $buffer);
                         $dbc->query($query);
                     } catch (PDOException $e) {
-                        $this->rollback();
+                        processException($e);
 
-                        debugLog($e->getMessage());
+                        $this->rollback();
 
                         throw new SPException(
                             sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),

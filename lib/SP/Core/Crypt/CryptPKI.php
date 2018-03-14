@@ -27,8 +27,6 @@ namespace SP\Core\Crypt;
 defined('APP_ROOT') || die();
 
 use phpseclib\Crypt\RSA;
-use SP\Core\Dic;
-use SP\Core\Dic\InjectableTrait;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Core\Exceptions\SPException;
 
@@ -39,34 +37,24 @@ use SP\Core\Exceptions\SPException;
  */
 class CryptPKI
 {
-    use InjectableTrait;
-
     /**
      * @var RSA
      */
     protected $rsa;
 
     /**
+     * @param RSA $rsa
      * @throws SPException
-     * @throws Dic\ContainerException
      */
-    public function __construct()
+    public function __construct(RSA $rsa)
     {
-        $this->injectDependencies();
+        $this->rsa = $rsa;
 
         if (!file_exists($this->getPublicKeyFile()) || !file_exists($this->getPrivateKeyFile())) {
             if (!$this->createKeys()) {
-                throw new SPException(__('No es posible generar las claves RSA', false), SPException::CRITICAL);
+                throw new SPException(__u('No es posible generar las claves RSA'), SPException::CRITICAL);
             }
         }
-    }
-
-    /**
-     * @param RSA $rsa
-     */
-    public function inject(RSA $rsa)
-    {
-        $this->rsa = $rsa;
     }
 
     /**
@@ -76,7 +64,7 @@ class CryptPKI
      */
     private function getPublicKeyFile()
     {
-        return APP_ROOT . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'pubkey.pem';
+        return CONFIG_PATH . DIRECTORY_SEPARATOR . 'pubkey.pem';
     }
 
     /**
@@ -86,7 +74,7 @@ class CryptPKI
      */
     private function getPrivateKeyFile()
     {
-        return APP_ROOT . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'key.pem';
+        return CONFIG_PATH . DIRECTORY_SEPARATOR . 'key.pem';
     }
 
     /**
@@ -130,7 +118,7 @@ class CryptPKI
         $file = $this->getPublicKeyFile();
 
         if (!file_exists($file)) {
-            throw new FileNotFoundException(SPException::ERROR, __('El archivo de clave no existe'));
+            throw new FileNotFoundException(__u('El archivo de clave no existe'));
         }
 
         return file_get_contents($file);
@@ -162,7 +150,7 @@ class CryptPKI
         $file = $this->getPrivateKeyFile();
 
         if (!file_exists($file)) {
-            throw new FileNotFoundException(SPException::ERROR, __('El archivo de clave no existe'));
+            throw new FileNotFoundException(__u('El archivo de clave no existe'));
         }
 
         return file_get_contents($file);

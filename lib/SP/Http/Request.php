@@ -25,6 +25,8 @@
 namespace SP\Http;
 
 use Klein\Klein;
+use phpseclib\Crypt\RSA;
+use SP\Bootstrap;
 use SP\Core\Crypt\CryptPKI;
 use SP\Html\Html;
 use SP\Util\Util;
@@ -88,6 +90,8 @@ class Request
      *
      * @param $param
      * @return string
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public static function analyzeEncrypted($param)
     {
@@ -98,8 +102,9 @@ class Request
         }
 
         try {
+            // FIXME: DIC???
             // Desencriptar con la clave RSA
-            if (($clearData = (new CryptPKI())->decryptRSA(base64_decode($encryptedData))) === false) {
+            if (($clearData = (new CryptPKI(Bootstrap::getContainer()->get(RSA::class)))->decryptRSA(base64_decode($encryptedData))) === false) {
                 debugLog('No RSA encrypted data from request');
 
                 return $encryptedData;
@@ -145,11 +150,11 @@ class Request
      * Obtener los valores de variables $_GET y $_POST
      * y devolverlos limpios con el tipo correcto o esperado.
      *
-     * @param string $param    con el parámetro a consultar
-     * @param mixed  $default  valor por defecto a devolver
-     * @param bool   $check    comprobar si el parámetro está presente
-     * @param mixed  $force    valor devuelto si el parámeto está definido
-     * @param bool   $sanitize escapar/eliminar carácteres especiales
+     * @param string $param con el parámetro a consultar
+     * @param mixed $default valor por defecto a devolver
+     * @param bool $check comprobar si el parámetro está presente
+     * @param mixed $force valor devuelto si el parámeto está definido
+     * @param bool $sanitize escapar/eliminar carácteres especiales
      * @return mixed si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
      * @deprecated
      */
@@ -204,7 +209,7 @@ class Request
     }
 
     /**
-     * @param string        $param
+     * @param string $param
      * @param callable|null $mapper
      * @return mixed
      */

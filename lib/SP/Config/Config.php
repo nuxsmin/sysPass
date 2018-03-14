@@ -28,6 +28,7 @@ use DI\Container;
 use ReflectionObject;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
+use SP\Core\Exceptions\FileNotFoundException;
 use SP\Services\Config\ConfigBackupService;
 use SP\Storage\XmlFileStorageInterface;
 use SP\Storage\XmlHandler;
@@ -64,8 +65,8 @@ class Config
      * Config constructor.
      *
      * @param XmlFileStorageInterface $fileStorage
-     * @param ContextInterface        $session
-     * @param Container               $dic
+     * @param ContextInterface $session
+     * @param Container $dic
      * @throws ConfigException
      */
     public function __construct(XmlFileStorageInterface $fileStorage, ContextInterface $session, Container $dic)
@@ -107,20 +108,50 @@ class Config
 
                 $property->setAccessible(false);
             }
-        } catch (\Exception $e) {
-            debugLog($e->getMessage());
+        } catch (FileNotFoundException $e) {
+            processException($e);
 
-            throw new ConfigException(ConfigException::CRITICAL, $e->getMessage(), '', $e->getCode(), $e);
+            $this->saveConfig($this->configData, false);
+        } catch (\Exception $e) {
+            processException($e);
+
+            throw new ConfigException($e->getMessage(), ConfigException::CRITICAL, null, $e->getCode(), $e);
         }
 
         return $this->configData;
     }
 
     /**
+     * Guardar la configuración
+     *
+     * @param ConfigData $configData
+     * @param bool $backup
+     */
+    public function saveConfig(ConfigData $configData, $backup = true)
+    {
+        try {
+            if ($backup) {
+
+                $this->dic->get(ConfigBackupService::class)->backup();
+
+            }
+
+            $configData->setConfigDate(time());
+            $configData->setConfigSaver($this->context->getUserData()->getLogin());
+            $configData->setConfigHash();
+
+            $this->fileStorage->setItems($configData);
+            $this->fileStorage->save('config');
+        } catch (\Exception $e) {
+            processException($e);
+        }
+    }
+
+    /**
      * Cargar la configuración desde el archivo
      *
      * @param ContextInterface $context
-     * @param bool             $reload
+     * @param bool $reload
      * @return ConfigData
      */
     public function loadConfig(ContextInterface $context, $reload = false)
@@ -149,30 +180,6 @@ class Config
         $context->setConfigTime(time());
 
         return $this->configData;
-    }
-
-    /**
-     * Guardar la configuración
-     *
-     * @param ConfigData $configData
-     * @param bool $backup
-     */
-    public function saveConfig(ConfigData $configData, $backup = true)
-    {
-        if ($backup) {
-            try {
-                $this->dic->get(ConfigBackupService::class)->backup();
-            } catch (\Exception $e) {
-                processException($e);
-            }
-        }
-
-        $configData->setConfigDate(time());
-        $configData->setConfigSaver($this->context->getUserData()->getLogin());
-        $configData->setConfigHash();
-
-        $this->fileStorage->setItems($configData);
-        $this->fileStorage->save('config');
     }
 
     /**

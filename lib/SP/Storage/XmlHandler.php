@@ -31,7 +31,6 @@ use DOMNodeList;
 use ReflectionObject;
 use RuntimeException;
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\Exceptions\SPException;
 
 /**
  * Class XmlHandler para manejo básico de documentos XML
@@ -77,7 +76,7 @@ class XmlHandler implements XmlFileStorageInterface
     public function load($node = 'root')
     {
         if (!$this->checkSourceFile()) {
-            throw new FileNotFoundException(sprintf(__('No es posible leer/escribir el archivo: %s'), $this->file), SPException::ERROR);
+            throw new FileNotFoundException(sprintf(__('No es posible leer/escribir el archivo: %s'), $this->file));
         }
 
         $this->setDOM();
