@@ -92,7 +92,7 @@ class MySQL implements DatabaseSetupInterface
 
             throw new SPException(
                 __u('No es posible conectar con la BD'),
-                SPException::CRITICAL,
+                SPException::ERROR,
                 __('Compruebe los datos de conexión') . '<br>' . $e->getHint()
             );
         }
@@ -106,12 +106,10 @@ class MySQL implements DatabaseSetupInterface
         $this->installData->setDbPass(Util::randomPassword());
         $this->installData->setDbUser(substr(uniqid('sp_'), 0, 16));
 
-        // Comprobar si el usuario sumistrado existe
-        $query = /** @lang SQL */
-            'SELECT COUNT(*) FROM mysql.user WHERE user = ? AND `host` = ?';
-
         try {
-            $sth = $this->dbs->getConnectionSimple()->prepare($query);
+            // Comprobar si el usuario proporcionado existe
+            $sth = $this->dbs->getConnectionSimple()
+                ->prepare('SELECT COUNT(*) FROM mysql.user WHERE `user` = ? AND `host` = ?');
             $sth->execute([$this->installData->getDbUser(), $this->installData->getDbAuthHost()]);
 
             // Si no existe el usuario, se intenta crear
@@ -148,17 +146,11 @@ class MySQL implements DatabaseSetupInterface
             return;
         }
 
-        $query = /** @lang SQL */
-            'CREATE USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHost() . '` IDENTIFIED BY \'' . $this->installData->getDbPass() . '\'';
-
-        $queryDns = /** @lang SQL */
-            'CREATE USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHostDns() . '` IDENTIFIED BY \'' . $this->installData->getDbPass() . '\'';
-
         try {
             $dbc = $this->dbs->getConnectionSimple();
 
-            $dbc->exec($query);
-            $dbc->exec($queryDns);
+            $dbc->exec('CREATE USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHost() . '` IDENTIFIED BY \'' . $this->installData->getDbPass() . '\'');
+            $dbc->exec('CREATE USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHostDns() . '` IDENTIFIED BY \'' . $this->installData->getDbPass() . '\'');
             $dbc->exec('FLUSH PRIVILEGES');
         } catch (PDOException $e) {
             processException($e);
@@ -177,31 +169,20 @@ class MySQL implements DatabaseSetupInterface
      */
     public function createDatabase()
     {
-        $checkDatabase = $this->checkDatabaseExist();
-
-        if ($checkDatabase && !$this->installData->isHostingMode()) {
-            throw new SPException(
-                __u('La BBDD ya existe'),
-                SPException::ERROR,
-                __u('Indique una nueva Base de Datos o elimine la existente')
-            );
-        }
-
-//        if (!$checkDatabase && $this->installData->isHostingMode()) {
-//            throw new SPException(
-//                __u('La BBDD no existe'),
-//                SPException::ERROR,
-//                __u('Es necesario crearla y asignar los permisos necesarios')
-//            );
-//        }
-
         if (!$this->installData->isHostingMode()) {
+
+            if ($this->checkDatabaseExist()) {
+                throw new SPException(
+                    __u('La BBDD ya existe'),
+                    SPException::ERROR,
+                    __u('Indique una nueva Base de Datos o elimine la existente')
+                );
+            }
 
             try {
                 $dbc = $this->dbs->getConnectionSimple();
 
-                $dbc->exec(/** @lang SQL */
-                    'CREATE SCHEMA `' . $this->installData->getDbName() . '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci');
+                $dbc->exec('CREATE SCHEMA `' . $this->installData->getDbName() . '` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci');
             } catch (PDOException $e) {
                 throw new SPException(
                     sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),
@@ -232,6 +213,18 @@ class MySQL implements DatabaseSetupInterface
                     __u('Verifique los permisos del usuario de la Base de Datos')
                 );
             }
+        } else {
+            try {
+                // Commprobar si existe al seleccionarla
+                $this->dbs->getConnectionSimple()
+                    ->exec('USE `' . $this->installData->getDbName() . '`');
+            } catch (PDOException $e) {
+                throw new SPException(
+                    __u('La BBDD no existe'),
+                    SPException::ERROR,
+                    __u('Es necesario crearla y asignar los permisos necesarios')
+                );
+            }
         }
     }
 
@@ -241,13 +234,11 @@ class MySQL implements DatabaseSetupInterface
      */
     public function checkDatabaseExist()
     {
-        $query = /** @lang SQL */
-            'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
-
-        $sth = $this->dbs->getConnectionSimple()->prepare($query);
+        $sth = $this->dbs->getConnectionSimple()
+            ->prepare('SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1');
         $sth->execute([$this->installData->getDbName()]);
 
-        return ((int)$sth->fetchColumn() > 0);
+        return (int)$sth->fetchColumn() === 1;
     }
 
     /**
@@ -255,16 +246,18 @@ class MySQL implements DatabaseSetupInterface
      */
     public function rollback()
     {
-        if ($this->installData->isHostingMode()) {
-            return;
-        }
-
         $dbc = $this->dbs->getConnectionSimple();
 
-        $dbc->exec('DROP DATABASE IF EXISTS `' . $this->installData->getDbName() . '`');
-        $dbc->exec('DROP USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHost() . '`');
-        $dbc->exec('DROP USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHostDns() . '`');
+        if ($this->installData->isHostingMode()) {
+            foreach (DBUtil::$tables as $table) {
+                $dbc->exec('DROP TABLE IF EXISTS `' . $this->installData->getDbName() . '`.`' . $table . '`');
+            }
+        } else {
+            $dbc->exec('DROP DATABASE IF EXISTS `' . $this->installData->getDbName() . '`');
+            $dbc->exec('DROP USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHost() . '`');
+            $dbc->exec('DROP USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHostDns() . '`');
 //            $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`%`');
+        }
 
         debugLog('Rollback');
     }
@@ -306,10 +299,11 @@ class MySQL implements DatabaseSetupInterface
 
                 if (strlen(trim($buffer)) > 0 && strpos($buffer, '--') !== 0) {
                     try {
-                        $query = str_replace("\n", '', $buffer);
-                        $dbc->query($query);
+                        $dbc->exec(str_replace("\n", '', $buffer));
                     } catch (PDOException $e) {
                         processException($e);
+
+                        debugLog('Query: ' . $buffer);
 
                         $this->rollback();
 

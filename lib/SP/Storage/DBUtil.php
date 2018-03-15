@@ -24,7 +24,6 @@
 
 namespace SP\Storage;
 
-
 use RuntimeException;
 use SP\Core\Exceptions\SPException;
 
@@ -54,7 +53,6 @@ class DBUtil
         'AccountToUser',
         'AuthToken',
         'Config',
-        'Action',
         'CustomFieldType',
         'CustomFieldDefinition',
         'CustomFieldData',
@@ -80,8 +78,7 @@ class DBUtil
         try {
             return $DBStorage->getConnection()->quote(trim($str));
         } catch (SPException $e) {
-            debugLog($e->getMessage());
-            debugLog($e->getHint());
+            processException($e);
         }
 
         return $str;
@@ -92,7 +89,6 @@ class DBUtil
      *
      * @param DBStorageInterface $DBStorage
      * @return array
-     * @throws SPException
      */
     public static function getDBinfo(DBStorageInterface $DBStorage)
     {
@@ -111,13 +107,9 @@ class DBUtil
             foreach ($attributes as $val) {
                 $dbinfo[$val] = $db->getAttribute(constant('PDO::ATTR_' . $val));
             }
-        } catch (SPException $e) {
-            debugLog($e->getMessage());
-            debugLog($e->getHint());
-            debugLog($e->getCode());
-
-            throw $e;
         } catch (\Exception $e) {
+            processException($e);
+
             debugLog($e->getMessage());
         }
 
@@ -130,7 +122,6 @@ class DBUtil
      * @param DBStorageInterface $DBStorage
      * @param string             $dbName
      * @return bool
-     * @throws SPException
      */
     public static function checkDatabaseExist(DBStorageInterface $DBStorage, $dbName)
     {
@@ -142,14 +133,8 @@ class DBUtil
                 AND `table_name` IN (\'Client\', \'Category\', \'Account\', \'User\', \'Config\', \'EventLog\')';
 
             return (int)$DBStorage->getConnection()->query($query)->fetchColumn() === 6;
-        } catch (SPException $e) {
-            debugLog($e->getMessage());
-            debugLog($e->getHint());
-
-            throw $e;
         } catch (\Exception $e) {
-            debugLog($e->getMessage());
-            debugLog($e->getCode());
+            processException($e);
 
             throw new RuntimeException(__u('Error en la verificación de la base de datos'));
         }
