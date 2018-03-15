@@ -3,8 +3,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,20 +23,19 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Install;
+namespace SP\Services\Install;
 
-use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Hash;
 use SP\Core\Dic;
 use SP\Core\Exceptions\InvalidArgumentException;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\InstallData;
 use SP\DataModel\ProfileData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserGroupData;
 use SP\DataModel\UserProfileData;
 use SP\Services\Config\ConfigService;
+use SP\Services\Service;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
@@ -48,7 +47,7 @@ defined('APP_ROOT') || die();
 /**
  * Esta clase es la encargada de instalar sysPass.
  */
-class Installer
+class Installer extends Service
 {
     use Dic\InjectableTrait;
 
@@ -60,33 +59,13 @@ class Installer
     const BUILD = 18031401;
 
     /**
-     * @var Config
-     */
-    protected $config;
-    /**
      * @var ConfigService
      */
     protected $configService;
     /**
-     * @var UserService
-     */
-    protected $userService;
-    /**
-     * @var UserGroupService
-     */
-    protected $userGroupService;
-    /**
-     * @var UserProfileService
-     */
-    protected $userProfileService;
-    /**
      * @var DatabaseSetupInterface
      */
     protected $dbs;
-    /**
-     * @var DatabaseConnectionData $databaseConnectionData
-     */
-    protected $databaseConnectionData;
     /**
      * @var InstallData
      */
@@ -95,19 +74,6 @@ class Installer
      * @var ConfigData
      */
     private $configData;
-
-    /**
-     * Installer constructor.
-     *
-     * @param InstallData $installData
-     * @throws Dic\ContainerException
-     */
-    public function __construct(InstallData $installData)
-    {
-        $this->injectDependencies();
-
-        $this->installData = $installData;
-    }
 
     /**
      * @param InstallData $installData
@@ -119,19 +85,20 @@ class Installer
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public static function run(InstallData $installData)
+    public function run(InstallData $installData)
     {
-        $installer = new static($installData);
-        $installer->checkData();
-        $installer->install();
+        $this->installData = $installData;
 
-        return $installer;
+        $this->checkData();
+        $this->install();
+
+        return $this;
     }
 
     /**
      * @throws InvalidArgumentException
      */
-    public function checkData()
+    private function checkData()
     {
         if (!$this->installData->getAdminLogin()) {
             throw new InvalidArgumentException(
@@ -208,7 +175,7 @@ class Installer
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function install()
+    private function install()
     {
         $this->setupDbHost();
         $this->setupConfig();
@@ -272,13 +239,16 @@ class Installer
     }
 
     /**
-     * @throws Dic\ContainerException
+     * @param string $type
      * @throws SPException
-     * @todo Select DB type
      */
-    private function setupDb()
+    private function setupDb($type = 'mysql')
     {
-        $this->dbs = new MySQL($this->installData);
+        switch ($type) {
+            case 'mysql':
+                $this->dbs = new MySQL($this->installData, $this->configData);
+                break;
+        }
 
         // Si no es modo hosting se crea un hash para la clave y un usuario con prefijo "sp_" para la DB
         if ($this->installData->isHostingMode()) {
@@ -300,7 +270,7 @@ class Installer
     private function setupDBConnectionData()
     {
         // FIXME: ugly!!
-        $this->databaseConnectionData->refreshFromConfig($this->configData);
+        $this->dic->get(DatabaseConnectionData::class)->refreshFromConfig($this->configData);
     }
 
     /**
@@ -345,15 +315,19 @@ class Installer
             $userProfileData->setName('Admin');
             $userProfileData->setProfile(new ProfileData());
 
+            $userService = $this->dic->get(UserService::class);
+            $userGroupService = $this->dic->get(UserGroupService::class);
+            $userProfileService = $this->dic->get(UserProfileService::class);
+
             // Datos del usuario
             $userData = new UserData();
-            $userData->setUserGroupId($this->userGroupService->create($userGroupData));
-            $userData->setUserProfileId($this->userProfileService->create($userProfileData));
+            $userData->setUserGroupId($userGroupService->create($userGroupData));
+            $userData->setUserProfileId($userProfileService->create($userProfileData));
             $userData->setLogin($this->installData->getAdminLogin());
             $userData->setName('sysPass Admin');
             $userData->setIsAdminApp(1);
 
-            $this->userService->createWithMasterPass($userData, $this->installData->getAdminPass(), $this->installData->getMasterPassword());
+            $userService->createWithMasterPass($userData, $this->installData->getAdminPass(), $this->installData->getMasterPassword());
 
 //                    __u('Error al actualizar la clave maestra del usuario "admin"'),
         } catch (\Exception $e) {
@@ -370,26 +344,11 @@ class Installer
     }
 
     /**
-     * @param Config $config
-     * @param ConfigService $configService
-     * @param UserService $userService
-     * @param UserGroupService $userGroupService
-     * @param UserProfileService $userProfileService
-     * @param DatabaseConnectionData $databaseConnectionData
+     * initialize
      */
-    public function inject(Config $config,
-                           ConfigService $configService,
-                           UserService $userService,
-                           UserGroupService $userGroupService,
-                           UserProfileService $userProfileService,
-                           DatabaseConnectionData $databaseConnectionData)
+    protected function initialize()
     {
-        $this->config = $config;
-        $this->configData = $config->getConfigData();
-        $this->configService = $configService;
-        $this->userService = $userService;
-        $this->userGroupService = $userGroupService;
-        $this->userProfileService = $userProfileService;
-        $this->databaseConnectionData = $databaseConnectionData;
+        $this->configData = $this->config->getConfigData();
+        $this->configService = $this->dic->get(ConfigService::class);
     }
 }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,14 +22,11 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Install;
+namespace SP\Services\Install;
 
 use PDOException;
-use SP\Config\Config;
 use SP\Config\ConfigData;
-use SP\Core\Dic\InjectableTrait;
 use SP\Core\Exceptions\SPException;
-use SP\DataModel\InstallData;
 use SP\Storage\DatabaseConnectionData;
 use SP\Storage\DBUtil;
 use SP\Storage\MySQLHandler;
@@ -38,12 +35,10 @@ use SP\Util\Util;
 /**
  * Class MySQL
  *
- * @package SP\Core\Install
+ * @package SP\Services\Install
  */
 class MySQL implements DatabaseSetupInterface
 {
-    use InjectableTrait;
-
     /**
      * @var InstallData
      */
@@ -61,14 +56,13 @@ class MySQL implements DatabaseSetupInterface
      * MySQL constructor.
      *
      * @param InstallData $installData
+     * @param ConfigData  $configData
      * @throws SPException
-     * @throws \SP\Core\Dic\ContainerException
      */
-    public function __construct(InstallData $installData)
+    public function __construct(InstallData $installData, ConfigData $configData)
     {
-        $this->injectDependencies();
-
         $this->installData = $installData;
+        $this->configData = $configData;
 
         $this->connectDatabase();
     }
@@ -102,14 +96,6 @@ class MySQL implements DatabaseSetupInterface
                 __('Compruebe los datos de conexión') . '<br>' . $e->getHint()
             );
         }
-    }
-
-    /**
-     * @param Config $config
-     */
-    public function inject(Config $config)
-    {
-        $this->configData = $config->getConfigData();
     }
 
     /**

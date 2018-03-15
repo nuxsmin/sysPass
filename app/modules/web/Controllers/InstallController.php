@@ -27,14 +27,14 @@ namespace SP\Modules\Web\Controllers;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Install\Installer;
 use SP\Core\Language;
-use SP\DataModel\InstallData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Services\Install\InstallData;
+use SP\Services\Install\Installer;
 use SP\Util\Checks;
 
 /**
@@ -118,7 +118,7 @@ class InstallController extends ControllerBase
         $installData->setHostingMode(Request::analyzeBool('hostingmode', false));
 
         try {
-            Installer::run($installData);
+            $this->dic->get(Installer::class)->run($installData);
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS_STICKY, __u('Instalación finalizada'));
         } catch (\Exception $e) {

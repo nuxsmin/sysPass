@@ -29,10 +29,10 @@ use Defuse\Crypto\Encoding;
 use SP\Bootstrap;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Install\Installer;
 use SP\Html\Html;
 use SP\Log\Log;
 use SP\Log\LogUtil;
+use SP\Services\Install\Installer;
 
 defined('APP_ROOT') || die();
 

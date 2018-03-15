@@ -22,12 +22,12 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Core\Install;
+namespace SP\Services\Install;
 
 /**
  * Interface DatabaseInterface
  *
- * @package SP\Core\Install
+ * @package SP\Services\Install
  */
 interface DatabaseSetupInterface
 {

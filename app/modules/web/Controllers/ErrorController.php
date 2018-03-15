@@ -26,8 +26,8 @@ namespace SP\Modules\Web\Controllers;
 
 use Klein\Klein;
 use SP\Bootstrap;
-use SP\Core\Install\Installer;
 use SP\Mvc\View\Template;
+use SP\Services\Install\Installer;
 use SP\Util\Util;
 
 /**

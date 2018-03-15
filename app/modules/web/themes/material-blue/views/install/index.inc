@@ -1,7 +1,6 @@
 <?php
 /**
- * @var $InstallData \SP\DataModel\InstallData
- * @var $this        \SP\Mvc\View\Template
+ * @var \SP\Mvc\View\Template $this
  */
 ?>
 <div id="actions" class="installer" align="center">

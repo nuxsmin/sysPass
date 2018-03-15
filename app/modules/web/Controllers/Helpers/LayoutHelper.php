@@ -30,12 +30,12 @@ use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\CryptPKI;
 use SP\Core\Dic\ContainerException;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Install\Installer;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
 use SP\Core\UI\Theme;
 use SP\Core\UI\ThemeInterface;
 use SP\Html\DataGrid\DataGridAction;
+use SP\Services\Install\Installer;
 use SP\Util\Checks;
 use SP\Util\Util;
 
