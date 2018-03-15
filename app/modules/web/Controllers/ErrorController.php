@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers;
 
 use Klein\Klein;
 use SP\Bootstrap;
+use SP\Core\Install\Installer;
 use SP\Mvc\View\Template;
 use SP\Util\Util;
 
@@ -36,8 +37,6 @@ use SP\Util\Util;
  */
 class ErrorController
 {
-    use SP\Core\Dic\InjectableTrait;
-
     /**
      * @var Template
      */
@@ -49,19 +48,10 @@ class ErrorController
 
     /**
      * ErrorController constructor.
-     *
-     * @throws \SP\Core\Dic\ContainerException
-     */
-    public function __construct()
-    {
-        $this->injectDependencies();
-    }
-
-    /**
      * @param Template $view
-     * @param Klein    $router
+     * @param Klein $router
      */
-    public function inject(Template $view, Klein $router)
+    public function __construct(Template $view, Klein $router)
     {
         $this->view = $view;
         $this->router = $router;
@@ -75,7 +65,7 @@ class ErrorController
         $this->view->assign('startTime', microtime());
 
         $this->view->assign('appInfo', Util::getAppInfo());
-        $this->view->assign('appVersion', Util::getVersionString());
+        $this->view->assign('appVersion', Installer::VERSION_TEXT);
         $this->view->assign('logoIcon', Bootstrap::$WEBURI . '/public/images/logo_icon.png');
         $this->view->assign('logoNoText', Bootstrap::$WEBURI . '/public/images/logo_icon.svg');
         $this->view->assign('logo', Bootstrap::$WEBURI . '/public/images/logo_full_bg.png');

@@ -156,64 +156,6 @@ class Util
     }
 
     /**
-     * Comprobar si hay actualizaciones de sysPass disponibles desde internet (github.com)
-     * Esta función hace una petición a GitHub y parsea el JSON devuelto para verificar
-     * si la aplicación está actualizada
-     *
-     * @return array|bool
-     */
-    public static function checkUpdates()
-    {
-        try {
-            $data = self::getDataFromUrl(self::getAppInfo('appupdates'));
-        } catch (SPException $e) {
-            return false;
-        }
-
-        $updateInfo = json_decode($data);
-
-        if (!isset($updateInfo->message)) {
-            // $updateInfo[0]->tag_name
-            // $updateInfo[0]->name
-            // $updateInfo[0]->body
-            // $updateInfo[0]->tarball_url
-            // $updateInfo[0]->zipball_url
-            // $updateInfo[0]->published_at
-            // $updateInfo[0]->html_url
-
-            $version = $updateInfo->tag_name;
-            $url = $updateInfo->html_url;
-            $title = $updateInfo->name;
-            $description = $updateInfo->body;
-            $date = $updateInfo->published_at;
-
-            preg_match('/v?(\d+)\.(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $remoteVersion);
-//            preg_match('/v?(\d+)\.(\d+)\.(\d+)(\-[a-z0-9.]+)?$/', $version, $realVer);
-
-            if (is_array($remoteVersion)) {
-                $appVersion = self::getVersionStringNormalized();
-                $pubVersion = $remoteVersion[1] . $remoteVersion[2] . $remoteVersion[3] . '.' . $remoteVersion[4];
-//                $pubVersion = $realVer[1] . $realVer[2] . $realVer[3];
-
-                if (self::checkVersion($appVersion, $pubVersion)) {
-                    return [
-                        'version' => $version,
-                        'url' => $url,
-                        'title' => $title,
-                        'description' => $description,
-                        'date' => $date];
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        return false;
-    }
-
-    /**
      * Obtener datos desde una URL usando CURL
      *
      * @param string    $url
@@ -466,54 +408,6 @@ class Util
     public static function getVersionArrayNormalized()
     {
         return [implode('', Installer::VERSION), Installer::BUILD];
-    }
-
-    /**
-     * Comprobar si hay notificaciones de sysPass disponibles desde internet (github.com)
-     * Esta función hace una petición a GitHub y parsea el JSON devuelto
-     *
-     * @return array|bool
-     * @throws \Psr\Container\ContainerExceptionInterface
-     */
-    public static function checkNotices()
-    {
-        /** @var ConfigData $ConfigData */
-        $ConfigData = Bootstrap::getContainer()->get(ConfigData::class);
-
-        if (!$ConfigData->isChecknotices()) {
-            return false;
-        }
-
-        try {
-            $data = self::getDataFromUrl(self::getAppInfo('appnotices'));
-        } catch (SPException $e) {
-            return false;
-        }
-
-        $noticesData = json_decode($data);
-
-
-        if (!isset($noticesData->message)) {
-            $notices = [];
-
-            // $noticesData[0]->title
-            // $noticesData[0]->body
-            // $noticesData[0]->created_at
-
-            foreach ($noticesData as $notice) {
-                $notices[] = [
-                    $notice->title,
-//              $notice->body,
-                    $notice->created_at
-                ];
-            }
-
-            return $notices;
-        }
-
-        debugLog($noticesData->message);
-
-        return false;
     }
 
     /**

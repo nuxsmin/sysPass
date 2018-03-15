@@ -28,7 +28,6 @@ defined('APP_ROOT') || die();
 
 use SP\Account\AccountUtil;
 use SP\Core\DiFactory;
-use SP\Core\Exceptions\SPException;
 use SP\Core\Upgrade\Check;
 use SP\Http\Request;
 use SP\Services\Task\Task;
@@ -42,7 +41,6 @@ use SP\Util\Util;
  */
 class MainController
 {
-
     /**
      * Obtener los datos para el interface de actualización de componentes
      *
@@ -86,73 +84,5 @@ class MainController
 
         $this->view();
         exit();
-    }
-
-    /**
-     * Obtener los datos para el interface de comprobación de actualizaciones
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     */
-    public function getCheckUpdates()
-    {
-        $this->view->addTemplate('update');
-
-        $this->view->assign('hasUpdates', false);
-        $this->view->assign('updateStatus', null);
-
-        if ($this->configData->isCheckUpdates()) {
-            $updates = Util::checkUpdates();
-
-            if (is_array($updates)) {
-                $description = nl2br($updates['description']);
-                $version = $updates['version'];
-
-                $this->view->assign('hasUpdates', true);
-                $this->view->assign('title', $updates['title']);
-                $this->view->assign('url', $updates['url']);
-                $this->view->assign('description', sprintf('%s - %s <br><br>%s', __('Descargar nueva versión'), $version, $description));
-            } else {
-                $this->view->assign('updateStatus', $updates);
-            }
-        }
-
-        if ($this->configData->isChecknotices()) {
-            $notices = Util::checkNotices();
-            $numNotices = count($notices);
-            $noticesTitle = '';
-
-            if ($notices !== false && $numNotices > 0) {
-                $noticesTitle = __('Avisos de sysPass') . '<br>';
-
-                foreach ($notices as $notice) {
-                    $noticesTitle .= '<br>' . $notice[0];
-                }
-            }
-
-            $this->view->assign('numNotices', $numNotices);
-            $this->view->assign('noticesTitle', $noticesTitle);
-        }
-    }
-
-    /**
-     * Realizar las acciones del controlador
-     *
-     * @param mixed $type Tipo de acción
-     */
-    public function doAction($type = null)
-    {
-        $this->setPage($type);
-
-        try {
-            switch ($type) {
-                case 'prelogin.passreset':
-                    $this->getPassReset();
-                    break;
-            }
-
-            DiFactory::getEventDispatcher()->notifyEvent('main.' . $type, $this);
-        } catch (SPException $e) {
-            $this->showError(self::ERR_EXCEPTION);
-        }
     }
 }
