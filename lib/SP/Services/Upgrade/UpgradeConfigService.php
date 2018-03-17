@@ -24,6 +24,7 @@
 
 namespace SP\Services\Upgrade;
 
+use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Services\Service;
@@ -34,65 +35,31 @@ use SP\Util\Util;
  *
  * @package SP\Services\Upgrade
  */
-class UpgradeConfigService extends Service
+class UpgradeConfigService extends Service implements UpgradeInterface
 {
     /**
      * @var array Versiones actualizables
      */
     const UPGRADES = ['112.4', '130.16020501', '200.17011202'];
-
     /**
-     * Comprueba si es necesario actualizar la configuración.
-     *
-     * @param int $version con el número de versión actual
-     * @returns bool
+     * @var ConfigData
      */
-    public static function needConfigUpgrade($version)
-    {
-        return Util::checkVersion($version, self::UPGRADES);
-    }
+    protected $configData;
 
     /**
-     * Migrar valores de configuración.
-     *
-     * @param int $version El número de versión
+     * @param $version
      * @return bool
      */
-    public function upgradeConfig($version)
+    public static function needsUpgrade($version)
     {
-        $message = EventMessage::factory()->addDescription(__u('Actualizar Configuración'));
-
-        $this->eventDispatcher->notifyEvent('upgrade.config.start', new Event($this, $message));
-
-        $configData = $this->config->getConfigData();
-        $count = 0;
-
-        foreach (self::UPGRADES as $upgradeVersion) {
-            if (Util::checkVersion($version, $upgradeVersion)) {
-                switch ($upgradeVersion) {
-                    case '200.17011202':
-                        $message->addDetail(__u('Versión'), $version);
-
-                        $configData->setSiteTheme('material-blue');
-                        $configData->setConfigVersion($upgradeVersion);
-
-                        $this->config->saveConfig($configData, false);
-                        $count++;
-                        break;
-                }
-            }
-        }
-
-        $this->eventDispatcher->notifyEvent('upgrade.config.end', new Event($this, $message));
-
-        return $count > 0;
+        return Util::checkVersion(Util::checkVersion($version, Util::getVersionArrayNormalized()), self::UPGRADES);
     }
 
     /**
      * Actualizar el archivo de configuración a formato XML
      *
      * @param $version
-     * @return bool
+     * @throws UpgradeException
      */
     public function upgradeOldConfigFile($version)
     {
@@ -103,19 +70,18 @@ class UpgradeConfigService extends Service
         // Include the file, save the data from $CONFIG
         include OLD_CONFIG_FILE;
 
-        $configData = $this->config->getConfigData();
         $message = EventMessage::factory();
 
         if (isset($CONFIG) && is_array($CONFIG)) {
-            $paramMapper = function ($mapFrom, $mapTo) use ($CONFIG, $message, $configData) {
+            $paramMapper = function ($mapFrom, $mapTo) use ($CONFIG, $message) {
                 if (isset($CONFIG[$mapFrom])) {
                     $message->addDetail(__u('Parámetro'), $mapFrom);
-                    $configData->{$mapTo}($CONFIG[$mapFrom]);
+                    $this->configData->{$mapTo}($CONFIG[$mapFrom]);
                 }
             };
 
             foreach (self::getConfigParams() as $mapTo => $mapFrom) {
-                if (method_exists($configData, $mapTo)) {
+                if (method_exists($this->configData, $mapTo)) {
                     if (is_array($mapFrom)) {
                         /** @var array $mapFrom */
                         foreach ($mapFrom as $param) {
@@ -133,28 +99,27 @@ class UpgradeConfigService extends Service
         $oldFile = OLD_CONFIG_FILE . '.old.' . time();
 
         try {
-            $configData->setSiteTheme('material-blue');
-            $configData->setConfigVersion($version);
+            $this->configData->setSiteTheme('material-blue');
+            $this->configData->setConfigVersion($version);
 
-            $this->config->saveConfig($configData, false);
+            $this->config->saveConfig($this->configData, false);
 
             rename(OLD_CONFIG_FILE, $oldFile);
 
             $message->addDetail(__u('Versión'), $version);
 
             $this->eventDispatcher->notifyEvent('upgrade.config.old.end', new Event($this, $message));
-
-            return true;
         } catch (\Exception $e) {
+            processException($e);
+
             $this->eventDispatcher->notifyEvent('exception',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Error al actualizar la configuración'))
                     ->addDetail(__u('Archivo'), $oldFile))
             );
-        }
 
-        // We are here...wrong
-        return false;
+            throw new UpgradeException(__u('Error al actualizar la configuración'));
+        }
     }
 
     /**
@@ -218,5 +183,50 @@ class UpgradeConfigService extends Service
             'setWikiPageUrl' => ['wikipageurl' . 'wiki_pageurl'],
             'setWikiSearchUrl' => ['wikisearchurl', 'wiki_searchurl']
         ];
+    }
+
+    /**
+     * Migrar valores de configuración.
+     *
+     * @param $version
+     */
+    public function upgrade($version)
+    {
+        $message = EventMessage::factory()->addDescription(__u('Actualizar Configuración'));
+        $this->eventDispatcher->notifyEvent('upgrade.config.start', new Event($this, $message));
+
+        foreach (self::UPGRADES as $upgradeVersion) {
+            if (Util::checkVersion($version, $upgradeVersion)) {
+                $this->applyUpgrade($upgradeVersion);
+            }
+        }
+
+        $this->eventDispatcher->notifyEvent('upgrade.config.end', new Event($this, $message));
+    }
+
+    public function initialize()
+    {
+        $this->configData = $this->config->getConfigData();
+    }
+
+    /**
+     * @param $version
+     */
+    private function applyUpgrade($version)
+    {
+        switch ($version) {
+            case '200.17011202':
+                $this->configData->setSiteTheme('material-blue');
+                $this->configData->setConfigVersion($version);
+
+                $this->config->saveConfig($this->configData, false);
+
+                $this->eventDispatcher->notifyEvent('upgrade.config.process',
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Actualizar Configuración'))
+                        ->addDetail(__u('Versión'), $version))
+                );
+                break;
+        }
     }
 }

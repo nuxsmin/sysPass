@@ -25,6 +25,7 @@
 namespace SP\Services\CustomField;
 
 use SP\Core\Acl\ActionsInterface;
+use SP\DataModel\CustomFieldDefinitionData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\CustomField\CustomFieldDefRepository;
 use SP\Services\Service;
@@ -150,7 +151,7 @@ class CustomFieldDefService extends Service
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
-    public function update($itemData)
+    public function update(CustomFieldDefinitionData $itemData)
     {
         return $this->customFieldDefRepository->update($itemData);
     }

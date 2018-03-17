@@ -371,7 +371,7 @@ class Util
             $nomalizedVersion = 0;
 
             foreach (str_split($version) as $key => $value) {
-                $nomalizedVersion += (int)$value * (10 * (3 - $key));
+                $nomalizedVersion += (int)$value * (10 ** (3 - $key));
             }
 
             return $nomalizedVersion . '.' . $build;
@@ -489,13 +489,13 @@ class Util
     /**
      * Cast an object to another class, keeping the properties, but changing the methods
      *
-     * @param string        $class    Class name
+     * @param string        $dstClass Class name
      * @param string|object $serialized
      * @param string        $srcClass Nombre de la clase serializada
      * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
      */
-    public static function unserialize($class, $serialized, $srcClass = null)
+    public static function unserialize($dstClass, $serialized, $srcClass = null)
     {
         if (!is_object($serialized)) {
             preg_match('/^O:\d+:"(?P<class>[^"]++)"/', $serialized, $matches);
@@ -514,11 +514,11 @@ class Util
                     },
                     $serialized);
 
-                return self::castToClass($serializedOut, $class);
+                return self::castToClass($serializedOut, $dstClass);
             }
 
-            if ($matches['class'] !== $class) {
-                return self::castToClass($serialized, $class);
+            if ($matches['class'] !== $dstClass) {
+                return self::castToClass($serialized, $dstClass);
             }
         }
 

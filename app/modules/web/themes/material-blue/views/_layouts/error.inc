@@ -1,12 +1,14 @@
 <?php /** @var \SP\Mvc\View\Template $this */ ?>
 <!DOCTYPE html>
-<html lang="<?php echo $lang; ?>">
+<html lang="<?php echo $language; ?>">
 <head>
     <title><?php echo $appInfo['appname'], ' :: ', $appInfo['appdesc']; ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="<?php echo $logoIcon; ?>">
-    <link rel="stylesheet" href="<?php echo $cssLink; ?>"/>
+    <?php foreach ($cssLinks as $cssLink): ?>
+        <link rel="stylesheet" href="<?php echo $cssLink; ?>"/>
+    <?php endforeach; ?>
 </head>
 <body>
 <div id="wrap">
@@ -25,18 +27,20 @@
                 <div class="mdl-layout__header-row">
                     <!-- Title -->
                     <span class="mdl-layout-icon">
-                <img class="logo btn-menu" src="<?php echo $logonobg; ?>"
-                     alt="logo"/>
-            </span>
+                    <img class="logo btn-menu" src="<?php echo $logonobg; ?>"
+                         alt="logo"/>
+                    </span>
                 </div>
             </header>
             <main class="mdl-layout__content">
                 <div id="content">
-                    <?php echo $error; ?>
+                    <?php include $this->includePartial('error'); ?>
                 </div>
             </main>
         </div>
     </div> <!-- Close container -->
+
+    <?php include $this->includePartial('footer'); ?>
 </div> <!-- Close wrap -->
 </body> <!-- Close BODY...almost done..go..go..go -->
 </html> <!-- Close HTML...ufff too much work!! :)) -->

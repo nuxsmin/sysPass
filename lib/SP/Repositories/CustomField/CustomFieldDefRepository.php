@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -82,7 +82,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     {
         $query = /** @lang SQL */
             'UPDATE CustomFieldDefinition 
-              SET `name` = ?, moduleId = ?, required = ?, `help` = ?, showInList = ?, typeId = ?
+              SET `name` = ?, moduleId = ?, required = ?, `help` = ?, showInList = ?, typeId = ?, field = NULL 
               WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();

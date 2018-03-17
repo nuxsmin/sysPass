@@ -38,26 +38,28 @@ use SP\Util\Util;
  *
  * @package SP\Services\Upgrade
  */
-class UpgradeDatabaseService extends Service
+class UpgradeDatabaseService extends Service implements UpgradeInterface
 {
     /**
      * @var array Versiones actualizables
      */
-    const DB_UPGRADES = ['110', '112.1', '112.2', '112.3', '112.13', '112.19', '112.20', '120.01', '120.02', '130.16011001', '130.16100601', '200.17011302', '200.17011701', '210.17022601', '213.17031402', '220.17050101'];
-    const AUX_UPGRADES = ['120.01', '120.02', '200.17010901', '200.17011202'];
-    const APP_UPGRADES = ['210.17022601'];
-    /**
-     * @var string Versión de la BBDD
-     */
-    private static $currentDbVersion;
-    /**
-     * @var ConfigService
-     */
-    protected $configService;
+    const UPGRADES = ['300.18010101'];
+
     /**
      * @var Database
      */
     protected $db;
+
+    /**
+     * Check if it needs to be upgraded
+     *
+     * @param $version
+     * @return bool
+     */
+    public static function needsUpgrade($version)
+    {
+        return Util::checkVersion($version, self::UPGRADES);
+    }
 
     /**
      * Inicia el proceso de actualización de la BBDD.
@@ -68,18 +70,21 @@ class UpgradeDatabaseService extends Service
      * @throws \SP\Core\Exceptions\SPException
      * @throws \SP\Services\Config\ParameterNotFoundException
      */
-    public function doUpgrade($version)
+    public function upgrade($version)
     {
         $this->eventDispatcher->notifyEvent('upgrade.db.start',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Actualizar BBDD')))
         );
 
-        self::$currentDbVersion = UpgradeUtil::fixVersionNumber($this->configService->getByParam('version'));
+        $configService = $this->dic->get(ConfigService::class);
+        $dbVersion = UpgradeUtil::fixVersionNumber($configService->getByParam('version'));
 
-        foreach (self::DB_UPGRADES as $dbVersion) {
-            if (Util::checkVersion($version, $dbVersion)) {
-                if ($this->auxPreDbUpgrade($dbVersion) === false) {
+        foreach (self::UPGRADES as $upgradeVersion) {
+            if (Util::checkVersion($version, $upgradeVersion)
+                && Util::checkVersion($dbVersion, $version)
+            ) {
+                if ($this->applyPreUpgrade($upgradeVersion) === false) {
                     throw new UpgradeException(
                         __u('Error al aplicar la actualización auxiliar'),
                         UpgradeException::CRITICAL,
@@ -87,39 +92,29 @@ class UpgradeDatabaseService extends Service
                     );
                 }
 
-                if ($this->upgradeDB($dbVersion) === false) {
+                if ($this->applyUpgrade($upgradeVersion) === false) {
                     throw new UpgradeException(
                         __u('Error al aplicar la actualización de la Base de Datos'),
                         UpgradeException::CRITICAL,
                         __u('Compruebe el registro de eventos para más detalles')
                     );
                 }
+
+                $configService->save('version', $version);
             }
         }
 
-        foreach (self::AUX_UPGRADES as $appVersion) {
-            if (Util::checkVersion($version, $appVersion)
-                && $this->appUpgrades($appVersion) === false
-            ) {
-                throw new UpgradeException(
-                    __u('Error al aplicar la actualización de la aplicación'),
-                    UpgradeException::CRITICAL,
-                    __u('Compruebe el registro de eventos para más detalles')
-                );
-            }
-        }
-
-        foreach (self::APP_UPGRADES as $auxVersion) {
-            if (Util::checkVersion($version, $auxVersion)
-                && $this->auxUpgrades($auxVersion) === false
-            ) {
-                throw new UpgradeException(
-                    __u('Error al aplicar la actualización auxiliar'),
-                    UpgradeException::CRITICAL,
-                    __u('Compruebe el registro de eventos para más detalles')
-                );
-            }
-        }
+//        foreach (self::AUX_UPGRADES as $auxVersion) {
+//            if (Util::checkVersion($version, $auxVersion)
+//                && $this->auxUpgrades($auxVersion) === false
+//            ) {
+//                throw new UpgradeException(
+//                    __u('Error al aplicar la actualización auxiliar'),
+//                    UpgradeException::CRITICAL,
+//                    __u('Compruebe el registro de eventos para más detalles')
+//                );
+//            }
+//        }
 
         $this->eventDispatcher->notifyEvent('upgrade.db.end',
             new Event($this, EventMessage::factory()
@@ -134,29 +129,9 @@ class UpgradeDatabaseService extends Service
      *
      * @param $version
      * @return bool
-     * @throws UpgradeException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
-    private function auxPreDbUpgrade($version)
+    private function applyPreUpgrade($version)
     {
-        switch ($version) {
-            case '130.16011001':
-                debugLog(__FUNCTION__ . ': ' . $version);
-
-                return $this->upgradeDB('130.00000000');
-            case '130.16100601':
-                debugLog(__FUNCTION__ . ': ' . $version);
-
-                return
-                    Account::fixAccountsId()
-                    && UserUpgrade::fixUsersId(Request::analyze('userid', 0))
-                    && Group::fixGroupId(Request::analyze('groupid', 0))
-                    && Profile::fixProfilesId(Request::analyze('profileid', 0))
-                    && Category::fixCategoriesId(Request::analyze('categoryid', 0))
-                    && Customer::fixCustomerId(Request::analyze('customerid', 0));
-        }
-
         return true;
     }
 
@@ -166,19 +141,12 @@ class UpgradeDatabaseService extends Service
      * @param int $version con la versión a actualizar
      * @returns bool
      * @throws UpgradeException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
-    private function upgradeDB($version)
+    private function applyUpgrade($version)
     {
-        $this->eventDispatcher->notifyEvent('upgrade.db.process',
-            new Event($this, EventMessage::factory()
-                ->addDetail(__u('Versión'), $version))
-        );
-
         $queries = $this->getQueriesFromFile($version);
 
-        if (count($queries) === 0 || Util::checkVersion(self::$currentDbVersion, $version) === false) {
+        if (count($queries) === 0) {
             debugLog(__('No es necesario actualizar la Base de Datos.'));
 
             $this->eventDispatcher->notifyEvent('upgrade.db.process',
@@ -189,12 +157,13 @@ class UpgradeDatabaseService extends Service
             return true;
         }
 
-//        TaskFactory::$Message->setTask(__('Actualizar BBDD'));
-//        TaskFactory::$Message->setMessage(sprintf('%s : %s', __('Versión'), $version));
-//        TaskFactory::update();
-
         foreach ($queries as $query) {
             try {
+                $this->eventDispatcher->notifyEvent('upgrade.db.process',
+                    new Event($this, EventMessage::factory()
+                        ->addDetail(__u('Versión'), $version))
+                );
+
                 $queryData = new QueryData();
                 $queryData->setQuery($query);
                 DbWrapper::getQuery($queryData, $this->db);
@@ -211,13 +180,10 @@ class UpgradeDatabaseService extends Service
             }
         }
 
-        $this->configService->save('version', $version);
-
-        self::$currentDbVersion = $version;
-
-
-        $this->eventDispatcher->notifyEvent('upgrade.db.process', new Event($this, EventMessage::factory()
-            ->addDescription(__u('Actualización de la Base de Datos realizada correctamente.'))));
+        $this->eventDispatcher->notifyEvent('upgrade.db.process',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Actualización de la Base de Datos realizada correctamente.')))
+        );
 
         return true;
     }
@@ -234,7 +200,9 @@ class UpgradeDatabaseService extends Service
 
         $queries = [];
 
-        if (file_exists($file) && $handle = fopen($file, 'rb')) {
+        if (file_exists($file)
+            && $handle = fopen($file, 'rb')
+        ) {
             while (!feof($handle)) {
                 $buffer = stream_get_line($handle, 1000000, ";\n");
 
@@ -247,77 +215,8 @@ class UpgradeDatabaseService extends Service
         return $queries;
     }
 
-    /**
-     * Actualizaciones de la aplicación
-     *
-     * @param $version
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    private function appUpgrades($version)
-    {
-        switch ($version) {
-            case '210.17022601':
-                $dbResult = true;
-
-                if (Util::checkVersion(self::$currentDbVersion, $version)) {
-                    $dbResult = $this->upgradeDB($version);
-                }
-
-                $masterPass = Request::analyzeEncrypted('masterkey');
-                $UserData = User::getItem()->getByLogin(Request::analyze('userlogin'));
-
-                if (!is_object($UserData)) {
-                    throw new SPException(__('Error al obtener los datos del usuario', false), SPException::ERROR);
-                }
-
-                CoreSession::setUserData($UserData);
-
-                return $dbResult === true
-                    && !empty($masterPass)
-                    && Crypt::migrate($masterPass);
-        }
-
-        return false;
-    }
-
-    /**
-     * Aplicar actualizaciones auxiliares.
-     *
-     * @param $version int El número de versión
-     * @return bool
-     */
-    private function auxUpgrades($version)
-    {
-        try {
-            switch ($version) {
-                case '120.01':
-                    debugLog(__FUNCTION__ . ': ' . $version);
-
-                    return (ProfileUtil::migrateProfiles() && UserMigrate::migrateUsersGroup());
-                case '120.02':
-                    debugLog(__FUNCTION__ . ': ' . $version);
-
-                    return UserMigrate::setMigrateUsers();
-                case '200.17010901':
-                    debugLog(__FUNCTION__ . ': ' . $version);
-
-                    return CustomFieldsUtil::migrateCustomFields() && UserPreferencesUtil::migrate();
-                case '200.17011202':
-                    debugLog(__FUNCTION__ . ': ' . $version);
-
-                    return UserPreferencesUtil::migrate();
-            }
-        } catch (SPException $e) {
-            return false;
-        }
-
-        return true;
-    }
-
     protected function initialize()
     {
-        $this->configService = $this->dic->get(ConfigService::class);
         $this->db = $this->dic->get(Database::class);
     }
 }

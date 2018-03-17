@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -28,7 +28,6 @@ use SP\Bootstrap;
 use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\CryptPKI;
-use SP\Core\Dic\ContainerException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\Plugin\PluginUtil;
@@ -328,7 +327,6 @@ class LayoutHelper extends HelperBase
      * @param string $template
      * @param string $page Page/view name
      * @return LayoutHelper
-     * @throws ContainerException
      */
     public function getPublicLayout($template, $page = '')
     {
@@ -343,12 +341,28 @@ class LayoutHelper extends HelperBase
     }
 
     /**
+     * Sets a full layout page
+     *
+     * @param string $page Page/view name
+     * @return LayoutHelper
+     */
+    public function getErrorLayout($page = '')
+    {
+        $this->view->addTemplate('error', '_layouts');
+        $this->view->assign('useFixedHeader');
+
+        $this->setPage($page);
+        $this->initBody();
+
+        return $this;
+    }
+
+    /**
      * Sets a custom layout page
      *
      * @param string $template
      * @param string $page Page/view name
      * @return LayoutHelper
-     * @throws ContainerException
      */
     public function getCustomLayout($template, $page = '')
     {

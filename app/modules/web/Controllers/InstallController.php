@@ -49,7 +49,6 @@ class InstallController extends ControllerBase
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {

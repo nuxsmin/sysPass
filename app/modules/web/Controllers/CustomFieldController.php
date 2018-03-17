@@ -222,9 +222,15 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
             $form = new CustomFieldDefForm();
             $form->validate(ActionsInterface::CUSTOMFIELD_CREATE);
 
-            $this->customFieldService->create($form->getItemData());
+            $itemData = $form->getItemData();
 
-            $this->eventDispatcher->notifyEvent('create.customField', new Event($this));
+            $this->customFieldService->create($itemData);
+
+            $this->eventDispatcher->notifyEvent('create.customField',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Campo creado'))
+                    ->addDetail(__u('Campo'), $itemData->getName()))
+            );
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo creado'));
         } catch (ValidationException $e) {
@@ -251,9 +257,15 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
             $form = new CustomFieldDefForm($id);
             $form->validate(ActionsInterface::CUSTOMFIELD_EDIT);
 
-            $this->customFieldService->update($form->getItemData());
+            $itemData = $form->getItemData();
 
-            $this->eventDispatcher->notifyEvent('edit.customField', new Event($this));
+            $this->customFieldService->update($itemData);
+
+            $this->eventDispatcher->notifyEvent('edit.customField',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Campo actualizado'))
+                    ->addDetail(__u('Campo'), $itemData->getName()))
+            );
 
             $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Campo actualizado'));
         } catch (ValidationException $e) {

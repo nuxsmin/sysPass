@@ -26,6 +26,8 @@ namespace SP\Modules\Web;
 
 use Defuse\Crypto\Exception\CryptoException;
 use DI\Container;
+use DI\DependencyException;
+use DI\NotFoundException;
 use SP\Bootstrap;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
@@ -38,6 +40,10 @@ use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\UI\Theme;
 use SP\Http\Request;
+use SP\Services\Config\ConfigService;
+use SP\Services\Upgrade\UpgradeAppService;
+use SP\Services\Upgrade\UpgradeDatabaseService;
+use SP\Services\Upgrade\UpgradeUtil;
 use SP\Services\UserProfile\UserProfileService;
 use SP\Storage\Database;
 use SP\Storage\DBUtil;
@@ -54,7 +60,7 @@ class Init extends ModuleBase
      * List of controllers that don't need to perform fully initialization
      * like: install/database checks, session/event handlers initialization
      */
-    const PARTIAL_INIT = ['resource', 'install', 'bootstrap', 'status'];
+    const PARTIAL_INIT = ['resource', 'install', 'bootstrap', 'status', 'upgrade'];
 
     /**
      * @var SessionContext
@@ -132,35 +138,43 @@ class Init extends ModuleBase
         HttpUtil::checkHttps($this->configData);
 
         if (in_array($controller, self::PARTIAL_INIT, true) === false) {
-            // Comprobar si está instalado
+            // Checks if sysPass is installed
             if ($this->checkInstalled() === false) {
-                $this->router->response()->redirect('index.php?r=install/index')->send();
-
-                throw new InitializationException('Not installed');
+                $this->router->response()
+                    ->redirect('index.php?r=install/index')
+                    ->send();
             }
 
-            // Comprobar si el modo mantenimiento está activado
+            // Checks if maintenance mode is turned on
             $this->checkMaintenanceMode($this->context);
 
             try {
-                // Comprobar si la Base de datos existe
+                // Checks if the database is set up
                 DBUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
             } catch (\Exception $e) {
                 if ($e->getCode() === 1049) {
-                    $this->router->response()->redirect('index.php?r=install/index')->send();
+                    $this->router->response()
+                        ->redirect('index.php?r=install/index')
+                        ->send();
                 }
+
+                throw new InitializationException($e->getMessage());
             }
 
+            // Checks if upgrade is needed
+            if ($this->checkUpgrade()) {
+                $this->router->response()
+                    ->redirect('index.php?r=upgrade/index')
+                    ->send();
+            }
 
-            // Comprobar si es necesario actualizar componentes
-//        $this->checkUpgrade();
-
+            // Initialize event handlers
             $this->initEventHandlers();
 
-            // Inicializar la sesión
+            // Initialize user session context
             $this->initUserSession();
 
-            // Cargar los plugins
+            // Load plugins
 //            PluginUtil::loadPlugins();
 
             // Comprobar acciones en URL
@@ -211,6 +225,22 @@ class Init extends ModuleBase
     {
         return $this->configData->isInstalled()
             && $this->router->request()->param('r') !== 'install/index';
+    }
+
+    /**
+     * Comprobar si es necesario actualizar componentes
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws \SP\Services\Config\ParameterNotFoundException
+     */
+    private function checkUpgrade()
+    {
+        $configService = $this->container->get(ConfigService::class);
+        $dbVersion = UpgradeUtil::fixVersionNumber($configService->getByParam('version'));
+
+        return UpgradeDatabaseService::needsUpgrade($dbVersion) ||
+            UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion()));
     }
 
     /**
@@ -276,16 +306,5 @@ class Init extends ModuleBase
         }
 
         return $timeout;
-    }
-
-    /**
-     * Comprobar si es necesario actualizar componentes
-     */
-    private function checkUpgrade()
-    {
-//        if (Bootstrap::$SUBURI === '/index.php') {
-//            $this->upgrade->checkDbVersion();
-//            $this->upgrade->checkAppVersion();
-//        }
     }
 }

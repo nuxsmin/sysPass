@@ -179,7 +179,8 @@ class Bootstrap
 
                     $this->initializeCommon();
 
-                    self::$container->get(InitApi::class)->initialize($controller);
+                    self::$container->get(InitApi::class)
+                        ->initialize($controller);
 
                     debugLog('Routing call: ' . $controllerClass . '::' . $method);
 
@@ -261,7 +262,7 @@ class Bootstrap
     /**
      * @throws ConfigException
      * @throws InitializationException
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws Services\Upgrade\UpgradeException
      */
     protected function initializeCommon()
     {
@@ -391,6 +392,7 @@ class Bootstrap
      * Cargar la configuración
      *
      * @throws ConfigException
+     * @throws Services\Upgrade\UpgradeException
      */
     private function initConfig()
     {
@@ -402,29 +404,23 @@ class Bootstrap
 
     /**
      * Comprobar la versión de configuración y actualizarla
+     *
+     * @throws Services\Upgrade\UpgradeException
      */
     private function checkConfigVersion()
     {
-        $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
-
-        $appVersion = Util::getVersionStringNormalized();
-
-        if (file_exists(OLD_CONFIG_FILE)
-            && $upgradeConfigService->upgradeOldConfigFile($appVersion)
-        ) {
-            self::$UPDATED = true;
-
-            return;
+        if (file_exists(OLD_CONFIG_FILE)) {
+            $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
+            $upgradeConfigService->upgradeOldConfigFile(Util::getVersionStringNormalized());
         }
 
         $configVersion = UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion());
 
         if ($this->configData->isInstalled()
-            && Util::checkVersion($configVersion, Util::getVersionArrayNormalized())
-            && UpgradeConfigService::needConfigUpgrade($configVersion)
-            && $upgradeConfigService->upgradeConfig($configVersion)
+            && UpgradeConfigService::needsUpgrade($configVersion)
         ) {
-            self::$UPDATED = true;
+            $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
+            $upgradeConfigService->upgrade($configVersion);
         }
     }
 
@@ -438,7 +434,7 @@ class Bootstrap
 
     /**
      * @param Container $container
-     * @param string $module
+     * @param string    $module
      * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
@@ -458,34 +454,4 @@ class Bootstrap
                 throw new InitializationException('Unknown module');
         }
     }
-
-    /**
-     * Comprobar si es necesario actualizar componentes
-     *
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     */
-//    private function checkUpgrade()
-//    {
-//        if (self::$SUBURI === '/index.php') {
-//            $this->upgrade->checkDbVersion();
-//            $this->upgrade->checkAppVersion();
-//        }
-//    }
-
-    /**
-     * Registrar la actualización de la configuración
-     *
-     * @deprecated
-     * @param $version
-     */
-//    private function logConfigUpgrade($version)
-//    {
-//        $Log = new Log();
-//        $LogMessage = $Log->getLogMessage();
-//        $LogMessage->setAction(__('Actualización', false));
-//        $LogMessage->addDescription(__('Actualización de versión realizada.', false));
-//        $LogMessage->addDetails(__('Versión', false), $version);
-//        $LogMessage->addDetails(__('Tipo', false), 'config');
-//        $Log->writeLog();
-//    }
 }

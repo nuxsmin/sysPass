@@ -25,10 +25,16 @@
 namespace SP\Modules\Api;
 
 use DI\Container;
+use DI\DependencyException;
+use Interop\Container\Exception\NotFoundException;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
+use SP\Services\Config\ConfigService;
+use SP\Services\Upgrade\UpgradeAppService;
+use SP\Services\Upgrade\UpgradeDatabaseService;
+use SP\Services\Upgrade\UpgradeUtil;
 use SP\Storage\Database;
 use SP\Storage\DBUtil;
 use SP\Util\HttpUtil;
@@ -70,6 +76,7 @@ class Init extends ModuleBase
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws NotFoundException
      */
     public function initialize($controller)
     {
@@ -92,11 +99,14 @@ class Init extends ModuleBase
             throw new InitializationException('Not installed');
         }
 
-        // Checks is maintenance mode is turned on
+        // Checks if maintenance mode is turned on
         $this->checkMaintenanceMode($this->context);
 
-        // Checks is the database is set up
+        // Checks if the database is set up
         DBUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
+
+        // Checks if upgrade is needed
+        $this->checkUpgrade();
 
         // Initialize event handlers
         $this->initEventHandlers();
@@ -109,5 +119,26 @@ class Init extends ModuleBase
     private function checkInstalled()
     {
         return $this->configData->isInstalled();
+    }
+
+    /**
+     * Comprobar si es necesario actualizar componentes
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws \SP\Services\Config\ParameterNotFoundException
+     * @throws InitializationException
+     * @throws \DI\NotFoundException
+     */
+    private function checkUpgrade()
+    {
+        $configService = $this->container->get(ConfigService::class);
+        $dbVersion = UpgradeUtil::fixVersionNumber($configService->getByParam('version'));
+
+        if (UpgradeDatabaseService::needsUpgrade($dbVersion) ||
+            UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion()))
+        ) {
+            throw new InitializationException(__u('Es necesario actualizar'));
+        }
     }
 }
