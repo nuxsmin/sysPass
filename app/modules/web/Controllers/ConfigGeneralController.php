@@ -81,7 +81,7 @@ class ConfigGeneralController extends SimpleControllerBase
         $configData->setLogEnabled($logEnabled);
         $configData->setLogEvents(Request::analyzeArray('log_events', function ($items) {
             return ConfigUtil::eventsAdapter($items);
-        }));
+        }, []));
 
         $configData->setSyslogEnabled($syslogEnabled);
 

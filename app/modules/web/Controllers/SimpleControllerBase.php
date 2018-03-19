@@ -132,7 +132,7 @@ abstract class SimpleControllerBase
      */
     protected function checkAccess($action)
     {
-        if (!$this->session->getUserData()->getIsAdminApp() || !$this->acl->checkUserAccess($action)) {
+        if (!$this->session->getUserData()->getIsAdminApp() && !$this->acl->checkUserAccess($action)) {
             throw new UnauthorizedPageException(UnauthorizedPageException::INFO);
         }
     }

@@ -151,20 +151,38 @@ class Acl implements ActionsInterface
             case self::CONFIG_GENERAL:
             case self::PLUGIN:
             case self::ACCOUNT_CONFIG:
+            case self::WIKI_CONFIG:
+            case self::LDAP_CONFIG:
+            case self::MAIL_CONFIG:
                 return $userProfile->isConfigGeneral();
             case self::IMPORT_CONFIG:
                 return $userProfile->isConfigImport();
             case self::CATEGORY:
             case self::CATEGORY_SEARCH:
+            case self::CATEGORY_VIEW:
+            case self::CATEGORY_CREATE:
+            case self::CATEGORY_EDIT:
+            case self::CATEGORY_DELETE:
                 return $userProfile->isMgmCategories();
             case self::CLIENT:
             case self::CLIENT_SEARCH:
+            case self::CLIENT_VIEW:
+            case self::CLIENT_CREATE:
+            case self::CLIENT_EDIT:
+            case self::CLIENT_DELETE:
                 return $userProfile->isMgmCustomers();
             case self::CUSTOMFIELD:
             case self::CUSTOMFIELD_SEARCH:
+            case self::CUSTOMFIELD_VIEW:
+            case self::CUSTOMFIELD_CREATE:
+            case self::CUSTOMFIELD_EDIT:
+            case self::CUSTOMFIELD_DELETE:
                 return $userProfile->isMgmCustomFields();
             case self::PUBLICLINK:
             case self::PUBLICLINK_SEARCH:
+            case self::PUBLICLINK_VIEW:
+            case self::PUBLICLINK_EDIT:
+            case self::PUBLICLINK_DELETE:
                 return $userProfile->isMgmPublicLinks();
             case self::PUBLICLINK_CREATE:
             case self::PUBLICLINK_REFRESH:
@@ -176,9 +194,16 @@ class Acl implements ActionsInterface
                 return $userProfile->isMgmAccounts();
             case self::FILE:
             case self::FILE_SEARCH:
+            case self::FILE_DELETE:
+            case self::FILE_VIEW:
+            case self::FILE_DOWNLOAD:
                 return $userProfile->isMgmFiles();
             case self::TAG:
             case self::TAG_SEARCH:
+            case self::TAG_VIEW:
+            case self::TAG_CREATE:
+            case self::TAG_EDIT:
+            case self::TAG_DELETE:
                 return $userProfile->isMgmTags();
             case self::ENCRYPTION_CONFIG:
                 return $userProfile->isConfigEncryption();
@@ -188,23 +213,38 @@ class Acl implements ActionsInterface
                 return ($userProfile->isMgmUsers() || $userProfile->isMgmGroups() || $userProfile->isMgmProfiles());
             case self::USER:
             case self::USER_SEARCH:
+            case self::USER_VIEW:
             case self::USER_CREATE:
             case self::USER_EDIT:
+            case self::USER_DELETE:
                 return $userProfile->isMgmUsers();
             case self::USER_EDIT_PASS:
                 // Comprobar si el usuario es distinto al de la sesión
                 return ($userId === $userData->getId() || $userProfile->isMgmUsers());
             case self::GROUP:
             case self::GROUP_SEARCH:
+            case self::GROUP_VIEW:
+            case self::GROUP_CREATE:
+            case self::GROUP_EDIT:
+            case self::GROUP_DELETE:
                 return $userProfile->isMgmGroups();
             case self::PROFILE:
             case self::PROFILE_SEARCH:
+            case self::PROFILE_VIEW:
+            case self::PROFILE_CREATE:
+            case self::PROFILE_EDIT:
+            case self::PROFILE_DELETE:
                 return $userProfile->isMgmProfiles();
             case self::AUTHTOKEN:
             case self::AUTHTOKEN_SEARCH:
+            case self::AUTHTOKEN_VIEW:
+            case self::AUTHTOKEN_CREATE:
+            case self::AUTHTOKEN_EDIT:
+            case self::AUTHTOKEN_DELETE:
                 return $userProfile->isMgmApiTokens();
             case self::EVENTLOG:
             case self::EVENTLOG_SEARCH:
+            case self::EVENTLOG_CLEAR:
                 return $userProfile->isEvl();
             case self::ACCOUNT_REQUEST:
             case self::NOTIFICATION:

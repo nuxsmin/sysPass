@@ -143,7 +143,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
             $this->view->assign('readonly');
         }
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::PROFILE, $profileId));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::PROFILE, $profileId, $this->session));
     }
 
     /**

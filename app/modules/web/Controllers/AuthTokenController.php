@@ -145,7 +145,7 @@ class AuthTokenController extends ControllerBase implements CrudControllerInterf
             $this->view->assign('readonly');
         }
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::AUTHTOKEN, $authTokenId));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::AUTHTOKEN, $authTokenId, $this->session));
     }
 
     /**

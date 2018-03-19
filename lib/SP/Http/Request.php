@@ -150,11 +150,11 @@ class Request
      * Obtener los valores de variables $_GET y $_POST
      * y devolverlos limpios con el tipo correcto o esperado.
      *
-     * @param string $param con el parámetro a consultar
-     * @param mixed $default valor por defecto a devolver
-     * @param bool $check comprobar si el parámetro está presente
-     * @param mixed $force valor devuelto si el parámeto está definido
-     * @param bool $sanitize escapar/eliminar carácteres especiales
+     * @param string $param    con el parámetro a consultar
+     * @param mixed  $default  valor por defecto a devolver
+     * @param bool   $check    comprobar si el parámetro está presente
+     * @param mixed  $force    valor devuelto si el parámeto está definido
+     * @param bool   $sanitize escapar/eliminar carácteres especiales
      * @return mixed si está presente el parámeto en la petición devuelve bool. Si lo está, devuelve el valor.
      * @deprecated
      */
@@ -209,11 +209,12 @@ class Request
     }
 
     /**
-     * @param string $param
+     * @param string        $param
      * @param callable|null $mapper
+     * @param mixed         $default
      * @return mixed
      */
-    public static function analyzeArray($param, callable $mapper = null)
+    public static function analyzeArray($param, callable $mapper = null, $default = null)
     {
         if (isset($_REQUEST[$param]) && is_array($_REQUEST[$param])) {
             if (is_callable($mapper)) {
@@ -229,7 +230,7 @@ class Request
             }, $_REQUEST[$param]);
         }
 
-        return null;
+        return $default;
     }
 
     /**

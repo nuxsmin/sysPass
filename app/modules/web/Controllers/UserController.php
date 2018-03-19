@@ -148,7 +148,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
             $this->view->assign('readonly');
         }
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::USER, $userId));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::USER, $userId, $this->session));
     }
 
     /**

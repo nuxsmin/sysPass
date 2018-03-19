@@ -139,7 +139,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
             $this->view->assign('readonly');
         }
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::CATEGORY, $categoryId));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::CATEGORY, $categoryId, $this->session));
     }
 
     /**

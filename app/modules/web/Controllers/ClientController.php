@@ -140,7 +140,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
             $this->view->assign('readonly');
         }
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::CLIENT, $clientId));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::CLIENT, $clientId, $this->session));
     }
 
     /**

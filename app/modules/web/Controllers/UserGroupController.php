@@ -148,7 +148,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
             $this->view->assign('readonly');
         }
 
-        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::GROUP, $userGroupId));
+        $this->view->assign('customFields', $this->getCustomFieldsForItem(ActionsInterface::GROUP, $userGroupId, $this->session));
     }
 
     /**
