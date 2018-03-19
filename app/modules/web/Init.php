@@ -33,7 +33,6 @@ use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
 use SP\Core\Crypt\SecureKeyCookie;
 use SP\Core\Crypt\Session as CryptSession;
-use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\UI\Theme;
@@ -57,7 +56,7 @@ class Init extends ModuleBase
      * List of controllers that don't need to perform fully initialization
      * like: install/database checks, session/event handlers initialization
      */
-    const PARTIAL_INIT = ['resource', 'install', 'bootstrap', 'status', 'upgrade'];
+    const PARTIAL_INIT = ['resource', 'install', 'bootstrap', 'status', 'upgrade', 'error'];
 
     /**
      * @var SessionContext
@@ -92,7 +91,6 @@ class Init extends ModuleBase
      * Initialize Web App
      *
      * @param string $controller
-     * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\SPException
@@ -144,19 +142,17 @@ class Init extends ModuleBase
             }
 
             // Checks if maintenance mode is turned on
-            $this->checkMaintenanceMode($this->context);
+            if ($this->checkMaintenanceMode($this->context)) {
+                $this->router->response()
+                    ->redirect('index.php?r=error/maintenanceError')
+                    ->send();
+            }
 
-            try {
-                // Checks if the database is set up
-                DBUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
-            } catch (\Exception $e) {
-                if ($e->getCode() === 1049) {
-                    $this->router->response()
-                        ->redirect('index.php?r=install/index')
-                        ->send();
-                }
-
-                throw new InitializationException($e->getMessage());
+            // Checks if the database is set up
+            if (!DBUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName())) {
+                $this->router->response()
+                    ->redirect('index.php?r=error/databaseError')
+                    ->send();
             }
 
             // Checks if upgrade is needed

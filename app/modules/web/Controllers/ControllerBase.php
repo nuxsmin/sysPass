@@ -36,7 +36,6 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Exceptions\FileNotFoundException;
-use SP\Core\Language;
 use SP\Core\UI\Theme;
 use SP\DataModel\ProfileData;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
@@ -91,10 +90,6 @@ abstract class ControllerBase
      * @var  EventDispatcher
      */
     protected $eventDispatcher;
-    /**
-     * @var bool
-     */
-    protected $loggedIn = false;
     /**
      * @var  ConfigData
      */
@@ -162,8 +157,6 @@ abstract class ControllerBase
 
             $this->setViewVars();
         }
-
-        $this->view->assign('language', substr(Language::$globalLang, 0, 2));
 
         if (method_exists($this, 'initialize')) {
             $this->initialize();

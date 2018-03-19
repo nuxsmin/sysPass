@@ -188,8 +188,6 @@ class Installer extends Service
         $this->configService->create(new \SP\DataModel\ConfigData('version', $version));
 
         $this->configData->setInstalled(true);
-        $this->configData->setDatabaseVersion($version);
-        $this->configData->setConfigVersion($version);
 
         $this->config->saveConfig($this->configData, false);
     }
@@ -229,7 +227,11 @@ class Installer extends Service
     {
         // Generate a random salt that is used to salt the local user passwords
         $this->configData->setPasswordSalt(Util::generateRandomBytes(30));
+
+        // Sets version and remove upgrade key
         $this->configData->setConfigVersion(Util::getVersionStringNormalized());
+        $this->configData->setDatabaseVersion(Util::getVersionStringNormalized());
+        $this->configData->setUpgradeKey(null);
 
         // Set DB connection info
         $this->configData->setDbHost($this->installData->getDbHost());

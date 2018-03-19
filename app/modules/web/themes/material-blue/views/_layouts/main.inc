@@ -1,6 +1,6 @@
 <?php /** @var \SP\Mvc\View\Template $this */ ?>
 <!DOCTYPE html>
-<html lang="<?php echo $language; ?>">
+<html lang="<?php echo $lang; ?>">
 <head>
     <title><?php echo $appInfo['appname'], ' :: ', $appInfo['appdesc']; ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>

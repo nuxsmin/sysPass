@@ -30,8 +30,6 @@ use SP\Bootstrap;
 use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
-use SP\Core\Exceptions\InitializationException;
-use SP\Http\Request;
 use SP\Providers\Log\LogHandler;
 use SP\Providers\Mail\MailHandler;
 use SP\Providers\Notification\NotificationHandler;
@@ -89,28 +87,22 @@ abstract class ModuleBase
      * Devuelve un error 503 y un reintento de 120s al cliente.
      *
      * @param ContextInterface $context
-     * @param bool             $check sólo comprobar si está activado el modo
-     * @throws InitializationException
+     * @return bool
      */
-    public function checkMaintenanceMode(ContextInterface $context, $check = false)
+    public function checkMaintenanceMode(ContextInterface $context)
     {
         if ($this->configData->isMaintenance()) {
             Bootstrap::$LOCK = Util::getAppLock();
 
-            if ($check === true
-                || Checks::isAjax($this->router)
-                || Request::analyzeInt('nodbupgrade') === 1
-                || (Bootstrap::$LOCK !== false && Bootstrap::$LOCK->userId > 0 && $context->isLoggedIn() && Bootstrap::$LOCK->userId === $context->getUserData()->getId())
-            ) {
-                return;
-            }
-
-            throw new InitializationException(
-                __u('Aplicación en mantenimiento'),
-                InitializationException::INFO,
-                __u('En breve estará operativa')
-            );
+            return (Checks::isAjax($this->router)
+                    || (Bootstrap::$LOCK !== false
+                        && Bootstrap::$LOCK->userId > 0
+                        && $context->isLoggedIn()
+                        && Bootstrap::$LOCK->userId === $context->getUserData()->getId())
+                ) === false;
         }
+
+        return false;
     }
 
     /**

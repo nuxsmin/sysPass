@@ -30,7 +30,6 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Upgrade\Crypt as CryptUpgrade;
 use SP\Core\Upgrade\User as UpgradeUser;
 use SP\DataModel\UserLoginData;
 use SP\Repositories\User\UserRepository;
@@ -117,6 +116,7 @@ class UserPassService extends Service
         }
 
         if ($userLoginResponse->getIsMigrate() === 1) {
+            // FIXME
             return UpgradeUser::upgradeMasterKey($userLoginData, $this) ? new UserPassResponse(self::MPASS_OK) : new UserPassResponse(self::MPASS_WRONG);
         }
 
@@ -186,9 +186,7 @@ class UserPassService extends Service
             $this->configService->save('masterPwd', $configHashMPass);
         }
 
-        if (Hash::checkHashKey($userMPass, $configHashMPass)
-            || CryptUpgrade::migrateHash($userMPass)
-        ) {
+        if (Hash::checkHashKey($userMPass, $configHashMPass)) {
             $response = $this->createMasterPass($userMPass, $userLoginData->getLoginUser(), $userLoginData->getLoginPass());
 
             $this->userRepository->updateMasterPassById($userData->getId(), $response->getCryptMasterPass(), $response->getCryptSecuredKey());

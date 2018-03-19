@@ -195,11 +195,11 @@ class MySQL implements DatabaseSetupInterface
 
             $query = /** @lang SQL */
                 'GRANT ALL PRIVILEGES ON `' . $this->installData->getDbName() . '`.* 
-                  TO `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHost() . '`';
+                  TO `' . $this->configData->getDbUser() . '`@`' . $this->installData->getDbAuthHost() . '`';
 
             $queryDns = /** @lang SQL */
                 'GRANT ALL PRIVILEGES ON `' . $this->installData->getDbName() . '`.* 
-                  TO `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHostDns() . '`';
+                  TO `' . $this->configData->getDbUser() . '`@`' . $this->installData->getDbAuthHostDns() . '`';
 
             try {
                 $dbc->exec($query);
@@ -257,8 +257,8 @@ class MySQL implements DatabaseSetupInterface
             }
         } else {
             $dbc->exec('DROP DATABASE IF EXISTS `' . $this->installData->getDbName() . '`');
-            $dbc->exec('DROP USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHost() . '`');
-            $dbc->exec('DROP USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHostDns() . '`');
+            $dbc->exec('DROP USER `' . $this->configData->getDbUser() . '`@`' . $this->installData->getDbAuthHost() . '`');
+            $dbc->exec('DROP USER `' . $this->configData->getDbUser() . '`@`' . $this->installData->getDbAuthHostDns() . '`');
 //            $this->DB->exec('DROP USER `' . $this->InstallData->getDbUser() . '`@`%`');
         }
 

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,7 +24,6 @@
 
 namespace SP\Storage;
 
-use RuntimeException;
 use SP\Core\Exceptions\SPException;
 
 /**
@@ -126,17 +125,23 @@ class DBUtil
     public static function checkDatabaseExist(DBStorageInterface $DBStorage, $dbName)
     {
         try {
+            $tables = array_map(function ($value) {
+                return '\'' . $value . '\'';
+            }, self::$tables);
+
             $query = /** @lang SQL */
                 'SELECT COUNT(*) 
                 FROM information_schema.tables
                 WHERE table_schema = \'' . $dbName . '\'
-                AND `table_name` IN (\'Client\', \'Category\', \'Account\', \'User\', \'Config\', \'EventLog\')';
+                AND `table_name` IN (' . implode(',', $tables) . ')';
 
-            return (int)$DBStorage->getConnection()->query($query)->fetchColumn() === 6;
+            $numTables = $DBStorage->getConnection()->query($query)->fetchColumn();
+
+            return (int)$numTables === count(self::$tables);
         } catch (\Exception $e) {
             processException($e);
-
-            throw new RuntimeException(__u('Error en la verificación de la base de datos'));
         }
+
+        return false;
     }
 }

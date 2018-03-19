@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,11 +24,12 @@
 
 namespace SP\Modules\Web\Controllers;
 
+use DI\Container;
 use Klein\Klein;
-use SP\Bootstrap;
+use SP\Core\Exceptions\FileNotFoundException;
+use SP\Core\Exceptions\SPException;
+use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\View\Template;
-use SP\Services\Install\Installer;
-use SP\Util\Util;
 
 /**
  * Class ErrorController
@@ -45,36 +46,83 @@ class ErrorController
      * @var Klein
      */
     protected $router;
+    /**
+     * @var LayoutHelper
+     */
+    protected $layoutHelper;
 
     /**
      * ErrorController constructor.
-     * @param Template $view
-     * @param Klein $router
+     *
+     * @param Container $container
+     * @param string    $actionName
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
-    public function __construct(Template $view, Klein $router)
+    public function __construct(Container $container, $actionName)
     {
-        $this->view = $view;
-        $this->router = $router;
+        $this->view = $container->get(Template::class);
+        $this->view->setBase('error');
+
+        $this->router = $container->get(Klein::class);
+        $this->layoutHelper = $container->get(LayoutHelper::class);
+        $this->layoutHelper->getPublicLayout('error');
     }
 
     /**
-     * @todo
+     * indexAction
      */
     public function indexAction()
     {
-        $this->view->assign('startTime', microtime());
+        $this->layoutHelper->getPublicLayout('error');
+        $this->view();
+    }
 
-        $this->view->assign('appInfo', Util::getAppInfo());
-        $this->view->assign('appVersion', Installer::VERSION_TEXT);
-        $this->view->assign('logoIcon', Bootstrap::$WEBURI . '/public/images/logo_icon.png');
-        $this->view->assign('logoNoText', Bootstrap::$WEBURI . '/public/images/logo_icon.svg');
-        $this->view->assign('logo', Bootstrap::$WEBURI . '/public/images/logo_full_bg.png');
-        $this->view->assign('logonobg', Bootstrap::$WEBURI . '/public/images/logo_full_nobg.png');
-        $this->view->assign('lang', 'en');
-        $this->view->assign('error', 'Error!');
+    /**
+     * Mostrar los datos de la plantilla
+     */
+    protected function view()
+    {
+        try {
+            echo $this->view->render();
+        } catch (FileNotFoundException $e) {
+            processException($e);
 
-        $this->router->response()->header('Content-Type', 'text/html; charset=UTF-8');
-        $this->router->response()->header('Cache-Control', 'public, no-cache, max-age=0, must-revalidate');
-        $this->router->response()->header('Pragma', 'public; max-age=0');
+            echo __($e->getMessage());
+        }
+
+        die();
+    }
+
+    /**
+     * databaseErrorAction
+     */
+    public function maintenanceErrorAction()
+    {
+        $this->layoutHelper->getPublicLayout('error-maintenance');
+
+        $this->view->append('errors', [
+            'type' => SPException::WARNING,
+            'description' => __('Aplicación en mantenimiento'),
+            'hint' => __('En breve estará operativa')
+        ]);
+
+        $this->view();
+    }
+
+    /**
+     * databaseErrorAction
+     */
+    public function databaseErrorAction()
+    {
+        $this->layoutHelper->getPublicLayout('error-database');
+
+        $this->view->append('errors', [
+            'type' => SPException::CRITICAL,
+            'description' => __('Error en la verificación de la base de datos'),
+            'hint' => __('Consulte con el administrador')
+        ]);
+
+        $this->view();
     }
 }

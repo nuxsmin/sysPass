@@ -112,7 +112,7 @@ class LayoutHelper extends HelperBase
         $this->loggedIn = $this->context->isLoggedIn();
 
         $this->view->assign('loggedIn', $this->loggedIn);
-        $this->view->assign('lang', $this->loggedIn ? Language::$userLang : Language::$globalLang);
+        $this->view->assign('lang', $this->loggedIn ? Language::$userLang : substr(Language::$globalLang, 0, 2));
         $this->view->assign('loadApp', $this->context->getAuthCompleted());
 
 
@@ -332,23 +332,6 @@ class LayoutHelper extends HelperBase
     {
         $this->view->addTemplate('main', '_layouts');
         $this->view->addContentTemplate($template);
-        $this->view->assign('useFixedHeader');
-
-        $this->setPage($page);
-        $this->initBody();
-
-        return $this;
-    }
-
-    /**
-     * Sets a full layout page
-     *
-     * @param string $page Page/view name
-     * @return LayoutHelper
-     */
-    public function getErrorLayout($page = '')
-    {
-        $this->view->addTemplate('error', '_layouts');
         $this->view->assign('useFixedHeader');
 
         $this->setPage($page);
