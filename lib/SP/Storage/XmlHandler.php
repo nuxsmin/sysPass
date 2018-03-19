@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -127,7 +127,7 @@ class XmlHandler implements XmlFileStorageInterface
                         $nodes[$node->nodeName] = $this->readChildNodes($node->childNodes);
                     }
                 } else {
-                    $val = is_numeric($node->nodeValue) ? (int)$node->nodeValue : $node->nodeValue;
+                    $val = is_numeric($node->nodeValue) && strpos($node->nodeValue, '.') === false ? (int)$node->nodeValue : $node->nodeValue;
 
                     if ($node->nodeName === 'item') {
                         $nodes[] = $val;
@@ -181,9 +181,9 @@ class XmlHandler implements XmlFileStorageInterface
     /**
      * Crear los nodos hijos recursivamente a partir de un array multidimensional
      *
-     * @param mixed $items
+     * @param mixed   $items
      * @param DOMNode $Node
-     * @param null $type
+     * @param null    $type
      */
     protected function writeChildNodes($items, DOMNode $Node, $type = null)
     {
@@ -212,7 +212,7 @@ class XmlHandler implements XmlFileStorageInterface
      * Analizar el tipo de elementos
      *
      * @param mixed $items
-     * @param bool $serialize
+     * @param bool  $serialize
      * @return array
      */
     protected function analyzeItems($items, $serialize = false)
@@ -246,8 +246,10 @@ class XmlHandler implements XmlFileStorageInterface
             $property->setAccessible(true);
             $value = $property->getValue($object);
 
-            if (is_numeric($value) || is_bool($value)) {
+            if (is_bool($value)) {
                 $items[$property->getName()] = (int)$value;
+            } elseif (is_numeric($value)) {
+                $items[$property->getName()] = strpos($value, '.') !== false ? (float)$value : (int)$value;
             } else {
                 $items[$property->getName()] = $value;
             }

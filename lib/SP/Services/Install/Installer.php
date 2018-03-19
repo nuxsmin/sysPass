@@ -78,7 +78,6 @@ class Installer extends Service
     /**
      * @param InstallData $installData
      * @return static
-     * @throws Dic\ContainerException
      * @throws InvalidArgumentException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
@@ -167,7 +166,6 @@ class Installer extends Service
     /**
      * Iniciar instalación.
      *
-     * @throws Dic\ContainerException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -185,9 +183,14 @@ class Installer extends Service
         $this->saveMasterPassword();
         $this->createAdminAccount();
 
-        $this->configService->create(new \SP\DataModel\ConfigData('version', Util::getVersionStringNormalized()));
+        $version = Util::getVersionStringNormalized();
+
+        $this->configService->create(new \SP\DataModel\ConfigData('version', $version));
 
         $this->configData->setInstalled(true);
+        $this->configData->setDatabaseVersion($version);
+        $this->configData->setConfigVersion($version);
+
         $this->config->saveConfig($this->configData, false);
     }
 
@@ -270,7 +273,8 @@ class Installer extends Service
     private function setupDBConnectionData()
     {
         // FIXME: ugly!!
-        $this->dic->get(DatabaseConnectionData::class)->refreshFromConfig($this->configData);
+        $this->dic->get(DatabaseConnectionData::class)
+            ->refreshFromConfig($this->configData);
     }
 
     /**

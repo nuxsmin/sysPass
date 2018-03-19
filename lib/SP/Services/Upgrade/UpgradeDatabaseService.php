@@ -26,7 +26,6 @@ namespace SP\Services\Upgrade;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Services\Config\ConfigService;
 use SP\Services\Service;
 use SP\Storage\Database;
 use SP\Storage\DbWrapper;
@@ -58,7 +57,7 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
      */
     public static function needsUpgrade($version)
     {
-        return Util::checkVersion($version, self::UPGRADES);
+        return empty($version) || Util::checkVersion($version, self::UPGRADES);
     }
 
     /**
@@ -67,8 +66,6 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
      * @param int $version con la versión de la BBDD actual
      * @return bool
      * @throws UpgradeException
-     * @throws \SP\Core\Exceptions\SPException
-     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     public function upgrade($version)
     {
@@ -77,13 +74,10 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
                 ->addDescription(__u('Actualizar BBDD')))
         );
 
-        $configService = $this->dic->get(ConfigService::class);
-        $dbVersion = UpgradeUtil::fixVersionNumber($configService->getByParam('version'));
+        $configData = $this->config->getConfigData();
 
         foreach (self::UPGRADES as $upgradeVersion) {
-            if (Util::checkVersion($version, $upgradeVersion)
-                && Util::checkVersion($dbVersion, $version)
-            ) {
+            if (Util::checkVersion($version, $upgradeVersion)) {
                 if ($this->applyPreUpgrade($upgradeVersion) === false) {
                     throw new UpgradeException(
                         __u('Error al aplicar la actualización auxiliar'),
@@ -100,7 +94,11 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
                     );
                 }
 
-                $configService->save('version', $version);
+                debugLog('DB Upgrade: ' . $upgradeVersion);
+
+                $configData->setDatabaseVersion($upgradeVersion);
+
+                $this->config->saveConfig($configData, false);
             }
         }
 
@@ -169,6 +167,7 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
                 DbWrapper::getQuery($queryData, $this->db);
             } catch (\Exception $e) {
                 processException($e);
+                debugLog('SQL: ' . $query);
 
                 $this->eventDispatcher->notifyEvent('exception',
                     new Event($this, EventMessage::factory()
@@ -206,8 +205,8 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
             while (!feof($handle)) {
                 $buffer = stream_get_line($handle, 1000000, ";\n");
 
-                if (strlen(trim($buffer)) > 0) {
-                    $queries[] = str_replace("\n", '', $buffer);
+                if (strlen(trim($buffer)) > 0 && strpos($buffer, '--') !== 0) {
+                    $queries[] = $buffer;
                 }
             }
         }

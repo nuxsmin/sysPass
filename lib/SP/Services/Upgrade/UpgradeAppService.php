@@ -24,6 +24,8 @@
 
 namespace SP\Services\Upgrade;
 
+use SP\Core\Events\Event;
+use SP\Core\Events\EventMessage;
 use SP\Services\Service;
 use SP\Util\Util;
 
@@ -51,17 +53,35 @@ class UpgradeAppService extends Service implements UpgradeInterface
      */
     public function upgrade($version)
     {
+        $this->eventDispatcher->notifyEvent('upgrade.app.start',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Actualizar Aplicación')))
+        );
+
+        $configData = $this->config->getConfigData();
+
         foreach (self::UPGRADES as $appVersion) {
-            if (Util::checkVersion($version, $appVersion)
-                && $this->applyUpgrade($appVersion) === false
-            ) {
-                throw new UpgradeException(
-                    __u('Error al aplicar la actualización de la aplicación'),
-                    UpgradeException::CRITICAL,
-                    __u('Compruebe el registro de eventos para más detalles')
-                );
+            if (Util::checkVersion($version, $appVersion)) {
+                if ($this->applyUpgrade($appVersion) === false) {
+                    throw new UpgradeException(
+                        __u('Error al aplicar la actualización de la aplicación'),
+                        UpgradeException::CRITICAL,
+                        __u('Compruebe el registro de eventos para más detalles')
+                    );
+                }
+
+                debugLog('APP Upgrade: '. $appVersion);
+
+                $configData->setConfigVersion($appVersion);
             }
         }
+
+        $this->config->saveConfig($configData, false);
+
+        $this->eventDispatcher->notifyEvent('upgrade.app.end',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Actualizar Aplicación')))
+        );
     }
 
     /**
@@ -76,6 +96,8 @@ class UpgradeAppService extends Service implements UpgradeInterface
             switch ($version) {
                 case '300.18010101':
                     $this->dic->get(UpgradeCustomFieldDefinition::class)
+                        ->upgrade_300_18010101();
+                    $this->dic->get(UpgradePublicLink::class)
                         ->upgrade_300_18010101();
                     return true;
             }

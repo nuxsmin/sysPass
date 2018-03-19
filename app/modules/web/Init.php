@@ -26,8 +26,6 @@ namespace SP\Modules\Web;
 
 use Defuse\Crypto\Exception\CryptoException;
 use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
 use SP\Bootstrap;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
@@ -40,7 +38,6 @@ use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\UI\Theme;
 use SP\Http\Request;
-use SP\Services\Config\ConfigService;
 use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
@@ -99,6 +96,7 @@ class Init extends ModuleBase
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\SPException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function initialize($controller)
     {
@@ -163,6 +161,8 @@ class Init extends ModuleBase
 
             // Checks if upgrade is needed
             if ($this->checkUpgrade()) {
+                $this->config->generateUpgradeKey();
+
                 $this->router->response()
                     ->redirect('index.php?r=upgrade/index')
                     ->send();
@@ -229,18 +229,12 @@ class Init extends ModuleBase
 
     /**
      * Comprobar si es necesario actualizar componentes
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws \SP\Services\Config\ParameterNotFoundException
      */
     private function checkUpgrade()
     {
-        $configService = $this->container->get(ConfigService::class);
-        $dbVersion = UpgradeUtil::fixVersionNumber($configService->getByParam('version'));
-
-        return UpgradeDatabaseService::needsUpgrade($dbVersion) ||
-            UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion()));
+        return $this->configData->getUpgradeKey()
+            || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion()) ||
+                UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion())));
     }
 
     /**

@@ -665,7 +665,7 @@ sysPass.Actions = function (Common) {
                         }
 
                         const opts = Common.appRequests().getRequestOpts();
-                        opts.url = ajaxUrl.entrypoint;
+                        opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data('action-route');
                         opts.method = "get";
                         opts.useFullLoading = !!taskId;
                         opts.data = $obj.serialize();
@@ -674,7 +674,7 @@ sysPass.Actions = function (Common) {
                             Common.msg.out(json);
 
                             if (json.status !== 0) {
-                                $obj.find(":input[name=h]").val("");
+                                $obj.find(":input[name=key]").val("");
                             } else {
                                 if (taskRunner !== undefined) {
                                     taskRunner.close();

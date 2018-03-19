@@ -79,6 +79,8 @@ class DatabaseConnectionData
      */
     public function refreshFromConfig(ConfigData $configData)
     {
+        debugLog('Refresh DB connection data');
+
         return $this->setDbHost($configData->getDbHost())
             ->setDbName($configData->getDbName())
             ->setDbUser($configData->getDbUser())

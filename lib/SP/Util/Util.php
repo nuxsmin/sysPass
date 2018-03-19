@@ -351,7 +351,7 @@ class Util
         list($currentVersion, $build) = explode('.', $currentVersion, 2);
         list($upgradeVersion, $upgradeBuild) = explode('.', $upgradeableVersion, 2);
 
-        $versionRes = (int)$currentVersion <= (int)$upgradeVersion;
+        $versionRes = (int)$currentVersion < (int)$upgradeVersion;
 
         return (($versionRes && (int)$upgradeBuild === 0)
             || ($versionRes && (int)$build < (int)$upgradeBuild));
@@ -500,7 +500,7 @@ class Util
         if (!is_object($serialized)) {
             preg_match('/^O:\d+:"(?P<class>[^"]++)"/', $serialized, $matches);
 
-            if (class_exists($matches['class'])) {
+            if (class_exists($matches['class']) && $srcClass === null) {
                 return unserialize($serialized);
             }
 

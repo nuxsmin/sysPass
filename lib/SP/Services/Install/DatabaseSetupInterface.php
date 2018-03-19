@@ -47,8 +47,11 @@ interface DatabaseSetupInterface
     /**
      * Crear el usuario para conectar con la base de datos.
      * Esta función crea el usuario para conectar con la base de datos.
+     *
+     * @param string $user
+     * @param string $pass
      */
-    public function createDBUser();
+    public function createDBUser($user, $pass);
 
     /**
      * Crear la base de datos

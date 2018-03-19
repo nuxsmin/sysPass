@@ -26,10 +26,9 @@ namespace SP\Services\Upgrade;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\DataModel\CustomFieldDefDataOld;
-use SP\DataModel\CustomFieldDefinitionData;
-use SP\Services\CustomField\CustomFieldDefService;
-use SP\Services\CustomField\CustomFieldTypeService;
+use SP\DataModel\PublickLinkOldData;
+use SP\DataModel\PublicLinkData;
+use SP\Services\PublicLink\PublicLinkService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\Database;
@@ -38,11 +37,11 @@ use SP\Storage\QueryData;
 use SP\Util\Util;
 
 /**
- * Class UpgradeCustomField
+ * Class UpgradePublicLink
  *
  * @package SP\Services\Upgrade
  */
-class UpgradeCustomFieldDefinition extends Service
+class UpgradePublicLink extends Service
 {
     /**
      * @var Database
@@ -56,48 +55,46 @@ class UpgradeCustomFieldDefinition extends Service
      */
     public function upgrade_300_18010101()
     {
-        $this->eventDispatcher->notifyEvent('upgrade.customField.start',
+        $this->eventDispatcher->notifyEvent('upgrade.publicLink.start',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualización de campos personalizados'))
+                ->addDescription(__u('Actualización de enlaces públicos'))
                 ->addDescription(__FUNCTION__))
         );
 
-        $customFieldDefService = $this->dic->get(CustomFieldDefService::class);
-        $customFieldTypeService = $this->dic->get(CustomFieldTypeService::class);
-
-        $types = [];
-
-        foreach ($customFieldTypeService->getAll() as $customFieldTypeData) {
-            $types[$customFieldTypeData->getName()] = $customFieldTypeData->getId();
-        }
-
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, moduleId, field FROM CustomFieldDefinition WHERE field IS NOT NULL');
+        $queryData->setQuery('SELECT id, `data` FROM PublicLink');
 
         try {
+            $publicLinkService = $this->dic->get(PublicLinkService::class);
+
             if (!DbWrapper::beginTransaction($this->db)) {
                 throw new ServiceException(__u('No es posible iniciar una transacción'));
             }
 
             foreach (DbWrapper::getResultsArray($queryData, $this->db) as $item) {
-                /** @var CustomFieldDefDataOld $data */
-                $data = Util::unserialize(CustomFieldDefDataOld::class, $item->field, 'SP\DataModel\CustomFieldDefData');
+                /** @var PublickLinkOldData $data */
+                $data = Util::unserialize(PublickLinkOldData::class, $item->data, 'SP\DataModel\PublicLinkData');
 
-                $itemData = new CustomFieldDefinitionData();
+                $itemData = new PublicLinkData();
                 $itemData->setId($item->id);
-                $itemData->setModuleId($item->moduleId);
-                $itemData->setName($data->getName());
-                $itemData->setHelp($data->getHelp());
-                $itemData->setRequired($data->isRequired());
-                $itemData->setShowInList($data->isShowInItemsList());
-                $itemData->setTypeId($types[$data->getType()]);
+                $itemData->setItemId($data->getItemId());
+                $itemData->setHash($data->getLinkHash());
+                $itemData->setUserId($data->getUserId());
+                $itemData->setTypeId($data->getTypeId());
+                $itemData->setNotify($data->isNotify());
+                $itemData->setDateAdd($data->getDateAdd());
+                $itemData->setDateExpire($data->getDateExpire());
+                $itemData->setCountViews($data->getCountViews());
+                $itemData->setMaxCountViews($data->getMaxCountViews());
+                $itemData->setUseInfo($data->getUseInfo());
+                $itemData->setData($data->getData());
 
-                $customFieldDefService->update($itemData);
+                $publicLinkService->update($itemData);
 
-                $this->eventDispatcher->notifyEvent('upgrade.customField.process',
+                $this->eventDispatcher->notifyEvent('upgrade.publicLink.process',
                     new Event($this, EventMessage::factory()
-                        ->addDescription(__u('Campo actualizado'))
-                        ->addDetail(__u('Campo'), $data->getName()))
+                        ->addDescription(__u('Enlace actualizado'))
+                        ->addDetail(__u('Enlace'), $item->id))
                 );
             }
 
@@ -112,9 +109,9 @@ class UpgradeCustomFieldDefinition extends Service
             $this->eventDispatcher->notifyEvent('exception', new Event($e));
         }
 
-        $this->eventDispatcher->notifyEvent('upgrade.customField.end',
+        $this->eventDispatcher->notifyEvent('upgrade.publicLink.end',
             new Event($this, EventMessage::factory()
-                ->addDescription(__u('Actualización de campos personalizados'))
+                ->addDescription(__u('Actualización de enlaces públicos'))
                 ->addDescription(__FUNCTION__))
         );
     }

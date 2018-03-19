@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -245,7 +245,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
             'INSERT INTO PublicLink
             SET itemId = ?,
             `hash` = ?,
-            data = ?,
+            `data` = ?,
             userId = ?,
             typeId = ?,
             notify = ?,
@@ -337,20 +337,32 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
     {
         $query = /** @lang SQL */
             'UPDATE PublicLink
-            SET `hash` = ?,
-            data = ?,
+            SET itemId = ?,
+            `hash` = ?,
+            `data` = ?,
+            userId = ?,
             notify = ?,
+            dateAdd = ?,
             dateExpire = ?,
-            maxCountViews = ?
+            countViews = ?,
+            maxCountViews = ?,
+            useInfo = ?,
+            typeId = ?
             WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
+        $queryData->addParam($itemData->getItemId());
         $queryData->addParam($itemData->getHash());
         $queryData->addParam($itemData->getData());
+        $queryData->addParam($itemData->getUserId());
         $queryData->addParam((int)$itemData->isNotify());
+        $queryData->addParam($itemData->getDateAdd());
         $queryData->addParam($itemData->getDateExpire());
+        $queryData->addParam($itemData->getCountViews());
         $queryData->addParam($itemData->getMaxCountViews());
+        $queryData->addParam($itemData->getUseInfo());
+        $queryData->addParam($itemData->getTypeId());
         $queryData->addParam($itemData->getId());
         $queryData->setOnErrorMessage(__u('Error al actualizar enlace'));
 
@@ -371,7 +383,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
         $query = /** @lang SQL */
             'UPDATE PublicLink
             SET `hash` = ?,
-            data = ?,
+            `data` = ?,
             dateExpire = ?,
             countViews = 0,
             maxCountViews = ?

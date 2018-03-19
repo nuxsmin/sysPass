@@ -326,6 +326,20 @@ class PublicLinkService extends Service
     }
 
     /**
+     * Updates an item
+     *
+     * @param PublicLinkData $itemData
+     * @return mixed
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function update(PublicLinkData $itemData)
+    {
+        return $this->publicLinkRepository->update($itemData);
+    }
+
+    /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */

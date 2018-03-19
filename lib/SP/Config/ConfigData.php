@@ -290,6 +290,10 @@ class ConfigData implements JsonSerializable
      */
     private $configVersion;
     /**
+     * @var string
+     */
+    private $databaseVersion;
+    /**
      * @var bool
      */
     private $wikiEnabled = false;
@@ -1520,11 +1524,11 @@ class ConfigData implements JsonSerializable
      */
     public function getConfigVersion()
     {
-        return $this->configVersion;
+        return (string)$this->configVersion;
     }
 
     /**
-     * @param int $configVersion
+     * @param string $configVersion
      * @return $this
      */
     public function setConfigVersion($configVersion)
@@ -1988,5 +1992,24 @@ class ConfigData implements JsonSerializable
     public function setMailEvents(array $mailEvents)
     {
         $this->mailEvents = $mailEvents;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDatabaseVersion()
+    {
+        return (string)$this->databaseVersion;
+    }
+
+    /**
+     * @param string $databaseVersion
+     * @return ConfigData
+     */
+    public function setDatabaseVersion($databaseVersion)
+    {
+        $this->databaseVersion = $databaseVersion;
+
+        return $this;
     }
 }

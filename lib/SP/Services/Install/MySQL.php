@@ -103,60 +103,63 @@ class MySQL implements DatabaseSetupInterface
      */
     public function setupDbUser()
     {
-        $this->installData->setDbPass(Util::randomPassword());
-        $this->installData->setDbUser(substr(uniqid('sp_'), 0, 16));
+        debugLog(__METHOD__);
+
+        $user = substr(uniqid('sp_'), 0, 16);
+        $pass = Util::randomPassword();
 
         try {
             // Comprobar si el usuario proporcionado existe
             $sth = $this->dbs->getConnectionSimple()
                 ->prepare('SELECT COUNT(*) FROM mysql.user WHERE `user` = ? AND `host` = ?');
-            $sth->execute([$this->installData->getDbUser(), $this->installData->getDbAuthHost()]);
+            $sth->execute([$user, $pass]);
 
             // Si no existe el usuario, se intenta crear
-            if ((int)$sth->fetchColumn() === 0
-                // Se comprueba si el nuevo usuario es distinto del creado en otra instalación
-                && $this->installData->getDbUser() !== $this->configData->getDbUser()
-            ) {
-                $this->createDBUser();
+            if ((int)$sth->fetchColumn() === 0) {
+                $this->createDBUser($user, $pass);
             }
         } catch (PDOException $e) {
             processException($e);
 
             throw new SPException(
-                sprintf(__('No es posible comprobar el usuario de sysPass (%s)'), $this->installData->getAdminLogin()),
+                sprintf(__('No es posible comprobar el usuario de sysPass (%s)'), $user),
                 SPException::CRITICAL,
                 __u('Compruebe los permisos del usuario de conexión a la BD')
             );
         }
 
         // Guardar el nuevo usuario/clave de conexión a la BD
-        $this->configData->setDbUser($this->installData->getDbUser());
-        $this->configData->setDbPass($this->installData->getDbPass());
+        $this->configData->setDbUser($user);
+        $this->configData->setDbPass($pass);
     }
 
     /**
      * Crear el usuario para conectar con la base de datos.
      * Esta función crea el usuario para conectar con la base de datos.
      *
+     * @param string $user
+     * @param string $pass
      * @throws SPException
      */
-    public function createDBUser()
+    public function createDBUser($user, $pass)
     {
         if ($this->installData->isHostingMode()) {
             return;
         }
 
+        debugLog('Creating DB user');
+
         try {
             $dbc = $this->dbs->getConnectionSimple();
 
-            $dbc->exec('CREATE USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHost() . '` IDENTIFIED BY \'' . $this->installData->getDbPass() . '\'');
-            $dbc->exec('CREATE USER `' . $this->installData->getDbUser() . '`@`' . $this->installData->getDbAuthHostDns() . '` IDENTIFIED BY \'' . $this->installData->getDbPass() . '\'');
+            $dbc->exec('CREATE USER `' . $user . '`@`' . $this->installData->getDbAuthHost() . '` IDENTIFIED BY \'' . $pass . '\'');
+            $dbc->exec('CREATE USER `' . $user . '`@`' . $this->installData->getDbAuthHostDns() . '` IDENTIFIED BY \'' . $pass . '\'');
             $dbc->exec('FLUSH PRIVILEGES');
         } catch (PDOException $e) {
             processException($e);
 
             throw new SPException(
-                sprintf(__u('Error al crear el usuario de conexión a MySQL \'%s\''), $this->installData->getDbUser()),
+                sprintf(__u('Error al crear el usuario de conexión a MySQL \'%s\''), $user),
                 SPException::CRITICAL, $e->getMessage()
             );
         }
@@ -291,9 +294,7 @@ class MySQL implements DatabaseSetupInterface
         }
 
         // Leemos el archivo SQL para crear las tablas de la BBDD
-        $handle = fopen($fileName, 'rb');
-
-        if ($handle) {
+        if ($handle = fopen($fileName, 'rb')) {
             while (!feof($handle)) {
                 $buffer = stream_get_line($handle, 1000000, ";\n");
 

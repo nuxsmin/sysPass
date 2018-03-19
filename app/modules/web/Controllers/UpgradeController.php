@@ -24,8 +24,14 @@
 
 namespace SP\Modules\Web\Controllers;
 
-use SP\Core\Exceptions\SPException;
+use SP\Http\JsonResponse;
+use SP\Http\Request;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
+use SP\Modules\Web\Controllers\Traits\JsonTrait;
+use SP\Services\Upgrade\UpgradeAppService;
+use SP\Services\Upgrade\UpgradeDatabaseService;
+use SP\Services\Upgrade\UpgradeException;
+use SP\Services\Upgrade\UpgradeUtil;
 
 /**
  * Class UpgradeController
@@ -34,22 +40,55 @@ use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
  */
 class UpgradeController extends ControllerBase
 {
+    use JsonTrait;
+
     /**
      * indexAction
      */
     public function indexAction()
     {
         $layoutHelper = $this->dic->get(LayoutHelper::class);
-        $layoutHelper->getErrorLayout('upgrade');
-
-        $errors[] = [
-            'type' => SPException::WARNING,
-            'description' => __('La aplicación necesita actualizarse'),
-            'hint' => __('Consulte con el administrador')
-        ];
-
-        $this->view->assign('errors', $errors);
+        $layoutHelper->getPublicLayout('index', 'upgrade');
 
         $this->view();
+    }
+
+    /**
+     * upgradeAction
+     */
+    public function upgradeAction()
+    {
+        if (Request::analyzeBool('chkConfirm', false) === false) {
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Es necesario confirmar la actualización'));
+        }
+
+        if (Request::analyzeString('key') !== $this->configData->getUpgradeKey()) {
+            $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('Código de seguridad incorrecto'));
+        }
+
+
+        try {
+            $dbVersion = $this->configData->getDatabaseVersion();
+            $dbVersion = empty($dbVersion) ? '0.0' : $dbVersion;
+
+            if (UpgradeDatabaseService::needsUpgrade($dbVersion)) {
+                $this->dic->get(UpgradeDatabaseService::class)
+                    ->upgrade($dbVersion);
+            }
+
+            if (UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion()))) {
+                $this->dic->get(UpgradeAppService::class)
+                    ->upgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion()));
+            }
+
+            $this->configData->setUpgradeKey(null);
+            $this->config->saveConfig($this->configData, false);
+
+            $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Aplicación actualizada correctamente'), [__u('En 5 segundos será redirigido al login')]);
+        } catch (UpgradeException $e) {
+            processException($e);
+
+            $this->returnJsonResponseException($e);
+        }
     }
 }

@@ -1,75 +1,234 @@
-ALTER TABLE `customers`
-  ADD `customer_isGlobal` TINYINT(1) DEFAULT '0' NULL;
-ALTER TABLE `usrData`
-  ADD `user_ssoLogin` VARCHAR(100) NULL
-  AFTER `user_login`;
-
-DROP INDEX IDX_login
-ON `usrData`;
-CREATE UNIQUE INDEX `IDX_login`
-  ON `usrData` (`user_login`, `user_ssoLogin`);
-
-ALTER TABLE plugins
-  ADD `plugin_available` TINYINT(1) DEFAULT '0' NULL;
-
-ALTER TABLE `customFieldsDef`
-  CHANGE COLUMN `customfielddef_field` `customfielddef_field` BLOB NULL;
-ALTER TABLE customFieldsDef
-  ADD `required` TINYINT(1) UNSIGNED NULL;
-ALTER TABLE customFieldsDef
-  ADD `help` VARCHAR(255) NULL;
-ALTER TABLE customFieldsDef
-  ADD `showInList` TINYINT(1) UNSIGNED NULL;
-ALTER TABLE customFieldsDef
-  ADD `name` VARCHAR(100) NOT NULL
-  AFTER customfielddef_id;
-ALTER TABLE customFieldsDef
-  ADD `typeId` TINYINT UNSIGNED NULL;
-ALTER TABLE customFieldsDef
-  CHANGE customfielddef_module moduleId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE customFieldsDef
-  CHANGE customfielddef_field field BLOB NOT NULL;
-
-ALTER TABLE customFieldsData
-  DROP FOREIGN KEY fk_customFieldsData_def_id;
-
-ALTER TABLE customFieldsData
-  CHANGE customfielddata_defId definitionId INT(10) UNSIGNED NOT NULL;
-ALTER TABLE customFieldsDef
-  CHANGE customfielddef_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE customFieldsData
-  CHANGE customfielddata_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE customFieldsData
-  CHANGE customfielddata_moduleId moduleId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE customFieldsData
-  CHANGE customfielddata_itemId itemId INT(10) UNSIGNED NOT NULL;
-ALTER TABLE customFieldsData
-  CHANGE customfielddata_data data LONGBLOB;
-ALTER TABLE customFieldsData
-  CHANGE customfielddata_key `key` VARBINARY(1000);
+SET FOREIGN_KEY_CHECKS=0;
 
 CREATE TABLE `CustomFieldType` (
   `id`   TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50)         NOT NULL,
   `text` VARCHAR(50)         NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_CustomFieldType_01` (`name`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
--- Extraer antes desde los datos
-INSERT INTO CustomFieldType (id, name, text) VALUES (1, 'text', 'Texto');
-INSERT INTO CustomFieldType (id, name, text) VALUES (2, 'password', 'Clave');
-INSERT INTO CustomFieldType (id, name, text) VALUES (3, 'date', 'Fecha');
-INSERT INTO CustomFieldType (id, name, text) VALUES (4, 'number', 'Número');
-INSERT INTO CustomFieldType (id, name, text) VALUES (5, 'email', 'Email');
-INSERT INTO CustomFieldType (id, name, text) VALUES (6, 'telephone', 'Teléfono');
-INSERT INTO CustomFieldType (id, name, text) VALUES (7, 'url', 'URL');
-INSERT INTO CustomFieldType (id, name, text) VALUES (8, 'color', 'Color');
-INSERT INTO CustomFieldType (id, name, text) VALUES (9, 'wiki', 'Wiki');
-INSERT INTO CustomFieldType (id, name, text) VALUES (10, 'textarea', 'Área de texto');
+INSERT INTO CustomFieldType (id, name, text)
+VALUES (1, 'text', 'Texto'), (2, 'password', 'Clave'), (3, 'date', 'Fecha'), (4, 'number', 'Número'),
+  (5, 'email', 'Email'), (6, 'telephone', 'Teléfono'), (7, 'url', 'URL'), (8, 'color', 'Color'), (9, 'wiki', 'Wiki'),
+  (10, 'textarea', 'Área de texto');
 
-ALTER TABLE `publicLinks`
+-- Foreign Keys;
+ALTER TABLE accFavorites
+  DROP FOREIGN KEY `fk_accFavorites_users_id`,
+  DROP FOREIGN KEY `fk_accFavorites_accounts_id`;
+
+ALTER TABLE accHistory
+  DROP FOREIGN KEY fk_accHistory_userGroup_id,
+  DROP FOREIGN KEY fk_accHistory_users_id,
+  DROP FOREIGN KEY fk_accHistory_users_edit_id,
+  DROP FOREIGN KEY fk_accHistory_customer_id,
+  DROP FOREIGN KEY fk_accHistory_category_id;
+
+ALTER TABLE usrData
+  DROP FOREIGN KEY fk_usrData_profiles_id,
+  DROP FOREIGN KEY fk_usrData_groups_id,
+  DROP INDEX fk_usrData_groups_id_idx,
+  DROP INDEX fk_usrData_profiles_id_idx;
+
+ALTER TABLE accounts
+  DROP FOREIGN KEY fk_accounts_userGroup_id,
+  DROP FOREIGN KEY fk_accounts_user_id,
+  DROP FOREIGN KEY fk_accounts_user_edit_id,
+  DROP FOREIGN KEY fk_accounts_customer_id,
+  DROP FOREIGN KEY fk_accounts_category_id,
+  DROP INDEX fk_accounts_user_id,
+  DROP INDEX fk_accounts_user_edit_id;
+
+ALTER TABLE accTags
+  DROP FOREIGN KEY fk_accTags_accounts_id,
+  DROP FOREIGN KEY fk_accTags_tags_id,
+  DROP INDEX IDX_id,
+  DROP INDEX fk_accTags_tags_id_idx;
+
+ALTER TABLE accUsers
+  DROP FOREIGN KEY fk_accUsers_accounts_id,
+  DROP FOREIGN KEY fk_accUsers_users_id,
+  DROP INDEX fk_accUsers_users_id_idx;
+
+ALTER TABLE accGroups
+  DROP FOREIGN KEY fk_accGroups_accounts_id,
+  DROP FOREIGN KEY fk_accGroups_groups_id,
+  DROP INDEX fk_accGroups_groups_id_idx;
+
+ALTER TABLE accHistory
+  DROP INDEX fk_accHistory_userGroup_id,
+  DROP INDEX fk_accHistory_users_id,
+  DROP INDEX fk_accHistory_users_edit_id_idx,
+  DROP INDEX fk_accHistory_customers_id,
+  DROP INDEX fk_accHistory_categories_id;
+
+ALTER TABLE accFiles
+  DROP FOREIGN KEY fk_accFiles_accounts_id;
+
+ALTER TABLE authTokens
+  DROP FOREIGN KEY fk_authTokens_user_id,
+  DROP FOREIGN KEY fk_authTokens_createdBy_id,
+  DROP INDEX fk_authTokens_users_id_idx,
+  DROP INDEX fk_authTokens_users_createdby_id;
+
+ALTER TABLE usrPassRecover
+  DROP FOREIGN KEY fk_usrPassRecover_users;
+
+ALTER TABLE usrToGroups
+  DROP FOREIGN KEY fk_usrToGroups_groups_id,
+  DROP FOREIGN KEY fk_usrToGroups_users_id,
+  DROP INDEX fk_usrToGroups_groups_id_idx;
+
+ALTER TABLE customFieldsData
+  DROP FOREIGN KEY fk_customFieldsData_def_id;
+
+-- CustomFieldData;
+ALTER TABLE customFieldsData
+  CHANGE customfielddata_defId definitionId INT(10) UNSIGNED NOT NULL,
+  CHANGE customfielddata_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE customfielddata_moduleId moduleId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE customfielddata_itemId itemId INT(10) UNSIGNED NOT NULL,
+  CHANGE customfielddata_data data LONGBLOB,
+  CHANGE customfielddata_key `key` VARBINARY(1000),
+  DROP INDEX IDX_DEFID,
+  ADD INDEX idx_CustomFieldData_01 (definitionId ASC),
+  DROP INDEX IDX_DELETE,
+  ADD INDEX idx_CustomFieldData_02 (itemId ASC, moduleId ASC),
+  DROP INDEX IDX_UPDATE,
+  DROP INDEX IDX_MODULE,
+  ADD INDEX idx_CustomFieldData_03 (moduleId ASC),
+  ADD INDEX uk_CustomFieldData_01 (moduleId ASC, itemId ASC, definitionId ASC),
+  DROP INDEX IDX_ITEM,
+RENAME TO CustomFieldData;
+
+-- CustomFieldDefinition;
+ALTER TABLE customFieldsDef
+  ADD required TINYINT(1) UNSIGNED NULL,
+  ADD help VARCHAR(255) NULL,
+  ADD showInList TINYINT(1) UNSIGNED NULL,
+  ADD name VARCHAR(100) NOT NULL
+  AFTER id,
+  ADD typeId TINYINT UNSIGNED NOT NULL,
+  CHANGE customfielddef_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE customfielddef_module moduleId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE customfielddef_field field BLOB NULL,
+RENAME TO CustomFieldDefinition;
+
+-- EventLog;
+ALTER TABLE log
+  CHANGE log_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE log_date date INT(10) UNSIGNED NOT NULL,
+  CHANGE log_login login VARCHAR(25),
+  CHANGE log_userId userId SMALLINT(5) UNSIGNED,
+  CHANGE log_ipAddress ipAddress VARCHAR(45) NOT NULL,
+  CHANGE log_action action VARCHAR(50) NOT NULL,
+  CHANGE log_description description TEXT,
+  CHANGE log_level level VARCHAR(20) NOT NULL,
+  DROP INDEX `fk_log_users_id_idx`,
+RENAME TO EventLog;
+
+-- Track;
+ALTER TABLE track
+  CHANGE track_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE track_userId userId SMALLINT(5) UNSIGNED,
+  CHANGE track_source source VARCHAR(100) NOT NULL,
+  CHANGE track_time time INT(10) UNSIGNED NOT NULL,
+  CHANGE track_ipv4 ipv4 BINARY(4) NOT NULL,
+  CHANGE track_ipv6 ipv6 BINARY(16),
+  DROP INDEX IDX_userId,
+  ADD INDEX idx_Track_01 (userId ASC),
+  DROP INDEX `IDX_time-ip-source`,
+  ADD INDEX `idx_Track_02` (time ASC, ipv4 ASC, ipv6 ASC, source ASC),
+RENAME TO Track;
+
+-- AccountFile;
+ALTER TABLE accFiles
+  CHANGE accfile_accountId accountId MEDIUMINT(5) UNSIGNED NOT NULL,
+  CHANGE accfile_id id INT(11) NOT NULL AUTO_INCREMENT,
+  CHANGE accfile_name name VARCHAR(100) NOT NULL,
+  CHANGE accfile_type type VARCHAR(100) NOT NULL,
+  CHANGE accfile_size size INT(11) NOT NULL,
+  CHANGE accfile_content content MEDIUMBLOB NOT NULL,
+  CHANGE accfile_extension extension VARCHAR(10) NOT NULL,
+  CHANGE accFile_thumb thumb MEDIUMBLOB,
+  DROP INDEX IDX_accountId,
+  ADD INDEX idx_AccountFile_01 (accountId ASC),
+RENAME TO AccountFile;
+
+-- User;
+ALTER TABLE usrData
+  DROP user_secGroupId,
+  CHANGE user_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE user_name name VARCHAR(80) NOT NULL,
+  CHANGE user_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE user_login login VARCHAR(50) NOT NULL,
+  ADD ssoLogin VARCHAR(100) NULL
+  AFTER login,
+  CHANGE user_pass pass VARBINARY(1000) NOT NULL,
+  CHANGE user_mPass mPass VARBINARY(1000) DEFAULT NULL,
+  CHANGE user_mKey mKey VARBINARY(1000) DEFAULT NULL,
+  CHANGE user_email email VARCHAR(80),
+  CHANGE user_notes notes TEXT,
+  CHANGE user_count loginCount INT(10) UNSIGNED NOT NULL DEFAULT '0',
+  CHANGE user_profileId userProfileId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE user_lastLogin lastLogin DATETIME,
+  CHANGE user_lastUpdate lastUpdate DATETIME,
+  CHANGE user_lastUpdateMPass lastUpdateMPass INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  CHANGE user_isAdminApp isAdminApp TINYINT(1) DEFAULT 0,
+  CHANGE user_isAdminAcc isAdminAcc TINYINT(1) DEFAULT 0,
+  CHANGE user_isLdap isLdap TINYINT(1) DEFAULT 0,
+  CHANGE user_isDisabled isDisabled TINYINT(1) DEFAULT 0,
+  CHANGE user_hashSalt hashSalt VARBINARY(128) NOT NULL,
+  CHANGE user_isMigrate isMigrate TINYINT(1) DEFAULT 0,
+  CHANGE user_isChangePass isChangePass TINYINT(1) DEFAULT 0,
+  CHANGE user_isChangedPass isChangedPass TINYINT(1) DEFAULT 0,
+  CHANGE user_preferences preferences BLOB,
+  DROP INDEX IDX_pass,
+  ADD INDEX idx_User_01 (pass ASC),
+  DROP INDEX IDX_login,
+  ADD UNIQUE INDEX `uk_User_01` (`login`, `ssoLogin`),
+RENAME TO User;
+
+-- UserProfile;
+ALTER TABLE usrProfiles
+  CHANGE userprofile_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE userprofile_name name VARCHAR(45) NOT NULL,
+  CHANGE userProfile_profile profile BLOB NOT NULL,
+RENAME TO UserProfile;
+
+-- Notice;
+ALTER TABLE notices
+  CHANGE notice_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE notice_type type VARCHAR(100),
+  CHANGE notice_component component VARCHAR(100) NOT NULL,
+  CHANGE notice_description description VARCHAR(500) NOT NULL,
+  CHANGE notice_date date INT(10) UNSIGNED NOT NULL,
+  CHANGE notice_checked checked TINYINT(1) DEFAULT 0,
+  CHANGE notice_userId userId SMALLINT(5) UNSIGNED,
+  CHANGE notice_sticky sticky TINYINT(1) DEFAULT 0,
+  CHANGE notice_onlyAdmin onlyAdmin TINYINT(1) DEFAULT 0,
+  DROP INDEX IDX_userId,
+  ADD INDEX idx_Notification_01 (userId ASC, checked ASC, date ASC),
+  DROP INDEX IDX_component,
+  ADD INDEX idx_Notification_02 (component ASC, date ASC, checked ASC, userId ASC),
+RENAME TO Notification;
+
+-- Plugin;
+ALTER TABLE plugins
+  CHANGE plugin_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE plugin_name name VARCHAR(100) NOT NULL,
+  CHANGE plugin_data data VARBINARY(5000),
+  CHANGE plugin_enabled enabled TINYINT(1) NOT NULL DEFAULT 0,
+  ADD available TINYINT(1) DEFAULT 0,
+  DROP INDEX plugin_name_UNIQUE,
+  ADD UNIQUE INDEX uk_Plugin_01 (name ASC),
+RENAME TO Plugin;
+
+-- PublicLink;
+ALTER TABLE publicLinks
   ADD COLUMN `userId` SMALLINT(5) UNSIGNED NOT NULL,
   ADD COLUMN `typeId` INT(10) UNSIGNED NOT NULL
   AFTER `userId`,
@@ -88,521 +247,204 @@ ALTER TABLE `publicLinks`
   ADD COLUMN `maxCountViews` SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0
   AFTER `totalCountViews`,
   ADD COLUMN `useinfo` BLOB NULL
-  AFTER `maxCountViews`;
-
--- Foreign Keys
-ALTER TABLE accHistory
-  DROP FOREIGN KEY fk_accHistory_userGroup_id;
-ALTER TABLE accHistory
-  DROP FOREIGN KEY fk_accHistory_users_id;
-ALTER TABLE accHistory
-  DROP FOREIGN KEY fk_accHistory_users_edit_id;
-ALTER TABLE accHistory
-  DROP FOREIGN KEY fk_accHistory_customer_id;
-ALTER TABLE accHistory
-  DROP FOREIGN KEY fk_accHistory_category_id;
-
-ALTER TABLE usrData
-  DROP FOREIGN KEY fk_usrData_profiles_id;
-ALTER TABLE usrData
-  DROP FOREIGN KEY fk_usrData_groups_id;
-DROP INDEX fk_usrData_groups_id_idx
-ON usrData;
-DROP INDEX fk_usrData_profiles_id_idx
-ON usrData;
-
-ALTER TABLE accounts
-  DROP FOREIGN KEY fk_accounts_userGroup_id;
-ALTER TABLE accounts
-  DROP FOREIGN KEY fk_accounts_user_id;
-ALTER TABLE accounts
-  DROP FOREIGN KEY fk_accounts_user_edit_id;
-ALTER TABLE accounts
-  DROP FOREIGN KEY fk_accounts_customer_id;
-ALTER TABLE accounts
-  DROP FOREIGN KEY fk_accounts_category_id;
-DROP INDEX fk_accounts_user_id
-ON accounts;
-DROP INDEX fk_accounts_user_edit_id
-ON accounts;
-
-ALTER TABLE accTags
-  DROP FOREIGN KEY fk_accTags_accounts_id;
-ALTER TABLE accTags
-  DROP FOREIGN KEY fk_accTags_tags_id;
-DROP INDEX IDX_id
-ON accTags;
-DROP INDEX fk_accTags_tags_id_idx
-ON accTags;
-
-ALTER TABLE accUsers
-  DROP FOREIGN KEY fk_accUsers_accounts_id;
-ALTER TABLE accUsers
-  DROP FOREIGN KEY fk_accUsers_users_id;
-DROP INDEX fk_accUsers_users_id_idx
-ON accUsers;
-
-ALTER TABLE accGroups
-  DROP FOREIGN KEY fk_accGroups_accounts_id;
-ALTER TABLE accGroups
-  DROP FOREIGN KEY fk_accGroups_groups_id;
-DROP INDEX fk_accGroups_groups_id_idx
-ON accGroups;
-
-DROP INDEX fk_accHistory_userGroup_id
-ON accHistory;
-DROP INDEX fk_accHistory_users_id
-ON accHistory;
-DROP INDEX fk_accHistory_users_edit_id_idx
-ON accHistory;
-DROP INDEX fk_accHistory_customers_id
-ON accHistory;
-DROP INDEX fk_accHistory_categories_id
-ON accHistory;
-
-ALTER TABLE accFiles
-  DROP FOREIGN KEY fk_accFiles_accounts_id;
-
-ALTER TABLE authTokens
-  DROP FOREIGN KEY fk_authTokens_user_id;
-ALTER TABLE authTokens
-  DROP FOREIGN KEY fk_authTokens_createdBy_id;
-DROP INDEX fk_authTokens_users_id_idx
-ON authTokens;
-DROP INDEX fk_authTokens_users_createdby_id
-ON authTokens;
-
-ALTER TABLE usrPassRecover
-  DROP FOREIGN KEY fk_usrPassRecover_users;
-
-ALTER TABLE usrToGroups
-  DROP FOREIGN KEY fk_usrToGroups_groups_id;
-ALTER TABLE usrToGroups
-  DROP FOREIGN KEY fk_usrToGroups_users_id;
-DROP INDEX fk_usrToGroups_groups_id_idx
-ON usrToGroups;
-
--- CustomFieldData
-ALTER TABLE customFieldsData
-RENAME TO CustomFieldData;
-
--- CustomFieldDefinition
-ALTER TABLE customFieldsDef
-RENAME TO CustomFieldDefinition;
-
--- EventLog
-ALTER TABLE log
-  CHANGE log_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE log
-  CHANGE log_date date INT(10) UNSIGNED NOT NULL;
-ALTER TABLE log
-  CHANGE log_login login VARCHAR(25);
-ALTER TABLE log
-  CHANGE log_userId userId SMALLINT(5) UNSIGNED;
-ALTER TABLE log
-  CHANGE log_ipAddress ipAddress VARCHAR(45) NOT NULL;
-ALTER TABLE log
-  CHANGE log_action action VARCHAR(50) NOT NULL;
-ALTER TABLE log
-  CHANGE log_description description TEXT;
-ALTER TABLE log
-  CHANGE log_level level VARCHAR(20) NOT NULL;
-ALTER TABLE log
-RENAME TO EventLog;
-
--- Track
-ALTER TABLE track
-  CHANGE track_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE track
-  CHANGE track_userId userId SMALLINT(5) UNSIGNED;
-ALTER TABLE track
-  CHANGE track_source source VARCHAR(100) NOT NULL;
-ALTER TABLE track
-  CHANGE track_time time INT(10) UNSIGNED NOT NULL;
-ALTER TABLE track
-  CHANGE track_ipv4 ipv4 BINARY(4) NOT NULL;
-ALTER TABLE track
-  CHANGE track_ipv6 ipv6 BINARY(16);
-ALTER TABLE track
-RENAME TO Track;
-
--- AccountFile
-ALTER TABLE accFiles
-  CHANGE accfile_accountId accountId MEDIUMINT(5) UNSIGNED NOT NULL;
-ALTER TABLE accFiles
-  CHANGE accfile_id id INT(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE accFiles
-  CHANGE accfile_name name VARCHAR(100) NOT NULL;
-ALTER TABLE accFiles
-  CHANGE accfile_type type VARCHAR(100) NOT NULL;
-ALTER TABLE accFiles
-  CHANGE accfile_size size INT(11) NOT NULL;
-ALTER TABLE accFiles
-  CHANGE accfile_content content MEDIUMBLOB NOT NULL;
-ALTER TABLE accFiles
-  CHANGE accfile_extension extension VARCHAR(10) NOT NULL;
-ALTER TABLE accFiles
-  CHANGE accFile_thumb thumb MEDIUMBLOB;
-ALTER TABLE accFiles
-RENAME TO AccountFile;
-
--- User
-ALTER TABLE usrData
-  DROP user_secGroupId;
-ALTER TABLE usrData
-  CHANGE user_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE usrData
-  CHANGE user_name name VARCHAR(80) NOT NULL;
-ALTER TABLE usrData
-  CHANGE user_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE usrData
-  CHANGE user_login login VARCHAR(50) NOT NULL;
-ALTER TABLE usrData
-  CHANGE user_ssoLogin ssoLogin VARCHAR(100);
-ALTER TABLE usrData
-  CHANGE user_pass pass VARBINARY(1000) NOT NULL;
-ALTER TABLE usrData
-  CHANGE user_mPass mPass VARBINARY(1000) DEFAULT NULL;
-ALTER TABLE usrData
-  CHANGE user_mKey mKey VARBINARY(1000) DEFAULT NULL;
-ALTER TABLE usrData
-  CHANGE user_email email VARCHAR(80);
-ALTER TABLE usrData
-  CHANGE user_notes notes TEXT;
-ALTER TABLE usrData
-  CHANGE user_count loginCount INT(10) UNSIGNED NOT NULL DEFAULT '0';
-ALTER TABLE usrData
-  CHANGE user_profileId userProfileId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE usrData
-  CHANGE user_lastLogin lastLogin DATETIME;
-ALTER TABLE usrData
-  CHANGE user_lastUpdate lastUpdate DATETIME;
-ALTER TABLE usrData
-  CHANGE user_lastUpdateMPass lastUpdateMPass INT(11) UNSIGNED NOT NULL DEFAULT '0';
-ALTER TABLE usrData
-  CHANGE user_isAdminApp isAdminApp TINYINT(1) DEFAULT 0;
-ALTER TABLE usrData
-  CHANGE user_isAdminAcc isAdminAcc TINYINT(1) DEFAULT 0;
-ALTER TABLE usrData
-  CHANGE user_isLdap isLdap TINYINT(1) DEFAULT 0;
-ALTER TABLE usrData
-  CHANGE user_isDisabled isDisabled TINYINT(1) DEFAULT 0;
-ALTER TABLE usrData
-  CHANGE user_hashSalt hashSalt VARBINARY(128) NOT NULL;
-ALTER TABLE usrData
-  CHANGE user_isMigrate isMigrate TINYINT(1) DEFAULT 0;
-ALTER TABLE usrData
-  CHANGE user_isChangePass isChangePass TINYINT(1) DEFAULT 0;
-ALTER TABLE usrData
-  CHANGE user_isChangedPass isChangedPass TINYINT(1) DEFAULT 0;
-ALTER TABLE usrData
-  CHANGE user_preferences preferences BLOB;
-ALTER TABLE usrData
-RENAME TO User;
-
--- UserProfile
-ALTER TABLE usrProfiles
-  CHANGE userprofile_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE usrProfiles
-  CHANGE userprofile_name name VARCHAR(45) NOT NULL;
-ALTER TABLE usrProfiles
-  CHANGE userProfile_profile profile BLOB NOT NULL;
-ALTER TABLE usrProfiles
-RENAME TO UserProfile;
-
--- Notice
-ALTER TABLE notices
-  CHANGE notice_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE notices
-  CHANGE notice_type type VARCHAR(100);
-ALTER TABLE notices
-  CHANGE notice_component component VARCHAR(100) NOT NULL;
-ALTER TABLE notices
-  CHANGE notice_description description VARCHAR(500) NOT NULL;
-ALTER TABLE notices
-  CHANGE notice_date date INT(10) UNSIGNED NOT NULL;
-ALTER TABLE notices
-  CHANGE notice_checked checked TINYINT(1) DEFAULT 0;
-ALTER TABLE notices
-  CHANGE notice_userId userId SMALLINT(5) UNSIGNED;
-ALTER TABLE notices
-  CHANGE notice_sticky sticky TINYINT(1) DEFAULT 0;
-ALTER TABLE notices
-  CHANGE notice_onlyAdmin onlyAdmin TINYINT(1) DEFAULT 0;
-ALTER TABLE notices
-RENAME TO Notification;
-
--- Plugin
-ALTER TABLE plugins
-  CHANGE plugin_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE plugins
-  CHANGE plugin_name name VARCHAR(100) NOT NULL;
-ALTER TABLE plugins
-  CHANGE plugin_data data VARBINARY(5000);
-ALTER TABLE plugins
-  CHANGE plugin_enabled enabled TINYINT(1) NOT NULL DEFAULT 0;
-ALTER TABLE plugins
-  CHANGE plugin_available available TINYINT(1) DEFAULT 0;
-ALTER TABLE plugins
-RENAME TO Plugin;
-
--- PublicLink
-ALTER TABLE publicLinks
-  CHANGE publicLink_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE publicLinks
-  CHANGE publicLink_itemId itemId INT(10) UNSIGNED NOT NULL;
-ALTER TABLE publicLinks
-  CHANGE publicLink_hash hash VARBINARY(100) NOT NULL;
-ALTER TABLE publicLinks
-  CHANGE publicLink_linkData data LONGBLOB;
-ALTER TABLE publicLinks
+  AFTER `maxCountViews`,
+  CHANGE publicLink_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE publicLink_itemId itemId INT(10) UNSIGNED NOT NULL,
+  CHANGE publicLink_hash `hash` VARBINARY(100) NOT NULL,
+  CHANGE publicLink_linkData `data` LONGBLOB,
+  DROP INDEX IDX_hash,
+  ADD UNIQUE INDEX uk_PublicLink_01 (`hash` ASC),
+  DROP INDEX unique_publicLink_accountId,
+  ADD UNIQUE INDEX uk_PublicLink_02 (itemId ASC),
+  DROP INDEX IDX_itemId,
+  DROP INDEX unique_publicLink_hash,
 RENAME TO PublicLink;
 
--- Category
+-- Category;
 ALTER TABLE categories
-  CHANGE category_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE categories
-  CHANGE category_name name VARCHAR(50) NOT NULL;
-ALTER TABLE categories
-  CHANGE category_hash hash VARBINARY(40) NOT NULL;
-ALTER TABLE categories
-  CHANGE category_description description VARCHAR(255);
-ALTER TABLE categories
+  CHANGE category_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE category_name name VARCHAR(50) NOT NULL,
+  CHANGE category_hash hash VARBINARY(40) NOT NULL,
+  CHANGE category_description description VARCHAR(255),
+  ADD UNIQUE INDEX uk_Category_01 (`hash` ASC),
 RENAME TO Category;
 
--- Config
-DROP INDEX vacParameter
-ON config;
+-- Config;
 ALTER TABLE config
-  CHANGE config_parameter parameter VARCHAR(50) NOT NULL;
-ALTER TABLE config
-  CHANGE config_value value VARCHAR(4000);
-ALTER TABLE config
-  ADD PRIMARY KEY (parameter);
-ALTER TABLE config
+  CHANGE config_parameter parameter VARCHAR(50) NOT NULL,
+  CHANGE config_value VALUE VARCHAR(4000),
+  DROP INDEX vacParameter,
+  ADD PRIMARY KEY (parameter),
 RENAME TO Config;
 
--- Customer
+-- Customer;
 ALTER TABLE customers
-  CHANGE customer_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE customers
-  CHANGE customer_name name VARCHAR(100) NOT NULL;
-ALTER TABLE customers
-  CHANGE customer_hash hash VARBINARY(40) NOT NULL;
-ALTER TABLE customers
-  CHANGE customer_description description VARCHAR(255);
-ALTER TABLE customers
-  CHANGE customer_isGlobal isGlobal TINYINT(1) DEFAULT 0;
-ALTER TABLE customers
+  CHANGE customer_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE customer_name name VARCHAR(100) NOT NULL,
+  CHANGE customer_hash hash VARBINARY(40) NOT NULL,
+  CHANGE customer_description description VARCHAR(255),
+  ADD `isGlobal` TINYINT(1) DEFAULT 0,
+  ADD INDEX uk_Client_01 (`hash` ASC),
+  DROP INDEX IDX_name,
 RENAME TO Client;
 
--- Account
+-- Account;
 ALTER TABLE accounts
-  CHANGE account_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE accounts
-  CHANGE account_userGroupId userGroupId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE accounts
-  CHANGE account_userId userId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE accounts
-  CHANGE account_userEditId userEditId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE accounts
-  CHANGE account_customerId clientId MEDIUMINT(8) UNSIGNED NOT NULL;
-ALTER TABLE accounts
-  CHANGE account_name name VARCHAR(50) NOT NULL;
-ALTER TABLE accounts
-  CHANGE account_categoryId categoryId MEDIUMINT UNSIGNED NOT NULL;
-ALTER TABLE accounts
-  CHANGE account_login login VARCHAR(50);
-ALTER TABLE accounts
-  CHANGE account_url url VARCHAR(255);
-ALTER TABLE accounts
-  CHANGE account_pass pass VARBINARY(1000) NOT NULL;
-ALTER TABLE accounts
-  CHANGE account_key `key` VARBINARY(1000) NOT NULL;
-ALTER TABLE accounts
-  CHANGE account_notes notes TEXT;
-ALTER TABLE accounts
-  CHANGE account_countView countView INT(10) UNSIGNED NOT NULL DEFAULT '0';
-ALTER TABLE accounts
-  CHANGE account_countDecrypt countDecrypt INT(10) UNSIGNED NOT NULL DEFAULT '0';
-ALTER TABLE accounts
-  CHANGE account_dateAdd dateAdd DATETIME NOT NULL;
-ALTER TABLE accounts
-  CHANGE account_dateEdit dateEdit DATETIME;
-ALTER TABLE accounts
-  CHANGE account_otherGroupEdit otherUserGroupEdit TINYINT(1) DEFAULT 0;
-ALTER TABLE accounts
-  CHANGE account_otherUserEdit otherUserEdit TINYINT(1) DEFAULT 0;
-ALTER TABLE accounts
-  CHANGE account_isPrivate isPrivate TINYINT(1) DEFAULT 0;
-ALTER TABLE accounts
-  CHANGE account_isPrivateGroup isPrivateGroup TINYINT(1) DEFAULT 0;
-ALTER TABLE accounts
-  CHANGE account_passDate passDate INT(11) UNSIGNED;
-ALTER TABLE accounts
-  CHANGE account_passDateChange passDateChange INT(11) UNSIGNED;
-ALTER TABLE accounts
-  CHANGE account_parentId parentId MEDIUMINT UNSIGNED;
-ALTER TABLE accounts
+  CHANGE account_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE account_userGroupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE account_userId userId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE account_userEditId userEditId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE account_customerId clientId MEDIUMINT(8) UNSIGNED NOT NULL,
+  CHANGE account_name name VARCHAR(50) NOT NULL,
+  CHANGE account_categoryId categoryId MEDIUMINT UNSIGNED NOT NULL,
+  CHANGE account_login login VARCHAR(50),
+  CHANGE account_url url VARCHAR(255),
+  CHANGE account_pass pass VARBINARY(1000) NOT NULL,
+  CHANGE account_key `key` VARBINARY(1000) NOT NULL,
+  CHANGE account_notes notes TEXT,
+  CHANGE account_countView countView INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  CHANGE account_countDecrypt countDecrypt INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  CHANGE account_dateAdd dateAdd DATETIME NOT NULL,
+  CHANGE account_dateEdit dateEdit DATETIME,
+  CHANGE account_otherGroupEdit otherUserGroupEdit TINYINT(1) DEFAULT 0,
+  CHANGE account_otherUserEdit otherUserEdit TINYINT(1) DEFAULT 0,
+  CHANGE account_isPrivate isPrivate TINYINT(1) DEFAULT 0,
+  CHANGE account_isPrivateGroup isPrivateGroup TINYINT(1) DEFAULT 0,
+  CHANGE account_passDate passDate INT(11) UNSIGNED,
+  CHANGE account_passDateChange passDateChange INT(11) UNSIGNED,
+  CHANGE account_parentId parentId MEDIUMINT UNSIGNED,
+  DROP INDEX IDX_categoryId,
+  ADD INDEX idx_Account_01 (`categoryId` ASC),
+  DROP INDEX IDX_userId,
+  ADD INDEX idx_Account_02 (`userGroupId` ASC, `userId` ASC),
+  DROP INDEX IDX_customerId,
+  ADD INDEX idx_Account_03 (`clientId` ASC),
+  DROP INDEX account_parentId,
+  ADD INDEX idx_Account_04 (`parentId` ASC),
+  DROP INDEX IDX_parentId,
 RENAME TO Account;
 
--- AccountToFavorite
-DROP INDEX fk_accFavorites_users_idx
-ON accFavorites;
-DROP INDEX fk_accFavorites_accounts_idx
-ON accFavorites;
+-- AccountToFavorite;
 ALTER TABLE accFavorites
-  CHANGE accfavorite_accountId accountId MEDIUMINT UNSIGNED NOT NULL;
-ALTER TABLE accFavorites
-  CHANGE accfavorite_userId userId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE accFavorites
+  DROP INDEX fk_accFavorites_users_idx,
+  DROP INDEX fk_accFavorites_accounts_idx,
+  CHANGE accfavorite_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
+  CHANGE accfavorite_userId userId SMALLINT(5) UNSIGNED NOT NULL,
+  DROP INDEX search_idx,
+  ADD INDEX idx_AccountToFavorite_01 (accountId ASC, userId ASC),
 RENAME TO AccountToFavorite;
 
--- AccountHistory
+-- AccountHistory;
 ALTER TABLE accHistory
-  CHANGE acchistory_id id INT(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE accHistory
-  CHANGE acchistory_accountId accountId MEDIUMINT UNSIGNED NOT NULL;
-ALTER TABLE accHistory
-  CHANGE acchistory_userGroupId userGroupId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE accHistory
-  CHANGE acchistory_userId userId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE accHistory
-  CHANGE acchistory_userEditId userEditId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE accHistory
-  CHANGE acchistory_customerId clientId MEDIUMINT UNSIGNED NOT NULL;
-ALTER TABLE accHistory
-  CHANGE acchistory_name name VARCHAR(255) NOT NULL;
-ALTER TABLE accHistory
-  CHANGE acchistory_categoryId categoryId MEDIUMINT UNSIGNED NOT NULL;
-ALTER TABLE accHistory
-  CHANGE acchistory_login login VARCHAR(50);
-ALTER TABLE accHistory
-  CHANGE acchistory_url url VARCHAR(255);
-ALTER TABLE accHistory
-  CHANGE acchistory_pass pass VARBINARY(1000) NOT NULL;
-ALTER TABLE accHistory
-  CHANGE acchistory_key `key` VARBINARY(1000) NOT NULL;
-ALTER TABLE accHistory
-  CHANGE acchistory_notes notes TEXT NOT NULL;
-ALTER TABLE accHistory
-  CHANGE acchistory_countView countView INT(10) UNSIGNED NOT NULL DEFAULT '0';
-ALTER TABLE accHistory
-  CHANGE acchistory_countDecrypt countDecrypt INT(10) UNSIGNED NOT NULL DEFAULT '0';
-ALTER TABLE accHistory
-  CHANGE acchistory_dateAdd dateAdd DATETIME NOT NULL;
-ALTER TABLE accHistory
-  CHANGE acchistory_dateEdit dateEdit DATETIME;
-ALTER TABLE accHistory
-  CHANGE acchistory_isModify isModify TINYINT(1) DEFAULT 0;
-ALTER TABLE accHistory
-  CHANGE acchistory_isDeleted isDeleted TINYINT(1) DEFAULT 0;
-ALTER TABLE accHistory
-  CHANGE acchistory_mPassHash mPassHash VARBINARY(255) NOT NULL;
-ALTER TABLE accHistory
-  CHANGE accHistory_otherUserEdit otherUserEdit TINYINT(1) DEFAULT 0;
-ALTER TABLE accHistory
-  CHANGE accHistory_otherGroupEdit otherUserGroupEdit TINYINT(1) DEFAULT 0;
-ALTER TABLE accHistory
-  CHANGE accHistory_passDate passDate INT(10) UNSIGNED;
-ALTER TABLE accHistory
-  CHANGE accHistory_passDateChange passDateChange INT(10) UNSIGNED;
-ALTER TABLE accHistory
-  CHANGE accHistory_parentId parentId MEDIUMINT UNSIGNED;
-ALTER TABLE accHistory
-  CHANGE accHistory_isPrivate isPrivate TINYINT(1) DEFAULT 0;
-ALTER TABLE accHistory
-  CHANGE accHistory_isPrivateGroup isPrivateGroup TINYINT(1) DEFAULT 0;
-ALTER TABLE accHistory
+  CHANGE acchistory_id id INT(11) NOT NULL AUTO_INCREMENT,
+  CHANGE acchistory_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
+  CHANGE acchistory_userGroupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE acchistory_userId userId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE acchistory_userEditId userEditId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE acchistory_customerId clientId MEDIUMINT UNSIGNED NOT NULL,
+  CHANGE acchistory_name name VARCHAR(255) NOT NULL,
+  CHANGE acchistory_categoryId categoryId MEDIUMINT UNSIGNED NOT NULL,
+  CHANGE acchistory_login login VARCHAR(50),
+  CHANGE acchistory_url url VARCHAR(255),
+  CHANGE acchistory_pass pass VARBINARY(1000) NOT NULL,
+  CHANGE acchistory_key `key` VARBINARY(1000) NOT NULL,
+  CHANGE acchistory_notes notes TEXT NOT NULL,
+  CHANGE acchistory_countView countView INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  CHANGE acchistory_countDecrypt countDecrypt INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  CHANGE acchistory_dateAdd dateAdd DATETIME NOT NULL,
+  CHANGE acchistory_dateEdit dateEdit DATETIME,
+  CHANGE acchistory_isModify isModify TINYINT(1) DEFAULT 0,
+  CHANGE acchistory_isDeleted isDeleted TINYINT(1) DEFAULT 0,
+  CHANGE acchistory_mPassHash mPassHash VARBINARY(255) NOT NULL,
+  CHANGE accHistory_otherUserEdit otherUserEdit TINYINT(1) DEFAULT 0,
+  CHANGE accHistory_otherGroupEdit otherUserGroupEdit TINYINT(1) DEFAULT 0,
+  CHANGE accHistory_passDate passDate INT(10) UNSIGNED,
+  CHANGE accHistory_passDateChange passDateChange INT(10) UNSIGNED,
+  CHANGE accHistory_parentId parentId MEDIUMINT UNSIGNED,
+  CHANGE accHistory_isPrivate isPrivate TINYINT(1) DEFAULT 0,
+  CHANGE accHistory_isPrivateGroup isPrivateGroup TINYINT(1) DEFAULT 0,
+  DROP INDEX IDX_accountId,
+  ADD INDEX idx_AccountHistory_01 (accountId ASC),
+  DROP INDEX acchistory_parentId,
+  ADD INDEX idx_AccountHistory_02 (parentId ASC),
 RENAME TO AccountHistory;
 
--- Tag
+-- Tag;
 ALTER TABLE tags
-  CHANGE tag_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE tags
-  CHANGE tag_name name VARCHAR(45) NOT NULL;
-ALTER TABLE tags
-  CHANGE tag_hash hash VARBINARY(40) NOT NULL;
-ALTER TABLE tags
+  CHANGE tag_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE tag_name name VARCHAR(45) NOT NULL,
+  CHANGE tag_hash hash VARBINARY(40) NOT NULL,
+  DROP INDEX tag_hash_UNIQUE,
+  ADD UNIQUE INDEX uk_Tag_01 (`hash` ASC),
+  DROP INDEX IDX_name,
+  ADD INDEX idx_Tag_01 (`name` ASC),
 RENAME TO Tag;
 
--- AccountToTag
+-- AccountToTag;
 ALTER TABLE accTags
-  CHANGE acctag_accountId accountId MEDIUMINT UNSIGNED NOT NULL;
-ALTER TABLE accTags
-  CHANGE acctag_tagId tagId INT(10) UNSIGNED NOT NULL;
-ALTER TABLE accTags
+  CHANGE acctag_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
+  CHANGE acctag_tagId tagId INT(10) UNSIGNED NOT NULL,
 RENAME TO AccountToTag;
 
--- AccountToUserGroup
+-- AccountToUserGroup;
 ALTER TABLE accGroups
-  CHANGE accgroup_accountId accountId MEDIUMINT UNSIGNED NOT NULL;
-ALTER TABLE accGroups
-  CHANGE accgroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE accGroups
+  CHANGE accgroup_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
+  CHANGE accgroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
+  DROP INDEX IDX_accountId,
+  ADD INDEX idx_AccountToUserGroup_01 (`accountId` ASC),
 RENAME TO AccountToUserGroup;
 
--- AccountToUser
+-- AccountToUser;
 ALTER TABLE accUsers
-  CHANGE accuser_accountId accountId MEDIUMINT UNSIGNED NOT NULL;
-ALTER TABLE accUsers
-  CHANGE accuser_userId userId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE accUsers
+  CHANGE accuser_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
+  CHANGE accuser_userId userId SMALLINT(5) UNSIGNED NOT NULL,
+  DROP INDEX idx_account,
+  ADD INDEX idx_AccountToUser_01 (accountId ASC),
 RENAME TO AccountToUser;
 
--- UserToUserGroup
+-- UserToUserGroup;
 ALTER TABLE usrToGroups
-  CHANGE usertogroup_userId userId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE usrToGroups
-  CHANGE usertogroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE usrToGroups
+  CHANGE usertogroup_userId userId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE usertogroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
+  DROP INDEX IDX_usertogroup_userId,
+  ADD INDEX idx_UserToUserGroup_01 (userId ASC),
 RENAME TO UserToUserGroup;
 
--- UserGroup
+-- UserGroup;
 ALTER TABLE usrGroups
-  CHANGE usergroup_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE usrGroups
-  CHANGE usergroup_name name VARCHAR(50) NOT NULL;
-ALTER TABLE usrGroups
-  CHANGE usergroup_description description VARCHAR(255);
-ALTER TABLE usrGroups
+  CHANGE usergroup_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE usergroup_name name VARCHAR(50) NOT NULL,
+  CHANGE usergroup_description description VARCHAR(255),
 RENAME TO UserGroup;
 
--- AuthToken
+-- AuthToken;
 ALTER TABLE authTokens
-  CHANGE authtoken_id id INT(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE authTokens
-  CHANGE authtoken_userId userId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE authTokens
-  CHANGE authtoken_token token VARBINARY(100) NOT NULL;
-ALTER TABLE authTokens
-  CHANGE authtoken_actionId actionId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE authTokens
-  CHANGE authtoken_createdBy createdBy SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE authTokens
-  CHANGE authtoken_startDate startDate INT(10) UNSIGNED NOT NULL;
-ALTER TABLE authTokens
-  CHANGE authtoken_vault vault VARBINARY(2000);
-ALTER TABLE authTokens
-  CHANGE authtoken_hash hash VARBINARY(1000);
-ALTER TABLE authTokens
+  CHANGE authtoken_id id INT(11) NOT NULL AUTO_INCREMENT,
+  CHANGE authtoken_userId userId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE authtoken_token token VARBINARY(100) NOT NULL,
+  CHANGE authtoken_actionId actionId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE authtoken_createdBy createdBy SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE authtoken_startDate startDate INT(10) UNSIGNED NOT NULL,
+  CHANGE authtoken_vault vault VARBINARY(2000),
+  CHANGE authtoken_hash hash VARBINARY(1000),
+  DROP INDEX unique_authtoken_id,
+  ADD UNIQUE INDEX uk_AuthToken_01 (token ASC, actionId ASC),
+  DROP INDEX IDX_checkToken,
+  ADD INDEX idx_AuthToken_01 (userId ASC, actionId ASC, token ASC),
 RENAME TO AuthToken;
 
--- UserPassRecover
+-- UserPassRecover;
 ALTER TABLE usrPassRecover
-  CHANGE userpassr_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-ALTER TABLE usrPassRecover
-  CHANGE userpassr_userId userId SMALLINT(5) UNSIGNED NOT NULL;
-ALTER TABLE usrPassRecover
-  CHANGE userpassr_hash hash VARBINARY(128) NOT NULL;
-ALTER TABLE usrPassRecover
-  CHANGE userpassr_date date INT(10) UNSIGNED NOT NULL;
-ALTER TABLE usrPassRecover
-  CHANGE userpassr_used used TINYINT(1) DEFAULT 0;
-ALTER TABLE usrPassRecover
+  CHANGE userpassr_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  CHANGE userpassr_userId userId SMALLINT(5) UNSIGNED NOT NULL,
+  CHANGE userpassr_hash hash VARBINARY(128) NOT NULL,
+  CHANGE userpassr_date date INT(10) UNSIGNED NOT NULL,
+  CHANGE userpassr_used used TINYINT(1) DEFAULT 0,
+  DROP INDEX IDX_userId,
+  ADD INDEX idx_UserPassRecover_01 (userId ASC, date ASC),
 RENAME TO UserPassRecover;
 
--- Views
+-- Views;
 CREATE OR REPLACE VIEW account_search_v AS
   SELECT DISTINCT
     `Account`.`id`                                       AS `id`,
@@ -678,8 +520,7 @@ CREATE OR REPLACE VIEW account_data_v AS
       ON ((`Account`.`clientId` = `Client`.`id`))) LEFT JOIN
     `PublicLink` ON ((`Account`.`id` = `PublicLink`.`itemId`)));
 
--- Foreign Keys
-
+-- Foreign Keys;
 CREATE INDEX fk_Account_userId
   ON Account (userId);
 
@@ -789,6 +630,22 @@ CREATE INDEX fk_AccountToTag_accountId
 CREATE INDEX fk_AccountToTag_tagId
   ON AccountToTag (tagId);
 
+-- Fix duplicated tags;
+CREATE TEMPORARY TABLE IF NOT EXISTS tmp_tags AS (SELECT
+                                                    accountId,
+                                                    tagId
+                                                  FROM AccountToTag
+                                                  GROUP BY accountId, tagId
+                                                  HAVING COUNT(*) > 1);
+
+DELETE a FROM AccountToTag AS a
+  INNER JOIN tmp_tags AS tmp ON tmp.accountId = a.accountId AND tmp.tagId = a.tagId;
+
+INSERT INTO AccountToTag SELECT *
+                         FROM tmp_tags;
+
+DROP TEMPORARY TABLE tmp_tags;
+
 ALTER TABLE AccountToTag
   ADD CONSTRAINT fk_AccountToTag_accountId
 FOREIGN KEY (accountId) REFERENCES Account (id)
@@ -824,6 +681,11 @@ ALTER TABLE AccountToUser
 
 CREATE INDEX fk_AuthToken_actionId
   ON AuthToken (actionId);
+
+-- Fix missing user's id;
+DELETE FROM AuthToken
+WHERE userId NOT IN (SELECT id
+                     FROM User);
 
 ALTER TABLE AuthToken
   ADD CONSTRAINT fk_AuthToken_userId
@@ -890,3 +752,5 @@ ALTER TABLE UserToUserGroup
 FOREIGN KEY (userGroupId) REFERENCES UserGroup (id)
   ON UPDATE CASCADE
   ON DELETE CASCADE;
+
+SET FOREIGN_KEY_CHECKS=1;

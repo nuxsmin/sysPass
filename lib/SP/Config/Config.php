@@ -32,6 +32,7 @@ use SP\Core\Exceptions\FileNotFoundException;
 use SP\Services\Config\ConfigBackupService;
 use SP\Storage\XmlFileStorageInterface;
 use SP\Storage\XmlHandler;
+use SP\Util\Util;
 
 defined('APP_ROOT') || die();
 
@@ -65,8 +66,8 @@ class Config
      * Config constructor.
      *
      * @param XmlFileStorageInterface $fileStorage
-     * @param ContextInterface $session
-     * @param Container $dic
+     * @param ContextInterface        $session
+     * @param Container               $dic
      * @throws ConfigException
      */
     public function __construct(XmlFileStorageInterface $fileStorage, ContextInterface $session, Container $dic)
@@ -125,15 +126,15 @@ class Config
      * Guardar la configuración
      *
      * @param ConfigData $configData
-     * @param bool $backup
+     * @param bool       $backup
+     * @return Config
      */
     public function saveConfig(ConfigData $configData, $backup = true)
     {
         try {
             if ($backup) {
-
-                $this->dic->get(ConfigBackupService::class)->backup();
-
+                $this->dic->get(ConfigBackupService::class)
+                    ->backup();
             }
 
             $configData->setConfigDate(time());
@@ -145,13 +146,15 @@ class Config
         } catch (\Exception $e) {
             processException($e);
         }
+
+        return $this;
     }
 
     /**
      * Cargar la configuración desde el archivo
      *
      * @param ContextInterface $context
-     * @param bool $reload
+     * @param bool             $reload
      * @return ConfigData
      */
     public function loadConfig(ContextInterface $context, $reload = false)
@@ -188,5 +191,19 @@ class Config
     public function getConfigData()
     {
         return clone $this->configData;
+    }
+
+    /**
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
+    public function generateUpgradeKey()
+    {
+        if (empty($this->configData->getUpgradeKey())) {
+            debugLog('Generating upgrade key');
+
+            return $this->saveConfig($this->configData->setUpgradeKey(Util::generateRandomBytes(16)), false);
+        }
+
+        return $this;
     }
 }

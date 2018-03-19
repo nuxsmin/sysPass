@@ -25,13 +25,11 @@
 namespace SP\Modules\Api;
 
 use DI\Container;
-use DI\DependencyException;
 use Interop\Container\Exception\NotFoundException;
 use SP\Core\Context\StatelessContext;
 use SP\Core\Exceptions\InitializationException;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
-use SP\Services\Config\ConfigService;
 use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
@@ -77,6 +75,7 @@ class Init extends ModuleBase
      * @throws \DI\NotFoundException
      * @throws \SP\Core\Exceptions\SPException
      * @throws NotFoundException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function initialize($controller)
     {
@@ -124,20 +123,17 @@ class Init extends ModuleBase
     /**
      * Comprobar si es necesario actualizar componentes
      *
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws \SP\Services\Config\ParameterNotFoundException
      * @throws InitializationException
-     * @throws \DI\NotFoundException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     private function checkUpgrade()
     {
-        $configService = $this->container->get(ConfigService::class);
-        $dbVersion = UpgradeUtil::fixVersionNumber($configService->getByParam('version'));
-
-        if (UpgradeDatabaseService::needsUpgrade($dbVersion) ||
-            UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion()))
+        if ($this->configData->getUpgradeKey()
+            || (UpgradeDatabaseService::needsUpgrade($this->configData->getDatabaseVersion()) ||
+                UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion())))
         ) {
+            $this->config->generateUpgradeKey();
+
             throw new InitializationException(__u('Es necesario actualizar'));
         }
     }
