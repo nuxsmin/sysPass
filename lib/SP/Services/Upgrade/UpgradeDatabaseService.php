@@ -24,6 +24,7 @@
 
 namespace SP\Services\Upgrade;
 
+use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Services\Service;
@@ -64,17 +65,16 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
      * Inicia el proceso de actualización de la BBDD.
      *
      * @param int $version con la versión de la BBDD actual
+     * @param ConfigData $configData
      * @return bool
      * @throws UpgradeException
      */
-    public function upgrade($version)
+    public function upgrade($version, ConfigData $configData)
     {
         $this->eventDispatcher->notifyEvent('upgrade.db.start',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Actualizar BBDD')))
         );
-
-        $configData = $this->config->getConfigData();
 
         foreach (self::UPGRADES as $upgradeVersion) {
             if (Util::checkVersion($version, $upgradeVersion)) {

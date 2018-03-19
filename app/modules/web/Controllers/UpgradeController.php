@@ -73,12 +73,12 @@ class UpgradeController extends ControllerBase
 
             if (UpgradeDatabaseService::needsUpgrade($dbVersion)) {
                 $this->dic->get(UpgradeDatabaseService::class)
-                    ->upgrade($dbVersion);
+                    ->upgrade($dbVersion, $this->configData);
             }
 
             if (UpgradeAppService::needsUpgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion()))) {
                 $this->dic->get(UpgradeAppService::class)
-                    ->upgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion()));
+                    ->upgrade(UpgradeUtil::fixVersionNumber($this->configData->getConfigVersion()), $this->configData);
             }
 
             $this->configData->setUpgradeKey(null);

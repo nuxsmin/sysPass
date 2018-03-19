@@ -420,7 +420,7 @@ class Bootstrap
             && UpgradeConfigService::needsUpgrade($configVersion)
         ) {
             $upgradeConfigService = self::$container->get(UpgradeConfigService::class);
-            $upgradeConfigService->upgrade($configVersion);
+            $upgradeConfigService->upgrade($configVersion, $this->configData);
         }
     }
 
@@ -434,7 +434,7 @@ class Bootstrap
 
     /**
      * @param Container $container
-     * @param string    $module
+     * @param string $module
      * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException

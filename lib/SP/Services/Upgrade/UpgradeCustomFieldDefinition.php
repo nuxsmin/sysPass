@@ -29,7 +29,6 @@ use SP\Core\Events\EventMessage;
 use SP\DataModel\CustomFieldDefDataOld;
 use SP\DataModel\CustomFieldDefinitionData;
 use SP\Services\CustomField\CustomFieldDefService;
-use SP\Services\CustomField\CustomFieldTypeService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Storage\Database;
@@ -63,13 +62,6 @@ class UpgradeCustomFieldDefinition extends Service
         );
 
         $customFieldDefService = $this->dic->get(CustomFieldDefService::class);
-        $customFieldTypeService = $this->dic->get(CustomFieldTypeService::class);
-
-        $types = [];
-
-        foreach ($customFieldTypeService->getAll() as $customFieldTypeData) {
-            $types[$customFieldTypeData->getName()] = $customFieldTypeData->getId();
-        }
 
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id, moduleId, field FROM CustomFieldDefinition WHERE field IS NOT NULL');
@@ -90,7 +82,7 @@ class UpgradeCustomFieldDefinition extends Service
                 $itemData->setHelp($data->getHelp());
                 $itemData->setRequired($data->isRequired());
                 $itemData->setShowInList($data->isShowInItemsList());
-                $itemData->setTypeId($types[$data->getType()]);
+                $itemData->setTypeId($data->getType());
 
                 $customFieldDefService->update($itemData);
 

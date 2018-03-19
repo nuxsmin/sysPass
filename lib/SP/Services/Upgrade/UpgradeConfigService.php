@@ -63,6 +63,8 @@ class UpgradeConfigService extends Service implements UpgradeInterface
      */
     public function upgradeOldConfigFile($version)
     {
+        $configData = $this->config->getConfigData();
+
         $message = EventMessage::factory()->addDescription(__u('Actualizar Configuración'));
 
         $this->eventDispatcher->notifyEvent('upgrade.config.old.start', new Event($this, $message));
@@ -73,15 +75,15 @@ class UpgradeConfigService extends Service implements UpgradeInterface
         $message = EventMessage::factory();
 
         if (isset($CONFIG) && is_array($CONFIG)) {
-            $paramMapper = function ($mapFrom, $mapTo) use ($CONFIG, $message) {
+            $paramMapper = function ($mapFrom, $mapTo) use ($CONFIG, $message, $configData) {
                 if (isset($CONFIG[$mapFrom])) {
                     $message->addDetail(__u('Parámetro'), $mapFrom);
-                    $this->configData->{$mapTo}($CONFIG[$mapFrom]);
+                    $configData->{$mapTo}($CONFIG[$mapFrom]);
                 }
             };
 
             foreach (self::getConfigParams() as $mapTo => $mapFrom) {
-                if (method_exists($this->configData, $mapTo)) {
+                if (method_exists($configData, $mapTo)) {
                     if (is_array($mapFrom)) {
                         /** @var array $mapFrom */
                         foreach ($mapFrom as $param) {
@@ -99,10 +101,10 @@ class UpgradeConfigService extends Service implements UpgradeInterface
         $oldFile = OLD_CONFIG_FILE . '.old.' . time();
 
         try {
-            $this->configData->setSiteTheme('material-blue');
-            $this->configData->setConfigVersion($version);
+            $configData->setSiteTheme('material-blue');
+            $configData->setConfigVersion($version);
 
-            $this->config->saveConfig($this->configData, false);
+            $this->config->saveConfig($configData, false);
 
             rename(OLD_CONFIG_FILE, $oldFile);
 
@@ -189,9 +191,12 @@ class UpgradeConfigService extends Service implements UpgradeInterface
      * Migrar valores de configuración.
      *
      * @param $version
+     * @param ConfigData $configData
      */
-    public function upgrade($version)
+    public function upgrade($version, ConfigData $configData)
     {
+        $this->configData = $configData;
+
         $message = EventMessage::factory()->addDescription(__u('Actualizar Configuración'));
         $this->eventDispatcher->notifyEvent('upgrade.config.start', new Event($this, $message));
 
@@ -202,11 +207,6 @@ class UpgradeConfigService extends Service implements UpgradeInterface
         }
 
         $this->eventDispatcher->notifyEvent('upgrade.config.end', new Event($this, $message));
-    }
-
-    public function initialize()
-    {
-        $this->configData = $this->config->getConfigData();
     }
 
     /**

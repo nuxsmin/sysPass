@@ -23,6 +23,7 @@
  */
 
 namespace SP\Services\Upgrade;
+use SP\Config\ConfigData;
 
 /**
  * Interface UpgradeInterface
@@ -35,8 +36,9 @@ interface UpgradeInterface
      * Performs the upgrading process
      *
      * @param $version
+     * @param ConfigData $configData
      */
-    public function upgrade($version);
+    public function upgrade($version, ConfigData $configData);
 
     /**
      * Check if it needs to be upgraded

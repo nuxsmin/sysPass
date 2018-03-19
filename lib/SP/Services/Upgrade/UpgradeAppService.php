@@ -24,6 +24,7 @@
 
 namespace SP\Services\Upgrade;
 
+use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Services\Service;
@@ -49,16 +50,15 @@ class UpgradeAppService extends Service implements UpgradeInterface
 
     /**
      * @param $version
+     * @param ConfigData $configData
      * @throws UpgradeException
      */
-    public function upgrade($version)
+    public function upgrade($version, ConfigData $configData)
     {
         $this->eventDispatcher->notifyEvent('upgrade.app.start',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Actualizar Aplicación')))
         );
-
-        $configData = $this->config->getConfigData();
 
         foreach (self::UPGRADES as $appVersion) {
             if (Util::checkVersion($version, $appVersion)) {
@@ -70,13 +70,13 @@ class UpgradeAppService extends Service implements UpgradeInterface
                     );
                 }
 
-                debugLog('APP Upgrade: '. $appVersion);
+                debugLog('APP Upgrade: ' . $appVersion);
 
                 $configData->setConfigVersion($appVersion);
+
+                $this->config->saveConfig($configData, false);
             }
         }
-
-        $this->config->saveConfig($configData, false);
 
         $this->eventDispatcher->notifyEvent('upgrade.app.end',
             new Event($this, EventMessage::factory()

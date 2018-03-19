@@ -71,7 +71,7 @@ ALTER TABLE accFiles
 ALTER TABLE authTokens
   DROP FOREIGN KEY fk_authTokens_user_id,
   DROP FOREIGN KEY fk_authTokens_createdBy_id,
-  DROP INDEX fk_authTokens_users_id_idx,
+  DROP INDEX fk_authTokens_user_id,
   DROP INDEX fk_authTokens_users_createdby_id;
 
 ALTER TABLE usrPassRecover

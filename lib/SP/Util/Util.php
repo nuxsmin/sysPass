@@ -44,7 +44,7 @@ class Util
     /**
      * Generar una clave aleatoria
      *
-     * @param int  $length     Longitud de la clave
+     * @param int $length Longitud de la clave
      * @param bool $useNumbers Usar números
      * @param bool $useSpecial Usar carácteres especiales
      * @param bool $checKStrength
@@ -158,10 +158,10 @@ class Util
     /**
      * Obtener datos desde una URL usando CURL
      *
-     * @param string    $url
-     * @param array     $data
+     * @param string $url
+     * @param array $data
      * @param bool|null $useCookie
-     * @param bool      $weak
+     * @param bool $weak
      * @return bool|string
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -331,7 +331,7 @@ class Util
     /**
      * Comprobar si una versión necesita actualización
      *
-     * @param string       $currentVersion
+     * @param string $currentVersion
      * @param array|string $upgradeableVersion
      * @return bool True si la versión es menor.
      */
@@ -436,8 +436,8 @@ class Util
      * such as 'false','N','yes','on','off', etc.
      *
      * @author Samuel Levy <sam+nospam@samuellevy.com>
-     * @param mixed $in     The variable to check
-     * @param bool  $strict If set to false, consider everything that is not false to
+     * @param mixed $in The variable to check
+     * @param bool $strict If set to false, consider everything that is not false to
      *                      be true.
      * @return bool The boolean equivalent or null (if strict, and no exact equivalent)
      */
@@ -489,9 +489,9 @@ class Util
     /**
      * Cast an object to another class, keeping the properties, but changing the methods
      *
-     * @param string        $dstClass Class name
+     * @param string $dstClass Class name
      * @param string|object $serialized
-     * @param string        $srcClass Nombre de la clase serializada
+     * @param string $srcClass Nombre de la clase serializada
      * @return mixed
      * @link http://blog.jasny.net/articles/a-dark-corner-of-php-class-casting/
      */
@@ -500,7 +500,9 @@ class Util
         if (!is_object($serialized)) {
             preg_match('/^O:\d+:"(?P<class>[^"]++)"/', $serialized, $matches);
 
-            if (class_exists($matches['class']) && $srcClass === null) {
+            if (class_exists($matches['class'])
+                && $matches['class'] === $dstClass
+            ) {
                 return unserialize($serialized);
             }
 
@@ -569,7 +571,7 @@ class Util
     /**
      * Bloquear la aplicación
      *
-     * @param int    $userId
+     * @param int $userId
      * @param string $subject
      * @return bool
      */
