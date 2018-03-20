@@ -124,8 +124,8 @@ class ApiService extends Service
      * Devolver el valor de un parámetro
      *
      * @param string $param
-     * @param bool   $required Si es requerido
-     * @param mixed  $default  Valor por defecto
+     * @param bool $required Si es requerido
+     * @param mixed $default Valor por defecto
      * @return int|string
      * @throws ServiceException
      */
@@ -210,7 +210,7 @@ class ApiService extends Service
             ],
             'category/search' => [
                 'help' => [
-                    'name' => __('Nombre de categoría a buscar'),
+                    'text' => __('Texto a buscar'),
                     'count' => __('Número de resultados a mostrar')
                 ]
             ],
@@ -227,7 +227,7 @@ class ApiService extends Service
             ],
             'client/search' => [
                 'help' => [
-                    'name' => __('Nombre de cliente a buscar'),
+                    'text' => __('Texto a buscar'),
                     'count' => __('Número de resultados a mostrar')
                 ]
             ],
@@ -241,6 +241,22 @@ class ApiService extends Service
             'client/delete' => [
                 'help' => [
                     'id' => __('Id de cliente')
+                ]
+            ],
+            'tag/search' => [
+                'help' => [
+                    'text' => __('Texto a buscar'),
+                    'count' => __('Número de resultados a mostrar')
+                ]
+            ],
+            'tag/create' => [
+                'help' => [
+                    'name' => __('Nombre de la etiqueta')
+                ]
+            ],
+            'tag/delete' => [
+                'help' => [
+                    'id' => __('Id de etiqueta')
                 ]
             ]
         ];
@@ -313,8 +329,8 @@ class ApiService extends Service
 
     /**
      * @param string $param
-     * @param bool   $required
-     * @param null   $default
+     * @param bool $required
+     * @param null $default
      * @return int|string
      * @throws ServiceException
      */
@@ -325,8 +341,8 @@ class ApiService extends Service
 
     /**
      * @param string $param
-     * @param bool   $required
-     * @param null   $default
+     * @param bool $required
+     * @param null $default
      * @return int|string
      * @throws ServiceException
      */
@@ -337,8 +353,8 @@ class ApiService extends Service
 
     /**
      * @param string $param
-     * @param bool   $required
-     * @param null   $default
+     * @param bool $required
+     * @param null $default
      * @return int|string
      * @throws ServiceException
      */
@@ -349,8 +365,8 @@ class ApiService extends Service
 
     /**
      * @param string $param
-     * @param bool   $required
-     * @param null   $default
+     * @param bool $required
+     * @param null $default
      * @return int|string
      * @throws ServiceException
      */

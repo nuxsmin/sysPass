@@ -32,7 +32,6 @@ use SP\Core\Exceptions\ValidationException;
 use SP\DataModel\AuthTokenData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Mgmt\ApiTokens\ApiTokensUtil;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -132,7 +131,7 @@ class AuthTokenController extends ControllerBase implements CrudControllerInterf
         $this->view->assign('authToken', $authToken);
 
         $this->view->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected([$authToken->getUserId()]));
-        $this->view->assign('actions', SelectItemAdapter::factory(ApiTokensUtil::getTokenActions())->getItemsFromArraySelected([$authToken->getActionId()]));
+        $this->view->assign('actions', SelectItemAdapter::factory(AuthTokenService::getTokenActions())->getItemsFromArraySelected([$authToken->getActionId()]));
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
@@ -323,10 +322,9 @@ class AuthTokenController extends ControllerBase implements CrudControllerInterf
             $this->setViewData($id);
 
             $this->eventDispatcher->notifyEvent('show.authToken',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Autorización visualizada'))
-                        ->addDetail(__u('Autorización'), $id))
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Autorización visualizada'))
+                    ->addDetail(__u('Autorización'), $id))
             );
         } catch (\Exception $e) {
             processException($e);

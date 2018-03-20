@@ -41,6 +41,7 @@ use SP\Services\Api\JsonRpcResponse;
  */
 abstract class ControllerBase
 {
+    const SEARCH_COUNT_ITEMS = 25;
     /**
      * @var Container
      */

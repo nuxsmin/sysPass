@@ -24,6 +24,7 @@
 
 namespace SP\Services\AuthToken;
 
+use SP\Core\Acl\Acl;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
@@ -236,5 +237,39 @@ class AuthTokenService extends Service
     protected function initialize()
     {
         $this->authTokenRepository = $this->dic->get(AuthTokenRepository::class);
+    }
+
+    /**
+     * Devuelver un array de acciones posibles para los tokens
+     *
+     * @return array
+     */
+    public static function getTokenActions()
+    {
+        $actions = [
+            ActionsInterface::ACCOUNT_SEARCH => Acl::getActionInfo(ActionsInterface::ACCOUNT_SEARCH),
+            ActionsInterface::ACCOUNT_VIEW => Acl::getActionInfo(ActionsInterface::ACCOUNT_VIEW),
+            ActionsInterface::ACCOUNT_VIEW_PASS => Acl::getActionInfo(ActionsInterface::ACCOUNT_VIEW_PASS),
+            ActionsInterface::ACCOUNT_DELETE => Acl::getActionInfo(ActionsInterface::ACCOUNT_DELETE),
+            ActionsInterface::ACCOUNT_CREATE => Acl::getActionInfo(ActionsInterface::ACCOUNT_CREATE),
+            ActionsInterface::BACKUP_CONFIG => Acl::getActionInfo(ActionsInterface::BACKUP_CONFIG),
+            ActionsInterface::CATEGORY_SEARCH => Acl::getActionInfo(ActionsInterface::CATEGORY_SEARCH),
+            ActionsInterface::CATEGORY_VIEW => Acl::getActionInfo(ActionsInterface::CATEGORY_VIEW),
+            ActionsInterface::CATEGORY_CREATE => Acl::getActionInfo(ActionsInterface::CATEGORY_CREATE),
+            ActionsInterface::CATEGORY_EDIT => Acl::getActionInfo(ActionsInterface::CATEGORY_EDIT),
+            ActionsInterface::CATEGORY_DELETE => Acl::getActionInfo(ActionsInterface::CATEGORY_DELETE),
+            ActionsInterface::CLIENT_SEARCH => Acl::getActionInfo(ActionsInterface::CLIENT_SEARCH),
+            ActionsInterface::CLIENT_VIEW => Acl::getActionInfo(ActionsInterface::CLIENT_VIEW),
+            ActionsInterface::CLIENT_CREATE => Acl::getActionInfo(ActionsInterface::CLIENT_CREATE),
+            ActionsInterface::CLIENT_EDIT => Acl::getActionInfo(ActionsInterface::CLIENT_EDIT),
+            ActionsInterface::CLIENT_DELETE => Acl::getActionInfo(ActionsInterface::CLIENT_DELETE),
+            ActionsInterface::TAG_SEARCH => Acl::getActionInfo(ActionsInterface::TAG_SEARCH),
+            ActionsInterface::TAG_VIEW => Acl::getActionInfo(ActionsInterface::TAG_VIEW),
+            ActionsInterface::TAG_CREATE => Acl::getActionInfo(ActionsInterface::TAG_CREATE),
+            ActionsInterface::TAG_EDIT => Acl::getActionInfo(ActionsInterface::TAG_EDIT),
+            ActionsInterface::TAG_DELETE => Acl::getActionInfo(ActionsInterface::TAG_DELETE),
+        ];
+
+        return $actions;
     }
 }

@@ -182,7 +182,6 @@ class AccountController extends ControllerBase
         try {
             $this->setupApi(ActionsInterface::ACCOUNT_DELETE);
 
-
             $accountId = $this->apiService->getParamInt('id', true);
 
             $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
