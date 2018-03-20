@@ -241,6 +241,8 @@ class Installer extends Service
 
         // Set site config
         $this->configData->setSiteLang($this->installData->getSiteLang());
+
+        $this->config->updateConfig($this->configData);
     }
 
     /**

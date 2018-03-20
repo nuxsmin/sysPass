@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -42,7 +42,6 @@ class Filter
      */
     public static function safeSearchString($string)
     {
-        return preg_replace(/** @lang RegExp */
-            '/[\[\]%{}*$]+/', '', (string)$string);
+        return str_replace(['/', '[', '\\', ']', '%', '{', '}', '*', '$'], '', (string)$string);
     }
 }

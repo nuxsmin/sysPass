@@ -704,6 +704,12 @@
         <route>backup/config</route>
     </action>
     <action multiple="1">
+        <id>1041</id>
+        <name>BACKUP</name>
+        <text>Copia de Seguridad</text>
+        <route>backup/backup</route>
+    </action>
+    <action multiple="1">
         <id>1050</id>
         <name>IMPORT_CONFIG</name>
         <text>Configuración Importación</text>
@@ -720,6 +726,18 @@
         <name>IMPORT_XML</name>
         <text>Importar XML</text>
         <route>import/xml</route>
+    </action>
+    <action multiple="1">
+        <id>1060</id>
+        <name>EXPORT_CONFIG</name>
+        <text>Configuración Exportación</text>
+        <route>export/config</route>
+    </action>
+    <action multiple="1">
+        <id>1061</id>
+        <name>EXPORT</name>
+        <text>Exportación</text>
+        <route>export/export</route>
     </action>
     <action multiple="1">
         <id>1070</id>

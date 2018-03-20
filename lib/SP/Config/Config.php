@@ -42,6 +42,10 @@ defined('APP_ROOT') || die();
 class Config
 {
     /**
+     * @var int
+     */
+    private static $timeUpdated;
+    /**
      * @var bool
      */
     private static $configLoaded = false;
@@ -79,6 +83,8 @@ class Config
             $this->configData = new ConfigData();
 
             $this->loadConfigFile();
+
+            self::$timeUpdated = $this->configData->getConfigDate();
 
             self::$configLoaded = true;
         }
@@ -146,6 +152,33 @@ class Config
         } catch (\Exception $e) {
             processException($e);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public static function getTimeUpdated()
+    {
+        return self::$timeUpdated;
+    }
+
+    /**
+     * Commits a config data
+     *
+     * @param ConfigData $configData
+     * @return Config
+     */
+    public function updateConfig(ConfigData $configData)
+    {
+        $configData->setConfigDate(time());
+        $configData->setConfigSaver($this->context->getUserData()->getLogin());
+        $configData->setConfigHash();
+
+        $this->configData = $configData;
+
+        self::$timeUpdated = $configData->getConfigDate();
 
         return $this;
     }

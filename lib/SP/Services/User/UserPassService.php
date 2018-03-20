@@ -25,6 +25,7 @@
 namespace SP\Services\User;
 
 use Defuse\Crypto\Exception\CryptoException;
+use SP\Config\Config;
 use SP\Config\ConfigData;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
@@ -211,7 +212,13 @@ class UserPassService extends Service
      */
     public function createMasterPass($masterPass, $userLogin, $userPass)
     {
-        $key = self::makeKeyForUser($userLogin, $userPass, $this->configData);
+        // Use always the most recent config data
+        if (Config::getTimeUpdated() > $this->configData->getConfigDate()) {
+            $key = self::makeKeyForUser($userLogin, $userPass, $this->config->getConfigData());
+        } else {
+            $key = self::makeKeyForUser($userLogin, $userPass, $this->configData);
+        }
+
         $securedKey = Crypt::makeSecuredKey($key);
         $cryptMPass = Crypt::encrypt($masterPass, $securedKey, $key);
 

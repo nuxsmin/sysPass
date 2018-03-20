@@ -902,11 +902,11 @@ class ConfigData implements JsonSerializable
     }
 
     /**
-     *
+     * Generates a hash from current config options
      */
     public function setConfigHash()
     {
-        $this->configHash = md5(serialize($this));
+        $this->configHash = sha1(serialize($this));
 
         return $this;
     }
@@ -1615,17 +1615,6 @@ class ConfigData implements JsonSerializable
     }
 
     /**
-     * @param int $configDate
-     * @return $this
-     */
-    public function setConfigDate($configDate)
-    {
-        $this->configDate = (int)$configDate;
-
-        return $this;
-    }
-
-    /**
      * @return boolean
      */
     public function isLdapAds()
@@ -2009,6 +1998,25 @@ class ConfigData implements JsonSerializable
     public function setDatabaseVersion($databaseVersion)
     {
         $this->databaseVersion = $databaseVersion;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getConfigDate()
+    {
+        return $this->configDate;
+    }
+
+    /**
+     * @param int $configDate
+     * @return $this
+     */
+    public function setConfigDate($configDate)
+    {
+        $this->configDate = (int)$configDate;
 
         return $this;
     }

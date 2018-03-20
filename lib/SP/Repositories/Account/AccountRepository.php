@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -587,10 +587,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             $stringFilter = $accountSearchFilter->getStringFilters();
 
             if (!empty($stringFilter)) {
-
-                foreach ($stringFilter['values'] as $value) {
-                    $queryFilterCommon->addFilter($stringFilter['query'], [$value]);
-                }
+                $queryFilterCommon->addFilter($stringFilter['query'], $stringFilter['values']);
             } else {
                 $searchText = '%' . $searchText . '%';
 

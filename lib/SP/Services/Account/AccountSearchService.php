@@ -51,7 +51,7 @@ class AccountSearchService extends Service
     /**
      * Regex filter for special searching
      */
-    const FILTERS_REGEX = '^(?:(?P<filter>user|group|file|owner|maingroup|expired|private):(?:"(?P<text>[\w\.]+)")?)$';
+    const FILTERS_REGEX = '^(?<filter>user|group|file|owner|maingroup|expired|private):(?:"(?<text>[\w\.]+)")?$';
 
     const COLORS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'colors.cache';
 
@@ -181,86 +181,93 @@ class AccountSearchService extends Service
      * @return array|bool
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\SPException
      */
     private function analyzeQueryString($txt)
     {
-        if (!preg_match('/' . self::FILTERS_REGEX . '/i', $txt, $filters)) {
+        if (!preg_match('#' . self::FILTERS_REGEX . '#i', $txt, $filters)) {
             return [];
         }
 
-        $text = isset($filters['text']) && empty($filters['text']) === false ? $filters['text'] : false;
+        $text = empty($filters['text']) === false ? $filters['text'] : false;
 
-        switch ($filters['filter']) {
-            case 'user':
-                if ($text === false
-                    || is_object(($userData = $this->dic->get(UserService::class)->getByLogin($text))) === false) {
+        try {
+            switch ($filters['filter']) {
+                case 'user':
+                    if ($text === false
+                        || is_object(($userData = $this->dic->get(UserService::class)->getByLogin($text))) === false) {
+                        return [];
+                    }
+
+                    return [
+                        'type' => 'user',
+                        'query' => 'A.userId = ? OR A.id IN (SELECT AU.accountId FROM AccountToUser AU WHERE AU.accountId = A.id AND AU.userId = ? UNION ALL SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = A.id AND AUG.userGroupId = ?)',
+                        'values' => [$userData->getId(), $userData->getId(), $userData->getUserGroupId()]
+                    ];
+                    break;
+                case 'owner':
+                    if ($text === false) {
+                        return [];
+                    }
+
+                    return [
+                        'type' => 'user',
+                        'query' => 'A.userLogin LIKE ?',
+                        'values' => ['%' . $text . '%']
+                    ];
+                    break;
+                case 'group':
+                    if ($text === false
+                        || is_object(($userGroupData = $this->dic->get(UserGroupService::class)->getByName($text))) === false) {
+                        return [];
+                    }
+
+                    return [
+                        'type' => 'group',
+                        'query' => 'A.userGroupId = ? OR A.id IN (SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = id AND AUG.userGroupId = ?)',
+                        'values' => [$userGroupData->getId(), $userGroupData->getId()]
+                    ];
+                    break;
+                case 'maingroup':
+                    if ($text === false) {
+                        return [];
+                    }
+
+                    return [
+                        'type' => 'group',
+                        'query' => 'A.userGroupName = ?',
+                        'values' => ['%' . $text . '%']
+                    ];
+                    break;
+                case 'file':
+                    if ($text === false) {
+                        return [];
+                    }
+
+                    return [
+                        'type' => 'file',
+                        'query' => 'A.id IN (SELECT AF.accountId FROM AccountFile AF WHERE AF.name LIKE ?)',
+                        'values' => ['%' . $text . '%']
+                    ];
+                    break;
+                case 'expired':
+                    return [
+                        'type' => 'expired',
+                        'query' => 'A.passDateChange > 0 AND UNIX_TIMESTAMP() > A.passDateChange',
+                        'values' => []
+                    ];
+                    break;
+                case 'private':
+                    return [
+                        'type' => 'private',
+                        'query' => '(A.isPrivate = 1 AND A.userId = ?) OR (A.isPrivateGroup = 1 AND A.userGroupId = ?)',
+                        'values' => [$this->context->getUserData()->getId(), $this->context->getUserData()->getUserGroupId()]
+                    ];
+                    break;
+                default:
                     return [];
-                }
-
-                return [
-                    'type' => 'user',
-                    'query' => 'A.userId = ? OR A.id IN (SELECT AU.accountId FROM AccountToUser AU WHERE AU.accountId = A.id AND AU.userId = ? UNION ALL SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = A.id AND AUG.userGroupId = ?)',
-                    'values' => [$userData->getId(), $userData->getId(), $userData->getUserGroupId()]
-                ];
-                break;
-            case 'owner':
-                if ($text === false) {
-                    return [];
-                }
-
-                return [
-                    'type' => 'user',
-                    'query' => 'A.userLogin LIKE ?',
-                    'values' => ['%' . $text . '%']
-                ];
-                break;
-            case 'group':
-                if ($text === false
-                    || is_object(($userGroupData = $this->dic->get(UserGroupService::class)->getByName($text))) === false) {
-                    return [];
-                }
-
-                return [
-                    'type' => 'group',
-                    'query' => 'A.userGroupId = ? OR A.id IN (SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = id AND AUG.userGroupId = ?)',
-                    'values' => [$userGroupData->getId(), $userGroupData->getId()]
-                ];
-                break;
-            case 'maingroup':
-                if ($text === false) {
-                    return [];
-                }
-
-                return [
-                    'type' => 'group',
-                    'query' => 'A.userGroupName = ?',
-                    'values' => ['%' . $text . '%']
-                ];
-                break;
-            case 'file':
-                return [
-                    'type' => 'file',
-                    'query' => 'A.id IN (SELECT AF.accountId FROM AccountFile AF WHERE AF.name LIKE ?)',
-                    'values' => ['%' . $text . '%']
-                ];
-                break;
-            case 'expired':
-                return [
-                    'type' => 'expired',
-                    'query' => 'A.passDateChange > 0 AND UNIX_TIMESTAMP() > A.passDateChange',
-                    'values' => []
-                ];
-                break;
-            case 'private':
-                return [
-                    'type' => 'private',
-                    'query' => '(A.isPrivate = 1 AND A.userId = ?) OR (A.isPrivateGroup = 1 AND A.userGroupId = ?)',
-                    'values' => [$this->context->getUserData()->getId(), $this->context->getUserData()->getUserGroupId()]
-                ];
-                break;
-            default:
-                return [];
+            }
+        } catch (\Exception $e) {
+            return [];
         }
     }
 

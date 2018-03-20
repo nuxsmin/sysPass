@@ -129,7 +129,7 @@ class Request
             return $default;
         }
 
-        return filter_var($_REQUEST[$param], FILTER_SANITIZE_STRING);
+        return filter_var($_REQUEST[$param], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
     }
 
     /**

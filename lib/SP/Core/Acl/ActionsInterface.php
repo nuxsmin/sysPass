@@ -156,8 +156,10 @@ interface ActionsInterface
     const ENCRYPTION_REFRESH = 1031;
     const ENCRYPTION_TEMPPASS = 1032;
     const BACKUP_CONFIG = 1040;
+    const BACKUP = 1041;
     const IMPORT_CONFIG = 1050;
     const EXPORT_CONFIG = 1060;
+    const EXPORT = 1061;
     const MAIL_CONFIG = 1070;
     const LDAP_CONFIG = 1080;
     const LDAP_SYNC = 1081;

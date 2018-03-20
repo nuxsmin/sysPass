@@ -340,16 +340,16 @@ sysPass.Theme = function (Common) {
             });
         },
         search: function () {
-            var $frmSearch = $("#frmSearch");
-            var $resContent = $("#res-content");
+            const $frmSearch = $("#frmSearch");
+            const $resContent = $("#res-content");
 
             $frmSearch.find("button.btn-clear").on("click", function (e) {
                 $(".icon-searchfav").find("i").removeClass("mdl-color-text--amber-A200");
             });
 
             $frmSearch.find(".icon-searchfav").on("click", function () {
-                var $icon = $(this).find("i");
-                var $searchfav = $frmSearch.find("input[name='searchfav']");
+                const $icon = $(this).find("i");
+                const $searchfav = $frmSearch.find("input[name='searchfav']");
 
                 if ($searchfav.val() == 0) {
                     $icon.addClass("mdl-color-text--amber-A200");
@@ -383,7 +383,7 @@ sysPass.Theme = function (Common) {
             const $showFilter = $frmSearch.find("i.show-filter");
 
             $resContent.on("click", "#data-search-header .sort-down,#data-search-header .sort-up", function () {
-                var $this = $(this);
+                const $this = $(this);
                 $this.parent().find("a").addClass("filterOn");
 
                 Common.appActions().account.sort($this);
@@ -402,7 +402,7 @@ sysPass.Theme = function (Common) {
             });
 
             $showFilter.on("click", function () {
-                var $this = $(this);
+                const $this = $(this);
 
                 if ($tagsBar.is(":hidden")) {
                     $tagsBar.slideDown("slow");
@@ -413,7 +413,7 @@ sysPass.Theme = function (Common) {
                 }
             });
 
-            if ($tagsSelect.selectedIndex > 0) {
+            if ($tagsSelect.selectedIndex !== -1) {
                 $showFilter.trigger("click");
             }
         },
