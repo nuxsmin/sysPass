@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="<?php echo $cssLink; ?>"/>
     <?php endforeach; ?>
 </head>
-<body>
+<body class="<?php echo $page; ?>">
 <div id="wrap">
     <noscript>
         <div id="nojs"><?php echo __('Javascript es necesario para el correcto funcionamiento'); ?></div>

@@ -1,8 +1,24 @@
+body.login, body.logout {
+  background-color: $color-indigo-fg;
+  #wrap {
+    background-color: $color-indigo-fg;
+  }
+}
+
+#login-logo {
+  position: fixed;
+  top: 1em;
+  right: 1em;
+  width: 100%;
+  height: 8em;
+  background: transparent url("../../../../public/images/logo_full_bg.png") no-repeat top right;
+  background-size: auto 8em;
+}
+
 #login-container {
+  padding: 1em;
   width: 40em;
   margin: 0 auto;
-  background: transparent url("../../../../public/images/logo_full_bg.png") no-repeat top left;
-  background-size: auto 10em;
   #boxSpacer {
     height: 11em;
     background-color: transparent;
@@ -24,7 +40,9 @@
         margin-right: .5em;
         opacity: .5;
       }
-      .extra-hidden {display: none;}
+      .extra-hidden {
+        display: none;
+      }
     }
     #boxButton {
       position: absolute;
@@ -42,7 +60,7 @@
   #boxLogout {
     margin-top: 4em;
     width: 100%;
-    &> div {
+    & > div {
       margin: 0 auto;
       width: 250px;
       font-size: 14px;
@@ -69,7 +87,7 @@
       display: flex;
       justify-content: space-around;
       list-style: none;
-      li span{
+      li span {
         margin: 0 2em;
       }
     }

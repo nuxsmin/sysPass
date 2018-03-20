@@ -1045,11 +1045,24 @@ fieldset.warning {
 .opacity50 {
   opacity: .5 !important; }
 
+body.login, body.logout {
+  background-color: #5c6bc0; }
+  body.login #wrap, body.logout #wrap {
+    background-color: #5c6bc0; }
+
+#login-logo {
+  position: fixed;
+  top: 1em;
+  right: 1em;
+  width: 100%;
+  height: 8em;
+  background: transparent url("../../../../public/images/logo_full_bg.png") no-repeat top right;
+  background-size: auto 8em; }
+
 #login-container {
+  padding: 1em;
   width: 40em;
-  margin: 0 auto;
-  background: transparent url("../../../../public/images/logo_full_bg.png") no-repeat top left;
-  background-size: auto 10em; }
+  margin: 0 auto; }
   #login-container #boxSpacer {
     height: 11em;
     background-color: transparent; }

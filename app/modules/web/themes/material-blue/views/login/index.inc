@@ -1,3 +1,4 @@
+<div id="login-logo"></div>
 <div id="login-container">
     <div id="boxSpacer"></div>
     <div id="boxLogin" class="round shadow">
@@ -10,8 +11,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="user" name="user" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="80"
-                               autocomplete="off">
+                               maxlength="80" autocomplete="off">
                         <label class="mdl-textfield__label"
                                for="user"><?php echo __('Usuario'); ?></label>
                     </div>
@@ -22,8 +22,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="pass" name="pass" type="password"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="255"
-                               autocomplete="off">
+                               maxlength="255" autocomplete="off">
                         <label class="mdl-textfield__label"
                                for="pass"><?php echo __('Clave'); ?></label>
                     </div>
