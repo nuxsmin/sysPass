@@ -6,11 +6,11 @@
 
 <div id="actions" class="public-link" align="center">
     <div id="content" class="public-link">
-        <div id="title" class="midroundup titleNormal">
+        <div id="title" class="titleNormal">
+            <i class="material-icons"><?php echo $title['icon']; ?></i>
             <?php echo $title['name']; ?>
-            <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
         </div>
-        <table class="data round">
+        <table class="data">
             <tr>
                 <td class="descField"><?php echo __('Nombre'); ?></td>
                 <td class="valField">

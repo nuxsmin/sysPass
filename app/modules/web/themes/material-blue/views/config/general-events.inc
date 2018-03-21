@@ -5,11 +5,12 @@
  */
 ?>
 
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
+    <i class="material-icons">view_headline</i>
     <?php echo __('Eventos'); ?>
 </div>
 
-<table id="tblEvents" class="data tblConfig round">
+<table id="tblEvents" class="data tblConfig">
     <tr>
         <td class="descField">
             <div id="help-eventlog"

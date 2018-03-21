@@ -263,7 +263,7 @@ sysPass.Actions = function (Common) {
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
-                r: $obj.data("action-route") + "/" + id + "/" + history,
+                r: $obj.data("action-route") + "/" + id + "/" + history + "/" + parentId,
                 sk: Common.sk.get(),
                 isAjax: 1
             };

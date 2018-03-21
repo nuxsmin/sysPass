@@ -401,23 +401,6 @@ sysPass.Triggers = function (Common) {
                 };
             }
 
-            const $extraInfo = $(".show-extra-info");
-
-            if ($extraInfo.length > 0) {
-                $extraInfo.on("click", function () {
-                    const $this = $(this);
-                    const $target = $($this.data("target"));
-
-                    if ($target.is(":hidden")) {
-                        $target.slideDown("slow");
-                        $this.html($this.data("icon-up"));
-                    } else {
-                        $target.slideUp("slow");
-                        $this.html($this.data("icon-down"));
-                    }
-                });
-            }
-
             const $selParentAccount = $("#selParentAccount");
 
             if ($selParentAccount.length > 0) {
@@ -490,12 +473,6 @@ sysPass.Triggers = function (Common) {
                         }
                     }
                 });
-            }
-
-            const $accesses = $("#data-accesses");
-
-            if ($accesses.length > 0 && $accesses[0].childNodes.length === 1) {
-                $accesses.parent(".data").hide();
             }
 
             $('input:text:visible:first').focus();

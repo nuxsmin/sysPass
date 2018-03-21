@@ -3,25 +3,28 @@
 /** @var $files \SP\DataModel\FileData[] */
 ?>
 
-<div id="files-wrap" class="list-wrap round">
-    <ul id="files-list">
+<div id="files-wrap">
+    <ul id="files-list " class="mdl-list">
         <?php foreach ($files as $file): ?>
-            <li class="files-item round">
-                <div class="files-item-info" title="<?php echo $file->getName(); ?>">
-                    <?php echo \SP\Html\Html::truncate($file->getName(), 35); ?>
-                    <?php printf('(%d KB)', $file->getSize() / 1024); ?>
+            <li class="mdl-list__item">
+                <span class="mdl-list__item-primary-content" title="<?php echo $file->getName(); ?>">
+                    <i class="material-icons  mdl-list__item-icon">attachment</i>
+                    <span><?php printf('%s (%d KB)', \SP\Html\Html::truncate($file->getName(), 50), $file->getSize() / 1024); ?></span>
+                </span>
+
+                <span class="list-actions">
                     <?php if ($file->getThumb() !== 'no_thumb'): ?>
-                        <img src="data:image/png;base64,<?php echo $file->getThumb(); ?>"
-                             title="<?php echo $file->getName(); ?>" alt="thumbnail"
-                             class="btn-action"
-                             data-item-id="<?php echo $file->getId(); ?>"
-                             data-action-route="<?php echo $fileViewRoute; ?>"
-                             data-onclick="file/view"/>
+                        <span title="<?php echo $file->getName(); ?>"
+                              class="btn-action"
+                              data-item-id="<?php echo $file->getId(); ?>"
+                              data-action-route="<?php echo $fileViewRoute; ?>"
+                              data-onclick="file/view">
+                            <img src="data:image/png;base64,<?php echo $file->getThumb(); ?>" alt="thumbnail"/>
+                        </span>
                     <?php endif; ?>
-                </div>
-                <div class="files-item-actions">
+
                     <?php if ($deleteEnabled === 1): ?>
-                        <i class="btn-action material-icons <?php echo $icons->getIconDelete()->getClass(); ?>"
+                        <i class="material-icons btn-action <?php echo $icons->getIconDelete()->getClass(); ?>"
                            title="<?php echo __('Eliminar Archivo'); ?>"
                            data-item-id="<?php echo $file->getId(); ?>"
                            data-action-route="<?php echo $fileDeleteRoute; ?>"
@@ -29,23 +32,25 @@
                             <?php echo $icons->getIconDelete()->getIcon(); ?></i>
                     <?php endif; ?>
 
-                    <i class="btn-action material-icons <?php echo $icons->getIconDownload()->getClass(); ?>"
+                    <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconDownload()->getClass(); ?>"
                        title="<?php echo __('Descargar Archivo'); ?>"
                        data-item-id="<?php echo $file->getId(); ?>"
                        data-action-route="<?php echo $fileDownloadRoute; ?>"
                        data-onclick="file/download">
                         <?php echo $icons->getIconDownload()->getIcon(); ?></i>
-                    <i class="btn-action material-icons <?php echo $icons->getIconView()->getClass(); ?>"
+
+                    <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconView()->getClass(); ?>"
                        title="<?php echo __('Ver Archivo'); ?>"
                        data-item-id="<?php echo $file->getId(); ?>"
                        data-action-route="<?php echo $fileViewRoute; ?>"
                        data-onclick="file/view">
                         <?php echo $icons->getIconView()->getIcon(); ?></i>
-                </div>
+                </span>
             </li>
         <?php endforeach; ?>
     </ul>
 </div>
+
 <script type="text/javascript">
     sysPassApp.sk.set("<?php echo $sk; ?>");
 </script>

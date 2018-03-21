@@ -27,6 +27,7 @@ namespace SP\Util;
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SP\DataModel\FileData;
 
 /**
  * Class FileUtil
@@ -35,6 +36,11 @@ use RecursiveIteratorIterator;
  */
 class FileUtil
 {
+    /**
+     * @var array
+     */
+    public static $imageExtensions = ['JPG', 'PNG', 'GIF'];
+
     /**
      * Removes a directory in a recursive way
      *
@@ -56,5 +62,14 @@ class FileUtil
         }
 
         return rmdir($dir);
+    }
+
+    /**
+     * @param FileData $FileData
+     * @return bool
+     */
+    public static function isImage(FileData $FileData)
+    {
+        return in_array(mb_strtoupper($FileData->getExtension()), self::$imageExtensions, true);
     }
 }

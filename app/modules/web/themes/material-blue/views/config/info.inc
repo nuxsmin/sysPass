@@ -1,8 +1,9 @@
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
+    <i class="material-icons">info</i>
     <?php echo __('Información de la Aplicación'); ?>
 </div>
 
-<table class="data round">
+<table class="data">
     <tr>
         <td class="descField">
             <?php echo __('Versión sysPass'); ?>

@@ -1,7 +1,8 @@
 <?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
 
 <?php if ($ldapIsAvailable || $isDemo): ?>
-    <div id="title" class="midroundup titleNormal">
+    <div id="title" class="titleNormal">
+        <i class="material-icons">business</i>
         <?php echo __('Configuración'); ?>
     </div>
 
@@ -9,7 +10,7 @@
           data-onsubmit="config/save"
           data-action-route="configLdap/save"
           data-hash="">
-        <table id="tblLdap" class="data tblConfig round">
+        <table id="tblLdap" class="data tblConfig">
 
             <tr>
                 <td class="descField">
@@ -282,11 +283,12 @@
             </ul>
         </div>
 
-        <div id="title" class="midroundup titleNormal">
+        <div id="title" class="titleNormal">
+            <i class="material-icons">import_export</i>
             <?php echo __('Importación'); ?>
         </div>
 
-        <table id="tblLdap" class="data tblConfig round">
+        <table id="tblLdap" class="data tblConfig">
             <tr>
                 <td class="descField">
                     <?php echo __('Atributo Login'); ?>

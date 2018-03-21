@@ -33,13 +33,13 @@ use SP\DataModel\FileData;
 use SP\Html\Html;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Mgmt\Files\FileUtil;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Services\Account\AccountFileService;
 use SP\Util\ErrorUtil;
+use SP\Util\FileUtil;
 use SP\Util\Util;
 
 /**

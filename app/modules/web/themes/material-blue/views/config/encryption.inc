@@ -9,7 +9,8 @@
       data-action-route="configEncryption/save"
       data-hash="">
 
-    <div id="title" class="midroundup titleNormal">
+    <div id="title" class="titleNormal">
+        <i class="material-icons">enhanced_encryption</i>
         <?php echo __('Clave Maestra'); ?>
     </div>
 
@@ -161,14 +162,15 @@
     </ul>
 </div>
 
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
+    <i class="material-icons">enhanced_encryption</i>
     <?php echo __('Clave Temporal'); ?>
 </div>
 
 <form method="post" name="frmTempMasterPass" id="frmTempMasterPass" class="form-action"
       data-onsubmit="config/save"
       data-action-route="configEncryption/saveTemp">
-    <table class="data tblConfig round">
+    <table class="data tblConfig">
         <tr>
             <td class="descField">
                 <?php echo __('Último cambio'); ?>

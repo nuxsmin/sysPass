@@ -5,11 +5,12 @@
       data-action-route="configWiki/save"
       data-hash="">
 
-    <div id="title" class="midroundup titleNormal">
+    <div id="title" class="titleNormal">
+        <i class="material-icons">folder</i>
         <?php echo __('Wiki'); ?>
     </div>
 
-    <table id="tblWiki" class="data tblConfig round">
+    <table id="tblWiki" class="data tblConfig">
         <tr>
             <td class="descField">
                 <div id="help-wiki_enabled"
@@ -120,11 +121,12 @@
         </tr>
     </table>
 
-    <div id="title" class="midroundup titleNormal">
+    <div id="title" class="titleNormal">
+        <i class="material-icons">folder</i>
         <?php echo __('DokuWiki API'); ?>
     </div>
 
-    <table id="tblDokuWiki" class="data tblConfig round">
+    <table id="tblDokuWiki" class="data tblConfig">
         <tr>
             <td class="descField">
                 <div id="help-dokuwiki_enabled"

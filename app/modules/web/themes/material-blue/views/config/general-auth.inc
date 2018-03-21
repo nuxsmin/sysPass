@@ -1,8 +1,9 @@
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
+    <i class="material-icons">verified_user</i>
     <?php echo __('Autentificación'); ?>
 </div>
 
-<table id="tblAuth" class="data tblConfig round">
+<table id="tblAuth" class="data tblConfig">
     <tr>
         <td class="descField"></td>
         <td class="valField">

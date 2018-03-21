@@ -6,9 +6,9 @@
 ?>
 
 <div class="data-container">
-    <div id="title" class="midroundup titleNormal">
+    <div id="title" class="titleNormal">
+        <i class="material-icons"><?php echo $title['icon']; ?></i>
         <?php echo $title['name']; ?>
-        <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
     </div>
 
     <form method="post" name="editpass" id="frmEditPass" class="form-action"
@@ -16,7 +16,7 @@
           data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
           data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
           data-hash="">
-        <table class="data round">
+        <table class="data">
             <tr>
                 <td class="descField"><?php echo __('Nombre'); ?></td>
                 <td class="valField">

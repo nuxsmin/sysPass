@@ -6,11 +6,12 @@
       data-reload="1"
       data-hash="">
 
-    <div id="title" class="midroundup titleNormal">
+    <div id="title" class="titleNormal">
+        <i class="material-icons">search</i>
         <?php echo __('Búsqueda'); ?>
     </div>
 
-    <table id="tblAccounts" class="data tblConfig round">
+    <table id="tblAccounts" class="data tblConfig">
         <tr>
             <td class="descField">
                 <?php echo __('Resultados por página'); ?>
@@ -140,7 +141,8 @@
         </tr>
     </table>
 
-    <div id="title" class="midroundup titleNormal">
+    <div id="title" class="titleNormal">
+        <i class="material-icons">link</i>
         <?php echo __('Enlaces Públicos'); ?>
     </div>
 
@@ -225,11 +227,12 @@
         </tr>
     </table>
 
-    <div id="title" class="midroundup titleNormal">
+    <div id="title" class="titleNormal">
+        <i class="material-icons">attachment</i>
         <?php echo __('Archivos'); ?>
     </div>
 
-    <table id="tblFiles" class="data tblConfig round">
+    <table id="tblFiles" class="data tblConfig">
         <tr>
             <td class="descField">
                 <div id="help-files"

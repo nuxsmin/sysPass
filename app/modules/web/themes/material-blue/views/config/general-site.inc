@@ -1,10 +1,11 @@
 <?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
 
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
+    <i class="material-icons">home</i>
     <?php echo __('Sitio'); ?>
 </div>
 
-<table id="tblSite" class="data tblConfig round">
+<table id="tblSite" class="data tblConfig">
     <tr>
         <td class="descField">
             <?php echo __('Idioma'); ?>

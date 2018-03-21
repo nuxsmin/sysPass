@@ -6,14 +6,14 @@
 ?>
 
 <div class="data-container">
-    <div id="title" class="midroundup titleNormal"><?php echo __('Solicitar Modificación de Cuenta'); ?></div>
+    <div id="title" class="titleNormal"><?php echo __('Solicitar Modificación de Cuenta'); ?></div>
 
     <form method="post" name="requestmodify" id="frmRequestModify" class="form-action"
           data-onsubmit="account/request"
           data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
           data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
           data-hash="">
-        <table class="data round">
+        <table class="data">
             <tr>
                 <td class="descField"><?php echo __('Nombre'); ?></td>
                 <td class="valField">

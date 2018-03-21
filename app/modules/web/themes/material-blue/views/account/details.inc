@@ -3,138 +3,127 @@
 /** @var \SP\DataModel\AccountExtData $accountData */
 ?>
 
-<fieldset class="data round">
-    <legend>
-        <?php echo __('Detalles'); ?>
-        <i id="btn-filters" class="material-icons show-extra-info"
-           data-state="0"
-           data-target="#data-details"
-           data-icon-down="<?php echo $icons->getIconDown()->getIcon(); ?>"
-           data-icon-up="<?php echo $icons->getIconUp()->getIcon(); ?>"><?php echo $icons->getIconDown()->getIcon(); ?></i>
-    </legend>
+<div id="data-details">
+    <table class="data">
+        <tr>
+            <td class="descField"><?php echo __('Visitas'); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Visitas'); ?></div>
 
-    <div id="data-details">
-        <table>
+                <?php echo $accountData->getCountView() . '(' . $accountData->getCountDecrypt() . ')'; ?>
+            </td>
+        </tr>
+        <tr>
+            <td class="descField"><?php echo __('Fecha Alta'); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Fecha Alta'); ?></div>
+
+                <?php echo $accountData->getDateAdd() ?>
+            </td>
+        </tr>
+        <?php if ($isModified && $accountData->getUserEditName()): ?>
             <tr>
-                <td class="descField"><?php echo __('Visitas'); ?></td>
+                <td class="descField"><?php echo __('Última Modificación'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Visitas'); ?></div>
+                    <div class="lowres-title"><?php echo __('Última Modificación'); ?></div>
 
-                    <?php echo $accountData->getCountView() . '(' . $accountData->getCountDecrypt() . ')'; ?>
+                    <?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName()); ?>
                 </td>
             </tr>
+        <?php endif; ?>
+        <tr>
+            <td class="descField"><?php echo __('Creador'); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Creador'); ?></div>
+
+                <?php echo $accountData->getUserName() ?: $accountData->getUserLogin(); ?>
+            </td>
+        </tr>
+        <tr>
+            <td class="descField"><?php echo __('Grupo Principal'); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Grupo Principal'); ?></div>
+
+                <?php echo $accountData->getUserGroupName(); ?>
+            </td>
+        </tr>
+        <?php if (isset($otherUsers) && is_array($otherUsers) && count($otherUsers) > 0): ?>
             <tr>
-                <td class="descField"><?php echo __('Fecha Alta'); ?></td>
+                <td class="descField"><?php echo __('Usuarios Secundarios'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Fecha Alta'); ?></div>
+                    <div class="lowres-title"><?php echo __('Usuarios Secundarios'); ?></div>
 
-                    <?php echo $accountData->getDateAdd() ?>
-                </td>
-            </tr>
-            <?php if ($isModified && $accountData->getUserEditName()): ?>
-                <tr>
-                    <td class="descField"><?php echo __('Última Modificación'); ?></td>
-                    <td class="valField">
-                        <div class="lowres-title"><?php echo __('Última Modificación'); ?></div>
+                    <?php
+                    $users = [];
 
-                        <?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName()); ?>
-                    </td>
-                </tr>
-            <?php endif; ?>
-            <tr>
-                <td class="descField"><?php echo __('Creador'); ?></td>
-                <td class="valField">
-                    <div class="lowres-title"><?php echo __('Creador'); ?></div>
-
-                    <?php echo $accountData->getUserName() ?: $accountData->getUserLogin(); ?>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField"><?php echo __('Grupo Principal'); ?></td>
-                <td class="valField">
-                    <div class="lowres-title"><?php echo __('Grupo Principal'); ?></div>
-
-                    <?php echo $accountData->getUserGroupName(); ?>
-                </td>
-            </tr>
-            <?php if (isset($otherUsers) && is_array($otherUsers) && count($otherUsers) > 0): ?>
-                <tr>
-                    <td class="descField"><?php echo __('Usuarios Secundarios'); ?></td>
-                    <td class="valField">
-                        <div class="lowres-title"><?php echo __('Usuarios Secundarios'); ?></div>
-
-                        <?php
-                        $users = [];
-
-                        /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsers */
-                        foreach ($otherUsers as $otherUser) {
-                            if (!$otherUser->isSkip() && $otherUser->isSelected()) {
-                                $users[] = $otherUser->getName();
-                            }
+                    /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsers */
+                    foreach ($otherUsers as $otherUser) {
+                        if (!$otherUser->isSkip() && $otherUser->isSelected()) {
+                            $users[] = $otherUser->getName();
                         }
+                    }
 
-                        $usersEdit = $accountData->getOtherUserEdit() ? '(+)' : '';
-                        echo $usersEdit . ' ' . implode(' | ', $users);
-                        ?>
-                    </td>
-                </tr>
-            <?php endif; ?>
-            <?php if (isset($otherUserGroups) && is_array($otherUserGroups) && count($otherUserGroups) > 0): ?>
-                <tr>
-                    <td class="descField"><?php echo __('Grupos Secundarios'); ?></td>
-                    <td class="valField">
-                        <div class="lowres-title"><?php echo __('Grupos Secundarios'); ?></div>
+                    $usersEdit = $accountData->getOtherUserEdit() ? '(+)' : '';
+                    echo $usersEdit . ' ' . implode(' | ', $users);
+                    ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php if (isset($otherUserGroups) && is_array($otherUserGroups) && count($otherUserGroups) > 0): ?>
+            <tr>
+                <td class="descField"><?php echo __('Grupos Secundarios'); ?></td>
+                <td class="valField">
+                    <div class="lowres-title"><?php echo __('Grupos Secundarios'); ?></div>
 
-                        <?php
-                        $userGroups = [];
+                    <?php
+                    $userGroups = [];
 
-                        /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroups */
-                        foreach ($otherUserGroups as $otherUserGroup) {
-                            if (!$otherUserGroup->isSkip() && $otherUserGroup->isSelected()) {
-                                $userGroups[] = $otherUserGroup->getName();
-                            }
+                    /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroups */
+                    foreach ($otherUserGroups as $otherUserGroup) {
+                        if (!$otherUserGroup->isSkip() && $otherUserGroup->isSelected()) {
+                            $userGroups[] = $otherUserGroup->getName();
                         }
+                    }
 
-                        $userGroupsEdit = $accountData->getOtherUserGroupEdit() ? '(+)' : '';
-                        echo $userGroupsEdit . ' ' . implode(' | ', $userGroups);
-                        ?>
-                    </td>
-                </tr>
-            <?php endif; ?>
-            <?php if ($accountAcl->isModified()): ?>
-                <tr>
-                    <td class="descField"><?php echo __('Fecha Edición'); ?></td>
-                    <td class="valField">
-                        <div class="lowres-title"><?php echo __('Fecha Edición'); ?></div>
-
-                        <?php echo $accountData->getDateEdit(); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField"><?php echo __('Editor'); ?></td>
-                    <td class="valField">
-                        <div class="lowres-title"><?php echo __('Editor'); ?></div>
-
-                        <?php echo $accountData->getUserEditName() ?: $accountData->getUserEditLogin(); ?>
-                    </td>
-                </tr>
-            <?php endif; ?>
+                    $userGroupsEdit = $accountData->getOtherUserGroupEdit() ? '(+)' : '';
+                    echo $userGroupsEdit . ' ' . implode(' | ', $userGroups);
+                    ?>
+                </td>
+            </tr>
+        <?php endif; ?>
+        <?php if ($accountAcl->isModified()): ?>
             <tr>
-                <td class="descField"><?php echo __('Fecha de Clave'); ?></td>
+                <td class="descField"><?php echo __('Fecha Edición'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Fecha de Clave'); ?></div>
+                    <div class="lowres-title"><?php echo __('Fecha Edición'); ?></div>
 
-                    <?php echo $accountPassDate; ?>
+                    <?php echo $accountData->getDateEdit(); ?>
                 </td>
             </tr>
             <tr>
-                <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
+                <td class="descField"><?php echo __('Editor'); ?></td>
                 <td class="valField">
-                    <div class="lowres-title"><?php echo __('Fecha Caducidad Clave'); ?></div>
+                    <div class="lowres-title"><?php echo __('Editor'); ?></div>
 
-                    <?php echo $accountPassDateChange; ?>
+                    <?php echo $accountData->getUserEditName() ?: $accountData->getUserEditLogin(); ?>
                 </td>
             </tr>
-        </table>
-    </div>
-</fieldset>
+        <?php endif; ?>
+        <tr>
+            <td class="descField"><?php echo __('Fecha de Clave'); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Fecha de Clave'); ?></div>
+
+                <?php echo $accountPassDate; ?>
+            </td>
+        </tr>
+        <tr>
+            <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('Fecha Caducidad Clave'); ?></div>
+
+                <?php echo $accountPassDateChange; ?>
+            </td>
+        </tr>
+    </table>
+</div>

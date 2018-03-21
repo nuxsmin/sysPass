@@ -1,35 +1,37 @@
-<fieldset class="data round">
-    <legend>
-        <?php echo __('Cuentas Vinculadas'); ?>
-        <i id="btn-filters" class="material-icons show-extra-info" data-state="0"
-           data-target="#data-linkedAccounts"
-           data-icon-down="<?php echo $icons->getIconDown()->getIcon(); ?>"
-           data-icon-up="<?php echo $icons->getIconUp()->getIcon(); ?>"><?php echo $icons->getIconDown()->getIcon(); ?></i>
-    </legend>
+<?php
+/**
+ * @var \SP\Core\UI\ThemeIcons $icons
+ */
+?>
 
-    <div id="data-linkedAccounts">
-        <table>
-            <tr>
-                <td class="descField"><?php echo __('Cuentas'); ?></td>
-                <td class="valField">
-                    <div class="list-wrap">
-                        <ul class="mdl-list">
-                            <?php foreach ($linkedAccounts as $account): ?>
-                                <li class="mdl-list__item">
-                                <span class="btn-action mdl-list__item-primary-content"
-                                      data-action-route="account/view"
-                                      data-item-id="<?php echo $account->id; ?>"
-                                      data-onclick="account/view"
-                                      data-action-sk="<?php echo $sk; ?>">
-                                <i class="material-icons mdl-list__item-icon">layers</i>
-                                    <?php printf('%s (%s)', $account->name, $account->clientName); ?>
-                                </span>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-        </table>
+<div id="data-linkedAccounts">
+    <div class="data">
+        <ul class="mdl-list">
+            <?php foreach ($linkedAccounts as $account): ?>
+                <li class="mdl-list__item">
+                    <span class="btn-action mdl-list__item-primary-content">
+                        <i class="material-icons mdl-list__item-icon">layers</i>
+                        <?php printf('%s (%s)', $account->name, $account->clientName); ?>
+                    </span>
+                    <span class="list-actions">
+                        <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconEdit()->getClass(); ?>"
+                           title="<?php echo __('Editar Cuenta'); ?>"
+                           data-action-route="account/edit"
+                           data-item-id="<?php echo $account->id; ?>"
+                           data-onclick="account/edit"
+                           data-action-sk="<?php echo $sk; ?>">
+                            <?php echo $icons->getIconEdit()->getIcon(); ?></i>
+
+                        <i class="material-icons btn-action mdl-list__item-icon <?php echo $icons->getIconView()->getClass(); ?>"
+                           title="<?php echo __('Detalles de Cuenta'); ?>"
+                           data-action-route="account/view"
+                           data-item-id="<?php echo $account->id; ?>"
+                           data-onclick="account/view"
+                           data-action-sk="<?php echo $sk; ?>">
+                        <?php echo $icons->getIconView()->getIcon(); ?></i>
+                    </span>
+                </li>
+            <?php endforeach; ?>
+        </ul>
     </div>
-</fieldset>
+</div>

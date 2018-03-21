@@ -5,14 +5,15 @@
  */
 ?>
 
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
+    <i class="material-icons">mail</i>
     <?php echo __('Correo'); ?>
 </div>
 
 <form method="post" name="frmMail" id="frmMail" class="form-action" data-onsubmit="config/save"
       data-action-route="configMail/save"
       data-hash="">
-    <table id="tblMail" class="data tblConfig round">
+    <table id="tblMail" class="data tblConfig">
         <tr>
             <td class="descField"></td>
             <td class="valField">

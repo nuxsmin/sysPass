@@ -1,8 +1,9 @@
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
+    <i class="material-icons">device_hub</i>
     <?php echo __('Proxy'); ?>
 </div>
 
-<table id="tblProxy" class="data tblConfig round">
+<table id="tblProxy" class="data tblConfig">
     <tr>
         <td class="descField"></td>
         <td class="valField">

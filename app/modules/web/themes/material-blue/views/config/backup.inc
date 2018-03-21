@@ -1,10 +1,11 @@
 <?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
 
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
+    <i class="material-icons">backup</i>
     <?php echo __('Copia de Seguridad'); ?>
 </div>
 
-<table class="data round">
+<table class="data">
     <tr>
         <td class="descField">
             <?php echo __('Resultado'); ?>
@@ -73,13 +74,14 @@
     </ul>
 </div>
 
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
+    <i class="material-icons">import_export</i>
     <?php echo __('Exportar Cuentas'); ?>
 </div>
 
 <form method="post" name="frmExport" id="frmExport" class="form-action" data-onsubmit="config/export"
       data-action-route="configBackup/xmlExport">
-    <table class="data round">
+    <table class="data">
         <tr>
             <td class="descField">
                 <?php echo __('Resultado'); ?>

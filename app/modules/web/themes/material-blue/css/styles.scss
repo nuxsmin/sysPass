@@ -159,16 +159,14 @@
     }
   }
   #title {
-    width: 50%;
+    width: 100%;
     padding: 7px;
-    margin: auto;
     background-color: #d9d9d9;
     color: #fff;
     font-size: 17px;
-    letter-spacing: .3em;
-    text-align: center;
+    letter-spacing: .2em;
     &.titleNormal {
-      background-color: #607d8b;
+      background-color: $color-bluegrey-fg;
       color: #fff;
     }
   }
@@ -180,7 +178,7 @@
     margin: 2em auto;
     > {
       legend {
-        color: #607d8b;
+        color: $color-bluegrey-fg;
         padding: 0 .5em;
         font-size: 1.5em;
       }
@@ -220,10 +218,14 @@
       margin: 1em 0;
     }
     .dropzone {
-      width: 30em;
+      &:hover {
+        opacity: 1;
+      }
+      width: 100%;
       padding: 1em;
       border: 2px dashed $color-teal-fg;
       text-align: center;
+      opacity: .3;
       img {
         vertical-align: middle;
       }
@@ -545,6 +547,14 @@
       padding: .3em 0;
     }
   }
+  .list-actions {
+    i {
+      opacity: .5;
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 #box-popup {
@@ -624,6 +634,10 @@
     line-height: 1.5em;
     margin-top: 1em;
   }
+}
+
+#box-upload-files > * {
+  margin: 0 auto;
 }
 
 #debug {

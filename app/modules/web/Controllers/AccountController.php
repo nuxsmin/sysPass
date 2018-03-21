@@ -522,16 +522,18 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Display account's password
      *
-     * @param int $id Account's ID
+     * @param int $id        Account's ID
      * @param int $isHistory The account's ID refers to history
-     * @throws \Psr\Container\ContainerExceptionInterface
+     * @param int $parentId
      */
-    public function viewPassAction($id, $isHistory)
+    public function viewPassAction($id, $isHistory, $parentId)
     {
         try {
             $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
             $account = $isHistory === 0 ? $this->accountService->getPasswordForId($id) : $this->accountService->getPasswordHistoryForId($id);
+
+            $this->view->assign('isLinked', $parentId > 0);
 
             $data = [
                 'acclogin' => $account->getLogin(),
@@ -540,11 +542,12 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 'html' => $this->render()
             ];
 
+            if ($isHistory === 0) $this->accountService->incrementDecryptCounter($id);
+
             $this->eventDispatcher->notifyEvent('show.account.pass',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Clave visualizada'))
-                        ->addDetail(__u('Cuenta'), $account->getName()))
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Clave visualizada'))
+                    ->addDetail(__u('Cuenta'), $account->getName()))
             );
 
             $this->returnJsonResponseData($data);
@@ -558,7 +561,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
     /**
      * Copy account's password
      *
-     * @param int $id Account's ID
+     * @param int $id        Account's ID
      * @param int $isHistory The account's ID refers to history
      * @throws Helpers\HelperException
      * @throws SPException
@@ -577,10 +580,9 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
         ];
 
         $this->eventDispatcher->notifyEvent('copy.account.pass',
-            new Event($this,
-                EventMessage::factory()
-                    ->addDescription(__u('Clave copiada'))
-                    ->addDetail(__u('Cuenta'), $account->getName()))
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Clave copiada'))
+                ->addDetail(__u('Cuenta'), $account->getName()))
         );
 
         $this->returnJsonResponseData($data);
@@ -613,11 +615,10 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $accountDetails = $this->accountService->getById($accountId)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent('create.account',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Cuenta creada'))
-                        ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                        ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Cuenta creada'))
+                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
             );
 
             $this->returnJsonResponseData(
@@ -659,11 +660,10 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent('edit.account',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Cuenta actualizada'))
-                        ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                        ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Cuenta actualizada'))
+                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
             );
 
             $this->returnJsonResponseData(
@@ -701,11 +701,10 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent('edit.account.pass',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Clave actualizada'))
-                        ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                        ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Clave actualizada'))
+                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
             );
 
             $this->returnJsonResponseData(
@@ -729,7 +728,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Saves restore action
      *
      * @param int $historyId Account's history ID
-     * @param int $id Account's ID
+     * @param int $id        Account's ID
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -741,11 +740,10 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent('edit.account.restore',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Cuenta restaurada'))
-                        ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                        ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Cuenta restaurada'))
+                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
             );
 
             $this->returnJsonResponseData(
@@ -791,11 +789,10 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 $this->deleteCustomFieldsForItem(ActionsInterface::ACCOUNT, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.account',
-                    new Event($this,
-                        EventMessage::factory()
-                            ->addDescription(__u('Cuenta eliminada'))
-                            ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                            ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Cuenta eliminada'))
+                        ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                        ->addDetail(__u('Cliente'), $accountDetails->getClientName()))
                 );
 
                 $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuenta eliminada'));
@@ -826,17 +823,16 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $accountDetails = $this->accountService->getById($id)->getAccountVData();
 
             $this->eventDispatcher->notifyEvent('request.account',
-                new Event($this,
-                    EventMessage::factory()
-                        ->addDescription(__u('Solicitud'))
-                        ->addDetail(__u('Solicitante'), sprintf('%s (%s)', $this->userData->getName(), $this->userData->getLogin()))
-                        ->addDetail(__u('Cuenta'), $accountDetails->getName())
-                        ->addDetail(__u('Cliente'), $accountDetails->getClientName())
-                        ->addDetail(__u('Descripción'), $description)
-                        ->addData('accountId', $id)
-                        ->addData('whoId', $this->userData->getId())
-                        ->addData('userId', $accountDetails->userId)
-                        ->addData('userId', $accountDetails->userEditId))
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Solicitud'))
+                    ->addDetail(__u('Solicitante'), sprintf('%s (%s)', $this->userData->getName(), $this->userData->getLogin()))
+                    ->addDetail(__u('Cuenta'), $accountDetails->getName())
+                    ->addDetail(__u('Cliente'), $accountDetails->getClientName())
+                    ->addDetail(__u('Descripción'), $description)
+                    ->addData('accountId', $id)
+                    ->addData('whoId', $this->userData->getId())
+                    ->addData('userId', $accountDetails->userId)
+                    ->addData('userId', $accountDetails->userEditId))
             );
 
             $this->returnJsonResponseData(

@@ -28,10 +28,10 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
-use SP\Mgmt\Files\FileUtil;
 use SP\Repositories\Account\AccountFileRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
+use SP\Util\FileUtil;
 use SP\Util\ImageUtil;
 
 /**

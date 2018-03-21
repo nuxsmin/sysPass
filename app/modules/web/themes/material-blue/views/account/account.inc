@@ -4,284 +4,309 @@
  * @var \SP\DataModel\AccountExtData $accountData
  * @var \SP\Config\ConfigData        $configData
  */
+
+$showLinked = $gotData && count($linkedAccounts) > 0;
+$showFiles = $gotData && $configData->isFilesEnabled() && $accountAcl->isShowFiles();
+$showDetails = $gotData && $accountAcl->isShowDetails();
+$showPermissions = !$isView && ($accountAcl->isShowPermission() || $allowPrivate || $allowPrivateGroup);
+$showCustomFields = count($customFields) > 0;
+
 ?>
 
 <div class="data-container">
-    <div id="title" class="midroundup titleNormal">
+    <div id="title" class="titleNormal">
+        <i class="material-icons"><?php echo $title['icon']; ?></i>
         <?php echo $title['name']; ?>
-        <i id="history-icon" class="material-icons"><?php echo $title['icon']; ?></i>
     </div>
 
-    <form method="post" name="frmaccount" id="frmAccount" class="form-action"
-          data-onsubmit="account/save"
-          data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
-          data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
-          data-hash="">
-        <input type="hidden" name="sk" value="<?php echo $sk; ?>">
-        <input type="hidden" name="isAjax" value="1">
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+        <div class="mdl-tabs__tab-bar">
+            <a href="#account-panel" class="mdl-tabs__tab is-active"><?php echo __('Cuenta'); ?></a>
 
-        <table class="data round">
-            <tr>
-                <td class="descField"><?php echo __('Nombre'); ?></td>
-                <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="name" name="name" type="text" required
-                               class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50"
-                               value="<?php echo $gotData ? $accountData->getName() : ''; ?>" <?php echo $readonly; ?>
-                               tabindex="1">
-                        <label class="mdl-textfield__label" for="name"><?php echo __('Nombre de cuenta'); ?></label>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField"><?php echo __('Cliente'); ?></td>
-                <td class="valField">
-                    <div class="lowres-title"><?php echo __('Cliente'); ?></div>
-
-                    <select id="selClient" name="clientId" class="select-box sel-chosen-client"
-                            tabindex="2" required <?php echo $disabled; ?>>
-                        <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $clients */
-                        foreach ($clients as $client): ?>
-                            <option
-                                    value="<?php echo $client->getId(); ?>" <?php echo ($gotData && $client->getId() === $accountData->getClientId()) ? 'selected' : ''; ?>><?php echo $client->getName(); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <?php if ($addClientEnabled): ?>
-                        <i class="material-icons btn-action" title="<?php echo __('Nuevo Cliente'); ?>"
-                           data-action-route="<?php echo $addClientRoute; ?>"
-                           data-item-route="items/clients"
-                           data-item-dst="selClient"
-                           data-item-id="0"
-                           data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
-                    <?php endif; ?>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField"><?php echo __('Categoría'); ?></td>
-                <td class="valField">
-                    <div class="lowres-title"><?php echo __('Categoría'); ?></div>
-
-                    <select id="selCategory" name="categoryId" class="select-box sel-chosen-category"
-                            tabindex="3" required <?php echo $disabled; ?>>
-                        <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $categories */
-                        foreach ($categories as $category): ?>
-                            <option
-                                    value="<?php echo $category->getId(); ?>" <?php echo ($gotData && $category->getId() === $accountData->getCategoryId()) ? 'selected' : ''; ?>><?php echo $category->getName(); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <?php if ($addCategoryEnabled): ?>
-                        <i class="material-icons btn-action" title="<?php echo __('Nueva Categoría'); ?>"
-                           data-action-route="<?php echo $addCategoryRoute; ?>"
-                           data-item-route="items/categories"
-                           data-item-dst="selCategory"
-                           data-item-id="0"
-                           data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
-                    <?php endif; ?>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField"><?php echo __('URL / IP'); ?></td>
-                <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="url" name="url" type="text" class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="255" tabindex="4"
-                               value="<?php echo $gotData ? $accountData->getUrl() : ''; ?>" <?php echo $readonly; ?>>
-                        <label class="mdl-textfield__label" for="name"><?php echo __('URL o IP de acceso'); ?></label>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField"><?php echo __('Usuario'); ?></td>
-                <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="login" name="login" type="text"
-                               class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50" tabindex="5"
-                               value="<?php echo $gotData ? $accountData->getLogin() : ''; ?>" <?php echo $readonly; ?>>
-                        <label class="mdl-textfield__label" for="name"><?php echo __('Usuario de acceso'); ?></label>
-                    </div>
-                </td>
-            </tr>
-            <?php if ($accountAcl->isShowPass()): ?>
-                <tr>
-                    <td class="descField"><?php echo __('Clave'); ?></td>
-                    <td class="valField">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="accountpass" name="pass" type="password" required
-                                   class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
-                                   maxlength="255" tabindex="6"
-                                   autocomplete="off">
-                            <label class="mdl-textfield__label" for="accountpass"><?php echo __('Clave'); ?></label>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="descField"><?php echo __('Clave (repetir)'); ?></td>
-                    <td class="valField">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="accountpassR" name="passR" type="password" required
-                                   class="mdl-textfield__input mdl-color-text--indigo-400"
-                                   tabindex="7" maxlength="255" autocomplete="off">
-                            <label class="mdl-textfield__label"
-                                   for="accountpassR"><?php echo __('Clave (repetir)'); ?></label>
-                        </div>
-                    </td>
-                </tr>
+            <?php if ($showCustomFields): ?>
+                <a href="#customfield-panel" class="mdl-tabs__tab"><?php echo __('Campos Personalizados'); ?></a>
             <?php endif; ?>
-            <?php if (!$isView): ?>
-                <tr>
-                    <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
-                    <td class="valField">
-                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="accountpassdatechange" name="accountpassdatechange" type="date"
-                                   class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
-                                   tabindex="8"
-                                   value="<?php echo $accountPassDateChange; ?>" <?php echo $readonly; ?>>
-                            <label class="mdl-textfield__label"
-                                   for="accountpassdatechange"><?php echo __('Fecha'); ?></label>
-                        </div>
 
-                        <i class="material-icons btn-action"
-                           title="<?php echo __('Seleccionar Fecha'); ?>">date_range</i>
-                    </td>
-                </tr>
+            <?php if ($showPermissions): ?>
+                <a href="#permission-panel" class="mdl-tabs__tab"><?php echo __('Permisos'); ?></a>
             <?php endif; ?>
-            <tr>
-                <td class="descField"><?php echo __('Notas'); ?></td>
-                <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+
+            <?php if ($showFiles): ?>
+                <a href="#file-panel" class="mdl-tabs__tab"><?php echo __('Archivos'); ?></a>
+            <?php endif; ?>
+
+            <?php if ($showDetails): ?>
+                <a href="#detail-panel" class="mdl-tabs__tab"><?php echo __('Detalles'); ?></a>
+            <?php endif; ?>
+
+            <?php if ($showLinked): ?>
+                <a href="#linked-panel" class="mdl-tabs__tab"><?php echo __('Enlaces'); ?></a>
+            <?php endif; ?>
+        </div>
+
+        <form method="post" name="frmaccount" id="frmAccount" class="form-action"
+              data-onsubmit="account/save"
+              data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
+              data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
+              data-hash="">
+            <input type="hidden" name="sk" value="<?php echo $sk; ?>">
+            <input type="hidden" name="isAjax" value="1">
+
+            <div class="mdl-tabs__panel is-active" id="account-panel">
+                <table class="data">
+                    <tr>
+                        <td class="descField"><?php echo __('Nombre'); ?></td>
+                        <td class="valField">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="name" name="name" type="text" required
+                                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                                       maxlength="50"
+                                       value="<?php echo $gotData ? $accountData->getName() : ''; ?>" <?php echo $readonly; ?>
+                                       tabindex="1">
+                                <label class="mdl-textfield__label"
+                                       for="name"><?php echo __('Nombre de cuenta'); ?></label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="descField"><?php echo __('Cliente'); ?></td>
+                        <td class="valField">
+                            <div class="lowres-title"><?php echo __('Cliente'); ?></div>
+
+                            <select id="selClient" name="clientId" class="select-box sel-chosen-client"
+                                    tabindex="2" required <?php echo $disabled; ?>>
+                                <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
+                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $clients */
+                                foreach ($clients as $client): ?>
+                                    <option
+                                            value="<?php echo $client->getId(); ?>" <?php echo ($gotData && $client->getId() === $accountData->getClientId()) ? 'selected' : ''; ?>><?php echo $client->getName(); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <?php if ($addClientEnabled): ?>
+                                <i class="material-icons btn-action" title="<?php echo __('Nuevo Cliente'); ?>"
+                                   data-action-route="<?php echo $addClientRoute; ?>"
+                                   data-item-route="items/clients"
+                                   data-item-dst="selClient"
+                                   data-item-id="0"
+                                   data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="descField"><?php echo __('Categoría'); ?></td>
+                        <td class="valField">
+                            <div class="lowres-title"><?php echo __('Categoría'); ?></div>
+
+                            <select id="selCategory" name="categoryId" class="select-box sel-chosen-category"
+                                    tabindex="3" required <?php echo $disabled; ?>>
+                                <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
+                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $categories */
+                                foreach ($categories as $category): ?>
+                                    <option
+                                            value="<?php echo $category->getId(); ?>" <?php echo ($gotData && $category->getId() === $accountData->getCategoryId()) ? 'selected' : ''; ?>><?php echo $category->getName(); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <?php if ($addCategoryEnabled): ?>
+                                <i class="material-icons btn-action" title="<?php echo __('Nueva Categoría'); ?>"
+                                   data-action-route="<?php echo $addCategoryRoute; ?>"
+                                   data-item-route="items/categories"
+                                   data-item-dst="selCategory"
+                                   data-item-id="0"
+                                   data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="descField"><?php echo __('URL / IP'); ?></td>
+                        <td class="valField">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="url" name="url" type="text"
+                                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                                       maxlength="255" tabindex="4"
+                                       value="<?php echo $gotData ? $accountData->getUrl() : ''; ?>" <?php echo $readonly; ?>>
+                                <label class="mdl-textfield__label"
+                                       for="name"><?php echo __('URL o IP de acceso'); ?></label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="descField"><?php echo __('Usuario'); ?></td>
+                        <td class="valField">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="login" name="login" type="text"
+                                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                                       maxlength="50" tabindex="5"
+                                       value="<?php echo $gotData ? $accountData->getLogin() : ''; ?>" <?php echo $readonly; ?>>
+                                <label class="mdl-textfield__label"
+                                       for="name"><?php echo __('Usuario de acceso'); ?></label>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php if ($accountAcl->isShowPass()): ?>
+                        <tr>
+                            <td class="descField"><?php echo __('Clave'); ?></td>
+                            <td class="valField">
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input id="accountpass" name="pass" type="password" required
+                                           class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
+                                           maxlength="255" tabindex="6"
+                                           autocomplete="off">
+                                    <label class="mdl-textfield__label"
+                                           for="accountpass"><?php echo __('Clave'); ?></label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="descField"><?php echo __('Clave (repetir)'); ?></td>
+                            <td class="valField">
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input id="accountpassR" name="passR" type="password" required
+                                           class="mdl-textfield__input mdl-color-text--indigo-400"
+                                           tabindex="7" maxlength="255" autocomplete="off">
+                                    <label class="mdl-textfield__label"
+                                           for="accountpassR"><?php echo __('Clave (repetir)'); ?></label>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                    <?php if (!$isView): ?>
+                        <tr>
+                            <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
+                            <td class="valField">
+                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input id="accountpassdatechange" name="accountpassdatechange" type="date"
+                                           class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
+                                           tabindex="8"
+                                           value="<?php echo $accountPassDateChange; ?>" <?php echo $readonly; ?>>
+                                    <label class="mdl-textfield__label"
+                                           for="accountpassdatechange"><?php echo __('Fecha'); ?></label>
+                                </div>
+
+                                <i class="material-icons btn-action"
+                                   title="<?php echo __('Seleccionar Fecha'); ?>">date_range</i>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                    <tr>
+                        <td class="descField"><?php echo __('Notas'); ?></td>
+                        <td class="valField">
+                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
                                   name="notes" tabindex="9"
                                   maxlength="5000" <?php echo $readonly; ?>><?php echo $gotData ? $accountData->getNotes() : ''; ?></textarea>
-                        <label class="mdl-textfield__label"
-                               for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
-                    </div>
-            </tr>
-            <tr>
-                <td class="descField"><?php echo __('Etiquetas'); ?></td>
-                <td class="valField">
-                    <div class="lowres-title"><?php echo __('Etiquetas'); ?></div>
+                                <label class="mdl-textfield__label"
+                                       for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
+                            </div>
+                    </tr>
+                    <tr>
+                        <td class="descField"><?php echo __('Etiquetas'); ?></td>
+                        <td class="valField">
+                            <div class="lowres-title"><?php echo __('Etiquetas'); ?></div>
 
-                    <?php if (!$isView): ?>
-                        <select id="selTags" name="tags[]" multiple="multiple" tabindex="10">
-                            <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
-                            <?php /** @var \SP\Mvc\View\Components\SelectItem[] $tags */
-                            foreach ($tags as $tag): ?>
-                                <option value="<?php echo $tag->getId(); ?>" <?php echo $tag->isSelected() ? 'selected' : ''; ?>><?php echo $tag->getName(); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    <?php else: ?>
-                        <?php /** @var \SP\Mvc\View\Components\SelectItem[] $tags */
-                        foreach ($tags as $tag): ?>
-                            <?php if ($tag->isSelected()): ?>
-                                <span class="tag"><?php echo $tag->getName(); ?></span>
+                            <?php if (!$isView): ?>
+                                <select id="selTags" name="tags[]" multiple="multiple" tabindex="10">
+                                    <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
+                                    <?php /** @var \SP\Mvc\View\Components\SelectItem[] $tags */
+                                    foreach ($tags as $tag): ?>
+                                        <option value="<?php echo $tag->getId(); ?>" <?php echo $tag->isSelected() ? 'selected' : ''; ?>><?php echo $tag->getName(); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            <?php else: ?>
+                                <?php /** @var \SP\Mvc\View\Components\SelectItem[] $tags */
+                                foreach ($tags as $tag): ?>
+                                    <?php if ($tag->isSelected()): ?>
+                                        <span class="tag"><?php echo $tag->getName(); ?></span>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
                             <?php endif; ?>
-                        <?php endforeach; ?>
+                        </td>
+                    </tr>
+                    <?php if (isset($linkedAccounts) && count($linkedAccounts) === 0): ?>
+                        <tr>
+                            <td class="descField"><?php echo __('Cuenta Vinculada'); ?></td>
+                            <td class="valField">
+                                <div class="lowres-title"><?php echo __('Cuenta Vinculada'); ?></div>
+
+                                <select id="selParentAccount" name="parentAccountId" tabindex="11"
+                                        class="select-box select-box-deselect" <?php echo $disabled; ?>
+                                        data-sk="<?php echo $sk; ?>"
+                                        data-action-route="items/accountsUser"
+                                        data-item-id="<?php echo $gotData ? $accountId : ''; ?>"
+                                        data-selected-id="<?php echo $gotData ? $accountData->getParentId() : ''; ?>">
+                                    <option value=""><?php echo __('Seleccionar Cuenta'); ?></option>
+                                </select>
+                            </td>
+                        </tr>
                     <?php endif; ?>
-                </td>
-            </tr>
-            <?php if (isset($linkedAccounts) && count($linkedAccounts) === 0): ?>
-                <tr>
-                    <td class="descField"><?php echo __('Cuenta Vinculada'); ?></td>
-                    <td class="valField">
-                        <div class="lowres-title"><?php echo __('Cuenta Vinculada'); ?></div>
+                    <?php if ($accountAcl->isShowHistory() && count($historyData) > 0): ?>
+                        <tr>
+                            <td class="descField"><?php echo __('Historial'); ?></td>
+                            <td class="valField">
+                                <div class="lowres-title"><?php echo __('Historial'); ?></div>
 
-                        <select id="selParentAccount" name="parentAccountId" tabindex="11"
-                                class="select-box select-box-deselect" <?php echo $disabled; ?>
-                                data-sk="<?php echo $sk; ?>"
-                                data-action-route="items/accountsUser"
-                                data-item-id="<?php echo $gotData ? $accountId : ''; ?>"
-                                data-selected-id="<?php echo $gotData ? $accountData->getParentId() : ''; ?>">
-                            <option value=""><?php echo __('Seleccionar Cuenta'); ?></option>
-                        </select>
-                    </td>
-                </tr>
-            <?php endif; ?>
-            <?php if ($accountAcl->isShowHistory() && count($historyData) > 0): ?>
-                <tr>
-                    <td class="descField"><?php echo __('Historial'); ?></td>
-                    <td class="valField">
-                        <div class="lowres-title"><?php echo __('Historial'); ?></div>
+                                <select id="historyId" name="historyId" class="select-box" tabindex="12"
+                                        data-action-route="account/viewHistory"
+                                        data-onchange="account/viewHistory">
+                                    <option value=""><?php echo __('Seleccionar fecha'); ?></option>
+                                    <?php foreach ($historyData as $historyId => $historyData): ?>
+                                        <option
+                                                value="<?php echo $historyId; ?>" <?php echo ($gotData && $accountIsHistory && $historyId === $accountHistoryId) ? 'selected' : ''; ?>><?php echo $historyData; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
 
-                        <select id="historyId" name="historyId" class="select-box" tabindex="12"
-                                data-action-route="account/viewHistory"
-                                data-onchange="account/viewHistory">
-                            <option value=""><?php echo __('Seleccionar fecha'); ?></option>
-                            <?php foreach ($historyData as $historyId => $historyData): ?>
-                                <option
-                                        value="<?php echo $historyId; ?>" <?php echo ($gotData && $accountIsHistory && $historyId === $accountHistoryId) ? 'selected' : ''; ?>><?php echo $historyData; ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </td>
-                </tr>
-            <?php endif; ?>
+                    <?php if ($actionId === \SP\Core\Acl\ActionsInterface::ACCOUNT_EDIT && $isModified && $accountData->getUserEditName()): ?>
+                        <tr>
+                            <td class="descField"><?php echo __('Última Modificación'); ?></td>
+                            <td class="valField"><?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName()); ?></td>
+                        </tr>
+                    <?php endif; ?>
 
-            <?php if ($actionId === \SP\Core\Acl\ActionsInterface::ACCOUNT_EDIT && $isModified && $accountData->getUserEditName()): ?>
-                <tr>
-                    <td class="descField"><?php echo __('Última Modificación'); ?></td>
-                    <td class="valField"><?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName()); ?></td>
-                </tr>
-            <?php endif; ?>
+                    <?php if ($gotData && $publicLinkShow && $publicLinkUrl !== null): ?>
+                        <tr>
+                            <td class="descField"><?php echo __('Enlace Público'); ?></td>
+                            <td class="valField">
+                                <div class="lowres-title"><?php echo __('Enlace Público'); ?></div>
 
-            <?php if ($gotData && $publicLinkShow && $publicLinkUrl !== null): ?>
-                <tr>
-                    <td class="descField"><?php echo __('Enlace Público'); ?></td>
-                    <td class="valField">
-                        <div class="lowres-title"><?php echo __('Enlace Público'); ?></div>
+                                <a href="<?php echo $publicLinkUrl; ?>" target="_blank"
+                                   title="<?php echo __('Enlace Público'); ?>">
+                                    <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </table>
+            </div>
 
-                        <a href="<?php echo $publicLinkUrl; ?>" target="_blank"
-                           title="<?php echo __('Enlace Público'); ?>">
-                            <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
-                        </a>
-                    </td>
-                </tr>
-            <?php endif; ?>
-        </table>
+            <div class="mdl-tabs__panel" id="customfield-panel">
+                <?php if ($showCustomFields): ?>
+                    <div id="data-customfields">
+                        <table class="data">
+                            <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </div>
 
-        <?php if (!$isView && ($accountAcl->isShowPermission() || $allowPrivate || $allowPrivateGroup)): ?>
-            <?php include $this->includeTemplate('account-permissions'); ?>
-        <?php endif; ?>
+            <div class="mdl-tabs__panel" id="permission-panel">
+                <?php if ($showPermissions): include $this->includeTemplate('account-permissions'); endif; ?>
+            </div>
+        </form>
 
-        <?php if (count($customFields) > 0): ?>
-            <fieldset class="data round">
-                <legend>
-                    <?php echo __('Campos Personalizados'); ?>
-                    <i id="btn-filters" class="material-icons show-extra-info" data-state="0"
-                       data-target="#data-customfields"
-                       data-icon-down="<?php echo $icons->getIconDown()->getIcon(); ?>"
-                       data-icon-up="<?php echo $icons->getIconUp()->getIcon(); ?>"><?php echo $icons->getIconDown()->getIcon(); ?></i>
-                </legend>
+        <div class="mdl-tabs__panel" id="file-panel">
+            <?php if ($showFiles) : include $this->includeTemplate('files'); endif; ?>
+        </div>
 
-                <div id="data-customfields">
-                    <table>
-                        <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
-                    </table>
-                </div>
-            </fieldset>
-        <?php endif; ?>
+        <div class="mdl-tabs__panel" id="detail-panel">
+            <?php if ($showDetails): include $this->includeTemplate('details'); endif; ?>
+        </div>
 
-    </form>
+        <div class="mdl-tabs__panel" id="linked-panel">
+            <?php if ($showLinked): include $this->includeTemplate('linkedAccounts'); endif; ?>
+        </div>
+    </div>
 
-    <?php
-    // Filex box
-    if ($gotData && $configData->isFilesEnabled() && $accountAcl->isShowFiles()) {
-        include $this->includeTemplate('files');
-    }
-
-    // Linked accounts box
-    if ($gotData && count($linkedAccounts) > 0) {
-        include $this->includeTemplate('linkedAccounts');
-    }
-
-    // Details box
-    if ($gotData && $accountAcl->isShowDetails()) {
-        include $this->includeTemplate('details');
-    }
-
-    // Actions box
-    include $this->includeTemplate('actions');
-    ?>
+    <?php include $this->includeTemplate('actions'); ?>
 </div>

@@ -5,11 +5,12 @@
  */
 ?>
 
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
+    <i class="material-icons">import_export</i>
     <?php echo __('Importar CSV/XML'); ?>
 </div>
 
-<table class="data tblConfig round">
+<table class="data tblConfig">
     <tr>
         <td class="descField">
             <?php echo __('Usuario por Defecto'); ?>
@@ -119,11 +120,11 @@
     </ul>
 </div>
 
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
     <?php echo __('XML'); ?>
 </div>
 
-<table class="data tblConfig round">
+<table class="data tblConfig">
     <tr>
         <td class="descField">
             <?php echo __('Clave de Importación'); ?>
@@ -168,11 +169,11 @@
     </tr>
 </table>
 
-<div id="title" class="midroundup titleNormal">
+<div id="title" class="titleNormal">
     <?php echo __('CSV'); ?>
 </div>
 
-<table class="data tblConfig round">
+<table class="data tblConfig">
     <tr>
         <td class="descField">
             <?php echo __('Delimitador CSV'); ?>

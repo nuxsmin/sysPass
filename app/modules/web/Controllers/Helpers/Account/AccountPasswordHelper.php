@@ -122,7 +122,6 @@ class AccountPasswordHelper extends HelperBase
             $this->view->assign('isImage', 0);
         }
 
-        $this->view->assign('isLinked', $accountData->getParentId() > 0);
         $this->view->assign('sk', $this->context->generateSecurityKey());
     }
 }
