@@ -510,6 +510,10 @@
 
 #content .data,
 #box-popup {
+  .profile-list-action {
+    width: 75%;
+    margin: 0 auto;
+  }
   .list-wrap {
     max-height: 20em;
     overflow: auto;

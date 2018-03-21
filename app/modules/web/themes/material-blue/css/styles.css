@@ -510,6 +510,10 @@ pre, code, samp, kbd {
   background-color: #fff8e1;
   border: 1px solid #ffca28; }
 
+#content .data .profile-list-action,
+#box-popup .profile-list-action {
+  width: 75%;
+  margin: 0 auto; }
 #content .data .list-wrap,
 #box-popup .list-wrap {
   max-height: 20em;

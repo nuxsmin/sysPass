@@ -28,6 +28,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -66,6 +67,8 @@ class ConfigImportController extends SimpleControllerBase
         try {
 
             $this->eventDispatcher->notifyEvent('run.import.start', new Event($this));
+
+            SessionContext::close();
 
             $counter = $this->dic->get(ImportService::class)
                 ->doImport($importParams, new FileImport($this->router->request()->files()->get('inFile')));
