@@ -173,6 +173,6 @@ class Checks
      */
     public static function isJson(Klein $router)
     {
-        return $router->request()->headers()->get('Accept') === 'application/json';
+        return strpos($router->request()->headers()->get('Accept'), 'application/json') !== false;
     }
 }

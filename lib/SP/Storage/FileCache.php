@@ -44,7 +44,7 @@ class FileCache implements FileStorageInterface
         }
 
         if (!($data = file_get_contents($path))) {
-            throw new FileException(sprintf(__('Error al leer datos del archivo: %s'), $path));
+            throw new FileException(sprintf(__('Error al leer datos del archivo (%s)'), $path));
         }
         return unserialize($data);
     }

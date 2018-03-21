@@ -294,7 +294,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountFile WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
-        $queryData->setOnErrorMessage(__u('Error al eliminar el archivos'));
+        $queryData->setOnErrorMessage(__u('Error al eliminar los archivos'));
 
         DbWrapper::getQuery($queryData, $this->db);
 

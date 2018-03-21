@@ -688,7 +688,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('UPDATE User SET preferences = ? WHERE id = ? LIMIT 1');
         $queryData->addParam(serialize($userPreferencesData));
         $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al actualizar preferencias\''));
+        $queryData->setOnErrorMessage(__u('Error al actualizar preferencias'));
 
         return DbWrapper::getQuery($queryData, $this->db);
     }

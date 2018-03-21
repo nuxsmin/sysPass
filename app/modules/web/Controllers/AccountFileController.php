@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -280,7 +280,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
                         ->addDescription(__u('Archivos eliminados')))
                 );
 
-                $this->returnJsonResponse(0, __u('Archivos Eliminados'));
+                $this->returnJsonResponse(0, __u('Archivos eliminados'));
             } else {
                 $this->eventDispatcher->notifyEvent('delete.accountFile',
                     new Event($this, EventMessage::factory()

@@ -256,7 +256,7 @@ class ConfigLdapController extends SimpleControllerBase
                 JsonResponse::JSON_SUCCESS,
                 __u('Importación de usuarios de LDAP realizada'),
                 [
-                    sprintf(__('Usuarios importados: %d/%d'), $userLdapService->getSyncedObjects(), $userLdapService->getTotalObjects()),
+                    sprintf(__('Usuarios importados: %d / %d'), $userLdapService->getSyncedObjects(), $userLdapService->getTotalObjects()),
                     sprintf(__('Errores: %d'), $userLdapService->getErrorObjects())
 
                 ]

@@ -278,6 +278,10 @@ CREATE TABLE `EventLog` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+INSERT INTO CustomFieldType (id, name, text)
+VALUES (1, 'text', 'Texto'), (2, 'password', 'Clave'), (3, 'date', 'Fecha'), (4, 'number', 'Número'),
+  (5, 'email', 'Email'), (6, 'telephone', 'Teléfono'), (7, 'url', 'URL'), (8, 'color', 'Color'), (9, 'wiki', 'Wiki'),
+  (10, 'textarea', 'Área de texto');
 DROP TABLE IF EXISTS `Notification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
