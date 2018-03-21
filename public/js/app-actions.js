@@ -922,7 +922,7 @@ sysPass.Actions = function (Common) {
             };
 
             Common.appRequests().getActionCall(opts, function (response) {
-                if (response.status === 1) {
+                if (response.status !== 0) {
                     return Common.msg.out(response);
                 }
 
