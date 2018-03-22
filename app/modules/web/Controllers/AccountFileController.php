@@ -332,7 +332,7 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
         try {
             $this->view->addTemplate('files-list', 'account');
 
-            $this->view->assign('deleteEnabled', Request::analyzeBool('del', false));
+            $this->view->assign('deleteEnabled', Request::analyzeInt('del', false));
             $this->view->assign('files', $this->dic->get(AccountFileService::class)->getByAccountId($accountId));
             $this->view->assign('sk', $this->session->getSecurityKey());
             $this->view->assign('fileViewRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT_FILE_VIEW));
