@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-22 23:38+0100\n"
-"PO-Revision-Date: 2018-03-22 23:41+0100\n"
+"POT-Creation-Date: 2018-03-22 23:54+0100\n"
+"PO-Revision-Date: 2018-03-22 23:54+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -1718,6 +1718,18 @@ msgstr "Token not found"
 #: ../../../../lib/SP/Services/AuthToken/AuthTokenService.php:136
 msgid "Error al eliminar tokens"
 msgstr "Error while removing the tokens"
+
+#: ../../../../lib/SP/Services/AuthToken/LangStubs.php:27
+msgid "Buscar Cuentas"
+msgstr "Search for Accounts"
+
+#: ../../../../lib/SP/Services/AuthToken/LangStubs.php:28
+msgid "Ver Cuenta"
+msgstr "View Account"
+
+#: ../../../../lib/SP/Services/AuthToken/LangStubs.php:29
+msgid "Exportación"
+msgstr "Export"
 
 #: ../../../../lib/SP/Services/Backup/FileBackupService.php:81
 msgid "Realizar Backup"
@@ -6241,7 +6253,7 @@ msgstr "Sign in"
 
 #: ../../../modules/web/themes/material-blue/views/login/index.inc:68
 msgid "¿Olvidó su clave?"
-msgstr "Lost your password?"
+msgstr "Forgot password?"
 
 #: ../../../modules/web/themes/material-blue/views/main/upgrade.inc:6
 #, php-format
@@ -6556,12 +6568,6 @@ msgstr "Page"
 
 #~ msgid "Descargar nueva versión"
 #~ msgstr "Download new version"
-
-#~ msgid "Buscar Cuentas"
-#~ msgstr "Search for Accounts"
-
-#~ msgid "Ver Cuenta"
-#~ msgstr "View Account"
 
 #~ msgid "Editar Clave de Cuenta"
 #~ msgstr "Edit Account Password"
