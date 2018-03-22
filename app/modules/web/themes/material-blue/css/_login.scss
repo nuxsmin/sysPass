@@ -1,17 +1,22 @@
 body.login, body.logout {
-  background-color: $color-bluegrey-fg;
+  background: $color-bluegrey-fg;
   #wrap {
-    background-color: $color-bluegrey-fg;
+    background: transparent;
+  }
+  footer {
+    background: $color-bluegrey-fg;
+    color: #c9c9c9;
+    @include box-shadow-top-white();
   }
 }
 
 #login-logo {
   position: fixed;
   top: 1em;
-  right: 1em;
+  left: 1em;
   width: 100%;
   height: 8em;
-  background: transparent url("../../../../public/images/logo_full_bg.png") no-repeat top right;
+  background: transparent url("../../../../public/images/logo_full_bg.png") no-repeat top left;
   background-size: auto 8em;
 }
 

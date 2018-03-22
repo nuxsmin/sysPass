@@ -50,10 +50,11 @@ class NoticeMessage extends MessageBase
     /**
      * Componer un mensaje en formato texto
      *
+     * @param string $delimiter
      * @return string
      */
-    public function composeText()
+    public function composeText($delimiter = PHP_EOL)
     {
-        return $this->title . PHP_EOL . implode(PHP_EOL, $this->description) . PHP_EOL . implode(PHP_EOL, $this->footer);
+        return $this->title . $delimiter . implode($delimiter, $this->description) . $delimiter . implode($delimiter, $this->footer);
     }
 }

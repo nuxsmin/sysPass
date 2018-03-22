@@ -28,6 +28,12 @@ $public-path: '../../../../../../public';
   box-shadow: 0 -3px 2px -2px rgba(0, 0, 0, 0.14);
 }
 
+@mixin box-shadow-top-white() {
+  -webkit-box-shadow: 0 -3px 2px -2px rgba(255, 255, 255, 0.25);
+  -moz-box-shadow: 0 -3px 2px -2px rgba(255, 255, 255, 0.25);
+  box-shadow: 0 -3px 2px -2px rgba(255, 255, 255, 0.25);
+}
+
 @mixin border-radius($radius) {
   border-radius: $radius !important;
   -moz-border-radius: $radius !important;

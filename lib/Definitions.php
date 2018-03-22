@@ -57,5 +57,7 @@ return [
     \SP\Core\UI\Theme::class => object(\SP\Core\UI\Theme::class)
         ->constructor(APP_MODULE, get(\SP\Config\Config::class), get(\SP\Core\Context\ContextInterface::class)),
     \PHPMailer\PHPMailer\PHPMailer::class => object(\PHPMailer\PHPMailer\PHPMailer::class)
-        ->constructor(true)
+        ->constructor(true),
+    \Monolog\Logger::class => object(\Monolog\Logger::class)
+        ->constructor('syspass')
 ];

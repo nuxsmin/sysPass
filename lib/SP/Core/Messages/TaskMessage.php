@@ -168,11 +168,12 @@ class TaskMessage implements MessageInterface, JsonSerializable
     /**
      * Componer un mensaje en formato texto
      *
+     * @param string $delimiter
      * @return string
      */
-    public function composeText()
+    public function composeText($delimiter = ';')
     {
-        return implode(';', [
+        return implode($delimiter, [
             'taskId' => $this->taskId,
             'task' => $this->task,
             'message' => $this->message,

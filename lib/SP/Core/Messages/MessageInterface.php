@@ -34,9 +34,10 @@ interface MessageInterface
     /**
      * Componer un mensaje en formato texto
      *
+     * @param string $delimiter
      * @return string
      */
-    public function composeText();
+    public function composeText($delimiter = PHP_EOL);
 
     /**
      * Componer un mensaje en formato HTML

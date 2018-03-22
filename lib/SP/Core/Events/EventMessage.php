@@ -187,11 +187,12 @@ class EventMessage implements MessageInterface
     /**
      * Componer un mensaje en formato texto
      *
+     * @param string $delimiter
      * @return string
      */
-    public function composeText()
+    public function composeText($delimiter = PHP_EOL)
     {
-        return implode(PHP_EOL, [$this->getDescription(true), $this->getDetails(true)]);
+        return implode($delimiter, [$this->getDescription(true), $this->getDetails(true)]);
     }
 
     /**
@@ -215,7 +216,7 @@ class EventMessage implements MessageInterface
      * Devolver un detalle formateado
      *
      * @param array $detail
-     * @param bool  $translate
+     * @param bool $translate
      * @return string
      */
     protected function formatDetail(array $detail, $translate = false)
@@ -291,7 +292,7 @@ class EventMessage implements MessageInterface
 
     /**
      * @param string $type
-     * @param mixed  $data
+     * @param mixed $data
      * @return EventMessage
      */
     public function addData($type, $data)

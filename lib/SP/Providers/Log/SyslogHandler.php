@@ -24,22 +24,18 @@
 
 namespace SP\Providers\Log;
 
-use Monolog\Handler\SyslogHandler;
 use Monolog\Logger;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventReceiver;
-use SP\DataModel\EventlogData;
 use SP\Providers\EventsTrait;
 use SP\Providers\Provider;
-use SP\Services\EventLog\EventlogService;
 use SplSubject;
 
 /**
- * Class LogHandler
- *
+ * Class SyslogHandler
  * @package SP\Providers\Log
  */
-class LogHandler extends Provider implements EventReceiver
+class SyslogHandler extends Provider implements EventReceiver
 {
     use EventsTrait;
 
@@ -68,28 +64,13 @@ class LogHandler extends Provider implements EventReceiver
     ];
 
     /**
-     * @var EventlogService
-     */
-    protected $eventlogService;
-    /**
      * @var string
      */
     protected $events;
-
     /**
-     * Receive update from subject
-     *
-     * @link  http://php.net/manual/en/splobserver.update.php
-     * @param SplSubject $subject <p>
-     *                            The <b>SplSubject</b> notifying the observer of an update.
-     *                            </p>
-     * @return void
-     * @since 5.1.0
+     * @var Logger
      */
-    public function update(SplSubject $subject)
-    {
-        // TODO: Implement update() method.
-    }
+    protected $logger;
 
     /**
      * Inicialización del observador
@@ -107,33 +88,7 @@ class LogHandler extends Provider implements EventReceiver
      */
     public function updateEvent($eventType, Event $event)
     {
-        $eventlogData = new EventlogData();
-        $eventlogData->setAction($eventType);
-        $eventlogData->setLevel('INFO');
-
-        if (($e = $event->getSource()) instanceof \Exception) {
-            /** @var \Exception $e */
-            $eventlogData->setDescription(__($e->getMessage()));
-            $eventlogData->setLevel('ERROR');
-        } elseif (($eventMessage = $event->getEventMessage()) !== null) {
-            $eventlogData->setDescription($eventMessage->composeText());
-        }
-
-        try {
-            $this->eventlogService->create($eventlogData);
-        } catch (\Exception $e) {
-            processException($e);
-        }
-    }
-
-    /**
-     * Devuelve los eventos que implementa el observador en formato cadena
-     *
-     * @return string
-     */
-    public function getEventsString()
-    {
-        return $this->events;
+        $this->logger->debug($eventType . ';' . $event->getEventMessage()->composeText(';'));
     }
 
     /**
@@ -147,30 +102,33 @@ class LogHandler extends Provider implements EventReceiver
     }
 
     /**
-     * @param string $eventType
-     * @param Event $event
+     * Devuelve los eventos que implementa el observador en formato cadena
+     *
+     * @return string
      */
-    protected function sendToSyslog($eventType, Event $event)
+    public function getEventsString()
     {
-        $logger = $this->dic->get(Logger::class);
-        $logger->pushHandler(new SyslogHandler('syspass'));
-        $logger->info($eventType . ';' . $event->getEventMessage()->composeText(';'));
+        return $this->events;
     }
 
     /**
-     * @param string $eventType
-     * @param Event $event
+     * Receive update from subject
+     * @link http://php.net/manual/en/splobserver.update.php
+     * @param SplSubject $subject <p>
+     * The <b>SplSubject</b> notifying the observer of an update.
+     * </p>
+     * @return void
+     * @since 5.1.0
      */
-    protected function sendToRemoteSyslog($eventType, Event $event)
+    public function update(SplSubject $subject)
     {
-        $logger = $this->dic->get(Logger::class);
-        $logger->pushHandler(new SyslogHandler('syspass'));
-        $logger->info($eventType . ';' . $event->getEventMessage()->composeText(';'));
+        // TODO: Implement update() method.
     }
 
     protected function initialize()
     {
-        $this->eventlogService = $this->dic->get(EventlogService::class);
+        $this->logger = $this->dic->get(Logger::class)
+            ->pushHandler(new \Monolog\Handler\SyslogHandler('syspass'));
 
         $configEvents = $this->config->getConfigData()->getLogEvents();
 

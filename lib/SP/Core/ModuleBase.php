@@ -31,6 +31,8 @@ use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Events\EventDispatcher;
 use SP\Providers\Log\LogHandler;
+use SP\Providers\Log\RemoteSyslogHandler;
+use SP\Providers\Log\SyslogHandler;
 use SP\Providers\Mail\MailHandler;
 use SP\Providers\Notification\NotificationHandler;
 use SP\Util\Checks;
@@ -121,6 +123,14 @@ abstract class ModuleBase
 
         if ($this->configData->isMailEnabled()) {
             $eventDispatcher->attach($this->container->get(MailHandler::class));
+        }
+
+        if ($this->configData->isSyslogEnabled()) {
+            $eventDispatcher->attach($this->container->get(SyslogHandler::class));
+        }
+
+        if ($this->configData->isSyslogRemoteEnabled()) {
+            $eventDispatcher->attach($this->container->get(RemoteSyslogHandler::class));
         }
 
         $eventDispatcher->attach($this->container->get(NotificationHandler::class));

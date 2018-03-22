@@ -1060,17 +1060,23 @@ fieldset.warning {
   opacity: .5 !important; }
 
 body.login, body.logout {
-  background-color: #607d8b; }
+  background: #607d8b; }
   body.login #wrap, body.logout #wrap {
-    background-color: #607d8b; }
+    background: transparent; }
+  body.login footer, body.logout footer {
+    background: #607d8b;
+    color: #c9c9c9;
+    -webkit-box-shadow: 0 -3px 2px -2px rgba(255, 255, 255, 0.25);
+    -moz-box-shadow: 0 -3px 2px -2px rgba(255, 255, 255, 0.25);
+    box-shadow: 0 -3px 2px -2px rgba(255, 255, 255, 0.25); }
 
 #login-logo {
   position: fixed;
   top: 1em;
-  right: 1em;
+  left: 1em;
   width: 100%;
   height: 8em;
-  background: transparent url("../../../../public/images/logo_full_bg.png") no-repeat top right;
+  background: transparent url("../../../../public/images/logo_full_bg.png") no-repeat top left;
   background-size: auto 8em; }
 
 #login-container {
