@@ -1060,9 +1060,9 @@ fieldset.warning {
   opacity: .5 !important; }
 
 body.login, body.logout {
-  background-color: #5c6bc0; }
+  background-color: #607d8b; }
   body.login #wrap, body.logout #wrap {
-    background-color: #5c6bc0; }
+    background-color: #607d8b; }
 
 #login-logo {
   position: fixed;

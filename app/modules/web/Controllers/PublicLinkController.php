@@ -34,7 +34,6 @@ use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
 use SP\Http\JsonResponse;
 use SP\Http\Request;
-use SP\Mgmt\PublicLinks\PublicLink;
 use SP\Modules\Web\Controllers\Helpers\ItemsGridHelper;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
@@ -296,7 +295,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
 
         try {
             $publicLinkData = new PublicLinkData();
-            $publicLinkData->setTypeId(PublicLink::TYPE_ACCOUNT);
+            $publicLinkData->setTypeId(PublicLinkService::TYPE_ACCOUNT);
             $publicLinkData->setItemId($accountId);
             $publicLinkData->setNotify((bool)$notify);
             $publicLinkData->setHash(Util::generateRandomBytes());

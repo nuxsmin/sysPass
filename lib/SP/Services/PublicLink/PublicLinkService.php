@@ -52,6 +52,10 @@ class PublicLinkService extends Service
     use ServiceItemTrait;
 
     /**
+     * Tipos de enlaces
+     */
+    const TYPE_ACCOUNT = 1;
+    /**
      * @var PublicLinkRepository
      */
     protected $publicLinkRepository;
