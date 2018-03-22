@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-22 11:17+0100\n"
-"PO-Revision-Date: 2018-03-22 11:17+0100\n"
+"POT-Creation-Date: 2018-03-22 23:38+0100\n"
+"PO-Revision-Date: 2018-03-22 23:41+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -219,7 +219,7 @@ msgstr "Client deleted"
 
 #: ../../../../lib/SP/Api/SyspassApi.php:428
 #: ../../../modules/api/Controllers/ConfigController.php:59
-#: ../../../modules/web/Controllers/ConfigBackupController.php:64
+#: ../../../modules/web/Controllers/ConfigBackupController.php:68
 msgid "Proceso de backup finalizado"
 msgstr "Backup process finished"
 
@@ -339,8 +339,8 @@ msgstr "Client Id"
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:123
 #: ../../../modules/web/themes/material-blue/views/itemshow/userpass.inc:38
 #: ../../../modules/web/themes/material-blue/views/itemshow/userpass.inc:44
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:27
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:83
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:26
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:82
 #: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:14
 msgid "Clave"
 msgstr "Password"
@@ -495,7 +495,7 @@ msgstr "The updating need to be confirmed"
 
 #: ../../../../lib/SP/Controller/MainActionController.php:103
 #: ../../../modules/web/Controllers/UpgradeController.php:87
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:75
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:74
 msgid "Aplicación actualizada correctamente"
 msgstr "Application successfully updated"
 
@@ -578,8 +578,8 @@ msgstr "Action"
 #: ../../../modules/web/Controllers/LoginController.php:93
 #: ../../../modules/web/Controllers/UserController.php:254
 #: ../../../modules/web/Controllers/UserController.php:288
-#: ../../../modules/web/Controllers/UserController.php:352
-#: ../../../modules/web/Controllers/UserController.php:389
+#: ../../../modules/web/Controllers/UserController.php:351
+#: ../../../modules/web/Controllers/UserController.php:388
 #: ../../../modules/web/Controllers/UserPassResetController.php:188
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:54
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:60
@@ -600,8 +600,8 @@ msgstr "Action"
 #: ../../../modules/web/themes/material-blue/views/itemshow/authtoken.inc:19
 #: ../../../modules/web/themes/material-blue/views/itemshow/publiclink.inc:61
 #: ../../../modules/web/themes/material-blue/views/itemshow/publiclink.inc:63
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:16
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:81
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:15
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:80
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:68
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:70
 #: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:14
@@ -2279,7 +2279,7 @@ msgstr "Error while deleting the groups"
 
 #: ../../../../lib/SP/Services/UserPassRecover/UserPassRecoverService.php:65
 #: ../../../modules/web/Controllers/UserController.php:200
-#: ../../../modules/web/Controllers/UserController.php:315
+#: ../../../modules/web/Controllers/UserController.php:314
 #: ../../../modules/web/Controllers/UserPassResetController.php:106
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:184
 msgid "Cambio de Clave"
@@ -2517,19 +2517,19 @@ msgid "Cliente actualizado"
 msgstr "Client updated"
 
 #: ../../../modules/api/Controllers/ConfigController.php:56
-#: ../../../modules/web/Controllers/ConfigBackupController.php:61
+#: ../../../modules/web/Controllers/ConfigBackupController.php:65
 msgid "Copia de la aplicación y base de datos realizada correctamente"
 msgstr "Application and database backup completed successfully"
 
 #: ../../../modules/api/Controllers/ConfigController.php:82
-#: ../../../modules/web/Controllers/ConfigBackupController.php:90
+#: ../../../modules/web/Controllers/ConfigBackupController.php:94
 msgid "Exportación de sysPass en XML"
 msgstr "sysPass XML export"
 
 #: ../../../modules/api/Controllers/ConfigController.php:90
 #: ../../../modules/api/Controllers/ConfigController.php:93
-#: ../../../modules/web/Controllers/ConfigBackupController.php:98
-#: ../../../modules/web/Controllers/ConfigBackupController.php:101
+#: ../../../modules/web/Controllers/ConfigBackupController.php:104
+#: ../../../modules/web/Controllers/ConfigBackupController.php:107
 msgid "Proceso de exportación finalizado"
 msgstr "Export process finished"
 
@@ -2613,8 +2613,8 @@ msgstr "Account updated"
 
 #: ../../../modules/web/Controllers/AccountController.php:705
 #: ../../../modules/web/Controllers/AccountController.php:716
-#: ../../../modules/web/Controllers/UserController.php:388
-#: ../../../modules/web/Controllers/UserController.php:392
+#: ../../../modules/web/Controllers/UserController.php:387
+#: ../../../modules/web/Controllers/UserController.php:391
 #: ../../../modules/web/Controllers/UserPassResetController.php:187
 #: ../../../modules/web/Controllers/UserPassResetController.php:191
 msgid "Clave actualizada"
@@ -2853,10 +2853,11 @@ msgstr "Public links enabled"
 msgid "Enlaces públicos deshabilitados"
 msgstr "Public links disabled"
 
-#: ../../../modules/web/Controllers/ConfigBackupController.php:53
+#: ../../../modules/web/Controllers/ConfigBackupController.php:54
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:98
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:160
 #: ../../../modules/web/Controllers/ConfigImportController.php:57
+#: ../../../modules/web/Controllers/ConfigLdapController.php:211
 #: ../../../modules/web/Controllers/Traits/ConfigTrait.php:53
 #: ../../../modules/web/Forms/UserForm.php:131
 #: ../../../modules/web/Forms/UserForm.php:143
@@ -2864,7 +2865,7 @@ msgstr "Public links disabled"
 msgid "Ey, esto es una DEMO!!"
 msgstr "Ey, this is a DEMO!!"
 
-#: ../../../modules/web/Controllers/ConfigBackupController.php:84
+#: ../../../modules/web/Controllers/ConfigBackupController.php:88
 #: ../../../modules/web/Controllers/UserPassResetController.php:174
 #: ../../../modules/web/Forms/AccountForm.php:130
 #: ../../../modules/web/Forms/UserForm.php:151
@@ -2983,7 +2984,7 @@ msgid "Cuentas importadas"
 msgstr "Accounts imported"
 
 #: ../../../modules/web/Controllers/ConfigImportController.php:81
-#: ../../../modules/web/Controllers/ConfigLdapController.php:248
+#: ../../../modules/web/Controllers/ConfigLdapController.php:251
 msgid "Importación finalizada"
 msgstr "Import finished"
 
@@ -3006,7 +3007,7 @@ msgid "LDAP deshabilitado"
 msgstr "LDAP disabled"
 
 #: ../../../modules/web/Controllers/ConfigLdapController.php:109
-#: ../../../modules/web/Controllers/ConfigLdapController.php:227
+#: ../../../modules/web/Controllers/ConfigLdapController.php:231
 msgid "Parámetros de LDAP incorrectos"
 msgstr "Wrong LDAP parameters"
 
@@ -3015,24 +3016,24 @@ msgstr "Wrong LDAP parameters"
 msgid "Resultados"
 msgstr "Results"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:235
+#: ../../../modules/web/Controllers/ConfigLdapController.php:237
 msgid "Importación LDAP"
 msgstr "LDAP Import"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:252
+#: ../../../modules/web/Controllers/ConfigLdapController.php:255
 msgid "No se encontraron objetos para sincronizar"
 msgstr "There aren't any objects to synchronize"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:257
+#: ../../../modules/web/Controllers/ConfigLdapController.php:260
 msgid "Importación de usuarios de LDAP realizada"
 msgstr "LDAP users import finished"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:259
+#: ../../../modules/web/Controllers/ConfigLdapController.php:262
 #, php-format
 msgid "Usuarios importados: %d / %d"
 msgstr "Imported users: %d / %d"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:260
+#: ../../../modules/web/Controllers/ConfigLdapController.php:263
 #, php-format
 msgid "Errores: %d"
 msgstr "Errors: %d"
@@ -3891,12 +3892,12 @@ msgstr "User deleted"
 msgid "Usuario creado"
 msgstr "User added"
 
-#: ../../../modules/web/Controllers/UserController.php:351
-#: ../../../modules/web/Controllers/UserController.php:357
+#: ../../../modules/web/Controllers/UserController.php:350
+#: ../../../modules/web/Controllers/UserController.php:356
 msgid "Usuario actualizado"
 msgstr "User updated"
 
-#: ../../../modules/web/Controllers/UserController.php:415
+#: ../../../modules/web/Controllers/UserController.php:414
 msgid "Ver Usuario"
 msgstr "View User"
 
@@ -5055,8 +5056,8 @@ msgstr ""
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:166
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:47
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:53
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:49
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:84
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:48
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:83
 msgid "Clave Maestra"
 msgstr "Master Password"
 
@@ -6230,15 +6231,15 @@ msgstr "Profile name"
 msgid "Usado por"
 msgstr "Used by"
 
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:38
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:37
 msgid "Clave Anterior"
 msgstr "Previous Password"
 
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:60
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:59
 msgid "Acceder"
 msgstr "Sign in"
 
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:69
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:68
 msgid "¿Olvidó su clave?"
 msgstr "Lost your password?"
 

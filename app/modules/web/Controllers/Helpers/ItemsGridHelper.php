@@ -179,7 +179,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('description');
         $GridData->addDataRowSource('isGlobal', false, function ($value) {
-            return $value ? __u('SI') : __u('NO');
+            return $value ? __('SI') : __('NO');
         });
         $GridData->setData($data);
 

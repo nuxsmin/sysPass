@@ -26,6 +26,7 @@ namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Acl\UnauthorizedPageException;
+use SP\Core\Context\SessionContext;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Http\JsonResponse;
@@ -54,7 +55,10 @@ class ConfigBackupController extends SimpleControllerBase
         }
 
         try {
-            $this->dic->get(FileBackupService::class)->doBackup();
+            SessionContext::close();
+
+            $this->dic->get(FileBackupService::class)
+                ->doBackup();
 
             $this->eventDispatcher->notifyEvent('run.backup.end',
                 new Event($this, EventMessage::factory()
@@ -90,8 +94,10 @@ class ConfigBackupController extends SimpleControllerBase
                     ->addDescription(__u('Exportación de sysPass en XML')))
             );
 
-            $exportService = $this->dic->get(XmlExportService::class);
-            $exportService->doExport($exportPassword);
+            SessionContext::close();
+
+            $this->dic->get(XmlExportService::class)
+                ->doExport($exportPassword);
 
             $this->eventDispatcher->notifyEvent('run.export.end',
                 new Event($this, EventMessage::factory()

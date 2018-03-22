@@ -849,7 +849,7 @@ sysPass.Actions = function (Common) {
             const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
             opts.useFullLoading = true;
-            opts.data = $obj.serialize();
+            opts.data = $obj.serialize() + "&sk=" + Common.sk.get();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
@@ -872,7 +872,7 @@ sysPass.Actions = function (Common) {
 
             const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route");
-            opts.data = $obj.serialize();
+            opts.data = $obj.serialize() + "&sk=" + Common.sk.get();
 
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);

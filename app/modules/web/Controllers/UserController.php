@@ -305,7 +305,6 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Providers\Mail\MailProviderException
      * @throws \SP\Services\ServiceException
      */
     protected function checkChangeUserPass(UserData $userData)

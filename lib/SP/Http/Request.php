@@ -90,8 +90,6 @@ class Request
      *
      * @param $param
      * @return string
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     public static function analyzeEncrypted($param)
     {
@@ -129,7 +127,7 @@ class Request
             return $default;
         }
 
-        return filter_var($_REQUEST[$param], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+        return filter_var(trim($_REQUEST[$param]), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
     }
 
     /**
@@ -143,7 +141,7 @@ class Request
             return $default;
         }
 
-        return filter_var($_REQUEST[$param], FILTER_SANITIZE_EMAIL);
+        return filter_var(trim($_REQUEST[$param]), FILTER_SANITIZE_EMAIL);
     }
 
     /**
@@ -225,7 +223,7 @@ class Request
                 if (is_numeric($value)) {
                     return (int)filter_var($value, FILTER_SANITIZE_NUMBER_INT);
                 } else {
-                    return (string)filter_var($value, FILTER_SANITIZE_STRING);
+                    return (string)filter_var(trim($value), FILTER_SANITIZE_STRING);
                 }
             }, $_REQUEST[$param]);
         }

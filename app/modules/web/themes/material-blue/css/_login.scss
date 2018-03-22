@@ -1,26 +1,32 @@
+@mixin background-logo-outline() {
+  background: transparent url($public-path + "/images/logo_full_nobg_outline.png") no-repeat top center;
+  background-size: auto 125px;
+}
+
 body.login, body.logout {
   background: $color-bluegrey-fg;
   #wrap {
     background: transparent;
   }
   footer {
-    background: $color-bluegrey-fg;
-    color: #c9c9c9;
-    @include box-shadow-top-white();
+    background: #78909C;
+    a {
+      color: #f2f2f2;
+    }
   }
 }
 
 #login-logo {
   position: fixed;
-  top: 1em;
-  left: 1em;
+  top: 11em;
+  left: 0;
   width: 100%;
-  height: 8em;
-  background: transparent url("../../../../public/images/logo_full_bg.png") no-repeat top left;
-  background-size: auto 8em;
+  height: 15em;
+  @include background-logo-outline;
 }
 
 #login-container {
+  @include background-logo-outline;
   padding: 1em;
   width: 40em;
   margin: 0 auto;
@@ -29,16 +35,16 @@ body.login, body.logout {
     background-color: transparent;
   }
   #boxLogin {
+    @include shadow-full();
     position: relative;
     margin: 0 auto;
     width: 100%;
     min-height: 14em;
     padding: 1em;
-    background-color: #fff;
+    background-color: #f2f2f2;
     #boxData {
       height: 100%;
       min-height: 14em;
-      /*margin-bottom: 10em;*/
       text-align: left;
       background-color: transparent;
       i {

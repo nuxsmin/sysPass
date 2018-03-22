@@ -207,6 +207,10 @@ class ConfigLdapController extends SimpleControllerBase
     public function importAction()
     {
         try {
+            if ($this->configData->isDemoEnabled()) {
+                $this->returnJsonResponse(JsonResponse::JSON_WARNING, __u('Ey, esto es una DEMO!!'));
+            }
+
             $ldapImportParams = new LdapImportParams();
 
             $ldapImportParams->filter = Request::analyzeString('ldap_import_filter');
@@ -229,12 +233,11 @@ class ConfigLdapController extends SimpleControllerBase
 
             $ldapParams = $this->getLdapParamsFromRequest();
 
-            $userLdapService = $this->dic->get(LdapImportService::class);
-
             $this->eventDispatcher->notifyEvent('import.ldap.start',
                 new Event($this, EventMessage::factory()->addDescription(__u('Importación LDAP')))
             );
 
+            $userLdapService = $this->dic->get(LdapImportService::class);
             $userLdapService->importUsers($ldapParams, $ldapImportParams);
 
             $filter = Request::analyzeString('ldap_import_filter');

@@ -13,7 +13,7 @@ CREATE TABLE `CustomFieldType` (
 INSERT INTO CustomFieldType (id, name, text)
 VALUES (1, 'text', 'Texto'), (2, 'password', 'Clave'), (3, 'date', 'Fecha'), (4, 'number', 'Número'),
   (5, 'email', 'Email'), (6, 'telephone', 'Teléfono'), (7, 'url', 'URL'), (8, 'color', 'Color'), (9, 'wiki', 'Wiki'),
-  (10, 'textarea', 'Área de texto');
+  (10, 'textarea', 'Área de Texto');
 
 -- Foreign Keys;
 ALTER TABLE accFavorites
@@ -238,7 +238,7 @@ ALTER TABLE publicLinks
   AFTER `notify`,
   ADD COLUMN `dateExpire` INT UNSIGNED NOT NULL
   AFTER `dateAdd`,
-  ADD COLUMN `dateUpdate` INT UNSIGNED NOT NULL
+  ADD COLUMN `dateUpdate` INT UNSIGNED DEFAULT 0
   AFTER `dateExpire`,
   ADD COLUMN `countViews` SMALLINT(5) UNSIGNED NULL DEFAULT 0
   AFTER `dateUpdate`,
