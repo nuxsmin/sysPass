@@ -55,8 +55,8 @@ class Installer extends Service
      * Versión y número de compilación de sysPass
      */
     const VERSION = [3, 0, 0];
-    const VERSION_TEXT = '3.0-dev';
-    const BUILD = 18031401;
+    const VERSION_TEXT = '3.0-beta';
+    const BUILD = 18230301;
 
     /**
      * @var ConfigService
