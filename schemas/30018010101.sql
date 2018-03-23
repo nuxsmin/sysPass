@@ -1,4 +1,4 @@
-SET FOREIGN_KEY_CHECKS=0;
+SET FOREIGN_KEY_CHECKS = 0;
 
 CREATE TABLE `CustomFieldType` (
   `id`   TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -16,74 +16,86 @@ VALUES (1, 'text', 'Texto'), (2, 'password', 'Clave'), (3, 'date', 'Fecha'), (4,
   (10, 'textarea', 'Área de Texto');
 
 -- Foreign Keys;
-ALTER TABLE accFavorites
+ALTER IGNORE TABLE accFavorites
   DROP FOREIGN KEY `fk_accFavorites_users_id`,
-  DROP FOREIGN KEY `fk_accFavorites_accounts_id`;
+  DROP FOREIGN KEY `fk_accFavorites_accounts_id`,
+  FORCE;
 
-ALTER TABLE accHistory
+ALTER IGNORE TABLE accFiles
+  DROP FOREIGN KEY fk_accFiles_accounts_id,
+  FORCE;
+
+ALTER IGNORE TABLE accGroups
+  DROP FOREIGN KEY fk_accGroups_accounts_id,
+  DROP FOREIGN KEY fk_accGroups_groups_id,
+  DROP INDEX fk_accGroups_groups_id_idx,
+  FORCE;
+
+ALTER IGNORE TABLE accHistory
   DROP FOREIGN KEY fk_accHistory_userGroup_id,
+  DROP FOREIGN KEY fk_accHistory_groups_id,
+  DROP FOREIGN KEY fk_accHistory_user_id,
   DROP FOREIGN KEY fk_accHistory_users_id,
   DROP FOREIGN KEY fk_accHistory_users_edit_id,
   DROP FOREIGN KEY fk_accHistory_customer_id,
-  DROP FOREIGN KEY fk_accHistory_category_id;
+  DROP FOREIGN KEY fk_accHistory_category_id,
+  DROP INDEX fk_accHistory_userGroup_id,
+  DROP INDEX fk_accHistory_users_id,
+  DROP INDEX fk_accHistory_users_edit_id_idx,
+  DROP INDEX fk_accHistory_customers_id,
+  DROP INDEX fk_accHistory_categories_id,
+  FORCE;
 
-ALTER TABLE usrData
-  DROP FOREIGN KEY fk_usrData_profiles_id,
-  DROP FOREIGN KEY fk_usrData_groups_id,
-  DROP INDEX fk_usrData_groups_id_idx,
-  DROP INDEX fk_usrData_profiles_id_idx;
-
-ALTER TABLE accounts
+ALTER IGNORE TABLE accounts
   DROP FOREIGN KEY fk_accounts_userGroup_id,
   DROP FOREIGN KEY fk_accounts_user_id,
   DROP FOREIGN KEY fk_accounts_user_edit_id,
   DROP FOREIGN KEY fk_accounts_customer_id,
   DROP FOREIGN KEY fk_accounts_category_id,
   DROP INDEX fk_accounts_user_id,
-  DROP INDEX fk_accounts_user_edit_id;
+  DROP INDEX fk_accounts_user_edit_id,
+  FORCE;
 
-ALTER TABLE accTags
+ALTER IGNORE TABLE accTags
   DROP FOREIGN KEY fk_accTags_accounts_id,
   DROP FOREIGN KEY fk_accTags_tags_id,
   DROP INDEX IDX_id,
-  DROP INDEX fk_accTags_tags_id_idx;
+  DROP INDEX fk_accTags_tags_id_idx,
+  FORCE;
 
-ALTER TABLE accUsers
+ALTER IGNORE TABLE accUsers
   DROP FOREIGN KEY fk_accUsers_accounts_id,
   DROP FOREIGN KEY fk_accUsers_users_id,
-  DROP INDEX fk_accUsers_users_id_idx;
+  DROP INDEX fk_accUsers_users_id_idx,
+  FORCE;
 
-ALTER TABLE accGroups
-  DROP FOREIGN KEY fk_accGroups_accounts_id,
-  DROP FOREIGN KEY fk_accGroups_groups_id,
-  DROP INDEX fk_accGroups_groups_id_idx;
-
-ALTER TABLE accHistory
-  DROP INDEX fk_accHistory_userGroup_id,
-  DROP INDEX fk_accHistory_users_id,
-  DROP INDEX fk_accHistory_users_edit_id_idx,
-  DROP INDEX fk_accHistory_customers_id,
-  DROP INDEX fk_accHistory_categories_id;
-
-ALTER TABLE accFiles
-  DROP FOREIGN KEY fk_accFiles_accounts_id;
-
-ALTER TABLE authTokens
+ALTER IGNORE TABLE authTokens
   DROP FOREIGN KEY fk_authTokens_user_id,
   DROP FOREIGN KEY fk_authTokens_createdBy_id,
   DROP INDEX fk_authTokens_user_id,
-  DROP INDEX fk_authTokens_users_createdby_id;
+  DROP INDEX fk_authTokens_users_createdby_id,
+  FORCE;
 
-ALTER TABLE usrPassRecover
-  DROP FOREIGN KEY fk_usrPassRecover_users;
+ALTER IGNORE TABLE customFieldsData
+  DROP FOREIGN KEY fk_customFieldsData_def_id,
+  FORCE;
 
-ALTER TABLE usrToGroups
+ALTER IGNORE TABLE usrData
+  DROP FOREIGN KEY fk_usrData_profiles_id,
+  DROP FOREIGN KEY fk_usrData_groups_id,
+  DROP INDEX fk_usrData_groups_id_idx,
+  DROP INDEX fk_usrData_profiles_id_idx,
+  FORCE;
+
+ALTER IGNORE TABLE usrPassRecover
+  DROP FOREIGN KEY fk_usrPassRecover_users,
+  FORCE;
+
+ALTER IGNORE TABLE usrToGroups
   DROP FOREIGN KEY fk_usrToGroups_groups_id,
   DROP FOREIGN KEY fk_usrToGroups_users_id,
-  DROP INDEX fk_usrToGroups_groups_id_idx;
-
-ALTER TABLE customFieldsData
-  DROP FOREIGN KEY fk_customFieldsData_def_id;
+  DROP INDEX fk_usrToGroups_groups_id_idx,
+  FORCE;
 
 -- CustomFieldData;
 ALTER TABLE customFieldsData
@@ -753,4 +765,4 @@ FOREIGN KEY (userGroupId) REFERENCES UserGroup (id)
   ON UPDATE CASCADE
   ON DELETE CASCADE;
 
-SET FOREIGN_KEY_CHECKS=1;
+SET FOREIGN_KEY_CHECKS = 1;

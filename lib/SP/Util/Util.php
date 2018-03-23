@@ -344,6 +344,10 @@ class Util
         $currentVersion = self::normalizeVersionForCompare($currentVersion);
         $upgradeableVersion = self::normalizeVersionForCompare($upgradeableVersion);
 
+        if (empty($currentVersion) || empty($upgradeableVersion)) {
+            return false;
+        }
+
         if (PHP_INT_SIZE > 4) {
             return version_compare($currentVersion, $upgradeableVersion) === -1;
         }

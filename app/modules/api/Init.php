@@ -101,11 +101,11 @@ class Init extends ModuleBase
         // Checks if maintenance mode is turned on
         $this->checkMaintenanceMode($this->context);
 
-        // Checks if the database is set up
-        DBUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
-
         // Checks if upgrade is needed
         $this->checkUpgrade();
+
+        // Checks if the database is set up
+        DBUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName());
 
         // Initialize event handlers
         $this->initEventHandlers();

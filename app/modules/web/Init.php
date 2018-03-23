@@ -148,19 +148,19 @@ class Init extends ModuleBase
                     ->send();
             }
 
-            // Checks if the database is set up
-            if (!DBUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName())) {
-                $this->router->response()
-                    ->redirect('index.php?r=error/databaseError')
-                    ->send();
-            }
-
             // Checks if upgrade is needed
             if ($this->checkUpgrade()) {
                 $this->config->generateUpgradeKey();
 
                 $this->router->response()
                     ->redirect('index.php?r=upgrade/index')
+                    ->send();
+            }
+
+            // Checks if the database is set up
+            if (!DBUtil::checkDatabaseExist($this->container->get(Database::class)->getDbHandler(), $this->configData->getDbName())) {
+                $this->router->response()
+                    ->redirect('index.php?r=error/databaseError')
                     ->send();
             }
 
