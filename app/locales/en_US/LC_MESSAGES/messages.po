@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-22 23:54+0100\n"
-"PO-Revision-Date: 2018-03-22 23:54+0100\n"
+"POT-Creation-Date: 2018-03-24 19:31+0100\n"
+"PO-Revision-Date: 2018-03-24 19:37+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -32,11 +32,13 @@ msgstr ""
 msgid "Acceso no permitido"
 msgstr "Unauthorized access"
 
+#. (itstool) path: action/text
 #: ../../../../lib/SP/Api/SyspassApi.php:83
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:257
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:258
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:36
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:65
+#: ../../../config/actions.xml:169
 msgid "Ver Clave"
 msgstr "View password"
 
@@ -135,6 +137,7 @@ msgstr "Name"
 msgid "Cuenta no encontrada"
 msgstr "Account not found"
 
+#. (itstool) path: action/text
 #: ../../../../lib/SP/Api/SyspassApi.php:226
 #: ../../../modules/web/Controllers/AccountController.php:385
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:196
@@ -143,6 +146,8 @@ msgstr "Account not found"
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:460
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:533
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:534
+#: ../../../config/actions.xml:163 ../../../config/actions.xml:469
+#: ../../../config/actions.xml:769
 msgid "Eliminar Cuenta"
 msgstr "Remove Account"
 
@@ -171,9 +176,11 @@ msgstr "Category added"
 msgid "Categoría no encontrada"
 msgstr "Category not found"
 
+#. (itstool) path: action/text
 #: ../../../../lib/SP/Api/SyspassApi.php:315
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:131
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:132
+#: ../../../config/actions.xml:301
 msgid "Eliminar Categoría"
 msgstr "Delete Category"
 
@@ -203,9 +210,11 @@ msgstr "Client added"
 msgid "Cliente no encontrado"
 msgstr "Client not found"
 
+#. (itstool) path: action/text
 #: ../../../../lib/SP/Api/SyspassApi.php:404
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:235
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:236
+#: ../../../config/actions.xml:331
 msgid "Eliminar Cliente"
 msgstr "Delete Client"
 
@@ -468,7 +477,7 @@ msgstr "Connection successful"
 #: ../../../../lib/SP/Core/Upgrade/Upgrade.php:403
 #: ../../../../lib/SP/Services/Upgrade/UpgradeConfigService.php:111
 #: ../../../../lib/SP/Services/Upgrade/UpgradeConfigService.php:227
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:162
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:165
 #: ../../../modules/web/themes/material-blue/views/config/info.inc:38
 #: ../../../modules/web/themes/material-blue/views/itemshow/plugin.inc:25
 msgid "Versión"
@@ -692,7 +701,9 @@ msgstr "An object is needed"
 msgid "Observador no inicializado"
 msgstr "Observer not initialized"
 
+#. (itstool) path: action/text
 #: ../../../../lib/SP/Core/Plugin/PluginDataStore.php:76
+#: ../../../config/actions.xml:511
 msgid "Nuevo Plugin"
 msgstr "New Plugin"
 
@@ -709,7 +720,7 @@ msgstr "Invalid icons class"
 
 #: ../../../../lib/SP/Core/Upgrade/Upgrade.php:108
 #: ../../../../lib/SP/Core/Upgrade/Upgrade.php:129
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:83
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:86
 msgid "Error al aplicar la actualización auxiliar"
 msgstr "Error while applying an auxiliary update"
 
@@ -718,16 +729,16 @@ msgstr "Error while applying an auxiliary update"
 #: ../../../../lib/SP/Core/Upgrade/Upgrade.php:121
 #: ../../../../lib/SP/Core/Upgrade/Upgrade.php:129
 #: ../../../../lib/SP/Services/Upgrade/UpgradeAppService.php:69
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:85
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:93
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:88
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:96
 msgid "Compruebe el registro de eventos para más detalles"
 msgstr "Please, check the event log for more details"
 
 #: ../../../../lib/SP/Core/Upgrade/Upgrade.php:112
 #: ../../../../lib/SP/Core/Upgrade/Upgrade.php:200
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:91
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:174
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:178
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:94
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:177
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:181
 msgid "Error al aplicar la actualización de la Base de Datos"
 msgstr "Error while updating the database"
 
@@ -738,19 +749,19 @@ msgstr "Error while applying the application update"
 
 #: ../../../../lib/SP/Core/Upgrade/Upgrade.php:174
 #: ../../../../lib/SP/Core/Upgrade/Upgrade.php:187
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:76
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:119
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:79
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:122
 msgid "Actualizar BBDD"
 msgstr "Update DB"
 
 #: ../../../../lib/SP/Core/Upgrade/Upgrade.php:180
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:148
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:152
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:151
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:155
 msgid "No es necesario actualizar la Base de Datos."
 msgstr "Database update not needed."
 
 #: ../../../../lib/SP/Core/Upgrade/Upgrade.php:214
-#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:184
+#: ../../../../lib/SP/Services/Upgrade/UpgradeDatabaseService.php:187
 msgid "Actualización de la Base de Datos realizada correctamente."
 msgstr "Database updating was completed successfully."
 
@@ -856,9 +867,11 @@ msgstr "Custom fields not found"
 msgid "Texto"
 msgstr "Text"
 
+#. (itstool) path: action/text
 #: ../../../../lib/SP/Mgmt/CustomFields/CustomFieldTypes.php:63
 #: ../../../modules/web/Controllers/ConfigManagerController.php:180
 #: ../../../modules/web/themes/material-blue/views/config/wiki.inc:10
+#: ../../../config/actions.xml:37
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -900,6 +913,7 @@ msgstr "Color"
 msgid "Área de Texto"
 msgstr "Text Area"
 
+#. (itstool) path: action/text
 #: ../../../../lib/SP/Mgmt/CustomFields/CustomFieldTypes.php:90
 #: ../../../../lib/SP/Providers/Notification/NotificationHandler.php:92
 #: ../../../../lib/SP/Providers/Notification/NotificationHandler.php:123
@@ -908,6 +922,7 @@ msgstr "Text Area"
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:440
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:21
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:390
+#: ../../../config/actions.xml:13
 msgid "Cuentas"
 msgstr "Accounts"
 
@@ -1719,18 +1734,6 @@ msgstr "Token not found"
 msgid "Error al eliminar tokens"
 msgstr "Error while removing the tokens"
 
-#: ../../../../lib/SP/Services/AuthToken/LangStubs.php:27
-msgid "Buscar Cuentas"
-msgstr "Search for Accounts"
-
-#: ../../../../lib/SP/Services/AuthToken/LangStubs.php:28
-msgid "Ver Cuenta"
-msgstr "View Account"
-
-#: ../../../../lib/SP/Services/AuthToken/LangStubs.php:29
-msgid "Exportación"
-msgstr "Export"
-
 #: ../../../../lib/SP/Services/Backup/FileBackupService.php:81
 msgid "Realizar Backup"
 msgstr "Make Backup"
@@ -2070,7 +2073,7 @@ msgstr "Server where the database will be installed"
 msgid "Informe al desarrollador"
 msgstr "Warn to developer"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:94
+#: ../../../../lib/SP/Services/Install/MySQL.php:96
 #: ../../../../lib/SP/Storage/MySQLHandler.php:92
 #: ../../../../lib/SP/Storage/MySQLHandler.php:111
 #: ../../../../lib/SP/Storage/MySQLHandler.php:162
@@ -2078,71 +2081,71 @@ msgstr "Warn to developer"
 msgid "No es posible conectar con la BD"
 msgstr "Unable to connect to the DB"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:96
+#: ../../../../lib/SP/Services/Install/MySQL.php:98
 #: ../../../../lib/SP/Storage/MySQLHandler.php:94
 #: ../../../../lib/SP/Storage/MySQLHandler.php:164
 msgid "Compruebe los datos de conexión"
 msgstr "Please, check the connection parameters"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:125
+#: ../../../../lib/SP/Services/Install/MySQL.php:127
 #, php-format
 msgid "No es posible comprobar el usuario de sysPass (%s)"
 msgstr "Unable to check the sysPass user (%s)"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:127
+#: ../../../../lib/SP/Services/Install/MySQL.php:129
 msgid "Compruebe los permisos del usuario de conexión a la BD"
 msgstr "Please, check the DB connection user rights"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:162
+#: ../../../../lib/SP/Services/Install/MySQL.php:164
 #, php-format
 msgid "Error al crear el usuario de conexión a MySQL '%s'"
 msgstr "Error while creating the MySQL connection user '%s'"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:179
+#: ../../../../lib/SP/Services/Install/MySQL.php:181
 msgid "La BBDD ya existe"
 msgstr "The database already exists"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:181
+#: ../../../../lib/SP/Services/Install/MySQL.php:183
 msgid "Indique una nueva Base de Datos o elimine la existente"
 msgstr "Please, enter a new database or delete the existing one"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:191
-#: ../../../../lib/SP/Services/Install/MySQL.php:312
+#: ../../../../lib/SP/Services/Install/MySQL.php:193
+#: ../../../../lib/SP/Services/Install/MySQL.php:311
 #, php-format
 msgid "Error al crear la BBDD ('%s')"
 msgstr "Error while creating the DB ('%s')"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:193
-#: ../../../../lib/SP/Services/Install/MySQL.php:216
+#: ../../../../lib/SP/Services/Install/MySQL.php:195
+#: ../../../../lib/SP/Services/Install/MySQL.php:218
 msgid "Verifique los permisos del usuario de la Base de Datos"
 msgstr "Please check the database user permissions"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:214
+#: ../../../../lib/SP/Services/Install/MySQL.php:216
 #, php-format
 msgid "Error al establecer permisos de la BBDD ('%s')"
 msgstr "Error while setting the database permissions ('%s')"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:226
+#: ../../../../lib/SP/Services/Install/MySQL.php:228
 msgid "La BBDD no existe"
 msgstr "The database does not exist"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:228
+#: ../../../../lib/SP/Services/Install/MySQL.php:230
 msgid "Es necesario crearla y asignar los permisos necesarios"
 msgstr "You need to create it and assign the needed permissions"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:277
+#: ../../../../lib/SP/Services/Install/MySQL.php:279
 msgid "El archivo de estructura de la BBDD no existe"
 msgstr "The database structure file does not exist"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:279
+#: ../../../../lib/SP/Services/Install/MySQL.php:281
 msgid "No es posible crear la BBDD de la aplicación. Descárguela de nuevo."
 msgstr "Unable to create the application database. Please download it again."
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:290
+#: ../../../../lib/SP/Services/Install/MySQL.php:292
 msgid "Error al seleccionar la BBDD"
 msgstr "Error while selecting the database."
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:292
+#: ../../../../lib/SP/Services/Install/MySQL.php:294
 msgid ""
 "No es posible usar la Base de Datos para crear la estructura. Compruebe los "
 "permisos y que no exista."
@@ -2150,15 +2153,15 @@ msgstr ""
 "Unable to use the database to create the structure. Check permissions and it "
 "does not exist."
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:314
+#: ../../../../lib/SP/Services/Install/MySQL.php:313
 msgid "Error al crear la estructura de la Base de Datos."
 msgstr "Error while creating database structure."
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:333
+#: ../../../../lib/SP/Services/Install/MySQL.php:330
 msgid "Error al comprobar la base de datos"
 msgstr "Error while checking the database"
 
-#: ../../../../lib/SP/Services/Install/MySQL.php:335
+#: ../../../../lib/SP/Services/Install/MySQL.php:332
 msgid "Intente de nuevo la instalación"
 msgstr "Please, try the installation again"
 
@@ -2595,16 +2598,20 @@ msgstr "Agent"
 msgid "HTTPS"
 msgstr "HTTPS"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/AccountController.php:254
 #: ../../../modules/web/Controllers/AccountController.php:297
 #: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:254
+#: ../../../config/actions.xml:151
 msgid "Nueva Cuenta"
 msgstr "New Account"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/AccountController.php:340
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:346
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:347
 #: ../../../modules/web/themes/material-blue/views/account/linkedAccounts.inc:18
+#: ../../../config/actions.xml:157
 msgid "Editar Cuenta"
 msgstr "Edit Account"
 
@@ -2801,16 +2808,20 @@ msgstr "View Authorization"
 msgid "Autorización visualizada"
 msgstr "Authorization viewed"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/CategoryController.php:100
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:107
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:108
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:110
+#: ../../../config/actions.xml:289
 msgid "Nueva Categoría"
 msgstr "New Category"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/CategoryController.php:157
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:119
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:120
+#: ../../../config/actions.xml:295
 msgid "Editar Categoría"
 msgstr "Edit Category"
 
@@ -2819,7 +2830,9 @@ msgstr "Edit Category"
 msgid "Categorías eliminadas"
 msgstr "Categories deleted"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/CategoryController.php:313
+#: ../../../config/actions.xml:283
 msgid "Ver Categoría"
 msgstr "View Category"
 
@@ -2830,9 +2843,11 @@ msgstr "View Category"
 msgid "Nuevo Cliente"
 msgstr "New Client"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/ClientController.php:158
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:224
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:225
+#: ../../../config/actions.xml:325
 msgid "Editar Cliente"
 msgstr "Edit Client"
 
@@ -2841,7 +2856,9 @@ msgstr "Edit Client"
 msgid "Clientes eliminados"
 msgstr "Clients deleted"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/ClientController.php:302
+#: ../../../config/actions.xml:313
 msgid "Ver Cliente"
 msgstr "View Client"
 
@@ -3103,8 +3120,10 @@ msgstr "Last export"
 msgid "No se encontró archivo de exportación"
 msgstr "No export file found"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/ConfigManagerController.php:306
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:5
+#: ../../../config/actions.xml:709
 msgid "Copia de Seguridad"
 msgstr "Backup"
 
@@ -3215,13 +3234,17 @@ msgstr "View Current"
 msgid "Atrás"
 msgstr "Back"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:216
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:217
+#: ../../../config/actions.xml:421
 msgid "Actualizar Enlace Público"
 msgstr "Update Public Link"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:236
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:237
+#: ../../../config/actions.xml:403
 msgid "Crear Enlace Público"
 msgstr "Create Public Link"
 
@@ -3230,8 +3253,10 @@ msgstr "Create Public Link"
 msgid "Copiar Clave en Portapapeles"
 msgstr "Copy Password to Clipboard"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:304
 #: ../../../modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:305
+#: ../../../config/actions.xml:193
 msgid "Copiar Cuenta"
 msgstr "Copy Account"
 
@@ -3293,7 +3318,9 @@ msgstr "URL / IP"
 msgid "Ordenar por URL / IP"
 msgstr "Sort by URL / IP"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:96
+#: ../../../config/actions.xml:307
 msgid "Buscar Categoría"
 msgstr "Search for Category"
 
@@ -3307,7 +3334,9 @@ msgstr "YES"
 msgid "NO"
 msgstr "NO"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:201
+#: ../../../config/actions.xml:337
 msgid "Buscar Cliente"
 msgstr "Search for Client"
 
@@ -3330,38 +3359,50 @@ msgstr "Delete Field"
 msgid "Tamaño"
 msgstr "Size"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:361
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:35
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:232
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:146
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:406
+#: ../../../config/actions.xml:19
 msgid "Archivos"
 msgstr "Files"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:369
+#: ../../../config/actions.xml:457
 msgid "Buscar Archivo"
 msgstr "Search for File"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:380
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:381
 #: ../../../modules/web/themes/material-blue/views/account/files-list.inc:43
+#: ../../../config/actions.xml:205 ../../../config/actions.xml:433
 msgid "Ver Archivo"
 msgstr "View File"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:392
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:393
 #: ../../../modules/web/themes/material-blue/views/account/files-list.inc:36
+#: ../../../config/actions.xml:217 ../../../config/actions.xml:439
 msgid "Descargar Archivo"
 msgstr "Download File"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:403
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:404
 #: ../../../modules/web/themes/material-blue/views/account/files-list.inc:28
+#: ../../../config/actions.xml:223 ../../../config/actions.xml:445
 msgid "Eliminar Archivo"
 msgstr "Delete File"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:448
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:512
+#: ../../../config/actions.xml:475 ../../../config/actions.xml:775
 msgid "Buscar Cuenta"
 msgstr "Search for Account"
 
@@ -3383,8 +3424,10 @@ msgstr "Removed"
 msgid "Cuentas (H)"
 msgstr "Accounts (H)"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:523
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:524
+#: ../../../config/actions.xml:187 ../../../config/actions.xml:781
 msgid "Restaurar Cuenta"
 msgstr "Account Restore"
 
@@ -3406,13 +3449,17 @@ msgstr "Profile"
 msgid "Propiedades"
 msgstr "Properties"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:587
+#: ../../../config/actions.xml:577
 msgid "Buscar Usuario"
 msgstr "Search for User"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:597
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:598
 #: ../../../modules/web/Controllers/UserController.php:106
+#: ../../../config/actions.xml:553
 msgid "Nuevo Usuario"
 msgstr "New User"
 
@@ -3427,9 +3474,11 @@ msgstr "Import users from LDAP"
 msgid "Ver Detalles de Usuario"
 msgstr "View User Details"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:637
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:638
 #: ../../../modules/web/Controllers/UserController.php:167
+#: ../../../config/actions.xml:559
 msgid "Editar Usuario"
 msgstr "Edit User"
 
@@ -3441,35 +3490,47 @@ msgstr "Edit User"
 msgid "Cambiar Clave de Usuario"
 msgstr "Change User's Password"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:660
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:661
+#: ../../../config/actions.xml:565
 msgid "Eliminar Usuario"
 msgstr "Delete User"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:705
+#: ../../../config/actions.xml:607
 msgid "Buscar Grupo"
 msgstr "Search for Group"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:716
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:717
 #: ../../../modules/web/Controllers/UserGroupController.php:107
+#: ../../../config/actions.xml:589
 msgid "Nuevo Grupo"
 msgstr "New Group"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:728
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:729
 #: ../../../modules/web/Controllers/UserGroupController.php:313
+#: ../../../config/actions.xml:583
 msgid "Ver Grupo"
 msgstr "View Group"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:739
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:740
 #: ../../../modules/web/Controllers/UserGroupController.php:166
+#: ../../../config/actions.xml:595
 msgid "Editar Grupo"
 msgstr "Edit Group"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:750
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:751
+#: ../../../config/actions.xml:601
 msgid "Eliminar Grupo"
 msgstr "Delete Group"
 
@@ -3478,13 +3539,17 @@ msgstr "Delete Group"
 msgid "Perfiles"
 msgstr "Profiles"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:793
+#: ../../../config/actions.xml:637
 msgid "Buscar Perfil"
 msgstr "Search for Profile"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:804
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:805
 #: ../../../modules/web/Controllers/UserProfileController.php:101
+#: ../../../config/actions.xml:619
 msgid "Nuevo Perfil"
 msgstr "New Profile"
 
@@ -3493,14 +3558,18 @@ msgstr "New Profile"
 msgid "Ver Detalles de Perfil"
 msgstr "View Profile Details"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:827
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:828
 #: ../../../modules/web/Controllers/UserProfileController.php:161
+#: ../../../config/actions.xml:625
 msgid "Editar Perfil"
 msgstr "Edit Profile"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:838
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:839
+#: ../../../config/actions.xml:631
 msgid "Eliminar Perfil"
 msgstr "Delete Profile"
 
@@ -3587,24 +3656,32 @@ msgstr "Delete Link"
 msgid "Etiquetas"
 msgstr "Tags"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1070
+#: ../../../config/actions.xml:505
 msgid "Buscar Etiqueta"
 msgstr "Search for Tag"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1081
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1082
 #: ../../../modules/web/Controllers/TagController.php:99
+#: ../../../config/actions.xml:481
 msgid "Nueva Etiqueta"
 msgstr "New Tag"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1093
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1094
 #: ../../../modules/web/Controllers/TagController.php:154
+#: ../../../config/actions.xml:493
 msgid "Editar Etiqueta"
 msgstr "Edit Tag"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1104
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1105
+#: ../../../config/actions.xml:499
 msgid "Eliminar Etiqueta"
 msgstr "Delete Tag"
 
@@ -3620,13 +3697,17 @@ msgstr "Unavailable"
 msgid "Plugins"
 msgstr "Plugins"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1151
+#: ../../../config/actions.xml:523
 msgid "Buscar Plugin"
 msgstr "Search for Plugin"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1162
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1163
 #: ../../../modules/web/Controllers/PluginController.php:115
+#: ../../../config/actions.xml:517
 msgid "Ver Plugin"
 msgstr "View Plugin"
 
@@ -3661,9 +3742,11 @@ msgstr "Event"
 msgid "IP"
 msgstr "IP"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1274
 #: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:310
 #: ../../../modules/web/themes/material-blue/views/eventlog/index.inc:1
+#: ../../../config/actions.xml:127
 msgid "Registro de Eventos"
 msgstr "Event Log"
 
@@ -3697,13 +3780,17 @@ msgstr "Read"
 msgid "Sólo Admins"
 msgstr "Only Admins"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1357
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:67
 #: ../../../modules/web/themes/material-blue/views/notification/index.inc:1
+#: ../../../config/actions.xml:655
 msgid "Notificaciones"
 msgstr "Notifications"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1365
+#: ../../../config/actions.xml:817
 msgid "Buscar Notificación"
 msgstr "Search for Notification"
 
@@ -3713,25 +3800,33 @@ msgstr "Search for Notification"
 msgid "Nueva Notificación"
 msgstr "New Notification"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1390
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1391
 #: ../../../modules/web/Controllers/NotificationController.php:100
+#: ../../../config/actions.xml:787
 msgid "Ver Notificación"
 msgstr "View Notification"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1400
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1401
+#: ../../../config/actions.xml:811
 msgid "Marcar Notificación"
 msgstr "Checkout Notification"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1412
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1413
 #: ../../../modules/web/Controllers/NotificationController.php:206
+#: ../../../config/actions.xml:799
 msgid "Editar Notificación"
 msgstr "Edit Notification"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1423
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1424
+#: ../../../config/actions.xml:805
 msgid "Eliminar Notificación"
 msgstr "Delete Notification"
 
@@ -3740,18 +3835,24 @@ msgstr "Delete Notification"
 msgid "Buscar"
 msgstr "Search"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:268
+#: ../../../config/actions.xml:103
 msgid "Usuarios y Accesos"
 msgstr "Users and Accesses"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:282
+#: ../../../config/actions.xml:43
 msgid "Elementos y Personalización"
 msgstr "Items and Customizations"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:296
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:63
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:6
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:23
+#: ../../../config/actions.xml:661
 msgid "Configuración"
 msgstr "Configuration"
 
@@ -3877,7 +3978,9 @@ msgstr "Notifications not available"
 msgid "Etiquetas eliminadas"
 msgstr "Tags deleted"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/TagController.php:277
+#: ../../../config/actions.xml:487
 msgid "Ver Etiqueta"
 msgstr "View Tag"
 
@@ -3909,7 +4012,9 @@ msgstr "User added"
 msgid "Usuario actualizado"
 msgstr "User updated"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/UserController.php:414
+#: ../../../config/actions.xml:547
 msgid "Ver Usuario"
 msgstr "View User"
 
@@ -3981,7 +4086,9 @@ msgstr "Profile added"
 msgid "Perfil actualizado"
 msgstr "Profile updated"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/Controllers/UserProfileController.php:301
+#: ../../../config/actions.xml:613
 msgid "Ver Perfil"
 msgstr "View Profile"
 
@@ -4361,8 +4468,10 @@ msgstr "Show Password"
 msgid "Copiar Usuario"
 msgstr "Copy Username"
 
+#. (itstool) path: action/text
 #: ../../../config/strings.js.inc:60
 #: ../../../modules/web/themes/material-blue/views/account/viewpass.inc:30
+#: ../../../config/actions.xml:199
 msgid "Copiar Clave"
 msgstr "Copy Password"
 
@@ -4412,8 +4521,10 @@ msgstr "Send notifies?"
 msgid "Marcar Favorito"
 msgstr "Mark as Favorite"
 
+#. (itstool) path: action/text
 #: ../../../config/strings.js.inc:75
 #: ../../../modules/web/themes/material-blue/views/account/search-rows.inc:133
+#: ../../../config/actions.xml:253
 msgid "Eliminar Favorito"
 msgstr "Delete Favorite"
 
@@ -4884,8 +4995,10 @@ msgstr ""
 msgid "Acceso Grupos Secundarios"
 msgstr "Secondary Groups Access"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:146
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:374
+#: ../../../config/actions.xml:73
 msgid "Enlaces Públicos"
 msgstr "Public Links"
 
@@ -6114,7 +6227,9 @@ msgstr "View account details"
 msgid "Ver clave de cuenta"
 msgstr "View account password"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:82
+#: ../../../config/actions.xml:175
 msgid "Ver Historial"
 msgstr "View History"
 
@@ -6202,7 +6317,9 @@ msgstr "Links management"
 msgid "Gestión de cuentas"
 msgstr "Accounts management"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:427
+#: ../../../config/actions.xml:667
 msgid "Configuración General"
 msgstr "General Configuration"
 
@@ -6410,7 +6527,9 @@ msgstr "Always show the hidden actions on the accounts search page."
 msgid "Mostrar Acciones Ocultas"
 msgstr "Show Hidden Actions"
 
+#. (itstool) path: action/text
 #: ../../../modules/web/themes/material-blue/views/wiki/wikipage.inc:2
+#: ../../../config/actions.xml:259
 msgid "Ver Wiki"
 msgstr "View Wiki"
 
@@ -6423,6 +6542,316 @@ msgstr "Search results of '%s'"
 #: ../../../modules/web/themes/material-blue/views/wiki/wikipage.inc:23
 msgid "Página"
 msgstr "Page"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:7
+msgid "Buscar Cuentas"
+msgstr "Search for Accounts"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:25
+msgid "Peticiones"
+msgstr "Requests"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:31
+msgid "Favoritos"
+msgstr "Favorites"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:49
+msgid "Gestión Categorías"
+msgstr "Categories Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:55
+msgid "Gestión Clientes"
+msgstr "Customers Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:61
+msgid "Gestión Autorizaciones API"
+msgstr "API Authorizations Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:67
+msgid "Gestión Campos Personalizados"
+msgstr "Custom Fields Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:79
+msgid "Gestión de Archivos"
+msgstr "Files Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:85
+msgid "Gestión de Cuentas"
+msgstr "Accounts Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:91
+msgid "Gestión de Etiquetas"
+msgstr "Tags Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:97
+msgid "Gestión Plugins"
+msgstr "Plugins Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:109
+msgid "Gestión Usuarios"
+msgstr "Users Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:115
+msgid "Gestión Grupos"
+msgstr "Groups Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:121
+msgid "Gestión Perfiles"
+msgstr "Profiles Management"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:133
+msgid "Buscar Eventos"
+msgstr "Search for Events"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:139
+msgid "Limpiar Eventos"
+msgstr "Clear Events"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:145 ../../../config/actions.xml:463
+msgid "Ver Cuenta"
+msgstr "View Account"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:181
+msgid "Editar Clave de Cuenta"
+msgstr "Edit Account Password"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:211 ../../../config/actions.xml:451
+msgid "Subir Archivo"
+msgstr "Upload File"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:229
+msgid "Buscar Archivos"
+msgstr "Search for Files"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:235
+msgid "Listar Archivos"
+msgstr "List Files"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:241
+msgid "Ver Favoritos"
+msgstr "Show Favorites"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:247
+msgid "Añadir Favorito"
+msgstr "Mark as Favorite"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:265
+msgid "Añadir Wiki"
+msgstr "Add Wiki"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:271
+msgid "Editar Wiki"
+msgstr "Edit Wiki"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:277
+msgid "Eliminar Wiki"
+msgstr "Delete Wiki"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:319
+msgid "Nuevo CLiente"
+msgstr "New Client"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:343
+msgid "Nuevo Token API"
+msgstr "New API Token"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:349
+msgid "Ver Token API"
+msgstr "View API Token"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:355
+msgid "Editar Token API"
+msgstr "Edit API Token"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:361
+msgid "Eliminar Token API"
+msgstr "Delete API Token"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:367
+msgid "Buscar Token API"
+msgstr "Search for API Token"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:373
+msgid "Nuevo Campo Personalizado"
+msgstr "New Custom Field"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:379
+msgid "Ver Campo Personalizado"
+msgstr "Show Custom Field"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:385
+msgid "Editar Campo Personalizado"
+msgstr "Edit Custom Field"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:391
+msgid "Eliminar Campo Personalizado"
+msgstr "Delete Custom Field"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:397
+msgid "Buscar Campo Personalizado"
+msgstr "Search for Custom Field"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:409
+msgid "Ver Enlace Público"
+msgstr "Show Public Link"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:415
+msgid "Eliminar Enlace Público"
+msgstr "Delete Public Link"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:427
+msgid "Buscar Enlace Público"
+msgstr "Search for Public Link"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:529
+msgid "Habilitar Plugin"
+msgstr "Enable Plugin"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:535
+msgid "Deshabilitar Plugin"
+msgstr "Disable Plugin"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:541
+msgid "Restablecer Plugin"
+msgstr "Reset Plugin"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:571
+msgid "Editar Clave Usuario"
+msgstr "Edit User Password"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:643
+msgid "Configuración Usuario"
+msgstr "User Configuration"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:649
+msgid "Preferencias General"
+msgstr "General Preferences"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:673
+msgid "Configuración Cuentas"
+msgstr "Accounts Configuration"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:679
+msgid "Configuración Wiki"
+msgstr "Wiki Configuration"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:685
+msgid "Configuración Encriptación"
+msgstr "Encryption Configuration"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:691
+msgid "Actualizar Hash"
+msgstr "Update Hash"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:697
+msgid "Clave Maestra Temporal"
+msgstr "Temporary Master Password"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:703
+msgid "Configuración Copia de Seguridad"
+msgstr "Backup Configuration"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:715
+msgid "Configuración Importación"
+msgstr "Import Configuration"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:721
+msgid "Importar CSV"
+msgstr "CSV Import"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:727
+msgid "Importar XML"
+msgstr "XML Import"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:733
+msgid "Configuración Exportación"
+msgstr "Export Configuration"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:739
+msgid "Exportación"
+msgstr "Export"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:745
+msgid "Configuración Email"
+msgstr "Email Configuration"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:751
+msgid "Configuración LDAP"
+msgstr "LDAP Configuration"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:757
+msgid "Sincronización LDAP"
+msgstr "LDAP synchronization"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:763
+msgid "Gestión de Cuenta (H)"
+msgstr "Account Management (H)"
+
+#. (itstool) path: action/text
+#: ../../../config/actions.xml:793
+msgid "Crear Notificación"
+msgstr "Create Notification"
 
 #~ msgid "Accesos"
 #~ msgstr "Accesses"
@@ -6440,9 +6869,6 @@ msgstr "Page"
 #~ msgid "No es posible crear el directorio: %s"
 #~ msgstr "Unable to create the backups directory (\"%s\")"
 
-#~ msgid "Subir Archivo"
-#~ msgstr "Upload File"
-
 #~ msgid "No es un ID de archivo válido"
 #~ msgstr "Invalid file ID"
 
@@ -6451,9 +6877,6 @@ msgstr "Page"
 
 #~ msgid "Compruebe datos de usuario o consulte con el administrador"
 #~ msgstr "Please, check the user data or contact to the administrator"
-
-#~ msgid "Modificar Clave Usuario"
-#~ msgstr "Edit User Password"
 
 #~ msgid "La clave es incorrecta o no coincide"
 #~ msgstr "Wrong password or does not match"
@@ -6478,9 +6901,6 @@ msgstr "Page"
 
 #~ msgid "Modificar Configuración"
 #~ msgstr "Edit Configuration"
-
-#~ msgid "Vaciar Eventos"
-#~ msgstr "Clear Events"
 
 #~ msgid "Crear Usuario"
 #~ msgstr "Add User"
@@ -6569,17 +6989,8 @@ msgstr "Page"
 #~ msgid "Descargar nueva versión"
 #~ msgstr "Download new version"
 
-#~ msgid "Editar Clave de Cuenta"
-#~ msgstr "Edit Account Password"
-
-#~ msgid "Peticiones"
-#~ msgstr "Requests"
-
 #~ msgid "Gestión Aplicación"
 #~ msgstr "Application Management"
-
-#~ msgid "Gestión Categorías"
-#~ msgstr "Categories Management"
 
 #~ msgid "Buscar Categorías"
 #~ msgstr "Search for Categories"
@@ -6587,38 +6998,11 @@ msgstr "Page"
 #~ msgid "Añadir Categoría"
 #~ msgstr "Add Category"
 
-#~ msgid "Gestión Clientes"
-#~ msgstr "Customers Management"
-
 #~ msgid "Buscar Clientes"
 #~ msgstr "Search for Customers"
 
 #~ msgid "Añadir Cliente"
 #~ msgstr "Add Customer"
-
-#~ msgid "Gestión Campos Personalizados"
-#~ msgstr "Custom Fields Management"
-
-#~ msgid "Gestión Autorizaciones API"
-#~ msgstr "API Authorizations Management"
-
-#~ msgid "Gestión de Archivos"
-#~ msgstr "Files Management"
-
-#~ msgid "Gestión de Cuentas"
-#~ msgstr "Accounts Management"
-
-#~ msgid "Gestión de Etiquetas"
-#~ msgstr "Tags Management"
-
-#~ msgid "Gestión Usuarios"
-#~ msgstr "Users Management"
-
-#~ msgid "Gestión Grupos"
-#~ msgstr "Groups Management"
-
-#~ msgid "Gestión Perfiles"
-#~ msgstr "Profiles Management"
 
 #~ msgid "Exportar"
 #~ msgstr "Export"
@@ -6707,14 +7091,8 @@ msgstr "Page"
 #~ msgid "En breve recibirá un email de confirmación."
 #~ msgstr "You will receive a confirmation email shortly."
 
-#~ msgid "Nuevo usuario de LDAP"
-#~ msgstr "New LDAP user"
-
 #~ msgid "Error al actualizar la clave del usuario en la BBDD"
 #~ msgstr "Error while updating the user's password in DB"
-
-#~ msgid "Sincronización LDAP"
-#~ msgstr "LDAP synchronization"
 
 #~ msgid "Sincronización finalizada"
 #~ msgstr "Synchronization finished"
