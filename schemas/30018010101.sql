@@ -1,4 +1,48 @@
-SET FOREIGN_KEY_CHECKS = 0;
+DELIMITER $$
+SET FOREIGN_KEY_CHECKS = 0 $$
+
+CREATE PROCEDURE removeConstraints()
+  BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE tName VARCHAR(64);
+    DECLARE cName VARCHAR(64);
+    DECLARE cur CURSOR FOR
+      SELECT DISTINCT
+        TABLE_NAME,
+        CONSTRAINT_NAME
+      FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+      WHERE TABLE_SCHEMA = DATABASE()
+            AND REFERENCED_TABLE_NAME IS NOT NULL;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    SET AUTOCOMMIT = 0;
+    SET FOREIGN_KEY_CHECKS = 0;
+
+    OPEN cur;
+
+    read_loop: LOOP
+      FETCH cur
+      INTO tName, cName;
+      IF done
+      THEN
+        LEAVE read_loop;
+      END IF;
+      SET @sql = CONCAT('ALTER TABLE ', tName, ' DROP FOREIGN KEY ', cName, ';');
+      PREPARE stmt FROM @sql;
+      EXECUTE stmt;
+      DEALLOCATE PREPARE stmt;
+    END LOOP;
+
+    CLOSE cur;
+
+    SET FOREIGN_KEY_CHECKS = 1;
+    COMMIT;
+    SET AUTOCOMMIT = 1;
+  END $$
+
+CALL removeConstraints() $$
+
+DROP PROCEDURE removeConstraints $$
 
 CREATE TABLE `CustomFieldType` (
   `id`   TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -8,96 +52,14 @@ CREATE TABLE `CustomFieldType` (
   UNIQUE KEY `uk_CustomFieldType_01` (`name`)
 )
   ENGINE = InnoDB
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8 $$
 
 INSERT INTO CustomFieldType (id, name, text)
 VALUES (1, 'text', 'Texto'), (2, 'password', 'Clave'), (3, 'date', 'Fecha'), (4, 'number', 'Número'),
   (5, 'email', 'Email'), (6, 'telephone', 'Teléfono'), (7, 'url', 'URL'), (8, 'color', 'Color'), (9, 'wiki', 'Wiki'),
-  (10, 'textarea', 'Área de Texto');
+  (10, 'textarea', 'Área de Texto') $$
 
--- Foreign Keys;
-ALTER IGNORE TABLE accFavorites
-  DROP FOREIGN KEY `fk_accFavorites_users_id`,
-  DROP FOREIGN KEY `fk_accFavorites_accounts_id`,
-  FORCE;
-
-ALTER IGNORE TABLE accFiles
-  DROP FOREIGN KEY fk_accFiles_accounts_id,
-  FORCE;
-
-ALTER IGNORE TABLE accGroups
-  DROP FOREIGN KEY fk_accGroups_accounts_id,
-  DROP FOREIGN KEY fk_accGroups_groups_id,
-  DROP INDEX fk_accGroups_groups_id_idx,
-  FORCE;
-
-ALTER IGNORE TABLE accHistory
-  DROP FOREIGN KEY fk_accHistory_userGroup_id,
-  DROP FOREIGN KEY fk_accHistory_groups_id,
-  DROP FOREIGN KEY fk_accHistory_user_id,
-  DROP FOREIGN KEY fk_accHistory_users_id,
-  DROP FOREIGN KEY fk_accHistory_users_edit_id,
-  DROP FOREIGN KEY fk_accHistory_customer_id,
-  DROP FOREIGN KEY fk_accHistory_category_id,
-  DROP INDEX fk_accHistory_userGroup_id,
-  DROP INDEX fk_accHistory_users_id,
-  DROP INDEX fk_accHistory_users_edit_id_idx,
-  DROP INDEX fk_accHistory_customers_id,
-  DROP INDEX fk_accHistory_categories_id,
-  FORCE;
-
-ALTER IGNORE TABLE accounts
-  DROP FOREIGN KEY fk_accounts_userGroup_id,
-  DROP FOREIGN KEY fk_accounts_user_id,
-  DROP FOREIGN KEY fk_accounts_user_edit_id,
-  DROP FOREIGN KEY fk_accounts_customer_id,
-  DROP FOREIGN KEY fk_accounts_category_id,
-  DROP INDEX fk_accounts_user_id,
-  DROP INDEX fk_accounts_user_edit_id,
-  FORCE;
-
-ALTER IGNORE TABLE accTags
-  DROP FOREIGN KEY fk_accTags_accounts_id,
-  DROP FOREIGN KEY fk_accTags_tags_id,
-  DROP INDEX IDX_id,
-  DROP INDEX fk_accTags_tags_id_idx,
-  FORCE;
-
-ALTER IGNORE TABLE accUsers
-  DROP FOREIGN KEY fk_accUsers_accounts_id,
-  DROP FOREIGN KEY fk_accUsers_users_id,
-  DROP INDEX fk_accUsers_users_id_idx,
-  FORCE;
-
-ALTER IGNORE TABLE authTokens
-  DROP FOREIGN KEY fk_authTokens_user_id,
-  DROP FOREIGN KEY fk_authTokens_createdBy_id,
-  DROP INDEX fk_authTokens_user_id,
-  DROP INDEX fk_authTokens_users_createdby_id,
-  FORCE;
-
-ALTER IGNORE TABLE customFieldsData
-  DROP FOREIGN KEY fk_customFieldsData_def_id,
-  FORCE;
-
-ALTER IGNORE TABLE usrData
-  DROP FOREIGN KEY fk_usrData_profiles_id,
-  DROP FOREIGN KEY fk_usrData_groups_id,
-  DROP INDEX fk_usrData_groups_id_idx,
-  DROP INDEX fk_usrData_profiles_id_idx,
-  FORCE;
-
-ALTER IGNORE TABLE usrPassRecover
-  DROP FOREIGN KEY fk_usrPassRecover_users,
-  FORCE;
-
-ALTER IGNORE TABLE usrToGroups
-  DROP FOREIGN KEY fk_usrToGroups_groups_id,
-  DROP FOREIGN KEY fk_usrToGroups_users_id,
-  DROP INDEX fk_usrToGroups_groups_id_idx,
-  FORCE;
-
--- CustomFieldData;
+-- CustomFieldData $$
 ALTER TABLE customFieldsData
   CHANGE customfielddata_defId definitionId INT(10) UNSIGNED NOT NULL,
   CHANGE customfielddata_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -114,9 +76,9 @@ ALTER TABLE customFieldsData
   ADD INDEX idx_CustomFieldData_03 (moduleId ASC),
   ADD INDEX uk_CustomFieldData_01 (moduleId ASC, itemId ASC, definitionId ASC),
   DROP INDEX IDX_ITEM,
-RENAME TO CustomFieldData;
+RENAME TO CustomFieldData $$
 
--- CustomFieldDefinition;
+-- CustomFieldDefinition $$
 ALTER TABLE customFieldsDef
   ADD required TINYINT(1) UNSIGNED NULL,
   ADD help VARCHAR(255) NULL,
@@ -127,9 +89,9 @@ ALTER TABLE customFieldsDef
   CHANGE customfielddef_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE customfielddef_module moduleId SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE customfielddef_field field BLOB NULL,
-RENAME TO CustomFieldDefinition;
+RENAME TO CustomFieldDefinition $$
 
--- EventLog;
+-- EventLog $$
 ALTER TABLE log
   CHANGE log_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE log_date date INT(10) UNSIGNED NOT NULL,
@@ -140,9 +102,9 @@ ALTER TABLE log
   CHANGE log_description description TEXT,
   CHANGE log_level level VARCHAR(20) NOT NULL,
   DROP INDEX `fk_log_users_id_idx`,
-RENAME TO EventLog;
+RENAME TO EventLog $$
 
--- Track;
+-- Track $$
 ALTER TABLE track
   CHANGE track_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE track_userId userId SMALLINT(5) UNSIGNED,
@@ -154,9 +116,9 @@ ALTER TABLE track
   ADD INDEX idx_Track_01 (userId ASC),
   DROP INDEX `IDX_time-ip-source`,
   ADD INDEX `idx_Track_02` (time ASC, ipv4 ASC, ipv6 ASC, source ASC),
-RENAME TO Track;
+RENAME TO Track $$
 
--- AccountFile;
+-- AccountFile $$
 ALTER TABLE accFiles
   CHANGE accfile_accountId accountId MEDIUMINT(5) UNSIGNED NOT NULL,
   CHANGE accfile_id id INT(11) NOT NULL AUTO_INCREMENT,
@@ -168,9 +130,9 @@ ALTER TABLE accFiles
   CHANGE accFile_thumb thumb MEDIUMBLOB,
   DROP INDEX IDX_accountId,
   ADD INDEX idx_AccountFile_01 (accountId ASC),
-RENAME TO AccountFile;
+RENAME TO AccountFile $$
 
--- User;
+-- User $$
 ALTER TABLE usrData
   DROP user_secGroupId,
   CHANGE user_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -202,16 +164,16 @@ ALTER TABLE usrData
   ADD INDEX idx_User_01 (pass ASC),
   DROP INDEX IDX_login,
   ADD UNIQUE INDEX `uk_User_01` (`login`, `ssoLogin`),
-RENAME TO User;
+RENAME TO User $$
 
--- UserProfile;
+-- UserProfile $$
 ALTER TABLE usrProfiles
   CHANGE userprofile_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE userprofile_name name VARCHAR(45) NOT NULL,
   CHANGE userProfile_profile profile BLOB NOT NULL,
-RENAME TO UserProfile;
+RENAME TO UserProfile $$
 
--- Notice;
+-- Notice $$
 ALTER TABLE notices
   CHANGE notice_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE notice_type type VARCHAR(100),
@@ -226,10 +188,10 @@ ALTER TABLE notices
   ADD INDEX idx_Notification_01 (userId ASC, checked ASC, date ASC),
   DROP INDEX IDX_component,
   ADD INDEX idx_Notification_02 (component ASC, date ASC, checked ASC, userId ASC),
-RENAME TO Notification;
+RENAME TO Notification $$
 
--- Plugin;
-ALTER TABLE plugins
+-- Plugin $$
+ALTER TABLE `plugins`
   CHANGE plugin_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE plugin_name name VARCHAR(100) NOT NULL,
   CHANGE plugin_data data VARBINARY(5000),
@@ -237,9 +199,9 @@ ALTER TABLE plugins
   ADD available TINYINT(1) DEFAULT 0,
   DROP INDEX plugin_name_UNIQUE,
   ADD UNIQUE INDEX uk_Plugin_01 (name ASC),
-RENAME TO Plugin;
+RENAME TO Plugin $$
 
--- PublicLink;
+-- PublicLink $$
 ALTER TABLE publicLinks
   ADD COLUMN `userId` SMALLINT(5) UNSIGNED NOT NULL,
   ADD COLUMN `typeId` INT(10) UNSIGNED NOT NULL
@@ -270,26 +232,26 @@ ALTER TABLE publicLinks
   ADD UNIQUE INDEX uk_PublicLink_02 (itemId ASC),
   DROP INDEX IDX_itemId,
   DROP INDEX unique_publicLink_hash,
-RENAME TO PublicLink;
+RENAME TO PublicLink $$
 
--- Category;
+-- Category $$
 ALTER TABLE categories
   CHANGE category_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE category_name name VARCHAR(50) NOT NULL,
   CHANGE category_hash hash VARBINARY(40) NOT NULL,
   CHANGE category_description description VARCHAR(255),
   ADD UNIQUE INDEX uk_Category_01 (`hash` ASC),
-RENAME TO Category;
+RENAME TO Category $$
 
--- Config;
+-- Config $$
 ALTER TABLE config
   CHANGE config_parameter parameter VARCHAR(50) NOT NULL,
   CHANGE config_value VALUE VARCHAR(4000),
   DROP INDEX vacParameter,
   ADD PRIMARY KEY (parameter),
-RENAME TO Config;
+RENAME TO Config $$
 
--- Customer;
+-- Customer $$
 ALTER TABLE customers
   CHANGE customer_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE customer_name name VARCHAR(100) NOT NULL,
@@ -298,9 +260,9 @@ ALTER TABLE customers
   ADD `isGlobal` TINYINT(1) DEFAULT 0,
   ADD INDEX uk_Client_01 (`hash` ASC),
   DROP INDEX IDX_name,
-RENAME TO Client;
+RENAME TO Client $$
 
--- Account;
+-- Account $$
 ALTER TABLE accounts
   CHANGE account_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE account_userGroupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
@@ -334,9 +296,9 @@ ALTER TABLE accounts
   DROP INDEX account_parentId,
   ADD INDEX idx_Account_04 (`parentId` ASC),
   DROP INDEX IDX_parentId,
-RENAME TO Account;
+RENAME TO Account $$
 
--- AccountToFavorite;
+-- AccountToFavorite $$
 ALTER TABLE accFavorites
   DROP INDEX fk_accFavorites_users_idx,
   DROP INDEX fk_accFavorites_accounts_idx,
@@ -344,9 +306,9 @@ ALTER TABLE accFavorites
   CHANGE accfavorite_userId userId SMALLINT(5) UNSIGNED NOT NULL,
   DROP INDEX search_idx,
   ADD INDEX idx_AccountToFavorite_01 (accountId ASC, userId ASC),
-RENAME TO AccountToFavorite;
+RENAME TO AccountToFavorite $$
 
--- AccountHistory;
+-- AccountHistory $$
 ALTER TABLE accHistory
   CHANGE acchistory_id id INT(11) NOT NULL AUTO_INCREMENT,
   CHANGE acchistory_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
@@ -379,9 +341,9 @@ ALTER TABLE accHistory
   ADD INDEX idx_AccountHistory_01 (accountId ASC),
   DROP INDEX acchistory_parentId,
   ADD INDEX idx_AccountHistory_02 (parentId ASC),
-RENAME TO AccountHistory;
+RENAME TO AccountHistory $$
 
--- Tag;
+-- Tag $$
 ALTER TABLE tags
   CHANGE tag_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE tag_name name VARCHAR(45) NOT NULL,
@@ -390,46 +352,46 @@ ALTER TABLE tags
   ADD UNIQUE INDEX uk_Tag_01 (`hash` ASC),
   DROP INDEX IDX_name,
   ADD INDEX idx_Tag_01 (`name` ASC),
-RENAME TO Tag;
+RENAME TO Tag $$
 
--- AccountToTag;
+-- AccountToTag $$
 ALTER TABLE accTags
   CHANGE acctag_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE acctag_tagId tagId INT(10) UNSIGNED NOT NULL,
-RENAME TO AccountToTag;
+RENAME TO AccountToTag $$
 
--- AccountToUserGroup;
+-- AccountToUserGroup $$
 ALTER TABLE accGroups
   CHANGE accgroup_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accgroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
   DROP INDEX IDX_accountId,
   ADD INDEX idx_AccountToUserGroup_01 (`accountId` ASC),
-RENAME TO AccountToUserGroup;
+RENAME TO AccountToUserGroup $$
 
--- AccountToUser;
+-- AccountToUser $$
 ALTER TABLE accUsers
   CHANGE accuser_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accuser_userId userId SMALLINT(5) UNSIGNED NOT NULL,
   DROP INDEX idx_account,
   ADD INDEX idx_AccountToUser_01 (accountId ASC),
-RENAME TO AccountToUser;
+RENAME TO AccountToUser $$
 
--- UserToUserGroup;
+-- UserToUserGroup $$
 ALTER TABLE usrToGroups
   CHANGE usertogroup_userId userId SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE usertogroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
   DROP INDEX IDX_usertogroup_userId,
   ADD INDEX idx_UserToUserGroup_01 (userId ASC),
-RENAME TO UserToUserGroup;
+RENAME TO UserToUserGroup $$
 
--- UserGroup;
+-- UserGroup $$
 ALTER TABLE usrGroups
   CHANGE usergroup_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE usergroup_name name VARCHAR(50) NOT NULL,
   CHANGE usergroup_description description VARCHAR(255),
-RENAME TO UserGroup;
+RENAME TO UserGroup $$
 
--- AuthToken;
+-- AuthToken $$
 ALTER TABLE authTokens
   CHANGE authtoken_id id INT(11) NOT NULL AUTO_INCREMENT,
   CHANGE authtoken_userId userId SMALLINT(5) UNSIGNED NOT NULL,
@@ -443,9 +405,9 @@ ALTER TABLE authTokens
   ADD UNIQUE INDEX uk_AuthToken_01 (token ASC, actionId ASC),
   DROP INDEX IDX_checkToken,
   ADD INDEX idx_AuthToken_01 (userId ASC, actionId ASC, token ASC),
-RENAME TO AuthToken;
+RENAME TO AuthToken $$
 
--- UserPassRecover;
+-- UserPassRecover $$
 ALTER TABLE usrPassRecover
   CHANGE userpassr_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE userpassr_userId userId SMALLINT(5) UNSIGNED NOT NULL,
@@ -454,9 +416,9 @@ ALTER TABLE usrPassRecover
   CHANGE userpassr_used used TINYINT(1) DEFAULT 0,
   DROP INDEX IDX_userId,
   ADD INDEX idx_UserPassRecover_01 (userId ASC, date ASC),
-RENAME TO UserPassRecover;
+RENAME TO UserPassRecover $$
 
--- Views;
+-- Views $$
 CREATE OR REPLACE VIEW account_search_v AS
   SELECT DISTINCT
     `Account`.`id`                                       AS `id`,
@@ -489,7 +451,7 @@ CREATE OR REPLACE VIEW account_search_v AS
     INNER JOIN `Category` ON `Account`.`categoryId` = `Category`.`id`
     INNER JOIN `Client` ON `Client`.`id` = `Account`.`clientId`
     INNER JOIN `User` ON Account.userId = `User`.id
-    INNER JOIN `UserGroup` ON `Account`.`userGroupId` = `UserGroup`.`id`;
+    INNER JOIN `UserGroup` ON `Account`.`userGroupId` = `UserGroup`.`id` $$
 
 CREATE OR REPLACE VIEW account_data_v AS
   SELECT
@@ -530,239 +492,240 @@ CREATE OR REPLACE VIEW account_data_v AS
     `User` `u2` ON ((`Account`.`userEditId` = `u2`.`id`))) LEFT JOIN
     `Client`
       ON ((`Account`.`clientId` = `Client`.`id`))) LEFT JOIN
-    `PublicLink` ON ((`Account`.`id` = `PublicLink`.`itemId`)));
+    `PublicLink` ON ((`Account`.`id` = `PublicLink`.`itemId`))) $$
 
--- Foreign Keys;
+-- Foreign Keys $$
 CREATE INDEX fk_Account_userId
-  ON Account (userId);
+  ON Account (userId) $$
 
 CREATE INDEX fk_Account_userEditId
-  ON Account (userEditId);
+  ON Account (userEditId) $$
 
 ALTER TABLE Account
   ADD CONSTRAINT fk_Account_userGroupId
-FOREIGN KEY (userGroupId) REFERENCES UserGroup (id);
+FOREIGN KEY (userGroupId) REFERENCES UserGroup (id) $$
 
 ALTER TABLE Account
   ADD CONSTRAINT fk_Account_userId
-FOREIGN KEY (userId) REFERENCES User (id);
+FOREIGN KEY (userId) REFERENCES User (id) $$
 
 ALTER TABLE Account
   ADD CONSTRAINT fk_Account_userEditId
-FOREIGN KEY (userEditId) REFERENCES User (id);
+FOREIGN KEY (userEditId) REFERENCES User (id) $$
 
 ALTER TABLE Account
   ADD CONSTRAINT fk_Account_clientId
-FOREIGN KEY (clientId) REFERENCES Client (id);
+FOREIGN KEY (clientId) REFERENCES Client (id) $$
 
 ALTER TABLE Account
   ADD CONSTRAINT fk_Account_categoryId
-FOREIGN KEY (categoryId) REFERENCES Category (id);
+FOREIGN KEY (categoryId) REFERENCES Category (id) $$
 
 ALTER TABLE AccountFile
   ADD CONSTRAINT fk_AccountFile_accountId
 FOREIGN KEY (accountId) REFERENCES Account (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 CREATE INDEX fk_AccountHistory_userGroupId
-  ON AccountHistory (userGroupId);
+  ON AccountHistory (userGroupId) $$
 
 CREATE INDEX fk_AccountHistory_userId
-  ON AccountHistory (userId);
+  ON AccountHistory (userId) $$
 
 CREATE INDEX fk_AccountHistory_userEditId
-  ON AccountHistory (userEditId);
+  ON AccountHistory (userEditId) $$
 
 CREATE INDEX fk_AccountHistory_clientId
-  ON AccountHistory (clientId);
+  ON AccountHistory (clientId) $$
 
 CREATE INDEX fk_AccountHistory_categoryId
-  ON AccountHistory (categoryId);
+  ON AccountHistory (categoryId) $$
 
 ALTER TABLE AccountHistory
   ADD CONSTRAINT fk_AccountHistory_userGroupId
-FOREIGN KEY (userGroupId) REFERENCES UserGroup (id);
+FOREIGN KEY (userGroupId) REFERENCES UserGroup (id) $$
 
 ALTER TABLE AccountHistory
   ADD CONSTRAINT fk_AccountHistory_userId
-FOREIGN KEY (userId) REFERENCES User (id);
+FOREIGN KEY (userId) REFERENCES User (id) $$
 
 ALTER TABLE AccountHistory
   ADD CONSTRAINT fk_AccountHistory_userEditId
-FOREIGN KEY (userEditId) REFERENCES User (id);
+FOREIGN KEY (userEditId) REFERENCES User (id) $$
 
 ALTER TABLE AccountHistory
   ADD CONSTRAINT fk_AccountHistory_clientId
-FOREIGN KEY (clientId) REFERENCES Client (id);
+FOREIGN KEY (clientId) REFERENCES Client (id) $$
 
 ALTER TABLE AccountHistory
   ADD CONSTRAINT fk_AccountHistory_categoryId
-FOREIGN KEY (categoryId) REFERENCES Category (id);
+FOREIGN KEY (categoryId) REFERENCES Category (id) $$
 
 CREATE INDEX fk_AccountToFavorite_userId
-  ON AccountToFavorite (userId);
+  ON AccountToFavorite (userId) $$
 
 ALTER TABLE AccountToFavorite
   ADD CONSTRAINT fk_AccountToFavorite_accountId
 FOREIGN KEY (accountId) REFERENCES Account (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 ALTER TABLE AccountToFavorite
   ADD CONSTRAINT fk_AccountToFavorite_userId
 FOREIGN KEY (userId) REFERENCES User (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 ALTER TABLE AccountToFavorite
-  ADD PRIMARY KEY (accountId, userId);
+  ADD PRIMARY KEY (accountId, userId) $$
 
 CREATE INDEX fk_AccountToUserGroup_userGroupId
-  ON AccountToUserGroup (userGroupId);
+  ON AccountToUserGroup (userGroupId) $$
 
 ALTER TABLE AccountToUserGroup
   ADD CONSTRAINT fk_AccountToUserGroup_accountId
 FOREIGN KEY (accountId) REFERENCES Account (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 ALTER TABLE AccountToUserGroup
   ADD CONSTRAINT fk_AccountToUserGroup_userGroupId
 FOREIGN KEY (userGroupId) REFERENCES UserGroup (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 ALTER TABLE AccountToUserGroup
-  ADD PRIMARY KEY (accountId, userGroupId);
+  ADD PRIMARY KEY (accountId, userGroupId) $$
 
 CREATE INDEX fk_AccountToTag_accountId
-  ON AccountToTag (accountId);
+  ON AccountToTag (accountId) $$
 
 CREATE INDEX fk_AccountToTag_tagId
-  ON AccountToTag (tagId);
+  ON AccountToTag (tagId) $$
 
--- Fix duplicated tags;
+-- Fix duplicated tags $$
 CREATE TEMPORARY TABLE IF NOT EXISTS tmp_tags AS (SELECT
                                                     accountId,
                                                     tagId
                                                   FROM AccountToTag
                                                   GROUP BY accountId, tagId
-                                                  HAVING COUNT(*) > 1);
+                                                  HAVING COUNT(*) > 1) $$
 
 DELETE a FROM AccountToTag AS a
-  INNER JOIN tmp_tags AS tmp ON tmp.accountId = a.accountId AND tmp.tagId = a.tagId;
+  INNER JOIN tmp_tags AS tmp ON tmp.accountId = a.accountId AND tmp.tagId = a.tagId $$
 
 INSERT INTO AccountToTag SELECT *
-                         FROM tmp_tags;
+                         FROM tmp_tags $$
 
-DROP TEMPORARY TABLE tmp_tags;
+DROP TEMPORARY TABLE tmp_tags $$
 
 ALTER TABLE AccountToTag
   ADD CONSTRAINT fk_AccountToTag_accountId
 FOREIGN KEY (accountId) REFERENCES Account (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 ALTER TABLE AccountToTag
   ADD CONSTRAINT fk_AccountToTag_tagId
 FOREIGN KEY (tagId) REFERENCES Tag (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 ALTER TABLE AccountToTag
-  ADD PRIMARY KEY (accountId, tagId);
+  ADD PRIMARY KEY (accountId, tagId) $$
 
 CREATE INDEX fk_AccountToUser_userId
-  ON AccountToUser (userId);
+  ON AccountToUser (userId) $$
 
 ALTER TABLE AccountToUser
   ADD CONSTRAINT fk_AccountToUser_accountId
 FOREIGN KEY (accountId) REFERENCES Account (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 ALTER TABLE AccountToUser
   ADD CONSTRAINT fk_AccountToUser_userId
 FOREIGN KEY (userId) REFERENCES User (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 ALTER TABLE AccountToUser
-  ADD PRIMARY KEY (accountId, userId);
+  ADD PRIMARY KEY (accountId, userId) $$
 
 CREATE INDEX fk_AuthToken_actionId
-  ON AuthToken (actionId);
+  ON AuthToken (actionId) $$
 
--- Fix missing user's id;
+-- Fix missing user's id $$
 DELETE FROM AuthToken
 WHERE userId NOT IN (SELECT id
-                     FROM User);
+                     FROM User) $$
 
 ALTER TABLE AuthToken
   ADD CONSTRAINT fk_AuthToken_userId
 FOREIGN KEY (userId) REFERENCES User (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 ALTER TABLE CustomFieldData
   ADD CONSTRAINT fk_CustomFieldData_definitionId
-FOREIGN KEY (definitionId) REFERENCES CustomFieldDefinition (id);
+FOREIGN KEY (definitionId) REFERENCES CustomFieldDefinition (id) $$
 
 CREATE INDEX fk_CustomFieldDefinition_typeId
-  ON CustomFieldDefinition (typeId);
+  ON CustomFieldDefinition (typeId) $$
 
 ALTER TABLE CustomFieldDefinition
   ADD CONSTRAINT fk_CustomFieldDefinition_typeId
 FOREIGN KEY (typeId) REFERENCES CustomFieldType (id)
-  ON UPDATE CASCADE;
+  ON UPDATE CASCADE $$
 
 ALTER TABLE Notification
   ADD CONSTRAINT fk_Notification_userId
 FOREIGN KEY (userId) REFERENCES User (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 CREATE INDEX fk_PublicLink_userId
-  ON PublicLink (userId);
+  ON PublicLink (userId) $$
 
 ALTER TABLE PublicLink
   ADD CONSTRAINT fk_PublicLink_userId
-FOREIGN KEY (userId) REFERENCES User (id);
+FOREIGN KEY (userId) REFERENCES User (id) $$
 
 CREATE INDEX fk_User_userGroupId
-  ON User (userGroupId);
+  ON User (userGroupId) $$
 
 CREATE INDEX fk_User_userProfileId
-  ON User (userProfileId);
+  ON User (userProfileId) $$
 
 ALTER TABLE User
   ADD CONSTRAINT fk_User_userGroupId
-FOREIGN KEY (userGroupId) REFERENCES UserGroup (id);
+FOREIGN KEY (userGroupId) REFERENCES UserGroup (id) $$
 
 ALTER TABLE User
   ADD CONSTRAINT fk_User_userProfileId
-FOREIGN KEY (userProfileId) REFERENCES UserProfile (id);
+FOREIGN KEY (userProfileId) REFERENCES UserProfile (id) $$
 
 ALTER TABLE UserPassRecover
   ADD CONSTRAINT fk_UserPassRecover_userId
 FOREIGN KEY (userId) REFERENCES User (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 CREATE INDEX fk_UserToGroup_userGroupId
-  ON UserToUserGroup (userGroupId);
+  ON UserToUserGroup (userGroupId) $$
 
 ALTER TABLE UserToUserGroup
   ADD CONSTRAINT fk_UserToGroup_userId
 FOREIGN KEY (userId) REFERENCES User (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
 ALTER TABLE UserToUserGroup
   ADD CONSTRAINT fk_UserToGroup_userGroupId
 FOREIGN KEY (userGroupId) REFERENCES UserGroup (id)
   ON UPDATE CASCADE
-  ON DELETE CASCADE;
+  ON DELETE CASCADE $$
 
-SET FOREIGN_KEY_CHECKS = 1;
+SET FOREIGN_KEY_CHECKS = 1 $$
+DELIMITER ;

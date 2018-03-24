@@ -29,6 +29,8 @@ use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
 use SP\Storage\DatabaseConnectionData;
 use SP\Storage\DBUtil;
+use SP\Storage\FileHandler;
+use SP\Storage\MysqlFileParser;
 use SP\Storage\MySQLHandler;
 use SP\Util\Util;
 
@@ -56,7 +58,7 @@ class MySQL implements DatabaseSetupInterface
      * MySQL constructor.
      *
      * @param InstallData $installData
-     * @param ConfigData  $configData
+     * @param ConfigData $configData
      * @throws SPException
      */
     public function __construct(InstallData $installData, ConfigData $configData)
@@ -293,28 +295,23 @@ class MySQL implements DatabaseSetupInterface
             );
         }
 
-        // Leemos el archivo SQL para crear las tablas de la BBDD
-        if ($handle = fopen($fileName, 'rb')) {
-            while (!feof($handle)) {
-                $buffer = stream_get_line($handle, 1000000, ";\n");
 
-                if (strlen(trim($buffer)) > 0 && strpos($buffer, '--') !== 0) {
-                    try {
-                        $dbc->exec(str_replace("\n", '', $buffer));
-                    } catch (PDOException $e) {
-                        processException($e);
+        foreach ((new MysqlFileParser())
+                     ->parse(new FileHandler($fileName)) as $query) {
+            try {
+                $dbc->exec($query);
+            } catch (PDOException $e) {
+                processException($e);
 
-                        debugLog('Query: ' . $buffer);
+                debugLog('Query: ' . $query);
 
-                        $this->rollback();
+                $this->rollback();
 
-                        throw new SPException(
-                            sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),
-                            SPException::CRITICAL,
-                            __u('Error al crear la estructura de la Base de Datos.')
-                        );
-                    }
-                }
+                throw new SPException(
+                    sprintf(__('Error al crear la BBDD (\'%s\')'), $e->getMessage()),
+                    SPException::CRITICAL,
+                    __u('Error al crear la estructura de la Base de Datos.')
+                );
             }
         }
     }

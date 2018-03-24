@@ -30,6 +30,9 @@ use SP\Core\Events\EventMessage;
 use SP\Services\Service;
 use SP\Storage\Database;
 use SP\Storage\DbWrapper;
+use SP\Storage\FileException;
+use SP\Storage\FileHandler;
+use SP\Storage\MysqlFileParser;
 use SP\Storage\QueryData;
 use SP\Util\Util;
 
@@ -192,26 +195,19 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
      *
      * @param $filename
      * @return array|bool
+     * @throws UpgradeException
      */
     private function getQueriesFromFile($filename)
     {
         $file = SQL_PATH . DIRECTORY_SEPARATOR . str_replace('.', '', $filename) . '.sql';
 
-        $queries = [];
+        try {
+            return (new MysqlFileParser())->parse(new FileHandler($file), '$$');
+        } catch (FileException $e) {
+            processException($e);
 
-        if (file_exists($file)
-            && $handle = fopen($file, 'rb')
-        ) {
-            while (!feof($handle)) {
-                $buffer = stream_get_line($handle, 1000000, ";\n");
-
-                if (strlen(trim($buffer)) > 0 && strpos($buffer, '--') !== 0) {
-                    $queries[] = $buffer;
-                }
-            }
+            throw new UpgradeException($e->getMessage());
         }
-
-        return $queries;
     }
 
     protected function initialize()
