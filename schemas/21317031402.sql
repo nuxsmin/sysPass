@@ -1,1 +1,0 @@
-ALTER TABLE `accHistory` CHANGE COLUMN `acchistory_pass` `acchistory_pass` VARBINARY(1000) NOT NULL;

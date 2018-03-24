@@ -61,12 +61,12 @@ class ErrorController
      */
     public function __construct(Container $container, $actionName)
     {
+        $this->router = $container->get(Klein::class);
+
         $this->view = $container->get(Template::class);
         $this->view->setBase('error');
 
-        $this->router = $container->get(Klein::class);
         $this->layoutHelper = $container->get(LayoutHelper::class);
-        $this->layoutHelper->getPublicLayout('error');
     }
 
     /**

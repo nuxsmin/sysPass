@@ -32,7 +32,7 @@ use SP\Storage\Database;
 use SP\Storage\DbWrapper;
 use SP\Storage\FileException;
 use SP\Storage\FileHandler;
-use SP\Storage\MysqlFileParser;
+use SP\Storage\MySQLFileParser;
 use SP\Storage\QueryData;
 use SP\Util\Util;
 
@@ -202,7 +202,7 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
         $file = SQL_PATH . DIRECTORY_SEPARATOR . str_replace('.', '', $filename) . '.sql';
 
         try {
-            return (new MysqlFileParser())->parse(new FileHandler($file), '$$');
+            return (new MySQLFileParser())->parse(new FileHandler($file), '$$');
         } catch (FileException $e) {
             processException($e);
 

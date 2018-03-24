@@ -15,9 +15,6 @@ CREATE PROCEDURE removeConstraints()
             AND REFERENCED_TABLE_NAME IS NOT NULL;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-    SET AUTOCOMMIT = 0;
-    SET FOREIGN_KEY_CHECKS = 0;
-
     OPEN cur;
 
     read_loop: LOOP
@@ -27,22 +24,17 @@ CREATE PROCEDURE removeConstraints()
       THEN
         LEAVE read_loop;
       END IF;
-      SET @sql = CONCAT('ALTER TABLE ', tName, ' DROP FOREIGN KEY ', cName, ';');
-      PREPARE stmt FROM @sql;
+      PREPARE stmt FROM CONCAT('ALTER TABLE ', tName, ' DROP FOREIGN KEY ', cName, ';');
       EXECUTE stmt;
       DEALLOCATE PREPARE stmt;
     END LOOP;
 
     CLOSE cur;
-
-    SET FOREIGN_KEY_CHECKS = 1;
-    COMMIT;
-    SET AUTOCOMMIT = 1;
   END $$
 
 CALL removeConstraints() $$
 
-DROP PROCEDURE removeConstraints $$
+-- DROP PROCEDURE removeConstraints
 
 CREATE TABLE `CustomFieldType` (
   `id`   TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -59,7 +51,7 @@ VALUES (1, 'text', 'Texto'), (2, 'password', 'Clave'), (3, 'date', 'Fecha'), (4,
   (5, 'email', 'Email'), (6, 'telephone', 'Teléfono'), (7, 'url', 'URL'), (8, 'color', 'Color'), (9, 'wiki', 'Wiki'),
   (10, 'textarea', 'Área de Texto') $$
 
--- CustomFieldData $$
+-- CustomFieldData
 ALTER TABLE customFieldsData
   CHANGE customfielddata_defId definitionId INT(10) UNSIGNED NOT NULL,
   CHANGE customfielddata_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -78,7 +70,7 @@ ALTER TABLE customFieldsData
   DROP INDEX IDX_ITEM,
 RENAME TO CustomFieldData $$
 
--- CustomFieldDefinition $$
+-- CustomFieldDefinition
 ALTER TABLE customFieldsDef
   ADD required TINYINT(1) UNSIGNED NULL,
   ADD help VARCHAR(255) NULL,
@@ -91,7 +83,7 @@ ALTER TABLE customFieldsDef
   CHANGE customfielddef_field field BLOB NULL,
 RENAME TO CustomFieldDefinition $$
 
--- EventLog $$
+-- EventLog
 ALTER TABLE log
   CHANGE log_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE log_date date INT(10) UNSIGNED NOT NULL,
@@ -104,7 +96,7 @@ ALTER TABLE log
   DROP INDEX `fk_log_users_id_idx`,
 RENAME TO EventLog $$
 
--- Track $$
+-- Track
 ALTER TABLE track
   CHANGE track_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE track_userId userId SMALLINT(5) UNSIGNED,
@@ -118,7 +110,7 @@ ALTER TABLE track
   ADD INDEX `idx_Track_02` (time ASC, ipv4 ASC, ipv6 ASC, source ASC),
 RENAME TO Track $$
 
--- AccountFile $$
+-- AccountFile
 ALTER TABLE accFiles
   CHANGE accfile_accountId accountId MEDIUMINT(5) UNSIGNED NOT NULL,
   CHANGE accfile_id id INT(11) NOT NULL AUTO_INCREMENT,
@@ -132,7 +124,7 @@ ALTER TABLE accFiles
   ADD INDEX idx_AccountFile_01 (accountId ASC),
 RENAME TO AccountFile $$
 
--- User $$
+-- User
 ALTER TABLE usrData
   DROP user_secGroupId,
   CHANGE user_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -166,14 +158,14 @@ ALTER TABLE usrData
   ADD UNIQUE INDEX `uk_User_01` (`login`, `ssoLogin`),
 RENAME TO User $$
 
--- UserProfile $$
+-- UserProfile
 ALTER TABLE usrProfiles
   CHANGE userprofile_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE userprofile_name name VARCHAR(45) NOT NULL,
   CHANGE userProfile_profile profile BLOB NOT NULL,
 RENAME TO UserProfile $$
 
--- Notice $$
+-- Notice
 ALTER TABLE notices
   CHANGE notice_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE notice_type type VARCHAR(100),
@@ -190,7 +182,7 @@ ALTER TABLE notices
   ADD INDEX idx_Notification_02 (component ASC, date ASC, checked ASC, userId ASC),
 RENAME TO Notification $$
 
--- Plugin $$
+-- Plugin
 ALTER TABLE `plugins`
   CHANGE plugin_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE plugin_name name VARCHAR(100) NOT NULL,
@@ -201,7 +193,7 @@ ALTER TABLE `plugins`
   ADD UNIQUE INDEX uk_Plugin_01 (name ASC),
 RENAME TO Plugin $$
 
--- PublicLink $$
+-- PublicLink
 ALTER TABLE publicLinks
   ADD COLUMN `userId` SMALLINT(5) UNSIGNED NOT NULL,
   ADD COLUMN `typeId` INT(10) UNSIGNED NOT NULL
@@ -234,7 +226,7 @@ ALTER TABLE publicLinks
   DROP INDEX unique_publicLink_hash,
 RENAME TO PublicLink $$
 
--- Category $$
+-- Category
 ALTER TABLE categories
   CHANGE category_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE category_name name VARCHAR(50) NOT NULL,
@@ -243,7 +235,7 @@ ALTER TABLE categories
   ADD UNIQUE INDEX uk_Category_01 (`hash` ASC),
 RENAME TO Category $$
 
--- Config $$
+-- Config
 ALTER TABLE config
   CHANGE config_parameter parameter VARCHAR(50) NOT NULL,
   CHANGE config_value VALUE VARCHAR(4000),
@@ -251,7 +243,7 @@ ALTER TABLE config
   ADD PRIMARY KEY (parameter),
 RENAME TO Config $$
 
--- Customer $$
+-- Customer
 ALTER TABLE customers
   CHANGE customer_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE customer_name name VARCHAR(100) NOT NULL,
@@ -262,7 +254,7 @@ ALTER TABLE customers
   DROP INDEX IDX_name,
 RENAME TO Client $$
 
--- Account $$
+-- Account
 ALTER TABLE accounts
   CHANGE account_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE account_userGroupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
@@ -298,7 +290,7 @@ ALTER TABLE accounts
   DROP INDEX IDX_parentId,
 RENAME TO Account $$
 
--- AccountToFavorite $$
+-- AccountToFavorite
 ALTER TABLE accFavorites
   DROP INDEX fk_accFavorites_users_idx,
   DROP INDEX fk_accFavorites_accounts_idx,
@@ -308,7 +300,7 @@ ALTER TABLE accFavorites
   ADD INDEX idx_AccountToFavorite_01 (accountId ASC, userId ASC),
 RENAME TO AccountToFavorite $$
 
--- AccountHistory $$
+-- AccountHistory
 ALTER TABLE accHistory
   CHANGE acchistory_id id INT(11) NOT NULL AUTO_INCREMENT,
   CHANGE acchistory_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
@@ -343,7 +335,7 @@ ALTER TABLE accHistory
   ADD INDEX idx_AccountHistory_02 (parentId ASC),
 RENAME TO AccountHistory $$
 
--- Tag $$
+-- Tag
 ALTER TABLE tags
   CHANGE tag_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE tag_name name VARCHAR(45) NOT NULL,
@@ -354,13 +346,13 @@ ALTER TABLE tags
   ADD INDEX idx_Tag_01 (`name` ASC),
 RENAME TO Tag $$
 
--- AccountToTag $$
+-- AccountToTag
 ALTER TABLE accTags
   CHANGE acctag_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE acctag_tagId tagId INT(10) UNSIGNED NOT NULL,
 RENAME TO AccountToTag $$
 
--- AccountToUserGroup $$
+-- AccountToUserGroup
 ALTER TABLE accGroups
   CHANGE accgroup_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accgroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
@@ -368,7 +360,7 @@ ALTER TABLE accGroups
   ADD INDEX idx_AccountToUserGroup_01 (`accountId` ASC),
 RENAME TO AccountToUserGroup $$
 
--- AccountToUser $$
+-- AccountToUser
 ALTER TABLE accUsers
   CHANGE accuser_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accuser_userId userId SMALLINT(5) UNSIGNED NOT NULL,
@@ -376,7 +368,7 @@ ALTER TABLE accUsers
   ADD INDEX idx_AccountToUser_01 (accountId ASC),
 RENAME TO AccountToUser $$
 
--- UserToUserGroup $$
+-- UserToUserGroup
 ALTER TABLE usrToGroups
   CHANGE usertogroup_userId userId SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE usertogroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
@@ -384,14 +376,14 @@ ALTER TABLE usrToGroups
   ADD INDEX idx_UserToUserGroup_01 (userId ASC),
 RENAME TO UserToUserGroup $$
 
--- UserGroup $$
+-- UserGroup
 ALTER TABLE usrGroups
   CHANGE usergroup_id id SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE usergroup_name name VARCHAR(50) NOT NULL,
   CHANGE usergroup_description description VARCHAR(255),
 RENAME TO UserGroup $$
 
--- AuthToken $$
+-- AuthToken
 ALTER TABLE authTokens
   CHANGE authtoken_id id INT(11) NOT NULL AUTO_INCREMENT,
   CHANGE authtoken_userId userId SMALLINT(5) UNSIGNED NOT NULL,
@@ -407,7 +399,7 @@ ALTER TABLE authTokens
   ADD INDEX idx_AuthToken_01 (userId ASC, actionId ASC, token ASC),
 RENAME TO AuthToken $$
 
--- UserPassRecover $$
+-- UserPassRecover
 ALTER TABLE usrPassRecover
   CHANGE userpassr_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE userpassr_userId userId SMALLINT(5) UNSIGNED NOT NULL,
@@ -418,7 +410,7 @@ ALTER TABLE usrPassRecover
   ADD INDEX idx_UserPassRecover_01 (userId ASC, date ASC),
 RENAME TO UserPassRecover $$
 
--- Views $$
+-- Views
 CREATE OR REPLACE VIEW account_search_v AS
   SELECT DISTINCT
     `Account`.`id`                                       AS `id`,
@@ -494,7 +486,7 @@ CREATE OR REPLACE VIEW account_data_v AS
       ON ((`Account`.`clientId` = `Client`.`id`))) LEFT JOIN
     `PublicLink` ON ((`Account`.`id` = `PublicLink`.`itemId`))) $$
 
--- Foreign Keys $$
+-- Foreign Keys
 CREATE INDEX fk_Account_userId
   ON Account (userId) $$
 
@@ -604,7 +596,7 @@ CREATE INDEX fk_AccountToTag_accountId
 CREATE INDEX fk_AccountToTag_tagId
   ON AccountToTag (tagId) $$
 
--- Fix duplicated tags $$
+-- Fix duplicated tags
 CREATE TEMPORARY TABLE IF NOT EXISTS tmp_tags AS (SELECT
                                                     accountId,
                                                     tagId
@@ -656,7 +648,7 @@ ALTER TABLE AccountToUser
 CREATE INDEX fk_AuthToken_actionId
   ON AuthToken (actionId) $$
 
--- Fix missing user's id $$
+-- Fix missing user's id
 DELETE FROM AuthToken
 WHERE userId NOT IN (SELECT id
                      FROM User) $$

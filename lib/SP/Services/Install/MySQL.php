@@ -30,7 +30,7 @@ use SP\Core\Exceptions\SPException;
 use SP\Storage\DatabaseConnectionData;
 use SP\Storage\DBUtil;
 use SP\Storage\FileHandler;
-use SP\Storage\MysqlFileParser;
+use SP\Storage\MySQLFileParser;
 use SP\Storage\MySQLHandler;
 use SP\Util\Util;
 
@@ -296,7 +296,7 @@ class MySQL implements DatabaseSetupInterface
         }
 
 
-        foreach ((new MysqlFileParser())
+        foreach ((new MySQLFileParser())
                      ->parse(new FileHandler($fileName)) as $query) {
             try {
                 $dbc->exec($query);

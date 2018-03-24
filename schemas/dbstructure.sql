@@ -298,7 +298,7 @@ CREATE TABLE `Notification` (
   PRIMARY KEY (`id`),
   KEY `idx_Notification_01` (`userId`,`checked`,`date`),
   KEY `idx_Notification_02` (`component`,`date`,`checked`,`userId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `Plugin`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -311,7 +311,7 @@ CREATE TABLE `Plugin` (
   `available` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_Plugin_01` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `PublicLink`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

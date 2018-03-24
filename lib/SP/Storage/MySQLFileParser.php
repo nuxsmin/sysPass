@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,16 +26,17 @@ namespace SP\Storage;
 
 /**
  * Class MysqlFileParser
+ *
  * @package SP\Storage
  */
-class MysqlFileParser implements DatabaseFileInterface
+class MySQLFileParser implements DatabaseFileInterface
 {
 
     /**
      * Parses a database script file and returns an array of lines parsed
      *
      * @param FileHandler $fileHandler
-     * @param string $delimiter
+     * @param string      $delimiter
      * @return array
      * @throws FileException
      */
@@ -54,24 +55,25 @@ class MysqlFileParser implements DatabaseFileInterface
             if ($length > 0
                 && strpos($buffer, '--') !== 0
             ) {
-                // Checks if line is a set wrapped by a comment
+                // CHecks if delimiter based EOL is reached
+                $end = strrpos($buffer, $delimiter) === $length - $delimiterLength;
+                // Checks if line is an SQL statement wrapped by a comment
                 $setComment = preg_match(/** @lang RegExp */
                     '#^(?P<statement>/\*!\d+.*\*/)#', $buffer, $matches);
 
                 if ($setComment) {
-                    $queries[] = $matches['statement'];
-                } else {
-                    $end = strrpos($buffer, $delimiter) === $length - $delimiterLength;
+                    if (!$end) {
+                        $query .= $matches['statement'] . PHP_EOL;
+                    } else {
+                        $queries[] = $query . $matches['statement'];
 
+                        $query = '';
+                    }
+                } else {
                     if (!$end) {
                         $query .= $buffer . PHP_EOL;
-                    } elseif ($end
-                        && empty($query)
-                        && strpos($buffer, 'DELIMITER') === false
-                    ) {
-                        $queries[] = trim(substr_replace($buffer, '', $length - $delimiterLength), $delimiterLength);
-                    } elseif (!empty($query)) { // End of query
-                        $queries[] = trim($query);
+                    } elseif ($end && strpos($buffer, 'DELIMITER') === false) {
+                        $queries[] = $query . trim(substr_replace($buffer, '', $length - $delimiterLength), $delimiterLength);
 
                         $query = '';
                     }
