@@ -1,18 +1,18 @@
 <footer>
     <div id="footer-left" class="footer-parts">
-        <?php if ($loadApp === true && isset($userName)): ?>
+        <?php if ($loadApp === true && isset($context_userName)): ?>
             <div id="session">
                 <span id="user-info">
-                    <?php if ($userType !== null): ?>
-                        <i id="user-type-footer" class="material-icons"><?php echo $userType->getIcon(); ?></i>
+                    <?php if ($context_userType !== null): ?>
+                        <i id="user-type-footer" class="material-icons"><?php echo $context_userType->getIcon(); ?></i>
                         <span for="user-type-footer"
-                              class="mdl-tooltip mdl-tooltip--top"><?php echo $userType->getTitle(); ?></span>
+                              class="mdl-tooltip mdl-tooltip--top"><?php echo $context_userType->getTitle(); ?></span>
                     <?php else: ?>
                         <i class="material-icons">face</i>
                     <?php endif; ?>
-                    <span id="user-name-footer"><?php echo $userName; ?></span>
+                    <span id="user-name-footer"><?php echo $context_userName; ?></span>
                     <span for="user-name-footer"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $userGroup); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $context_userGroup); ?></span>
                 </span>
             </div>
         <?php endif; ?>

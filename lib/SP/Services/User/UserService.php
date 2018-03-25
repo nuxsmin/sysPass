@@ -70,6 +70,7 @@ class UserService extends Service
             ->setMKey($userData->getMKey())
             ->setLastUpdateMPass($userData->getLastUpdateMPass())
             ->setUserGroupId($userData->getUserGroupId())
+            ->setUserGroupName($userData->getUserGroupName())
             ->setUserProfileId($userData->getUserProfileId())
             ->setPreferences(self::getUserPreferences($userData->getPreferences()))
             ->setIsLdap($userData->isLdap())

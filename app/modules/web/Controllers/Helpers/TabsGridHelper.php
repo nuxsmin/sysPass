@@ -56,6 +56,7 @@ class TabsGridHelper extends HelperBase
         $this->view->assign('activeTab', $activeTab);
         $this->view->assign('maxNumActions', self::MAX_NUM_ACTIONS);
         $this->view->assign('tabsRoute', $route);
+        $this->view->assign('sk', $this->context->generateSecurityKey());
     }
 
     /**

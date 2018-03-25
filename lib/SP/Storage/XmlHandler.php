@@ -75,9 +75,7 @@ class XmlHandler implements XmlFileStorageInterface
      */
     public function load($node = 'root')
     {
-        if (!$this->checkSourceFile()) {
-            throw new FileNotFoundException(sprintf(__('No es posible leer/escribir el archivo: %s'), $this->file));
-        }
+        $this->checkSourceFile();
 
         $this->setDOM();
         $this->items = [];
@@ -92,11 +90,13 @@ class XmlHandler implements XmlFileStorageInterface
     /**
      * Comprobar que el archivo existe y se puede leer/escribir
      *
-     * @return bool
+     * @throws FileNotFoundException
      */
     protected function checkSourceFile()
     {
-        return (is_writable($this->file) && filesize($this->file) > 0);
+        if (!is_writable($this->file) || filesize($this->file) === 0) {
+            throw new FileNotFoundException(sprintf(__('No es posible leer/escribir el archivo: %s'), $this->file));
+        }
     }
 
     /**
@@ -181,9 +181,9 @@ class XmlHandler implements XmlFileStorageInterface
     /**
      * Crear los nodos hijos recursivamente a partir de un array multidimensional
      *
-     * @param mixed $items
+     * @param mixed   $items
      * @param DOMNode $Node
-     * @param null $type
+     * @param null    $type
      */
     protected function writeChildNodes($items, DOMNode $Node, $type = null)
     {
@@ -212,7 +212,7 @@ class XmlHandler implements XmlFileStorageInterface
      * Analizar el tipo de elementos
      *
      * @param mixed $items
-     * @param bool $serialize
+     * @param bool  $serialize
      * @return array
      */
     protected function analyzeItems($items, $serialize = false)

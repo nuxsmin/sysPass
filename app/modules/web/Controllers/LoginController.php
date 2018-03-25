@@ -25,11 +25,11 @@
 namespace SP\Modules\Web\Controllers;
 
 use SP\Core\Context\SessionContext;
+use SP\Core\Crypt\Hash;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Core\SessionUtil;
 use SP\Http\Request;
-use SP\Http\Response;
 use SP\Modules\Web\Controllers\Helpers\LayoutHelper;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Services\Auth\LoginService;
@@ -52,7 +52,14 @@ class LoginController extends ControllerBase
     public function loginAction()
     {
         try {
+            $from = Request::analyzeString('from');
+
             $loginService = $this->dic->get(LoginService::class);
+
+            if ($from && Hash::checkMessage($from, $this->configData->getPasswordSalt(), Request::analyzeString('h'))) {
+                $loginService->setFrom($from);
+            }
+
             $loginResponmse = $loginService->doLogin();
 
             $forward = Request::getRequestHeaders('X-Forwarded-For');
@@ -79,7 +86,6 @@ class LoginController extends ControllerBase
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function logoutAction()
     {
@@ -104,7 +110,7 @@ class LoginController extends ControllerBase
 
             $this->view();
         } else {
-            Response::redirect('index.php?r=login');
+            $this->router->response()->redirect('index.php?r=login');
         }
     }
 
@@ -113,23 +119,28 @@ class LoginController extends ControllerBase
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {
+        if ($this->session->isLoggedIn() === true) {
+            $this->router->response()
+                ->redirect('index.php?r=index')
+                ->send(true);
+        }
+        
         $layoutHelper = $this->dic->get(LayoutHelper::class);
         $layoutHelper->getCustomLayout('index', 'login');
 
-        if ($this->session->isLoggedIn() === true) {
-            $this->session->setAppStatus(SessionContext::APP_STATUS_LOGGEDOUT);
-
-            $this->view->assign('loggedOut', 1);
-        } else {
-            $this->view->assign('loggedOut', 0);
-        }
-
         $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
 //        $this->view->assign('updated', SessionFactory::getAppUpdated());
+
+        $from = Request::analyzeString('from');
+        $hash = Request::analyzeString('h');
+
+        if ($from && Hash::checkMessage($from, $this->configData->getPasswordSalt(), $hash)) {
+            $this->view->assign('from', $from);
+            $this->view->assign('from_hash', $hash);
+        }
 
         $this->view();
     }

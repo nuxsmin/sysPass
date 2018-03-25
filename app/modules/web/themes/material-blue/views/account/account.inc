@@ -277,6 +277,18 @@ $showCustomFields = count($customFields) > 0;
                             </td>
                         </tr>
                     <?php endif; ?>
+
+                    <tr>
+                        <td class="descField"><?php echo __('Enlace Directo'); ?></td>
+                        <td class="valField">
+                            <div class="lowres-title"><?php echo __('Enlace Directo'); ?></div>
+
+                            <a href="<?php echo $deepLink; ?>" target="_blank"
+                               title="<?php echo __('Enlace Directo'); ?>">
+                                <i class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
+                            </a>
+                        </td>
+                    </tr>
                 </table>
             </div>
 

@@ -103,8 +103,6 @@ class Init extends ModuleBase
         // Iniciar la sesión de PHP
         $this->initSession($this->configData->isEncryptSession());
 
-        $this->theme->initialize();
-
         // Volver a cargar la configuración si se recarga la página
         if (Request::checkReload($this->router) === false) {
             // Cargar la configuración

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-24 19:31+0100\n"
-"PO-Revision-Date: 2018-03-24 19:37+0100\n"
+"POT-Creation-Date: 2018-03-25 13:38+0100\n"
+"PO-Revision-Date: 2018-03-25 13:39+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -349,7 +349,7 @@ msgstr "Client Id"
 #: ../../../modules/web/themes/material-blue/views/itemshow/userpass.inc:38
 #: ../../../modules/web/themes/material-blue/views/itemshow/userpass.inc:44
 #: ../../../modules/web/themes/material-blue/views/login/index.inc:26
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:82
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:86
 #: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:14
 msgid "Clave"
 msgstr "Password"
@@ -504,7 +504,7 @@ msgstr "The updating need to be confirmed"
 
 #: ../../../../lib/SP/Controller/MainActionController.php:103
 #: ../../../modules/web/Controllers/UpgradeController.php:87
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:74
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:78
 msgid "Aplicación actualizada correctamente"
 msgstr "Application successfully updated"
 
@@ -518,10 +518,10 @@ msgid "Actualización de versión realizada."
 msgstr "Version updating done."
 
 #: ../../../../lib/SP/Controller/MainActionController.php:151
-#: ../../../../lib/SP/Services/Auth/LoginService.php:415
-#: ../../../../lib/SP/Services/Auth/LoginService.php:478
-#: ../../../../lib/SP/Services/Auth/LoginService.php:524
-#: ../../../../lib/SP/Services/Auth/LoginService.php:564
+#: ../../../../lib/SP/Services/Auth/LoginService.php:427
+#: ../../../../lib/SP/Services/Auth/LoginService.php:490
+#: ../../../../lib/SP/Services/Auth/LoginService.php:536
+#: ../../../../lib/SP/Services/Auth/LoginService.php:576
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:257
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:341
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1330
@@ -574,17 +574,17 @@ msgstr "Action"
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapMsAds.php:165
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:114
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:126
-#: ../../../../lib/SP/Services/Auth/LoginService.php:222
-#: ../../../../lib/SP/Services/Auth/LoginService.php:240
-#: ../../../../lib/SP/Services/Auth/LoginService.php:377
-#: ../../../../lib/SP/Services/Auth/LoginService.php:417
-#: ../../../../lib/SP/Services/Auth/LoginService.php:525
-#: ../../../../lib/SP/Services/Auth/LoginService.php:565
+#: ../../../../lib/SP/Services/Auth/LoginService.php:226
+#: ../../../../lib/SP/Services/Auth/LoginService.php:244
+#: ../../../../lib/SP/Services/Auth/LoginService.php:381
+#: ../../../../lib/SP/Services/Auth/LoginService.php:429
+#: ../../../../lib/SP/Services/Auth/LoginService.php:537
+#: ../../../../lib/SP/Services/Auth/LoginService.php:577
 #: ../../../../lib/SP/Services/Ldap/LdapImportService.php:228
 #: ../../../modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:234
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:858
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:952
-#: ../../../modules/web/Controllers/LoginController.php:93
+#: ../../../modules/web/Controllers/LoginController.php:99
 #: ../../../modules/web/Controllers/UserController.php:254
 #: ../../../modules/web/Controllers/UserController.php:288
 #: ../../../modules/web/Controllers/UserController.php:351
@@ -610,7 +610,7 @@ msgstr "Action"
 #: ../../../modules/web/themes/material-blue/views/itemshow/publiclink.inc:61
 #: ../../../modules/web/themes/material-blue/views/itemshow/publiclink.inc:63
 #: ../../../modules/web/themes/material-blue/views/login/index.inc:15
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:80
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:84
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:68
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:70
 #: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:14
@@ -671,12 +671,12 @@ msgstr "The key file does not exist"
 #: ../../../../lib/SP/Services/Api/ApiService.php:115
 #: ../../../../lib/SP/Services/Api/ApiService.php:314
 #: ../../../../lib/SP/Services/Api/ApiService.php:322
-#: ../../../../lib/SP/Services/Auth/LoginService.php:193
-#: ../../../../lib/SP/Services/Auth/LoginService.php:344
-#: ../../../../lib/SP/Services/Auth/LoginService.php:464
-#: ../../../../lib/SP/Services/Auth/LoginService.php:469
-#: ../../../../lib/SP/Services/Auth/LoginService.php:502
-#: ../../../../lib/SP/Services/Auth/LoginService.php:605
+#: ../../../../lib/SP/Services/Auth/LoginService.php:197
+#: ../../../../lib/SP/Services/Auth/LoginService.php:348
+#: ../../../../lib/SP/Services/Auth/LoginService.php:476
+#: ../../../../lib/SP/Services/Auth/LoginService.php:481
+#: ../../../../lib/SP/Services/Auth/LoginService.php:514
+#: ../../../../lib/SP/Services/Auth/LoginService.php:617
 #: ../../../../lib/SP/Services/CustomField/CustomFieldService.php:188
 #: ../../../../lib/SP/Services/Import/XmlFileImport.php:101
 #: ../../../../lib/SP/Services/User/UserPassService.php:227
@@ -1003,11 +1003,11 @@ msgstr "Error while migrating the custom fields"
 msgid "Campo actualizado"
 msgstr "Field updated"
 
-#: ../../../../lib/SP/Mvc/Controller/ControllerTrait.php:64
+#: ../../../../lib/SP/Mvc/Controller/ControllerTrait.php:63
 msgid "La sesión no se ha iniciado o ha caducado"
 msgstr "Session not started or timed out"
 
-#: ../../../../lib/SP/Mvc/Controller/ControllerTrait.php:91
+#: ../../../../lib/SP/Mvc/Controller/ControllerTrait.php:101
 msgid "Acción Inválida"
 msgstr "Invalid Action"
 
@@ -1448,7 +1448,7 @@ msgid "Error al eliminar el usuario"
 msgstr "Error while deleting the user"
 
 #: ../../../../lib/SP/Repositories/User/UserRepository.php:344
-#: ../../../../lib/SP/Services/User/UserService.php:175
+#: ../../../../lib/SP/Services/User/UserService.php:176
 msgid "Error al eliminar los usuarios"
 msgstr "Error while deleting the users"
 
@@ -1608,7 +1608,7 @@ msgid "Fomato incorrecto"
 msgstr "Invalid format"
 
 #: ../../../../lib/SP/Services/Api/ApiService.php:85
-#: ../../../../lib/SP/Services/Auth/LoginService.php:143
+#: ../../../../lib/SP/Services/Auth/LoginService.php:147
 #: ../../../../lib/SP/Services/UserPassRecover/UserPassRecoverService.php:101
 #: ../../../modules/web/Controllers/UserPassResetController.php:125
 msgid "Intentos excedidos"
@@ -1662,34 +1662,34 @@ msgstr "Tag name"
 msgid "Id de etiqueta"
 msgstr "Tag Id"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:163
-#: ../../../../lib/SP/Services/Auth/LoginService.php:420
-#: ../../../../lib/SP/Services/Auth/LoginService.php:427
-#: ../../../../lib/SP/Services/Auth/LoginService.php:535
-#: ../../../../lib/SP/Services/Auth/LoginService.php:540
-#: ../../../../lib/SP/Services/Auth/LoginService.php:576
-#: ../../../../lib/SP/Services/Auth/LoginService.php:581
+#: ../../../../lib/SP/Services/Auth/LoginService.php:167
+#: ../../../../lib/SP/Services/Auth/LoginService.php:432
+#: ../../../../lib/SP/Services/Auth/LoginService.php:439
+#: ../../../../lib/SP/Services/Auth/LoginService.php:547
+#: ../../../../lib/SP/Services/Auth/LoginService.php:552
+#: ../../../../lib/SP/Services/Auth/LoginService.php:588
+#: ../../../../lib/SP/Services/Auth/LoginService.php:593
 msgid "Login incorrecto"
 msgstr "Wrong login"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:221
-#: ../../../../lib/SP/Services/Auth/LoginService.php:228
+#: ../../../../lib/SP/Services/Auth/LoginService.php:225
+#: ../../../../lib/SP/Services/Auth/LoginService.php:232
 msgid "Usuario deshabilitado"
 msgstr "User disabled"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:273
+#: ../../../../lib/SP/Services/Auth/LoginService.php:277
 msgid "Usando clave temporal"
 msgstr "Using temporary password"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:281
-#: ../../../../lib/SP/Services/Auth/LoginService.php:287
-#: ../../../../lib/SP/Services/Auth/LoginService.php:300
-#: ../../../../lib/SP/Services/Auth/LoginService.php:306
+#: ../../../../lib/SP/Services/Auth/LoginService.php:285
+#: ../../../../lib/SP/Services/Auth/LoginService.php:291
+#: ../../../../lib/SP/Services/Auth/LoginService.php:304
+#: ../../../../lib/SP/Services/Auth/LoginService.php:310
 msgid "Clave maestra incorrecta"
 msgstr "Wrong master password"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:295
-#: ../../../../lib/SP/Services/Auth/LoginService.php:314
+#: ../../../../lib/SP/Services/Auth/LoginService.php:299
+#: ../../../../lib/SP/Services/Auth/LoginService.php:318
 #: ../../../../lib/SP/Services/User/UpdatedMasterPassException.php:45
 #: ../../../../lib/SP/Util/ErrorUtil.php:143
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:74
@@ -1698,30 +1698,30 @@ msgstr "Wrong master password"
 msgid "Clave maestra actualizada"
 msgstr "Master password updated"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:320
+#: ../../../../lib/SP/Services/Auth/LoginService.php:324
 msgid "Es necesaria su clave anterior"
 msgstr "Your previous password is needed"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:332
+#: ../../../../lib/SP/Services/Auth/LoginService.php:336
 msgid "La clave maestra no ha sido guardada o es incorrecta"
 msgstr "The Master Password either is not saved or is wrong"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:416
-#: ../../../../lib/SP/Services/Auth/LoginService.php:479
+#: ../../../../lib/SP/Services/Auth/LoginService.php:428
+#: ../../../../lib/SP/Services/Auth/LoginService.php:491
 msgid "Servidor LDAP"
 msgstr "LDAP Server"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:435
-#: ../../../../lib/SP/Services/Auth/LoginService.php:440
+#: ../../../../lib/SP/Services/Auth/LoginService.php:447
+#: ../../../../lib/SP/Services/Auth/LoginService.php:452
 msgid "Cuenta expirada"
 msgstr "Account expired"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:448
-#: ../../../../lib/SP/Services/Auth/LoginService.php:453
+#: ../../../../lib/SP/Services/Auth/LoginService.php:460
+#: ../../../../lib/SP/Services/Auth/LoginService.php:465
 msgid "El usuario no tiene grupos asociados"
 msgstr "The user has no associated groups"
 
-#: ../../../../lib/SP/Services/Auth/LoginService.php:566
+#: ../../../../lib/SP/Services/Auth/LoginService.php:578
 #: ../../../modules/web/themes/material-blue/views/config/general-auth.inc:3
 msgid "Autentificación"
 msgstr "Authentication"
@@ -2280,7 +2280,7 @@ msgstr "Link"
 msgid "Reinicie la sesión para cambiarla"
 msgstr "Please, restart the session for update it"
 
-#: ../../../../lib/SP/Services/User/UserService.php:159
+#: ../../../../lib/SP/Services/User/UserService.php:160
 msgid "Usuario no encontrado"
 msgstr "User not found"
 
@@ -2345,26 +2345,26 @@ msgstr "Unable to read/write the file (%s)"
 msgid "Error al leer datos del archivo (%s)"
 msgstr "Error while reading file data (%s)"
 
-#: ../../../../lib/SP/Storage/FileCache.php:63
+#: ../../../../lib/SP/Storage/FileCache.php:64
 #: ../../../../lib/SP/Storage/FileCachePacked.php:99
 #, php-format
 msgid "No es posible crear el directorio (%s)"
 msgstr "Unable to create the directory (%s)"
 
-#: ../../../../lib/SP/Storage/FileCache.php:67
-#: ../../../../lib/SP/Storage/FileCache.php:71
+#: ../../../../lib/SP/Storage/FileCache.php:68
+#: ../../../../lib/SP/Storage/FileCache.php:72
 #: ../../../../lib/SP/Storage/FileHandler.php:63
 #, php-format
 msgid "No es posible escribir en el archivo (%s)"
 msgstr "Unable to read/write the file (%s)"
 
-#: ../../../../lib/SP/Storage/FileCache.php:86
+#: ../../../../lib/SP/Storage/FileCache.php:87
 #: ../../../../lib/SP/Storage/FileHandler.php:77
 #, php-format
 msgid "No es posible abrir el archivo (%s)"
 msgstr "Unable to open the file (%s)"
 
-#: ../../../../lib/SP/Storage/FileCache.php:90
+#: ../../../../lib/SP/Storage/FileCache.php:91
 #: ../../../../lib/SP/Storage/FileCachePacked.php:127
 #, php-format
 msgid "Error al eliminar el archivo (%s)"
@@ -2405,7 +2405,7 @@ msgstr "Data not loaded"
 msgid "No es posible cerrar el archivo (%s)"
 msgstr "Unable to close the file (%s)"
 
-#: ../../../../lib/SP/Storage/XmlHandler.php:79
+#: ../../../../lib/SP/Storage/XmlHandler.php:98
 #, php-format
 msgid "No es posible leer/escribir el archivo: %s"
 msgstr "Unable to read/write the file: %s"
@@ -2439,7 +2439,7 @@ msgstr "An exception occured"
 msgid "Error de codificación"
 msgstr "Encoding error"
 
-#: ../../../../lib/SP/Util/Util.php:239
+#: ../../../../lib/SP/Util/Util.php:240
 msgid "Respuesta"
 msgstr "Response"
 
@@ -2601,7 +2601,7 @@ msgstr "HTTPS"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/AccountController.php:254
 #: ../../../modules/web/Controllers/AccountController.php:297
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:254
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:255
 #: ../../../config/actions.xml:151
 msgid "Nueva Cuenta"
 msgstr "New Account"
@@ -3744,7 +3744,7 @@ msgstr "IP"
 
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1274
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:310
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:311
 #: ../../../modules/web/themes/material-blue/views/eventlog/index.inc:1
 #: ../../../config/actions.xml:127
 msgid "Registro de Eventos"
@@ -3830,25 +3830,25 @@ msgstr "Edit Notification"
 msgid "Eliminar Notificación"
 msgstr "Delete Notification"
 
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:241
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:242
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:60
 msgid "Buscar"
 msgstr "Search"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:268
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:269
 #: ../../../config/actions.xml:103
 msgid "Usuarios y Accesos"
 msgstr "Users and Accesses"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:282
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:283
 #: ../../../config/actions.xml:43
 msgid "Elementos y Personalización"
 msgstr "Items and Customizations"
 
 #. (itstool) path: action/text
-#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:296
+#: ../../../modules/web/Controllers/Helpers/LayoutHelper.php:297
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:63
 #: ../../../modules/web/themes/material-blue/views/config/ldap.inc:6
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:23
@@ -3891,15 +3891,15 @@ msgstr ""
 msgid "Instalación finalizada"
 msgstr "Installation finished"
 
-#: ../../../modules/web/Controllers/LoginController.php:92
+#: ../../../modules/web/Controllers/LoginController.php:98
 msgid "Finalizar sesión"
 msgstr "Logout session"
 
-#: ../../../modules/web/Controllers/LoginController.php:94
+#: ../../../modules/web/Controllers/LoginController.php:100
 msgid "Tiempo inactivo"
 msgstr "Inactive time"
 
-#: ../../../modules/web/Controllers/LoginController.php:95
+#: ../../../modules/web/Controllers/LoginController.php:101
 msgid "Tiempo total"
 msgstr "Total time"
 
@@ -4773,6 +4773,12 @@ msgstr "Select Account"
 msgid "Enlace Público"
 msgstr "Public Link"
 
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:282
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:284
+#: ../../../modules/web/themes/material-blue/views/account/account.inc:287
+msgid "Enlace Directo"
+msgstr "Direct Link"
+
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:17
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:19
 msgid "Fecha Alta"
@@ -5182,7 +5188,7 @@ msgstr ""
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:47
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:53
 #: ../../../modules/web/themes/material-blue/views/login/index.inc:48
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:83
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:87
 msgid "Clave Maestra"
 msgstr "Master Password"
 
@@ -6364,11 +6370,11 @@ msgstr "Used by"
 msgid "Clave Anterior"
 msgstr "Previous Password"
 
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:59
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:63
 msgid "Acceder"
 msgstr "Sign in"
 
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:68
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:72
 msgid "¿Olvidó su clave?"
 msgstr "Forgot password?"
 

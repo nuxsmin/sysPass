@@ -5,8 +5,8 @@
             <span class="mdl-layout-icon">
                 <img class="logo btn-menu" src="<?php echo $logonobg; ?>"
                      alt="logo"
-                     data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_SEARCH; ?>"
-                     data-view="search"
+                     data-route="<?php echo $homeRoute; ?>"
+                     data-view="account"
                      data-historyReset="1"/>
             </span>
 
@@ -55,7 +55,7 @@
                         <?php if ($showPassIcon): ?>
                             <li id="btnUserPass" class="btn-action mdl-menu__item"
                                 data-onclick="appMgmt/show"
-                                data-action-route="user/editPass/<?php echo $userId; ?>"
+                                data-action-route="user/editPass/<?php echo $context_userId; ?>"
                                 data-sk="<?php echo $sk; ?>">
                                 <i class="material-icons">security</i>
                                 <?php echo __('Cambiar Clave de Usuario'); ?>
@@ -114,7 +114,7 @@
                     <a class="btn-action mdl-navigation__link"
                        title="<?php echo __('Cambiar Clave de Usuario'); ?>"
                        data-onclick="appMgmt/show"
-                       data-action-route="user/editPass/<?php echo $userId; ?>"
+                       data-action-route="user/editPass/<?php echo $context_userId; ?>"
                        data-sk="<?php echo $sk; ?>">
                         <i class="btn-action material-icons">security</i>
                         <?php echo __('Cambiar Clave de Usuario'); ?>
@@ -126,14 +126,14 @@
                    data-onclick="user/showSettings"
                    data-action-route="userSettingsManager/index">
                     <i class="btn-action material-icons">account_circle</i>
-                    <span id="user-name"><?php echo $userName; ?></span>
+                    <span id="user-name"><?php echo $context_userName; ?></span>
                     <span for="user-name"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $userGroup); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Grupo'), $context_userGroup); ?></span>
                     <?php /** @var \SP\Html\Assets\IconInterface $userType */
-                    if ($userType !== null): ?>
-                        <i id="user-type" class="material-icons"><?php echo $userType->getIcon(); ?></i>
+                    if ($context_userType !== null): ?>
+                        <i id="user-type" class="material-icons"><?php echo $context_userType->getIcon(); ?></i>
                         <span for="user-type"
-                              class="mdl-tooltip mdl-tooltip--top"><?php echo $userType->getTitle(); ?></span>
+                              class="mdl-tooltip mdl-tooltip--top"><?php echo $context_userType->getTitle(); ?></span>
                     <?php endif; ?>
                 </a>
                 <a class="btn-action mdl-navigation__link" title="<?php echo __('Salir'); ?>"

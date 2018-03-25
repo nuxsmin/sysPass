@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -77,5 +77,30 @@ class Hash
     public static function hashKey($key)
     {
         return password_hash(self::getKey($key, false), PASSWORD_BCRYPT);
+    }
+
+    /**
+     * Signs a message with a given key
+     *
+     * @param $message
+     * @param $key
+     * @return string
+     */
+    public static function signMessage($message, $key)
+    {
+        return hash_hmac('sha256', $message, $key);
+    }
+
+    /**
+     * Checks a message with a given key against a hash
+     *
+     * @param $message
+     * @param $key
+     * @param $hash
+     * @return bool
+     */
+    public static function checkMessage($message, $key, $hash)
+    {
+        return hash_hmac('sha256', $message, $key) === $hash;
     }
 }

@@ -30,7 +30,6 @@ use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Util\Checks;
 use SP\Util\Json;
-use SP\Util\Util;
 
 
 /**
@@ -65,7 +64,18 @@ trait ControllerTrait
                 $JsonResponse->setStatus(10);
                 Json::returnJson($JsonResponse);
             } else {
-                Util::logout();
+                $route = Request::analyzeString('r');
+                $hash = Request::analyzeString('h');
+
+                if ($route && $hash) {
+                    $redirect = 'index.php?r=login&from=' . urlencode($route) . '&h=' . $hash;
+                } else {
+                    $redirect = 'index.php?r=login';
+                }
+
+                $router->response()
+                    ->redirect($redirect)
+                    ->send(true);
             }
         }
     }

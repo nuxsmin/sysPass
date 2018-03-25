@@ -445,9 +445,15 @@ class Bootstrap
 
         switch ($module) {
             case 'web':
+                debugLog('------------');
+                debugLog('Boostrap:web');
+
                 $bs->router->dispatch();
                 break;
             case 'api':
+                debugLog('------------');
+                debugLog('Boostrap:api');
+
                 $bs->router->dispatch();
                 break;
             default;

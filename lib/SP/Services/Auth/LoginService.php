@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -100,6 +100,10 @@ class LoginService extends Service
      * @var TrackRequest
      */
     protected $trackRequest;
+    /**
+     * @var string
+     */
+    protected $from;
 
     /**
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -176,7 +180,7 @@ class LoginService extends Service
         $this->loadUserPreferences();
         $this->cleanUserData();
 
-        return new LoginResponse(self::STATUS_PASS, 'index.php?r=index');
+        return new LoginResponse(self::STATUS_PASS, 'index.php?r=' . ($this->from ?: 'index'));
     }
 
     /**
@@ -398,6 +402,14 @@ class LoginService extends Service
     private function cleanUserData()
     {
         $this->userLoginData->setUserLoginResponse();
+    }
+
+    /**
+     * @param string $from
+     */
+    public function setFrom($from)
+    {
+        $this->from = $from;
     }
 
     /**

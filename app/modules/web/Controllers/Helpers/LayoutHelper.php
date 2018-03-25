@@ -108,6 +108,7 @@ class LayoutHelper extends HelperBase
         $this->view->assign('logo', Bootstrap::$WEBURI . '/public/images/logo_full_bg.png');
         $this->view->assign('logonobg', Bootstrap::$WEBURI . '/public/images/logo_full_nobg.png');
         $this->view->assign('httpsEnabled', Checks::httpsEnabled());
+        $this->view->assign('homeRoute', Acl::getActionRoute(ActionsInterface::ACCOUNT));
 
         $this->loggedIn = $this->context->isLoggedIn();
 
@@ -218,11 +219,11 @@ class LayoutHelper extends HelperBase
             $userType = $icons->getIconAccAdmin();
         }
 
-        $this->view->assign('userType', $userType);
-        $this->view->assign('userId', $userData->getId());
-        $this->view->assign('userLogin', mb_strtoupper($userData->getLogin()));
-        $this->view->assign('userName', $userData->getName() ?: mb_strtoupper($this->view->userLogin));
-        $this->view->assign('userGroup', $userData->getUserGroupId());
+        $this->view->assign('context_userType', $userType);
+        $this->view->assign('context_userId', $userData->getId());
+        $this->view->assign('context_userLogin', mb_strtoupper($userData->getLogin()));
+        $this->view->assign('context_userName', $userData->getName() ?: mb_strtoupper($this->view->userLogin));
+        $this->view->assign('context_userGroup', $userData->getUserGroupName());
         $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userData->getIsLdap()));
         $this->view->assign('notifications', 0);
     }

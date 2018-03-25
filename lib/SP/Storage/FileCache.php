@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -46,12 +46,13 @@ class FileCache implements FileStorageInterface
         if (!($data = file_get_contents($path))) {
             throw new FileException(sprintf(__('Error al leer datos del archivo (%s)'), $path));
         }
+
         return unserialize($data);
     }
 
     /**
      * @param string $path
-     * @param mixed $data
+     * @param mixed  $data
      * @return FileStorageInterface
      * @throws FileException
      */
@@ -94,14 +95,26 @@ class FileCache implements FileStorageInterface
     }
 
     /**
-     * Returns whether the file is expired
+     * Returns if the file is expired adding time to modification date
      *
      * @param string $path
-     * @param int $time
+     * @param int    $time
      * @return mixed
      */
     public function isExpired($path, $time = 86400)
     {
         return !file_exists($path) || time() > filemtime($path) + $time;
+    }
+
+    /**
+     * Returns if the file is expired adding time to modification date
+     *
+     * @param string $path
+     * @param int    $date
+     * @return mixed
+     */
+    public function isExpiredDate($path, $date)
+    {
+        return !file_exists($path) || (int)$date > filemtime($path);
     }
 }

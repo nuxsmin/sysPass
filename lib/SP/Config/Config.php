@@ -30,6 +30,8 @@ use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
 use SP\Core\Exceptions\FileNotFoundException;
 use SP\Services\Config\ConfigBackupService;
+use SP\Storage\FileCache;
+use SP\Storage\FileException;
 use SP\Storage\XmlFileStorageInterface;
 use SP\Storage\XmlHandler;
 use SP\Util\Util;
@@ -42,6 +44,10 @@ defined('APP_ROOT') || die();
 class Config
 {
     /**
+     * Cache file name
+     */
+    const CONFIG_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
+    /**
      * @var int
      */
     private static $timeUpdated;
@@ -49,6 +55,10 @@ class Config
      * @var bool
      */
     private static $configLoaded = false;
+    /**
+     * @var FileCache
+     */
+    private $fileCache;
     /**
      * @var ConfigData
      */
@@ -73,59 +83,87 @@ class Config
      * @param ContextInterface        $session
      * @param Container               $dic
      * @throws ConfigException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function __construct(XmlFileStorageInterface $fileStorage, ContextInterface $session, Container $dic)
     {
         $this->context = $session;
         $this->fileStorage = $fileStorage;
+        $this->dic = $dic;
+        $this->fileCache = $dic->get(FileCache::class);
 
+        $this->initialize();
+    }
+
+    /**
+     * @throws ConfigException
+     */
+    private function initialize()
+    {
         if (!self::$configLoaded) {
-            $this->configData = new ConfigData();
+            try {
 
-            $this->loadConfigFile();
+                $this->configData = $this->loadConfigFromFile();
+            } catch (FileNotFoundException $e) {
+                processException($e);
+
+                $this->configData = new ConfigData();
+
+                $this->saveConfig($this->configData, false);
+            } catch (\Exception $e) {
+                processException($e);
+
+                throw new ConfigException($e->getMessage(), ConfigException::CRITICAL, null, $e->getCode(), $e);
+            }
 
             self::$timeUpdated = $this->configData->getConfigDate();
-
             self::$configLoaded = true;
         }
-        $this->dic = $dic;
     }
 
     /**
      * Cargar el archivo de configuración
      *
      * @return ConfigData
-     * @throws \SP\Core\Exceptions\ConfigException
+     * @throws ConfigException
+     * @throws FileNotFoundException
      */
-    public function loadConfigFile()
+    public function loadConfigFromFile()
     {
         ConfigUtil::checkConfigDir();
 
-        try {
-            // Mapear el array de elementos de configuración con las propiedades de la clase configData
-            $items = $this->fileStorage->load('config')->getItems();
-            $reflectionObject = new ReflectionObject($this->configData);
+        $configData = new ConfigData();
 
-            foreach ($reflectionObject->getProperties() as $property) {
-                $property->setAccessible(true);
+        // Mapear el array de elementos de configuración con las propiedades de la clase configData
+        $items = $this->fileStorage->load('config')->getItems();
+        $reflectionObject = new ReflectionObject($configData);
 
-                if (isset($items[$property->getName()])) {
-                    $property->setValue($this->configData, $items[$property->getName()]);
-                }
+        foreach ($reflectionObject->getProperties() as $property) {
+            $property->setAccessible(true);
 
-                $property->setAccessible(false);
+            if (isset($items[$property->getName()])) {
+                $property->setValue($configData, $items[$property->getName()]);
             }
-        } catch (FileNotFoundException $e) {
-            processException($e);
 
-            $this->saveConfig($this->configData, false);
-        } catch (\Exception $e) {
-            processException($e);
-
-            throw new ConfigException($e->getMessage(), ConfigException::CRITICAL, null, $e->getCode(), $e);
+            $property->setAccessible(false);
         }
 
-        return $this->configData;
+        return $configData;
+    }
+
+    /**
+     * Saves config into the cache file
+     */
+    private function saveConfigToCache()
+    {
+        try {
+            $this->fileCache->save(self::CONFIG_CACHE_FILE, $this->configData);
+
+            debugLog('Saved config cache');
+        } catch (FileException $e) {
+            processException($e);
+        }
     }
 
     /**
@@ -238,5 +276,31 @@ class Config
         }
 
         return $this;
+    }
+
+    /**
+     * Loads config from the cache file
+     *
+     * @return bool
+     */
+    private function loadConfigFromCache()
+    {
+        try {
+            $configData = $this->fileCache->load(self::CONFIG_CACHE_FILE);
+
+            if (!$configData instanceof ConfigData) {
+                return false;
+            }
+
+            $this->configData = $configData;
+
+            debugLog('Loaded config cache');
+
+            return true;
+        } catch (FileException $e) {
+            processException($e);
+        }
+
+        return false;
     }
 }

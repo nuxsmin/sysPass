@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -58,9 +58,17 @@ class UserLoginResponse
      */
     private $userGroupId = 0;
     /**
+     * @var string
+     */
+    private $userGroupName;
+    /**
      * @var int
      */
     private $userProfileId = 0;
+    /**
+     * @var string
+     */
+    private $userProfileName;
     /**
      * @var int
      */
@@ -471,6 +479,42 @@ class UserLoginResponse
     public function setId($id)
     {
         $this->id = (int)$id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserGroupName()
+    {
+        return $this->userGroupName;
+    }
+
+    /**
+     * @param string $userGroupName
+     * @return UserLoginResponse
+     */
+    public function setUserGroupName($userGroupName)
+    {
+        $this->userGroupName = $userGroupName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserProfileName()
+    {
+        return $this->userProfileName;
+    }
+
+    /**
+     * @param string $userProfileName
+     * @return UserLoginResponse
+     */
+    public function setUserProfileName($userProfileName)
+    {
+        $this->userProfileName = $userProfileName;
         return $this;
     }
 }

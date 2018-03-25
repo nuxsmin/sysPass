@@ -49,7 +49,11 @@
                     </div>
                 </div>
 
-                <input type="hidden" name="loggedOut" value="<?php echo $loggedOut; ?>"/>
+                <?php if (isset($from, $from_hash)): ?>
+                    <input type="hidden" name="from" value="<?php echo $from; ?>"/>
+                    <input type="hidden" name="h" value="<?php echo $from_hash; ?>"/>
+                <?php endif; ?>
+
                 <input type="hidden" name="login" value="1"/>
                 <input type="hidden" name="isAjax" value="1"/>
             </div>

@@ -46,6 +46,7 @@ use SP\Services\Tag\TagService;
 use SP\Services\User\UpdatedMasterPassException;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
+use SP\Util\Util;
 
 /**
  * Class AccountHelper
@@ -93,7 +94,7 @@ class AccountHelper extends HelperBase
      * Sets account's view variables
      *
      * @param AccountDetailsResponse $accountDetailsResponse
-     * @param int $actionId
+     * @param int                    $actionId
      * @throws AccountPermissionException
      * @throws SPException
      * @throws UnauthorizedPageException
@@ -247,6 +248,16 @@ class AccountHelper extends HelperBase
 
         $this->view->assign('showViewCustomPass', $this->accountAcl->isShowViewPass());
         $this->view->assign('accountAcl', $this->accountAcl ?: $this->accountAcl);
+
+        $this->view->assign('deepLink', $this->getDeepLink());
+    }
+
+    /**
+     * @return string
+     */
+    private function getDeepLink()
+    {
+        return Util::getSecureLink(Acl::getActionRoute($this->actionId) . ($this->accountId ? '/' . $this->accountId : ''), $this->configData);
     }
 
     /**
@@ -294,7 +305,7 @@ class AccountHelper extends HelperBase
      * Sets account's view variables
      *
      * @param AccountDetailsResponse $accountDetailsResponse
-     * @param int $actionId
+     * @param int                    $actionId
      * @return bool
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
