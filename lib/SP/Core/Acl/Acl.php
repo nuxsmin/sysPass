@@ -75,7 +75,7 @@ class Acl implements ActionsInterface
     public static function getActionRoute($actionId)
     {
         try {
-            return self::$action->getActionById($actionId)->getRoute();
+            return self::$action !== null ? self::$action->getActionById($actionId)->getRoute() : '';
         } catch (ActionNotFoundException $e) {
             processException($e);
         }
