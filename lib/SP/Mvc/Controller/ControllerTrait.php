@@ -30,6 +30,7 @@ use SP\Http\JsonResponse;
 use SP\Http\Request;
 use SP\Util\Checks;
 use SP\Util\Json;
+use SP\Util\Util;
 
 
 /**
@@ -63,6 +64,8 @@ trait ControllerTrait
                 $JsonResponse->setDescription(__u('La sesión no se ha iniciado o ha caducado'));
                 $JsonResponse->setStatus(10);
                 Json::returnJson($JsonResponse);
+            } elseif (Checks::isAjax($router)) {
+                Util::logout();
             } else {
                 $route = Request::analyzeString('r');
                 $hash = Request::analyzeString('h');
