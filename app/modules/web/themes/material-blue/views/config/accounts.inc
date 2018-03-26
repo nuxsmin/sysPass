@@ -53,7 +53,7 @@
                     <input type="checkbox" id="account_expire"
                            class="mdl-switch__input mdl-color-text--indigo-400"
                            name="account_expire" <?php echo $configData->isAccountExpireEnabled() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Caducidad cuentas'); ?></span>
+                    <span class="mdl-switch__label"><?php echo __('Caducidad clave cuentas'); ?></span>
                 </label>
             </td>
         </tr>
