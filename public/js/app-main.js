@@ -242,7 +242,35 @@ sysPass.Main = function () {
             });
 
             if (json !== false) {
-                clipboard.copy(json.responseJSON.data.accpass).then(
+                clipboard
+                    .copy(json.responseJSON.data.accpass)
+                    .then(
+                        function () {
+                            msg.ok(config.LANG[45]);
+                        },
+                        function (err) {
+                            msg.error(config.LANG[46]);
+                        }
+                    );
+            }
+        }).on("click", ".dialog-clip-button", function () {
+            const $target = $(this.dataset.clipboardTarget);
+
+            clipboard
+                .copy($target.text())
+                .then(
+                    function () {
+                        $(".dialog-text").removeClass("dialog-clip-copy");
+                        $target.addClass("dialog-clip-copy");
+                    },
+                    function (err) {
+                        msg.error(config.LANG[46]);
+                    }
+                );
+        }).on("click", ".clip-pass-icon", function () {
+            clipboard
+                .copy(decodeEntities($(this.dataset.clipboardTarget).val()))
+                .then(
                     function () {
                         msg.ok(config.LANG[45]);
                     },
@@ -250,30 +278,17 @@ sysPass.Main = function () {
                         msg.error(config.LANG[46]);
                     }
                 );
-            }
-        }).on("click", ".dialog-clip-button", function () {
-            const $target = $(this.dataset.clipboardTarget);
-
-            clipboard.copy($target.text()).then(
-                function () {
-                    $(".dialog-text").removeClass("dialog-clip-copy");
-                    $target.addClass("dialog-clip-copy");
-                },
-                function (err) {
-                    msg.error(config.LANG[46]);
-                }
-            );
-        }).on("click", ".clip-pass-icon", function () {
-            const $target = $(this.dataset.clipboardTarget);
-
-            clipboard.copy(decodeEntities($target.val())).then(
-                function () {
-                    msg.ok(config.LANG[45]);
-                },
-                function (err) {
-                    msg.error(config.LANG[46]);
-                }
-            );
+        }).on("click", ".clip-pass-field", function () {
+            clipboard
+                .copy(decodeEntities($(this.dataset.clipboardTarget).data("pass")))
+                .then(
+                    function () {
+                        msg.ok(config.LANG[45]);
+                    },
+                    function (err) {
+                        msg.error(config.LANG[46]);
+                    }
+                );
         });
     };
 
@@ -420,7 +435,7 @@ sysPass.Main = function () {
 
         const checkFileExtension = function (name) {
             for (let ext in options.allowedExts) {
-                if (name.indexOf(options.allowedExts[ext]) !== -1){
+                if (name.indexOf(options.allowedExts[ext]) !== -1) {
                     return true;
                 }
             }

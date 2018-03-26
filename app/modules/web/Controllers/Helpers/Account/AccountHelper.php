@@ -154,7 +154,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup() && $accountData->getUserGroupId() === $userData->getUserGroupId());
 
         $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountData->getPassDate()));
-        $this->view->assign('accountPassDateChange', date('Y-m-d', $accountData->getPassDateChange() ?: 0));
+        $this->view->assign('accountPassDateChange', $accountData->getPassDateChange() > 0 && date('Y-m-d', $accountData->getPassDateChange() ?: 0));
         $this->view->assign('linkedAccounts', $this->accountService->getLinked($this->accountId));
 
         $this->view->assign('accountId', $accountData->getId());

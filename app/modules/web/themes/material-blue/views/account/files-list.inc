@@ -1,6 +1,8 @@
 <?php
-/** @var $icons \SP\Core\UI\ThemeIcons */
-/** @var $files \SP\DataModel\FileData[] */
+/**
+ * @var \SP\Core\UI\ThemeIcons   $icons
+ * @var \SP\DataModel\FileData[] $files
+ */
 ?>
 
 <div id="files-wrap">

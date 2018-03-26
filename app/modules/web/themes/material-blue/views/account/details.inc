@@ -21,6 +21,7 @@
                 <?php echo $accountData->getDateAdd() ?>
             </td>
         </tr>
+
         <?php if ($isModified && $accountData->getUserEditName()): ?>
             <tr>
                 <td class="descField"><?php echo __('Última Modificación'); ?></td>
@@ -31,6 +32,7 @@
                 </td>
             </tr>
         <?php endif; ?>
+
         <tr>
             <td class="descField"><?php echo __('Creador'); ?></td>
             <td class="valField">
@@ -47,6 +49,7 @@
                 <?php echo $accountData->getUserGroupName(); ?>
             </td>
         </tr>
+
         <?php if (isset($otherUsers) && is_array($otherUsers) && count($otherUsers) > 0): ?>
             <tr>
                 <td class="descField"><?php echo __('Usuarios Secundarios'); ?></td>
@@ -69,6 +72,7 @@
                 </td>
             </tr>
         <?php endif; ?>
+
         <?php if (isset($otherUserGroups) && is_array($otherUserGroups) && count($otherUserGroups) > 0): ?>
             <tr>
                 <td class="descField"><?php echo __('Grupos Secundarios'); ?></td>
@@ -91,6 +95,7 @@
                 </td>
             </tr>
         <?php endif; ?>
+
         <?php if ($accountAcl->isModified()): ?>
             <tr>
                 <td class="descField"><?php echo __('Fecha Edición'); ?></td>
@@ -109,6 +114,7 @@
                 </td>
             </tr>
         <?php endif; ?>
+
         <tr>
             <td class="descField"><?php echo __('Fecha de Clave'); ?></td>
             <td class="valField">
@@ -117,13 +123,16 @@
                 <?php echo $accountPassDate; ?>
             </td>
         </tr>
-        <tr>
-            <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
-            <td class="valField">
-                <div class="lowres-title"><?php echo __('Fecha Caducidad Clave'); ?></div>
 
-                <?php echo $accountPassDateChange; ?>
-            </td>
-        </tr>
+        <?php if (isset($accountPassDateChange) && $accountPassDateChange > 0): ?>
+            <tr>
+                <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
+                <td class="valField">
+                    <div class="lowres-title"><?php echo __('Fecha Caducidad Clave'); ?></div>
+
+                    <?php echo $accountPassDateChange; ?>
+                </td>
+            </tr>
+        <?php endif; ?>
     </table>
 </div>

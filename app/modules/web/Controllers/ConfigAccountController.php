@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -52,53 +52,53 @@ class ConfigAccountController extends SimpleControllerBase
         $eventMessage = EventMessage::factory();
 
         // Accounts
-        $globalSearchEnabled = Request::analyzeBool('globalsearch', false);
-        $accountPassToImageEnabled = Request::analyzeBool('account_passtoimage', false);
-        $accountLinkEnabled = Request::analyzeBool('account_link', false);
-        $accountFullGroupAccessEnabled = Request::analyzeBool('account_fullgroup_access', false);
-        $accountCount = Request::analyzeInt('account_count', 10);
-        $resultsAsCardsEnabled = Request::analyzeBool('resultsascards', false);
-
-        $configData->setGlobalSearch($globalSearchEnabled);
-        $configData->setAccountPassToImage($accountPassToImageEnabled);
-        $configData->setAccountLink($accountLinkEnabled);
-        $configData->setAccountFullGroupAccess($accountFullGroupAccessEnabled);
-        $configData->setAccountCount($accountCount);
-        $configData->setResultsAsCards($resultsAsCardsEnabled);
+        $configData->setGlobalSearch(Request::analyzeBool('account_globalsearch', false));
+        $configData->setAccountPassToImage(Request::analyzeBool('account_passtoimage', false));
+        $configData->setAccountLink(Request::analyzeBool('account_link', false));
+        $configData->setAccountFullGroupAccess(Request::analyzeBool('account_fullgroup_access', false));
+        $configData->setAccountCount(Request::analyzeInt('account_count', 10));
+        $configData->setResultsAsCards(Request::analyzeBool('account_resultsascards', false));
+        $configData->setAccountExpireEnabled(Request::analyzeBool('account_expire', false));
+        $configData->setAccountExpireTime(Request::analyzeInt('account_expire_time', 10368000) * 24 * 3600);
 
         // Files
         $filesEnabled = Request::analyzeBool('files_enabled', false);
-        $filesAllowedSize = Request::analyzeInt('files_allowed_size', 1024);
-        $filesAllowedExts = ConfigUtil::filesExtsAdapter(Request::analyzeString('files_allowed_exts'));
 
         if ($filesEnabled) {
+            $filesAllowedSize = Request::analyzeInt('files_allowed_size', 1024);
+
             if ($filesAllowedSize >= 16384) {
                 $this->returnJsonResponse(JsonResponse::JSON_ERROR, __u('El tamaño máximo por archivo es de 16MB'));
-            } elseif ($configData->isFilesEnabled() === false) {
+            }
+
+            $configData->setFilesEnabled(true);
+            $configData->setFilesAllowedExts(ConfigUtil::filesExtsAdapter(Request::analyzeString('files_allowed_exts')));
+            $configData->setFilesAllowedSize($filesAllowedSize);
+
+            if ($configData->isFilesEnabled() === false) {
                 $eventMessage->addDescription(__u('Archivos habilitados'));
             }
         } elseif ($filesEnabled === false && $configData->isFilesEnabled()) {
+            $configData->setFilesEnabled(false);
+
             $eventMessage->addDescription(__u('Archivos deshabilitados'));
         }
 
-        $configData->setFilesEnabled($filesEnabled);
-        $configData->setFilesAllowedExts($filesAllowedExts);
-        $configData->setFilesAllowedSize($filesAllowedSize);
-
         // Public Links
         $pubLinksEnabled = Request::analyzeBool('publinks_enabled', false);
-        $pubLinksImageEnabled = Request::analyzeBool('publinks_image_enabled', false);
-        $pubLinksMaxTime = Request::analyzeInt('publinks_maxtime', 10);
-        $pubLinksMaxViews = Request::analyzeInt('publinks_maxviews', 3);
 
-        $configData->setPublinksEnabled($pubLinksEnabled);
-        $configData->setPublinksImageEnabled($pubLinksImageEnabled);
-        $configData->setPublinksMaxTime($pubLinksMaxTime * 60);
-        $configData->setPublinksMaxViews($pubLinksMaxViews);
+        if ($pubLinksEnabled === true) {
+            $configData->setPublinksEnabled(true);
+            $configData->setPublinksImageEnabled(Request::analyzeBool('publinks_image_enabled', false));
+            $configData->setPublinksMaxTime(Request::analyzeInt('publinks_maxtime', 10) * 60);
+            $configData->setPublinksMaxViews(Request::analyzeInt('publinks_maxviews', 3));
 
-        if ($pubLinksEnabled === true && $configData->isPublinksEnabled() === false) {
-            $eventMessage->addDescription(__u('Enlaces públicos habilitados'));
+            if ($configData->isPublinksEnabled() === false) {
+                $eventMessage->addDescription(__u('Enlaces públicos habilitados'));
+            }
         } elseif ($pubLinksEnabled === false && $configData->isPublinksEnabled()) {
+            $configData->setPublinksEnabled(false);
+
             $eventMessage->addDescription(__u('Enlaces públicos deshabilitados'));
         }
 

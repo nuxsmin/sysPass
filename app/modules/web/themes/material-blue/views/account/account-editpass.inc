@@ -1,7 +1,8 @@
 <?php
 /**
- * @var $icons \SP\Core\UI\ThemeIcons
- * @var $accountData \SP\DataModel\AccountVData
+ * @var \SP\Core\UI\ThemeIcons     $icons
+ * @var \SP\DataModel\AccountVData $accountData
+ * @var \SP\Config\ConfigData      $configData
  */
 ?>
 
@@ -32,10 +33,10 @@
                 <td class="descField"><?php echo __('Cliente'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="customer" name="customer" type="text"
+                        <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $accountData->getClientName(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="customer"><?php echo __('Cliente'); ?></label>
+                        <label class="mdl-textfield__label" for="client"><?php echo __('Cliente'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -54,10 +55,10 @@
                 <td class="descField"><?php echo __('Usuario'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="user" name="user" type="text"
+                        <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $accountData->getLogin(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="user"><?php echo __('Usuario'); ?></label>
+                        <label class="mdl-textfield__label" for="login"><?php echo __('Usuario'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -65,10 +66,10 @@
                 <td class="descField"><?php echo __('Clave'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="accountpass" name="pass" type="password" required
+                        <input id="password" name="password" type="password" required
                                class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                maxlength="255" autocomplete="off">
-                        <label class="mdl-textfield__label" for="accountpass"><?php echo __('Clave'); ?></label>
+                        <label class="mdl-textfield__label" for="password"><?php echo __('Clave'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -76,27 +77,31 @@
                 <td class="descField"><?php echo __('Clave (repetir)'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="accountpassR" name="passR" type="password" required
+                        <input id="password_repeat" name="password_repeat" type="password" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="255" autocomplete="off">
-                        <label class="mdl-textfield__label" for="accountpassR"><?php echo __('Clave'); ?></label>
+                        <label class="mdl-textfield__label" for="password_repeat"><?php echo __('Clave'); ?></label>
                     </div>
                 </td>
             </tr>
-            <tr>
-                <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
-                <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="accountpassdatechange" name="accountpassdatechange" type="date"
-                               class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
-                               value="<?php echo $accountPassDateChange; ?>">
-                        <label class="mdl-textfield__label"
-                               for="accountpassdatechange"><?php echo __('Fecha'); ?></label>
-                    </div>
-                    <i class="material-icons btn-action"
-                       title="<?php echo __('Seleccionar Fecha'); ?>">date_range</i>
-                </td>
-            </tr>
+            <?php if ($configData->isAccountExpireEnabled()): ?>
+                <tr>
+                    <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
+                    <td class="valField">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="password_date_expire" name="password_date_expire" type="date"
+                                   class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
+                                   value="<?php echo $accountPassDateChange; ?>"
+                                   data-dst-unix="password_date_expire_unix">
+                            <input type='hidden' name='password_date_expire_unix' value=""/>
+                            <label class="mdl-textfield__label"
+                                   for="password_date_expire"><?php echo __('Fecha'); ?></label>
+                        </div>
+                        <i class="material-icons btn-action"
+                           title="<?php echo __('Seleccionar Fecha'); ?>">date_range</i>
+                    </td>
+                </tr>
+            <?php endif; ?>
         </table>
         <input type="hidden" name="sk" value="">
         <input type="hidden" name="isAjax" value="1">

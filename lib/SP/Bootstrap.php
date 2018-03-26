@@ -39,7 +39,6 @@ use SP\Core\Exceptions\InitializationException;
 use SP\Core\Exceptions\SPException;
 use SP\Core\Language;
 use SP\Core\UI\Theme;
-use SP\Core\Upgrade\Upgrade;
 use SP\Modules\Api\Init as InitApi;
 use SP\Modules\Web\Init as InitWeb;
 use SP\Services\Api\ApiRequest;
@@ -91,10 +90,6 @@ class Bootstrap
      * @var ContainerInterface|Container
      */
     protected static $container;
-    /**
-     * @var Upgrade
-     */
-    protected $upgrade;
     /**
      * @var ContextInterface
      */
@@ -434,7 +429,7 @@ class Bootstrap
 
     /**
      * @param Container $container
-     * @param string $module
+     * @param string    $module
      * @throws InitializationException
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException

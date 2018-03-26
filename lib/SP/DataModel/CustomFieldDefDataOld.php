@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,8 +23,6 @@
  */
 
 namespace SP\DataModel;
-
-use SP\Mgmt\CustomFields\CustomFieldTypes;
 
 /**
  * Class CustomFieldDefDataOld
@@ -160,23 +158,6 @@ class CustomFieldDefDataOld extends CustomFieldBaseData implements DataModelInte
     public function setHelp($help)
     {
         $this->help = $help;
-    }
-
-    /**
-     * unserialize() checks for the presence of a function with the magic name __wakeup.
-     * If present, this function can reconstruct any resources that the object may have.
-     * The intended use of __wakeup is to reestablish any database connections that may have been lost during
-     * serialization and perform other reinitialization tasks.
-     *
-     * @return void
-     * @link http://php.net/manual/en/language.oop5.magic.php#language.oop5.magic.sleep
-     */
-    public function __wakeup()
-    {
-        parent::__wakeup();
-
-        $this->moduleName = CustomFieldTypes::getFieldsModules($this->getModule());
-        $this->typeName = CustomFieldTypes::getFieldsTypes($this->getType(), true);
     }
 
     /**

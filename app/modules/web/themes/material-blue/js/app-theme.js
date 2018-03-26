@@ -24,14 +24,14 @@
 sysPass.Theme = function (Common) {
     "use strict";
 
-    var log = Common.log;
+    const log = Common.log;
 
     /**
      * Funciones a realizar en peticiones AJAX
      *
      * @type {{complete: ajax.complete}}
      */
-    var ajax = {
+    const ajax = {
         complete: function () {
             log.info("ajax:complete");
 
@@ -45,7 +45,7 @@ sysPass.Theme = function (Common) {
      *
      * @type {{show: loading.show, hide: loading.hide}}
      */
-    var loading = {
+    const loading = {
         elems: {
             $wrap: $("#wrap-loading"),
             $loading: $("#loading")
@@ -68,12 +68,12 @@ sysPass.Theme = function (Common) {
     };
 
     // Función para generar claves aleatorias.
-    var password = function ($target) {
-        var i = 0;
-        var chars = "";
-        var genPassword = "";
+    const password = function ($target) {
+        let i = 0;
+        let chars = "";
+        let genPassword = "";
 
-        var getRandomChar = function (min, max) {
+        const getRandomChar = function (min, max) {
             return chars.charAt(Math.floor((Math.random() * max) + min));
         };
 
@@ -97,43 +97,43 @@ sysPass.Theme = function (Common) {
             genPassword += getRandomChar(0, chars.length - 1);
         }
 
-        $("#viewPass").attr("title", genPassword);
+        $target.attr("data-pass", genPassword);
 
-        var level = zxcvbn(genPassword);
+        const level = zxcvbn(genPassword);
         Common.passwordData.passLength = genPassword.length;
 
-        if ($target) {
-            var $dstParent = $target.parent();
-            var $targetR = $("#" + $target.attr("id") + "R");
+        // if ($target) {
+        const $dstParent = $target.parent();
+        const $targetR = $("#" + $target.attr("id") + "_repeat");
 
-            Common.outputResult(level, $target);
+        Common.outputResult(level, $target);
 
-            // Actualizar los componentes de MDL
-            var mdl = new MaterialTextfield();
+        // Actualizar los componentes de MDL
+        const mdl = new MaterialTextfield();
 
-            // Poner la clave en los input y actualizar MDL
-            $dstParent.find("input:password").val(genPassword);
-            $dstParent.addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+        // Poner la clave en los input y actualizar MDL
+        $dstParent.find("input:password").val(genPassword);
+        $dstParent.addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
 
-            // Poner la clave en el input de repetición y encriptarla
-            if ($targetR.length > 0) {
-                $targetR.val(genPassword).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-                Common.encryptFormValue($targetR);
-            }
-
-            // Mostar el indicador de complejidad
-            $dstParent.find("#passLevel").show(500);
-        } else {
-            Common.outputResult(level);
-            $("input:password, input.password").val(genPassword);
-            $("#passLevel").show(500);
+        // Poner la clave en el input de repetición y encriptarla
+        if ($targetR.length > 0) {
+            $targetR.val(genPassword).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+            Common.encryptFormValue($targetR);
         }
+
+        // Mostar el indicador de complejidad
+        $dstParent.find("#passLevel").show(500);
+        // } else {
+        //     Common.outputResult(level);
+        //     $("input:password, input.password").val(genPassword);
+        //     $("#passLevel").show(500);
+        // }
     };
 
     // Diálogo de configuración de complejidad de clave
-    var complexityDialog = function () {
+    const complexityDialog = function () {
 
-        var content =
+        const content =
             "<div id=\"box-complexity\"><div>" +
             "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-chars\">" +
             "<input type=\"checkbox\" id=\"checkbox-chars\" class=\"mdl-checkbox__input\" name=\"checkbox-chars\" checked/>" +
@@ -189,42 +189,43 @@ sysPass.Theme = function (Common) {
     /**
      * Detectar los campos de clave y añadir funciones
      */
-    var passwordDetect = function ($container) {
+    const passwordDetect = function ($container) {
         // Crear los iconos de acciones sobre claves
         $container.find(".passwordfield__input").each(function () {
-            var $this = $(this);
+            const $this = $(this);
 
             if ($this.attr("data-pass-upgraded") === "true") {
                 return;
             }
 
-            var $thisParent = $this.parent();
-            var targetId = $this.attr("id");
+            const $thisParent = $this.parent();
+            const targetId = $this.attr("id");
 
-            var btnMenu = "<button id=\"menu-speed-" + targetId + "\" class=\"mdl-button mdl-js-button mdl-button--icon\" type=\"button\" title=\"" + Common.config().LANG[27] + "\"><i class=\"material-icons\">more_vert</i></button>";
+            let btnMenu =
+                `<button id="menu-password-${targetId}" class="mdl-button mdl-js-button mdl-button--icon" type="button" title="${Common.config().LANG[27]}"><i class="material-icons">more_vert</i></button>
+                <ul class="mdl-menu mdl-js-menu" for="menu-password-${targetId}">
+                <li class="mdl-menu__item passGen"><i class="material-icons">settings</i>${Common.config().LANG[28]}</li>
+                <li class="mdl-menu__item passComplexity"><i class="material-icons">vpn_key</i>${Common.config().LANG[29]}</li>
+                <li class="mdl-menu__item reset"><i class="material-icons">refresh</i>${Common.config().LANG[30]}</li></ul>`;
 
-            btnMenu += "<ul class=\"mdl-menu mdl-js-menu\" for=\"menu-speed-" + targetId + "\">";
-            btnMenu += "<li class=\"mdl-menu__item passGen\"><i class=\"material-icons\">settings</i>" + Common.config().LANG[28] + "</li>";
-            btnMenu += "<li class=\"mdl-menu__item passComplexity\"><i class=\"material-icons\">vpn_key</i>" + Common.config().LANG[29] + "</li>";
-            btnMenu += "<li class=\"mdl-menu__item reset\"><i class=\"material-icons\">refresh</i>" + Common.config().LANG[30] + "</li>";
-
-            $thisParent.after("<div class=\"password-actions\" />");
+            $thisParent.after(`<div class="password-actions" />`);
 
             $thisParent.next(".password-actions")
-                .prepend("<span class=\"passLevel passLevel-" + targetId + " fullround\" title=\"" + Common.config().LANG[31] + "\"></span>")
-                .prepend("<i class=\"showpass material-icons\" title=\"" + Common.config().LANG[32] + "\">remove_red_eye</i>")
+                .prepend(`<span class="passLevel passLevel-${targetId} fullround" title="${Common.config().LANG[31]}"></span>`)
+                .prepend(`<i class="showpass material-icons clip-pass-field" data-clipboard-target='#${targetId}' title="${Common.config().LANG[32]}">remove_red_eye</i>`)
                 .prepend(btnMenu);
 
             $this.on("keyup", function () {
                 Common.checkPassLevel($this);
             });
 
-            var $passwordActions = $this.parent().next();
+            const $passwordActions = $this.parent().next();
 
             // Crear evento para generar clave aleatoria
             $passwordActions.find(".passGen").on("click", function () {
                 password($this);
-                $this.focus();
+
+                $this.blur();
             });
 
             $passwordActions.find(".passComplexity").on("click", function () {
@@ -233,14 +234,14 @@ sysPass.Theme = function (Common) {
 
             // Crear evento para mostrar clave generada/introducida
             $passwordActions.find(".showpass").on("mouseover", function () {
-                $(this).attr("title", $this.val());
+                $(this).attr("title", $this.data("pass"));
             });
 
             // Reset de los campos de clave
             $passwordActions.find(".reset").on("click", function () {
                 $this.val("");
 
-                var $targetIdR = $("#" + targetId + "R");
+                const $targetIdR = $("#" + targetId + "_repeat");
 
                 if ($targetIdR.length > 0) {
                     $targetIdR.val("");
@@ -255,11 +256,11 @@ sysPass.Theme = function (Common) {
 
         // Crear los iconos de acciones sobre claves (sólo mostrar clave)
         $container.find(".passwordfield__input-show").each(function () {
-            var $this = $(this);
-            var $icon = $("<i class=\"showpass material-icons\" title=\"" + Common.config().LANG[32] + "\">remove_red_eye</i>");
+            const $this = $(this);
+            const $icon = $("<i class=\"showpass material-icons\" title=\"" + Common.config().LANG[32] + "\">remove_red_eye</i>");
 
             if ($this.data("clipboard") === 1) {
-                var $clip = $("<i class=\"clip-pass-icon material-icons\" title=\"" + Common.config().LANG[34] + "\" data-clipboard-target=\"#" + $this.attr("id") + "\">content_paste</i>");
+                const $clip = $("<i class=\"clip-pass-icon material-icons\" title=\"" + Common.config().LANG[34] + "\" data-clipboard-target=\"#" + $this.attr("id") + "\">content_paste</i>");
                 $this.parent().after($clip).after($icon);
             } else {
                 $this.parent().after($icon);
@@ -276,10 +277,10 @@ sysPass.Theme = function (Common) {
      * Inicializar el selector de fecha
      * @param $container
      */
-    var setupDatePicker = function ($container) {
+    const setupDatePicker = function ($container) {
         log.info("setupDatePicker");
 
-        var datePickerOpts = {
+        const datePickerOpts = {
             format: "YYYY-MM-DD",
             lang: Common.config().LOCALE.substr(0, 2),
             time: false,
@@ -291,38 +292,29 @@ sysPass.Theme = function (Common) {
             triggerEvent: "dateIconClick"
         };
 
-        var getUnixtime = function (val) {
+        const getUnixtime = function (val) {
             return moment.tz(val, Common.config().TIMEZONE).format("X");
         };
 
-        // Actualizar el input oculto con la fecha en formato UNIX
-        var updateUnixInput = function ($obj, date) {
-            var unixtime;
-
-            if (date !== undefined) {
-                unixtime = date;
-            } else {
-                unixtime = getUnixtime($obj.val());
-            }
-
-            $obj.parent().find("input[name='passworddatechange_unix']").val(unixtime);
-        };
-
         $container.find(".password-datefield__input").each(function () {
-            var $this = $(this);
+            const $this = $(this);
+            const $parent = $this.parent();
 
             $this.bootstrapMaterialDatePicker(datePickerOpts);
 
-            $this.parent().append("<input type='hidden' name='passworddatechange_unix' value='" + getUnixtime($this.val()) + "' />");
+            // Search for an input to set the unix timestamp from a localized date
+            const $dstUnix = $parent.find("input[name=" + $this.data('dst-unix') + "]");
+
+            $dstUnix.val(getUnixtime($this.val()));
 
             // Evento de click para el icono de calendario
-            $this.parent().next("i").on("click", function () {
+            $parent.next("i").on("click", function () {
                 $this.trigger("dateIconClick");
             });
 
             // Actualizar el campo oculto cuando cambie la fecha
             $this.on("change", function () {
-                updateUnixInput($this);
+                $dstUnix.val(getUnixtime($this.val()));
             });
         });
     };

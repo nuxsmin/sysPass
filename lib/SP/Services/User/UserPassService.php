@@ -31,7 +31,6 @@ use SP\Core\Crypt\Crypt;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\SPException;
-use SP\Core\Upgrade\User as UpgradeUser;
 use SP\DataModel\UserLoginData;
 use SP\Repositories\User\UserRepository;
 use SP\Services\Config\ConfigService;
@@ -116,10 +115,10 @@ class UserPassService extends Service
             return new UserPassResponse(self::MPASS_CHANGED);
         }
 
-        if ($userLoginResponse->getIsMigrate() === 1) {
-            // FIXME
-            return UpgradeUser::upgradeMasterKey($userLoginData, $this) ? new UserPassResponse(self::MPASS_OK) : new UserPassResponse(self::MPASS_WRONG);
-        }
+        // FIXME
+//        if ($userLoginResponse->getIsMigrate() === 1) {
+//            return UpgradeUser::upgradeMasterKey($userLoginData, $this) ? new UserPassResponse(self::MPASS_OK) : new UserPassResponse(self::MPASS_WRONG);
+//        }
 
         if ($key === null && $userLoginResponse->getIsChangedPass() === 1) {
             return new UserPassResponse(self::MPASS_CHECKOLD);

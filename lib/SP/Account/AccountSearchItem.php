@@ -352,14 +352,11 @@ class AccountSearchItem
      */
     public function getShortNotes()
     {
-        $accountNotes = '';
-
         if ($this->accountSearchVData->getNotes()) {
-            $accountNotes = (strlen($this->accountSearchVData->getNotes()) > 300) ? substr($this->accountSearchVData->getNotes(), 0, 300) . '...' : $this->accountSearchVData->getNotes();
-            $accountNotes = nl2br(wordwrap(htmlspecialchars($accountNotes), 50, '<br>', true));
+            return nl2br(Html::truncate($this->accountSearchVData->getNotes(), 300));
         }
 
-        return $accountNotes;
+        return '';
     }
 
     /**
@@ -369,7 +366,9 @@ class AccountSearchItem
      */
     public function isPasswordExpired()
     {
-        return $this->accountSearchVData->getPassDateChange() > 0 && time() > $this->accountSearchVData->getPassDateChange();
+        return $this->configData->isAccountExpireEnabled()
+            && $this->accountSearchVData->getPassDateChange() > 0
+            && time() > $this->accountSearchVData->getPassDateChange();
     }
 
     /**

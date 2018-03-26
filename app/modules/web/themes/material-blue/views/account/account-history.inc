@@ -48,7 +48,7 @@
                         <td class="valField">
                             <div class="lowres-title"><?php echo __('Cliente'); ?></div>
 
-                            <select id="selClient" name="clientId" class="select-box sel-chosen-client"
+                            <select id="client_id" name="client_id" class="select-box sel-chosen-client"
                                     tabindex="2" required disabled>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem[] $clients */
                                 foreach ($clients as $client): ?>
@@ -63,7 +63,7 @@
                         <td class="valField">
                             <div class="lowres-title"><?php echo __('Categoría'); ?></div>
 
-                            <select id="selCategory" name="categoryId" class="select-box sel-chosen-category"
+                            <select id="category_id" name="category_id" class="select-box"
                                     tabindex="3" required disabled>
                                 <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem[] $categories */
@@ -104,12 +104,12 @@
                         <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input id="accountpassdatechange" name="accountpassdatechange" type="date"
+                                <input id="password_date_expire" name="password_date_expire" type="date"
                                        class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
                                        tabindex="8"
                                        value="<?php echo $accountPassDateChange; ?>" readonly>
                                 <label class="mdl-textfield__label"
-                                       for="accountpassdatechange"><?php echo __('Fecha'); ?></label>
+                                       for="password_date_expire"><?php echo __('Fecha'); ?></label>
                             </div>
                         </td>
                     </tr>
@@ -130,7 +130,7 @@
                             <td class="valField">
                                 <div class="lowres-title"><?php echo __('Historial'); ?></div>
 
-                                <select id="historyId" name="historyId" class="select-box" tabindex="12"
+                                <select id="history_id" name="history_id" class="select-box" tabindex="12"
                                         data-action-route="account/viewHistory"
                                         data-onchange="account/viewHistory">
                                     <option value=""><?php echo __('Seleccionar fecha'); ?></option>

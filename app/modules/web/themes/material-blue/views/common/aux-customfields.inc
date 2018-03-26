@@ -1,7 +1,4 @@
 <?php
-
-use SP\Mgmt\CustomFields\CustomFieldTypes;
-
 /**
  * @var \SP\Core\UI\ThemeIcons                     $icons
  * @var \SP\Services\CustomField\CustomFieldItem[] $customFields
@@ -23,10 +20,10 @@ foreach ($customFields as $index => $field):?>
             <?php endif; ?>
         </td>
         <td class="valField">
-            <?php if ($field->typeId === CustomFieldTypes::TYPE_COLOR && $isView): ?>
+            <?php if ($field->typeName === 'color' && $isView): ?>
                 <span class="round custom-input-color"
                       style="background-color: <?php echo $field->getValue(); ?>;"></span>
-            <?php elseif ($field->typeId === CustomFieldTypes::TYPE_PASSWORD): ?>
+            <?php elseif ($field->typeName === 'password'): ?>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="<?php echo $field->formId; ?>"
                            name="customfield[<?php echo $field->definitionId; ?>]"
@@ -38,7 +35,7 @@ foreach ($customFields as $index => $field):?>
                     <label class="mdl-textfield__label"
                            for="<?php echo $field->formId; ?>"><?php echo $field->definitionName; ?></label>
                 </div>
-            <?php elseif ($field->typeId === CustomFieldTypes::TYPE_TEXTAREA): ?>
+            <?php elseif ($field->typeName === 'textarea'): ?>
                 <div class="mdl-textfield mdl-js-textfield">
                     <textarea class="mdl-textfield__input mdl-color-text--indigo-400" type="text" rows="3"
                               name="customfield[<?php echo $field->definitionId; ?>]"

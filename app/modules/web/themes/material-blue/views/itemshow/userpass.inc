@@ -38,10 +38,10 @@
                 <td class="descField"><?php echo __('Clave'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="fancypass" name="pass" type="password" required
+                        <input id="password" name="password" type="password" required
                                class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                maxlength="50">
-                        <label class="mdl-textfield__label" for="userpass"><?php echo __('Clave'); ?></label>
+                        <label class="mdl-textfield__label" for="password"><?php echo __('Clave'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -50,11 +50,11 @@
                 <td class="descField"><?php echo __('Clave (repetir)'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="fancypassR" name="passR" type="password" required
+                        <input id="password_repeat" name="password_repeat" type="password" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50">
                         <label class="mdl-textfield__label"
-                               for="userpassR"><?php echo __('Clave (repetir)'); ?></label>
+                               for="password_repeat"><?php echo __('Clave (repetir)'); ?></label>
                     </div>
                 </td>
             </tr>

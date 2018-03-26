@@ -1,4 +1,8 @@
-<?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
+<?php
+/**
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ */ ?>
 
 <form method="post" name="frmAccounts" id="frmAccounts" class="form-action"
       data-onsubmit="config/save"
@@ -36,6 +40,46 @@
         </tr>
         <tr>
             <td class="descField">
+                <div id="help-account_expire"
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_expire">
+                    <p>
+                        <?php echo __('Habilita la caducidad de la clave de cuentas.'); ?>
+                    </p>
+                </div>
+            </td>
+            <td class="valField">
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_expire">
+                    <input type="checkbox" id="account_expire"
+                           class="mdl-switch__input mdl-color-text--indigo-400"
+                           name="account_expire" <?php echo $configData->isAccountExpireEnabled() ? 'checked' : ''; ?>/>
+                    <span class="mdl-switch__label"><?php echo __('Caducidad cuentas'); ?></span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td class="descField">
+                <?php echo __('Tiempo caducidad'); ?>
+                <div id="help-account_expire_time"
+                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
+                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_expire_time">
+                    <p>
+                        <?php echo __('Número de días para la caducidad de la clave de cuenta.'); ?>
+                    </p>
+                </div>
+            </td>
+            <td class="valField">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input id="account_expire_time" name="account_expire_time" type="number"
+                           pattern="[0-9]{1,3}" class="mdl-textfield__input mdl-color-text--indigo-400"
+                           value="<?php echo $configData->getAccountExpireTime()  / 24 / 3600; ?>"/>
+                    <label class="mdl-textfield__label"
+                           for="account_expire_time"><?php echo __('Tiempo caducidad (días)'); ?></label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="descField">
                 <div id="help-account_link"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-account_link">
@@ -55,19 +99,19 @@
         </tr>
         <tr>
             <td class="descField">
-                <div id="help-globalsearch"
+                <div id="help-account_globalsearch"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-globalsearch">
+                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_globalsearch">
                     <p>
                         <?php echo __('Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos.'); ?>
                     </p>
                 </div>
             </td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="globalsearch">
-                    <input type="checkbox" id="globalsearch"
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_globalsearch">
+                    <input type="checkbox" id="account_globalsearch"
                            class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="globalsearch" <?php echo $configData->isGlobalSearch() ? 'checked' : ''; ?>/>
+                           name="account_globalsearch" <?php echo $configData->isGlobalSearch() ? 'checked' : ''; ?>/>
                     <span class="mdl-switch__label"><?php echo __('Búsquedas globales'); ?></span>
                 </label>
             </td>
@@ -98,19 +142,19 @@
         </tr>
         <tr>
             <td class="descField">
-                <div id="help-resultsascards"
+                <div id="help-account_resultsascards"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-resultsascards">
+                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_resultsascards">
                     <p>
                         <?php echo __('Muestra los resultados de búsqueda de cuentas en formato tarjeta.'); ?>
                     </p>
                 </div>
             </td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="resultsascards">
-                    <input type="checkbox" id="resultsascards"
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_resultsascards">
+                    <input type="checkbox" id="account_resultsascards"
                            class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="resultsascards"
+                           name="account_resultsascards"
                         <?php echo $configData->isResultsAsCards() ? 'checked' : ''; ?>/>
                     <span class="mdl-switch__label"><?php echo __('Resultados en Tarjetas'); ?></span>
                 </label>

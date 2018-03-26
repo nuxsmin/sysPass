@@ -20,7 +20,6 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50"
                                value="<?php echo $accountData->getName(); ?>" readonly>
                         <label class="mdl-textfield__label" for="name"><?php echo __('Nombre de cuenta'); ?></label>
                     </div>
@@ -30,11 +29,10 @@
                 <td class="descField"><?php echo __('Cliente'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="customer" name="customer" type="text"
+                        <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50"
                                value="<?php echo $accountData->getClientName(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="name"><?php echo __('Cliente'); ?></label>
+                        <label class="mdl-textfield__label" for="client"><?php echo __('Cliente'); ?></label>
                     </div>
                 </td>
             </tr>

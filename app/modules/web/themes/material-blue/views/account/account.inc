@@ -49,6 +49,7 @@ $showCustomFields = count($customFields) > 0;
               data-action-route="<?php echo isset($formRoute) ? $formRoute : ''; ?>"
               data-item-id="<?php echo isset($accountId) ? $accountId : ''; ?>"
               data-hash="">
+
             <input type="hidden" name="sk" value="<?php echo $sk; ?>">
             <input type="hidden" name="isAjax" value="1">
 
@@ -73,7 +74,7 @@ $showCustomFields = count($customFields) > 0;
                         <td class="valField">
                             <div class="lowres-title"><?php echo __('Cliente'); ?></div>
 
-                            <select id="selClient" name="clientId" class="select-box sel-chosen-client"
+                            <select id="client_id" name="client_id" class="select-box"
                                     tabindex="2" required <?php echo $disabled; ?>>
                                 <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem[] $clients */
@@ -86,7 +87,7 @@ $showCustomFields = count($customFields) > 0;
                                 <i class="material-icons btn-action" title="<?php echo __('Nuevo Cliente'); ?>"
                                    data-action-route="<?php echo $addClientRoute; ?>"
                                    data-item-route="items/clients"
-                                   data-item-dst="selClient"
+                                   data-item-dst="client_id"
                                    data-item-id="0"
                                    data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
                             <?php endif; ?>
@@ -97,7 +98,7 @@ $showCustomFields = count($customFields) > 0;
                         <td class="valField">
                             <div class="lowres-title"><?php echo __('Categoría'); ?></div>
 
-                            <select id="selCategory" name="categoryId" class="select-box sel-chosen-category"
+                            <select id="category_id" name="category_id" class="select-box"
                                     tabindex="3" required <?php echo $disabled; ?>>
                                 <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem[] $categories */
@@ -110,7 +111,7 @@ $showCustomFields = count($customFields) > 0;
                                 <i class="material-icons btn-action" title="<?php echo __('Nueva Categoría'); ?>"
                                    data-action-route="<?php echo $addCategoryRoute; ?>"
                                    data-item-route="items/categories"
-                                   data-item-dst="selCategory"
+                                   data-item-dst="category_id"
                                    data-item-id="0"
                                    data-onclick="appMgmt/show"><?php echo $icons->getIconAdd()->getIcon(); ?></i>
                             <?php endif; ?>
@@ -147,12 +148,12 @@ $showCustomFields = count($customFields) > 0;
                             <td class="descField"><?php echo __('Clave'); ?></td>
                             <td class="valField">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input id="accountpass" name="pass" type="password" required
+                                    <input id="password" name="password" type="password" required
                                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                                            maxlength="255" tabindex="6"
                                            autocomplete="off">
                                     <label class="mdl-textfield__label"
-                                           for="accountpass"><?php echo __('Clave'); ?></label>
+                                           for="password"><?php echo __('Clave'); ?></label>
                                 </div>
                             </td>
                         </tr>
@@ -160,32 +161,34 @@ $showCustomFields = count($customFields) > 0;
                             <td class="descField"><?php echo __('Clave (repetir)'); ?></td>
                             <td class="valField">
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input id="accountpassR" name="passR" type="password" required
+                                    <input id="password_repeat" name="password_repeat" type="password" required
                                            class="mdl-textfield__input mdl-color-text--indigo-400"
                                            tabindex="7" maxlength="255" autocomplete="off">
                                     <label class="mdl-textfield__label"
-                                           for="accountpassR"><?php echo __('Clave (repetir)'); ?></label>
+                                           for="password_repeat"><?php echo __('Clave (repetir)'); ?></label>
                                 </div>
                             </td>
                         </tr>
-                    <?php endif; ?>
-                    <?php if (!$isView): ?>
-                        <tr>
-                            <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
-                            <td class="valField">
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                    <input id="accountpassdatechange" name="accountpassdatechange" type="date"
-                                           class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
-                                           tabindex="8"
-                                           value="<?php echo $accountPassDateChange; ?>" <?php echo $readonly; ?>>
-                                    <label class="mdl-textfield__label"
-                                           for="accountpassdatechange"><?php echo __('Fecha'); ?></label>
-                                </div>
+                        <?php if ($configData->isAccountExpireEnabled()): ?>
+                            <tr>
+                                <td class="descField"><?php echo __('Fecha Caducidad Clave'); ?></td>
+                                <td class="valField">
+                                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                        <input id="password_date_expire" name="password_date_expire" type="date"
+                                               class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
+                                               tabindex="8"
+                                               value="<?php echo $accountPassDateChange; ?>"
+                                               data-dst-unix="password_date_expire_unix" <?php echo $readonly; ?>>
+                                        <input type='hidden' name='password_date_expire_unix' value="" />
+                                        <label class="mdl-textfield__label"
+                                               for="password_date_expire"><?php echo __('Fecha'); ?></label>
+                                    </div>
 
-                                <i class="material-icons btn-action"
-                                   title="<?php echo __('Seleccionar Fecha'); ?>">date_range</i>
-                            </td>
-                        </tr>
+                                    <i class="material-icons btn-action"
+                                       title="<?php echo __('Seleccionar Fecha'); ?>">date_range</i>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     <?php endif; ?>
                     <tr>
                         <td class="descField"><?php echo __('Notas'); ?></td>
@@ -204,7 +207,7 @@ $showCustomFields = count($customFields) > 0;
                             <div class="lowres-title"><?php echo __('Etiquetas'); ?></div>
 
                             <?php if (!$isView): ?>
-                                <select id="selTags" name="tags[]" multiple="multiple" tabindex="10">
+                                <select id="tags" name="tags[]" multiple="multiple" tabindex="10">
                                     <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
                                     <?php /** @var \SP\Mvc\View\Components\SelectItem[] $tags */
                                     foreach ($tags as $tag): ?>
@@ -227,7 +230,7 @@ $showCustomFields = count($customFields) > 0;
                             <td class="valField">
                                 <div class="lowres-title"><?php echo __('Cuenta Vinculada'); ?></div>
 
-                                <select id="selParentAccount" name="parentAccountId" tabindex="11"
+                                <select id="parent_account_id" name="parent_account_id" tabindex="11"
                                         class="select-box select-box-deselect" <?php echo $disabled; ?>
                                         data-sk="<?php echo $sk; ?>"
                                         data-action-route="items/accountsUser"
@@ -244,7 +247,7 @@ $showCustomFields = count($customFields) > 0;
                             <td class="valField">
                                 <div class="lowres-title"><?php echo __('Historial'); ?></div>
 
-                                <select id="historyId" name="historyId" class="select-box" tabindex="12"
+                                <select id="history_id" name="history_id" class="select-box" tabindex="12"
                                         data-action-route="account/viewHistory"
                                         data-onchange="account/viewHistory">
                                     <option value=""><?php echo __('Seleccionar fecha'); ?></option>
@@ -257,14 +260,14 @@ $showCustomFields = count($customFields) > 0;
                         </tr>
                     <?php endif; ?>
 
-                    <?php if ($actionId === \SP\Core\Acl\ActionsInterface::ACCOUNT_EDIT && $isModified && $accountData->getUserEditName()): ?>
+                    <?php if (isset($editAction) && $isModified && $accountData->getUserEditName()): ?>
                         <tr>
                             <td class="descField"><?php echo __('Última Modificación'); ?></td>
                             <td class="valField"><?php printf('%s (%s)', $accountData->getDateEdit(), $accountData->getUserEditName()); ?></td>
                         </tr>
                     <?php endif; ?>
 
-                    <?php if ($gotData && $publicLinkShow && $publicLinkUrl !== null): ?>
+                    <?php if (isset($publicLinkShow) && $publicLinkShow && $publicLinkUrl !== null): ?>
                         <tr>
                             <td class="descField"><?php echo __('Enlace Público'); ?></td>
                             <td class="valField">

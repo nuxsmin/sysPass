@@ -342,7 +342,6 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 ]
             );
             $this->view->assign('formRoute', 'account/saveEdit');
-            $this->view->assign(__FUNCTION__);
 
             $this->accountService->incrementViewCounter($id);
 

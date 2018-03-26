@@ -119,7 +119,6 @@ class AccountSearchService extends Service
      * @return array
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function processSearchResults(AccountSearchFilter $accountSearchFilter)
     {

@@ -27,10 +27,10 @@
                 <td class="descField"><?php echo __('Cliente'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="customer" name="customer" type="text"
+                        <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $accountData->getClientName(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="name"><?php echo __('Cliente'); ?></label>
+                        <label class="mdl-textfield__label" for="client"><?php echo __('Cliente'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -41,7 +41,7 @@
                         <input id="category" name="category" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $accountData->getCategoryName(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="name"><?php echo __('Categoría'); ?></label>
+                        <label class="mdl-textfield__label" for="category"><?php echo __('Categoría'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -52,7 +52,7 @@
                         <input id="url" name="url" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $accountData->getUrl(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="name"><?php echo __('URL / IP'); ?></label>
+                        <label class="mdl-textfield__label" for="url"><?php echo __('URL / IP'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -60,10 +60,10 @@
                 <td class="descField"><?php echo __('Usuario'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="user" name="user" type="text"
+                        <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php echo $accountData->getLogin(); ?>" readonly>
-                        <label class="mdl-textfield__label" for="name"><?php echo __('Usuario'); ?></label>
+                        <label class="mdl-textfield__label" for="login"><?php echo __('Usuario'); ?></label>
                     </div>
                 </td>
             </tr>
@@ -87,10 +87,10 @@
                         <img class="account-pass-image" src="data:image/png;base64,<?php echo $accountPassImage; ?>"/>
                     <?php else: ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input id="account-pass" name="account-pass" type="text"
+                            <input id="password" name="password" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php echo $accountData->getPass(); ?>" readonly>
-                            <label class="mdl-textfield__label" for="name"><?php echo __('Clave'); ?></label>
+                            <label class="mdl-textfield__label" for="password"><?php echo __('Clave'); ?></label>
                         </div>
                     <?php endif; ?>
             </tr>
@@ -102,7 +102,7 @@
                     <li>
                         <button id="btnClipPass"
                                 class="clip-pass-icon mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored mdl-color--indigo-A200"
-                                data-clipboard-target="#account-pass"
+                                data-clipboard-target="#password"
                                 data-item-id="<?php echo $accountData->getId(); ?>"
                                 data-sk="<?php echo $sk; ?>"
                                 data-history="0"

@@ -80,24 +80,24 @@ class AccountForm extends FormBase implements FormInterface
         $this->accountRequest = new AccountRequest();
         $this->accountRequest->id = $this->itemId;
         $this->accountRequest->name = Request::analyzeString('name');
-        $this->accountRequest->clientId = Request::analyzeInt('clientId', 0);
-        $this->accountRequest->categoryId = Request::analyzeInt('categoryId', 0);
+        $this->accountRequest->clientId = Request::analyzeInt('client_id', 0);
+        $this->accountRequest->categoryId = Request::analyzeInt('category_id', 0);
         $this->accountRequest->login = Request::analyzeString('login');
         $this->accountRequest->url = Request::analyzeString('url');
         $this->accountRequest->notes = Request::analyzeString('notes');
         $this->accountRequest->userEditId = $this->context->getUserData()->getId();
-        $this->accountRequest->otherUserEdit = (int)Request::analyzeBool('otherUserEditEnabled', false);
-        $this->accountRequest->otherUserGroupEdit = (int)Request::analyzeBool('otherUserGroupEditEnabled', false);
-        $this->accountRequest->pass = Request::analyzeEncrypted('pass');
-        $this->accountRequest->isPrivate = (int)Request::analyzeBool('privateEnabled', false);
-        $this->accountRequest->isPrivateGroup = (int)Request::analyzeBool('privateGroupEnabled', false);
-        $this->accountRequest->passDateChange = Request::analyzeInt('passworddatechange_unix');
-        $this->accountRequest->parentId = Request::analyzeInt('parentAccountId');
-        $this->accountRequest->userGroupId = Request::analyzeInt('mainUserGroupId');
+        $this->accountRequest->otherUserEdit = (int)Request::analyzeBool('other_user_edit_enabled', false);
+        $this->accountRequest->otherUserGroupEdit = (int)Request::analyzeBool('other_usergroup_edit_enabled', false);
+        $this->accountRequest->pass = Request::analyzeEncrypted('password');
+        $this->accountRequest->isPrivate = (int)Request::analyzeBool('private_enabled', false);
+        $this->accountRequest->isPrivateGroup = (int)Request::analyzeBool('private_group_enabled', false);
+        $this->accountRequest->passDateChange = Request::analyzeInt('password_date_expire_unix');
+        $this->accountRequest->parentId = Request::analyzeInt('parent_eccount_id');
+        $this->accountRequest->userGroupId = Request::analyzeInt('main_usergroup_id');
 
         // Arrays
-        $accountOtherGroups = Request::analyzeArray('otherUserGroups');
-        $accountOtherUsers = Request::analyzeArray('otherUsers');
+        $accountOtherGroups = Request::analyzeArray('other_usergroups');
+        $accountOtherUsers = Request::analyzeArray('other_users');
         $accountTags = Request::analyzeArray('tags');
 
         if ($accountOtherUsers) {
@@ -126,7 +126,7 @@ class AccountForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Es necesaria una clave'));
         }
 
-        if (Request::analyzeEncrypted('passR') !== $this->accountRequest->pass) {
+        if (Request::analyzeEncrypted('password_repeat') !== $this->accountRequest->pass) {
             throw new ValidationException(__u('Las claves no coinciden'));
         }
     }

@@ -381,6 +381,14 @@ class ConfigData implements JsonSerializable
      * @var int
      */
     private $ssoDefaultProfile;
+    /**
+     * @var bool
+     */
+    private $accountExpireEnabled = false;
+    /**
+     * @var int
+     */
+    private $accountExpireTime = 10368000;
 
     /**
      * @return array
@@ -2017,6 +2025,44 @@ class ConfigData implements JsonSerializable
     public function setConfigDate($configDate)
     {
         $this->configDate = (int)$configDate;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccountExpireEnabled()
+    {
+        return (int)$this->accountExpireEnabled;
+    }
+
+    /**
+     * @param bool $accountExpireEnabled
+     * @return ConfigData
+     */
+    public function setAccountExpireEnabled($accountExpireEnabled)
+    {
+        $this->accountExpireEnabled = $accountExpireEnabled;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountExpireTime()
+    {
+        return $this->accountExpireTime;
+    }
+
+    /**
+     * @param int $accountExpireTime
+     * @return ConfigData
+     */
+    public function setAccountExpireTime($accountExpireTime)
+    {
+        $this->accountExpireTime = (int)$accountExpireTime;
 
         return $this;
     }

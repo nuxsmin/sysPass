@@ -11,7 +11,7 @@
                 <td class="descField"><?php echo __('Usuarios'); ?></td>
                 <td class="valField">
                     <div class="account-permissions">
-                        <select id="otherUsers" name="otherUsers[]" multiple="multiple">
+                        <select id="other_users" name="other_users[]" multiple="multiple">
                             <option value=""><?php echo __('Seleccionar Usuarios'); ?></option>
                             <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUsers */
                             foreach ($otherUsers as $otherUser): ?>
@@ -22,8 +22,8 @@
                             <?php endforeach; ?>
                         </select>
                         <br>
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="otherUserEditEnabled">
-                            <input name="otherUserEditEnabled" type="checkbox" id="otherUserEditEnabled"
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="other_user_edit_enabled">
+                            <input name="other_user_edit_enabled" type="checkbox" id="other_user_edit_enabled"
                                    class="mdl-switch__input" <?php echo ($gotData && $accountData->getOtherUserEdit()) ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Hablitar edición'); ?></span>
                         </label>
@@ -34,7 +34,7 @@
                 <td class="descField"><?php echo __('Grupos'); ?></td>
                 <td class="valField">
                     <div class="account-permissions">
-                        <select id="otherUserGroups" name="otherUserGroups[]" multiple="multiple">
+                        <select id="other_usergroups" name="other_usergroups[]" multiple="multiple">
                             <option value=""><?php echo __('Seleccionar Grupos'); ?></option>
                             <?php /** @var \SP\Mvc\View\Components\SelectItem[] $otherUserGroups */
                             foreach ($otherUserGroups as $otherUserGroup): ?>
@@ -46,9 +46,9 @@
                         </select>
                         <br>
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
-                               for="otherUserGroupEditEnabled">
-                            <input name="otherUserGroupEditEnabled" type="checkbox"
-                                   id="otherUserGroupEditEnabled"
+                               for="other_usergroup_edit_enabled">
+                            <input name="other_usergroup_edit_enabled" type="checkbox"
+                                   id="other_usergroup_edit_enabled"
                                    class="mdl-switch__input" <?php echo ($gotData && $accountData->getOtherUserGroupEdit()) ? 'checked' : ''; ?>/>
                             <span class="mdl-switch__label"><?php echo __('Hablitar edición'); ?></span>
                         </label
@@ -61,7 +61,7 @@
             <tr>
                 <td class="descField"><?php echo __('Grupo Principal'); ?></td>
                 <td class="valField">
-                    <select id="mainUserGroupId" name="mainUserGroupId" class="select-box">
+                    <select id="main_usergroup_id" name="main_usergroup_id" class="select-box">
                         <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
                         <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroups */
                         foreach ($userGroups as $userGroup): ?>
@@ -78,8 +78,8 @@
             <tr>
                 <td class="descField"><?php echo __('Cuenta Privada'); ?></td>
                 <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="privateEnabled">
-                        <input name="privateEnabled" type="checkbox" id="privateEnabled"
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="private_enabled">
+                        <input name="private_enabled" type="checkbox" id="private_enabled"
                                class="mdl-switch__input" <?php echo ($gotData && $accountData->getIsPrivate()) ? 'checked' : ''; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Privada'); ?></span>
                     </label>
@@ -91,8 +91,8 @@
             <tr>
                 <td class="descField"><?php echo __('Cuenta Privada Grupo'); ?></td>
                 <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="privateGroupEnabled">
-                        <input name="privateGroupEnabled" type="checkbox" id="privateGroupEnabled"
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="private_group_enabled">
+                        <input name="private_group_enabled" type="checkbox" id="private_group_enabled"
                                class="mdl-switch__input" <?php echo ($gotData && $accountData->getIsPrivateGroup()) ? 'checked' : ''; ?>/>
                         <span class="mdl-switch__label"><?php echo __('Privada Grupo'); ?></span>
                     </label>

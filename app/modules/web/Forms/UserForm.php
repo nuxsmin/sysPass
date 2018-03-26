@@ -97,7 +97,7 @@ class UserForm extends FormBase implements FormInterface
         $this->userData->setIsAdminAcc(Request::analyzeBool('adminacc', false));
         $this->userData->setIsDisabled(Request::analyzeBool('disabled', false));
         $this->userData->setIsChangePass(Request::analyzeBool('changepass', false));
-        $this->userData->setPass(Request::analyzeEncrypted('pass'));
+        $this->userData->setPass(Request::analyzeEncrypted('password'));
     }
 
     /**
@@ -137,7 +137,7 @@ class UserForm extends FormBase implements FormInterface
      */
     protected function checkPass()
     {
-        $userPassR = Request::analyzeEncrypted('passR');
+        $userPassR = Request::analyzeEncrypted('password_repeat');
 
         if ($this->configData->isDemoEnabled()) {
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));

@@ -44,6 +44,7 @@ use SP\Mvc\View\Template;
 use SP\Providers\Auth\Browser\Browser;
 use SP\Services\Auth\AuthException;
 use SP\Services\User\UserLoginResponse;
+use SP\Util\Checks;
 
 /**
  * Clase base para los controladores
@@ -149,7 +150,7 @@ abstract class ControllerBase
 
         $this->view->setBase(strtolower($this->controllerName));
 
-        $this->isAjax = $this->router->request()->headers()->get('X_REQUESTED_WITH') === 'XMLHttpRequest';
+        $this->isAjax = Checks::isAjax($this->router);
 
         if ($this->session->isLoggedIn()) {
             $this->userData = clone $this->session->getUserData();
@@ -178,6 +179,9 @@ abstract class ControllerBase
         $this->view->assign('isDemo', $this->configData->isDemoEnabled());
         $this->view->assign('icons', $this->theme->getIcons());
         $this->view->assign('configData', $this->configData);
+
+        // Pass the action name to the template as a variable
+        $this->view->assign($this->actionName);
     }
 
     /**

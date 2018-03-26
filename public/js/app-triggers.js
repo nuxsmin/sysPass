@@ -332,12 +332,6 @@ sysPass.Triggers = function (Common) {
                 Common.sk.set($sk.val());
             }
 
-            // $container.find(".help-box").dialog({
-            //     autoOpen: false,
-            //     title: Common.config().LANG[54],
-            //     width: screen.width / 2.5
-            // });
-
             if (typeof Common.appTheme().viewsTriggers.common === "function") {
                 Common.appTheme().viewsTriggers.common($container);
             }
@@ -401,7 +395,7 @@ sysPass.Triggers = function (Common) {
                 };
             }
 
-            const $selParentAccount = $("#selParentAccount");
+            const $selParentAccount = $("#parent_account_id");
 
             if ($selParentAccount.length > 0) {
                 $selParentAccount.on("change", function () {
@@ -424,7 +418,7 @@ sysPass.Triggers = function (Common) {
                 Common.appActions().items.get($selParentAccount);
             }
 
-            const $selTags = $("#selTags");
+            const $selTags = $("#tags");
 
             if ($selTags.length > 0) {
                 $selTags.selectize({
@@ -437,7 +431,7 @@ sysPass.Triggers = function (Common) {
                 });
             }
 
-            const $otherUsers = $('#otherUsers');
+            const $otherUsers = $('#other_users');
 
             if ($otherUsers.length > 0) {
                 $otherUsers.selectize({
@@ -456,7 +450,7 @@ sysPass.Triggers = function (Common) {
                 });
             }
 
-            const $otherUserGroups = $('#otherUserGroups');
+            const $otherUserGroups = $('#other_usergroups');
 
             if ($otherUserGroups.length > 0) {
                 $otherUserGroups.selectize({
