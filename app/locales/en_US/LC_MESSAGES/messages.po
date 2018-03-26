@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-26 13:40+0100\n"
-"PO-Revision-Date: 2018-03-26 13:40+0100\n"
+"PO-Revision-Date: 2018-03-26 13:43+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -4849,11 +4849,11 @@ msgstr "Results per page"
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:47
 msgid "Habilita la caducidad de la clave de cuentas."
-msgstr "Enables the accounts' password expiry date."
+msgstr "Enables the accounts password expiry date."
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:56
 msgid "Caducidad clave cuentas"
-msgstr "Accounts' password expiry"
+msgstr "Accounts password expiry"
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:62
 msgid "Tiempo caducidad clave"
