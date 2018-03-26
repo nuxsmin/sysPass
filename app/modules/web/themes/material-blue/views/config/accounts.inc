@@ -59,7 +59,7 @@
         </tr>
         <tr>
             <td class="descField">
-                <?php echo __('Tiempo caducidad'); ?>
+                <?php echo __('Tiempo caducidad clave'); ?>
                 <div id="help-account_expire_time"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
                 <div class="mdl-tooltip mdl-tooltip--large" for="help-account_expire_time">
