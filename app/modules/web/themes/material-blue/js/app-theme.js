@@ -68,93 +68,65 @@ sysPass.Theme = function (Common) {
     };
 
     // Función para generar claves aleatorias.
-    const password = function ($target) {
-        let i = 0;
-        let chars = "";
-        let genPassword = "";
+    const randomPassword = function ($target) {
+        Common.generateRandomPass(function (password, level) {
+            $target.attr("data-pass", password);
 
-        const getRandomChar = function (min, max) {
-            return chars.charAt(Math.floor((Math.random() * max) + min));
-        };
+            // if ($target) {
+            const $dstParent = $target.parent();
+            const $targetR = $("#" + $target.attr("id") + "_repeat");
 
-        if (Common.passwordData.complexity.symbols) {
-            chars += "!\"\\·@|#$~%&/()=?'¿¡^*[]·;,_-{}<>";
-        }
+            Common.outputResult(level, $target);
 
-        if (Common.passwordData.complexity.numbers) {
-            chars += "1234567890";
-        }
+            // Actualizar los componentes de MDL
+            const mdl = new MaterialTextfield();
 
-        if (Common.passwordData.complexity.chars) {
-            chars += "abcdefghijklmnopqrstuvwxyz";
+            // Poner la clave en los input y actualizar MDL
+            $dstParent.find("input:password").val(password);
+            $dstParent.addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
 
-            if (Common.passwordData.complexity.uppercase) {
-                chars += String("abcdefghijklmnopqrstuvwxyz").toUpperCase();
+            // Poner la clave en el input de repetición y encriptarla
+            if ($targetR.length > 0) {
+                $targetR.val(password).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+                Common.encryptFormValue($targetR);
             }
-        }
 
-        for (; i++ < Common.passwordData.complexity.numlength;) {
-            genPassword += getRandomChar(0, chars.length - 1);
-        }
-
-        $target.attr("data-pass", genPassword);
-
-        const level = zxcvbn(genPassword);
-        Common.passwordData.passLength = genPassword.length;
-
-        // if ($target) {
-        const $dstParent = $target.parent();
-        const $targetR = $("#" + $target.attr("id") + "_repeat");
-
-        Common.outputResult(level, $target);
-
-        // Actualizar los componentes de MDL
-        const mdl = new MaterialTextfield();
-
-        // Poner la clave en los input y actualizar MDL
-        $dstParent.find("input:password").val(genPassword);
-        $dstParent.addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-
-        // Poner la clave en el input de repetición y encriptarla
-        if ($targetR.length > 0) {
-            $targetR.val(genPassword).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
-            Common.encryptFormValue($targetR);
-        }
-
-        // Mostar el indicador de complejidad
-        $dstParent.find("#passLevel").show(500);
-        // } else {
-        //     Common.outputResult(level);
-        //     $("input:password, input.password").val(genPassword);
-        //     $("#passLevel").show(500);
-        // }
+            // Mostar el indicador de complejidad
+            $dstParent.find("#passLevel").show(500);
+            // } else {
+            //     Common.outputResult(level);
+            //     $("input:password, input.password").val(genPassword);
+            //     $("#passLevel").show(500);
+            // }
+        });
     };
 
     // Diálogo de configuración de complejidad de clave
     const complexityDialog = function () {
 
         const content =
-            "<div id=\"box-complexity\"><div>" +
-            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-chars\">" +
-            "<input type=\"checkbox\" id=\"checkbox-chars\" class=\"mdl-checkbox__input\" name=\"checkbox-chars\" checked/>" +
-            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[63] + "</span>" +
-            "</label>" +
-            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-numbers\">" +
-            "<input type=\"checkbox\" id=\"checkbox-numbers\" class=\"mdl-checkbox__input\" name=\"checkbox-numbers\" checked/>" +
-            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[35] + "</span>" +
-            "</label>" +
-            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-uppercase\">" +
-            "<input type=\"checkbox\" id=\"checkbox-uppercase\" class=\"mdl-checkbox__input\" name=\"checkbox-uppercase\"/>" +
-            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[36] + "</span>" +
-            "</label>" +
-            "<label class=\"mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect\" for=\"checkbox-symbols\">" +
-            "<input type=\"checkbox\" id=\"checkbox-symbols\" class=\"mdl-checkbox__input\" name=\"checkbox-symbols\"/>" +
-            "<span class=\"mdl-checkbox__label\">" + Common.config().LANG[37] + "</span>" +
-            "</label>" +
-            "<div class=\"mdl-textfield mdl-js-textfield textfield-passlength\">" +
-            "<input class=\"mdl-textfield__input\" type=\"number\" pattern=\"[0-9]*\" id=\"passlength\" />" +
-            "<label class=\"mdl-textfield__label\" for=\"passlength\">" + Common.config().LANG[38] + "</label>" +
-            "</div></div></div>";
+            `<div id="box-complexity"><div>
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-chars">
+            <input type="checkbox" id="checkbox-chars" class="mdl-checkbox__input" name="checkbox-chars" checked/>
+            <span class="mdl-checkbox__label">${Common.config().LANG[63]}</span>
+            </label>
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-numbers">
+            <input type="checkbox" id="checkbox-numbers" class="mdl-checkbox__input" name="checkbox-numbers" checked/>
+            <span class="mdl-checkbox__label">${Common.config().LANG[35]}</span>
+            </label>
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-uppercase">
+            <input type="checkbox" id="checkbox-uppercase" class="mdl-checkbox__input" name="checkbox-uppercase"/>
+            <span class="mdl-checkbox__label">${Common.config().LANG[36]}</span>
+            </label>
+            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-symbols">
+            <input type="checkbox" id="checkbox-symbols" class="mdl-checkbox__input" name="checkbox-symbols"/>
+            <span class="mdl-checkbox__label">${Common.config().LANG[37]}</span>
+            </label>
+            <div class="mdl-textfield mdl-js-textfield textfield-passlength">
+            <input class="mdl-textfield__input" type="number" pattern="[0-9]*" id="passlength" min="1" max="117" list="defaultLength"/>
+            <label class="mdl-textfield__label" for="passlength">${Common.config().LANG[38]}</label>
+            </div></div></div>
+            <datalist id="defaultLength"><option value="8"><option value="12"><option value="16"><option value="32"><option value="64"></datalist>`;
 
         mdlDialog().show({
             title: Common.config().LANG[29],
@@ -167,11 +139,13 @@ sysPass.Theme = function (Common) {
                 onClick: function (e) {
                     e.preventDefault();
 
+                    const length = parseInt($("#passlength").val());
+
                     Common.passwordData.complexity.chars = $("#checkbox-chars").is(":checked");
                     Common.passwordData.complexity.numbers = $("#checkbox-numbers").is(":checked");
                     Common.passwordData.complexity.uppercase = $("#checkbox-uppercase").is(":checked");
                     Common.passwordData.complexity.symbols = $("#checkbox-symbols").is(":checked");
-                    Common.passwordData.complexity.numlength = parseInt($("#passlength").val());
+                    Common.passwordData.complexity.numlength = length;
                 }
             },
             cancelable: true,
@@ -223,7 +197,7 @@ sysPass.Theme = function (Common) {
 
             // Crear evento para generar clave aleatoria
             $passwordActions.find(".passGen").on("click", function () {
-                password($this);
+                randomPassword($this);
 
                 $this.blur();
             });
@@ -234,7 +208,7 @@ sysPass.Theme = function (Common) {
 
             // Crear evento para mostrar clave generada/introducida
             $passwordActions.find(".showpass").on("mouseover", function () {
-                $(this).attr("title", $this.data("pass"));
+                $(this).attr("title", $this[0].dataset.pass);
             });
 
             // Reset de los campos de clave
@@ -518,7 +492,7 @@ sysPass.Theme = function (Common) {
 
     return {
         passwordDetect: passwordDetect,
-        password: password,
+        password: randomPassword,
         viewsTriggers: viewsTriggers,
         loading: loading,
         ajax: ajax,

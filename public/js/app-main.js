@@ -257,7 +257,7 @@ sysPass.Main = function () {
             const $target = $(this.dataset.clipboardTarget);
 
             clipboard
-                .copy($target.text())
+                .copy($target.text().replace(/\r?\n|\r/g))
                 .then(
                     function () {
                         $(".dialog-text").removeClass("dialog-clip-copy");
@@ -843,7 +843,8 @@ sysPass.Main = function () {
             fileUpload: fileUpload,
             redirect: redirect,
             scrollUp: scrollUp,
-            setContentSize: setContentSize
+            setContentSize: setContentSize,
+            generateRandomPass: generateRandomPass
         };
 
         // Objeto con métodos y propiedades protegidas
@@ -932,6 +933,47 @@ sysPass.Main = function () {
         return t.getTime();
     };
 
+    /**
+     * Function to generate random password and call a callback sending the generated string
+     * and a zxcvbn object
+     *
+     * @param callback
+     */
+    const generateRandomPass = function (callback) {
+        let i = 0;
+        let chars = "";
+        let password = "";
+
+        const getRandomChar = function (min, max) {
+            return chars.charAt(Math.floor((Math.random() * max) + min));
+        };
+
+        if (passwordData.complexity.symbols) {
+            chars += "!\"\\·@|#$~%&/()=?'¿¡^*[]·;,_-{}<>";
+        }
+
+        if (passwordData.complexity.numbers) {
+            chars += "1234567890";
+        }
+
+        if (passwordData.complexity.chars) {
+            chars += "abcdefghijklmnopqrstuvwxyz";
+
+            if (passwordData.complexity.uppercase) {
+                chars += String("abcdefghijklmnopqrstuvwxyz").toUpperCase();
+            }
+        }
+
+        for (; i++ < passwordData.complexity.numlength;) {
+            password += getRandomChar(0, chars.length - 1);
+        }
+
+        passwordData.passLength = password.length;
+
+        if (typeof callback === "function") {
+            callback(password, zxcvbn(password));
+        }
+    };
 
     return init();
 };

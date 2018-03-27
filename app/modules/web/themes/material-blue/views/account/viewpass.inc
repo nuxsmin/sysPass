@@ -24,7 +24,7 @@
         </tr>
         <tr>
             <?php if (!$isImage): ?>
-                <td class="dialog-text dialog-pass-text"><?php echo $pass; ?></td>
+                <td class="dialog-text dialog-pass-text"><?php echo wordwrap($pass, 50, PHP_EOL, true); ?></td>
                 <td class="right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
                             title="<?php echo __('Copiar Clave'); ?>" data-clipboard-target=".dialog-pass-text">
