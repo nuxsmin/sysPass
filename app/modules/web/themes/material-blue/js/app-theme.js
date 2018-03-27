@@ -139,13 +139,11 @@ sysPass.Theme = function (Common) {
                 onClick: function (e) {
                     e.preventDefault();
 
-                    const length = parseInt($("#passlength").val());
-
                     Common.passwordData.complexity.chars = $("#checkbox-chars").is(":checked");
                     Common.passwordData.complexity.numbers = $("#checkbox-numbers").is(":checked");
                     Common.passwordData.complexity.uppercase = $("#checkbox-uppercase").is(":checked");
                     Common.passwordData.complexity.symbols = $("#checkbox-symbols").is(":checked");
-                    Common.passwordData.complexity.numlength = length;
+                    Common.passwordData.complexity.numlength = parseInt($("#passlength").val());
                 }
             },
             cancelable: true,
