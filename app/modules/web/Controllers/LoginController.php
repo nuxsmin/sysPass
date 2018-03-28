@@ -128,8 +128,8 @@ class LoginController extends ControllerBase
                 ->send(true);
         }
         
-        $layoutHelper = $this->dic->get(LayoutHelper::class);
-        $layoutHelper->getCustomLayout('index', 'login');
+        $this->dic->get(LayoutHelper::class)
+            ->getCustomLayout('index', 'login');
 
         $this->view->assign('mailEnabled', $this->configData->isMailEnabled());
 //        $this->view->assign('updated', SessionFactory::getAppUpdated());

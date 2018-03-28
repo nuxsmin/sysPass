@@ -9,7 +9,7 @@
 
     <?php if (!isset($skipBackButton)): ?>
         <div class="buttons">
-            <button id="btnBack" class="btn-back mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+            <button id="btnBack" class="btn-back mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
                 <i class="material-icons"
                    title="<?php echo __('Volver'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
                 <?php echo __('Volver'); ?>

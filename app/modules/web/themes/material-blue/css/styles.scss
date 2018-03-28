@@ -1,5 +1,6 @@
 @import "base";
 @import "elements";
+@import "noheader";
 
 #nojs {
   width: 80%;
@@ -62,7 +63,7 @@
 #container {
   margin: auto;
   width: 100%;
-  &.login {
+  &.login, &.passreset {
     padding-top: 5%;
   }
   &.error, &.install, &.passreset {
@@ -967,6 +968,10 @@ h5.datagrid-header-title {
   @extend .dialog-text;
   border: transparent 1px solid;
   letter-spacing: .2em;
+}
+
+.dialog-button {
+  width: 150px;
 }
 
 .dialog-buttons {

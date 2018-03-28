@@ -1,66 +1,22 @@
-@mixin background-logo-outline() {
-  background: transparent url($public-path + "/images/logo_full_nobg_outline.png") no-repeat top center;
-  background-size: auto 125px;
-}
-
-body.login, body.logout {
-  background: $color-bluegrey-fg;
-  #wrap {
-    background: transparent;
-  }
-  footer {
-    background: #78909C;
-    a {
-      color: #f2f2f2;
-    }
-  }
-}
-
 #login-logo {
   position: fixed;
-  top: 11em;
+  top: 15em;
   left: 0;
   width: 100%;
-  height: 15em;
+  height: 20em;
   @include background-logo-outline;
 }
 
-#login-container {
-  @include background-logo-outline;
-  padding: 1em;
-  width: 40em;
-  margin: 0 auto;
-  #boxSpacer {
-    height: 11em;
-    background-color: transparent;
-  }
-  #boxLogin {
-    @include shadow-full();
+#box-pub-noheader {
+  #box-login {
     position: relative;
-    margin: 0 auto;
-    width: 100%;
     min-height: 14em;
-    padding: 1em;
-    background-color: #f2f2f2;
-    #boxData {
-      height: 100%;
-      min-height: 14em;
-      text-align: left;
-      background-color: transparent;
-      i {
-        margin-right: .5em;
-        opacity: .5;
-      }
-      .extra-hidden {
-        display: none;
-      }
-    }
-    #boxButton {
+    #box-buttons {
       position: absolute;
       top: 2em;
       right: 2em;
     }
-    #boxActions {
+    #box-actions {
       width: 100%;
       text-align: right;
       a {
@@ -68,19 +24,7 @@ body.login, body.logout {
       }
     }
   }
-  #boxLogout {
-    margin-top: 4em;
-    width: 100%;
-    & > div {
-      margin: 0 auto;
-      width: 250px;
-      font-size: 14px;
-      padding: 0.5em;
-      text-align: center;
-      @include color-amber();
-    }
-  }
-  #boxUpdated {
+  #box-updated {
     width: 350px;
     margin: 3em auto;
     font-size: 14px;
@@ -89,17 +33,44 @@ body.login, body.logout {
     @include color-teal();
   }
   #demo-info {
-    margin: 3em auto;
+    padding: .5em;
+    margin: 3em auto 0 auto;
     color: #c9c9c9;
     border-top: 1px solid #d9d9d9;
     border-bottom: 1px solid #d9d9d9;
-    padding: .5em;
     ul {
       display: flex;
       justify-content: space-around;
       list-style: none;
       li span {
         margin: 0 2em;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  #box-pub-noheader {
+    #box-login {
+      #box-buttons {
+        position: relative;
+        top: 0;
+        right: 0;
+        text-align: right;
+      }
+      #box-actions {
+        margin-top: 1em;
+      }
+    }
+    #demo-info {
+      ul {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        list-style: none;
+        li span {
+          margin: 0 2em;
+        }
       }
     }
   }

@@ -61,14 +61,14 @@ class UserPassResetController extends ControllerBase
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function indexAction()
     {
-        $this->dic->get(LayoutHelper::class)->getPublicLayout('request', 'passreset');
+        $this->dic->get(LayoutHelper::class)
+            ->getCustomLayout('request', 'passreset');
 
         if (!$this->configData->isMailEnabled()) {
-            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE);
+            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, 'request');
         }
 
         $this->view();
@@ -140,16 +140,16 @@ class UserPassResetController extends ControllerBase
 
     /**
      * @param null $hash
-     * @throws \SP\Core\Dic\ContainerException
      */
     public function resetAction($hash = null)
     {
-        $this->dic->get(LayoutHelper::class)->getPublicLayout('reset', 'passreset');
+        $this->dic->get(LayoutHelper::class)
+            ->getCustomLayout('reset', 'passreset');
 
         if ($hash && $this->configData->isMailEnabled()) {
             $this->view->assign('hash', $hash);
         } else {
-            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE);
+            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, 'reset');
         }
 
         $this->view();
@@ -163,8 +163,8 @@ class UserPassResetController extends ControllerBase
         try {
             $this->checkTracking();
 
-            $pass = Request::analyzeEncrypted('pass');
-            $passR = Request::analyzeEncrypted('passR');
+            $pass = Request::analyzeEncrypted('password');
+            $passR = Request::analyzeEncrypted('password_repeat');
 
             if (!$pass || !$passR) {
                 throw new ValidationException(__u('La clave no puede estar en blanco'));

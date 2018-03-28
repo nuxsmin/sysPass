@@ -1,10 +1,10 @@
-<div id="login-container">
-    <div id="boxSpacer"></div>
-    <div id="boxLogin" class="round shadow">
+<div id="box-pub-noheader">
+    <div class="box-spacer"></div>
+    <div id="box-login" class="box-form round">
         <form method="post" name="frmLogin" id="frmLogin" class="form-action"
               data-onsubmit="main/login"
               data-route="login/login">
-            <div id="boxData">
+            <fieldset id="box-data">
                 <div>
                     <i class="material-icons">perm_identity</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -56,8 +56,8 @@
 
                 <input type="hidden" name="login" value="1"/>
                 <input type="hidden" name="isAjax" value="1"/>
-            </div>
-            <div id="boxButton">
+            </fieldset>
+            <div id="box-buttons">
                 <button id="btnLogin" type="submit" form="frmLogin"
                         class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-color--indigo-400"
                         title="<?php echo __('Acceder'); ?>">
@@ -68,24 +68,31 @@
 
         <!-- Close boxData -->
         <?php if ($mailEnabled): ?>
-            <div id="boxActions">
+            <div id="box-actions">
                 <a href="index.php?r=userPassReset"><?php echo __('¿Olvidó su clave?'); ?></a>
             </div>
         <?php endif; ?>
     </div><!-- Close boxLogin -->
 
     <?php if (isset($updated)): ?>
-        <div id="boxUpdated" class="round5"><?php echo __('Aplicación actualizada correctamente'); ?></div>
+        <div id="box-updated" class="round5"><?php echo __('Aplicación actualizada correctamente'); ?></div>
     <?php endif; ?>
 
     <?php if ($isDemoMode): ?>
         <div id="demo-info">
             <ul>
-                <li title="<?php echo __('Usuario'); ?>"><i class="material-icons">perm_identity</i><span>demo</span>
+                <li title="<?php echo __('Usuario'); ?>">
+                    <i class="material-icons">perm_identity</i>
+                    <span>demo</span>
                 </li>
-                <li title="<?php echo __('Clave'); ?>"><i class="material-icons">vpn_key</i><span>syspass</span></li>
-                <li title="<?php echo __('Clave Maestra'); ?>"><i
-                            class="material-icons">vpn_key</i><span>12345678900</span></li>
+                <li title="<?php echo __('Clave'); ?>">
+                    <i class="material-icons">vpn_key</i>
+                    <span>syspass</span>
+                </li>
+                <li title="<?php echo __('Clave Maestra'); ?>">
+                    <i class="material-icons">vpn_key</i>
+                    <span>12345678900</span>
+                </li>
             </ul>
         </div>
     <?php endif; ?>
