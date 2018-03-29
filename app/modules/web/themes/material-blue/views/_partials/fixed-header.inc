@@ -88,9 +88,8 @@
                             <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
                         <?php endforeach; ?>>
                         <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
+                        <?php echo $action->getTitle(); ?>
                     </a>
-                    <span for="btn-drawer-<?php echo $action->getId(); ?>"
-                          class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                 <?php endforeach; ?>
 
                 <a id="notifications-drawer" class="btn-menu mdl-navigation__link"

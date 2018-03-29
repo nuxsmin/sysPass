@@ -1169,8 +1169,6 @@ fieldset.warning {
 @media screen and (max-width: 1000px) {
   #content #searchbox .search-filters > * {
     margin: .5em 1em .5em 0; }
-  #content .data-container #title, #content .tab-data #title {
-    width: 90%; }
 
   footer {
     display: none;
@@ -1202,10 +1200,11 @@ fieldset.warning {
     width: 100%; }
   #content .data-container, #content .tab-data {
     width: 100%; }
-    #content .data-container #title, #content .tab-data #title {
-      width: 90%; }
     #content .data-container .selectize-control, #content .tab-data .selectize-control {
       width: 100%; }
+  #content .mdl-tabs__tab-bar {
+    flex-wrap: wrap;
+    height: auto; }
 
   #box-popup h2 > .btn-popup-close {
     display: inline-block; }
