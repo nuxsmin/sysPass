@@ -134,5 +134,13 @@
                 </td>
             </tr>
         <?php endif; ?>
+        <tr>
+            <td class="descField"><?php echo __('ID'); ?></td>
+            <td class="valField">
+                <div class="lowres-title"><?php echo __('ID'); ?></div>
+
+                <?php echo $accountData->getId(); ?>
+            </td>
+        </tr>
     </table>
 </div>

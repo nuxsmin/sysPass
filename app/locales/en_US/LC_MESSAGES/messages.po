@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-26 13:40+0100\n"
-"PO-Revision-Date: 2018-03-26 13:43+0100\n"
+"POT-Creation-Date: 2018-03-29 20:56+0100\n"
+"PO-Revision-Date: 2018-03-29 20:57+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -44,6 +44,8 @@ msgstr "View password"
 
 #: ../../../../lib/SP/Api/SyspassApi.php:84
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1220
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:138
+#: ../../../modules/web/themes/material-blue/views/account/details.inc:140
 msgid "ID"
 msgstr "ID"
 
@@ -344,12 +346,12 @@ msgstr "Client Id"
 #: ../../../modules/web/themes/material-blue/views/itemshow/authtoken.inc:47
 #: ../../../modules/web/themes/material-blue/views/itemshow/authtoken.inc:54
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:116
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:123
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:124
 #: ../../../modules/web/themes/material-blue/views/itemshow/userpass.inc:38
-#: ../../../modules/web/themes/material-blue/views/itemshow/userpass.inc:44
+#: ../../../modules/web/themes/material-blue/views/itemshow/userpass.inc:45
 #: ../../../modules/web/themes/material-blue/views/login/index.inc:26
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:86
-#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:14
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:88
+#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:20
 msgid "Clave"
 msgstr "Password"
 
@@ -372,7 +374,7 @@ msgstr "Access URL or IP"
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:124
 #: ../../../modules/web/themes/material-blue/views/account/account-link.inc:78
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:201
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:149
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:151
 msgid "Notas sobre la cuenta"
 msgstr "Notes about the account"
 
@@ -444,14 +446,14 @@ msgstr "The LDAP parameters are not set"
 
 #: ../../../../lib/SP/Controller/ChecksController.php:107
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapBase.php:123
-#: ../../../modules/web/Controllers/ConfigLdapController.php:147
-#: ../../../modules/web/Controllers/ConfigLdapController.php:190
+#: ../../../modules/web/Controllers/ConfigLdapController.php:152
+#: ../../../modules/web/Controllers/ConfigLdapController.php:195
 msgid "Conexión a LDAP correcta"
 msgstr "LDAP connection OK"
 
 #: ../../../../lib/SP/Controller/ChecksController.php:108
-#: ../../../modules/web/Controllers/ConfigLdapController.php:148
-#: ../../../modules/web/Controllers/ConfigLdapController.php:191
+#: ../../../modules/web/Controllers/ConfigLdapController.php:153
+#: ../../../modules/web/Controllers/ConfigLdapController.php:196
 #, php-format
 msgid "Objetos encontrados: %d"
 msgstr "Objects found: %d"
@@ -609,7 +611,7 @@ msgstr "Action"
 #: ../../../modules/web/themes/material-blue/views/login/index.inc:84
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:68
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:70
-#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:14
+#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:19
 msgid "Usuario"
 msgstr "User"
 
@@ -827,7 +829,7 @@ msgstr "Error while searching the group RDN"
 #: ../../../../lib/SP/Services/Ldap/LdapImportService.php:136
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:556
 #: ../../../modules/web/Controllers/UserGroupController.php:215
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:131
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:130
 #: ../../../modules/web/themes/material-blue/views/_partials/footer.inc:15
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:246
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:249
@@ -2010,13 +2012,13 @@ msgid "Error al enviar correo"
 msgstr "Error while sending the email"
 
 #: ../../../../lib/SP/Services/MailService.php:140
-#: ../../../modules/web/Controllers/ConfigMailController.php:134
-#: ../../../modules/web/Controllers/ConfigMailController.php:140
+#: ../../../modules/web/Controllers/ConfigMailController.php:139
+#: ../../../modules/web/Controllers/ConfigMailController.php:145
 msgid "Correo enviado"
 msgstr "Email sent"
 
 #: ../../../../lib/SP/Services/MailService.php:141
-#: ../../../modules/web/Controllers/ConfigMailController.php:135
+#: ../../../modules/web/Controllers/ConfigMailController.php:140
 msgid "Destinatario"
 msgstr "Recipient"
 
@@ -2179,7 +2181,7 @@ msgstr "Error while deleting the groups"
 #: ../../../modules/web/Controllers/UserController.php:200
 #: ../../../modules/web/Controllers/UserController.php:314
 #: ../../../modules/web/Controllers/UserPassResetController.php:106
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:184
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:186
 msgid "Cambio de Clave"
 msgstr "Password Change"
 
@@ -2769,7 +2771,7 @@ msgstr "Public links disabled"
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:98
 #: ../../../modules/web/Controllers/ConfigEncryptionController.php:160
 #: ../../../modules/web/Controllers/ConfigImportController.php:57
-#: ../../../modules/web/Controllers/ConfigLdapController.php:211
+#: ../../../modules/web/Controllers/ConfigLdapController.php:216
 #: ../../../modules/web/Controllers/Traits/ConfigTrait.php:53
 #: ../../../modules/web/Forms/UserForm.php:131
 #: ../../../modules/web/Forms/UserForm.php:143
@@ -2875,19 +2877,19 @@ msgstr "Remote syslog disabled"
 msgid "Faltan parámetros de Proxy"
 msgstr "Missing Proxy parameters "
 
-#: ../../../modules/web/Controllers/ConfigGeneralController.php:127
+#: ../../../modules/web/Controllers/ConfigGeneralController.php:130
 msgid "Proxy habiltado"
 msgstr "Proxy enabled"
 
-#: ../../../modules/web/Controllers/ConfigGeneralController.php:132
+#: ../../../modules/web/Controllers/ConfigGeneralController.php:135
 msgid "Proxy deshabilitado"
 msgstr "Proxy disabled"
 
-#: ../../../modules/web/Controllers/ConfigGeneralController.php:151
+#: ../../../modules/web/Controllers/ConfigGeneralController.php:154
 msgid "Auth Basic habilitada"
 msgstr "Auth Basic enabled"
 
-#: ../../../modules/web/Controllers/ConfigGeneralController.php:157
+#: ../../../modules/web/Controllers/ConfigGeneralController.php:160
 msgid "Auth Basic deshabiltada"
 msgstr "Auth Basic disabled"
 
@@ -2896,7 +2898,7 @@ msgid "Cuentas importadas"
 msgstr "Accounts imported"
 
 #: ../../../modules/web/Controllers/ConfigImportController.php:81
-#: ../../../modules/web/Controllers/ConfigLdapController.php:251
+#: ../../../modules/web/Controllers/ConfigLdapController.php:256
 msgid "Importación finalizada"
 msgstr "Import finished"
 
@@ -2905,65 +2907,71 @@ msgid "No se importaron cuentas"
 msgstr "No accounts were imported"
 
 #: ../../../modules/web/Controllers/ConfigLdapController.php:69
-#: ../../../modules/web/Controllers/ConfigLdapController.php:132
-#: ../../../modules/web/Controllers/ConfigLdapController.php:168
+#: ../../../modules/web/Controllers/ConfigLdapController.php:137
+#: ../../../modules/web/Controllers/ConfigLdapController.php:173
 msgid "Faltan parámetros de LDAP"
 msgstr "Missing LDAP parameters"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:84
+#: ../../../modules/web/Controllers/ConfigLdapController.php:87
 msgid "LDAP habiltado"
 msgstr "LDAP enabled"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:89
+#: ../../../modules/web/Controllers/ConfigLdapController.php:92
 msgid "LDAP deshabilitado"
 msgstr "LDAP disabled"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:109
-#: ../../../modules/web/Controllers/ConfigLdapController.php:231
+#: ../../../modules/web/Controllers/ConfigLdapController.php:94
+#: ../../../modules/web/Controllers/ConfigMailController.php:103
+#: ../../../config/strings.js.inc:80
+msgid "Sin cambios"
+msgstr "No changes"
+
+#: ../../../modules/web/Controllers/ConfigLdapController.php:114
+#: ../../../modules/web/Controllers/ConfigLdapController.php:236
 msgid "Parámetros de LDAP incorrectos"
 msgstr "Wrong LDAP parameters"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:142
-#: ../../../modules/web/Controllers/ConfigLdapController.php:184
+#: ../../../modules/web/Controllers/ConfigLdapController.php:147
+#: ../../../modules/web/Controllers/ConfigLdapController.php:189
 msgid "Resultados"
 msgstr "Results"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:237
+#: ../../../modules/web/Controllers/ConfigLdapController.php:242
 msgid "Importación LDAP"
 msgstr "LDAP Import"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:255
+#: ../../../modules/web/Controllers/ConfigLdapController.php:260
 msgid "No se encontraron objetos para sincronizar"
 msgstr "There aren't any objects to synchronize"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:260
+#: ../../../modules/web/Controllers/ConfigLdapController.php:265
 msgid "Importación de usuarios de LDAP realizada"
 msgstr "LDAP users import finished"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:262
+#: ../../../modules/web/Controllers/ConfigLdapController.php:267
 #, php-format
 msgid "Usuarios importados: %d / %d"
 msgstr "Imported users: %d / %d"
 
-#: ../../../modules/web/Controllers/ConfigLdapController.php:263
+#: ../../../modules/web/Controllers/ConfigLdapController.php:268
 #, php-format
 msgid "Errores: %d"
 msgstr "Errors: %d"
 
 #: ../../../modules/web/Controllers/ConfigMailController.php:69
-#: ../../../modules/web/Controllers/ConfigMailController.php:121
+#: ../../../modules/web/Controllers/ConfigMailController.php:126
 msgid "Faltan parámetros de Correo"
 msgstr "Missing Mail parameters"
 
-#: ../../../modules/web/Controllers/ConfigMailController.php:91
+#: ../../../modules/web/Controllers/ConfigMailController.php:94
 msgid "Correo habiltado"
 msgstr "Mail enabled"
 
-#: ../../../modules/web/Controllers/ConfigMailController.php:98
+#: ../../../modules/web/Controllers/ConfigMailController.php:101
 msgid "Correo deshabilitado"
 msgstr "Mail disabled"
 
-#: ../../../modules/web/Controllers/ConfigMailController.php:141
+#: ../../../modules/web/Controllers/ConfigMailController.php:146
 msgid "Compruebe su buzón de correo"
 msgstr "Please, check your inbox"
 
@@ -3392,8 +3400,8 @@ msgstr "Edit User"
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:648
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:649
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:61
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:115
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:120
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:114
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:119
 msgid "Cambiar Clave de Usuario"
 msgstr "Change User's Password"
 
@@ -4128,12 +4136,12 @@ msgid "Cambiar Clave"
 msgstr "Change Password"
 
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:40
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:162
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:164
 msgid "Admin Aplicación"
 msgstr "Application Admin"
 
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:41
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:169
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:171
 msgid "Admin Cuentas"
 msgstr "Accounts Admin"
 
@@ -4142,8 +4150,8 @@ msgid "Usuario de LDAP"
 msgstr "LDAP User"
 
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:43
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:174
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:177
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:176
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:179
 msgid "Deshabilitado"
 msgstr "Disabled"
 
@@ -4173,8 +4181,8 @@ msgstr "Email"
 #: ../../../modules/web/themes/material-blue/views/error/error-database.inc:14
 #: ../../../modules/web/themes/material-blue/views/error/error-maintenance.inc:13
 #: ../../../modules/web/themes/material-blue/views/error/error-maintenance.inc:14
-#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:33
-#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:34
+#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:41
+#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:44
 msgid "Volver"
 msgstr "Back"
 
@@ -4336,14 +4344,14 @@ msgstr "Select Profile"
 
 #: ../../../config/strings.js.inc:50
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:79
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:50
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:51
 msgid "Seleccionar Cliente"
 msgstr "Select Client"
 
 #: ../../../config/strings.js.inc:51
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:68
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:103
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:59
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:60
 msgid "Seleccionar Categoría"
 msgstr "Select Category"
 
@@ -4449,13 +4457,9 @@ msgid "Mostrar Favoritos"
 msgstr "Show Favorites"
 
 #: ../../../config/strings.js.inc:78
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:73
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:74
 msgid "Mostrar Todos"
 msgstr "Show All"
-
-#: ../../../config/strings.js.inc:80
-msgid "Sin cambios"
-msgstr "No changes"
 
 #: ../../../config/strings.js.inc:81
 msgid "Ahora"
@@ -4519,28 +4523,28 @@ msgid "Javascript es necesario para el correcto funcionamiento"
 msgstr "Javascript is needed in order to run correctly"
 
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:40
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:106
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:105
 #, php-format
 msgid "Hay %d notificaciones pendientes"
 msgstr "There are %d unread notifications"
 
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:42
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:108
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:107
 msgid "No hay no hay notificaciones pendientes"
 msgstr "There aren't any pending notifications"
 
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:68
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:125
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:124
 msgid "Preferencias de usuario"
 msgstr "User preferences"
 
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:72
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:139
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:142
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:138
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:141
 msgid "Salir"
 msgstr "Sign Out"
 
-#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:152
+#: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:151
 #: ../../../modules/web/themes/material-blue/views/_partials/footer.inc:43
 msgid "Demo"
 msgstr "Demo"
@@ -4568,11 +4572,11 @@ msgstr "A cygnux.org project"
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:161
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:168
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:61
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:129
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:136
-#: ../../../modules/web/themes/material-blue/views/itemshow/userpass.inc:50
-#: ../../../modules/web/themes/material-blue/views/itemshow/userpass.inc:57
-#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:22
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:131
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:138
+#: ../../../modules/web/themes/material-blue/views/itemshow/userpass.inc:52
+#: ../../../modules/web/themes/material-blue/views/itemshow/userpass.inc:59
+#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:31
 msgid "Clave (repetir)"
 msgstr "Password (repeat)"
 
@@ -4593,7 +4597,7 @@ msgstr "Details"
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:117
 #: ../../../modules/web/themes/material-blue/views/account/account-link.inc:71
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:194
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:143
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:145
 msgid "Notas"
 msgstr "Notes"
 
@@ -4613,8 +4617,8 @@ msgstr "Select date"
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:265
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:27
 #: ../../../modules/web/themes/material-blue/views/account/details.inc:29
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:213
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:215
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:217
 msgid "Última Modificación"
 msgstr "Last Modification"
 
@@ -4805,26 +4809,30 @@ msgstr "Search for accounts with expired password"
 msgid "Devolver las cuentas privadas del usuario actual"
 msgstr "Get the private accounts for the current user"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:40
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:44
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:33
+msgid "Devolver la cuenta con ID"
+msgstr "Returns the account for then given ID"
+
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:41
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:45
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:226
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:227
 msgid "Búsqueda global"
 msgstr "Global searching"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:76
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:77
 msgid "Filtrar Favoritos"
 msgstr "Favorites Filtering"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:90
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:91
 msgid "Cuentas por página"
 msgstr "Accounts per page"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:96
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:97
 msgid "Más Filtros"
 msgstr "More Filters"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:101
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:102
 msgid "Seleccionar Etiqueta"
 msgstr "Select Tag"
 
@@ -5120,7 +5128,7 @@ msgstr ""
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:47
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:53
 #: ../../../modules/web/themes/material-blue/views/login/index.inc:48
-#: ../../../modules/web/themes/material-blue/views/login/index.inc:87
+#: ../../../modules/web/themes/material-blue/views/login/index.inc:92
 msgid "Clave Maestra"
 msgstr "Master Password"
 
@@ -5999,7 +6007,7 @@ msgid "No crea ni verifica los permisos del usuario sobre la BBDD"
 msgstr "It does not create or verify the user's permissions on the DB"
 
 #: ../../../modules/web/themes/material-blue/views/itemshow/authtoken.inc:59
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:155
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:157
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:85
 msgid "Opciones"
 msgstr "Options"
@@ -6102,30 +6110,30 @@ msgstr "Session login with SSO"
 msgid "Dirección de correo"
 msgstr "Email address"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:159
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:161
 msgid "Administrador de la aplicación"
 msgstr "Application administrator"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:166
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:168
 msgid "Administrador de cuentas"
 msgstr "Accounts administrator"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:181
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:183
 msgid "Forzar cambio de clave"
 msgstr "Force password change"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:195
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:197
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:199
 msgid "Entradas"
 msgstr "Entries"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:204
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:206
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:208
 msgid "Último Acceso"
 msgstr "Last Access"
 
-#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:222
 #: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:224
+#: ../../../modules/web/themes/material-blue/views/itemshow/user.inc:226
 msgid "Fecha Clave Maestra"
 msgstr "Master Password Date"
 
@@ -6415,27 +6423,27 @@ msgstr "The application needs to be updated"
 msgid "Para iniciar la actualización introduzca el código de seguridad"
 msgstr "Please enter the security code to start the upgrade"
 
-#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:7
-#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:7
+#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:6
+#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:6
 msgid "Solicitud de Cambio de Clave"
 msgstr "Request Password Change"
 
-#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:22
+#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:29
 msgid "Email del Usuario"
 msgstr "User's Email"
 
-#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:32
-#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:33
+#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:40
+#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:43
 msgid "Volver a iniciar sesión"
 msgstr "Go back to login"
 
-#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:37
-#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:39
+#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:45
+#: ../../../modules/web/themes/material-blue/views/userpassreset/request.inc:47
 msgid "Solicitar"
 msgstr "Request"
 
-#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:38
-#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:40
+#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:48
+#: ../../../modules/web/themes/material-blue/views/userpassreset/reset.inc:50
 msgid "Cambiar"
 msgstr "Change"
 

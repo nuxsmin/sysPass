@@ -30,6 +30,7 @@
                     <li><?php printf('<strong>file:"file_name"</strong> <br> %s', __('Buscar cuentas con archivos con el nombre \'file_name\'')); ?></li>
                     <li><?php printf('<strong>expired:</strong> <br> %s', __('Buscar cuentas con la clave caducada')); ?></li>
                     <li><?php printf('<strong>private:</strong> <br> %s', __('Devolver las cuentas privadas del usuario actual')); ?></li>
+                    <li><?php printf('<strong>id:"account_id"</strong> <br> %s', __('Devolver la cuenta con ID')); ?></li>
                 </ul>
             </div>
         </div>

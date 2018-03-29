@@ -51,7 +51,7 @@ class AccountSearchService extends Service
     /**
      * Regex filter for special searching
      */
-    const FILTERS_REGEX = '^(?<filter>user|group|file|owner|maingroup|expired|private):(?:"(?<text>[\w\.]+)")?$';
+    const FILTERS_REGEX = '^(?<type>id|user|group|file|owner|maingroup|expired|private):(?:"(?<filter>[\w\.]+)")?$';
 
     const COLORS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'colors.cache';
 
@@ -187,13 +187,13 @@ class AccountSearchService extends Service
             return [];
         }
 
-        $text = empty($filters['text']) === false ? $filters['text'] : false;
+        $filter = empty($filters['filter']) === false ? $filters['filter'] : false;
 
         try {
-            switch ($filters['filter']) {
+            switch ($filters['type']) {
                 case 'user':
-                    if ($text === false
-                        || is_object(($userData = $this->dic->get(UserService::class)->getByLogin($text))) === false) {
+                    if ($filter === false
+                        || is_object(($userData = $this->dic->get(UserService::class)->getByLogin($filter))) === false) {
                         return [];
                     }
 
@@ -204,19 +204,19 @@ class AccountSearchService extends Service
                     ];
                     break;
                 case 'owner':
-                    if ($text === false) {
+                    if ($filter === false) {
                         return [];
                     }
 
                     return [
                         'type' => 'user',
                         'query' => 'A.userLogin LIKE ?',
-                        'values' => ['%' . $text . '%']
+                        'values' => ['%' . $filter . '%']
                     ];
                     break;
                 case 'group':
-                    if ($text === false
-                        || is_object(($userGroupData = $this->dic->get(UserGroupService::class)->getByName($text))) === false) {
+                    if ($filter === false
+                        || is_object(($userGroupData = $this->dic->get(UserGroupService::class)->getByName($filter))) === false) {
                         return [];
                     }
 
@@ -227,25 +227,25 @@ class AccountSearchService extends Service
                     ];
                     break;
                 case 'maingroup':
-                    if ($text === false) {
+                    if ($filter === false) {
                         return [];
                     }
 
                     return [
                         'type' => 'group',
                         'query' => 'A.userGroupName = ?',
-                        'values' => ['%' . $text . '%']
+                        'values' => ['%' . $filter . '%']
                     ];
                     break;
                 case 'file':
-                    if ($text === false) {
+                    if ($filter === false) {
                         return [];
                     }
 
                     return [
                         'type' => 'file',
                         'query' => 'A.id IN (SELECT AF.accountId FROM AccountFile AF WHERE AF.name LIKE ?)',
-                        'values' => ['%' . $text . '%']
+                        'values' => ['%' . $filter . '%']
                     ];
                     break;
                 case 'expired':
@@ -260,6 +260,17 @@ class AccountSearchService extends Service
                         'type' => 'private',
                         'query' => '(A.isPrivate = 1 AND A.userId = ?) OR (A.isPrivateGroup = 1 AND A.userGroupId = ?)',
                         'values' => [$this->context->getUserData()->getId(), $this->context->getUserData()->getUserGroupId()]
+                    ];
+                    break;
+                case 'id':
+                    if ($filter === false) {
+                        return [];
+                    }
+
+                    return [
+                        'type' => 'id',
+                        'query' => 'A.id = ?',
+                        'values' => [(int)$filter]
                     ];
                     break;
                 default:
