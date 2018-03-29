@@ -83,22 +83,17 @@ sysPass.Theme = function (Common) {
 
             // Poner la clave en los input y actualizar MDL
             $dstParent.find("input:password").val(password);
-            $dstParent.addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+            $dstParent
+                .addClass(mdl.CssClasses_.IS_DIRTY)
+                .removeClass(mdl.CssClasses_.IS_INVALID);
 
             // Poner la clave en el input de repetición y encriptarla
             if ($targetR.length > 0) {
-                $targetR.val(password).parent().addClass(mdl.CssClasses_.IS_DIRTY).removeClass(mdl.CssClasses_.IS_INVALID);
+                $targetR.val(password).parent()
+                    .addClass(mdl.CssClasses_.IS_DIRTY)
+                    .removeClass(mdl.CssClasses_.IS_INVALID);
                 Common.encryptFormValue($targetR);
             }
-
-            // Mostar el indicador de complejidad
-            // $dstParent.find("#passLevel").show(500);
-
-            // } else {
-            //     Common.outputResult(level);
-            //     $("input:password, input.password").val(genPassword);
-            //     $("#passLevel").show(500);
-            // }
         });
     };
 
@@ -198,7 +193,7 @@ sysPass.Theme = function (Common) {
             $this.on("keyup", function () {
                 Common.checkPassLevel($this);
 
-                $this[0].dataset.pass = $this.val();
+                this.dataset.pass = $this.val();
             });
 
             const $passwordActions = $this.parent().next();

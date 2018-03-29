@@ -317,12 +317,10 @@ sysPass.Main = function () {
         const $passLevel = $("#password-level-" + $target.attr("id"));
         const score = level.score;
 
-        $passLevel
-            .show()
-            .removeClass("weak good strong strongest");
+        $passLevel.removeClass("weak good strong strongest");
 
         if (passwordData.passLength === 0) {
-            $passLevel.attr("data-level-msg", "").empty();
+            $passLevel.attr("data-level-msg", "");
         } else if (passwordData.passLength < passwordData.minPasswordLength) {
             $passLevel.attr("data-level-msg", config.LANG[11]).addClass("weak");
         } else if (score === 0) {
