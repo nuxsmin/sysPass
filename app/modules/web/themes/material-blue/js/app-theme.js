@@ -92,7 +92,8 @@ sysPass.Theme = function (Common) {
             }
 
             // Mostar el indicador de complejidad
-            $dstParent.find("#passLevel").show(500);
+            // $dstParent.find("#passLevel").show(500);
+
             // } else {
             //     Common.outputResult(level);
             //     $("input:password, input.password").val(genPassword);
@@ -170,8 +171,16 @@ sysPass.Theme = function (Common) {
                 return;
             }
 
+            const uniqueId = Common.uniqueId();
             const $thisParent = $this.parent();
-            const targetId = $this.attr("id");
+            const $form = $this.closest("form");
+            const targetId = $this.attr("id") + "-" + uniqueId;
+
+            const $passwordRepeat = $form.find("#" + $this.attr("id") + "_repeat");
+            $passwordRepeat.attr("id", targetId + "_repeat");
+
+            $this.attr("id", targetId);
+            $this.attr("data-pass", $this.val());
 
             let btnMenu =
                 `<button id="menu-password-${targetId}" class="mdl-button mdl-js-button mdl-button--icon" type="button" title="${Common.config().LANG[27]}"><i class="material-icons">more_vert</i></button>
@@ -183,47 +192,62 @@ sysPass.Theme = function (Common) {
             $thisParent.after(`<div class="password-actions" />`);
 
             $thisParent.next(".password-actions")
-                .prepend(`<span class="passLevel passLevel-${targetId} fullround" title="${Common.config().LANG[31]}"></span>`)
-                .prepend(`<i class="showpass material-icons clip-pass-field" data-clipboard-target='#${targetId}' title="${Common.config().LANG[32]}">remove_red_eye</i>`)
+                .prepend(`<i id='password-level-${targetId}' class="showpass material-icons clip-pass-field password-level" data-clipboard-target='${targetId}' data-level-msg= '' title="${Common.config().LANG[32]}">remove_red_eye</i>`)
                 .prepend(btnMenu);
 
             $this.on("keyup", function () {
                 Common.checkPassLevel($this);
+
+                $this[0].dataset.pass = $this.val();
             });
 
             const $passwordActions = $this.parent().next();
 
             // Crear evento para generar clave aleatoria
-            $passwordActions.find(".passGen").on("click", function () {
-                randomPassword($this);
+            $passwordActions
+                .find(".passGen")
+                .on("click", function () {
+                    randomPassword($this);
 
-                $this.blur();
-            });
+                    $this.blur();
+                });
 
-            $passwordActions.find(".passComplexity").on("click", function () {
-                complexityDialog();
-            });
+            $passwordActions
+                .find(".passComplexity")
+                .on("click", function () {
+                    complexityDialog();
+                });
 
             // Crear evento para mostrar clave generada/introducida
-            $passwordActions.find(".showpass").on("mouseover", function () {
-                $(this).attr("title", $this[0].dataset.pass);
-            });
+            $passwordActions
+                .find(".showpass")
+                .on("mouseover", function () {
+                    if (this.dataset.levelMsg !== "") {
+                        $(this).attr("title", this.dataset.levelMsg + "\n\n" + $this[0].dataset.pass);
+                    } else {
+                        $(this).attr("title", $this[0].dataset.pass);
+                    }
+                });
 
             // Reset de los campos de clave
-            $passwordActions.find(".reset").on("click", function () {
-                $this.val("");
+            $passwordActions
+                .find(".reset")
+                .on("click", function () {
+                    $this.val("");
+                    $this[0].dataset.pass = "";
 
-                const $targetIdR = $("#" + targetId + "_repeat");
+                    if ($passwordRepeat.length > 0) {
+                        $passwordRepeat.val("");
+                    }
 
-                if ($targetIdR.length > 0) {
-                    $targetIdR.val("");
-                }
-
-                // Actualizar objetos de MDL
-                componentHandler.upgradeDom();
-            });
+                    // Actualizar objetos de MDL
+                    componentHandler.upgradeDom();
+                });
 
             $this.attr("data-pass-upgraded", "true");
+
+            // Actualizar objetos de MDL
+            componentHandler.upgradeDom();
         });
 
         // Crear los iconos de acciones sobre claves (sólo mostrar clave)

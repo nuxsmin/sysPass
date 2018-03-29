@@ -115,25 +115,30 @@ pre, code, samp, kbd {
 
 body.login,
 body.logout,
-body.passreset {
+body.userpassreset {
   background: #607d8b; }
   body.login #wrap,
   body.logout #wrap,
-  body.passreset #wrap {
+  body.userpassreset #wrap {
     background: transparent; }
+  body.login #container,
+  body.logout #container,
+  body.userpassreset #container {
+    padding-top: 5%; }
   body.login footer,
   body.logout footer,
-  body.passreset footer {
+  body.userpassreset footer {
     background: #78909C; }
     body.login footer a,
     body.logout footer a,
-    body.passreset footer a {
+    body.userpassreset footer a {
       color: #f2f2f2; }
 
 #box-pub-noheader {
   background: transparent url("../../../../../../public/images/logo_full_nobg_outline.png") no-repeat top center;
   background-size: 75% auto;
   width: 40em;
+  min-height: 20em;
   margin: 0 auto; }
   #box-pub-noheader > div {
     width: 100%;
@@ -170,7 +175,7 @@ body.passreset {
         margin: 1em 0;
         letter-spacing: .1em;
         padding: 0.2em 0; }
-      #box-pub-noheader .box-form form fieldset#box-data i {
+      #box-pub-noheader .box-form form fieldset#box-data .form-control > i {
         margin-right: .5em;
         opacity: .5; }
       #box-pub-noheader .box-form form fieldset#box-data .extra-hidden {
@@ -203,7 +208,8 @@ body.passreset {
   /*min-width: 1024px;*/
   /*height: 100%;*/
   width: 100%;
-  background-color: #f5f5f5; }
+  background-color: #f5f5f5;
+  padding-bottom: 5em; }
 
 #wrap-loading {
   position: fixed;
@@ -242,9 +248,7 @@ body.passreset {
 #container {
   margin: auto;
   width: 100%; }
-  #container.login, #container.passreset {
-    padding-top: 5%; }
-  #container.error, #container.install, #container.passreset {
+  #container.error, #container.install {
     width: 100%; }
   #container .logo {
     height: 64px; }
@@ -916,52 +920,14 @@ h5.datagrid-header-title {
   margin: 0;
   padding: 0.3em; }
 
-.passLevel {
-  width: 20px;
-  height: 20px;
-  display: inline-block;
-  position: relative;
-  top: 2px; }
-  .passLevel.strongest {
-    color: #26a69a;
-    background-color: #e0f2f1;
-    border: 1px solid #26a69a;
-    font-weight: bold; }
-    .passLevel.strongest:hover {
-      color: #26a69a;
-      background-color: #e0f2f1;
-      border: 1px solid #26a69a;
-      font-weight: bold; }
-  .passLevel.strong {
-    color: #2196f3;
-    background-color: #e3f2fd;
-    border: 1px solid #2196f3;
-    font-weight: bold; }
-    .passLevel.strong:hover {
-      color: #2196f3;
-      background-color: #e3f2fd;
-      border: 1px solid #2196f3;
-      font-weight: bold; }
-  .passLevel.good {
-    color: #ffca28;
-    background-color: #fff8e1;
-    border: 1px solid #ffca28;
-    font-weight: bold; }
-    .passLevel.good:hover {
-      color: #ffca28;
-      background-color: #fff8e1;
-      border: 1px solid #ffca28;
-      font-weight: bold; }
-  .passLevel.weak {
-    color: #ef5350;
-    background-color: #ffebee;
-    border: 1px solid #ef5350;
-    font-weight: bold; }
-    .passLevel.weak:hover {
-      color: #ef5350;
-      background-color: #ffebee;
-      border: 1px solid #ef5350;
-      font-weight: bold; }
+.password-level.strongest {
+  color: #26a69a; }
+.password-level.strong {
+  color: #2196f3; }
+.password-level.good {
+  color: #ffca28; }
+.password-level.weak {
+  color: #ef5350; }
 
 #alert #alert-text {
   margin: 15px auto;
@@ -1029,6 +995,13 @@ h5.datagrid-header-title {
   width: 12em; }
   .password-actions > span, .password-actions i {
     margin-right: 0.6em; }
+
+.form-control {
+  position: relative; }
+  .form-control .password-actions {
+    position: absolute;
+    right: 0;
+    padding: 20px; }
 
 .custom-input-color {
   width: 3em;
@@ -1136,15 +1109,6 @@ fieldset.warning {
 .opacity50 {
   opacity: .5 !important; }
 
-#login-logo {
-  position: fixed;
-  top: 15em;
-  left: 0;
-  width: 100%;
-  height: 20em;
-  background: transparent url("../../../../../../public/images/logo_full_nobg_outline.png") no-repeat top center;
-  background-size: 75% auto; }
-
 #box-pub-noheader #box-login {
   position: relative;
   min-height: 14em; }
@@ -1176,8 +1140,8 @@ fieldset.warning {
     display: flex;
     justify-content: space-around;
     list-style: none; }
-    #box-pub-noheader #demo-info ul li span {
-      margin: 0 2em; }
+    #box-pub-noheader #demo-info ul li > span {
+      padding: 0 1em; }
 
 @media screen and (max-width: 600px) {
   #box-pub-noheader #box-login #box-buttons {
@@ -1190,10 +1154,13 @@ fieldset.warning {
   #box-pub-noheader #demo-info ul {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
     list-style: none; }
-    #box-pub-noheader #demo-info ul li span {
-      margin: 0 2em; } }
+    #box-pub-noheader #demo-info ul li {
+      width: 11em;
+      text-align: left; }
+      #box-pub-noheader #demo-info ul li > span {
+        padding: 0 1em; } }
 /* Default styles first then media queries */
 /*@media screen and (min-width: 400px)  {}*/
 /*@media screen and (min-width: 600px)  {}*/
@@ -1242,6 +1209,9 @@ fieldset.warning {
 
   #box-popup h2 > .btn-popup-close {
     display: inline-block; }
+
+  #actions ul.errors {
+    max-width: 90vw; }
 
   .mdl-data-table {
     table-layout: fixed;

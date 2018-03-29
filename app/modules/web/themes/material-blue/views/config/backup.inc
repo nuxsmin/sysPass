@@ -119,7 +119,7 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="exportPwd" name="exportPwd" type="password"
+                    <input id="export-password" name="exportPwd" type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                            maxlength="255"/>
                     <label class="mdl-textfield__label"
@@ -133,7 +133,7 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="exportPwdR" name="exportPwdR" type="password"
+                    <input id="export-password_repeat" name="exportPwdR" type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"/>
                     <label class="mdl-textfield__label"

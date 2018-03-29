@@ -78,7 +78,10 @@ class ConfigLdapController extends SimpleControllerBase
                 $configData->setLdapDefaultGroup($ldapDefaultGroup);
                 $configData->setLdapDefaultProfile($ldapDefaultProfile);
                 $configData->setLdapBindUser($ldapParams->getBindDn());
-                $configData->setLdapBindPass($ldapParams->getBindPass());
+
+                if ($ldapParams->getBindPass() !== '***') {
+                    $configData->setLdapBindPass($ldapParams->getBindPass());
+                }
 
                 if ($configData->isLdapEnabled() === false) {
                     $eventMessage->addDescription(__u('LDAP habiltado'));

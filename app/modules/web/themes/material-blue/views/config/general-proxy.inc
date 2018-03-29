@@ -65,7 +65,7 @@
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="proxy_pass" name="proxy_pass" type="password"
                        class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
-                       maxlength="128" value="<?php echo $configData->getProxyPass(); ?>">
+                       maxlength="128" value="<?php echo $configData->getProxyPass() ? '***' : ''; ?>">
                 <label class="mdl-textfield__label"
                        for="proxy_pass"><?php echo __('Clave del servidor proxy'); ?></label>
             </div>

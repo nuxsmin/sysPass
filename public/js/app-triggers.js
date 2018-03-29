@@ -310,10 +310,10 @@ sysPass.Triggers = function (Common) {
                 Common.appActions().main.login($frmLogin);
             }
         },
-        passreset: function () {
-            log.info("views:passreset");
+        userpassreset: function () {
+            log.info("views:userpassreset");
 
-            const $form = $("#frmPassReset");
+            const $form = $("#frmUserPassReset");
 
             Common.appTheme().passwordDetect($form);
         },

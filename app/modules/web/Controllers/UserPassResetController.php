@@ -65,7 +65,7 @@ class UserPassResetController extends ControllerBase
     public function indexAction()
     {
         $this->dic->get(LayoutHelper::class)
-            ->getCustomLayout('request', 'passreset');
+            ->getCustomLayout('request', strtolower($this->controllerName));
 
         if (!$this->configData->isMailEnabled()) {
             ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, 'request');
@@ -144,7 +144,7 @@ class UserPassResetController extends ControllerBase
     public function resetAction($hash = null)
     {
         $this->dic->get(LayoutHelper::class)
-            ->getCustomLayout('reset', 'passreset');
+            ->getCustomLayout('reset', strtolower($this->controllerName));
 
         if ($hash && $this->configData->isMailEnabled()) {
             $this->view->assign('hash', $hash);

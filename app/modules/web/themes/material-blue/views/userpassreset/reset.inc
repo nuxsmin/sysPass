@@ -6,10 +6,10 @@
         <?php echo __('Solicitud de Cambio de Clave'); ?>
     </div>
     <div id="box-passreset" class="box-form round">
-        <form id="frmPassReset" action="" method="post" class="form-action" data-onsubmit="user/passreset"
+        <form id="frmUserPassReset" action="" method="post" class="form-action" data-onsubmit="user/passreset"
               data-action-route="userPassReset/saveReset">
             <fieldset id="box-data">
-                <div>
+                <div class="form-control">
                     <i class="material-icons">vpn_key</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="password" name="password" type="password" required
@@ -20,7 +20,7 @@
                                for="password"><?php echo __('Clave'); ?></label>
                     </div>
                 </div>
-                <div>
+                <div class="form-control">
                     <i class="material-icons">vpn_key</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="password_repeat" name="password_repeat" type="password" required

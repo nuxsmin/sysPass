@@ -1,1 +1,2 @@
-<div id="login-logo"></div>
+<div id="box-pub-noheader">
+</div>

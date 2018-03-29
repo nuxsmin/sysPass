@@ -127,7 +127,7 @@ class LoginController extends ControllerBase
                 ->redirect('index.php?r=index')
                 ->send(true);
         }
-        
+
         $this->dic->get(LayoutHelper::class)
             ->getCustomLayout('index', 'login');
 

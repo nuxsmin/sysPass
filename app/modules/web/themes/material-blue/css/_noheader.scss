@@ -5,10 +5,13 @@
 
 body.login,
 body.logout,
-body.passreset {
+body.userpassreset {
   background: $color-bluegrey-fg;
   #wrap {
     background: transparent;
+  }
+  #container {
+    padding-top: 5%;
   }
   footer {
     background: #78909C;
@@ -21,6 +24,7 @@ body.passreset {
 #box-pub-noheader {
   @include background-logo-outline;
   width: 40em;
+  min-height: 20em;
   margin: 0 auto;
   > div {
     width: 100%;
@@ -60,7 +64,7 @@ body.passreset {
           letter-spacing: .1em;
           padding: 0.2em 0;
         }
-        i {
+        .form-control > i {
           margin-right: .5em;
           opacity: .5;
         }

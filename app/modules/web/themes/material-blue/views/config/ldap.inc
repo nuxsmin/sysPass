@@ -132,7 +132,7 @@
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="ldap_bindpass" name="ldap_bindpass" type="password"
                                class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
-                               maxlength="128" value="<?php echo $configData->getLdapBindPass(); ?>"/>
+                               maxlength="128" value="<?php echo $configData->getLdapBindPass() ? '***' : ''; ?>"/>
                         <label class="mdl-textfield__label"
                                for="ldap_bindpass"><?php echo __('Clave'); ?></label>
                     </div>

@@ -103,7 +103,7 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="mail_pass" name="mail_pass" type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
-                           maxlength="128" value="<?php echo $configData->getMailPass(); ?>"/>
+                           maxlength="128" value="<?php echo $configData->getMailPass() ? '***' : ''; ?>"/>
                     <label class="mdl-textfield__label" for="mail_pass"><?php echo __('Clave'); ?></label>
                 </div>
             </td>

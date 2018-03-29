@@ -280,7 +280,7 @@ sysPass.Main = function () {
                 );
         }).on("click", ".clip-pass-field", function () {
             clipboard
-                .copy(decodeEntities($(this.dataset.clipboardTarget).data("pass")))
+                .copy(decodeEntities(document.getElementById(this.dataset.clipboardTarget).dataset.pass))
                 .then(
                     function () {
                         msg.ok(config.LANG[45]);
@@ -314,24 +314,25 @@ sysPass.Main = function () {
     const outputResult = function (level, $target) {
         log.info("outputResult");
 
-        const $passLevel = $(".passLevel-" + $target.attr("id"));
+        const $passLevel = $("#password-level-" + $target.attr("id"));
         const score = level.score;
 
-        $passLevel.show();
-        $passLevel.removeClass("weak good strong strongest");
+        $passLevel
+            .show()
+            .removeClass("weak good strong strongest");
 
         if (passwordData.passLength === 0) {
-            $passLevel.attr("title", "").empty();
+            $passLevel.attr("data-level-msg", "").empty();
         } else if (passwordData.passLength < passwordData.minPasswordLength) {
-            $passLevel.attr("title", config.LANG[11]).addClass("weak");
+            $passLevel.attr("data-level-msg", config.LANG[11]).addClass("weak");
         } else if (score === 0) {
-            $passLevel.attr("title", config.LANG[9] + " - " + level.feedback.warning).addClass("weak");
+            $passLevel.attr("data-level-msg", config.LANG[9] + " - " + level.feedback.warning).addClass("weak");
         } else if (score === 1 || score === 2) {
-            $passLevel.attr("title", config.LANG[8] + " - " + level.feedback.warning).addClass("good");
+            $passLevel.attr("data-level-msg", config.LANG[8] + " - " + level.feedback.warning).addClass("good");
         } else if (score === 3) {
-            $passLevel.attr("title", config.LANG[7]).addClass("strong");
+            $passLevel.attr("data-level-msg", config.LANG[7]).addClass("strong");
         } else if (score === 4) {
-            $passLevel.attr("title", config.LANG[10]).addClass("strongest");
+            $passLevel.attr("data-level-msg", config.LANG[10]).addClass("strongest");
         }
     };
 
@@ -844,7 +845,8 @@ sysPass.Main = function () {
             redirect: redirect,
             scrollUp: scrollUp,
             setContentSize: setContentSize,
-            generateRandomPass: generateRandomPass
+            generateRandomPass: generateRandomPass,
+            uniqueId: uniqueId
         };
 
         // Objeto con métodos y propiedades protegidas
@@ -974,6 +976,27 @@ sysPass.Main = function () {
             callback(password, zxcvbn(password));
         }
     };
+
+    /**
+     * @see https://stackoverflow.com/questions/3231459/create-unique-id-with-javascript
+     * @returns {string}
+     */
+    const uniqueId = function () {
+        // always start with a letter (for DOM friendlyness)
+        let idstr = String.fromCharCode(Math.floor((Math.random() * 25) + 65));
+
+        do {
+            // between numbers and characters (48 is 0 and 90 is Z (42-48 = 90)
+            const ascicode = Math.floor((Math.random() * 42) + 48);
+            if (ascicode < 58 || ascicode > 64) {
+                // exclude all chars between : (58) and @ (64)
+                idstr += String.fromCharCode(ascicode);
+            }
+        } while (idstr.length < 32);
+
+        return idstr.toLowerCase();
+    };
+
 
     return init();
 };

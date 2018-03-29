@@ -1,12 +1,3 @@
-#login-logo {
-  position: fixed;
-  top: 15em;
-  left: 0;
-  width: 100%;
-  height: 20em;
-  @include background-logo-outline;
-}
-
 #box-pub-noheader {
   #box-login {
     position: relative;
@@ -42,8 +33,10 @@
       display: flex;
       justify-content: space-around;
       list-style: none;
-      li span {
-        margin: 0 2em;
+      li {
+        > span {
+          padding: 0 1em;
+        }
       }
     }
   }
@@ -66,10 +59,14 @@
       ul {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        align-items: center;
         list-style: none;
-        li span {
-          margin: 0 2em;
+        li {
+          width: 11em;
+          text-align: left;
+          > span {
+            padding: 0 1em;
+          }
         }
       }
     }

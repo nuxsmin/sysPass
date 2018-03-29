@@ -84,7 +84,10 @@ class ConfigMailController extends SimpleControllerBase
             if ($mailAuth) {
                 $configData->setMailAuthenabled($mailAuth);
                 $configData->setMailUser($mailUser);
-                $configData->setMailPass($mailPass);
+
+                if ($mailPass !== '***') {
+                    $configData->setMailPass($mailPass);
+                }
             }
 
             if ($configData->isMailEnabled() === false) {

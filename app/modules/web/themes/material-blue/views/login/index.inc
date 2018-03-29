@@ -5,7 +5,7 @@
               data-onsubmit="main/login"
               data-route="login/login">
             <fieldset id="box-data">
-                <div>
+                <div class="form-control">
                     <i class="material-icons">perm_identity</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="user" name="user" type="text"
@@ -16,7 +16,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div class="form-control">
                     <i class="material-icons">vpn_key</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="pass" name="pass" type="password"
@@ -27,7 +27,7 @@
                     </div>
                 </div>
 
-                <div id="soldpass" class="extra-hidden">
+                <div id="soldpass" class="extra-hidden form-control">
                     <i class="material-icons">vpn_key</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="oldpass" name="oldpass" type="password"
@@ -38,7 +38,7 @@
                     </div>
                 </div>
 
-                <div id="smpass" class="extra-hidden">
+                <div id="smpass" class="extra-hidden form-control">
                     <i class="material-icons">vpn_key</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="mpass" name="mpass" type="password"

@@ -47,7 +47,7 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="newMasterPwd" name="newMasterPwd" type="password"
+                    <input id="new-masterpassword" name="newMasterPwd" type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                            maxlength="255" required/>
                     <label class="mdl-textfield__label"
@@ -61,7 +61,7 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="newMasterPwdR" name="newMasterPwdR" type="password"
+                    <input id="new-masterpassword_repeat" name="newMasterPwdR" type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255" required/>
                     <label class="mdl-textfield__label"

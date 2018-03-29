@@ -121,7 +121,10 @@ class ConfigGeneralController extends SimpleControllerBase
             $configData->setProxyServer($proxyServer);
             $configData->setProxyPort($proxyPort);
             $configData->setProxyUser($proxyUser);
-            $configData->setProxyPass($proxyPass);
+
+            if ($proxyPass !== '***') {
+                $configData->setProxyPass($proxyPass);
+            }
 
             if ($configData->isProxyEnabled() === false) {
                 $eventMessage->addDescription(__u('Proxy habiltado'));

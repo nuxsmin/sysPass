@@ -37,11 +37,13 @@
             <tr>
                 <td class="descField"><?php echo __('Clave'); ?></td>
                 <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="password" name="password" type="password" required
-                               class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
-                               maxlength="50">
-                        <label class="mdl-textfield__label" for="password"><?php echo __('Clave'); ?></label>
+                    <div class="form-control">
+                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input id="password" name="password" type="password" required
+                                   class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
+                                   maxlength="50">
+                            <label class="mdl-textfield__label" for="password"><?php echo __('Clave'); ?></label>
+                        </div>
                     </div>
                 </td>
             </tr>
