@@ -202,6 +202,7 @@ class Language
         self::$localeStatus = setlocale(LC_MESSAGES, [$lang, $fallback]);
 
         putenv('LANG=' . $lang);
+        putenv('LANGUAGE=' . $lang);
         setlocale(LC_ALL, [$lang, $fallback]);
         bindtextdomain('messages', LOCALES_PATH);
         textdomain('messages');
