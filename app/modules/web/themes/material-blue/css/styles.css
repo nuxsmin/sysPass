@@ -475,17 +475,20 @@ body.userpassreset {
   border-bottom: 1px solid #dfdfdf; }
   #content .data-header-minimal ul {
     display: flex;
+    flex-flow: row;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    align-content: flex-start;
+    justify-content: space-around;
     margin: 0; }
   #content .data-header-minimal li {
-    display: inline-flex;
     min-width: 10em;
     font-weight: normal;
     letter-spacing: normal; }
     #content .data-header-minimal li a {
       color: #b9b9b9;
       padding: 0.3em 0.8em; }
+  #content .data-header-minimal li.search-filter-spacer {
+    flex: 0 0 18em; }
 #content .data-table {
   width: 100%; }
   #content .data-table td:first-of-type,
@@ -1198,6 +1201,8 @@ fieldset.warning {
     width: 90%; }
   #content #searchbox .search-filters .selectize-control {
     width: 100%; }
+  #content .data-header-minimal li.search-filter-spacer {
+    display: none; }
   #content .data-container, #content .tab-data {
     width: 100%; }
     #content .data-container .selectize-control, #content .tab-data .selectize-control {

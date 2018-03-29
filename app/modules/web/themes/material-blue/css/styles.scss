@@ -355,12 +355,13 @@
     border-bottom: 1px solid #dfdfdf;
     ul {
       display: flex;
+      flex-flow: row;
       flex-wrap: wrap;
-      justify-content: flex-start;
+      align-content: flex-start;
+      justify-content: space-around;
       margin: 0;
     }
     li {
-      display: inline-flex;
       min-width: 10em;
       font-weight: normal;
       letter-spacing: normal;
@@ -368,6 +369,9 @@
         color: #b9b9b9;
         padding: 0.3em 0.8em;
       }
+    }
+    li.search-filter-spacer {
+      flex: 0 0 18em;
     }
   }
   .data-table {
@@ -1193,6 +1197,10 @@ fieldset.warning {
           width: 100%;
         }
       }
+    }
+
+    .data-header-minimal li.search-filter-spacer {
+      display: none;
     }
 
     .data-container, .tab-data {
