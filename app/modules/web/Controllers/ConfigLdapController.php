@@ -90,6 +90,8 @@ class ConfigLdapController extends SimpleControllerBase
                 $configData->setLdapEnabled(false);
 
                 $eventMessage->addDescription(__u('LDAP deshabilitado'));
+            } else {
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Sin cambios'));
             }
 
             $this->saveConfig($configData, $this->config, function () use ($eventMessage) {
