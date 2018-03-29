@@ -115,7 +115,7 @@
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Seguridad'); ?></div>
 
-                <select name="mail_security" id="sel-mailsecurity" size="1" class="select-box sel-chosen-ns">
+                <select name="mail_security" id="sel-mailsecurity" size="1" class="select-box select-box-deselect">
                     <option value=""><?php echo __('Deshabilitada'); ?></option>
                     <?php foreach ($mailSecurity as $security): ?>
                         <option
