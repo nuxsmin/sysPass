@@ -528,11 +528,10 @@
                     <td class="descField"><?php echo __('Usado por'); ?></td>
                     <td class="valField">
                         <div class="lowres-title"><?php echo __('Usado por'); ?></div>
-
                         <div class="list-wrap">
                             <ul class="mdl-list">
                                 <?php foreach ($usedBy as $user): ?>
-                                    <li class="mdl-list__item mdl-list__item--two-line">
+                                    <li class="mdl-list__item mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 <i class="material-icons mdl-list__item-icon">person</i>
                                     <?php echo $user->login; ?>

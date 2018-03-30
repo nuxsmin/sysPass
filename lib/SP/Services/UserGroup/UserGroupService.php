@@ -152,6 +152,28 @@ class UserGroupService extends Service
     }
 
     /**
+     * Returns the users that are using the given group id
+     *
+     * @param $id int
+     * @return array
+     */
+    public function getUsage($id)
+    {
+        return $this->userGroupRepository->getUsage($id);
+    }
+
+    /**
+     * Returns the items that are using the given group id
+     *
+     * @param $id int
+     * @return array
+     */
+    public function getUsageByUsers($id)
+    {
+        return $this->userGroupRepository->getUsageByUsers($id);
+    }
+
+    /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */

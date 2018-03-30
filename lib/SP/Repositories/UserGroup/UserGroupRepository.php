@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -92,7 +92,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     }
 
     /**
-     * Checks whether the item is in use or not
+     * Returns the items that are using the given group id
      *
      * @param $id int
      * @return array
@@ -115,6 +115,38 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->addParams(array_fill(0, 4, (int)$id));
+
+        return DbWrapper::getResultsArray($queryData, $this->db);
+    }
+
+    /**
+     * Returns the users that are using the given group id
+     *
+     * @param $id int
+     * @return array
+     */
+    public function getUsageByUsers($id)
+    {
+        $query = /** @lang SQL */
+            'SELECT U.id, login, `name`, ref
+              FROM (
+               SELECT
+                 id,
+                 "User" AS ref
+               FROM User U
+               WHERE U.userGroupId = ?
+               UNION ALL
+               SELECT
+                 userId AS id,
+                 "UserGroup" AS ref
+               FROM
+                 UserToUserGroup UUG
+               WHERE userGroupId = ?) Users
+          INNER JOIN User U ON U.id = Users.id';
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParams([(int)$id, (int)$id]);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -136,6 +136,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
 
         $this->view->assign('group', $group);
         $this->view->assign('users', SelectItemAdapter::factory(UserService::getItemsBasic())->getItemsFromModelSelected($this->userToUserGroupService->getUsersByGroupId($userGroupId)));
+        $this->view->assign('usedBy', $this->userGroupService->getUsageByUsers($userGroupId));
 
         $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));

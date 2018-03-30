@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-30 15:14+0100\n"
-"PO-Revision-Date: 2018-03-30 15:15+0100\n"
+"POT-Creation-Date: 2018-03-30 21:47+0100\n"
+"PO-Revision-Date: 2018-03-30 21:47+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -113,8 +113,8 @@ msgstr "Account added"
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:680
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:770
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:1047
-#: ../../../modules/web/Controllers/UserGroupController.php:249
-#: ../../../modules/web/Controllers/UserGroupController.php:288
+#: ../../../modules/web/Controllers/UserGroupController.php:250
+#: ../../../modules/web/Controllers/UserGroupController.php:289
 #: ../../../modules/web/themes/material-blue/views/account/account-editpass.inc:22
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:33
 #: ../../../modules/web/themes/material-blue/views/account/account-link.inc:15
@@ -607,6 +607,7 @@ msgstr "Action"
 #: ../../../modules/web/themes/material-blue/views/itemshow/authtoken.inc:19
 #: ../../../modules/web/themes/material-blue/views/itemshow/publiclink.inc:61
 #: ../../../modules/web/themes/material-blue/views/itemshow/publiclink.inc:63
+#: ../../../modules/web/themes/material-blue/views/itemshow/usergroup.inc:77
 #: ../../../modules/web/themes/material-blue/views/login/index.inc:15
 #: ../../../modules/web/themes/material-blue/views/login/index.inc:84
 #: ../../../modules/web/themes/material-blue/views/notification/notification.inc:68
@@ -828,7 +829,7 @@ msgstr "Error while searching the group RDN"
 #: ../../../../lib/SP/Providers/Auth/Ldap/LdapStd.php:127
 #: ../../../../lib/SP/Services/Ldap/LdapImportService.php:136
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:556
-#: ../../../modules/web/Controllers/UserGroupController.php:215
+#: ../../../modules/web/Controllers/UserGroupController.php:216
 #: ../../../modules/web/themes/material-blue/views/_partials/fixed-header.inc:130
 #: ../../../modules/web/themes/material-blue/views/_partials/footer.inc:15
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:246
@@ -1245,16 +1246,16 @@ msgstr "Group in use"
 msgid "Error al eliminar el grupo"
 msgstr "Error while deleting the group"
 
-#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:257
-#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:305
+#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:289
+#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:337
 msgid "Nombre de grupo duplicado"
 msgstr "Duplicated group name"
 
-#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:267
+#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:299
 msgid "Error al crear el grupo"
 msgstr "Error while creating the group"
 
-#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:313
+#: ../../../../lib/SP/Repositories/UserGroup/UserGroupRepository.php:345
 msgid "Error al actualizar el grupo"
 msgstr "Error while updating the group"
 
@@ -3429,7 +3430,7 @@ msgstr "New Group"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:728
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:729
-#: ../../../modules/web/Controllers/UserGroupController.php:313
+#: ../../../modules/web/Controllers/UserGroupController.php:314
 #: ../../../config/actions.xml:583
 msgid "Ver Grupo"
 msgstr "View Group"
@@ -3437,7 +3438,7 @@ msgstr "View Group"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:739
 #: ../../../modules/web/Controllers/Helpers/ItemsGridHelper.php:740
-#: ../../../modules/web/Controllers/UserGroupController.php:166
+#: ../../../modules/web/Controllers/UserGroupController.php:167
 #: ../../../config/actions.xml:595
 msgid "Editar Grupo"
 msgstr "Edit Group"
@@ -3933,23 +3934,23 @@ msgstr "User updated"
 msgid "Ver Usuario"
 msgstr "View User"
 
-#: ../../../modules/web/Controllers/UserGroupController.php:203
-#: ../../../modules/web/Controllers/UserGroupController.php:206
+#: ../../../modules/web/Controllers/UserGroupController.php:204
+#: ../../../modules/web/Controllers/UserGroupController.php:207
 msgid "Grupos eliminados"
 msgstr "Groups deleted"
 
-#: ../../../modules/web/Controllers/UserGroupController.php:214
-#: ../../../modules/web/Controllers/UserGroupController.php:218
+#: ../../../modules/web/Controllers/UserGroupController.php:215
+#: ../../../modules/web/Controllers/UserGroupController.php:219
 msgid "Grupo eliminado"
 msgstr "Group deleted"
 
-#: ../../../modules/web/Controllers/UserGroupController.php:248
-#: ../../../modules/web/Controllers/UserGroupController.php:252
+#: ../../../modules/web/Controllers/UserGroupController.php:249
+#: ../../../modules/web/Controllers/UserGroupController.php:253
 msgid "Grupo creado"
 msgstr "Group added"
 
-#: ../../../modules/web/Controllers/UserGroupController.php:287
-#: ../../../modules/web/Controllers/UserGroupController.php:291
+#: ../../../modules/web/Controllers/UserGroupController.php:288
+#: ../../../modules/web/Controllers/UserGroupController.php:292
 msgid "Grupo actualizado"
 msgstr "Group updated"
 
@@ -6156,6 +6157,17 @@ msgstr "Group name"
 msgid "Descripción del grupo"
 msgstr "Group description"
 
+#: ../../../modules/web/themes/material-blue/views/itemshow/usergroup.inc:68
+#: ../../../modules/web/themes/material-blue/views/itemshow/usergroup.inc:70
+#: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:528
+#: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:530
+msgid "Usado por"
+msgstr "Used by"
+
+#: ../../../modules/web/themes/material-blue/views/itemshow/usergroup.inc:88
+msgid "(*) Incluido en grupo"
+msgstr "(*) Listed in group"
+
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:22
 msgid "Gestión"
 msgstr "Management"
@@ -6311,11 +6323,6 @@ msgstr "View event log"
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:521
 msgid "Nombre del perfil"
 msgstr "Profile name"
-
-#: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:528
-#: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:530
-msgid "Usado por"
-msgstr "Used by"
 
 #: ../../../modules/web/themes/material-blue/views/login/index.inc:37
 msgid "Clave Anterior"

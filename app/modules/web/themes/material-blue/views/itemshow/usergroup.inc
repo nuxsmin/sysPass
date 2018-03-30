@@ -63,6 +63,33 @@
                 <?php include $this->includeTemplate('aux-customfields', 'common'); ?>
             <?php endif; ?>
 
+            <?php if (isset($usedBy)): ?>
+                <tr>
+                    <td class="descField"><?php echo __('Usado por'); ?></td>
+                    <td class="valField">
+                        <div class="lowres-title"><?php echo __('Usado por'); ?></div>
+                        <div class="list-wrap">
+                            <ul class="mdl-list">
+                                <?php foreach ($usedBy as $user): ?>
+                                    <li class="mdl-list__item mdl-list__item">
+                                        <span class="mdl-list__item-primary-content">
+                                            <i class="material-icons mdl-list__item-icon"
+                                               title="<?php echo __('Usuario'); ?>">person</i>
+                                            <?php if ($user->ref === 'UserGroup'): ?>
+                                                <?php printf('%s (%s)*', $user->name, $user->login); ?>
+                                            <?php else: ?>
+                                                <?php printf('%s (%s)', $user->name, $user->login); ?>
+                                            <?php endif; ?>
+                                        </span>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                        <div><?php echo __('(*) Incluido en grupo'); ?></div>
+                    </td>
+                </tr>
+            <?php endif; ?>
+
             </tbody>
         </table>
 
