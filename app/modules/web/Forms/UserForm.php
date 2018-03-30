@@ -26,7 +26,6 @@ namespace SP\Modules\Web\Forms;
 
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
-use SP\Core\SessionFactory;
 use SP\DataModel\UserData;
 use SP\Http\Request;
 
@@ -125,9 +124,7 @@ class UserForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Es necesario un email'));
         }
 
-        if ($this->configData->isDemoEnabled()
-            && $this->userData->getLogin() === 'demo'
-            && !$this->userData->isAdminApp()) {
+        if ($this->isDemo()) {
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
     }
@@ -139,7 +136,7 @@ class UserForm extends FormBase implements FormInterface
     {
         $userPassR = Request::analyzeEncrypted('password_repeat');
 
-        if ($this->configData->isDemoEnabled()) {
+        if ($this->isDemo()) {
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
 
@@ -157,7 +154,7 @@ class UserForm extends FormBase implements FormInterface
      */
     protected function checkDelete()
     {
-        if ($this->configData->isDemoEnabled()) {
+        if ($this->isDemo()) {
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
 
@@ -168,6 +165,16 @@ class UserForm extends FormBase implements FormInterface
         ) {
             throw new ValidationException(__u('No es posible eliminar, usuario en uso'));
         }
+    }
+
+    /**
+     * @return bool
+     */
+    private function isDemo()
+    {
+        return $this->configData->isDemoEnabled()
+            && $this->userData->getLogin() === 'demo'
+            && $this->userData->isAdminApp() === 0;
     }
 
     /**
