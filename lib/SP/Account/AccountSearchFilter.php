@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,7 @@
 
 namespace SP\Account;
 
+use SP\Mvc\Model\QueryCondition;
 use SP\Util\Filter;
 
 
@@ -58,6 +59,10 @@ class AccountSearchFilter
      * @var string
      */
     private $txtSearch;
+    /**
+     * @var string Search string without special filters
+     */
+    private $cleanTxtSearch;
     /**
      * @var int
      */
@@ -95,9 +100,13 @@ class AccountSearchFilter
      */
     private $searchFavorites = false;
     /**
-     * @var array
+     * @var QueryCondition
      */
     private $stringFilters;
+    /**
+     * @var string
+     */
+    private $filterOperator;
 
     /**
      * @return boolean
@@ -273,7 +282,7 @@ class AccountSearchFilter
     }
 
     /**
-     * @return array
+     * @return QueryCondition
      */
     public function getStringFilters()
     {
@@ -281,9 +290,9 @@ class AccountSearchFilter
     }
 
     /**
-     * @param array $stringFilters
+     * @param QueryCondition $stringFilters
      */
-    public function setStringFilters(array $stringFilters)
+    public function setStringFilters(QueryCondition $stringFilters)
     {
         $this->stringFilters = $stringFilters;
     }
@@ -362,5 +371,37 @@ class AccountSearchFilter
         $this->sortKey = $sortKey;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCleanTxtSearch()
+    {
+        return $this->cleanTxtSearch;
+    }
+
+    /**
+     * @param string $cleanTxtSearch
+     */
+    public function setCleanTxtSearch($cleanTxtSearch)
+    {
+        $this->cleanTxtSearch = $cleanTxtSearch;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilterOperator()
+    {
+        return $this->filterOperator;
+    }
+
+    /**
+     * @param string $filterOperator
+     */
+    public function setFilterOperator($filterOperator)
+    {
+        $this->filterOperator = $filterOperator;
     }
 }

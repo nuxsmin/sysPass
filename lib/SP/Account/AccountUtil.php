@@ -55,9 +55,7 @@ class AccountUtil
             && !($useGlobalSearch && $context->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
         ) {
             // Filtro usuario y grupo
-            $filter =
-                /** @lang SQL */
-                '(AH.userId = ? 
+            $filter = '(AH.userId = ? 
             OR AH.userGroupId = ? 
             OR AH.accountId IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = AH.accountId AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AH.accountId AND userGroupId = ?)
             OR AH.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AH.userGroupId AND userId = ?))';
@@ -66,16 +64,17 @@ class AccountUtil
 
             if ($configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
-                $filter .= /** @lang SQL */
-                    PHP_EOL . 'OR AH.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AH.accountId AND uug.userId = ? LIMIT 1)';
+                $filter .= PHP_EOL . 'OR AH.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AH.accountId AND uug.userId = ? LIMIT 1)';
                 $params[] = $userData->getId();
             }
 
             $queryFilter->addFilter($filter, $params);
         }
 
-        $queryFilter->addFilter(/** @lang SQL */
-            '(AH.isPrivate IS NULL OR AH.isPrivate = 0 OR (AH.isPrivate = 1 AND AH.userId = ?)) AND (AH.isPrivateGroup IS NULL OR AH.isPrivateGroup = 0 OR (AH.isPrivateGroup = 1 AND AH.userGroupId = ?))', [$userData->getId(), $userData->getUserGroupId()]);
+        $queryFilter->addFilter(
+            '(AH.isPrivate IS NULL OR AH.isPrivate = 0 OR (AH.isPrivate = 1 AND AH.userId = ?)) AND (AH.isPrivateGroup IS NULL OR AH.isPrivateGroup = 0 OR (AH.isPrivateGroup = 1 AND AH.userGroupId = ?))',
+            [$userData->getId(), $userData->getUserGroupId()]
+        );
 
         return $queryFilter;
     }
@@ -99,9 +98,7 @@ class AccountUtil
             && !($useGlobalSearch && $context->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
         ) {
             // Filtro usuario y grupo
-            $filter =
-                /** @lang SQL */
-                '(A.userId = ? 
+            $filter = '(A.userId = ? 
             OR A.userGroupId = ? 
             OR A.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = A.id AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = A.id AND userGroupId = ?)
             OR A.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = A.userGroupId AND userId = ?))';
@@ -110,16 +107,17 @@ class AccountUtil
 
             if ($configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
-                $filter .= /** @lang SQL */
-                    PHP_EOL . 'OR A.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = A.id AND uug.userId = ? LIMIT 1)';
+                $filter .= PHP_EOL . 'OR A.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = A.id AND uug.userId = ? LIMIT 1)';
                 $params[] = $userData->getId();
             }
 
             $queryFilter->addFilter($filter, $params);
         }
 
-        $queryFilter->addFilter(/** @lang SQL */
-            '(A.isPrivate IS NULL OR A.isPrivate = 0 OR (A.isPrivate = 1 AND A.userId = ?)) AND (A.isPrivateGroup IS NULL OR A.isPrivateGroup = 0 OR (A.isPrivateGroup = 1 AND A.userGroupId = ?))', [$userData->getId(), $userData->getUserGroupId()]);
+        $queryFilter->addFilter(
+            '(A.isPrivate IS NULL OR A.isPrivate = 0 OR (A.isPrivate = 1 AND A.userId = ?)) AND (A.isPrivateGroup IS NULL OR A.isPrivateGroup = 0 OR (A.isPrivateGroup = 1 AND A.userGroupId = ?))',
+            [$userData->getId(), $userData->getUserGroupId()]
+        );
 
         return $queryFilter;
     }

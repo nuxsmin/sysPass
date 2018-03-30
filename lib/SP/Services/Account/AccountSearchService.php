@@ -31,6 +31,7 @@ use SP\Core\Acl\Acl;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\Dto\AccountAclDto;
 use SP\DataModel\Dto\AccountCache;
+use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\Account\AccountRepository;
 use SP\Repositories\Account\AccountToTagRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
@@ -49,9 +50,11 @@ defined('APP_ROOT') || die();
 class AccountSearchService extends Service
 {
     /**
-     * Regex filter for special searching
+     * Regex filters for special searching
      */
-    const FILTERS_REGEX = '^(?<type>id|user|group|file|owner|maingroup|expired|private):(?:"(?<filter>[\w\.]+)")?$';
+    const FILTERS_REGEX_IS = '#(?<filter>(?:is|not):(?:expired|private))#';
+    const FILTERS_REGEX = '#(?<type>id|user|group|file|owner|maingroup):"?(?<filter>[\w\.]+)"?#';
+    const FILTERS_REGEX_OPERATOR = '#op:(?<operator>and|or)#';
 
     const COLORS_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'colors.cache';
 
@@ -85,31 +88,39 @@ class AccountSearchService extends Service
     /**
      * @var ConfigData
      */
-    protected $configData;
+    private $configData;
     /**
      * @var AccountToTagRepository
      */
-    protected $accountToTagRepository;
+    private $accountToTagRepository;
     /**
      * @var AccountToUserRepository
      */
-    protected $accountToUserRepository;
+    private $accountToUserRepository;
     /**
      * @var AccountToUserGroupRepository
      */
-    protected $accountToUserGroupRepository;
+    private $accountToUserGroupRepository;
     /**
      * @var FileCache
      */
-    protected $fileCache;
+    private $fileCache;
     /**
      * @var array
      */
-    protected $accountColor;
+    private $accountColor;
     /**
      * @var AccountRepository
      */
     private $accountRepository;
+    /**
+     * @var string
+     */
+    private $cleanString;
+    /**
+     * @var string
+     */
+    private $filterOperator = QueryCondition::CONDITION_OR;
 
     /**
      * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta
@@ -122,7 +133,9 @@ class AccountSearchService extends Service
      */
     public function processSearchResults(AccountSearchFilter $accountSearchFilter)
     {
-        $accountSearchFilter->setStringFilters($this->analyzeQueryString($accountSearchFilter->getTxtSearch()));
+        $accountSearchFilter->setStringFilters($this->analyzeQueryFilters($accountSearchFilter->getTxtSearch()));
+        $accountSearchFilter->setFilterOperator($this->filterOperator);
+        $accountSearchFilter->setCleanTxtSearch($this->cleanString);
 
         $accountSearchResponse = $this->accountRepository->getByFilter($accountSearchFilter);
 
@@ -173,112 +186,100 @@ class AccountSearchService extends Service
     }
 
     /**
-     * Analizar la cadena de consulta por eqituetas especiales y devolver un array
-     * con las columnas y los valores a buscar.
+     * Analizar la cadena de consulta por eqituetas especiales y devolver un objeto
+     * QueryCondition con los filtros
      *
-     * @param $txt
-     * @return array|bool
+     * @param $string
+     * @return QueryCondition
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    private function analyzeQueryString($txt)
+    private function analyzeQueryFilters($string)
     {
-        if (!preg_match('#' . self::FILTERS_REGEX . '#i', $txt, $filters)) {
-            return [];
-        }
+        $this->cleanString = $string;
 
-        $filter = empty($filters['filter']) === false ? $filters['filter'] : false;
+        $queryCondition = new QueryCondition();
 
-        try {
-            switch ($filters['type']) {
-                case 'user':
-                    if ($filter === false
-                        || is_object(($userData = $this->dic->get(UserService::class)->getByLogin($filter))) === false) {
-                        return [];
-                    }
+        if (preg_match(self::FILTERS_REGEX_OPERATOR, $string, $matches)) {
+            // Removes the operator from the string to increase regex performance
+            $this->cleanString = trim(str_replace($matches[0], '', $this->cleanString));
 
-                    return [
-                        'type' => 'user',
-                        'query' => 'A.userId = ? OR A.id IN (SELECT AU.accountId FROM AccountToUser AU WHERE AU.accountId = A.id AND AU.userId = ? UNION ALL SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = A.id AND AUG.userGroupId = ?)',
-                        'values' => [$userData->getId(), $userData->getId(), $userData->getUserGroupId()]
-                    ];
+            switch ($matches['operator']) {
+                case 'and':
+                    $this->filterOperator = QueryCondition::CONDITION_AND;
                     break;
-                case 'owner':
-                    if ($filter === false) {
-                        return [];
-                    }
-
-                    return [
-                        'type' => 'user',
-                        'query' => 'A.userLogin LIKE ?',
-                        'values' => ['%' . $filter . '%']
-                    ];
+                case 'or':
+                    $this->filterOperator = QueryCondition::CONDITION_OR;
                     break;
-                case 'group':
-                    if ($filter === false
-                        || is_object(($userGroupData = $this->dic->get(UserGroupService::class)->getByName($filter))) === false) {
-                        return [];
-                    }
-
-                    return [
-                        'type' => 'group',
-                        'query' => 'A.userGroupId = ? OR A.id IN (SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = id AND AUG.userGroupId = ?)',
-                        'values' => [$userGroupData->getId(), $userGroupData->getId()]
-                    ];
-                    break;
-                case 'maingroup':
-                    if ($filter === false) {
-                        return [];
-                    }
-
-                    return [
-                        'type' => 'group',
-                        'query' => 'A.userGroupName = ?',
-                        'values' => ['%' . $filter . '%']
-                    ];
-                    break;
-                case 'file':
-                    if ($filter === false) {
-                        return [];
-                    }
-
-                    return [
-                        'type' => 'file',
-                        'query' => 'A.id IN (SELECT AF.accountId FROM AccountFile AF WHERE AF.name LIKE ?)',
-                        'values' => ['%' . $filter . '%']
-                    ];
-                    break;
-                case 'expired':
-                    return [
-                        'type' => 'expired',
-                        'query' => 'A.passDateChange > 0 AND UNIX_TIMESTAMP() > A.passDateChange',
-                        'values' => []
-                    ];
-                    break;
-                case 'private':
-                    return [
-                        'type' => 'private',
-                        'query' => '(A.isPrivate = 1 AND A.userId = ?) OR (A.isPrivateGroup = 1 AND A.userGroupId = ?)',
-                        'values' => [$this->context->getUserData()->getId(), $this->context->getUserData()->getUserGroupId()]
-                    ];
-                    break;
-                case 'id':
-                    if ($filter === false) {
-                        return [];
-                    }
-
-                    return [
-                        'type' => 'id',
-                        'query' => 'A.id = ?',
-                        'values' => [(int)$filter]
-                    ];
-                    break;
-                default:
-                    return [];
             }
-        } catch (\Exception $e) {
-            return [];
         }
+
+        if (preg_match_all(self::FILTERS_REGEX_IS, $string, $matches, PREG_SET_ORDER) > 0) {
+            foreach ($matches as $filter) {
+                // Removes the current filter from the string to increase regex performance
+                $this->cleanString = trim(str_replace($filter['filter'], '', $this->cleanString));
+
+                switch ($filter['filter']) {
+                    case 'is:expired':
+                        $queryCondition->addFilter('A.passDateChange > 0 AND UNIX_TIMESTAMP() > A.passDateChange', []);
+                        break;
+                    case 'not:expired':
+                        $queryCondition->addFilter('A.passDateChange = 0 OR UNIX_TIMESTAMP() < A.passDateChange', []);
+                        break;
+                    case 'is:private':
+                        $queryCondition->addFilter('(A.isPrivate = 1 AND A.userId = ?) OR (A.isPrivateGroup = 1 AND A.userGroupId = ?)', [$this->context->getUserData()->getId(), $this->context->getUserData()->getUserGroupId()]);
+                        break;
+                    case 'not:private':
+                        $queryCondition->addFilter('A.isPrivate = 0 AND A.isPrivateGroup = 0');
+                        break;
+                }
+            }
+        }
+
+        if (preg_match_all(self::FILTERS_REGEX, $string, $matches, PREG_SET_ORDER) > 0) {
+            foreach ($matches as $filter) {
+                // Removes the current filter from the string to increase regex performance
+                $this->cleanString = trim(str_replace($filter[0], '', $this->cleanString));
+
+                if (($text = $filter['filter']) !== '') {
+                    try {
+
+                        switch ($filter['type']) {
+                            case 'user':
+                                if (is_object(($userData = $this->dic->get(UserService::class)->getByLogin($text)))) {
+                                    $queryCondition->addFilter(
+                                        'A.userId = ? OR A.id IN (SELECT AU.accountId FROM AccountToUser AU WHERE AU.accountId = A.id AND AU.userId = ? UNION ALL SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = A.id AND AUG.userGroupId = ?)',
+                                        [$userData->getId(), $userData->getId(), $userData->getUserGroupId()]);
+                                }
+                                break;
+                            case 'owner':
+                                $queryCondition->addFilter('A.userLogin LIKE ?', ['%' . $text . '%']);
+                                break;
+                            case 'group':
+                                if (is_object(($userGroupData = $this->dic->get(UserGroupService::class)->getByName($text)))) {
+                                    $queryCondition->addFilter(
+                                        'A.userGroupId = ? OR A.id IN (SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = id AND AUG.userGroupId = ?)',
+                                        [$userGroupData->getId(), $userGroupData->getId()]);
+                                }
+                                break;
+                            case 'maingroup':
+                                $queryCondition->addFilter('A.userGroupName = ?', ['%' . $text . '%']);
+                                break;
+                            case 'file':
+                                $queryCondition->addFilter('A.id IN (SELECT AF.accountId FROM AccountFile AF WHERE AF.name LIKE ?)', ['%' . $text . '%']);
+                                break;
+                            case 'id':
+                                $queryCondition->addFilter('A.id = ?', [(int)$text]);
+                                break;
+                        }
+
+                    } catch (\Exception $e) {
+                    }
+                }
+            }
+        }
+
+        return $queryCondition;
     }
 
     /**

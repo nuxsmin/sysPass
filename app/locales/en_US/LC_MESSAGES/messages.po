@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-29 20:56+0100\n"
-"PO-Revision-Date: 2018-03-29 20:57+0100\n"
+"POT-Creation-Date: 2018-03-30 15:14+0100\n"
+"PO-Revision-Date: 2018-03-30 15:15+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -755,7 +755,7 @@ msgstr "Session not started or timed out"
 msgid "Acción Inválida"
 msgstr "Invalid Action"
 
-#: ../../../../lib/SP/Mvc/Model/QueryCondition.php:66
+#: ../../../../lib/SP/Mvc/Model/QueryCondition.php:69
 msgid "Tipo de filtro inválido"
 msgstr "Invalid filter type"
 
@@ -4344,14 +4344,14 @@ msgstr "Select Profile"
 
 #: ../../../config/strings.js.inc:50
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:79
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:51
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:55
 msgid "Seleccionar Cliente"
 msgstr "Select Client"
 
 #: ../../../config/strings.js.inc:51
 #: ../../../modules/web/themes/material-blue/views/account/account-history.inc:68
 #: ../../../modules/web/themes/material-blue/views/account/account.inc:103
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:60
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:64
 msgid "Seleccionar Categoría"
 msgstr "Select Category"
 
@@ -4457,7 +4457,7 @@ msgid "Mostrar Favoritos"
 msgstr "Show Favorites"
 
 #: ../../../config/strings.js.inc:78
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:74
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:78
 msgid "Mostrar Todos"
 msgstr "Show All"
 
@@ -4777,62 +4777,73 @@ msgstr "Link to Wiki"
 msgid "Ver en Wiki"
 msgstr "View at Wiki"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:23
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:24
 msgid "Parámetros especiales:"
 msgstr "Special parameters"
 
 #: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:26
+msgid ""
+"Es posible utilizar uno o varios parámetros especiales separados por espacios"
+msgstr ""
+"You could use either one or several special parameters separated by blank "
+"spaces"
+
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:28
 msgid "Buscar cuentas a las que 'login' tenga acceso"
 msgstr "Search for accounts which 'login' has access rights"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:27
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:29
 msgid "Devolver las cuentas en las que 'login' es propietario"
 msgstr "Get the accounts in which the user login \"login\" is the owner"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:28
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:30
 msgid "Buscar cuentas a las que 'group_name' tenga acceso"
 msgstr "Search for accounts which 'group_name' has access rights"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:29
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:31
 msgid "Devolver las cuentas con grupo principal 'group_name'"
 msgstr "Get the accounts which have the main group name \"group_name\""
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:30
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:32
 msgid "Buscar cuentas con archivos con el nombre 'file_name'"
 msgstr "Search for accounts which contains a file with the name 'file_name'"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:31
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:33
+msgid "Devolver la cuenta con ID"
+msgstr "Returns the account for the given ID"
+
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:34
 msgid "Buscar cuentas con la clave caducada"
 msgstr "Search for accounts with expired password"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:32
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:35
 msgid "Devolver las cuentas privadas del usuario actual"
 msgstr "Get the private accounts for the current user"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:33
-msgid "Devolver la cuenta con ID"
-msgstr "Returns the account for then given ID"
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:36
+msgid "Operador para los parámetros especiales"
+msgstr "Operator for special parameters"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:41
 #: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:45
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:49
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:226
 #: ../../../modules/web/themes/material-blue/views/itemshow/userprofile.inc:227
 msgid "Búsqueda global"
 msgstr "Global searching"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:77
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:81
 msgid "Filtrar Favoritos"
 msgstr "Favorites Filtering"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:91
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:95
 msgid "Cuentas por página"
 msgstr "Accounts per page"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:97
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:101
 msgid "Más Filtros"
 msgstr "More Filters"
 
-#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:102
+#: ../../../modules/web/themes/material-blue/views/account/search-searchbox.inc:106
 msgid "Seleccionar Etiqueta"
 msgstr "Select Tag"
 

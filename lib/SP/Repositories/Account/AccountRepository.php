@@ -580,19 +580,20 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryFilterCommon = new QueryCondition();
         $queryFilterSelect = new QueryCondition();
 
-        $searchText = $accountSearchFilter->getTxtSearch();
+        // Sets the search text depending on if special search filters are being used
+        $searchText = $accountSearchFilter->getCleanTxtSearch();
 
-        if ($searchText !== null && $searchText !== '') {
-            // Analizar la cadena de búsqueda por etiquetas especiales
-            $stringFilter = $accountSearchFilter->getStringFilters();
+        if (!empty($searchText)) {
+            $searchText = '%' . $searchText . '%';
 
-            if (!empty($stringFilter)) {
-                $queryFilterCommon->addFilter($stringFilter['query'], $stringFilter['values']);
-            } else {
-                $searchText = '%' . $searchText . '%';
+            $queryFilterCommon->addFilter('A.name LIKE ? OR A.login LIKE ? OR A.url LIKE ? OR A.notes LIKE ?', [$searchText, $searchText, $searchText, $searchText]);
+        }
 
-                $queryFilterCommon->addFilter('A.name LIKE ? OR A.login LIKE ? OR A.url LIKE ? OR A.notes LIKE ?', [$searchText, $searchText, $searchText, $searchText]);
-            }
+        // Gets special search filters
+        $stringFilters = $accountSearchFilter->getStringFilters();
+
+        if ($stringFilters->hasFilters()) {
+            $queryFilterCommon->addFilter($stringFilters->getFilters(), $stringFilters->getParams());
         }
 
         if (!empty($accountSearchFilter->getCategoryId())) {
@@ -613,7 +614,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $where = [];
 
         if ($queryFilterCommon->hasFilters()) {
-            $where[] = $queryFilterCommon->getFilters(QueryCondition::CONDITION_OR);
+            $where[] = $queryFilterCommon->getFilters($accountSearchFilter->getFilterOperator());
         }
 
         if ($queryFilterSelect->hasFilters()) {

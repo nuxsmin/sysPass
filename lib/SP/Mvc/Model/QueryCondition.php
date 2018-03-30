@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -44,14 +44,17 @@ class QueryCondition
     protected $param = [];
 
     /**
-     * @param $query
-     * @param $params
+     * @param string $query
+     * @param array  $params
      * @return QueryCondition
      */
-    public function addFilter($query, array $params)
+    public function addFilter($query, array $params = null)
     {
-        $this->query[] = $query;
-        $this->param = array_merge($this->param, $params);
+        $this->query[] = '(' . $query . ')';
+
+        if ($params !== null) {
+            $this->param = array_merge($this->param, $params);
+        }
 
         return $this;
     }

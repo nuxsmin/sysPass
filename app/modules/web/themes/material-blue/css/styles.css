@@ -990,6 +990,13 @@ h5.datagrid-header-title {
   color: #fff;
   z-index: 101; }
 
+.tooltip-text {
+  padding: .5em; }
+  .tooltip-text .tooltip-header {
+    text-transform: capitalize;
+    font-weight: bold;
+    border-bottom: 1px solid #c9c9c9; }
+
 .cursor-pointer {
   cursor: pointer; }
 
