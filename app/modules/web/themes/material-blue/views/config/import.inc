@@ -66,10 +66,7 @@
         </td>
     </tr>
     <tr>
-        <td class="descField">
-            <?php echo __('Archivo'); ?>
-        </td>
-        <td class="valField">
+        <td class="valField" colspan="2">
             <div class="lowres-title"><?php echo __('Archivo'); ?></div>
 
             <div id="drop-import-files" class="round active-tooltip dropzone"

@@ -329,6 +329,17 @@ class UserService extends Service
     }
 
     /**
+     * Returns the usage of the given user's id
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getUsageForUser($id)
+    {
+        return $this->userRepository->getUsageForUser($id);
+    }
+
+    /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */

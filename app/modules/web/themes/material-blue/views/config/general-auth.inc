@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData $configData
+ */
+?>
+
 <div id="title" class="titleNormal">
     <i class="material-icons">verified_user</i>
     <?php echo __('Autentificación'); ?>
@@ -7,24 +14,37 @@
     <tr>
         <td class="descField"></td>
         <td class="valField">
-            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="authbasic_enabled">
-                <input type="checkbox" id="authbasic_enabled" class="mdl-switch__input mdl-color-text--indigo-400"
-                       name="authbasic_enabled"
-                    <?php echo $configData->isAuthBasicEnabled() ? 'checked' : ''; ?>/>
-                <span class="mdl-switch__label"><?php echo __('Usar Auth Basic'); ?></span>
-            </label>
-        </td>
-    </tr>
-    <tr>
-        <td class="descField"></td>
-        <td class="valField">
-            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="authbasicautologin_enabled">
-                <input type="checkbox" id="authbasicautologin_enabled"
-                       class="mdl-switch__input mdl-color-text--indigo-400"
-                       name="authbasicautologin_enabled"
-                    <?php echo $configData->isAuthBasicAutoLoginEnabled() ? 'checked' : ''; ?>/>
-                <span class="mdl-switch__label"><?php echo __('Usar auto-login con Auth Basic'); ?></span>
-            </label>
+            <ul class="config-auth-list-action mdl-list">
+                <li class="mdl-list__item mdl-list__item--two-line">
+                    <div class="mdl-switch__box">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="authbasic_enabled">
+                            <input type="checkbox" id="authbasic_enabled"
+                                   class="mdl-switch__input"
+                                   name="authbasic_enabled" <?php echo $configData->isAuthBasicEnabled() ? 'checked' : ''; ?>/>
+                        </label>
+                    </div>
+
+                    <span class="mdl-list__item-primary-content">
+                        <span><?php echo __('Usar Auth Basic'); ?></span>
+                        <span class="mdl-list__item-sub-title"><?php echo __('Usar Auth Basic para autorizar los accesos a la aplicación.'); ?></span>
+                    </span>
+                </li>
+
+                <li class="mdl-list__item mdl-list__item--two-line">
+                    <div class="mdl-switch__box">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="authbasicautologin_enabled">
+                            <input type="checkbox" id="authbasicautologin_enabled"
+                                   class="mdl-switch__input"
+                                   name="authbasicautologin_enabled" <?php echo $configData->isAuthBasicAutoLoginEnabled() ? 'checked' : ''; ?>/>
+                        </label>
+                    </div>
+
+                    <span class="mdl-list__item-primary-content">
+                        <span><?php echo __('Usar Auth Basic SSO'); ?></span>
+                        <span class="mdl-list__item-sub-title"><?php echo __('Usar auto-login con Auth Basic.'); ?></span>
+                    </span>
+                </li>
+            </ul>
         </td>
     </tr>
     <tr>

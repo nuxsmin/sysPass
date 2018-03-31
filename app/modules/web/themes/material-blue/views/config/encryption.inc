@@ -1,6 +1,6 @@
 <?php
 /**
- * @var $icons \SP\Core\UI\ThemeIcons
+ * @var $icons      \SP\Core\UI\ThemeIcons
  * @var $configData \SP\Config\ConfigData
  */ ?>
 
@@ -33,11 +33,11 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="curMasterPwd" name="curMasterPwd" type="password"
+                    <input id="current_masterpass" name="current_masterpass" type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                            maxlength="255" required/>
                     <label class="mdl-textfield__label"
-                           for="curMasterPwd"><?php echo __('Clave Maestra actual'); ?></label>
+                           for="current_masterpass"><?php echo __('Clave Maestra actual'); ?></label>
                 </div>
             </td>
         </tr>
@@ -47,11 +47,11 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="new-masterpassword" name="newMasterPwd" type="password"
+                    <input id="new_masterpass" name="new_masterpass" type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                            maxlength="255" required/>
                     <label class="mdl-textfield__label"
-                           for="newMasterPwd"><?php echo __('Nueva Clave Maestra'); ?></label>
+                           for="new_masterpass"><?php echo __('Nueva Clave Maestra'); ?></label>
                 </div>
             </td>
         </tr>
@@ -61,30 +61,12 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="new-masterpassword_repeat" name="newMasterPwdR" type="password"
+                    <input id="new_masterpass_repeat" name="new_masterpass_repeat" type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255" required/>
                     <label class="mdl-textfield__label"
-                           for="newMasterPwdR"><?php echo __('Nueva Clave Maestra (repetir)'); ?></label>
+                           for="new_masterpass_repeat"><?php echo __('Nueva Clave Maestra (repetir)'); ?></label>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <div id="help-chkNoAccountChange"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-chkNoAccountChange">
-                    <p>
-                        <?php echo __('Establece una nueva clave maestra sin re-encriptar las cuentas'); ?>
-                    </p>
-                </div>
-            </td>
-            <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="chkNoAccountChange">
-                    <input type="checkbox" id="chkNoAccountChange"
-                           class="mdl-switch__input mdl-color-text--indigo-400" name="chkNoAccountChange"/>
-                    <span class="mdl-switch__label"><?php echo __('No modificar cuentas'); ?></span>
-                </label>
             </td>
         </tr>
         <tr>
@@ -105,12 +87,46 @@
                 <div
                         class="icon material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></div>
                 <strong><?php printf(__('Se van a actualizar %s cuentas. Este proceso puede tardar algo de tiempo.'), $numAccounts); ?></strong>
-                <br>
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="confirmPassChange">
-                    <input type="checkbox" id="confirmPassChange" class="mdl-switch__input"
-                           name="confirmPassChange"/>
-                    <span class="mdl-switch__label"><?php echo __('Confirmar cambio'); ?></span>
-                </label>
+            </td>
+        </tr>
+        <tr>
+            <td class="descField"></td>
+            <td class="valField">
+                <ul class="config-masterpass-list-action mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="no_account_change">
+                                <input type="checkbox" id="no_account_change"
+                                       class="mdl-switch__input"
+                                       name="no_account_change"/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('No modificar cuentas'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Establece una nueva clave maestra sin re-encriptar las cuentas'); ?>
+                            </span>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="confirm_masterpass_change">
+                                <input type="checkbox" id="confirm_masterpass_change"
+                                       class="mdl-switch__input"
+                                       name="confirm_masterpass_change"/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Confirmar cambio'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Confirmar el cambio de clave maestra después de haber leído las advertencias anteriores.'); ?>
+                            </span>
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
     </table>
@@ -211,34 +227,36 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="tmpass_maxtime" name="tmpass_maxtime" type="number" step="600"
+                    <input id="temporary_masterpass_maxtime" name="temporary_masterpass_maxtime" type="number" step="600"
                            pattern="[0-9]{2,6}" class="mdl-textfield__input mdl-color-text--indigo-400"
                            value="3600"
                            required/>
                     <label class="mdl-textfield__label"
-                           for="tmpass_maxtime"><?php echo __('Validez (s)'); ?></label>
+                           for="temporary_masterpass_maxtime"><?php echo __('Validez (s)'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
-            <td class="descField">
-
-
-                <div id="help-chkSendEmail"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-chkSendEmail">
-                    <p>
-                        <?php echo __('Envía un correo a todos los usuarios o sólo a los del grupo seleccionado.'); ?>
-                    </p>
-                </div>
-            </td>
+            <td class="descField"></td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="tmpass_chkSendEmail">
-                    <input type="checkbox" id="tmpass_chkSendEmail"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="tmpass_chkSendEmail" <?php echo !$configData->isMailEnabled() ? 'disabled' : ''; ?> />
-                    <span class="mdl-switch__label"><?php echo __('Enviar correo'); ?></span>
-                </label>
+                <ul class="config-masterpass-list-action mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="temporary_masterpass_email">
+                                <input type="checkbox" id="temporary_masterpass_email"
+                                       class="mdl-switch__input"
+                                       name="temporary_masterpass_email" <?php echo !$configData->isMailEnabled() ? 'disabled' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Enviar correo'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Envía un correo a todos los usuarios o sólo a los del grupo seleccionado.'); ?>
+                            </span>
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
         <tr>
@@ -248,7 +266,7 @@
             <td class="valField">
                 <div class="lowres-title"><?php echo __('Grupo'); ?></div>
 
-                <select id="tmpass_group" name="tmpass_group"
+                <select id="temporary_masterpass_group" name="temporary_masterpass_group"
                         class="select-box select-box-deselect" <?php echo !$configData->isMailEnabled() ? 'disabled' : ''; ?>>
                     <option value=""><?php echo __('Seleccionar Grupo'); ?></option>
                     <?php /** @var \SP\Mvc\View\Components\SelectItem[] $userGroups */

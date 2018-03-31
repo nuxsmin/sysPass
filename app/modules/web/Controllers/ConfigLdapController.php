@@ -121,7 +121,7 @@ class ConfigLdapController extends SimpleControllerBase
             ->setGroup(Request::analyzeString('ldap_group'))
             ->setBindDn(Request::analyzeString('ldap_binduser'))
             ->setBindPass(Request::analyzeEncrypted('ldap_bindpass'))
-            ->setAds(Request::analyzeBool('ldap_ads', false));
+            ->setAds(Request::analyzeBool('ldap_ads_enabled', false));
     }
 
     /**

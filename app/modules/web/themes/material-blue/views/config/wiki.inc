@@ -1,4 +1,8 @@
-<?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
+<?php
+/**
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ */ ?>
 
 <form method="post" name="frmWiki" id="frmWiki" class="form-action"
       data-onsubmit="config/save"
@@ -12,23 +16,24 @@
 
     <table id="tblWiki" class="data tblConfig">
         <tr>
-            <td class="descField">
-                <div id="help-wiki_enabled"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-wiki_enabled">
-                    <p>
-                        <?php echo __('Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda.'); ?>
-                    </p>
-                </div>
-            </td>
+            <td class="descField"></td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="wiki_enabled">
-                    <input type="checkbox" id="wiki_enabled"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="wiki_enabled"
-                        <?php echo $configData->isWikiEnabled() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Habilitar enlaces Wiki'); ?></span>
-                </label>
+                <ul class="config-wiki-list-action mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="wiki_enabled">
+                                <input type="checkbox" id="wiki_enabled"
+                                       class="mdl-switch__input"
+                                       name="wiki_enabled" <?php echo $configData->isWikiEnabled() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Habilitar enlaces Wiki'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Habilita la opción de añadir un enlace a Wiki externa para los resultados de la búsqueda.'); ?></span>
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
         <tr>
@@ -128,26 +133,28 @@
 
     <table id="tblDokuWiki" class="data tblConfig">
         <tr>
-            <td class="descField">
-                <div id="help-dokuwiki_enabled"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-dokuwiki_enabled">
-                    <p>
-                        <?php echo __('Habilita la conexión a la API XML-RPC de DokuWiki para los enlaces Wiki.'); ?>
-                    </p>
-                    <p>
-                        <?php echo __('Para que esta característica funcione, es necesario habilitar los enlaces Wiki para el filtrado de cuentas.'); ?>
-                    </p>
-                </div>
-            </td>
+            <td class="descField"></td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="dokuwiki_enabled">
-                    <input type="checkbox" id="dokuwiki_enabled"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="dokuwiki_enabled"
-                        <?php echo $configData->isDokuwikiEnabled() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Habilitar API de DokuWiki'); ?></span>
-                </label>
+                <ul class="config-wiki-list-action mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="dokuwiki_enabled">
+                                <input type="checkbox" id="dokuwiki_enabled"
+                                       class="mdl-switch__input"
+                                       name="dokuwiki_enabled" <?php echo $configData->isDokuwikiEnabled() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Habilitar API de DokuWiki'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Habilita la conexión a la API XML-RPC de DokuWiki para los enlaces Wiki.'); ?>
+                                <br>
+                                <?php echo __('Para que esta característica funcione, es necesario habilitar los enlaces Wiki para el filtrado de cuentas.'); ?>
+                            </span>
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
 

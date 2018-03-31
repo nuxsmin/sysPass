@@ -63,11 +63,11 @@ class ConfigEncryptionController extends SimpleControllerBase
     {
         $mastePassService = $this->dic->get(MasterPassService::class);
 
-        $currentMasterPass = Request::analyzeEncrypted('curMasterPwd');
-        $newMasterPass = Request::analyzeEncrypted('newMasterPwd');
-        $newMasterPassR = Request::analyzeEncrypted('newMasterPwdR');
-        $confirmPassChange = Request::analyzeBool('confirmPassChange', false);
-        $noAccountPassChange = Request::analyzeBool('chkNoAccountChange', false);
+        $currentMasterPass = Request::analyzeEncrypted('current_masterpass');
+        $newMasterPass = Request::analyzeEncrypted('new_masterpass');
+        $newMasterPassR = Request::analyzeEncrypted('new_masterpass_repeat');
+        $confirmPassChange = Request::analyzeBool('confirm_masterpass_change', false);
+        $noAccountPassChange = Request::analyzeBool('no_account_change', false);
         $taskId = Request::analyzeString('taskId');
 
         if (!$mastePassService->checkUserUpdateMPass($this->session->getUserData()->getLastUpdateMPass())) {
@@ -185,10 +185,10 @@ class ConfigEncryptionController extends SimpleControllerBase
     {
         try {
             $temporaryMasterPassService = $this->dic->get(TemporaryMasterPassService::class);
-            $key = $temporaryMasterPassService->create(Request::analyzeInt('tmpass_maxtime', 3600));
+            $key = $temporaryMasterPassService->create(Request::analyzeInt('temporary_masterpass_maxtime', 3600));
 
-            $groupId = Request::analyzeInt('tmpass_group');
-            $sendEmail = Request::analyzeBool('tmpass_chkSendEmail');
+            $groupId = Request::analyzeInt('temporary_masterpass_group');
+            $sendEmail = Request::analyzeBool('temporary_masterpass_email');
 
             if ($this->configData->isMailEnabled() && $sendEmail && $groupId) {
                 $mailMessage = new MailMessage();

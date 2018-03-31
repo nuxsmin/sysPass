@@ -90,12 +90,12 @@ class UserForm extends FormBase implements FormInterface
         $this->userData->setSsoLogin(Request::analyzeString('login_sso'));
         $this->userData->setEmail(Request::analyzeEmail('email'));
         $this->userData->setNotes(Request::analyzeString('notes'));
-        $this->userData->setUserGroupId(Request::analyzeInt('groupid'));
-        $this->userData->setUserProfileId(Request::analyzeInt('profileid'));
-        $this->userData->setIsAdminApp(Request::analyzeBool('adminapp', false));
-        $this->userData->setIsAdminAcc(Request::analyzeBool('adminacc', false));
+        $this->userData->setUserGroupId(Request::analyzeInt('usergroup_id'));
+        $this->userData->setUserProfileId(Request::analyzeInt('userprofile_id'));
+        $this->userData->setIsAdminApp(Request::analyzeBool('adminapp_enabled', false));
+        $this->userData->setIsAdminAcc(Request::analyzeBool('adminacc_enabled', false));
         $this->userData->setIsDisabled(Request::analyzeBool('disabled', false));
-        $this->userData->setIsChangePass(Request::analyzeBool('changepass', false));
+        $this->userData->setIsChangePass(Request::analyzeBool('changepass_enabled', false));
         $this->userData->setPass(Request::analyzeEncrypted('password'));
     }
 

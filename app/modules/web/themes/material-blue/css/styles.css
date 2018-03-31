@@ -592,7 +592,9 @@ body.userpassreset {
   background-color: #fff8e1;
   border: 1px solid #ffca28; }
 
+#content .data .user-list-action,
 #content .data .profile-list-action,
+#box-popup .user-list-action,
 #box-popup .profile-list-action {
   width: 75%;
   margin: 0 auto; }

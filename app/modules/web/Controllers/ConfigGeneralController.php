@@ -55,11 +55,11 @@ class ConfigGeneralController extends SimpleControllerBase
         $siteTheme = Request::analyzeString('sitetheme', 'material-blue');
         $sessionTimeout = Request::analyzeInt('session_timeout', 300);
         $httpsEnabled = Request::analyzeBool('https_enabled', false);
-        $debugEnabled = Request::analyzeBool('debug', false);
-        $maintenanceEnabled = Request::analyzeBool('maintenance', false);
-        $checkUpdatesEnabled = Request::analyzeBool('updates', false);
-        $checkNoticesEnabled = Request::analyzeBool('notices', false);
-        $encryptSessionEnabled = Request::analyzeBool('encryptsession', false);
+        $debugEnabled = Request::analyzeBool('debug_enabled', false);
+        $maintenanceEnabled = Request::analyzeBool('maintenance_enabled', false);
+        $checkUpdatesEnabled = Request::analyzeBool('check_updates_enabled', false);
+        $checkNoticesEnabled = Request::analyzeBool('check_notices_enabled', false);
+        $encryptSessionEnabled = Request::analyzeBool('encrypt_session_enabled', false);
 
         $configData->setSiteLang($siteLang);
         $configData->setSiteTheme($siteTheme);

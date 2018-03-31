@@ -39,22 +39,24 @@
             </td>
         </tr>
         <tr>
-            <td class="descField">
-                <div id="help-account_expire"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_expire">
-                    <p>
-                        <?php echo __('Habilita la caducidad de la clave de cuentas.'); ?>
-                    </p>
-                </div>
-            </td>
+            <td class="descField"></td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_expire">
-                    <input type="checkbox" id="account_expire"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="account_expire" <?php echo $configData->isAccountExpireEnabled() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Caducidad clave cuentas'); ?></span>
-                </label>
+                <ul class="config-accounts-list-action mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_expire_enabled">
+                                <input type="checkbox" id="account_expire_enabled"
+                                       class="mdl-switch__input"
+                                       name="account_expire_enabled" <?php echo $configData->isAccountExpireEnabled() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Caducidad clave cuentas'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Habilita la caducidad de la clave de cuentas.'); ?></span>
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
         <tr>
@@ -72,115 +74,105 @@
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="account_expire_time" name="account_expire_time" type="number"
                            pattern="[0-9]{1,3}" class="mdl-textfield__input mdl-color-text--indigo-400"
-                           value="<?php echo $configData->getAccountExpireTime()  / 24 / 3600; ?>"/>
+                           value="<?php echo $configData->getAccountExpireTime() / 24 / 3600; ?>"/>
                     <label class="mdl-textfield__label"
                            for="account_expire_time"><?php echo __('Tiempo caducidad (días)'); ?></label>
                 </div>
             </td>
         </tr>
         <tr>
-            <td class="descField">
-                <div id="help-account_link"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_link">
-                    <p>
-                        <?php echo __('Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta.'); ?>
-                    </p>
-                </div>
-            </td>
+            <td class="descField"></td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link">
-                    <input type="checkbox" id="account_link"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="account_link" <?php echo $configData->isAccountLink() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Nombre de cuenta como enlace'); ?></span>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <div id="help-account_globalsearch"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_globalsearch">
-                    <p>
-                        <?php echo __('Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos.'); ?>
-                    </p>
-                </div>
-            </td>
-            <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_globalsearch">
-                    <input type="checkbox" id="account_globalsearch"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="account_globalsearch" <?php echo $configData->isGlobalSearch() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Búsquedas globales'); ?></span>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <div id="help-account_passtoimage"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_passtoimage">
-                    <p>
-                        <?php echo __('Generar una imagen con el texto de la clave de la cuenta.'); ?>
-                    </p>
+                <ul class="config-accounts-list-action mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link_enabled">
+                                <input type="checkbox" id="account_link_enabled"
+                                       class="mdl-switch__input"
+                                       name="account_link_enabled" <?php echo $configData->isAccountLink() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
 
-                    <p>
-                        <?php echo __('Util para entornos donde copiar la clave supone un riesgo de seguridad.'); ?>
-                    </p>
-                </div>
-            </td>
-            <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_passtoimage">
-                    <input type="checkbox" id="account_passtoimage"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="account_passtoimage"
-                        <?php echo $configData->isAccountPassToImage() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Imagen para mostrar clave'); ?></span>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <div id="help-account_resultsascards"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_resultsascards">
-                    <p>
-                        <?php echo __('Muestra los resultados de búsqueda de cuentas en formato tarjeta.'); ?>
-                    </p>
-                </div>
-            </td>
-            <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_resultsascards">
-                    <input type="checkbox" id="account_resultsascards"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="account_resultsascards"
-                        <?php echo $configData->isResultsAsCards() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Resultados en Tarjetas'); ?></span>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <div id="help-account_fullgroup_access"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_fullgroup_access">
-                    <p>
-                        <?php echo __('Habilita el acceso a los usuarios que estén incluidos en los grupos secundarios.'); ?>
-                    </p>
-                    <p>
-                        <?php echo __('Por defecto el usuario de un grupo secundario es permitido si el grupo secundario está establecido como el primario del usuario.'); ?>
-                    </p>
-                </div>
-            </td>
-            <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_fullgroup_access">
-                    <input type="checkbox" id="account_fullgroup_access"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="account_fullgroup_access"
-                        <?php echo $configData->isAccountFullGroupAccess() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Acceso Grupos Secundarios'); ?></span>
-                </label>
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Nombre de cuenta como enlace'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta.'); ?></span>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="account_globalsearch_enabled">
+                                <input type="checkbox" id="account_globalsearch_enabled"
+                                       class="mdl-switch__input"
+                                       name="account_globalsearch_enabled" <?php echo $configData->isGlobalSearch() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Búsquedas globales'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Permite que todos los usuarios puedan realizar búsquedas en todas las cuentas, pero no pueden ver el contenido de las que no tienen permisos.'); ?></span>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="account_passtoimage_enabled">
+                                <input type="checkbox" id="account_passtoimage_enabled"
+                                       class="mdl-switch__input"
+                                       name="account_passtoimage_enabled" <?php echo $configData->isAccountPassToImage() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Imagen para mostrar clave'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Generar una imagen con el texto de la clave de la cuenta.'); ?>
+                                <br>
+                                <?php echo __('Util para entornos donde copiar la clave supone un riesgo de seguridad.'); ?>
+                            </span>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="account_resultsascards_enabled">
+                                <input type="checkbox" id="account_resultsascards_enabled"
+                                       class="mdl-switch__input"
+                                       name="account_resultsascards_enabled" <?php echo $configData->isResultsAsCards() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Resultados en Tarjetas'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Muestra los resultados de búsqueda de cuentas en formato tarjeta.'); ?>
+                            </span>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="account_fullgroup_access_enabled">
+                                <input type="checkbox" id="account_fullgroup_access_enabled"
+                                       class="mdl-switch__input"
+                                       name="account_fullgroup_access_enabled" <?php echo $configData->isAccountFullGroupAccess() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Acceso Grupos Secundarios'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Habilita el acceso a los usuarios que estén incluidos en los grupos secundarios.'); ?>
+                                <br>
+                                <?php echo __('Por defecto el usuario de un grupo secundario es permitido si el grupo secundario está establecido como el primario del usuario.'); ?>
+                            </span>
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
     </table>
@@ -192,31 +184,48 @@
 
     <table id="tblFiles" class="data tblConfig round">
         <tr>
-            <td class="descField">
-                <div id="help-publinks"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-publinks">
-                    <p>
-                        <?php echo __('Habilita la posibilidad de generar enlaces públicos para ver los detalles de una cuenta.'); ?>
-                    </p>
-
-                    <p>
-                        <?php echo __('Las cuentas enlazadas serán visibles por cualquiera que disponga del enlace.'); ?>
-                    </p>
-
-                    <p>
-                        <?php echo __('Para crear enlaces, los usuarios tienen que tener activada la opción en su perfl.'); ?>
-                    </p>
-                </div>
-            </td>
+            <td class="descField"></td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="publinks_enabled">
-                    <input type="checkbox" id="publinks_enabled"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="publinks_enabled"
-                        <?php echo $configData->isPublinksEnabled() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Habilitar Enlaces Públicos'); ?></span>
-                </label>
+                <ul class="config-publiclinks-list-action mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="publiclinks_enabled">
+                                <input type="checkbox" id="publiclinks_enabled"
+                                       class="mdl-switch__input"
+                                       name="publiclinks_enabled" <?php echo $configData->isPublinksEnabled() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Habilitar Enlaces Públicos'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Habilita la posibilidad de generar enlaces públicos para ver los detalles de una cuenta.'); ?>
+                                <br>
+                                <?php echo __('Las cuentas enlazadas serán visibles por cualquiera que disponga del enlace.'); ?>
+                                <br>
+                                <?php echo __('Para crear enlaces, los usuarios tienen que tener activada la opción en su perfl.'); ?>
+                            </span>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="publiclinks_image_enabled">
+                                <input type="checkbox" id="publiclinks_image_enabled"
+                                       class="mdl-switch__input"
+                                       name="publiclinks_image_enabled" <?php echo $configData->isPublinksImageEnabled() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Usar imagen para clave'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('La clave de la cuenta es visualizada como una imagen.'); ?>
+                            </span>
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
         <tr>
@@ -225,12 +234,12 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="publinks_maxtime" name="publinks_maxtime" type="number" step="5"
+                    <input id="publiclinks_maxtime" name="publiclinks_maxtime" type="number" step="5"
                            pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
                            value="<?php echo $configData->getPublinksMaxTime() / 60; ?>"/>
                     <label class="mdl-textfield__label"
-                           for="publinks_maxtime"><?php echo __('Tiempo de caducidad'); ?></label>
+                           for="publiclinks_maxtime"><?php echo __('Tiempo de caducidad'); ?></label>
                 </div>
             </td>
         </tr>
@@ -240,33 +249,13 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="publinks_maxviews" name="publinks_maxviews" type="number" step="1"
+                    <input id="publiclinks_maxviews" name="publiclinks_maxviews" type="number" step="1"
                            pattern="[0-9]{1,5}" class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="5"
                            value="<?php echo $configData->getPublinksMaxViews(); ?>"/>
                     <label class="mdl-textfield__label"
-                           for="publinks_maxviews"><?php echo __('Número máximo  de visitas'); ?></label>
+                           for="publiclinks_maxviews"><?php echo __('Número máximo  de visitas'); ?></label>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <div id="help-publinksimage"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-publinksimage">
-                    <p>
-                        <?php echo __('La clave de la cuenta es visualizada como una imagen.'); ?>
-                    </p>
-                </div>
-            </td>
-            <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="publinks_image_enabled">
-                    <input type="checkbox" id="publinks_image_enabled"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="publinks_image_enabled"
-                        <?php echo $configData->isPublinksImageEnabled() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Usar imagen para clave'); ?></span>
-                </label>
             </td>
         </tr>
     </table>
@@ -278,23 +267,24 @@
 
     <table id="tblFiles" class="data tblConfig">
         <tr>
-            <td class="descField">
-                <div id="help-files"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-files">
-                    <p>
-                        <?php echo __('Habilita la subida/descarga de archivos para las cuentas.'); ?>
-                    </p>
-                </div>
-            </td>
+            <td class="descField"></td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="files_enabled">
-                    <input type="checkbox" id="files_enabled"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="files_enabled"
-                        <?php echo $configData->isFilesEnabled() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Gestión de archivos'); ?></span>
-                </label>
+                <ul class="config-accounts-list-action mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="files_enabled">
+                                <input type="checkbox" id="files_enabled"
+                                       class="mdl-switch__input"
+                                       name="files_enabled" <?php echo $configData->isFilesEnabled() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Gestión de archivos'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Habilita la subida/descarga de archivos para las cuentas.'); ?></span>
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
         <tr>
@@ -306,11 +296,6 @@
                     <p>
                         <?php echo __('Extensiones permitidas para la subida de archivos.'); ?>
                     </p>
-
-                    <p>
-                        <?php echo __('Se permite un máximo de 4 caracteres.'); ?>
-                    </p>
-
                     <p>
                         <?php echo __('Escribir extensión y pulsar intro para añadir. Es necesario guardar la configuración.'); ?>
                     </p>

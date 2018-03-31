@@ -176,3 +176,17 @@
 label.mdl-switch {
     margin: .5em 0;
 }
+
+.mdl-switch__box {
+    width: 48px;
+}
+
+.mdl-list__item--two-line {
+    height: auto;
+    min-height: 72px;
+}
+
+.mdl-list__item--two-line .mdl-list__item-primary-content {
+    height: auto;
+    min-height: 36px;
+}

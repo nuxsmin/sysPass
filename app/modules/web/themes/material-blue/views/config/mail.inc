@@ -17,32 +17,39 @@
         <tr>
             <td class="descField"></td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_enabled">
-                    <input type="checkbox" id="mail_enabled"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="mail_enabled"
-                        <?php echo $configData->isMailEnabled() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Habilitar notificaciones de correo'); ?></span>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <div id="help-mail_requestsenabled"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-mail_requestsenabled">
-                    <p>
-                        <?php echo __('Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos.'); ?>
-                    </p>
-                </div>
-            </td>
-            <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_requestsenabled">
-                    <input type="checkbox" id="mail_requestsenabled"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="mail_requestsenabled" <?php echo $configData->isMailRequestsEnabled() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Habilitar peticiones por correo'); ?></span>
-                </label>
+                <ul class="config-mail-list-action mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_enabled">
+                                <input type="checkbox" id="mail_enabled"
+                                       class="mdl-switch__input"
+                                       name="mail_enabled" <?php echo $configData->isMailEnabled() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Habilitar notificaciones de correo'); ?></span>
+                            <span class="mdl-list__item-sub-title"><?php echo __('Habilitar notificaciones de correo'); ?></span>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_requests_enabled">
+                                <input type="checkbox" id="mail_requests_enabled"
+                                       class="mdl-switch__input"
+                                       name="mail_requests_enabled" <?php echo $configData->isMailRequestsEnabled() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Habilitar peticiones por correo'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Habilita que los usuarios puedan solicitar modificaciones o acceso a las cuentas sin permisos.'); ?>
+                            </span>
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
         <tr>
@@ -74,12 +81,22 @@
         <tr>
             <td class="descField"></td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_authenabled">
-                    <input type="checkbox" id="mail_authenabled"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="mail_authenabled" <?php echo $configData->isMailAuthenabled() ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Habilitar Autentificación'); ?></span>
-                </label>
+                <ul class="config-mail-list-action mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="mail_auth_enabled">
+                                <input type="checkbox" id="mail_auth_enabled"
+                                       class="mdl-switch__input"
+                                       name="mail_auth_enabled" <?php echo $configData->isMailAuthenabled() ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Habilitar Autentificación'); ?></span>
+                            <span class="mdl-list__item-sub-title"></span>
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
         <tr>

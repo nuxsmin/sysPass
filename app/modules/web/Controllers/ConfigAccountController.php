@@ -52,13 +52,13 @@ class ConfigAccountController extends SimpleControllerBase
         $eventMessage = EventMessage::factory();
 
         // Accounts
-        $configData->setGlobalSearch(Request::analyzeBool('account_globalsearch', false));
-        $configData->setAccountPassToImage(Request::analyzeBool('account_passtoimage', false));
-        $configData->setAccountLink(Request::analyzeBool('account_link', false));
-        $configData->setAccountFullGroupAccess(Request::analyzeBool('account_fullgroup_access', false));
+        $configData->setGlobalSearch(Request::analyzeBool('account_globalsearch_enabled', false));
+        $configData->setAccountPassToImage(Request::analyzeBool('account_passtoimage_enabled', false));
+        $configData->setAccountLink(Request::analyzeBool('account_link_enabled', false));
+        $configData->setAccountFullGroupAccess(Request::analyzeBool('account_fullgroup_access_enabled', false));
         $configData->setAccountCount(Request::analyzeInt('account_count', 10));
-        $configData->setResultsAsCards(Request::analyzeBool('account_resultsascards', false));
-        $configData->setAccountExpireEnabled(Request::analyzeBool('account_expire', false));
+        $configData->setResultsAsCards(Request::analyzeBool('account_resultsascards_enabled', false));
+        $configData->setAccountExpireEnabled(Request::analyzeBool('account_expire_enabled', false));
         $configData->setAccountExpireTime(Request::analyzeInt('account_expire_time', 10368000) * 24 * 3600);
 
         // Files
@@ -85,13 +85,13 @@ class ConfigAccountController extends SimpleControllerBase
         }
 
         // Public Links
-        $pubLinksEnabled = Request::analyzeBool('publinks_enabled', false);
+        $pubLinksEnabled = Request::analyzeBool('publiclinks_enabled', false);
 
         if ($pubLinksEnabled === true) {
             $configData->setPublinksEnabled(true);
-            $configData->setPublinksImageEnabled(Request::analyzeBool('publinks_image_enabled', false));
-            $configData->setPublinksMaxTime(Request::analyzeInt('publinks_maxtime', 10) * 60);
-            $configData->setPublinksMaxViews(Request::analyzeInt('publinks_maxviews', 3));
+            $configData->setPublinksImageEnabled(Request::analyzeBool('publiclinks_image_enabled', false));
+            $configData->setPublinksMaxTime(Request::analyzeInt('publiclinks_maxtime', 10) * 60);
+            $configData->setPublinksMaxViews(Request::analyzeInt('publiclinks_maxviews', 3));
 
             if ($configData->isPublinksEnabled() === false) {
                 $eventMessage->addDescription(__u('Enlaces públicos habilitados'));

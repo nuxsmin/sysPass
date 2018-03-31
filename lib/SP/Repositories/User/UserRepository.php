@@ -718,4 +718,56 @@ class UserRepository extends Repository implements RepositoryItemInterface
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
+
+    /**
+     * Returns the usage of the given user's id
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getUsageForUser($id)
+    {
+        $query = 'SELECT * FROM (SELECT
+                  A.id,
+                  CONCAT(A.name, " (", C.name, ")") AS name,
+                  \'Account\'                         AS ref
+                FROM Account A
+                  INNER JOIN Client C on A.clientId = C.id
+                WHERE A.userId = ? OR A.userEditId = ?
+                UNION ALL
+                SELECT
+                  AU.accountId                        AS id,
+                  CONCAT(A.name, " (", C.name, ")") AS name,
+                  \'Account\'                           AS ref
+                FROM AccountToUser AU
+                  INNER JOIN Account A on AU.accountId = A.id
+                  INNER JOIN Client C on A.clientId = C.id
+                WHERE AU.userId = ?
+                UNION ALL
+                SELECT
+                  UUG.userGroupId AS id,
+                  G.name,
+                  \'UserGroup\'     AS ref
+                FROM
+                  UserToUserGroup UUG
+                  INNER JOIN UserGroup G on UUG.userGroupId = G.id
+                WHERE UUG.userId = ?
+                UNION ALL
+                SELECT
+                  PL.id,
+                  CONCAT(A.name, " (", C.name, ")") AS name,
+                  \'PublicLink\' AS ref
+                FROM
+                  PublicLink PL
+                  INNER JOIN Account A ON A.id = PL.itemId
+                  INNER JOIN Client C on A.clientId = C.id
+                WHERE PL.userId = ?) Items
+                ORDER BY Items.ref';
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams(array_fill(0, 5, (int)$id));
+
+        return DbWrapper::getResultsArray($queryData, $this->db);
+    }
 }

@@ -60,8 +60,8 @@ class ConfigMailController extends SimpleControllerBase
         $mailPass = Request::analyzeEncrypted('mail_pass');
         $mailSecurity = Request::analyzeString('mail_security');
         $mailFrom = Request::analyzeEmail('mail_from');
-        $mailRequests = Request::analyzeBool('mail_requestsenabled', false);
-        $mailAuth = Request::analyzeBool('mail_authenabled', false);
+        $mailRequests = Request::analyzeBool('mail_requests_enabled', false);
+        $mailAuth = Request::analyzeBool('mail_auth_enabled', false);
         $mailRecipients = ConfigUtil::mailAddressesAdapter(Request::analyzeString('mail_recipients'));
 
         // Valores para la configuración del Correo

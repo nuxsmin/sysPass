@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -143,6 +143,24 @@ class UserController extends ControllerBase implements CrudControllerInterface
         if ($this->view->isView === true || $user->getLogin() === 'demo') {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
+
+            $this->view->assign('usage', array_map(function ($value) {
+                switch ($value->ref) {
+                    case 'Account':
+                        $value->icon = 'description';
+                        break;
+                    case 'UserGroup':
+                        $value->icon = 'group';
+                        break;
+                    case 'PublicLink':
+                        $value->icon = 'link';
+                        break;
+                    default:
+                        $value->icon = 'info_outline';
+                }
+
+                return $value;
+            }, $this->userService->getUsageForUser($userId)));
         } else {
             $this->view->assign('disabled');
             $this->view->assign('readonly');

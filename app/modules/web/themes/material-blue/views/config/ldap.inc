@@ -1,4 +1,8 @@
-<?php /** @var $icons \SP\Core\UI\ThemeIcons */ ?>
+<?php
+/**
+ * @var \SP\Core\UI\ThemeIcons $icons
+ * @var \SP\Config\ConfigData  $configData
+ */ ?>
 
 <?php if ($ldapIsAvailable || $isDemo): ?>
     <div id="title" class="titleNormal">
@@ -11,49 +15,47 @@
           data-action-route="configLdap/save"
           data-hash="">
         <table id="tblLdap" class="data tblConfig">
-
             <tr>
-                <td class="descField">
-                    <div id="help-ldap_enabled"
-                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_enabled">
-                        <p>
-                            <?php echo __('Habilita de autentificación mediante servidor LDAP.'); ?>
-                        </p>
+                <td class="descField"></td>
+                <td class="valField">
+                    <ul class="config-ldap-list-action mdl-list">
+                        <li class="mdl-list__item mdl-list__item--two-line">
+                            <div class="mdl-switch__box">
+                                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_enabled">
+                                    <input type="checkbox" id="ldap_enabled"
+                                           class="mdl-switch__input"
+                                           name="ldap_enabled" <?php echo $configData->isLdapEnabled() ? 'checked' : ''; ?>/>
+                                </label>
+                            </div>
 
-                        <p>
-                            <?php echo __('Este método utilizará MySQL en caso de fallo.'); ?>
-                        </p>
-                    </div>
-                </td>
-                <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_enabled">
-                        <input type="checkbox" id="ldap_enabled"
-                               class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="ldap_enabled"
-                            <?php echo $configData->isLdapEnabled() ? 'checked' : ''; ?>/>
-                        <span class="mdl-switch__label"><?php echo __('Habilitar LDAP'); ?></span>
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField">
-                    <div id="help-ldap_ads"
-                         class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                    <div class="mdl-tooltip mdl-tooltip--large" for="help-ldap_ads">
-                        <p>
-                            <?php echo __('Habilita el modo de conexión con LDAP de Active Directory.'); ?>
-                        </p>
-                    </div>
-                </td>
-                <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_ads">
-                        <input type="checkbox" id="ldap_ads"
-                               class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="ldap_ads"
-                            <?php echo $configData->isLdapAds() ? 'checked' : ''; ?>/>
-                        <span class="mdl-switch__label"><?php echo __('Active Directory'); ?></span>
-                    </label>
+                            <span class="mdl-list__item-primary-content">
+                                <span><?php echo __('Habilitar LDAP'); ?></span>
+                                <span class="mdl-list__item-sub-title">
+                                    <?php echo __('Habilita de autentificación mediante servidor LDAP.'); ?>
+                                    <br>
+                                    <?php echo __('Este método utilizará MySQL en caso de fallo.'); ?>
+                                </span>
+                            </span>
+                        </li>
+
+                        <li class="mdl-list__item mdl-list__item--two-line">
+                            <div class="mdl-switch__box">
+                                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_ads_enabled">
+                                    <input type="checkbox" id="ldap_ads_enabled"
+                                           class="mdl-switch__input"
+                                           name="ldap_ads_enabled" <?php echo $configData->isLdapAds() ? 'checked' : ''; ?>/>
+                                </label>
+                            </div>
+
+                            <span class="mdl-list__item-primary-content">
+                                <span><?php echo __('Active Directory'); ?></span>
+                                <span class="mdl-list__item-sub-title">
+                                    <?php echo __('Habilita el modo de conexión con LDAP de Active Directory.'); ?>
+                                </span>
+                            </span>
+                        </li>
+
+                    </ul>
                 </td>
             </tr>
             <tr>
@@ -338,12 +340,22 @@
             <tr>
                 <td class="descField"></td>
                 <td class="valField">
-                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_import_groups">
-                        <input type="checkbox" id="ldap_import_groups"
-                               class="mdl-switch__input mdl-color-text--indigo-400"
-                               name="ldap_import_groups"/>
-                        <span class="mdl-switch__label"><?php echo __('Importar Grupos'); ?></span>
-                    </label>
+                    <ul class="config-ldap-list-action mdl-list">
+                        <li class="mdl-list__item mdl-list__item--two-line">
+                            <div class="mdl-switch__box">
+                                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="ldap_import_groups">
+                                    <input type="checkbox" id="ldap_import_groups"
+                                           class="mdl-switch__input"
+                                           name="ldap_import_groups" />
+                                </label>
+                            </div>
+
+                            <span class="mdl-list__item-primary-content">
+                                <span><?php echo __('Importar Grupos'); ?></span>
+                                <span class="mdl-list__item-sub-title"></span>
+                            </span>
+                        </li>
+                    </ul>
                 </td>
             </tr>
             <tr>
