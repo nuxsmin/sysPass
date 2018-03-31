@@ -200,6 +200,11 @@ class AccountSearchService extends Service
 
         $queryCondition = new QueryCondition();
 
+        // Do not search for special parameters if there isn't any ":" within the string
+        if (strpos($string, ':') === false) {
+            return $queryCondition;
+        }
+
         if (preg_match(self::FILTERS_REGEX_OPERATOR, $string, $matches)) {
             // Removes the operator from the string to increase regex performance
             $this->cleanString = trim(str_replace($matches[0], '', $this->cleanString));
