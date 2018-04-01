@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -87,13 +87,78 @@ class AccountToUserRepository extends Repository
     public function add(AccountRequest $accountRequest)
     {
         $query = /** @lang SQL */
-            'INSERT INTO AccountToUser (accountId, userId) VALUES ' . $this->getParamsFromArray($accountRequest->users, '(?,?)');
+            'INSERT INTO AccountToUser (accountId, userId, isEdit) 
+              VALUES ' . $this->getParamsFromArray($accountRequest->usersView, '(?,?,0)') . '
+              ON DUPLICATE KEY UPDATE isEdit = 0';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setOnErrorMessage(__u('Error al actualizar los usuarios de la cuenta'));
 
-        foreach ($accountRequest->users as $user) {
+        foreach ($accountRequest->usersView as $user) {
+            $queryData->addParam($accountRequest->id);
+            $queryData->addParam($user);
+        }
+
+        return DbWrapper::getQuery($queryData, $this->db);
+    }
+
+    /**
+     * Actualizar la asociación de grupos con cuentas.
+     *
+     * @param AccountRequest $accountRequest
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function updateEdit(AccountRequest $accountRequest)
+    {
+        $this->deleteEditByAccountId($accountRequest->id);
+        $this->addEdit($accountRequest);
+
+        return false;
+    }
+
+    /**
+     * Eliminar la asociación de grupos con cuentas.
+     *
+     * @param int $id con el Id de la cuenta
+     * @return int
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     */
+    public function deleteEditByAccountId($id)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AccountToUser WHERE accountId = ? AND isEdit = 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar usuarios asociados a la cuenta'));
+
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getNumRows();
+    }
+
+    /**
+     * Crear asociación de usuarios con cuentas.
+     *
+     * @param AccountRequest $accountRequest
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function addEdit(AccountRequest $accountRequest)
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO AccountToUser (accountId, userId, isEdit) 
+              VALUES ' . $this->getParamsFromArray($accountRequest->usersEdit, '(?,?,1)') . '
+              ON DUPLICATE KEY UPDATE isEdit = 1';
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setOnErrorMessage(__u('Error al actualizar los usuarios de la cuenta'));
+
+        foreach ($accountRequest->usersEdit as $user) {
             $queryData->addParam($accountRequest->id);
             $queryData->addParam($user);
         }
@@ -110,7 +175,7 @@ class AccountToUserRepository extends Repository
     public function getUsersByAccountId($id)
     {
         $query = /** @lang SQL */
-            'SELECT U.id, U.name, U.login
+            'SELECT U.id, U.name, U.login, AU.isEdit
             FROM AccountToUser AU
             INNER JOIN User U ON AU.userId = U.id
             WHERE AU.accountId = ?

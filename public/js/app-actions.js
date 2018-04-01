@@ -450,6 +450,11 @@ sysPass.Actions = function (Common) {
             opts.url = ajaxUrl.entrypoint + "?r=" + $obj.data("action-route") + "/" + $obj.data("item-id");
             opts.data = $obj.serialize();
 
+            // Sets which "select" elements should be updated
+            $("select.select-box-tags[data-hash][data-updated=true]").each(function (index, value) {
+                opts.data += "&" + value.getAttribute("id") + "_update=1";
+            });
+
             Common.appRequests().getActionCall(opts, function (json) {
                 Common.msg.out(json);
 

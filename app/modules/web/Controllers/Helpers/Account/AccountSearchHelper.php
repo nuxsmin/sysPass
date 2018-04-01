@@ -98,7 +98,6 @@ class AccountSearchHelper extends HelperBase
      * Obtener los resultados de una búsqueda
      *
      * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function getAccountSearch()
     {

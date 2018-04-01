@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -49,7 +49,7 @@ class AccountToUserGroupRepository extends Repository
     public function getUserGroupsByAccountId($id)
     {
         $query = /** @lang SQL */
-            'SELECT G.id, G.name
+            'SELECT G.id, G.name, AUG.isEdit
             FROM AccountToUserGroup AUG
             INNER JOIN UserGroup G ON AUG.userGroupId = G.id
             WHERE AUG.accountId = ?
@@ -72,7 +72,7 @@ class AccountToUserGroupRepository extends Repository
     public function getUserGroupsByUserGroupId($id)
     {
         $query = /** @lang SQL */
-            'SELECT G.id, G.name
+            'SELECT G.id, G.name, AUG.isEdit
             FROM AccountToUserGroup AUG
             INNER JOIN UserGroup G ON AUG.userGroupId = G.id
             WHERE AUG.userGroupId = ?
@@ -141,12 +141,70 @@ class AccountToUserGroupRepository extends Repository
     public function add(AccountRequest $accountRequest)
     {
         $query = /** @lang SQL */
-            'INSERT INTO AccountToUserGroup (accountId, userGroupId) VALUES ' . $this->getParamsFromArray($accountRequest->userGroups, '(?,?)');
+            'INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) 
+              VALUES ' . $this->getParamsFromArray($accountRequest->userGroupsView, '(?,?,0)') . '
+              ON DUPLICATE KEY UPDATE isEdit = 0';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
 
-        foreach ($accountRequest->userGroups as $userGroup) {
+        foreach ($accountRequest->userGroupsView as $userGroup) {
+            $queryData->addParam($accountRequest->id);
+            $queryData->addParam($userGroup);
+        }
+
+        $queryData->setOnErrorMessage(__u('Error al actualizar los grupos secundarios'));
+
+        return DbWrapper::getQuery($queryData, $this->db);
+    }
+
+    /**
+     * @param AccountRequest $accountRequest
+     * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function updateEdit(AccountRequest $accountRequest)
+    {
+        $this->deleteEditByAccountId($accountRequest->id);
+        $this->addEdit($accountRequest);
+
+        return $this;
+    }
+
+    /**
+     * @param $id int
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteEditByAccountId($id)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AccountToUserGroup WHERE accountId = ? AND isEdit = 1');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
+
+        return DbWrapper::getQuery($queryData, $this->db);
+    }
+
+    /**
+     * @param AccountRequest $accountRequest
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function addEdit(AccountRequest $accountRequest)
+    {
+        $query = /** @lang SQL */
+            'INSERT INTO AccountToUserGroup (accountId, userGroupId, isEdit) 
+              VALUES ' . $this->getParamsFromArray($accountRequest->userGroupsEdit, '(?,?,1)') . '
+              ON DUPLICATE KEY UPDATE isEdit = 1';
+
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+
+        foreach ($accountRequest->userGroupsEdit as $userGroup) {
             $queryData->addParam($accountRequest->id);
             $queryData->addParam($userGroup);
         }

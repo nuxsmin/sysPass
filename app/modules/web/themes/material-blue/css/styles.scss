@@ -234,22 +234,15 @@
     }
     .account-permissions {
       width: 100%;
-      fieldset {
-        border: 1px solid #c9c9c9;
-        padding: 1em;
-      }
-      legend {
-        font-weight: bold;
-        color: #999;
-        padding: 0.2em 0;
-      }
-      fieldset > span {
-        font-weight: bold;
-        color: #999;
-        padding: .2em 0;
-        display: inline-block;
-        width: 100px;
-        text-align: right;
+      .tag-list-box {
+        margin-bottom: 1em;
+        .tag-list-header {
+          text-align: left;
+          border-bottom: 1px solid #d9d9d9;
+          color: $color-bluegrey-fg;
+          font-size: 12px;
+          font-weight: bold;
+        }
       }
     }
   }

@@ -207,7 +207,7 @@ $showCustomFields = count($customFields) > 0;
                             <div class="lowres-title"><?php echo __('Etiquetas'); ?></div>
 
                             <?php if (!$isView): ?>
-                                <select id="tags" name="tags[]" multiple="multiple" tabindex="10">
+                                <select id="tags" name="tags[]" multiple="multiple" tabindex="10" class="select-box-tags">
                                     <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
                                     <?php /** @var \SP\Mvc\View\Components\SelectItem[] $tags */
                                     foreach ($tags as $tag): ?>

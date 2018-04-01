@@ -57,14 +57,6 @@ class AccountAclDto
      * @var int
      */
     private $dateEdit;
-    /**
-     * @var int
-     */
-    private $otherUserEdit;
-    /**
-     * @var int
-     */
-    private $otherUserGroupEdit;
 
     /**
      * @return int
@@ -131,7 +123,7 @@ class AccountAclDto
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getDateEdit()
     {
@@ -139,43 +131,11 @@ class AccountAclDto
     }
 
     /**
-     * @param string $dateEdit
+     * @param int $dateEdit
      */
     public function setDateEdit($dateEdit)
     {
-        $this->dateEdit = $dateEdit;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOtherUserEdit()
-    {
-        return $this->otherUserEdit;
-    }
-
-    /**
-     * @param int $otherUserEdit
-     */
-    public function setOtherUserEdit($otherUserEdit)
-    {
-        $this->otherUserEdit = (int)$otherUserEdit;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOtherUserGroupEdit()
-    {
-        return $this->otherUserGroupEdit;
-    }
-
-    /**
-     * @param int $otherUserGroupEdit
-     */
-    public function setOtherUserGroupEdit($otherUserGroupEdit)
-    {
-        $this->otherUserGroupEdit = (int)$otherUserGroupEdit;
+        $this->dateEdit = (int)$dateEdit;
     }
 
     /**

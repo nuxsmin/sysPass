@@ -27,6 +27,7 @@ namespace SP\Modules\Web\Forms;
 use SP\Account\AccountRequest;
 use SP\Core\Acl\ActionsInterface;
 use SP\Core\Exceptions\ValidationException;
+use SP\DataModel\AccountPermissionData;
 use SP\Http\Request;
 
 /**
@@ -96,16 +97,29 @@ class AccountForm extends FormBase implements FormInterface
         $this->accountRequest->userGroupId = Request::analyzeInt('main_usergroup_id');
 
         // Arrays
-        $accountOtherGroups = Request::analyzeArray('other_usergroups');
-        $accountOtherUsers = Request::analyzeArray('other_users');
+        $accountOtherGroupsView = Request::analyzeArray('other_usergroups_view');
+        $accountOtherGroupsEdit = Request::analyzeArray('other_usergroups_edit');
+        $accountOtherUsersView = Request::analyzeArray('other_users_view');
+        $accountOtherUsersEdit = Request::analyzeArray('other_users_edit');
         $accountTags = Request::analyzeArray('tags');
 
-        if ($accountOtherUsers) {
-            $this->accountRequest->users = $accountOtherUsers;
+        $this->accountRequest->updateUserGroupPermissions = Request::analyzeInt('other_usergroups_view_update') === 1 || Request::analyzeInt('other_usergroups_edit_update') === 1;
+        $this->accountRequest->updateUserPermissions = Request::analyzeInt('other_users_view_update') === 1 || Request::analyzeInt('other_users_edit_update') === 1;
+        $this->accountRequest->updateTags = Request::analyzeInt('tags_update') === 1;
+
+        if ($accountOtherUsersView) {
+            $this->accountRequest->usersView = $accountOtherUsersView;
+        }
+        if ($accountOtherUsersEdit) {
+            $this->accountRequest->usersEdit = $accountOtherUsersEdit;
         }
 
-        if ($accountOtherGroups) {
-            $this->accountRequest->userGroups = $accountOtherGroups;
+        if ($accountOtherGroupsView) {
+            $this->accountRequest->userGroupsView = $accountOtherGroupsView;
+        }
+
+        if ($accountOtherGroupsEdit) {
+            $this->accountRequest->userGroupsEdit = $accountOtherGroupsEdit;
         }
 
         if ($accountTags) {

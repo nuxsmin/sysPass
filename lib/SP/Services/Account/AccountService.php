@@ -220,11 +220,19 @@ class AccountService extends Service implements AccountServiceInterface
     {
         try {
             if ($accountRequest->changePermissions) {
-                if (is_array($accountRequest->userGroups) && !empty($accountRequest->userGroups)) {
+                if (is_array($accountRequest->userGroupsView) && !empty($accountRequest->userGroupsView)) {
                     $this->accountToUserGroupRepository->add($accountRequest);
                 }
 
-                if (is_array($accountRequest->users) && !empty($accountRequest->users)) {
+                if (is_array($accountRequest->userGroupsEdit) && !empty($accountRequest->userGroupsEdit)) {
+                    $this->accountToUserGroupRepository->addEdit($accountRequest);
+                }
+
+                if (is_array($accountRequest->usersView) && !empty($accountRequest->usersView)) {
+                    $this->accountToUserRepository->add($accountRequest);
+                }
+
+                if (is_array($accountRequest->usersEdit) && !empty($accountRequest->usersEdit)) {
                     $this->accountToUserRepository->add($accountRequest);
                 }
             }
@@ -264,7 +272,7 @@ class AccountService extends Service implements AccountServiceInterface
     }
 
     /**
-     * @param int $accountId
+     * @param int  $accountId
      * @param bool $isDelete
      * @return bool
      * @throws QueryException
@@ -296,23 +304,41 @@ class AccountService extends Service implements AccountServiceInterface
         try {
 
             if ($accountRequest->changePermissions) {
-                if (!empty($accountRequest->userGroups)) {
-                    $this->accountToUserGroupRepository->update($accountRequest);
-                } else {
-                    $this->accountToUserGroupRepository->deleteByAccountId($accountRequest->id);
+                if ($accountRequest->updateUserGroupPermissions) {
+                    if (!empty($accountRequest->userGroupsView)) {
+                        $this->accountToUserGroupRepository->update($accountRequest);
+                    } else {
+                        $this->accountToUserGroupRepository->deleteByAccountId($accountRequest->id);
+                    }
+
+                    if (!empty($accountRequest->userGroupsEdit)) {
+                        $this->accountToUserGroupRepository->updateEdit($accountRequest);
+                    } else {
+                        $this->accountToUserGroupRepository->deleteEditByAccountId($accountRequest->id);
+                    }
                 }
 
-                if (!empty($accountRequest->users)) {
-                    $this->accountToUserRepository->update($accountRequest);
-                } else {
-                    $this->accountToUserRepository->deleteByAccountId($accountRequest->id);
+                if ($accountRequest->updateUserPermissions) {
+                    if (!empty($accountRequest->usersView)) {
+                        $this->accountToUserRepository->update($accountRequest);
+                    } else {
+                        $this->accountToUserRepository->deleteByAccountId($accountRequest->id);
+                    }
+
+                    if (!empty($accountRequest->usersEdit)) {
+                        $this->accountToUserRepository->updateEdit($accountRequest);
+                    } else {
+                        $this->accountToUserRepository->deleteEditByAccountId($accountRequest->id);
+                    }
                 }
             }
 
-            if (!empty($accountRequest->tags)) {
-                $this->accountToTagRepository->update($accountRequest);
-            } else {
-                $this->accountToTagRepository->deleteByAccountId($accountRequest->id);
+            if ($accountRequest->updateTags) {
+                if (!empty($accountRequest->tags)) {
+                    $this->accountToTagRepository->update($accountRequest);
+                } else {
+                    $this->accountToTagRepository->deleteByAccountId($accountRequest->id);
+                }
             }
         } catch (SPException $e) {
             debugLog($e->getMessage());
@@ -321,7 +347,7 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param AccountRequest $accountRequest
-     * @param bool $addHistory
+     * @param bool           $addHistory
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface

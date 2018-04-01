@@ -152,13 +152,11 @@ class AccountSearchService extends Service
 
             $accountAclDto = new AccountAclDto();
             $accountAclDto->setAccountId($accountSearchData->getId());
-            $accountAclDto->setDateEdit($accountSearchData->getDateEdit());
+            $accountAclDto->setDateEdit(strtotime($accountSearchData->getDateEdit()));
             $accountAclDto->setUserId($accountSearchData->getUserId());
             $accountAclDto->setUserGroupId($accountSearchData->getUserGroupId());
             $accountAclDto->setUsersId($cache->getUsers());
             $accountAclDto->setUserGroupsId($cache->getUserGroups());
-            $accountAclDto->setOtherUserEdit($accountSearchData->getOtherUserEdit());
-            $accountAclDto->setOtherUserGroupEdit($accountSearchData->getOtherUserGroupEdit());
 
             // Obtener la ACL de la cuenta
             $accountAcl = $accountAclService->getAcl(Acl::ACCOUNT_SEARCH, $accountAclDto);

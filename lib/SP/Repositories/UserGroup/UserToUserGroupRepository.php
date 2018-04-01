@@ -67,7 +67,7 @@ class UserToUserGroupRepository extends Repository
     public function getGroupsForUser($userId)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT userGroupId AS groupId FROM UserToUserGroup WHERE userId = ?');
+        $queryData->setQuery('SELECT userGroupId FROM UserToUserGroup WHERE userId = ?');
         $queryData->addParam($userId);
 
         return DbWrapper::getResultsArray($queryData, $this->db);

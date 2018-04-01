@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -23,6 +23,8 @@
  */
 
 namespace SP\Account;
+
+use SP\DataModel\AccountPermissionData;
 
 /**
  * Class AccountRequest
@@ -106,11 +108,19 @@ class AccountRequest
     /**
      * @var array
      */
-    public $users;
+    public $usersView;
     /**
      * @var array
      */
-    public $userGroups;
+    public $usersEdit;
+    /**
+     * @var array
+     */
+    public $userGroupsView;
+    /**
+     * @var array
+     */
+    public $userGroupsEdit;
     /**
      * @var array
      */
@@ -123,4 +133,16 @@ class AccountRequest
      * @var bool
      */
     public $changePermissions = false;
+    /**
+     * @var bool
+     */
+    public $updateUserPermissions = false;
+    /**
+     * @var bool
+     */
+    public $updateUserGroupPermissions = false;
+    /**
+     * @var bool
+     */
+    public $updateTags = false;
 }

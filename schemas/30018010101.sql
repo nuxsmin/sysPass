@@ -354,6 +354,7 @@ RENAME TO AccountToTag $$
 
 -- AccountToUserGroup
 ALTER TABLE accGroups
+  ADD isEdit tinyint(1) unsigned DEFAULT 0 NULL,
   CHANGE accgroup_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accgroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
   DROP INDEX IDX_accountId,
@@ -362,6 +363,7 @@ RENAME TO AccountToUserGroup $$
 
 -- AccountToUser
 ALTER TABLE accUsers
+  ADD isEdit tinyint(1) unsigned DEFAULT 0 NULL,
   CHANGE accuser_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accuser_userId userId SMALLINT(5) UNSIGNED NOT NULL,
   DROP INDEX idx_account,

@@ -418,56 +418,31 @@ sysPass.Triggers = function (Common) {
                 Common.appActions().items.get($selParentAccount);
             }
 
-            const $selTags = $("#tags");
+            $('.select-box-tags').selectize({
+                persist: false,
+                valueField: 'id',
+                labelField: 'name',
+                searchField: ['name'],
+                plugins: ['remove_button'],
+                onInitialize: function () {
+                    const input = this.$input[0];
+                    const attribute = document.createAttribute("data-hash");
+                    attribute.value = SparkMD5.hash(this.getValue().join(), false);
 
-            if ($selTags.length > 0) {
-                $selTags.selectize({
-                    persist: false,
-                    maxItems: null,
-                    valueField: "id",
-                    labelField: "name",
-                    searchField: ["name"],
-                    plugins: ["remove_button"]
-                });
-            }
+                    input.setAttributeNode(attribute);
 
-            const $otherUsers = $('#other_users');
-
-            if ($otherUsers.length > 0) {
-                $otherUsers.selectize({
-                    persist: false,
-                    valueField: 'id',
-                    labelField: 'name',
-                    searchField: ['name'],
-                    plugins: ['remove_button'],
-                    onInitialize: function () {
-                        const userId = $otherUsers.data('userId');
-
-                        if (userId > 0) {
-                            this.removeOption(userId);
-                        }
+                    if (typeof input.dataset.currentItemId !== "undefined") {
+                        this.removeOption(input.dataset.currentItemId, true);
                     }
-                });
-            }
+                },
+                onChange: function () {
+                    const input = this.$input[0];
+                    const attribute = document.createAttribute("data-updated");
+                    attribute.value = SparkMD5.hash(this.getValue().join(), false) !== input.dataset.hash && "true";
 
-            const $otherUserGroups = $('#other_usergroups');
-
-            if ($otherUserGroups.length > 0) {
-                $otherUserGroups.selectize({
-                    persist: false,
-                    valueField: 'id',
-                    labelField: 'name',
-                    searchField: ['name'],
-                    plugins: ['remove_button'],
-                    onInitialize: function () {
-                        const userGroupId = $otherUserGroups.data('userGroupId');
-
-                        if (userGroupId > 0) {
-                            this.removeOption(userGroupId);
-                        }
-                    }
-                });
-            }
+                    input.setAttributeNode(attribute);
+                }
+            });
 
             $('input:text:visible:first').focus();
         },

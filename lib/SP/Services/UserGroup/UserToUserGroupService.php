@@ -61,7 +61,7 @@ class UserToUserGroupService extends Service
     }
 
     /**
-     * @param       $id
+     * @param int   $id
      * @param array $users
      * @return UserToUserGroupRepository
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -69,6 +69,10 @@ class UserToUserGroupService extends Service
      */
     public function update($id, array $users)
     {
+        if (count($users) === 0) {
+            return $this->userToUserGroupRepository->delete($id);
+        }
+
         return $this->userToUserGroupRepository->update($id, $users);
     }
 

@@ -140,7 +140,9 @@ class UserController extends ControllerBase implements CrudControllerInterface
         $this->view->assign('sk', $this->session->generateSecurityKey());
         $this->view->assign('nextAction', Acl::getActionRoute(ActionsInterface::ACCESS_MANAGE));
 
-        if ($this->view->isView === true || $user->getLogin() === 'demo') {
+        if ($this->view->isView === true
+            || ($this->configData->isDemoEnabled() && $user->getLogin() === 'demo')
+        ) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
 

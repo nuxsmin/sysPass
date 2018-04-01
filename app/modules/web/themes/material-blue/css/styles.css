@@ -380,20 +380,14 @@ body.userpassreset {
     display: none; }
   #content .data .account-permissions {
     width: 100%; }
-    #content .data .account-permissions fieldset {
-      border: 1px solid #c9c9c9;
-      padding: 1em; }
-    #content .data .account-permissions legend {
-      font-weight: bold;
-      color: #999;
-      padding: 0.2em 0; }
-    #content .data .account-permissions fieldset > span {
-      font-weight: bold;
-      color: #999;
-      padding: .2em 0;
-      display: inline-block;
-      width: 100px;
-      text-align: right; }
+    #content .data .account-permissions .tag-list-box {
+      margin-bottom: 1em; }
+      #content .data .account-permissions .tag-list-box .tag-list-header {
+        text-align: left;
+        border-bottom: 1px solid #d9d9d9;
+        color: #607d8b;
+        font-size: 12px;
+        font-weight: bold; }
 #content span.tag {
   margin: 0 3px 3px 0;
   padding: .2em;

@@ -33,7 +33,6 @@ use SP\Services\User\UserLoginResponse;
 use SP\Services\UserGroup\UserToUserGroupService;
 use SP\Storage\FileCache;
 use SP\Storage\FileException;
-use SP\Util\ArrayUtil;
 use SP\Util\FileUtil;
 
 /**
@@ -63,6 +62,10 @@ class AccountAclService extends Service
      * @var FileCache
      */
     protected $fileCache;
+    /**
+     * @var UserLoginResponse
+     */
+    protected $userData;
 
     /**
      * @param $userId
@@ -87,15 +90,16 @@ class AccountAclService extends Service
     public function getAcl($actionId, AccountAclDto $accountAclDto = null, $isHistory = false)
     {
         $this->accountAcl = new AccountAcl($actionId, $isHistory);
-
         $this->accountAcl->showPermission = self::getShowPermission($this->context->getUserData(), $this->context->getUserProfile());
 
         if ($accountAclDto !== null) {
             $this->accountAclDto = $accountAclDto;
+
             $accountAcl = $this->getAclFromCache($accountAclDto->getAccountId(), $actionId);
 
             if (null !== $accountAcl
-                && !($this->accountAcl->modified = (int)strtotime($accountAclDto->getDateEdit()) > $accountAcl->getTime())
+                && !($this->accountAcl->modified = ($accountAclDto->getDateEdit() > $accountAcl->getTime()
+                    || $this->userData->getLastUpdate() > $accountAcl->getTime()))
             ) {
                 debugLog('Account ACL HIT');
 
@@ -196,10 +200,13 @@ class AccountAclService extends Service
      */
     protected function compileAccountAccess()
     {
-        $userData = $this->context->getUserData();
+        $this->accountAcl->resultView = $this->accountAcl->resultEdit = false;
 
-        if ($userData->getIsAdminApp()
-            || $userData->getIsAdminAcc()
+        // Check out if user is admin or owner/maingroup
+        if ($this->userData->getIsAdminApp()
+            || $this->userData->getIsAdminAcc()
+            || $this->userData->getId() === $this->accountAclDto->getUserId()
+            || $this->userData->getUserGroupId() === $this->accountAclDto->getUserGroupId()
         ) {
             $this->accountAcl->resultView = true;
             $this->accountAcl->resultEdit = true;
@@ -207,54 +214,88 @@ class AccountAclService extends Service
             return;
         }
 
-        $this->accountAcl->userInGroups = $this->getIsUserInGroups();
-        $this->accountAcl->userInUsers = ArrayUtil::checkInObjectArray($this->accountAclDto->getUsersId(), 'id', $userData->getId());
+        // Check out if user is listed in secondary users of the account
+        $userInUsers = $this->getUserInSecondaryUsers($this->userData->getId());
+        $this->accountAcl->userInUsers = count($userInUsers) > 0;
 
-        $this->accountAcl->resultView = ($userData->getId() === $this->accountAclDto->getUserId()
-            || $userData->getUserGroupId() === $this->accountAclDto->getUserGroupId()
-            || $this->accountAcl->userInUsers
-            || $this->accountAcl->userInGroups);
+        if ($this->accountAcl->userInUsers) {
+            $this->accountAcl->resultView = true;
+            $this->accountAcl->resultEdit = (int)$userInUsers[0]->isEdit === 1;
 
-        $this->accountAcl->resultEdit = ($userData->getId() === $this->accountAclDto->getUserId()
-            || $userData->getUserGroupId() === $this->accountAclDto->getUserGroupId()
-            || ($this->accountAcl->userInUsers && $this->accountAclDto->getOtherUserEdit() === 1)
-            || ($this->accountAcl->userInGroups && $this->accountAclDto->getOtherUserGroupEdit() === 1));
+            return;
+        }
+
+        // Analyze user's groups
+        $userToUserGroupService = $this->dic->get(UserToUserGroupService::class);
+
+        // Groups in whinch the user is listed in
+        $userGroups = array_map(function ($value) {
+            return (int)$value->userGroupId;
+        }, $userToUserGroupService->getGroupsForUser($this->userData->getId()));
+
+        // Check out if user groups match with account's main group
+        if ($this->getUserGroupsInMainGroup($userGroups)) {
+            $this->accountAcl->userInGroups = true;
+            $this->accountAcl->resultView = true;
+            $this->accountAcl->resultEdit = true;
+
+            return;
+        }
+
+        // Check out if user groups match with account's secondary groups
+        $userGroupsInSecondaryUserGroups = $this->getUserGroupsInSecondaryGroups($userGroups, $this->userData->getUserGroupId());
+
+        $this->accountAcl->userInGroups = count($userGroupsInSecondaryUserGroups) > 0;
+        $this->accountAcl->resultView = true;
+        $this->accountAcl->resultEdit = $this->accountAcl->userInGroups && (int)$userGroupsInSecondaryUserGroups[0]->isEdit === 1;
+    }
+
+    /**
+     * Checks if the user is listed in the account users
+     *
+     * @param $userId
+     * @return array
+     */
+    protected function getUserInSecondaryUsers($userId)
+    {
+        return array_filter($this->accountAclDto->getUsersId(), function ($value) use ($userId) {
+            return (int)$value->id === $userId;
+        });
+    }
+
+    /**
+     * Comprobar si los grupos del usuario está vinculado desde el grupo principal de la cuenta
+     *
+     * @param array $userGroups
+     * @return bool
+     */
+    protected function getUserGroupsInMainGroup(array $userGroups)
+    {
+        // Comprobar si el usuario está vinculado desde el grupo principal de la cuenta
+        return in_array($this->accountAclDto->getUserGroupId(), $userGroups);
     }
 
     /**
      * Comprobar si el usuario o el grupo del usuario se encuentran los grupos asociados a la
      * cuenta.
      *
-     * @return bool
+     * @param array $userGroups
+     * @param int   $userGroupId
+     * @return bool|array
      */
-    protected function getIsUserInGroups()
+    protected function getUserGroupsInSecondaryGroups(array $userGroups, $userGroupId)
     {
-        $userData = $this->context->getUserData();
-        $userToUserGroupService = $this->dic->get(UserToUserGroupService::class);
-
-        // Comprobar si el usuario está vinculado desde el grupo principal de la cuenta
-        if ($userToUserGroupService->checkUserInGroup($this->accountAclDto->getUserGroupId(), $userData->getId())) {
-            return true;
-        }
-
-        // Grupos en los que se encuentra el usuario
-        $userGroupIds = $userToUserGroupService->getGroupsForUser($userData->getId());
         $isAccountFullGroupAccess = $this->config->getConfigData()->isAccountFullGroupAccess();
 
         // Comprobar si el grupo del usuario está vinculado desde los grupos secundarios de la cuenta
-        foreach ($this->accountAclDto->getUserGroupsId() as $userGroup) {
-            // Consultar el grupo principal del usuario
-            if ((int)$userGroup->id === $userData->getUserGroupId()
-                // o... permitir los grupos que no sean el principal del usuario?
-                || ($isAccountFullGroupAccess
-                    // Comprobar si el usuario está vinculado desde los grupos secundarios de la cuenta
-                    && ArrayUtil::checkInObjectArray($userGroupIds, 'userGroupId', $userGroup->id))
-            ) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_filter($this->accountAclDto->getUserGroupsId(),
+            function ($value) use ($userGroupId, $isAccountFullGroupAccess, $userGroups) {
+                return (int)$value->id === $userGroupId
+                    // o... permitir los grupos que no sean el principal del usuario?
+                    || ($isAccountFullGroupAccess
+                        // Comprobar si el usuario está vinculado desde los grupos secundarios de la cuenta
+                        && in_array((int)$value->id, $userGroups));
+            });
     }
 
     /**
@@ -321,5 +362,6 @@ class AccountAclService extends Service
     {
         $this->acl = $this->dic->get(Acl::class);
         $this->fileCache = $this->dic->get(FileCache::class);
+        $this->userData = $this->context->getUserData();
     }
 }

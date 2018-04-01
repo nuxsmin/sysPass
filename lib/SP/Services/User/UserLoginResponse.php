@@ -121,6 +121,10 @@ class UserLoginResponse
      * @var int
      */
     private $lastUpdateMPass = 0;
+    /**
+     * @var int
+     */
+    private $lastUpdate;
 
     /**
      * @return string
@@ -515,6 +519,25 @@ class UserLoginResponse
     public function setUserProfileName($userProfileName)
     {
         $this->userProfileName = $userProfileName;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastUpdate(): int
+    {
+        return $this->lastUpdate;
+    }
+
+    /**
+     * @param int $lastUpdate
+     * @return UserLoginResponse
+     */
+    public function setLastUpdate(int $lastUpdate)
+    {
+        $this->lastUpdate = $lastUpdate;
+
         return $this;
     }
 }

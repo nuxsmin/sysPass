@@ -118,8 +118,27 @@ class AccountHelper extends HelperBase
         $selectUserGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
         $selectTags = SelectItemAdapter::factory(TagService::getItemsBasic());
 
-        $this->view->assign('otherUsers', $selectUsers->getItemsFromModelSelected(SelectItemAdapter::getIdFromArrayOfObjects($accountDetailsResponse->getUsers()), $accountData->getUserId()));
-        $this->view->assign('otherUserGroups', $selectUserGroups->getItemsFromModelSelected(SelectItemAdapter::getIdFromArrayOfObjects($accountDetailsResponse->getUserGroups()), $accountData->getUserGroupId()));
+        $this->view->assign('otherUsersView', $selectUsers->getItemsFromModelSelected(
+            SelectItemAdapter::getIdFromArrayOfObjects(array_filter($accountDetailsResponse->getUsers(), function ($value) {
+                return (int)$value->isEdit === 0;
+            })), $accountData->getUserId()));
+        
+        $this->view->assign('otherUsersEdit', $selectUsers->getItemsFromModelSelected(
+            SelectItemAdapter::getIdFromArrayOfObjects(array_filter($accountDetailsResponse->getUsers(), function ($value) {
+                return (int)$value->isEdit === 1;
+            })), $accountData->getUserId()));
+
+        $this->view->assign('otherUserGroupsView', $selectUserGroups->getItemsFromModelSelected(
+            SelectItemAdapter::getIdFromArrayOfObjects(array_filter($accountDetailsResponse->getUserGroups(), function ($value) {
+                return (int)$value->isEdit === 0;
+            })), $accountData->getUserGroupId()));
+
+        $this->view->assign('otherUserGroupsEdit', $selectUserGroups->getItemsFromModelSelected(
+            SelectItemAdapter::getIdFromArrayOfObjects(array_filter($accountDetailsResponse->getUserGroups(), function ($value) {
+                return (int)$value->isEdit === 1;
+            })), $accountData->getUserGroupId()));
+
+        $this->view->assign('users', $selectUsers->getItemsFromModelSelected([$accountData->getUserId()]));
         $this->view->assign('userGroups', $selectUserGroups->getItemsFromModelSelected([$accountData->getUserGroupId()]));
         $this->view->assign('tags', $selectTags->getItemsFromModelSelected(SelectItemAdapter::getIdFromArrayOfObjects($accountDetailsResponse->getTags())));
 
@@ -177,7 +196,8 @@ class AccountHelper extends HelperBase
             throw new UnauthorizedPageException(UnauthorizedPageException::INFO);
         }
 
-        if (!$this->dic->get(MasterPassService::class)->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
+        if (!$this->dic->get(MasterPassService::class)
+            ->checkUserUpdateMPass($this->context->getUserData()->getLastUpdateMPass())) {
             throw new UpdatedMasterPassException(UpdatedMasterPassException::INFO);
         }
     }
@@ -200,8 +220,6 @@ class AccountHelper extends HelperBase
         $accountAclDto->setUserGroupId($accountData->getUserGroupId());
         $accountAclDto->setUsersId($accountDetailsResponse->getUsers());
         $accountAclDto->setUserGroupsId($accountDetailsResponse->getUserGroups());
-        $accountAclDto->setOtherUserEdit($accountData->getOtherUserEdit());
-        $accountAclDto->setOtherUserGroupEdit($accountData->getOtherUserGroupEdit());
 
         $accountAcl = $this->dic->get(AccountAclService::class)->getAcl($this->actionId, $accountAclDto);
 
@@ -247,7 +265,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('readonly', $this->isView ? 'readonly' : '');
 
         $this->view->assign('showViewCustomPass', $this->accountAcl->isShowViewPass());
-        $this->view->assign('accountAcl', $this->accountAcl ?: $this->accountAcl);
+        $this->view->assign('accountAcl', $this->accountAcl);
 
         $this->view->assign('deepLink', $this->getDeepLink());
     }
@@ -278,17 +296,23 @@ class AccountHelper extends HelperBase
 
         $this->checkActionAccess();
 
+        $userProfileData = $this->context->getUserProfile();
+        $userData = $this->context->getUserData();
+
+        $this->accountAcl->showPermission = $userData->getIsAdminApp() || $userData->getIsAdminAcc() || $userProfileData->isAccPermission();
+
         $selectUsers = SelectItemAdapter::factory(UserService::getItemsBasic());
         $selectUserGroups = SelectItemAdapter::factory(UserGroupService::getItemsBasic());
         $selectTags = SelectItemAdapter::factory(TagService::getItemsBasic());
 
         $this->view->assign('accountPassDateChange', date('Y-m-d', time() + 7776000));
-        $this->view->assign('otherUsers', $selectUsers->getItemsFromModel());
-        $this->view->assign('otherUserGroups', $selectUserGroups->getItemsFromModel());
+        $this->view->assign('otherUsersView', $selectUsers->getItemsFromModel());
+        $this->view->assign('otherUsersEdit', $selectUsers->getItemsFromModel());
+        $this->view->assign('otherUserGroupsView', $selectUserGroups->getItemsFromModel());
+        $this->view->assign('otherUserGroupsEdit', $selectUserGroups->getItemsFromModel());
+
         $this->view->assign('userGroups', $selectUserGroups->getItemsFromModel());
         $this->view->assign('tags', $selectTags->getItemsFromModel());
-
-        $userProfileData = $this->context->getUserProfile();
 
         $this->view->assign('allowPrivate', $userProfileData->isAccPrivate());
         $this->view->assign('allowPrivateGroup', $userProfileData->isAccPrivateGroup());

@@ -79,7 +79,8 @@ class UserService extends Service
             ->setIsMigrate($userData->isMigrate())
             ->setIsChangedPass($userData->isIsChangedPass())
             ->setIsChangePass($userData->isChangePass())
-            ->setIsDisabled($userData->isDisabled());
+            ->setIsDisabled($userData->isDisabled())
+            ->setLastUpdate((int)strtotime($userData->getLastUpdate()));
     }
 
     /**
