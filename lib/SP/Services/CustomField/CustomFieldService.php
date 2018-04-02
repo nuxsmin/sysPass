@@ -46,6 +46,10 @@ class CustomFieldService extends Service
      * @var CustomFieldRepository
      */
     protected $customFieldRepository;
+    /**
+     * @var CustomFieldDefService
+     */
+    protected $customFieldDefService;
 
     /**
      * Returns the form Id for a given name
@@ -69,7 +73,7 @@ class CustomFieldService extends Service
      */
     public static function decryptData($data, $key, SessionContext $sessionContext)
     {
-        if ($data !== '') {
+        if ($data !== '' && $key !== '') {
             $securedKey = Crypt::unlockSecuredKey($key, CryptSession::getSessionKey($sessionContext));
 
             return self::formatValue(Crypt::decrypt($data, $securedKey));
@@ -129,7 +133,9 @@ class CustomFieldService extends Service
             return $this->create($customFieldData);
         }
 
-        $this->setSecureData($customFieldData);
+        if ($this->customFieldDefService->getById($customFieldData->getDefinitionId())->getisEncrypted()) {
+            $this->setSecureData($customFieldData);
+        }
 
         return $this->customFieldRepository->update($customFieldData);
     }
@@ -168,7 +174,9 @@ class CustomFieldService extends Service
             return true;
         }
 
-        $this->setSecureData($customFieldData);
+        if ($this->customFieldDefService->getById($customFieldData->getDefinitionId())->getisEncrypted()) {
+            $this->setSecureData($customFieldData);
+        }
 
         return $this->customFieldRepository->create($customFieldData);
     }
@@ -259,11 +267,20 @@ class CustomFieldService extends Service
     }
 
     /**
+     * @return CustomFieldData[]
+     */
+    public function getAllEncrypted()
+    {
+        return $this->customFieldRepository->getAllEncrypted();
+    }
+
+    /**
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
     protected function initialize()
     {
         $this->customFieldRepository = $this->dic->get(CustomFieldRepository::class);
+        $this->customFieldDefService = $this->dic->get(CustomFieldDefService::class);
     }
 }

@@ -41,6 +41,10 @@ use SP\Storage\QueryData;
 class CustomFieldDefRepository extends Repository implements RepositoryItemInterface
 {
     use RepositoryItemTrait;
+    /**
+     * @var CustomFieldDefCollection
+     */
+    private $customFieldDefCollection;
 
     /**
      * Creates an item
@@ -53,7 +57,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     public function create($itemData)
     {
         $query = /** @lang SQL */
-            'INSERT INTO CustomFieldDefinition SET `name` = ?, moduleId = ?, required = ?, `help` = ?, showInList = ?, typeId = ?';
+            'INSERT INTO CustomFieldDefinition SET `name` = ?, moduleId = ?, required = ?, `help` = ?, showInList = ?, typeId = ?, isEncrypted = ?';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
@@ -63,6 +67,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->addParam($itemData->getHelp());
         $queryData->addParam($itemData->getShowInList());
         $queryData->addParam($itemData->getTypeId());
+        $queryData->addParam($itemData->getisEncrypted());
         $queryData->setOnErrorMessage(__u('Error al crear el campo personalizado'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -82,7 +87,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     {
         $query = /** @lang SQL */
             'UPDATE CustomFieldDefinition 
-              SET `name` = ?, moduleId = ?, required = ?, `help` = ?, showInList = ?, typeId = ?, field = NULL 
+              SET `name` = ?, moduleId = ?, required = ?, `help` = ?, showInList = ?, typeId = ?, isEncrypted = ?, field = NULL 
               WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
@@ -93,6 +98,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->addParam($itemData->getHelp());
         $queryData->addParam($itemData->getShowInList());
         $queryData->addParam($itemData->getTypeId());
+        $queryData->addParam($itemData->getisEncrypted());
         $queryData->addParam($itemData->getId());
         $queryData->setOnErrorMessage(__u('Error al actualizar el campo personalizado'));
 
@@ -107,8 +113,12 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      */
     public function getById($id)
     {
+        if ($this->customFieldDefCollection->exists($id)) {
+            return $this->customFieldDefCollection->get($id);
+        }
+
         $query = /** @lang SQL */
-            'SELECT id, `name`, moduleId, required, `help`, showInList, typeId
+            'SELECT id, `name`, moduleId, required, `help`, showInList, typeId, isEncrypted
               FROM CustomFieldDefinition
               WHERE id = ? LIMIT 1';
 
@@ -117,7 +127,10 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->addParam($id);
         $queryData->setMapClassName(CustomFieldDefinitionData::class);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        $cfd = DbWrapper::getResults($queryData, $this->db);
+        $this->customFieldDefCollection->set($id, $cfd);
+
+        return $cfd;
     }
 
     /**
@@ -128,7 +141,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     public function getAll()
     {
         $query = /** @lang SQL */
-            'SELECT id, `name`, moduleId, required, `help`, showInList
+            'SELECT id, `name`, moduleId, required, `help`, showInList, isEncrypted
               FROM CustomFieldDefinition
               ORDER BY moduleId';
 
@@ -148,7 +161,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     public function getByIdBatch(array $ids)
     {
         $query = /** @lang SQL */
-            'SELECT id, `name`, moduleId, required, `help`, showInList, typeId
+            'SELECT id, `name`, moduleId, required, `help`, showInList, typeId, isEncrypted
               FROM CustomFieldDefinition
               WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
@@ -243,7 +256,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(CustomFieldDefinitionData::class);
-        $queryData->setSelect('CFD.id, CFD.name, CFD.moduleId, CFD.required, CFD.help, CFD.showInList, CFD.typeId, CFT.name AS typeName');
+        $queryData->setSelect('CFD.id, CFD.name, CFD.moduleId, CFD.required, CFD.help, CFD.showInList, CFD.typeId, CFD.isEncrypted, CFT.name AS typeName');
         $queryData->setFrom('CustomFieldDefinition CFD INNER JOIN CustomFieldType CFT ON CFD.typeId = CFT.id');
         $queryData->setOrder('CFD.moduleId');
 
@@ -259,5 +272,10 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
+    }
+
+    protected function initialize()
+    {
+        $this->customFieldDefCollection = new CustomFieldDefCollection();
     }
 }

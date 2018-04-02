@@ -70,7 +70,6 @@ class CustomFieldDefService extends Service
             ActionsInterface::CLIENT => __('Clientes'),
             ActionsInterface::USER => __('Usuarios'),
             ActionsInterface::GROUP => __('Grupos')
-
         ];
 
         return $modules;

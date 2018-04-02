@@ -78,6 +78,7 @@ ALTER TABLE customFieldsDef
   ADD name VARCHAR(100) NOT NULL
   AFTER id,
   ADD typeId TINYINT UNSIGNED NOT NULL,
+  ADD isEncrypted tinyint(1) unsigned DEFAULT 1 NULL,
   CHANGE customfielddef_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE customfielddef_module moduleId SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE customfielddef_field field BLOB NULL,

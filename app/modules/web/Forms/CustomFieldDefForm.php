@@ -75,6 +75,7 @@ class CustomFieldDefForm extends FormBase implements FormInterface
         $this->customFieldDefData->setModuleId(Request::analyzeInt('module'));
         $this->customFieldDefData->setHelp(Request::analyzeString('help'));
         $this->customFieldDefData->setRequired(Request::analyzeBool('required', false));
+        $this->customFieldDefData->setIsEncrypted(Request::analyzeBool('encrypted', false));
     }
 
     /**

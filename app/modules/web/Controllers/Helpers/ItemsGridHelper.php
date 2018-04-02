@@ -255,6 +255,7 @@ class ItemsGridHelper extends HelperBase
         $GridHeaders->addHeader(__('Nombre'));
         $GridHeaders->addHeader(__('Módulo'));
         $GridHeaders->addHeader(__('Tipo'));
+        $GridHeaders->addHeader(__('Propiedades'));
 
         // Grid Data
         $GridData = new DataGridData();
@@ -264,6 +265,7 @@ class ItemsGridHelper extends HelperBase
             return CustomFieldDefService::getFieldModuleById($value);
         });
         $GridData->addDataRowSource('typeName');
+        $GridData->addDataRowSourceWithIcon('isEncrypted', $this->icons->getIconEditPass()->setTitle(__('Encriptado')));
         $GridData->setData($data);
 
         // Grid
@@ -1443,7 +1445,7 @@ class ItemsGridHelper extends HelperBase
      * Actualizar los datos del paginador
      *
      * @param DataGridInterface $dataGrid
-     * @param ItemSearchData $itemSearchData
+     * @param ItemSearchData    $itemSearchData
      * @return DataGridInterface
      */
     public function updatePager(DataGridInterface $dataGrid, ItemSearchData $itemSearchData)

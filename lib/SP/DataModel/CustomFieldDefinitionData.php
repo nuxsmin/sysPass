@@ -63,6 +63,10 @@ class CustomFieldDefinitionData
      * @var int
      */
     public $typeId;
+    /**
+     * @var int
+     */
+    public $isEncrypted = 1;
 
     /**
      * @return int
@@ -190,5 +194,21 @@ class CustomFieldDefinitionData
     public function setTypeId($typeId)
     {
         $this->typeId = (int)$typeId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getisEncrypted(): int
+    {
+        return (int)$this->isEncrypted;
+    }
+
+    /**
+     * @param int $isEncrypted
+     */
+    public function setIsEncrypted(int $isEncrypted)
+    {
+        $this->isEncrypted = $isEncrypted;
     }
 }

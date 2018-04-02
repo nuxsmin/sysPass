@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author    nuxsmin
- * @link      https://syspass.org
+ * @author nuxsmin
+ * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -22,25 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Services\CustomField;
+namespace SP\Repositories\CustomField;
+
+use SP\Core\DataCollection;
 
 /**
- * Class CustomFieldItem
+ * Class CustomFieldDefCollection
  *
- * @package SP\Services\CustomField
+ * @package SP\Repositories\CustomField
  */
-class CustomFieldItem
+class CustomFieldDefCollection extends DataCollection
 {
-    public $required = false;
-    public $showInList = false;
-    public $help;
-    public $definitionId = 0;
-    public $definitionName;
-    public $typeId = 0;
-    public $typeName;
-    public $typeText;
-    public $moduleId = 0;
-    public $formId;
-    public $value;
-    public $isEncrypted;
+
 }

@@ -85,7 +85,7 @@ class CustomFieldCryptService extends Service
      */
     protected function processUpdateMasterPassword(callable $decryptor)
     {
-        $customFields = $this->customFieldService->getAll();
+        $customFields = $this->customFieldService->getAllEncrypted();
 
         if (count($customFields) === 0) {
             $this->eventDispatcher->notifyEvent('update.masterPassword.customFields',

@@ -69,7 +69,15 @@ trait ItemTrait
                 $customField->typeText = $item->typeText;
                 $customField->moduleId = (int)$item->moduleId;
                 $customField->formId = CustomFieldService::getFormIdForName($item->definitionName);
-                $customField->value = $item->data !== null ? CustomFieldService::decryptData($item->data, $item->key, $sessionContext) : null;
+                $customField->isEncrypted = (int)$item->isEncrypted;
+
+                if ($item->data !== null
+                    && $item->key !== null
+                ) {
+                    $customField->value = CustomFieldService::decryptData($item->data, $item->key, $sessionContext);
+                } else {
+                    $customField->value = $item->data;
+                }
 
                 $customFields[] = $customField;
             } catch (CryptoException $e) {
@@ -94,14 +102,13 @@ trait ItemTrait
     protected function addCustomFieldsForItem($moduleId, $itemId)
     {
         if ($customFields = Request::analyzeArray('customfield')) {
-            $customFieldData = new CustomFieldData();
-            $customFieldData->setId($itemId);
-            $customFieldData->setModuleId($moduleId);
-
             $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
 
             try {
                 foreach ($customFields as $id => $value) {
+                    $customFieldData = new CustomFieldData();
+                    $customFieldData->setId($itemId);
+                    $customFieldData->setModuleId($moduleId);
                     $customFieldData->setDefinitionId($id);
                     $customFieldData->setData($value);
 
@@ -147,14 +154,13 @@ trait ItemTrait
     protected function updateCustomFieldsForItem($moduleId, $itemId)
     {
         if ($customFields = Request::analyzeArray('customfield')) {
-            $customFieldData = new CustomFieldData();
-            $customFieldData->setId($itemId);
-            $customFieldData->setModuleId($moduleId);
-
             $customFieldService = Bootstrap::getContainer()->get(CustomFieldService::class);
 
             try {
                 foreach ($customFields as $id => $value) {
+                    $customFieldData = new CustomFieldData();
+                    $customFieldData->setId($itemId);
+                    $customFieldData->setModuleId($moduleId);
                     $customFieldData->setDefinitionId($id);
                     $customFieldData->setData($value);
 

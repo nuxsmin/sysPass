@@ -281,6 +281,20 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
     }
 
     /**
+     * Returns all the items
+     *
+     * @return CustomFieldData[]
+     */
+    public function getAllEncrypted()
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('SELECT * FROM CustomFieldData WHERE `key` IS NOT NULL');
+        $queryData->setMapClassName(CustomFieldData::class);
+
+        return DbWrapper::getResultsArray($queryData, $this->db);
+    }
+
+    /**
      * Returns all the items for given ids
      *
      * @param array $ids
@@ -340,6 +354,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             CFD.required,
             CFD.showInList,
             CFD.help,
+            CFD.isEncrypted,
             CFD2.data,
             CFD2.key,
             CFT.id AS typeId,

@@ -8,6 +8,13 @@ foreach ($customFields as $index => $field):?>
     <tr>
         <td class="descField">
             <?php echo $field->definitionName; ?>
+            <?php if ($field->isEncrypted): ?>
+                <i class="icon material-icons <?php echo $icons->getIconEditPass()->getClass(); ?>"
+                   title="<?php echo __('Encriptado'); ?>">
+                    <?php echo $icons->getIconEditPass()->getIcon(); ?>
+                </i>
+            <?php endif; ?>
+
             <?php if ($field->help): ?>
                 <div id="help-<?php echo $field->formId; ?>"
                      class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>">
@@ -22,7 +29,7 @@ foreach ($customFields as $index => $field):?>
         <td class="valField">
             <?php if ($field->typeName === 'color' && $isView): ?>
                 <span class="round custom-input-color"
-                      style="background-color: <?php echo $field->getValue(); ?>;"></span>
+                      style="background-color: <?php echo $field->value; ?>;"></span>
             <?php elseif ($field->typeName === 'password'): ?>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input id="<?php echo $field->formId; ?>"

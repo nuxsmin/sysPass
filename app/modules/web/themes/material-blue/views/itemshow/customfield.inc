@@ -77,7 +77,17 @@
                         <span class="mdl-switch__label"><?php echo __('Obligatorio'); ?></span>
                     </label>
                 </td>
-            </tr
+            </tr>
+            <tr>
+                <td class="descField"></td>
+                <td class="valField">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="encrypted">
+                        <input type="checkbox" id="encrypted" class="mdl-switch__input mdl-color-text--indigo-400"
+                               name="encrypted" <?php echo $field->getisEncrypted() ? 'checked' : ''; ?>/>
+                        <span class="mdl-switch__label"><?php echo __('Encriptado'); ?></span>
+                    </label>
+                </td>
+            </tr>
             </tbody>
         </table>
 
