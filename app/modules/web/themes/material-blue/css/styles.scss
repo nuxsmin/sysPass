@@ -815,7 +815,13 @@ footer {
 }
 
 .item-actions {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
   margin: 1em auto;
+  > div {
+    display: inline-block;
+  }
 }
 
 .tab-actions {

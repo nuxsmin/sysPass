@@ -122,7 +122,7 @@ class AccountHelper extends HelperBase
             SelectItemAdapter::getIdFromArrayOfObjects(array_filter($accountDetailsResponse->getUsers(), function ($value) {
                 return (int)$value->isEdit === 0;
             })), $accountData->getUserId()));
-        
+
         $this->view->assign('otherUsersEdit', $selectUsers->getItemsFromModelSelected(
             SelectItemAdapter::getIdFromArrayOfObjects(array_filter($accountDetailsResponse->getUsers(), function ($value) {
                 return (int)$value->isEdit === 1;
@@ -180,7 +180,10 @@ class AccountHelper extends HelperBase
         $this->view->assign('accountData', $accountData);
         $this->view->assign('gotData', true);
 
-        $this->view->assign('accountActions', $this->dic->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, $accountActionsDto));
+        $accountActionsHelper = $this->dic->get(AccountActionsHelper::class);
+
+        $this->view->assign('accountActions', $accountActionsHelper->getActionsForAccount($this->accountAcl, $accountActionsDto));
+        $this->view->assign('accountActionsMenu', $accountActionsHelper->getActionsGrouppedForAccount($this->accountAcl, $accountActionsDto));
 
         $this->setViewCommon();
     }
@@ -320,7 +323,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('accountId', 0);
         $this->view->assign('gotData', false);
 
-        $this->view->assign('accountActions', $this->dic->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId)));
+        $this->view->assign('accountActions', $this->dic->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl,  new AccountActionsDto($this->accountId)));
 
         $this->setViewCommon();
     }

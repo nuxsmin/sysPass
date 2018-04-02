@@ -79,7 +79,7 @@ class AccountActionsHelper extends HelperBase
      */
     public function getActionsForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
     {
-        $actionsEnabled = [];
+        $actions = [];
 
         $actionBack = $this->getBackAction();
 
@@ -92,10 +92,172 @@ class AccountActionsHelper extends HelperBase
             $actionBack->setClasses(['btn-back']);
         }
 
-        $actionsEnabled[] = $actionBack;
+        $actions[] = $actionBack;
+
+        if ($accountAcl->isShowEditPass()) {
+            $actions[] = $this->getEditPassAction()->addData('item-id', $accountActionsDto->getAccountId());
+        }
+
+        if ($accountAcl->isShowEdit()) {
+            $actions[] = $this->getEditAction()->addData('item-id', $accountActionsDto->getAccountId());
+        }
+
+        if ($accountAcl->getActionId() === ActionsInterface::ACCOUNT_VIEW
+            && !$accountAcl->isShowEdit()
+            && $this->configData->isMailRequestsEnabled()
+        ) {
+            $actions[] = $this->getRequestAction()->addData('item-id', $accountActionsDto->getAccountId());
+        }
+
+        if ($accountAcl->isShowRestore()) {
+            $actionRestore = $this->getRestoreAction();
+            $actionRestore->addData('item-id', $accountActionsDto->getAccountId());
+            $actionRestore->addData('history-id', $accountActionsDto->getAccountHistoryId());
+
+            $actions[] = $actionRestore;
+        }
+
+        if ($accountAcl->isShowSave()) {
+            $actions[] = $this->getSaveAction()->addAttribute('form', 'frmAccount');
+        }
+
+        return $actions;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    public function getBackAction()
+    {
+        $action = new DataGridAction();
+        $action->setId('btnBack');
+        $action->setName(__('Atrás'));
+        $action->setTitle(__('Atrás'));
+        $action->addClass('btn-action');
+        $action->setIcon($this->icons->getIconBack());
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addData('action-sk', $this->sk);
+        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addAttribute('type', 'button');
+
+        return $action;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    public function getEditPassAction()
+    {
+        $action = new DataGridAction();
+        $action->setId(ActionsInterface::ACCOUNT_EDIT_PASS);
+        $action->setType(DataGridActionType::VIEW_ITEM);
+        $action->setName(__('Modificar Clave de Cuenta'));
+        $action->setTitle(__('Modificar Clave de Cuenta'));
+        $action->addClass('btn-action');
+        $action->setIcon($this->icons->getIconEditPass());
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT_PASS));
+        $action->addData('action-sk', $this->sk);
+        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT_PASS));
+        $action->addAttribute('type', 'button');
+
+        return $action;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    public function getEditAction()
+    {
+        $action = new DataGridAction();
+        $action->setId(ActionsInterface::ACCOUNT_EDIT);
+        $action->setType(DataGridActionType::EDIT_ITEM);
+        $action->setName(__('Editar Cuenta'));
+        $action->setTitle(__('Editar Cuenta'));
+        $action->addClass('btn-action');
+        $action->setIcon($this->icons->getIconEdit());
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowEdit');
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT));
+        $action->addData('action-sk', $this->sk);
+        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT));
+        $action->addAttribute('type', 'button');
+
+        return $action;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    public function getRequestAction()
+    {
+        $action = new DataGridAction();
+        $action->setId(ActionsInterface::ACCOUNT_REQUEST);
+        $action->setName(__('Solicitar Modificación'));
+        $action->setTitle(__('Solicitar Modificación'));
+        $action->addClass('btn-action');
+        $action->setIcon($this->icons->getIconEmail());
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowRequest');
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_REQUEST));
+        $action->addData('action-sk', $this->sk);
+        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
+        $action->addAttribute('type', 'submit');
+
+        return $action;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    public function getRestoreAction()
+    {
+        $action = new DataGridAction();
+        $action->setId(ActionsInterface::ACCOUNT_EDIT_RESTORE);
+        $action->setType(DataGridActionType::VIEW_ITEM);
+        $action->setName(__('Restaurar cuenta desde este punto'));
+        $action->setTitle(__('Restaurar cuenta desde este punto'));
+        $action->addClass('btn-action');
+        $action->setIcon($this->icons->getIconRestore());
+        $action->addData('action-route', 'account/saveEditRestore');
+        $action->addData('action-sk', $this->sk);
+        $action->addData('onclick', 'account/saveEditRestore');
+        $action->addAttribute('type', 'button');
+
+        return $action;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    public function getSaveAction()
+    {
+        $action = new DataGridAction();
+        $action->setId(ActionsInterface::ACCOUNT);
+        $action->setType(DataGridActionType::VIEW_ITEM);
+        $action->setName(__('Guardar'));
+        $action->setTitle(__('Guardar'));
+        $action->addClass('btn-action');
+        $action->setIcon($this->icons->getIconSave());
+        $action->addData('action-route', 'account/save');
+        $action->addData('action-sk', $this->sk);
+        $action->addData('onclick', 'account/save');
+        $action->addAttribute('type', 'submit');
+
+        return $action;
+    }
+
+    /**
+     * Set icons for view
+     *
+     * @param AccountAcl        $accountAcl
+     * @param AccountActionsDto $accountActionsDto
+     * @return DataGridAction[]
+     */
+    public function getActionsGrouppedForAccount(AccountAcl $accountAcl, AccountActionsDto $accountActionsDto)
+    {
+        $actions = [];
 
         if ($accountAcl->isShowDelete()) {
-            $actionsEnabled[] = $this->getDeleteAction()->addData('item-id', $accountActionsDto->getAccountId());
+            $actions[] = $this->getDeleteAction()->addData('item-id', $accountActionsDto->getAccountId());
         }
 
         if ($accountActionsDto->isHistory() === false
@@ -107,7 +269,7 @@ class AccountActionsHelper extends HelperBase
             $action = $accountActionsDto->getPublicLinkId() ? $this->getPublicLinkRefreshAction() : $this->getPublicLinkAction();
             $itemId = $accountActionsDto->getPublicLinkId() ?: $accountActionsDto->getAccountId();
 
-            $actionsEnabled[] = $action->addData('item-id', $itemId);
+            $actions[] = $action->addData('item-id', $itemId);
         }
 
         if ($accountAcl->isShowViewPass()) {
@@ -128,61 +290,15 @@ class AccountActionsHelper extends HelperBase
                 $actionCopy->addData('item-id', $accountActionsDto->getAccountId());
             }
 
-            $actionsEnabled[] = $actionViewPass;
-            $actionsEnabled[] = $actionCopy;
+            $actions[] = $actionViewPass;
+            $actions[] = $actionCopy;
         }
 
         if ($accountAcl->isShowCopy()) {
-            $actionsEnabled[] = $this->getCopyAction()->addData('item-id', $accountActionsDto->getAccountId());
+            $actions[] = $this->getCopyAction()->addData('item-id', $accountActionsDto->getAccountId());
         }
 
-        if ($accountAcl->isShowEditPass()) {
-            $actionsEnabled[] = $this->getEditPassAction()->addData('item-id', $accountActionsDto->getAccountId());
-        }
-
-        if ($accountAcl->isShowEdit()) {
-            $actionsEnabled[] = $this->getEditAction()->addData('item-id', $accountActionsDto->getAccountId());
-        }
-
-        if ($accountAcl->getActionId() === ActionsInterface::ACCOUNT_VIEW
-            && !$accountAcl->isShowEdit()
-            && $this->configData->isMailRequestsEnabled()
-        ) {
-            $actionsEnabled[] = $this->getRequestAction()->addData('item-id', $accountActionsDto->getAccountId());
-        }
-
-        if ($accountAcl->isShowRestore()) {
-            $actionRestore = $this->getRestoreAction();
-            $actionRestore->addData('item-id', $accountActionsDto->getAccountId());
-            $actionRestore->addData('history-id', $accountActionsDto->getAccountHistoryId());
-
-            $actionsEnabled[] = $actionRestore;
-        }
-
-        if ($accountAcl->isShowSave()) {
-            $actionsEnabled[] = $this->getSaveAction()->addAttribute('form', 'frmAccount');
-        }
-
-        return $actionsEnabled;
-    }
-
-    /**
-     * @return DataGridAction
-     */
-    public function getBackAction()
-    {
-        $action = new DataGridAction();
-        $action->setId('btnBack');
-        $action->setName(__('Atrás'));
-        $action->setTitle(__('Atrás'));
-        $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconBack());
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
-        $action->addData('action-sk', $this->sk);
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
-        $action->addAttribute('type', 'button');
-
-        return $action;
+        return $actions;
     }
 
     /**
@@ -310,108 +426,6 @@ class AccountActionsHelper extends HelperBase
         $action->addData('action-sk', $this->sk);
         $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY));
         $action->addAttribute('type', 'button');
-
-        return $action;
-    }
-
-    /**
-     * @return DataGridAction
-     */
-    public function getEditPassAction()
-    {
-        $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_EDIT_PASS);
-        $action->setType(DataGridActionType::VIEW_ITEM);
-        $action->setName(__('Modificar Clave de Cuenta'));
-        $action->setTitle(__('Modificar Clave de Cuenta'));
-        $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconEditPass());
-        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT_PASS));
-        $action->addData('action-sk', $this->sk);
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT_PASS));
-        $action->addAttribute('type', 'button');
-
-        return $action;
-    }
-
-    /**
-     * @return DataGridAction
-     */
-    public function getEditAction()
-    {
-        $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_EDIT);
-        $action->setType(DataGridActionType::EDIT_ITEM);
-        $action->setName(__('Editar Cuenta'));
-        $action->setTitle(__('Editar Cuenta'));
-        $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconEdit());
-        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowEdit');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT));
-        $action->addData('action-sk', $this->sk);
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_EDIT));
-        $action->addAttribute('type', 'button');
-
-        return $action;
-    }
-
-    /**
-     * @return DataGridAction
-     */
-    public function getRequestAction()
-    {
-        $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_REQUEST);
-        $action->setName(__('Solicitar Modificación'));
-        $action->setTitle(__('Solicitar Modificación'));
-        $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconEmail());
-        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowRequest');
-        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_REQUEST));
-        $action->addData('action-sk', $this->sk);
-        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_VIEW));
-        $action->addAttribute('type', 'submit');
-
-        return $action;
-    }
-
-    /**
-     * @return DataGridAction
-     */
-    public function getRestoreAction()
-    {
-        $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT_EDIT_RESTORE);
-        $action->setType(DataGridActionType::VIEW_ITEM);
-        $action->setName(__('Restaurar cuenta desde este punto'));
-        $action->setTitle(__('Restaurar cuenta desde este punto'));
-        $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconRestore());
-        $action->addData('action-route', 'account/saveEditRestore');
-        $action->addData('action-sk', $this->sk);
-        $action->addData('onclick', 'account/saveEditRestore');
-        $action->addAttribute('type', 'button');
-
-        return $action;
-    }
-
-    /**
-     * @return DataGridAction
-     */
-    public function getSaveAction()
-    {
-        $action = new DataGridAction();
-        $action->setId(ActionsInterface::ACCOUNT);
-        $action->setType(DataGridActionType::VIEW_ITEM);
-        $action->setName(__('Guardar'));
-        $action->setTitle(__('Guardar'));
-        $action->addClass('btn-action');
-        $action->setIcon($this->icons->getIconSave());
-        $action->addData('action-route', 'account/save');
-        $action->addData('action-sk', $this->sk);
-        $action->addData('onclick', 'account/save');
-        $action->addAttribute('type', 'submit');
 
         return $action;
     }

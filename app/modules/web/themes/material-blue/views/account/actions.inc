@@ -2,6 +2,7 @@
 /**
  * @var \SP\Core\UI\ThemeIcons                      $icons
  * @var \SP\Html\DataGrid\DataGridActionInterface[] $accountActions
+ * @var \SP\Html\DataGrid\DataGridActionInterface[] $accountActionsMenu
  */
 ?>
 <div class="item-actions">
@@ -18,4 +19,25 @@
             </li>
         <?php endforeach; ?>
     </ul>
+    <?php if (isset($accountActionsMenu) && count($accountActionsMenu) > 0): ?>
+        <div>
+            <button id="actions-menu-account"
+                    class="mdl-button mdl-js-button mdl-button--icon">
+                <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--top-left mdl-js-menu mdl-js-ripple-effect"
+                for="actions-menu-account">
+                <?php foreach ($accountActionsMenu as $action): ?>
+                    <li class="btn-action mdl-menu__item"
+                        id="<?php echo $action->getId(); ?>"
+                        <?php foreach ($action->getData() as $key => $value): echo 'data-', $key, '="', $value, '"'; endforeach; ?>
+                        <?php foreach ($action->getAttributes() as $key => $value): echo $key, '="', $value, '"'; endforeach; ?>
+                        title="<?php echo $action->getTitle(); ?>">
+                        <i class="material-icons <?php echo $action->getIcon()->getClass(); ?>"><?php echo $action->getIcon()->getIcon(); ?></i>
+                        <?php echo $action->getName(); ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
 </div>

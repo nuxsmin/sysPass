@@ -144,6 +144,7 @@ DROP TABLE IF EXISTS `AccountToUser`;
 CREATE TABLE `AccountToUser` (
   `accountId` mediumint(8) unsigned NOT NULL,
   `userId` smallint(5) unsigned NOT NULL,
+  `isEdit` tinyint(1) unsigned DEFAULT 0 NULL,
   PRIMARY KEY (`accountId`,`userId`),
   KEY `idx_AccountToUser_01` (`accountId`),
   KEY `fk_AccountToUser_userId` (`userId`),
@@ -157,6 +158,7 @@ DROP TABLE IF EXISTS `AccountToUserGroup`;
 CREATE TABLE `AccountToUserGroup` (
   `accountId` mediumint(8) unsigned NOT NULL,
   `userGroupId` smallint(5) unsigned NOT NULL,
+  `isEdit` tinyint(1) unsigned DEFAULT 0 NULL,
   PRIMARY KEY (`accountId`,`userGroupId`),
   KEY `idx_AccountToUserGroup_01` (`accountId`),
   KEY `fk_AccountToUserGroup_userGroupId` (`userGroupId`),
@@ -247,6 +249,7 @@ CREATE TABLE `CustomFieldDefinition` (
   `help` varchar(255) DEFAULT NULL,
   `showInList` tinyint(1) unsigned DEFAULT NULL,
   `typeId` tinyint(3) unsigned NOT NULL,
+  `isEncrypted` tinyint(1) unsigned DEFAULT 1 NULL,
   PRIMARY KEY (`id`),
   KEY `fk_CustomFieldDefinition_typeId` (`typeId`),
   CONSTRAINT `fk_CustomFieldDefinition_typeId` FOREIGN KEY (`typeId`) REFERENCES `CustomFieldType` (`id`) ON UPDATE CASCADE

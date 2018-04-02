@@ -851,7 +851,12 @@ footer {
   width: 75%; }
 
 .item-actions {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
   margin: 1em auto; }
+  .item-actions > div {
+    display: inline-block; }
 
 .tab-actions {
   margin: 2em 0; }
