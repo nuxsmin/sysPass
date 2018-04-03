@@ -135,7 +135,7 @@ body.userpassreset {
       color: #f2f2f2; }
 
 #box-pub-noheader {
-  background: transparent url("../../../../../../public/images/logo_full_nobg_outline.png") no-repeat top center;
+  background: transparent url("public/images/logo_full_nobg_outline.png") no-repeat top center;
   background-size: 75% auto;
   width: 40em;
   min-height: 20em;
@@ -1049,7 +1049,7 @@ fieldset.warning {
     margin-bottom: 30px;
     color: #607d8b;
     align-items: center;
-    background: url("../../../../../../public/images/logo_full_bg.png") left no-repeat;
+    background: url("public/images/logo_full_bg.png") left no-repeat;
     background-size: auto 150px;
     height: 150px; }
   #actions #page-title {

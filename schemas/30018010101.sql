@@ -24,7 +24,8 @@ CREATE PROCEDURE removeConstraints()
       THEN
         LEAVE read_loop;
       END IF;
-      PREPARE stmt FROM CONCAT('ALTER TABLE ', tName, ' DROP FOREIGN KEY ', cName, ';');
+      SET @SQL = CONCAT('ALTER TABLE ', tName, ' DROP FOREIGN KEY ', cName, ';');
+      PREPARE stmt FROM @SQL;
       EXECUTE stmt;
       DEALLOCATE PREPARE stmt;
     END LOOP;
@@ -94,7 +95,6 @@ ALTER TABLE log
   CHANGE log_action action VARCHAR(50) NOT NULL,
   CHANGE log_description description TEXT,
   CHANGE log_level level VARCHAR(20) NOT NULL,
-  DROP INDEX `fk_log_users_id_idx`,
 RENAME TO EventLog $$
 
 -- Track
@@ -286,7 +286,6 @@ ALTER TABLE accounts
   ADD INDEX idx_Account_02 (`userGroupId` ASC, `userId` ASC),
   DROP INDEX IDX_customerId,
   ADD INDEX idx_Account_03 (`clientId` ASC),
-  DROP INDEX account_parentId,
   ADD INDEX idx_Account_04 (`parentId` ASC),
   DROP INDEX IDX_parentId,
 RENAME TO Account $$
@@ -332,7 +331,6 @@ ALTER TABLE accHistory
   CHANGE accHistory_isPrivateGroup isPrivateGroup TINYINT(1) DEFAULT 0,
   DROP INDEX IDX_accountId,
   ADD INDEX idx_AccountHistory_01 (accountId ASC),
-  DROP INDEX acchistory_parentId,
   ADD INDEX idx_AccountHistory_02 (parentId ASC),
 RENAME TO AccountHistory $$
 
