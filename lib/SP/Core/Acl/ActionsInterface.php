@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -38,7 +38,6 @@ interface ActionsInterface
     const ACCOUNT_EDIT = 102;
     const ACCOUNT_DELETE = 103;
     const ACCOUNT_VIEW_PASS = 104;
-    const ACCOUNT_VIEW_HISTORY = 105;
     const ACCOUNT_EDIT_PASS = 106;
     const ACCOUNT_EDIT_RESTORE = 107;
     const ACCOUNT_COPY = 108;
@@ -55,6 +54,9 @@ interface ActionsInterface
     const ACCOUNT_FAVORITE_VIEW = 130;
     const ACCOUNT_FAVORITE_ADD = 131;
     const ACCOUNT_FAVORITE_DELETE = 133;
+    const ACCOUNT_HISTORY_VIEW = 140;
+    const ACCOUNT_HISTORY_VIEW_PASS = 141;
+    const ACCOUNT_HISTORY_COPY_PASS = 142;
     const WIKI = 20;
     const WIKI_VIEW = 200;
     const WIKI_NEW = 201;

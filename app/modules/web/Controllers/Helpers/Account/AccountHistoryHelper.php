@@ -107,8 +107,8 @@ class AccountHistoryHelper extends HelperBase
 
         $accountActionsHelper = $this->dic->get(AccountActionsHelper::class);
 
-        $this->view->assign('accountActions', $accountActionsHelper->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId, $this->accountHistoryId)));
-        $this->view->assign('accountActionsMenu', $accountActionsHelper->getActionsGrouppedForAccount($this->accountAcl, new AccountActionsDto($this->accountId, $this->accountHistoryId)));
+        $this->view->assign('accountActions', $accountActionsHelper->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId, $this->accountHistoryId, 0)));
+        $this->view->assign('accountActionsMenu', $accountActionsHelper->getActionsGrouppedForAccount($this->accountAcl, new AccountActionsDto($this->accountId, $this->accountHistoryId, 0)));
     }
 
     /**

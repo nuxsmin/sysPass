@@ -130,7 +130,7 @@ class Acl implements ActionsInterface
                 return ($userData->getIsAdminAcc() || $userProfile->isAccView() || $userProfile->isAccEdit());
             case self::ACCOUNT_VIEW_PASS:
                 return ($userData->getIsAdminAcc() || $userProfile->isAccViewPass());
-            case self::ACCOUNT_VIEW_HISTORY:
+            case self::ACCOUNT_HISTORY_VIEW:
                 return ($userData->getIsAdminAcc() || $userProfile->isAccViewHistory());
             case self::ACCOUNT_EDIT:
                 return ($userData->getIsAdminAcc() || $userProfile->isAccEdit());

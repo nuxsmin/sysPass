@@ -459,7 +459,7 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
             $accountHistoryData = $accountHistoryService->getById($id);
 
             $accountHistoryHelper = $this->dic->get(AccountHistoryHelper::class);
-            $accountHistoryHelper->setView($accountHistoryData, ActionsInterface::ACCOUNT_VIEW_HISTORY);
+            $accountHistoryHelper->setView($accountHistoryData, ActionsInterface::ACCOUNT_HISTORY_VIEW);
 
             $this->view->addTemplate('account-history');
 
@@ -522,15 +522,14 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Display account's password
      *
      * @param int $id        Account's ID
-     * @param int $isHistory The account's ID refers to history
      * @param int $parentId
      */
-    public function viewPassAction($id, $isHistory, $parentId)
+    public function viewPassAction($id, $parentId)
     {
         try {
             $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
-            $account = $isHistory === 0 ? $this->accountService->getPasswordForId($id) : $this->accountService->getPasswordHistoryForId($id);
+            $account = $this->accountService->getPasswordForId($id);
 
             $this->view->assign('isLinked', $parentId > 0);
 
@@ -541,9 +540,44 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
                 'html' => $this->render()
             ];
 
-            if ($isHistory === 0) $this->accountService->incrementDecryptCounter($id);
+            $this->accountService->incrementDecryptCounter($id);
 
             $this->eventDispatcher->notifyEvent('show.account.pass',
+                new Event($this, EventMessage::factory()
+                    ->addDescription(__u('Clave visualizada'))
+                    ->addDetail(__u('Cuenta'), $account->getName()))
+            );
+
+            $this->returnJsonResponseData($data);
+        } catch (\Exception $e) {
+            processException($e);
+
+            $this->returnJsonResponseException($e);
+        }
+    }
+
+    /**
+     * Display account's password
+     *
+     * @param int $id Account's ID
+     */
+    public function viewPassHistoryAction($id)
+    {
+        try {
+            $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
+
+            $account = $this->accountService->getPasswordHistoryForId($id);
+
+            $this->view->assign('isLinked', 0);
+
+            $data = [
+                'acclogin' => $account->getLogin(),
+                'accpass' => $accountPassHelper->getPassword($account, $this->acl, AccountPasswordHelper::TYPE_FULL),
+                'useimage' => $this->configData->isAccountPassToImage(),
+                'html' => $this->render()
+            ];
+
+            $this->eventDispatcher->notifyEvent('show.account.pass.history',
                 new Event($this, EventMessage::factory()
                     ->addDescription(__u('Clave visualizada'))
                     ->addDetail(__u('Cuenta'), $account->getName()))
@@ -561,24 +595,52 @@ class AccountController extends ControllerBase implements CrudControllerInterfac
      * Copy account's password
      *
      * @param int $id        Account's ID
-     * @param int $isHistory The account's ID refers to history
      * @throws Helpers\HelperException
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function copyPassAction($id, $isHistory)
+    public function copyPassAction($id)
     {
         $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
 
-        $account = $isHistory === 0 ? $this->accountService->getPasswordForId($id) : $this->accountService->getPasswordHistoryForId($id);
+        $account = $this->accountService->getPasswordForId($id);
 
         $data = [
             'accpass' => $accountPassHelper->getPassword($account, $this->acl, AccountPasswordHelper::TYPE_NORMAL),
         ];
 
         $this->eventDispatcher->notifyEvent('copy.account.pass',
+            new Event($this, EventMessage::factory()
+                ->addDescription(__u('Clave copiada'))
+                ->addDetail(__u('Cuenta'), $account->getName()))
+        );
+
+        $this->returnJsonResponseData($data);
+    }
+
+    /**
+     * Copy account's password
+     *
+     * @param int $id        Account's ID
+     * @throws Helpers\HelperException
+     * @throws SPException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function copyPassHistoryAction($id)
+    {
+        $accountPassHelper = $this->dic->get(AccountPasswordHelper::class);
+
+        $account = $this->accountService->getPasswordHistoryForId($id);
+
+        $data = [
+            'accpass' => $accountPassHelper->getPassword($account, $this->acl, AccountPasswordHelper::TYPE_NORMAL),
+        ];
+
+        $this->eventDispatcher->notifyEvent('copy.account.pass.history',
             new Event($this, EventMessage::factory()
                 ->addDescription(__u('Clave copiada'))
                 ->addDetail(__u('Cuenta'), $account->getName()))

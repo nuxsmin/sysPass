@@ -33,6 +33,7 @@ use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
+use SP\DataModel\AccountPassData;
 use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\DataModel\Dto\AccountSearchResponse;
 use SP\DataModel\ItemSearchData;
@@ -454,7 +455,7 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param $id
-     * @return \SP\DataModel\ItemData
+     * @return AccountPassData
      */
     public function getPasswordHistoryForId($id)
     {

@@ -94,7 +94,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
     /**
      * @param QueryCondition $queryCondition
-     * @return ItemData
+     * @return AccountPassData
      */
     public function getPasswordHistoryForId(QueryCondition $queryCondition)
     {

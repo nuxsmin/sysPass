@@ -273,22 +273,20 @@ class AccountActionsHelper extends HelperBase
         }
 
         if ($accountAcl->isShowViewPass()) {
-            $actionViewPass = $this->getViewPassAction();
-            $actionCopy = $this->getCopyPassAction();
+            if ($accountActionsDto->isHistory()) {
+                $actionViewPass = $this->getViewPassHistoryAction()
+                    ->addData('item-id', $accountActionsDto->getAccountHistoryId());
+                $actionCopy = $this->getCopyPassHistoryAction()
+                    ->addData('item-id', $accountActionsDto->getAccountHistoryId());
+            } else {
+                $actionViewPass = $this->getViewPassAction()
+                    ->addData('item-id', $accountActionsDto->getAccountId());
+                $actionCopy = $this->getCopyPassAction()
+                    ->addData('item-id', $accountActionsDto->getAccountId());
+            }
 
             $actionViewPass->addData('parent-id', $accountActionsDto->getAccountParentId());
             $actionCopy->addData('parent-id', $accountActionsDto->getAccountParentId());
-
-            $actionViewPass->addData('history', (int)$accountActionsDto->isHistory());
-            $actionCopy->addData('history', (int)$accountActionsDto->isHistory());
-
-            if ($accountActionsDto->isHistory()) {
-                $actionViewPass->addData('item-id', $accountActionsDto->getAccountHistoryId());
-                $actionCopy->addData('item-id', $accountActionsDto->getAccountHistoryId());
-            } else {
-                $actionViewPass->addData('item-id', $accountActionsDto->getAccountId());
-                $actionCopy->addData('item-id', $accountActionsDto->getAccountId());
-            }
 
             $actions[] = $actionViewPass;
             $actions[] = $actionCopy;
@@ -365,6 +363,51 @@ class AccountActionsHelper extends HelperBase
     /**
      * @return DataGridAction
      */
+    public function getViewPassHistoryAction()
+    {
+        $action = new DataGridAction();
+        $action->setId(ActionsInterface::ACCOUNT_VIEW_PASS);
+        $action->setType(DataGridActionType::VIEW_ITEM);
+        $action->setName(__('Ver Clave'));
+        $action->setTitle(__('Ver Clave'));
+        $action->addClass('btn-action');
+        $action->setIcon($this->icons->getIconViewPass());
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowViewPass');
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_HISTORY_VIEW_PASS));
+        $action->addData('action-full', 1);
+        $action->addData('action-sk', $this->sk);
+        $action->addData('onclick', Acl::getActionRoute(ActionsInterface::ACCOUNT_HISTORY_VIEW_PASS));
+        $action->addAttribute('type', 'button');
+
+        return $action;
+    }
+
+    /**
+     * @return DataGridAction
+     */
+    public function getCopyPassHistoryAction()
+    {
+        $action = new DataGridAction();
+        $action->setId(ActionsInterface::ACCOUNT_VIEW_PASS);
+        $action->setType(DataGridActionType::VIEW_ITEM);
+        $action->setName(__('Copiar Clave en Portapapeles'));
+        $action->setTitle(__('Copiar Clave en Portapapeles'));
+        $action->addClass('btn-action');
+        $action->addClass('clip-pass-button');
+        $action->setIcon($this->icons->getIconClipboard());
+        $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopyPass');
+        $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_HISTORY_COPY_PASS));
+        $action->addData('action-full', 0);
+        $action->addData('action-sk', $this->sk);
+        $action->addData('useclipboard', '1');
+        $action->addAttribute('type', 'button');
+
+        return $action;
+    }
+
+    /**
+     * @return DataGridAction
+     */
     public function getViewPassAction()
     {
         $action = new DataGridAction();
@@ -389,16 +432,14 @@ class AccountActionsHelper extends HelperBase
      */
     public function getCopyPassAction()
     {
-        // Añadir la clase para usar el portapapeles
-        $ClipboardIcon = $this->icons->getIconClipboard()->setClass('clip-pass-button');
-
         $action = new DataGridAction();
         $action->setId(ActionsInterface::ACCOUNT_VIEW_PASS);
         $action->setType(DataGridActionType::VIEW_ITEM);
         $action->setName(__('Copiar Clave en Portapapeles'));
         $action->setTitle(__('Copiar Clave en Portapapeles'));
         $action->addClass('btn-action');
-        $action->setIcon($ClipboardIcon);
+        $action->addClass('clip-pass-button');
+        $action->setIcon($this->icons->getIconClipboard());
         $action->setRuntimeFilter(AccountSearchItem::class, 'isShowCopyPass');
         $action->addData('action-route', Acl::getActionRoute(ActionsInterface::ACCOUNT_COPY_PASS));
         $action->addData('action-full', 0);

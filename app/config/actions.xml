@@ -170,12 +170,6 @@
         <route>account/viewPass</route>
     </action>
     <action multiple="1">
-        <id>105</id>
-        <name>ACCOUNT_VIEW_HISTORY</name>
-        <text>Ver Historial</text>
-        <route>account/viewHistory</route>
-    </action>
-    <action multiple="1">
         <id>106</id>
         <name>ACCOUNT_EDIT_PASS</name>
         <text>Editar Clave de Cuenta</text>
@@ -252,6 +246,24 @@
         <name>ACCOUNT_FAVORITE_DELETE</name>
         <text>Eliminar Favorito</text>
         <route>accountFavorite/unmark</route>
+    </action>
+    <action multiple="1">
+        <id>140</id>
+        <name>ACCOUNT_HISTORY_VIEW</name>
+        <text>Ver Historial</text>
+        <route>account/viewHistory</route>
+    </action>
+    <action multiple="1">
+        <id>141</id>
+        <name>ACCOUNT_HISTORY_VIEW_PASS</name>
+        <text>Ver Clave</text>
+        <route>account/viewPassHistory</route>
+    </action>
+    <action multiple="1">
+        <id>142</id>
+        <name>ACCOUNT_HISTORY_COPY_PASS</name>
+        <text>Copiar Clave</text>
+        <route>account/copyPassHistory</route>
     </action>
     <action multiple="1">
         <id>200</id>

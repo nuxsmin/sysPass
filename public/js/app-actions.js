@@ -253,17 +253,16 @@ sysPass.Actions = function (Common) {
         },
         // Ver la clave de una cuenta
         viewPass: function ($obj) {
-            log.info("account:showpass");
+            log.info("account:viewPass");
 
             const parentId = $obj.data("parent-id") || 0;
             const id = parentId === 0 ? $obj.data("item-id") : parentId;
-            const history = $obj.data("history") || 0;
 
             const opts = Common.appRequests().getRequestOpts();
             opts.url = ajaxUrl.entrypoint;
             opts.method = "get";
             opts.data = {
-                r: $obj.data("action-route") + "/" + id + "/" + history + "/" + parentId,
+                r: $obj.data("action-route") + "/" + id + "/" + parentId,
                 sk: Common.sk.get(),
                 isAjax: 1
             };
@@ -293,8 +292,14 @@ sysPass.Actions = function (Common) {
                 }
             });
         },
+        // Ver la clave de una cuenta
+        viewPassHistory: function ($obj) {
+            log.info("account:viewPassHistory");
+
+            account.viewPass($obj);
+        },
         copyPass: function ($obj) {
-            log.info("account:copypass");
+            log.info("account:copyPass");
 
             const parentId = $obj.data("parent-id");
             const id = parentId === 0 ? $obj.data("item-id") : parentId;
@@ -304,12 +309,17 @@ sysPass.Actions = function (Common) {
             opts.method = "get";
             opts.async = false;
             opts.data = {
-                r: $obj.data("action-route") + "/" + id + "/" + $obj.data("history"),
+                r: $obj.data("action-route") + "/" + id,
                 sk: Common.sk.get(),
                 isAjax: 1
             };
 
             return Common.appRequests().getActionCall(opts);
+        },
+        copyPassHistory: function ($obj) {
+            log.info("account:copyPassHistory");
+
+            account.copyPassHistory($obj);
         },
         copy: function ($obj) {
             log.info("account:copy");

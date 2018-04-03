@@ -10,7 +10,7 @@
         <?php foreach ($accountActions as $action): ?>
             <li>
                 <button id="<?php echo $action->getId(); ?>"
-                        class="<?php echo $action->getClassesAsString(); ?> mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $action->getIcon()->getClassButton(); ?>"
+                        class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php echo $action->getClassesAsString(), ' ', $action->getIcon()->getClassButton(); ?>"
                     <?php foreach ($action->getData() as $key => $value): echo 'data-', $key, '="', $value, '"'; endforeach; ?>
                     <?php foreach ($action->getAttributes() as $key => $value): echo $key, '="', $value, '"'; endforeach; ?>
                         title="<?php echo $action->getTitle(); ?>">
@@ -28,7 +28,7 @@
             <ul class="mdl-menu mdl-menu--top-left mdl-js-menu mdl-js-ripple-effect"
                 for="actions-menu-account">
                 <?php foreach ($accountActionsMenu as $action): ?>
-                    <li class="btn-action mdl-menu__item"
+                    <li class="mdl-menu__item btn-action <?php echo $action->getClassesAsString(); ?>"
                         id="<?php echo $action->getId(); ?>"
                         <?php foreach ($action->getData() as $key => $value): echo 'data-', $key, '="', $value, '"'; endforeach; ?>
                         <?php foreach ($action->getAttributes() as $key => $value): echo $key, '="', $value, '"'; endforeach; ?>

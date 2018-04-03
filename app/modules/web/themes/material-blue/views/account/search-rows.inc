@@ -191,7 +191,7 @@
                     <div class="account-actions">
                         <?php foreach ($data->getDataActionsFiltered($accountSearchItem) as $action): ?>
                             <i id="btn-action-<?php echo $accountSearchData->getId(), '-', $action->getIcon()->getIcon(); ?>"
-                               class="btn-action material-icons <?php echo $action->getIcon()->getClass(); ?>"
+                               class="btn-action material-icons <?php echo $action->getClassesAsString(), ' ', $action->getIcon()->getClass(); ?>"
                                data-item-id="<?php echo $accountSearchData->getId(); ?>"
                                data-parent-id="<?php echo $accountSearchData->getParentId(); ?>"
                                 <?php foreach ($action->getData() as $name => $actionData): printf('data-%s="%s"', $name, $actionData); endforeach; ?>>
@@ -211,7 +211,7 @@
                                     for="actions-menu-lower-right-<?php echo $accountSearchData->getId(); ?>">
 
                                     <?php foreach ($actionsMenu as $actionMenu): ?>
-                                        <li class="btn-action mdl-menu__item"
+                                        <li class="btn-action mdl-menu__item <?php echo $actionMenu->getClassesAsString(); ?>"
                                             data-item-id="<?php echo $accountSearchData->getId(); ?>"
                                             data-parent-id="<?php echo $accountSearchData->getParentId(); ?>"
                                             <?php foreach ($actionMenu->getData() as $dataName => $dataValue): printf('data-%s="%s"', $dataName, $dataValue); endforeach; ?>>

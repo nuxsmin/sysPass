@@ -153,7 +153,7 @@ class AccountAcl
     public function isShowDetails()
     {
         return $this->actionId === Acl::ACCOUNT_VIEW
-            || $this->actionId === Acl::ACCOUNT_VIEW_HISTORY
+            || $this->actionId === Acl::ACCOUNT_HISTORY_VIEW
             || $this->actionId === Acl::ACCOUNT_DELETE;
     }
 
@@ -173,7 +173,7 @@ class AccountAcl
     {
         return ($this->actionId === Acl::ACCOUNT_EDIT
                 || $this->actionId === Acl::ACCOUNT_VIEW
-                || $this->actionId === Acl::ACCOUNT_VIEW_HISTORY)
+                || $this->actionId === Acl::ACCOUNT_HISTORY_VIEW)
             && $this->showFiles;
     }
 
@@ -185,7 +185,7 @@ class AccountAcl
         return ($this->actionId === Acl::ACCOUNT_SEARCH
                 || $this->actionId === Acl::ACCOUNT_VIEW
                 || $this->actionId === Acl::ACCOUNT_VIEW_PASS
-                || $this->actionId === Acl::ACCOUNT_VIEW_HISTORY
+                || $this->actionId === Acl::ACCOUNT_HISTORY_VIEW
                 || $this->actionId === Acl::ACCOUNT_EDIT)
             && $this->showViewPass;
     }
@@ -236,7 +236,7 @@ class AccountAcl
      */
     public function isShowRestore()
     {
-        return $this->actionId === Acl::ACCOUNT_VIEW_HISTORY && $this->showRestore;
+        return $this->actionId === Acl::ACCOUNT_HISTORY_VIEW && $this->showRestore;
     }
 
     /**
@@ -253,7 +253,7 @@ class AccountAcl
     public function isShowHistory()
     {
         return ($this->actionId === Acl::ACCOUNT_VIEW
-                || $this->actionId === Acl::ACCOUNT_VIEW_HISTORY)
+                || $this->actionId === Acl::ACCOUNT_HISTORY_VIEW)
             && $this->showHistory;
     }
 
@@ -313,7 +313,7 @@ class AccountAcl
             case ActionsInterface::ACCOUNT_VIEW:
             case ActionsInterface::ACCOUNT_SEARCH:
             case ActionsInterface::ACCOUNT_VIEW_PASS:
-            case ActionsInterface::ACCOUNT_VIEW_HISTORY:
+            case ActionsInterface::ACCOUNT_HISTORY_VIEW:
             case ActionsInterface::ACCOUNT_COPY:
                 return $this->resultView;
             case ActionsInterface::ACCOUNT_EDIT:

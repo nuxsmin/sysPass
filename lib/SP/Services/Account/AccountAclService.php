@@ -304,7 +304,7 @@ class AccountAclService extends Service
     protected function compileShowAccess()
     {
         // Mostrar historial
-        $this->accountAcl->showHistory = $this->acl->checkUserAccess(Acl::ACCOUNT_VIEW_HISTORY);
+        $this->accountAcl->showHistory = $this->acl->checkUserAccess(Acl::ACCOUNT_HISTORY_VIEW);
 
         // Mostrar lista archivos
         $this->accountAcl->showFiles = $this->acl->checkUserAccess(Acl::ACCOUNT_FILE);
