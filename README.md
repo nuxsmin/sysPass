@@ -1,6 +1,6 @@
 ![sysPass logo](https://syspass.org/assets/imgs/syspass_bg_bluegrey.png)
 
-## #sysPass - Systems Password Manager
+## sysPass - Systems Password Manager
 
 [![Join the chat at https://gitter.im/sysPass/Lobby](https://badges.gitter.im/sysPass/Lobby.svg)](https://gitter.im/sysPass/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
