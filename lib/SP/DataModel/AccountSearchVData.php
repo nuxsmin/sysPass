@@ -553,7 +553,7 @@ class AccountSearchVData
     /**
      * @return string
      */
-    public function getPublicLinkHash(): string
+    public function getPublicLinkHash()
     {
         return $this->publicLinkHash;
     }
