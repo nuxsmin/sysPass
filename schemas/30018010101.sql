@@ -227,6 +227,11 @@ ALTER TABLE publicLinks
   DROP INDEX unique_publicLink_hash,
 RENAME TO PublicLink $$
 
+-- Fix missing categories hash
+UPDATE categories
+SET category_hash = MD5(CONCAT(category_id, category_name))
+WHERE category_hash IS NULL OR category_hash = 0 $$
+
 -- Category
 ALTER TABLE categories
   CHANGE category_id id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -243,6 +248,11 @@ ALTER TABLE config
   DROP INDEX vacParameter,
   ADD PRIMARY KEY (parameter),
 RENAME TO Config $$
+
+-- Fix missing customers hash
+UPDATE customers
+SET customer_hash = MD5(CONCAT(customer_id, customer_name))
+WHERE customer_hash IS NULL OR customer_hash = 0 $$
 
 -- Customer
 ALTER TABLE customers
@@ -333,6 +343,12 @@ ALTER TABLE accHistory
   ADD INDEX idx_AccountHistory_01 (accountId ASC),
   ADD INDEX idx_AccountHistory_02 (parentId ASC),
 RENAME TO AccountHistory $$
+
+
+-- Fix missing tags hash
+UPDATE tags
+SET tag_hash = MD5(CONCAT(tag_id, tag_name))
+WHERE tag_hash IS NULL OR tag_hash = 0 $$
 
 -- Tag
 ALTER TABLE tags
@@ -599,16 +615,18 @@ CREATE INDEX fk_AccountToTag_tagId
 
 -- Fix duplicated tags
 CREATE TEMPORARY TABLE IF NOT EXISTS tmp_tags AS (SELECT
-                                                    accountId,
-                                                    tagId
-                                                  FROM AccountToTag
-                                                  GROUP BY accountId, tagId
+                                                    AT.accountId,
+                                                    AT.tagId
+                                                  FROM AccountToTag AT
+                                                  GROUP BY AT.accountId, AT.tagId
                                                   HAVING COUNT(*) > 1) $$
 
 DELETE a FROM AccountToTag AS a
   INNER JOIN tmp_tags AS tmp ON tmp.accountId = a.accountId AND tmp.tagId = a.tagId $$
 
-INSERT INTO AccountToTag SELECT *
+INSERT INTO AccountToTag SELECT
+                           accountId,
+                           tagId
                          FROM tmp_tags $$
 
 DROP TEMPORARY TABLE tmp_tags $$
@@ -719,6 +737,24 @@ ALTER TABLE UserToUserGroup
 FOREIGN KEY (userGroupId) REFERENCES UserGroup (id)
   ON UPDATE CASCADE
   ON DELETE CASCADE $$
+
+-- Update AccountToUser permissions
+UPDATE AccountToUser AU
+  INNER JOIN
+  Account A ON AU.accountId = A.id
+SET
+  AU.isEdit = 1
+WHERE
+  A.otherUserEdit = 1 $$
+
+-- Update AccountToUserGroup permissions
+UPDATE AccountToUserGroup AUG
+  INNER JOIN
+  Account A ON AUG.accountId = A.id
+SET
+  AUG.isEdit = 1
+WHERE
+  A.otherUserGroupEdit = 1 $$
 
 SET FOREIGN_KEY_CHECKS = 1 $$
 DELIMITER ;
