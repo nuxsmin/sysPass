@@ -8,10 +8,15 @@ foreach ($customFields as $index => $field):?>
     <tr>
         <td class="descField">
             <?php echo $field->definitionName; ?>
-            <?php if ($field->isEncrypted): ?>
-                <i class="icon material-icons <?php echo $icons->getIconEditPass()->getClass(); ?>"
+            <?php if ($field->isEncrypted && $field->isValueEncrypted === true): ?>
+                <i class="icon material-icons mdl-color-text--teal-500"
                    title="<?php echo __('Encriptado'); ?>">
-                    <?php echo $icons->getIconEditPass()->getIcon(); ?>
+                    lock_outline
+                </i>
+            <?php elseif ($field->isEncrypted && $field->isValueEncrypted === false): ?>
+                <i class="icon material-icons mdl-color-text--amber-500"
+                   title="<?php echo __('Los datos serán encriptados al guardar'); ?>">
+                    lock_outline
                 </i>
             <?php endif; ?>
 

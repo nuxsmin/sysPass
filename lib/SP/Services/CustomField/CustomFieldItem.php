@@ -43,4 +43,5 @@ class CustomFieldItem
     public $formId;
     public $value;
     public $isEncrypted;
+    public $isValueEncrypted;
 }

@@ -74,8 +74,10 @@ trait ItemTrait
                 if ($item->data !== null
                     && $item->key !== null
                 ) {
+                    $customField->isValueEncrypted = true;
                     $customField->value = CustomFieldService::decryptData($item->data, $item->key, $sessionContext);
                 } else {
+                    $customField->isValueEncrypted = false;
                     $customField->value = $item->data;
                 }
 
