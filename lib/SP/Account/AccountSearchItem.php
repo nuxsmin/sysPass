@@ -30,6 +30,7 @@ use SP\Config\ConfigData;
 use SP\DataModel\AccountSearchVData;
 use SP\DataModel\ItemData;
 use SP\Html\Html;
+use SP\Services\PublicLink\PublicLinkService;
 
 /**
  * Class AccountSearchItem para contener los datos de cada cuenta en la búsqueda
@@ -62,6 +63,10 @@ class AccountSearchItem
      * @var bool
      */
     public static $dokuWikiEnabled = false;
+    /**
+     * @var bool
+     */
+    public static $publicLinkEnabled = false;
     /**
      * @var bool
      */
@@ -224,7 +229,16 @@ class AccountSearchItem
      */
     public function getClientLink()
     {
-        return self::$wikiEnabled ? $this->configData->getWikiSearchurl() . $this->accountSearchVData->getClientName() : '';
+        return self::$wikiEnabled ? $this->configData->getWikiSearchurl() . $this->accountSearchVData->getClientName() : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPublicLink()
+    {
+        return self::$publicLinkEnabled
+        && $this->accountSearchVData->getPublicLinkHash() !== null ? PublicLinkService::getLinkForHash($this->accountSearchVData->getPublicLinkHash()) : null;
     }
 
     /**

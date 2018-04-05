@@ -19,7 +19,7 @@
                 <div class="label-row-up">
                     <div class="field-customer label-field">
                         <div class="field-name-hidden"><?php echo __('Cliente'); ?></div>
-                        <?php if (!empty($accountSearchItem->getClientLink())): ?>
+                        <?php if (null !== $accountSearchItem->getClientLink()): ?>
                             <a href="<?php echo $accountSearchItem->getClientLink(); ?>" target="blank"
                                title="<?php echo __('Buscar en Wiki'); ?>">
                                 <span class="mdl-chip mdl-chip--contact">
@@ -116,8 +116,12 @@
 
                             <div class="mdl-tooltip mdl-tooltip--top"
                                  for="accesses-<?php echo $accountSearchData->getId(); ?>">
-                                <div class="tooltip-header"><?php echo __('Permisos'); ?></div>
-                                <?php echo implode('<br>', $accountSearchItem->getAccesses()); ?>
+                                <div class="tooltip-text">
+                                    <p class="tooltip-header"><?php echo __('Permisos'); ?></p>
+                                    <p>
+                                        <?php echo implode('<br>', $accountSearchItem->getAccesses()); ?>
+                                    </p>
+                                </div>
                             </div>
                         <?php endif; ?>
 
@@ -147,8 +151,12 @@
                             <i id="notes-<?php echo $accountSearchData->getId(); ?>" class="material-icons">speaker_notes</i>
                             <div class="mdl-tooltip mdl-tooltip--top"
                                  for="notes-<?php echo $accountSearchData->getId(); ?>">
-                                <div class="tooltip-header"><?php echo __('Notes'); ?></div>
-                                <?php echo $accountSearchItem->getShortNotes(); ?>
+                                <div class="tooltip-text">
+                                    <p class="tooltip-header"><?php echo __('Notes'); ?></p>
+                                    <p>
+                                        <?php echo $accountSearchItem->getShortNotes(); ?>
+                                    </p>
+                                </div>
                             </div>
                         <?php endif; ?>
 
@@ -157,7 +165,25 @@
                                class="material-icons">attach_file</i>
                             <div class="mdl-tooltip mdl-tooltip--top"
                                  for="attachments-<?php echo $accountSearchData->getId(); ?>">
-                                <?php echo __('Archivos adjuntos'), ': ', $accountSearchItem->getNumFiles(); ?>
+                                <div class="tooltip-text">
+                                    <?php echo __('Archivos adjuntos'), ': ', $accountSearchItem->getNumFiles(); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if (null !== $accountSearchItem->getPublicLink()): ?>
+                            <i id="publiclink-<?php echo $accountSearchData->getId(); ?>"
+                               class="material-icons"><?php echo $icons->getIconPublicLink()->getIcon(); ?></i>
+                            <div class="mdl-tooltip mdl-tooltip--top"
+                                 for="publiclink-<?php echo $accountSearchData->getId(); ?>">
+                                <div class="tooltip-text">
+                                    <p class="tooltip-header"><?php echo __('Enlace Público'); ?></p>
+                                    <p>
+                                        <?php printf('%s : %s', __('Fecha Caducidad'), \SP\Util\DateUtil::getDateFromUnix($accountSearchData->getPublicLinkDateExpire())); ?>
+                                        <br>
+                                        <?php printf('%s : %s', __('Visitas'), $accountSearchData->getPublicLinkTotalCountViews()); ?>
+                                    </p>
+                                </div>
                             </div>
                         <?php endif; ?>
 

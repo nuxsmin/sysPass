@@ -429,7 +429,7 @@ RENAME TO UserPassRecover $$
 
 -- Views
 CREATE OR REPLACE VIEW account_search_v AS
-  SELECT DISTINCT
+  SELECT
     `Account`.`id`                                       AS `id`,
     `Account`.`clientId`                                 AS `clientId`,
     `Account`.`categoryId`                               AS `categoryId`,
@@ -455,12 +455,16 @@ CREATE OR REPLACE VIEW account_search_v AS
     `Client`.`name`                                      AS `clientName`,
     (SELECT count(0)
      FROM `AccountFile`
-     WHERE (`AccountFile`.`accountId` = `Account`.`id`)) AS `num_files`
+     WHERE (`AccountFile`.`accountId` = `Account`.`id`)) AS `num_files`,
+    `PublicLink`.`hash`                                  AS `publicLinkHash`,
+    `PublicLink`.`dateExpire`                            AS `publicLinkDateExpire`,
+    `PublicLink`.`totalCountViews`                       AS `publicLinkTotalCountViews`
   FROM `Account`
     INNER JOIN `Category` ON `Account`.`categoryId` = `Category`.`id`
     INNER JOIN `Client` ON `Client`.`id` = `Account`.`clientId`
-    INNER JOIN `User` ON Account.userId = `User`.id
-    INNER JOIN `UserGroup` ON `Account`.`userGroupId` = `UserGroup`.`id` $$
+    INNER JOIN `User` ON `Account`.`userId` = `User`.`id`
+    INNER JOIN `UserGroup` ON `Account`.`userGroupId` = `UserGroup`.`id`
+    LEFT JOIN `PublicLink` ON `Account`.`id` = `PublicLink`.`itemId` $$
 
 CREATE OR REPLACE VIEW account_data_v AS
   SELECT

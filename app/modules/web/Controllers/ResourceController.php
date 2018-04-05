@@ -61,7 +61,6 @@ class ResourceController extends SimpleControllerBase
                 ->addFiles(['reset.min.css',
                     'jquery-ui.min.css',
                     'jquery-ui.structure.min.css',
-                    'jquery.tagsinput.min.css',
                     'fonts.min.css',
                     'material-icons.min.css',
                     'toastr.min.css',
@@ -95,7 +94,7 @@ class ResourceController extends SimpleControllerBase
 
             if ($group === 0) {
                 $minify->addFiles([
-                    'jquery-3.2.0.min.js',
+                    'jquery-3.3.1.min.js',
                     'jquery-migrate-3.0.0.min.js',
                     'jquery.fileDownload.min.js',
                     'clipboard.min.js',

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -135,6 +135,18 @@ class AccountSearchVData
      * @var int
      */
     public $num_files = 0;
+    /**
+     * @var string
+     */
+    public $publicLinkHash;
+    /**
+     * @var int
+     */
+    public $publicLinkDateExpire;
+    /**
+     * @var int
+     */
+    public $publicLinkTotalCountViews;
 
     /**
      * AccountData constructor.
@@ -504,5 +516,53 @@ class AccountSearchVData
     public function setDateEdit($dateEdit)
     {
         $this->dateEdit = $dateEdit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPublicLinkDateExpire(): int
+    {
+        return (int)$this->publicLinkDateExpire;
+    }
+
+    /**
+     * @param int $publicLinkDateExpire
+     */
+    public function setPublicLinkDateExpire(int $publicLinkDateExpire)
+    {
+        $this->publicLinkDateExpire = $publicLinkDateExpire;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPublicLinkTotalCountViews(): int
+    {
+        return (int)$this->publicLinkTotalCountViews;
+    }
+
+    /**
+     * @param int $publicLinkTotalCountViews
+     */
+    public function setPublicLinkTotalCountViews(int $publicLinkTotalCountViews)
+    {
+        $this->publicLinkTotalCountViews = $publicLinkTotalCountViews;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPublicLinkHash(): string
+    {
+        return $this->publicLinkHash;
+    }
+
+    /**
+     * @param string $publicLinkHash
+     */
+    public function setPublicLinkHash(string $publicLinkHash)
+    {
+        $this->publicLinkHash = $publicLinkHash;
     }
 }
