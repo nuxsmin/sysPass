@@ -18,6 +18,11 @@ foreach ($customFields as $index => $field):?>
                    title="<?php echo __('Los datos serán encriptados al guardar'); ?>">
                     lock_outline
                 </i>
+            <?php elseif ($field->isEncrypted === 0 && $field->isValueEncrypted === true): ?>
+                <i class="icon material-icons mdl-color-text--red-500"
+                   title="<?php echo __('Los datos serán desencriptados al guardar'); ?>">
+                    lock_open
+                </i>
             <?php endif; ?>
 
             <?php if ($field->help): ?>

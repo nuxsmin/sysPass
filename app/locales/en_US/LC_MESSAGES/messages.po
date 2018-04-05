@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-06 00:21+0100\n"
-"PO-Revision-Date: 2018-04-06 00:22+0100\n"
+"POT-Creation-Date: 2018-04-06 00:27+0100\n"
+"PO-Revision-Date: 2018-04-06 00:27+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
 "Language: en_US\n"
@@ -4880,6 +4880,10 @@ msgstr "Select Tag"
 #: ../../../modules/web/themes/material-blue/views/common/aux-customfields.inc:18
 msgid "Los datos serán encriptados al guardar"
 msgstr "Data will be encrypted before saving"
+
+#: ../../../modules/web/themes/material-blue/views/common/aux-customfields.inc:23
+msgid "Los datos serán desencriptados al guardar"
+msgstr "Data will be unencrypted before saving"
 
 #: ../../../modules/web/themes/material-blue/views/config/accounts.inc:15
 msgid "Búsqueda"
