@@ -1,7 +1,44 @@
 DELIMITER $$
 SET FOREIGN_KEY_CHECKS = 0 $$
 
-CREATE PROCEDURE removeConstraints()
+DROP PROCEDURE IF EXISTS drop_primary $$
+  
+CREATE PROCEDURE drop_primary(
+  tName VARCHAR(64)
+)
+  BEGIN
+	DECLARE cName VARCHAR(64);
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE cur CURSOR FOR
+	  SELECT DISTINCT
+        COLUMN_NAME
+	  FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+        WHERE TABLE_SCHEMA = DATABASE()
+        AND CONSTRAINT_NAME = 'PRIMARY'
+        AND TABLE_NAME = tName;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+  
+    read_loop: LOOP
+      FETCH cur
+      INTO cName;
+      IF done
+      THEN
+        LEAVE read_loop;
+      END IF;
+      SET @SQL = CONCAT('ALTER TABLE `', tName, '` DROP COLUMN `', cName, '`, DROP PRIMARY KEY');
+      PREPARE stmt FROM @SQL;
+      EXECUTE stmt;
+      DEALLOCATE PREPARE stmt;
+    END LOOP;
+
+    CLOSE cur;
+  END $$
+  
+DROP PROCEDURE IF EXISTS remove_constraints $$
+  
+CREATE PROCEDURE remove_constraints()
   BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE tName VARCHAR(64);
@@ -24,7 +61,7 @@ CREATE PROCEDURE removeConstraints()
       THEN
         LEAVE read_loop;
       END IF;
-      SET @SQL = CONCAT('ALTER TABLE ', tName, ' DROP FOREIGN KEY ', cName, ';');
+      SET @SQL = CONCAT('ALTER TABLE `', tName, '` DROP FOREIGN KEY `', cName, '`');
       PREPARE stmt FROM @SQL;
       EXECUTE stmt;
       DEALLOCATE PREPARE stmt;
@@ -32,8 +69,43 @@ CREATE PROCEDURE removeConstraints()
 
     CLOSE cur;
   END $$
+  
+DROP PROCEDURE IF EXISTS remove_indexes $$
 
-CALL removeConstraints() $$
+CREATE PROCEDURE remove_indexes()
+  BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE tName VARCHAR(64);
+    DECLARE iName VARCHAR(64);
+    DECLARE cur CURSOR FOR
+      SELECT DISTINCT
+        TABLE_NAME,
+        INDEX_NAME
+      FROM INFORMATION_SCHEMA.STATISTICS
+      WHERE TABLE_SCHEMA = DATABASE()
+      AND NON_UNIQUE = 1;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+
+    read_loop: LOOP
+      FETCH cur
+      INTO tName, iName;
+      IF done
+      THEN
+        LEAVE read_loop;
+      END IF;
+      SET @SQL = CONCAT('ALTER TABLE `', tName, '` DROP INDEX `', iName, '`');
+      PREPARE stmt FROM @SQL;
+      EXECUTE stmt;
+      DEALLOCATE PREPARE stmt;
+    END LOOP;
+
+    CLOSE cur;
+  END $$  
+
+CALL remove_constraints() $$
+CALL remove_indexes() $$
 
 -- DROP PROCEDURE removeConstraints
 
@@ -60,15 +132,10 @@ ALTER TABLE customFieldsData
   CHANGE customfielddata_itemId itemId INT(10) UNSIGNED NOT NULL,
   CHANGE customfielddata_data data LONGBLOB,
   CHANGE customfielddata_key `key` VARBINARY(1000),
-  DROP INDEX IDX_DEFID,
   ADD INDEX idx_CustomFieldData_01 (definitionId ASC),
-  DROP INDEX IDX_DELETE,
   ADD INDEX idx_CustomFieldData_02 (itemId ASC, moduleId ASC),
-  DROP INDEX IDX_UPDATE,
-  DROP INDEX IDX_MODULE,
   ADD INDEX idx_CustomFieldData_03 (moduleId ASC),
   ADD INDEX uk_CustomFieldData_01 (moduleId ASC, itemId ASC, definitionId ASC),
-  DROP INDEX IDX_ITEM,
 RENAME TO CustomFieldData $$
 
 -- CustomFieldDefinition
@@ -105,9 +172,7 @@ ALTER TABLE track
   CHANGE track_time time INT(10) UNSIGNED NOT NULL,
   CHANGE track_ipv4 ipv4 BINARY(4) NOT NULL,
   CHANGE track_ipv6 ipv6 BINARY(16),
-  DROP INDEX IDX_userId,
-  ADD INDEX idx_Track_01 (userId ASC),
-  DROP INDEX `IDX_time-ip-source`,
+  ADD INDEX `idx_Track_01` (userId ASC),
   ADD INDEX `idx_Track_02` (time ASC, ipv4 ASC, ipv6 ASC, source ASC),
 RENAME TO Track $$
 
@@ -121,9 +186,11 @@ ALTER TABLE accFiles
   CHANGE accfile_content content MEDIUMBLOB NOT NULL,
   CHANGE accfile_extension extension VARCHAR(10) NOT NULL,
   CHANGE accFile_thumb thumb MEDIUMBLOB,
-  DROP INDEX IDX_accountId,
   ADD INDEX idx_AccountFile_01 (accountId ASC),
 RENAME TO AccountFile $$
+
+-- Fix NULL user's hash salt
+UPDATE usrData SET user_hashSalt = '' WHERE user_hashSalt IS NULL $$
 
 -- User
 ALTER TABLE usrData
@@ -153,9 +220,7 @@ ALTER TABLE usrData
   CHANGE user_isChangePass isChangePass TINYINT(1) DEFAULT 0,
   CHANGE user_isChangedPass isChangedPass TINYINT(1) DEFAULT 0,
   CHANGE user_preferences preferences BLOB,
-  DROP INDEX IDX_pass,
   ADD INDEX idx_User_01 (pass ASC),
-  DROP INDEX IDX_login,
   ADD UNIQUE INDEX `uk_User_01` (`login`, `ssoLogin`),
 RENAME TO User $$
 
@@ -177,9 +242,7 @@ ALTER TABLE notices
   CHANGE notice_userId userId SMALLINT(5) UNSIGNED,
   CHANGE notice_sticky sticky TINYINT(1) DEFAULT 0,
   CHANGE notice_onlyAdmin onlyAdmin TINYINT(1) DEFAULT 0,
-  DROP INDEX IDX_userId,
   ADD INDEX idx_Notification_01 (userId ASC, checked ASC, date ASC),
-  DROP INDEX IDX_component,
   ADD INDEX idx_Notification_02 (component ASC, date ASC, checked ASC, userId ASC),
 RENAME TO Notification $$
 
@@ -190,7 +253,6 @@ ALTER TABLE `plugins`
   CHANGE plugin_data data VARBINARY(5000),
   CHANGE plugin_enabled enabled TINYINT(1) NOT NULL DEFAULT 0,
   ADD available TINYINT(1) DEFAULT 0,
-  DROP INDEX plugin_name_UNIQUE,
   ADD UNIQUE INDEX uk_Plugin_01 (name ASC),
 RENAME TO Plugin $$
 
@@ -219,12 +281,8 @@ ALTER TABLE publicLinks
   CHANGE publicLink_itemId itemId INT(10) UNSIGNED NOT NULL,
   CHANGE publicLink_hash `hash` VARBINARY(100) NOT NULL,
   CHANGE publicLink_linkData `data` LONGBLOB,
-  DROP INDEX IDX_hash,
   ADD UNIQUE INDEX uk_PublicLink_01 (`hash` ASC),
-  DROP INDEX unique_publicLink_accountId,
   ADD UNIQUE INDEX uk_PublicLink_02 (itemId ASC),
-  DROP INDEX IDX_itemId,
-  DROP INDEX unique_publicLink_hash,
 RENAME TO PublicLink $$
 
 -- Fix missing categories hash
@@ -245,14 +303,13 @@ RENAME TO Category $$
 ALTER TABLE config
   CHANGE config_parameter parameter VARCHAR(50) NOT NULL,
   CHANGE config_value VALUE VARCHAR(4000),
-  DROP INDEX vacParameter,
   ADD PRIMARY KEY (parameter),
 RENAME TO Config $$
 
 -- Fix missing customers hash
 UPDATE customers
 SET customer_hash = MD5(CONCAT(customer_id, customer_name))
-WHERE customer_hash IS NULL OR customer_hash = 0 $$
+WHERE customer_hash IS NULL OR customer_hash = '' $$
 
 -- Customer
 ALTER TABLE customers
@@ -262,7 +319,6 @@ ALTER TABLE customers
   CHANGE customer_description description VARCHAR(255),
   ADD `isGlobal` TINYINT(1) DEFAULT 0,
   ADD INDEX uk_Client_01 (`hash` ASC),
-  DROP INDEX IDX_name,
 RENAME TO Client $$
 
 -- Account
@@ -290,23 +346,16 @@ ALTER TABLE accounts
   CHANGE account_passDate passDate INT(11) UNSIGNED,
   CHANGE account_passDateChange passDateChange INT(11) UNSIGNED,
   CHANGE account_parentId parentId MEDIUMINT UNSIGNED,
-  DROP INDEX IDX_categoryId,
   ADD INDEX idx_Account_01 (`categoryId` ASC),
-  DROP INDEX IDX_userId,
   ADD INDEX idx_Account_02 (`userGroupId` ASC, `userId` ASC),
-  DROP INDEX IDX_customerId,
   ADD INDEX idx_Account_03 (`clientId` ASC),
   ADD INDEX idx_Account_04 (`parentId` ASC),
-  DROP INDEX IDX_parentId,
 RENAME TO Account $$
 
 -- AccountToFavorite
 ALTER TABLE accFavorites
-  DROP INDEX fk_accFavorites_users_idx,
-  DROP INDEX fk_accFavorites_accounts_idx,
   CHANGE accfavorite_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accfavorite_userId userId SMALLINT(5) UNSIGNED NOT NULL,
-  DROP INDEX search_idx,
   ADD INDEX idx_AccountToFavorite_01 (accountId ASC, userId ASC),
 RENAME TO AccountToFavorite $$
 
@@ -339,7 +388,6 @@ ALTER TABLE accHistory
   CHANGE accHistory_parentId parentId MEDIUMINT UNSIGNED,
   CHANGE accHistory_isPrivate isPrivate TINYINT(1) DEFAULT 0,
   CHANGE accHistory_isPrivateGroup isPrivateGroup TINYINT(1) DEFAULT 0,
-  DROP INDEX IDX_accountId,
   ADD INDEX idx_AccountHistory_01 (accountId ASC),
   ADD INDEX idx_AccountHistory_02 (parentId ASC),
 RENAME TO AccountHistory $$
@@ -348,16 +396,14 @@ RENAME TO AccountHistory $$
 -- Fix missing tags hash
 UPDATE tags
 SET tag_hash = MD5(CONCAT(tag_id, tag_name))
-WHERE tag_hash IS NULL OR tag_hash = 0 $$
+WHERE tag_hash IS NULL OR tag_hash = '' $$
 
 -- Tag
 ALTER TABLE tags
   CHANGE tag_id id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   CHANGE tag_name name VARCHAR(45) NOT NULL,
   CHANGE tag_hash hash VARBINARY(40) NOT NULL,
-  DROP INDEX tag_hash_UNIQUE,
   ADD UNIQUE INDEX uk_Tag_01 (`hash` ASC),
-  DROP INDEX IDX_name,
   ADD INDEX idx_Tag_01 (`name` ASC),
 RENAME TO Tag $$
 
@@ -372,7 +418,6 @@ ALTER TABLE accGroups
   ADD isEdit tinyint(1) unsigned DEFAULT 0 NULL,
   CHANGE accgroup_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accgroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
-  DROP INDEX IDX_accountId,
   ADD INDEX idx_AccountToUserGroup_01 (`accountId` ASC),
 RENAME TO AccountToUserGroup $$
 
@@ -381,7 +426,6 @@ ALTER TABLE accUsers
   ADD isEdit tinyint(1) unsigned DEFAULT 0 NULL,
   CHANGE accuser_accountId accountId MEDIUMINT UNSIGNED NOT NULL,
   CHANGE accuser_userId userId SMALLINT(5) UNSIGNED NOT NULL,
-  DROP INDEX idx_account,
   ADD INDEX idx_AccountToUser_01 (accountId ASC),
 RENAME TO AccountToUser $$
 
@@ -389,7 +433,6 @@ RENAME TO AccountToUser $$
 ALTER TABLE usrToGroups
   CHANGE usertogroup_userId userId SMALLINT(5) UNSIGNED NOT NULL,
   CHANGE usertogroup_groupId userGroupId SMALLINT(5) UNSIGNED NOT NULL,
-  DROP INDEX IDX_usertogroup_userId,
   ADD INDEX idx_UserToUserGroup_01 (userId ASC),
 RENAME TO UserToUserGroup $$
 
@@ -410,9 +453,7 @@ ALTER TABLE authTokens
   CHANGE authtoken_startDate startDate INT(10) UNSIGNED NOT NULL,
   CHANGE authtoken_vault vault VARBINARY(2000),
   CHANGE authtoken_hash hash VARBINARY(1000),
-  DROP INDEX unique_authtoken_id,
   ADD UNIQUE INDEX uk_AuthToken_01 (token ASC, actionId ASC),
-  DROP INDEX IDX_checkToken,
   ADD INDEX idx_AuthToken_01 (userId ASC, actionId ASC, token ASC),
 RENAME TO AuthToken $$
 
@@ -423,7 +464,6 @@ ALTER TABLE usrPassRecover
   CHANGE userpassr_hash hash VARBINARY(128) NOT NULL,
   CHANGE userpassr_date date INT(10) UNSIGNED NOT NULL,
   CHANGE userpassr_used used TINYINT(1) DEFAULT 0,
-  DROP INDEX IDX_userId,
   ADD INDEX idx_UserPassRecover_01 (userId ASC, date ASC),
 RENAME TO UserPassRecover $$
 
@@ -607,6 +647,8 @@ ALTER TABLE AccountToUserGroup
 FOREIGN KEY (userGroupId) REFERENCES UserGroup (id)
   ON UPDATE CASCADE
   ON DELETE CASCADE $$
+
+CALL drop_primary('AccountToUserGroup') $$
 
 ALTER TABLE AccountToUserGroup
   ADD PRIMARY KEY (accountId, userGroupId) $$
