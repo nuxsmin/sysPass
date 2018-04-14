@@ -85,7 +85,7 @@ class UpgradePublicLink extends Service
                 $itemData->setDateAdd($data->getDateAdd());
                 $itemData->setDateExpire($data->getDateExpire());
                 $itemData->setCountViews($data->getCountViews());
-                $itemData->setMaxCountViews($data->getMaxCountViews());
+                $itemData->setMaxCountViews($data->getCountViews());
                 $itemData->setUseInfo($data->getUseInfo());
                 $itemData->setData($data->getData());
 
