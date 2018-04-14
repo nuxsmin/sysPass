@@ -173,17 +173,21 @@ sysPass.Triggers = function (Common) {
             e.preventDefault();
 
             handleFormAction($(this));
-        }).on("click", ".btn-help", function () {
+        }).on("click", ".btn-help[data-help]", function () {
             const $this = $(this);
-            const helpText = $("#" + $this.data("help")).html();
+            const $helpSrc = $.find("div[for='" + $this.data("help") + "']");
 
-            mdlDialog().show({
-                title: Common.config().LANG[54],
-                text: helpText,
-                positive: {
-                    title: Common.config().LANG[43]
-                }
-            });
+            if ($helpSrc.length > 0) {
+                const title = Common.config().LANG[54] + " - " + $helpSrc[0].getAttribute("title") || Common.config().LANG[54];
+
+                mdlDialog().show({
+                    title: title,
+                    text: $helpSrc[0].innerHTML,
+                    positive: {
+                        title: Common.config().LANG[43]
+                    }
+                });
+            }
         }).on("reset", ".form-action", function (e) {
             e.preventDefault();
 

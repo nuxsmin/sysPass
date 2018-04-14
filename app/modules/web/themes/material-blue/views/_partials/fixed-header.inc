@@ -141,6 +141,8 @@
                     <?php endif; ?>
                 </a>
 
+                <span class="mdl-menu__item--full-bleed-divider"></span>
+
                 <a class="btn-action mdl-navigation__link"
                    title="<?php echo __('Salir'); ?>"
                    data-onclick="main/logout">

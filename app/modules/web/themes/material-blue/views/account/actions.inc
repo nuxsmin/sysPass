@@ -25,7 +25,7 @@
                     class="mdl-button mdl-js-button mdl-button--icon">
                 <i class="material-icons">more_vert</i>
             </button>
-            <ul class="mdl-menu mdl-menu--top-left mdl-js-menu mdl-js-ripple-effect"
+            <ul class="mdl-menu mdl-menu--top-right mdl-js-menu mdl-js-ripple-effect"
                 for="actions-menu-account">
                 <?php foreach ($accountActionsMenu as $action): ?>
                     <li class="mdl-menu__item btn-action <?php echo $action->getClassesAsString(); ?>"

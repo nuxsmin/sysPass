@@ -108,7 +108,7 @@ class AuthProvider extends Provider
         $ldapAuthData = $ldap->getLdapAuthData();
 
         if (!$ldap->authenticate($this->userLoginData)) {
-            return $ldapAuthData->getAuthenticated() === 1 ? $ldapAuthData : false;
+            return $ldapAuthData->getAuthenticated() === true ? $ldapAuthData : false;
         }
 
         // Comprobamos si la cuenta está bloqueada o expirada
@@ -118,7 +118,7 @@ class AuthProvider extends Provider
             $ldapAuthData->setStatusCode(702);
         }
 
-        $ldapAuthData->setAuthenticated(1);
+        $ldapAuthData->setAuthenticated(true);
 
         return $ldapAuthData;
     }

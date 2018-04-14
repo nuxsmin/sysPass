@@ -99,7 +99,7 @@ class Browser implements AuthInterface
      * Comprobar si el usuario es autentificado por el servidor web
      *
      * @param $login string El login del usuario a comprobar
-     * @return bool
+     * @return bool|null
      */
     public function checkServerAuthUser($login)
     {
@@ -111,7 +111,7 @@ class Browser implements AuthInterface
 
         $authUser = self::getServerAuthUser();
 
-        return $authUser !== null && $authUser === $login ?: true;
+        return $authUser !== null && $authUser === $login ?: null;
     }
 
     /**

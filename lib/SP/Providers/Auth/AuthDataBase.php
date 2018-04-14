@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -40,7 +40,7 @@ abstract class AuthDataBase
      */
     protected $email;
     /**
-     * @var int
+     * @var bool
      */
     protected $authenticated;
     /**
@@ -101,12 +101,12 @@ abstract class AuthDataBase
     }
 
     /**
-     * @param int $authenticated
+     * @param bool $authenticated
      * @return $this
      */
-    public function setAuthenticated($authenticated)
+    public function setAuthenticated($authenticated = null)
     {
-        $this->authenticated = (int)$authenticated;
+        $this->authenticated = $authenticated !== null ? (bool)$authenticated : null;
 
         return $this;
     }

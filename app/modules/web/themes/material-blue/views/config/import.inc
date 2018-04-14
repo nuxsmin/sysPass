@@ -94,24 +94,26 @@
             <button id="help_import_button"
                     class="btn-help mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                     title="<?php echo $icons->getIconHelp()->getTitle(); ?>"
-                    data-help="help_import">
+                    data-help="help-import">
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
-            <div id="help_import" class="help-box" title="<?php echo __('Ayuda'); ?>">
-                <p class="help-text"><?php echo __('Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV.'); ?></p>
+            <div for="help-import" class="help-box" title="<?php echo __('Importar CSV/XML'); ?>">
+                <div class="help-container">
+                    <p class="help-text"><?php echo __('Permite realizar la importación de Cuentas, Categorías y Clientes desde archivos XML y CSV.'); ?></p>
 
-                <p class="help-text"><?php echo __('Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX'); ?></p>
+                    <p class="help-text"><?php echo __('Los formatos de archivos XML soportados son: sysPass, KeePass y KeePassX'); ?></p>
 
-                <p class="help-text"><?php echo __('Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha.'); ?></p>
+                    <p class="help-text"><?php echo __('Arrastar el archivo a importar a la zona indicada o hacer click sobre la flecha.'); ?></p>
 
-                <p class="help-text"><?php echo __('Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos.'); ?></p>
+                    <p class="help-text"><?php echo __('Para archivos de KeePass o KeePassX, el nombre del cliente será igual a KeePass o KeePassX y la categoría igual al nombre de los grupos.'); ?></p>
 
-                <p class="help-text"><?php echo __('La importación de archivos CSV se realiza con el siguiente formato:'); ?></p>
+                    <p class="help-text"><?php echo __('La importación de archivos CSV se realiza con el siguiente formato:'); ?></p>
 
-                <p class="help-text"><?php echo __('"nombre_de_cuenta";"cliente";"categoría";"url";"usuario";"clave";"notas"'); ?></p>
+                    <p class="help-text"><?php echo __('"nombre_de_cuenta";"cliente";"categoría";"url";"usuario";"clave";"notas"'); ?></p>
 
-                <p class="help-text"><?php echo __('En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente.'); ?></p>
+                    <p class="help-text"><?php echo __('En todos los casos, si el cliente o la categoría no están creados, se crean automáticamente.'); ?></p>
+                </div>
             </div>
         </li>
     </ul>

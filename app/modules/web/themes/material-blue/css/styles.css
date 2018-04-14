@@ -972,6 +972,9 @@ h5.datagrid-header-title {
   color: #26a69a;
   background-color: #e0f2f1; }
 
+.btn-help {
+  cursor: pointer; }
+
 .help-box {
   display: none;
   background-color: #fff !important;
@@ -979,7 +982,12 @@ h5.datagrid-header-title {
   .help-box > * {
     font-weight: bold; }
 
-.help-text {
+.help-container ul {
+  padding: 0 .5em;
+  list-style: none; }
+  .help-container ul li {
+    padding: .5em 0; }
+.help-container .help-text {
   text-align: justify;
   line-height: 1.5em;
   margin-top: 1em; }

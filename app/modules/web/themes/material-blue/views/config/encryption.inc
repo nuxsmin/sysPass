@@ -112,7 +112,8 @@
 
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="confirm_masterpass_change">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="confirm_masterpass_change">
                                 <input type="checkbox" id="confirm_masterpass_change"
                                        class="mdl-switch__input"
                                        name="confirm_masterpass_change"/>
@@ -142,16 +143,18 @@
             <button id="help_mpass_button" type="button"
                     class="btn-help mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                     title="<?php echo $icons->getIconHelp()->getTitle(); ?>"
-                    data-help="help_mpass">
+                    data-help="help-mpass">
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
-            <div id="help_mpass" class="help-box" title="<?php echo __('Ayuda'); ?>">
-                <p class="help-text"><?php echo __('La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras.'); ?></p>
+            <div for="help-mpass" class="help-box" title="<?php echo __('Clave Maestra'); ?>">
+                <div class="help-container">
+                    <p class="help-text"><?php echo __('La clave maestra es utilizada para encriptar las claves de las cuentas de sysPass para mantenerlas seguras.'); ?></p>
 
-                <p class="help-text"><?php echo __('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
+                    <p class="help-text"><?php echo __('Es recomendable cambiarla cada cierto tiempo y utilizar una clave compleja que incluya números, letras y símbolos.'); ?></p>
 
-                <p class="help-text"><?php printf(__('Para más información consulte: %s'), '<a target="_blank" href="https://doc.syspass.org">https://doc.syspass.org</a>'); ?></p>
+                    <p class="help-text"><?php printf(__('Para más información consulte: %s'), '<a target="_blank" href="https://doc.syspass.org">https://doc.syspass.org</a>'); ?></p>
+                </div>
             </div>
         </li>
         <?php if ($userIsAdminApp): ?>
@@ -227,7 +230,8 @@
             </td>
             <td class="valField">
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="temporary_masterpass_maxtime" name="temporary_masterpass_maxtime" type="number" step="600"
+                    <input id="temporary_masterpass_maxtime" name="temporary_masterpass_maxtime" type="number"
+                           step="600"
                            pattern="[0-9]{2,6}" class="mdl-textfield__input mdl-color-text--indigo-400"
                            value="3600"
                            required/>
@@ -242,7 +246,8 @@
                 <ul class="config-masterpass-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
                         <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="temporary_masterpass_email">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                   for="temporary_masterpass_email">
                                 <input type="checkbox" id="temporary_masterpass_email"
                                        class="mdl-switch__input"
                                        name="temporary_masterpass_email" <?php echo !$configData->isMailEnabled() ? 'disabled' : ''; ?>/>
@@ -305,13 +310,15 @@
             <button id="help_tmpass_button"
                     class="btn-help mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                     title="<?php echo $icons->getIconHelp()->getTitle(); ?>"
-                    data-help="help_tmpass">
+                    data-help="help-tmpass">
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
 
-            <div id="help_tmpass" class="help-box" title="<?php echo __('Ayuda'); ?>">
-                <p class="help-text"><?php echo __('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
+            <div for="help-tmpass" class="help-box" title="<?php echo __('Clave Temporal'); ?>">
+                <div class="help-container">
+                    <p class="help-text"><?php echo __('La clave temporal es utilizada como clave maestra para los usuarios que necesitan introducirla al iniciar la sesión, así no es necesario facilitar la clave maestra original.'); ?></p>
+                </div>
             </div>
         </li>
         <li>

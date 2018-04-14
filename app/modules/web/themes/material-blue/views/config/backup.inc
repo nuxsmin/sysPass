@@ -51,14 +51,16 @@
             <button id="help_backup_button" type="button"
                     class="btn-help mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                     title="<?php echo $icons->getIconHelp()->getTitle(); ?>"
-                    data-help="help_backup">
+                    data-help="help-backup">
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
-            <div id="help_backup" class="help-box" title="<?php echo __('Ayuda'); ?>">
-                <p class="help-text"><?php echo __('La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración.'); ?></p>
+            <div for="help-backup" class="help-box" title="<?php echo __('Copia de Seguridad') ?>">
+                <div class="help-container">
+                    <p class="help-text"><?php echo __('La copia de seguridad permite guardar y descargar tanto la base de datos de sysPass como los archivos de la aplicación y su configuración.'); ?></p>
 
-                <p class="help-text"><?php echo __('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
+                    <p class="help-text"><?php echo __('Con este método es posible guardar todos los datos de sysPass en otro lugar o utilizarlos para hacer la aplicación portable.'); ?></p>
+                </div>
             </div>
         </li>
         <li>
@@ -157,18 +159,20 @@
             <button id="help_export_button" type="button"
                     class="btn-help mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored"
                     title="<?php echo $icons->getIconHelp()->getTitle(); ?>"
-                    data-help="help_export">
+                    data-help="help-export">
                 <i class="material-icons"><?php echo $icons->getIconHelp()->getIcon(); ?></i>
             </button>
 
-            <div id="help_export" class="help-box" title="<?php echo $icons->getIconHelp()->getTitle(); ?>">
-                <p class="help-text"><?php echo __('La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass.'); ?></p>
+            <div for="help-export" class="help-box" title="<?php echo __('Exportar Cuentas'); ?>">
+                <div class="help-container">
+                    <p class="help-text"><?php echo __('La exportación de cuentas permite guardar las cuentas y sus datos en formato XML para posteriormente poder ser importados en otras instancias de sysPass.'); ?></p>
 
-                <p class="help-text"><?php echo __('Los elementos exportados son cuentas, clientes, categorías y etiquetas.'); ?></p>
+                    <p class="help-text"><?php echo __('Los elementos exportados son cuentas, clientes, categorías y etiquetas.'); ?></p>
 
-                <p class="help-text"><?php echo __('Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad.'); ?></p>
+                    <p class="help-text"><?php echo __('Las claves de las cuentas son exportadas de forma encriptada para mayor seguridad.'); ?></p>
 
-                <p class="help-text"><?php echo __('Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML.'); ?></p>
+                    <p class="help-text"><?php echo __('Es posible establecer una clave de exportación para guardar todos los datos encriptados en el archivo XML.'); ?></p>
+                </div>
             </div>
         </li>
         <li>

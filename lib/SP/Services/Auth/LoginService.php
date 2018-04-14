@@ -537,7 +537,7 @@ class LoginService extends Service
             ->addDetail(__u('Usuario'), $this->userLoginData->getLoginUser());
 
         // Autentificamos con la BBDD
-        if ($authData->getAuthenticated() === 0) {
+        if ($authData->getAuthenticated() === false) {
             if ($authData->isAuthGranted() === false) {
                 return false;
             }
@@ -556,7 +556,7 @@ class LoginService extends Service
             );
         }
 
-        if ($authData->getAuthenticated() === 1) {
+        if ($authData->getAuthenticated() === true) {
             $this->eventDispatcher->notifyEvent('login.auth.database', new Event($this, $eventMessage));
         }
 
@@ -578,7 +578,7 @@ class LoginService extends Service
             ->addDetail(__u('Autentificación'), sprintf('%s (%s)', AuthUtil::getServerAuthType(), $authData->getName()));
 
         // Comprobar si concide el login con la autentificación del servidor web
-        if ($authData->getAuthenticated() === 0) {
+        if ($authData->getAuthenticated() === false) {
             if ($authData->isAuthGranted() === false) {
                 return false;
             }
@@ -597,7 +597,7 @@ class LoginService extends Service
             );
         }
 
-        if ($authData->getAuthenticated() === 1 && $this->configData->isAuthBasicAutoLoginEnabled()) {
+        if ($authData->getAuthenticated() === true && $this->configData->isAuthBasicAutoLoginEnabled()) {
             try {
                 $userLoginRequest = new UserLoginRequest();
                 $userLoginRequest->setLogin($this->userLoginData->getLoginUser());

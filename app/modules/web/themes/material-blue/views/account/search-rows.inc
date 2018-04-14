@@ -1,7 +1,7 @@
 <?php
 /**
- * @var $data              SP\Html\DataGrid\DataGridTab
- * @var $accountSearchItem SP\Account\AccountSearchItem
+ * @var $data              \SP\Html\DataGrid\DataGridTab
+ * @var $accountSearchItem \SP\Account\AccountSearchItem
  * @var $this              \SP\Mvc\View\Template
  * @var $action            \SP\Html\DataGrid\DataGridActionBase
  * @var $actionMenu        \SP\Html\DataGrid\DataGridActionBase
@@ -43,9 +43,9 @@
                         <div class="field-name"><?php echo __('Nombre'); ?></div>
                         <?php if ($accountSearchItem->isShow() && $accountSearchItem->getLink()): ?>
                             <a title="<?php echo __('Detalles de Cuenta'); ?>" class="btn-action"
-                               data-action-id="<?php echo \SP\Core\Acl\ActionsInterface::ACCOUNT_VIEW; ?>"
+                               data-action-route="<?php echo $viewAccountRoute; ?>"
                                data-item-id="<?php echo $accountSearchData->getId(); ?>"
-                               data-onclick="account/show"><?php echo $accountSearchData->getName(); ?></a>
+                               data-onclick="account/view"><?php echo $accountSearchData->getName(); ?></a>
                         <?php else: ?>
                             <div class="field-text">
                                 <?php echo $accountSearchData->getName(); ?>
@@ -215,26 +215,32 @@
 
                 <?php if ($accountSearchItem->isShow() || $accountSearchItem->isShowRequest()): ?>
                     <div class="account-actions">
-                        <?php foreach ($data->getDataActionsFiltered($accountSearchItem) as $action): ?>
-                            <i id="btn-action-<?php echo $accountSearchData->getId(), '-', $action->getIcon()->getIcon(); ?>"
+                        <?php foreach ($data->getDataActionsFiltered($accountSearchItem) as $action):
+                            $actionUid = uniqid('btn-action-', true);
+                            ?>
+                            <i id="<?php echo $actionUid; ?>"
                                class="btn-action material-icons <?php echo $action->getClassesAsString(), ' ', $action->getIcon()->getClass(); ?>"
                                data-item-id="<?php echo $accountSearchData->getId(); ?>"
                                data-parent-id="<?php echo $accountSearchData->getParentId(); ?>"
-                                <?php foreach ($action->getData() as $name => $actionData): printf('data-%s="%s"', $name, $actionData); endforeach; ?>>
+                                <?php foreach ($action->getData() as $dataName => $dataValue): printf('data-%s="%s"', $dataName, $dataValue); endforeach; ?>>
                                 <?php echo $action->getIcon()->getIcon(); ?></i>
                             <span
-                                    for="btn-action-<?php echo $accountSearchData->getId(), '-', $action->getIcon()->getIcon(); ?>"
+                                    for="<?php echo $actionUid; ?>"
                                     class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
                         <?php endforeach; ?>
 
-                        <?php if ($data->getDataActionsMenuCount()): $actionsMenu = $data->getDataActionsMenuFiltered($accountSearchItem); ?>
-                            <?php if (count($actionsMenu) > 0): ?>
-                                <button id="actions-menu-lower-right-<?php echo $accountSearchData->getId(); ?>"
+                        <?php
+                        if ($data->getDataActionsMenuCount()):
+                            $actionsMenu = $data->getDataActionsMenuFiltered($accountSearchItem);
+                            if (count($actionsMenu) > 0):
+                                $actionMenuUid = uniqid('actions-menu-lower-right-', true);
+                                ?>
+                                <button id="<?php echo $actionMenuUid; ?>"
                                         class="mdl-button mdl-js-button mdl-button--icon">
                                     <i class="material-icons">more_vert</i>
                                 </button>
                                 <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
-                                    for="actions-menu-lower-right-<?php echo $accountSearchData->getId(); ?>">
+                                    for="<?php echo $actionMenuUid; ?>">
 
                                     <?php foreach ($actionsMenu as $actionMenu): ?>
                                         <li class="btn-action mdl-menu__item <?php echo $actionMenu->getClassesAsString(); ?>"

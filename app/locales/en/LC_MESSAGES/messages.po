@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-14 21:36+0100\n"
-"PO-Revision-Date: 2018-04-14 21:36+0100\n"
+"POT-Creation-Date: 2018-04-14 21:57+0100\n"
+"PO-Revision-Date: 2018-04-14 21:58+0100\n"
 "Last-Translator: nuxsmin <nuxsmin@syspass.org>\n"
 "Language-Team: nuxsmin@syspass.org\n"
-"Language: en_US\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -3031,6 +3031,7 @@ msgstr "No export file found"
 #. (itstool) path: action/text
 #: ../../../modules/web/Controllers/ConfigManagerController.php:306
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:5
+#: ../../../modules/web/themes/material-blue/views/config/backup.inc:58
 #: ../../../config/actions.xml:721
 msgid "Copia de Seguridad"
 msgstr "Backup"
@@ -4215,10 +4216,6 @@ msgstr "Restore"
 
 #: ../../../modules/web/themes/material-blue/inc/Icons.php:54
 #: ../../../config/strings.js.inc:79
-#: ../../../modules/web/themes/material-blue/views/config/backup.inc:58
-#: ../../../modules/web/themes/material-blue/views/config/encryption.inc:150
-#: ../../../modules/web/themes/material-blue/views/config/encryption.inc:318
-#: ../../../modules/web/themes/material-blue/views/config/import.inc:101
 msgid "Ayuda"
 msgstr "Help"
 
@@ -5126,6 +5123,7 @@ msgstr ""
 "place or use it to make the application portable."
 
 #: ../../../modules/web/themes/material-blue/views/config/backup.inc:81
+#: ../../../modules/web/themes/material-blue/views/config/backup.inc:166
 msgid "Exportar Cuentas"
 msgstr "Export Accounts"
 
@@ -5171,6 +5169,7 @@ msgstr ""
 "the XML file."
 
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:14
+#: ../../../modules/web/themes/material-blue/views/config/encryption.inc:150
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:150
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:165
 #: ../../../modules/web/themes/material-blue/views/install/index.inc:47
@@ -5269,6 +5268,7 @@ msgid "Actualizar hash de clave maestra"
 msgstr "Update master password hash"
 
 #: ../../../modules/web/themes/material-blue/views/config/encryption.inc:186
+#: ../../../modules/web/themes/material-blue/views/config/encryption.inc:318
 msgid "Clave Temporal"
 msgstr "Temporary Password"
 
@@ -5561,6 +5561,7 @@ msgstr ""
 "won't be readable."
 
 #: ../../../modules/web/themes/material-blue/views/config/import.inc:10
+#: ../../../modules/web/themes/material-blue/views/config/import.inc:101
 msgid "Importar CSV/XML"
 msgstr "CSV/XML Import"
 

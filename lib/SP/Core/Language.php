@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -69,7 +69,9 @@ class Language
     private static $langs = [
         'es_ES' => 'Español',
         'ca_ES' => 'Catalá',
-        'en_US' => 'English',
+        'en' => 'English',
+        'en_US' => 'English (US)',
+        'en_GB' => 'English (GB)',
         'de_DE' => 'Deutsch',
         'hu_HU' => 'Magyar',
         'fr_FR' => 'Français',
@@ -153,12 +155,12 @@ class Language
         $browserLang = $this->getBrowserLang();
         $configLang = $this->configData->getSiteLang();
 
-        // Establecer a en_US si no existe la traducción o no es español
+        // Establecer a en si no existe la traducción o no es español
         if (!$configLang
             && !$this->checkLangFile($browserLang)
             && strpos($browserLang, 'es_') === false
         ) {
-            $lang = 'en_US';
+            $lang = 'en';
         } else {
             $lang = $configLang ?: $browserLang;
         }
@@ -197,13 +199,13 @@ class Language
     public function setLocales($lang)
     {
         $lang .= '.utf8';
-        $fallback = 'en_US.utf8';
+        $locales = [$lang, 'en.utf8', 'en_US.utf8', 'en_GB.utf8'];
 
-        self::$localeStatus = setlocale(LC_MESSAGES, [$lang, $fallback]);
+        self::$localeStatus = setlocale(LC_MESSAGES, $locales);
 
         putenv('LANG=' . $lang);
         putenv('LANGUAGE=' . $lang);
-        setlocale(LC_ALL, [$lang, $fallback]);
+        setlocale(LC_ALL, $locales);
         bindtextdomain('messages', LOCALES_PATH);
         textdomain('messages');
         bind_textdomain_codeset('messages', 'UTF-8');
