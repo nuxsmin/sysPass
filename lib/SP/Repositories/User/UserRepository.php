@@ -114,11 +114,11 @@ class UserRepository extends Repository implements RepositoryItemInterface
     public function checkDuplicatedOnUpdate($itemData)
     {
         $query = /** @lang SQL */
-            'SELECT login, email
+            'SELECT id
             FROM User
             WHERE id <> ? AND (UPPER(login) = UPPER(?) 
-            OR (ssoLogin <> "" AND UPPER(ssoLogin) = UPPER(?)) 
-            OR UPPER(email) = UPPER(?))';
+            OR (UPPER(?) = ssoLogin AND ssoLogin IS NOT NULL AND ssoLogin <> \'\')
+            OR (UPPER(?) = email AND email IS NOT NULL AND email <> \'\'))';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
@@ -477,11 +477,11 @@ class UserRepository extends Repository implements RepositoryItemInterface
     public function checkDuplicatedOnAdd($itemData)
     {
         $query = /** @lang SQL */
-            'SELECT login, email
+            'SELECT id
             FROM User
             WHERE UPPER(login) = UPPER(?) 
-            OR UPPER(?) IN (SELECT ssoLogin FROM User WHERE ssoLogin IS NOT NULL OR ssoLogin <> \'\')
-            OR UPPER(?) IN (SELECT email FROM User WHERE email IS NOT NULL OR email <> \'\')';
+            OR (UPPER(?) = ssoLogin AND ssoLogin IS NOT NULL AND ssoLogin <> \'\')
+            OR (UPPER(?) = email AND email IS NOT NULL AND email <> \'\')';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
