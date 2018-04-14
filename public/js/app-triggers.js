@@ -152,7 +152,12 @@ sysPass.Triggers = function (Common) {
     const bodyHooks = function () {
         log.info("bodyHooks");
 
-        $("body").on("click", "button.btn-action[data-onclick][type='button'],li.btn-action[data-onclick],span.btn-action[data-onclick],i.btn-action[data-onclick],.btn-action-pager[data-onclick]", function () {
+        $("body").on("click", "button.btn-action[data-onclick][type='button']" +
+            ",li.btn-action[data-onclick]" +
+            ",span.btn-action[data-onclick]" +
+            ",i.btn-action[data-onclick]" +
+            ",a.btn-action[data-onclick]" +
+            ",.btn-action-pager[data-onclick]", function () {
             handleActionButton($(this));
         }).on("click", ".btn-back", function () {
             const appRequests = Common.appRequests();
@@ -219,10 +224,6 @@ sysPass.Triggers = function (Common) {
                 }
 
                 Common.appActions().doAction({r: $this.data("route")}, $this.data("view"));
-            });
-
-            $("#btnLogout").click(function (e) {
-                Common.appActions().main.logout();
             });
 
             // setInterval(function () {

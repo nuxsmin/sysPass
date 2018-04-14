@@ -64,97 +64,94 @@
             </td>
         </tr>
         <tr>
-            <td class="descField">
-                <div id="help-account_link"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-account_link">
-                    <p>
-                        <?php echo __('Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta.'); ?>
-                    </p>
-                </div>
-            </td>
+            <td class="descField"></td>
             <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link">
-                    <input type="checkbox" id="account_link"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="account_link" <?php echo $chkAccountLink; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Nombre de cuenta como enlace'); ?></span>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <div id="help-sort_views"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-sort_views">
-                    <p>
-                        <?php echo __('Ordena los resultados de búsqueda por el número de visitas de las cuentas.'); ?>
-                    </p>
-                </div>
-            </td>
-            <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sort_views">
-                    <input type="checkbox" id="sort_views" class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="sort_views" <?php echo ($chkSortViews) ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Ordenar resultados por visitas'); ?></span>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <div id="help-top_navbar"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-top_navbar">
-                    <p>
-                        <?php echo __('Mostrar una barra de navegación superior en las búsquedas.'); ?>
-                    </p>
-                </div>
-            </td>
-            <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="top_navbar">
-                    <input type="checkbox" id="top_navbar" class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="top_navbar" <?php echo ($chkTopNavbar) ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Barra de navegación superior'); ?></span>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <div id="help-optional_actions"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-optional_actions">
-                    <p>
-                        <?php echo __('Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas.'); ?>
-                    </p>
-                </div>
-            </td>
-            <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="optional_actions">
-                    <input type="checkbox" id="optional_actions"
-                           class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="optional_actions" <?php echo ($chkOptionalActions) ? 'checked' : ''; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Mostrar Acciones Ocultas'); ?></span>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td class="descField">
-                <div id="help-resultsascards"
-                     class="icon material-icons <?php echo $icons->getIconHelp()->getClass(); ?>"><?php echo $icons->getIconHelp()->getIcon(); ?></div>
-                <div class="mdl-tooltip mdl-tooltip--large" for="help-resultsascards">
-                    <p>
-                        <?php echo __('Muestra los resultados de búsqueda de cuentas en formato tarjeta.'); ?>
-                    </p>
-                </div>
-            </td>
-            <td class="valField">
-                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="resultsascards">
-                    <input type="checkbox" id="resultsascards" class="mdl-switch__input mdl-color-text--indigo-400"
-                           name="resultsascards"
-                        <?php echo $chkResultsAsCards; ?>/>
-                    <span class="mdl-switch__label"><?php echo __('Resultados en Tarjetas'); ?></span>
-                </label>
+                <ul class="usersettings-general-list-action mdl-list">
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="account_link">
+                                <input type="checkbox" id="account_link"
+                                       class="mdl-switch__input"
+                                       name="account_link" <?php echo $chkAccountLink ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
 
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Nombre de cuenta como enlace'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Habilita el nombre de la cuenta de la búsqueda, como enlace a los detalles de la cuenta.'); ?>
+                            </span>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="sort_views">
+                                <input type="checkbox" id="sort_views"
+                                       class="mdl-switch__input"
+                                       name="sort_views" <?php echo $chkSortViews ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Ordenar resultados por visitas'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Ordena los resultados de búsqueda por el número de visitas de las cuentas.'); ?>
+                            </span>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="top_navbar">
+                                <input type="checkbox" id="top_navbar"
+                                       class="mdl-switch__input"
+                                       name="top_navbar" <?php echo $chkTopNavbar ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Barra de navegación superior'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Mostrar una barra de navegación superior en las búsquedas.'); ?>
+                            </span>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="optional_actions">
+                                <input type="checkbox" id="optional_actions"
+                                       class="mdl-switch__input"
+                                       name="optional_actions" <?php echo $chkOptionalActions ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Mostrar Acciones Ocultas'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Mostrar las acciones ocultas para los elementos de la búsqueda de cuentas.'); ?>
+                            </span>
+                        </span>
+                    </li>
+
+                    <li class="mdl-list__item mdl-list__item--two-line">
+                        <div class="mdl-switch__box">
+                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="resultsascards">
+                                <input type="checkbox" id="resultsascards"
+                                       class="mdl-switch__input"
+                                       name="resultsascards" <?php echo $chkResultsAsCards ? 'checked' : ''; ?>/>
+                            </label>
+                        </div>
+
+                        <span class="mdl-list__item-primary-content">
+                            <span><?php echo __('Resultados en Tarjetas'); ?></span>
+                            <span class="mdl-list__item-sub-title">
+                                <?php echo __('Muestra los resultados de búsqueda de cuentas en formato tarjeta.'); ?>
+                            </span>
+                        </span>
+                    </li>
+                </ul>
             </td>
         </tr>
     </table>

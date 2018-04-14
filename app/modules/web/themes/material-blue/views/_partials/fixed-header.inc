@@ -67,7 +67,10 @@
                             <i class="material-icons">account_circle</i>
                             <?php echo __('Preferencias de usuario'); ?>
                         </li>
-                        <li id="btnLogout" class="mdl-menu__item">
+                        <li class="mdl-menu__item--full-bleed-divider"></li>
+                        <li class="btn-action mdl-menu__item"
+                            title="<?php echo __('Salir'); ?>"
+                            data-onclick="main/logout">
                             <i class="material-icons">exit_to_app</i>
                             <?php echo __('Salir'); ?>
                         </li>
@@ -98,16 +101,18 @@
                    data-view="notifications">
                     <i class="material-icons mdl-badge mdl-badge--overlap"
                        data-badge="<?php echo $notifications; ?>">notifications</i>
+                    <?php echo __('Notificaciones'); ?>
                 </a>
 
                 <span for="notifications-drawer" class="mdl-tooltip mdl-tooltip--bottom">
-                            <?php if ($notifications > 0): ?>
-                                <?php printf(__('Hay %d notificaciones pendientes'), $notifications); ?>
-                            <?php else: ?>
-                                <?php echo __('No hay no hay notificaciones pendientes'); ?>
-                            <?php endif; ?>
-                        </span>
+                    <?php if ($notifications > 0): ?>
+                        <?php printf(__('Hay %d notificaciones pendientes'), $notifications); ?>
+                    <?php else: ?>
+                        <?php echo __('No hay no hay notificaciones pendientes'); ?>
+                    <?php endif; ?>
+                </span>
 
+                <span class="mdl-menu__item--full-bleed-divider"></span>
 
                 <?php if ($showPassIcon): ?>
                     <a class="btn-action mdl-navigation__link"
@@ -120,7 +125,7 @@
                     </a>
                 <?php endif; ?>
 
-                <a class="btn-menu mdl-navigation__link"
+                <a class="btn-action mdl-navigation__link"
                    title="<?php echo __('Preferencias de usuario'); ?>"
                    data-onclick="user/showSettings"
                    data-action-route="userSettingsManager/index">
@@ -135,11 +140,16 @@
                               class="mdl-tooltip mdl-tooltip--top"><?php echo $context_userType->getTitle(); ?></span>
                     <?php endif; ?>
                 </a>
-                <a class="btn-action mdl-navigation__link" title="<?php echo __('Salir'); ?>"
+
+                <a class="btn-action mdl-navigation__link"
+                   title="<?php echo __('Salir'); ?>"
                    data-onclick="main/logout">
                     <i class="material-icons">exit_to_app</i>
                     <?php echo __('Salir'); ?>
                 </a>
+
+                <span class="mdl-menu__item--full-bleed-divider"></span>
+
                 <a class="mdl-navigation__link" href="#">
                     <?php if ($httpsEnabled): ?>
                         <i class="material-icons mdl-color-text--teal-500">lock</i>
