@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,6 +24,8 @@
 
 namespace SP\Core\Crypt;
 
+use SP\Bootstrap;
+
 /**
  * Class Cookie
  *
@@ -31,6 +33,21 @@ namespace SP\Core\Crypt;
  */
 abstract class Cookie
 {
+    /**
+     * @var string
+     */
+    private $cookieName;
+
+    /**
+     * Cookie constructor.
+     *
+     * @param string $cookieName
+     */
+    public function __construct($cookieName)
+    {
+        $this->cookieName = $cookieName;
+    }
+
     /**
      * Firmar la cookie para autentificación
      *
@@ -61,5 +78,26 @@ abstract class Cookie
         }
 
         return false;
+    }
+
+    /**
+     * Returns cookie raw data
+     *
+     * @return bool|string
+     */
+    protected function getCookie()
+    {
+        return isset($_COOKIE[$this->cookieName]) ? $_COOKIE[$this->cookieName] : false;
+    }
+
+    /**
+     * Sets cookie data
+     *
+     * @param $data
+     * @return bool
+     */
+    protected function setCookie($data)
+    {
+        return setcookie($this->cookieName, $data, 0, Bootstrap::$WEBROOT);
     }
 }

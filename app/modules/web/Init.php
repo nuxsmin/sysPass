@@ -31,12 +31,12 @@ use SP\Core\Context\ContextException;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Context\SessionContext;
 use SP\Core\Crypt\CryptSessionHandler;
-use SP\Core\Crypt\SecureKeyCookie;
 use SP\Core\Crypt\Session as CryptSession;
 use SP\Core\Language;
 use SP\Core\ModuleBase;
 use SP\Core\UI\Theme;
 use SP\Http\Request;
+use SP\Services\Crypt\SecureSessionService;
 use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
@@ -70,6 +70,10 @@ class Init extends ModuleBase
      * @var Language
      */
     protected $language;
+    /**
+     * @var SecureSessionService
+     */
+    protected $secureSessionService;
 
     /**
      * Init constructor.
@@ -85,6 +89,7 @@ class Init extends ModuleBase
         $this->context = $container->get(ContextInterface::class);
         $this->theme = $container->get(Theme::class);
         $this->language = $container->get(Language::class);
+        $this->secureSessionService = $container->get(SecureSessionService::class);
     }
 
     /**
@@ -197,7 +202,7 @@ class Init extends ModuleBase
     {
         if ($encrypt === true
             && Bootstrap::$checkPhpVersion
-            && ($key = SecureKeyCookie::getKey()) !== false) {
+            && ($key = $this->secureSessionService->getKey()) !== false) {
             session_set_save_handler(new CryptSessionHandler($key), true);
         }
 

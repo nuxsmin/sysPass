@@ -41,7 +41,7 @@ class CryptSessionHandler extends \SessionHandler
     /**
      * @var Key
      */
-    private $Key;
+    private $key;
 
     /**
      * Session constructor.
@@ -50,7 +50,7 @@ class CryptSessionHandler extends \SessionHandler
      */
     public function __construct(Key $Key)
     {
-        $this->Key = $Key;
+        $this->key = $Key;
     }
 
     /**
@@ -75,7 +75,7 @@ class CryptSessionHandler extends \SessionHandler
             try {
                 self::$isSecured = true;
 
-                return Crypt::decrypt($data, $this->Key);
+                return Crypt::decrypt($data, $this->key);
             } catch (CryptoException $e) {
                 self::$isSecured = false;
 
@@ -108,7 +108,7 @@ class CryptSessionHandler extends \SessionHandler
     public function write($id, $data)
     {
         try {
-            $data = Crypt::encrypt($data, $this->Key);
+            $data = Crypt::encrypt($data, $this->key);
 
             self::$isSecured = true;
         } catch (CryptoException $e) {

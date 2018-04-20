@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,7 +26,6 @@ namespace SP\Core\Crypt;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Key;
-use SP\Core\Init;
 use SP\Http\Request;
 use SP\Util\HttpUtil;
 
@@ -46,47 +45,46 @@ class SecureKeyCookie extends Cookie
      *
      * @var Key
      */
-    protected $SecuredKey;
+    protected $securedKey;
 
     /**
      * Obtener una llave de encriptación
      *
-     * @param string $key
      * @return Key|false|string
      */
-    public static function getKey($key = null)
+    public static function getKey()
     {
-        $Cookie = new SecureKeyCookie();
+        $secureKeyCookie = new self(self::COOKIE_NAME);
 
-        $key = $key === null ? $Cookie->getCypher() : $key;
+        $key = $secureKeyCookie->getCypher();
 
-        if (isset($_COOKIE[SecureKeyCookie::COOKIE_NAME])) {
-            $data = $Cookie->getCookieData($_COOKIE[SecureKeyCookie::COOKIE_NAME], $key);
+        if (($cookie = $secureKeyCookie->getCookie())) {
+            $data = $secureKeyCookie->getCookieData($cookie, $key);
 
             if ($data === false) {
                 debugLog('Cookie verification error.');
 
-                return $Cookie->saveKey($key);
+                return $secureKeyCookie->saveKey($key);
             }
 
-            /** @var Vault $Vault */
-            $Vault = unserialize($data);
+            /** @var Vault $vault */
+            $vault = unserialize($data);
 
-            if ($Vault !== false
-                && ($Vault instanceof Vault) === true
+            if ($vault !== false
+                && ($vault instanceof Vault) === true
             ) {
                 try {
-                    return Key::loadFromAsciiSafeString($Vault->getData($key));
+                    return Key::loadFromAsciiSafeString($vault->getData($key));
                 } catch (CryptoException $e) {
                     debugLog($e->getMessage());
 
                     return false;
                 }
             }
-        } elseif (($Cookie->getSecuredKey() instanceof Key) === true) {
-            return $Cookie->getSecuredKey();
+        } elseif (($secureKeyCookie->getSecuredKey() instanceof Key) === true) {
+            return $secureKeyCookie->getSecuredKey();
         } else {
-            return $Cookie->saveKey($key);
+            return $secureKeyCookie->saveKey($key);
         }
 
         return false;
@@ -97,7 +95,7 @@ class SecureKeyCookie extends Cookie
      *
      * @return string
      */
-    public function getCypher()
+    private function getCypher()
     {
         return md5(Request::getRequestHeaders('User-Agent') . HttpUtil::getClientAddress());
     }
@@ -106,7 +104,7 @@ class SecureKeyCookie extends Cookie
      * Guardar una llave de encriptación
      *
      * @param $key
-     * @return Key|bool
+     * @return Key|false
      */
     public function saveKey($key)
     {
@@ -115,21 +113,19 @@ class SecureKeyCookie extends Cookie
         }
 
         try {
-            $this->SecuredKey = Key::createNewRandomKey();
+            $this->securedKey = Key::createNewRandomKey();
 
-            $Vault = new Vault();
-            $Vault->saveData($this->SecuredKey->saveToAsciiSafeString(), $key);
+            $vault = new Vault();
+            $vault->saveData($this->securedKey->saveToAsciiSafeString(), $key);
 
-//            $timeout = ini_get('session.gc_maxlifetime') ?: 3600;
-
-            if (setcookie(SecureKeyCookie::COOKIE_NAME, $this->sign(serialize($Vault), $key), 0, Init::$WEBROOT)) {
+            if ($this->setCookie($this->sign(serialize($vault), $key))) {
                 debugLog('Generating a new session key.');
 
-                return $this->SecuredKey;
+                return $this->securedKey;
             } else {
                 debugLog('Could not generate session key cookie.');
 
-                unset($this->SecuredKey);
+                unset($this->securedKey);
             }
         } catch (CryptoException $e) {
             debugLog($e->getMessage());
@@ -143,6 +139,6 @@ class SecureKeyCookie extends Cookie
      */
     public function getSecuredKey()
     {
-        return $this->SecuredKey;
+        return $this->securedKey;
     }
 }
