@@ -93,7 +93,7 @@ class AccountForm extends FormBase implements FormInterface
         $this->accountRequest->isPrivate = (int)Request::analyzeBool('private_enabled', false);
         $this->accountRequest->isPrivateGroup = (int)Request::analyzeBool('private_group_enabled', false);
         $this->accountRequest->passDateChange = Request::analyzeInt('password_date_expire_unix');
-        $this->accountRequest->parentId = Request::analyzeInt('parent_eccount_id');
+        $this->accountRequest->parentId = Request::analyzeInt('parent_account_id');
         $this->accountRequest->userGroupId = Request::analyzeInt('main_usergroup_id');
 
         // Arrays

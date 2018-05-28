@@ -2,7 +2,7 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
+ * @author nuxsmin
  * @link https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
@@ -192,9 +192,8 @@ class ClientController extends ControllerBase implements CrudControllerInterface
                 $this->deleteCustomFieldsForItem(ActionsInterface::CLIENT, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.client.selection',
-                    new Event($this,
-                        EventMessage::factory()
-                            ->addDescription(__u('Clientes eliminados')))
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Clientes eliminados')))
                 );
 
                 $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Clientes eliminados'));
@@ -204,10 +203,9 @@ class ClientController extends ControllerBase implements CrudControllerInterface
                 $this->deleteCustomFieldsForItem(ActionsInterface::CLIENT, $id);
 
                 $this->eventDispatcher->notifyEvent('delete.client',
-                    new Event($this,
-                        EventMessage::factory()
-                            ->addDescription(__u('Cliente eliminado'))
-                            ->addDetail(__u('Cliente'), $id))
+                    new Event($this, EventMessage::factory()
+                        ->addDescription(__u('Cliente eliminado'))
+                        ->addDetail(__u('Cliente'), $id))
                 );
 
                 $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cliente eliminado'));

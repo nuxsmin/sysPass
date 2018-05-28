@@ -139,6 +139,29 @@ class AccountHistoryService extends Service
     }
 
     /**
+     * Elimina los datos de una cuenta en la BBDD.
+     *
+     * @param array|int $id
+     * @return bool Los ids de las cuentas eliminadas
+     * @throws SPException
+     */
+    public function delete($id)
+    {
+        return $this->accountHistoryRepository->delete($id);
+    }
+
+    /**
+     * Deletes all the items for given ids
+     *
+     * @param array $ids
+     * @return void
+     */
+    public function deleteByIdBatch(array $ids)
+    {
+        return $this->accountHistoryRepository->deleteByIdBatch($ids);
+    }
+
+    /**
      * @param AccountPasswordRequest $accountRequest
      * @return bool
      * @throws SPException

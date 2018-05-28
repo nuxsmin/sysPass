@@ -189,17 +189,6 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
     }
 
     /**
-     * @param array $ids
-     * @throws SPException
-     */
-    public function deleteBatch(array $ids)
-    {
-        foreach ($ids as $id) {
-            $this->delete($id);
-        }
-    }
-
-    /**
      * Elimina los datos de una cuenta en la BBDD.
      *
      * @param array|int $id
@@ -269,7 +258,9 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             U1.login AS userLogin,
             UG.name AS userGroupName,
             U2.name AS userEditName,
-            U2.login AS userEditLogin
+            U2.login AS userEditLogin,
+            C.name AS categoryName,
+            C2.name AS clientName
             FROM AccountHistory AH
             INNER JOIN Category C ON AH.categoryId = C.id
             INNER JOIN Client C2 ON AH.clientId = C2.id
@@ -344,11 +335,21 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return void
+     * @return int
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function deleteByIdBatch(array $ids)
     {
-        throw new \RuntimeException('Not implemented');
+        $queryData = new QueryData();
+
+        $queryData->setQuery('DELETE FROM AccountHistory WHERE id IN (' . $this->getParamsFromArray($ids) . ') LIMIT 1');
+        $queryData->setParams($ids);
+        $queryData->setOnErrorMessage(__u('Error al eliminar las cuentas'));
+
+        DbWrapper::getQuery($queryData, $this->db);
+
+        return $this->db->getNumRows();
     }
 
     /**
@@ -393,12 +394,15 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
     public function search(ItemSearchData $SearchData)
     {
         $Data = new QueryData();
-        $Data->setSelect('AH.id, AH.name, C.name as clientName, IFNULL(dateEdit,dateAdd) as date, isModify, isDeleted');
-        $Data->setFrom('AccountHistory AH INNER JOIN Client C ON clientId = C.id');
-        $Data->setOrder('name, C.name, id DESC');
+        $Data->setSelect('AH.id, AH.name, C.name as clientName, C2.name as categoryName, IFNULL(AH.dateEdit,AH.dateAdd) as date, AH.isModify, AH.isDeleted');
+        $Data->setFrom('AccountHistory AH 
+        INNER JOIN Client C ON AH.clientId = C.id
+        INNER JOIN Category C2 ON AH.categoryId = C2.id
+        ');
+        $Data->setOrder('AH.name, C.name, AH.id DESC');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('name LIKE ? OR C.name LIKE ?');
+            $Data->setWhere('AH.name LIKE ? OR C.name LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
             $Data->addParam($search);

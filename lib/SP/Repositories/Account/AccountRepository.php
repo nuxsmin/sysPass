@@ -485,9 +485,11 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     public function search(ItemSearchData $SearchData)
     {
         $queryData = new QueryData();
-        $queryData->setSelect('A.id, A.name, C.name AS clientName');
-        $queryData->setFrom('Account A INNER JOIN Client C ON A.clientId = C.id');
-        $queryData->setOrder('A.name');
+        $queryData->setSelect('A.id, A.name, C.name AS clientName, C2.name AS categoryName');
+        $queryData->setFrom('Account A 
+        INNER JOIN Client C ON A.clientId = C.id
+        INNER JOIN Category C2 ON A.categoryId = C2.id');
+        $queryData->setOrder('A.name, C.name');
 
         if ($SearchData->getSeachString() !== '') {
             $queryData->setWhere('A.name LIKE ? OR C.name LIKE ?');

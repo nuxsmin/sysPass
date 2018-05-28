@@ -424,12 +424,14 @@ class ItemsGridHelper extends HelperBase
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(__('Nombre'));
         $GridHeaders->addHeader(__('Cliente'));
+        $GridHeaders->addHeader(__('Categoría'));
 
         // Grid Data
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('id');
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('clientName');
+        $GridData->addDataRowSource('categoryName');
         $GridData->setData($data);
 
         // Grid
@@ -480,6 +482,7 @@ class ItemsGridHelper extends HelperBase
         $GridHeaders = new DataGridHeader();
         $GridHeaders->addHeader(__('Nombre'));
         $GridHeaders->addHeader(__('Cliente'));
+        $GridHeaders->addHeader(__('Categoría'));
         $GridHeaders->addHeader(__('Fecha'));
         $GridHeaders->addHeader(__('Estado'));
 
@@ -491,6 +494,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setDataRowSourceId('id');
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('clientName');
+        $GridData->addDataRowSource('categoryName');
         $GridData->addDataRowSource('date');
         $GridData->addDataRowSourceWithIcon('isModify', $iconEdit->setTitle(__('Modificada'))->setClass('opacity50'));
         $GridData->addDataRowSourceWithIcon('isDeleted', $iconDelete->setTitle(__('Eliminada'))->setClass('opacity50'));

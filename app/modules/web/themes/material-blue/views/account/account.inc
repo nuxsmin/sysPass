@@ -1,8 +1,8 @@
 <?php
 /**
- * @var \SP\Account\AccountAcl       $accountAcl
+ * @var \SP\Account\AccountAcl $accountAcl
  * @var \SP\DataModel\AccountExtData $accountData
- * @var \SP\Config\ConfigData        $configData
+ * @var \SP\Config\ConfigData $configData
  */
 
 $showLinked = $gotData && count($linkedAccounts) > 0;
@@ -62,8 +62,7 @@ $showCustomFields = count($customFields) > 0;
                                 <input id="name" name="name" type="text" required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
-                                       value="<?php echo $gotData ? $accountData->getName() : ''; ?>" <?php echo $readonly; ?>
-                                       tabindex="1">
+                                       value="<?php echo $gotData ? $accountData->getName() : ''; ?>" <?php echo $readonly; ?>>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Nombre de cuenta'); ?></label>
                             </div>
@@ -75,7 +74,7 @@ $showCustomFields = count($customFields) > 0;
                             <div class="lowres-title"><?php echo __('Cliente'); ?></div>
 
                             <select id="client_id" name="client_id" class="select-box"
-                                    tabindex="2" required <?php echo $disabled; ?>>
+                                    required <?php echo $disabled; ?>>
                                 <option value=""><?php echo __('Seleccionar Cliente'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem[] $clients */
                                 foreach ($clients as $client): ?>
@@ -99,7 +98,7 @@ $showCustomFields = count($customFields) > 0;
                             <div class="lowres-title"><?php echo __('Categoría'); ?></div>
 
                             <select id="category_id" name="category_id" class="select-box"
-                                    tabindex="3" required <?php echo $disabled; ?>>
+                                    required <?php echo $disabled; ?>>
                                 <option value=""><?php echo __('Seleccionar Categoría'); ?></option>
                                 <?php /** @var \SP\Mvc\View\Components\SelectItem[] $categories */
                                 foreach ($categories as $category): ?>
@@ -123,7 +122,7 @@ $showCustomFields = count($customFields) > 0;
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="url" name="url" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       maxlength="255" tabindex="4"
+                                       maxlength="255"
                                        value="<?php echo $gotData ? $accountData->getUrl() : ''; ?>" <?php echo $readonly; ?>>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('URL o IP de acceso'); ?></label>
@@ -136,7 +135,7 @@ $showCustomFields = count($customFields) > 0;
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                 <input id="login" name="login" type="text"
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
-                                       maxlength="50" tabindex="5"
+                                       maxlength="50"
                                        value="<?php echo $gotData ? $accountData->getLogin() : ''; ?>" <?php echo $readonly; ?>>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php echo __('Usuario de acceso'); ?></label>
@@ -150,7 +149,7 @@ $showCustomFields = count($customFields) > 0;
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <input id="password" name="password" type="password" required
                                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
-                                           maxlength="255" tabindex="6"
+                                           maxlength="255"
                                            autocomplete="off">
                                     <label class="mdl-textfield__label"
                                            for="password"><?php echo __('Clave'); ?></label>
@@ -163,7 +162,7 @@ $showCustomFields = count($customFields) > 0;
                                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                     <input id="password_repeat" name="password_repeat" type="password" required
                                            class="mdl-textfield__input mdl-color-text--indigo-400"
-                                           tabindex="7" maxlength="255" autocomplete="off">
+                                           maxlength="255" autocomplete="off">
                                     <label class="mdl-textfield__label"
                                            for="password_repeat"><?php echo __('Clave (repetir)'); ?></label>
                                 </div>
@@ -176,10 +175,9 @@ $showCustomFields = count($customFields) > 0;
                                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                         <input id="password_date_expire" name="password_date_expire" type="date"
                                                class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
-                                               tabindex="8"
                                                value="<?php echo $accountPassDateChange; ?>"
                                                data-dst-unix="password_date_expire_unix" <?php echo $readonly; ?>>
-                                        <input type='hidden' name='password_date_expire_unix' value="" />
+                                        <input type='hidden' name='password_date_expire_unix' value=""/>
                                         <label class="mdl-textfield__label"
                                                for="password_date_expire"><?php echo __('Fecha'); ?></label>
                                     </div>
@@ -195,7 +193,7 @@ $showCustomFields = count($customFields) > 0;
                         <td class="valField">
                             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <textarea class="mdl-textfield__input mdl-color-text--indigo-400" rows="3" id="notes"
-                                  name="notes" tabindex="9"
+                                  name="notes"
                                   maxlength="5000" <?php echo $readonly; ?>><?php echo $gotData ? $accountData->getNotes() : ''; ?></textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php echo __('Notas sobre la cuenta'); ?></label>
@@ -207,7 +205,8 @@ $showCustomFields = count($customFields) > 0;
                             <div class="lowres-title"><?php echo __('Etiquetas'); ?></div>
 
                             <?php if (!$isView): ?>
-                                <select id="tags" name="tags[]" multiple="multiple" tabindex="10" class="select-box-tags">
+                                <select id="tags" name="tags[]" multiple="multiple"
+                                        class="select-box-tags">
                                     <option value=""><?php echo __('Seleccionar Etiquetas'); ?></option>
                                     <?php /** @var \SP\Mvc\View\Components\SelectItem[] $tags */
                                     foreach ($tags as $tag): ?>
@@ -230,7 +229,7 @@ $showCustomFields = count($customFields) > 0;
                             <td class="valField">
                                 <div class="lowres-title"><?php echo __('Cuenta Vinculada'); ?></div>
 
-                                <select id="parent_account_id" name="parent_account_id" tabindex="11"
+                                <select id="parent_account_id" name="parent_account_id"
                                         class="select-box select-box-deselect" <?php echo $disabled; ?>
                                         data-sk="<?php echo $sk; ?>"
                                         data-action-route="items/accountsUser"
@@ -247,7 +246,7 @@ $showCustomFields = count($customFields) > 0;
                             <td class="valField">
                                 <div class="lowres-title"><?php echo __('Historial'); ?></div>
 
-                                <select id="history_id" name="history_id" class="select-box" tabindex="12"
+                                <select id="history_id" name="history_id" class="select-box"
                                         data-action-route="account/viewHistory"
                                         data-onchange="account/viewHistory">
                                     <option value=""><?php echo __('Seleccionar fecha'); ?></option>
