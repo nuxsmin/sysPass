@@ -50,11 +50,12 @@ app/backup/*
 app/config/*
 !app/config/actions.xml
 !app/config/*.inc
-res/
+res/*
 tools/
 app/temp/*
 app/modules/web/plugins/*
 vendor/*
+doc/*
 
 .phpstorm.meta.php
 composer.phar

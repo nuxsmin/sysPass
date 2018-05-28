@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,10 +26,12 @@ namespace SP\Storage;
 
 /**
  * Class FileHandler
+ *
  * @package SP\Storage
  */
 class FileHandler
 {
+    const CHUNK_LENGTH = 8192;
     /**
      * @var string
      */
@@ -41,22 +43,25 @@ class FileHandler
 
     /**
      * FileHandler constructor.
+     *
      * @param string $file
      */
-    public function __construct($file)
+    public function __construct(string $file)
     {
         $this->file = $file;
     }
 
     /**
+     * Writes data into file
+     *
      * @param $data
      * @return FileHandler
      * @throws FileException
      */
     public function write($data)
     {
-        if ($this->handle === null) {
-            $this->open('w');
+        if (!is_resource($this->handle)) {
+            $this->open('wb');
         }
 
         if (fwrite($this->handle, $data) === false) {
@@ -67,6 +72,8 @@ class FileHandler
     }
 
     /**
+     * Opens the file
+     *
      * @param $mode
      * @return resource
      * @throws FileException
@@ -81,12 +88,149 @@ class FileHandler
     }
 
     /**
+     * Reads data from file into a string
+     *
+     * @return string Data read from file
      * @throws FileException
+     */
+    public function readString()
+    {
+        if (($data = file_get_contents($this->file)) === false) {
+            throw new FileException(sprintf(__('No es posible leer desde el archivo (%s)'), $this->file));
+        }
+
+        return $data;
+    }
+
+    /**
+     * Reads data from file
+     *
+     * @return string Data read from file
+     * @throws FileException
+     */
+    public function read()
+    {
+        if (!is_resource($this->handle)) {
+            $this->open('rb');
+        }
+
+        $data = '';
+
+        while (!feof($this->handle)) {
+            $data .= fread($this->handle, self::CHUNK_LENGTH);
+        }
+
+        $this->close();
+
+        return $data;
+    }
+
+    /**
+     * Closes the file
+     *
+     * @throws FileException
+     * @return FileHandler
      */
     public function close()
     {
-        if (fclose($this->handle) === false) {
+        if (!is_resource($this->handle) || fclose($this->handle) === false) {
             throw new FileException(sprintf(__('No es posible cerrar el archivo (%s)'), $this->file));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Checks if the file is writable
+     *
+     * @throws FileException
+     * @return FileHandler
+     */
+    public function checkIsWritable()
+    {
+        if (!is_writable($this->file)) {
+            throw new FileException(sprintf(__('No es posible escribir el archivo (%s)'), $this->file));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Checks if the file is readable
+     *
+     * @throws FileException
+     * @return FileHandler
+     */
+    public function checkIsReadable()
+    {
+        if (!is_readable($this->file)) {
+            throw new FileException(sprintf(__('No es posible leer el archivo (%s)'), $this->file));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Checks if the file exists
+     *
+     * @throws FileException
+     * @return FileHandler
+     */
+    public function checkFileExists()
+    {
+        if (!file_exists($this->file)) {
+            throw new FileException(sprintf(__('Archivo no encontrado (%s)'), $this->file));
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFile(): string
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param bool $isExceptionOnZero
+     * @return int
+     * @throws FileException
+     */
+    public function getFileSize($isExceptionOnZero = false): int
+    {
+        $size = filesize($this->file);
+
+        if ($size === false || ($isExceptionOnZero === true && $size === 0)) {
+            throw new FileException(sprintf(__('No es posible leer el archivo (%s)'), $this->file));
+        }
+
+        return $size;
+    }
+
+    /**
+     * Clears the stat cache for the given file
+     *
+     * @return FileHandler
+     */
+    public function clearCache()
+    {
+        clearstatcache(true, $this->file);
+
+        return $this;
+    }
+
+    /**
+     * Deletes a file
+     *
+     * @return FileHandler
+     * @throws FileException
+     */
+    public function delete()
+    {
+        if (@unlink($this->file) === false) {
+            throw new FileException(sprintf(__('No es posible eliminar el archivo (%s)'), $this->file));
         }
 
         return $this;

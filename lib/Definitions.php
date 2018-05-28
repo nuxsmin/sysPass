@@ -37,7 +37,8 @@ return [
     },
     \SP\Config\Config::class => object(\SP\Config\Config::class)
         ->constructor(object(\SP\Storage\XmlHandler::class)
-            ->constructor(CONFIG_FILE), get(\SP\Core\Context\ContextInterface::class)),
+            ->constructor(object(\SP\Storage\FileHandler::class)
+                ->constructor(CONFIG_FILE)), get(\SP\Core\Context\ContextInterface::class)),
     \SP\Core\Language::class => object(\SP\Core\Language::class),
     \SP\Config\ConfigData::class => function (\SP\Config\Config $config) {
         return $config->getConfigData();
@@ -50,7 +51,8 @@ return [
             ->constructor(get(\SP\Storage\DatabaseConnectionData::class))),
     \SP\Core\Acl\Actions::class => object(\SP\Core\Acl\Actions::class)
         ->constructor(object(\SP\Storage\FileCache::class), object(\SP\Storage\XmlHandler::class)
-            ->constructor(ACTIONS_FILE)),
+            ->constructor(object(\SP\Storage\FileHandler::class)
+                ->constructor(ACTIONS_FILE))),
     \SP\Core\Events\EventDispatcher::class => object(\SP\Core\Events\EventDispatcher::class),
     \SP\Core\Acl\Acl::class => object(\SP\Core\Acl\Acl::class)
         ->constructor(get(\SP\Core\Context\ContextInterface::class), get(\SP\Core\Events\EventDispatcher::class), get(\SP\Core\Acl\Actions::class)),

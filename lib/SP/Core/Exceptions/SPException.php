@@ -31,7 +31,7 @@ defined('APP_ROOT') || die();
 /**
  * Extender la clase Exception para mostrar ayuda en los mensajes
  */
-class SPException extends Exception
+class SPException extends \Exception
 {
     /**
      * Constantes para tipos de excepción

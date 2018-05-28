@@ -33,7 +33,6 @@ use SP\Services\Config\ConfigBackupService;
 use SP\Storage\FileCache;
 use SP\Storage\FileException;
 use SP\Storage\XmlFileStorageInterface;
-use SP\Storage\XmlHandler;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -64,7 +63,7 @@ class Config
      */
     private $configData;
     /**
-     * @var XmlHandler
+     * @var XmlFileStorageInterface
      */
     private $fileStorage;
     /**
@@ -153,20 +152,6 @@ class Config
     }
 
     /**
-     * Saves config into the cache file
-     */
-    private function saveConfigToCache()
-    {
-        try {
-            $this->fileCache->save(self::CONFIG_CACHE_FILE, $this->configData);
-
-            debugLog('Saved config cache');
-        } catch (FileException $e) {
-            processException($e);
-        }
-    }
-
-    /**
      * Guardar la configuración
      *
      * @param ConfigData $configData
@@ -185,8 +170,7 @@ class Config
             $configData->setConfigSaver($this->context->getUserData()->getLogin());
             $configData->setConfigHash();
 
-            $this->fileStorage->setItems($configData);
-            $this->fileStorage->save('config');
+            $this->fileStorage->save($configData, 'config');
         } catch (\Exception $e) {
             processException($e);
         }
@@ -276,6 +260,20 @@ class Config
         }
 
         return $this;
+    }
+
+    /**
+     * Saves config into the cache file
+     */
+    private function saveConfigToCache()
+    {
+        try {
+            $this->fileCache->save(self::CONFIG_CACHE_FILE, $this->configData);
+
+            debugLog('Saved config cache');
+        } catch (FileException $e) {
+            processException($e);
+        }
     }
 
     /**

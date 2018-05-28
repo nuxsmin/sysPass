@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -89,9 +89,9 @@ class Crypt
     /**
      * Desencriptar datos con una clave segura
      *
-     * @param string     $data
-     * @param string|Key $securedKey
-     * @param string     $password
+     * @param string                            $data
+     * @param string|Key|KeyProtectedByPassword $securedKey
+     * @param string                            $password
      * @return string
      * @throws CryptoException
      */
@@ -100,8 +100,12 @@ class Crypt
         try {
             if ($securedKey instanceof Key) {
                 return Crypto::decrypt($data, $securedKey);
-            } elseif (null !== $password && $securedKey instanceof KeyProtectedByPassword) {
-                return Crypto::decrypt($data, self::unlockSecuredKey($securedKey, $password));
+            } elseif (null !== $password) {
+                if ($securedKey instanceof KeyProtectedByPassword) {
+                    return Crypto::decrypt($data, $securedKey->unlockKey($password));
+                } else {
+                    return Crypto::decrypt($data, self::unlockSecuredKey($securedKey, $password, false));
+                }
             }
 
             return Crypto::decrypt($data, Key::loadFromAsciiSafeString($securedKey));

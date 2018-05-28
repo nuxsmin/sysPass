@@ -31,13 +31,15 @@
     "monolog/monolog": "1.23.0"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "3.*"
+    "squizlabs/php_codesniffer": "3.*",
+    "phpunit/phpunit": "^6"
   },
   "autoload": {
     "psr-4": {
       "SP\\": "lib/SP/",
       "SP\\Modules\\Web\\": "app/modules/web/",
-      "SP\\Modules\\Api\\": "app/modules/api/"
+      "SP\\Modules\\Api\\": "app/modules/api/",
+      "Tests\\": "tests"
     }
   },
   "config": {

@@ -22,34 +22,22 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+define('APP_ROOT', dirname(__DIR__));
+define('TEST_ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'tests');
 
-use SP\Core\Exceptions\FileNotFoundException;
+require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 /**
- * Interface StorageInterface
- *
- * @package SP\Storage
+ * Función para llamadas a gettext
  */
-interface XmlFileStorageInterface
-{
+if (!function_exists('gettext')) {
     /**
-     * @param string $node
-     *
-     * @return XmlFileStorageInterface
-     * @throws FileNotFoundException
+     * @param $str
+     * @return string
      */
-    public function load($node = '');
-
-    /**
-     * @param mixed  $data Data to be saved
-     * @param string $node
-     * @return XmlFileStorageInterface
-     */
-    public function save($data, $node = '');
-
-    /**
-     * @return mixed
-     */
-    public function getItems();
+    function gettext($str)
+    {
+        return $str;
+    }
 }

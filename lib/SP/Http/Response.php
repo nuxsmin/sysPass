@@ -69,7 +69,6 @@ class Response
      * @param string|array $data   mensaje a devolver
      * @param int          $status devuelve el estado
      * @param string       $action con la accion a realizar
-     * @return bool
      */
     public static function printJson($data, $status = 1, $action = '')
     {

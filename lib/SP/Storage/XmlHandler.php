@@ -30,7 +30,6 @@ use DOMNode;
 use DOMNodeList;
 use ReflectionObject;
 use RuntimeException;
-use SP\Core\Exceptions\FileNotFoundException;
 
 /**
  * Class XmlHandler para manejo básico de documentos XML
@@ -44,10 +43,6 @@ class XmlHandler implements XmlFileStorageInterface
      */
     protected $items;
     /**
-     * @var string
-     */
-    protected $file;
-    /**
      * @var DOMDocument
      */
     private $Dom;
@@ -55,15 +50,19 @@ class XmlHandler implements XmlFileStorageInterface
      * @var DOMElement
      */
     private $root;
+    /**
+     * @var FileHandler
+     */
+    private $fileHandler;
 
     /**
      * XmlHandler constructor.
      *
-     * @param $file
+     * @param FileHandler $fileHandler
      */
-    public function __construct($file)
+    public function __construct(FileHandler $fileHandler)
     {
-        $this->file = $file;
+        $this->fileHandler = $fileHandler;
     }
 
     /**
@@ -71,32 +70,26 @@ class XmlHandler implements XmlFileStorageInterface
      *
      * @param string $node
      * @return XmlFileStorageInterface
-     * @throws FileNotFoundException
+     * @throws FileException
      */
     public function load($node = 'root')
     {
-        $this->checkSourceFile();
+        $this->fileHandler->checkIsReadable();
+        $this->fileHandler->getFileSize(true);
 
-        $this->setDOM();
         $this->items = [];
-        $this->Dom->load($this->file);
+        $this->setDOM();
+        $this->Dom->load($this->fileHandler->getFile());
 
-        $nodes = $this->Dom->getElementsByTagName($node)->item(0)->childNodes;
-        $this->items = $this->readChildNodes($nodes);
+        $nodes = $this->Dom->getElementsByTagName($node);
+
+        if ($nodes->length === 0) {
+            throw new RuntimeException(__u('El nodo XML no existe'));
+        }
+
+        $this->items = $this->readChildNodes($nodes->item(0)->childNodes);
 
         return $this;
-    }
-
-    /**
-     * Comprobar que el archivo existe y se puede leer/escribir
-     *
-     * @throws FileNotFoundException
-     */
-    protected function checkSourceFile()
-    {
-        if (!is_writable($this->file) || filesize($this->file) === 0) {
-            throw new FileNotFoundException(sprintf(__('No es posible leer/escribir el archivo: %s'), $this->file));
-        }
     }
 
     /**
@@ -155,13 +148,16 @@ class XmlHandler implements XmlFileStorageInterface
     /**
      * Guardar el archivo XML
      *
+     * @param mixed  $data Data to be saved
      * @param string $node
      * @return XmlFileStorageInterface
-     * @throws \RuntimeException
+     * @throws FileException
      */
-    public function save($node = 'root')
+    public function save($data, $node = 'root')
     {
-        if (null === $this->items) {
+        $this->fileHandler->checkIsWritable();
+
+        if (null === $data) {
             throw new RuntimeException(__u('No hay elementos para guardar'));
         }
 
@@ -170,10 +166,10 @@ class XmlHandler implements XmlFileStorageInterface
 
         $this->root = $this->Dom->createElement($node);
         $this->Dom->appendChild($this->root);
-        $this->writeChildNodes($this->items, $this->root);
+        $this->writeChildNodes($data, $this->root);
 //        $this->Dom->save($this->file);
 
-        file_put_contents($this->file, $this->Dom->saveXML(), LOCK_EX);
+        file_put_contents($this->fileHandler->getFile(), $this->Dom->saveXML(), LOCK_EX);
 
         return $this;
     }
