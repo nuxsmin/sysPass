@@ -68,7 +68,7 @@ class LdapParams
      */
     public static function getServerAndPort($server)
     {
-        return preg_match('/(?P<server>[\w\.]+)(:(?P<port>\d+))?/', $server, $matches) ? $matches : false;
+        return preg_match('#(?P<server>(?:(?:ldap|ldaps)://)?[\w\.]+)(:(?P<port>\d+))?#i', $server, $matches) ? $matches : false;
     }
 
     /**
