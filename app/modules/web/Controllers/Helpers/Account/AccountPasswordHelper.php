@@ -93,10 +93,7 @@ class AccountPasswordHelper extends HelperBase
             throw new HelperException(__('Clave maestra actualizada') . '<br>' . __('Reinicie la sesión para cambiarla'));
         }
 
-        $key = CryptSession::getSessionKey($this->context);
-        $securedKey = Crypt::unlockSecuredKey($accountData->getKey(), $key);
-
-        return trim(Crypt::decrypt($accountData->getPass(), $securedKey, $key));
+        return trim(Crypt::decrypt($accountData->getPass(), $accountData->getKey(), CryptSession::getSessionKey($this->context)));
     }
 
     /**

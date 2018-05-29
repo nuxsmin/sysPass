@@ -75,13 +75,13 @@ class Vault
      */
     public function getData($key)
     {
-        return Crypt::decrypt($this->data, Crypt::unlockSecuredKey($this->key, $key), $key);
+        return Crypt::decrypt($this->data, $this->key, $key);
     }
 
     /**
      * Guardar la clave maestra en la sesión
      *
-     * @param  mixed  $data
+     * @param  mixed $data
      * @param  string $key
      * @return $this
      * @throws \Defuse\Crypto\Exception\CryptoException

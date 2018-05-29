@@ -126,8 +126,8 @@ class UserPassService extends Service
 
         try {
             $key = self::makeKeyForUser($userLoginData->getLoginUser(), $key ?: $userLoginData->getLoginPass(), $this->configData);
-            $securedKey = Crypt::unlockSecuredKey($userLoginResponse->getMKey(), $key);
-            $clearMPass = Crypt::decrypt($userLoginResponse->getMPass(), $securedKey, $key);
+
+            $clearMPass = Crypt::decrypt($userLoginResponse->getMPass(), $userLoginResponse->getMKey(), $key);
 
             // Comprobamos el hash de la clave del usuario con la guardada
             if (Hash::checkHashKey($clearMPass, $configHashMPass)) {

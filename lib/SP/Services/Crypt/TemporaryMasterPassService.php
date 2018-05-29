@@ -167,7 +167,7 @@ class TemporaryMasterPassService extends Service
     public function getUsingKey($key)
     {
         return Crypt::decrypt($this->configService->getByParam('tempmaster_pass'),
-            Crypt::unlockSecuredKey($this->configService->getByParam('tempmaster_passkey'), $key),
+            $this->configService->getByParam('tempmaster_passkey'),
             $key);
     }
 

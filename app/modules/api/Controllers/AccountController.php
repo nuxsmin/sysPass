@@ -83,7 +83,7 @@ class AccountController extends ControllerBase
 
             $accountId = $this->apiService->getParamInt('id', true);
             $accountPassData = $this->accountService->getPasswordForId($accountId);
-            $password = Crypt::decrypt($accountPassData->getPass(), Crypt::unlockSecuredKey($accountPassData->getKey(), $this->apiService->getMasterPass()));
+            $password = Crypt::decrypt($accountPassData->getPass(), $accountPassData->getKey(), $this->apiService->getMasterPass());
 
             $this->accountService->incrementDecryptCounter($accountId);
 

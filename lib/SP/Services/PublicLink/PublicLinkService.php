@@ -164,9 +164,7 @@ class PublicLinkService extends Service
         $accountData = $this->dic->get(AccountService::class)->getDataForLink($itemId);
 
         // Desencriptar la clave de la cuenta
-        $key = CryptSession::getSessionKey($this->context);
-        $securedKey = Crypt::unlockSecuredKey($accountData->getKey(), $key);
-        $accountData->setPass(Crypt::decrypt($accountData->getPass(), $securedKey, $key));
+        $accountData->setPass(Crypt::decrypt($accountData->getPass(), $accountData->getKey(), CryptSession::getSessionKey($this->context)));
         $accountData->setKey(null);
 
         $vault = new Vault();

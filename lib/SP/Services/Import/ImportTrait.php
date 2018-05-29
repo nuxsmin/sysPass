@@ -114,8 +114,7 @@ trait ImportTrait
 
         if ($this->mPassValidHash === false && $this->importParams->getImportMasterPwd() !== '') {
             if ($this->version >= 210) {
-                $securedKey = Crypt::unlockSecuredKey($accountRequest->key, $this->importParams->getImportMasterPwd());
-                $pass = Crypt::decrypt($accountRequest->pass, $securedKey, $this->importParams->getImportMasterPwd());
+                $pass = Crypt::decrypt($accountRequest->pass, $accountRequest->key, $this->importParams->getImportMasterPwd());
             } else {
                 $pass = OldCrypt::getDecrypt($accountRequest->pass, $accountRequest->key, $this->importParams->getImportMasterPwd());
             }

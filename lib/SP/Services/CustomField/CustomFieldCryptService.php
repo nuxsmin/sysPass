@@ -151,7 +151,7 @@ class CustomFieldCryptService extends Service
             $this->processUpdateMasterPassword(function (CustomFieldData $customFieldData) {
                 return Crypt::decrypt(
                     $customFieldData->getData(),
-                    Crypt::unlockSecuredKey($customFieldData->getKey(), $this->request->getCurrentMasterPass()),
+                    $customFieldData->getKey(),
                     $this->request->getCurrentMasterPass());
             });
         } catch (\Exception $e) {

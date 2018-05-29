@@ -65,8 +65,8 @@ class CustomFieldService extends Service
     /**
      * Desencriptar y formatear los datos del campo
      *
-     * @param string         $data
-     * @param string         $key
+     * @param string $data
+     * @param string $key
      * @param SessionContext $sessionContext
      * @return string
      * @throws CryptoException
@@ -74,9 +74,7 @@ class CustomFieldService extends Service
     public static function decryptData($data, $key, SessionContext $sessionContext)
     {
         if ($data !== '' && $key !== '') {
-            $securedKey = Crypt::unlockSecuredKey($key, CryptSession::getSessionKey($sessionContext));
-
-            return self::formatValue(Crypt::decrypt($data, $securedKey));
+            return self::formatValue(Crypt::decrypt($data, $key, CryptSession::getSessionKey($sessionContext)));
         }
 
         return '';
@@ -183,7 +181,7 @@ class CustomFieldService extends Service
 
     /**
      * @param CustomFieldData $customFieldData
-     * @param null            $key
+     * @param null $key
      * @throws CryptoException
      * @throws ServiceException
      */
@@ -217,7 +215,7 @@ class CustomFieldService extends Service
      * Eliminar los datos de los campos personalizados del módulo
      *
      * @param int[] $ids
-     * @param int   $moduleId
+     * @param int $moduleId
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -244,7 +242,7 @@ class CustomFieldService extends Service
      * Updates an item
      *
      * @param CustomFieldData $customFieldData
-     * @param string          $masterPass
+     * @param string $masterPass
      * @return bool
      * @throws CryptoException
      * @throws QueryException

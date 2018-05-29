@@ -87,11 +87,10 @@ class SyspassApi extends ApiBase
         $this->Log->writeLog();
 
         $mPass = $this->getMPass();
-        $securedKey = Crypt::unlockSecuredKey($AccountData->getKey(), $mPass);
 
         $ret = [
             'itemId' => $accountId,
-            'pass' => Crypt::decrypt($AccountData->getPass(), $securedKey, $mPass)
+            'pass' => Crypt::decrypt($AccountData->getPass(), $AccountData->getKey(), $mPass)
         ];
 
         if ($this->getParam('details', false, 0)) {

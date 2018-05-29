@@ -267,7 +267,7 @@ class AccountCryptService extends Service
 
             try {
                 $passData = $this->accountService->getPasswordEncrypted(
-                    Crypt::decrypt($account->pass, Crypt::unlockSecuredKey($account->key, $this->request->getCurrentMasterPass())),
+                    Crypt::decrypt($account->pass, $account->key, $this->request->getCurrentMasterPass()),
                     $this->request->getNewMasterPass()
                 );
 
