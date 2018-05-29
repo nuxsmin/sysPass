@@ -296,7 +296,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Elimina los datos de una cuenta en la BBDD.
      *
      * @param int $id
-     * @return bool Los ids de las cuentas eliminadas
+     * @return int EL número de cuentas eliminadas
      * @throws SPException
      */
     public function delete($id)
@@ -437,7 +437,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     {
         $queryData = new QueryData();
 
-        $queryData->setQuery('DELETE FROM Account WHERE id IN (' . $this->getParamsFromArray($ids) . ') LIMIT 1');
+        $queryData->setQuery('DELETE FROM Account WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar las cuentas'));
 
@@ -520,7 +520,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function incrementViewCounter($id = null)
+    public function incrementViewCounter($id)
     {
         $queryData = new QueryData();
         $queryData->setQuery('UPDATE Account SET countView = (countView + 1) WHERE id = ? LIMIT 1');

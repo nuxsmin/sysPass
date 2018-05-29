@@ -68,7 +68,8 @@ class ConfigTest extends TestCase
         self::$dic = $builder->build();
 
         // Inicializar el contexto
-        self::$dic->get(ContextInterface::class)->initialize();
+        $context = self::$dic->get(ContextInterface::class);
+        $context->initialize();
     }
 
     /**
