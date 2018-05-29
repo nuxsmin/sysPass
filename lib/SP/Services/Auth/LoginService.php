@@ -500,7 +500,6 @@ class LoginService extends Service
             $userLoginRequest->setName($authData->getName());
             $userLoginRequest->setIsLdap(1);
 
-
             // Verificamos si el usuario existe en la BBDD
             if ($this->userService->checkExistsByLogin($this->userLoginData->getLoginUser())) {
                 // Actualizamos el usuario de LDAP en MySQL

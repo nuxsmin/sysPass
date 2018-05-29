@@ -196,6 +196,16 @@ class UserService extends Service
         $userData->setIsLdap($userLoginRequest->getisLdap());
         $userData->setPass($userLoginRequest->getPassword());
 
+        $configData = $this->config->getConfigData();
+
+        if ($userLoginRequest->getisLdap() === 1) {
+            $userData->setUserGroupId($configData->getLdapDefaultGroup());
+            $userData->setUserProfileId($configData->getLdapDefaultProfile());
+        } else {
+            $userData->setUserGroupId($configData->getSsoDefaultGroup());
+            $userData->setUserProfileId($configData->getSsoDefaultProfile());
+        }
+
         return $this->create($userData);
     }
 
