@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Tests;
+namespace SP\Tests;
 
 use PHPUnit\Framework\TestCase;
 use SP\Storage\FileException;
@@ -32,30 +32,37 @@ use SP\Storage\FileHandler;
  * Class FileHandlerTest
  *
  * Tests unitarios para comprobar el funcionamiento de la clase SP\Storage\FileHandler
+ *
+ * @package SP\Tests
  */
 class FileHandlerTest extends TestCase
 {
     /**
      * @var string Archvivo de prueba válido
      */
-    protected $validFile;
+    protected static $validFile = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'valid_file.test';
     /**
-     * @var string Archvivo de prueba inválido
+     * @var string Archvivo de prueba inmutable
      */
-    protected $invalidFile;
+    protected static $immutableFile = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'immutable_file.test';
+    /**
+     * @var string Archivo de prueba no existente
+     */
+    protected static $missingFile = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'missing_file.test';
 
     /**
      * Comprobar la escritura de texto en un archivo
      *
-     * @doesNotPerformAssertions
      * @throws FileException
      */
     public function testWrite()
     {
-        $handler = new FileHandler($this->validFile);
+        $handler = new FileHandler(self::$validFile);
         $handler->write('valid_file');
         $this->assertEquals('valid_file', $handler->readString());
         $handler->close();
+
+        $this->assertFileExists(self::$validFile);
     }
 
     /**
@@ -67,13 +74,13 @@ class FileHandlerTest extends TestCase
      */
     public function testCheckIsWritable()
     {
-        (new FileHandler($this->validFile))
+        (new FileHandler(self::$validFile))
             ->clearCache()
             ->checkIsWritable();
 
         $this->expectException(FileException::class);
 
-        (new FileHandler($this->invalidFile))
+        (new FileHandler(self::$immutableFile))
             ->clearCache()
             ->checkIsWritable();
     }
@@ -86,7 +93,7 @@ class FileHandlerTest extends TestCase
      */
     public function testGetFileSize()
     {
-        $size = (new FileHandler($this->validFile))->getFileSize();
+        $size = (new FileHandler(self::$validFile))->getFileSize();
 
         $this->assertEquals(10, $size);
     }
@@ -100,13 +107,13 @@ class FileHandlerTest extends TestCase
      */
     public function testCheckFileExists()
     {
-        (new FileHandler($this->validFile))
+        (new FileHandler(self::$validFile))
             ->clearCache()
             ->checkFileExists();
 
         $this->expectException(FileException::class);
 
-        (new FileHandler($this->invalidFile))
+        (new FileHandler(self::$missingFile))
             ->clearCache()
             ->checkFileExists();
     }
@@ -119,7 +126,7 @@ class FileHandlerTest extends TestCase
      */
     public function testOpenAndRead()
     {
-        $handler = new FileHandler($this->validFile);
+        $handler = new FileHandler(self::$validFile);
         $handler->open('rb');
         $this->assertEquals('valid_file', $handler->read());
         $this->assertEquals('valid_file', $handler->readString());
@@ -133,7 +140,7 @@ class FileHandlerTest extends TestCase
      */
     public function testClose()
     {
-        $handler = new FileHandler($this->validFile);
+        $handler = new FileHandler(self::$validFile);
         $handler->open('rb');
         $handler->close();
 
@@ -150,13 +157,11 @@ class FileHandlerTest extends TestCase
      */
     public function testCheckIsReadable()
     {
-        (new FileHandler($this->validFile))
+        (new FileHandler(self::$validFile))
             ->clearCache()
             ->checkIsReadable();
 
-        $this->expectException(FileException::class);
-
-        (new FileHandler($this->invalidFile))
+        (new FileHandler(self::$immutableFile))
             ->clearCache()
             ->checkIsReadable();
     }
@@ -170,16 +175,10 @@ class FileHandlerTest extends TestCase
      */
     public function testDelete()
     {
-        (new FileHandler($this->validFile))->delete();
+        (new FileHandler(self::$validFile))->delete();
 
         $this->expectException(FileException::class);
 
-        (new FileHandler($this->invalidFile))->delete();
-    }
-
-    protected function setUp()
-    {
-        $this->validFile = TEST_ROOT . DIRECTORY_SEPARATOR . 'res' . DIRECTORY_SEPARATOR . 'valid_file.test';
-        $this->invalidFile = TEST_ROOT . DIRECTORY_SEPARATOR . 'res' . DIRECTORY_SEPARATOR . 'invalid_file.test';
+        (new FileHandler(self::$immutableFile))->delete();
     }
 }

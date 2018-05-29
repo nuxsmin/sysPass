@@ -140,6 +140,7 @@ function mb_ucfirst($string)
  *
  * @param float $from
  * @returns float con el tiempo actual
+ * @return float
  */
 function getElapsedTime($from)
 {

@@ -24,8 +24,6 @@
 
 namespace SP\Storage;
 
-use SP\Core\Exceptions\FileNotFoundException;
-
 /**
  * Interface StorageInterface
  *
@@ -37,7 +35,7 @@ interface XmlFileStorageInterface
      * @param string $node
      *
      * @return XmlFileStorageInterface
-     * @throws FileNotFoundException
+     * @throws FileException
      */
     public function load($node = '');
 

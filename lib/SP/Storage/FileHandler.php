@@ -148,7 +148,7 @@ class FileHandler
      */
     public function checkIsWritable()
     {
-        if (!is_writable($this->file)) {
+        if (!is_writable($this->file) && @touch($this->file) === false) {
             throw new FileException(sprintf(__('No es posible escribir el archivo (%s)'), $this->file));
         }
 

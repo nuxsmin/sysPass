@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Tests;
+namespace SP\Tests;
 
 use PHPUnit\Framework\TestCase;
 use SP\Storage\FileException;
@@ -34,22 +34,33 @@ use SP\Storage\XmlHandler;
  *
  * Tests unitarios para comprobar el funcionamiento de la clase SP\Storage\XmlHandler
  *
- * @package Tests
+ * @package SP\Tests
  */
 class XmlHandlerTest extends TestCase
 {
     /**
-     * @var array Elementos del archivo XML
-     */
-    protected $items;
-    /**
      * @var XmlHandler
      */
-    protected $xmlHandler;
+    protected static $xmlHandler;
     /**
      * @var object Objeto con los datos a guardar en el archivo XML
      */
-    protected $itemsData;
+    protected static $itemsData;
+    /**
+     * @var array Elementos del archivo XML
+     */
+    protected $items;
+
+    public static function setUpBeforeClass()
+    {
+        $file = RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config.xml';
+        self::$xmlHandler = new XmlHandler(new FileHandler($file));
+
+        self::$itemsData = new \stdClass();
+        self::$itemsData->configString = 'Hello world.';
+        self::$itemsData->configNumber = 1;
+        self::$itemsData->configArray = [1, 2, 3, 4];
+    }
 
     /**
      * Test para comprobar el guardado de un archivo XML
@@ -59,7 +70,7 @@ class XmlHandlerTest extends TestCase
      */
     public function testSave()
     {
-        $this->xmlHandler->save($this->itemsData, 'config');
+        self::$xmlHandler->save(self::$itemsData, 'config');
     }
 
     /**
@@ -71,7 +82,7 @@ class XmlHandlerTest extends TestCase
     {
         $this->expectException(\RuntimeException::class);
 
-        $this->xmlHandler->load('root')->getItems();
+        self::$xmlHandler->load('root')->getItems();
     }
 
     /**
@@ -82,16 +93,16 @@ class XmlHandlerTest extends TestCase
      */
     public function testLoad()
     {
-        $this->items = $this->xmlHandler->load('config')->getItems();
+        $this->items = self::$xmlHandler->load('config')->getItems();
 
         $this->assertTrue(is_array($this->items));
         $this->assertCount(3, $this->items);
 
-        $this->assertSame($this->itemsData->configString, $this->items['configString']);
-        $this->assertSame($this->itemsData->configNumber, $this->items['configNumber']);
+        $this->assertSame(self::$itemsData->configString, $this->items['configString']);
+        $this->assertSame(self::$itemsData->configNumber, $this->items['configNumber']);
 
         $this->assertTrue(is_array($this->items['configArray']));
-        $this->assertCount(count($this->itemsData->configArray), $this->items['configArray']);
+        $this->assertCount(count(self::$itemsData->configArray), $this->items['configArray']);
     }
 
     /**
@@ -104,17 +115,6 @@ class XmlHandlerTest extends TestCase
     {
         $this->expectException(\RuntimeException::class);
 
-        $this->xmlHandler->save(null, 'config');
-    }
-
-    protected function setUp()
-    {
-        $file = TEST_ROOT . DIRECTORY_SEPARATOR . 'res' . DIRECTORY_SEPARATOR . 'config.xml';
-        $this->xmlHandler = new XmlHandler(new FileHandler($file));
-
-        $this->itemsData = new \stdClass();
-        $this->itemsData->configString = 'Hello world.';
-        $this->itemsData->configNumber = 1;
-        $this->itemsData->configArray = [1, 2, 3, 4];
+        self::$xmlHandler->save(null, 'config');
     }
 }

@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Tests;
+namespace SP\Tests;
 
 use Defuse\Crypto\Exception\CryptoException;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +33,7 @@ use SP\Core\Crypt\Crypt;
  *
  * Tests unitarios para comprobar el funcionamiento de la clase SP\Core\Crypt\Crypt
  *
- * @package Tests
+ * @package SP\Tests
  */
 class CryptTest extends TestCase
 {

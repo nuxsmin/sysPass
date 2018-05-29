@@ -28,9 +28,7 @@ use DI\Container;
 use ReflectionObject;
 use SP\Core\Context\ContextInterface;
 use SP\Core\Exceptions\ConfigException;
-use SP\Core\Exceptions\FileNotFoundException;
 use SP\Services\Config\ConfigBackupService;
-use SP\Storage\FileCache;
 use SP\Storage\FileException;
 use SP\Storage\XmlFileStorageInterface;
 use SP\Util\Util;
@@ -43,10 +41,6 @@ defined('APP_ROOT') || die();
 class Config
 {
     /**
-     * Cache file name
-     */
-    const CONFIG_CACHE_FILE = CACHE_PATH . DIRECTORY_SEPARATOR . 'config.cache';
-    /**
      * @var int
      */
     private static $timeUpdated;
@@ -54,10 +48,6 @@ class Config
      * @var bool
      */
     private static $configLoaded = false;
-    /**
-     * @var FileCache
-     */
-    private $fileCache;
     /**
      * @var ConfigData
      */
@@ -82,15 +72,12 @@ class Config
      * @param ContextInterface        $session
      * @param Container               $dic
      * @throws ConfigException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function __construct(XmlFileStorageInterface $fileStorage, ContextInterface $session, Container $dic)
     {
         $this->context = $session;
         $this->fileStorage = $fileStorage;
         $this->dic = $dic;
-        $this->fileCache = $dic->get(FileCache::class);
 
         $this->initialize();
     }
@@ -104,7 +91,7 @@ class Config
             try {
 
                 $this->configData = $this->loadConfigFromFile();
-            } catch (FileNotFoundException $e) {
+            } catch (FileException $e) {
                 processException($e);
 
                 $this->configData = new ConfigData();
@@ -126,7 +113,7 @@ class Config
      *
      * @return ConfigData
      * @throws ConfigException
-     * @throws FileNotFoundException
+     * @throws FileException
      */
     public function loadConfigFromFile()
     {
@@ -206,7 +193,7 @@ class Config
     }
 
     /**
-     * Cargar la configuración desde el archivo
+     * Cargar la configuración desde el contexto
      *
      * @param ContextInterface $context
      * @param bool             $reload
@@ -260,45 +247,5 @@ class Config
         }
 
         return $this;
-    }
-
-    /**
-     * Saves config into the cache file
-     */
-    private function saveConfigToCache()
-    {
-        try {
-            $this->fileCache->save(self::CONFIG_CACHE_FILE, $this->configData);
-
-            debugLog('Saved config cache');
-        } catch (FileException $e) {
-            processException($e);
-        }
-    }
-
-    /**
-     * Loads config from the cache file
-     *
-     * @return bool
-     */
-    private function loadConfigFromCache()
-    {
-        try {
-            $configData = $this->fileCache->load(self::CONFIG_CACHE_FILE);
-
-            if (!$configData instanceof ConfigData) {
-                return false;
-            }
-
-            $this->configData = $configData;
-
-            debugLog('Loaded config cache');
-
-            return true;
-        } catch (FileException $e) {
-            processException($e);
-        }
-
-        return false;
     }
 }

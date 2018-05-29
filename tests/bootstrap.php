@@ -22,11 +22,19 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+define('APP_MODULE', 'tests');
+
 define('APP_ROOT', dirname(__DIR__));
 define('TEST_ROOT', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'tests');
+define('RESOURCE_DIR', TEST_ROOT . DIRECTORY_SEPARATOR . 'res');
 
-require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
+define('CONFIG_PATH', RESOURCE_DIR . DIRECTORY_SEPARATOR . 'config');
+define('CONFIG_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'config.xml');
+
+define('ACTIONS_FILE', CONFIG_PATH . DIRECTORY_SEPARATOR . 'actions.xml');
+
 require APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
 /**
  * Función para llamadas a gettext

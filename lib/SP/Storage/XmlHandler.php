@@ -71,6 +71,7 @@ class XmlHandler implements XmlFileStorageInterface
      * @param string $node
      * @return XmlFileStorageInterface
      * @throws FileException
+     * @throws RuntimeException
      */
     public function load($node = 'root')
     {
@@ -152,6 +153,7 @@ class XmlHandler implements XmlFileStorageInterface
      * @param string $node
      * @return XmlFileStorageInterface
      * @throws FileException
+     * @throws RuntimeException
      */
     public function save($data, $node = 'root')
     {
@@ -272,10 +274,12 @@ class XmlHandler implements XmlFileStorageInterface
      * Establecer los elementos
      *
      * @param $items
-     * @return mixed
+     * @return XmlHandler
      */
     public function setItems($items)
     {
         $this->items = $items;
+
+        return $this;
     }
 }
