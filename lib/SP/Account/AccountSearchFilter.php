@@ -74,7 +74,7 @@ class AccountSearchFilter
     /**
      * @var array
      */
-    private $tagsId = [];
+    private $tagsId;
     /**
      * @var int
      */
@@ -265,7 +265,7 @@ class AccountSearchFilter
      */
     public function getTagsId()
     {
-        return $this->tagsId;
+        return $this->tagsId ?: [];
     }
 
     /**
@@ -282,11 +282,19 @@ class AccountSearchFilter
     }
 
     /**
+     * @return bool
+     */
+    public function hasTags()
+    {
+        return !empty($this->tagsId);
+    }
+
+    /**
      * @return QueryCondition
      */
     public function getStringFilters()
     {
-        return $this->stringFilters;
+        return $this->stringFilters ?: new QueryCondition();
     }
 
     /**
@@ -394,7 +402,7 @@ class AccountSearchFilter
      */
     public function getFilterOperator()
     {
-        return $this->filterOperator;
+        return $this->filterOperator ?: QueryCondition::CONDITION_AND;
     }
 
     /**
@@ -403,5 +411,25 @@ class AccountSearchFilter
     public function setFilterOperator($filterOperator)
     {
         $this->filterOperator = $filterOperator;
+    }
+
+    /**
+     * Resets internal variables
+     */
+    public function reset()
+    {
+        self::$queryNumRows = null;
+        $this->categoryId = null;
+        $this->clientId = null;
+        $this->filterOperator = null;
+        $this->globalSearch = false;
+        $this->txtSearch = null;
+        $this->cleanTxtSearch = null;
+        $this->tagsId = null;
+        $this->limitCount = null;
+        $this->sortViews = null;
+        $this->searchFavorites = false;
+        $this->sortOrder = self::SORT_DEFAULT;
+        $this->sortKey = self::SORT_DIR_ASC;
     }
 }

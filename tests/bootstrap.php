@@ -22,6 +22,15 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace SP\Tests;
+
+use DI\ContainerBuilder;
+use Doctrine\Common\Cache\ArrayCache;
+use SP\Config\ConfigData;
+use SP\Core\Context\ContextInterface;
+use SP\Services\User\UserLoginResponse;
+use SP\Storage\DatabaseConnectionData;
+
 define('APP_MODULE', 'tests');
 
 define('APP_ROOT', dirname(__DIR__));
@@ -48,4 +57,48 @@ if (!function_exists('gettext')) {
     {
         return $str;
     }
+}
+
+/**
+ * Configura el contexto de la aplicación para los tests
+ *
+ * @throws \DI\DependencyException
+ * @throws \DI\NotFoundException
+ * @throws \SP\Core\Context\ContextException
+ * @return \DI\Container
+ */
+function setupContext()
+{
+    // Instancia del contenedor de dependencias con las definiciones de los objetos necesarios
+    // para la aplicación
+    $builder = new ContainerBuilder();
+    $builder->setDefinitionCache(new ArrayCache());
+    $builder->addDefinitions(APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Definitions.php');
+    $dic = $builder->build();
+
+    // Inicializar el contexto
+    $context = $dic->get(ContextInterface::class);
+    $context->initialize();
+    $context->setConfig(new ConfigData());
+
+    $userData = new UserLoginResponse();
+    $userData->setId(1);
+    $userData->setUserGroupId(1);
+    $userData->setIsAdminApp(1);
+
+    $context->setUserData($userData);
+
+    $databaseConnectionData = (new DatabaseConnectionData())
+        ->setDbHost('172.17.0.2')
+        ->setDbName('syspass')
+        ->setDbUser('root')
+        ->setDbPass('syspass');
+
+    // Inicializar la configuración
+    $dic->set(ConfigData::class, $context->getConfig());
+
+    // Inicializar los datos de conexión a la BBDD
+    $dic->set(DatabaseConnectionData::class, $databaseConnectionData);
+
+    return $dic;
 }

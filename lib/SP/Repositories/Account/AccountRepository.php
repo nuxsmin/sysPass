@@ -39,6 +39,7 @@ use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryAssignment;
 use SP\Mvc\Model\QueryCondition;
+use SP\Mvc\Model\QueryJoin;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -579,49 +580,31 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      */
     public function getByFilter(AccountSearchFilter $accountSearchFilter)
     {
-        $queryFilterCommon = new QueryCondition();
-        $queryFilterSelect = new QueryCondition();
+        $queryFilters = new QueryCondition();
 
         // Sets the search text depending on if special search filters are being used
         $searchText = $accountSearchFilter->getCleanTxtSearch();
 
         if (!empty($searchText)) {
-            $searchText = '%' . $searchText . '%';
-
-            $queryFilterCommon->addFilter('A.name LIKE ? OR A.login LIKE ? OR A.url LIKE ? OR A.notes LIKE ?', [$searchText, $searchText, $searchText, $searchText]);
+            $queryFilters->addFilter('A.name LIKE ? OR A.login LIKE ? OR A.url LIKE ? OR A.notes LIKE ?', array_fill(0, 4, '%' . $searchText . '%'));
         }
 
         // Gets special search filters
         $stringFilters = $accountSearchFilter->getStringFilters();
 
         if ($stringFilters->hasFilters()) {
-            $queryFilterCommon->addFilter($stringFilters->getFilters(), $stringFilters->getParams());
+            $queryFilters->addFilter($stringFilters->getFilters(), $stringFilters->getParams());
         }
 
         if (!empty($accountSearchFilter->getCategoryId())) {
-            $queryFilterSelect->addFilter('A.categoryId = ?', [$accountSearchFilter->getCategoryId()]);
+            $queryFilters->addFilter('A.categoryId = ?', [$accountSearchFilter->getCategoryId()]);
         }
 
         if (!empty($accountSearchFilter->getClientId())) {
-            $queryFilterSelect->addFilter('A.clientId = ?', [$accountSearchFilter->getClientId()]);
-        }
-
-        $tagsId = $accountSearchFilter->getTagsId();
-        $numTags = count($tagsId);
-
-        if ($numTags > 0) {
-            $queryFilterSelect->addFilter('A.id IN (SELECT accountId FROM AccountToTag WHERE tagId IN (' . str_repeat('?,', $numTags - 1) . '?' . '))', $tagsId);
+            $queryFilters->addFilter('A.clientId = ?', [$accountSearchFilter->getClientId()]);
         }
 
         $where = [];
-
-        if ($queryFilterCommon->hasFilters()) {
-            $where[] = $queryFilterCommon->getFilters($accountSearchFilter->getFilterOperator());
-        }
-
-        if ($queryFilterSelect->hasFilters()) {
-            $where[] = $queryFilterSelect->getFilters();
-        }
 
         $queryFilterUser = AccountUtil::getAccountFilterUser($this->context, $accountSearchFilter->getGlobalSearch());
 
@@ -629,18 +612,29 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             $where[] = $queryFilterUser->getFilters();
         }
 
-        $join = ['query' => [], 'param' => []];
+        $queryJoins = new QueryJoin();
 
         if ($accountSearchFilter->isSearchFavorites() === true) {
-            $join['query'][] = 'INNER JOIN AccountToFavorite AF ON (AF.accountId = A.id AND AF.userId = ?)';
-            $join['param'][] = $this->context->getUserData()->getId();
+            $queryJoins->addJoin('INNER JOIN AccountToFavorite AF ON (AF.accountId = A.id AND AF.userId = ?)', [$this->context->getUserData()->getId()]);
+        }
+
+        if ($accountSearchFilter->hasTags()) {
+            $queryJoins->addJoin('INNER JOIN AccountToTag AT ON AT.accountId = A.id');
+
+            foreach ($accountSearchFilter->getTagsId() as $tag) {
+                $queryFilters->addFilter('AT.tagId = ?', [$tag]);
+            }
+        }
+
+        if ($queryFilters->hasFilters()) {
+            $where[] = $queryFilters->getFilters($accountSearchFilter->getFilterOperator());
         }
 
         $queryData = new QueryData();
         $queryData->setWhere($where);
-        $queryData->setParams(array_merge($join['param'], $queryFilterCommon->getParams(), $queryFilterSelect->getParams(), $queryFilterUser->getParams()));
+        $queryData->setParams(array_merge($queryJoins->getParams(), $queryFilterUser->getParams(), $queryFilters->getParams()));
         $queryData->setSelect('*');
-        $queryData->setFrom('account_search_v A ' . implode(PHP_EOL, $join['query']));
+        $queryData->setFrom('account_search_v A ' . $queryJoins->getJoins());
         $queryData->setOrder($accountSearchFilter->getOrderString());
 
         if ($accountSearchFilter->getLimitCount() > 0) {

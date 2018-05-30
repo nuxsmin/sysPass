@@ -25,32 +25,29 @@
 namespace SP\Mvc\Model;
 
 /**
- * Class QueryCondition
+ * Class QueryJoin
  *
  * @package SP\Mvc\Model
  */
-class QueryCondition
+class QueryJoin
 {
-    const CONDITION_AND = ' AND ';
-    const CONDITION_OR = ' OR ';
-
     /**
      * @var array
      */
-    protected $query = [];
+    protected $join = [];
     /**
      * @var array
      */
     protected $param = [];
 
     /**
-     * @param string $query
+     * @param string $join
      * @param array  $params
-     * @return QueryCondition
+     * @return QueryJoin
      */
-    public function addFilter($query, array $params = null)
+    public function addJoin($join, array $params = null)
     {
-        $this->query[] = '(' . $query . ')';
+        $this->join[] = $join;
 
         if ($params !== null) {
             $this->param = array_merge($this->param, $params);
@@ -60,24 +57,19 @@ class QueryCondition
     }
 
     /**
-     * @param string $type
      * @return string|null
      */
-    public function getFilters($type = self::CONDITION_AND)
+    public function getJoins()
     {
-        if ($type !== self::CONDITION_AND && $type !== self::CONDITION_OR) {
-            throw new \RuntimeException(__u('Tipo de filtro inválido'));
-        }
-
-        return $this->hasFilters() ? '(' . implode($type, $this->query) . ')' : null;
+        return $this->hasJoins() ? implode(PHP_EOL, $this->join) : null;
     }
 
     /**
      * @return bool
      */
-    public function hasFilters()
+    public function hasJoins()
     {
-        return !empty($this->query);
+        return !empty($this->join);
     }
 
     /**
@@ -91,8 +83,8 @@ class QueryCondition
     /**
      * @return int
      */
-    public function getFiltersCount()
+    public function getJoinsCount()
     {
-        return count($this->query);
+        return count($this->join);
     }
 }

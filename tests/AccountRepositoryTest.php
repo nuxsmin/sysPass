@@ -24,25 +24,22 @@
 
 namespace SP\Tests;
 
-use DI\ContainerBuilder;
 use DI\DependencyException;
-use Doctrine\Common\Cache\ArrayCache;
 use PHPUnit\DbUnit\Database\Connection;
 use PHPUnit\DbUnit\Database\DefaultConnection;
 use PHPUnit\DbUnit\DataSet\IDataSet;
 use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\Framework\TestCase;
 use SP\Account\AccountRequest;
-use SP\Config\ConfigData;
-use SP\Core\Context\ContextInterface;
+use SP\Account\AccountSearchFilter;
 use SP\Core\Crypt\Crypt;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountVData;
+use SP\DataModel\Dto\AccountSearchResponse;
 use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\Account\AccountRepository;
 use SP\Services\Account\AccountPasswordRequest;
-use SP\Services\User\UserLoginResponse;
 use SP\Storage\DatabaseConnectionData;
 use SP\Storage\MySQLHandler;
 
@@ -82,33 +79,10 @@ class AccountRepositoryTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
-        // Instancia del contenedor de dependencias con las definiciones de los objetos necesarios
-        // para la aplicación
-        $builder = new ContainerBuilder();
-        $builder->setDefinitionCache(new ArrayCache());
-        $builder->addDefinitions(APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Definitions.php');
-        $dic = $builder->build();
+        $dic = setupContext();
 
-        // Inicializar el contexto
-        $context = $dic->get(ContextInterface::class);
-        $context->initialize();
-        $context->setConfig(new ConfigData());
-
-        $userData = new UserLoginResponse();
-        $userData->setId(1);
-        $userData->setUserGroupId(1);
-        $userData->setIsAdminApp(1);
-
-        $context->setUserData($userData);
-
-        self::$databaseConnectionData = (new DatabaseConnectionData())
-            ->setDbHost('172.17.0.3')
-            ->setDbName('syspass')
-            ->setDbUser('root')
-            ->setDbPass('syspass');
-
-        $dic->set(ConfigData::class, $context->getConfig());
-        $dic->set(DatabaseConnectionData::class, self::$databaseConnectionData);
+        // Datos de conexión a la BBDD
+        self::$databaseConnectionData = $dic->get(DatabaseConnectionData::class);
 
         // Inicializar el repositorio
         self::$accountRepository = $dic->get(AccountRepository::class);
@@ -270,30 +244,32 @@ class AccountRepositoryTest extends TestCase
      */
     public function testSearch()
     {
+        // Comprobar búsqueda con el texto Google Inc
         $itemSearchData = new ItemSearchData();
-        $itemSearchData->setSeachString('Google');
+        $itemSearchData->setSeachString('Google Inc');
         $itemSearchData->setLimitCount(10);
 
         $search = self::$accountRepository->search($itemSearchData);
 
-        $this->assertCount(3, $search);
+        $this->assertCount(2, $search);
         $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(2, $search['count']);
+        $this->assertEquals(1, $search['count']);
         $this->assertInstanceOf(\stdClass::class, $search[0]);
         $this->assertEquals(1, $search[0]->id);
         $this->assertEquals('Google', $search[0]->name);
 
+        // Comprobar búsqueda con el texto Apple
         $itemSearchData = new ItemSearchData();
-        $itemSearchData->setSeachString('Google');
+        $itemSearchData->setSeachString('Apple');
         $itemSearchData->setLimitCount(1);
 
         $search = self::$accountRepository->search($itemSearchData);
         $this->assertCount(2, $search);
         $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(2, $search['count']);
+        $this->assertEquals(1, $search['count']);
         $this->assertInstanceOf(\stdClass::class, $search[0]);
-        $this->assertEquals(1, $search[0]->id);
-        $this->assertEquals('Google', $search[0]->name);
+        $this->assertEquals(2, $search[0]->id);
+        $this->assertEquals('Apple', $search[0]->name);
     }
 
     /**
@@ -389,24 +365,67 @@ class AccountRepositoryTest extends TestCase
         $this->markTestSkipped();
     }
 
+    /**
+     * Comprobar las cuentas devueltas para un filtro de usuario
+     */
     public function testGetForUser()
     {
-//        self::$accountRepository->getForUser();
+        $queryCondition = new QueryCondition();
+        $queryCondition->addFilter('A.isPrivate = 1');
+
+        $this->assertCount(0, self::$accountRepository->getForUser($queryCondition));
     }
 
+    /**
+     * Comprobar las cuentas devueltas para obtener los datos de las claves
+     */
     public function testGetAccountsPassData()
     {
-
+        $this->assertCount(2, self::$accountRepository->getAccountsPassData());
     }
 
+    /**
+     * Comprobar la creación de una cuenta
+     *
+     * @throws SPException
+     * @throws \Defuse\Crypto\Exception\CryptoException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
     public function testCreate()
     {
+        $accountRequest = new AccountRequest();
+        $accountRequest->name = 'Prueba 2';
+        $accountRequest->login = 'admin';
+        $accountRequest->url = 'http://syspass.org';
+        $accountRequest->notes = 'notas';
+        $accountRequest->userEditId = 1;
+        $accountRequest->passDateChange = time() + 3600;
+        $accountRequest->clientId = 1;
+        $accountRequest->categoryId = 1;
+        $accountRequest->isPrivate = 0;
+        $accountRequest->isPrivateGroup = 0;
+        $accountRequest->parentId = 0;
+        $accountRequest->userId = 1;
+        $accountRequest->userGroupId = 2;
+        $accountRequest->key = Crypt::makeSecuredKey(self::SECURE_KEY_PASSWORD);
+        $accountRequest->pass = Crypt::encrypt('1234', $accountRequest->key, self::SECURE_KEY_PASSWORD);
 
+        // Comprobar registros iniciales
+        $this->assertEquals(2, $this->conn->getRowCount('Account'));
+
+        self::$accountRepository->create($accountRequest);
+
+        // Comprobar registros finales
+        $this->assertEquals(3, $this->conn->getRowCount('Account'));
     }
 
+    /**
+     * No implementado
+     */
     public function testGetByIdBatch()
     {
-
+        $this->markTestSkipped();
     }
 
     /**
@@ -417,14 +436,90 @@ class AccountRepositoryTest extends TestCase
         $this->markTestSkipped();
     }
 
+    /**
+     * No implementado
+     */
     public function testGetPasswordHistoryForId()
     {
-
+        $this->markTestSkipped();
     }
 
+    /**
+     * Comprobar la búsqueda de cuentas mediante filtros
+     */
     public function testGetByFilter()
     {
+        $searchFilter = new AccountSearchFilter();
+        $searchFilter->setLimitCount(10);
+        $searchFilter->setCategoryId(1);
 
+        // Comprobar un Id de categoría
+        $response = self::$accountRepository->getByFilter($searchFilter);
+        $this->assertInstanceOf(AccountSearchResponse::class, $response);
+        $this->assertEquals(1, $response->getCount());
+        $this->assertCount(1, $response->getData());
+
+        // Comprobar un Id de categoría no existente
+        $searchFilter->reset();
+        $searchFilter->setLimitCount(10);
+        $searchFilter->setCategoryId(10);
+
+        $response = self::$accountRepository->getByFilter($searchFilter);
+        $this->assertInstanceOf(AccountSearchResponse::class, $response);
+        $this->assertEquals(0, $response->getCount());
+        $this->assertCount(0, $response->getData());
+
+        // Comprobar un Id de cliente
+        $searchFilter->reset();
+        $searchFilter->setLimitCount(10);
+        $searchFilter->setClientId(1);
+
+        $response = self::$accountRepository->getByFilter($searchFilter);
+        $this->assertInstanceOf(AccountSearchResponse::class, $response);
+        $this->assertEquals(1, $response->getCount());
+        $this->assertCount(1, $response->getData());
+
+        // Comprobar un Id de cliente no existente
+        $searchFilter->reset();
+        $searchFilter->setLimitCount(10);
+        $searchFilter->setClientId(10);
+
+        $response = self::$accountRepository->getByFilter($searchFilter);
+        $this->assertInstanceOf(AccountSearchResponse::class, $response);
+        $this->assertEquals(0, $response->getCount());
+        $this->assertCount(0, $response->getData());
+
+        // Comprobar una cadena de texto
+        $searchFilter->reset();
+        $searchFilter->setLimitCount(10);
+        $searchFilter->setCleanTxtSearch('apple.com');
+
+        $response = self::$accountRepository->getByFilter($searchFilter);
+        $this->assertInstanceOf(AccountSearchResponse::class, $response);
+        $this->assertEquals(1, $response->getCount());
+        $this->assertCount(1, $response->getData());
+        $this->assertEquals(2, $response->getData()[0]->getId());
+
+        // Comprobar los favoritos
+        $searchFilter->reset();
+        $searchFilter->setLimitCount(10);
+        $searchFilter->setSearchFavorites(true);
+
+        $response = self::$accountRepository->getByFilter($searchFilter);
+        $this->assertInstanceOf(AccountSearchResponse::class, $response);
+        $this->assertEquals(0, $response->getCount());
+        $this->assertCount(0, $response->getData());
+
+        // Comprobar las etiquetas
+        $searchFilter->reset();
+        $searchFilter->setLimitCount(10);
+        $searchFilter->setTagsId([1]);
+
+        $response = self::$accountRepository->getByFilter($searchFilter);
+        $this->assertInstanceOf(AccountSearchResponse::class, $response);
+        $this->assertEquals(1, $response->getCount());
+        $this->assertCount(1, $response->getData());
+        $this->assertEquals(1, $response->getData()[0]->getId());
     }
 
     /**

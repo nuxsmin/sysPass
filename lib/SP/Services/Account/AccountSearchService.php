@@ -120,7 +120,7 @@ class AccountSearchService extends Service
     /**
      * @var string
      */
-    private $filterOperator = QueryCondition::CONDITION_OR;
+    private $filterOperator;
 
     /**
      * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta

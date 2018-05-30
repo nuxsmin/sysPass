@@ -56,7 +56,7 @@ class Installer extends Service
      */
     const VERSION = [3, 0, 0];
     const VERSION_TEXT = '3.0-beta';
-    const BUILD = 18053001;
+    const BUILD = 18053101;
 
     /**
      * @var ConfigService
