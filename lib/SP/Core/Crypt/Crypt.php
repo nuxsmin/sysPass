@@ -56,7 +56,7 @@ class Crypt
                 $key = Key::loadFromAsciiSafeString($securedKey);
             }
 
-            return Crypto::encrypt($data, $key);
+            return Crypto::encrypt((string)$data, $key);
         } catch (CryptoException $e) {
             debugLog($e->getMessage());
 
