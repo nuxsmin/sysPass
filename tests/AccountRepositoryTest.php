@@ -25,11 +25,6 @@
 namespace SP\Tests;
 
 use DI\DependencyException;
-use PHPUnit\DbUnit\Database\Connection;
-use PHPUnit\DbUnit\Database\DefaultConnection;
-use PHPUnit\DbUnit\DataSet\IDataSet;
-use PHPUnit\DbUnit\TestCaseTrait;
-use PHPUnit\Framework\TestCase;
 use SP\Account\AccountRequest;
 use SP\Account\AccountSearchFilter;
 use SP\Core\Crypt\Crypt;
@@ -41,7 +36,6 @@ use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\Account\AccountRepository;
 use SP\Services\Account\AccountPasswordRequest;
 use SP\Storage\DatabaseConnectionData;
-use SP\Storage\MySQLHandler;
 
 /**
  * Class AccountRepositoryTest
@@ -50,27 +44,13 @@ use SP\Storage\MySQLHandler;
  *
  * @package SP\Tests
  */
-class AccountRepositoryTest extends TestCase
+class AccountRepositoryTest extends DatabaseTestCase
 {
-    use TestCaseTrait;
-
     const SECURE_KEY_PASSWORD = 'syspass123';
     /**
      * @var AccountRepository
      */
     private static $accountRepository;
-    /**
-     * @var \PDO
-     */
-    private static $pdo;
-    /**
-     * @var DatabaseConnectionData
-     */
-    private static $databaseConnectionData;
-    /**
-     * @var DefaultConnection
-     */
-    private $conn;
 
     /**
      * @throws DependencyException
@@ -115,7 +95,7 @@ class AccountRepositoryTest extends TestCase
      */
     public function testEditRestore()
     {
-        $this->markTestSkipped();
+        $this->markTestSkipped('Not implemented');
     }
 
     /**
@@ -153,7 +133,7 @@ class AccountRepositoryTest extends TestCase
      */
     public function testCheckInUse()
     {
-        $this->markTestSkipped();
+        $this->markTestSkipped('Not implemented');
     }
 
     /**
@@ -219,7 +199,7 @@ class AccountRepositoryTest extends TestCase
      */
     public function testCheckDuplicatedOnAdd()
     {
-        $this->markTestSkipped();
+        $this->markTestSkipped('Not implemented');
     }
 
     /**
@@ -246,7 +226,7 @@ class AccountRepositoryTest extends TestCase
     {
         // Comprobar búsqueda con el texto Google Inc
         $itemSearchData = new ItemSearchData();
-        $itemSearchData->setSeachString('Google Inc');
+        $itemSearchData->setSeachString('Google');
         $itemSearchData->setLimitCount(10);
 
         $search = self::$accountRepository->search($itemSearchData);
@@ -278,7 +258,7 @@ class AccountRepositoryTest extends TestCase
     public function testGetLinked()
     {
         $filter = new QueryCondition();
-        $filter->addFilter('A.parentId = 1');
+        $filter->addFilter('Account.parentId = 1');
 
         $this->assertCount(0, self::$accountRepository->getLinked($filter));
     }
@@ -362,7 +342,7 @@ class AccountRepositoryTest extends TestCase
      */
     public function testGetDataForLink()
     {
-        $this->markTestSkipped();
+        $this->markTestSkipped('Not implemented');
     }
 
     /**
@@ -371,7 +351,7 @@ class AccountRepositoryTest extends TestCase
     public function testGetForUser()
     {
         $queryCondition = new QueryCondition();
-        $queryCondition->addFilter('A.isPrivate = 1');
+        $queryCondition->addFilter('Account.isPrivate = 1');
 
         $this->assertCount(0, self::$accountRepository->getForUser($queryCondition));
     }
@@ -425,7 +405,7 @@ class AccountRepositoryTest extends TestCase
      */
     public function testGetByIdBatch()
     {
-        $this->markTestSkipped();
+        $this->markTestSkipped('Not implemented');
     }
 
     /**
@@ -433,7 +413,7 @@ class AccountRepositoryTest extends TestCase
      */
     public function testCheckDuplicatedOnUpdate()
     {
-        $this->markTestSkipped();
+        $this->markTestSkipped('Not implemented');
     }
 
     /**
@@ -441,7 +421,7 @@ class AccountRepositoryTest extends TestCase
      */
     public function testGetPasswordHistoryForId()
     {
-        $this->markTestSkipped();
+        $this->markTestSkipped('Not implemented');
     }
 
     /**
@@ -520,34 +500,5 @@ class AccountRepositoryTest extends TestCase
         $this->assertEquals(1, $response->getCount());
         $this->assertCount(1, $response->getData());
         $this->assertEquals(1, $response->getData()[0]->getId());
-    }
-
-    /**
-     * Returns the test database connection.
-     *
-     * @return Connection
-     * @throws \SP\Core\Exceptions\SPException
-     */
-    protected function getConnection()
-    {
-        if ($this->conn === null) {
-            if (self::$pdo === null) {
-                self::$pdo = (new MySQLHandler(self::$databaseConnectionData))->getConnection();
-            }
-
-            $this->conn = $this->createDefaultDBConnection(self::$pdo, 'syspass');
-        }
-
-        return $this->conn;
-    }
-
-    /**
-     * Returns the test dataset.
-     *
-     * @return IDataSet
-     */
-    protected function getDataSet()
-    {
-        return $this->createMySQLXMLDataSet(RESOURCE_DIR . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass.xml');
     }
 }

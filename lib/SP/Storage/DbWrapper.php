@@ -158,21 +158,28 @@ class DbWrapper
             $db->doQuery($queryData);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (QueryException $e) {
             processException($e);
 
             $queryData->setQueryStatus($e->getCode());
+            $previous = $e->getPrevious();
 
-            switch ($e->getCode()) {
-                case 23000:
-                    throw new ConstraintException(
-                        __u('Restricción de integridad'),
-                        SPException::ERROR,
-                        $e->getMessage(),
-                        $e->getCode(),
-                        $e
-                    );
+            if ($previous) {
+                switch ($previous->getCode()) {
+                    case '23000':
+                        throw new ConstraintException(
+                            __u('Restricción de integridad'),
+                            SPException::ERROR,
+                            $e->getMessage(),
+                            $e->getCode(),
+                            $e
+                        );
+                }
             }
+
+            throw $e;
+        } catch (\Exception $e) {
+            processException($e);
 
             throw new QueryException(
                 $errorMessage,

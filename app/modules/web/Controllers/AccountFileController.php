@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -38,6 +38,7 @@ use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\CrudControllerInterface;
 use SP\Services\Account\AccountFileService;
+use SP\Services\Account\AccountService;
 use SP\Util\ErrorUtil;
 use SP\Util\FileUtil;
 use SP\Util\Util;
@@ -195,11 +196,20 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
 
             $this->accountFileService->create($fileData);
 
+            $account = $this->dic->get(AccountService::class)
+                ->getById($accountId)
+                ->getAccountVData();
+
             $this->eventDispatcher->notifyEvent('upload.accountFile',
                 new Event($this,
                     EventMessage::factory()
                         ->addDescription(__u('Archivo guardado'))
-                        ->addDetail(__u('Archivo'), $fileData->getName()))
+                        ->addDetail(__u('Archivo'), $fileData->getName())
+                        ->addDetail(__u('Cuenta'), $account->getName())
+                        ->addDetail(__u('Cliente'), $account->getClientName())
+                        ->addDetail(__u('Tipo'), $fileData->getType())
+                        ->addDetail(__u('Tamaño'), $fileData->getRoundSize() . 'KB')
+                )
             );
 
             $this->returnJsonResponse(0, __u('Archivo guardado'));

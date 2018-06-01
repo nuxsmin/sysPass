@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\Client;
 
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
 use SP\DataModel\ItemData;
@@ -146,8 +147,9 @@ class ClientRepository extends Repository implements RepositoryItemInterface
     public function checkDuplicatedOnUpdate($itemData)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id FROM Client WHERE `hash` = ? AND id <> ? LIMIT 1');
+        $queryData->setQuery('SELECT id FROM Client WHERE (`hash` = ? OR `name` = ?) AND id <> ?');
         $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->addParam($itemData->getName());
         $queryData->addParam($itemData->getId());
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -246,7 +248,8 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      *
      * @param $id
      * @return int
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
@@ -311,18 +314,23 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      *
      * @param QueryCondition $queryFilter
      * @return ItemData[]
+     * @throws QueryException
      */
     public function getAllForFilter(QueryCondition $queryFilter)
     {
+        if (!$queryFilter->hasFilters()) {
+            throw new QueryException(__u('Filtro incorrecto'));
+        }
+
         $query = /** @lang SQL */
-            'SELECT C.id, C.name 
-            FROM Account A
-            RIGHT JOIN Client C ON A.clientId = C.id
-            WHERE A.clientId IS NULL
-            OR C.isGlobal = 1
-            OR (' . $queryFilter->getFilters() . ')
+            'SELECT Client.id, Client.name 
+            FROM Account
+            RIGHT JOIN Client ON Account.clientId = Client.id
+            WHERE Account.clientId IS NULL
+            OR Client.isGlobal = 1
+            OR ' . $queryFilter->getFilters() . '
             GROUP BY id
-            ORDER BY C.name';
+            ORDER BY Client.name';
 
         $queryData = new QueryData();
         $queryData->setMapClassName(ItemData::class);

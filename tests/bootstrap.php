@@ -88,8 +88,9 @@ function setupContext()
 
     $context->setUserData($userData);
 
+    // Establecer configuración de conexión con la BBDD
     $databaseConnectionData = (new DatabaseConnectionData())
-        ->setDbHost('172.17.0.2')
+        ->setDbHost('172.17.0.3')
         ->setDbName('syspass')
         ->setDbUser('root')
         ->setDbPass('syspass');

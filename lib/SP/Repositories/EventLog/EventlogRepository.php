@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -43,7 +43,6 @@ class EventlogRepository extends Repository
      * @return bool con el resultado
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\SPException
      */
     public function clear()
     {
@@ -108,12 +107,14 @@ class EventlogRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($sql);
-        $queryData->addParam($eventlogData->getLogin());
-        $queryData->addParam($eventlogData->getUserId());
-        $queryData->addParam($eventlogData->getIpAddress());
-        $queryData->addParam($eventlogData->getAction());
-        $queryData->addParam($eventlogData->getDescription());
-        $queryData->addParam($eventlogData->getLevel());
+        $queryData->setParams([
+                $eventlogData->getLogin(),
+                $eventlogData->getUserId(),
+                $eventlogData->getIpAddress(),
+                $eventlogData->getAction(),
+                $eventlogData->getDescription(),
+                $eventlogData->getLevel()]
+        );
 
         DbWrapper::getQuery($queryData, $this->db);
 

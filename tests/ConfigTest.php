@@ -25,10 +25,8 @@
 namespace SP\Tests;
 
 use DI\Container;
-use DI\ContainerBuilder;
 use DI\DependencyException;
 use DI\NotFoundException;
-use Doctrine\Common\Cache\ArrayCache;
 use PHPUnit\Framework\TestCase;
 use SP\Config\Config;
 use SP\Config\ConfigData;
@@ -47,10 +45,6 @@ class ConfigTest extends TestCase
      * @var Container
      */
     protected static $dic;
-    /**
-     * @var Config
-     */
-    protected $config;
 
     /**
      * @throws DependencyException
@@ -59,17 +53,7 @@ class ConfigTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
-        // Instancia del contenedor de dependencias con las definiciones de los objetos necesarios
-        // para la aplicación
-        $builder = new ContainerBuilder();
-        $builder->setDefinitionCache(new ArrayCache());
-        $builder->addDefinitions(APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Definitions.php');
-
-        self::$dic = $builder->build();
-
-        // Inicializar el contexto
-        $context = self::$dic->get(ContextInterface::class);
-        $context->initialize();
+        self::$dic = setupContext();
     }
 
     /**

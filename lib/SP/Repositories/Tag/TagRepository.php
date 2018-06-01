@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,9 +24,9 @@
 
 namespace SP\Repositories\Tag;
 
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
+use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -47,14 +47,14 @@ class TagRepository extends Repository implements RepositoryItemInterface
      *
      * @param TagData $itemData
      * @return mixed
-     * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws DuplicatedItemException
      */
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(__u('Etiqueta duplicada'), SPException::INFO);
+            throw new DuplicatedItemException(__u('Etiqueta duplicada'));
         }
 
         $queryData = new QueryData();
@@ -79,7 +79,8 @@ class TagRepository extends Repository implements RepositoryItemInterface
     public function checkDuplicatedOnAdd($itemData)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id FROM Tag WHERE `hash` = ?');
+        $queryData->setQuery('SELECT id FROM Tag WHERE `name` = ? OR `hash` = ?');
+        $queryData->addParam($itemData->getName());
         $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -92,14 +93,14 @@ class TagRepository extends Repository implements RepositoryItemInterface
      *
      * @param TagData $itemData
      * @return mixed
-     * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws DuplicatedItemException
      */
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(__u('Etiqueta duplicada'), SPException::INFO);
+            throw new DuplicatedItemException(__u('Etiqueta duplicada'));
         }
 
         $queryData = new QueryData();
@@ -123,7 +124,8 @@ class TagRepository extends Repository implements RepositoryItemInterface
     public function checkDuplicatedOnUpdate($itemData)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT hash FROM Tag WHERE `hash` = ? AND id <> ?');
+        $queryData->setQuery('SELECT hash FROM Tag WHERE (`name` = ?  OR `hash` = ?) AND id <> ?');
+        $queryData->addParam($itemData->getName());
         $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
         $queryData->addParam($itemData->getId());
 
@@ -141,7 +143,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
     public function getById($id)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, name FROM Tag WHERE id = ? LIMIT 1');
+        $queryData->setQuery('SELECT id, `name` FROM Tag WHERE id = ?  ORDER BY  `name` LIMIT 1');
         $queryData->addParam($id);
         $queryData->setMapClassName(TagData::class);
 
@@ -186,7 +188,8 @@ class TagRepository extends Repository implements RepositoryItemInterface
      *
      * @param array $ids
      * @return int
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function deleteByIdBatch(array $ids)
     {

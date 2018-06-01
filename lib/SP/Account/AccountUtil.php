@@ -55,16 +55,16 @@ class AccountUtil
             && !($useGlobalSearch && $context->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
         ) {
             // Filtro usuario y grupo
-            $filter = '(AH.userId = ? 
-            OR AH.userGroupId = ? 
-            OR AH.accountId IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = AH.accountId AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AH.accountId AND userGroupId = ?)
-            OR AH.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AH.userGroupId AND userId = ?))';
+            $filter = '(AccountHistory.userId = ? 
+            OR AccountHistory.userGroupId = ? 
+            OR AccountHistory.accountId IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = AccountHistory.accountId AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = AccountHistory.accountId AND userGroupId = ?)
+            OR AccountHistory.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = AccountHistory.userGroupId AND userId = ?))';
 
             $params = [$userData->getId(), $userData->getUserGroupId(), $userData->getId(), $userData->getUserGroupId(), $userData->getId()];
 
             if ($configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
-                $filter .= PHP_EOL . 'OR AH.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AH.accountId AND uug.userId = ? LIMIT 1)';
+                $filter .= PHP_EOL . 'OR AccountHistory.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AccountHistory.accountId AND uug.userId = ? LIMIT 1)';
                 $params[] = $userData->getId();
             }
 
@@ -72,7 +72,7 @@ class AccountUtil
         }
 
         $queryFilter->addFilter(
-            '(AH.isPrivate IS NULL OR AH.isPrivate = 0 OR (AH.isPrivate = 1 AND AH.userId = ?)) AND (AH.isPrivateGroup IS NULL OR AH.isPrivateGroup = 0 OR (AH.isPrivateGroup = 1 AND AH.userGroupId = ?))',
+            '(AccountHistory.isPrivate IS NULL OR AccountHistory.isPrivate = 0 OR (AccountHistory.isPrivate = 1 AND AccountHistory.userId = ?)) AND (AccountHistory.isPrivateGroup IS NULL OR AccountHistory.isPrivateGroup = 0 OR (AccountHistory.isPrivateGroup = 1 AND AccountHistory.userGroupId = ?))',
             [$userData->getId(), $userData->getUserGroupId()]
         );
 
@@ -98,16 +98,16 @@ class AccountUtil
             && !($useGlobalSearch && $context->getUserProfile()->isAccGlobalSearch() && $configData->isGlobalSearch())
         ) {
             // Filtro usuario y grupo
-            $filter = '(A.userId = ? 
-            OR A.userGroupId = ? 
-            OR A.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = A.id AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = A.id AND userGroupId = ?)
-            OR A.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = A.userGroupId AND userId = ?))';
+            $filter = '(Account.userId = ? 
+            OR Account.userGroupId = ? 
+            OR Account.id IN (SELECT accountId AS accountId FROM AccountToUser WHERE accountId = Account.id AND userId = ? UNION ALL SELECT accountId FROM AccountToUserGroup WHERE accountId = Account.id AND userGroupId = ?)
+            OR Account.userGroupId IN (SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = Account.userGroupId AND userId = ?))';
 
             $params = [$userData->getId(), $userData->getUserGroupId(), $userData->getId(), $userData->getUserGroupId(), $userData->getId()];
 
             if ($configData->isAccountFullGroupAccess()) {
                 // Filtro de grupos secundarios en grupos que incluyen al usuario
-                $filter .= PHP_EOL . 'OR A.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = A.id AND uug.userId = ? LIMIT 1)';
+                $filter .= PHP_EOL . 'OR Account.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = Account.id AND uug.userId = ? LIMIT 1)';
                 $params[] = $userData->getId();
             }
 
@@ -115,7 +115,7 @@ class AccountUtil
         }
 
         $queryFilter->addFilter(
-            '(A.isPrivate IS NULL OR A.isPrivate = 0 OR (A.isPrivate = 1 AND A.userId = ?)) AND (A.isPrivateGroup IS NULL OR A.isPrivateGroup = 0 OR (A.isPrivateGroup = 1 AND A.userGroupId = ?))',
+            '(Account.isPrivate IS NULL OR Account.isPrivate = 0 OR (Account.isPrivate = 1 AND Account.userId = ?)) AND (Account.isPrivateGroup IS NULL OR Account.isPrivateGroup = 0 OR (Account.isPrivateGroup = 1 AND Account.userGroupId = ?))',
             [$userData->getId(), $userData->getUserGroupId()]
         );
 

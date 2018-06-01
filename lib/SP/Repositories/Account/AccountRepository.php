@@ -80,13 +80,13 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     public function getPasswordForId($id)
     {
         $queryFilter = AccountUtil::getAccountFilterUser($this->context)
-            ->addFilter('A.id = ?', [$id]);
+            ->addFilter('Account.id = ?', [$id]);
 
         $queryData = new QueryData();
         $queryData->setMapClassName(AccountPassData::class);
         $queryData->setLimit(1);
-        $queryData->setSelect('A.id, A.name, A.login, A.pass, A.key, A.parentId');
-        $queryData->setFrom('Account A');
+        $queryData->setSelect('Account.id, Account.name, Account.login, Account.pass, Account.key, Account.parentId');
+        $queryData->setFrom('Account');
         $queryData->setWhere($queryFilter->getFilters());
         $queryData->setParams($queryFilter->getParams());
 
@@ -411,7 +411,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     {
         $queryData = new QueryData();
         $queryData->setMapClassName(AccountData::class);
-        $queryData->setQuery('SELECT * FROM Account A ORDER BY id');
+        $queryData->setQuery('SELECT * FROM Account ORDER BY id');
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -486,14 +486,14 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     public function search(ItemSearchData $SearchData)
     {
         $queryData = new QueryData();
-        $queryData->setSelect('A.id, A.name, C.name AS clientName, C2.name AS categoryName');
-        $queryData->setFrom('Account A 
-        INNER JOIN Client C ON A.clientId = C.id
-        INNER JOIN Category C2 ON A.categoryId = C2.id');
-        $queryData->setOrder('A.name, C.name');
+        $queryData->setSelect('Account.id, Account.name, C.name AS clientName, C2.name AS categoryName');
+        $queryData->setFrom('Account 
+        INNER JOIN Client C ON Account.clientId = C.id
+        INNER JOIN Category C2 ON Account.categoryId = C2.id');
+        $queryData->setOrder('Account.name, C.name');
 
         if ($SearchData->getSeachString() !== '') {
-            $queryData->setWhere('A.name LIKE ? OR C.name LIKE ?');
+            $queryData->setWhere('Account.name LIKE ? OR C.name LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
             $queryData->addParam($search);
@@ -540,18 +540,18 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     public function getDataForLink($id)
     {
         $query = /** @lang SQL */
-            'SELECT A.name,
-            A.login,
-            A.pass,
-            A.key,
-            A.url,
-            A.notes,
+            'SELECT Account.name,
+            Account.login,
+            Account.pass,
+            Account.key,
+            Account.url,
+            Account.notes,
             C.name AS clientName,
             C2.name AS categoryName
-            FROM Account A
-            INNER JOIN Client C ON A.clientId = C.id
-            INNER JOIN Category C2 ON A.categoryId = C2.id 
-            WHERE A.id = ? LIMIT 1';
+            FROM Account
+            INNER JOIN Client C ON Account.clientId = C.id
+            INNER JOIN Category C2 ON Account.categoryId = C2.id 
+            WHERE Account.id = ? LIMIT 1';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
@@ -586,7 +586,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $searchText = $accountSearchFilter->getCleanTxtSearch();
 
         if (!empty($searchText)) {
-            $queryFilters->addFilter('A.name LIKE ? OR A.login LIKE ? OR A.url LIKE ? OR A.notes LIKE ?', array_fill(0, 4, '%' . $searchText . '%'));
+            $queryFilters->addFilter('Account.name LIKE ? OR Account.login LIKE ? OR Account.url LIKE ? OR Account.notes LIKE ?', array_fill(0, 4, '%' . $searchText . '%'));
         }
 
         // Gets special search filters
@@ -597,11 +597,11 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         }
 
         if (!empty($accountSearchFilter->getCategoryId())) {
-            $queryFilters->addFilter('A.categoryId = ?', [$accountSearchFilter->getCategoryId()]);
+            $queryFilters->addFilter('Account.categoryId = ?', [$accountSearchFilter->getCategoryId()]);
         }
 
         if (!empty($accountSearchFilter->getClientId())) {
-            $queryFilters->addFilter('A.clientId = ?', [$accountSearchFilter->getClientId()]);
+            $queryFilters->addFilter('Account.clientId = ?', [$accountSearchFilter->getClientId()]);
         }
 
         $where = [];
@@ -615,11 +615,11 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryJoins = new QueryJoin();
 
         if ($accountSearchFilter->isSearchFavorites() === true) {
-            $queryJoins->addJoin('INNER JOIN AccountToFavorite AF ON (AF.accountId = A.id AND AF.userId = ?)', [$this->context->getUserData()->getId()]);
+            $queryJoins->addJoin('INNER JOIN AccountToFavorite AF ON (AF.accountId = Account.id AND AF.userId = ?)', [$this->context->getUserData()->getId()]);
         }
 
         if ($accountSearchFilter->hasTags()) {
-            $queryJoins->addJoin('INNER JOIN AccountToTag AT ON AT.accountId = A.id');
+            $queryJoins->addJoin('INNER JOIN AccountToTag AT ON AT.accountId = Account.id');
 
             foreach ($accountSearchFilter->getTagsId() as $tag) {
                 $queryFilters->addFilter('AT.tagId = ?', [$tag]);
@@ -634,7 +634,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setWhere($where);
         $queryData->setParams(array_merge($queryJoins->getParams(), $queryFilterUser->getParams(), $queryFilters->getParams()));
         $queryData->setSelect('*');
-        $queryData->setFrom('account_search_v A ' . $queryJoins->getJoins());
+        $queryData->setFrom('account_search_v Account ' . $queryJoins->getJoins());
         $queryData->setOrder($accountSearchFilter->getOrderString());
 
         if ($accountSearchFilter->getLimitCount() > 0) {
@@ -657,9 +657,9 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     public function getForUser(QueryCondition $queryFilter)
     {
         $query = /** @lang SQL */
-            'SELECT A.id, A.name, C.name AS clientName 
-            FROM Account A
-            LEFT JOIN Client C ON A.clientId = C.id 
+            'SELECT Account.id, Account.name, C.name AS clientName 
+            FROM Account
+            LEFT JOIN Client C ON Account.clientId = C.id 
             WHERE ' . $queryFilter->getFilters() . ' ORDER BY name';
 
         $queryData = new QueryData();
@@ -677,9 +677,9 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     public function getLinked(QueryCondition $queryFilter)
     {
         $query = /** @lang SQL */
-            'SELECT A.id, A.name, C.name AS clientName 
-            FROM Account A
-            INNER JOIN Client C ON A.clientId = C.id 
+            'SELECT Account.id, Account.name, C.name AS clientName 
+            FROM Account
+            INNER JOIN Client C ON Account.clientId = C.id 
             WHERE ' . $queryFilter->getFilters() . ' ORDER  BY name';
 
         $queryData = new QueryData();

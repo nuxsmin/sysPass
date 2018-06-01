@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -56,7 +56,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $query = /** @lang SQL */
             'INSERT INTO AccountFile
             SET accountId = ?,
-            name = ?,
+            `name` = ?,
             type = ?,
             size = ?,
             content = ?,
@@ -75,21 +75,6 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
             $itemData->getThumb()
         ]);
         $Data->setOnErrorMessage(__u('No se pudo guardar el archivo'));
-
-//        $Log = new Log();
-//        $LogMessage = $Log->getLogMessage();
-//        $LogMessage->setAction(__('Subir Archivo', false));
-//        $LogMessage->addDetails(__('Cuenta', false), AccountUtil::getAccountNameById($this->itemData->getAccfileAccountId()));
-//        $LogMessage->addDetails(__('Archivo', false), $this->itemData->getAccfileName());
-//        $LogMessage->addDetails(__('Tipo', false), $this->itemData->getAccfileType());
-//        $LogMessage->addDetails(__('Tamaño', false), $this->itemData->getRoundSize() . 'KB');
-//
-//        DbWrapper::getQuery($Data);
-//
-//        $LogMessage->addDescription(__('Archivo subido', false));
-//        $Log->writeLog();
-//
-//        Email::sendEmail($LogMessage);
 
         DbWrapper::getQuery($Data, $this->db);
 

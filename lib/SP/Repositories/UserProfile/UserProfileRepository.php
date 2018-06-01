@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -24,10 +24,11 @@
 
 namespace SP\Repositories\UserProfile;
 
-use SP\Core\Exceptions\SPException;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
-use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
+use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -63,16 +64,11 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param $id
      * @return int
-     * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
-        if ($this->checkInUse($id)) {
-            throw new SPException(__u('Perfil en uso'), SPException::INFO);
-        }
-
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM UserProfile WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
@@ -88,8 +84,8 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param $id int
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkInUse($id)
     {
@@ -111,7 +107,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
     public function getById($id)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, name, profile FROM UserProfile WHERE id = ? LIMIT 1');
+        $queryData->setQuery('SELECT id, `name`, `profile` FROM UserProfile WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
         $queryData->setMapClassName(UserProfileData::class);
 
@@ -126,7 +122,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
     public function getAll()
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, name FROM UserProfile ORDER BY name');
+        $queryData->setQuery('SELECT id, `name` FROM UserProfile ORDER BY `name`');
         $queryData->setMapClassName(UserProfileData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
@@ -136,7 +132,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Returns all the items for given ids
      *
      * @param array $ids
-     * @return array
+     * @return UserProfileData[]
      */
     public function getByIdBatch(array $ids)
     {
@@ -145,12 +141,12 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         }
 
         $query = /** @lang SQL */
-            'SELECT id, name FROM UserProfile WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
+            'SELECT id, `name` FROM UserProfile WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams($ids);
-        $queryData->setMapClassName(ProfileData::class);
+        $queryData->setMapClassName(UserProfileData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -160,8 +156,8 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param array $ids
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -213,18 +209,18 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param UserProfileData $itemData
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
      */
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(__u('Nombre de perfil duplicado'), SPException::INFO);
+            throw new DuplicatedItemException(__u('Nombre de perfil duplicado'));
         }
 
         $queryData = new QueryData();
-        $queryData->setQuery('INSERT INTO UserProfile SET name = ?, profile = ?');
+        $queryData->setQuery('INSERT INTO UserProfile SET `name` = ?, `profile` = ?');
         $queryData->addParam($itemData->getName());
         $queryData->addParam(serialize($itemData->getProfile()));
         $queryData->setOnErrorMessage(__u('Error al crear perfil'));
@@ -239,13 +235,13 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param UserProfileData $itemData
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT name FROM UserProfile WHERE UPPER(name) = ?');
+        $queryData->setQuery('SELECT `name` FROM UserProfile WHERE UPPER(`name`) = ?');
         $queryData->addParam($itemData->getName());
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -258,18 +254,18 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param UserProfileData $itemData
      * @return bool
-     * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
      */
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(__u('Nombre de perfil duplicado'), SPException::INFO);
+            throw new DuplicatedItemException(__u('Nombre de perfil duplicado'));
         }
 
         $query = /** @lang SQL */
-            'UPDATE UserProfile SET name = ?, profile = ? WHERE id = ? LIMIT 1';
+            'UPDATE UserProfile SET `name` = ?, `profile` = ? WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
@@ -288,15 +284,15 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param UserProfileData $itemData
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
         $query = /** @lang SQL */
-            'SELECT name
+            'SELECT `name`
             FROM UserProfile
-            WHERE UPPER(name) = ?
+            WHERE UPPER(`name`) = ?
             AND id <> ?';
 
         $queryData = new QueryData();

@@ -145,6 +145,7 @@ class ClientService extends Service
      * Returns all clients visible for a given user
      *
      * @return ItemData[]
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllForUser()
     {

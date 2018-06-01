@@ -24,9 +24,12 @@
 
 namespace SP\Repositories\UserGroup;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
+use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -51,10 +54,6 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      */
     public function delete($id)
     {
-        if ($this->checkInUse($id)) {
-            throw new SPException(__u('Grupo en uso'), SPException::WARNING);
-        }
-
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM UserGroup WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
@@ -70,8 +69,8 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      *
      * @param $id int
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkInUse($id)
     {
@@ -186,7 +185,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
     /**
      * Returns all the items
      *
-     * @return mixed
+     * @return UserGroupData[]
      */
     public function getAll()
     {
@@ -201,7 +200,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      * Returns all the items for given ids
      *
      * @param array $ids
-     * @return array
+     * @return UserGroupData[]
      */
     public function getByIdBatch(array $ids)
     {
@@ -225,8 +224,8 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      *
      * @param array $ids
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -280,13 +279,13 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      * @param UserGroupData $itemData
      * @return int
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(__u('Nombre de grupo duplicado'), SPException::INFO);
+            throw new DuplicatedItemException(__u('Nombre de grupo duplicado'));
         }
 
         $query = /** @lang SQL */
@@ -308,8 +307,8 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      *
      * @param UserGroupData $itemData
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
@@ -326,15 +325,15 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      * Updates an item
      *
      * @param UserGroupData $itemData
-     * @return mixed
-     * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
      */
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(__u('Nombre de grupo duplicado'), SPException::INFO);
+            throw new DuplicatedItemException(__u('Nombre de grupo duplicado'));
         }
 
         $queryData = new QueryData();
@@ -346,7 +345,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
 
         DbWrapper::getQuery($queryData, $this->db);
 
-        return $this;
+        return $this->db->getNumRows();
     }
 
     /**
@@ -354,8 +353,8 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      *
      * @param UserGroupData $itemData
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnUpdate($itemData)
     {

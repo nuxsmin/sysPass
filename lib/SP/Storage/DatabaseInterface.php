@@ -25,7 +25,7 @@
 namespace SP\Storage;
 
 use PDOStatement;
-use SP\Core\Exceptions\SPException;
+use SP\Core\Exceptions\QueryException;
 
 /**
  * Interface DatabaseInterface
@@ -40,7 +40,7 @@ interface DatabaseInterface
      * @param QueryData $queryData  Query data
      * @param bool      $getRawData Don't fetch records and return prepared statement
      * @return PDOStatement|array
-     * @throws SPException
+     * @throws QueryException
      */
     public function doQuery(QueryData $queryData, $getRawData = false);
 

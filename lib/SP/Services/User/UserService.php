@@ -260,14 +260,16 @@ class UserService extends Service
      * Updates an item
      *
      * @param UserData $itemData
-     * @return mixed
-     * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws ServiceException
+     * @throws SPException
      */
     public function update($itemData)
     {
-        return $this->userRepository->update($itemData);
+        if ($this->userRepository->update($itemData) === 0) {
+            throw new ServiceException(__u('Error al actualizar el usuario'));
+        }
     }
 
     /**

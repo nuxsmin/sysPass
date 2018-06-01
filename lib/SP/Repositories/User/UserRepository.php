@@ -28,6 +28,7 @@ use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
+use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
@@ -49,7 +50,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * Updates an item
      *
      * @param UserData $itemData
-     * @return mixed
+     * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -57,12 +58,12 @@ class UserRepository extends Repository implements RepositoryItemInterface
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(__u('Login/email de usuario duplicados'), SPException::INFO);
+            throw new DuplicatedItemException(__u('Login/email de usuario duplicados'));
         }
 
         $query = /** @lang SQL */
             'UPDATE User SET
-            name = ?,
+            `name` = ?,
             login = ?,
             ssoLogin = ?,
             email = ?,
@@ -96,11 +97,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
 
         DbWrapper::getQuery($queryData, $this->db);
 
-        if ($queryData->getQueryNumRows() > 0) {
-            $itemData->setId(DbWrapper::getLastId());
-        }
-
-        return $this;
+        return $queryData->getQueryNumRows();
     }
 
     /**
@@ -188,7 +185,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * Returns the item for given id
      *
      * @param int $id
-     * @return mixed
+     * @return UserData
      * @throws SPException
      */
     public function getById($id)
@@ -231,7 +228,11 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(__u('Error al obtener los datos del usuario'), SPException::ERROR);
+            throw new SPException(__u('Error al obtener los datos del usuario'));
+        }
+
+        if (!($queryRes instanceof UserData)) {
+            throw new NoSuchItemException(__u('El usuario no existe'));
         }
 
         return $queryRes;
@@ -240,7 +241,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * Returns all the items
      *
-     * @return mixed
+     * @return UserData[]
      */
     public function getAll()
     {
@@ -282,7 +283,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * Returns all the items for given ids
      *
      * @param array $ids
-     * @return array
+     * @return UserData[]
      */
     public function getByIdBatch(array $ids)
     {
@@ -418,7 +419,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(__u('Login/email de usuario duplicados'), SPException::INFO);
+            throw new DuplicatedItemException(__u('Login/email de usuario duplicados'));
         }
 
         $query = /** @lang SQL */
@@ -540,7 +541,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(__u('Error al obtener los datos del usuario'), SPException::ERROR);
+            throw new SPException(__u('Error al obtener los datos del usuario'));
         }
 
         if ($queryData->getQueryNumRows() === 0) {
@@ -553,7 +554,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
     /**
      * Returns items' basic information
      *
-     * @return mixed
+     * @return UserData[]
      */
     public function getBasicInfo()
     {

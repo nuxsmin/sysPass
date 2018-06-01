@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,6 +26,7 @@ namespace SP\Storage;
 
 use PDO;
 use PDOStatement;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 
 /**
@@ -140,7 +141,7 @@ class Database implements DatabaseInterface
      * @param $queryData QueryData Los datos de la consulta
      * @param $isCount   bool   Indica si es una consulta de contador de registros
      * @return \PDOStatement|false
-     * @throws SPException
+     * @throws QueryException
      */
     private function prepareQueryData(QueryData $queryData, $isCount = false)
     {
@@ -208,7 +209,7 @@ class Database implements DatabaseInterface
 //            debugLog('Exception: ' . $e->getMessage());
 //            debugLog(ob_get_clean());
 
-            throw new SPException($e->getMessage(), SPException::CRITICAL, $e->getCode(), 0, $e);
+            throw new QueryException($e->getMessage(), SPException::CRITICAL, $e->getCode(), 0, $e);
         }
     }
 
