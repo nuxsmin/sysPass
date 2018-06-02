@@ -271,8 +271,23 @@
 		<field name="userId">3</field>
 		<field name="isEdit">1</field>
 	</row>
+    <row>
+        <field name="accountId">2</field>
+        <field name="userId">2</field>
+        <field name="isEdit">0</field>
+    </row>
 	</table_data>
 	<table_data name="AccountToUserGroup">
+        <row>
+            <field name="accountId">1</field>
+            <field name="userGroupId">2</field>
+            <field name="isEdit">1</field>
+        </row>
+        <row>
+            <field name="accountId">2</field>
+            <field name="userGroupId">2</field>
+            <field name="isEdit">0</field>
+        </row>
 	</table_data>
 	<table_data name="Config">
 	<row>

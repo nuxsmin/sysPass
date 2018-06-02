@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -38,6 +38,11 @@ class MySQLHandler implements DBStorageInterface
 {
     const STATUS_OK = 0;
     const STATUS_KO = 1;
+    const PDO_OPTS = [
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::MYSQL_ATTR_FOUND_ROWS => true
+    ];
     /**
      * @var PDO
      */
@@ -95,18 +100,15 @@ class MySQLHandler implements DBStorageInterface
             }
 
             try {
-                $opts = [PDO::ATTR_EMULATE_PREPARES => true, PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+                $this->db = new PDO(
+                    $this->getConnectionUri(),
+                    $this->connectionData->getDbUser(),
+                    $this->connectionData->getDbPass(),
+                    self::PDO_OPTS
+                );
 
-                $this->db = new PDO($this->getConnectionUri(), $this->connectionData->getDbUser(), $this->connectionData->getDbPass(), $opts);
                 $this->dbStatus = self::STATUS_OK;
             } catch (\Exception $e) {
-//                if ($isInstalled) {
-//                    if ($e->getCode() === 1049) {
-//                        $this->ConfigData->setInstalled(false);
-//                        $this->Config->saveConfig($this->ConfigData);
-//                    }
-//                }
-
                 throw new SPException(
                     __u('No es posible conectar con la BD'),
                     SPException::CRITICAL,
@@ -135,7 +137,7 @@ class MySQLHandler implements DBStorageInterface
             if (null !== $this->connectionData->getDbName()) {
                 $dsn .= ';dbname=' . $this->connectionData->getDbName();
             }
-            
+
             return $dsn . ';charset=utf8';
         }
 

@@ -217,7 +217,7 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
      */
     public function testGetUsage()
     {
-        $this->assertCount(5, self::$userGroupRepository->getUsage(2));
+        $this->assertCount(7, self::$userGroupRepository->getUsage(2));
         $this->assertCount(0, self::$userGroupRepository->getUsage(3));
     }
 

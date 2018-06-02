@@ -159,7 +159,7 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testGetUsageForUser()
     {
-        $this->assertCount(1, self::$userRepository->getUsageForUser(2));
+        $this->assertCount(2, self::$userRepository->getUsageForUser(2));
     }
 
     /**
