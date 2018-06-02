@@ -39,7 +39,7 @@ class MySQLHandler implements DBStorageInterface
     const STATUS_OK = 0;
     const STATUS_KO = 1;
     const PDO_OPTS = [
-        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::ATTR_EMULATE_PREPARES => true,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::MYSQL_ATTR_FOUND_ROWS => true
     ];
