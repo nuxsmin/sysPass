@@ -34,7 +34,7 @@ use SP\Storage\DatabaseConnectionData;
 /**
  * Class AccountToTagRepositoryTest
  *
- * Tests unitarios para la comprobación de operaciones de etiquetas asociadas a cuentas
+ * Tests de integración para la comprobación de operaciones de etiquetas asociadas a cuentas
  *
  * @package SP\Tests
  */

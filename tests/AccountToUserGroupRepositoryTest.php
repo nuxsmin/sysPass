@@ -32,9 +32,9 @@ use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Storage\DatabaseConnectionData;
 
 /**
- * Class AccountToUserRepositoryTest
+ * Class AccountToUserGroupRepositoryTest
  *
- * Tests unitarios para la comprobación de operaciones de grupos de usuarios asociados a cuentas
+ * Tests de integración para la comprobación de operaciones de grupos de usuarios asociados a cuentas
  *
  * @package SP\Tests
  */

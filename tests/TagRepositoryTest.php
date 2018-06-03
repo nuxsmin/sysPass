@@ -34,7 +34,7 @@ use SP\Storage\DatabaseConnectionData;
 /**
  * Class TagRepositoryTest
  *
- * Tests unitarios para comprobar las consultas a la BBDD relativas a las etiquetas
+ * Tests de integración para comprobar las consultas a la BBDD relativas a las etiquetas
  *
  * @package SP\Tests
  */

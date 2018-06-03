@@ -40,7 +40,7 @@ use SP\Storage\DatabaseConnectionData;
 /**
  * Class AccountRepositoryTest
  *
- * Tests unitarios para comprobar las consultas a la BBDD relativas a las cuentas
+ * Tests de integración para comprobar las consultas a la BBDD relativas a las cuentas
  *
  * @package SP\Tests
  */

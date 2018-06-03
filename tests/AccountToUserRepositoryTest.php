@@ -34,7 +34,7 @@ use SP\Storage\DatabaseConnectionData;
 /**
  * Class AccountToUserRepositoryTest
  *
- * Tests unitarios para la comprobación de operaciones de usuarios asociados a cuentas
+ * Tests de integración para la comprobación de operaciones de usuarios asociados a cuentas
  *
  * @package SP\Tests
  */

@@ -41,7 +41,7 @@ use SP\Storage\DatabaseConnectionData;
 /**
  * Class UserRepositoryTest
  *
- * Tests unitarios para comprobar las consultas a la BBDD relativas a los usuarios
+ * Tests de integración para comprobar las consultas a la BBDD relativas a los usuarios
  *
  * @package SP\Tests
  */

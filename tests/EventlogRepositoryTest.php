@@ -34,6 +34,8 @@ use SP\Storage\DatabaseConnectionData;
 /**
  * Class EventlogRepositoryTest
  *
+ * Tests de integración para comprobar las consultas a la BBDD relativas a los registros de eventos
+ *
  * @package SP\Tests
  */
 class EventlogRepositoryTest extends DatabaseTestCase

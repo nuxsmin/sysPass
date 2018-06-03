@@ -35,7 +35,7 @@ use SP\Storage\DatabaseConnectionData;
 /**
  * Class CategoryRepositoryTest
  *
- * Tests unitarios para comprobar las consultas a la BBDD relativas a las categorías
+ * Tests de integración para comprobar las consultas a la BBDD relativas a las categorías
  *
  * @package SP\Tests
  */
