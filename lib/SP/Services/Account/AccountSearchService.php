@@ -224,16 +224,16 @@ class AccountSearchService extends Service
 
                 switch ($filter['filter']) {
                     case 'is:expired':
-                        $queryCondition->addFilter('A.passDateChange > 0 AND UNIX_TIMESTAMP() > A.passDateChange', []);
+                        $queryCondition->addFilter('Account.passDateChange > 0 AND UNIX_TIMESTAMP() > Account.passDateChange', []);
                         break;
                     case 'not:expired':
-                        $queryCondition->addFilter('A.passDateChange = 0 OR UNIX_TIMESTAMP() < A.passDateChange', []);
+                        $queryCondition->addFilter('Account.passDateChange = 0 OR UNIX_TIMESTAMP() < Account.passDateChange', []);
                         break;
                     case 'is:private':
-                        $queryCondition->addFilter('(A.isPrivate = 1 AND A.userId = ?) OR (A.isPrivateGroup = 1 AND A.userGroupId = ?)', [$this->context->getUserData()->getId(), $this->context->getUserData()->getUserGroupId()]);
+                        $queryCondition->addFilter('(Account.isPrivate = 1 AND Account.userId = ?) OR (Account.isPrivateGroup = 1 AND Account.userGroupId = ?)', [$this->context->getUserData()->getId(), $this->context->getUserData()->getUserGroupId()]);
                         break;
                     case 'not:private':
-                        $queryCondition->addFilter('A.isPrivate = 0 AND A.isPrivateGroup = 0');
+                        $queryCondition->addFilter('Account.isPrivate = 0 AND Account.isPrivateGroup = 0');
                         break;
                 }
             }
@@ -251,28 +251,29 @@ class AccountSearchService extends Service
                             case 'user':
                                 if (is_object(($userData = $this->dic->get(UserService::class)->getByLogin($text)))) {
                                     $queryCondition->addFilter(
-                                        'A.userId = ? OR A.id IN (SELECT AU.accountId FROM AccountToUser AU WHERE AU.accountId = A.id AND AU.userId = ? UNION ALL SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = A.id AND AUG.userGroupId = ?)',
+                                        'Account.userId = ? OR Account.id IN (SELECT AU.accountId FROM AccountToUser AU WHERE AU.accountId = Account.id AND AU.userId = ? 
+                                        UNION ALL SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = Account.id AND AUG.userGroupId = ?)',
                                         [$userData->getId(), $userData->getId(), $userData->getUserGroupId()]);
                                 }
                                 break;
                             case 'owner':
-                                $queryCondition->addFilter('A.userLogin LIKE ?', ['%' . $text . '%']);
+                                $queryCondition->addFilter('Account.userLogin LIKE ?', ['%' . $text . '%']);
                                 break;
                             case 'group':
                                 if (is_object(($userGroupData = $this->dic->get(UserGroupService::class)->getByName($text)))) {
                                     $queryCondition->addFilter(
-                                        'A.userGroupId = ? OR A.id IN (SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = id AND AUG.userGroupId = ?)',
+                                        'Account.userGroupId = ? OR Account.id IN (SELECT AUG.accountId FROM AccountToUserGroup AUG WHERE AUG.accountId = id AND AUG.userGroupId = ?)',
                                         [$userGroupData->getId(), $userGroupData->getId()]);
                                 }
                                 break;
                             case 'maingroup':
-                                $queryCondition->addFilter('A.userGroupName = ?', ['%' . $text . '%']);
+                                $queryCondition->addFilter('Account.userGroupName = ?', ['%' . $text . '%']);
                                 break;
                             case 'file':
-                                $queryCondition->addFilter('A.id IN (SELECT AF.accountId FROM AccountFile AF WHERE AF.name LIKE ?)', ['%' . $text . '%']);
+                                $queryCondition->addFilter('Account.id IN (SELECT AF.accountId FROM AccountFile AF WHERE AF.name LIKE ?)', ['%' . $text . '%']);
                                 break;
                             case 'id':
-                                $queryCondition->addFilter('A.id = ?', [(int)$text]);
+                                $queryCondition->addFilter('Account.id = ?', [(int)$text]);
                                 break;
                         }
 

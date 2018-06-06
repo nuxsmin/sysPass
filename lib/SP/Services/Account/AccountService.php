@@ -435,7 +435,7 @@ class AccountService extends Service implements AccountServiceInterface
         $queryFilter = AccountUtil::getAccountFilterUser($this->context);
 
         if (null !== $accountId) {
-            $queryFilter->addFilter('A.id <> ? AND (A.parentId = 0 OR A.parentId IS NULL)', [$accountId]);
+            $queryFilter->addFilter('Account.id <> ? AND (Account.parentId = 0 OR Account.parentId IS NULL)', [$accountId]);
         }
 
         return $this->accountRepository->getForUser($queryFilter);
@@ -448,7 +448,7 @@ class AccountService extends Service implements AccountServiceInterface
     public function getLinked($accountId)
     {
         $queryFilter = AccountUtil::getAccountFilterUser($this->context)
-            ->addFilter('A.parentId = ?', [$accountId]);
+            ->addFilter('Account.parentId = ?', [$accountId]);
 
         return $this->accountRepository->getLinked($queryFilter);
     }

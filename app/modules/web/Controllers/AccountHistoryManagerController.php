@@ -91,7 +91,7 @@ class AccountHistoryManagerController extends ControllerBase
                     new Event($this, EventMessage::factory()->addDescription(__u('Cuentas eliminadas')))
                 );
 
-                $this->returnJsonResponseData(JsonResponse::JSON_SUCCESS, __u('Cuentas eliminadas'));
+                $this->returnJsonResponse(JsonResponse::JSON_SUCCESS, __u('Cuentas eliminadas'));
             } else {
                 $accountDetails = $this->accountHistoryService->getById($id);
 

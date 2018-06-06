@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -36,11 +36,11 @@ class QueryData
     /**
      * @var array
      */
-    protected $data = [];
+    protected $params = [];
     /**
      * @var string
      */
-    protected $query = '';
+    protected $query;
     /**
      * @var string
      */
@@ -65,6 +65,10 @@ class QueryData
      * @var string
      */
     protected $where = '';
+    /**
+     * @var string
+     */
+    protected $groupBy = '';
     /**
      * @var string
      */
@@ -99,20 +103,20 @@ class QueryData
     public function addParam($value, $name = null)
     {
         if (null !== $name) {
-            $this->data[$name] = $value;
+            $this->params[$name] = $value;
         } else {
-            $this->data[] = $value;
+            $this->params[] = $value;
         }
     }
 
     /**
-     * Añadir un parámetro a la consulta
+     * Añadir parámetros a la consulta
      *
      * @param array $params
      */
     public function addParams(array $params)
     {
-        $this->data = array_merge($this->data, $params);
+        $this->params = array_merge($this->params, $params);
     }
 
     /**
@@ -120,7 +124,7 @@ class QueryData
      */
     public function getParams()
     {
-        return $this->data;
+        return $this->params;
     }
 
     /**
@@ -128,8 +132,8 @@ class QueryData
      */
     public function getQuery()
     {
-        if ($this->query === '') {
-            return $this->select . ' ' . $this->from . ' ' . $this->where . ' ' . $this->order . ' ' . $this->limit;
+        if (empty($this->query)) {
+            return $this->select . ' ' . $this->from . ' ' . $this->where . ' ' . $this->groupBy . ' ' . $this->order . ' ' . $this->limit;
         }
 
         return $this->query;
@@ -176,7 +180,7 @@ class QueryData
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isUseKeyPair()
     {
@@ -198,7 +202,7 @@ class QueryData
      */
     public function setParams(array $data)
     {
-        $this->data = $data;
+        $this->params = $data;
     }
 
     /**
@@ -230,7 +234,7 @@ class QueryData
      */
     public function setOrder($order)
     {
-        if ($order !== '') {
+        if (!empty($order)) {
             $this->order = 'ORDER BY ' . $order;
         }
     }
@@ -248,7 +252,7 @@ class QueryData
      */
     public function setLimit($limit)
     {
-        if ($limit !== '') {
+        if (!empty($limit)) {
             $this->limit = 'LIMIT ' . $limit;
         }
     }
@@ -258,8 +262,8 @@ class QueryData
      */
     public function getQueryCount()
     {
-        if ($this->queryCount === '') {
-            return 'SELECT COUNT(*) ' . $this->getFrom() . ' ' . $this->getWhere();
+        if (empty($this->queryCount)) {
+            return 'SELECT COUNT(*) ' . $this->from . ' ' . $this->where;
         }
 
         return $this->queryCount;
@@ -278,7 +282,7 @@ class QueryData
      */
     public function setFrom($from)
     {
-        if ($from !== '') {
+        if (!empty($from)) {
             $this->from = 'FROM ' . $from;
         }
     }
@@ -297,7 +301,6 @@ class QueryData
     public function setWhere($where)
     {
         if (!empty($where)) {
-
             if (is_array($where)) {
                 $this->where = 'WHERE ' . implode(' AND ', $where);
             } else {
@@ -352,5 +355,23 @@ class QueryData
     public function setOnErrorMessage($onErrorMessage)
     {
         $this->onErrorMessage = $onErrorMessage;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupBy()
+    {
+        return $this->groupBy;
+    }
+
+    /**
+     * @param string $groupBy
+     */
+    public function setGroupBy($groupBy)
+    {
+        if (!empty($groupBy)) {
+            $this->groupBy = 'GROUP BY ' . $groupBy;
+        }
     }
 }

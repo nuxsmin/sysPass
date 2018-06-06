@@ -1186,11 +1186,13 @@ sysPass.Actions = function (Common) {
             grid.delete($obj, function (items) {
                 const itemId = $obj.data("item-id");
 
+                console.info(itemId);
+
                 const opts = Common.appRequests().getRequestOpts();
                 opts.url = ajaxUrl.entrypoint;
                 opts.method = "get";
                 opts.data = {
-                    r: $obj.data("action-route") + (itemId && "/" + itemId),
+                    r: $obj.data("action-route") + (itemId > 0 ? "/" + itemId : ''),
                     items: items,
                     sk: Common.sk.get(),
                     isAjax: 1

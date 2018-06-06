@@ -154,7 +154,10 @@ class AccountHistoryService extends Service
      * Deletes all the items for given ids
      *
      * @param array $ids
-     * @return void
+     *
+     * @return int
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function deleteByIdBatch(array $ids)
     {

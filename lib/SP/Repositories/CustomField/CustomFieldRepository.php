@@ -364,7 +364,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             LEFT JOIN CustomFieldData CFD2 ON CFD2.definitionId = CFD.id AND CFD2.itemId = ?
             INNER JOIN CustomFieldType CFT ON CFT.id = CFD.typeId
             WHERE CFD.moduleId = ?
-            ORDER BY CFT.text';
+            ORDER BY CFD.required, CFT.text';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);

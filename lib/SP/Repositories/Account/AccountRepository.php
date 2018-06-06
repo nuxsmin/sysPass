@@ -75,6 +75,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
     /**
      * @param $id
+     *
      * @return AccountPassData
      */
     public function getPasswordForId($id)
@@ -95,6 +96,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
     /**
      * @param QueryCondition $queryCondition
+     *
      * @return AccountPassData
      */
     public function getPasswordHistoryForId(QueryCondition $queryCondition)
@@ -116,6 +118,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Incrementa el contador de vista de clave de una cuenta en la BBDD
      *
      * @param int $id
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -136,6 +139,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Crea una nueva cuenta en la BBDD
      *
      * @param AccountRequest $itemData
+     *
      * @return int
      * @throws QueryException
      * @throws SPException
@@ -197,6 +201,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Actualiza la clave de una cuenta en la BBDD.
      *
      * @param AccountRequest $accountRequest
+     *
      * @return bool
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -229,6 +234,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Actualiza la clave de una cuenta en la BBDD.
      *
      * @param AccountPasswordRequest $request
+     *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -255,6 +261,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Restaurar una cuenta desde el histórico.
      *
      * @param int $historyId El Id del registro en el histórico
+     *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -297,6 +304,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Elimina los datos de una cuenta en la BBDD.
      *
      * @param int $id
+     *
      * @return int EL número de cuentas eliminadas
      * @throws SPException
      */
@@ -317,6 +325,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Updates an item
      *
      * @param AccountRequest $itemData
+     *
      * @return mixed
      * @throws SPException
      */
@@ -378,6 +387,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return AccountVData
      * @throws SPException
      */
@@ -430,6 +440,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return int
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -481,6 +492,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
+     *
      * @return mixed
      */
     public function search(ItemSearchData $SearchData)
@@ -517,6 +529,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Incrementa el contador de visitas de una cuenta en la BBDD
      *
      * @param int $id
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -534,6 +547,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Obtener los datos de una cuenta.
      *
      * @param $id
+     *
      * @return AccountExtData
      * @throws SPException
      */
@@ -576,6 +590,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Obtener las cuentas de una búsqueda.
      *
      * @param AccountSearchFilter $accountSearchFilter
+     *
      * @return AccountSearchResponse
      */
     public function getByFilter(AccountSearchFilter $accountSearchFilter)
@@ -612,6 +627,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             $where[] = $queryFilterUser->getFilters();
         }
 
+        $queryData = new QueryData();
         $queryJoins = new QueryJoin();
 
         if ($accountSearchFilter->isSearchFavorites() === true) {
@@ -620,9 +636,10 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
         if ($accountSearchFilter->hasTags()) {
             $queryJoins->addJoin('INNER JOIN AccountToTag AT ON AT.accountId = Account.id');
+            $queryFilters->addFilter('AT.tagId IN (' . $this->getParamsFromArray($accountSearchFilter->getTagsId()) . ')', $accountSearchFilter->getTagsId());
 
-            foreach ($accountSearchFilter->getTagsId() as $tag) {
-                $queryFilters->addFilter('AT.tagId = ?', [$tag]);
+            if (QueryCondition::CONDITION_AND === $accountSearchFilter->getFilterOperator()) {
+                $queryData->setGroupBy('Account.id HAVING COUNT(DISTINCT AT.tagId) = ' . count($accountSearchFilter->getTagsId()));
             }
         }
 
@@ -630,10 +647,9 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             $where[] = $queryFilters->getFilters($accountSearchFilter->getFilterOperator());
         }
 
-        $queryData = new QueryData();
         $queryData->setWhere($where);
         $queryData->setParams(array_merge($queryJoins->getParams(), $queryFilterUser->getParams(), $queryFilters->getParams()));
-        $queryData->setSelect('*');
+        $queryData->setSelect('DISTINCT Account.*');
         $queryData->setFrom('account_search_v Account ' . $queryJoins->getJoins());
         $queryData->setOrder($accountSearchFilter->getOrderString());
 
@@ -652,6 +668,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
     /**
      * @param QueryCondition $queryFilter
+     *
      * @return array
      */
     public function getForUser(QueryCondition $queryFilter)
@@ -672,6 +689,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
     /**
      * @param QueryCondition $queryFilter
+     *
      * @return array
      */
     public function getLinked(QueryCondition $queryFilter)

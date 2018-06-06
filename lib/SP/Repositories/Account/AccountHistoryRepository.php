@@ -343,7 +343,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
     {
         $queryData = new QueryData();
 
-        $queryData->setQuery('DELETE FROM AccountHistory WHERE id IN (' . $this->getParamsFromArray($ids) . ') LIMIT 1');
+        $queryData->setQuery('DELETE FROM AccountHistory WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar las cuentas'));
 
