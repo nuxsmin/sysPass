@@ -70,20 +70,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        $items = [];
-
-        foreach (DbWrapper::getResultsArray($queryData, $this->db) as $history) {
-            // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
-            if (empty($history->dateEdit) || $history->dateEdit === '0000-00-00 00:00:00') {
-                $date = $history->dateAdd . ' - ' . $history->userAdd;
-            } else {
-                $date = $history->dateEdit . ' - ' . $history->userEdit;
-            }
-
-            $items[$history->id] = $date;
-        }
-
-        return $items;
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -136,7 +123,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             (accountId,
             categoryId,
             clientId,
-            name,
+            `name`,
             login,
             url,
             pass,
@@ -159,7 +146,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             SELECT id,
             categoryId,
             clientId,
-            name,
+            `name`,
             login,
             url,
             pass,
@@ -304,20 +291,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData = new QueryData();
         $queryData->setQuery($query);
 
-        $items = [];
-
-        foreach (DbWrapper::getResultsArray($queryData, $this->db) as $history) {
-            // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
-            if (empty($history->dateEdit) || $history->dateEdit === '0000-00-00 00:00:00') {
-                $date = $history->dateAdd . ' - ' . $history->userAdd;
-            } else {
-                $date = $history->dateEdit . ' - ' . $history->userEdit;
-            }
-
-            $items[$history->id] = $date;
-        }
-
-        return $items;
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -393,31 +367,31 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      */
     public function search(ItemSearchData $SearchData)
     {
-        $Data = new QueryData();
-        $Data->setSelect('AH.id, AH.name, C.name as clientName, C2.name as categoryName, IFNULL(AH.dateEdit,AH.dateAdd) as date, AH.isModify, AH.isDeleted');
-        $Data->setFrom('AccountHistory AH 
+        $queryData = new QueryData();
+        $queryData->setSelect('AH.id, AH.name, C.name as clientName, C2.name as categoryName, IFNULL(AH.dateEdit,AH.dateAdd) as date, AH.isModify, AH.isDeleted');
+        $queryData->setFrom('AccountHistory AH 
         INNER JOIN Client C ON AH.clientId = C.id
         INNER JOIN Category C2 ON AH.categoryId = C2.id
         ');
-        $Data->setOrder('AH.name, C.name, AH.id DESC');
+        $queryData->setOrder('AH.name, C.name, AH.id DESC');
 
         if ($SearchData->getSeachString() !== '') {
-            $Data->setWhere('AH.name LIKE ? OR C.name LIKE ?');
+            $queryData->setWhere('AH.name LIKE ? OR C.name LIKE ?');
 
             $search = '%' . $SearchData->getSeachString() . '%';
-            $Data->addParam($search);
-            $Data->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
         }
 
-        $Data->setLimit('?,?');
-        $Data->addParam($SearchData->getLimitStart());
-        $Data->addParam($SearchData->getLimitCount());
+        $queryData->setLimit('?,?');
+        $queryData->addParam($SearchData->getLimitStart());
+        $queryData->addParam($SearchData->getLimitCount());
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
     }
@@ -430,7 +404,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
     public function getAccountsPassData()
     {
         $query = /** @lang SQL */
-            'SELECT id, name, pass, `key`, mPassHash
+            'SELECT id, `name`, pass, `key`, mPassHash
             FROM AccountHistory WHERE BIT_LENGTH(pass) > 0';
 
         $queryData = new QueryData();
@@ -456,14 +430,16 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
             mPassHash = ?
             WHERE id = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($request->pass);
-        $Data->addParam($request->key);
-        $Data->addParam($request->hash);
-        $Data->addParam($request->id);
-        $Data->setOnErrorMessage(__u('Error al actualizar la clave'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams([
+            $request->pass,
+            $request->key,
+            $request->hash,
+            $request->id
+        ]);
+        $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 }

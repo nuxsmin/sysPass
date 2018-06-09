@@ -44,6 +44,7 @@ class AccountToUserRepository extends Repository
      * Actualizar la asociación de grupos con cuentas.
      *
      * @param AccountRequest $accountRequest
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -60,6 +61,7 @@ class AccountToUserRepository extends Repository
      * Eliminar la asociación de grupos con cuentas.
      *
      * @param int $id con el Id de la cuenta
+     *
      * @return int
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -80,6 +82,7 @@ class AccountToUserRepository extends Repository
      * Crear asociación de usuarios con cuentas.
      *
      * @param AccountRequest $accountRequest
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -107,6 +110,7 @@ class AccountToUserRepository extends Repository
      * Actualizar la asociación de grupos con cuentas.
      *
      * @param AccountRequest $accountRequest
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -123,6 +127,7 @@ class AccountToUserRepository extends Repository
      * Eliminar la asociación de grupos con cuentas.
      *
      * @param int $id con el Id de la cuenta
+     *
      * @return int
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -143,6 +148,7 @@ class AccountToUserRepository extends Repository
      * Crear asociación de usuarios con cuentas.
      *
      * @param AccountRequest $accountRequest
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -170,6 +176,7 @@ class AccountToUserRepository extends Repository
      * Obtiene el listado de usuarios de una cuenta.
      *
      * @param int $id con el id de la cuenta
+     *
      * @return ItemData[] con los id de usuarios de la cuenta
      */
     public function getUsersByAccountId($id)

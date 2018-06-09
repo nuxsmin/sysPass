@@ -86,8 +86,10 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param int $id
+     *
      * @return AccountDetailsResponse
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     public function getById($id)
     {
@@ -393,7 +395,7 @@ class AccountService extends Service implements AccountServiceInterface
     {
         $this->addHistory($accountId);
 
-        $this->accountRepository->editRestore($historyId);
+        $this->accountRepository->editRestore($historyId, $this->context->getUserData()->getId());
     }
 
     /**
@@ -496,8 +498,10 @@ class AccountService extends Service implements AccountServiceInterface
      * Obtener los datos de una cuenta.
      *
      * @param $id
+     *
      * @return \SP\DataModel\AccountExtData
-     * @throws SPException
+     * @throws QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     public function getDataForLink($id)
     {

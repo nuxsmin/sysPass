@@ -46,6 +46,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * Creates an item
      *
      * @param CustomFieldTypeData $itemData
+     *
      * @return mixed
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -54,9 +55,8 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
     public function create($itemData)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('INSERT INTO CustomFieldType SET name = ?, text = ?');
-        $queryData->addParam($itemData->getName());
-        $queryData->addParam($itemData->getText());
+        $queryData->setQuery('INSERT INTO CustomFieldType SET `name` = ?, `text` = ?');
+        $queryData->setParams([$itemData->getName(), $itemData->getText()]);
         $queryData->setOnErrorMessage(__u('Error al crear el tipo de campo'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -68,6 +68,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * Checks whether the item is duplicated on adding
      *
      * @param mixed $itemData
+     *
      * @return void
      */
     public function checkDuplicatedOnAdd($itemData)
@@ -79,6 +80,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * Updates an item
      *
      * @param CustomFieldTypeData $itemData
+     *
      * @return mixed
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -87,10 +89,12 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
     public function update($itemData)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('UPDATE CustomFieldType SET name = ?, text = ? WHERE id = ? LIMIT 1');
-        $queryData->addParam($itemData->getName());
-        $queryData->addParam($itemData->getText());
-        $queryData->addParam($itemData->getId());
+        $queryData->setQuery('UPDATE CustomFieldType SET `name` = ?, `text` = ? WHERE id = ? LIMIT 1');
+        $queryData->setParams([
+            $itemData->getName(),
+            $itemData->getText(),
+            $itemData->getId()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el tipo de campo'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -102,6 +106,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * Checks whether the item is duplicated on updating
      *
      * @param mixed $itemData
+     *
      * @return void
      */
     public function checkDuplicatedOnUpdate($itemData)
@@ -113,14 +118,15 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return CustomFieldTypeData
      */
     public function getById($id)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, name, text FROM CustomFieldType WHERE id = ? LIMIT 1');
-        $queryData->addParam($id);
         $queryData->setMapClassName(CustomFieldTypeData::class);
+        $queryData->setQuery('SELECT id, `name`, `text` FROM CustomFieldType WHERE id = ? LIMIT 1');
+        $queryData->addParam($id);
 
         return DbWrapper::getResults($queryData, $this->db);
     }
@@ -133,8 +139,8 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
     public function getAll()
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, `name`, `text` FROM CustomFieldType');
         $queryData->setMapClassName(CustomFieldTypeData::class);
+        $queryData->setQuery('SELECT id, `name`, `text` FROM CustomFieldType');
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -143,6 +149,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return void
      */
     public function getByIdBatch(array $ids)
@@ -154,6 +161,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return void
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -169,6 +177,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * Deletes an item
      *
      * @param $id
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -187,6 +196,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * Checks whether the item is in use or not
      *
      * @param $id int
+     *
      * @return void
      */
     public function checkInUse($id)
@@ -198,6 +208,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
+     *
      * @return mixed
      */
     public function search(ItemSearchData $SearchData)

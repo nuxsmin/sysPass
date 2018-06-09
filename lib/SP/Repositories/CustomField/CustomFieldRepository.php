@@ -46,6 +46,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Updates an item
      *
      * @param CustomFieldData $itemData
+     *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -62,11 +63,13 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getData());
-        $queryData->addParam($itemData->getKey());
-        $queryData->addParam($itemData->getModuleId());
-        $queryData->addParam($itemData->getId());
-        $queryData->addParam($itemData->getDefinitionId());
+        $queryData->setParams([
+            $itemData->getData(),
+            $itemData->getKey(),
+            $itemData->getModuleId(),
+            $itemData->getId(),
+            $itemData->getDefinitionId()
+        ]);
 
         return DbWrapper::getQuery($queryData, $this->db);
     }
@@ -75,6 +78,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Comprueba si el elemento tiene campos personalizados con datos
      *
      * @param CustomFieldData $itemData
+     *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -90,9 +94,11 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getModuleId());
-        $queryData->addParam($itemData->getId());
-        $queryData->addParam($itemData->getDefinitionId());
+        $queryData->setParams([
+            $itemData->getModuleId(),
+            $itemData->getId(),
+            $itemData->getDefinitionId()
+        ]);
 
         DbWrapper::getQuery($queryData, $this->db);
 
@@ -103,6 +109,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Deletes an item
      *
      * @param $id
+     *
      * @return mixed
      */
     public function delete($id)
@@ -114,6 +121,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Creates an item
      *
      * @param CustomFieldData $itemData
+     *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -125,11 +133,13 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getId());
-        $queryData->addParam($itemData->getModuleId());
-        $queryData->addParam($itemData->getDefinitionId());
-        $queryData->addParam($itemData->getData());
-        $queryData->addParam($itemData->getKey());
+        $queryData->setParams([
+            $itemData->getId(),
+            $itemData->getModuleId(),
+            $itemData->getDefinitionId(),
+            $itemData->getData(),
+            $itemData->getKey()
+        ]);
 
         DbWrapper::getQuery($queryData, $this->db);
 
@@ -141,6 +151,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @param int $id
      * @param int $moduleId
+     *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -154,8 +165,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($id);
-        $queryData->addParam($moduleId);
+        $queryData->setParams([$id, $moduleId]);
 
         DbWrapper::getQuery($queryData, $this->db);
 
@@ -168,6 +178,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * @param int $id
      * @param int $moduleId
      * @param int $definitionId
+     *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -182,9 +193,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($id);
-        $queryData->addParam($moduleId);
-        $queryData->addParam($definitionId);
+        $queryData->setParams([$id, $moduleId, $definitionId]);
 
         DbWrapper::getQuery($queryData, $this->db);
 
@@ -195,6 +204,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Eliminar los datos de los campos personalizados del módulo
      *
      * @param int $definitionId
+     *
      * @return int
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -214,6 +224,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Eliminar los datos de los elementos de una definición
      *
      * @param array $definitionIds
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -234,6 +245,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @param int[] $ids
      * @param int   $moduleId
+     *
      * @return int
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -259,6 +271,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return void
      */
     public function getById($id)
@@ -274,8 +287,8 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
     public function getAll()
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT * FROM CustomFieldData');
         $queryData->setMapClassName(CustomFieldData::class);
+        $queryData->setQuery('SELECT * FROM CustomFieldData');
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -288,8 +301,8 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
     public function getAllEncrypted()
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT * FROM CustomFieldData WHERE `key` IS NOT NULL');
         $queryData->setMapClassName(CustomFieldData::class);
+        $queryData->setQuery('SELECT * FROM CustomFieldData WHERE `key` IS NOT NULL');
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -298,6 +311,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return void
      */
     public function getByIdBatch(array $ids)
@@ -309,6 +323,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return void
      */
     public function deleteByIdBatch(array $ids)
@@ -320,6 +335,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Checks whether the item is in use or not
      *
      * @param $id int
+     *
      * @return void
      */
     public function checkInUse($id)
@@ -331,6 +347,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
+     *
      * @return mixed
      */
     public function search(ItemSearchData $SearchData)
@@ -343,6 +360,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @param $moduleId
      * @param $itemId
+     *
      * @return array
      */
     public function getForModuleById($moduleId, $itemId)
@@ -368,8 +386,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemId);
-        $queryData->addParam($moduleId);
+        $queryData->setParams([$itemId, $moduleId]);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -378,6 +395,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Checks whether the item is duplicated on updating
      *
      * @param mixed $itemData
+     *
      * @return void
      */
     public function checkDuplicatedOnUpdate($itemData)
@@ -389,6 +407,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Checks whether the item is duplicated on adding
      *
      * @param mixed $itemData
+     *
      * @return void
      */
     public function checkDuplicatedOnAdd($itemData)

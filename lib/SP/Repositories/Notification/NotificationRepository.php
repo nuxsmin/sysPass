@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -45,6 +45,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * Creates an item
      *
      * @param NotificationData $itemData
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -64,12 +65,14 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getType());
-        $queryData->addParam($itemData->getComponent());
-        $queryData->addParam($itemData->getDescription());
-        $queryData->addParam($itemData->getUserId() ?: null);
-        $queryData->addParam($itemData->isSticky());
-        $queryData->addParam($itemData->isOnlyAdmin());
+        $queryData->setParams([
+            $itemData->getType(),
+            $itemData->getComponent(),
+            $itemData->getDescription(),
+            $itemData->getUserId() ?: null,
+            $itemData->isSticky(),
+            $itemData->isOnlyAdmin()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al crear la notificación'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -81,6 +84,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * Updates an item
      *
      * @param NotificationData $itemData
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -101,14 +105,16 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getType());
-        $queryData->addParam($itemData->getComponent());
-        $queryData->addParam($itemData->getDescription());
-        $queryData->addParam($itemData->isChecked());
-        $queryData->addParam($itemData->getUserId() ?: null);
-        $queryData->addParam($itemData->isSticky());
-        $queryData->addParam($itemData->isOnlyAdmin());
-        $queryData->addParam($itemData->getId());
+        $queryData->setParams([
+            $itemData->getType(),
+            $itemData->getComponent(),
+            $itemData->getDescription(),
+            $itemData->isChecked(),
+            $itemData->getUserId() ?: null,
+            $itemData->isSticky(),
+            $itemData->isOnlyAdmin(),
+            $itemData->getId()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al modificar la notificación'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -120,6 +126,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * Deletes an item
      *
      * @param $id
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -140,6 +147,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * Deletes an item
      *
      * @param $id
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -160,6 +168,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * Deletes an item
      *
      * @param array $ids
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -180,6 +189,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return NotificationData
      */
     public function getById($id)
@@ -198,9 +208,9 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
             WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
+        $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setMapClassName(NotificationData::class);
         $queryData->setOnErrorMessage(__u('Error al obtener la notificación'));
 
         return DbWrapper::getResults($queryData, $this->db);
@@ -226,8 +236,8 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
             FROM Notification';
 
         $queryData = new QueryData();
-        $queryData->setQuery($query);
         $queryData->setMapClassName(NotificationData::class);
+        $queryData->setQuery($query);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
         return DbWrapper::getResultsArray($queryData, $this->db);
@@ -237,6 +247,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return NotificationData[]
      */
     public function getByIdBatch(array $ids)
@@ -255,9 +266,9 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
             WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $queryData = new QueryData();
+        $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
-        $queryData->setMapClassName(NotificationData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -266,6 +277,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -316,6 +328,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * Searches for items by a given filter
      *
      * @param ItemSearchData $itemSearchData
+     *
      * @return mixed
      */
     public function search(ItemSearchData $itemSearchData)
@@ -353,6 +366,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      *
      * @param ItemSearchData $itemSearchData
      * @param int            $userId
+     *
      * @return mixed
      */
     public function searchForUserId(ItemSearchData $itemSearchData, $userId)
@@ -395,6 +409,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * Marcar una notificación como leída
      *
      * @param $id
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -419,6 +434,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      *
      * @param $component
      * @param $id
+     *
      * @return NotificationData[]
      */
     public function getForUserIdByDate($component, $id)
@@ -434,14 +450,13 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
             onlyAdmin 
             FROM Notification 
             WHERE component = ? AND 
-            (UNIX_TIMESTAMP() - date) <= 86400 AND
+            (UNIX_TIMESTAMP() - `date`) <= 86400 AND
             userId = ?';
 
         $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->addParam($component);
-        $queryData->addParam($id);
         $queryData->setMapClassName(NotificationData::class);
+        $queryData->setQuery($query);
+        $queryData->setParams([$component, $id]);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
         return DbWrapper::getResultsArray($queryData, $this->db);
@@ -449,6 +464,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
 
     /**
      * @param $id
+     *
      * @return NotificationData[]
      */
     public function getAllForUserId($id)
@@ -466,12 +482,12 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
             FROM Notification 
             WHERE (userId = ? OR userId IS NULL OR sticky = 1)
             AND onlyAdmin = 0 
-            ORDER BY date DESC ';
+            ORDER BY `date` DESC ';
 
         $queryData = new QueryData();
+        $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setMapClassName(NotificationData::class);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
         return DbWrapper::getResultsArray($queryData, $this->db);
@@ -479,6 +495,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
 
     /**
      * @param $id
+     *
      * @return NotificationData[]
      */
     public function getAllActiveForUserId($id)
@@ -497,12 +514,12 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
             WHERE (userId = ? OR sticky = 1) 
             AND onlyAdmin = 0 
             AND checked = 0
-            ORDER BY date DESC ';
+            ORDER BY `date` DESC ';
 
         $queryData = new QueryData();
+        $queryData->setMapClassName(NotificationData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setMapClassName(NotificationData::class);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
         return DbWrapper::getResultsArray($queryData, $this->db);

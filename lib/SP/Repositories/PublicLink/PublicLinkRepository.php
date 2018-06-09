@@ -24,10 +24,13 @@
 
 namespace SP\Repositories\PublicLink;
 
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\PublicLinkData;
 use SP\DataModel\PublicLinkListData;
+use SP\Repositories\DuplicatedItemException;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -48,6 +51,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Deletes an item
      *
      * @param $id
+     *
      * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -105,6 +109,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return PublicLinkData[]
      */
     public function getByIdBatch(array $ids)
@@ -144,6 +149,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -163,6 +169,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Checks whether the item is in use or not
      *
      * @param $id int
+     *
      * @return void
      */
     public function checkInUse($id)
@@ -174,6 +181,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
+     *
      * @return mixed
      */
     public function search(ItemSearchData $SearchData)
@@ -230,15 +238,16 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Creates an item
      *
      * @param PublicLinkData $itemData
+     *
      * @return int
-     * @throws SPException
+     * @throws DuplicatedItemException
+     * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
      */
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(__u('Enlace ya creado'), SPException::INFO);
+            throw new DuplicatedItemException(__u('Enlace ya creado'));
         }
 
         $query = /** @lang SQL */
@@ -255,14 +264,16 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getItemId());
-        $queryData->addParam($itemData->getHash());
-        $queryData->addParam($itemData->getData());
-        $queryData->addParam($itemData->getUserId());
-        $queryData->addParam($itemData->getTypeId());
-        $queryData->addParam((int)$itemData->isNotify());
-        $queryData->addParam($itemData->getDateExpire());
-        $queryData->addParam($itemData->getMaxCountViews());
+        $queryData->setParams([
+            $itemData->getItemId(),
+            $itemData->getHash(),
+            $itemData->getData(),
+            $itemData->getUserId(),
+            $itemData->getTypeId(),
+            (int)$itemData->isNotify(),
+            $itemData->getDateExpire(),
+            $itemData->getMaxCountViews()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al crear enlace'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -274,6 +285,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Checks whether the item is duplicated on adding
      *
      * @param PublicLinkData $itemData
+     *
      * @return bool
      */
     public function checkDuplicatedOnAdd($itemData)
@@ -291,6 +303,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Checks whether the item is duplicated on updating
      *
      * @param mixed $itemData
+     *
      * @return void
      */
     public function checkDuplicatedOnUpdate($itemData)
@@ -302,6 +315,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Incrementar el contador de visitas de un enlace
      *
      * @param PublicLinkData $publicLinkData
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -317,8 +331,10 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($publicLinkData->getUseInfo());
-        $queryData->addParam($publicLinkData->getHash());
+        $queryData->setParams([
+            $publicLinkData->getUseInfo(),
+            $publicLinkData->getHash()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar enlace'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -328,6 +344,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Updates an item
      *
      * @param PublicLinkData $itemData
+     *
      * @return mixed
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -352,18 +369,20 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getItemId());
-        $queryData->addParam($itemData->getHash());
-        $queryData->addParam($itemData->getData());
-        $queryData->addParam($itemData->getUserId());
-        $queryData->addParam((int)$itemData->isNotify());
-        $queryData->addParam($itemData->getDateAdd());
-        $queryData->addParam($itemData->getDateExpire());
-        $queryData->addParam($itemData->getCountViews());
-        $queryData->addParam($itemData->getMaxCountViews());
-        $queryData->addParam($itemData->getUseInfo());
-        $queryData->addParam($itemData->getTypeId());
-        $queryData->addParam($itemData->getId());
+        $queryData->setParams([
+            $itemData->getItemId(),
+            $itemData->getHash(),
+            $itemData->getData(),
+            $itemData->getUserId(),
+            (int)$itemData->isNotify(),
+            $itemData->getDateAdd(),
+            $itemData->getDateExpire(),
+            $itemData->getCountViews(),
+            $itemData->getMaxCountViews(),
+            $itemData->getUseInfo(),
+            $itemData->getTypeId(),
+            $itemData->getId()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar enlace'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -373,6 +392,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Refreshes a public link
      *
      * @param PublicLinkData $publicLinkData
+     *
      * @return bool
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -391,11 +411,13 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($publicLinkData->getHash());
-        $queryData->addParam($publicLinkData->getData());
-        $queryData->addParam($publicLinkData->getDateExpire());
-        $queryData->addParam($publicLinkData->getMaxCountViews());
-        $queryData->addParam($publicLinkData->getId());
+        $queryData->setParams([
+            $publicLinkData->getHash(),
+            $publicLinkData->getData(),
+            $publicLinkData->getDateExpire(),
+            $publicLinkData->getMaxCountViews(),
+            $publicLinkData->getId()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al renovar enlace'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -405,8 +427,10 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return PublicLinkData
-     * @throws SPException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -440,11 +464,11 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(__u('Error al obtener enlace'), SPException::ERROR);
+            throw new QueryException(__u('Error al obtener enlace'));
         }
 
         if ($queryData->getQueryNumRows() === 0) {
-            throw new SPException(__u('El enlace no existe'), SPException::ERROR);
+            throw new NoSuchItemException(__u('El enlace no existe'));
         }
 
         return $queryRes;
@@ -452,8 +476,9 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
 
     /**
      * @param $hash string
+     *
      * @return bool|PublicLinkData
-     * @throws \SP\Core\Exceptions\SPException
+     * @throws NoSuchItemException
      */
     public function getByHash($hash)
     {
@@ -490,7 +515,7 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryData->getQueryNumRows() === 0) {
-            throw new SPException(__u('El enlace no existe'), SPException::ERROR);
+            throw new NoSuchItemException(__u('El enlace no existe'));
         }
 
         return $queryRes;
@@ -500,20 +525,21 @@ class PublicLinkRepository extends Repository implements RepositoryItemInterface
      * Devolver el hash asociado a un elemento
      *
      * @param int $itemId
+     *
      * @return PublicLinkData
-     * @throws SPException
+     * @throws QueryException
      */
     public function getHashForItem($itemId)
     {
         $queryData = new QueryData();
+        $queryData->setMapClassName(PublicLinkData::class);
         $queryData->setQuery('SELECT id, `hash` FROM PublicLink WHERE itemId = ? LIMIT 1');
         $queryData->addParam($itemId);
-        $queryData->setMapClassName(PublicLinkData::class);
 
         $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(__u('Error al obtener enlace'), SPException::ERROR);
+            throw new QueryException(__u('Error al obtener enlace'));
         }
 
         return $queryRes;

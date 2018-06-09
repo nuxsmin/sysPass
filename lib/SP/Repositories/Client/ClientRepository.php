@@ -50,6 +50,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Creates an item
      *
      * @param ClientData $itemData
+     *
      * @return int
      * @throws DuplicatedItemException
      * @throws SPException
@@ -69,10 +70,12 @@ class ClientRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getName());
-        $queryData->addParam($itemData->getDescription());
-        $queryData->addParam($itemData->getIsGlobal());
-        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
+        $queryData->setParams([
+            $itemData->getName(),
+            $itemData->getDescription(),
+            $itemData->getIsGlobal(),
+            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler())
+        ]);
         $queryData->setOnErrorMessage(__u('Error al crear el cliente'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -84,6 +87,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Checks whether the item is duplicated on adding
      *
      * @param ClientData $itemData
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -103,6 +107,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Updates an item
      *
      * @param ClientData $itemData
+     *
      * @return mixed
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -124,11 +129,13 @@ class ClientRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getName());
-        $queryData->addParam($itemData->getDescription());
-        $queryData->addParam($itemData->getIsGlobal());
-        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
-        $queryData->addParam($itemData->getId());
+        $queryData->setParams([
+            $itemData->getName(),
+            $itemData->getDescription(),
+            $itemData->getIsGlobal(),
+            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+            $itemData->getId()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el cliente'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -140,6 +147,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Checks whether the item is duplicated on updating
      *
      * @param ClientData $itemData
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -148,9 +156,11 @@ class ClientRepository extends Repository implements RepositoryItemInterface
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id FROM Client WHERE (`hash` = ? OR `name` = ?) AND id <> ?');
-        $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
-        $queryData->addParam($itemData->getName());
-        $queryData->addParam($itemData->getId());
+        $queryData->setParams([
+            $this->makeItemHash($itemData->getName(), $this->db->getDbHandler()),
+            $itemData->getName(),
+            $itemData->getId()
+        ]);
 
         DbWrapper::getQuery($queryData, $this->db);
 
@@ -161,14 +171,15 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return ClientData
      */
     public function getById($id)
     {
         $queryData = new QueryData();
+        $queryData->setMapClassName(ClientData::class);
         $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setMapClassName(ClientData::class);
 
         return DbWrapper::getResults($queryData, $this->db);
     }
@@ -177,15 +188,18 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Returns the item for given name
      *
      * @param string $name
+     *
      * @return ClientData
      */
     public function getByName($name)
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client WHERE `name` = ? OR `hash` = ? LIMIT 1');
-        $queryData->addParam($name);
-        $queryData->addParam($this->makeItemHash($name, $this->db->getDbHandler()));
         $queryData->setMapClassName(ClientData::class);
+        $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client WHERE `name` = ? OR `hash` = ? LIMIT 1');
+        $queryData->setParams([
+            $name,
+            $this->makeItemHash($name, $this->db->getDbHandler())
+        ]);
 
         return DbWrapper::getResults($queryData, $this->db);
     }
@@ -208,6 +222,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return array
      */
     public function getByIdBatch(array $ids)
@@ -216,9 +231,9 @@ class ClientRepository extends Repository implements RepositoryItemInterface
             'SELECT id, `name`, description, isGlobal FROM Client WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $queryData = new QueryData();
+        $queryData->setMapClassName(ClientData::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
-        $queryData->setMapClassName(ClientData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -227,6 +242,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -247,6 +263,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Deletes an item
      *
      * @param $id
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -267,6 +284,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Checks whether the item is in use or not
      *
      * @param $id int
+     *
      * @return void
      */
     public function checkInUse($id)
@@ -278,6 +296,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
+     *
      * @return ClientData[]
      */
     public function search(ItemSearchData $SearchData)
@@ -313,6 +332,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * Devolver los clientes visibles por el usuario
      *
      * @param QueryCondition $queryFilter
+     *
      * @return ItemData[]
      * @throws QueryException
      */

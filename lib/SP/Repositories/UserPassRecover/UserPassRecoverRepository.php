@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -41,6 +41,7 @@ class UserPassRecoverRepository extends Repository
      *
      * @param int $userId
      * @param int $time
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -56,8 +57,7 @@ class UserPassRecoverRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($userId);
-        $queryData->addParam($time);
+        $queryData->setParams([$userId, $time]);
 
         DbWrapper::getQuery($queryData, $this->db);
 
@@ -69,6 +69,7 @@ class UserPassRecoverRepository extends Repository
      *
      * @param $userId
      * @param $hash
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -84,8 +85,7 @@ class UserPassRecoverRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($userId);
-        $queryData->addParam($hash);
+        $queryData->setParams([$userId, $hash]);
         $queryData->setOnErrorMessage(__u('Error al generar el hash de recuperación'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -96,6 +96,7 @@ class UserPassRecoverRepository extends Repository
      *
      * @param string $hash
      * @param int    $time
+     *
      * @return bool
      * @throws SPException
      */
@@ -110,8 +111,7 @@ class UserPassRecoverRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($hash);
-        $queryData->addParam($time);
+        $queryData->setParams([$hash, $time]);
         $queryData->setOnErrorMessage(__u('Error en comprobación de hash'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -124,6 +124,7 @@ class UserPassRecoverRepository extends Repository
      *
      * @param $hash
      * @param $time
+     *
      * @return mixed
      */
     public function getUserIdForHash($hash, $time)
@@ -134,12 +135,11 @@ class UserPassRecoverRepository extends Repository
             WHERE `hash` = ?
             AND used = 0
             AND `date` >= ? 
-            ORDER BY date DESC LIMIT 1';
+            ORDER BY `date` DESC LIMIT 1';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($hash);
-        $queryData->addParam($time);
+        $queryData->setParams([$hash, $time]);
 
         return DbWrapper::getResults($queryData, $this->db);
     }

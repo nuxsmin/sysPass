@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,12 +31,14 @@ use SP\Storage\QueryData;
 
 /**
  * Class TrackRepository
+ *
  * @package SP\Repositories\Track
  */
 class TrackRepository extends Repository
 {
     /**
      * @param TrackRequest $trackRequest
+     *
      * @return mixed
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -46,17 +48,19 @@ class TrackRepository extends Repository
         $query = /** @lang SQL */
             'INSERT INTO Track SET 
             userId = ?, 
-            source = ?, 
-            time = UNIX_TIMESTAMP(),
+            `source` = ?, 
+            `time` = UNIX_TIMESTAMP(),
             ipv4 = ?,
             ipv6 = ?';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($trackRequest->userId);
-        $queryData->addParam($trackRequest->source);
-        $queryData->addParam($trackRequest->getIpv4());
-        $queryData->addParam($trackRequest->getIpv6());
+        $queryData->setParams([
+            $trackRequest->userId,
+            $trackRequest->source,
+            $trackRequest->getIpv4(),
+            $trackRequest->getIpv6()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al crear track'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -66,6 +70,7 @@ class TrackRepository extends Repository
 
     /**
      * @param $id int|array
+     *
      * @return mixed
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -84,6 +89,7 @@ class TrackRepository extends Repository
 
     /**
      * @param TrackData $itemData
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -101,11 +107,13 @@ class TrackRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getUserId());
-        $queryData->addParam($itemData->getSource());
-        $queryData->addParam($itemData->getTrackIpv4Bin());
-        $queryData->addParam($itemData->getTrackIpv6Bin());
-        $queryData->addParam($itemData->getId());
+        $queryData->setParams([
+            $itemData->getUserId(),
+            $itemData->getSource(),
+            $itemData->getTrackIpv4Bin(),
+            $itemData->getTrackIpv6Bin(),
+            $itemData->getId()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar track'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -113,6 +121,7 @@ class TrackRepository extends Repository
 
     /**
      * @param $id int
+     *
      * @return TrackData
      */
     public function getById($id)
@@ -128,9 +137,9 @@ class TrackRepository extends Repository
             WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
+        $queryData->setMapClassName(TrackData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setMapClassName(TrackData::class);
         $queryData->setOnErrorMessage(__u('Error al obtener track'));
 
         return DbWrapper::getResults($queryData, $this->db);
@@ -144,14 +153,14 @@ class TrackRepository extends Repository
         $query = /** @lang SQL */
             'SELECT id, 
             userId, 
-            source, 
-            time,
+            `source`, 
+            `time`,
             ipv4,
             ipv6 FROM Track';
 
         $queryData = new QueryData();
-        $queryData->setQuery($query);
         $queryData->setMapClassName(TrackData::class);
+        $queryData->setQuery($query);
         $queryData->setOnErrorMessage(__u('Error al obtener tracks'));
 
         return DbWrapper::getResultsArray($queryData);
@@ -161,6 +170,7 @@ class TrackRepository extends Repository
      * Devuelve los tracks de un cliente desde un tiempo y origen determinados
      *
      * @param TrackRequest $trackRequest
+     *
      * @return array
      */
     public function getTracksForClientFromTime(TrackRequest $trackRequest)
@@ -173,12 +183,14 @@ class TrackRepository extends Repository
             AND `source` = ?';
 
         $queryData = new QueryData();
-        $queryData->setQuery($query);
-        $queryData->addParam($trackRequest->time);
-        $queryData->addParam($trackRequest->getIpv4());
-        $queryData->addParam($trackRequest->getIpv6());
-        $queryData->addParam($trackRequest->source);
         $queryData->setMapClassName(TrackData::class);
+        $queryData->setQuery($query);
+        $queryData->setParams([
+            $trackRequest->time,
+            $trackRequest->getIpv4(),
+            $trackRequest->getIpv6(),
+            $trackRequest->source
+        ]);
         $queryData->setOnErrorMessage(__u('Error al obtener tracks'));
 
         return DbWrapper::getResultsArray($queryData, $this->db);

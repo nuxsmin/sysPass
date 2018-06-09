@@ -24,10 +24,10 @@
 
 namespace SP\Repositories\Account;
 
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\FileData;
 use SP\DataModel\FileExtData;
 use SP\DataModel\ItemSearchData;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -63,9 +63,9 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
             extension = ?,
             thumb = ?';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->setParams([
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams([
             $itemData->getAccountId(),
             $itemData->getName(),
             $itemData->getType(),
@@ -74,9 +74,9 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
             $itemData->getExtension(),
             $itemData->getThumb()
         ]);
-        $Data->setOnErrorMessage(__u('No se pudo guardar el archivo'));
+        $queryData->setOnErrorMessage(__u('No se pudo guardar el archivo'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
         return $this->db->getLastId();
     }
@@ -111,12 +111,12 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
             INNER JOIN Client C ON A.clientId = C.id
             WHERE AF.id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(FileExtData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(FileExtData::class);
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
 
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -143,12 +143,12 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
             INNER JOIN Client C ON A.clientId = C.id
             WHERE AF.id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(FileExtData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(FileExtData::class);
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
 
-        return DbWrapper::getResults($Data, $this->db);
+        return DbWrapper::getResults($queryData, $this->db);
     }
 
     /**
@@ -171,12 +171,12 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
             FROM AccountFile AF
             WHERE accountId = ?';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(FileData::class);
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(FileData::class);
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -201,11 +201,11 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
             INNER JOIN Account A ON A.id = AF.accountId
             INNER JOIN Client C ON A.clientId = C.id';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(FileExtData::class);
-        $Data->setQuery($query);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(FileExtData::class);
+        $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
@@ -232,35 +232,38 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
             INNER JOIN Client C ON A.clientId = C.id
             WHERE AF.id IN (' . $this->getParamsFromArray($ids) . ')';
 
-        $Data = new QueryData();
-        $Data->setMapClassName(FileExtData::class);
-        $Data->setQuery($query);
-        $Data->setParams($ids);
+        $queryData = new QueryData();
+        $queryData->setMapClassName(FileExtData::class);
+        $queryData->setQuery($query);
+        $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($Data, $this->db);
+        return DbWrapper::getResultsArray($queryData, $this->db);
     }
 
     /**
      * Deletes an item
      *
      * @param $id
+     *
      * @return AccountFileRepository
-     * @throws SPException
+     * @throws NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
         $query = /** @lang SQL */
             'DELETE FROM AccountFile WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
-        $Data->setOnErrorMessage(__u('Error al eliminar el archivo'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar el archivo'));
 
-        DbWrapper::getQuery($Data, $this->db);
+        DbWrapper::getQuery($queryData, $this->db);
 
-        if ($Data->getQueryNumRows() === 0) {
-            throw new SPException(__u('Archivo no encontrado'), SPException::INFO);
+        if ($queryData->getQueryNumRows() === 0) {
+            throw new NoSuchItemException(__u('Archivo no encontrado'));
         }
 
         return $this;
@@ -324,31 +327,31 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      */
     public function search(ItemSearchData $itemSearchData)
     {
-        $Data = new QueryData();
-        $Data->setMapClassName(FileExtData::class);
-        $Data->setSelect('AF.id, AF.name, CONCAT(ROUND(AF.size/1000, 2), "KB") AS size, AF.thumb, AF.type, A.name as accountName, C.name as clientName');
-        $Data->setFrom('AccountFile AF INNER JOIN Account A ON A.id = AF.accountId INNER JOIN Client C ON A.clientId = C.id');
-        $Data->setOrder('A.name');
+        $queryData = new QueryData();
+        $queryData->setMapClassName(FileExtData::class);
+        $queryData->setSelect('AF.id, AF.name, CONCAT(ROUND(AF.size/1000, 2), "KB") AS size, AF.thumb, AF.type, A.name as accountName, C.name as clientName');
+        $queryData->setFrom('AccountFile AF INNER JOIN Account A ON A.id = AF.accountId INNER JOIN Client C ON A.clientId = C.id');
+        $queryData->setOrder('A.name');
 
         if ($itemSearchData->getSeachString() !== '') {
-            $Data->setWhere('AF.name LIKE ? OR AF.type LIKE ? OR A.name LIKE ? OR C.name LIKE ?');
+            $queryData->setWhere('AF.name LIKE ? OR AF.type LIKE ? OR A.name LIKE ? OR C.name LIKE ?');
 
             $search = '%' . $itemSearchData->getSeachString() . '%';
-            $Data->addParam($search);
-            $Data->addParam($search);
-            $Data->addParam($search);
-            $Data->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
+            $queryData->addParam($search);
         }
 
-        $Data->setLimit('?,?');
-        $Data->addParam($itemSearchData->getLimitStart());
-        $Data->addParam($itemSearchData->getLimitCount());
+        $queryData->setLimit('?,?');
+        $queryData->addParam($itemSearchData->getLimitStart());
+        $queryData->addParam($itemSearchData->getLimitCount());
 
         DbWrapper::setFullRowCount();
 
-        $queryRes = DbWrapper::getResultsArray($Data, $this->db);
+        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
 
-        $queryRes['count'] = $Data->getQueryNumRows();
+        $queryRes['count'] = $queryData->getQueryNumRows();
 
         return $queryRes;
     }

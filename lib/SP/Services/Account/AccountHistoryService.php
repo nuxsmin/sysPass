@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -69,6 +69,7 @@ class AccountHistoryService extends Service
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return AccountHistoryData
      * @throws SPException
      * @throws \SP\Core\Exceptions\SPException
@@ -82,15 +83,42 @@ class AccountHistoryService extends Service
      * Obtiene el listado del histórico de una cuenta.
      *
      * @param $id
-     * @return array|false Con los registros con id como clave y fecha - usuario como valor
+     *
+     * @return array Con los registros con id como clave y fecha - usuario como valor
      */
     public function getHistoryForAccount($id)
     {
-        return $this->accountHistoryRepository->getHistoryForAccount($id);
+        return self::mapHistoryForDateSelect($this->accountHistoryRepository->getHistoryForAccount($id));
+    }
+
+    /**
+     * Masps history items to fill in a date select
+     *
+     * @param array $history
+     *
+     * @return array
+     */
+    private static function mapHistoryForDateSelect(array $history)
+    {
+        $items = [];
+
+        foreach ($history as $item) {
+            // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
+            if (empty($item->dateEdit) || $item->dateEdit === '0000-00-00 00:00:00') {
+                $date = $item->dateAdd . ' - ' . $item->userAdd;
+            } else {
+                $date = $item->dateEdit . ' - ' . $item->userEdit;
+            }
+
+            $items[$item->id] = $date;
+        };
+
+        return $items;
     }
 
     /**
      * @param $id
+     *
      * @return ItemData[]
      */
     public function getUsersByAccountId($id)
@@ -100,6 +128,7 @@ class AccountHistoryService extends Service
 
     /**
      * @param $id
+     *
      * @return ItemData[]
      */
     public function getUserGroupsByAccountId($id)
@@ -109,6 +138,7 @@ class AccountHistoryService extends Service
 
     /**
      * @param ItemSearchData $itemSearchData
+     *
      * @return mixed
      */
     public function search(ItemSearchData $itemSearchData)
@@ -120,6 +150,7 @@ class AccountHistoryService extends Service
      * Crea una nueva cuenta en la BBDD
      *
      * @param array $itemData ['id' => <int>, 'isModify' => <bool>,'isDelete' => <bool>, 'masterPassHash' => <string>]
+     *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -142,6 +173,7 @@ class AccountHistoryService extends Service
      * Elimina los datos de una cuenta en la BBDD.
      *
      * @param array|int $id
+     *
      * @return bool Los ids de las cuentas eliminadas
      * @throws SPException
      */
@@ -166,6 +198,7 @@ class AccountHistoryService extends Service
 
     /**
      * @param AccountPasswordRequest $accountRequest
+     *
      * @return bool
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -175,4 +208,13 @@ class AccountHistoryService extends Service
         return $this->accountHistoryRepository->updatePassword($accountRequest);
     }
 
+    /**
+     * Returns all the items
+     *
+     * @return array
+     */
+    public function getAll()
+    {
+        return self::mapHistoryForDateSelect($this->accountHistoryRepository->getAll());
+    }
 }

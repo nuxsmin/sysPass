@@ -40,6 +40,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryAssignment;
 use SP\Mvc\Model\QueryCondition;
 use SP\Mvc\Model\QueryJoin;
+use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
@@ -128,11 +129,11 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $query = /** @lang SQL */
             'UPDATE Account SET countDecrypt = (countDecrypt + 1) WHERE id = ? LIMIT 1';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($id);
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->addParam($id);
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -151,7 +152,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             'INSERT INTO Account SET 
             clientId = ?,
             categoryId = ?,
-            name = ?,
+            `name` = ?,
             login = ?,
             url = ?,
             pass = ?,
@@ -220,11 +221,13 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($accountRequest->pass);
-        $queryData->addParam($accountRequest->key);
-        $queryData->addParam($accountRequest->userEditId);
-        $queryData->addParam($accountRequest->passDateChange);
-        $queryData->addParam($accountRequest->id);
+        $queryData->setParams([
+            $accountRequest->pass,
+            $accountRequest->key,
+            $accountRequest->userEditId,
+            $accountRequest->passDateChange,
+            $accountRequest->id
+        ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -249,9 +252,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($request->pass);
-        $queryData->addParam($request->key);
-        $queryData->addParam($request->id);
+        $queryData->setParams([$request->pass, $request->key, $request->id]);
         $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -261,16 +262,17 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Restaurar una cuenta desde el histórico.
      *
      * @param int $historyId El Id del registro en el histórico
+     * @param int $userId    User's Id
      *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
-    public function editRestore($historyId)
+    public function editRestore($historyId, $userId)
     {
         $query = /** @lang SQL */
             'UPDATE Account dst, 
-            (SELECT * FROM AccountHistory AH WHERE AH.id = :id) src SET 
+            (SELECT * FROM AccountHistory AH WHERE AH.id = ?) src SET 
             dst.clientId = src.clientId,
             dst.categoryId = src.categoryId,
             dst.name = src.name,
@@ -278,7 +280,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             dst.url = src.url,
             dst.notes = src.notes,
             dst.userGroupId = src.userGroupId,
-            dst.userEditId = :userEditId,
+            dst.userEditId = ?,
             dst.dateEdit = NOW(),
             dst.otherUserEdit = src.otherUserEdit + 0,
             dst.otherUserGroupEdit = src.otherUserGroupEdit + 0,
@@ -291,13 +293,12 @@ class AccountRepository extends Repository implements RepositoryItemInterface
             dst.isPrivateGroup = src.isPrivateGroup
             WHERE dst.id = src.accountId';
 
-        $Data = new QueryData();
-        $Data->setQuery($query);
-        $Data->addParam($historyId, 'id');
-        $Data->addParam($this->context->getUserData()->getId(), 'userEditId');
-        $Data->setOnErrorMessage(__u('Error al restaurar cuenta'));
+        $queryData = new QueryData();
+        $queryData->setQuery($query);
+        $queryData->setParams([$historyId, $userId]);
+        $queryData->setOnErrorMessage(__u('Error al restaurar cuenta'));
 
-        return DbWrapper::getQuery($Data, $this->db);
+        return DbWrapper::getQuery($queryData, $this->db);
     }
 
     /**
@@ -389,7 +390,8 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @param int $id
      *
      * @return AccountVData
-     * @throws SPException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -402,11 +404,11 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(__u('No se pudieron obtener los datos de la cuenta'), SPException::CRITICAL);
+            throw new QueryException(__u('No se pudieron obtener los datos de la cuenta'));
         }
 
         if (is_array($queryRes) && count($queryRes) === 0) {
-            throw new SPException(__u('La cuenta no existe'), SPException::CRITICAL);
+            throw new NoSuchItemException(__u('La cuenta no existe'));
         }
 
         return $queryRes;
@@ -549,7 +551,8 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @param $id
      *
      * @return AccountExtData
-     * @throws SPException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
     public function getDataForLink($id)
     {
@@ -576,11 +579,11 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryRes = DbWrapper::getResults($queryData, $this->db);
 
         if ($queryRes === false) {
-            throw new SPException(__u('No se pudieron obtener los datos de la cuenta'), SPException::ERROR);
+            throw new QueryException(__u('No se pudieron obtener los datos de la cuenta'));
         }
 
         if (is_array($queryRes) && count($queryRes) === 0) {
-            throw new SPException(__u('La cuenta no existe'), SPException::ERROR);
+            throw new NoSuchItemException(__u('La cuenta no existe'));
         }
 
         return $queryRes;
@@ -715,7 +718,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
     public function getAccountsPassData()
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, name, pass, `key` FROM Account WHERE BIT_LENGTH(pass) > 0');
+        $queryData->setQuery('SELECT id, `name`, pass, `key` FROM Account WHERE BIT_LENGTH(pass) > 0');
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }

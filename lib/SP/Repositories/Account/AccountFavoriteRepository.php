@@ -63,8 +63,7 @@ class AccountFavoriteRepository extends Repository
     {
         $queryData = new QueryData();
         $queryData->setQuery('INSERT INTO AccountToFavorite SET accountId = ?, userId = ?');
-        $queryData->addParam($accountId);
-        $queryData->addParam($userId);
+        $queryData->setParams([$accountId, $userId]);
         $queryData->setOnErrorMessage(__u('Error al añadir favorito'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -83,8 +82,7 @@ class AccountFavoriteRepository extends Repository
     {
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AccountToFavorite WHERE accountId = ? AND userId = ?');
-        $queryData->addParam($accountId);
-        $queryData->addParam($userId);
+        $queryData->setParams([$accountId, $userId]);
         $queryData->setOnErrorMessage(__u('Error al eliminar favorito'));
 
         DbWrapper::getQuery($queryData, $this->db);

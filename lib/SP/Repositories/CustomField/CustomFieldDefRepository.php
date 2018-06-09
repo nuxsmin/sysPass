@@ -50,6 +50,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      * Creates an item
      *
      * @param CustomFieldDefinitionData $itemData
+     *
      * @return mixed
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -61,13 +62,15 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getName());
-        $queryData->addParam($itemData->getModuleId());
-        $queryData->addParam($itemData->getRequired());
-        $queryData->addParam($itemData->getHelp());
-        $queryData->addParam($itemData->getShowInList());
-        $queryData->addParam($itemData->getTypeId());
-        $queryData->addParam($itemData->getisEncrypted());
+        $queryData->setParams([
+            $itemData->getName(),
+            $itemData->getModuleId(),
+            $itemData->getRequired(),
+            $itemData->getHelp(),
+            $itemData->getShowInList(),
+            $itemData->getTypeId(),
+            $itemData->getisEncrypted()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al crear el campo personalizado'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -79,6 +82,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      * Updates an item
      *
      * @param CustomFieldDefinitionData $itemData
+     *
      * @return mixed
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -92,14 +96,16 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getName());
-        $queryData->addParam($itemData->getModuleId());
-        $queryData->addParam($itemData->getRequired());
-        $queryData->addParam($itemData->getHelp());
-        $queryData->addParam($itemData->getShowInList());
-        $queryData->addParam($itemData->getTypeId());
-        $queryData->addParam($itemData->getisEncrypted());
-        $queryData->addParam($itemData->getId());
+        $queryData->setParams([
+            $itemData->getName(),
+            $itemData->getModuleId(),
+            $itemData->getRequired(),
+            $itemData->getHelp(),
+            $itemData->getShowInList(),
+            $itemData->getTypeId(),
+            $itemData->getisEncrypted(),
+            $itemData->getId()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el campo personalizado'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -109,6 +115,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return CustomFieldDefinitionData
      */
     public function getById($id)
@@ -123,9 +130,9 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
               WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
+        $queryData->setMapClassName(CustomFieldDefinitionData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setMapClassName(CustomFieldDefinitionData::class);
 
         $cfd = DbWrapper::getResults($queryData, $this->db);
         $this->customFieldDefCollection->set($id, $cfd);
@@ -146,8 +153,8 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
               ORDER BY moduleId';
 
         $queryData = new QueryData();
-        $queryData->setQuery($query);
         $queryData->setMapClassName(CustomFieldDefinitionData::class);
+        $queryData->setQuery($query);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -156,6 +163,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return array
      */
     public function getByIdBatch(array $ids)
@@ -166,9 +174,9 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
               WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $queryData = new QueryData();
+        $queryData->setMapClassName(CustomFieldDefinitionData::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
-        $queryData->setMapClassName(CustomFieldDefinitionData::class);
 
         return DbWrapper::getResults($queryData, $this->db);
     }
@@ -177,6 +185,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -201,6 +210,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      * Deletes an item
      *
      * @param $id
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -250,6 +260,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
+     *
      * @return CustomFieldDefinitionData[]
      */
     public function search(ItemSearchData $SearchData)

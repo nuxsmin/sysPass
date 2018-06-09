@@ -50,8 +50,7 @@ class UserToUserGroupRepository extends Repository
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = ? AND userId = ?');
-        $queryData->addParam($groupId);
-        $queryData->addParam($userId);
+        $queryData->setParams([$groupId, $userId]);
 
         DbWrapper::getResults($queryData, $this->db);
 
@@ -146,9 +145,9 @@ class UserToUserGroupRepository extends Repository
     public function getById($id)
     {
         $queryData = new QueryData();
+        $queryData->setMapClassName(UserToUserGroupData::class);
         $queryData->setQuery('SELECT userGroupId, userId FROM UserToUserGroup WHERE userGroupId = ?');
         $queryData->addParam($id);
-        $queryData->setMapClassName(UserToUserGroupData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }

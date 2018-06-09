@@ -48,6 +48,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Obtener el nombre de los usuarios que usan un perfil.
      *
      * @param $id int El id del perfil
+     *
      * @return array
      */
     public function getUsersForProfile($id)
@@ -63,6 +64,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Deletes an item
      *
      * @param $id
+     *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
@@ -83,6 +85,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Checks whether the item is in use or not
      *
      * @param $id int
+     *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
@@ -102,14 +105,15 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return UserProfileData
      */
     public function getById($id)
     {
         $queryData = new QueryData();
+        $queryData->setMapClassName(UserProfileData::class);
         $queryData->setQuery('SELECT id, `name`, `profile` FROM UserProfile WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
-        $queryData->setMapClassName(UserProfileData::class);
 
         return DbWrapper::getResults($queryData, $this->db);
     }
@@ -122,8 +126,8 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
     public function getAll()
     {
         $queryData = new QueryData();
-        $queryData->setQuery('SELECT id, `name` FROM UserProfile ORDER BY `name`');
         $queryData->setMapClassName(UserProfileData::class);
+        $queryData->setQuery('SELECT id, `name` FROM UserProfile ORDER BY `name`');
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -132,6 +136,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return UserProfileData[]
      */
     public function getByIdBatch(array $ids)
@@ -144,9 +149,9 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
             'SELECT id, `name` FROM UserProfile WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
         $queryData = new QueryData();
+        $queryData->setMapClassName(UserProfileData::class);
         $queryData->setQuery($query);
         $queryData->setParams($ids);
-        $queryData->setMapClassName(UserProfileData::class);
 
         return DbWrapper::getResultsArray($queryData, $this->db);
     }
@@ -155,6 +160,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
@@ -175,6 +181,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
+     *
      * @return mixed
      */
     public function search(ItemSearchData $SearchData)
@@ -208,6 +215,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Creates an item
      *
      * @param UserProfileData $itemData
+     *
      * @return int
      * @throws ConstraintException
      * @throws QueryException
@@ -221,8 +229,10 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
 
         $queryData = new QueryData();
         $queryData->setQuery('INSERT INTO UserProfile SET `name` = ?, `profile` = ?');
-        $queryData->addParam($itemData->getName());
-        $queryData->addParam(serialize($itemData->getProfile()));
+        $queryData->setParams([
+            $itemData->getName(),
+            serialize($itemData->getProfile())
+        ]);
         $queryData->setOnErrorMessage(__u('Error al crear perfil'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -234,6 +244,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Checks whether the item is duplicated on adding
      *
      * @param UserProfileData $itemData
+     *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
@@ -253,6 +264,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Updates an item
      *
      * @param UserProfileData $itemData
+     *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
@@ -269,9 +281,11 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getName());
-        $queryData->addParam(serialize($itemData->getProfile()));
-        $queryData->addParam($itemData->getId());
+        $queryData->setParams([
+            $itemData->getName(),
+            serialize($itemData->getProfile()),
+            $itemData->getId()
+        ]);
         $queryData->setOnErrorMessage(__u('Error al modificar perfil'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -283,6 +297,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * Checks whether the item is duplicated on updating
      *
      * @param UserProfileData $itemData
+     *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
@@ -296,8 +311,10 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
             AND id <> ?';
 
         $queryData = new QueryData();
-        $queryData->addParam($itemData->getName());
-        $queryData->addParam($itemData->getId());
+        $queryData->setParams([
+            $itemData->getName(),
+            $itemData->getId()
+        ]);
         $queryData->setQuery($query);
 
         DbWrapper::getQuery($queryData, $this->db);

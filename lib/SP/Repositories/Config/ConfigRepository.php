@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -39,23 +39,8 @@ use SP\Storage\QueryData;
 class ConfigRepository extends Repository
 {
     /**
-     * @param ConfigData $configData
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function update(ConfigData $configData)
-    {
-        $queryData = new QueryData();
-        $queryData->setQuery('UPDATE Config SET value = ? WHERE parameter = ?');
-        $queryData->addParam($configData->getValue());
-        $queryData->addParam($configData->getParam());
-
-        return DbWrapper::getQuery($queryData, $this->db);
-    }
-
-    /**
      * @param ConfigData[] $data
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -65,12 +50,7 @@ class ConfigRepository extends Repository
 
         try {
             foreach ($data as $configData) {
-                $queryData = new QueryData();
-                $queryData->setQuery('UPDATE Config SET value = ? WHERE parameter = ?');
-                $queryData->addParam($configData->getValue());
-                $queryData->addParam($configData->getParam());
-
-                DbWrapper::getQuery($queryData, $this->db);
+                $this->update($configData);
             }
         } catch (QueryException $e) {
             debugLog($e->getMessage());
@@ -83,6 +63,23 @@ class ConfigRepository extends Repository
 
     /**
      * @param ConfigData $configData
+     *
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function update(ConfigData $configData)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('UPDATE Config SET `value` = ? WHERE parameter = ?');
+        $queryData->setParams([$configData->getValue(), $configData->getParam()]);
+
+        return DbWrapper::getQuery($queryData, $this->db);
+    }
+
+    /**
+     * @param ConfigData $configData
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -91,8 +88,7 @@ class ConfigRepository extends Repository
     {
         $queryData = new QueryData();
         $queryData->setQuery('INSERT INTO Config SET parameter = ?, value = ?');
-        $queryData->addParam($configData->getParam());
-        $queryData->addParam($configData->getValue());
+        $queryData->setParams([$configData->getParam(), $configData->getValue()]);
 
         return DbWrapper::getQuery($queryData, $this->db);
     }
@@ -112,6 +108,7 @@ class ConfigRepository extends Repository
 
     /**
      * @param string $param
+     *
      * @return mixed
      */
     public function getByParam($param)
@@ -125,6 +122,7 @@ class ConfigRepository extends Repository
 
     /**
      * @param string $param
+     *
      * @return bool
      * @throws ConstraintException
      * @throws QueryException
@@ -142,6 +140,7 @@ class ConfigRepository extends Repository
 
     /**
      * @param $param
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException

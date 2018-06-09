@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -44,6 +44,7 @@ class AccountToTagRepository extends Repository
      * Devolver las etiquetas de una cuenta
      *
      * @param int $id
+     *
      * @return ItemData[]
      */
     public function getTagsByAccountId($id)
@@ -64,9 +65,41 @@ class AccountToTagRepository extends Repository
     }
 
     /**
+     * @param AccountRequest $accountRequest
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function update(AccountRequest $accountRequest)
+    {
+        $this->deleteByAccountId($accountRequest->id);
+        $this->add($accountRequest);
+    }
+
+    /**
+     * Eliminar las etiquetas de una cuenta
+     *
+     * @param int $id
+     *
+     * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     */
+    public function deleteByAccountId($id)
+    {
+        $queryData = new QueryData();
+        $queryData->setQuery('DELETE FROM AccountToTag WHERE accountId = ?');
+        $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al eliminar las etiquetas de la cuenta'));
+
+        return DbWrapper::getQuery($queryData, $this->db);
+    }
+
+    /**
      * Actualizar las etiquetas de una cuenta
      *
      * @param AccountRequest $accountRequest
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -86,35 +119,6 @@ class AccountToTagRepository extends Repository
         }
 
         return DbWrapper::getQuery($queryData, $this->db);
-    }
-
-    /**
-     * Eliminar las etiquetas de una cuenta
-     *
-     * @param int $id
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function deleteByAccountId($id)
-    {
-        $queryData = new QueryData();
-        $queryData->setQuery('DELETE FROM AccountToTag WHERE accountId = ?');
-        $queryData->addParam($id);
-        $queryData->setOnErrorMessage(__u('Error al eliminar las etiquetas de la cuenta'));
-
-        return DbWrapper::getQuery($queryData,$this->db);
-    }
-
-    /**
-     * @param AccountRequest $accountRequest
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
-     */
-    public function update(AccountRequest $accountRequest)
-    {
-        $this->deleteByAccountId($accountRequest->id);
-        $this->add($accountRequest);
     }
 
 }

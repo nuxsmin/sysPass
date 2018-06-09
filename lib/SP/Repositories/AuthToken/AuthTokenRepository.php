@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -47,6 +47,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Deletes an item
      *
      * @param $id
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -67,6 +68,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return mixed
      */
     public function getById($id)
@@ -103,6 +105,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return void
      */
     public function getByIdBatch(array $ids)
@@ -114,6 +117,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -134,6 +138,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Checks whether the item is in use or not
      *
      * @param $id int
+     *
      * @return void
      */
     public function checkInUse($id)
@@ -145,6 +150,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
+     *
      * @return mixed
      */
     public function search(ItemSearchData $SearchData)
@@ -192,6 +198,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Creates an item
      *
      * @param AuthTokenData $itemData
+     *
      * @return mixed
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -215,12 +222,14 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getUserId());
-        $queryData->addParam($itemData->getActionId());
-        $queryData->addParam($itemData->getCreatedBy());
-        $queryData->addParam($itemData->getToken());
-        $queryData->addParam($itemData->getVault());
-        $queryData->addParam($itemData->getHash());
+        $queryData->setParams([
+            $itemData->getUserId(),
+            $itemData->getActionId(),
+            $itemData->getCreatedBy(),
+            $itemData->getToken(),
+            $itemData->getVault(),
+            $itemData->getHash()
+        ]);
         $queryData->setOnErrorMessage(__u('Error interno'));
 
         DbWrapper::getQuery($queryData, $this->db);
@@ -232,6 +241,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Checks whether the item is duplicated on adding
      *
      * @param AuthTokenData $itemData
+     *
      * @return bool
      */
     public function checkDuplicatedOnAdd($itemData)
@@ -255,6 +265,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Obtener el token de la API de un usuario
      *
      * @param $id
+     *
      * @return string
      */
     public function getTokenByUserId($id)
@@ -272,6 +283,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Updates an item
      *
      * @param AuthTokenData $itemData
+     *
      * @return mixed
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -296,13 +308,15 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getUserId());
-        $queryData->addParam($itemData->getActionId());
-        $queryData->addParam($itemData->getCreatedBy());
-        $queryData->addParam($itemData->getToken());
-        $queryData->addParam($itemData->getVault());
-        $queryData->addParam($itemData->getHash());
-        $queryData->addParam($itemData->getId());
+        $queryData->setParams([
+            $itemData->getUserId(),
+            $itemData->getActionId(),
+            $itemData->getCreatedBy(),
+            $itemData->getToken(),
+            $itemData->getVault(),
+            $itemData->getHash(),
+            $itemData->getId()
+        ]);
         $queryData->setOnErrorMessage(__u('Error interno'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -312,6 +326,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Checks whether the item is duplicated on updating
      *
      * @param AuthTokenData $itemData
+     *
      * @return bool
      */
     public function checkDuplicatedOnUpdate($itemData)
@@ -324,9 +339,11 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getUserId());
-        $queryData->addParam($itemData->getActionId());
-        $queryData->addParam($itemData->getId());
+        $queryData->setParams([
+            $itemData->getUserId(),
+            $itemData->getActionId(),
+            $itemData->getId()
+        ]);
 
         DbWrapper::getResults($queryData, $this->db);
 
@@ -338,6 +355,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      *
      * @param int    $id
      * @param string $token
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -352,8 +370,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($token);
-        $queryData->addParam($id);
+        $queryData->setParams([$token, $id]);
         $queryData->setOnErrorMessage(__u('Error interno'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -365,6 +382,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * @param int $id
      * @param     $vault
      * @param     $hash
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -380,9 +398,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($vault);
-        $queryData->addParam($hash);
-        $queryData->addParam($id);
+        $queryData->setParams([$vault, $hash, $id]);
         $queryData->setOnErrorMessage(__u('Error interno'));
 
         return DbWrapper::getQuery($queryData, $this->db);
@@ -392,6 +408,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * Obtener el usuario a partir del token
      *
      * @param $token string El token de autorización
+     *
      * @return bool|mixed
      */
     public function getUserIdForToken($token)
@@ -410,6 +427,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      *
      * @param $actionId int El id de la accion
      * @param $token    string El token de seguridad
+     *
      * @return false|AuthTokenData
      */
     public function getTokenByToken($actionId, $token)
@@ -423,8 +441,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setMapClassName(AuthTokenData::class);
         $queryData->setQuery($query);
-        $queryData->addParam($actionId);
-        $queryData->addParam($token);
+        $queryData->setParams([$actionId, $token]);
 
         $queryRes = DbWrapper::getResults($queryData, $this->db);
 
