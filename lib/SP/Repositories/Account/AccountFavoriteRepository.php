@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,8 +25,7 @@
 namespace SP\Repositories\Account;
 
 use SP\Repositories\Repository;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class AccountFavoriteRepository
@@ -39,7 +38,10 @@ class AccountFavoriteRepository extends Repository
      * Obtener un array con los Ids de cuentas favoritas
      *
      * @param $id int El Id de usuario
+     *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getForUserId($id)
     {
@@ -48,7 +50,7 @@ class AccountFavoriteRepository extends Repository
         $queryData->addParam($id);
         $queryData->setUseKeyPair(true);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getDataAsArray();
     }
 
     /**
@@ -56,8 +58,10 @@ class AccountFavoriteRepository extends Repository
      *
      * @param $accountId int El Id de la cuenta
      * @param $userId    int El Id del usuario
-     * @return bool
-     * @throws \SP\Core\Exceptions\SPException
+     *
+     * @return int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function add($accountId, $userId)
     {
@@ -66,7 +70,7 @@ class AccountFavoriteRepository extends Repository
         $queryData->setParams([$accountId, $userId]);
         $queryData->setOnErrorMessage(__u('Error al añadir favorito'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -74,6 +78,7 @@ class AccountFavoriteRepository extends Repository
      *
      * @param $accountId int El Id de la cuenta
      * @param $userId    int El Id del usuario
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -85,8 +90,6 @@ class AccountFavoriteRepository extends Repository
         $queryData->setParams([$accountId, $userId]);
         $queryData->setOnErrorMessage(__u('Error al eliminar favorito'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 }

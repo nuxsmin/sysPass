@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -57,8 +57,8 @@ class ClientController extends ControllerBase implements CrudControllerInterface
     /**
      * Search action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
@@ -77,6 +77,8 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {
@@ -116,10 +118,12 @@ class ClientController extends ControllerBase implements CrudControllerInterface
     }
 
     /**
-     * Sets view data for displaying user's data
+     * Sets view data for displaying client's data
      *
      * @param $clientId
-     * @throws \Psr\Container\ContainerExceptionInterface
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setViewData($clientId = null)
     {
@@ -147,6 +151,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      * Edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function editAction($id)
@@ -176,6 +181,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      * Delete action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -289,6 +295,7 @@ class ClientController extends ControllerBase implements CrudControllerInterface
      * View action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function viewAction($id)

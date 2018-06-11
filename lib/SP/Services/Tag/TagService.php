@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -48,7 +48,10 @@ class TagService extends Service
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return \SP\DataModel\ClientData[]
+     *
+     * @return \SP\Storage\Database\QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -57,7 +60,10 @@ class TagService extends Service
 
     /**
      * @param $id
-     * @return mixed
+     *
+     * @return TagData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -66,8 +72,11 @@ class TagService extends Service
 
     /**
      * @param $id
+     *
      * @return $this
-     * @throws SPException
+     * @throws ServiceException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function delete($id)
     {
@@ -80,6 +89,7 @@ class TagService extends Service
 
     /**
      * @param array $ids
+     *
      * @return $this
      * @throws SPException
      */
@@ -94,7 +104,8 @@ class TagService extends Service
 
     /**
      * @param $itemData
-     * @return mixed
+     *
+     * @return int
      * @throws SPException
      */
     public function create($itemData)
@@ -104,7 +115,8 @@ class TagService extends Service
 
     /**
      * @param $itemData
-     * @return mixed
+     *
+     * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -118,6 +130,8 @@ class TagService extends Service
      * Get all items from the service's repository
      *
      * @return TagData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllBasic()
     {

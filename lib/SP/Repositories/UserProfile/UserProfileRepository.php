@@ -32,8 +32,8 @@ use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class UserProfileRepository
@@ -50,6 +50,8 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * @param $id int El id del perfil
      *
      * @return array
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsersForProfile($id)
     {
@@ -57,7 +59,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery('SELECT login FROM User WHERE userProfileId = ?');
         $queryData->addParam($id);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -76,9 +78,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar perfil'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -96,9 +96,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery('SELECT userProfileId FROM User WHERE userProfileId = ?');
         $queryData->addParam($id);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -107,6 +105,8 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * @param int $id
      *
      * @return UserProfileData
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -115,13 +115,15 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery('SELECT id, `name`, `profile` FROM UserProfile WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * Returns all the items
      *
      * @return UserProfileData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -129,7 +131,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setMapClassName(UserProfileData::class);
         $queryData->setQuery('SELECT id, `name` FROM UserProfile ORDER BY `name`');
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -138,6 +140,8 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      * @param array $ids
      *
      * @return UserProfileData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -153,7 +157,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -172,9 +176,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar los perfiles'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -182,7 +184,9 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
      *
      * @param ItemSearchData $SearchData
      *
-     * @return mixed
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $SearchData)
     {
@@ -202,13 +206,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->addParam($SearchData->getLimitStart());
         $queryData->addParam($SearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
     /**
@@ -235,9 +233,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear perfil'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -255,9 +251,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery('SELECT `name` FROM UserProfile WHERE UPPER(`name`) = ?');
         $queryData->addParam($itemData->getName());
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doQuery($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -288,9 +282,7 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         ]);
         $queryData->setOnErrorMessage(__u('Error al modificar perfil'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -317,8 +309,6 @@ class UserProfileRepository extends Repository implements RepositoryItemInterfac
         ]);
         $queryData->setQuery($query);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return ($queryData->getQueryNumRows() > 0);
+        return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
 }

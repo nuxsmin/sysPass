@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -61,8 +61,8 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
     /**
      * Search action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
@@ -81,6 +81,8 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {
@@ -120,9 +122,10 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
     }
 
     /**
-     * Sets view data for displaying user's data
+     * Sets view data for displaying public link's data
      *
      * @param $publicLinkId
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws SPException
      */
@@ -153,6 +156,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      * Create action
      *
      * @param int $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -179,6 +183,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      * Edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function editAction($id)
@@ -208,6 +213,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      * Delete action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -284,6 +290,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      *
      * @param int $accountId
      * @param int $notify
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -326,6 +333,7 @@ class PublicLinkController extends ControllerBase implements CrudControllerInter
      * View action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function viewAction($id)

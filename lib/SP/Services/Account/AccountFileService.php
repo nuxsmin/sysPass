@@ -31,6 +31,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Repositories\Account\AccountFileRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
+use SP\Storage\Database\QueryResult;
 use SP\Util\FileUtil;
 use SP\Util\ImageUtil;
 
@@ -77,7 +78,10 @@ class AccountFileService extends Service
 
     /**
      * @param $id
+     *
      * @return FileExtData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getInfoById($id)
     {
@@ -88,7 +92,10 @@ class AccountFileService extends Service
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return FileExtData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -99,6 +106,8 @@ class AccountFileService extends Service
      * Returns all the items
      *
      * @return FileExtData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAll()
     {
@@ -109,7 +118,10 @@ class AccountFileService extends Service
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -155,7 +167,10 @@ class AccountFileService extends Service
      * Searches for items by a given filter
      *
      * @param ItemSearchData $searchData
-     * @return mixed
+     *
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $searchData)
     {
@@ -166,7 +181,10 @@ class AccountFileService extends Service
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return FileData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByAccountId($id)
     {

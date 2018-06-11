@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\User;
 
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
@@ -35,8 +36,8 @@ use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Services\User\UpdatePassRequest;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class UserRepository
@@ -53,9 +54,9 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @param UserData $itemData
      *
      * @return int
-     * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
      */
     public function update($itemData)
     {
@@ -99,9 +100,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el usuario'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -110,8 +109,8 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @param UserData $itemData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
@@ -131,9 +130,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
             $itemData->getEmail()
         ]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -142,9 +139,9 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @param int               $id
      * @param UpdatePassRequest $passRequest
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updatePassById($id, UpdatePassRequest $passRequest)
     {
@@ -168,7 +165,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al modificar la clave'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -177,8 +174,8 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @param $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -187,9 +184,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar el usuario'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -200,6 +195,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @return UserData
      * @throws NoSuchItemException
      * @throws QueryException
+     * @throws ConstraintException
      */
     public function getById($id)
     {
@@ -237,24 +233,23 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(UserData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('Error al obtener los datos del usuario'));
 
-        $queryRes = DbWrapper::getResults($queryData, $this->db);
+        $result = $this->db->doSelect($queryData);
 
-        if ($queryRes === false) {
-            throw new QueryException(__u('Error al obtener los datos del usuario'));
-        }
-
-        if (!($queryRes instanceof UserData)) {
+        if ($result->getNumRows() === 0) {
             throw new NoSuchItemException(__u('El usuario no existe'));
         }
 
-        return $queryRes;
+        return $result->getData();
     }
 
     /**
      * Returns all the items
      *
      * @return UserData[]
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getAll()
     {
@@ -289,7 +284,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(UserData::class);
         $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -298,6 +293,8 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return UserData[]
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getByIdBatch(array $ids)
     {
@@ -340,7 +337,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -349,8 +346,8 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -359,9 +356,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar los usuarios'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -381,7 +376,9 @@ class UserRepository extends Repository implements RepositoryItemInterface
      *
      * @param ItemSearchData $SearchData
      *
-     * @return array
+     * @return QueryResult
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function search(ItemSearchData $SearchData)
     {
@@ -417,13 +414,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($SearchData->getLimitStart());
         $queryData->addParam($SearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
     /**
@@ -483,9 +474,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear el usuario'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -494,8 +483,8 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @param UserData $itemData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
@@ -514,15 +503,14 @@ class UserRepository extends Repository implements RepositoryItemInterface
             $itemData->getEmail()
         ]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
 
     /**
      * @param $login string
      *
      * @return UserData
+     * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException
      */
@@ -562,24 +550,23 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(UserData::class);
         $queryData->setQuery($query);
         $queryData->setParams([$login, $login]);
+        $queryData->setOnErrorMessage(__u('Error al obtener los datos del usuario'));
 
-        $queryRes = DbWrapper::getResults($queryData, $this->db);
+        $result = $this->db->doSelect($queryData);
 
-        if ($queryRes === false) {
-            throw new QueryException(__u('Error al obtener los datos del usuario'));
-        }
-
-        if ($queryData->getQueryNumRows() === 0) {
+        if ($result->getNumRows() === 0) {
             throw new NoSuchItemException(__u('El usuario no existe'));
         }
 
-        return $queryRes;
+        return $result->getData();
     }
 
     /**
      * Returns items' basic information
      *
      * @return UserData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getBasicInfo()
     {
@@ -600,7 +587,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(UserData::class);
         $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -610,9 +597,9 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @param $pass
      * @param $key
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updateMasterPassById($id, $pass, $key)
     {
@@ -629,7 +616,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams([$pass, $key, $id]);
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -637,9 +624,9 @@ class UserRepository extends Repository implements RepositoryItemInterface
      *
      * @param $id int El id del usuario
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @return int
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function updateLastLoginById($id)
     {
@@ -647,15 +634,15 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('UPDATE User SET lastLogin = NOW(), loginCount = loginCount + 1 WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
      * @param $login
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkExistsByLogin($login)
     {
@@ -663,17 +650,15 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id FROM User WHERE UPPER(login) = UPPER(?) OR UPPER(ssoLogin) = UPPER(?) LIMIT 1');
         $queryData->setParams([$login, $login]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
 
     /**
      * @param UserData $itemData
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updateOnLogin(UserData $itemData)
     {
@@ -699,7 +684,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el usuario'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -708,9 +693,9 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @param int                 $id
      * @param UserPreferencesData $userPreferencesData
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updatePreferencesById($id, UserPreferencesData $userPreferencesData)
     {
@@ -719,7 +704,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([serialize($userPreferencesData), $id]);
         $queryData->setOnErrorMessage(__u('Error al actualizar preferencias'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -728,6 +713,8 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @param $groupId
      *
      * @return array
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserEmailForGroup($groupId)
     {
@@ -745,7 +732,7 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams([$groupId, $groupId]);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -754,6 +741,8 @@ class UserRepository extends Repository implements RepositoryItemInterface
      * @param int $id
      *
      * @return array
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsageForUser($id)
     {
@@ -798,6 +787,6 @@ class UserRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams(array_fill(0, 5, (int)$id));
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 }

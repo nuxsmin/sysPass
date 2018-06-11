@@ -45,6 +45,7 @@ use SP\Services\Config\ConfigService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class AccountService
@@ -90,6 +91,7 @@ class AccountService extends Service implements AccountServiceInterface
      * @return AccountDetailsResponse
      * @throws QueryException
      * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getById($id)
     {
@@ -98,9 +100,10 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param AccountDetailsResponse $accountDetailsResponse
+     *
      * @return AccountService
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function withUsersById(AccountDetailsResponse $accountDetailsResponse)
     {
@@ -111,7 +114,10 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param AccountDetailsResponse $accountDetailsResponse
+     *
      * @return AccountService
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function withUserGroupsById(AccountDetailsResponse $accountDetailsResponse)
     {
@@ -122,7 +128,10 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param AccountDetailsResponse $accountDetailsResponse
+     *
      * @return AccountService
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function withTagsById(AccountDetailsResponse $accountDetailsResponse)
     {
@@ -133,6 +142,7 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param $id
+     *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -144,6 +154,7 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param $id
+     *
      * @return bool
      * @throws QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -155,7 +166,10 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param $id
+     *
      * @return \SP\DataModel\AccountPassData
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getPasswordForId($id)
     {
@@ -164,6 +178,7 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param AccountRequest $accountRequest
+     *
      * @return int
      * @throws QueryException
      * @throws SPException
@@ -193,6 +208,7 @@ class AccountService extends Service implements AccountServiceInterface
      *
      * @param string $pass
      * @param string $masterPass Clave maestra a utilizar
+     *
      * @return array
      * @throws ServiceException
      */
@@ -252,6 +268,7 @@ class AccountService extends Service implements AccountServiceInterface
      * Updates external items for the account
      *
      * @param AccountRequest $accountRequest
+     *
      * @throws QueryException
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -277,6 +294,7 @@ class AccountService extends Service implements AccountServiceInterface
     /**
      * @param int  $accountId
      * @param bool $isDelete
+     *
      * @return bool
      * @throws QueryException
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -351,6 +369,7 @@ class AccountService extends Service implements AccountServiceInterface
     /**
      * @param AccountRequest $accountRequest
      * @param bool           $addHistory
+     *
      * @throws SPException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -373,6 +392,7 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param AccountPasswordRequest $accountRequest
+     *
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
@@ -385,6 +405,7 @@ class AccountService extends Service implements AccountServiceInterface
     /**
      * @param $historyId
      * @param $accountId
+     *
      * @throws QueryException
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -400,6 +421,7 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param $id
+     *
      * @return AccountService
      * @throws SPException
      * @throws ServiceException
@@ -415,6 +437,7 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param array $ids
+     *
      * @return AccountService
      * @throws SPException
      * @throws ServiceException
@@ -430,7 +453,10 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param $accountId
+     *
      * @return array
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getForUser($accountId = null)
     {
@@ -445,7 +471,10 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param $accountId
+     *
      * @return array
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getLinked($accountId)
     {
@@ -457,7 +486,10 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param $id
+     *
      * @return AccountPassData
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getPasswordHistoryForId($id)
     {
@@ -469,6 +501,8 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @return AccountData[]
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getAllBasic()
     {
@@ -477,7 +511,10 @@ class AccountService extends Service implements AccountServiceInterface
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return mixed
+     *
+     * @return QueryResult
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -488,6 +525,8 @@ class AccountService extends Service implements AccountServiceInterface
      * Devolver el número total de cuentas
      *
      * @return \stdClass
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getTotalNumAccounts()
     {
@@ -502,6 +541,7 @@ class AccountService extends Service implements AccountServiceInterface
      * @return \SP\DataModel\AccountExtData
      * @throws QueryException
      * @throws \SP\Repositories\NoSuchItemException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getDataForLink($id)
     {
@@ -512,6 +552,8 @@ class AccountService extends Service implements AccountServiceInterface
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
      * @return array Con los datos de la clave
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getAccountsPassData()
     {
@@ -522,7 +564,11 @@ class AccountService extends Service implements AccountServiceInterface
      * Obtener las cuentas de una búsqueda.
      *
      * @param AccountSearchFilter $accountSearchFilter
+     *
      * @return AccountSearchResponse
+     * @throws QueryException
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getByFilter(AccountSearchFilter $accountSearchFilter)
     {

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -49,17 +49,11 @@ class UserProfileService extends Service
     protected $userProfileRepository;
 
     /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    protected function initialize()
-    {
-        $this->userProfileRepository = $this->dic->get(UserProfileRepository::class);
-    }
-
-    /**
      * @param $id
+     *
      * @return UserProfileData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -71,7 +65,10 @@ class UserProfileService extends Service
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return \SP\DataModel\ClientData[]
+     *
+     * @return \SP\Storage\Database\QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -80,6 +77,7 @@ class UserProfileService extends Service
 
     /**
      * @param $id
+     *
      * @return $this
      * @throws SPException
      */
@@ -94,6 +92,7 @@ class UserProfileService extends Service
 
     /**
      * @param array $ids
+     *
      * @return int
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -110,6 +109,7 @@ class UserProfileService extends Service
 
     /**
      * @param $itemData
+     *
      * @return int
      * @throws SPException
      */
@@ -120,7 +120,8 @@ class UserProfileService extends Service
 
     /**
      * @param $itemData
-     * @return mixed
+     *
+     * @return bool
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -132,7 +133,10 @@ class UserProfileService extends Service
 
     /**
      * @param $id
+     *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getUsersForProfile($id)
     {
@@ -143,9 +147,20 @@ class UserProfileService extends Service
      * Get all items from the service's repository
      *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllBasic()
     {
         return $this->userProfileRepository->getAll();
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    protected function initialize()
+    {
+        $this->userProfileRepository = $this->dic->get(UserProfileRepository::class);
     }
 }

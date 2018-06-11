@@ -10,10 +10,8 @@ use SP\Html\Html;
 
     <!-- Rows -->
 <?php if ($data->getData()->getDataCount() > 0):
-    foreach ($data->getData()->getData() as $dataIndex => $dataItem):
-        if ($dataIndex === 'count'): continue; endif;
-        $numFields = count($data->getData()->getDataRowSources()); ?>
-
+    $numFields = count($data->getData()->getDataRowSources());
+    foreach ($data->getData()->getData() as $dataIndex => $dataItem): ?>
         <tr data-item-id="<?php echo $dataItem->{$data->getData()->getDataRowSourceId()}; ?>">
             <?php foreach ($data->getData()->getDataRowSources() as $rowSrc): ?>
                 <?php $value = $rowSrc['isMethod'] === true && method_exists($dataItem, $rowSrc['name']) ? $dataItem->{$rowSrc['name']}() : $dataItem->{$rowSrc['name']}; ?>

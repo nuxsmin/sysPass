@@ -67,6 +67,8 @@ class AccountHistoryManagerController extends ControllerBase
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {

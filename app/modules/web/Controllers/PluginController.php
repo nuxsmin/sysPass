@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -40,6 +40,7 @@ use SP\Services\Plugin\PluginService;
 
 /**
  * Class PluginController
+ *
  * @package web\Controllers
  */
 class PluginController extends ControllerBase
@@ -53,6 +54,9 @@ class PluginController extends ControllerBase
 
     /**
      * indexAction
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function indexAction()
     {
@@ -71,6 +75,8 @@ class PluginController extends ControllerBase
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {
@@ -83,8 +89,8 @@ class PluginController extends ControllerBase
     /**
      * Search action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
@@ -103,6 +109,7 @@ class PluginController extends ControllerBase
      * View action
      *
      * @param $id
+     *
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -132,8 +139,9 @@ class PluginController extends ControllerBase
      * Sets view data for displaying items's data
      *
      * @param $pluginId
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setViewData($pluginId = null)
     {

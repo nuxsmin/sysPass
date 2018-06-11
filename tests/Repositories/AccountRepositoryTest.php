@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests;
+namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
 use SP\Account\AccountRequest;
@@ -35,7 +35,9 @@ use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\Account\AccountRepository;
 use SP\Services\Account\AccountPasswordRequest;
-use SP\Storage\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Tests\DatabaseTestCase;
+use function SP\Tests\setupContext;
 
 /**
  * Class AccountRepositoryTest
@@ -116,7 +118,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $accountRequest->passDateChange = time() + 3600;
 
         // Comprobar que la modificación de la clave es correcta
-        $this->assertTrue(self::$accountRepository->editPassword($accountRequest));
+        $this->assertEquals(1, self::$accountRepository->editPassword($accountRequest));
 
         $accountPassData = self::$accountRepository->getPasswordForId(2);
         $clearPassword = Crypt::decrypt($accountPassData->pass, $accountPassData->key, self::SECURE_KEY_PASSWORD);
@@ -126,14 +128,6 @@ class AccountRepositoryTest extends DatabaseTestCase
 
         // Comprobar que se devuelve un array vacío
         $this->assertCount(0, self::$accountRepository->getPasswordForId(10));
-    }
-
-    /**
-     * No implementado
-     */
-    public function testCheckInUse()
-    {
-        $this->markTestSkipped('Not implemented');
     }
 
     /**
@@ -173,7 +167,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $accountRequest->parentId = 0;
         $accountRequest->userGroupId = 2;
 
-        $this->assertTrue(self::$accountRepository->update($accountRequest));
+        $this->assertEquals(1, self::$accountRepository->update($accountRequest));
 
         $account = self::$accountRepository->getById(1);
 
@@ -221,6 +215,9 @@ class AccountRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar la búsqueda de cuentas
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testSearch()
     {
@@ -229,31 +226,35 @@ class AccountRepositoryTest extends DatabaseTestCase
         $itemSearchData->setSeachString('Google');
         $itemSearchData->setLimitCount(10);
 
-        $search = self::$accountRepository->search($itemSearchData);
+        $result = self::$accountRepository->search($itemSearchData);
+        $data = $result->getDataAsArray();
 
-        $this->assertCount(2, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(1, $search['count']);
-        $this->assertInstanceOf(\stdClass::class, $search[0]);
-        $this->assertEquals(1, $search[0]->id);
-        $this->assertEquals('Google', $search[0]->name);
+        $this->assertCount(1, $data);
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertEquals(1, $data[0]->id);
+        $this->assertEquals('Google', $data[0]->name);
 
         // Comprobar búsqueda con el texto Apple
         $itemSearchData = new ItemSearchData();
         $itemSearchData->setSeachString('Apple');
         $itemSearchData->setLimitCount(1);
 
-        $search = self::$accountRepository->search($itemSearchData);
-        $this->assertCount(2, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(1, $search['count']);
-        $this->assertInstanceOf(\stdClass::class, $search[0]);
-        $this->assertEquals(2, $search[0]->id);
-        $this->assertEquals('Apple', $search[0]->name);
+        $result = self::$accountRepository->search($itemSearchData);
+        $data = $result->getDataAsArray();
+
+        $this->assertCount(1, $data);
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertEquals(2, $data[0]->id);
+        $this->assertEquals('Apple', $data[0]->name);
     }
 
     /**
      * Comprobar las cuentas enlazadas
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetLinked()
     {
@@ -283,6 +284,9 @@ class AccountRepositoryTest extends DatabaseTestCase
 
     /**
      * Obtener todas las cuentas
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetAll()
     {
@@ -331,6 +335,9 @@ class AccountRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar el número total de cuentas
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetTotalNumAccounts()
     {
@@ -347,6 +354,9 @@ class AccountRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar las cuentas devueltas para un filtro de usuario
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetForUser()
     {
@@ -358,6 +368,9 @@ class AccountRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar las cuentas devueltas para obtener los datos de las claves
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetAccountsPassData()
     {
@@ -426,6 +439,10 @@ class AccountRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar la búsqueda de cuentas mediante filtros
+     *
+     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetByFilter()
     {
@@ -435,6 +452,7 @@ class AccountRepositoryTest extends DatabaseTestCase
 
         // Comprobar un Id de categoría
         $response = self::$accountRepository->getByFilter($searchFilter);
+
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(1, $response->getCount());
         $this->assertCount(1, $response->getData());
@@ -445,6 +463,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setCategoryId(10);
 
         $response = self::$accountRepository->getByFilter($searchFilter);
+
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(0, $response->getCount());
         $this->assertCount(0, $response->getData());
@@ -455,6 +474,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setClientId(1);
 
         $response = self::$accountRepository->getByFilter($searchFilter);
+
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(1, $response->getCount());
         $this->assertCount(1, $response->getData());
@@ -465,6 +485,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setClientId(10);
 
         $response = self::$accountRepository->getByFilter($searchFilter);
+
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(0, $response->getCount());
         $this->assertCount(0, $response->getData());
@@ -475,6 +496,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setCleanTxtSearch('apple.com');
 
         $response = self::$accountRepository->getByFilter($searchFilter);
+
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(1, $response->getCount());
         $this->assertCount(1, $response->getData());
@@ -486,6 +508,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setSearchFavorites(true);
 
         $response = self::$accountRepository->getByFilter($searchFilter);
+
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(0, $response->getCount());
         $this->assertCount(0, $response->getData());
@@ -496,6 +519,7 @@ class AccountRepositoryTest extends DatabaseTestCase
         $searchFilter->setTagsId([1]);
 
         $response = self::$accountRepository->getByFilter($searchFilter);
+
         $this->assertInstanceOf(AccountSearchResponse::class, $response);
         $this->assertEquals(1, $response->getCount());
         $this->assertCount(1, $response->getData());

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -57,8 +57,8 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
     /**
      * Search action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
@@ -77,6 +77,8 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {
@@ -116,10 +118,12 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
     }
 
     /**
-     * Sets view data for displaying user's data
+     * Sets view data for displaying user profile's data
      *
      * @param $profileId
-     * @throws \Psr\Container\ContainerExceptionInterface
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setViewData($profileId = null)
     {
@@ -150,6 +154,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      * Edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function editAction($id)
@@ -179,6 +184,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      * Delete action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -254,6 +260,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      * Saves edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -290,6 +297,7 @@ class UserProfileController extends ControllerBase implements CrudControllerInte
      * View action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function viewAction($id)

@@ -33,6 +33,7 @@ use SP\Repositories\Account\AccountHistoryRepository;
 use SP\Repositories\Account\AccountToUserGroupRepository;
 use SP\Repositories\Account\AccountToUserRepository;
 use SP\Services\Service;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class AccountHistoryService
@@ -85,6 +86,8 @@ class AccountHistoryService extends Service
      * @param $id
      *
      * @return array Con los registros con id como clave y fecha - usuario como valor
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getHistoryForAccount($id)
     {
@@ -120,6 +123,8 @@ class AccountHistoryService extends Service
      * @param $id
      *
      * @return ItemData[]
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getUsersByAccountId($id)
     {
@@ -130,6 +135,8 @@ class AccountHistoryService extends Service
      * @param $id
      *
      * @return ItemData[]
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getUserGroupsByAccountId($id)
     {
@@ -139,7 +146,9 @@ class AccountHistoryService extends Service
     /**
      * @param ItemSearchData $itemSearchData
      *
-     * @return mixed
+     * @return QueryResult
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -163,6 +172,8 @@ class AccountHistoryService extends Service
 
     /**
      * @return array
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getAccountsPassData()
     {
@@ -212,6 +223,8 @@ class AccountHistoryService extends Service
      * Returns all the items
      *
      * @return array
+     * @throws QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getAll()
     {

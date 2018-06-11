@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,6 +25,7 @@
 namespace SP\Html\DataGrid;
 
 use SP\Html\Assets\IconInterface;
+use SP\Storage\Database\QueryResult;
 
 defined('APP_ROOT') || die();
 
@@ -119,12 +120,12 @@ abstract class DataGridDataBase implements DataGridDataInterface
     }
 
     /**
-     * @param $data array
+     * @param QueryResult $queryResult
      */
-    public function setData(array $data)
+    public function setData(QueryResult $queryResult)
     {
-        $this->_dataCount = isset($data['count']) ? $data['count'] : count($data);
-        $this->_data = $data;
+        $this->_dataCount = $queryResult->getNumRows();
+        $this->_data = $queryResult->getDataAsArray();
     }
 
     /**

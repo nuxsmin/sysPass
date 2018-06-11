@@ -22,9 +22,8 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\Database;
 
-use PDOStatement;
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
@@ -58,17 +57,14 @@ class DbWrapper
      *
      * @param QueryData         $queryData
      * @param DatabaseInterface $db
-     * @return array
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public static function getResultsArray(QueryData $queryData, DatabaseInterface $db = null)
     {
-        $results = self::getResults($queryData, $db);
-
-        if ($results === false) {
-            return [];
-        }
-
-        return is_object($results) ? [$results] : $results;
+        return $db->doQuery($queryData);
     }
 
     /**
@@ -76,61 +72,14 @@ class DbWrapper
      *
      * @param QueryData         $queryData QueryData Los datos de la consulta
      * @param DatabaseInterface $db
-     * @return mixed devuelve bool si hay un error. Devuelve array con el array de registros devueltos
+     *
+     * @return QueryResult devuelve bool si hay un error. Devuelve array con el array de registros devueltos
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public static function getResults(QueryData $queryData, DatabaseInterface $db = null)
     {
-        if ($queryData->getQuery() === '') {
-            self::resetVars();
-            return false;
-        }
-
-        try {
-            $db->doQuery($queryData);
-
-            if (self::$fullRowCount === true) {
-                $db->getFullRowCount($queryData);
-            }
-        } catch (\Exception $e) {
-            processException($e);
-
-            $queryData->setQueryStatus($e->getCode());
-        }
-
-        self::resetVars();
-
-        if ($db->getNumRows() === 1 && !$queryData->isUseKeyPair()) {
-            return $db->getLastResult()[0];
-        }
-
-        return $db->getLastResult();
-    }
-
-    /**
-     * Restablecer los atributos estáticos
-     */
-    private static function resetVars()
-    {
-        self::$fullRowCount = false;
-    }
-
-    /**
-     * Devolver los resultados como objeto PDOStatement
-     *
-     * @param QueryData         $queryData
-     * @param DatabaseInterface $db
-     * @return PDOStatement|false
-     * @throws \Exception
-     */
-    public static function getResultsRaw(QueryData $queryData, DatabaseInterface $db = null)
-    {
-        try {
-            return $db->doQuery($queryData, true);
-        } catch (\Exception $e) {
-            processException($e);
-
-            throw $e;
-        }
+        return $db->doQuery($queryData);
     }
 
     /**
@@ -138,57 +87,14 @@ class DbWrapper
      *
      * @param QueryData         $queryData Los datos para realizar la consulta
      * @param DatabaseInterface $db
-     * @return bool
+     *
+     * @return int
      * @throws QueryException
      * @throws ConstraintException
      */
     public static function getQuery(QueryData $queryData, DatabaseInterface $db)
     {
-        if (null === $queryData->getOnErrorMessage()) {
-            $errorMessage = __u('Error en la consulta');
-        } else {
-            $errorMessage = $queryData->getOnErrorMessage();
-        }
-
-        if ($queryData->getQuery() === '') {
-            throw new QueryException($errorMessage, SPException::ERROR, __u('Consulta en blanco'));
-        }
-
-        try {
-            $db->doQuery($queryData);
-
-            return true;
-        } catch (QueryException $e) {
-            processException($e);
-
-            $queryData->setQueryStatus($e->getCode());
-            $previous = $e->getPrevious();
-
-            if ($previous) {
-                switch ($previous->getCode()) {
-                    case '23000':
-                        throw new ConstraintException(
-                            __u('Restricción de integridad'),
-                            SPException::ERROR,
-                            $e->getMessage(),
-                            $e->getCode(),
-                            $e
-                        );
-                }
-            }
-
-            throw $e;
-        } catch (\Exception $e) {
-            processException($e);
-
-            throw new QueryException(
-                $errorMessage,
-                SPException::ERROR,
-                $e->getMessage(),
-                $e->getCode(),
-                $e
-            );
-        }
+        return $db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -203,6 +109,7 @@ class DbWrapper
      * Iniciar una transacción
      *
      * @param DatabaseInterface $db
+     *
      * @return bool
      * @throws SPException
      */
@@ -217,6 +124,7 @@ class DbWrapper
      * Finalizar una transacción
      *
      * @param DatabaseInterface $db
+     *
      * @return bool
      * @throws SPException
      */
@@ -231,6 +139,7 @@ class DbWrapper
      * Rollback de una transacción
      *
      * @param DatabaseInterface $db
+     *
      * @return bool
      * @throws SPException
      */
@@ -239,6 +148,14 @@ class DbWrapper
         $conn = $db->getDbHandler()->getConnection();
 
         return $conn->inTransaction() && $conn->rollBack();
+    }
+
+    /**
+     * Restablecer los atributos estáticos
+     */
+    private static function resetVars()
+    {
+        self::$fullRowCount = false;
     }
 
     /**

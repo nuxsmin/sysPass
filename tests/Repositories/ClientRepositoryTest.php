@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests;
+namespace SP\Tests\Repositories;
 
 use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
@@ -31,7 +31,9 @@ use SP\DataModel\ItemSearchData;
 use SP\Mvc\Model\QueryCondition;
 use SP\Repositories\Client\ClientRepository;
 use SP\Repositories\DuplicatedItemException;
-use SP\Storage\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Tests\DatabaseTestCase;
+use function SP\Tests\setupContext;
 
 /**
  * Class ClientRepositoryTest
@@ -91,6 +93,9 @@ class ClientRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar la búsqueda mediante texto
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -98,21 +103,23 @@ class ClientRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('google');
 
-        $search = self::$clientRepository->search($itemSearchData);
-        $this->assertCount(2, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(1, $search['count']);
-        $this->assertEquals(1, $search[0]->id);
-        $this->assertEquals('Google Inc.', $search[0]->description);
+        $result = self::$clientRepository->search($itemSearchData);
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertCount(1, $data);
+        $this->assertInstanceOf(ClientData::class, $data[0]);
+        $this->assertEquals(1, $data[0]->id);
+        $this->assertEquals('Google Inc.', $data[0]->description);
 
         $itemSearchData = new ItemSearchData();
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('prueba');
 
-        $search = self::$clientRepository->search($itemSearchData);
-        $this->assertCount(1, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(0, $search['count']);
+        $result = self::$clientRepository->search($itemSearchData);
+
+        $this->assertEquals(0, $result->getNumRows());
+        $this->assertCount(0, $result->getDataAsArray());
     }
 
     /**
@@ -264,6 +271,9 @@ class ClientRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar la obtención de clientes por Id en lote
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetByIdBatch()
     {
@@ -273,14 +283,7 @@ class ClientRepositoryTest extends DatabaseTestCase
     }
 
     /**
-     * No implementado
-     */
-    public function testCheckInUse()
-    {
-        $this->markTestSkipped('Not implemented');
-    }
-
-    /**
+     * @throws ConstraintException
      * @throws QueryException
      */
     public function testGetAllForFilter()

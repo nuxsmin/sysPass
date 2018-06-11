@@ -26,10 +26,8 @@ namespace SP\Repositories;
 
 use SP\Config\Config;
 use SP\Core\Context\ContextInterface;
-use SP\Core\Dic\Container;
 use SP\Core\Events\EventDispatcher;
-use SP\Storage\Database;
-use SP\Storage\DatabaseInterface;
+use SP\Storage\Database\Database;
 
 /**
  * Class Repository
@@ -51,26 +49,20 @@ abstract class Repository
      */
     protected $eventDispatcher;
     /**
-     * @var DatabaseInterface
+     * @var Database
      */
     protected $db;
-    /**
-     * @var Container
-     */
-    private $dic;
 
     /**
      * Repository constructor.
      *
-     * @param Container        $dic
      * @param Config           $config
      * @param Database         $database
      * @param ContextInterface $session
      * @param EventDispatcher  $eventDispatcher
      */
-    final public function __construct(Container $dic, Config $config, Database $database, ContextInterface $session, EventDispatcher $eventDispatcher)
+    final public function __construct(Config $config, Database $database, ContextInterface $session, EventDispatcher $eventDispatcher)
     {
-        $this->dic = $dic;
         $this->config = $config;
         $this->db = $database;
         $this->context = $session;

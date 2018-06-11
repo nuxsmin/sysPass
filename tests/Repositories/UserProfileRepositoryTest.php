@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests;
+namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
 use SP\Core\Exceptions\ConstraintException;
@@ -32,7 +32,9 @@ use SP\DataModel\ProfileData;
 use SP\DataModel\UserProfileData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\UserProfile\UserProfileRepository;
-use SP\Storage\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Tests\DatabaseTestCase;
+use function SP\Tests\setupContext;
 
 /**
  * Class UserProfileRepositoryTest
@@ -66,6 +68,9 @@ class UserProfileRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar la obtención de perfiles
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetAll()
     {
@@ -80,6 +85,9 @@ class UserProfileRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar la búsqueda de perfiles
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -87,20 +95,22 @@ class UserProfileRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('Demo');
 
-        $search = self::$userProfileRepository->search($itemSearchData);
-        $this->assertCount(2, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(1, $search['count']);
-        $this->assertEquals(2, $search[0]->id);
-        $this->assertEquals('Demo', $search[0]->name);
+        $result = self::$userProfileRepository->search($itemSearchData);
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertCount(1, $data);
+        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertEquals(2, $data[0]->id);
+        $this->assertEquals('Demo', $data[0]->name);
 
         // Nueva búsqueda de perfil no existente
         $itemSearchData->setSeachString('prueba');
 
-        $search = self::$userProfileRepository->search($itemSearchData);
-        $this->assertCount(1, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(0, $search['count']);
+        $result = self::$userProfileRepository->search($itemSearchData);
+
+        $this->assertEquals(0, $result->getNumRows());
+        $this->assertCount(0, $result->getDataAsArray());
     }
 
     /**

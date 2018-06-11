@@ -84,6 +84,7 @@ class AccountSearchHelper extends HelperBase
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getSearchBox()
     {

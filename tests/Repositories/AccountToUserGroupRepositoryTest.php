@@ -22,14 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests;
+namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
 use SP\Account\AccountRequest;
 use SP\Core\Exceptions\ConstraintException;
 use SP\DataModel\ItemData;
 use SP\Repositories\Account\AccountToUserGroupRepository;
-use SP\Storage\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Tests\DatabaseTestCase;
+use function SP\Tests\setupContext;
 
 /**
  * Class AccountToUserGroupRepositoryTest

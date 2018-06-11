@@ -43,12 +43,12 @@ return [
     \SP\Config\ConfigData::class => function (\SP\Config\Config $config) {
         return $config->getConfigData();
     },
-    \SP\Storage\DatabaseConnectionData::class => function (\SP\Config\ConfigData $configData) {
-        return \SP\Storage\DatabaseConnectionData::getFromConfig($configData);
+    \SP\Storage\Database\DatabaseConnectionData::class => function (\SP\Config\ConfigData $configData) {
+        return \SP\Storage\Database\DatabaseConnectionData::getFromConfig($configData);
     },
-    \SP\Storage\Database::class => object(\SP\Storage\Database::class)
-        ->constructor(object(\SP\Storage\MySQLHandler::class)
-            ->constructor(get(\SP\Storage\DatabaseConnectionData::class))),
+    \SP\Storage\Database\Database::class => object(\SP\Storage\Database\Database::class)
+        ->constructor(object(\SP\Storage\Database\MySQLHandler::class)
+            ->constructor(get(\SP\Storage\Database\DatabaseConnectionData::class))),
     \SP\Core\Acl\Actions::class => object(\SP\Core\Acl\Actions::class)
         ->constructor(object(\SP\Storage\FileCache::class), object(\SP\Storage\XmlHandler::class)
             ->constructor(object(\SP\Storage\FileHandler::class)

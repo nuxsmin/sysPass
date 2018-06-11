@@ -24,14 +24,15 @@
 
 namespace SP\Repositories\CustomField;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\CustomFieldTypeData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class CustomFieldTypeRepository
@@ -49,8 +50,8 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      *
      * @return mixed
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create($itemData)
     {
@@ -59,9 +60,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
         $queryData->setParams([$itemData->getName(), $itemData->getText()]);
         $queryData->setOnErrorMessage(__u('Error al crear el tipo de campo'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -83,8 +82,8 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      *
      * @return mixed
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update($itemData)
     {
@@ -97,9 +96,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el tipo de campo'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -120,6 +117,8 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * @param int $id
      *
      * @return CustomFieldTypeData
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -128,13 +127,15 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
         $queryData->setQuery('SELECT id, `name`, `text` FROM CustomFieldType WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * Returns all the items
      *
      * @return CustomFieldTypeData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -142,7 +143,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
         $queryData->setMapClassName(CustomFieldTypeData::class);
         $queryData->setQuery('SELECT id, `name`, `text` FROM CustomFieldType');
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -163,8 +164,8 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * @param array $ids
      *
      * @return void
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -179,8 +180,8 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
      * @param $id
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -189,7 +190,7 @@ class CustomFieldTypeRepository extends Repository implements RepositoryItemInte
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar el tipo de campo'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**

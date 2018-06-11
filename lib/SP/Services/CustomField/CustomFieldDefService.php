@@ -48,6 +48,7 @@ class CustomFieldDefService extends Service
 
     /**
      * @param $id
+     *
      * @return mixed
      */
     public static function getFieldModuleById($id)
@@ -77,7 +78,10 @@ class CustomFieldDefService extends Service
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return \SP\DataModel\CustomFieldDefinitionData[]
+     *
+     * @return \SP\Storage\Database\QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -86,7 +90,10 @@ class CustomFieldDefService extends Service
 
     /**
      * @param $id
+     *
      * @return \SP\DataModel\CustomFieldDefinitionData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -95,6 +102,7 @@ class CustomFieldDefService extends Service
 
     /**
      * @param $id
+     *
      * @return CustomFieldDefService
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -115,6 +123,7 @@ class CustomFieldDefService extends Service
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return int
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -135,6 +144,7 @@ class CustomFieldDefService extends Service
 
     /**
      * @param $itemData
+     *
      * @return mixed
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -146,6 +156,7 @@ class CustomFieldDefService extends Service
 
     /**
      * @param $itemData
+     *
      * @return mixed
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -159,6 +170,8 @@ class CustomFieldDefService extends Service
      * Get all items from the service's repository
      *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllBasic()
     {

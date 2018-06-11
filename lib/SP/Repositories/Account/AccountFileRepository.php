@@ -31,8 +31,7 @@ use SP\Repositories\NoSuchItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class AccountFileRepository
@@ -47,6 +46,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      * Creates an item
      *
      * @param FileData $itemData
+     *
      * @return mixed
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -76,15 +76,14 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         ]);
         $queryData->setOnErrorMessage(__u('No se pudo guardar el archivo'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
      * Updates an item
      *
      * @param mixed $itemData
+     *
      * @return mixed
      */
     public function update($itemData)
@@ -94,7 +93,10 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
 
     /**
      * @param $id
+     *
      * @return FileExtData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getInfoById($id)
     {
@@ -116,14 +118,17 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return FileExtData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -148,14 +153,17 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return FileData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByAccountId($id)
     {
@@ -176,13 +184,15 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
      * Returns all the items
      *
      * @return FileExtData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAll()
     {
@@ -205,14 +215,17 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setMapClassName(FileExtData::class);
         $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -237,7 +250,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getDataAsArray();
     }
 
     /**
@@ -260,9 +273,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar el archivo'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        if ($queryData->getQueryNumRows() === 0) {
+        if ($this->db->doQuery($queryData)->getAffectedNumRows() === 0) {
             throw new NoSuchItemException(__u('Archivo no encontrado'));
         }
 
@@ -273,6 +284,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -284,9 +296,7 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar los archivos'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -323,7 +333,10 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
      * Searches for items by a given filter
      *
      * @param ItemSearchData $itemSearchData
+     *
      * @return mixed
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -347,12 +360,6 @@ class AccountFileRepository extends Repository implements RepositoryItemInterfac
         $queryData->addParam($itemSearchData->getLimitStart());
         $queryData->addParam($itemSearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 }

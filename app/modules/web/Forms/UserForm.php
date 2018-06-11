@@ -49,6 +49,7 @@ class UserForm extends FormBase implements FormInterface
      * Validar el formulario
      *
      * @param $action
+     *
      * @return bool
      * @throws ValidationException
      */
@@ -83,6 +84,8 @@ class UserForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData()
     {
+        $this->isLdap = Request::analyzeInt('isLdap', 0);
+
         $this->userData = new UserData();
         $this->userData->setId($this->itemId);
         $this->userData->setName(Request::analyzeString('name'));
@@ -97,6 +100,7 @@ class UserForm extends FormBase implements FormInterface
         $this->userData->setIsDisabled(Request::analyzeBool('disabled', false));
         $this->userData->setIsChangePass(Request::analyzeBool('changepass_enabled', false));
         $this->userData->setPass(Request::analyzeEncrypted('password'));
+        $this->userData->setIsLdap($this->isLdap);
     }
 
     /**
@@ -127,6 +131,16 @@ class UserForm extends FormBase implements FormInterface
         if ($this->isDemo()) {
             throw new ValidationException(__u('Ey, esto es una DEMO!!'));
         }
+    }
+
+    /**
+     * @return bool
+     */
+    private function isDemo()
+    {
+        return $this->configData->isDemoEnabled()
+            && ($this->userData->getLogin() === 'demo'
+                && $this->userData->isAdminApp() === 0);
     }
 
     /**
@@ -168,16 +182,6 @@ class UserForm extends FormBase implements FormInterface
     }
 
     /**
-     * @return bool
-     */
-    private function isDemo()
-    {
-        return $this->configData->isDemoEnabled()
-            && ($this->userData->getLogin() === 'demo'
-            && $this->userData->isAdminApp() === 0);
-    }
-
-    /**
      * @return UserData
      */
     public function getItemData()
@@ -191,13 +195,5 @@ class UserForm extends FormBase implements FormInterface
     public function getIsLdap()
     {
         return $this->isLdap;
-    }
-
-    /**
-     * @param int $isLdap
-     */
-    public function setIsLdap($isLdap)
-    {
-        $this->isLdap = $isLdap;
     }
 }

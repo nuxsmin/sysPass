@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests;
+namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
 use SP\Core\Crypt\Crypt;
@@ -36,7 +36,9 @@ use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\NoSuchItemException;
 use SP\Repositories\User\UserRepository;
 use SP\Services\User\UpdatePassRequest;
-use SP\Storage\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Tests\DatabaseTestCase;
+use function SP\Tests\setupContext;
 
 /**
  * Class UserRepositoryTest
@@ -121,7 +123,7 @@ class UserRepositoryTest extends DatabaseTestCase
         $preferences->setResultsAsCards(true);
         $preferences->setResultsPerPage(10);
 
-        $this->assertTrue(self::$userRepository->updatePreferencesById(2, $preferences));
+        $this->assertEquals(1, self::$userRepository->updatePreferencesById(2, $preferences));
     }
 
     /**
@@ -173,11 +175,17 @@ class UserRepositoryTest extends DatabaseTestCase
     {
         $result = self::$userRepository->updatePassById(2, new UpdatePassRequest(Hash::hashKey('prueba123')));
 
-        $this->assertTrue($result);
+        $this->assertEquals(1, $result);
+
+        $result = self::$userRepository->updatePassById(10, new UpdatePassRequest(Hash::hashKey('prueba123')));
+        $this->assertEquals(0, $result);
     }
 
     /**
      * Obtener los datos de los usuarios por Id en lote
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetByIdBatch()
     {
@@ -216,9 +224,11 @@ class UserRepositoryTest extends DatabaseTestCase
         $userData->setIsLdap(1);
         $userData->setLogin('demo');
 
-        $result = self::$userRepository->updateOnLogin($userData);
+        $this->assertEquals(1, self::$userRepository->updateOnLogin($userData));
 
-        $this->assertTrue($result);
+        $userData->setLogin('demodedadae');
+
+        $this->assertEquals(0, self::$userRepository->updateOnLogin($userData));
     }
 
     /**
@@ -291,13 +301,16 @@ class UserRepositoryTest extends DatabaseTestCase
      */
     public function testUpdateLastLoginById()
     {
-        $result = self::$userRepository->updateLastLoginById(2);
+        $this->assertEquals(1, self::$userRepository->updateLastLoginById(2));
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, self::$userRepository->updateLastLoginById(10));
     }
 
     /**
      * Comprobar la búsqueda de usuarios mediante texto
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -305,21 +318,23 @@ class UserRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('User A');
 
-        $search = self::$userRepository->search($itemSearchData);
-        $this->assertCount(2, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(1, $search['count']);
-        $this->assertEquals(3, $search[0]->id);
-        $this->assertEquals('User A', $search[0]->name);
+        $result = self::$userRepository->search($itemSearchData);
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertCount(1, $data);
+        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertEquals(3, $data[0]->id);
+        $this->assertEquals('User A', $data[0]->name);
 
         $itemSearchData = new ItemSearchData();
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('prueba');
 
-        $search = self::$userRepository->search($itemSearchData);
-        $this->assertCount(1, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(0, $search['count']);
+        $result = self::$userRepository->search($itemSearchData);
+
+        $this->assertEquals(0, $result->getNumRows());
+        $this->assertCount(0, $result->getDataAsArray());
     }
 
     /**
@@ -333,7 +348,7 @@ class UserRepositoryTest extends DatabaseTestCase
         $key = Crypt::makeSecuredKey('prueba123');
         $pass = Crypt::encrypt('prueba_key', $key, 'prueba123');
 
-        $this->assertTrue(self::$userRepository->updateMasterPassById(3, $pass, $key));
+        $this->assertEquals(1, self::$userRepository->updateMasterPassById(3, $pass, $key));
 
         $user = self::$userRepository->getById(3);
 

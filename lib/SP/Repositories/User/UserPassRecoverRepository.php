@@ -22,12 +22,11 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Repositories\UserPassRecover;
+namespace SP\Repositories\User;
 
 use SP\Core\Exceptions\SPException;
 use SP\Repositories\Repository;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class UserPassRecoverRepository
@@ -59,9 +58,7 @@ class UserPassRecoverRepository extends Repository
         $queryData->setQuery($query);
         $queryData->setParams([$userId, $time]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows();
+        return $this->db->doSelect($queryData)->getNumRows();
     }
 
     /**
@@ -70,7 +67,7 @@ class UserPassRecoverRepository extends Repository
      * @param $userId
      * @param $hash
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -88,7 +85,7 @@ class UserPassRecoverRepository extends Repository
         $queryData->setParams([$userId, $hash]);
         $queryData->setOnErrorMessage(__u('Error al generar el hash de recuperación'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -114,9 +111,7 @@ class UserPassRecoverRepository extends Repository
         $queryData->setParams([$hash, $time]);
         $queryData->setOnErrorMessage(__u('Error en comprobación de hash'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -126,6 +121,8 @@ class UserPassRecoverRepository extends Repository
      * @param $time
      *
      * @return mixed
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getUserIdForHash($hash, $time)
     {
@@ -141,6 +138,6 @@ class UserPassRecoverRepository extends Repository
         $queryData->setQuery($query);
         $queryData->setParams([$hash, $time]);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 }

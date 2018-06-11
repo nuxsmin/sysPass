@@ -39,6 +39,7 @@ use SP\Repositories\Account\AccountToUserRepository;
 use SP\Services\Service;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
+use SP\Storage\Database\QueryResult;
 use SP\Storage\FileCache;
 use SP\Storage\FileException;
 
@@ -127,9 +128,11 @@ class AccountSearchService extends Service
      * a mostrar.
      *
      * @param AccountSearchFilter $accountSearchFilter
-     * @return array
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     *
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\SPException
      */
     public function processSearchResults(AccountSearchFilter $accountSearchFilter)
     {
@@ -147,6 +150,8 @@ class AccountSearchService extends Service
 
         $accountAclService = $this->dic->get(AccountAclService::class);
 
+        $accountsData = [];
+        
         foreach ($accountSearchResponse->getData() as $accountSearchData) {
             $cache = $this->getCacheForAccount($accountSearchData);
 
@@ -178,9 +183,7 @@ class AccountSearchService extends Service
             $accountsData[] = $accountsSearchItem;
         }
 
-        $accountsData['count'] = $accountSearchResponse->getCount();
-
-        return $accountsData;
+        return (new QueryResult($accountsData))->setTotalNumRows($accountSearchResponse->getCount());
     }
 
     /**
@@ -188,6 +191,7 @@ class AccountSearchService extends Service
      * QueryCondition con los filtros
      *
      * @param $string
+     *
      * @return QueryCondition
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -290,6 +294,7 @@ class AccountSearchService extends Service
      * Devolver los accesos desde la caché
      *
      * @param AccountSearchVData $accountSearchData
+     *
      * @return AccountCache
      */
     protected function getCacheForAccount(AccountSearchVData $accountSearchData)
@@ -317,6 +322,7 @@ class AccountSearchService extends Service
      * Seleccionar un color para la cuenta
      *
      * @param int $id El id del elemento a asignar
+     *
      * @return string
      */
     private function pickAccountColor($id)

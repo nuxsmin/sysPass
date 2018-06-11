@@ -64,6 +64,7 @@ abstract class FormBase
      */
     public function __construct($itemId = null)
     {
+        // FIXME
         $this->injectDependencies();
 
         $this->itemId = $itemId;

@@ -227,8 +227,8 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
     /**
      * Search action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
@@ -247,6 +247,8 @@ class AccountFileController extends ControllerBase implements CrudControllerInte
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {

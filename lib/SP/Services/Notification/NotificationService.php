@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -29,6 +29,7 @@ use SP\DataModel\NotificationData;
 use SP\Repositories\Notification\NotificationRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class NotificationService
@@ -46,6 +47,7 @@ class NotificationService extends Service
      * Creates an item
      *
      * @param NotificationData $itemData
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -59,6 +61,7 @@ class NotificationService extends Service
      * Updates an item
      *
      * @param NotificationData $itemData
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -72,7 +75,10 @@ class NotificationService extends Service
      * Devolver los elementos con los ids especificados
      *
      * @param array $ids
-     * @return mixed
+     *
+     * @return NotificationData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -83,6 +89,7 @@ class NotificationService extends Service
      * Deletes an item preserving the sticky ones
      *
      * @param $id
+     *
      * @return NotificationService
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -101,6 +108,7 @@ class NotificationService extends Service
      * Deletes an item
      *
      * @param $id
+     *
      * @return NotificationService
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -119,6 +127,7 @@ class NotificationService extends Service
      * Deletes an item
      *
      * @param array $ids
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -137,6 +146,7 @@ class NotificationService extends Service
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -155,7 +165,10 @@ class NotificationService extends Service
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return NotificationData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -166,6 +179,8 @@ class NotificationService extends Service
      * Returns all the items
      *
      * @return NotificationData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAll()
     {
@@ -176,6 +191,7 @@ class NotificationService extends Service
      * Marcar una notificación como leída
      *
      * @param $id
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -190,7 +206,10 @@ class NotificationService extends Service
      *
      * @param $component
      * @param $id
+     *
      * @return NotificationData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getForUserIdByDate($component, $id)
     {
@@ -199,7 +218,10 @@ class NotificationService extends Service
 
     /**
      * @param $id
+     *
      * @return NotificationData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllForUserId($id)
     {
@@ -208,7 +230,10 @@ class NotificationService extends Service
 
     /**
      * @param $id
+     *
      * @return NotificationData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllActiveForUserId($id)
     {
@@ -219,7 +244,10 @@ class NotificationService extends Service
      * Searches for items by a given filter
      *
      * @param ItemSearchData $itemSearchData
-     * @return mixed
+     *
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -237,7 +265,10 @@ class NotificationService extends Service
      *
      * @param ItemSearchData $itemSearchData
      * @param int            $userId
+     *
      * @return mixed
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchForUserId(ItemSearchData $itemSearchData, $userId)
     {

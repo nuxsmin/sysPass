@@ -28,8 +28,8 @@ namespace SP\Services\Import;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Services\Service;
-use SP\Storage\Database;
-use SP\Storage\DbWrapper;
+use SP\Storage\Database\Database;
+use SP\Storage\Database\DbWrapper;
 
 defined('APP_ROOT') || die();
 

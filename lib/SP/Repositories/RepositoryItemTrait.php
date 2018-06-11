@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -26,8 +26,8 @@ namespace SP\Repositories;
 
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\DataModelInterface;
-use SP\Storage\DBStorageInterface;
-use SP\Storage\DBUtil;
+use SP\Storage\Database\DBStorageInterface;
+use SP\Storage\Database\DBUtil;
 
 /**
  * Trait RepositoryItemTrait
@@ -40,6 +40,7 @@ trait RepositoryItemTrait
      * Eliminar elementos en lotes
      *
      * @param $ids
+     *
      * @return array
      */
     public function deleteBatch(array $ids)
@@ -67,6 +68,7 @@ trait RepositoryItemTrait
      *
      * @param string             $name
      * @param DBStorageInterface $DBStorage
+     *
      * @return string con el hash generado
      */
     protected function makeItemHash($name, DBStorageInterface $DBStorage)
@@ -81,6 +83,7 @@ trait RepositoryItemTrait
      *
      * @param array  $items
      * @param string $string Cadena a utilizar para los parámetros
+     *
      * @return string
      */
     protected function getParamsFromArray(array $items, $string = '?')

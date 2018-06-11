@@ -28,8 +28,7 @@ use SP\Account\AccountRequest;
 use SP\DataModel\ItemData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class AccountToUserRepository
@@ -63,8 +62,8 @@ class AccountToUserRepository extends Repository
      * @param int $id con el Id de la cuenta
      *
      * @return int
-     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function deleteByAccountId($id)
     {
@@ -73,9 +72,7 @@ class AccountToUserRepository extends Repository
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar usuarios asociados a la cuenta'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -103,7 +100,7 @@ class AccountToUserRepository extends Repository
             $queryData->addParam($user);
         }
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -129,8 +126,8 @@ class AccountToUserRepository extends Repository
      * @param int $id con el Id de la cuenta
      *
      * @return int
-     * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function deleteEditByAccountId($id)
     {
@@ -139,9 +136,7 @@ class AccountToUserRepository extends Repository
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar usuarios asociados a la cuenta'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -169,7 +164,7 @@ class AccountToUserRepository extends Repository
             $queryData->addParam($user);
         }
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -178,6 +173,8 @@ class AccountToUserRepository extends Repository
      * @param int $id con el id de la cuenta
      *
      * @return ItemData[] con los id de usuarios de la cuenta
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getUsersByAccountId($id)
     {
@@ -193,6 +190,6 @@ class AccountToUserRepository extends Repository
         $queryData->addParam($id);
         $queryData->setMapClassName(ItemData::class);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 }

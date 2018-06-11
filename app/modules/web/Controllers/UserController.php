@@ -62,8 +62,8 @@ class UserController extends ControllerBase implements CrudControllerInterface
     /**
      * Search action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
@@ -82,6 +82,8 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {
@@ -124,6 +126,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * Sets view data for displaying user's data
      *
      * @param $userId
+     *
      * @throws \SP\Core\Exceptions\SPException
      * @throws \Psr\Container\ContainerExceptionInterface
      */
@@ -175,6 +178,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * Edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function editAction($id)
@@ -205,6 +209,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * Edit user's pass action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function editPassAction($id)
@@ -241,6 +246,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * Delete action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -322,6 +328,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
 
     /**
      * @param UserData $userData
+     *
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -345,6 +352,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * Saves edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -356,7 +364,6 @@ class UserController extends ControllerBase implements CrudControllerInterface
 
         try {
             $form = new UserForm($id);
-            $form->setIsLdap(Request::analyzeInt('isLdap', 0));
             $form->validate(ActionsInterface::USER_EDIT);
 
             $itemData = $form->getItemData();
@@ -422,6 +429,7 @@ class UserController extends ControllerBase implements CrudControllerInterface
      * View action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function viewAction($id)

@@ -24,6 +24,8 @@
 
 namespace SP\Repositories\Plugin;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemData;
 use SP\DataModel\ItemSearchData;
@@ -31,8 +33,8 @@ use SP\DataModel\PluginData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class PluginRepository
@@ -49,8 +51,8 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      * @param PluginData $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create($itemData)
     {
@@ -67,9 +69,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear el plugin'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -77,9 +77,9 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      *
      * @param PluginData $itemData
      *
-     * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update($itemData)
     {
@@ -102,7 +102,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -111,6 +111,8 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      * @param int $id
      *
      * @return PluginData
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -128,13 +130,15 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * Returns all the items
      *
      * @return PluginData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -150,7 +154,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(PluginData::class);
         $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -159,6 +163,8 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return PluginData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -175,7 +181,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -185,8 +191,8 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      *
      * @return void
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -202,8 +208,8 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      *
      * @return int
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -212,9 +218,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar el plugin'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -258,7 +262,9 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      *
      * @param ItemSearchData $itemSearchData
      *
-     * @return mixed
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -278,14 +284,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($itemSearchData->getLimitStart());
         $queryData->addParam($itemSearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        /** @var array $queryRes */
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
     /**
@@ -294,6 +293,8 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      * @param string $name
      *
      * @return PluginData
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByName($name)
     {
@@ -311,7 +312,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->addParam($name);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
@@ -320,9 +321,9 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      * @param $id
      * @param $enabled
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleEnabled($id, $enabled)
     {
@@ -331,7 +332,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([$enabled, $id]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -340,9 +341,9 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      * @param $name
      * @param $enabled
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleEnabledByName($name, $enabled)
     {
@@ -351,7 +352,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([$enabled, $name]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -360,9 +361,9 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      * @param $id
      * @param $available
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleAvailable($id, $available)
     {
@@ -371,7 +372,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([$id, $available]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -380,9 +381,9 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      * @param $name
      * @param $available
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function toggleAvailableByName($name, $available)
     {
@@ -391,7 +392,7 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([$available, $name]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -399,9 +400,9 @@ class PluginRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id Id del plugin
      *
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function resetById($id)
     {
@@ -410,13 +411,15 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al actualizar el plugin'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
      * Devolver los plugins activados
      *
      * @return ItemData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getEnabled()
     {
@@ -424,6 +427,6 @@ class PluginRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(ItemData::class);
         $queryData->setQuery('SELECT id, name FROM Plugin WHERE enabled = 1');
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 }

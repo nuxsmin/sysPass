@@ -28,12 +28,11 @@ use SP\Config\ConfigData;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Services\Service;
-use SP\Storage\Database;
-use SP\Storage\DbWrapper;
+use SP\Storage\Database\Database;
+use SP\Storage\Database\MySQLFileParser;
+use SP\Storage\Database\QueryData;
 use SP\Storage\FileException;
 use SP\Storage\FileHandler;
-use SP\Storage\MySQLFileParser;
-use SP\Storage\QueryData;
 use SP\Util\Util;
 
 /**
@@ -57,6 +56,7 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
      * Check if it needs to be upgraded
      *
      * @param $version
+     *
      * @return bool
      */
     public static function needsUpgrade($version)
@@ -67,8 +67,9 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
     /**
      * Inicia el proceso de actualización de la BBDD.
      *
-     * @param int $version con la versión de la BBDD actual
+     * @param int        $version con la versión de la BBDD actual
      * @param ConfigData $configData
+     *
      * @return bool
      * @throws UpgradeException
      */
@@ -129,6 +130,7 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
      * Aplicar actualizaciones auxiliares antes de actualizar la BBDD
      *
      * @param $version
+     *
      * @return bool
      */
     private function applyPreUpgrade($version)
@@ -140,6 +142,7 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
      * Actualiza la BBDD según la versión.
      *
      * @param int $version con la versión a actualizar
+     *
      * @returns bool
      * @throws UpgradeException
      */
@@ -167,7 +170,8 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
 
                 $queryData = new QueryData();
                 $queryData->setQuery($query);
-                DbWrapper::getQuery($queryData, $this->db);
+
+                $this->db->doQuery($queryData);
             } catch (\Exception $e) {
                 processException($e);
                 debugLog('SQL: ' . $query);
@@ -194,6 +198,7 @@ class UpgradeDatabaseService extends Service implements UpgradeInterface
      * Obtener las consultas de actualización desde un archivo
      *
      * @param $filename
+     *
      * @return array|bool
      * @throws UpgradeException
      */

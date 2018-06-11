@@ -49,10 +49,19 @@ class Vault
     private $timeUpdated = 0;
 
     /**
+     * @return static
+     */
+    public static function getInstance()
+    {
+        return new static();
+    }
+
+    /**
      * Regenerar la clave de sesión
      *
      * @param string $newSeed
      * @param string $oldSeed
+     *
      * @return Vault
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
@@ -70,6 +79,7 @@ class Vault
      * Devolver la clave maestra de la sesión
      *
      * @param  string $key
+     *
      * @return string
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
@@ -81,8 +91,9 @@ class Vault
     /**
      * Guardar la clave maestra en la sesión
      *
-     * @param  mixed $data
+     * @param  mixed  $data
      * @param  string $key
+     *
      * @return $this
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
@@ -112,5 +123,13 @@ class Vault
     public function getTimeUpdated()
     {
         return $this->timeUpdated;
+    }
+
+    /**
+     * Serializaes the current object
+     */
+    public function getSerialized()
+    {
+        return serialize($this);
     }
 }

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -28,6 +28,7 @@ use SP\Core\Exceptions\InvalidArgumentException;
 
 /**
  * Class TrackRequest
+ *
  * @package SP\Repositories\Track
  */
 class TrackRequest
@@ -40,6 +41,7 @@ class TrackRequest
 
     /**
      * @param string $address
+     *
      * @throws InvalidArgumentException
      */
     public function setTrackIp($address)

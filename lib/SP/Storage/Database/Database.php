@@ -22,10 +22,11 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\Database;
 
 use PDO;
 use PDOStatement;
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 
@@ -100,39 +101,88 @@ class Database implements DatabaseInterface
     }
 
     /**
+     * @return DBStorageInterface
+     */
+    public function getDbHandler()
+    {
+        return $this->dbHandler;
+    }
+
+    /**
+     * @param QueryData $queryData
+     * @param bool      $fullCount
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function doSelect(QueryData $queryData, $fullCount = false)
+    {
+        if ($queryData->getQuery() === '') {
+            throw new QueryException($queryData->getOnErrorMessage(), QueryException::ERROR, __u('Consulta en blanco'));
+        }
+
+        try {
+            $queryResult = $this->doQuery($queryData);
+
+            if ($fullCount === true) {
+                $queryResult->setTotalNumRows($this->getFullRowCount($queryData));
+            }
+
+            return $queryResult;
+        } catch (ConstraintException $e) {
+            processException($e);
+
+            throw $e;
+        } catch (QueryException $e) {
+            processException($e);
+
+            throw $e;
+        } catch (\Exception $e) {
+            processException($e);
+
+            throw new QueryException(
+                $queryData->getOnErrorMessage(),
+                SPException::ERROR,
+                $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
+        }
+    }
+
+    /**
      * Realizar una consulta a la BBDD.
      *
      * @param $queryData   QueryData Los datos de la consulta
      * @param $getRawData  bool    realizar la consulta para obtener registro a registro
-     * @return PDOStatement|array
-     * @throws SPException
+     *
+     * @return QueryResult
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function doQuery(QueryData $queryData, $getRawData = false)
     {
-        $isSelect = preg_match("/^(select|show)\s/i", $queryData->getQuery());
-
         // Limpiar valores de caché
-        $this->lastResult = [];
+//        $this->lastResult = [];
 
         /** @var PDOStatement $stmt */
         $stmt = $this->prepareQueryData($queryData);
 
-        if ($isSelect) {
-            if ($getRawData) {
-                return $stmt;
-            }
-
+        if (preg_match("/^(select|show)\s/i", $queryData->getQuery())) {
             $this->numFields = $stmt->columnCount();
-            $this->lastResult = $stmt->fetchAll();
-            $this->numRows = count($this->lastResult);
 
-            $queryData->setQueryNumRows($this->numRows);
-        } else {
-            $this->numRows = $stmt->rowCount();
-            $queryData->setQueryNumRows($stmt->rowCount());
+            return new QueryResult($stmt->fetchAll());
+
+//            $this->lastResult = $stmt->fetchAll();
+//            $this->numRows = count($this->lastResult);
+//
+//            $queryData->setQueryNumRows($this->numRows);
         }
 
-        return $stmt;
+        return (new QueryResult())
+            ->setAffectedNumRows($stmt->rowCount())
+            ->setLastId($this->lastId);
     }
 
     /**
@@ -140,8 +190,10 @@ class Database implements DatabaseInterface
      *
      * @param $queryData QueryData Los datos de la consulta
      * @param $isCount   bool   Indica si es una consulta de contador de registros
+     *
      * @return \PDOStatement|false
      * @throws QueryException
+     * @throws ConstraintException
      */
     private function prepareQueryData(QueryData $queryData, $isCount = false)
     {
@@ -204,12 +256,19 @@ class Database implements DatabaseInterface
             return $stmt;
         } catch (\Exception $e) {
             processException($e);
-//            ob_start();
-//            debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-//            debugLog('Exception: ' . $e->getMessage());
-//            debugLog(ob_get_clean());
 
-            throw new QueryException($e->getMessage(), SPException::CRITICAL, $e->getCode(), 0, $e);
+            switch ($e->getCode()) {
+                case '23000':
+                    throw new ConstraintException(
+                        __u('Restricción de integridad'),
+                        ConstraintException::ERROR,
+                        $e->getMessage(),
+                        $e->getCode(),
+                        $e
+                    );
+            }
+
+            throw new QueryException($e->getMessage(), QueryException::CRITICAL, $e->getCode(), 0, $e);
         }
     }
 
@@ -217,6 +276,7 @@ class Database implements DatabaseInterface
      * Obtener el número de filas de una consulta realizada
      *
      * @param $queryData QueryData Los datos de la consulta
+     *
      * @return int Número de files de la consulta
      * @throws SPException
      */
@@ -229,16 +289,20 @@ class Database implements DatabaseInterface
         $queryRes = $this->prepareQueryData($queryData, true);
         $num = (int)$queryRes->fetchColumn();
         $queryRes->closeCursor();
-        $queryData->setQueryNumRows($num);
 
         return $num;
     }
 
     /**
-     * @return DBStorageInterface
+     * Don't fetch records and return prepared statement
+     *
+     * @param QueryData $queryData
+     *
+     * @return \PDOStatement
+     * @throws QueryException
      */
-    public function getDbHandler()
+    public function doQueryRaw(QueryData $queryData)
     {
-        return $this->dbHandler;
+        return $this->prepareQueryData($queryData);
     }
 }

@@ -28,8 +28,8 @@ use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ConfigData;
 use SP\Repositories\Repository;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\DbWrapper;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class ConfigRepository
@@ -65,8 +65,8 @@ class ConfigRepository extends Repository
      * @param ConfigData $configData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update(ConfigData $configData)
     {
@@ -74,13 +74,13 @@ class ConfigRepository extends Repository
         $queryData->setQuery('UPDATE Config SET `value` = ? WHERE parameter = ?');
         $queryData->setParams([$configData->getValue(), $configData->getParam()]);
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
      * @param ConfigData $configData
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -90,26 +90,30 @@ class ConfigRepository extends Repository
         $queryData->setQuery('INSERT INTO Config SET parameter = ?, value = ?');
         $queryData->setParams([$configData->getParam(), $configData->getValue()]);
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
      * Obtener un array con la configuración almacenada en la BBDD.
      *
      * @return ConfigData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT parameter, value FROM Config');
 
-        return DbWrapper::getResults($queryData);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * @param string $param
      *
      * @return mixed
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByParam($param)
     {
@@ -117,7 +121,7 @@ class ConfigRepository extends Repository
         $queryData->setQuery('SELECT value FROM Config WHERE parameter = ? LIMIT 1');
         $queryData->addParam($param);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
@@ -133,9 +137,7 @@ class ConfigRepository extends Repository
         $queryData->setQuery('SELECT parameter FROM Config WHERE parameter = ? LIMIT 1');
         $queryData->addParam($param);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows() === 1;
+        return $this->db->doSelect($queryData)->getNumRows() === 1;
     }
 
     /**
@@ -151,6 +153,6 @@ class ConfigRepository extends Repository
         $queryData->setQuery('DELETE FROM Config WHERE parameter = ? LIMIT 1');
         $queryData->addParam($param);
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 }

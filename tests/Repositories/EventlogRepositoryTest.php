@@ -22,14 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests;
+namespace SP\Tests\Repositories;
 
 use PHPUnit\DbUnit\DataSet\IDataSet;
 use SP\Core\Exceptions\ConstraintException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\EventLog\EventlogRepository;
-use SP\Storage\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Tests\DatabaseTestCase;
+use function SP\Tests\setupContext;
 
 /**
  * Class EventlogRepositoryTest
@@ -63,6 +65,9 @@ class EventlogRepositoryTest extends DatabaseTestCase
 
     /**
      * Comprobar la búsqueda de eventos por texto
+     *
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testSearch()
     {
@@ -70,32 +75,38 @@ class EventlogRepositoryTest extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('login.auth.database');
 
-        $search = self::$eventlogRepository->search($itemSearchData);
-        $this->assertCount(5, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(4, $search['count']);
-        $this->assertEquals('login.auth.database', $search[0]->action);
+        $result = self::$eventlogRepository->search($itemSearchData);
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(4, $result->getNumRows());
+        $this->assertCount(4, $data);
+        $this->assertInstanceOf(\stdClass::class, $data[0]);
+        $this->assertEquals('login.auth.database', $data[0]->action);
 
         $itemSearchData->setSeachString('login.auth.');
 
-        $search = self::$eventlogRepository->search($itemSearchData);
-        $this->assertCount(5, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(4, $search['count']);
+        $result = self::$eventlogRepository->search($itemSearchData);
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(4, $result->getNumRows());
+        $this->assertCount(4, $data);
+        $this->assertInstanceOf(\stdClass::class, $data[0]);
 
         $itemSearchData->setSeachString('Tiempo inactivo : 0 min.');
 
-        $search = self::$eventlogRepository->search($itemSearchData);
-        $this->assertCount(2, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(1, $search['count']);
+        $result = self::$eventlogRepository->search($itemSearchData);
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertCount(1, $data);
+        $this->assertInstanceOf(\stdClass::class, $data[0]);
 
         $itemSearchData->setSeachString('prueba');
 
-        $search = self::$eventlogRepository->search($itemSearchData);
-        $this->assertCount(1, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(0, $search['count']);
+        $result = self::$eventlogRepository->search($itemSearchData);
+
+        $this->assertCount(0, $result->getDataAsArray());
+        $this->assertEquals(0, $result->getNumRows());
     }
 
     /**

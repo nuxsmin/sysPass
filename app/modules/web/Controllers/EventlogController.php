@@ -49,6 +49,9 @@ class EventlogController extends ControllerBase
 
     /**
      * indexAction
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function indexAction()
     {
@@ -67,6 +70,8 @@ class EventlogController extends ControllerBase
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {
@@ -78,6 +83,9 @@ class EventlogController extends ControllerBase
 
     /**
      * searchAction
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {

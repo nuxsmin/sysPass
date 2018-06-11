@@ -28,8 +28,7 @@ use SP\Account\AccountRequest;
 use SP\DataModel\ItemData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class AccountToUserGroupRepository
@@ -46,6 +45,8 @@ class AccountToUserGroupRepository extends Repository
      * @param int $id con el Id de la cuenta
      *
      * @return ItemData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getUserGroupsByAccountId($id)
     {
@@ -61,7 +62,7 @@ class AccountToUserGroupRepository extends Repository
         $queryData->addParam($id);
         $queryData->setMapClassName(ItemData::class);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -70,6 +71,8 @@ class AccountToUserGroupRepository extends Repository
      * @param $id
      *
      * @return ItemData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getUserGroupsByUserGroupId($id)
     {
@@ -85,13 +88,13 @@ class AccountToUserGroupRepository extends Repository
         $queryData->addParam($id);
         $queryData->setMapClassName(ItemData::class);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
      * @param $id int
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -102,9 +105,7 @@ class AccountToUserGroupRepository extends Repository
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -135,9 +136,7 @@ class AccountToUserGroupRepository extends Repository
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -156,17 +155,14 @@ class AccountToUserGroupRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
+        $queryData->setOnErrorMessage(__u('Error al actualizar los grupos secundarios'));
 
         foreach ($accountRequest->userGroupsView as $userGroup) {
             $queryData->addParam($accountRequest->id);
             $queryData->addParam($userGroup);
         }
 
-        $queryData->setOnErrorMessage(__u('Error al actualizar los grupos secundarios'));
-
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -197,9 +193,7 @@ class AccountToUserGroupRepository extends Repository
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar grupos asociados a la cuenta'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -218,16 +212,13 @@ class AccountToUserGroupRepository extends Repository
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
+        $queryData->setOnErrorMessage(__u('Error al actualizar los grupos secundarios'));
 
         foreach ($accountRequest->userGroupsEdit as $userGroup) {
             $queryData->addParam($accountRequest->id);
             $queryData->addParam($userGroup);
         }
 
-        $queryData->setOnErrorMessage(__u('Error al actualizar los grupos secundarios'));
-
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 }

@@ -22,14 +22,16 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests;
+namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
 use SP\Account\AccountRequest;
 use SP\Core\Exceptions\ConstraintException;
 use SP\DataModel\ItemData;
 use SP\Repositories\Account\AccountToTagRepository;
-use SP\Storage\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Tests\DatabaseTestCase;
+use function SP\Tests\setupContext;
 
 /**
  * Class AccountToTagRepositoryTest
@@ -73,7 +75,7 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
         $accountRequest->id = 1;
         $accountRequest->tags = [2, 3];
 
-        $this->assertTrue(self::$accountToTagRepository->add($accountRequest));
+        $this->assertEquals(2, self::$accountToTagRepository->add($accountRequest));
 
         $tags = self::$accountToTagRepository->getTagsByAccountId($accountRequest->id);
 
@@ -87,6 +89,10 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
         $accountRequest->tags = [1];
 
         self::$accountToTagRepository->add($accountRequest);
+
+        $accountRequest->id = 10;
+
+        self::$accountToTagRepository->add($accountRequest);
     }
 
 
@@ -98,13 +104,18 @@ class AccountToTagRepositoryTest extends DatabaseTestCase
      */
     public function testDeleteByAccountId()
     {
-        $this->assertTrue(self::$accountToTagRepository->deleteByAccountId(1));
+        $this->assertEquals(1, self::$accountToTagRepository->deleteByAccountId(1));
+
         $this->assertCount(0, self::$accountToTagRepository->getTagsByAccountId(1));
-        $this->assertTrue(self::$accountToTagRepository->deleteByAccountId(10));
+
+        $this->assertEquals(0, self::$accountToTagRepository->deleteByAccountId(10));
     }
 
     /**
      * Comprobar la obtención de etiquetas por Id de cuenta
+     *
+     * @throws ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function testGetTagsByAccountId()
     {

@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests;
+namespace SP\Tests\Repositories;
 
 use DI\DependencyException;
 use SP\Core\Exceptions\ConstraintException;
@@ -31,7 +31,9 @@ use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserGroupData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\UserGroup\UserGroupRepository;
-use SP\Storage\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Tests\DatabaseTestCase;
+use function SP\Tests\setupContext;
 
 /**
  * Class UserGroupRepositoryTest
@@ -88,6 +90,9 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
 
     /**
      * Comprobar la obtención de grupos por nombre
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testGetByName()
     {
@@ -237,6 +242,9 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
 
     /**
      * Comprobar la búsqueda de grupos
+     *
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function testSearch()
     {
@@ -244,20 +252,22 @@ class UserGroupRepositoryTestCase extends DatabaseTestCase
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('Demo');
 
-        $search = self::$userGroupRepository->search($itemSearchData);
-        $this->assertCount(2, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(1, $search['count']);
-        $this->assertEquals(2, $search[0]->id);
-        $this->assertEquals('Demo', $search[0]->name);
+        $result = self::$userGroupRepository->search($itemSearchData);
+        $data = $result->getDataAsArray();
+
+        $this->assertEquals(1, $result->getNumRows());
+        $this->assertCount(1, $data);
+        $this->assertInstanceOf(UserGroupData::class, $data[0]);
+        $this->assertEquals(2, $data[0]->id);
+        $this->assertEquals('Demo', $data[0]->name);
 
         $itemSearchData = new ItemSearchData();
         $itemSearchData->setLimitCount(10);
         $itemSearchData->setSeachString('prueba');
 
-        $search = self::$userGroupRepository->search($itemSearchData);
-        $this->assertCount(1, $search);
-        $this->assertArrayHasKey('count', $search);
-        $this->assertEquals(0, $search['count']);
+        $result = self::$userGroupRepository->search($itemSearchData);
+
+        $this->assertEquals(0, $result->getNumRows());
+        $this->assertCount(0, $result->getDataAsArray());
     }
 }

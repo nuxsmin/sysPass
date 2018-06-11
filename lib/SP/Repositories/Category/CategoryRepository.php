@@ -31,8 +31,8 @@ use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class CategoryRepository
@@ -67,9 +67,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear la categoría'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -90,9 +88,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
             $itemData->getName()
         ]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doQuery($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -100,8 +96,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      *
      * @param CategoryData $itemData
      *
-     * @return mixed
-     * @throws SPException
+     * @return int
      * @throws DuplicatedItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -129,9 +124,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar la categoría'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this;
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -153,9 +146,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
             $itemData->getId()
         ]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doQuery($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -164,6 +155,8 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @param int $id
      *
      * @return CategoryData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -172,7 +165,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name`, description FROM Category WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
@@ -181,6 +174,8 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @param string $name
      *
      * @return CategoryData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByName($name)
     {
@@ -192,13 +187,15 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
             $this->makeItemHash($name, $this->db->getDbHandler())
         ]);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * Returns all the items
      *
      * @return CategoryData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAll()
     {
@@ -206,7 +203,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(CategoryData::class);
         $queryData->setQuery('SELECT id, `name`, description, `hash` FROM Category ORDER BY `name`');
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -215,9 +212,15 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids)
     {
+        if (count($ids) === 0) {
+            return [];
+        }
+
         $query = /** @lang SQL */
             'SELECT id, `name`, description FROM Category WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
@@ -226,7 +229,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -245,9 +248,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar la categorías'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -269,9 +270,7 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar la categoría'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -291,7 +290,9 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
      *
      * @param ItemSearchData $SearchData
      *
-     * @return mixed
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $SearchData)
     {
@@ -312,13 +313,6 @@ class CategoryRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($SearchData->getLimitStart());
         $queryData->addParam($SearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        /** @var array $queryRes */
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 }

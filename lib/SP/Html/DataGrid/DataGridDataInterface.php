@@ -25,6 +25,7 @@
 namespace SP\Html\DataGrid;
 
 use SP\Html\Assets\IconInterface;
+use SP\Storage\Database\QueryResult;
 
 defined('APP_ROOT') || die();
 
@@ -68,9 +69,9 @@ interface DataGridDataInterface
     /**
      * Establecer los datos de la consulta
      *
-     * @param $data array
+     * @param QueryResult $queryResult
      */
-    public function setData(array $data);
+    public function setData(QueryResult $queryResult);
 
     /**
      * Devolver los datos de la consulta

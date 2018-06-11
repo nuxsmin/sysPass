@@ -41,6 +41,7 @@ use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\DataGridPager;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Services\CustomField\CustomFieldDefService;
+use SP\Storage\Database\QueryResult;
 use SP\Util\DateUtil;
 
 /**
@@ -61,10 +62,11 @@ class ItemsGridHelper extends HelperBase
     protected $acl;
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getCategoriesGrid(array $data)
+    public function getCategoriesGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -76,7 +78,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setDataRowSourceId('id');
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('description');
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -144,6 +146,7 @@ class ItemsGridHelper extends HelperBase
      * Devolver el paginador por defecto
      *
      * @param DataGridActionSearch $sourceAction
+     *
      * @return DataGridPager
      */
     protected function getPager(DataGridActionSearch $sourceAction)
@@ -162,10 +165,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getClientsGrid(array $data)
+    public function getClientsGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -181,7 +185,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSource('isGlobal', false, function ($value) {
             return $value ? __('SI') : __('NO');
         });
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -245,10 +249,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getCustomFieldsGrid(array $data)
+    public function getCustomFieldsGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -266,7 +271,7 @@ class ItemsGridHelper extends HelperBase
         });
         $GridData->addDataRowSource('typeName');
         $GridData->addDataRowSourceWithIcon('isEncrypted', $this->icons->getIconEditPass()->setTitle(__('Encriptado')));
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -330,10 +335,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getFilesGrid(array $data)
+    public function getFilesGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -351,7 +357,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('type');
         $GridData->addDataRowSource('size');
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -415,10 +421,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getAccountsGrid(array $data)
+    public function getAccountsGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -432,7 +439,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('clientName');
         $GridData->addDataRowSource('categoryName');
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -473,10 +480,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getAccountsHistoryGrid(array $data)
+    public function getAccountsHistoryGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -498,7 +506,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSource('date');
         $GridData->addDataRowSourceWithIcon('isModify', $iconEdit->setTitle(__('Modificada'))->setClass('opacity50'));
         $GridData->addDataRowSourceWithIcon('isDeleted', $iconDelete->setTitle(__('Eliminada'))->setClass('opacity50'));
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -549,10 +557,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getUsersGrid(array $data)
+    public function getUsersGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -573,7 +582,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSourceWithIcon('isAdminAcc', $this->icons->getIconAccAdmin());
         $GridData->addDataRowSourceWithIcon('isLdap', $this->icons->getIconLdapUser());
         $GridData->addDataRowSourceWithIcon('isDisabled', $this->icons->getIconDisabled());
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -676,10 +685,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getUserGroupsGrid(array $data)
+    public function getUserGroupsGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -691,7 +701,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->setDataRowSourceId('id');
         $GridData->addDataRowSource('name');
         $GridData->addDataRowSource('description');
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -766,10 +776,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getUserProfilesGrid(array $data)
+    public function getUserProfilesGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -779,7 +790,7 @@ class ItemsGridHelper extends HelperBase
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('id');
         $GridData->addDataRowSource('name');
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -854,10 +865,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getAuthTokensGrid(array $data)
+    public function getAuthTokensGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -868,8 +880,10 @@ class ItemsGridHelper extends HelperBase
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('id');
         $GridData->addDataRowSource('userLogin');
-        $GridData->addDataRowSource('actionId');
-        $GridData->setData($data);
+        $GridData->addDataRowSource('actionId', false, function ($value) {
+            return Acl::getActionInfo($value);
+        });
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -944,10 +958,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getPublicLinksGrid(array $data)
+    public function getPublicLinksGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -969,7 +984,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSource('userLogin');
         $GridData->addDataRowSource('getNotifyString', true);
         $GridData->addDataRowSource('getCountViewsString', true);
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -1043,10 +1058,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getTagsGrid(array $data)
+    public function getTagsGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -1056,7 +1072,7 @@ class ItemsGridHelper extends HelperBase
         $GridData = new DataGridData();
         $GridData->setDataRowSourceId('id');
         $GridData->addDataRowSource('name');
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -1120,10 +1136,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGridTab
      */
-    public function getPluginsGrid(array $data)
+    public function getPluginsGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -1137,7 +1154,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSourceWithIcon('enabled', $this->icons->getIconEnabled());
         $GridData->addDataRowSourceWithIcon('enabled', $this->icons->getIconDisabled(), 0);
         $GridData->addDataRowSourceWithIcon('available', $this->icons->getIconDelete()->setTitle(__('No disponible')), 0);
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGridTab($this->view->getTheme());
@@ -1216,10 +1233,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGrid
      */
-    public function getEventLogGrid(array $data)
+    public function getEventLogGrid(QueryResult $queryResult)
     {
         // Grid Header
         $GridHeaders = new DataGridHeader();
@@ -1267,7 +1285,7 @@ class ItemsGridHelper extends HelperBase
 
                 return str_replace(PHP_EOL, '<br>', $text);
             });
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGrid($this->view->getTheme());
@@ -1323,10 +1341,11 @@ class ItemsGridHelper extends HelperBase
     }
 
     /**
-     * @param array $data
+     * @param QueryResult $queryResult
+     *
      * @return DataGrid
      */
-    public function getNotificationsGrid(array $data)
+    public function getNotificationsGrid(QueryResult $queryResult)
     {
         $isAdminApp = $this->context->getUserData()->getIsAdminApp();
 
@@ -1351,7 +1370,7 @@ class ItemsGridHelper extends HelperBase
         $GridData->addDataRowSourceWithIcon('checked', $this->icons->getIconEnabled()->setTitle(__('Leída')));
         $GridData->addDataRowSourceWithIcon('onlyAdmin', $this->icons->getIconAppAdmin()->setTitle(__('Sólo Admins')));
         $GridData->addDataRowSourceWithIcon('sticky', $this->icons->getIconGroup()->setTitle(__('Global')));
-        $GridData->setData($data);
+        $GridData->setData($queryResult);
 
         // Grid
         $Grid = new DataGrid($this->view->getTheme());
@@ -1450,6 +1469,7 @@ class ItemsGridHelper extends HelperBase
      *
      * @param DataGridInterface $dataGrid
      * @param ItemSearchData    $itemSearchData
+     *
      * @return DataGridInterface
      */
     public function updatePager(DataGridInterface $dataGrid, ItemSearchData $itemSearchData)

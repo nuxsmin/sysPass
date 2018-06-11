@@ -27,6 +27,7 @@ namespace SP\Repositories\Account;
 use SP\Account\AccountRequest;
 use SP\Account\AccountSearchFilter;
 use SP\Account\AccountUtil;
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountData;
@@ -45,8 +46,8 @@ use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Services\Account\AccountPasswordRequest;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class AccountRepository
@@ -61,6 +62,8 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * Devolver el número total de cuentas
      *
      * @return \stdClass
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getTotalNumAccounts()
     {
@@ -71,13 +74,15 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData = new QueryData();
         $queryData->setQuery($query);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * @param $id
      *
      * @return AccountPassData
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getPasswordForId($id)
     {
@@ -92,13 +97,15 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setWhere($queryFilter->getFilters());
         $queryData->setParams($queryFilter->getParams());
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * @param QueryCondition $queryCondition
      *
      * @return AccountPassData
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getPasswordHistoryForId(QueryCondition $queryCondition)
     {
@@ -112,7 +119,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($queryCondition->getParams());
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
@@ -121,8 +128,8 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @param int $id
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function incrementDecryptCounter($id)
     {
@@ -133,7 +140,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -142,9 +149,8 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @param AccountRequest $itemData
      *
      * @return int
+     * @throws ConstraintException
      * @throws QueryException
-     * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function create($itemData)
     {
@@ -193,9 +199,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear la cuenta'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -203,9 +207,9 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      *
      * @param AccountRequest $accountRequest
      *
-     * @return bool
-     * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function editPassword(AccountRequest $accountRequest)
     {
@@ -230,7 +234,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -239,8 +243,8 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @param AccountPasswordRequest $request
      *
      * @return bool
+     * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function updatePassword(AccountPasswordRequest $request)
     {
@@ -255,7 +259,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([$request->pass, $request->key, $request->id]);
         $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -265,8 +269,8 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @param int $userId    User's Id
      *
      * @return bool
+     * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function editRestore($historyId, $userId)
     {
@@ -298,7 +302,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([$historyId, $userId]);
         $queryData->setOnErrorMessage(__u('Error al restaurar cuenta'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -307,7 +311,8 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @param int $id
      *
      * @return int EL número de cuentas eliminadas
-     * @throws SPException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -317,9 +322,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar la cuenta'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -381,7 +384,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($itemData->id);
         $queryData->setOnErrorMessage(__u('Error al modificar la cuenta'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -392,6 +395,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @return AccountVData
      * @throws NoSuchItemException
      * @throws QueryException
+     * @throws ConstraintException
      */
     public function getById($id)
     {
@@ -399,25 +403,23 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT * FROM account_data_v WHERE id = ? LIMIT 1');
         $queryData->setMapClassName(AccountVData::class);
         $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('No se pudieron obtener los datos de la cuenta'));
 
-        /** @var AccountVData|array $queryRes */
-        $queryRes = DbWrapper::getResults($queryData, $this->db);
+        $result = $this->db->doSelect($queryData);
 
-        if ($queryRes === false) {
-            throw new QueryException(__u('No se pudieron obtener los datos de la cuenta'));
-        }
-
-        if (is_array($queryRes) && count($queryRes) === 0) {
+        if ($result->getNumRows() === 0) {
             throw new NoSuchItemException(__u('La cuenta no existe'));
         }
 
-        return $queryRes;
+        return $result->getData();
     }
 
     /**
      * Returns all the items
      *
      * @return AccountData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -425,7 +427,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(AccountData::class);
         $queryData->setQuery('SELECT * FROM Account ORDER BY id');
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -444,8 +446,8 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return int
+     * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -455,9 +457,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar las cuentas'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -495,7 +495,9 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      *
      * @param ItemSearchData $SearchData
      *
-     * @return mixed
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $SearchData)
     {
@@ -518,13 +520,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($SearchData->getLimitStart());
         $queryData->addParam($SearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
     /**
@@ -533,8 +529,8 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @param int $id
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function incrementViewCounter($id)
     {
@@ -542,7 +538,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('UPDATE Account SET countView = (countView + 1) WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
@@ -553,6 +549,7 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @return AccountExtData
      * @throws NoSuchItemException
      * @throws QueryException
+     * @throws ConstraintException
      */
     public function getDataForLink($id)
     {
@@ -574,19 +571,15 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setMapClassName(AccountExtData::class);
         $queryData->addParam($id);
+        $queryData->setOnErrorMessage(__u('No se pudieron obtener los datos de la cuenta'));
 
-        /** @var AccountExtData|array $queryRes */
-        $queryRes = DbWrapper::getResults($queryData, $this->db);
+        $result = $this->db->doSelect($queryData, true);
 
-        if ($queryRes === false) {
-            throw new QueryException(__u('No se pudieron obtener los datos de la cuenta'));
-        }
-
-        if (is_array($queryRes) && count($queryRes) === 0) {
+        if ($result->getNumRows() === 0) {
             throw new NoSuchItemException(__u('La cuenta no existe'));
         }
 
-        return $queryRes;
+        return $result->getData();
     }
 
     /**
@@ -595,6 +588,9 @@ class AccountRepository extends Repository implements RepositoryItemInterface
      * @param AccountSearchFilter $accountSearchFilter
      *
      * @return AccountSearchResponse
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
      */
     public function getByFilter(AccountSearchFilter $accountSearchFilter)
     {
@@ -666,13 +662,15 @@ class AccountRepository extends Repository implements RepositoryItemInterface
 
         $queryData->setMapClassName(AccountSearchVData::class);
 
-        return new AccountSearchResponse($this->db->getFullRowCount($queryData), DbWrapper::getResultsArray($queryData, $this->db));
+        return new AccountSearchResponse($this->db->getFullRowCount($queryData), $this->db->doSelect($queryData)->getDataAsArray());
     }
 
     /**
      * @param QueryCondition $queryFilter
      *
      * @return array
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUser(QueryCondition $queryFilter)
     {
@@ -687,13 +685,15 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($queryFilter->getParams());
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
      * @param QueryCondition $queryFilter
      *
      * @return array
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getLinked(QueryCondition $queryFilter)
     {
@@ -707,19 +707,21 @@ class AccountRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($queryFilter->getParams());
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
      * @return array Con los datos de la clave
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAccountsPassData()
     {
         $queryData = new QueryData();
         $queryData->setQuery('SELECT id, `name`, pass, `key` FROM Account WHERE BIT_LENGTH(pass) > 0');
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 }

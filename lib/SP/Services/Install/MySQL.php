@@ -27,11 +27,11 @@ namespace SP\Services\Install;
 use PDOException;
 use SP\Config\ConfigData;
 use SP\Core\Exceptions\SPException;
-use SP\Storage\DatabaseConnectionData;
-use SP\Storage\DBUtil;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\Database\DBUtil;
+use SP\Storage\Database\MySQLFileParser;
+use SP\Storage\Database\MySQLHandler;
 use SP\Storage\FileHandler;
-use SP\Storage\MySQLFileParser;
-use SP\Storage\MySQLHandler;
 use SP\Util\Util;
 
 /**
@@ -46,7 +46,7 @@ class MySQL implements DatabaseSetupInterface
      */
     protected $installData;
     /**
-     * @var MySQLHandler
+     * @var \SP\Storage\Database\MySQLHandler
      */
     protected $dbs;
     /**

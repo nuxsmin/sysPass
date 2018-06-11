@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -37,6 +37,7 @@ interface RepositoryItemInterface
      * Creates an item
      *
      * @param mixed $itemData
+     *
      * @return mixed
      */
     public function create($itemData);
@@ -45,6 +46,7 @@ interface RepositoryItemInterface
      * Updates an item
      *
      * @param mixed $itemData
+     *
      * @return mixed
      */
     public function update($itemData);
@@ -60,6 +62,7 @@ interface RepositoryItemInterface
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return mixed
      */
     public function getById($id);
@@ -75,6 +78,7 @@ interface RepositoryItemInterface
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return array
      */
     public function getByIdBatch(array $ids);
@@ -83,6 +87,7 @@ interface RepositoryItemInterface
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return $this
      */
     public function deleteByIdBatch(array $ids);
@@ -91,6 +96,7 @@ interface RepositoryItemInterface
      * Checks whether the item is in use or not
      *
      * @param $id int
+     *
      * @return bool
      */
     public function checkInUse($id);
@@ -99,6 +105,7 @@ interface RepositoryItemInterface
      * Checks whether the item is duplicated on updating
      *
      * @param mixed $itemData
+     *
      * @return bool
      */
     public function checkDuplicatedOnUpdate($itemData);
@@ -107,6 +114,7 @@ interface RepositoryItemInterface
      * Checks whether the item is duplicated on adding
      *
      * @param mixed $itemData
+     *
      * @return bool
      */
     public function checkDuplicatedOnAdd($itemData);
@@ -115,6 +123,7 @@ interface RepositoryItemInterface
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
+     *
      * @return mixed
      */
     public function search(ItemSearchData $SearchData);

@@ -33,11 +33,10 @@ use SP\Core\Events\EventMessage;
 use SP\Core\Exceptions\SPException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
-use SP\Storage\Database;
-use SP\Storage\DBUtil;
-use SP\Storage\DbWrapper;
+use SP\Storage\Database\Database;
+use SP\Storage\Database\DBUtil;
+use SP\Storage\Database\QueryData;
 use SP\Storage\FileHandler;
-use SP\Storage\QueryData;
 use SP\Util\Checks;
 use SP\Util\Util;
 
@@ -175,7 +174,7 @@ class FileBackupService extends Service
             $queryData->setQuery('SHOW CREATE TABLE ' . $tableName);
 
             // Consulta para crear la tabla
-            $txtCreate = DbWrapper::getResults($queryData, $db);
+            $txtCreate = $db->doQuery($queryData);
 
             if (isset($txtCreate->{'Create Table'})) {
                 $sqlOut = '-- ' . PHP_EOL;
@@ -209,7 +208,7 @@ class FileBackupService extends Service
             $queryData->setQuery('SELECT * FROM `' . $tableName . '`');
 
             // Consulta para obtener los registros de la tabla
-            $queryRes = DbWrapper::getResultsRaw($queryData, $db);
+            $queryRes = $db->doQueryRaw($queryData);
 
             $numColumns = $queryRes->columnCount();
 

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -31,9 +31,11 @@ use SP\DataModel\PluginData;
 use SP\Repositories\Plugin\PluginRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class PluginService
+ *
  * @package SP\Services\Plugin
  */
 class PluginService extends Service
@@ -47,6 +49,7 @@ class PluginService extends Service
      * Creates an item
      *
      * @param PluginData $itemData
+     *
      * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -60,6 +63,7 @@ class PluginService extends Service
      * Updates an item
      *
      * @param PluginData $itemData
+     *
      * @return mixed
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -73,7 +77,10 @@ class PluginService extends Service
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return PluginData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -84,6 +91,8 @@ class PluginService extends Service
      * Returns all the items
      *
      * @return PluginData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAll()
     {
@@ -94,7 +103,10 @@ class PluginService extends Service
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return PluginData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -105,6 +117,7 @@ class PluginService extends Service
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -119,6 +132,7 @@ class PluginService extends Service
      * Deletes an item
      *
      * @param $id
+     *
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -134,7 +148,10 @@ class PluginService extends Service
      * Searches for items by a given filter
      *
      * @param ItemSearchData $itemSearchData
-     * @return mixed
+     *
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -145,7 +162,10 @@ class PluginService extends Service
      * Devuelve los datos de un plugin por su nombre
      *
      * @param string $name
+     *
      * @return PluginData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByName($name)
     {
@@ -157,6 +177,7 @@ class PluginService extends Service
      *
      * @param $id
      * @param $enabled
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -171,6 +192,7 @@ class PluginService extends Service
      *
      * @param $name
      * @param $enabled
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -185,6 +207,7 @@ class PluginService extends Service
      *
      * @param $id
      * @param $available
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -199,6 +222,7 @@ class PluginService extends Service
      *
      * @param $name
      * @param $available
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -212,6 +236,7 @@ class PluginService extends Service
      * Restablecer los datos de un plugin
      *
      * @param int $id Id del plugin
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -225,6 +250,8 @@ class PluginService extends Service
      * Devolver los plugins activados
      *
      * @return ItemData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getEnabled()
     {

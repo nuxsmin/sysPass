@@ -33,8 +33,8 @@ use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class UserGroupRepository
@@ -51,7 +51,8 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      * @param $id
      *
      * @return int
-     * @throws SPException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -60,9 +61,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar el grupo'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -87,9 +86,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams([(int)$id, (int)$id]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -98,6 +95,8 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      * @param $id int
      *
      * @return array
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsage($id)
     {
@@ -118,7 +117,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->addParams(array_fill(0, 4, (int)$id));
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -127,6 +126,8 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      * @param $id int
      *
      * @return array
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsageByUsers($id)
     {
@@ -151,7 +152,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->addParams([(int)$id, (int)$id]);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -159,7 +160,9 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id
      *
-     * @return mixed
+     * @return UserGroupData
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -168,7 +171,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name`, description FROM UserGroup WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
@@ -177,6 +180,8 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      * @param string $name
      *
      * @return UserGroupData
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByName($name)
     {
@@ -185,13 +190,15 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name`, description FROM UserGroup WHERE name = ? LIMIT 1');
         $queryData->addParam($name);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * Returns all the items
      *
      * @return UserGroupData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -199,7 +206,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(UserGroupData::class);
         $queryData->setQuery('SELECT id, `name`, description FROM UserGroup ORDER BY name');
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -208,6 +215,8 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return UserGroupData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -223,7 +232,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -241,9 +250,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('DELETE FROM UserGroup WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -251,7 +258,9 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
      *
      * @param ItemSearchData $SearchData
      *
-     * @return mixed
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $SearchData)
     {
@@ -273,13 +282,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($SearchData->getLimitStart());
         $queryData->addParam($SearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
     /**
@@ -306,9 +309,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([$itemData->getName(), $itemData->getDescription()]);
         $queryData->setOnErrorMessage(__u('Error al crear el grupo'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -326,9 +327,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT `name` FROM UserGroup WHERE UPPER(`name`) = UPPER(?)');
         $queryData->addParam($itemData->getName());
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -356,9 +355,7 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el grupo'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -376,8 +373,6 @@ class UserGroupRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT `name` FROM UserGroup WHERE UPPER(`name`) = UPPER(?) AND id <> ?');
         $queryData->setParams([$itemData->getName(), $itemData->getId()]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
 }

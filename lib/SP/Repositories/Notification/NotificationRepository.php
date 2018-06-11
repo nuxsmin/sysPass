@@ -24,13 +24,15 @@
 
 namespace SP\Repositories\Notification;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\NotificationData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class NotificationRepository
@@ -47,8 +49,8 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * @param NotificationData $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create($itemData)
     {
@@ -75,9 +77,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear la notificación'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -86,8 +86,8 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * @param NotificationData $itemData
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function update($itemData)
     {
@@ -117,9 +117,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         ]);
         $queryData->setOnErrorMessage(__u('Error al modificar la notificación'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -128,8 +126,8 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * @param $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -138,9 +136,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar la notificación'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -149,8 +145,8 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * @param $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteAdmin($id)
     {
@@ -159,9 +155,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar la notificación'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -170,8 +164,8 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * @param array $ids
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteAdminBatch(array $ids)
     {
@@ -180,9 +174,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar las notificaciones'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -191,6 +183,8 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * @param int $id
      *
      * @return NotificationData
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -213,13 +207,15 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al obtener la notificación'));
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * Returns all the items
      *
      * @return NotificationData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -240,7 +236,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->setQuery($query);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -249,6 +245,8 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * @param array $ids
      *
      * @return NotificationData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -270,7 +268,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -279,8 +277,8 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * @param array $ids
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -289,9 +287,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar las notificaciones'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -329,7 +325,9 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      *
      * @param ItemSearchData $itemSearchData
      *
-     * @return mixed
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -351,14 +349,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->addParam($itemSearchData->getLimitStart());
         $queryData->addParam($itemSearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        /** @var array $queryRes */
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
     /**
@@ -367,7 +358,9 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * @param ItemSearchData $itemSearchData
      * @param int            $userId
      *
-     * @return mixed
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function searchForUserId(ItemSearchData $itemSearchData, $userId)
     {
@@ -395,14 +388,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->addParam($itemSearchData->getLimitStart());
         $queryData->addParam($itemSearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        /** @var array $queryRes */
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
     /**
@@ -411,8 +397,8 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * @param $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function setCheckedById($id)
     {
@@ -424,9 +410,7 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al modificar la notificación'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -436,6 +420,8 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
      * @param $id
      *
      * @return NotificationData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getForUserIdByDate($component, $id)
     {
@@ -459,13 +445,15 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->setParams([$component, $id]);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
      * @param $id
      *
      * @return NotificationData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllForUserId($id)
     {
@@ -490,13 +478,15 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
      * @param $id
      *
      * @return NotificationData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllActiveForUserId($id)
     {
@@ -522,6 +512,6 @@ class NotificationRepository extends Repository implements RepositoryItemInterfa
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al obtener las notificaciones'));
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 }

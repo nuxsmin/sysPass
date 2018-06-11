@@ -26,8 +26,7 @@ namespace SP\Repositories\Track;
 
 use SP\DataModel\TrackData;
 use SP\Repositories\Repository;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class TrackRepository
@@ -63,15 +62,13 @@ class TrackRepository extends Repository
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear track'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
      * @param $id int|array
      *
-     * @return mixed
+     * @return int
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\ConstraintException
      */
@@ -82,15 +79,13 @@ class TrackRepository extends Repository
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar track'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
      * @param TrackData $itemData
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -116,13 +111,15 @@ class TrackRepository extends Repository
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar track'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
      * @param $id int
      *
      * @return TrackData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -142,11 +139,13 @@ class TrackRepository extends Repository
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al obtener track'));
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * @return TrackData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAll()
     {
@@ -163,7 +162,7 @@ class TrackRepository extends Repository
         $queryData->setQuery($query);
         $queryData->setOnErrorMessage(__u('Error al obtener tracks'));
 
-        return DbWrapper::getResultsArray($queryData);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -172,6 +171,8 @@ class TrackRepository extends Repository
      * @param TrackRequest $trackRequest
      *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getTracksForClientFromTime(TrackRequest $trackRequest)
     {
@@ -193,6 +194,6 @@ class TrackRepository extends Repository
         ]);
         $queryData->setOnErrorMessage(__u('Error al obtener tracks'));
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 }

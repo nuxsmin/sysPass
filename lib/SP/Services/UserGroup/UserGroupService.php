@@ -53,7 +53,10 @@ class UserGroupService extends Service
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return \SP\DataModel\ClientData[]
+     *
+     * @return \SP\Storage\Database\QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -62,7 +65,10 @@ class UserGroupService extends Service
 
     /**
      * @param $id
-     * @return mixed
+     *
+     * @return UserGroupData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -71,6 +77,7 @@ class UserGroupService extends Service
 
     /**
      * @param $id
+     *
      * @return $this
      * @throws SPException
      */
@@ -85,6 +92,7 @@ class UserGroupService extends Service
 
     /**
      * @param array $ids
+     *
      * @return int
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -102,6 +110,7 @@ class UserGroupService extends Service
     /**
      * @param UserGroupData $itemData
      * @param array         $users
+     *
      * @return int
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -120,6 +129,7 @@ class UserGroupService extends Service
 
     /**
      * @param UserGroupData $itemData
+     *
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -133,7 +143,9 @@ class UserGroupService extends Service
     /**
      * Get all items from the service's repository
      *
-     * @return array
+     * @return UserGroupData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllBasic()
     {
@@ -144,7 +156,10 @@ class UserGroupService extends Service
      * Returns the item for given name
      *
      * @param string $name
+     *
      * @return UserGroupData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByName($name)
     {
@@ -155,7 +170,10 @@ class UserGroupService extends Service
      * Returns the users that are using the given group id
      *
      * @param $id int
+     *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getUsage($id)
     {
@@ -166,7 +184,10 @@ class UserGroupService extends Service
      * Returns the items that are using the given group id
      *
      * @param $id int
+     *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getUsageByUsers($id)
     {

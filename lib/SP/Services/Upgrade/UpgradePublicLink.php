@@ -31,9 +31,9 @@ use SP\DataModel\PublicLinkData;
 use SP\Services\PublicLink\PublicLinkService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
-use SP\Storage\Database;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\Database;
+use SP\Storage\Database\DbWrapper;
+use SP\Storage\Database\QueryData;
 use SP\Util\Util;
 
 /**
@@ -71,7 +71,7 @@ class UpgradePublicLink extends Service
                 throw new ServiceException(__u('No es posible iniciar una transacción'));
             }
 
-            foreach (DbWrapper::getResultsArray($queryData, $this->db) as $item) {
+            foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
                 /** @var PublickLinkOldData $data */
                 $data = Util::unserialize(PublickLinkOldData::class, $item->data, 'SP\DataModel\PublicLinkData');
 

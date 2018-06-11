@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\Database;
 
 use SP\Config\ConfigData;
 

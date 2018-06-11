@@ -63,8 +63,8 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
     /**
      * Search action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
@@ -83,6 +83,8 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {
@@ -122,11 +124,12 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
     }
 
     /**
-     * Sets view data for displaying user's data
+     * Sets view data for displaying user group's data
      *
      * @param $userGroupId
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setViewData($userGroupId = null)
     {
@@ -156,6 +159,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      * Edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function editAction($id)
@@ -185,6 +189,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      * Delete action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -264,6 +269,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      * Saves edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -303,6 +309,7 @@ class UserGroupController extends ControllerBase implements CrudControllerInterf
      * View action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function viewAction($id)

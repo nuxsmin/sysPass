@@ -28,8 +28,7 @@ use SP\Account\AccountRequest;
 use SP\DataModel\ItemData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class AccountToTagRepository
@@ -46,6 +45,8 @@ class AccountToTagRepository extends Repository
      * @param int $id
      *
      * @return ItemData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getTagsByAccountId($id)
     {
@@ -61,7 +62,7 @@ class AccountToTagRepository extends Repository
         $queryData->addParam($id);
         $queryData->setMapClassName(ItemData::class);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -81,7 +82,7 @@ class AccountToTagRepository extends Repository
      *
      * @param int $id
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -92,7 +93,7 @@ class AccountToTagRepository extends Repository
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar las etiquetas de la cuenta'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -100,7 +101,7 @@ class AccountToTagRepository extends Repository
      *
      * @param AccountRequest $accountRequest
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -118,7 +119,7 @@ class AccountToTagRepository extends Repository
             $queryData->addParam($tag);
         }
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
 }

@@ -36,6 +36,7 @@ use SP\Repositories\AuthToken\AuthTokenRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
+use SP\Storage\Database\QueryResult;
 use SP\Util\Util;
 
 /**
@@ -89,7 +90,10 @@ class AuthTokenService extends Service
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return mixed
+     *
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -98,7 +102,10 @@ class AuthTokenService extends Service
 
     /**
      * @param $id
+     *
      * @return mixed
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -107,6 +114,7 @@ class AuthTokenService extends Service
 
     /**
      * @param $id
+     *
      * @return AuthTokenService
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -125,6 +133,7 @@ class AuthTokenService extends Service
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return bool
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -141,6 +150,7 @@ class AuthTokenService extends Service
 
     /**
      * @param $itemData
+     *
      * @return mixed
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -150,18 +160,20 @@ class AuthTokenService extends Service
      */
     public function create($itemData)
     {
-        $this->injectSecureData($itemData);
-
-        return $this->authTokenRepository->create($itemData);
+        return $this->authTokenRepository->create($this->injectSecureData($itemData));
     }
 
     /**
      * Injects secure data for token
      *
      * @param AuthTokenData $authTokenData
-     * @param  string       $token
+     * @param string        $token
+     *
+     * @return AuthTokenData
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     private function injectSecureData(AuthTokenData $authTokenData, $token = null)
     {
@@ -182,6 +194,8 @@ class AuthTokenService extends Service
 
         $authTokenData->setToken($token);
         $authTokenData->setCreatedBy($this->context->getUserData()->getId());
+
+        return $authTokenData;
     }
 
     /**
@@ -199,18 +213,20 @@ class AuthTokenService extends Service
      * Generar la llave segura del token
      *
      * @param string $token
-     * @param string $hash
+     * @param string $key
+     *
      * @return Vault
      * @throws \Defuse\Crypto\Exception\CryptoException
      */
-    private function getSecureData($token, $hash)
+    private function getSecureData($token, $key)
     {
         return (new Vault())
-            ->saveData(CryptSession::getSessionKey($this->context), $hash . $token);
+            ->saveData(CryptSession::getSessionKey($this->context), $key . $token);
     }
 
     /**
      * @param AuthTokenData $itemData
+     *
      * @return mixed
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -232,6 +248,7 @@ class AuthTokenService extends Service
     /**
      * @param AuthTokenData $itemData
      * @param string        $token
+     *
      * @return mixed
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -240,9 +257,7 @@ class AuthTokenService extends Service
      */
     public function update(AuthTokenData $itemData, $token = null)
     {
-        $this->injectSecureData($itemData, $token);
-
-        return $this->authTokenRepository->update($itemData);
+        return $this->authTokenRepository->update($this->injectSecureData($itemData, $token));
     }
 
     /**
@@ -250,7 +265,10 @@ class AuthTokenService extends Service
      *
      * @param $actionId int El id de la accion
      * @param $token    string El token de seguridad
+     *
      * @return false|AuthTokenData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getTokenByToken($actionId, $token)
     {

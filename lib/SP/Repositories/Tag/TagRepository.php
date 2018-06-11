@@ -24,14 +24,16 @@
 
 namespace SP\Repositories\Tag;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\TagData;
 use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class TagRepository
@@ -47,9 +49,9 @@ class TagRepository extends Repository implements RepositoryItemInterface
      *
      * @param TagData $itemData
      *
-     * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws DuplicatedItemException
      */
     public function create($itemData)
@@ -66,9 +68,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear etiqueta'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -77,8 +77,8 @@ class TagRepository extends Repository implements RepositoryItemInterface
      * @param TagData $itemData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
@@ -89,9 +89,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
             $this->makeItemHash($itemData->getName(), $this->db->getDbHandler())
         ]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows() > 0;
+        return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -99,9 +97,9 @@ class TagRepository extends Repository implements RepositoryItemInterface
      *
      * @param TagData $itemData
      *
-     * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws DuplicatedItemException
      */
     public function update($itemData)
@@ -119,7 +117,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar etiqueta'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -128,8 +126,8 @@ class TagRepository extends Repository implements RepositoryItemInterface
      * @param TagData $itemData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
@@ -141,9 +139,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
             $itemData->getId()
         ]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows() > 0;
+        return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -151,7 +147,9 @@ class TagRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id
      *
-     * @return mixed
+     * @return TagData
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getById($id)
     {
@@ -160,13 +158,15 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name` FROM Tag WHERE id = ?  ORDER BY  `name` LIMIT 1');
         $queryData->addParam($id);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * Returns all the items
      *
      * @return TagData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAll()
     {
@@ -174,7 +174,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->setMapClassName(TagData::class);
         $queryData->setQuery('SELECT id, `name`, `hash` FROM Tag ORDER BY `name`');
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -183,9 +183,15 @@ class TagRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return TagData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getByIdBatch(array $ids)
     {
+        if (count($ids) === 0) {
+            return [];
+        }
+
         $query = /** @lang SQL */
             'SELECT id, `name` FROM Tag WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
@@ -194,7 +200,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -203,8 +209,8 @@ class TagRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -213,9 +219,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar etiquetas'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -224,8 +228,8 @@ class TagRepository extends Repository implements RepositoryItemInterface
      * @param $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -234,9 +238,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar etiqueta'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -245,8 +247,8 @@ class TagRepository extends Repository implements RepositoryItemInterface
      * @param $id int
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkInUse($id)
     {
@@ -254,9 +256,7 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT tagId FROM AccountToTag WHERE tagId = ?');
         $queryData->addParam($id);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows() > 0;
+        return $this->db->doSelect($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -264,7 +264,9 @@ class TagRepository extends Repository implements RepositoryItemInterface
      *
      * @param ItemSearchData $itemSearchData
      *
-     * @return mixed
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -284,12 +286,6 @@ class TagRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($itemSearchData->getLimitStart());
         $queryData->addParam($itemSearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 }

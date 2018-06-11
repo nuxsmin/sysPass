@@ -32,8 +32,8 @@ use SP\Services\Config\ConfigService;
 use SP\Services\CustomField\CustomFieldCryptService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
-use SP\Storage\Database;
-use SP\Storage\DbWrapper;
+use SP\Storage\Database\Database;
+use SP\Storage\Database\DbWrapper;
 
 /**
  * Class MasterPassService

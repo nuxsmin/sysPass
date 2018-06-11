@@ -45,8 +45,8 @@ use SP\Services\Task\Task;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
-use SP\Storage\DBUtil;
-use SP\Storage\MySQLHandler;
+use SP\Storage\Database\DBUtil;
+use SP\Storage\Database\MySQLHandler;
 use SP\Util\Checks;
 use SP\Util\Util;
 

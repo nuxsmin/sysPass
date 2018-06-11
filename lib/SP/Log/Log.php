@@ -26,8 +26,8 @@ namespace SP\Log;
 
 use SP\Core\Exceptions\SPException;
 use SP\Core\Messages\LogMessage;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\DbWrapper;
+use SP\Storage\Database\QueryData;
 use SP\Util\HttpUtil;
 use SP\Util\Util;
 

@@ -29,7 +29,7 @@ use SP\Config\ConfigData;
 use SP\Core\Context\SessionContext;
 use SP\Core\Language;
 use SP\Core\Messages\LogMessage;
-use SP\Storage\Database;
+use SP\Storage\Database\Database;
 
 /**
  * Clase abstracta ActionLog para la gestión de mensajes de eventos
@@ -69,7 +69,7 @@ abstract class ActionLog extends LogLevel
     /** @var  \SP\Core\Context\SessionContext */
     protected $session;
     /**
-     * @var Database
+     * @var \SP\Storage\Database\Database
      */
     protected $db;
 
@@ -90,10 +90,10 @@ abstract class ActionLog extends LogLevel
     }
 
     /**
-     * @param Config   $config
-     * @param Language $language
-     * @param SessionContext  $session
-     * @param Database $database
+     * @param Config                        $config
+     * @param Language                      $language
+     * @param SessionContext                $session
+     * @param \SP\Storage\Database\Database $database
      */
     public function inject(Config $config, Language $language, SessionContext $session, Database $database)
     {

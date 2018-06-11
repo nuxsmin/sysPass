@@ -24,15 +24,14 @@
 
 namespace SP\Repositories\AuthToken;
 
-use SP\Core\Acl\Acl;
-use SP\Core\Exceptions\SPException;
 use SP\DataModel\AuthTokenData;
 use SP\DataModel\ItemSearchData;
+use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class AuthTokenRepository
@@ -59,9 +58,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error interno'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -69,7 +66,9 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      *
      * @param int $id
      *
-     * @return mixed
+     * @return AuthTokenData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -79,16 +78,17 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             actionId,
             createdBy,
             startDate,
-            token 
+            token,
+            `hash` 
             FROM AuthToken 
             WHERE id = ? LIMIT 1';
 
         $queryData = new QueryData();
+        $queryData->setMapClassName(AuthTokenData::class);
         $queryData->setQuery($query);
         $queryData->addParam($id);
-        $queryData->setMapClassName(AuthTokenData::class);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
@@ -118,20 +118,22 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      *
      * @param array $ids
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
+        if (count($ids) === 0) {
+            return 0;
+        }
+
         $queryData = new QueryData();
         $queryData->setQuery('DELETE FROM AuthToken WHERE id IN (' . $this->getParamsFromArray($ids) . ')');
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error interno'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -151,7 +153,9 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      *
      * @param ItemSearchData $SearchData
      *
-     * @return mixed
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $SearchData)
     {
@@ -173,25 +177,11 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
             $queryData->addParam($search);
         }
 
-        $query .= ' ORDER BY U.login';
-        $query .= ' LIMIT ?, ?';
-
-        $queryData->addParam($SearchData->getLimitStart());
-        $queryData->addParam($SearchData->getLimitCount());
-
         $queryData->setQuery($query);
+        $queryData->setOrder('U.login, AT.actionId');
+        $queryData->setLimit('?, ?', [$SearchData->getLimitStart(), $SearchData->getLimitCount()]);
 
-        DbWrapper::setFullRowCount();
-
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        foreach ($queryRes as $token) {
-            $token->actionId = Acl::getActionInfo($token->actionId);
-        }
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
     /**
@@ -199,15 +189,15 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      *
      * @param AuthTokenData $itemData
      *
-     * @return mixed
-     * @throws SPException
+     * @return int
+     * @throws DuplicatedItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function create($itemData)
     {
         if ($this->checkDuplicatedOnAdd($itemData)) {
-            throw new SPException(__u('La autorización ya existe'), SPException::WARNING);
+            throw new DuplicatedItemException(__u('La autorización ya existe'));
         }
 
         $query = /** @lang SQL */
@@ -232,9 +222,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error interno'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -243,22 +231,25 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * @param AuthTokenData $itemData
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
         $query = /** @lang SQL */
             'SELECT id FROM AuthToken 
-            WHERE userId = ? 
+            WHERE (userId = ? OR token = ?)
             AND actionId = ? LIMIT 1';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
-        $queryData->addParam($itemData->getUserId());
-        $queryData->addParam($itemData->getActionId());
+        $queryData->setParams([
+            $itemData->getUserId(),
+            $itemData->getToken(),
+            $itemData->getActionId()
+        ]);
 
-        DbWrapper::getResults($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() === 1;
+        return $this->db->doSelect($queryData)->getNumRows() === 1;
     }
 
     /**
@@ -267,6 +258,8 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * @param $id
      *
      * @return string
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getTokenByUserId($id)
     {
@@ -274,9 +267,9 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT token FROM AuthToken WHERE userId = ? AND token <> \'\' LIMIT 1');
         $queryData->addParam($id);
 
-        $queryRes = DbWrapper::getResults($queryData, $this->db);
+        $result = $this->db->doSelect($queryData);
 
-        return $queryData->getQueryNumRows() === 1 ? $queryRes->token : null;
+        return $result->getNumRows() === 1 ? $result->getData()->token : null;
     }
 
     /**
@@ -284,15 +277,15 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      *
      * @param AuthTokenData $itemData
      *
-     * @return mixed
-     * @throws SPException
+     * @return int
+     * @throws DuplicatedItemException
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
     public function update($itemData)
     {
         if ($this->checkDuplicatedOnUpdate($itemData)) {
-            throw new SPException(__u('La autorización ya existe'), SPException::WARNING);
+            throw new DuplicatedItemException(__u('La autorización ya existe'));
         }
 
         $query = /** @lang SQL */
@@ -319,7 +312,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error interno'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -328,26 +321,27 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * @param AuthTokenData $itemData
      *
      * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
         $query = /** @lang SQL */
             'SELECT id FROM AuthToken 
-            WHERE userId = ? 
-            AND actionId = ? 
+            WHERE (userId = ? OR token = ?)
+            AND actionId = ?  
             AND id <> ? LIMIT 1';
 
         $queryData = new QueryData();
         $queryData->setQuery($query);
         $queryData->setParams([
             $itemData->getUserId(),
+            $itemData->getToken(),
             $itemData->getActionId(),
             $itemData->getId()
         ]);
 
-        DbWrapper::getResults($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() === 1;
+        return $this->db->doSelect($queryData)->getNumRows() === 1;
     }
 
     /**
@@ -373,7 +367,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([$token, $id]);
         $queryData->setOnErrorMessage(__u('Error interno'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -401,7 +395,7 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams([$vault, $hash, $id]);
         $queryData->setOnErrorMessage(__u('Error interno'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -409,7 +403,9 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      *
      * @param $token string El token de autorización
      *
-     * @return bool|mixed
+     * @return false|int
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getUserIdForToken($token)
     {
@@ -417,9 +413,9 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT userId FROM AuthToken WHERE token = ? LIMIT 1');
         $queryData->addParam($token);
 
-        $queryRes = DbWrapper::getResults($queryData, $this->db);
+        $result = $this->db->doSelect($queryData);
 
-        return $queryData->getQueryNumRows() === 1 ? $queryRes->userId : false;
+        return $result->getNumRows() === 1 ? (int)$result->getData()->userId : false;
     }
 
     /**
@@ -429,11 +425,13 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
      * @param $token    string El token de seguridad
      *
      * @return false|AuthTokenData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getTokenByToken($actionId, $token)
     {
         $query = /** @lang SQL */
-            'SELECT actionId, userId, vault, `hash`
+            'SELECT id, actionId, userId, vault, `hash`
             FROM AuthToken
             WHERE actionId = ? 
             AND token = ? LIMIT 1';
@@ -443,8 +441,8 @@ class AuthTokenRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams([$actionId, $token]);
 
-        $queryRes = DbWrapper::getResults($queryData, $this->db);
+        $result = $this->db->doSelect($queryData);
 
-        return $queryData->getQueryNumRows() === 1 ? $queryRes : false;
+        return $result->getNumRows() === 1 ? $result->getData() : false;
     }
 }

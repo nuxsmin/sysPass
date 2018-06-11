@@ -25,14 +25,18 @@
 namespace SP\Services\User;
 
 use SP\Core\Crypt\Hash;
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ItemSearchData;
 use SP\DataModel\UserData;
 use SP\DataModel\UserPreferencesData;
+use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\User\UserRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
+use SP\Storage\Database\QueryResult;
 use SP\Util\Util;
 
 /**
@@ -55,6 +59,7 @@ class UserService extends Service
 
     /**
      * @param UserData $userData
+     *
      * @return UserLoginResponse
      */
     public static function mapUserLoginResponse(UserData $userData)
@@ -87,6 +92,7 @@ class UserService extends Service
      * Returns user's preferences object
      *
      * @param string $preferences
+     *
      * @return UserPreferencesData
      */
     public static function getUserPreferences($preferences)
@@ -102,9 +108,10 @@ class UserService extends Service
      * Actualiza el último inicio de sesión del usuario en la BBDD.
      *
      * @param $id int El id del usuario
+     *
      * @return bool
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function updateLastLoginById($id)
     {
@@ -113,9 +120,10 @@ class UserService extends Service
 
     /**
      * @param $login
+     *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkExistsByLogin($login)
     {
@@ -126,6 +134,7 @@ class UserService extends Service
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return mixed
      * @throws SPException
      */
@@ -138,6 +147,7 @@ class UserService extends Service
      * Returns the item for given id
      *
      * @param $login
+     *
      * @return UserData
      * @throws SPException
      */
@@ -150,10 +160,11 @@ class UserService extends Service
      * Deletes an item
      *
      * @param $id
+     *
      * @return UserService
      * @throws SPException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -166,10 +177,11 @@ class UserService extends Service
 
     /**
      * @param array $ids
+     *
      * @return int
      * @throws ServiceException
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -184,6 +196,7 @@ class UserService extends Service
      * Creates an item
      *
      * @param UserLoginRequest $userLoginRequest
+     *
      * @return mixed
      * @throws SPException
      */
@@ -213,6 +226,7 @@ class UserService extends Service
      * Creates an item
      *
      * @param UserData $itemData
+     *
      * @return int
      * @throws SPException
      */
@@ -229,6 +243,7 @@ class UserService extends Service
      * @param UserData $itemData
      * @param string   $userPass
      * @param string   $masterPass
+     *
      * @return int
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -249,7 +264,10 @@ class UserService extends Service
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
-     * @return array
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $SearchData)
     {
@@ -260,10 +278,11 @@ class UserService extends Service
      * Updates an item
      *
      * @param UserData $itemData
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     *
      * @throws ServiceException
-     * @throws SPException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws DuplicatedItemException
      */
     public function update($itemData)
     {
@@ -277,9 +296,10 @@ class UserService extends Service
      *
      * @param int    $userId
      * @param string $pass
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updatePass($userId, $pass)
     {
@@ -293,9 +313,10 @@ class UserService extends Service
     /**
      * @param                     $userId
      * @param UserPreferencesData $userPreferencesData
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updatePreferencesById($userId, UserPreferencesData $userPreferencesData)
     {
@@ -304,9 +325,10 @@ class UserService extends Service
 
     /**
      * @param UserLoginRequest $userLoginRequest
-     * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function updateOnLogin(UserLoginRequest $userLoginRequest)
     {
@@ -323,7 +345,9 @@ class UserService extends Service
     /**
      * Get all items from the service's repository
      *
-     * @return array
+     * @return UserData[]
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAllBasic()
     {
@@ -334,7 +358,10 @@ class UserService extends Service
      * Obtener el email de los usuarios de un grupo
      *
      * @param $groupId
+     *
      * @return array
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUserEmailForGroup($groupId)
     {
@@ -345,7 +372,10 @@ class UserService extends Service
      * Returns the usage of the given user's id
      *
      * @param int $id
+     *
      * @return array
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getUsageForUser($id)
     {

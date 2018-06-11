@@ -28,8 +28,8 @@ use PHPUnit\DbUnit\Database\DefaultConnection;
 use PHPUnit\DbUnit\DataSet\IDataSet;
 use PHPUnit\DbUnit\TestCaseTrait;
 use PHPUnit\Framework\TestCase;
-use SP\Storage\DatabaseConnectionData;
-use SP\Storage\MySQLHandler;
+use SP\Storage\Database\DatabaseConnectionData;
+use SP\Storage\Database\MySQLHandler;
 
 /**
  * Class DatabaseBaseTest

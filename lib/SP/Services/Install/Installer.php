@@ -39,7 +39,7 @@ use SP\Services\Service;
 use SP\Services\User\UserService;
 use SP\Services\UserGroup\UserGroupService;
 use SP\Services\UserProfile\UserProfileService;
-use SP\Storage\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseConnectionData;
 use SP\Util\Util;
 
 defined('APP_ROOT') || die();
@@ -56,7 +56,7 @@ class Installer extends Service
      */
     const VERSION = [3, 0, 0];
     const VERSION_TEXT = '3.0-beta';
-    const BUILD = 18060701;
+    const BUILD = 18061201;
 
     /**
      * @var ConfigService

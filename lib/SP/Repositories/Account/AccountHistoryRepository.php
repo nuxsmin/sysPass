@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -25,6 +25,7 @@
 namespace SP\Repositories\Account;
 
 use SP\Account\AccountUtil;
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\AccountHistoryData;
@@ -34,8 +35,8 @@ use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
 use SP\Services\Account\AccountPasswordRequest;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class AccountHistoryRepository
@@ -50,7 +51,10 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      * Obtiene el listado del histórico de una cuenta.
      *
      * @param $id
+     *
      * @return array|false Con los registros con id como clave y fecha - usuario como valor
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getHistoryForAccount($id)
     {
@@ -70,12 +74,15 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
      * @param $id
+     *
      * @return AccountPassData
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getPasswordForHistoryId($id)
     {
@@ -92,13 +99,14 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
 
         $queryData->setWhere($queryWhere);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * @param array $items array of ['id' => <int>, 'isDelete' => <bool>]
+     *
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function createBatch(array $items)
     {
@@ -111,9 +119,10 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      * Crea una nueva cuenta en la BBDD
      *
      * @param array $itemData ['id' => <int>, 'isModify' => <bool>,'isDelete' => <bool>, 'masterPassHash' => <string>]
+     *
      * @return bool
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function create($itemData)
     {
@@ -172,15 +181,17 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData->addParam($itemData['id']);
         $queryData->setOnErrorMessage(__u('Error al actualizar el historial'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
      * Elimina los datos de una cuenta en la BBDD.
      *
      * @param array|int $id
+     *
      * @return bool Los ids de las cuentas eliminadas
-     * @throws SPException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -192,15 +203,14 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar la cuenta'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() === 1;
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 
     /**
      * Updates an item
      *
      * @param mixed $itemData
+     *
      * @return mixed
      */
     public function update($itemData)
@@ -212,6 +222,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      * Returns the item for given id
      *
      * @param int $id
+     *
      * @return AccountHistoryData
      * @throws SPException
      */
@@ -261,19 +272,21 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData->setMapClassName(AccountHistoryData::class);
         $queryData->addParam($id);
 
-        $queryRes = DbWrapper::getResults($queryData, $this->db);
+        $results = $this->db->doSelect($queryData);
 
-        if ($queryRes === false) {
+        if ($results->getNumRows() === false) {
             throw new SPException(__u('No se pudieron obtener los datos de la cuenta'), SPException::CRITICAL);
         }
 
-        return $queryRes;
+        return $results->getData();
     }
 
     /**
      * Returns all the items
      *
      * @return array
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getAll()
     {
@@ -291,13 +304,14 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData = new QueryData();
         $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
      * Returns all the items for given ids
      *
      * @param array $ids
+     *
      * @return void
      */
     public function getByIdBatch(array $ids)
@@ -309,9 +323,10 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return int
+     * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -321,15 +336,14 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar las cuentas'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
      * Checks whether the item is in use or not
      *
      * @param $id int
+     *
      * @return void
      */
     public function checkInUse($id)
@@ -341,6 +355,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      * Checks whether the item is duplicated on updating
      *
      * @param mixed $itemData
+     *
      * @return void
      */
     public function checkDuplicatedOnUpdate($itemData)
@@ -352,6 +367,7 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      * Checks whether the item is duplicated on adding
      *
      * @param mixed $itemData
+     *
      * @return void
      */
     public function checkDuplicatedOnAdd($itemData)
@@ -363,7 +379,10 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
      * Searches for items by a given filter
      *
      * @param ItemSearchData $SearchData
-     * @return mixed
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $SearchData)
     {
@@ -387,19 +406,15 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData->addParam($SearchData->getLimitStart());
         $queryData->addParam($SearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
     /**
      * Obtener los datos relativos a la clave de todas las cuentas.
      *
      * @return array Con los datos de la clave
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function getAccountsPassData()
     {
@@ -410,16 +425,17 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         $queryData = new QueryData();
         $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
      * Actualiza la clave de una cuenta en la BBDD.
      *
      * @param AccountPasswordRequest $request
+     *
      * @return bool
+     * @throws ConstraintException
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function updatePassword(AccountPasswordRequest $request)
     {
@@ -440,6 +456,6 @@ class AccountHistoryRepository extends Repository implements RepositoryItemInter
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar la clave'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows() === 1;
     }
 }

@@ -24,14 +24,14 @@
 
 namespace SP\Repositories\CustomField;
 
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\DataModel\CustomFieldData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class CustomFieldRepository
@@ -49,7 +49,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @return bool
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function update($itemData)
     {
@@ -71,7 +71,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             $itemData->getDefinitionId()
         ]);
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -81,7 +81,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @return bool
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function checkExists($itemData)
     {
@@ -100,9 +100,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             $itemData->getDefinitionId()
         ]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() >= 1;
+        return $this->db->doSelect($queryData)->getNumRows() >= 1;
     }
 
     /**
@@ -124,7 +122,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @return bool
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function create($itemData)
     {
@@ -141,9 +139,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
             $itemData->getKey()
         ]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -154,7 +150,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @return bool
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function deleteCustomFieldData($id, $moduleId)
     {
@@ -167,9 +163,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->setParams([$id, $moduleId]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -181,7 +175,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @return bool
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function deleteCustomFieldDataForDefinition($id, $moduleId, $definitionId)
     {
@@ -195,9 +189,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->setParams([$id, $moduleId, $definitionId]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -207,7 +199,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @return int
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function deleteCustomFieldDefinitionData($definitionId)
     {
@@ -215,9 +207,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery('DELETE FROM CustomFieldData WHERE definitionId = ?');
         $queryData->addParam($definitionId);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -226,8 +216,8 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * @param array $definitionIds
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteCustomFieldDefinitionDataBatch(array $definitionIds)
     {
@@ -235,9 +225,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery('DELETE FROM CustomFieldData WHERE definitionId IN (' . $this->getParamsFromArray($definitionIds) . ')');
         $queryData->setParams($definitionIds);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -248,7 +236,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      *
      * @return int
      * @throws QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws ConstraintException
      */
     public function deleteCustomFieldDataBatch(array $ids, $moduleId)
     {
@@ -262,9 +250,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setParams($ids);
         $queryData->addParam($moduleId);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -283,6 +269,8 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * Returns all the items
      *
      * @return CustomFieldData[]
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getAll()
     {
@@ -290,13 +278,15 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setMapClassName(CustomFieldData::class);
         $queryData->setQuery('SELECT * FROM CustomFieldData');
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
      * Returns all the items
      *
      * @return CustomFieldData[]
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getAllEncrypted()
     {
@@ -304,7 +294,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setMapClassName(CustomFieldData::class);
         $queryData->setQuery('SELECT * FROM CustomFieldData WHERE `key` IS NOT NULL');
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -362,6 +352,8 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
      * @param $itemId
      *
      * @return array
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getForModuleById($moduleId, $itemId)
     {
@@ -388,7 +380,7 @@ class CustomFieldRepository extends Repository implements RepositoryItemInterfac
         $queryData->setQuery($query);
         $queryData->setParams([$itemId, $moduleId]);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**

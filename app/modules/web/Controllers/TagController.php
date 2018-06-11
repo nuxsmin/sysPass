@@ -55,8 +55,8 @@ class TagController extends ControllerBase implements CrudControllerInterface
     /**
      * Search action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
@@ -75,6 +75,8 @@ class TagController extends ControllerBase implements CrudControllerInterface
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {
@@ -114,10 +116,12 @@ class TagController extends ControllerBase implements CrudControllerInterface
     }
 
     /**
-     * Sets view data for displaying user's data
+     * Sets view data for displaying tag's data
      *
      * @param $tagId
-     * @throws \Psr\Container\ContainerExceptionInterface
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setViewData($tagId = null)
     {

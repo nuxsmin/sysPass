@@ -32,6 +32,7 @@ use SP\Repositories\DuplicatedItemException;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class CategoryService
@@ -58,7 +59,10 @@ class CategoryService extends Service
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return mixed
+     *
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -67,7 +71,10 @@ class CategoryService extends Service
 
     /**
      * @param int $id
+     *
      * @return CategoryData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -78,7 +85,10 @@ class CategoryService extends Service
      * Returns the item for given id
      *
      * @param string $name
+     *
      * @return CategoryData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByName($name)
     {
@@ -87,6 +97,7 @@ class CategoryService extends Service
 
     /**
      * @param $id
+     *
      * @return $this
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -105,6 +116,7 @@ class CategoryService extends Service
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return int
      * @throws ServiceException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -121,6 +133,7 @@ class CategoryService extends Service
 
     /**
      * @param $itemData
+     *
      * @return int
      * @throws SPException
      * @throws DuplicatedItemException
@@ -132,6 +145,7 @@ class CategoryService extends Service
 
     /**
      * @param $itemData
+     *
      * @return mixed
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException
@@ -146,6 +160,8 @@ class CategoryService extends Service
      * Get all items from the service's repository
      *
      * @return CategoryData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllBasic()
     {

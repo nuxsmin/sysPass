@@ -86,6 +86,7 @@ class ConfigTest extends TestCase
      * Comprobar que la configuración se guarda correctamente
      *
      * @depends testLoadClass
+     *
      * @param Config $config
      */
     public function testSaveConfig($config)
@@ -100,7 +101,9 @@ class ConfigTest extends TestCase
      * Comprobar la carga de la configuración en el contexto
      *
      * @depends testLoadClass
+     *
      * @param Config $config
+     *
      * @throws DependencyException
      * @throws NotFoundException
      */
@@ -117,6 +120,7 @@ class ConfigTest extends TestCase
      * Comprobar la actualización de la configuración
      *
      * @depends testLoadClass
+     *
      * @param Config $config
      */
     public function testUpdateConfig($config)
@@ -130,7 +134,9 @@ class ConfigTest extends TestCase
      * Comprobar la generación de una clave de actualización y que su longitud es correcta
      *
      * @depends testLoadClass
+     *
      * @param Config $config
+     *
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function testGenerateUpgradeKey($config)

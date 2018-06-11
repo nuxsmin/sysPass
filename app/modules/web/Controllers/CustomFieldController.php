@@ -58,8 +58,8 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
     /**
      * Search action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
@@ -78,6 +78,8 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {
@@ -117,10 +119,12 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
     }
 
     /**
-     * Sets view data for displaying user's data
+     * Sets view data for displaying custom field's data
      *
      * @param $customFieldId
-     * @throws \Psr\Container\ContainerExceptionInterface
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setViewData($customFieldId = null)
     {
@@ -148,6 +152,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      * Edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function editAction($id)
@@ -177,6 +182,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      * Delete action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -281,6 +287,7 @@ class CustomFieldController extends ControllerBase implements CrudControllerInte
      * View action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function viewAction($id)

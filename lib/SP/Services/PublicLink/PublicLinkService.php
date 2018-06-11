@@ -38,6 +38,7 @@ use SP\Services\Account\AccountService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Services\ServiceItemTrait;
+use SP\Storage\Database\QueryResult;
 use SP\Util\Checks;
 use SP\Util\HttpUtil;
 use SP\Util\Util;
@@ -64,6 +65,7 @@ class PublicLinkService extends Service
      * Returns an HTTP URL for given hash
      *
      * @param $hash
+     *
      * @return string
      */
     public static function getLinkForHash($hash)
@@ -83,7 +85,10 @@ class PublicLinkService extends Service
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return mixed
+     *
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -92,6 +97,7 @@ class PublicLinkService extends Service
 
     /**
      * @param $id
+     *
      * @return \SP\DataModel\PublicLinkData
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -102,6 +108,7 @@ class PublicLinkService extends Service
 
     /**
      * @param $id
+     *
      * @return bool
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -127,6 +134,7 @@ class PublicLinkService extends Service
 
     /**
      * @param string $salt
+     *
      * @return string
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
@@ -140,6 +148,7 @@ class PublicLinkService extends Service
      *
      * @param string $key
      * @param string $salt
+     *
      * @return mixed
      */
     public static function getHashForKey($key, $salt)
@@ -152,6 +161,7 @@ class PublicLinkService extends Service
      *
      * @param int    $itemId
      * @param string $linkKey
+     *
      * @return Vault
      * @throws \Defuse\Crypto\Exception\CryptoException
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -175,6 +185,7 @@ class PublicLinkService extends Service
      * Devolver el tiempo de caducidad del enlace
      *
      * @param Config $config
+     *
      * @return int
      */
     public static function calcDateExpire(Config $config)
@@ -184,6 +195,7 @@ class PublicLinkService extends Service
 
     /**
      * @param $id
+     *
      * @return $this
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -202,6 +214,7 @@ class PublicLinkService extends Service
      * Deletes all the items for given ids
      *
      * @param array $ids
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -218,6 +231,7 @@ class PublicLinkService extends Service
 
     /**
      * @param PublicLinkData $itemData
+     *
      * @return int
      * @throws SPException
      * @throws \Defuse\Crypto\Exception\CryptoException
@@ -239,6 +253,7 @@ class PublicLinkService extends Service
     /**
      * @param string         $salt
      * @param PublicLinkData $publicLinkData
+     *
      * @return string
      */
     public static function getKeyForHash($salt, PublicLinkData $publicLinkData)
@@ -250,6 +265,8 @@ class PublicLinkService extends Service
      * Get all items from the service's repository
      *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllBasic()
     {
@@ -260,6 +277,7 @@ class PublicLinkService extends Service
      * Incrementar el contador de visitas de un enlace
      *
      * @param PublicLinkData $publicLinkData
+     *
      * @return bool
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -292,6 +310,7 @@ class PublicLinkService extends Service
      * Actualizar la información de uso
      *
      * @param $hash
+     *
      * @return array
      */
     public static function getUseInfo($hash)
@@ -307,6 +326,7 @@ class PublicLinkService extends Service
 
     /**
      * @param $hash string
+     *
      * @return bool|PublicLinkData
      * @throws \SP\Core\Exceptions\SPException
      */
@@ -319,6 +339,7 @@ class PublicLinkService extends Service
      * Devolver el hash asociado a un elemento
      *
      * @param int $itemId
+     *
      * @return PublicLinkData
      * @throws SPException
      */
@@ -331,6 +352,7 @@ class PublicLinkService extends Service
      * Updates an item
      *
      * @param PublicLinkData $itemData
+     *
      * @return mixed
      * @throws SPException
      * @throws \SP\Core\Exceptions\ConstraintException

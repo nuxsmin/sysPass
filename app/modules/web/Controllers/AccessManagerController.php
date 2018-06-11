@@ -148,8 +148,8 @@ class AccessManagerController extends ControllerBase
      * Returns API tokens data tab
      *
      * @return \SP\Html\DataGrid\DataGridTab
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getApiTokensList()
     {

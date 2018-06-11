@@ -24,6 +24,7 @@
 
 namespace SP\Repositories\Client;
 
+use SP\Core\Exceptions\ConstraintException;
 use SP\Core\Exceptions\QueryException;
 use SP\Core\Exceptions\SPException;
 use SP\DataModel\ClientData;
@@ -34,8 +35,8 @@ use SP\Repositories\DuplicatedItemException;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class ClientRepository
@@ -78,9 +79,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear el cliente'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -89,8 +88,8 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * @param ClientData $itemData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnAdd($itemData)
     {
@@ -98,9 +97,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id FROM Client WHERE `hash` = ? LIMIT 1');
         $queryData->addParam($this->makeItemHash($itemData->getName(), $this->db->getDbHandler()));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doQuery($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -108,9 +105,9 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      *
      * @param ClientData $itemData
      *
-     * @return mixed
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
      * @throws DuplicatedItemException
      */
     public function update($itemData)
@@ -138,9 +135,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el cliente'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this;
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -149,8 +144,8 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * @param ClientData $itemData
      *
      * @return bool
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function checkDuplicatedOnUpdate($itemData)
     {
@@ -162,9 +157,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
             $itemData->getId()
         ]);
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $queryData->getQueryNumRows() > 0;
+        return $this->db->doQuery($queryData)->getNumRows() > 0;
     }
 
     /**
@@ -173,6 +166,8 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * @param int $id
      *
      * @return ClientData
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getById($id)
     {
@@ -181,7 +176,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client WHERE id = ? LIMIT 1');
         $queryData->addParam($id);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
@@ -190,6 +185,8 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * @param string $name
      *
      * @return ClientData
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getByName($name)
     {
@@ -201,13 +198,15 @@ class ClientRepository extends Repository implements RepositoryItemInterface
             $this->makeItemHash($name, $this->db->getDbHandler())
         ]);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
      * Returns all the items
      *
      * @return ClientData[]
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getAll()
     {
@@ -215,7 +214,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery('SELECT id, `name`, description, isGlobal FROM Client ORDER BY `name`');
         $queryData->setMapClassName(ClientData::class);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -224,9 +223,15 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return array
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function getByIdBatch(array $ids)
     {
+        if (count($ids) === 0) {
+            return [];
+        }
+
         $query = /** @lang SQL */
             'SELECT id, `name`, description, isGlobal FROM Client WHERE id IN (' . $this->getParamsFromArray($ids) . ')';
 
@@ -235,7 +240,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -244,8 +249,8 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * @param array $ids
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function deleteByIdBatch(array $ids)
     {
@@ -254,9 +259,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->setParams($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar los clientes'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -265,8 +268,8 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      * @param $id
      *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function delete($id)
     {
@@ -275,9 +278,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar el cliente'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -297,7 +298,9 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      *
      * @param ItemSearchData $SearchData
      *
-     * @return ClientData[]
+     * @return QueryResult
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function search(ItemSearchData $SearchData)
     {
@@ -319,13 +322,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->addParam($SearchData->getLimitStart());
         $queryData->addParam($SearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
     /**
@@ -335,6 +332,7 @@ class ClientRepository extends Repository implements RepositoryItemInterface
      *
      * @return ItemData[]
      * @throws QueryException
+     * @throws ConstraintException
      */
     public function getAllForFilter(QueryCondition $queryFilter)
     {
@@ -357,6 +355,6 @@ class ClientRepository extends Repository implements RepositoryItemInterface
         $queryData->setQuery($query);
         $queryData->setParams($queryFilter->getParams());
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 }

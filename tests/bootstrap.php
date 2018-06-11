@@ -29,7 +29,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use SP\Config\ConfigData;
 use SP\Core\Context\ContextInterface;
 use SP\Services\User\UserLoginResponse;
-use SP\Storage\DatabaseConnectionData;
+use SP\Storage\Database\DatabaseConnectionData;
 
 define('APP_MODULE', 'tests');
 
@@ -51,6 +51,7 @@ require APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunc
 if (!function_exists('gettext')) {
     /**
      * @param $str
+     *
      * @return string
      */
     function gettext($str)

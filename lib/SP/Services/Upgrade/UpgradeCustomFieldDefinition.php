@@ -31,9 +31,9 @@ use SP\DataModel\CustomFieldDefinitionData;
 use SP\Services\CustomField\CustomFieldDefService;
 use SP\Services\Service;
 use SP\Services\ServiceException;
-use SP\Storage\Database;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\Database;
+use SP\Storage\Database\DbWrapper;
+use SP\Storage\Database\QueryData;
 use SP\Util\Util;
 
 /**
@@ -44,7 +44,7 @@ use SP\Util\Util;
 class UpgradeCustomFieldDefinition extends Service
 {
     /**
-     * @var Database
+     * @var \SP\Storage\Database\Database
      */
     private $db;
 
@@ -71,7 +71,7 @@ class UpgradeCustomFieldDefinition extends Service
                 throw new ServiceException(__u('No es posible iniciar una transacción'));
             }
 
-            foreach (DbWrapper::getResultsArray($queryData, $this->db) as $item) {
+            foreach ($this->db->doSelect($queryData)->getDataAsArray() as $item) {
                 /** @var CustomFieldDefDataOld $data */
                 $data = Util::unserialize(CustomFieldDefDataOld::class, $item->field, 'SP\DataModel\CustomFieldDefData');
 

@@ -41,8 +41,8 @@ use SP\Services\Upgrade\UpgradeAppService;
 use SP\Services\Upgrade\UpgradeDatabaseService;
 use SP\Services\Upgrade\UpgradeUtil;
 use SP\Services\UserProfile\UserProfileService;
-use SP\Storage\Database;
-use SP\Storage\DBUtil;
+use SP\Storage\Database\Database;
+use SP\Storage\Database\DBUtil;
 use SP\Util\HttpUtil;
 
 /**

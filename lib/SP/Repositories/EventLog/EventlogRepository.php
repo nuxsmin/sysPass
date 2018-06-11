@@ -24,11 +24,13 @@
 
 namespace SP\Repositories\EventLog;
 
+use SP\Core\Exceptions\ConstraintException;
+use SP\Core\Exceptions\QueryException;
 use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
+use SP\Storage\Database\QueryResult;
 
 /**
  * Class EventlogRepository
@@ -41,8 +43,8 @@ class EventlogRepository extends Repository
      * Clears the event log
      *
      * @return bool con el resultado
-     * @throws \SP\Core\Exceptions\QueryException
-     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws QueryException
+     * @throws ConstraintException
      */
     public function clear()
     {
@@ -50,14 +52,17 @@ class EventlogRepository extends Repository
         $queryData->setQuery('TRUNCATE TABLE EventLog');
         $queryData->setOnErrorMessage(__u('Error al vaciar el registro de eventos'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows() > 0;
     }
 
     /**
      * Searches for items by a given filter
      *
      * @param ItemSearchData $itemSearchData
-     * @return mixed
+     *
+     * @return QueryResult
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -77,22 +82,16 @@ class EventlogRepository extends Repository
         $queryData->addParam($itemSearchData->getLimitStart());
         $queryData->addParam($itemSearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        /** @var array $queryRes */
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
 
     /**
      * @param EventlogData $eventlogData
+     *
      * @return int
-     * @throws \SP\Core\Exceptions\ConstraintException
-     * @throws \SP\Core\Exceptions\QueryException
+     * @throws ConstraintException
+     * @throws QueryException
      */
     public function create(EventlogData $eventlogData)
     {
@@ -116,8 +115,6 @@ class EventlogRepository extends Repository
                 $eventlogData->getLevel()]
         );
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 }

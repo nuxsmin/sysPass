@@ -51,7 +51,10 @@ class ClientService extends Service
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return \SP\DataModel\ClientData[]
+     *
+     * @return \SP\Storage\Database\QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {
@@ -60,7 +63,10 @@ class ClientService extends Service
 
     /**
      * @param int $id
+     *
      * @return ClientData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -71,7 +77,10 @@ class ClientService extends Service
      * Returns the item for given name
      *
      * @param string $name
+     *
      * @return ClientData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByName($name)
     {
@@ -135,6 +144,8 @@ class ClientService extends Service
      * Get all items from the service's repository
      *
      * @return ClientData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAllBasic()
     {
@@ -146,6 +157,7 @@ class ClientService extends Service
      *
      * @return ItemData[]
      * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Core\Exceptions\ConstraintException
      */
     public function getAllForUser()
     {

@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -27,8 +27,7 @@ namespace SP\Repositories\UserGroup;
 use SP\DataModel\UserToUserGroupData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class UserToUserGroupRepository
@@ -42,9 +41,12 @@ class UserToUserGroupRepository extends Repository
     /**
      * Checks whether the user is included in the group
      *
-     * @param $userId
      * @param $groupId
+     * @param $userId
+     *
      * @return bool
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function checkUserInGroup($groupId, $userId)
     {
@@ -52,16 +54,17 @@ class UserToUserGroupRepository extends Repository
         $queryData->setQuery('SELECT userGroupId FROM UserToUserGroup WHERE userGroupId = ? AND userId = ?');
         $queryData->setParams([$groupId, $userId]);
 
-        DbWrapper::getResults($queryData, $this->db);
-
-        return ($queryData->getQueryNumRows() === 1);
+        return $this->db->doSelect($queryData)->getNumRows() === 1;
     }
 
     /**
      * Returns the groups which the user belongs to
      *
      * @param $userId
+     *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getGroupsForUser($userId)
     {
@@ -69,7 +72,7 @@ class UserToUserGroupRepository extends Repository
         $queryData->setQuery('SELECT userGroupId FROM UserToUserGroup WHERE userId = ?');
         $queryData->addParam($userId);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -77,6 +80,7 @@ class UserToUserGroupRepository extends Repository
      *
      * @param int   $id
      * @param array $users
+     *
      * @return UserToUserGroupRepository
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -91,6 +95,7 @@ class UserToUserGroupRepository extends Repository
      * Deletes users from a group
      *
      * @param $id int
+     *
      * @return $this
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -102,7 +107,7 @@ class UserToUserGroupRepository extends Repository
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar los usuarios del grupo'));
 
-        DbWrapper::getQuery($queryData, $this->db);
+        $this->db->doQuery($queryData);
 
         return $this;
     }
@@ -112,6 +117,7 @@ class UserToUserGroupRepository extends Repository
      *
      * @param int   $groupId
      * @param array $users
+     *
      * @return UserToUserGroupRepository
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
@@ -131,7 +137,7 @@ class UserToUserGroupRepository extends Repository
 
         $queryData->setOnErrorMessage(__u('Error al asignar los usuarios al grupo'));
 
-        DbWrapper::getQuery($queryData, $this->db);
+        $this->db->doQuery($queryData);
 
         return $this;
     }
@@ -140,7 +146,10 @@ class UserToUserGroupRepository extends Repository
      * Returns users from a group by group Id
      *
      * @param $id int
+     *
      * @return UserToUserGroupData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -149,6 +158,6 @@ class UserToUserGroupRepository extends Repository
         $queryData->setQuery('SELECT userGroupId, userId FROM UserToUserGroup WHERE userGroupId = ?');
         $queryData->addParam($id);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 }

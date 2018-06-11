@@ -22,7 +22,7 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\Database;
 
 use SP\DataModel\DataModelBase;
 
@@ -110,21 +110,21 @@ class QueryData
     }
 
     /**
-     * Añadir parámetros a la consulta
-     *
-     * @param array $params
-     */
-    public function addParams(array $params)
-    {
-        $this->params = array_merge($this->params, $params);
-    }
-
-    /**
      * @return array
      */
     public function getParams()
     {
         return $this->params;
+    }
+
+    /**
+     * Establecer los parámetros de la consulta
+     *
+     * @param array $data
+     */
+    public function setParams(array $data)
+    {
+        $this->params = $data;
     }
 
     /**
@@ -196,16 +196,6 @@ class QueryData
     }
 
     /**
-     * Establecer los parámetros de la consulta
-     *
-     * @param array $data
-     */
-    public function setParams(array $data)
-    {
-        $this->params = $data;
-    }
-
-    /**
      * @return string
      */
     public function getSelect()
@@ -248,13 +238,28 @@ class QueryData
     }
 
     /**
-     * @param string $limit
+     * @param string     $limit
+     * @param array|null $params
      */
-    public function setLimit($limit)
+    public function setLimit($limit, array $params = null)
     {
         if (!empty($limit)) {
             $this->limit = 'LIMIT ' . $limit;
+
+            if ($params !== null) {
+                $this->addParams($params);
+            }
         }
+    }
+
+    /**
+     * Añadir parámetros a la consulta
+     *
+     * @param array $params
+     */
+    public function addParams(array $params)
+    {
+        $this->params = array_merge($this->params, $params);
     }
 
     /**
@@ -346,7 +351,7 @@ class QueryData
      */
     public function getOnErrorMessage()
     {
-        return $this->onErrorMessage;
+        return $this->onErrorMessage ?: __u('Error en la consulta');
     }
 
     /**

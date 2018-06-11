@@ -57,6 +57,9 @@ class NotificationController extends ControllerBase implements CrudControllerInt
 
     /**
      * indexAction
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function indexAction()
     {
@@ -75,6 +78,8 @@ class NotificationController extends ControllerBase implements CrudControllerInt
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {
@@ -114,11 +119,12 @@ class NotificationController extends ControllerBase implements CrudControllerInt
     }
 
     /**
-     * Sets view data for displaying user's data
+     * Sets view data for displaying notification's data
      *
      * @param $notificationId
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setViewData($notificationId = null)
     {

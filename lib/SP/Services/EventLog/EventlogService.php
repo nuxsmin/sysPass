@@ -28,6 +28,7 @@ use SP\DataModel\EventlogData;
 use SP\DataModel\ItemSearchData;
 use SP\Repositories\EventLog\EventlogRepository;
 use SP\Services\Service;
+use SP\Storage\Database\QueryResult;
 use SP\Util\HttpUtil;
 
 /**
@@ -44,7 +45,10 @@ class EventlogService extends Service
 
     /**
      * @param ItemSearchData $itemSearchData
-     * @return mixed
+     *
+     * @return QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $itemSearchData)
     {

@@ -30,8 +30,7 @@ use SP\DataModel\ItemSearchData;
 use SP\Repositories\Repository;
 use SP\Repositories\RepositoryItemInterface;
 use SP\Repositories\RepositoryItemTrait;
-use SP\Storage\DbWrapper;
-use SP\Storage\QueryData;
+use SP\Storage\Database\QueryData;
 
 /**
  * Class CustomFieldDefRepository
@@ -73,9 +72,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         ]);
         $queryData->setOnErrorMessage(__u('Error al crear el campo personalizado'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getLastId();
+        return $this->db->doQuery($queryData)->getLastId();
     }
 
     /**
@@ -83,7 +80,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      *
      * @param CustomFieldDefinitionData $itemData
      *
-     * @return mixed
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      */
@@ -108,7 +105,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         ]);
         $queryData->setOnErrorMessage(__u('Error al actualizar el campo personalizado'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -117,6 +114,8 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      * @param int $id
      *
      * @return CustomFieldDefinitionData
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getById($id)
     {
@@ -134,16 +133,18 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->setQuery($query);
         $queryData->addParam($id);
 
-        $cfd = DbWrapper::getResults($queryData, $this->db);
-        $this->customFieldDefCollection->set($id, $cfd);
+        $result = $this->db->doSelect($queryData)->getData();
+        $this->customFieldDefCollection->set($id, $result);
 
-        return $cfd;
+        return $result;
     }
 
     /**
      * Returns all the items
      *
      * @return CustomFieldDefinitionData[]
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getAll()
     {
@@ -156,7 +157,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->setMapClassName(CustomFieldDefinitionData::class);
         $queryData->setQuery($query);
 
-        return DbWrapper::getResultsArray($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getDataAsArray();
     }
 
     /**
@@ -165,6 +166,8 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      * @param array $ids
      *
      * @return array
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function getByIdBatch(array $ids)
     {
@@ -178,7 +181,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->setQuery($query);
         $queryData->setParams($ids);
 
-        return DbWrapper::getResults($queryData, $this->db);
+        return $this->db->doSelect($queryData)->getData();
     }
 
     /**
@@ -201,9 +204,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->addParam($ids);
         $queryData->setOnErrorMessage(__u('Error al eliminar los campos personalizados'));
 
-        DbWrapper::getQuery($queryData, $this->db);
-
-        return $this->db->getNumRows();
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -211,7 +212,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      *
      * @param $id
      *
-     * @return bool
+     * @return int
      * @throws \SP\Core\Exceptions\ConstraintException
      * @throws \SP\Core\Exceptions\QueryException
      * @throws \SP\Core\Exceptions\SPException
@@ -223,7 +224,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->addParam($id);
         $queryData->setOnErrorMessage(__u('Error al eliminar el campo personalizado'));
 
-        return DbWrapper::getQuery($queryData, $this->db);
+        return $this->db->doQuery($queryData)->getAffectedNumRows();
     }
 
     /**
@@ -261,7 +262,9 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
      *
      * @param ItemSearchData $SearchData
      *
-     * @return CustomFieldDefinitionData[]
+     * @return \SP\Storage\Database\QueryResult
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function search(ItemSearchData $SearchData)
     {
@@ -275,14 +278,7 @@ class CustomFieldDefRepository extends Repository implements RepositoryItemInter
         $queryData->addParam($SearchData->getLimitStart());
         $queryData->addParam($SearchData->getLimitCount());
 
-        DbWrapper::setFullRowCount();
-
-        /** @var CustomFieldDefinitionData[] $queryRes */
-        $queryRes = DbWrapper::getResultsArray($queryData, $this->db);
-
-        $queryRes['count'] = $queryData->getQueryNumRows();
-
-        return $queryRes;
+        return $this->db->doSelect($queryData, true);
     }
 
     protected function initialize()

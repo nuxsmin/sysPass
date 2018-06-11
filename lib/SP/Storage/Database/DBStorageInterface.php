@@ -22,58 +22,42 @@
  *  along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Storage;
+namespace SP\Storage\Database;
 
-use PDOStatement;
-use SP\Core\Exceptions\QueryException;
+use SP\Core\Exceptions\SPException;
 
 /**
- * Interface DatabaseInterface
+ * Interface DBStorageInterface
  *
  * @package SP\Storage
  */
-interface DatabaseInterface
+interface DBStorageInterface
 {
     /**
-     * Performs a DB query
+     * Obtener una conexión PDO
      *
-     * @param QueryData $queryData  Query data
-     * @param bool      $getRawData Don't fetch records and return prepared statement
-     * @return PDOStatement|array
-     * @throws QueryException
+     * @return \PDO
+     * @throws SPException
      */
-    public function doQuery(QueryData $queryData, $getRawData = false);
+    public function getConnection();
 
     /**
-     * Returns the total number of records
+     * Obtener una conexión PDO sin seleccionar la BD
      *
-     * @param QueryData $queryData Query data
-     * @return int Records count
+     * @return \PDO
+     * @throws SPException
      */
-    public function getFullRowCount(QueryData $queryData);
+    public function getConnectionSimple();
 
     /**
-     * @return DBStorageInterface
-     */
-    public function getDbHandler();
-
-    /**
+     * Devolcer el estado de la BD
+     *
      * @return int
      */
-    public function getNumRows();
+    public function getDbStatus();
 
     /**
-     * @return int
+     * @return mixed
      */
-    public function getNumFields();
-
-    /**
-     * @return array
-     */
-    public function getLastResult();
-
-    /**
-     * @return int
-     */
-    public function getLastId();
+    public function getConnectionUri();
 }

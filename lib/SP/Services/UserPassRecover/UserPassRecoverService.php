@@ -27,7 +27,6 @@ namespace SP\Services\UserPassRecover;
 use SP\Bootstrap;
 use SP\Core\Messages\MailMessage;
 use SP\Html\Html;
-use SP\Repositories\UserPassRecover\UserPassRecoverRepository;
 use SP\Services\Service;
 use SP\Services\ServiceException;
 use SP\Util\Util;
@@ -51,7 +50,7 @@ class UserPassRecoverService extends Service
     const USER_MAIL_EXIST = 2;
 
     /**
-     * @var UserPassRecoverRepository
+     * @var \SP\Repositories\User\UserPassRecoverRepository
      */
     protected $userPassRecoverRepository;
 
@@ -157,6 +156,6 @@ class UserPassRecoverService extends Service
      */
     protected function initialize()
     {
-        $this->userPassRecoverRepository = $this->dic->get(UserPassRecoverRepository::class);
+        $this->userPassRecoverRepository = $this->dic->get(\SP\Repositories\User\UserPassRecoverRepository::class);
     }
 }

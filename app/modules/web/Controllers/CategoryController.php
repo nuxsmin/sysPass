@@ -2,8 +2,8 @@
 /**
  * sysPass
  *
- * @author nuxsmin 
- * @link https://syspass.org
+ * @author    nuxsmin
+ * @link      https://syspass.org
  * @copyright 2012-2018, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
@@ -56,8 +56,8 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
     /**
      * Search action
      *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     public function searchAction()
     {
@@ -76,6 +76,8 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      * getSearchGrid
      *
      * @return $this
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function getSearchGrid()
     {
@@ -115,10 +117,12 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
     }
 
     /**
-     * Sets view data for displaying user's data
+     * Sets view data for displaying category's data
      *
      * @param $categoryId
-     * @throws \Psr\Container\ContainerExceptionInterface
+     *
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
      */
     protected function setViewData($categoryId = null)
     {
@@ -146,6 +150,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      * Edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function editAction($id)
@@ -175,6 +180,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      * Delete action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
@@ -261,6 +267,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      * Saves edit action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      *
@@ -302,6 +309,7 @@ class CategoryController extends ControllerBase implements CrudControllerInterfa
      * View action
      *
      * @param $id
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function viewAction($id)
