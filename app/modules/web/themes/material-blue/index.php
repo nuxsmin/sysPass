@@ -26,8 +26,8 @@
 return [
     'name' => 'Material Blue',
     'creator' => 'nuxsmin',
-    'version' => '2.0',
-    'targetversion' => '2.0.0',
+    'version' => '3.0',
+    'targetversion' => '3.0.0',
     'js' => [
         'bootstrap-material-datetimepicker.min.js',
         'material.min.js',

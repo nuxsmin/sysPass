@@ -203,7 +203,7 @@ class Theme implements ThemeInterface
 
         while (false !== ($themeDir = $themesDirs->read())) {
             if ($themeDir !== '.' && $themeDir !== '..') {
-                $themeFile = $this->themePathFull . DIRECTORY_SEPARATOR . 'index.php';
+                $themeFile = VIEW_PATH . DIRECTORY_SEPARATOR . $themeDir . DIRECTORY_SEPARATOR . 'index.php';
 
                 if (file_exists($themeFile)) {
                     $themeInfo = require $themeFile;
