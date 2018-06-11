@@ -35,6 +35,7 @@ use SP\DataModel\Dto\AccountDetailsResponse;
 use SP\Modules\Web\Controllers\Helpers\HelperBase;
 use SP\Modules\Web\Controllers\Traits\ItemTrait;
 use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Repositories\NoSuchItemException;
 use SP\Services\Account\AccountAclService;
 use SP\Services\Account\AccountHistoryService;
 use SP\Services\Account\AccountService;
@@ -95,6 +96,7 @@ class AccountHelper extends HelperBase
      *
      * @param AccountDetailsResponse $accountDetailsResponse
      * @param int                    $actionId
+     *
      * @throws AccountPermissionException
      * @throws SPException
      * @throws UnauthorizedPageException
@@ -149,19 +151,18 @@ class AccountHelper extends HelperBase
         $this->view->assign('filesAllowedExts', implode(',', $this->configData->getFilesAllowedExts()));
 
         if ($this->configData->isPublinksEnabled() && $this->accountAcl->isShowLink()) {
-            $publicLinkData = $this->publicLinkService->getHashForItem($this->accountId);
-
-            $hasPublicLink = !empty($publicLinkData);
-
-            $publicLinkUrl = $hasPublicLink ? PublicLinkService::getLinkForHash($publicLinkData->getHash()) : null;
-
-            $this->view->assign('publicLinkUrl', $publicLinkUrl);
-            $this->view->assign('publicLinkId', $hasPublicLink ? $publicLinkData->getId() : 0);
-            $this->view->assign('publicLinkShow', true);
-
-            if ($hasPublicLink) {
+            try {
+                $publicLinkData = $this->publicLinkService->getHashForItem($this->accountId);
                 $accountActionsDto->setPublicLinkId($publicLinkData->getId());
+
+                $this->view->assign('publicLinkUrl', PublicLinkService::getLinkForHash($publicLinkData->getHash()));
+                $this->view->assign('publicLinkId', $publicLinkData->getId());
+            } catch (NoSuchItemException $e) {
+                $this->view->assign('publicLinkId', 0);
+                $this->view->assign('publicLinkUrl', null);
             }
+
+            $this->view->assign('publicLinkShow', true);
         } else {
             $this->view->assign('publicLinkShow', false);
         }
@@ -209,6 +210,7 @@ class AccountHelper extends HelperBase
      * Comprobar si el usuario dispone de acceso al módulo
      *
      * @param AccountDetailsResponse $accountDetailsResponse
+     *
      * @return AccountAcl
      * @throws AccountPermissionException
      */
@@ -285,6 +287,7 @@ class AccountHelper extends HelperBase
      * Sets account's view for a blank form
      *
      * @param $actionId
+     *
      * @return void
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException
@@ -323,7 +326,7 @@ class AccountHelper extends HelperBase
         $this->view->assign('accountId', 0);
         $this->view->assign('gotData', false);
 
-        $this->view->assign('accountActions', $this->dic->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl,  new AccountActionsDto($this->accountId)));
+        $this->view->assign('accountActions', $this->dic->get(AccountActionsHelper::class)->getActionsForAccount($this->accountAcl, new AccountActionsDto($this->accountId)));
 
         $this->setViewCommon();
     }
@@ -333,6 +336,7 @@ class AccountHelper extends HelperBase
      *
      * @param AccountDetailsResponse $accountDetailsResponse
      * @param int                    $actionId
+     *
      * @return bool
      * @throws UnauthorizedPageException
      * @throws UpdatedMasterPassException

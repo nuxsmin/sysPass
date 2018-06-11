@@ -341,7 +341,9 @@ class PublicLinkService extends Service
      * @param int $itemId
      *
      * @return PublicLinkData
-     * @throws SPException
+     * @throws \SP\Core\Exceptions\ConstraintException
+     * @throws \SP\Core\Exceptions\QueryException
+     * @throws \SP\Repositories\NoSuchItemException
      */
     public function getHashForItem($itemId)
     {
